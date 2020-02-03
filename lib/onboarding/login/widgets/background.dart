@@ -51,7 +51,7 @@ class Background extends StatelessWidget {
         children: <Widget>[
           Container(
             decoration: BoxDecoration(
-              gradient: VialerTheme.gradient,
+              gradient: VialerTheme.onboardingGradient,
             ),
           ),
           ..._clouds,

@@ -13,16 +13,19 @@ final vialerTheme = ThemeData(
 );
 
 abstract class VialerTheme {
-  static const gradient = LinearGradient(
-    colors: [VialerColors.gradientStart, VialerColors.gradientEnd],
+  static const onboardingGradient = LinearGradient(
+    colors: [
+      VialerColors.onboardingGradientStart,
+      VialerColors.onboardingGradientEnd,
+    ],
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
   );
 
-  static final gradientReversed = LinearGradient(
-    colors: gradient.colors,
-    begin: gradient.end,
-    end: gradient.begin,
+  static final onboardingGradientReversed = LinearGradient(
+    colors: onboardingGradient.colors,
+    begin: onboardingGradient.end,
+    end: onboardingGradient.begin,
   );
 }
 
@@ -33,6 +36,6 @@ abstract class VialerColors {
 
   static const highlight = Color(0xFF3E50B4);
 
-  static const gradientStart = Color(0xFFFF8213);
-  static const gradientEnd = Color(0xFFE94E1B);
+  static const onboardingGradientStart = Color(0xFFFF8213);
+  static const onboardingGradientEnd = Color(0xFFE94E1B);
 }
