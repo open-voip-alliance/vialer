@@ -153,4 +153,10 @@ class _LoginFormState extends State<LoginForm> with WidgetsBindingObserver {
       ),
     );
   }
+
+  @override
+  void dispose() {
+    super.dispose();
+    WidgetsBinding.instance.removeObserver(this);
+  }
 }
