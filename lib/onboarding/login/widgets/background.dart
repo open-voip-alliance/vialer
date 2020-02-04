@@ -65,7 +65,10 @@ class Background extends StatelessWidget {
 class _Cloud extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return SvgPicture.asset('assets/background_cloud.svg');
+    return SvgPicture.asset(
+      'assets/background_cloud.svg',
+      height: 96,
+    );
   }
 
   static Widget mirrored() => Transform.scale(
