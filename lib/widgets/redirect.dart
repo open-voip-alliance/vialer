@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../auth/bloc.dart';
 import '../routes.dart';
+import 'splash_screen.dart';
 
 class Redirect extends StatefulWidget {
   @override
@@ -27,7 +28,7 @@ class _RedirectState extends State<Redirect> {
           Navigator.pushReplacementNamed(context, Routes.onboardingLogin);
         }
       },
-      child: Container(),
+      child: SplashScreen(),
     );
   }
 }

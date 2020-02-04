@@ -27,6 +27,15 @@ abstract class VialerTheme {
     begin: onboardingGradient.end,
     end: onboardingGradient.begin,
   );
+
+  static const splashScreenGradient = LinearGradient(
+    colors: [
+      VialerColors.splashScreenGradientStart,
+      VialerColors.splashScreenGradientEnd
+    ],
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+  );
 }
 
 abstract class VialerColors {
@@ -38,4 +47,7 @@ abstract class VialerColors {
 
   static const onboardingGradientStart = Color(0xFFFF8213);
   static const onboardingGradientEnd = Color(0xFFE94E1B);
+
+  static const splashScreenGradientStart = Color(0xFFFFA257);
+  static const splashScreenGradientEnd = Color(0xFFFF7B24);
 }
