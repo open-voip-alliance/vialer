@@ -25,7 +25,7 @@ class _RedirectState extends State<Redirect> {
         if (state is Authenticated) {
           Navigator.pushReplacementNamed(context, Routes.dialer);
         } else if (state is NotAuthenticated) {
-          Navigator.pushReplacementNamed(context, Routes.onboardingLogin);
+          Navigator.pushReplacementNamed(context, Routes.onboarding);
         }
       },
       child: SplashScreen(),

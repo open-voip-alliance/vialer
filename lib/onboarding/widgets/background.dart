@@ -5,13 +5,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:vialer_lite/resources/theme.dart';
 
-import '../../../widgets/splash_screen.dart';
+import '../../widgets/splash_screen.dart';
 
 class Background extends StatefulWidget {
   final Widget child;
-  final bool showSplashScreen;
 
-  const Background({Key key, this.child, this.showSplashScreen = true})
+  const Background({Key key, this.child})
       : super(key: key);
 
   @override
