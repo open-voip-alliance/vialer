@@ -22,10 +22,19 @@ class _OnboardingPageState extends State<OnboardingPage> {
         curve: _curve,
       );
 
-  void _backward() => _controller.previousPage(
-        duration: _duration,
-        curve: _curve,
-      );
+  Future<bool> _backward() async {
+    if (_controller.page <= 0) {
+      // Pop the page.
+      return true;
+    }
+
+    _controller.previousPage(
+      duration: _duration,
+      curve: _curve,
+    );
+
+    return false;
+  }
 
   @override
   void initState() {
@@ -43,10 +52,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         body: WillPopScope(
-          onWillPop: () async {
-            _backward();
-            return false;
-          },
+          onWillPop: _backward,
           child: PageView(
             controller: _controller,
             children: _forms.map((f) {
