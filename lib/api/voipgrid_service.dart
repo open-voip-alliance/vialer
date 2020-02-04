@@ -1,8 +1,4 @@
 import 'package:chopper/chopper.dart';
-import 'package:flutter/cupertino.dart';
-
-import 'package:meta/meta.dart';
-import 'package:provider/provider.dart';
 
 part 'voipgrid_service.chopper.dart';
 

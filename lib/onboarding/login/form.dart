@@ -5,7 +5,6 @@ import 'package:vialer_lite/auth/bloc.dart';
 
 import '../../api/api.dart';
 import '../../routes.dart';
-import '../widgets/background.dart';
 import '../widgets/stylized_button.dart';
 import '../widgets/stylized_text_field.dart';
 import 'bloc.dart';

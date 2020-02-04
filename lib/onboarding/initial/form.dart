@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../routes.dart';
 import '../widgets/stylized_button.dart';
 
 class InitialForm extends StatelessWidget {
