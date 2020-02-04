@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'initial/form.dart';
 import 'login/form.dart';
@@ -51,14 +52,15 @@ class _OnboardingPageState extends State<OnboardingPage> {
     return Background(
       child: Scaffold(
         backgroundColor: Colors.transparent,
+        resizeToAvoidBottomInset: false,
         body: WillPopScope(
           onWillPop: _backward,
           child: PageView(
             controller: _controller,
             children: _forms.map((f) {
               return SafeArea(
-                child: Padding(
-                  padding: EdgeInsets.all(48).copyWith(
+                child: Provider<EdgeInsets>(
+                  create: (_) => EdgeInsets.all(48).copyWith(
                     top: 128,
                     bottom: 32,
                   ),
