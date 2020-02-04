@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../routes.dart';
 import 'initial/form.dart';
 import 'login/form.dart';
 import 'widgets/background.dart';
@@ -18,10 +19,16 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   List<Widget> _forms;
 
-  void _forward() => _controller.nextPage(
+  void _forward() {
+    if (_controller.page >= _forms.length - 1) {
+      Navigator.pushNamed(context, Routes.dialer);
+    } else {
+      _controller.nextPage(
         duration: _duration,
         curve: _curve,
       );
+    }
+  }
 
   Future<bool> _backward() async {
     if (_controller.page <= 0) {
@@ -43,7 +50,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
     _forms = [
       InitialForm(forward: _forward),
-      LoginForm.create(),
+      LoginForm.create(forward: _forward),
     ];
   }
 

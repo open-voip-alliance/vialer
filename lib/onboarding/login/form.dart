@@ -5,21 +5,22 @@ import 'package:provider/provider.dart';
 import 'package:vialer_lite/auth/bloc.dart';
 
 import '../../api/api.dart';
-import '../../routes.dart';
 import '../widgets/stylized_button.dart';
 import '../widgets/stylized_text_field.dart';
 import 'bloc.dart';
 
 class LoginForm extends StatefulWidget {
-  LoginForm._();
+  final VoidCallback forward;
 
-  static Widget create() {
+  LoginForm._(this.forward);
+
+  static Widget create({@required VoidCallback forward}) {
     return BlocProvider<LoginBloc>(
       create: (context) => LoginBloc(
         api: context.api,
         authBloc: context.bloc<AuthBloc>(),
       ),
-      child: LoginForm._(),
+      child: LoginForm._(forward),
     );
   }
 
@@ -75,7 +76,7 @@ class _LoginFormState extends State<LoginForm> with WidgetsBindingObserver {
     return BlocListener<LoginBloc, LoginState>(
       listener: (context, state) {
         if (state is LoginSuccessful) {
-          Navigator.pushNamed(context, Routes.dialer);
+          widget.forward();
         }
       },
       child: AnimatedContainer(
