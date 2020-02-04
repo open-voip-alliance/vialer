@@ -29,34 +29,4 @@ class _$VoipGridService extends VoipGridService {
     final $request = Request('GET', $url, client.baseUrl);
     return client.send<dynamic, dynamic>($request);
   }
-
-  @override
-  Future<Response> getPhoneAccount(String accountId) {
-    final $url = 'api/phoneaccount/basic/phoneaccount/$accountId/';
-    final $request = Request('GET', $url, client.baseUrl);
-    return client.send<dynamic, dynamic>($request);
-  }
-
-  @override
-  Future<Response> register(
-      {String name,
-      String token,
-      dynamic sipUserId,
-      String osVersion,
-      String clientVersion,
-      String app,
-      String remoteLoggingId}) {
-    final $url = 'api/android-device/';
-    final $params = <String, dynamic>{
-      'name': name,
-      'token': token,
-      'sip_user_id': sipUserId,
-      'os_version': osVersion,
-      'client_version': clientVersion,
-      'app': app,
-      'remote_logging_id': remoteLoggingId
-    };
-    final $request = Request('POST', $url, client.baseUrl, parameters: $params);
-    return client.send<dynamic, dynamic>($request);
-  }
 }
