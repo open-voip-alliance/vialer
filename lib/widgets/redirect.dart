@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../auth/bloc.dart';
@@ -25,10 +26,23 @@ class _RedirectState extends State<Redirect> {
         if (state is Authenticated) {
           Navigator.pushReplacementNamed(context, Routes.dialer);
         } else if (state is NotAuthenticated) {
-          Navigator.pushReplacementNamed(context, Routes.onboarding);
+          // Push without animation, so the two splash screens appear
+          // to be a seamless transition.
+          Navigator.pushReplacement(
+            context,
+            PageRouteBuilder(
+              pageBuilder: (_, __, ___) =>
+                  Routes.mapped[Routes.onboarding](null),
+            ),
+          );
         }
       },
-      child: SplashScreen(),
+      child: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle.light.copyWith(
+          statusBarColor: Colors.transparent,
+        ),
+        child: SplashScreen(),
+      ),
     );
   }
 }
