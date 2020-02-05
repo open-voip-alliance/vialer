@@ -35,6 +35,12 @@ class _LoginFormState extends State<LoginForm> with WidgetsBindingObserver {
   EdgeInsets _defaultPadding;
   EdgeInsets _padding;
 
+  double _defaultHeaderDistance = 48;
+  double _headerDistance;
+
+  static const _duration = Duration(milliseconds: 200);
+  static const _curve = Curves.decelerate;
+
   @override
   void initState() {
     super.initState();
@@ -52,10 +58,13 @@ class _LoginFormState extends State<LoginForm> with WidgetsBindingObserver {
         _padding = _defaultPadding.copyWith(
           top: 24,
         );
+
+        _headerDistance = 24;
       });
     } else {
       setState(() {
         _padding = _defaultPadding;
+        _headerDistance = _defaultHeaderDistance;
       });
     }
   }
@@ -69,6 +78,10 @@ class _LoginFormState extends State<LoginForm> with WidgetsBindingObserver {
     if (_padding == null) {
       _padding = _defaultPadding;
     }
+
+    if (_headerDistance == null) {
+      _headerDistance = _defaultHeaderDistance;
+    }
   }
 
   @override
@@ -80,8 +93,8 @@ class _LoginFormState extends State<LoginForm> with WidgetsBindingObserver {
         }
       },
       child: AnimatedContainer(
-        curve: Curves.decelerate,
-        duration: Duration(milliseconds: 200),
+        curve: _curve,
+        duration: _duration,
         padding: _padding,
         child: Column(
           children: <Widget>[
@@ -94,7 +107,11 @@ class _LoginFormState extends State<LoginForm> with WidgetsBindingObserver {
                 color: Colors.white,
               ),
             ),
-            SizedBox(height: 48),
+            AnimatedContainer(
+              curve: _curve,
+              duration: _duration,
+              height: _headerDistance,
+            ),
             StylizedTextField(
               controller: _usernameController,
               prefixIcon: Icons.person,
