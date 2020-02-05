@@ -40,6 +40,13 @@ abstract class VialerTheme {
 abstract class VialerColors {
   static const primary = Color(0xFFFFA257);
 
+  static const grey1 = Color(0xFFCCCCCC);
+  static const grey2 = Color(0xFFD8D8D8);
+  static const grey3 = Color(0xFFE0E0E0);
+  static const grey4 = Color(0xFF8F8F8F);
+
+  static const green = Color(0xFF28CA42);
+
   static const onboardingGradientStart = Color(0xFFFF8213);
   static const onboardingGradientEnd = Color(0xFFE94E1B);
 

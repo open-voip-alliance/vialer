@@ -24,7 +24,7 @@ class _RedirectState extends State<Redirect> {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) async {
         if (state is Authenticated) {
-          Navigator.pushReplacementNamed(context, Routes.dialer);
+          Navigator.pushReplacementNamed(context, Routes.main);
         } else if (state is NotAuthenticated) {
           // Push without animation, so the two splash screens appear
           // to be a seamless transition.
