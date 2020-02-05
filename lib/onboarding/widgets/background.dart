@@ -11,8 +11,7 @@ import '../../widgets/transparent_status_bar.dart';
 class Background extends StatefulWidget {
   final Widget child;
 
-  const Background({Key key, this.child})
-      : super(key: key);
+  const Background({Key key, this.child}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _BackgroundState();
