@@ -53,9 +53,12 @@ class AuthorizationInterceptor implements RequestInterceptor {
   @override
   FutureOr<Request> onRequest(Request request) {
     if (api.token != null) {
-      return request.replace(headers: {
-        'Authorization': 'Token ${api.systemUser.email}:${api.token}',
-      });
+      return request.replace(
+        headers: request.headers
+          ..addAll({
+            'Authorization': 'Token ${api.systemUser.email}:${api.token}',
+          }),
+      );
     } else {
       return request;
     }
