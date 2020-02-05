@@ -21,7 +21,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   void _forward() {
     if (_controller.page >= _forms.length - 1) {
-      Navigator.pushNamed(context, Routes.main);
+      Navigator.pushNamedAndRemoveUntil(context, Routes.main, (_) => false);
     } else {
       _controller.nextPage(
         duration: _duration,
