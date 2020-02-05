@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import '../resources/theme.dart';
 import 'recent/page.dart';
+import '../widgets/transparent_status_bar.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -48,10 +49,8 @@ class _MainPageState extends State<MainPage> {
         currentIndex: _currentIndex,
         onTap: (i) => setState(() => _currentIndex = i),
       ),
-      body: AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle.dark.copyWith(
-          statusBarColor: Colors.transparent,
-        ),
+      body: TransparentStatusBar(
+        brightness: Brightness.dark,
         child: AnimatedSwitcher(
           duration: Duration(milliseconds: 100),
           transitionBuilder: (child, animation) {

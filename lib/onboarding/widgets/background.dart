@@ -6,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:vialer_lite/resources/theme.dart';
 
 import '../../widgets/splash_screen.dart';
+import '../../widgets/transparent_status_bar.dart';
 
 class Background extends StatefulWidget {
   final Widget child;
@@ -97,10 +98,8 @@ class _BackgroundState extends State<Background> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.light.copyWith(
-        statusBarColor: Colors.transparent,
-      ),
+    return TransparentStatusBar(
+      brightness: Brightness.light,
       child: Stack(
         fit: StackFit.expand,
         children: <Widget>[
