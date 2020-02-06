@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../resources/theme.dart';
+import '../routes.dart';
 import 'recent/page.dart';
 import '../widgets/transparent_status_bar.dart';
 
@@ -40,8 +41,8 @@ class _MainPageState extends State<MainPage> {
         height: 62,
         width: 62,
         child: FloatingActionButton(
-          onPressed: () {},
           backgroundColor: Theme.of(context).primaryColor,
+          onPressed: () => Navigator.pushNamed(context, Routes.dialer),
           child: Icon(Icons.dialpad, size: 31.5),
         ),
       ),
