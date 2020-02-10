@@ -64,7 +64,7 @@ abstract class VialerSans {
   static const lockOff = IconData(0xE90A, fontFamily: _family);
   static const phone = IconData(0xE980, fontFamily: _family);
   static const dialpad = IconData(0xE961, fontFamily: _family);
-  static const recent = IconData(0xE93E, fontFamily: _family);
+  static const clock = IconData(0xE95E, fontFamily: _family);
   static const contacts = IconData(0xE967, fontFamily: _family);
   static const settings = IconData(0xE949, fontFamily: _family);
   static const correct = IconData(0xE910, fontFamily: _family);

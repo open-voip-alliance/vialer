@@ -105,7 +105,7 @@ class _BottomNavigationBar extends StatelessWidget {
             title: _BottomNavigationBarText('Contacts'),
           ),
           BottomNavigationBarItem(
-            icon: Icon(VialerSans.recent),
+            icon: Icon(VialerSans.clock),
             title: _BottomNavigationBarText('Recent'),
           ),
           BottomNavigationBarItem(
