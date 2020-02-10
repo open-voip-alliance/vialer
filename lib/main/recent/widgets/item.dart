@@ -19,8 +19,9 @@ class RecentCallItem extends StatelessWidget {
       subtitle: _RecentItemSubtitle(item),
       trailing: IconButton(
         icon: Icon(
-          Icons.more_vert,
+          VialerSans.ellipsis,
           color: VialerColors.grey1,
+          size: 16,
         ),
         onPressed: () {},
       ),
@@ -57,7 +58,7 @@ class _RecentItemAvatar extends StatelessWidget {
                   fontSize: 16,
                 ),
               )
-            : Icon(Icons.call, size: 20),
+            : Icon(VialerSans.phone, size: 20),
       ),
     );
   }
@@ -77,9 +78,11 @@ class _RecentItemSubtitle extends StatelessWidget {
     return Row(
       children: <Widget>[
         Icon(
-          recentCall.isIncoming ? Icons.call_made : Icons.call_received,
+          recentCall.isIncoming
+              ? VialerSans.outgoingCall
+              : VialerSans.incomingCall,
           color: VialerColors.green,
-          size: 16,
+          size: 12,
         ),
         SizedBox(width: 8),
         Text(

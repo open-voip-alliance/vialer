@@ -43,7 +43,7 @@ class _MainPageState extends State<MainPage> {
         child: FloatingActionButton(
           backgroundColor: Theme.of(context).primaryColor,
           onPressed: () => Navigator.pushNamed(context, Routes.dialer),
-          child: Icon(Icons.dialpad, size: 31.5),
+          child: Icon(VialerSans.dialpad, size: 31),
         ),
       ),
       bottomNavigationBar: _BottomNavigationBar(
@@ -101,15 +101,15 @@ class _BottomNavigationBar extends StatelessWidget {
         onTap: onTap,
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.contacts),
+            icon: Icon(VialerSans.contacts),
             title: _BottomNavigationBarText('Contacts'),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.alarm),
+            icon: Icon(VialerSans.recent),
             title: _BottomNavigationBarText('Recent'),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
+            icon: Icon(VialerSans.settings),
             title: _BottomNavigationBarText('Settings'),
           ),
         ],

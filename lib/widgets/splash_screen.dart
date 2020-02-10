@@ -20,7 +20,7 @@ class SplashScreen extends StatelessWidget {
       ),
       child: Center(
         child: Icon(
-          Icons.call,
+          VialerSans.brandVialer,
           size: 64,
           color: iconColor,
         ),

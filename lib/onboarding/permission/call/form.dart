@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vialer_lite/onboarding/widgets/stylized_button.dart';
+import 'package:vialer_lite/resources/theme.dart';
 
 import 'bloc.dart';
 
@@ -38,7 +39,7 @@ class _CallPermissionFormState extends State<CallPermissionForm> {
         child: Column(
           children: <Widget>[
             SizedBox(height: 64),
-            Icon(Icons.call, size: 54),
+            Icon(VialerSans.phone, size: 54),
             SizedBox(height: 24),
             Text(
               'Call permission',

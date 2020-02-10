@@ -54,3 +54,21 @@ abstract class VialerColors {
   static const splashScreenGradientStart = Color(0xFFFFA257);
   static const splashScreenGradientEnd = Color(0xFFFF7B24);
 }
+
+abstract class VialerSans {
+  static const _family = 'VialerSans';
+
+  static const brandVialer = IconData(0xE98A, fontFamily: _family);
+  static const user = IconData(0xE964,fontFamily: _family);
+  static const lockOn = IconData(0xE90C, fontFamily: _family);
+  static const lockOff = IconData(0xE90A, fontFamily: _family);
+  static const phone = IconData(0xE980, fontFamily: _family);
+  static const dialpad = IconData(0xE961, fontFamily: _family);
+  static const recent = IconData(0xE93E, fontFamily: _family);
+  static const contacts = IconData(0xE967, fontFamily: _family);
+  static const settings = IconData(0xE949, fontFamily: _family);
+  static const correct = IconData(0xE910, fontFamily: _family);
+  static const ellipsis = IconData(0xE981, fontFamily: _family);
+  static const incomingCall = IconData(0xE924, fontFamily: _family);
+  static const outgoingCall = IconData(0xE92A, fontFamily: _family);
+}

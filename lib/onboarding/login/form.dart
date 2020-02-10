@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:vialer_lite/auth/bloc.dart';
 
 import '../../api/api.dart';
+import '../../resources/theme.dart';
 import '../widgets/stylized_button.dart';
 import '../widgets/stylized_text_field.dart';
 import 'bloc.dart';
@@ -116,14 +117,14 @@ class _LoginFormState extends State<LoginForm> with WidgetsBindingObserver {
             ),
             StylizedTextField(
               controller: _usernameController,
-              prefixIcon: Icons.person,
+              prefixIcon: VialerSans.user,
               labelText: 'Username',
               keyboardType: TextInputType.emailAddress,
             ),
             SizedBox(height: 20),
             StylizedTextField(
               controller: _passwordController,
-              prefixIcon: Icons.lock,
+              prefixIcon: VialerSans.lockOn,
               labelText: 'Password',
               obscureText: true,
             ),

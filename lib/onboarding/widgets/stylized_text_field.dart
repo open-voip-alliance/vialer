@@ -27,7 +27,7 @@ class StylizedTextField extends StatelessWidget {
       child: TextField(
         controller: controller,
         decoration: InputDecoration(
-          prefixIcon: Icon(prefixIcon, color: color),
+          prefixIcon: Icon(prefixIcon, color: color, size: 16),
           labelText: labelText,
           border: inputBorder,
           enabledBorder: inputBorder,

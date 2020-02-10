@@ -169,10 +169,7 @@ class _CallButton extends StatelessWidget {
         child: FloatingActionButton(
           backgroundColor: VialerColors.green,
           onPressed: onPressed,
-          child: Icon(
-            Icons.call,
-            size: 32,
-          ),
+          child: Icon(VialerSans.phone, size: 32),
         ),
       ),
     );
@@ -205,7 +202,7 @@ class _DeleteButton extends StatelessWidget {
       onTap: _deletePrevious,
       onLongPress: _deleteAll,
       child: Icon(
-        Icons.backspace,
+        VialerSans.correct,
         color: VialerColors.grey5,
         size: 32,
       ),
