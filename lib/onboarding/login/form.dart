@@ -89,6 +89,8 @@ class _LoginFormState extends State<LoginForm> with WidgetsBindingObserver {
     return BlocListener<LoginBloc, LoginState>(
       listener: (context, state) {
         if (state is LoginSuccessful) {
+          // Remove focus
+          FocusScope.of(context).requestFocus(FocusNode());
           widget.forward();
         }
       },

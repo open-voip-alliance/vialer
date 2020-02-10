@@ -13,7 +13,7 @@ abstract class Routes {
 
   static final mapped = {
     Routes.root: (_) => Redirect(),
-    Routes.onboarding: (_) => OnboardingPage(),
+    Routes.onboarding: (_) => OnboardingPage.create(),
     Routes.main: (_) => MainPage(),
     Routes.dialer: (_) => DialerPage.create(),
   };
