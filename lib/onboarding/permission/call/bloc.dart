@@ -2,6 +2,7 @@ export 'event.dart';
 export 'state.dart';
 
 import 'dart:async';
+import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -12,10 +13,14 @@ import 'state.dart';
 class CallPermissionBloc
     extends Bloc<CallPermissionEvent, CallPermissionState> {
   static Future<bool> shouldAddStep() async {
-    final callPermissionStatus =
-        await PermissionHandler().checkPermissionStatus(PermissionGroup.phone);
+    if (Platform.isAndroid) {
+      final callPermissionStatus = await PermissionHandler()
+          .checkPermissionStatus(PermissionGroup.phone);
 
-    return callPermissionStatus != PermissionStatus.granted;
+      return callPermissionStatus != PermissionStatus.granted;
+    } else {
+      return false;
+    }
   }
 
   @override
