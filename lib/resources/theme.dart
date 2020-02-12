@@ -65,7 +65,7 @@ abstract class VialerSans {
   static const _family = 'VialerSans';
 
   static const brandVialer = IconData(0xE98A, fontFamily: _family);
-  static const user = IconData(0xE964,fontFamily: _family);
+  static const user = IconData(0xE964, fontFamily: _family);
   static const lockOn = IconData(0xE90C, fontFamily: _family);
   static const lockOff = IconData(0xE90A, fontFamily: _family);
   static const phone = IconData(0xE980, fontFamily: _family);
