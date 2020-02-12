@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:android_intent/android_intent.dart';
 import 'package:bloc/bloc.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'event.dart';
 import 'state.dart';
@@ -23,6 +24,8 @@ class DialerBloc extends Bloc<DialerEvent, DialerState> {
         );
 
         await intent.launch();
+      } else {
+        await launch('tel:${event.phoneNumber}');
       }
     }
   }
