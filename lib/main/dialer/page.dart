@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../resources/theme.dart';
 import '../../widgets/transparent_status_bar.dart';
 import 'bloc.dart';
 import 'widgets/key_input.dart';
@@ -32,7 +33,7 @@ class _DialerPageState extends State<DialerPage> {
         child: Column(
           children: <Widget>[
             Material(
-              elevation: 8,
+              elevation: context.isIOS ? 0 : 8,
               child: SafeArea(
                 child: SizedBox(
                   height: 96,

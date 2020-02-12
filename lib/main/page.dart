@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import '../resources/theme.dart';
 import '../routes.dart';
+import 'dialer/page.dart';
 import 'recent/page.dart';
 import '../widgets/transparent_status_bar.dart';
 
@@ -16,38 +17,50 @@ class _MainPageState extends State<MainPage> {
 
   List<Widget> _pages;
 
+  bool _dialerIsPage;
+
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
 
-    _currentIndex = 1;
+    _dialerIsPage = context.isIOS;
 
-    _pages = [
-      ListView(
-        children: List.generate(
-          128,
-          (i) => Text(i.toString(), style: TextStyle(fontSize: 24)),
+    if (_pages == null) {
+      _pages = [
+        if (_dialerIsPage) DialerPage.create(),
+        ListView(
+          children: List.generate(
+            128,
+            (i) => Text(i.toString(), style: TextStyle(fontSize: 24)),
+          ),
         ),
-      ),
-      RecentPage.create(),
-      Container(),
-    ];
+        RecentPage.create(),
+        Container(),
+      ];
+    }
+
+    if (_currentIndex == null) {
+      _currentIndex = _dialerIsPage ? 2 : 1;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: SizedBox(
-        height: 62,
-        width: 62,
-        child: FloatingActionButton(
-          backgroundColor: Theme.of(context).primaryColor,
-          onPressed: () => Navigator.pushNamed(context, Routes.dialer),
-          child: Icon(VialerSans.dialpad, size: 31),
-        ),
-      ),
+      floatingActionButton: !_dialerIsPage
+          ? SizedBox(
+              height: 62,
+              width: 62,
+              child: FloatingActionButton(
+                backgroundColor: Theme.of(context).primaryColor,
+                onPressed: () => Navigator.pushNamed(context, Routes.dialer),
+                child: Icon(VialerSans.dialpad, size: 31),
+              ),
+            )
+          : null,
       bottomNavigationBar: _BottomNavigationBar(
         currentIndex: _currentIndex,
+        dialerIsPage: _dialerIsPage,
         onTap: (i) => setState(() => _currentIndex = i),
       ),
       body: TransparentStatusBar(
@@ -75,11 +88,13 @@ class _MainPageState extends State<MainPage> {
 class _BottomNavigationBar extends StatelessWidget {
   final int currentIndex;
   final ValueChanged<int> onTap;
+  final bool dialerIsPage;
 
   const _BottomNavigationBar({
     Key key,
     this.currentIndex,
     this.onTap,
+    this.dialerIsPage = false,
   }) : super(key: key);
 
   @override
@@ -93,13 +108,20 @@ class _BottomNavigationBar extends StatelessWidget {
         ),
       ),
       child: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
         iconSize: 24,
         selectedFontSize: 9,
+        selectedItemColor: VialerColors.primary,
         unselectedFontSize: 9,
         unselectedItemColor: VialerColors.grey1,
         currentIndex: currentIndex,
         onTap: onTap,
         items: [
+          if (dialerIsPage)
+            BottomNavigationBarItem(
+              icon: Icon(VialerSans.dialpad),
+              title: _BottomNavigationBarText('Keypad'),
+            ),
           BottomNavigationBarItem(
             icon: Icon(VialerSans.contacts),
             title: _BottomNavigationBarText('Contacts'),

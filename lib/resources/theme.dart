@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
 
-final vialerTheme = ThemeData(
-  primaryColor: VialerColors.primary,
-  buttonTheme: ButtonThemeData(
-    height: 42,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(4),
-    ),
-    buttonColor: Colors.white,
-  ),
-);
+final ThemeData vialerTheme = ThemeData(
+      primaryColor: VialerColors.primary,
+      buttonTheme: ButtonThemeData(
+        height: 42,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(7),
+        ),
+        buttonColor: Colors.white,
+      ),
+    );
+
+extension ThemeTargetPlatform on BuildContext {
+  bool get isIOS => Theme.of(this).platform == TargetPlatform.iOS;
+
+  bool get isAndroid => Theme.of(this).platform == TargetPlatform.android;
+}
 
 abstract class VialerTheme {
   static const onboardingGradient = LinearGradient(

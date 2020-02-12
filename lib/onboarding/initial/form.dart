@@ -56,7 +56,7 @@ class InitialForm extends StatelessWidget {
                 SizedBox(height: 24),
                 SizedBox(
                   width: double.infinity,
-                  child: StylizedFlatButton(
+                  child: StylizedOutlineButton(
                     text: 'Sign in with Vialer Lite account',
                     onPressed: () => forward(),
                   ),

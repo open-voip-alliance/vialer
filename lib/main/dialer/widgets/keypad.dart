@@ -42,30 +42,92 @@ class _KeypadState extends State<Keypad> {
 
   @override
   Widget build(BuildContext context) {
-    return GridView.count(
-      primary: false,
-      shrinkWrap: true,
-      crossAxisCount: 3,
-      padding: EdgeInsets.only(
-        bottom: 24,
+    var rows = List<Widget>();
+
+    final amountPerRow = 3;
+    for (int i = 0; i < (_buttonValues.length / amountPerRow); i++) {
+      rows.add(
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: _buttonValues.entries
+              .skip(i * amountPerRow)
+              .take(amountPerRow)
+              .map((entry) {
+            return _KeypadButton(
+              controller: _controller,
+              primaryValue: entry.key,
+              secondaryValue: entry.value,
+              replaceWithSecondaryValueOnLongPress:
+                  entry.key == '0' && entry.value == '+',
+            );
+          }).toList(),
+        ),
+      );
+    }
+
+    rows.add(
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          SizedBox.fromSize(
+            size: _ButtonWrap.size,
+          ),
+          // Empty space in the grid
+          _CallButton(
+            onPressed: widget.onCallButtonPressed,
+          ),
+          _DeleteButton(
+            controller: _controller,
+          ),
+        ],
       ),
-      childAspectRatio: 32 / 24,
-      children: [
-        ..._buttonValues.entries
-            .map<Widget>(
-              (entry) => _KeypadButton(
-                controller: _controller,
-                primaryValue: entry.key,
-                secondaryValue: entry.value,
-                replaceWithSecondaryValueOnLongPress:
-                    entry.key == '0' && entry.value == '+',
-              ),
-            )
-            .toList(),
-        Container(), // Empty space in the grid
-        _CallButton(onPressed: widget.onCallButtonPressed),
-        _DeleteButton(controller: _controller),
-      ],
+    );
+
+    rows = rows
+        .map(
+          (r) => SizedBox(
+            width: (_ButtonWrap.size.width * amountPerRow),
+            child: r,
+          ),
+        )
+        .toList();
+
+    return Padding(
+      padding: EdgeInsets.only(
+        bottom: 32,
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: rows,
+      ),
+    );
+  }
+}
+
+class _ButtonWrap extends StatelessWidget {
+  final Widget child;
+
+  static const _baseSize = Size(82, 82);
+  static const _padding = EdgeInsets.all(12);
+
+  static get size =>
+      _baseSize +
+      Offset(
+        _ButtonWrap._padding.horizontal,
+        _ButtonWrap._padding.vertical,
+      );
+
+  const _ButtonWrap({Key key, this.child}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: _padding,
+      child: SizedBox.fromSize(
+        size: _baseSize,
+        child: child,
+      ),
     );
   }
 }
@@ -120,35 +182,46 @@ class _KeypadButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkResponse(
-      enableFeedback: true,
-      onTapDown: (_) => _enterValue(),
-      // onTap needs to be defined for onTapDown to work
-      onTap: () {},
-      onLongPress: replaceWithSecondaryValueOnLongPress
-          ? _replaceWithSecondaryValue
-          : null,
-      child: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Text(
-              primaryValue,
-              style: TextStyle(
-                fontSize: 32,
-                color: !_primaryIsNumber
-                    ? VialerColors.grey5
-                    : null, // Null means default color
+    return _ButtonWrap(
+      child: Material(
+        shape: CircleBorder(
+          side: context.isIOS
+              ? BorderSide(color: VialerColors.grey3)
+              : BorderSide.none,
+        ),
+        child: _InkWellOrResponse(
+          isResponse: !context.isIOS,
+          customBorder: CircleBorder(),
+          enableFeedback: true,
+          onTapDown: _enterValue,
+          onLongPress: replaceWithSecondaryValueOnLongPress
+              ? _replaceWithSecondaryValue
+              : null,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                primaryValue,
+                style: TextStyle(
+                  fontSize: 32,
+                  color: !_primaryIsNumber
+                      ? VialerColors.grey5
+                      : null, // Null means default color
+                ),
               ),
-            ),
-            Text(
-              secondaryValue ?? '',
-              style: TextStyle(
-                color: VialerColors.grey5,
-                fontSize: 12,
-              ),
-            ),
-          ],
+              // Render an empty string on non-iOS platforms
+              // to keep the alignments proper
+              if (secondaryValue != null || !context.isIOS)
+                Text(
+                  secondaryValue ?? '',
+                  style: TextStyle(
+                    color: VialerColors.grey5,
+                    fontSize: 12,
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );
@@ -162,10 +235,12 @@ class _CallButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = context.isIOS ? 96.0 : 64.0;
+
     return Center(
       child: SizedBox(
-        width: 64,
-        height: 64,
+        width: size,
+        height: size,
         child: FloatingActionButton(
           backgroundColor: VialerColors.green,
           onPressed: onPressed,
@@ -198,14 +273,61 @@ class _DeleteButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkResponse(
-      onTap: _deletePrevious,
-      onLongPress: _deleteAll,
-      child: Icon(
-        VialerSans.correct,
-        color: VialerColors.grey5,
-        size: 32,
+    return _ButtonWrap(
+      child: InkResponse(
+        onTap: _deletePrevious,
+        onLongPress: _deleteAll,
+        child: Icon(
+          VialerSans.correct,
+          color: VialerColors.grey5,
+          size: 32,
+        ),
       ),
     );
+  }
+}
+
+class _InkWellOrResponse extends StatelessWidget {
+  final Widget child;
+  final VoidCallback onTapDown;
+  final VoidCallback onLongPress;
+  final bool enableFeedback;
+  final ShapeBorder customBorder;
+
+  final bool isResponse;
+
+  const _InkWellOrResponse({
+    Key key,
+    this.onTapDown,
+    this.onLongPress,
+    this.isResponse = false,
+    this.customBorder,
+    this.enableFeedback,
+    this.child,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    // onTap needs to be defined for onTapDown to work
+    final onTap = this.onTapDown != null ? () {} : null;
+    final onTapDown = (_) => this.onTapDown();
+
+    return isResponse
+        ? InkResponse(
+            enableFeedback: enableFeedback,
+            onTap: onTap,
+            onTapDown: onTapDown,
+            onLongPress: onLongPress,
+            customBorder: customBorder,
+            child: child,
+          )
+        : InkWell(
+            enableFeedback: enableFeedback,
+            onTap: onTap,
+            onTapDown: onTapDown,
+            onLongPress: onLongPress,
+            customBorder: customBorder,
+            child: child,
+          );
   }
 }
