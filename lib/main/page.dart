@@ -52,7 +52,7 @@ class _MainPageState extends State<MainPage> {
               height: 62,
               width: 62,
               child: FloatingActionButton(
-                backgroundColor: Theme.of(context).primaryColor,
+                backgroundColor: VialerColors.green1,
                 onPressed: () => Navigator.pushNamed(context, Routes.dialer),
                 child: Icon(VialerSans.dialpad, size: 31),
               ),
