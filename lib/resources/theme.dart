@@ -52,7 +52,9 @@ abstract class VialerColors {
   static const grey4 = Color(0xFF8F8F8F);
   static const grey5 = Color(0xFF8B95A3);
 
-  static const green = Color(0xFF28CA42);
+  static const green1 = Color(0xFF28CA42);
+  static const green2 = Color(0xFFACF5A6);
+  static const green3 = Color(0xFF046614);
 
   static const onboardingGradientStart = Color(0xFFFF8213);
   static const onboardingGradientEnd = Color(0xFFE94E1B);

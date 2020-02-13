@@ -17,6 +17,11 @@ class DialerBloc extends Bloc<DialerEvent, DialerState> {
   @override
   Stream<DialerState> mapEventToState(DialerEvent event) async* {
     if (event is Call) {
+      if (!event.showedConfirmation) {
+        yield NeedConfirmation();
+        return;
+      }
+
       if (Platform.isAndroid) {
         final intent = AndroidIntent(
           action: 'android.intent.action.CALL',

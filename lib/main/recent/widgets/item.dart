@@ -81,7 +81,7 @@ class _RecentItemSubtitle extends StatelessWidget {
           recentCall.isIncoming
               ? VialerSans.outgoingCall
               : VialerSans.incomingCall,
-          color: VialerColors.green,
+          color: VialerColors.green1,
           size: 12,
         ),
         SizedBox(width: 8),

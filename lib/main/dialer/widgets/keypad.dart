@@ -242,7 +242,7 @@ class _CallButton extends StatelessWidget {
         width: size,
         height: size,
         child: FloatingActionButton(
-          backgroundColor: VialerColors.green,
+          backgroundColor: VialerColors.green1,
           onPressed: onPressed,
           child: Icon(VialerSans.phone, size: 32),
         ),

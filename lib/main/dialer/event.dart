@@ -6,9 +6,10 @@ abstract class DialerEvent extends Equatable {
 
 class Call extends DialerEvent {
   final String phoneNumber;
+  final bool showedConfirmation;
 
-  const Call(this.phoneNumber);
+  const Call(this.phoneNumber, {this.showedConfirmation = false});
 
   @override
-  List<Object> get props => [phoneNumber];
+  List<Object> get props => [phoneNumber, showedConfirmation];
 }

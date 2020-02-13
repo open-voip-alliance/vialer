@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../resources/theme.dart';
 import '../../widgets/transparent_status_bar.dart';
 import 'bloc.dart';
+import 'confirm/page.dart';
 import 'widgets/key_input.dart';
 import 'widgets/keypad.dart';
 
@@ -50,11 +51,25 @@ class _DialerPageState extends State<DialerPage> {
                 padding: EdgeInsets.symmetric(horizontal: 32),
                 child: Align(
                   alignment: Alignment.bottomCenter,
-                  child: Keypad(
+                  child: BlocListener<DialerBloc, DialerState>(
+                    listener: (context, state) {
+                      if (state is NeedConfirmation) {
+                        Navigator.push(
+                          context,
+                          ConfirmPageRoute(
+                            bloc: context.bloc<DialerBloc>(),
+                            phoneNumber: _controller.text,
+                          ),
+                        );
+                      }
+                    },
+                    child: Keypad(
                       controller: _controller,
                       onCallButtonPressed: () {
                         context.bloc<DialerBloc>().add(Call(_controller.text));
-                      }),
+                      },
+                    ),
+                  ),
                 ),
               ),
             ),
