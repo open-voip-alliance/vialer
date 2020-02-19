@@ -1,0 +1,11 @@
+image: google/dart:latest
+
+analysis:
+  stage: check
+  script:
+    - dartanalyzer .
+
+format:
+  stage: check
+  script:
+    - dartfmt --fix -n --set-exit-if-changed .
