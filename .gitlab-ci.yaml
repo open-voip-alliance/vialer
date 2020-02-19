@@ -1,11 +1,13 @@
-image: google/dart:latest
-
-analysis:
+analyze:
+  image: cirrusci/flutter:stable
   stage: check
   script:
-    - dartanalyzer .
+    - flutter pub get
+    - dartanalyzer . --fatal-infos --fatal-warnings
+
 
 format:
+  image: google/dart:latest
   stage: check
   script:
     - dartfmt --fix -n --set-exit-if-changed .
