@@ -1,5 +1,5 @@
 enum PermissionStatus {
   denied,
   granted,
-  unavailable
+  unavailable,
 }

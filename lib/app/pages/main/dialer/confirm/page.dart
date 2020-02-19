@@ -21,7 +21,6 @@ class ConfirmPage extends View {
 
 class ConfirmPageState extends ViewState<ConfirmPage, ConfirmController>
     with TickerProviderStateMixin {
-
   AnimationController _animationController;
   Animation<double> _animation;
 

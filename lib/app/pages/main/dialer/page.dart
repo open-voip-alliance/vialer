@@ -19,7 +19,6 @@ class DialerPage extends View {
 }
 
 class _DialerPageState extends ViewState<DialerPage, DialerController> {
-
   _DialerPageState() : super(DialerController(DataCallRepository()));
 
   @override
@@ -49,7 +48,7 @@ class _DialerPageState extends ViewState<DialerPage, DialerController> {
                 child: Align(
                   alignment: Alignment.bottomCenter,
                   child: Keypad(
-                    controller:  controller.keypadController,
+                    controller: controller.keypadController,
                     onCallButtonPressed: controller.call,
                   ),
                 ),

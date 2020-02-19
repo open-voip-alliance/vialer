@@ -25,7 +25,6 @@ class LoginController extends Controller {
   @override
   void initController(GlobalKey<State<StatefulWidget>> key) {
     super.initController(key);
-
   }
 
   @override

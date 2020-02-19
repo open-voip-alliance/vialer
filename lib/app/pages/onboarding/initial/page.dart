@@ -35,7 +35,7 @@ class InitialPage extends StatelessWidget {
           ),
           Text(
             'Private calling with your business'
-                '\nnumber just got an upgrade',
+            '\nnumber just got an upgrade',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 18,

@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
 final ThemeData vialerTheme = ThemeData(
-      primaryColor: VialerColors.primary,
-      buttonTheme: ButtonThemeData(
-        height: 42,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(7),
-        ),
-        buttonColor: Colors.white,
-      ),
-    );
+  primaryColor: VialerColors.primary,
+  buttonTheme: ButtonThemeData(
+    height: 42,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(7),
+    ),
+    buttonColor: Colors.white,
+  ),
+);
 
 extension ThemeTargetPlatform on BuildContext {
   bool get isIOS => Theme.of(this).platform == TargetPlatform.iOS;
