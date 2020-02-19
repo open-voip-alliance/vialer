@@ -36,13 +36,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.4.0"
-  bloc:
-    dependency: "direct main"
-    description:
-      name: bloc
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.0.0"
   boolean_selector:
     dependency: transitive
     description:
@@ -202,13 +195,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_bloc:
+  flutter_clean_architecture:
     dependency: "direct main"
     description:
-      name: flutter_bloc
+      name: flutter_clean_architecture
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.2.0"
+    version: "3.0.2"
   flutter_svg:
     dependency: "direct main"
     description:
