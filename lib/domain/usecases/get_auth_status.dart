@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
-import 'package:vialer_lite/domain/repositories/auth_repository.dart';
 
+import '../repositories/auth_repository.dart';
 
 class GetAuthStatusUseCase extends UseCase<bool, void> {
   final AuthRepository authRepository;
@@ -14,7 +14,7 @@ class GetAuthStatusUseCase extends UseCase<bool, void> {
     final controller = StreamController<bool>();
 
     controller.add(await authRepository.isAuthenticated());
-    controller.close();
+    await controller.close();
 
     return controller.stream;
   }

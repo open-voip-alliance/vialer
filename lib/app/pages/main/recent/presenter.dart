@@ -31,7 +31,7 @@ class _GetRecentCallsUseCaseObserver extends Observer<List<RecentCall>> {
   void onComplete() {}
 
   @override
-  void onError(e) {}
+  void onError(dynamic e) {}
 
   @override
   void onNext(List<RecentCall> recentCalls) =>

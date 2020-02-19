@@ -33,7 +33,7 @@ class _LoginUseCaseObserver extends Observer<bool> {
   void onComplete() {}
 
   @override
-  void onError(e) {}
+  void onError(dynamic e) {}
 
   @override
   void onNext(bool success) => presenter.loginOnNext(success);

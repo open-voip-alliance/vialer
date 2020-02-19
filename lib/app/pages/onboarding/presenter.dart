@@ -31,7 +31,7 @@ class _GetStepsUseCaseObserver extends Observer<List<Step>> {
   void onComplete() {}
 
   @override
-  void onError(e) {}
+  void onError(dynamic e) {}
 
   @override
   void onNext(List<Step> steps) => presenter.getStepsOnNext(steps);

@@ -9,7 +9,7 @@ import 'presenter.dart';
 class RecentController extends Controller {
   final RecentPresenter _presenter;
 
-  List<RecentCall> recentCalls = List();
+  List<RecentCall> recentCalls = [];
 
   RecentController(RecentCallRepository recentCallRepository)
       : _presenter = RecentPresenter(recentCallRepository);

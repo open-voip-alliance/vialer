@@ -16,7 +16,7 @@ class RequestCallPermissionUseCase extends UseCase<bool, void> {
     final granted = await _callPermissionRepository.enablePermission();
 
     controller.add(granted);
-    controller.close();
+    await controller.close();
 
     return controller.stream;
   }

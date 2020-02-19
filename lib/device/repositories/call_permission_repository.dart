@@ -1,5 +1,6 @@
 import 'package:permission_handler/permission_handler.dart';
-import 'package:vialer_lite/device/mappers/permission_status_mapper.dart';
+
+import '../mappers/permission_status_mapper.dart';
 
 import '../../domain/entities/onboarding/permission_status.dart' as domain;
 import '../../domain/repositories/call_permission_repository.dart';

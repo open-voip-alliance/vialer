@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../domain/entities/system_user.dart';
 
 class Storage {
-  SharedPreferences _preferences;
+  final SharedPreferences _preferences;
 
   Storage._(this._preferences);
 

@@ -1,11 +1,12 @@
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
-import 'package:vialer_lite/domain/repositories/auth_repository.dart';
-import 'package:vialer_lite/domain/usecases/get_auth_status.dart';
+
+import '../../../domain/repositories/auth_repository.dart';
+import '../../../domain/usecases/get_auth_status.dart';
 
 class SplashPresenter extends Presenter {
   Function getAuthStatusOnNext;
 
-  GetAuthStatusUseCase _useCase;
+  final GetAuthStatusUseCase _useCase;
 
   SplashPresenter(AuthRepository authRepository)
       : _useCase = GetAuthStatusUseCase(authRepository);
@@ -25,7 +26,7 @@ class _SplashObserver implements Observer<bool> {
   void onComplete() {}
 
   @override
-  void onError(e) => onNext(false);
+  void onError(dynamic e) => onNext(false);
 
   @override
   void onNext(bool authenticated) =>

@@ -18,7 +18,7 @@ class LoginUseCase extends UseCase<bool, LoginUseCaseParams> {
     );
 
     controller.add(success);
-    controller.close();
+    await controller.close();
 
     return controller.stream;
   }

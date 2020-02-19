@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
-import 'package:vialer_lite/domain/entities/onboarding/permission_status.dart';
 
 import '../../repositories/call_permission_repository.dart';
+import '../../entities/onboarding/permission_status.dart';
 import '../../entities/onboarding/step.dart';
 
 class GetStepsUseCase extends UseCase<List<Step>, void> {
@@ -26,7 +26,7 @@ class GetStepsUseCase extends UseCase<List<Step>, void> {
     ];
 
     controller.add(steps);
-    controller.close();
+    await controller.close();
 
     return controller.stream;
   }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
-import 'package:vialer_lite/device/repositories/call_permission_repository.dart';
+import '../../../../../device/repositories/call_permission_repository.dart';
 
 import '../../widgets/stylized_button.dart';
 import '../../../../resources/theme.dart';

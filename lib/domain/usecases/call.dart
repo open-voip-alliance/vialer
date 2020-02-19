@@ -15,7 +15,7 @@ class CallUseCase extends UseCase<void, CallUseCaseParams> {
 
     await _callRepository.call(params.destination);
 
-    controller.close();
+    await controller.close();
 
     return controller.stream;
   }

@@ -41,10 +41,10 @@ class _KeypadState extends State<Keypad> {
 
   @override
   Widget build(BuildContext context) {
-    var rows = List<Widget>();
+    var rows = <Widget>[];
 
     final amountPerRow = 3;
-    for (int i = 0; i < (_buttonValues.length / amountPerRow); i++) {
+    for (var i = 0; i < (_buttonValues.length / amountPerRow); i++) {
       rows.add(
         Row(
           mainAxisSize: MainAxisSize.min,
@@ -155,7 +155,7 @@ class _KeypadButton extends StatelessWidget {
   }
 
   void _replaceWithSecondaryValue() {
-    int offset = controller.selection.baseOffset;
+    var offset = controller.selection.baseOffset;
 
     if (offset < 0) {
       offset = controller.text.length - 1;
@@ -309,7 +309,7 @@ class _InkWellOrResponse extends StatelessWidget {
   Widget build(BuildContext context) {
     // onTap needs to be defined for onTapDown to work
     final onTap = this.onTapDown != null ? () {} : null;
-    final onTapDown = (_) => this.onTapDown();
+    void onTapDown(_) => this.onTapDown();
 
     return isResponse
         ? InkResponse(

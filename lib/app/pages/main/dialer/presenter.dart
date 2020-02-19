@@ -33,7 +33,7 @@ class _CallUseCaseObserver extends Observer<void> {
   void onComplete() => presenter.callOnComplete;
 
   @override
-  void onError(e) {}
+  void onError(dynamic e) {}
 
   @override
   void onNext(_) {}

@@ -28,7 +28,7 @@ class _BackgroundState extends State<Background> with TickerProviderStateMixin {
 
   bool _showForm = false;
 
-  List<Alignment> _cloudAlignments = [
+  final List<Alignment> _cloudAlignments = [
     Alignment(-1.2, -1.05),
     Alignment(1.2, -0.7),
     Alignment(-1.9, -0.2),

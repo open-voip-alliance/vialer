@@ -1,4 +1,4 @@
-import 'package:vialer_lite/domain/entities/onboarding/permission_status.dart';
+import '../entities/onboarding/permission_status.dart';
 
 abstract class CallPermissionRepository {
   /// Returns whether the permission is `granted`, `denied` or `notApplicable`.

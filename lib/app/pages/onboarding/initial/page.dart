@@ -58,7 +58,7 @@ class InitialPage extends StatelessWidget {
                   width: double.infinity,
                   child: StylizedOutlineButton(
                     text: 'Sign in with Vialer Lite account',
-                    onPressed: () => forward(),
+                    onPressed: forward,
                   ),
                 ),
               ],

@@ -15,7 +15,7 @@ class GetRecentCallsUseCase extends UseCase<List<RecentCall>, void> {
     final controller = StreamController<List<RecentCall>>();
 
     controller.add(await _recentCallRepository.getRecentCalls());
-    controller.close();
+    await controller.close();
 
     return controller.stream;
   }

@@ -1,5 +1,5 @@
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
-import 'package:vialer_lite/domain/repositories/call_permission_repository.dart';
+import '../../../../../domain/repositories/call_permission_repository.dart';
 
 import '../../../../../domain/usecases/onboarding/request_call_permission.dart';
 
@@ -32,7 +32,7 @@ class _CallPermissionObserver extends Observer<bool> {
   void onComplete() {}
 
   @override
-  void onError(e) {}
+  void onError(dynamic e) {}
 
   @override
   void onNext(bool granted) => presenter.requestCallPermissionOnNext(granted);

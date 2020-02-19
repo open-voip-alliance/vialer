@@ -1,9 +1,9 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
-import 'package:vialer_lite/app/pages/main/dialer/confirm/page.dart';
 
 import '../../../../domain/repositories/call_repository.dart';
 
+import 'confirm/page.dart';
 import 'presenter.dart';
 
 class DialerController extends Controller {
