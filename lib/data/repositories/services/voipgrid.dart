@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:chopper/chopper.dart';
-import 'package:meta/meta.dart';
 
 part 'voipgrid.chopper.dart';
 
