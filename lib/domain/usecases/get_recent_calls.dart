@@ -4,7 +4,7 @@ import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:pedantic/pedantic.dart';
 
 import '../entities/recent_call.dart';
-import '../repositories/recent_call_repository.dart';
+import '../repositories/recent_call.dart';
 
 class GetRecentCallsUseCase extends UseCase<List<RecentCall>, void> {
   final RecentCallRepository _recentCallRepository;

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
-import '../../../../../device/repositories/call_permission_repository.dart';
+import '../../../../../device/repositories/call_permission.dart';
 
 import '../../widgets/stylized_button.dart';
 import '../../../../resources/theme.dart';

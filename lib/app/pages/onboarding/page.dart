@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:provider/provider.dart';
-import '../../../device/repositories/call_permission_repository.dart';
+import '../../../device/repositories/call_permission.dart';
 
 import 'controller.dart';
 import 'widgets/background.dart';

@@ -1,5 +1,5 @@
 import '../../domain/entities/recent_call.dart';
-import '../../domain/repositories/recent_call_repository.dart';
+import '../../domain/repositories/recent_call.dart';
 
 class DataRecentCallRepository extends RecentCallRepository {
   @override

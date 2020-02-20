@@ -1,6 +1,6 @@
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 
-import '../../../../domain/repositories/call_repository.dart';
+import '../../../../domain/repositories/call.dart';
 import '../../../../domain/usecases/call.dart';
 
 class DialerPresenter extends Presenter {

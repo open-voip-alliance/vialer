@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 
-import '../../mappers/step_mapper.dart';
-import '../../../domain/repositories/call_permission_repository.dart';
+import '../../mappers/step.dart';
+import '../../../domain/repositories/call_permission.dart';
 import '../../../domain/entities/onboarding/step.dart';
 
 import '../../routes.dart';

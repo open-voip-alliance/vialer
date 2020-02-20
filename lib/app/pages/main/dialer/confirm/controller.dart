@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 
-import '../../../../../domain/repositories/call_repository.dart';
+import '../../../../../domain/repositories/call.dart';
 
 import 'presenter.dart';
 

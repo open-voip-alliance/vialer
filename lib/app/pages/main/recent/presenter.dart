@@ -1,7 +1,7 @@
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 
 import '../../../../domain/entities/recent_call.dart';
-import '../../../../domain/repositories/recent_call_repository.dart';
+import '../../../../domain/repositories/recent_call.dart';
 import '../../../../domain/usecases/get_recent_calls.dart';
 
 class RecentPresenter extends Presenter {

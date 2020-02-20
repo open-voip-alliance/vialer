@@ -1,6 +1,6 @@
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 
-import '../../../../domain/repositories/auth_repository.dart';
+import '../../../../domain/repositories/auth.dart';
 import '../../../../domain/usecases/onboarding/login.dart';
 
 class LoginPresenter extends Presenter {

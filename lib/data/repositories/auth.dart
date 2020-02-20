@@ -1,4 +1,4 @@
-import '../../domain/repositories/auth_repository.dart';
+import '../../domain/repositories/auth.dart';
 
 import 'services/voipgrid.dart';
 import '../utils/storage.dart';

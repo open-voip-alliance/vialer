@@ -7,7 +7,7 @@ import '../../../widgets/transparent_status_bar.dart';
 import 'widgets/key_input.dart';
 import 'widgets/keypad.dart';
 
-import '../../../../data/repositories/call_repository.dart';
+import '../../../../data/repositories/call.dart';
 
 import 'controller.dart';
 

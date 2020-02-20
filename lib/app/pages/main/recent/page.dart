@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
-import '../../../../data/repositories/recent_call_repository.dart';
+import '../../../../data/repositories/recent_call.dart';
 
 import '../widgets/header.dart';
 import 'controller.dart';

@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:pedantic/pedantic.dart';
-import '../../repositories/auth_repository.dart';
+import '../../repositories/auth.dart';
 
 class LoginUseCase extends UseCase<bool, LoginUseCaseParams> {
   final AuthRepository _authRepository;

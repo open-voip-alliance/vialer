@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:pedantic/pedantic.dart';
 
-import '../../repositories/call_permission_repository.dart';
+import '../../repositories/call_permission.dart';
 import '../../entities/onboarding/permission_status.dart';
 import '../../entities/onboarding/step.dart';
 

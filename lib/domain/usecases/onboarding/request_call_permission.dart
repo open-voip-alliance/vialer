@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:pedantic/pedantic.dart';
 
-import '../../repositories/call_permission_repository.dart';
+import '../../repositories/call_permission.dart';
 
 class RequestCallPermissionUseCase extends UseCase<bool, void> {
   final CallPermissionRepository _callPermissionRepository;

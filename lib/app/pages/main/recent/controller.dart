@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 
-import '../../../../domain/repositories/recent_call_repository.dart';
+import '../../../../domain/repositories/recent_call.dart';
 import '../../../../domain/entities/recent_call.dart';
 
 import 'presenter.dart';

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:provider/provider.dart';
-import '../../../../data/repositories/auth_repository.dart';
+import '../../../../data/repositories/auth.dart';
 
 import '../../../resources/theme.dart';
 import '../widgets/stylized_button.dart';
