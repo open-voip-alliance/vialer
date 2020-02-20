@@ -402,7 +402,7 @@ packages:
     source: hosted
     version: "0.1.4"
   pedantic:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: pedantic
       url: "https://pub.dartlang.org"

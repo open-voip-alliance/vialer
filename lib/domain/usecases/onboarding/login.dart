@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
+import 'package:pedantic/pedantic.dart';
 import '../../repositories/auth_repository.dart';
 
 class LoginUseCase extends UseCase<bool, LoginUseCaseParams> {
@@ -18,7 +19,7 @@ class LoginUseCase extends UseCase<bool, LoginUseCaseParams> {
     );
 
     controller.add(success);
-    await controller.close();
+    unawaited(controller.close());
 
     return controller.stream;
   }

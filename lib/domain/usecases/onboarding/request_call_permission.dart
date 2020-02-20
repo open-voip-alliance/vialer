@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
+import 'package:pedantic/pedantic.dart';
 
 import '../../repositories/call_permission_repository.dart';
 
@@ -16,7 +17,7 @@ class RequestCallPermissionUseCase extends UseCase<bool, void> {
     final granted = await _callPermissionRepository.enablePermission();
 
     controller.add(granted);
-    await controller.close();
+    unawaited(controller.close());
 
     return controller.stream;
   }

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
+import 'package:pedantic/pedantic.dart';
 
 import '../entities/recent_call.dart';
 import '../repositories/recent_call_repository.dart';
@@ -15,7 +16,7 @@ class GetRecentCallsUseCase extends UseCase<List<RecentCall>, void> {
     final controller = StreamController<List<RecentCall>>();
 
     controller.add(await _recentCallRepository.getRecentCalls());
-    await controller.close();
+    unawaited(controller.close());
 
     return controller.stream;
   }

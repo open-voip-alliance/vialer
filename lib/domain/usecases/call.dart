@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
+import 'package:pedantic/pedantic.dart';
 
 import '../repositories/call_repository.dart';
 
@@ -15,7 +16,7 @@ class CallUseCase extends UseCase<void, CallUseCaseParams> {
 
     await _callRepository.call(params.destination);
 
-    await controller.close();
+    unawaited(controller.close());
 
     return controller.stream;
   }

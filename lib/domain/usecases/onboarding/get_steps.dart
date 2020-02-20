@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
+import 'package:pedantic/pedantic.dart';
 
 import '../../repositories/call_permission_repository.dart';
 import '../../entities/onboarding/permission_status.dart';
@@ -26,7 +27,7 @@ class GetStepsUseCase extends UseCase<List<Step>, void> {
     ];
 
     controller.add(steps);
-    await controller.close();
+    unawaited(controller.close());
 
     return controller.stream;
   }
