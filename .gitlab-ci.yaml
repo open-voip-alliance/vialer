@@ -8,7 +8,6 @@ analyze:
     - flutter pub get
     - dartanalyzer . --fatal-infos --fatal-warnings
 
-
 format:
   image: google/dart:latest
   stage: check
