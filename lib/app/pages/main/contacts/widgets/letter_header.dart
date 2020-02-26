@@ -12,7 +12,7 @@ class LetterHeader extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(
         top: 16,
-        bottom: 4
+        bottom: 4,
       ),
       child: Text(
         letter,
