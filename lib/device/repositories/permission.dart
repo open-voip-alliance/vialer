@@ -3,9 +3,9 @@ import 'package:permission_handler/permission_handler.dart';
 import '../mappers/permission_status.dart';
 
 import '../../domain/entities/onboarding/permission_status.dart' as domain;
-import '../../domain/repositories/call_permission.dart';
+import '../../domain/repositories/permission.dart';
 
-class DeviceCallPermissionRepository extends CallPermissionRepository {
+class DeviceCallPermissionRepository extends PermissionRepository {
   @override
   Future<domain.PermissionStatus> getPermissionStatus() async {
     final callPermissionStatus =

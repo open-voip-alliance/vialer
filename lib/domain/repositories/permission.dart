@@ -1,6 +1,6 @@
 import '../entities/onboarding/permission_status.dart';
 
-abstract class CallPermissionRepository {
+abstract class PermissionRepository {
   /// Returns whether the permission is `granted`, `denied` or `notApplicable`.
   Future<PermissionStatus> getPermissionStatus();
 

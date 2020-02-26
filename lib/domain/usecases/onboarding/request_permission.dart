@@ -5,10 +5,10 @@ import 'package:pedantic/pedantic.dart';
 
 import '../../repositories/call_permission.dart';
 
-class RequestCallPermissionUseCase extends UseCase<bool, void> {
-  final CallPermissionRepository _callPermissionRepository;
+class RequestPermissionUseCase extends UseCase<bool, void> {
+  final PermissionRepository _callPermissionRepository;
 
-  RequestCallPermissionUseCase(this._callPermissionRepository);
+  RequestPermissionUseCase(this._callPermissionRepository);
 
   @override
   Future<Stream<bool>> buildUseCaseStream(_) async {
