@@ -1,7 +1,7 @@
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 
 import '../../../domain/entities/onboarding/step.dart';
-import '../../../domain/repositories/call_permission.dart';
+import '../../../domain/repositories/permission.dart';
 import '../../../domain/usecases/onboarding/get_steps.dart';
 
 class OnboardingPresenter extends Presenter {
@@ -9,7 +9,7 @@ class OnboardingPresenter extends Presenter {
 
   final GetStepsUseCase _getStepsUseCase;
 
-  OnboardingPresenter(CallPermissionRepository callPermissionRepository)
+  OnboardingPresenter(PermissionRepository callPermissionRepository)
       : _getStepsUseCase = GetStepsUseCase(callPermissionRepository);
 
   void getSteps() {

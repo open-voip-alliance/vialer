@@ -3,27 +3,33 @@ import 'dart:async';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:pedantic/pedantic.dart';
 
-import '../../repositories/call_permission.dart';
+import '../../repositories/permission.dart';
+import '../../entities/onboarding/permission.dart';
 import '../../entities/onboarding/permission_status.dart';
 import '../../entities/onboarding/step.dart';
 
 class GetStepsUseCase extends UseCase<List<Step>, void> {
-  final CallPermissionRepository callPermissionRepository;
+  final PermissionRepository permissionRepository;
 
-  GetStepsUseCase(this.callPermissionRepository);
+  GetStepsUseCase(this.permissionRepository);
 
   @override
   Future<Stream<List<Step>>> buildUseCaseStream(_) async {
     final controller = StreamController<List<Step>>();
 
     final callPermissionDenied =
-        await callPermissionRepository.getPermissionStatus() ==
+        await permissionRepository.getPermissionStatus(Permission.phone) ==
+            PermissionStatus.denied;
+
+    final contactsPermissionDenied =
+        await permissionRepository.getPermissionStatus(Permission.contacts) ==
             PermissionStatus.denied;
 
     final steps = [
       Step.initial,
       Step.login,
       if (callPermissionDenied) Step.callPermission,
+      if (contactsPermissionDenied) Step.contactsPermission,
     ];
 
     controller.add(steps);

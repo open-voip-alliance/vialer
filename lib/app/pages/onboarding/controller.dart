@@ -1,8 +1,9 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
+import 'package:vialer_lite/app/pages/onboarding/permission/contacts/page.dart';
 
 import '../../mappers/step.dart';
-import '../../../domain/repositories/call_permission.dart';
+import '../../../domain/repositories/permission.dart';
 import '../../../domain/entities/onboarding/step.dart';
 
 import '../../routes.dart';
@@ -23,8 +24,8 @@ class OnboardingController extends Controller {
   Map<Type, WidgetBuilder> _pageBuilders;
   List<WidgetBuilder> pages;
 
-  OnboardingController(CallPermissionRepository callPermissionRepository)
-      : _presenter = OnboardingPresenter(callPermissionRepository);
+  OnboardingController(PermissionRepository permissionRepository)
+      : _presenter = OnboardingPresenter(permissionRepository);
 
   @override
   void initController(GlobalKey<State<StatefulWidget>> key) {
@@ -34,6 +35,7 @@ class OnboardingController extends Controller {
       InitialPage: (_) => InitialPage(forward),
       LoginPage: (_) => LoginPage(forward),
       CallPermissionPage: (_) => CallPermissionPage(forward),
+      ContactsPermissionPage: (_) => ContactsPermissionPage(forward),
     };
 
     pages = [_pageBuilders[InitialPage]];

@@ -7,27 +7,26 @@ import '../../../../../domain/entities/onboarding/permission.dart';
 
 import '../abstract/page.dart';
 
-class CallPermissionPage extends StatelessWidget {
+class ContactsPermissionPage extends StatelessWidget {
   final VoidCallback forward;
 
-  const CallPermissionPage(this.forward, {Key key}) : super(key: key);
+  const ContactsPermissionPage(this.forward, {Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return PermissionPage(
       controller: PermissionController(
-        Permission.phone,
+        Permission.contacts,
         DevicePermissionRepository(),
         forward,
       ),
-      icon: Icon(VialerSans.phone),
+      icon: Icon(VialerSans.contacts),
       title: Text(
-        'Call permission',
+        'Contacts permission',
         textAlign: TextAlign.center,
       ),
       description: Text(
-        'This permissions is required to make calls seamlessly from'
-        'the app using the default call app.',
+        'This permissions is required to view contacts in-app.',
       ),
     );
   }

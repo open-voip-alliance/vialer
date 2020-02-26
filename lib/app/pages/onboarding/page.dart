@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:provider/provider.dart';
-import '../../../device/repositories/call_permission.dart';
+import '../../../device/repositories/permission.dart';
 
 import 'controller.dart';
 import 'widgets/background.dart';
@@ -14,7 +14,7 @@ class OnboardingPage extends View {
 class _OnboardingPageState
     extends ViewState<OnboardingPage, OnboardingController> {
   _OnboardingPageState()
-      : super(OnboardingController(DeviceCallPermissionRepository()));
+      : super(OnboardingController(DevicePermissionRepository()));
 
   @override
   Widget buildPage() {

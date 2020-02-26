@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import '../../resources/theme.dart';
 import '../../routes.dart';
 import 'dialer/page.dart';
+import 'contacts/page.dart';
 import 'recent/page.dart';
 import '../../widgets/transparent_status_bar.dart';
 
@@ -28,12 +29,7 @@ class _MainPageState extends State<MainPage> {
     if (_pages == null) {
       _pages = [
         if (_dialerIsPage) DialerPage(),
-        ListView(
-          children: List.generate(
-            128,
-            (i) => Text(i.toString(), style: TextStyle(fontSize: 24)),
-          ),
-        ),
+        ContactsPage(bottomLettersPadding: !_dialerIsPage ? 96 : 0),
         RecentPage(),
         Container(),
       ];

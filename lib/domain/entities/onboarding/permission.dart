@@ -1,0 +1,4 @@
+enum Permission {
+  phone,
+  contacts,
+}
