@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
-import 'package:vialer_lite/app/pages/onboarding/permission/contacts/page.dart';
 
 import '../../mappers/step.dart';
 import '../../../domain/repositories/permission.dart';
@@ -12,6 +11,7 @@ import 'presenter.dart';
 import 'initial/page.dart';
 import 'login/page.dart';
 import 'permission/call/page.dart';
+import 'permission/contacts/page.dart';
 
 class OnboardingController extends Controller {
   static const _duration = Duration(milliseconds: 400);
