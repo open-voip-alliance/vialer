@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../../resources/theme.dart';
-import '../../../../../domain/entities/contact.dart';
 
 class LetterHeader extends StatelessWidget {
   final String letter;
