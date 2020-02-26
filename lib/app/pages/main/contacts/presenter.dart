@@ -34,6 +34,5 @@ class _GetContactsUseCaseObserver extends Observer<List<Contact>> {
   void onError(dynamic e) {}
 
   @override
-  void onNext(List<Contact> contacts) =>
-      presenter.contactsOnNext(contacts);
+  void onNext(List<Contact> contacts) => presenter.contactsOnNext(contacts);
 }
