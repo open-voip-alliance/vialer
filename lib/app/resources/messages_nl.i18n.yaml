@@ -38,13 +38,14 @@ main:
 
 onboarding:
   button:
-    login: "Inloggen"
+    login: &loginButton "Inloggen"
 
   initial:
     title: "Zakelijke\\nprivé gesprekken"
     description: "Privé bellen met je zakelijk\\nnummer heeft zojuist een upgrade gekregen"
 
   login:
+    title: *loginButton
     placeholder:
       username: "Gebruikersnaam"
       password: "Wachtwoord"

@@ -155,6 +155,7 @@ class InitialOnboardingMessages_nl extends InitialOnboardingMessages {
 class LoginOnboardingMessages_nl extends LoginOnboardingMessages {
 	final OnboardingMessages_nl _parent;
 	const LoginOnboardingMessages_nl(this._parent):super(_parent);
+	String get title => "Inloggen";
 	PlaceholderLoginOnboardingMessages_nl get placeholder => PlaceholderLoginOnboardingMessages_nl(this);
 	ButtonLoginOnboardingMessages_nl get button => ButtonLoginOnboardingMessages_nl(this);
 }

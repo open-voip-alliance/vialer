@@ -154,6 +154,7 @@ class InitialOnboardingMessages {
 class LoginOnboardingMessages {
 	final OnboardingMessages _parent;
 	const LoginOnboardingMessages(this._parent);
+	String get title => "Login";
 	PlaceholderLoginOnboardingMessages get placeholder => PlaceholderLoginOnboardingMessages(this);
 	ButtonLoginOnboardingMessages get button => ButtonLoginOnboardingMessages(this);
 }

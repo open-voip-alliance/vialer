@@ -52,7 +52,7 @@ class _LoginPageState extends ViewState<LoginPage, LoginController> {
       child: Column(
         children: <Widget>[
           Text(
-            'Log in',
+            context.msg.onboarding.login.title,
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 26,

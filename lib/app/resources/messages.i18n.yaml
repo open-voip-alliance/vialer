@@ -38,13 +38,14 @@ main:
 
 onboarding:
   button:
-    login: "Login"
+    login: &loginButton "Login"
 
   initial:
     title: "Private\\nbusiness calls"
     description: "Private calling with your business\\nnumber just got an upgrade"
 
   login:
+    title: *loginButton
     placeholder:
       username: "Username"
       password: "Password"
