@@ -19,12 +19,35 @@ class LoginController extends Controller {
   double defaultHeaderDistance = 48;
   double headerDistance;
 
+  bool canLogin = false;
+
   LoginController(AuthRepository authRepository, this._forward)
       : _presenter = LoginPresenter(authRepository);
 
   @override
   void initController(GlobalKey<State<StatefulWidget>> key) {
     super.initController(key);
+
+    void toggleLoginButton() {
+      final isValidEmail = RegExp(
+        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
+      ).hasMatch(usernameController.text);
+
+      final oldCanLogin = canLogin;
+      if (isValidEmail && passwordController.text.isNotEmpty) {
+        canLogin = true;
+      } else {
+        canLogin = false;
+      }
+
+      if (oldCanLogin != canLogin) {
+        refreshUI();
+      }
+    }
+
+    usernameController.addListener(toggleLoginButton);
+
+    passwordController.addListener(toggleLoginButton);
   }
 
   @override

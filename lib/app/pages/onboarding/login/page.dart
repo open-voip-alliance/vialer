@@ -87,7 +87,7 @@ class _LoginPageState extends ViewState<LoginPage, LoginController> {
                   width: double.infinity,
                   child: StylizedRaisedButton(
                     text: context.msg.onboarding.button.login,
-                    onPressed: controller.login,
+                    onPressed: controller.canLogin ? controller.login : null,
                   ),
                 ),
                 SizedBox(height: 20),

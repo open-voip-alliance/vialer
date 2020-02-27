@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../resources/theme.dart';
+
 class StylizedRaisedButton extends StatelessWidget {
   final String text;
   final VoidCallback onPressed;
@@ -11,6 +13,8 @@ class StylizedRaisedButton extends StatelessWidget {
     return RaisedButton(
       onPressed: onPressed,
       color: Colors.white,
+      disabledColor: VialerColors.grey1,
+      disabledTextColor: VialerColors.grey5,
       child: _Text(text),
     );
   }
