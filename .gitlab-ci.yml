@@ -12,4 +12,7 @@ format:
   image: google/dart:latest
   stage: check
   script:
-    - dartfmt --fix -n --set-exit-if-changed .
+    - >-
+      dartfmt $(find . -type f
+      \( -iname "*.dart" ! -path "./lib/app/resources/messages*.i18n.dart" \))
+      --fix -n --set-exit-if-changed
