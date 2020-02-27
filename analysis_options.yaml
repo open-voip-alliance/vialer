@@ -15,3 +15,6 @@ linter:
 analyzer:
   errors:
     missing_required_param: error
+
+  exclude:
+    - ./lib/app/resources/messages*.i18n.dart
