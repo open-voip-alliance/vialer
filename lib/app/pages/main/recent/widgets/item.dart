@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:timeago/timeago.dart' as timeago;
-import 'package:vialer_lite/app/resources/localizations.dart';
 
 import '../../../../resources/theme.dart';
 import '../../../../../domain/entities/recent_call.dart';
+
+import '../../../../resources/localizations.dart';
 
 class RecentCallItem extends StatelessWidget {
   final RecentCall item;
