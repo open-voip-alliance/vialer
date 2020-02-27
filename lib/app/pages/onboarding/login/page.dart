@@ -9,6 +9,8 @@ import '../widgets/stylized_button.dart';
 import '../widgets/stylized_text_field.dart';
 import 'controller.dart';
 
+import '../../../resources/localizations.dart';
+
 class LoginPage extends View {
   final VoidCallback forward;
 
@@ -66,14 +68,14 @@ class _LoginPageState extends ViewState<LoginPage, LoginController> {
           StylizedTextField(
             controller: controller.usernameController,
             prefixIcon: VialerSans.user,
-            labelText: 'Username',
+            labelText: context.msg.onboarding.login.placeholder.username,
             keyboardType: TextInputType.emailAddress,
           ),
           SizedBox(height: 20),
           StylizedTextField(
             controller: controller.passwordController,
             prefixIcon: VialerSans.lockOn,
-            labelText: 'Password',
+            labelText: context.msg.onboarding.login.placeholder.password,
             obscureText: true,
           ),
           SizedBox(height: 32),
@@ -84,7 +86,7 @@ class _LoginPageState extends ViewState<LoginPage, LoginController> {
                 SizedBox(
                   width: double.infinity,
                   child: StylizedRaisedButton(
-                    text: 'Log in',
+                    text: context.msg.onboarding.button.login,
                     onPressed: controller.login,
                   ),
                 ),
@@ -92,7 +94,8 @@ class _LoginPageState extends ViewState<LoginPage, LoginController> {
                 SizedBox(
                   width: double.infinity,
                   child: StylizedOutlineButton(
-                    text: 'Forgot password',
+                    text:
+                        context.msg.onboarding.login.button.forgotPassword,
                     onPressed: () {},
                   ),
                 ),

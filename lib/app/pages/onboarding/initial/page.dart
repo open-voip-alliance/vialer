@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 
 import '../widgets/stylized_button.dart';
 
+import '../../../resources/localizations.dart';
+
 class InitialPage extends StatelessWidget {
   final VoidCallback forward;
 
@@ -15,7 +17,7 @@ class InitialPage extends StatelessWidget {
       child: Column(
         children: <Widget>[
           Text(
-            'Private\nbusiness calls',
+            context.msg.onboarding.initial.title,
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 40,
@@ -34,8 +36,7 @@ class InitialPage extends StatelessWidget {
             ),
           ),
           Text(
-            'Private calling with your business'
-            '\nnumber just got an upgrade',
+            context.msg.onboarding.initial.description,
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 18,
@@ -57,7 +58,7 @@ class InitialPage extends StatelessWidget {
                 SizedBox(
                   width: double.infinity,
                   child: StylizedOutlineButton(
-                    text: 'Sign in with Vialer Lite account',
+                    text: context.msg.onboarding.button.login,
                     onPressed: forward,
                   ),
                 ),

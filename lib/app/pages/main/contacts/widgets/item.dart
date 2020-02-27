@@ -5,6 +5,8 @@ import 'package:characters/characters.dart';
 import '../../../../resources/theme.dart';
 import '../../../../../domain/entities/contact.dart';
 
+import '../../../../resources/localizations.dart';
+
 class ContactItem extends StatelessWidget {
   final Contact contact;
 
@@ -67,7 +69,7 @@ class _ContactSubtitle extends StatelessWidget {
 
   const _ContactSubtitle(this.contact, {Key key}) : super(key: key);
 
-  String get text {
+  String _text(BuildContext context) {
     final phoneNumbers = contact.phoneNumbers;
     final emails = contact.emails;
 
@@ -76,15 +78,19 @@ class _ContactSubtitle extends StatelessWidget {
     } else if (phoneNumbers.isEmpty && emails.length == 1) {
       return emails.first.value;
     } else if (phoneNumbers.isEmpty && emails.isEmpty) {
-      return 'No number';
+      return context.msg.main.contacts.list.item.noNumber;
     } else {
       String phoneNumbersText, emailsText;
       if (phoneNumbers.isNotEmpty) {
-        phoneNumbersText = '${phoneNumbers.length} numbers';
+        phoneNumbersText = context.msg.main.contacts.list.item.numbers(
+          phoneNumbers.length,
+        );
       }
 
       if (emails.isNotEmpty) {
-        emailsText = '${emails.length} emails';
+        emailsText = context.msg.main.contacts.list.item.emails(
+          emails.length,
+        );
       }
 
       if (phoneNumbersText != null && emailsText == null) {
@@ -100,7 +106,7 @@ class _ContactSubtitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(
-      text,
+      _text(context),
       overflow: TextOverflow.ellipsis,
       style: TextStyle(color: VialerColors.grey4),
     );

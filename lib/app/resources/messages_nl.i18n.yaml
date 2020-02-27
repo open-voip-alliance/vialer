@@ -1,0 +1,64 @@
+generic:
+  button:
+    cancel: "Annuleren"
+
+main:
+  dialer:
+    title: &keypadTitle "Telefoon"
+    menu:
+      title: *keypadTitle
+    confirm:
+      title: "Vialer Lite Gesprek"
+      description:
+        origin: "Er wordt gebeld met je zakelijke nummer"
+        main: "Vialer Lite verbindt je gesprek door,\\nwaardoor je persoonlijke nummer privé blijft"
+        action: "Klik op de “Bel” knop om het volgende nummer te bellen:"
+      button:
+        call(String number): "Bel $number"
+
+  recent:
+    title: "Recente gesprekken"
+    menu:
+      title: "Recent"
+
+  contacts:
+    title: &contactsTitle "Contacten"
+    menu:
+      title: *contactsTitle
+    list:
+      item:
+        noNumber: "Geen nummer"
+        numbers(int count): "$count ${_plural(count, one: 'nummer', many: 'nummers')}"
+        emails(int count): "$count ${_plural(count, one: 'email', many: 'emails')}"
+
+  settings:
+    title: &settingsTitle "Instellingen"
+    menu:
+      title: *settingsTitle
+
+onboarding:
+  button:
+    login: "Inloggen"
+
+  initial:
+    title: "Zakelijke\\nprivé gesprekken"
+    description: "Privé bellen met je zakelijk\\nnummer heeft zojuist een upgrade gekregen"
+
+  login:
+    placeholder:
+      username: "Gebruikersnaam"
+      password: "Wachtwoord"
+    button:
+      forgotPassword: "Wachtwoord vergeten"
+
+  permission:
+    button:
+      iUnderstand: "Ik begrijp het"
+    call:
+      title: "Bel permissie"
+      description: >-
+        Deze permissie is nodig om te bellen met de standaard telefoon app.
+    contacts:
+      title: "Contact permissie"
+      description: >-
+        Deze permissie is nodig om contacten in de app te bekijken.

@@ -7,6 +7,8 @@ import '../../../../../domain/entities/onboarding/permission.dart';
 
 import '../abstract/page.dart';
 
+import '../../../../resources/localizations.dart';
+
 class ContactsPermissionPage extends StatelessWidget {
   final VoidCallback forward;
 
@@ -22,11 +24,11 @@ class ContactsPermissionPage extends StatelessWidget {
       ),
       icon: Icon(VialerSans.contacts),
       title: Text(
-        'Contacts permission',
+        context.msg.onboarding.permission.contacts.title,
         textAlign: TextAlign.center,
       ),
       description: Text(
-        'This permissions is required to view contacts in-app.',
+        context.msg.onboarding.permission.contacts.description,
       ),
     );
   }

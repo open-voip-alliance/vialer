@@ -6,6 +6,8 @@ import '../widgets/header.dart';
 import 'controller.dart';
 import 'widgets/item.dart';
 
+import '../../../resources/localizations.dart';
+
 class RecentPage extends View {
   RecentPage({Key key}) : super(key: key);
 
@@ -29,7 +31,7 @@ class _RecentPageState extends ViewState<RecentPage, RecentController> {
             children: <Widget>[
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Header('Recent calls'),
+                child: Header(context.msg.main.recent.title),
               ),
               Expanded(
                 child: ListView(

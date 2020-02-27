@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'package:vialer_lite/app/resources/localizations.dart';
 
 import '../../../../resources/theme.dart';
 import '../../../../../domain/entities/recent_call.dart';
@@ -69,7 +70,10 @@ class _RecentItemSubtitle extends StatelessWidget {
 
   const _RecentItemSubtitle(this.recentCall, {Key key}) : super(key: key);
 
-  String _timeAgo(BuildContext context) => timeago.format(recentCall.time);
+  String _timeAgo(BuildContext context) => timeago.format(
+        recentCall.time,
+        locale: '${VialerLocalizations.of(context).locale.languageCode}_short',
+      );
 
   String _time(BuildContext context) => DateFormat.jm().format(recentCall.time);
 

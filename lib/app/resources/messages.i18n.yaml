@@ -1,0 +1,65 @@
+generic:
+  button:
+    cancel: "Cancel"
+
+main:
+  dialer:
+    title: &keypadTitle "Keypad"
+    menu:
+      title: *keypadTitle
+    confirm:
+      title: "Vialer Lite Call"
+      description:
+        origin: "Dialing from your business number"
+        main: "Vialer Lite will route your call through,\\nkeeping your personal number private"
+        action: "Tap the “Call” button to dial:"
+      button:
+        call(String number): "Call $number"
+
+  recent:
+    title: "Recent calls"
+    menu:
+      title: "Recent"
+
+  contacts:
+    title: &contactsTitle "Contacts"
+    menu:
+      title: *contactsTitle
+    list:
+      item:
+        noNumber: "No number"
+        numbers(int count): "$count ${_plural(count, one: 'number', many: 'numbers')}"
+        emails(int count): "$count ${_plural(count, one: 'email', many: 'emails')}"
+
+  settings:
+    title: &settingsTitle "Settings"
+    menu:
+      title: *settingsTitle
+
+onboarding:
+  button:
+    login: "Login"
+
+  initial:
+    title: "Private\\nbusiness calls"
+    description: "Private calling with your business\\nnumber just got an upgrade"
+
+  login:
+    placeholder:
+      username: "Username"
+      password: "Password"
+    button:
+      forgotPassword: "Forgot password"
+
+  permission:
+    button:
+      iUnderstand: "I understand"
+    call:
+      title: "Call permission"
+      description: >-
+        This permission is required to make calls seamlessly from the
+        app using the default call app.
+    contacts:
+      title: "Contacts"
+      description: >-
+        This permission is required to view contacts in-app.

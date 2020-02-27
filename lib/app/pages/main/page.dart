@@ -8,6 +8,8 @@ import 'contacts/page.dart';
 import 'recent/page.dart';
 import '../../widgets/transparent_status_bar.dart';
 
+import '../../resources/localizations.dart';
+
 class MainPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _MainPageState();
@@ -116,19 +118,27 @@ class _BottomNavigationBar extends StatelessWidget {
           if (dialerIsPage)
             BottomNavigationBarItem(
               icon: Icon(VialerSans.dialpad),
-              title: _BottomNavigationBarText('Keypad'),
+              title: _BottomNavigationBarText(
+                context.msg.main.dialer.menu.title,
+              ),
             ),
           BottomNavigationBarItem(
             icon: Icon(VialerSans.contacts),
-            title: _BottomNavigationBarText('Contacts'),
+            title: _BottomNavigationBarText(
+              context.msg.main.contacts.menu.title,
+            ),
           ),
           BottomNavigationBarItem(
             icon: Icon(VialerSans.clock),
-            title: _BottomNavigationBarText('Recent'),
+            title: _BottomNavigationBarText(
+              context.msg.main.recent.menu.title,
+            ),
           ),
           BottomNavigationBarItem(
             icon: Icon(VialerSans.settings),
-            title: _BottomNavigationBarText('Settings'),
+            title: _BottomNavigationBarText(
+              context.msg.main.settings.menu.title,
+            ),
           ),
         ],
       ),

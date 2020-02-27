@@ -7,6 +7,8 @@ import '../../../../../domain/entities/onboarding/permission.dart';
 
 import '../abstract/page.dart';
 
+import '../../../../resources/localizations.dart';
+
 class CallPermissionPage extends StatelessWidget {
   final VoidCallback forward;
 
@@ -22,13 +24,10 @@ class CallPermissionPage extends StatelessWidget {
       ),
       icon: Icon(VialerSans.phone),
       title: Text(
-        'Call permission',
+        context.msg.onboarding.permission.call.title,
         textAlign: TextAlign.center,
       ),
-      description: Text(
-        'This permissions is required to make calls seamlessly from'
-        'the app using the default call app.',
-      ),
+      description: Text(context.msg.onboarding.permission.call.description),
     );
   }
 }

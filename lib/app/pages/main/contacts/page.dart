@@ -5,6 +5,8 @@ import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:characters/characters.dart';
 import 'package:flutter_widgets/flutter_widgets.dart';
 
+import '../../../resources/localizations.dart';
+
 import '../../../../domain/entities/contact.dart';
 import '../../../../device/repositories/contact.dart';
 
@@ -44,7 +46,7 @@ class _ContactPageState extends ViewState<ContactsPage, ContactsController> {
             children: <Widget>[
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Header('Contacts'),
+                child: Header(context.msg.main.contacts.title),
               ),
               Expanded(
                 child: _AlphabetListView(

@@ -10,6 +10,8 @@ import '../../../../resources/theme.dart';
 import '../../../../widgets/transparent_status_bar.dart';
 import 'controller.dart';
 
+import '../../../../resources/localizations.dart';
+
 class ConfirmPage extends View {
   final String destination;
 
@@ -100,20 +102,27 @@ class ConfirmPageState extends ViewState<ConfirmPage, ConfirmController>
                       child: Column(
                         children: <Widget>[
                           SizedBox(height: 48),
-                          Text('Vialer Lite Call', style: _largeStyle),
+                          Text(
+                            context.msg.main.dialer.confirm.title,
+                            style: _largeStyle,
+                          ),
                           SizedBox(height: 48),
-                          Text('Dialing from your business number',
-                              style: _style),
+                          Text(
+                            context.msg.main.dialer.confirm.description.origin,
+                            style: _style,
+                          ),
                           SizedBox(height: 8),
                           Text('(+31) 50 1234567', style: _largeStyle),
                           SizedBox(height: 48),
                           Text(
-                            'Vialer Lite will route your call through,\n'
-                            'keeping your personal number private',
+                            context.msg.main.dialer.confirm.description.main,
                             style: _style,
                           ),
                           SizedBox(height: 48),
-                          Text('Tap the “Call” button to dial:', style: _style),
+                          Text(
+                            context.msg.main.dialer.confirm.description.action,
+                            style: _style,
+                          ),
                           SizedBox(height: 8),
                           Text(widget.destination, style: _largeStyle),
                           if (context.isAndroid)
@@ -146,7 +155,12 @@ class ConfirmPageState extends ViewState<ConfirmPage, ConfirmController>
                                               ),
                                               SizedBox(width: 12),
                                               Text(
-                                                'CALL ${widget.destination}',
+                                                context.msg.main.dialer.confirm
+                                                    .button
+                                                    .call(
+                                                      widget.destination,
+                                                    )
+                                                    .toUpperCase(),
                                                 style: TextStyle(
                                                   color: VialerColors.green3,
                                                 ),
@@ -160,7 +174,10 @@ class ConfirmPageState extends ViewState<ConfirmPage, ConfirmController>
                                         width: double.infinity,
                                         child: FlatButton(
                                           onPressed: () => controller.pop(),
-                                          child: Text('CANCEL'),
+                                          child: Text(
+                                            context.msg.generic.button.cancel
+                                                .toUpperCase(),
+                                          ),
                                         ),
                                       ),
                                     ],
