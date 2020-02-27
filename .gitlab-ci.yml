@@ -6,6 +6,14 @@ analyze:
   stage: check
   script:
     - flutter pub get
+    # This next line is necessary because the analyzer's exclude functionality is currently
+    # not working. See here for more: https://github.com/dart-lang/sdk/issues/25551
+    # If any analysis errors occur in the generated messages file, there probably
+    # needs to be another rule to be ignored added to the comment below.
+    - >-
+      echo "// ignore_for_file: unused_element, lines_longer_than_80_chars,
+      annotate_overrides, camel_case_types, prefer_single_quotes, unused_field"
+      | tee -a lib/app/resources/messages*.i18n.dart
     - dartanalyzer . --fatal-infos --fatal-warnings
 
 format:
