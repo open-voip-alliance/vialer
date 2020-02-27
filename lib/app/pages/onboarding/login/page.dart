@@ -94,8 +94,7 @@ class _LoginPageState extends ViewState<LoginPage, LoginController> {
                 SizedBox(
                   width: double.infinity,
                   child: StylizedOutlineButton(
-                    text:
-                        context.msg.onboarding.login.button.forgotPassword,
+                    text: context.msg.onboarding.login.button.forgotPassword,
                     onPressed: () {},
                   ),
                 ),
