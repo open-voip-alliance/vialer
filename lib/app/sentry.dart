@@ -25,12 +25,26 @@ Future<void> run(Function f, {@required String dsn}) async {
       );
 }
 
+bool get _inDebugMode {
+  var _debug = false;
+
+  // Asserts are only run in debug mode, so only then will _debug be true.
+  assert(_debug = true);
+
+  return _debug;
+}
+
 Future<void> _capture(
   SentryClient client,
   dynamic error,
   StackTrace stackTrace, {
   Function always,
 }) async {
+
+  if (_inDebugMode) {
+    return;
+  }
+
   try {
     client.capture(
       event: Event(
