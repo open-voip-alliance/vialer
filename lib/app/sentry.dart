@@ -40,7 +40,6 @@ Future<void> _capture(
   StackTrace stackTrace, {
   Function always,
 }) async {
-
   if (_inDebugMode) {
     return;
   }
