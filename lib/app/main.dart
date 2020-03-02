@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
+import '../device/repositories/env.dart';
+
 import 'resources/localizations.dart';
 import 'resources/theme.dart';
 import 'routes.dart';
 
-void main() => runApp(App());
+import 'sentry.dart' as sentry;
+
+void main() async => sentry.run(
+      () => runApp(App()),
+      dsn: await DeviceEnvRepository().sentryDsn,
+    );
 
 class App extends StatelessWidget {
   @override
