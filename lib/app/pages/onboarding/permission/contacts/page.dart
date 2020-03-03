@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../abstract/controller.dart';
 import '../../../../resources/theme.dart';
-import '../../../../../device/repositories/permission.dart';
+import '../../../../../domain/repositories/permission.dart';
 import '../../../../../domain/entities/onboarding/permission.dart';
 
 import '../abstract/page.dart';
@@ -10,16 +10,21 @@ import '../abstract/page.dart';
 import '../../../../resources/localizations.dart';
 
 class ContactsPermissionPage extends StatelessWidget {
+  final PermissionRepository _permissionRepository;
   final VoidCallback forward;
 
-  const ContactsPermissionPage(this.forward, {Key key}) : super(key: key);
+  const ContactsPermissionPage(
+    this._permissionRepository,
+    this.forward, {
+    Key key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return PermissionPage(
       controller: PermissionController(
         Permission.contacts,
-        DevicePermissionRepository(),
+        _permissionRepository,
         forward,
       ),
       icon: Icon(VialerSans.contacts),

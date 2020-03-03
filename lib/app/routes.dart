@@ -1,3 +1,9 @@
+import 'package:provider/provider.dart';
+
+import '../domain/repositories/call.dart';
+import '../domain/repositories/permission.dart';
+import '../domain/repositories/auth.dart';
+
 import 'pages/main/dialer/page.dart';
 import 'pages/main/page.dart';
 import 'pages/onboarding/page.dart';
@@ -12,9 +18,10 @@ abstract class Routes {
   static const dialer = '/dialer';
 
   static final mapped = {
-    Routes.root: (_) => SplashPage(),
-    Routes.onboarding: (_) => OnboardingPage(),
+    Routes.root: (c) => SplashPage(Provider.of<AuthRepository>(c)),
+    Routes.onboarding: (c) =>
+        OnboardingPage(Provider.of<PermissionRepository>(c)),
     Routes.main: (_) => MainPage(),
-    Routes.dialer: (_) => DialerPage(),
+    Routes.dialer: (c) => DialerPage(Provider.of<CallRepository>(c)),
   };
 }

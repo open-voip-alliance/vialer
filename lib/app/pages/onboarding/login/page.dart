@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:provider/provider.dart';
-import '../../../../data/repositories/auth.dart';
+
+import '../../../../domain/repositories/auth.dart';
 
 import '../../../resources/theme.dart';
 import '../widgets/stylized_button.dart';
@@ -12,20 +13,22 @@ import 'controller.dart';
 import '../../../resources/localizations.dart';
 
 class LoginPage extends View {
+  final AuthRepository _authRepository;
   final VoidCallback forward;
 
-  LoginPage(this.forward, {Key key}) : super(key: key);
+  LoginPage(this._authRepository, this.forward, {Key key}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _LoginPageState(forward);
+  State<StatefulWidget> createState() =>
+      _LoginPageState(_authRepository, forward);
 }
 
 class _LoginPageState extends ViewState<LoginPage, LoginController> {
   static const _duration = Duration(milliseconds: 200);
   static const _curve = Curves.decelerate;
 
-  _LoginPageState(VoidCallback forward)
-      : super(LoginController(DataAuthRepository(), forward));
+  _LoginPageState(AuthRepository authRepository, VoidCallback forward)
+      : super(LoginController(authRepository, forward));
 
   @override
   void didChangeDependencies() {

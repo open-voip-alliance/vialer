@@ -8,7 +8,7 @@ import 'package:flutter_widgets/flutter_widgets.dart';
 import '../../../resources/localizations.dart';
 
 import '../../../../domain/entities/contact.dart';
-import '../../../../device/repositories/contact.dart';
+import '../../../../domain/repositories/contact.dart';
 
 import '../../../resources/theme.dart';
 
@@ -19,19 +19,22 @@ import 'widgets/letter_header.dart';
 import 'controller.dart';
 
 class ContactsPage extends View {
+  final ContactRepository _contactsRepository;
   final double bottomLettersPadding;
 
-  ContactsPage({
+  ContactsPage(
+    this._contactsRepository, {
     Key key,
     this.bottomLettersPadding = 0,
   }) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _ContactPageState();
+  State<StatefulWidget> createState() => _ContactPageState(_contactsRepository);
 }
 
 class _ContactPageState extends ViewState<ContactsPage, ContactsController> {
-  _ContactPageState() : super(ContactsController(DeviceContactsRepository()));
+  _ContactPageState(ContactRepository contactRepository)
+      : super(ContactsController(contactRepository));
 
   @override
   Widget buildPage() {

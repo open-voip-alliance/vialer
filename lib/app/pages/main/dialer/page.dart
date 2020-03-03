@@ -7,19 +7,22 @@ import '../../../widgets/transparent_status_bar.dart';
 import 'widgets/key_input.dart';
 import 'widgets/keypad.dart';
 
-import '../../../../data/repositories/call.dart';
+import '../../../../domain/repositories/call.dart';
 
 import 'controller.dart';
 
 class DialerPage extends View {
-  DialerPage();
+  final CallRepository _callRepository;
+
+  DialerPage(this._callRepository);
 
   @override
-  State<StatefulWidget> createState() => _DialerPageState();
+  State<StatefulWidget> createState() => _DialerPageState(_callRepository);
 }
 
 class _DialerPageState extends ViewState<DialerPage, DialerController> {
-  _DialerPageState() : super(DialerController(DataCallRepository()));
+  _DialerPageState(CallRepository callRepository)
+      : super(DialerController(callRepository));
 
   @override
   Widget buildPage() {

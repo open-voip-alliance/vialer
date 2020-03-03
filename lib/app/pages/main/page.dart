@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+
+import '../../../domain/repositories/call.dart';
+import '../../../domain/repositories/contact.dart';
+import '../../../domain/repositories/recent_call.dart';
 
 import '../../resources/theme.dart';
 import '../../routes.dart';
@@ -30,9 +35,12 @@ class _MainPageState extends State<MainPage> {
 
     if (_pages == null) {
       _pages = [
-        if (_dialerIsPage) DialerPage(),
-        ContactsPage(bottomLettersPadding: !_dialerIsPage ? 96 : 0),
-        RecentPage(),
+        if (_dialerIsPage) DialerPage(Provider.of<CallRepository>(context)),
+        ContactsPage(
+          Provider.of<ContactRepository>(context),
+          bottomLettersPadding: !_dialerIsPage ? 96 : 0,
+        ),
+        RecentPage(Provider.of<RecentCallRepository>(context)),
         Container(),
       ];
     }

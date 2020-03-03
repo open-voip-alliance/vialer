@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
-import '../../../../data/repositories/recent_call.dart';
+
+import '../../../../domain/repositories/recent_call.dart';
 
 import '../widgets/header.dart';
 import 'controller.dart';
@@ -9,14 +10,18 @@ import 'widgets/item.dart';
 import '../../../resources/localizations.dart';
 
 class RecentPage extends View {
-  RecentPage({Key key}) : super(key: key);
+  final RecentCallRepository _recentCallRepository;
+
+  RecentPage(this._recentCallRepository, {Key key}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _RecentPageState();
+  State<StatefulWidget> createState() =>
+      _RecentPageState(_recentCallRepository);
 }
 
 class _RecentPageState extends ViewState<RecentPage, RecentController> {
-  _RecentPageState() : super(RecentController(DataRecentCallRepository()));
+  _RecentPageState(RecentCallRepository recentCallRepository)
+      : super(RecentController(recentCallRepository));
 
   @override
   Widget buildPage() {
