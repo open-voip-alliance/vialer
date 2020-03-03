@@ -28,7 +28,10 @@ class SplashController extends Controller {
       Navigator.pushReplacement(
         getContext(),
         PageRouteBuilder(
-          pageBuilder: (_, __, ___) => Routes.mapped[Routes.onboarding](null),
+          transitionDuration: Duration.zero,
+          pageBuilder: (context, _, __) {
+            return Routes.mapped[Routes.onboarding](context);
+          },
         ),
       );
     }
