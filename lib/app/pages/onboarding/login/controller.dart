@@ -4,6 +4,8 @@ import 'package:flutter_segment/flutter_segment.dart';
 
 import '../../../../domain/repositories/auth.dart';
 
+import '../../../util/debug.dart';
+
 import 'presenter.dart';
 
 class LoginController extends Controller {
@@ -79,8 +81,13 @@ class LoginController extends Controller {
 
   Future<void> _onLogin(bool success) async {
     if (success) {
-      await Segment.identify(userId: (await _authRepository.currentUser).uuid);
-      await Segment.track(eventName: 'login');
+      doIfNotDebug(() async {
+        await Segment.identify(
+          userId: (await _authRepository.currentUser).uuid,
+        );
+        await Segment.track(eventName: 'login');
+      });
+
       _forward();
     } else {
       print('login failed');

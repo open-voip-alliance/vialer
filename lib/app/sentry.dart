@@ -7,6 +7,7 @@ import 'package:meta/meta.dart';
 import 'package:sentry/sentry.dart';
 
 import '../domain/repositories/auth.dart';
+import 'util/debug.dart';
 
 Future<void> run(
   AuthRepository authRepository,
@@ -33,15 +34,6 @@ Future<void> run(
       );
 }
 
-bool get _inDebugMode {
-  var _debug = false;
-
-  // Asserts are only run in debug mode, so only then will _debug be true.
-  assert(_debug = true);
-
-  return _debug;
-}
-
 Future<void> _capture(
   AuthRepository authRepository,
   SentryClient client,
@@ -49,7 +41,7 @@ Future<void> _capture(
   StackTrace stackTrace, {
   Function always,
 }) async {
-  if (_inDebugMode) {
+  if (inDebugMode) {
     return;
   }
 
