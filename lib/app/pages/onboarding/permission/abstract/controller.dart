@@ -1,8 +1,11 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
+import 'package:flutter_segment/flutter_segment.dart';
 
 import '../../../../../domain/entities/onboarding/permission.dart';
 import '../../../../../domain/repositories/permission.dart';
+
+import '../../../../util/debug.dart';
 
 import 'presenter.dart';
 
@@ -30,6 +33,16 @@ class PermissionController extends Controller {
     if (granted) {
       _forward();
     }
+
+    doIfNotDebug(() {
+      Segment.track(
+        eventName: 'permission',
+        properties: {
+          'type': permission.toShortString(),
+          'granted': granted,
+        },
+      );
+    });
 
     // TODO: Show error on fail
   }
