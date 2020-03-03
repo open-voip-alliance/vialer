@@ -53,6 +53,7 @@ dependencies:
   flutter_dotenv: ^2.1.0
 
   sentry: ^3.0.1
+  flutter_segment: ^1.0.0
 
   device_info: ^0.4.1+5
   package_info: ^0.4.0+14

@@ -1,11 +1,14 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
+import 'package:flutter_segment/flutter_segment.dart';
 
 import '../../../../domain/repositories/auth.dart';
 
 import 'presenter.dart';
 
 class LoginController extends Controller {
+  final AuthRepository _authRepository;
+
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
 
@@ -21,8 +24,8 @@ class LoginController extends Controller {
 
   bool canLogin = false;
 
-  LoginController(AuthRepository authRepository, this._forward)
-      : _presenter = LoginPresenter(authRepository);
+  LoginController(this._authRepository, this._forward)
+      : _presenter = LoginPresenter(_authRepository);
 
   @override
   void initController(GlobalKey<State<StatefulWidget>> key) {
@@ -74,8 +77,10 @@ class LoginController extends Controller {
     _presenter.login(usernameController.text, passwordController.text);
   }
 
-  void _onLogin(bool success) {
+  Future<void> _onLogin(bool success) async {
     if (success) {
+      await Segment.identify(userId: (await _authRepository.currentUser).uuid);
+      await Segment.track(eventName: 'login');
       _forward();
     } else {
       print('login failed');
