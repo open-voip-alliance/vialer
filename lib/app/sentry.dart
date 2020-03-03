@@ -94,7 +94,7 @@ Future<Contexts> get _contexts async {
       model: info.model,
       simulator: !info.isPhysicalDevice,
     );
-  } else {
+  } else if (Platform.isIOS) {
     final info = await plugin.iosInfo;
 
     os = OperatingSystem(
