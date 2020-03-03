@@ -11,6 +11,8 @@ class DataAuthRepository extends AuthRepository {
   static const _passwordKey = 'password';
   static const _apiTokenKey = 'api_token';
 
+  SystemUser _currentUser;
+
   @override
   Future<bool> authenticate(String email, String password) async {
     final tokenResponse = await _service.getToken({
@@ -31,6 +33,8 @@ class DataAuthRepository extends AuthRepository {
       final systemUserResponse = await _service.getSystemUser();
       storage.systemUser = SystemUser.fromJson(systemUserResponse.body);
 
+      _currentUser = storage.systemUser;
+
       return true;
     } else {
       return false;
@@ -42,5 +46,16 @@ class DataAuthRepository extends AuthRepository {
     final storage = await Storage.load();
 
     return storage.apiToken != null;
+  }
+
+  @override
+  Future<SystemUser> get currentUser async {
+    if (_currentUser == null) {
+      final storage = await Storage.load();
+
+      _currentUser = storage.systemUser;
+    }
+
+    return _currentUser;
   }
 }

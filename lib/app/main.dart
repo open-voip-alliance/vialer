@@ -27,12 +27,14 @@ import 'routes.dart';
 import 'sentry.dart' as sentry;
 
 void main() async => sentry.run(
+      App._authRepository,
       () => runApp(App()),
       dsn: await App._envRepository.sentryDsn,
     );
 
 class App extends StatelessWidget {
   static final EnvRepository _envRepository = DeviceEnvRepository();
+  static final AuthRepository _authRepository = DataAuthRepository();
 
   @override
   Widget build(BuildContext context) {
@@ -41,8 +43,8 @@ class App extends StatelessWidget {
         Provider<EnvRepository>.value(
           value: _envRepository,
         ),
-        Provider<AuthRepository>(
-          create: (c) => DataAuthRepository(),
+        Provider<AuthRepository>.value(
+          value: _authRepository,
         ),
         Provider<PermissionRepository>(
           create: (_) => DevicePermissionRepository(),

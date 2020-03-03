@@ -1,4 +1,12 @@
 class SystemUser {
+  static const _uuidKey = 'uuid';
+  static const _emailKey = 'email';
+  static const _firstNameKey = 'first_name';
+  static const _lastNameKey = 'last_name';
+  static const _appAccountKey = 'app_account';
+
+  final String uuid;
+
   final String email;
 
   final String firstName;
@@ -11,6 +19,7 @@ class SystemUser {
       );
 
   SystemUser({
+    this.uuid,
     this.email,
     this.firstName,
     this.lastName,
@@ -19,19 +28,21 @@ class SystemUser {
 
   factory SystemUser.fromJson(Map<String, dynamic> json) {
     return SystemUser(
-      email: json['email'],
-      firstName: json['first_name'],
-      lastName: json['last_name'],
-      appAccount: Uri.parse(json['app_account']),
+      uuid: json[_uuidKey],
+      email: json[_emailKey],
+      firstName: json[_firstNameKey],
+      lastName: json[_lastNameKey],
+      appAccount: Uri.parse(json[_appAccountKey]),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'email': email,
-      'first_name': firstName,
-      'last_name': lastName,
-      'app_account': _appAccount.toString(),
+      _uuidKey: uuid,
+      _emailKey: email,
+      _firstNameKey: firstName,
+      _lastNameKey: lastName,
+      _appAccountKey: _appAccount.toString(),
     };
   }
 }

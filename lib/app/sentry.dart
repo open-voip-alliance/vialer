@@ -6,15 +6,23 @@ import 'package:flutter/foundation.dart';
 import 'package:meta/meta.dart';
 import 'package:sentry/sentry.dart';
 
-Future<void> run(Function f, {@required String dsn}) async {
+import '../domain/repositories/auth.dart';
+
+Future<void> run(
+  AuthRepository authRepository,
+  Function f, {
+  @required String dsn,
+}) async {
   final sentry = SentryClient(dsn: dsn);
 
   runZoned(
     f,
-    onError: (error, stackTrace) => _capture(sentry, error, stackTrace),
+    onError: (error, stackTrace) =>
+        _capture(authRepository, sentry, error, stackTrace),
   );
 
   FlutterError.onError = (details, {forceReport = false}) => _capture(
+        authRepository,
         sentry,
         details.exception,
         details.stack,
@@ -35,6 +43,7 @@ bool get _inDebugMode {
 }
 
 Future<void> _capture(
+  AuthRepository authRepository,
   SentryClient client,
   dynamic error,
   StackTrace stackTrace, {
@@ -45,11 +54,14 @@ Future<void> _capture(
   }
 
   try {
+    final user = await authRepository.currentUser;
+
     client.capture(
       event: Event(
         exception: error,
         stackTrace: stackTrace,
         contexts: await _contexts,
+        userContext: user != null ? User(id: user.uuid) : null,
       ),
     );
     // ignore: avoid_catches_without_on_clauses
@@ -95,8 +107,6 @@ Future<Contexts> get _contexts async {
       model: info.utsname.machine,
       simulator: !info.isPhysicalDevice,
     );
-
-    print(info.name);
   }
 
   return Contexts(
