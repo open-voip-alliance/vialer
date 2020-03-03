@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 
+import '../../../../resources/localizations.dart';
 import '../../widgets/stylized_button.dart';
 
 import 'controller.dart';
@@ -60,22 +61,9 @@ class _PermissionPageState
           Expanded(
             child: Align(
               alignment: Alignment.bottomCenter,
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    child: StylizedOutlineButton(
-                      text: 'Deny',
-                      onPressed: () {},
-                    ),
-                  ),
-                  SizedBox(width: 24),
-                  Expanded(
-                    child: StylizedRaisedButton(
-                      text: 'Allow',
-                      onPressed: controller.ask,
-                    ),
-                  ),
-                ],
+              child: StylizedRaisedButton(
+                text: context.msg.onboarding.permission.button.iUnderstand,
+                onPressed: controller.ask,
               ),
             ),
           ),
