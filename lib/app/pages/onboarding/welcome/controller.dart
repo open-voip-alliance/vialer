@@ -31,7 +31,6 @@ class WelcomeController extends Controller {
 
   void getCurrentUser() => _presenter.getCurrentUser();
 
-  // ignore: use_setters_to_change_properties
   void _onRetrievedUser(SystemUser user) {
     _systemUser = user;
     refreshUI();
