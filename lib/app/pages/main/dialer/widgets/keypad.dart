@@ -69,7 +69,7 @@ class _KeypadState extends State<Keypad> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           SizedBox.fromSize(
-            size: _ButtonWrap.size,
+            size: _ButtonWrap.size(context),
           ),
           // Empty space in the grid
           _CallButton(
@@ -82,10 +82,12 @@ class _KeypadState extends State<Keypad> {
       ),
     );
 
+    final buttonSize = _ButtonWrap.size(context);
+
     rows = rows
         .map(
           (r) => SizedBox(
-            width: (_ButtonWrap.size.width * amountPerRow),
+            width: (buttonSize.width * amountPerRow),
             child: r,
           ),
         )
@@ -108,13 +110,33 @@ class _ButtonWrap extends StatelessWidget {
   final Widget child;
 
   static const _baseSize = Size(82, 82);
-  static const _padding = EdgeInsets.all(12);
 
-  static get size =>
-      _baseSize +
+  static EdgeInsets padding(BuildContext context) =>
+      EdgeInsets.all(_relative(context, 12));
+
+  static Size baseSize(BuildContext context) =>
+      _relativeSize(context, _baseSize);
+
+  static double _relative(BuildContext context, double input) {
+    final screenSize = MediaQuery.of(context).size;
+
+    final dimension =
+        (input * (screenSize.width / 390)).clamp(input * 0.5, input);
+
+    return dimension;
+  }
+
+  static Size _relativeSize(BuildContext context, Size size) {
+    final dimension = _relative(context, size.width);
+
+    return Size(dimension, dimension);
+  }
+
+  static Size size(BuildContext context) =>
+      baseSize(context) +
       Offset(
-        _ButtonWrap._padding.horizontal,
-        _ButtonWrap._padding.vertical,
+        padding(context).horizontal,
+        padding(context).vertical,
       );
 
   const _ButtonWrap({Key key, this.child}) : super(key: key);
@@ -122,9 +144,9 @@ class _ButtonWrap extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: _padding,
+      padding: padding(context),
       child: SizedBox.fromSize(
-        size: _baseSize,
+        size: baseSize(context),
         child: child,
       ),
     );
@@ -234,16 +256,16 @@ class _CallButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = context.isIOS ? 96.0 : 64.0;
-
-    return Center(
-      child: SizedBox(
-        width: size,
-        height: size,
-        child: FloatingActionButton(
-          backgroundColor: VialerColors.green1,
-          onPressed: onPressed,
-          child: Icon(VialerSans.phone, size: 32),
+    return SizedBox.fromSize(
+      size: _ButtonWrap.size(context),
+      child: Center(
+        child: SizedBox.fromSize(
+          size: _ButtonWrap.size(context) * 0.70,
+          child: FloatingActionButton(
+            backgroundColor: VialerColors.green1,
+            onPressed: onPressed,
+            child: Icon(VialerSans.phone, size: 32),
+          ),
         ),
       ),
     );
