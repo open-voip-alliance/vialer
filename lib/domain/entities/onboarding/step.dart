@@ -4,4 +4,5 @@ enum Step {
   callPermission,
   contactsPermission,
   voicemail,
+  welcome,
 }

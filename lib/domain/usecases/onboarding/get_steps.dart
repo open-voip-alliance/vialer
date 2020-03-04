@@ -31,6 +31,7 @@ class GetStepsUseCase extends UseCase<List<Step>, void> {
       if (callPermissionDenied) Step.callPermission,
       if (contactsPermissionDenied) Step.contactsPermission,
       Step.voicemail,
+      Step.welcome,
     ];
 
     controller.add(steps);
