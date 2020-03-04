@@ -15,6 +15,7 @@ import 'initial/page.dart';
 import 'login/page.dart';
 import 'permission/call/page.dart';
 import 'permission/contacts/page.dart';
+import 'voicemail/page.dart';
 
 class OnboardingController extends Controller {
   static const _duration = Duration(milliseconds: 400);
@@ -45,6 +46,7 @@ class OnboardingController extends Controller {
             Provider.of<PermissionRepository>(c),
             forward,
           ),
+      VoicemailPage: (_) => VoicemailPage(forward),
     };
 
     pages = [_pageBuilders[InitialPage]];

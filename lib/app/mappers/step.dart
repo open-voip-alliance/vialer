@@ -4,6 +4,7 @@ import '../pages/onboarding/initial/page.dart';
 import '../pages/onboarding/login/page.dart';
 import '../pages/onboarding/permission/call/page.dart';
 import '../pages/onboarding/permission/contacts/page.dart';
+import '../pages/onboarding/voicemail/page.dart';
 
 Type mapStepToWidgetType(Step step) {
   switch (step) {
@@ -15,6 +16,8 @@ Type mapStepToWidgetType(Step step) {
       return CallPermissionPage;
     case Step.contactsPermission:
       return ContactsPermissionPage;
+    case Step.voicemail:
+      return VoicemailPage;
     default:
       throw UnsupportedError('Unknown step');
   }

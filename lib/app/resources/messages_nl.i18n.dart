@@ -137,6 +137,7 @@ class OnboardingMessages_nl extends OnboardingMessages {
 	InitialOnboardingMessages_nl get initial => InitialOnboardingMessages_nl(this);
 	LoginOnboardingMessages_nl get login => LoginOnboardingMessages_nl(this);
 	PermissionOnboardingMessages_nl get permission => PermissionOnboardingMessages_nl(this);
+	VoicemailOnboardingMessages_nl get voicemail => VoicemailOnboardingMessages_nl(this);
 }
 
 class ButtonOnboardingMessages_nl extends ButtonOnboardingMessages {
@@ -199,5 +200,12 @@ class ContactsPermissionOnboardingMessages_nl extends ContactsPermissionOnboardi
 	const ContactsPermissionOnboardingMessages_nl(this._parent):super(_parent);
 	String get title => "Contact permissie";
 	String get description => "Deze permissie is nodig om contacten in de app te bekijken.";
+}
+
+class VoicemailOnboardingMessages_nl extends VoicemailOnboardingMessages {
+	final OnboardingMessages_nl _parent;
+	const VoicemailOnboardingMessages_nl(this._parent):super(_parent);
+	String get title => "Voicemail";
+	String get description => "Als je niet een gepersonaliseerde voicemail hebt, kan het zijn dat je persoonlijke nummer wordt genoemd in de voice mail. Mensen die jouw zakelijk nummer bellen kunnen dan je persoonlijke nummer achterhalen.";
 }
 

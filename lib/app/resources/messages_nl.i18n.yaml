@@ -63,3 +63,10 @@ onboarding:
       title: "Contact permissie"
       description: >-
         Deze permissie is nodig om contacten in de app te bekijken.
+
+  voicemail:
+    title: "Voicemail"
+    description: >-
+      Als je niet een gepersonaliseerde voicemail hebt, kan het zijn dat je persoonlijke
+      nummer wordt genoemd in de voice mail. Mensen die jouw zakelijk nummer bellen kunnen
+      dan je persoonlijke nummer achterhalen.

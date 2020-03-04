@@ -34,7 +34,7 @@ class PermissionController extends Controller {
       _forward();
     }
 
-    doIfNotDebug(() {
+    //doIfNotDebug(() {
       Segment.track(
         eventName: 'permission',
         properties: {
@@ -42,7 +42,7 @@ class PermissionController extends Controller {
           'granted': granted,
         },
       );
-    });
+    //});
 
     // TODO: Show error on fail
   }

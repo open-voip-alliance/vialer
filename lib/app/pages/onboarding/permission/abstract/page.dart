@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 
-import '../../../../resources/localizations.dart';
-import '../../widgets/stylized_button.dart';
+import '../../info/page.dart';
 
 import 'controller.dart';
 
@@ -30,45 +29,11 @@ class _PermissionPageState
 
   @override
   Widget buildPage() {
-    return Padding(
-      padding: EdgeInsets.symmetric(
-        horizontal: 48,
-      ).copyWith(
-        bottom: 24,
-      ),
-      child: Column(
-        children: <Widget>[
-          SizedBox(height: 64),
-          IconTheme(
-            data: IconTheme.of(context).copyWith(size: 54),
-            child: widget.icon,
-          ),
-          SizedBox(height: 24),
-          DefaultTextStyle(
-            style: TextStyle(
-              fontSize: 40,
-              fontWeight: FontWeight.bold,
-            ),
-            child: widget.title,
-          ),
-          SizedBox(height: 24),
-          DefaultTextStyle(
-            style: TextStyle(
-              fontSize: 18,
-            ),
-            child: widget.description,
-          ),
-          Expanded(
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: StylizedRaisedButton(
-                text: context.msg.onboarding.permission.button.iUnderstand,
-                onPressed: controller.ask,
-              ),
-            ),
-          ),
-        ],
-      ),
+    return InfoPage(
+      icon: widget.icon,
+      title: widget.title,
+      description: widget.description,
+      onPressed: controller.ask,
     );
   }
 }

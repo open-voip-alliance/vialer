@@ -136,6 +136,7 @@ class OnboardingMessages {
 	InitialOnboardingMessages get initial => InitialOnboardingMessages(this);
 	LoginOnboardingMessages get login => LoginOnboardingMessages(this);
 	PermissionOnboardingMessages get permission => PermissionOnboardingMessages(this);
+	VoicemailOnboardingMessages get voicemail => VoicemailOnboardingMessages(this);
 }
 
 class ButtonOnboardingMessages {
@@ -198,5 +199,12 @@ class ContactsPermissionOnboardingMessages {
 	const ContactsPermissionOnboardingMessages(this._parent);
 	String get title => "Contacts";
 	String get description => "This permission is required to view contacts in-app.";
+}
+
+class VoicemailOnboardingMessages {
+	final OnboardingMessages _parent;
+	const VoicemailOnboardingMessages(this._parent);
+	String get title => "Voicemail";
+	String get description => "Please note that if you don't use a personalized voicemail, it may contain your personal number which is then leaked if people call your business number.";
 }
 

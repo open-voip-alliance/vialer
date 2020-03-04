@@ -64,3 +64,9 @@ onboarding:
       title: "Contacts"
       description: >-
         This permission is required to view contacts in-app.
+
+  voicemail:
+    title: "Voicemail"
+    description: >-
+      Please note that if you don't use a personalized voicemail, it may contain your
+      personal number which is then leaked if people call your business number.
