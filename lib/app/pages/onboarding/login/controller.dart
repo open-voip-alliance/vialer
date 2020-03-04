@@ -51,7 +51,6 @@ class LoginController extends Controller {
     }
 
     usernameController.addListener(toggleLoginButton);
-
     passwordController.addListener(toggleLoginButton);
   }
 
@@ -87,6 +86,8 @@ class LoginController extends Controller {
         );
         await Segment.track(eventName: 'login');
       });
+
+      FocusScope.of(getContext()).requestFocus(FocusNode());
 
       _forward();
     } else {
