@@ -2,12 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
-import 'package:flutter_segment/flutter_segment.dart';
 
 import '../../../../domain/entities/system_user.dart';
 import '../../../../domain/repositories/auth.dart';
-
-import '../../../util/debug.dart';
 
 import 'presenter.dart';
 
