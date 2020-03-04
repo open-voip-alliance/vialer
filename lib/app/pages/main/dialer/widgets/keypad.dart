@@ -52,7 +52,7 @@ class _KeypadState extends State<Keypad> {
               .skip(i * amountPerRow)
               .take(amountPerRow)
               .map((entry) {
-            return _KeypadButton(
+            return _ValueButton(
               controller: _controller,
               primaryValue: entry.key,
               secondaryValue: entry.value,
@@ -69,7 +69,7 @@ class _KeypadState extends State<Keypad> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           SizedBox.fromSize(
-            size: _ButtonWrap.size(context),
+            size: _KeypadButton.size(context),
           ),
           // Empty space in the grid
           _CallButton(
@@ -82,7 +82,7 @@ class _KeypadState extends State<Keypad> {
       ),
     );
 
-    final buttonSize = _ButtonWrap.size(context);
+    final buttonSize = _KeypadButton.size(context);
 
     rows = rows
         .map(
@@ -106,7 +106,7 @@ class _KeypadState extends State<Keypad> {
   }
 }
 
-class _ButtonWrap extends StatelessWidget {
+class _KeypadButton extends StatelessWidget {
   final Widget child;
 
   static const _baseSize = Size(82, 82);
@@ -139,7 +139,7 @@ class _ButtonWrap extends StatelessWidget {
         padding(context).vertical,
       );
 
-  const _ButtonWrap({Key key, this.child}) : super(key: key);
+  const _KeypadButton({Key key, this.child}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -153,7 +153,7 @@ class _ButtonWrap extends StatelessWidget {
   }
 }
 
-class _KeypadButton extends StatelessWidget {
+class _ValueButton extends StatelessWidget {
   final String primaryValue;
   final String secondaryValue;
 
@@ -193,7 +193,7 @@ class _KeypadButton extends StatelessWidget {
 
   bool get _primaryIsNumber => int.tryParse(primaryValue) != null;
 
-  const _KeypadButton({
+  const _ValueButton({
     Key key,
     this.primaryValue,
     this.secondaryValue,
@@ -203,7 +203,7 @@ class _KeypadButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _ButtonWrap(
+    return _KeypadButton(
       child: Material(
         shape: CircleBorder(
           side: context.isIOS
@@ -257,10 +257,10 @@ class _CallButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox.fromSize(
-      size: _ButtonWrap.size(context),
+      size: _KeypadButton.size(context),
       child: Center(
         child: SizedBox.fromSize(
-          size: _ButtonWrap.size(context) * 0.70,
+          size: _KeypadButton.size(context) * 0.70,
           child: FloatingActionButton(
             backgroundColor: VialerColors.green1,
             onPressed: onPressed,
@@ -294,7 +294,7 @@ class _DeleteButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _ButtonWrap(
+    return _KeypadButton(
       child: InkResponse(
         onTap: _deletePrevious,
         onLongPress: _deleteAll,
