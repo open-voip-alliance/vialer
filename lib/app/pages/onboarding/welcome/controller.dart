@@ -10,12 +10,13 @@ import 'presenter.dart';
 
 class WelcomeController extends Controller {
   final WelcomePresenter _presenter;
-  
+
   final VoidCallback _forward;
-  
+
   SystemUser _systemUser;
+
   SystemUser get systemUser => _systemUser;
-  
+
   WelcomeController(
     AuthRepository authRepository,
     this._forward,
