@@ -272,36 +272,67 @@ class _CallButton extends StatelessWidget {
   }
 }
 
-class _DeleteButton extends StatelessWidget {
+class _DeleteButton extends StatefulWidget {
   final TextEditingController controller;
 
   const _DeleteButton({Key key, this.controller}) : super(key: key);
 
+  @override
+  State<StatefulWidget> createState() => _DeleteButtonState();
+}
+
+class _DeleteButtonState extends State<_DeleteButton> {
+  TextEditingController get _controller => widget.controller;
+
+  bool _visible = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller?.addListener(() {
+      if (_controller.text.isNotEmpty) {
+        setState(() {
+          _visible = true;
+        });
+      } else {
+        setState(() {
+          _visible = false;
+        });
+      }
+    });
+  }
+
   void _deletePrevious() {
-    if (controller != null && controller.text.isNotEmpty) {
+    if (_controller != null && _controller.text.isNotEmpty) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        final text = controller.text;
-        controller.text = text.substring(0, text.length - 1);
+        final text = _controller.text;
+        _controller.text = text.substring(0, text.length - 1);
       });
     }
   }
 
   void _deleteAll() {
-    if (controller != null) {
-      controller.clear();
+    if (_controller != null) {
+      _controller.clear();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return _KeypadButton(
-      child: InkResponse(
-        onTap: _deletePrevious,
-        onLongPress: _deleteAll,
-        child: Icon(
-          VialerSans.correct,
-          color: VialerColors.grey5,
-          size: 32,
+    return AnimatedOpacity(
+      opacity: _visible ? 1 : 0,
+      duration: Duration(milliseconds: 300),
+      curve: Curves.decelerate,
+      child: _KeypadButton(
+        child: InkResponse(
+          onTap: _visible ? _deletePrevious : null,
+          onLongPress: _visible ? _deleteAll : null,
+          child: Icon(
+            VialerSans.correct,
+            color: VialerColors.grey5,
+            size: 32,
+          ),
         ),
       ),
     );
