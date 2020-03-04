@@ -80,4 +80,5 @@ abstract class VialerSans {
   static const incomingCall = IconData(0xE924, fontFamily: _family);
   static const outgoingCall = IconData(0xE92A, fontFamily: _family);
   static const speaker = IconData(0xE984, fontFamily: _family);
+  static const voicemail = IconData(0xE98B, fontFamily: _family);
 }
