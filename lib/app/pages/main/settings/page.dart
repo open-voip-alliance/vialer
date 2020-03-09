@@ -6,7 +6,7 @@ import '../../../../domain/repositories/setting.dart';
 import '../widgets/header.dart';
 import 'controller.dart';
 import 'widgets/tile.dart';
-import '../../../widgets/colored_button.dart';
+import '../widgets/colored_button.dart';
 
 import '../../../resources/theme.dart';
 import '../../../resources/localizations.dart';
