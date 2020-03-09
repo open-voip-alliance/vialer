@@ -121,12 +121,34 @@ class SettingsMainMessages {
 	const SettingsMainMessages(this._parent);
 	String get title => "Settings";
 	MenuSettingsMainMessages get menu => MenuSettingsMainMessages(this);
+	ListSettingsMainMessages get list => ListSettingsMainMessages(this);
+	ButtonsSettingsMainMessages get buttons => ButtonsSettingsMainMessages(this);
 }
 
 class MenuSettingsMainMessages {
 	final SettingsMainMessages _parent;
 	const MenuSettingsMainMessages(this._parent);
 	String get title => "Settings";
+}
+
+class ListSettingsMainMessages {
+	final SettingsMainMessages _parent;
+	const ListSettingsMainMessages(this._parent);
+	DebugListSettingsMainMessages get debug => DebugListSettingsMainMessages(this);
+}
+
+class DebugListSettingsMainMessages {
+	final ListSettingsMainMessages _parent;
+	const DebugListSettingsMainMessages(this._parent);
+	String get title => "Debug";
+	String get remoteLogging => "Remote logging";
+}
+
+class ButtonsSettingsMainMessages {
+	final SettingsMainMessages _parent;
+	const ButtonsSettingsMainMessages(this._parent);
+	String get sendFeedback => "Send feedback";
+	String get logout => "Logout";
 }
 
 class OnboardingMessages {

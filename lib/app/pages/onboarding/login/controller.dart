@@ -3,6 +3,7 @@ import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:flutter_segment/flutter_segment.dart';
 
 import '../../../../domain/repositories/auth.dart';
+import '../../../../domain/repositories/setting.dart';
 
 import '../../../util/debug.dart';
 
@@ -26,8 +27,11 @@ class LoginController extends Controller {
 
   bool canLogin = false;
 
-  LoginController(this._authRepository, this._forward)
-      : _presenter = LoginPresenter(_authRepository);
+  LoginController(
+    this._authRepository,
+    SettingRepository settingRepository,
+    this._forward,
+  ) : _presenter = LoginPresenter(_authRepository, settingRepository);
 
   @override
   void initController(GlobalKey<State<StatefulWidget>> key) {
@@ -88,6 +92,8 @@ class LoginController extends Controller {
       });
 
       FocusScope.of(getContext()).requestFocus(FocusNode());
+
+      _presenter.resetSettingsToDefaults();
 
       _forward();
     } else {

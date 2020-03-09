@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../domain/repositories/setting.dart';
 import '../../../../domain/repositories/auth.dart';
 
 import '../../../resources/theme.dart';
@@ -14,21 +15,30 @@ import '../../../resources/localizations.dart';
 
 class LoginPage extends View {
   final AuthRepository _authRepository;
+  final SettingRepository _settingRepository;
   final VoidCallback forward;
 
-  LoginPage(this._authRepository, this.forward, {Key key}) : super(key: key);
+  LoginPage(
+    this._authRepository,
+    this._settingRepository,
+    this.forward, {
+    Key key,
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() =>
-      _LoginPageState(_authRepository, forward);
+      _LoginPageState(_authRepository, _settingRepository, forward);
 }
 
 class _LoginPageState extends ViewState<LoginPage, LoginController> {
   static const _duration = Duration(milliseconds: 200);
   static const _curve = Curves.decelerate;
 
-  _LoginPageState(AuthRepository authRepository, VoidCallback forward)
-      : super(LoginController(authRepository, forward));
+  _LoginPageState(
+    AuthRepository authRepository,
+    SettingRepository settingRepository,
+    VoidCallback forward,
+  ) : super(LoginController(authRepository, settingRepository, forward));
 
   @override
   void didChangeDependencies() {

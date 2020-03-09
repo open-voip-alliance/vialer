@@ -20,6 +20,9 @@ import '../data/repositories/recent_call.dart';
 import '../domain/repositories/call.dart';
 import '../data/repositories/call.dart';
 
+import '../domain/repositories/setting.dart';
+import '../data/repositories/setting.dart';
+
 import 'resources/localizations.dart';
 import 'resources/theme.dart';
 import 'routes.dart';
@@ -57,6 +60,9 @@ class App extends StatelessWidget {
         ),
         Provider<CallRepository>(
           create: (_) => DataCallRepository(),
+        ),
+        Provider<SettingRepository>(
+          create: (_) => DataSettingRepository(),
         ),
       ],
       child: MaterialApp(

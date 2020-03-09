@@ -122,12 +122,34 @@ class SettingsMainMessages_nl extends SettingsMainMessages {
 	const SettingsMainMessages_nl(this._parent):super(_parent);
 	String get title => "Instellingen";
 	MenuSettingsMainMessages_nl get menu => MenuSettingsMainMessages_nl(this);
+	ListSettingsMainMessages_nl get list => ListSettingsMainMessages_nl(this);
+	ButtonsSettingsMainMessages_nl get buttons => ButtonsSettingsMainMessages_nl(this);
 }
 
 class MenuSettingsMainMessages_nl extends MenuSettingsMainMessages {
 	final SettingsMainMessages_nl _parent;
 	const MenuSettingsMainMessages_nl(this._parent):super(_parent);
 	String get title => "Instellingen";
+}
+
+class ListSettingsMainMessages_nl extends ListSettingsMainMessages {
+	final SettingsMainMessages_nl _parent;
+	const ListSettingsMainMessages_nl(this._parent):super(_parent);
+	DebugListSettingsMainMessages_nl get debug => DebugListSettingsMainMessages_nl(this);
+}
+
+class DebugListSettingsMainMessages_nl extends DebugListSettingsMainMessages {
+	final ListSettingsMainMessages_nl _parent;
+	const DebugListSettingsMainMessages_nl(this._parent):super(_parent);
+	String get title => "Debug";
+	String get remoteLogging => "Remote logging";
+}
+
+class ButtonsSettingsMainMessages_nl extends ButtonsSettingsMainMessages {
+	final SettingsMainMessages_nl _parent;
+	const ButtonsSettingsMainMessages_nl(this._parent):super(_parent);
+	String get sendFeedback => "Feedback sturen";
+	String get logout => "Uitloggen";
 }
 
 class OnboardingMessages_nl extends OnboardingMessages {

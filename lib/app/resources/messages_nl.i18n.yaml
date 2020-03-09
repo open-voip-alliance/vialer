@@ -35,6 +35,13 @@ main:
     title: &settingsTitle "Instellingen"
     menu:
       title: *settingsTitle
+    list:
+      debug:
+        title: "Debug"
+        remoteLogging: "Remote logging"
+    buttons:
+      sendFeedback: "Feedback sturen"
+      logout: "Uitloggen"
 
 onboarding:
   button:

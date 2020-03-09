@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 final ThemeData vialerTheme = ThemeData(
   primaryColor: VialerColors.primary,
+  primaryColorDark: VialerColors.primaryDark,
+  primaryColorLight: VialerColors.primaryLight,
   buttonTheme: ButtonThemeData(
     height: 42,
     shape: RoundedRectangleBorder(
@@ -45,6 +47,8 @@ abstract class VialerTheme {
 
 abstract class VialerColors {
   static const primary = Color(0xFFFFA257);
+  static const primaryDark = Color(0xFFD45400);
+  static const primaryLight = Color(0xFFFFD0A3);
 
   static const grey1 = Color(0xFFCCCCCC);
   static const grey2 = Color(0xFFD8D8D8);

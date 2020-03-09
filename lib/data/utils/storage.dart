@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../domain/entities/system_user.dart';
+import '../../domain/entities/setting.dart';
 
 class Storage {
   final SharedPreferences _preferences;
@@ -26,4 +27,14 @@ class Storage {
   String get apiToken => _preferences.getString(_apiTokenKey);
 
   set apiToken(String token) => _preferences.setString(_apiTokenKey, token);
+
+  static const _settingsKey = 'settings';
+
+  List<Setting> get settings =>
+      (json.decode(_preferences.get(_settingsKey)) as List)
+          .map((s) => Setting.fromJson(s))
+          .toList();
+
+  set settings(List<Setting> settings) => _preferences.setString(
+      _settingsKey, json.encode(settings.map((s) => s.toJson()).toList()));
 }

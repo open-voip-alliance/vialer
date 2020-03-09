@@ -1,12 +1,13 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:provider/provider.dart';
-
 import '../../mappers/step.dart';
+
+import '../../../domain/entities/onboarding/step.dart';
 
 import '../../../domain/repositories/auth.dart';
 import '../../../domain/repositories/permission.dart';
-import '../../../domain/entities/onboarding/step.dart';
+import '../../../domain/repositories/setting.dart';
 
 import '../../routes.dart';
 import 'presenter.dart';
@@ -38,7 +39,11 @@ class OnboardingController extends Controller {
 
     _pageBuilders = {
       InitialPage: (_) => InitialPage(forward),
-      LoginPage: (c) => LoginPage(Provider.of<AuthRepository>(c), forward),
+      LoginPage: (c) => LoginPage(
+            Provider.of<AuthRepository>(c),
+            Provider.of<SettingRepository>(c),
+            forward,
+          ),
       CallPermissionPage: (c) => CallPermissionPage(
             Provider.of<PermissionRepository>(c),
             forward,

@@ -5,15 +5,18 @@ import 'package:provider/provider.dart';
 import '../../../domain/repositories/call.dart';
 import '../../../domain/repositories/contact.dart';
 import '../../../domain/repositories/recent_call.dart';
+import '../../../domain/repositories/setting.dart';
 
 import '../../resources/theme.dart';
+import '../../resources/localizations.dart';
 import '../../routes.dart';
+
 import 'dialer/page.dart';
 import 'contacts/page.dart';
 import 'recent/page.dart';
-import '../../widgets/transparent_status_bar.dart';
+import 'settings/page.dart';
 
-import '../../resources/localizations.dart';
+import '../../widgets/transparent_status_bar.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -41,7 +44,7 @@ class _MainPageState extends State<MainPage> {
           bottomLettersPadding: !_dialerIsPage ? 96 : 0,
         ),
         RecentPage(Provider.of<RecentCallRepository>(context)),
-        Container(),
+        SettingsPage(Provider.of<SettingRepository>(context)),
       ];
     }
 
@@ -53,7 +56,7 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: !_dialerIsPage
+      floatingActionButton: _currentIndex != 2 && !_dialerIsPage
           ? SizedBox(
               height: 62,
               width: 62,
