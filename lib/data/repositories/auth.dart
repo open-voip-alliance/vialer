@@ -1,10 +1,14 @@
 import '../../domain/repositories/auth.dart';
+import '../../domain/repositories/storage.dart';
 
 import 'services/voipgrid.dart';
-import '../utils/storage.dart';
 import '../../domain/entities/system_user.dart';
 
 class DataAuthRepository extends AuthRepository {
+  final StorageRepository _storageRepository;
+
+  DataAuthRepository(this._storageRepository);
+
   var _service = VoipGridService.create();
 
   static const _emailKey = 'email';
@@ -25,15 +29,16 @@ class DataAuthRepository extends AuthRepository {
     if (body != null && body.containsKey(_apiTokenKey)) {
       final token = body[_apiTokenKey];
 
-      final storage = await Storage.load();
-      storage.apiToken = token;
+      _storageRepository.apiToken = token;
 
       _service = VoipGridService.create(email: email, token: token);
 
       final systemUserResponse = await _service.getSystemUser();
-      storage.systemUser = SystemUser.fromJson(systemUserResponse.body);
+      _storageRepository.systemUser = SystemUser.fromJson(
+        systemUserResponse.body,
+      );
 
-      _currentUser = storage.systemUser;
+      _currentUser = _storageRepository.systemUser;
 
       return true;
     } else {
@@ -43,18 +48,12 @@ class DataAuthRepository extends AuthRepository {
 
   @override
   Future<bool> isAuthenticated() async {
-    final storage = await Storage.load();
-
-    return storage.apiToken != null;
+    return _storageRepository.apiToken != null;
   }
 
   @override
   Future<SystemUser> get currentUser async {
-    if (_currentUser == null) {
-      final storage = await Storage.load();
-
-      _currentUser = storage.systemUser;
-    }
+    _currentUser ??= _storageRepository.systemUser;
 
     return _currentUser;
   }

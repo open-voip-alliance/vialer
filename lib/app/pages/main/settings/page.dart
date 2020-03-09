@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 
 import '../../../../domain/repositories/setting.dart';
+import '../../../../domain/repositories/storage.dart';
 
 import '../widgets/header.dart';
 import 'controller.dart';
@@ -15,17 +16,26 @@ import '../../../mappers/setting.dart';
 
 class SettingsPage extends View {
   final SettingRepository _settingsRepository;
+  final StorageRepository _storageRepository;
 
-  SettingsPage(this._settingsRepository, {Key key}) : super(key: key);
+  SettingsPage(
+    this._settingsRepository,
+    this._storageRepository, {
+    Key key,
+  }) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() =>
-      _SettingsPageState(_settingsRepository);
+  State<StatefulWidget> createState() => _SettingsPageState(
+        _settingsRepository,
+        _storageRepository,
+      );
 }
 
 class _SettingsPageState extends ViewState<SettingsPage, SettingsController> {
-  _SettingsPageState(SettingRepository settingRepository)
-      : super(SettingsController(settingRepository));
+  _SettingsPageState(
+    SettingRepository settingRepository,
+    StorageRepository storageRepository,
+  ) : super(SettingsController(settingRepository, storageRepository));
 
   List<Widget> get settingsList {
     final settings = controller.settings;
@@ -81,6 +91,7 @@ class _SettingsPageState extends ViewState<SettingsPage, SettingsController> {
     }
 
     return Scaffold(
+      key: globalKey,
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.only(
@@ -115,7 +126,7 @@ class _SettingsPageState extends ViewState<SettingsPage, SettingsController> {
                     SizedBox(
                       width: double.infinity,
                       child: ColoredButton.outline(
-                        onPressed: () {},
+                        onPressed: controller.logout,
                         child: Text(logoutButtonText),
                       ),
                     ),

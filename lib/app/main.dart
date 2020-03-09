@@ -5,6 +5,9 @@ import 'package:provider/provider.dart';
 import '../domain/repositories/env.dart';
 import '../device/repositories/env.dart';
 
+import '../domain/repositories/storage.dart';
+import '../data/repositories/storage.dart';
+
 import '../domain/repositories/auth.dart';
 import '../data/repositories/auth.dart';
 
@@ -29,15 +32,23 @@ import 'routes.dart';
 
 import 'sentry.dart' as sentry;
 
-void main() async => sentry.run(
-      App._authRepository,
-      () => runApp(App()),
-      dsn: await App._envRepository.sentryDsn,
-    );
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await App._storageRepository.load();
+
+  sentry.run(
+    App._authRepository,
+    () => runApp(App()),
+    dsn: await App._envRepository.sentryDsn,
+  );
+}
 
 class App extends StatelessWidget {
   static final EnvRepository _envRepository = DeviceEnvRepository();
-  static final AuthRepository _authRepository = DataAuthRepository();
+  static final StorageRepository _storageRepository = DeviceStorageRepository();
+  static final AuthRepository _authRepository = DataAuthRepository(
+    _storageRepository,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +56,9 @@ class App extends StatelessWidget {
       providers: [
         Provider<EnvRepository>.value(
           value: _envRepository,
+        ),
+        Provider<StorageRepository>.value(
+          value: _storageRepository,
         ),
         Provider<AuthRepository>.value(
           value: _authRepository,
@@ -62,7 +76,7 @@ class App extends StatelessWidget {
           create: (_) => DataCallRepository(),
         ),
         Provider<SettingRepository>(
-          create: (_) => DataSettingRepository(),
+          create: (_) => DataSettingRepository(_storageRepository),
         ),
       ],
       child: MaterialApp(

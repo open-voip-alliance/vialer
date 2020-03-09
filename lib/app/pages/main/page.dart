@@ -6,6 +6,7 @@ import '../../../domain/repositories/call.dart';
 import '../../../domain/repositories/contact.dart';
 import '../../../domain/repositories/recent_call.dart';
 import '../../../domain/repositories/setting.dart';
+import '../../../domain/repositories/storage.dart';
 
 import '../../resources/theme.dart';
 import '../../resources/localizations.dart';
@@ -44,7 +45,10 @@ class _MainPageState extends State<MainPage> {
           bottomLettersPadding: !_dialerIsPage ? 96 : 0,
         ),
         RecentPage(Provider.of<RecentCallRepository>(context)),
-        SettingsPage(Provider.of<SettingRepository>(context)),
+        SettingsPage(
+          Provider.of<SettingRepository>(context),
+          Provider.of<StorageRepository>(context),
+        ),
       ];
     }
 

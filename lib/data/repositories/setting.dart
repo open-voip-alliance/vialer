@@ -1,14 +1,16 @@
 import '../../domain/entities/setting.dart';
 import '../../domain/repositories/setting.dart';
 
-import '../utils/storage.dart';
+import '../../domain/repositories/storage.dart';
 
 class DataSettingRepository extends SettingRepository {
+  final StorageRepository _storageRepository;
+
+  DataSettingRepository(this._storageRepository);
+
   @override
   Future<void> resetToDefaults() async {
-    final storage = await Storage.load();
-
-    storage.settings = [
+    _storageRepository.settings = [
       RemoteLoggingSetting(false),
     ];
 
@@ -17,7 +19,7 @@ class DataSettingRepository extends SettingRepository {
 
   @override
   Future<List<Setting>> getSettings() async {
-    return (await Storage.load()).settings;
+    return _storageRepository.settings;
   }
 
   @override
@@ -33,6 +35,6 @@ class DataSettingRepository extends SettingRepository {
       }
     }
 
-    (await Storage.load()).settings = newSettings;
+    _storageRepository.settings = newSettings;
   }
 }
