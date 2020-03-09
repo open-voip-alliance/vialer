@@ -28,7 +28,7 @@ class SettingsController extends Controller {
 
     refreshUI();
   }
-  
+
   void changeSetting(Setting setting) => _presenter.changeSetting(setting);
 
   @override

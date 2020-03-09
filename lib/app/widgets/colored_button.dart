@@ -53,9 +53,11 @@ class ColoredButton extends StatelessWidget {
       hoverElevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(4),
-        side: isOutline ? BorderSide(
-          color: Theme.of(context).primaryColorLight,
-        ) : BorderSide.none,
+        side: isOutline
+            ? BorderSide(
+                color: Theme.of(context).primaryColorLight,
+              )
+            : BorderSide.none,
       ),
       child: DefaultTextStyle(
         style: TextStyle(
