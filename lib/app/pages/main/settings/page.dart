@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
-import 'package:vialer_lite/app/widgets/colored_button.dart';
 
 import '../../../../domain/repositories/setting.dart';
 
 import '../widgets/header.dart';
 import 'controller.dart';
 import 'widgets/tile.dart';
+import '../../../widgets/colored_button.dart';
 
 import '../../../resources/theme.dart';
 import '../../../resources/localizations.dart';

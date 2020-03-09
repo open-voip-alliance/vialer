@@ -32,6 +32,8 @@ class Storage {
 
   List<Setting> get settings =>
       (json.decode(_preferences.get(_settingsKey)) as List)
+          // Tear-off won't work here
+          // ignore: unnecessary_lambdas
           .map((s) => Setting.fromJson(s))
           .toList();
 
