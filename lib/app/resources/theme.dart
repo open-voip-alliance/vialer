@@ -22,7 +22,7 @@ final ThemeData vialerTheme = ThemeData(
     ),
     iconTheme: IconThemeData(
       color: VialerColors.primaryDark,
-    )
+    ),
   ),
 );
 
