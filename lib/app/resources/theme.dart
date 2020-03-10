@@ -11,6 +11,19 @@ final ThemeData vialerTheme = ThemeData(
     ),
     buttonColor: Colors.white,
   ),
+  appBarTheme: AppBarTheme(
+    color: VialerColors.primaryLight,
+    textTheme: TextTheme(
+      title: TextStyle(
+        color: VialerColors.primaryDark,
+        fontSize: 24,
+        fontWeight: FontWeight.bold,
+      ),
+    ),
+    iconTheme: IconThemeData(
+      color: VialerColors.primaryDark,
+    )
+  ),
 );
 
 extension ThemeTargetPlatform on BuildContext {

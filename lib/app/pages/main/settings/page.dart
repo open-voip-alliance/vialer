@@ -118,7 +118,7 @@ class _SettingsPageState extends ViewState<SettingsPage, SettingsController> {
                     SizedBox(
                       width: double.infinity,
                       child: ColoredButton.filled(
-                        onPressed: () {},
+                        onPressed: controller.goToFeedbackPage,
                         child: Text(sendFeedbackButtonText),
                       ),
                     ),

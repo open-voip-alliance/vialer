@@ -15,7 +15,7 @@ class ChangeSettingUseCase extends UseCase<void, ChangeSettingUseCaseParams> {
   Future<Stream<void>> buildUseCaseStream(
     ChangeSettingUseCaseParams params,
   ) async {
-    final controller = StreamController<List<Setting>>();
+    final controller = StreamController<void>();
 
     await settingRepository.changeSetting(params.setting);
     unawaited(controller.close());

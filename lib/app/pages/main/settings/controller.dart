@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 
@@ -35,6 +36,22 @@ class SettingsController extends Controller {
   }
 
   void changeSetting(Setting setting) => _presenter.changeSetting(setting);
+
+  Future<void> goToFeedbackPage() async {
+    final sent = await Navigator.pushNamed(
+          getContext(),
+          Routes.feedback,
+        ) ??
+        false;
+
+    if (sent) {
+      Scaffold.of(getContext()).showSnackBar(
+        SnackBar(
+          content: Text('Feedback sent'),
+        ),
+      );
+    }
+  }
 
   void logout() => _presenter.logout();
 

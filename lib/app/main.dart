@@ -26,6 +26,9 @@ import '../data/repositories/call.dart';
 import '../domain/repositories/setting.dart';
 import '../data/repositories/setting.dart';
 
+import '../domain/repositories/feedback.dart';
+import '../data/repositories/feedback.dart';
+
 import 'resources/localizations.dart';
 import 'resources/theme.dart';
 import 'routes.dart';
@@ -77,6 +80,9 @@ class App extends StatelessWidget {
         ),
         Provider<SettingRepository>(
           create: (_) => DataSettingRepository(_storageRepository),
+        ),
+        Provider<FeedbackRepository>(
+          create: (_) => DataFeedbackRepository(),
         ),
       ],
       child: MaterialApp(
