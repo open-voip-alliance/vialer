@@ -61,138 +61,139 @@ class ConfirmPageState extends ViewState<ConfirmPage, ConfirmController>
       key: globalKey,
       onWillPop: controller.onWillPop,
       child: TransparentStatusBar(
-          brightness: Brightness.dark,
-          child: Stack(
-            fit: StackFit.expand,
-            children: <Widget>[
-              AnimatedBuilder(
-                animation: _animation,
-                builder: (context, widget) {
-                  final opacity = _animation.drive(
-                    Tween<double>(
-                      begin: 0,
-                      end: 0.8,
-                    ),
-                  );
-
-                  return Container(
-                    color: Colors.black.withOpacity(opacity.value),
-                  );
-                },
-              ),
-              SlideTransition(
-                position: _animation.drive(
-                  Tween<Offset>(
-                    begin: Offset(0, 0.25),
-                    end: Offset(0, 0),
+        brightness: Brightness.dark,
+        child: Stack(
+          fit: StackFit.expand,
+          children: <Widget>[
+            AnimatedBuilder(
+              animation: _animation,
+              builder: (context, widget) {
+                final opacity = _animation.drive(
+                  Tween<double>(
+                    begin: 0,
+                    end: 0.8,
                   ),
+                );
+
+                return Container(
+                  color: Colors.black.withOpacity(opacity.value),
+                );
+              },
+            ),
+            SlideTransition(
+              position: _animation.drive(
+                Tween<Offset>(
+                  begin: Offset(0, 0.25),
+                  end: Offset(0, 0),
                 ),
-                child: FadeTransition(
-                  opacity: _animation,
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                      top: 64,
+              ),
+              child: FadeTransition(
+                opacity: _animation,
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    top: 64,
+                  ),
+                  child: Material(
+                    elevation: 8,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(24),
+                      topRight: Radius.circular(24),
                     ),
-                    child: Material(
-                      elevation: 8,
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(24),
-                        topRight: Radius.circular(24),
-                      ),
-                      child: Column(
-                        children: <Widget>[
-                          SizedBox(height: 48),
-                          Text(
-                            context.msg.main.dialer.confirm.title,
-                            style: _largeStyle,
-                          ),
-                          SizedBox(height: 48),
-                          Text(
-                            context.msg.main.dialer.confirm.description.origin,
-                            style: _style,
-                          ),
-                          SizedBox(height: 8),
-                          Text('(+31) 50 1234567', style: _largeStyle),
-                          SizedBox(height: 48),
-                          Text(
-                            context.msg.main.dialer.confirm.description.main,
-                            style: _style,
-                          ),
-                          SizedBox(height: 48),
-                          Text(
-                            context.msg.main.dialer.confirm.description.action,
-                            style: _style,
-                          ),
-                          SizedBox(height: 8),
-                          Text(widget.destination, style: _largeStyle),
-                          if (context.isAndroid)
-                            Expanded(
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 40,
-                                ).copyWith(
-                                  bottom: 16,
-                                ),
-                                child: Align(
-                                  alignment: Alignment.bottomCenter,
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: <Widget>[
-                                      SizedBox(
-                                        width: double.infinity,
-                                        child: RaisedButton(
-                                          elevation: 4,
-                                          onPressed: controller.call,
-                                          color: VialerColors.green2,
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: <Widget>[
-                                              Icon(
-                                                VialerSans.phone,
-                                                size: 16,
+                    child: Column(
+                      children: <Widget>[
+                        SizedBox(height: 48),
+                        Text(
+                          context.msg.main.dialer.confirm.title,
+                          style: _largeStyle,
+                        ),
+                        SizedBox(height: 48),
+                        Text(
+                          context.msg.main.dialer.confirm.description.origin,
+                          style: _style,
+                        ),
+                        SizedBox(height: 8),
+                        Text('(+31) 50 1234567', style: _largeStyle),
+                        SizedBox(height: 48),
+                        Text(
+                          context.msg.main.dialer.confirm.description.main,
+                          style: _style,
+                        ),
+                        SizedBox(height: 48),
+                        Text(
+                          context.msg.main.dialer.confirm.description.action,
+                          style: _style,
+                        ),
+                        SizedBox(height: 8),
+                        Text(widget.destination, style: _largeStyle),
+                        if (context.isAndroid)
+                          Expanded(
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 40,
+                              ).copyWith(
+                                bottom: 16,
+                              ),
+                              child: Align(
+                                alignment: Alignment.bottomCenter,
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: <Widget>[
+                                    SizedBox(
+                                      width: double.infinity,
+                                      child: RaisedButton(
+                                        elevation: 4,
+                                        onPressed: controller.call,
+                                        color: VialerColors.green2,
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: <Widget>[
+                                            Icon(
+                                              VialerSans.phone,
+                                              size: 16,
+                                              color: VialerColors.green3,
+                                            ),
+                                            SizedBox(width: 12),
+                                            Text(
+                                              context.msg.main.dialer.confirm
+                                                  .button
+                                                  .call(
+                                                    widget.destination,
+                                                  )
+                                                  .toUpperCase(),
+                                              style: TextStyle(
                                                 color: VialerColors.green3,
                                               ),
-                                              SizedBox(width: 12),
-                                              Text(
-                                                context.msg.main.dialer.confirm
-                                                    .button
-                                                    .call(
-                                                      widget.destination,
-                                                    )
-                                                    .toUpperCase(),
-                                                style: TextStyle(
-                                                  color: VialerColors.green3,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
+                                            ),
+                                          ],
                                         ),
                                       ),
-                                      SizedBox(height: 16),
-                                      SizedBox(
-                                        width: double.infinity,
-                                        child: FlatButton(
-                                          onPressed: () => controller.pop(),
-                                          child: Text(
-                                            context.msg.generic.button.cancel
-                                                .toUpperCase(),
-                                          ),
+                                    ),
+                                    SizedBox(height: 16),
+                                    SizedBox(
+                                      width: double.infinity,
+                                      child: FlatButton(
+                                        onPressed: () => controller.pop(),
+                                        child: Text(
+                                          context.msg.generic.button.cancel
+                                              .toUpperCase(),
                                         ),
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
-                        ],
-                      ),
+                          ),
+                      ],
                     ),
                   ),
                 ),
               ),
-            ],
-          )),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
