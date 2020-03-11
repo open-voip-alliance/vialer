@@ -124,6 +124,7 @@ class SettingsMainMessages_nl extends SettingsMainMessages {
 	MenuSettingsMainMessages_nl get menu => MenuSettingsMainMessages_nl(this);
 	ListSettingsMainMessages_nl get list => ListSettingsMainMessages_nl(this);
 	ButtonsSettingsMainMessages_nl get buttons => ButtonsSettingsMainMessages_nl(this);
+	FeedbackSettingsMainMessages_nl get feedback => FeedbackSettingsMainMessages_nl(this);
 }
 
 class MenuSettingsMainMessages_nl extends MenuSettingsMainMessages {
@@ -150,6 +151,27 @@ class ButtonsSettingsMainMessages_nl extends ButtonsSettingsMainMessages {
 	const ButtonsSettingsMainMessages_nl(this._parent):super(_parent);
 	String get sendFeedback => "Feedback sturen";
 	String get logout => "Uitloggen";
+}
+
+class FeedbackSettingsMainMessages_nl extends FeedbackSettingsMainMessages {
+	final SettingsMainMessages_nl _parent;
+	const FeedbackSettingsMainMessages_nl(this._parent):super(_parent);
+	String get title => "Feedback";
+	PlaceholdersFeedbackSettingsMainMessages_nl get placeholders => PlaceholdersFeedbackSettingsMainMessages_nl(this);
+	ButtonsFeedbackSettingsMainMessages_nl get buttons => ButtonsFeedbackSettingsMainMessages_nl(this);
+}
+
+class PlaceholdersFeedbackSettingsMainMessages_nl extends PlaceholdersFeedbackSettingsMainMessages {
+	final FeedbackSettingsMainMessages_nl _parent;
+	const PlaceholdersFeedbackSettingsMainMessages_nl(this._parent):super(_parent);
+	String get title => "Titel";
+	String get text => "Vul hier je feedback in";
+}
+
+class ButtonsFeedbackSettingsMainMessages_nl extends ButtonsFeedbackSettingsMainMessages {
+	final FeedbackSettingsMainMessages_nl _parent;
+	const ButtonsFeedbackSettingsMainMessages_nl(this._parent):super(_parent);
+	String get send => "Feedback sturen";
 }
 
 class OnboardingMessages_nl extends OnboardingMessages {

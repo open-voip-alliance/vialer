@@ -123,6 +123,7 @@ class SettingsMainMessages {
 	MenuSettingsMainMessages get menu => MenuSettingsMainMessages(this);
 	ListSettingsMainMessages get list => ListSettingsMainMessages(this);
 	ButtonsSettingsMainMessages get buttons => ButtonsSettingsMainMessages(this);
+	FeedbackSettingsMainMessages get feedback => FeedbackSettingsMainMessages(this);
 }
 
 class MenuSettingsMainMessages {
@@ -149,6 +150,27 @@ class ButtonsSettingsMainMessages {
 	const ButtonsSettingsMainMessages(this._parent);
 	String get sendFeedback => "Send feedback";
 	String get logout => "Logout";
+}
+
+class FeedbackSettingsMainMessages {
+	final SettingsMainMessages _parent;
+	const FeedbackSettingsMainMessages(this._parent);
+	String get title => "Feedback";
+	PlaceholdersFeedbackSettingsMainMessages get placeholders => PlaceholdersFeedbackSettingsMainMessages(this);
+	ButtonsFeedbackSettingsMainMessages get buttons => ButtonsFeedbackSettingsMainMessages(this);
+}
+
+class PlaceholdersFeedbackSettingsMainMessages {
+	final FeedbackSettingsMainMessages _parent;
+	const PlaceholdersFeedbackSettingsMainMessages(this._parent);
+	String get title => "Title";
+	String get text => "Enter your feedback here";
+}
+
+class ButtonsFeedbackSettingsMainMessages {
+	final FeedbackSettingsMainMessages _parent;
+	const ButtonsFeedbackSettingsMainMessages(this._parent);
+	String get send => "Send feedback";
 }
 
 class OnboardingMessages {

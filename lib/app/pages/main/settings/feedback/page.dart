@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 
 import '../../../../resources/theme.dart';
+import '../../../../resources/localizations.dart';
 
 import '../../../../widgets/transparent_status_bar.dart';
 import '../../widgets/colored_button.dart';
@@ -31,6 +32,12 @@ class _FeedbackPageState extends ViewState<FeedbackPage, DialerController> {
 
   @override
   Widget buildPage() {
+    var sendFeedbackButtonText =
+        context.msg.main.settings.feedback.buttons.send;
+    if (context.isAndroid) {
+      sendFeedbackButtonText = sendFeedbackButtonText.toUpperCase();
+    }
+
     return Scaffold(
       key: globalKey,
       appBar: AppBar(
@@ -49,15 +56,16 @@ class _FeedbackPageState extends ViewState<FeedbackPage, DialerController> {
             TextField(
               controller: controller.titleController,
               decoration: InputDecoration(
-                  hintText: 'Title',
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.symmetric(
-                    horizontal: 24,
-                    vertical: 16,
-                  ),
-                  hintStyle: TextStyle(
-                    color: VialerColors.grey4,
-                  )),
+                hintText: context.msg.main.settings.feedback.placeholders.title,
+                border: InputBorder.none,
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 16,
+                ),
+                hintStyle: TextStyle(
+                  color: VialerColors.grey4,
+                ),
+              ),
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -69,7 +77,8 @@ class _FeedbackPageState extends ViewState<FeedbackPage, DialerController> {
                 controller: controller.textController,
                 maxLines: null,
                 decoration: InputDecoration(
-                  hintText: 'Enter your feedback here',
+                  hintText:
+                      context.msg.main.settings.feedback.placeholders.text,
                   border: InputBorder.none,
                   contentPadding: EdgeInsets.symmetric(
                     horizontal: 24,
@@ -91,7 +100,7 @@ class _FeedbackPageState extends ViewState<FeedbackPage, DialerController> {
                 width: double.infinity,
                 child: ColoredButton.filled(
                   onPressed: controller.sendFeedback,
-                  child: Text('Send feedback'.toUpperCase()),
+                  child: Text(sendFeedbackButtonText),
                 ),
               ),
             ),

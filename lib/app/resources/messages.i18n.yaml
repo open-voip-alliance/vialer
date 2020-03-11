@@ -40,8 +40,15 @@ main:
         title: "Debug"
         remoteLogging: "Remote logging"
     buttons:
-      sendFeedback: "Send feedback"
+      sendFeedback: &sendFeedbackButton "Send feedback"
       logout: "Logout"
+    feedback:
+      title: "Feedback"
+      placeholders:
+        title: "Title"
+        text: "Enter your feedback here"
+      buttons:
+        send: *sendFeedbackButton
 
 onboarding:
   button:
