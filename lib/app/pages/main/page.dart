@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/repositories/call.dart';
+import '../../../domain/repositories/permission.dart';
 import '../../../domain/repositories/contact.dart';
 import '../../../domain/repositories/recent_call.dart';
 import '../../../domain/repositories/setting.dart';
@@ -40,7 +41,11 @@ class _MainPageState extends State<MainPage> {
 
     if (_pages == null) {
       _pages = [
-        if (_dialerIsPage) DialerPage(Provider.of<CallRepository>(context)),
+        if (_dialerIsPage)
+          DialerPage(
+            Provider.of<CallRepository>(context),
+            Provider.of<PermissionRepository>(context),
+          ),
         ContactsPage(
           Provider.of<ContactRepository>(context),
           bottomLettersPadding: !_dialerIsPage ? 96 : 0,

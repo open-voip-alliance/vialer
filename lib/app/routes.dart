@@ -26,7 +26,10 @@ abstract class Routes {
     Routes.onboarding: (c) =>
         OnboardingPage(Provider.of<PermissionRepository>(c)),
     Routes.main: (_) => MainPage(),
-    Routes.dialer: (c) => DialerPage(Provider.of<CallRepository>(c)),
+    Routes.dialer: (c) => DialerPage(
+          Provider.of<CallRepository>(c),
+          Provider.of<PermissionRepository>(c),
+        ),
     Routes.feedback: (c) => FeedbackPage(
           Provider.of<FeedbackRepository>(c),
           Provider.of<AuthRepository>(c),

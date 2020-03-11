@@ -43,6 +43,7 @@ class DialerMainMessages {
 	final MainMessages _parent;
 	const DialerMainMessages(this._parent);
 	String get title => "Keypad";
+	String get permissionDenied => "The call permission is denied, which is required to make seamless calls.";
 	MenuDialerMainMessages get menu => MenuDialerMainMessages(this);
 	ConfirmDialerMainMessages get confirm => ConfirmDialerMainMessages(this);
 }

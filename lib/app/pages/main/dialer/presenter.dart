@@ -3,18 +3,36 @@ import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import '../../../../domain/repositories/call.dart';
 import '../../../../domain/usecases/call.dart';
 
+import '../../../../domain/entities/onboarding/permission.dart';
+import '../../../../domain/entities/onboarding/permission_status.dart';
+import '../../../../domain/repositories/permission.dart';
+import '../../../../domain/usecases/get_permission_status.dart';
+
 class DialerPresenter extends Presenter {
   Function callOnComplete;
+  Function onCheckCallPermissionNext;
 
   final CallUseCase _callUseCase;
+  final GetPermissionStatusUseCase _getPermissionStatusUseCase;
 
-  DialerPresenter(CallRepository callRepository)
-      : _callUseCase = CallUseCase(callRepository);
+  DialerPresenter(
+      CallRepository callRepository, PermissionRepository permissionRepository)
+      : _callUseCase = CallUseCase(callRepository),
+        _getPermissionStatusUseCase = GetPermissionStatusUseCase(
+          permissionRepository,
+        );
 
   void call(String destination) {
     _callUseCase.execute(
       _CallUseCaseObserver(this),
       CallUseCaseParams(destination),
+    );
+  }
+
+  void checkCallPermission() {
+    _getPermissionStatusUseCase.execute(
+      _GetPermissionStatusUseCaseObserver(this),
+      GetPermissionStatusUseCaseParams(Permission.phone),
     );
   }
 
@@ -37,4 +55,20 @@ class _CallUseCaseObserver extends Observer<void> {
 
   @override
   void onNext(_) {}
+}
+
+class _GetPermissionStatusUseCaseObserver extends Observer<PermissionStatus> {
+  final DialerPresenter presenter;
+
+  _GetPermissionStatusUseCaseObserver(this.presenter);
+
+  @override
+  void onComplete() {}
+
+  @override
+  void onError(dynamic e) {}
+
+  @override
+  void onNext(PermissionStatus status) =>
+      presenter.onCheckCallPermissionNext(status);
 }

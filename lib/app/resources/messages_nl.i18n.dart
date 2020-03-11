@@ -44,6 +44,7 @@ class DialerMainMessages_nl extends DialerMainMessages {
 	final MainMessages_nl _parent;
 	const DialerMainMessages_nl(this._parent):super(_parent);
 	String get title => "Telefoon";
+	String get permissionDenied => "Er is geen permissie om te bellen, wat nodig is om via de app te bellen.";
 	MenuDialerMainMessages_nl get menu => MenuDialerMainMessages_nl(this);
 	ConfirmDialerMainMessages_nl get confirm => ConfirmDialerMainMessages_nl(this);
 }

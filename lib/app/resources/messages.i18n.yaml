@@ -5,6 +5,8 @@ generic:
 main:
   dialer:
     title: &keypadTitle "Keypad"
+    permissionDenied: >-
+      The call permission is denied, which is required to make seamless calls.
     menu:
       title: *keypadTitle
     confirm:

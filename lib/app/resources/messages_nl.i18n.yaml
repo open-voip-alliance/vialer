@@ -5,6 +5,8 @@ generic:
 main:
   dialer:
     title: &keypadTitle "Telefoon"
+    permissionDenied: >-
+      Er is geen permissie om te bellen, wat nodig is om via de app te bellen.
     menu:
       title: *keypadTitle
     confirm:
