@@ -19,7 +19,7 @@ class SendFeedbackUseCase extends UseCase<void, SendFeedbackUseCaseParams> {
   ) async {
     final controller = StreamController<void>();
 
-    final user = await _authRepository.currentUser;
+    final user = _authRepository.currentUser;
 
     await _feedbackRepository.send(
       title: params.title,

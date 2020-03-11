@@ -6,6 +6,7 @@ import '../../../domain/repositories/call.dart';
 import '../../../domain/repositories/contact.dart';
 import '../../../domain/repositories/recent_call.dart';
 import '../../../domain/repositories/setting.dart';
+import '../../../domain/repositories/logging.dart';
 import '../../../domain/repositories/storage.dart';
 
 import '../../resources/theme.dart';
@@ -47,6 +48,7 @@ class _MainPageState extends State<MainPage> {
         RecentPage(Provider.of<RecentCallRepository>(context)),
         SettingsPage(
           Provider.of<SettingRepository>(context),
+          Provider.of<LoggingRepository>(context),
           Provider.of<StorageRepository>(context),
         ),
       ];

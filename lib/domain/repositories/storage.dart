@@ -16,5 +16,11 @@ abstract class StorageRepository {
 
   set settings(List<Setting> settings);
 
+  String get logs;
+
+  set logs(String value);
+
+  void appendLogs(String value);
+
   Future<void> clear();
 }

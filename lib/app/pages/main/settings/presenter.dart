@@ -1,11 +1,14 @@
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
-import '../../../../domain/repositories/storage.dart';
-import '../../../../domain/usecases/logout.dart';
 
 import '../../../../domain/entities/setting.dart';
+
+import '../../../../domain/repositories/storage.dart';
+import '../../../../domain/repositories/logging.dart';
 import '../../../../domain/repositories/setting.dart';
+
 import '../../../../domain/usecases/get_settings.dart';
 import '../../../../domain/usecases/change_setting.dart';
+import '../../../../domain/usecases/logout.dart';
 
 class SettingsPresenter extends Presenter {
   Function settingsOnNext;
@@ -18,9 +21,13 @@ class SettingsPresenter extends Presenter {
 
   SettingsPresenter(
     SettingRepository settingRepository,
+    LoggingRepository loggingRepository,
     StorageRepository storageRepository,
   )   : _getSettingsUseCase = GetSettingsUseCase(settingRepository),
-        _changeSettingUseCase = ChangeSettingUseCase(settingRepository),
+        _changeSettingUseCase = ChangeSettingUseCase(
+          settingRepository,
+          loggingRepository,
+        ),
         _logoutUseCase = LogoutUseCase(storageRepository);
 
   void getSettings() {

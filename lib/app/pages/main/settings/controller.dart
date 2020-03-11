@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 
 import '../../../../domain/repositories/storage.dart';
+import '../../../../domain/repositories/logging.dart';
 import '../../../../domain/repositories/setting.dart';
 
 import '../../../../domain/entities/setting.dart';
@@ -17,8 +18,13 @@ class SettingsController extends Controller {
 
   SettingsController(
     SettingRepository settingRepository,
+    LoggingRepository loggingRepository,
     StorageRepository storageRepository,
-  ) : _presenter = SettingsPresenter(settingRepository, storageRepository);
+  ) : _presenter = SettingsPresenter(
+          settingRepository,
+          loggingRepository,
+          storageRepository,
+        );
 
   @override
   void initController(GlobalKey<State<StatefulWidget>> key) {
@@ -35,7 +41,10 @@ class SettingsController extends Controller {
     refreshUI();
   }
 
-  void changeSetting(Setting setting) => _presenter.changeSetting(setting);
+  void changeSetting(Setting setting) {
+    logger.info('Set ${setting.runtimeType} to ${setting.value}');
+    _presenter.changeSetting(setting);
+  }
 
   Future<void> goToFeedbackPage() async {
     final sent = await Navigator.pushNamed(
@@ -53,9 +62,13 @@ class SettingsController extends Controller {
     }
   }
 
-  void logout() => _presenter.logout();
+  void logout() {
+    logger.info('Logging out');
+    _presenter.logout();
+  }
 
   void _logoutOnComplete() {
+    logger.info('Logged out');
     Navigator.pushNamedAndRemoveUntil(
       getContext(),
       Routes.onboarding,

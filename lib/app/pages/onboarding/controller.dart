@@ -68,6 +68,7 @@ class OnboardingController extends Controller {
     final index = pageController.page.round() + 1;
 
     if (index >= pages.length) {
+      logger.info('Onboarding complete');
       Navigator.pushNamedAndRemoveUntil(
         getContext(),
         Routes.main,
@@ -90,6 +91,14 @@ class OnboardingController extends Controller {
   }
 
   Future<void> _goTo(int index) async {
+    String displayReturnType(Type type) => type.toString().split(' => ')[1];
+
+    logger.info(
+      'Progress step: '
+      '${displayReturnType(pages[index - 1].runtimeType)}'
+      ' -> ${displayReturnType(pages[index].runtimeType)}',
+    );
+
     await pageController.animateToPage(
       index,
       duration: _duration,

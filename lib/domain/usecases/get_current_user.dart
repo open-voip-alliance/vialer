@@ -15,7 +15,7 @@ class GetCurrentUserUseCase extends UseCase<SystemUser, void> {
   Future<Stream<SystemUser>> buildUseCaseStream(_) async {
     final controller = StreamController<SystemUser>();
 
-    controller.add(await authRepository.currentUser);
+    controller.add(authRepository.currentUser);
     unawaited(controller.close());
 
     return controller.stream;

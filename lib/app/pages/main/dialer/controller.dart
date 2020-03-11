@@ -15,9 +15,11 @@ class DialerController extends Controller {
       : _presenter = DialerPresenter(callRepository);
 
   void call() {
+    final destination = keypadController.text;
+    logger.info('Start calling: $destination, going to call through page');
     Navigator.push(
       getContext(),
-      ConfirmPageRoute(destination: keypadController.text),
+      ConfirmPageRoute(destination: destination),
     );
   }
 

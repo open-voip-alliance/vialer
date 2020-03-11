@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 
 import '../../../../domain/repositories/setting.dart';
+import '../../../../domain/repositories/logging.dart';
 import '../../../../domain/repositories/storage.dart';
 
 import '../widgets/header.dart';
@@ -16,10 +17,12 @@ import '../../../mappers/setting.dart';
 
 class SettingsPage extends View {
   final SettingRepository _settingsRepository;
+  final LoggingRepository _loggingRepository;
   final StorageRepository _storageRepository;
 
   SettingsPage(
     this._settingsRepository,
+    this._loggingRepository,
     this._storageRepository, {
     Key key,
   }) : super(key: key);
@@ -27,6 +30,7 @@ class SettingsPage extends View {
   @override
   State<StatefulWidget> createState() => _SettingsPageState(
         _settingsRepository,
+        _loggingRepository,
         _storageRepository,
       );
 }
@@ -34,8 +38,13 @@ class SettingsPage extends View {
 class _SettingsPageState extends ViewState<SettingsPage, SettingsController> {
   _SettingsPageState(
     SettingRepository settingRepository,
+    LoggingRepository loggingRepository,
     StorageRepository storageRepository,
-  ) : super(SettingsController(settingRepository, storageRepository));
+  ) : super(SettingsController(
+          settingRepository,
+          loggingRepository,
+          storageRepository,
+        ));
 
   List<Widget> get settingsList {
     final settings = controller.settings;

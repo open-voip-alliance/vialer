@@ -52,7 +52,7 @@ class DataAuthRepository extends AuthRepository {
   }
 
   @override
-  Future<SystemUser> get currentUser async {
+  SystemUser get currentUser {
     _currentUser ??= _storageRepository.systemUser;
 
     return _currentUser;

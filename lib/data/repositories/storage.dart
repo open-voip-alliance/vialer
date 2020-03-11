@@ -18,11 +18,14 @@ class DeviceStorageRepository implements StorageRepository {
   static const _systemUserKey = 'system_user';
 
   @override
-  SystemUser get systemUser => SystemUser.fromJson(
-        json.decode(
-          _preferences.getString(_systemUserKey),
-        ),
-      );
+  SystemUser get systemUser {
+    final string = _preferences.getString(_systemUserKey);
+    if (string == null) {
+      return null;
+    }
+
+    return SystemUser.fromJson(json.decode(string));
+  }
 
   @override
   set systemUser(SystemUser user) => _preferences.setString(
@@ -57,6 +60,19 @@ class DeviceStorageRepository implements StorageRepository {
           settings.map((s) => s.toJson()).toList(),
         ),
       );
+
+  static const _logsKey = 'logs';
+
+  @override
+  String get logs => _preferences.getString(_logsKey) ?? '';
+
+  @override
+  set logs(String value) => _preferences.setString(_logsKey, value);
+
+  @override
+  void appendLogs(String value) {
+    _preferences.setString(_logsKey, '$logs\n$value');
+  }
 
   @override
   Future<void> clear() => _preferences.clear();

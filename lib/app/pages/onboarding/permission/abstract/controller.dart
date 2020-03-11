@@ -27,11 +27,17 @@ class PermissionController extends Controller {
     super.initController(key);
   }
 
-  void ask() => _presenter.ask(permission);
+  void ask() {
+    logger.info('Asking permission for "${permission.toShortString()}"');
+    _presenter.ask(permission);
+  }
 
   void _onAsked(bool granted) {
     if (granted) {
+      logger.info('Permission granted for: "${permission.toShortString()}"');
       _forward();
+    } else {
+      logger.info('Permission denied for: "${permission.toShortString()}"');
     }
 
     doIfNotDebug(() {

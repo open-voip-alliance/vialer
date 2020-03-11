@@ -46,7 +46,7 @@ Future<void> _capture(
   }
 
   try {
-    final user = await authRepository.currentUser;
+    final user = authRepository.currentUser;
 
     client.capture(
       event: Event(

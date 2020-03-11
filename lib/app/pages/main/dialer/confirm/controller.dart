@@ -40,10 +40,12 @@ class ConfirmController extends Controller {
   }
 
   void call() {
+    logger.info('Initiating call to $destination');
     _presenter.call(destination);
   }
 
   void pop() {
+    logger.info('Popping call through page');
     _animationController.reverse();
   }
 

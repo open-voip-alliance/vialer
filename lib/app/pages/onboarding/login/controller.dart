@@ -79,25 +79,28 @@ class LoginController extends Controller {
   }
 
   void login() {
+    logger.info('Logging in');
     _presenter.login(usernameController.text, passwordController.text);
   }
 
   Future<void> _onLogin(bool success) async {
     if (success) {
+      logger.info('Login successful');
       doIfNotDebug(() async {
         await Segment.identify(
-          userId: (await _authRepository.currentUser).uuid,
+          userId: _authRepository.currentUser.uuid,
         );
         await Segment.track(eventName: 'login');
       });
 
       FocusScope.of(getContext()).requestFocus(FocusNode());
 
+      logger.info('Writing default settings');
       _presenter.resetSettingsToDefaults();
 
       _forward();
     } else {
-      print('login failed');
+      logger.info('Login failed');
     }
 
     // TODO: Show error on fail

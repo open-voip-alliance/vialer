@@ -11,6 +11,9 @@ import '../data/repositories/storage.dart';
 import '../domain/repositories/auth.dart';
 import '../data/repositories/auth.dart';
 
+import '../domain/repositories/logging.dart';
+import '../data/repositories/logging.dart';
+
 import '../domain/repositories/permission.dart';
 import '../device/repositories/permission.dart';
 
@@ -39,6 +42,9 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await App._storageRepository.load();
 
+  App._loggingRepository.enableConsoleLogging();
+  App._loggingRepository.enableRemoteLoggingIfSettingEnabled();
+
   sentry.run(
     App._authRepository,
     () => runApp(App()),
@@ -51,6 +57,14 @@ class App extends StatelessWidget {
   static final StorageRepository _storageRepository = DeviceStorageRepository();
   static final AuthRepository _authRepository = DataAuthRepository(
     _storageRepository,
+  );
+  static final SettingRepository _settingRepository = DataSettingRepository(
+    _storageRepository,
+  );
+  static final LoggingRepository _loggingRepository = DataLoggingRepository(
+    _authRepository,
+    _storageRepository,
+    _settingRepository,
   );
 
   @override
@@ -66,6 +80,9 @@ class App extends StatelessWidget {
         Provider<AuthRepository>.value(
           value: _authRepository,
         ),
+        Provider<LoggingRepository>.value(
+          value: _loggingRepository,
+        ),
         Provider<PermissionRepository>(
           create: (_) => DevicePermissionRepository(),
         ),
@@ -78,8 +95,8 @@ class App extends StatelessWidget {
         Provider<CallRepository>(
           create: (_) => DataCallRepository(),
         ),
-        Provider<SettingRepository>(
-          create: (_) => DataSettingRepository(_storageRepository),
+        Provider<SettingRepository>.value(
+          value: _settingRepository,
         ),
         Provider<FeedbackRepository>(
           create: (_) => DataFeedbackRepository(),

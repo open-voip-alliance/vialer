@@ -5,5 +5,5 @@ abstract class AuthRepository {
 
   Future<bool> isAuthenticated();
 
-  Future<SystemUser> get currentUser;
+  SystemUser get currentUser;
 }
