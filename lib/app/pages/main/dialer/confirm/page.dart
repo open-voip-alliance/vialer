@@ -125,67 +125,6 @@ class ConfirmPageState extends ViewState<ConfirmPage, ConfirmController>
                         ),
                         SizedBox(height: 8),
                         Text(widget.destination, style: _largeStyle),
-                        if (context.isAndroid)
-                          Expanded(
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 40,
-                              ).copyWith(
-                                bottom: 16,
-                              ),
-                              child: Align(
-                                alignment: Alignment.bottomCenter,
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: <Widget>[
-                                    SizedBox(
-                                      width: double.infinity,
-                                      child: RaisedButton(
-                                        elevation: 4,
-                                        onPressed: controller.call,
-                                        color: context.brandTheme.green2,
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: <Widget>[
-                                            Icon(
-                                              VialerSans.phone,
-                                              size: 16,
-                                              color: context.brandTheme.green3,
-                                            ),
-                                            SizedBox(width: 12),
-                                            Text(
-                                              context.msg.main.dialer.confirm
-                                                  .button
-                                                  .call(
-                                                    widget.destination,
-                                                  )
-                                                  .toUpperCase(),
-                                              style: TextStyle(
-                                                color:
-                                                    context.brandTheme.green3,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(height: 16),
-                                    SizedBox(
-                                      width: double.infinity,
-                                      child: FlatButton(
-                                        onPressed: () => controller.pop(),
-                                        child: Text(
-                                          context.msg.generic.button.cancel
-                                              .toUpperCase(),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
                       ],
                     ),
                   ),

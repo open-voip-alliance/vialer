@@ -37,11 +37,16 @@ class DialerController extends Controller {
 
   void call() {
     final destination = keypadController.text;
-    logger.info('Start calling: $destination, going to call through page');
-    Navigator.push(
-      getContext(),
-      ConfirmPageRoute(destination: destination),
-    );
+    if (Platform.isIOS) {
+      logger.info('Start calling: $destination, going to call through page');
+      Navigator.push(
+        getContext(),
+        ConfirmPageRoute(destination: destination),
+      );
+    } else {
+      logger.info('Calling $destination');
+      _presenter.call(destination);
+    }
   }
 
   void _onCheckCallPermissionNext(PermissionStatus status) {
