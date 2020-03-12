@@ -6,7 +6,6 @@ import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 
 import '../../../../../data/repositories/call.dart';
 
-import '../../../../resources/theme.dart';
 import '../../../../widgets/transparent_status_bar.dart';
 import 'controller.dart';
 
