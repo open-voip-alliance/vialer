@@ -1,6 +1,9 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:flutter_segment/flutter_segment.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import '../../../../domain/entities/brand.dart';
 
 import '../../../../domain/repositories/auth.dart';
 import '../../../../domain/repositories/setting.dart';
@@ -11,6 +14,8 @@ import 'presenter.dart';
 
 class LoginController extends Controller {
   final AuthRepository _authRepository;
+
+  final Brand _brand;
 
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
@@ -30,6 +35,7 @@ class LoginController extends Controller {
   LoginController(
     this._authRepository,
     SettingRepository settingRepository,
+    this._brand,
     this._forward,
   ) : _presenter = LoginPresenter(_authRepository, settingRepository);
 
@@ -104,6 +110,10 @@ class LoginController extends Controller {
     }
 
     // TODO: Show error on fail
+  }
+
+  void goToPasswordReset() {
+    launch(_brand.baseUrl.resolve('/user/password_reset/').toString());
   }
 
   @override

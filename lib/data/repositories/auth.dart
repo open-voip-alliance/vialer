@@ -1,3 +1,5 @@
+import '../../domain/entities/brand.dart';
+
 import '../../domain/repositories/auth.dart';
 import '../../domain/repositories/storage.dart';
 
@@ -6,10 +8,14 @@ import '../../domain/entities/system_user.dart';
 
 class DataAuthRepository extends AuthRepository {
   final StorageRepository _storageRepository;
+  final Brand _brand;
 
-  DataAuthRepository(this._storageRepository);
+  DataAuthRepository(
+    this._storageRepository,
+    this._brand,
+  ) : _service = VoipGridService.create(baseUrl: _brand.baseUrl);
 
-  var _service = VoipGridService.create();
+  VoipGridService _service;
 
   static const _emailKey = 'email';
   static const _passwordKey = 'password';
@@ -31,7 +37,11 @@ class DataAuthRepository extends AuthRepository {
 
       _storageRepository.apiToken = token;
 
-      _service = VoipGridService.create(email: email, token: token);
+      _service = VoipGridService.create(
+        baseUrl: _brand.baseUrl,
+        email: email,
+        token: token,
+      );
 
       final systemUserResponse = await _service.getSystemUser();
       _storageRepository.systemUser = SystemUser.fromJson(

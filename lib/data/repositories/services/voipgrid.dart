@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:meta/meta.dart';
 import 'package:chopper/chopper.dart';
 
 part 'voipgrid.chopper.dart';
@@ -7,12 +8,13 @@ part 'voipgrid.chopper.dart';
 @ChopperApi()
 abstract class VoipGridService extends ChopperService {
   static VoipGridService create({
+    @required Uri baseUrl,
     String email,
     String token,
   }) {
     return _$VoipGridService(
       ChopperClient(
-        baseUrl: 'https://partner.voipgrid.nl',
+        baseUrl: baseUrl.toString(),
         converter: JsonConverter(),
         interceptors: email != null && token != null
             ? [_AuthorizationInterceptor(email, token)]

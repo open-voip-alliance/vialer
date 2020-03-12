@@ -1,9 +1,11 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:provider/provider.dart';
+
 import '../../mappers/step.dart';
 
 import '../../../domain/entities/onboarding/step.dart';
+import '../../../domain/entities/brand.dart';
 
 import '../../../domain/repositories/auth.dart';
 import '../../../domain/repositories/permission.dart';
@@ -42,6 +44,7 @@ class OnboardingController extends Controller {
       LoginPage: (c) => LoginPage(
             Provider.of<AuthRepository>(c),
             Provider.of<SettingRepository>(c),
+            Provider.of<Brand>(c),
             forward,
           ),
       CallPermissionPage: (c) => CallPermissionPage(

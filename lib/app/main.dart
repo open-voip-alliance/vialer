@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 
+import '../domain/entities/brand.dart';
+
 import '../domain/repositories/env.dart';
 import '../device/repositories/env.dart';
 
@@ -40,48 +42,82 @@ import 'sentry.dart' as sentry;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await App._storageRepository.load();
 
-  App._loggingRepository.enableConsoleLogging();
-  App._loggingRepository.enableRemoteLoggingIfSettingEnabled();
+  final brand = Voys();
+
+  final envRepo = DeviceEnvRepository();
+
+  final storageRepo = DeviceStorageRepository();
+  await storageRepo.load();
+
+  final authRepo = DataAuthRepository(
+    storageRepo,
+    brand,
+  );
+
+  final settingRepo = DataSettingRepository(
+    storageRepo,
+  );
+
+  final loggingRepo = DataLoggingRepository(
+    authRepo,
+    storageRepo,
+    settingRepo,
+  );
+
+  loggingRepo.enableConsoleLogging();
+  loggingRepo.enableRemoteLoggingIfSettingEnabled();
+
+  final app = App(
+    brand: brand,
+    envRepository: envRepo,
+    storageRepository: storageRepo,
+    authRepository: authRepo,
+    settingRepository: settingRepo,
+    loggingRepository: loggingRepo,
+  );
 
   sentry.run(
-    App._authRepository,
-    () => runApp(App()),
-    dsn: await App._envRepository.sentryDsn,
+    authRepo,
+    () => runApp(app),
+    dsn: await envRepo.sentryDsn,
   );
 }
 
 class App extends StatelessWidget {
-  static final EnvRepository _envRepository = DeviceEnvRepository();
-  static final StorageRepository _storageRepository = DeviceStorageRepository();
-  static final AuthRepository _authRepository = DataAuthRepository(
-    _storageRepository,
-  );
-  static final SettingRepository _settingRepository = DataSettingRepository(
-    _storageRepository,
-  );
-  static final LoggingRepository _loggingRepository = DataLoggingRepository(
-    _authRepository,
-    _storageRepository,
-    _settingRepository,
-  );
+  final Brand brand;
+
+  final EnvRepository envRepository;
+  final StorageRepository storageRepository;
+  final AuthRepository authRepository;
+  final SettingRepository settingRepository;
+  final LoggingRepository loggingRepository;
+
+  App({
+    Key key,
+    @required this.brand,
+    @required this.envRepository,
+    @required this.storageRepository,
+    @required this.authRepository,
+    @required this.settingRepository,
+    @required this.loggingRepository,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
         Provider<EnvRepository>.value(
-          value: _envRepository,
+          value: envRepository,
         ),
         Provider<StorageRepository>.value(
-          value: _storageRepository,
+          value: storageRepository,
         ),
         Provider<AuthRepository>.value(
-          value: _authRepository,
+          value: authRepository,
         ),
         Provider<LoggingRepository>.value(
-          value: _loggingRepository,
+          value: loggingRepository,
         ),
         Provider<PermissionRepository>(
           create: (_) => DevicePermissionRepository(),
@@ -96,19 +132,22 @@ class App extends StatelessWidget {
           create: (_) => DataCallRepository(),
         ),
         Provider<SettingRepository>.value(
-          value: _settingRepository,
+          value: settingRepository,
         ),
         Provider<FeedbackRepository>(
           create: (_) => DataFeedbackRepository(),
         ),
+        Provider<Brand>.value(
+          value: brand,
+        ),
         Provider<BrandTheme>(
-          create: (_) => VialerTheme(),
-        )
+          create: (_) => brand is Vialer ? VialerTheme() : VoysTheme(),
+        ),
       ],
       child: Builder(
         builder: (context) {
           return MaterialApp(
-            title: 'Vialer',
+            title: Provider.of<Brand>(context).appName,
             theme: context.brandTheme.themeData,
             initialRoute: Routes.root,
             routes: Routes.mapped,

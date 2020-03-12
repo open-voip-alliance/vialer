@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../domain/entities/brand.dart';
+
 import '../../../../domain/repositories/setting.dart';
 import '../../../../domain/repositories/auth.dart';
 
@@ -16,18 +18,24 @@ import '../../../resources/localizations.dart';
 class LoginPage extends View {
   final AuthRepository _authRepository;
   final SettingRepository _settingRepository;
+  final Brand _brand;
   final VoidCallback forward;
 
   LoginPage(
     this._authRepository,
     this._settingRepository,
+    this._brand,
     this.forward, {
     Key key,
   }) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() =>
-      _LoginPageState(_authRepository, _settingRepository, forward);
+  State<StatefulWidget> createState() => _LoginPageState(
+        _authRepository,
+        _settingRepository,
+        _brand,
+        forward,
+      );
 }
 
 class _LoginPageState extends ViewState<LoginPage, LoginController> {
@@ -37,8 +45,9 @@ class _LoginPageState extends ViewState<LoginPage, LoginController> {
   _LoginPageState(
     AuthRepository authRepository,
     SettingRepository settingRepository,
+    Brand brand,
     VoidCallback forward,
-  ) : super(LoginController(authRepository, settingRepository, forward));
+  ) : super(LoginController(authRepository, settingRepository, brand, forward));
 
   @override
   void didChangeDependencies() {
@@ -108,7 +117,7 @@ class _LoginPageState extends ViewState<LoginPage, LoginController> {
                   width: double.infinity,
                   child: StylizedOutlineButton(
                     text: context.msg.onboarding.login.button.forgotPassword,
-                    onPressed: () {},
+                    onPressed: controller.goToPasswordReset,
                   ),
                 ),
               ],
