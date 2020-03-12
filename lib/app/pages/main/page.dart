@@ -72,7 +72,7 @@ class _MainPageState extends State<MainPage> {
               height: 62,
               width: 62,
               child: FloatingActionButton(
-                backgroundColor: VialerColors.green1,
+                backgroundColor: context.brandTheme.green1,
                 onPressed: () => Navigator.pushNamed(context, Routes.dialer),
                 child: Icon(VialerSans.dialpad, size: 31),
               ),
@@ -123,7 +123,7 @@ class _BottomNavigationBar extends StatelessWidget {
       decoration: BoxDecoration(
         border: Border(
           top: BorderSide(
-            color: VialerColors.grey2,
+            color: context.brandTheme.grey2,
           ),
         ),
       ),
@@ -131,9 +131,9 @@ class _BottomNavigationBar extends StatelessWidget {
         type: BottomNavigationBarType.fixed,
         iconSize: 24,
         selectedFontSize: 9,
-        selectedItemColor: VialerColors.primary,
+        selectedItemColor: context.brandTheme.primary,
         unselectedFontSize: 9,
-        unselectedItemColor: VialerColors.grey1,
+        unselectedItemColor: context.brandTheme.grey1,
         currentIndex: currentIndex,
         onTap: onTap,
         items: [

@@ -63,7 +63,7 @@ class _FeedbackPageState extends ViewState<FeedbackPage, DialerController> {
                   vertical: 16,
                 ),
                 hintStyle: TextStyle(
-                  color: VialerColors.grey4,
+                  color: context.brandTheme.grey4,
                 ),
               ),
               style: TextStyle(
@@ -85,7 +85,7 @@ class _FeedbackPageState extends ViewState<FeedbackPage, DialerController> {
                     vertical: 16,
                   ),
                   hintStyle: TextStyle(
-                    color: VialerColors.grey4,
+                    color: context.brandTheme.grey4,
                   ),
                 ),
               ),

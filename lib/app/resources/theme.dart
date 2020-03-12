@@ -1,30 +1,5 @@
 import 'package:flutter/material.dart';
-
-final ThemeData vialerTheme = ThemeData(
-  primaryColor: VialerColors.primary,
-  primaryColorDark: VialerColors.primaryDark,
-  primaryColorLight: VialerColors.primaryLight,
-  buttonTheme: ButtonThemeData(
-    height: 42,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(7),
-    ),
-    buttonColor: Colors.white,
-  ),
-  appBarTheme: AppBarTheme(
-    color: VialerColors.primaryLight,
-    textTheme: TextTheme(
-      title: TextStyle(
-        color: VialerColors.primaryDark,
-        fontSize: 24,
-        fontWeight: FontWeight.bold,
-      ),
-    ),
-    iconTheme: IconThemeData(
-      color: VialerColors.primaryDark,
-    ),
-  ),
-);
+import 'package:provider/provider.dart';
 
 extension ThemeTargetPlatform on BuildContext {
   bool get isIOS => Theme.of(this).platform == TargetPlatform.iOS;
@@ -32,58 +7,131 @@ extension ThemeTargetPlatform on BuildContext {
   bool get isAndroid => Theme.of(this).platform == TargetPlatform.android;
 }
 
-abstract class VialerTheme {
-  static const onboardingGradient = LinearGradient(
-    colors: [
-      VialerColors.onboardingGradientStart,
-      VialerColors.onboardingGradientEnd,
-    ],
-    begin: Alignment.topCenter,
-    end: Alignment.bottomCenter,
-  );
+abstract class BrandTheme {
+  get onboardingGradient => LinearGradient(
+        colors: [
+          onboardingGradientStart,
+          onboardingGradientEnd,
+        ],
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+      );
 
-  static final onboardingGradientReversed = LinearGradient(
-    colors: onboardingGradient.colors,
-    begin: onboardingGradient.end,
-    end: onboardingGradient.begin,
-  );
+  get onboardingGradientReversed => LinearGradient(
+        colors: onboardingGradient.colors,
+        begin: onboardingGradient.end,
+        end: onboardingGradient.begin,
+      );
 
-  static const splashScreenGradient = LinearGradient(
-    colors: [
-      VialerColors.splashScreenGradientStart,
-      VialerColors.splashScreenGradientEnd
-    ],
-    begin: Alignment.topCenter,
-    end: Alignment.bottomCenter,
-  );
+  get splashScreenGradient => LinearGradient(
+        colors: [primary, primary],
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+      );
+
+  IconData get logo;
+
+  Color get primary;
+
+  Color get primaryDark;
+
+  Color get primaryLight;
+
+  final grey1 = Color(0xFFCCCCCC);
+  final grey2 = Color(0xFFD8D8D8);
+  final grey3 = Color(0xFFE0E0E0);
+  final grey4 = Color(0xFF8F8F8F);
+  final grey5 = Color(0xFF8B95A3);
+
+  final green1 = Color(0xFF28CA42);
+  final green2 = Color(0xFFACF5A6);
+  final green3 = Color(0xFF046614);
+
+  Color get onboardingGradientStart;
+
+  Color get onboardingGradientEnd;
+
+  ThemeData get themeData {
+    return ThemeData(
+      primaryColor: primary,
+      primaryColorDark: primaryDark,
+      primaryColorLight: primaryLight,
+      buttonTheme: ButtonThemeData(
+        height: 42,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(7),
+        ),
+        buttonColor: Colors.white,
+      ),
+      appBarTheme: AppBarTheme(
+        color: primaryLight,
+        textTheme: TextTheme(
+          title: TextStyle(
+            color: primaryDark,
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        iconTheme: IconThemeData(
+          color: primaryDark,
+        ),
+      ),
+    );
+  }
+
+  static BrandTheme of(BuildContext context) =>
+      Provider.of<BrandTheme>(context);
 }
 
-abstract class VialerColors {
-  static const primary = Color(0xFFFFA257);
-  static const primaryDark = Color(0xFFD45400);
-  static const primaryLight = Color(0xFFFFD0A3);
+class VialerTheme extends BrandTheme {
+  @override
+  IconData get logo => VialerSans.brandVialer;
 
-  static const grey1 = Color(0xFFCCCCCC);
-  static const grey2 = Color(0xFFD8D8D8);
-  static const grey3 = Color(0xFFE0E0E0);
-  static const grey4 = Color(0xFF8F8F8F);
-  static const grey5 = Color(0xFF8B95A3);
+  @override
+  final primary = Color(0xFFFFA257);
 
-  static const green1 = Color(0xFF28CA42);
-  static const green2 = Color(0xFFACF5A6);
-  static const green3 = Color(0xFF046614);
+  @override
+  final primaryDark = Color(0xFFD45400);
 
-  static const onboardingGradientStart = Color(0xFFFF8213);
-  static const onboardingGradientEnd = Color(0xFFE94E1B);
+  @override
+  final primaryLight = Color(0xFFFFD0A3);
 
-  static const splashScreenGradientStart = Color(0xFFFFA257);
-  static const splashScreenGradientEnd = Color(0xFFFF7B24);
+  @override
+  final onboardingGradientStart = Color(0xFFFF8213);
+
+  @override
+  final onboardingGradientEnd = Color(0xFFE94E1B);
+}
+
+class VoysTheme extends BrandTheme {
+  @override
+  IconData get logo => VialerSans.brandVoys;
+
+  @override
+  final primary = Color(0xFF57B3FF);
+
+  @override
+  final primaryDark = Color(0xFF0051D4);
+
+  @override
+  final primaryLight = Color(0xFFA3E0FF);
+
+  @override
+  get onboardingGradientStart => primaryLight;
+
+  @override
+  get onboardingGradientEnd => primaryDark;
+}
+
+extension BrandThemeContext on BuildContext {
+  BrandTheme get brandTheme => BrandTheme.of(this);
 }
 
 abstract class VialerSans {
   static const _family = 'VialerSans';
 
   static const brandVialer = IconData(0xE98A, fontFamily: _family);
+  static const brandVoys = IconData(0xE975, fontFamily: _family);
   static const user = IconData(0xE964, fontFamily: _family);
   static const lockOn = IconData(0xE90C, fontFamily: _family);
   static const lockOff = IconData(0xE90A, fontFamily: _family);

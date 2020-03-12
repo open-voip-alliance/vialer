@@ -9,18 +9,18 @@ class SplashScreen extends StatelessWidget {
   const SplashScreen({
     Key key,
     this.iconColor = Colors.white,
-    this.gradient = VialerTheme.splashScreenGradient,
+    this.gradient,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        gradient: gradient,
+        gradient: gradient ?? context.brandTheme.splashScreenGradient,
       ),
       child: Center(
         child: Icon(
-          VialerSans.brandVialer,
+          context.brandTheme.logo,
           size: 64,
           color: iconColor,
         ),

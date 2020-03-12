@@ -22,7 +22,7 @@ class RecentCallItem extends StatelessWidget {
       trailing: IconButton(
         icon: Icon(
           VialerSans.ellipsis,
-          color: VialerColors.grey1,
+          color: context.brandTheme.grey1,
           size: 16,
         ),
         onPressed: () {},
@@ -51,7 +51,7 @@ class _RecentItemAvatar extends StatelessWidget {
       alignment: Alignment.center,
       child: CircleAvatar(
         foregroundColor: Colors.white,
-        backgroundColor: VialerColors.grey3,
+        backgroundColor: context.brandTheme.grey3,
         child: recentCall.name != null
             ? Text(
                 _letters,
@@ -86,13 +86,13 @@ class _RecentItemSubtitle extends StatelessWidget {
           recentCall.isIncoming
               ? VialerSans.outgoingCall
               : VialerSans.incomingCall,
-          color: VialerColors.green1,
+          color: context.brandTheme.green1,
           size: 12,
         ),
         SizedBox(width: 8),
         Text(
           '${_timeAgo(context)}, ${_time(context)}',
-          style: TextStyle(color: VialerColors.grey4),
+          style: TextStyle(color: context.brandTheme.grey4),
         ),
       ],
     );

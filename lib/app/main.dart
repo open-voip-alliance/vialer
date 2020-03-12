@@ -101,22 +101,29 @@ class App extends StatelessWidget {
         Provider<FeedbackRepository>(
           create: (_) => DataFeedbackRepository(),
         ),
+        Provider<BrandTheme>(
+          create: (_) => VialerTheme(),
+        )
       ],
-      child: MaterialApp(
-        title: 'Vialer',
-        theme: vialerTheme,
-        initialRoute: Routes.root,
-        routes: Routes.mapped,
-        localizationsDelegates: [
-          VialerLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: [
-          Locale('en'),
-          Locale('nl'),
-        ],
+      child: Builder(
+        builder: (context) {
+          return MaterialApp(
+            title: 'Vialer',
+            theme: context.brandTheme.themeData,
+            initialRoute: Routes.root,
+            routes: Routes.mapped,
+            localizationsDelegates: [
+              VialerLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: [
+              Locale('en'),
+              Locale('nl'),
+            ],
+          );
+        },
       ),
     );
   }

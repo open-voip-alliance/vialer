@@ -13,8 +13,8 @@ class StylizedRaisedButton extends StatelessWidget {
     return RaisedButton(
       onPressed: onPressed,
       color: Colors.white,
-      disabledColor: VialerColors.grey1,
-      disabledTextColor: VialerColors.grey5,
+      disabledColor: context.brandTheme.grey1,
+      disabledTextColor: context.brandTheme.grey5,
       child: _Text(text),
     );
   }

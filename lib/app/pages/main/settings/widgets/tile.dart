@@ -57,7 +57,7 @@ class SettingTileCategory extends StatelessWidget {
                 children: <Widget>[
                   Icon(
                     info.icon,
-                    color: VialerColors.grey1,
+                    color: context.brandTheme.grey1,
                     size: !context.isIOS ? 16 : null,
                   ),
                   SizedBox(width: 8),
@@ -112,7 +112,7 @@ class _BoolSettingTileState extends State<_BoolSettingTile> {
           decoration: context.isIOS
               ? BoxDecoration(
                   border: Border.all(
-                    color: VialerColors.grey2,
+                    color: context.brandTheme.grey2,
                   ),
                   borderRadius: BorderRadius.circular(8),
                 )
@@ -151,7 +151,7 @@ class _BoolSettingTileState extends State<_BoolSettingTile> {
             child: Text(
               info.description,
               style: TextStyle(
-                color: VialerColors.grey4,
+                color: context.brandTheme.grey4,
               ),
             ),
           ),

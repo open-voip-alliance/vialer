@@ -143,7 +143,7 @@ class ConfirmPageState extends ViewState<ConfirmPage, ConfirmController>
                                       child: RaisedButton(
                                         elevation: 4,
                                         onPressed: controller.call,
-                                        color: VialerColors.green2,
+                                        color: context.brandTheme.green2,
                                         child: Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
@@ -151,7 +151,7 @@ class ConfirmPageState extends ViewState<ConfirmPage, ConfirmController>
                                             Icon(
                                               VialerSans.phone,
                                               size: 16,
-                                              color: VialerColors.green3,
+                                              color: context.brandTheme.green3,
                                             ),
                                             SizedBox(width: 12),
                                             Text(
@@ -162,7 +162,7 @@ class ConfirmPageState extends ViewState<ConfirmPage, ConfirmController>
                                                   )
                                                   .toUpperCase(),
                                               style: TextStyle(
-                                                color: VialerColors.green3,
+                                                color: context.brandTheme.green3,
                                               ),
                                             ),
                                           ],

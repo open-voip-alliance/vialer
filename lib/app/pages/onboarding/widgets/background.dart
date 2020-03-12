@@ -39,8 +39,8 @@ class _BackgroundState extends State<Background> with TickerProviderStateMixin {
   List<Widget> _clouds;
 
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
 
     _controller = AnimationController(
       vsync: this,
@@ -72,8 +72,8 @@ class _BackgroundState extends State<Background> with TickerProviderStateMixin {
     });
 
     _gradientAnimation = _LinearGradientTween(
-      begin: VialerTheme.splashScreenGradient,
-      end: VialerTheme.onboardingGradient,
+      begin: context.brandTheme.splashScreenGradient,
+      end: context.brandTheme.onboardingGradient,
     ).animate(_controller);
 
     _iconColorAnimation = ColorTween(

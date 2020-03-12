@@ -207,7 +207,7 @@ class _ValueButton extends StatelessWidget {
       child: Material(
         shape: CircleBorder(
           side: context.isIOS
-              ? BorderSide(color: VialerColors.grey3)
+              ? BorderSide(color: context.brandTheme.grey3)
               : BorderSide.none,
         ),
         child: _InkWellOrResponse(
@@ -227,7 +227,7 @@ class _ValueButton extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 32,
                   color: !_primaryIsNumber
-                      ? VialerColors.grey5
+                      ? context.brandTheme.grey5
                       : null, // Null means default color
                 ),
               ),
@@ -237,7 +237,7 @@ class _ValueButton extends StatelessWidget {
                 Text(
                   secondaryValue ?? '',
                   style: TextStyle(
-                    color: VialerColors.grey5,
+                    color: context.brandTheme.grey5,
                     fontSize: 12,
                   ),
                 ),
@@ -262,7 +262,7 @@ class _CallButton extends StatelessWidget {
         child: SizedBox.fromSize(
           size: _KeypadButton.size(context) * 0.70,
           child: FloatingActionButton(
-            backgroundColor: VialerColors.green1,
+            backgroundColor: context.brandTheme.green1,
             onPressed: onPressed,
             child: Icon(VialerSans.phone, size: 32),
           ),
@@ -330,7 +330,7 @@ class _DeleteButtonState extends State<_DeleteButton> {
           onLongPress: _visible ? _deleteAll : null,
           child: Icon(
             VialerSans.correct,
-            color: VialerColors.grey5,
+            color: context.brandTheme.grey5,
             size: 32,
           ),
         ),

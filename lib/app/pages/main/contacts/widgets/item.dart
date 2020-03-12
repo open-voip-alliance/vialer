@@ -47,7 +47,7 @@ class _ContactItemAvatar extends StatelessWidget {
         aspectRatio: 1 / 1,
         child: CircleAvatar(
           foregroundColor: Colors.white,
-          backgroundColor: VialerColors.grey3,
+          backgroundColor: context.brandTheme.grey3,
           backgroundImage: hasAvatar ? MemoryImage(contact.avatar) : null,
           child: !hasAvatar
               ? Text(
@@ -108,7 +108,7 @@ class _ContactSubtitle extends StatelessWidget {
     return Text(
       _text(context),
       overflow: TextOverflow.ellipsis,
-      style: TextStyle(color: VialerColors.grey4),
+      style: TextStyle(color: context.brandTheme.grey4),
     );
   }
 }

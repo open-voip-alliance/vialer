@@ -249,7 +249,7 @@ class _SideLetter extends StatelessWidget {
           style: TextStyle(
             fontSize: fontSize,
             fontWeight: FontWeight.w500,
-            color: VialerColors.grey5,
+            color: context.brandTheme.grey5,
           ),
         ),
       ),
