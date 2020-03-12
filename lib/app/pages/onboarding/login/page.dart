@@ -114,18 +114,6 @@ class _LoginPageState extends ViewState<LoginPage, LoginController> {
               ],
             ),
           ),
-          Expanded(
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: SizedBox(
-                width: double.infinity,
-                child: StylizedFlatButton(
-                  text: 'Create account',
-                  onPressed: () {},
-                ),
-              ),
-            ),
-          ),
         ],
       ),
     );

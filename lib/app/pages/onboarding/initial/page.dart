@@ -47,17 +47,10 @@ class InitialPage extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
-                SizedBox(
-                  width: double.infinity,
-                  child: StylizedRaisedButton(
-                    text: 'Create account',
-                    onPressed: () {},
-                  ),
-                ),
                 SizedBox(height: 24),
                 SizedBox(
                   width: double.infinity,
-                  child: StylizedOutlineButton(
+                  child: StylizedRaisedButton(
                     text: context.msg.onboarding.button.login,
                     onPressed: forward,
                   ),
