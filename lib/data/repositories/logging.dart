@@ -77,7 +77,7 @@ class DataLoggingRepository extends LoggingRepository {
     final settings = await _settingRepository.getSettings();
     final setting = settings.whereType<RemoteLoggingSetting>().firstWhere(
           (_) => true,
-          orElse: null,
+          orElse: () => null,
         );
 
     if (setting?.value == true) {

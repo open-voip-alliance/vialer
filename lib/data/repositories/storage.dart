@@ -46,12 +46,18 @@ class DeviceStorageRepository implements StorageRepository {
   static const _settingsKey = 'settings';
 
   @override
-  List<Setting> get settings =>
-      (json.decode(_preferences.get(_settingsKey)) as List)
+  List<Setting> get settings {
+    final string = _preferences.get(_settingsKey);
+    if (string != null) {
+      return (json.decode(string) as List)
           // Tear-off won't work here
           // ignore: unnecessary_lambdas
           .map((s) => Setting.fromJson(s))
           .toList();
+    } else {
+      return [];
+    }
+  }
 
   @override
   set settings(List<Setting> settings) => _preferences.setString(
