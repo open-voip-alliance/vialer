@@ -162,7 +162,8 @@ class ConfirmPageState extends ViewState<ConfirmPage, ConfirmController>
                                                   )
                                                   .toUpperCase(),
                                               style: TextStyle(
-                                                color: context.brandTheme.green3,
+                                                color:
+                                                    context.brandTheme.green3,
                                               ),
                                             ),
                                           ],

@@ -17,7 +17,9 @@ class LetterHeader extends StatelessWidget {
       child: Text(
         letter,
         style: TextStyle(
-          color: context.isIOS ? context.brandTheme.grey1 : context.brandTheme.grey5,
+          color: context.isIOS
+              ? context.brandTheme.grey1
+              : context.brandTheme.grey5,
           fontSize: 16,
           fontWeight: context.isIOS ? FontWeight.normal : FontWeight.bold,
         ),
