@@ -11,8 +11,13 @@ import '../../../resources/localizations.dart';
 
 class RecentPage extends View {
   final RecentCallRepository _recentCallRepository;
+  final double listBottomPadding;
 
-  RecentPage(this._recentCallRepository, {Key key}) : super(key: key);
+  RecentPage(
+    this._recentCallRepository, {
+    Key key,
+    this.listBottomPadding = 0,
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() =>
@@ -40,7 +45,9 @@ class _RecentPageState extends ViewState<RecentPage, RecentController> {
               ),
               Expanded(
                 child: ListView(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  padding: EdgeInsets.symmetric(horizontal: 16).copyWith(
+                    bottom: widget.listBottomPadding,
+                  ),
                   children: controller.recentCalls
                       .map((item) => RecentCallItem(item: item))
                       .toList(),
