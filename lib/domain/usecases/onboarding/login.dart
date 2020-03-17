@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:pedantic/pedantic.dart';
+
+import '../../entities/need_to_change_password.dart';
 import '../../repositories/auth.dart';
 
 class LoginUseCase extends UseCase<bool, LoginUseCaseParams> {
@@ -13,10 +15,16 @@ class LoginUseCase extends UseCase<bool, LoginUseCaseParams> {
   Future<Stream<bool>> buildUseCaseStream(LoginUseCaseParams params) async {
     final controller = StreamController<bool>();
 
-    final success = await _authRepository.authenticate(
-      params.email,
-      params.password,
-    );
+    var success = false;
+    try {
+      success = await _authRepository.authenticate(
+        params.email,
+        params.password,
+      );
+    } on NeedToChangePassword catch(e) {
+      controller.addError(e);
+    }
+
 
     controller.add(success);
     unawaited(controller.close());

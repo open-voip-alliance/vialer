@@ -7,6 +7,8 @@ import '../../../../domain/repositories/setting.dart';
 
 class LoginPresenter extends Presenter {
   Function loginOnNext;
+  Function loginOnError;
+
   Function resetSettingsToDefaultsOnNext;
 
   final LoginUseCase _loginUseCase;
@@ -48,7 +50,7 @@ class _LoginUseCaseObserver extends Observer<bool> {
   void onComplete() {}
 
   @override
-  void onError(dynamic e) {}
+  void onError(dynamic e) => presenter.loginOnError(e);
 
   @override
   void onNext(bool success) => presenter.loginOnNext(success);

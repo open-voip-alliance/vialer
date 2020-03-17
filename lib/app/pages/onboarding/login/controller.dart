@@ -3,6 +3,7 @@ import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:flutter_segment/flutter_segment.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../../domain/entities/need_to_change_password.dart';
 import '../../../../domain/entities/brand.dart';
 
 import '../../../../domain/repositories/auth.dart';
@@ -89,7 +90,7 @@ class LoginController extends Controller {
     _presenter.login(usernameController.text, passwordController.text);
   }
 
-  Future<void> _onLogin(bool success) async {
+  void _onLogin(bool success) {
     if (success) {
       logger.info('Login successful');
       doIfNotDebug(() async {
@@ -112,6 +113,14 @@ class LoginController extends Controller {
     // TODO: Show error on fail
   }
 
+  void _onLoginError(dynamic e) {
+    if (e is NeedToChangePassword) {
+      launch(_brand.baseUrl.resolve('/user/login/').toString());
+    } else {
+      throw e;
+    }
+  }
+
   void goToPasswordReset() {
     launch(_brand.baseUrl.resolve('/user/password_reset/').toString());
   }
@@ -119,5 +128,6 @@ class LoginController extends Controller {
   @override
   void initListeners() {
     _presenter.loginOnNext = _onLogin;
+    _presenter.loginOnError = _onLoginError;
   }
 }

@@ -1,4 +1,5 @@
 import '../../domain/entities/brand.dart';
+import '../../domain/entities/need_to_change_password.dart';
 
 import '../../domain/repositories/auth.dart';
 import '../../domain/repositories/storage.dart';
@@ -44,6 +45,12 @@ class DataAuthRepository extends AuthRepository {
       );
 
       final systemUserResponse = await _service.getSystemUser();
+      if (systemUserResponse.error
+          .toString()
+          .contains('You need to change your password in the portal')) {
+        throw NeedToChangePassword();
+      }
+
       _storageRepository.systemUser = SystemUser.fromJson(
         systemUserResponse.body,
       );
