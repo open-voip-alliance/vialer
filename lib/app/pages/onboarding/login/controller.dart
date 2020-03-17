@@ -33,6 +33,8 @@ class LoginController extends Controller {
 
   bool canLogin = false;
 
+  bool loginFailed = false;
+
   LoginController(
     this._authRepository,
     SettingRepository settingRepository,
@@ -108,9 +110,10 @@ class LoginController extends Controller {
       _forward();
     } else {
       logger.info('Login failed');
-    }
+      loginFailed = true;
 
-    // TODO: Show error on fail
+      refreshUI();
+    }
   }
 
   void _onLoginError(dynamic e) {

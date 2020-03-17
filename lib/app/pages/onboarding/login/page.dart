@@ -87,6 +87,31 @@ class _LoginPageState extends ViewState<LoginPage, LoginController> {
             duration: _duration,
             height: controller.headerDistance,
           ),
+          if (controller.loginFailed) ...[
+            // Temporary design
+            Material(
+              elevation: 2,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              color: Colors.red[600],
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  vertical: 16,
+                  horizontal: 32,
+                ),
+                child: Text(
+                  'Login failed',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 16)
+          ],
           StylizedTextField(
             controller: controller.usernameController,
             prefixIcon: VialerSans.user,
