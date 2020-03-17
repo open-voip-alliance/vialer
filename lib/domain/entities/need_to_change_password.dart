@@ -1,0 +1,1 @@
+class NeedToChangePassword implements Exception {}
