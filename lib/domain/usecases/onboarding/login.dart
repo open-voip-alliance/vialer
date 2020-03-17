@@ -21,10 +21,9 @@ class LoginUseCase extends UseCase<bool, LoginUseCaseParams> {
         params.email,
         params.password,
       );
-    } on NeedToChangePassword catch(e) {
+    } on NeedToChangePassword catch (e) {
       controller.addError(e);
     }
-
 
     controller.add(success);
     unawaited(controller.close());
