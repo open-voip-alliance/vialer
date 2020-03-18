@@ -146,4 +146,5 @@ abstract class VialerSans {
   static const outgoingCall = IconData(0xE92A, fontFamily: _family);
   static const speaker = IconData(0xE984, fontFamily: _family);
   static const voicemail = IconData(0xE98B, fontFamily: _family);
+  static const mail = IconData(0xE95B, fontFamily: _family);
 }

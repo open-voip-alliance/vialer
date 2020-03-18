@@ -18,20 +18,33 @@ class DialerPage extends View {
   final CallRepository _callRepository;
   final PermissionRepository _permissionRepository;
 
-  DialerPage(this._callRepository, this._permissionRepository);
+  /// If destination is not null, call [destination] on open.
+  final String destination;
+
+  DialerPage(
+    this._callRepository,
+    this._permissionRepository, {
+    this.destination,
+  });
 
   @override
   State<StatefulWidget> createState() => _DialerPageState(
         _callRepository,
         _permissionRepository,
+        destination,
       );
 }
 
 class _DialerPageState extends ViewState<DialerPage, DialerController> {
-  _DialerPageState(
-    CallRepository callRepository,
-    PermissionRepository permissionRepository,
-  ) : super(DialerController(callRepository, permissionRepository));
+  _DialerPageState(CallRepository callRepository,
+      PermissionRepository permissionRepository, String destination)
+      : super(
+          DialerController(
+            callRepository,
+            permissionRepository,
+            destination,
+          ),
+        );
 
   @override
   Widget buildPage() {
@@ -62,7 +75,7 @@ class _DialerPageState extends ViewState<DialerPage, DialerController> {
                         alignment: Alignment.bottomCenter,
                         child: Keypad(
                           controller: controller.keypadController,
-                          onCallButtonPressed: controller.call,
+                          onCallButtonPressed: controller.startCall,
                         ),
                       ),
                     ),

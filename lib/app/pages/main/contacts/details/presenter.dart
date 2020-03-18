@@ -1,0 +1,66 @@
+import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
+import 'package:vialer_lite/domain/repositories/call.dart';
+import 'package:vialer_lite/domain/usecases/call.dart';
+
+import '../../../../../domain/entities/contact.dart';
+import '../../../../../domain/repositories/contact.dart';
+import '../../../../../domain/usecases/get_contacts.dart';
+
+class ContactDetailsPresenter extends Presenter {
+  Function contactsOnNext;
+
+  final GetContactsUseCase _getContactsUseCase;
+  final CallUseCase _callUseCase;
+
+  ContactDetailsPresenter(
+    ContactRepository contactRepository,
+    CallRepository callRepository,
+  )   : _getContactsUseCase = GetContactsUseCase(contactRepository),
+        _callUseCase = CallUseCase(callRepository);
+
+  void getContacts() {
+    _getContactsUseCase.execute(_GetContactsUseCaseObserver(this));
+  }
+
+  void call(String destination) {
+    _callUseCase.execute(
+      _CallUseCaseObserver(this),
+      CallUseCaseParams(destination),
+    );
+  }
+
+  @override
+  void dispose() {
+    _getContactsUseCase.dispose();
+  }
+}
+
+class _GetContactsUseCaseObserver extends Observer<List<Contact>> {
+  final ContactDetailsPresenter presenter;
+
+  _GetContactsUseCaseObserver(this.presenter);
+
+  @override
+  void onComplete() {}
+
+  @override
+  void onError(dynamic e) {}
+
+  @override
+  void onNext(List<Contact> contacts) => presenter.contactsOnNext(contacts);
+}
+
+class _CallUseCaseObserver extends Observer<void> {
+  final ContactDetailsPresenter presenter;
+
+  _CallUseCaseObserver(this.presenter);
+
+  @override
+  void onComplete() {}
+
+  @override
+  void onError(dynamic e) {}
+
+  @override
+  void onNext(_) {}
+}

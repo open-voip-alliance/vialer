@@ -49,6 +49,7 @@ dependencies:
   flutter_widgets: ^0.1.11
 
   i18n: ^0.9.10
+  intl: ^0.16.0
 
   flutter_dotenv: ^2.1.0
 

@@ -18,7 +18,13 @@ import 'widgets/letter_header.dart';
 
 import 'controller.dart';
 
+abstract class ContactsPageRoutes {
+  static const root = '/';
+  static const details = '/details';
+}
+
 class ContactsPage extends View {
+
   final ContactRepository _contactsRepository;
   final double bottomLettersPadding;
 

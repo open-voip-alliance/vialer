@@ -14,12 +14,15 @@ import '../../resources/theme.dart';
 import '../../resources/localizations.dart';
 import '../../routes.dart';
 
+import 'contacts/details/page.dart';
 import 'dialer/page.dart';
 import 'contacts/page.dart';
 import 'recent/page.dart';
 import 'settings/page.dart';
 
 import '../../widgets/transparent_status_bar.dart';
+
+typedef WidgetWithArgumentsBuilder = Widget Function(BuildContext, Object);
 
 class MainPage extends StatefulWidget {
   @override
@@ -46,9 +49,19 @@ class _MainPageState extends State<MainPage> {
             Provider.of<CallRepository>(context),
             Provider.of<PermissionRepository>(context),
           ),
-        ContactsPage(
-          Provider.of<ContactRepository>(context),
-          bottomLettersPadding: !_dialerIsPage ? 96 : 0,
+        _Navigator(
+          navigatorKey: GlobalKey<NavigatorState>(),
+          routes: {
+            ContactsPageRoutes.root: (_, __) => ContactsPage(
+                  Provider.of<ContactRepository>(context),
+                  bottomLettersPadding: !_dialerIsPage ? 96 : 0,
+                ),
+            ContactsPageRoutes.details: (_, contact) => ContactDetailsPage(
+                  Provider.of<ContactRepository>(context),
+                  Provider.of<CallRepository>(context),
+                  contact: contact,
+                ),
+          },
         ),
         RecentPage(
           Provider.of<RecentCallRepository>(context),
@@ -181,6 +194,35 @@ class _BottomNavigationBarText extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(top: 4),
       child: Text(data),
+    );
+  }
+}
+
+class _Navigator extends StatelessWidget {
+  final GlobalKey<NavigatorState> navigatorKey;
+  final Map<String, WidgetWithArgumentsBuilder> routes;
+
+  _Navigator({
+    Key key,
+    @required this.routes,
+    this.navigatorKey,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: () => navigatorKey.currentState.maybePop(),
+      child: Navigator(
+        key: navigatorKey,
+        initialRoute: routes.keys.first,
+        onGenerateRoute: (settings) => MaterialPageRoute(
+          settings: settings,
+          builder: (context) => routes[settings.name](
+            context,
+            settings.arguments,
+          ),
+        ),
+      ),
     );
   }
 }
