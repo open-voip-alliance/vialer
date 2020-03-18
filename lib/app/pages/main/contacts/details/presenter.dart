@@ -1,10 +1,11 @@
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
-import 'package:vialer_lite/domain/repositories/call.dart';
-import 'package:vialer_lite/domain/usecases/call.dart';
 
 import '../../../../../domain/entities/contact.dart';
 import '../../../../../domain/repositories/contact.dart';
 import '../../../../../domain/usecases/get_contacts.dart';
+
+import '../../../../../domain/repositories/call.dart';
+import '../../../../../domain/usecases/call.dart';
 
 class ContactDetailsPresenter extends Presenter {
   Function contactsOnNext;

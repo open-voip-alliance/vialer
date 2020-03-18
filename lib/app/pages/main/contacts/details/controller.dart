@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
+import 'package:flutter_segment/flutter_segment.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../dialer/caller.dart';
@@ -8,6 +9,8 @@ import '../../../../../domain/repositories/contact.dart';
 import '../../../../../domain/repositories/call.dart';
 
 import '../../../../../domain/entities/contact.dart';
+
+import '../../../../util/debug.dart';
 
 import 'presenter.dart';
 
@@ -36,6 +39,14 @@ class ContactDetailsController extends Controller with Caller {
     this.contacts = contacts;
 
     refreshUI();
+  }
+
+  @override
+  void call(String destination) {
+    doIfNotDebug(() {
+      Segment.track(eventName: 'call', properties: {'via': 'contact'});
+    });
+    super.call(destination);
   }
 
   void mail(String destination) {

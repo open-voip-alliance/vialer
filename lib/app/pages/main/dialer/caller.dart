@@ -6,7 +6,6 @@ import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'confirm/page.dart';
 
 mixin Caller on Controller {
-  
   void executeCall(String destination);
 
   void call(String destination) {

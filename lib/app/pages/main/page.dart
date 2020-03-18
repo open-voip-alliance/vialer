@@ -211,7 +211,7 @@ class _Navigator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () => navigatorKey.currentState.maybePop(),
+      onWillPop: () async => !await navigatorKey.currentState.maybePop(),
       child: Navigator(
         key: navigatorKey,
         initialRoute: routes.keys.first,

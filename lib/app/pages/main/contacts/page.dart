@@ -24,7 +24,6 @@ abstract class ContactsPageRoutes {
 }
 
 class ContactsPage extends View {
-
   final ContactRepository _contactsRepository;
   final double bottomLettersPadding;
 
