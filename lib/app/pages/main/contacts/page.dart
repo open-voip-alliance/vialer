@@ -231,7 +231,6 @@ class _AlphabetListViewState extends State<_AlphabetListView> {
                     duration: Duration(milliseconds: 300),
                     curve: Curves.decelerate,
                     opacity: _letterMarkerVisible ? 1 : 0,
-                    onEnd: () => _letterMarkerVisible = !_letterMarkerVisible,
                     child: SizedBox.fromSize(
                       size: _floatingLetterSize,
                       child: Center(
