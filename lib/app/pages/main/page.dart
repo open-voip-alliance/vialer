@@ -36,6 +36,22 @@ class _MainPageState extends State<MainPage> {
 
   bool _dialerIsPage;
 
+  final _navigatorStates = [
+    GlobalKey<NavigatorState>(),
+  ];
+
+  void _navigateTo(int index) {
+    setState(() {
+      _currentIndex = index;
+
+      if (context.isAndroid) {
+        for (final state in _navigatorStates) {
+          state.currentState.popUntil(ModalRoute.withName('/'));
+        }
+      }
+    });
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -50,7 +66,7 @@ class _MainPageState extends State<MainPage> {
             Provider.of<PermissionRepository>(context),
           ),
         _Navigator(
-          navigatorKey: GlobalKey<NavigatorState>(),
+          navigatorKey: _navigatorStates[0],
           routes: {
             ContactsPageRoutes.root: (_, __) => ContactsPage(
                   Provider.of<ContactRepository>(context),
@@ -97,24 +113,13 @@ class _MainPageState extends State<MainPage> {
       bottomNavigationBar: _BottomNavigationBar(
         currentIndex: _currentIndex,
         dialerIsPage: _dialerIsPage,
-        onTap: (i) => setState(() => _currentIndex = i),
+        onTap: _navigateTo,
       ),
       body: TransparentStatusBar(
         brightness: Brightness.dark,
-        child: AnimatedSwitcher(
-          duration: Duration(milliseconds: 100),
-          transitionBuilder: (child, animation) {
-            return ScaleTransition(
-              scale: animation.drive(
-                Tween(begin: 0.9, end: 1.0),
-              ),
-              child: FadeTransition(
-                opacity: animation,
-                child: child,
-              ),
-            );
-          },
-          child: _pages[_currentIndex],
+        child: _AnimatedIndexedStack(
+          index: _currentIndex,
+          children: _pages,
         ),
       ),
     );
@@ -223,6 +228,102 @@ class _Navigator extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _AnimatedIndexedStack extends StatefulWidget {
+  final int index;
+  final List<Widget> children;
+
+  const _AnimatedIndexedStack({
+    Key key,
+    this.index,
+    this.children = const [],
+  }) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => _AnimatedIndexedStackState();
+}
+
+class _AnimatedIndexedStackState extends State<_AnimatedIndexedStack>
+    with TickerProviderStateMixin {
+  AnimationController _controller;
+
+  bool _animating = false;
+  int _previousIndex;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = AnimationController(
+      duration: Duration(milliseconds: 100),
+      vsync: this,
+    );
+
+    _controller.addListener(() {
+      if (_controller.status == AnimationStatus.completed ||
+          _controller.status == AnimationStatus.dismissed) {
+        setState(() {
+          _animating = false;
+        });
+      }
+    });
+
+    _controller.value = 1;
+  }
+
+  @override
+  void didUpdateWidget(_AnimatedIndexedStack oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (widget.index != oldWidget.index) {
+      _previousIndex = oldWidget.index;
+
+      _controller.reset();
+      _controller.forward();
+      _animating = true;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final children = <Widget>[];
+
+    var i = 0;
+    for (final child in widget.children) {
+      final shouldShow =
+          i == widget.index || (_animating && i == _previousIndex);
+
+      children.add(
+        Offstage(
+          offstage: !shouldShow,
+          child: IgnorePointer(
+            ignoring: !shouldShow,
+            child: ScaleTransition(
+              scale: _controller.drive(
+                i == widget.index
+                    ? Tween(begin: 0.9, end: 1.0)
+                    : Tween(begin: 1.0, end: 0.9),
+              ),
+              child: FadeTransition(
+                opacity: i == _previousIndex
+                    ? _controller.drive(Tween(begin: 1, end: 0))
+                    : _controller,
+                child: child,
+              ),
+            ),
+          ),
+        ),
+      );
+
+      i++;
+    }
+
+    return Stack(
+      fit: StackFit.expand,
+      children: children,
     );
   }
 }
