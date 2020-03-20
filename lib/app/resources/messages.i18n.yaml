@@ -67,6 +67,9 @@ onboarding:
       password: "Password"
     button:
       forgotPassword: "Forgot password"
+    error:
+      wrongCombination: >-
+        Incorrect username & password combination. Check your login details and try again.
 
   permission:
     button:

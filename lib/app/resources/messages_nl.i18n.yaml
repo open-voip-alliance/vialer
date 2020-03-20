@@ -67,6 +67,10 @@ onboarding:
       password: "Wachtwoord"
     button:
       forgotPassword: "Wachtwoord vergeten"
+    error:
+      wrongCombination: >-
+        Onjuiste gebruikersnaam & wachtwoord combinatie.
+        Check je login gegevens en probeer het opnieuw.
 
   permission:
     button:

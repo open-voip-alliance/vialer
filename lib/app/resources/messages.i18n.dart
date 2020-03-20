@@ -203,6 +203,7 @@ class LoginOnboardingMessages {
 	String get title => "Login";
 	PlaceholderLoginOnboardingMessages get placeholder => PlaceholderLoginOnboardingMessages(this);
 	ButtonLoginOnboardingMessages get button => ButtonLoginOnboardingMessages(this);
+	ErrorLoginOnboardingMessages get error => ErrorLoginOnboardingMessages(this);
 }
 
 class PlaceholderLoginOnboardingMessages {
@@ -216,6 +217,12 @@ class ButtonLoginOnboardingMessages {
 	final LoginOnboardingMessages _parent;
 	const ButtonLoginOnboardingMessages(this._parent);
 	String get forgotPassword => "Forgot password";
+}
+
+class ErrorLoginOnboardingMessages {
+	final LoginOnboardingMessages _parent;
+	const ErrorLoginOnboardingMessages(this._parent);
+	String get wrongCombination => "Incorrect username & password combination. Check your login details and try again.";
 }
 
 class PermissionOnboardingMessages {

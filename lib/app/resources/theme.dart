@@ -51,6 +51,10 @@ abstract class BrandTheme {
 
   Color get onboardingGradientEnd;
 
+  Color get errorBorderColor;
+
+  Color get errorContentColor;
+
   ThemeData get themeData {
     return ThemeData(
       primaryColor: primary,
@@ -101,6 +105,12 @@ class VialerTheme extends BrandTheme {
 
   @override
   final onboardingGradientEnd = Color(0xFFE94E1B);
+
+  @override
+  final Color errorBorderColor = Color(0xFFDA534F).withOpacity(0.32);
+
+  @override
+  final Color errorContentColor = Color(0xFF8F0A06);
 }
 
 class VoysTheme extends BrandTheme {
@@ -121,6 +131,12 @@ class VoysTheme extends BrandTheme {
 
   @override
   get onboardingGradientEnd => primaryDark;
+
+  @override
+  final Color errorBorderColor = Color(0xFF2491FF).withOpacity(0.32);
+
+  @override
+  Color get errorContentColor => primaryDark;
 }
 
 extension BrandThemeContext on BuildContext {
@@ -147,4 +163,5 @@ abstract class VialerSans {
   static const speaker = IconData(0xE984, fontFamily: _family);
   static const voicemail = IconData(0xE98B, fontFamily: _family);
   static const mail = IconData(0xE95B, fontFamily: _family);
+  static const exclamationMark = IconData(0xE915, fontFamily: _family);
 }

@@ -204,6 +204,7 @@ class LoginOnboardingMessages_nl extends LoginOnboardingMessages {
 	String get title => "Inloggen";
 	PlaceholderLoginOnboardingMessages_nl get placeholder => PlaceholderLoginOnboardingMessages_nl(this);
 	ButtonLoginOnboardingMessages_nl get button => ButtonLoginOnboardingMessages_nl(this);
+	ErrorLoginOnboardingMessages_nl get error => ErrorLoginOnboardingMessages_nl(this);
 }
 
 class PlaceholderLoginOnboardingMessages_nl extends PlaceholderLoginOnboardingMessages {
@@ -217,6 +218,12 @@ class ButtonLoginOnboardingMessages_nl extends ButtonLoginOnboardingMessages {
 	final LoginOnboardingMessages_nl _parent;
 	const ButtonLoginOnboardingMessages_nl(this._parent):super(_parent);
 	String get forgotPassword => "Wachtwoord vergeten";
+}
+
+class ErrorLoginOnboardingMessages_nl extends ErrorLoginOnboardingMessages {
+	final LoginOnboardingMessages_nl _parent;
+	const ErrorLoginOnboardingMessages_nl(this._parent):super(_parent);
+	String get wrongCombination => "Onjuiste gebruikersnaam & wachtwoord combinatie. Check je login gegevens en probeer het opnieuw.";
 }
 
 class PermissionOnboardingMessages_nl extends PermissionOnboardingMessages {

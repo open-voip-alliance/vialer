@@ -38,7 +38,8 @@ class LoginPage extends View {
       );
 }
 
-class _LoginPageState extends ViewState<LoginPage, LoginController> {
+class _LoginPageState extends ViewState<LoginPage, LoginController>
+    with TickerProviderStateMixin {
   static const _duration = Duration(milliseconds: 200);
   static const _curve = Curves.decelerate;
 
@@ -87,31 +88,63 @@ class _LoginPageState extends ViewState<LoginPage, LoginController> {
             duration: _duration,
             height: controller.headerDistance,
           ),
-          if (controller.loginFailed) ...[
-            // Temporary design
-            Material(
-              elevation: 2,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-              color: Colors.red[600],
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                  vertical: 16,
-                  horizontal: 32,
-                ),
-                child: Text(
-                  'Login failed',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.white,
+          AnimatedSize(
+            curve: _curve,
+            duration: _duration,
+            vsync: this,
+            child: AnimatedOpacity(
+              curve: _curve,
+              duration: _duration,
+              opacity: controller.loginFailed ? 1 : 0,
+              child: Visibility(
+                visible: controller.loginFailed,
+                child: Padding(
+                  padding: EdgeInsets.only(bottom: 16),
+                  child: Container(
+                    padding: EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: context.brandTheme.errorBorderColor,
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Container(
+                      padding: EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: context.brandTheme.errorBorderColor,
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Container(
+                        padding: EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          children: <Widget>[
+                            Icon(
+                              VialerSans.exclamationMark,
+                              color: context.brandTheme.errorContentColor,
+                            ),
+                            SizedBox(width: 16),
+                            Expanded(
+                              child: Text(
+                                context.msg.onboarding.login.error
+                                    .wrongCombination,
+                                style: TextStyle(
+                                  color: context.brandTheme.errorContentColor,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               ),
             ),
-            SizedBox(height: 16)
-          ],
+          ),
           StylizedTextField(
             controller: controller.usernameController,
             prefixIcon: VialerSans.user,
