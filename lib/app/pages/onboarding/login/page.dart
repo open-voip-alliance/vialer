@@ -9,11 +9,14 @@ import '../../../../domain/repositories/setting.dart';
 import '../../../../domain/repositories/auth.dart';
 
 import '../../../resources/theme.dart';
-import '../widgets/stylized_button.dart';
-import '../widgets/stylized_text_field.dart';
-import 'controller.dart';
-
 import '../../../resources/localizations.dart';
+
+import '../../../widgets/stylized_button.dart';
+import '../widgets/stylized_text_field.dart';
+
+import '../../../util/conditional_capitalization.dart';
+
+import 'controller.dart';
 
 class LoginPage extends View {
   final AuthRepository _authRepository;
@@ -159,27 +162,28 @@ class _LoginPageState extends ViewState<LoginPage, LoginController>
             obscureText: true,
           ),
           SizedBox(height: 32),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8),
-            child: Column(
-              children: <Widget>[
-                SizedBox(
-                  width: double.infinity,
-                  child: StylizedRaisedButton(
-                    text: context.msg.onboarding.button.login,
-                    onPressed: controller.canLogin ? controller.login : null,
+          Column(
+            children: <Widget>[
+              SizedBox(
+                width: double.infinity,
+                child: StylizedButton.raised(
+                  onPressed: controller.canLogin ? controller.login : null,
+                  child: Text(context.msg.onboarding.button.login
+                      .toUpperCaseIfAndroid(context)),
+                ),
+              ),
+              SizedBox(height: 20),
+              SizedBox(
+                width: double.infinity,
+                child: StylizedButton.outline(
+                  onPressed: controller.goToPasswordReset,
+                  child: Text(
+                    context.msg.onboarding.login.button.forgotPassword
+                        .toUpperCaseIfAndroid(context),
                   ),
                 ),
-                SizedBox(height: 20),
-                SizedBox(
-                  width: double.infinity,
-                  child: StylizedOutlineButton(
-                    text: context.msg.onboarding.login.button.forgotPassword,
-                    onPressed: controller.goToPasswordReset,
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ],
       ),

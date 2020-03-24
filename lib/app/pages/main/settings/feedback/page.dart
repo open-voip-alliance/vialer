@@ -6,10 +6,12 @@ import '../../../../resources/theme.dart';
 import '../../../../resources/localizations.dart';
 
 import '../../../../widgets/transparent_status_bar.dart';
-import '../../widgets/colored_button.dart';
+import '../../../../widgets/stylized_button.dart';
 
 import '../../../../../domain/repositories/feedback.dart';
 import '../../../../../domain/repositories/auth.dart';
+
+import '../../../../util/conditional_capitalization.dart';
 
 import 'controller.dart';
 
@@ -32,11 +34,9 @@ class _FeedbackPageState extends ViewState<FeedbackPage, DialerController> {
 
   @override
   Widget buildPage() {
-    var sendFeedbackButtonText =
-        context.msg.main.settings.feedback.buttons.send;
-    if (context.isAndroid) {
-      sendFeedbackButtonText = sendFeedbackButtonText.toUpperCase();
-    }
+    final sendFeedbackButtonText = context
+        .msg.main.settings.feedback.buttons.send
+        .toUpperCaseIfAndroid(context);
 
     return Scaffold(
       key: globalKey,
@@ -98,9 +98,12 @@ class _FeedbackPageState extends ViewState<FeedbackPage, DialerController> {
               ),
               child: SizedBox(
                 width: double.infinity,
-                child: ColoredButton.filled(
+                child: StylizedButton.raised(
+                  colored: true,
                   onPressed: controller.sendFeedback,
-                  child: Text(sendFeedbackButtonText),
+                  child: Text(
+                    sendFeedbackButtonText.toUpperCaseIfAndroid(context),
+                  ),
                 ),
               ),
             ),

@@ -5,15 +5,17 @@ import '../../../../domain/repositories/setting.dart';
 import '../../../../domain/repositories/logging.dart';
 import '../../../../domain/repositories/storage.dart';
 
+import '../../../widgets/stylized_button.dart';
 import '../widgets/header.dart';
-import 'controller.dart';
 import 'widgets/tile.dart';
-import '../widgets/colored_button.dart';
 
-import '../../../resources/theme.dart';
 import '../../../resources/localizations.dart';
 
 import '../../../mappers/setting.dart';
+
+import '../../../util/conditional_capitalization.dart';
+
+import 'controller.dart';
 
 class SettingsPage extends View {
   final SettingRepository _settingsRepository;
@@ -92,12 +94,11 @@ class _SettingsPageState extends ViewState<SettingsPage, SettingsController> {
 
   @override
   Widget buildPage() {
-    var sendFeedbackButtonText = context.msg.main.settings.buttons.sendFeedback;
-    var logoutButtonText = context.msg.main.settings.buttons.logout;
-    if (!context.isIOS) {
-      logoutButtonText = logoutButtonText.toUpperCase();
-      sendFeedbackButtonText = sendFeedbackButtonText.toUpperCase();
-    }
+    final sendFeedbackButtonText = context
+        .msg.main.settings.buttons.sendFeedback
+        .toUpperCaseIfAndroid(context);
+    final logoutButtonText =
+        context.msg.main.settings.buttons.logout.toUpperCaseIfAndroid(context);
 
     return Scaffold(
       key: globalKey,
@@ -121,22 +122,28 @@ class _SettingsPageState extends ViewState<SettingsPage, SettingsController> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 40),
+                padding: EdgeInsets.symmetric(horizontal: 48),
                 child: Column(
                   children: <Widget>[
                     SizedBox(
                       width: double.infinity,
-                      child: ColoredButton.filled(
+                      child: StylizedButton.raised(
+                        colored: true,
                         onPressed: controller.goToFeedbackPage,
-                        child: Text(sendFeedbackButtonText),
+                        child: Text(
+                          sendFeedbackButtonText.toUpperCaseIfAndroid(context),
+                        ),
                       ),
                     ),
-                    SizedBox(height: 4),
+                    SizedBox(height: 16),
                     SizedBox(
                       width: double.infinity,
-                      child: ColoredButton.outline(
+                      child: StylizedButton.outline(
+                        colored: true,
                         onPressed: controller.logout,
-                        child: Text(logoutButtonText),
+                        child: Text(
+                          logoutButtonText.toUpperCaseIfAndroid(context),
+                        ),
                       ),
                     ),
                     SizedBox(height: 16),

@@ -9,6 +9,8 @@ import '../../../../../domain/entities/setting.dart';
 
 import '../../../../mappers/setting.dart';
 
+import '../../../../util/conditional_capitalization.dart';
+
 class SettingTile extends StatelessWidget {
   final Setting setting;
   final ValueChanged<bool> onChanged;
@@ -45,8 +47,6 @@ class SettingTileCategory extends StatelessWidget {
   Widget build(BuildContext context) {
     final info = category.toInfo(context);
 
-    final title = !context.isIOS ? info.title.toUpperCase() : info.title;
-
     return Column(
       children: <Widget>[
         Padding(
@@ -62,7 +62,7 @@ class SettingTileCategory extends StatelessWidget {
                   ),
                   SizedBox(width: 8),
                   Text(
-                    title,
+                    info.title.toUpperCaseIfAndroid(context),
                     style: TextStyle(
                       color: !context.isIOS
                           ? Theme.of(context).primaryColor

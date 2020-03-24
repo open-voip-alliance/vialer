@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../widgets/stylized_button.dart';
-
 import '../../../resources/localizations.dart';
+import '../../../widgets/stylized_button.dart';
+import '../../../util/conditional_capitalization.dart';
 
 class InitialPage extends StatelessWidget {
   final VoidCallback forward;
@@ -50,9 +50,10 @@ class InitialPage extends StatelessWidget {
                 SizedBox(height: 24),
                 SizedBox(
                   width: double.infinity,
-                  child: StylizedRaisedButton(
-                    text: context.msg.onboarding.button.login,
+                  child: StylizedButton.raised(
                     onPressed: forward,
+                    child: Text(context.msg.onboarding.button.login
+                        .toUpperCaseIfAndroid(context)),
                   ),
                 ),
               ],

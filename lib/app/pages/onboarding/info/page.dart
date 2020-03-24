@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../resources/localizations.dart';
-import '../widgets/stylized_button.dart';
+import '../../../widgets/stylized_button.dart';
+import '../../../util/conditional_capitalization.dart';
 
 class InfoPage extends StatelessWidget {
   final Widget icon;
@@ -48,12 +49,17 @@ class InfoPage extends StatelessWidget {
             child: description,
           ),
           Expanded(
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: StylizedRaisedButton(
-                text: context.msg.onboarding.permission.button.iUnderstand,
-                onPressed: onPressed,
-              ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                StylizedButton.raised(
+                  onPressed: onPressed,
+                  child: Text(
+                    context.msg.onboarding.permission.button.iUnderstand
+                        .toUpperCaseIfAndroid(context),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
