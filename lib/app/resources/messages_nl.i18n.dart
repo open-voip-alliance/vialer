@@ -107,7 +107,15 @@ class MenuContactsMainMessages_nl extends MenuContactsMainMessages {
 class ListContactsMainMessages_nl extends ListContactsMainMessages {
 	final ContactsMainMessages_nl _parent;
 	const ListContactsMainMessages_nl(this._parent):super(_parent);
+	PlaceholderListContactsMainMessages_nl get placeholder => PlaceholderListContactsMainMessages_nl(this);
 	ItemListContactsMainMessages_nl get item => ItemListContactsMainMessages_nl(this);
+}
+
+class PlaceholderListContactsMainMessages_nl extends PlaceholderListContactsMainMessages {
+	final ListContactsMainMessages_nl _parent;
+	const PlaceholderListContactsMainMessages_nl(this._parent):super(_parent);
+	String get title => "Geen contacten gevonden";
+	String get description => "Vialer kon geen contacten vinden op je telefoon. Wanneer je een contact aanmaakt zijn te zien in Vialer.";
 }
 
 class ItemListContactsMainMessages_nl extends ItemListContactsMainMessages {

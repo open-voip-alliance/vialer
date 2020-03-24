@@ -28,6 +28,11 @@ main:
     menu:
       title: *contactsTitle
     list:
+      placeholder:
+        title: "Geen contacten gevonden"
+        description: >-
+          Vialer kon geen contacten vinden op je telefoon.
+          Wanneer je een contact aanmaakt zijn te zien in Vialer.
       item:
         noNumber: "Geen nummer"
         numbers(int count): "$count ${_plural(count, one: 'nummer', many: 'nummers')}"

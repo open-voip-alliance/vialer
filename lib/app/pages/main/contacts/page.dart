@@ -57,17 +57,62 @@ class _ContactPageState extends ViewState<ContactsPage, ContactsController> {
                 padding: EdgeInsets.symmetric(horizontal: 16),
                 child: Header(context.msg.main.contacts.title),
               ),
-              Expanded(
-                child: _AlphabetListView(
-                  bottomLettersPadding: widget.bottomLettersPadding,
-                  children: _mapToWidgets(controller.contacts),
-                ),
-              ),
+              _listOrPlaceholder(),
             ],
           ),
         ),
       ),
     );
+  }
+
+  Widget _listOrPlaceholder() {
+    if (controller.contacts.isNotEmpty) {
+      return Expanded(
+        child: _AlphabetListView(
+          bottomLettersPadding: widget.bottomLettersPadding,
+          children: _mapToWidgets(controller.contacts),
+        ),
+      );
+    } else {
+      return Expanded(
+        child: SizedBox(
+          width: double.infinity,
+          child: Padding(
+            padding: EdgeInsets.only(
+              left: 76,
+              right: 76,
+              top: 84,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                _Illustration(
+                  child: Icon(
+                    VialerSans.contacts,
+                  ),
+                ),
+                SizedBox(height: 20),
+                Text(
+                  context.msg.main.contacts.list.placeholder.title,
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 16),
+                Text(
+                  context.msg.main.contacts.list.placeholder.description,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 16,
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+      );
+    }
   }
 
   List<Widget> _mapToWidgets(Iterable<Contact> contacts) {
@@ -90,6 +135,46 @@ class _ContactPageState extends ViewState<ContactsPage, ContactsController> {
     }
 
     return widgets;
+  }
+}
+
+class _Illustration extends StatelessWidget {
+  final Widget child;
+
+  const _Illustration({Key key, @required this.child}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    const size = 96.0;
+    const borderWidth = 20.0;
+    const padding = 24.0;
+    final backgroundColor = Theme.of(context).primaryColorLight;
+
+    return Container(
+      width: size + padding + borderWidth,
+      height: size + padding + borderWidth,
+      padding: EdgeInsets.all(borderWidth),
+      decoration: BoxDecoration(
+        color: backgroundColor.withOpacity(0.40),
+        shape: BoxShape.circle,
+      ),
+      child: Container(
+        padding: EdgeInsets.all(padding),
+        decoration: BoxDecoration(
+          color: backgroundColor,
+          shape: BoxShape.circle,
+        ),
+        child: IconTheme(
+          data: IconTheme.of(context).copyWith(
+            color: Theme.of(context).primaryColor,
+            size: 48,
+          ),
+          child: Center(
+            child: child,
+          ),
+        ),
+      ),
+    );
   }
 }
 

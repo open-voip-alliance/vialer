@@ -28,6 +28,11 @@ main:
     menu:
       title: *contactsTitle
     list:
+      placeholder:
+        title: "No contacts found"
+        description: >-
+          Vialer was unable to find any contacts in your phone.
+          If you create contacts they will be shown in Vialer.
       item:
         noNumber: "No number"
         numbers(int count): "$count ${_plural(count, one: 'number', many: 'numbers')}"

@@ -106,7 +106,15 @@ class MenuContactsMainMessages {
 class ListContactsMainMessages {
 	final ContactsMainMessages _parent;
 	const ListContactsMainMessages(this._parent);
+	PlaceholderListContactsMainMessages get placeholder => PlaceholderListContactsMainMessages(this);
 	ItemListContactsMainMessages get item => ItemListContactsMainMessages(this);
+}
+
+class PlaceholderListContactsMainMessages {
+	final ListContactsMainMessages _parent;
+	const PlaceholderListContactsMainMessages(this._parent);
+	String get title => "No contacts found";
+	String get description => "Vialer was unable to find any contacts in your phone. If you create contacts they will be shown in Vialer.";
 }
 
 class ItemListContactsMainMessages {
