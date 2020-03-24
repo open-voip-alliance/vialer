@@ -1,0 +1,1 @@
+class NoPermission implements Exception {}
