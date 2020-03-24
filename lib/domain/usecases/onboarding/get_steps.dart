@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:pedantic/pedantic.dart';
@@ -17,13 +18,16 @@ class GetStepsUseCase extends UseCase<List<Step>, void> {
   Future<Stream<List<Step>>> buildUseCaseStream(_) async {
     final controller = StreamController<List<Step>>();
 
-    final callPermissionDenied =
-        await permissionRepository.getPermissionStatus(Permission.phone) ==
-            PermissionStatus.denied;
+    var callPermissionDenied = false;
+    if (Platform.isAndroid) {
+      callPermissionDenied =
+          await permissionRepository.getPermissionStatus(Permission.phone) !=
+              PermissionStatus.granted;
+    }
 
     final contactsPermissionDenied =
-        await permissionRepository.getPermissionStatus(Permission.contacts) ==
-            PermissionStatus.denied;
+        await permissionRepository.getPermissionStatus(Permission.contacts) !=
+            PermissionStatus.granted;
 
     final steps = [
       Step.initial,
