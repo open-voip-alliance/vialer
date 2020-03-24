@@ -32,8 +32,6 @@ class GetContactsUseCase extends UseCase<List<Contact>, void> {
       controller.add(await _contactsRepository.getContacts());
     }
 
-
-
     unawaited(controller.close());
 
     return controller.stream;

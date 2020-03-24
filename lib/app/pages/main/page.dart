@@ -76,8 +76,7 @@ class _MainPageState extends State<MainPage> {
             ContactsPageRoutes.details: (_, contact) => ContactDetailsPage(
                   Provider.of<ContactRepository>(context),
                   Provider.of<CallRepository>(context),
-
-              Provider.of<PermissionRepository>(context),
+                  Provider.of<PermissionRepository>(context),
                   contact: contact,
                 ),
           },
