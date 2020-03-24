@@ -17,7 +17,7 @@ class ContactsController extends Controller {
     PermissionRepository permissionRepository,
   ) : _presenter = ContactsPresenter(contactRepository, permissionRepository);
 
-  bool _hasPermission = false;
+  bool _hasPermission = true;
   bool get hasPermission => _hasPermission;
 
   @override
