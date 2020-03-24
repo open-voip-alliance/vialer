@@ -9,6 +9,7 @@ import '../../../../../domain/repositories/contact.dart';
 import '../../../../../domain/repositories/call.dart';
 
 import '../../../../../domain/entities/contact.dart';
+import '../../../../../domain/repositories/permission.dart';
 
 import '../../../../util/debug.dart';
 
@@ -22,7 +23,12 @@ class ContactDetailsController extends Controller with Caller {
   ContactDetailsController(
     ContactRepository contactRepository,
     CallRepository callRepository,
-  ) : _presenter = ContactDetailsPresenter(contactRepository, callRepository);
+    PermissionRepository permissionRepository,
+  ) : _presenter = ContactDetailsPresenter(
+          contactRepository,
+          callRepository,
+          permissionRepository,
+        );
 
   @override
   void initController(GlobalKey<State<StatefulWidget>> key) {

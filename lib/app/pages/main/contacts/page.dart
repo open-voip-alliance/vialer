@@ -9,13 +9,18 @@ import 'package:provider/provider.dart';
 import '../../../resources/localizations.dart';
 
 import '../../../../domain/entities/contact.dart';
+
+import '../../../../domain/repositories/permission.dart';
 import '../../../../domain/repositories/contact.dart';
 
 import '../../../resources/theme.dart';
 
+import '../../../widgets/stylized_button.dart';
 import '../widgets/header.dart';
 import 'widgets/item.dart';
 import 'widgets/letter_header.dart';
+
+import '../../../util/conditional_capitalization.dart';
 
 import 'controller.dart';
 
@@ -26,21 +31,29 @@ abstract class ContactsPageRoutes {
 
 class ContactsPage extends View {
   final ContactRepository _contactsRepository;
+  final PermissionRepository _permissionRepository;
+
   final double bottomLettersPadding;
 
   ContactsPage(
-    this._contactsRepository, {
+    this._contactsRepository,
+    this._permissionRepository, {
     Key key,
     this.bottomLettersPadding = 0,
   }) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _ContactPageState(_contactsRepository);
+  State<StatefulWidget> createState() => _ContactPageState(
+        _contactsRepository,
+        _permissionRepository,
+      );
 }
 
 class _ContactPageState extends ViewState<ContactsPage, ContactsController> {
-  _ContactPageState(ContactRepository contactRepository)
-      : super(ContactsController(contactRepository));
+  _ContactPageState(
+    ContactRepository contactRepository,
+    PermissionRepository permissionRepository,
+  ) : super(ContactsController(contactRepository, permissionRepository));
 
   @override
   Widget buildPage() {
@@ -74,42 +87,53 @@ class _ContactPageState extends ViewState<ContactsPage, ContactsController> {
         ),
       );
     } else {
-      return Expanded(
-        child: SizedBox(
-          width: double.infinity,
-          child: Padding(
-            padding: EdgeInsets.only(
-              left: 76,
-              right: 76,
-              top: 84,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                _Illustration(
-                  child: Icon(
-                    VialerSans.contacts,
-                  ),
-                ),
-                SizedBox(height: 20),
-                Text(
-                  context.msg.main.contacts.list.placeholder.title,
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(height: 16),
-                Text(
-                  context.msg.main.contacts.list.placeholder.description,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 16,
+      const padding = EdgeInsets.symmetric(horizontal: 12);
+
+      return SizedBox(
+        width: double.infinity,
+        child: Padding(
+          padding: EdgeInsets.only(
+            left: 64,
+            right: 64,
+            top: 84,
+          ),
+          child: controller.hasPermission
+              ? Padding(
+                  padding: padding,
+                  child: _Placeholder(
+                    icon: Icon(VialerSans.contacts),
+                    title: Text(context.msg.main.contacts.list.empty.title),
+                    description:
+                        Text(context.msg.main.contacts.list.empty.description),
                   ),
                 )
-              ],
-            ),
-          ),
+              : Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Padding(
+                      padding: padding,
+                      child: _Placeholder(
+                        icon: Icon(VialerSans.lockOn),
+                        title: Text(
+                          context.msg.main.contacts.list.noPermission.title,
+                        ),
+                        description: Text(
+                          context
+                              .msg.main.contacts.list.noPermission.description,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 40),
+                    StylizedButton.raised(
+                      colored: true,
+                      onPressed: controller.askPermission,
+                      child: Text(
+                        context.msg.main.contacts.list.noPermission.button
+                            .toUpperCaseIfAndroid(context),
+                      ),
+                    ),
+                  ],
+                ),
         ),
       );
     }
@@ -135,6 +159,48 @@ class _ContactPageState extends ViewState<ContactsPage, ContactsController> {
     }
 
     return widgets;
+  }
+}
+
+class _Placeholder extends StatelessWidget {
+  final Widget icon;
+  final Widget title;
+  final Widget description;
+
+  const _Placeholder({
+    Key key,
+    @required this.icon,
+    @required this.title,
+    @required this.description,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        _Illustration(
+          child: icon,
+        ),
+        SizedBox(height: 20),
+        DefaultTextStyle.merge(
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+          child: title,
+        ),
+        SizedBox(height: 16),
+        DefaultTextStyle.merge(
+          style: TextStyle(
+            fontSize: 16,
+          ),
+          textAlign: TextAlign.center,
+          child: description,
+        ),
+      ],
+    );
   }
 }
 

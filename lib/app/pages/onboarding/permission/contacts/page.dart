@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../abstract/controller.dart';
 import '../../../../resources/theme.dart';
 import '../../../../../domain/repositories/permission.dart';
-import '../../../../../domain/entities/onboarding/permission.dart';
+import '../../../../../domain/entities/permission.dart';
 
 import '../abstract/page.dart';
 

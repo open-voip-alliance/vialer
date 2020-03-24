@@ -1,6 +1,6 @@
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 
-import '../../../../../domain/entities/onboarding/permission.dart';
+import '../../../../../domain/entities/permission.dart';
 import '../../../../../domain/repositories/permission.dart';
 import '../../../../../domain/usecases/onboarding/request_permission.dart';
 

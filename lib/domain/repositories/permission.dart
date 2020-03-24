@@ -1,8 +1,8 @@
-import '../entities/onboarding/permission.dart';
-import '../entities/onboarding/permission_status.dart';
+import '../entities/permission.dart';
+import '../entities/permission_status.dart';
 
 abstract class PermissionRepository {
-  /// Returns whether the permission is `granted`, `denied` or `notApplicable`.
+  /// Returns whether the permission is `granted`, `denied` or `unavailable`.
   Future<PermissionStatus> getPermissionStatus(Permission permission);
 
   /// Enable the permission, perhaps asking the user whether they want

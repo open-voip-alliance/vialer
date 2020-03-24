@@ -2,8 +2,8 @@ import 'package:permission_handler/permission_handler.dart';
 
 import '../mappers/permission_status.dart';
 
-import '../../domain/entities/onboarding/permission.dart' as domain;
-import '../../domain/entities/onboarding/permission_status.dart' as domain;
+import '../../domain/entities/permission.dart' as domain;
+import '../../domain/entities/permission_status.dart' as domain;
 import '../../domain/repositories/permission.dart';
 import '../mappers/permission.dart';
 

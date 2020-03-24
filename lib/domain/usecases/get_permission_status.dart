@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:pedantic/pedantic.dart';
 
-import '../entities/onboarding/permission.dart';
-import '../entities/onboarding/permission_status.dart';
+import '../entities/permission.dart';
+import '../entities/permission_status.dart';
 import '../repositories/permission.dart';
 
 class GetPermissionStatusUseCase

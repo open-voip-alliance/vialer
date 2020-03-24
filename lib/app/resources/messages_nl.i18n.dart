@@ -107,15 +107,24 @@ class MenuContactsMainMessages_nl extends MenuContactsMainMessages {
 class ListContactsMainMessages_nl extends ListContactsMainMessages {
 	final ContactsMainMessages_nl _parent;
 	const ListContactsMainMessages_nl(this._parent):super(_parent);
-	PlaceholderListContactsMainMessages_nl get placeholder => PlaceholderListContactsMainMessages_nl(this);
+	EmptyListContactsMainMessages_nl get empty => EmptyListContactsMainMessages_nl(this);
+	NoPermissionListContactsMainMessages_nl get noPermission => NoPermissionListContactsMainMessages_nl(this);
 	ItemListContactsMainMessages_nl get item => ItemListContactsMainMessages_nl(this);
 }
 
-class PlaceholderListContactsMainMessages_nl extends PlaceholderListContactsMainMessages {
+class EmptyListContactsMainMessages_nl extends EmptyListContactsMainMessages {
 	final ListContactsMainMessages_nl _parent;
-	const PlaceholderListContactsMainMessages_nl(this._parent):super(_parent);
+	const EmptyListContactsMainMessages_nl(this._parent):super(_parent);
 	String get title => "Geen contacten gevonden";
 	String get description => "Vialer kon geen contacten vinden op je telefoon. Wanneer je een contact aanmaakt zijn te zien in Vialer.";
+}
+
+class NoPermissionListContactsMainMessages_nl extends NoPermissionListContactsMainMessages {
+	final ListContactsMainMessages_nl _parent;
+	const NoPermissionListContactsMainMessages_nl(this._parent):super(_parent);
+	String get title => "Geen toegang tot contacten";
+	String get description => "Vialer heeft toestemming nodig om bij je contacten te komen en ze te tonen.";
+	String get button => "Geef toestemming";
 }
 
 class ItemListContactsMainMessages_nl extends ItemListContactsMainMessages {

@@ -6,8 +6,9 @@ import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
 
 import '../../../../../domain/entities/contact.dart';
-import '../../../../../domain/repositories/contact.dart';
 
+import '../../../../../domain/repositories/contact.dart';
+import '../../../../../domain/repositories/permission.dart';
 import '../../../../../domain/repositories/call.dart';
 
 import '../widgets/avatar.dart';
@@ -19,21 +20,26 @@ import 'controller.dart';
 class ContactDetailsPage extends View {
   final ContactRepository _contactsRepository;
   final CallRepository _callRepository;
+  final PermissionRepository _permissionRepository;
 
   final Contact contact;
   final double bottomLettersPadding;
 
   ContactDetailsPage(
     this._contactsRepository,
-    this._callRepository, {
+    this._callRepository,
+    this._permissionRepository, {
     Key key,
     @required this.contact,
     this.bottomLettersPadding = 0,
   }) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() =>
-      _ContactDetailsPageState(_contactsRepository, _callRepository);
+  State<StatefulWidget> createState() => _ContactDetailsPageState(
+        _contactsRepository,
+        _callRepository,
+        _permissionRepository,
+      );
 }
 
 class _ContactDetailsPageState
@@ -41,7 +47,14 @@ class _ContactDetailsPageState
   _ContactDetailsPageState(
     ContactRepository contactRepository,
     CallRepository callRepository,
-  ) : super(ContactDetailsController(contactRepository, callRepository));
+    PermissionRepository permissionRepository,
+  ) : super(
+          ContactDetailsController(
+            contactRepository,
+            callRepository,
+            permissionRepository,
+          ),
+        );
 
   @override
   Widget buildPage() {

@@ -70,11 +70,14 @@ class _MainPageState extends State<MainPage> {
           routes: {
             ContactsPageRoutes.root: (_, __) => ContactsPage(
                   Provider.of<ContactRepository>(context),
+                  Provider.of<PermissionRepository>(context),
                   bottomLettersPadding: !_dialerIsPage ? 96 : 0,
                 ),
             ContactsPageRoutes.details: (_, contact) => ContactDetailsPage(
                   Provider.of<ContactRepository>(context),
                   Provider.of<CallRepository>(context),
+
+              Provider.of<PermissionRepository>(context),
                   contact: contact,
                 ),
           },

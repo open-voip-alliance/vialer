@@ -1,10 +1,12 @@
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 
 import '../../../../../domain/entities/contact.dart';
-import '../../../../../domain/repositories/contact.dart';
-import '../../../../../domain/usecases/get_contacts.dart';
 
+import '../../../../../domain/repositories/permission.dart';
+import '../../../../../domain/repositories/contact.dart';
 import '../../../../../domain/repositories/call.dart';
+
+import '../../../../../domain/usecases/get_contacts.dart';
 import '../../../../../domain/usecases/call.dart';
 
 class ContactDetailsPresenter extends Presenter {
@@ -16,7 +18,11 @@ class ContactDetailsPresenter extends Presenter {
   ContactDetailsPresenter(
     ContactRepository contactRepository,
     CallRepository callRepository,
-  )   : _getContactsUseCase = GetContactsUseCase(contactRepository),
+    PermissionRepository permissionRepository,
+  )   : _getContactsUseCase = GetContactsUseCase(
+          contactRepository,
+          permissionRepository,
+        ),
         _callUseCase = CallUseCase(callRepository);
 
   void getContacts() {

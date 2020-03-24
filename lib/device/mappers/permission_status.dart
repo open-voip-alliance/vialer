@@ -1,6 +1,6 @@
 import 'package:permission_handler/permission_handler.dart';
 
-import '../../domain/entities/onboarding/permission_status.dart' as domain;
+import '../../domain/entities/permission_status.dart' as domain;
 
 domain.PermissionStatus mapPermissionStatusToDomainPermissionStatus(
   PermissionStatus status,

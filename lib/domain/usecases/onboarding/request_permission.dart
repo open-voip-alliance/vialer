@@ -4,7 +4,7 @@ import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:pedantic/pedantic.dart';
 
 import '../../repositories/permission.dart';
-import '../../entities/onboarding/permission.dart';
+import '../../entities/permission.dart';
 
 class RequestPermissionUseCase
     extends UseCase<bool, RequestPermissionUseCaseParams> {
