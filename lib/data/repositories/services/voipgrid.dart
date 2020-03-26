@@ -3,46 +3,50 @@ import 'dart:async';
 import 'package:meta/meta.dart';
 import 'package:chopper/chopper.dart';
 
+import '../../../domain/repositories/auth.dart';
+
 part 'voipgrid.chopper.dart';
 
-@ChopperApi()
-abstract class VoipGridService extends ChopperService {
-  static VoipGridService create({
+@ChopperApi(baseUrl: '/api/')
+abstract class VoipgridService extends ChopperService {
+  static VoipgridService create({
     @required Uri baseUrl,
-    String email,
-    String token,
+    AuthRepository authRepository,
   }) {
     return _$VoipGridService(
       ChopperClient(
         baseUrl: baseUrl.toString(),
         converter: JsonConverter(),
-        interceptors: email != null && token != null
-            ? [_AuthorizationInterceptor(email, token)]
-            : [],
+        interceptors: [_AuthorizationInterceptor(authRepository)],
       ),
     );
   }
 
-  @Post(path: 'api/permission/apitoken/')
+  @Post(path: 'permission/apitoken/')
   Future<Response> getToken(@Body() Map<String, dynamic> body);
 
-  @Get(path: 'api/permission/systemuser/profile/')
+  @Get(path: 'permission/systemuser/profile/')
   Future<Response> getSystemUser();
 }
 
 class _AuthorizationInterceptor implements RequestInterceptor {
-  final String email;
-  final String token;
+  final AuthRepository _authRepository;
 
-  _AuthorizationInterceptor(this.email, this.token);
+  _AuthorizationInterceptor(this._authRepository);
 
   @override
   FutureOr<Request> onRequest(Request request) {
-    return request.replace(
-      headers: Map.of(request.headers)
-        ..addAll({
-          'Authorization': 'Token $email:$token',
-        }),
-    );
+    final user = _authRepository.currentUser;
+
+    if (user != null) {
+      return request.replace(
+        headers: Map.of(request.headers)
+          ..addAll({
+            'Authorization': 'Token ${user.email}:${user.token}',
+          }),
+      );
+    } else {
+      return request;
+    }
   }
 }

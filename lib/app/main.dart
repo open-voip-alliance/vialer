@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:vialer_lite/data/repositories/services/voipgrid.dart';
 
 import '../domain/entities/brand.dart';
 
@@ -50,14 +51,9 @@ void main() async {
   final storageRepo = DeviceStorageRepository();
   await storageRepo.load();
 
-  final authRepo = DataAuthRepository(
-    storageRepo,
-    brand,
-  );
+  final authRepo = DataAuthRepository(storageRepo, brand);
 
-  final settingRepo = DataSettingRepository(
-    storageRepo,
-  );
+  final settingRepo = DataSettingRepository(storageRepo);
 
   final loggingRepo = DataLoggingRepository(
     authRepo,
@@ -70,6 +66,7 @@ void main() async {
 
   final app = App(
     brand: brand,
+    service: authRepo.service,
     envRepository: envRepo,
     storageRepository: storageRepo,
     authRepository: authRepo,
@@ -87,6 +84,8 @@ void main() async {
 class App extends StatelessWidget {
   final Brand brand;
 
+  final VoipgridService service;
+
   final EnvRepository envRepository;
   final StorageRepository storageRepository;
   final AuthRepository authRepository;
@@ -96,6 +95,7 @@ class App extends StatelessWidget {
   App({
     Key key,
     @required this.brand,
+    @required this.service,
     @required this.envRepository,
     @required this.storageRepository,
     @required this.authRepository,
@@ -107,6 +107,9 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        Provider<VoipgridService>.value(
+          value: service,
+        ),
         Provider<EnvRepository>.value(
           value: envRepository,
         ),

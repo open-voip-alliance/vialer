@@ -14,9 +14,14 @@ class DataAuthRepository extends AuthRepository {
   DataAuthRepository(
     this._storageRepository,
     this._brand,
-  ) : _service = VoipGridService.create(baseUrl: _brand.baseUrl);
+  ) {
+    service = VoipgridService.create(
+      baseUrl: _brand.baseUrl,
+      authRepository: this,
+    );
+  }
 
-  VoipGridService _service;
+  VoipgridService service;
 
   static const _emailKey = 'email';
   static const _passwordKey = 'password';
@@ -26,7 +31,7 @@ class DataAuthRepository extends AuthRepository {
 
   @override
   Future<bool> authenticate(String email, String password) async {
-    final tokenResponse = await _service.getToken({
+    final tokenResponse = await service.getToken({
       _emailKey: email,
       _passwordKey: password,
     });
@@ -38,13 +43,14 @@ class DataAuthRepository extends AuthRepository {
 
       _storageRepository.apiToken = token;
 
-      _service = VoipGridService.create(
-        baseUrl: _brand.baseUrl,
+      // Set a temporary system user that the authorization interceptor will
+      // use
+      _currentUser = SystemUser(
         email: email,
         token: token,
       );
 
-      final systemUserResponse = await _service.getSystemUser();
+      final systemUserResponse = await service.getSystemUser();
       if (systemUserResponse.error
           .toString()
           .contains('You need to change your password in the portal')) {
@@ -53,6 +59,8 @@ class DataAuthRepository extends AuthRepository {
 
       _storageRepository.systemUser = SystemUser.fromJson(
         systemUserResponse.body,
+      ).copyWith(
+        token: token,
       );
 
       _currentUser = _storageRepository.systemUser;
