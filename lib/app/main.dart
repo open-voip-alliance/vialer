@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:vialer_lite/data/repositories/services/voipgrid.dart';
+import 'package:vialer_lite/data/repositories/db/moor.dart';
 
 import '../domain/entities/brand.dart';
+
+import '../data/repositories/services/voipgrid.dart';
 
 import '../domain/repositories/env.dart';
 import '../device/repositories/env.dart';
@@ -110,6 +112,9 @@ class App extends StatelessWidget {
         Provider<VoipgridService>.value(
           value: service,
         ),
+        Provider<Database>(
+          create: (_) => Database(),
+        ),
         Provider<EnvRepository>.value(
           value: envRepository,
         ),
@@ -129,7 +134,11 @@ class App extends StatelessWidget {
           create: (_) => DeviceContactsRepository(),
         ),
         Provider<RecentCallRepository>(
-          create: (_) => DataRecentCallRepository(),
+          create: (context) => DataRecentCallRepository(
+            service,
+            Provider.of<Database>(context, listen: false),
+            Provider.of<ContactRepository>(context, listen: false),
+          ),
         ),
         Provider<CallRepository>(
           create: (_) => DataCallRepository(),

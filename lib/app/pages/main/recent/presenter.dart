@@ -1,6 +1,8 @@
+import 'package:meta/meta.dart';
+
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 
-import '../../../../domain/entities/recent_call.dart';
+import '../../../../domain/entities/call.dart';
 import '../../../../domain/repositories/recent_call.dart';
 import '../../../../domain/usecases/get_recent_calls.dart';
 
@@ -12,8 +14,15 @@ class RecentPresenter extends Presenter {
   RecentPresenter(RecentCallRepository recentCallRepository)
       : _getRecentCallsUseCase = GetRecentCallsUseCase(recentCallRepository);
 
-  void getRecentCalls() {
-    _getRecentCallsUseCase.execute(_GetRecentCallsUseCaseObserver(this));
+
+
+  void getRecentCalls({@required int page}) {
+    _getRecentCallsUseCase.execute(
+      _GetRecentCallsUseCaseObserver(this),
+      GetRecentCallsUseCaseParams(
+        page: page,
+      ),
+    );
   }
 
   @override
@@ -22,7 +31,7 @@ class RecentPresenter extends Presenter {
   }
 }
 
-class _GetRecentCallsUseCaseObserver extends Observer<List<RecentCall>> {
+class _GetRecentCallsUseCaseObserver extends Observer<List<Call>> {
   final RecentPresenter presenter;
 
   _GetRecentCallsUseCaseObserver(this.presenter);
@@ -34,6 +43,6 @@ class _GetRecentCallsUseCaseObserver extends Observer<List<RecentCall>> {
   void onError(dynamic e) {}
 
   @override
-  void onNext(List<RecentCall> recentCalls) =>
+  void onNext(List<Call> recentCalls) =>
       presenter.recentCallsOnNext(recentCalls);
 }

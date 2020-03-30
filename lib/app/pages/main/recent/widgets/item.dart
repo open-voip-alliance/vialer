@@ -3,22 +3,22 @@ import 'package:intl/intl.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 import '../../../../resources/theme.dart';
-import '../../../../../domain/entities/recent_call.dart';
+import '../../../../../domain/entities/call.dart';
 
 import '../../../../resources/localizations.dart';
 
 class RecentCallItem extends StatelessWidget {
-  final RecentCall item;
+  final Call call;
 
-  const RecentCallItem({Key key, this.item}) : super(key: key);
+  const RecentCallItem({Key key, this.call}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
       contentPadding: EdgeInsets.zero,
-      leading: _RecentItemAvatar(item),
-      title: Text(item.name ?? item.phoneNumber),
-      subtitle: _RecentItemSubtitle(item),
+      leading: _RecentItemAvatar(call),
+      title: Text(call.destinationContactName ?? call.destinationNumber),
+      subtitle: _RecentItemSubtitle(call),
       trailing: IconButton(
         icon: Icon(
           VialerSans.ellipsis,
@@ -32,12 +32,12 @@ class RecentCallItem extends StatelessWidget {
 }
 
 class _RecentItemAvatar extends StatelessWidget {
-  final RecentCall recentCall;
+  final Call call;
 
-  const _RecentItemAvatar(this.recentCall, {Key key}) : super(key: key);
+  const _RecentItemAvatar(this.call, {Key key}) : super(key: key);
 
   String get _letters {
-    final letters = recentCall.name.split(' ').map(
+    final letters = call.destinationNumber.split(' ').map(
           (word) => word.substring(0, 1).toUpperCase(),
         );
 
@@ -52,7 +52,7 @@ class _RecentItemAvatar extends StatelessWidget {
       child: CircleAvatar(
         foregroundColor: Colors.white,
         backgroundColor: context.brandTheme.grey3,
-        child: recentCall.name != null
+        child: call.destinationContactName != null
             ? Text(
                 _letters,
                 style: TextStyle(
@@ -67,26 +67,28 @@ class _RecentItemAvatar extends StatelessWidget {
 }
 
 class _RecentItemSubtitle extends StatelessWidget {
-  final RecentCall recentCall;
+  final Call call;
 
-  const _RecentItemSubtitle(this.recentCall, {Key key}) : super(key: key);
+  const _RecentItemSubtitle(this.call, {Key key}) : super(key: key);
 
   String _timeAgo(BuildContext context) => timeago.format(
-        recentCall.time,
+        call.date,
         locale: '${VialerLocalizations.of(context).locale.languageCode}_short',
       );
 
-  String _time(BuildContext context) => DateFormat.jm().format(recentCall.time);
+  String _time(BuildContext context) => DateFormat.jm().format(call.date);
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: <Widget>[
         Icon(
-          recentCall.isIncoming
-              ? VialerSans.outgoingCall
-              : VialerSans.incomingCall,
-          color: context.brandTheme.green1,
+          call.wasMissed
+              ? VialerSans.missedCall
+              : call.direction == Direction.outbound
+                  ? VialerSans.outgoingCall
+                  : VialerSans.incomingCall,
+          color: call.wasMissed ? Colors.red : context.brandTheme.green1,
           size: 12,
         ),
         SizedBox(width: 8),

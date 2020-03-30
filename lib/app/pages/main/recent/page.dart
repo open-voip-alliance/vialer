@@ -44,13 +44,17 @@ class _RecentPageState extends ViewState<RecentPage, RecentController> {
                 child: Header(context.msg.main.recent.title),
               ),
               Expanded(
-                child: ListView(
+                child: ListView.builder(
+                  controller: controller.scrollController,
                   padding: EdgeInsets.symmetric(horizontal: 16).copyWith(
                     bottom: widget.listBottomPadding,
                   ),
-                  children: controller.recentCalls
-                      .map((item) => RecentCallItem(item: item))
-                      .toList(),
+                  itemCount: controller.recentCalls.length,
+                  itemBuilder: (context, index) {
+                    return RecentCallItem(
+                      call: controller.recentCalls[index],
+                    );
+                  }
                 ),
               ),
             ],

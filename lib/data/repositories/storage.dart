@@ -31,17 +31,9 @@ class DeviceStorageRepository implements StorageRepository {
   set systemUser(SystemUser user) => _preferences.setString(
         _systemUserKey,
         json.encode(
-          user.toJson(),
+          user.toJson(includeToken: true),
         ),
       );
-
-  static const _apiTokenKey = 'api_token';
-
-  @override
-  String get apiToken => _preferences.getString(_apiTokenKey);
-
-  @override
-  set apiToken(String token) => _preferences.setString(_apiTokenKey, token);
 
   static const _settingsKey = 'settings';
 

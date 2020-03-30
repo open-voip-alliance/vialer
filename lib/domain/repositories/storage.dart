@@ -8,10 +8,6 @@ abstract class StorageRepository {
 
   set systemUser(SystemUser user);
 
-  String get apiToken;
-
-  set apiToken(String token);
-
   List<Setting> get settings;
 
   set settings(List<Setting> settings);

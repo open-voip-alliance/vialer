@@ -13,7 +13,7 @@ abstract class VoipgridService extends ChopperService {
     @required Uri baseUrl,
     AuthRepository authRepository,
   }) {
-    return _$VoipGridService(
+    return _$VoipgridService(
       ChopperClient(
         baseUrl: baseUrl.toString(),
         converter: JsonConverter(),
@@ -27,6 +27,14 @@ abstract class VoipgridService extends ChopperService {
 
   @Get(path: 'permission/systemuser/profile/')
   Future<Response> getSystemUser();
+
+  @Get(path: 'cdr/record/personalized/')
+  Future<Response> getPersonalCalls({
+    @Query('limit') int limit,
+    @Query('offset') int offset,
+    @Query('call_date__gt') String from,
+    @Query('call_date__lt') String to,
+  });
 }
 
 class _AuthorizationInterceptor implements RequestInterceptor {

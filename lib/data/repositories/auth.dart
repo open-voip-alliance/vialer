@@ -41,8 +41,6 @@ class DataAuthRepository extends AuthRepository {
     if (body != null && body.containsKey(_apiTokenKey)) {
       final token = body[_apiTokenKey];
 
-      _storageRepository.apiToken = token;
-
       // Set a temporary system user that the authorization interceptor will
       // use
       _currentUser = SystemUser(
@@ -73,7 +71,7 @@ class DataAuthRepository extends AuthRepository {
 
   @override
   Future<bool> isAuthenticated() async {
-    return _storageRepository.apiToken != null;
+    return currentUser?.token != null;
   }
 
   @override
