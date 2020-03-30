@@ -12,8 +12,11 @@ analyze:
     # needs to be another rule to be ignored added to the comment below.
     - >-
       echo "// ignore_for_file: unused_element, lines_longer_than_80_chars,
-      annotate_overrides, camel_case_types, prefer_single_quotes, unused_field"
+      annotate_overrides, camel_case_types, prefer_single_quotes, unused_field,
+      avoid_equals_and_hash_code_on_mutable_classes"
       | tee -a lib/app/resources/messages*.i18n.dart
+               lib/data/repositories/services/*.chopper.dart
+               lib/data/repositories/db/*.g.dart
     - dartanalyzer . --fatal-infos --fatal-warnings
 
 format:

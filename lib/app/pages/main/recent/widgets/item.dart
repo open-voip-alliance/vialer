@@ -17,7 +17,7 @@ class RecentCallItem extends StatelessWidget {
     return ListTile(
       contentPadding: EdgeInsets.zero,
       leading: _RecentItemAvatar(call),
-      title: Text(call.destinationContactName ?? call.destinationNumber),
+      title: Text(call.destinationName),
       subtitle: _RecentItemSubtitle(call),
       trailing: IconButton(
         icon: Icon(
@@ -37,11 +37,15 @@ class _RecentItemAvatar extends StatelessWidget {
   const _RecentItemAvatar(this.call, {Key key}) : super(key: key);
 
   String get _letters {
-    final letters = call.destinationNumber.split(' ').map(
+    final letters = call.destinationName.split(' ').map(
           (word) => word.substring(0, 1).toUpperCase(),
         );
 
-    return letters.first + letters.last;
+    if (letters.length == 1) {
+      return letters.first;
+    } else {
+      return letters.first + letters.last;
+    }
   }
 
   @override
@@ -99,4 +103,8 @@ class _RecentItemSubtitle extends StatelessWidget {
       ],
     );
   }
+}
+
+extension CallDestinationName on Call {
+  String get destinationName => destinationContactName ?? destinationNumber;
 }

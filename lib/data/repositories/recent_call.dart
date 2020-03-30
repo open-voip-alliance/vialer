@@ -1,4 +1,3 @@
-import 'package:chopper/chopper.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 

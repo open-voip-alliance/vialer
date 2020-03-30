@@ -54,7 +54,7 @@ class _RecentPageState extends ViewState<RecentPage, RecentController> {
                     return RecentCallItem(
                       call: controller.recentCalls[index],
                     );
-                  }
+                  },
                 ),
               ),
             ],

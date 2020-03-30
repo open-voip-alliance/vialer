@@ -14,8 +14,6 @@ class RecentPresenter extends Presenter {
   RecentPresenter(RecentCallRepository recentCallRepository)
       : _getRecentCallsUseCase = GetRecentCallsUseCase(recentCallRepository);
 
-
-
   void getRecentCalls({@required int page}) {
     _getRecentCallsUseCase.execute(
       _GetRecentCallsUseCaseObserver(this),

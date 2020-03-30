@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:vialer_lite/data/repositories/db/moor.dart';
 
 import '../domain/entities/brand.dart';
 
 import '../data/repositories/services/voipgrid.dart';
+
+import '../data/repositories/db/moor.dart';
 
 import '../domain/repositories/env.dart';
 import '../device/repositories/env.dart';
