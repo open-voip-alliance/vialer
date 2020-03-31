@@ -15,8 +15,8 @@ analyze:
       annotate_overrides, camel_case_types, prefer_single_quotes, unused_field,
       avoid_equals_and_hash_code_on_mutable_classes"
       | tee -a lib/app/resources/messages*.i18n.dart
-               lib/data/repositories/services/*.chopper.dart
-               lib/data/repositories/db/*.g.dart
+      lib/data/repositories/services/*.chopper.dart
+      lib/data/repositories/db/*.g.dart
     - dartanalyzer . --fatal-infos --fatal-warnings
 
 format:
