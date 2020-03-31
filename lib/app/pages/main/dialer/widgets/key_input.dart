@@ -9,8 +9,8 @@ class KeyInput extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextField(
       controller: controller,
-      focusNode: _NoFocusNode(),
       showCursor: true,
+      readOnly: true,
       decoration: InputDecoration(
         border: InputBorder.none,
       ),
@@ -20,9 +20,4 @@ class KeyInput extends StatelessWidget {
       ),
     );
   }
-}
-
-class _NoFocusNode extends FocusNode {
-  @override
-  bool get canRequestFocus => false;
 }

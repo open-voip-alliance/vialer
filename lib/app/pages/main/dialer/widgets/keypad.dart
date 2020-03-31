@@ -18,6 +18,12 @@ class Keypad extends StatefulWidget {
 class _KeypadState extends State<Keypad> {
   TextEditingController _controller;
 
+  /// This is necessary to keep track of because if the cursor has been shown
+  /// once in a readOnly text field, the cursor will be shown forever, even if
+  /// the offset is reported as -1. We need to update the position of the
+  /// cursor in that case.
+  final _cursorShownNotifier = ValueNotifier<bool>(false);
+
   final _buttonValues = {
     '1': null,
     '2': 'ABC',
@@ -54,6 +60,7 @@ class _KeypadState extends State<Keypad> {
               .map((entry) {
             return _ValueButton(
               controller: _controller,
+              cursorShownNotifier: _cursorShownNotifier,
               primaryValue: entry.key,
               secondaryValue: entry.value,
               replaceWithSecondaryValueOnLongPress:
@@ -77,6 +84,7 @@ class _KeypadState extends State<Keypad> {
           ),
           _DeleteButton(
             controller: _controller,
+            cursorShownNotifier: _cursorShownNotifier,
           ),
         ],
       ),
@@ -153,7 +161,7 @@ class _KeypadButton extends StatelessWidget {
   }
 }
 
-class _ValueButton extends StatelessWidget {
+class _ValueButton extends StatefulWidget {
   final String primaryValue;
   final String secondaryValue;
 
@@ -162,44 +170,78 @@ class _ValueButton extends StatelessWidget {
   /// Controller to push text to on press.
   final TextEditingController controller;
 
+  final ValueNotifier<bool> cursorShownNotifier;
+
+  const _ValueButton({
+    Key key,
+    @required this.primaryValue,
+    this.secondaryValue,
+    this.replaceWithSecondaryValueOnLongPress = false,
+    @required this.controller,
+    @required this.cursorShownNotifier,
+  }) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => _ValueButtonState();
+}
+
+class _ValueButtonState extends State<_ValueButton> {
+  TextEditingController get _controller => widget.controller;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   void _enterValue() {
-    final offset = controller.selection.baseOffset;
-    if (offset != -1) {
-      final currentText = controller.text;
+    final baseOffset = _controller.selection.baseOffset;
+    final extentOffset = _controller.selection.extentOffset;
 
-      final start = currentText.substring(0, offset);
-      final end = currentText.substring(offset);
+    final hasOffset = baseOffset >= 0 && extentOffset >= 0;
 
-      controller.text = start + primaryValue + end;
+    final text = _controller.text;
+
+    String start, end;
+    if (hasOffset) {
+      start = text.substring(0, baseOffset);
+      end = text.substring(extentOffset);
     } else {
-      controller.text += primaryValue;
+      start = text;
+      end = '';
+    }
+
+    final cursorShown = widget.cursorShownNotifier.value;
+
+    _controller.value = _controller.value.copyWith(
+      text: start + widget.primaryValue + end,
+      selection: TextSelection.collapsed(
+        offset: hasOffset || cursorShown
+            ? start.length + widget.primaryValue.length
+            : -1,
+      ),
+    );
+
+    if (hasOffset) {
+      widget.cursorShownNotifier.value = true;
     }
   }
 
   void _replaceWithSecondaryValue() {
-    var offset = controller.selection.baseOffset;
+    final offset = _controller.selection.extentOffset;
 
-    if (offset < 0) {
-      offset = controller.text.length - 1;
-    }
+    final text = _controller.text;
 
-    final currentText = controller.text;
+    final hasOffset = offset >= 0;
 
-    final start = currentText.substring(0, offset);
-    final end = currentText.substring(offset + 1);
+    final start = text.substring(0, hasOffset ? offset - 1 : text.length - 1);
+    final end = hasOffset ? text.substring(offset) : '';
 
-    controller.text = start + secondaryValue + end;
+    _controller.value = _controller.value.copyWith(
+      text: start + widget.secondaryValue + end,
+    );
   }
 
-  bool get _primaryIsNumber => int.tryParse(primaryValue) != null;
-
-  const _ValueButton({
-    Key key,
-    this.primaryValue,
-    this.secondaryValue,
-    this.controller,
-    this.replaceWithSecondaryValueOnLongPress = false,
-  }) : super(key: key);
+  bool get _primaryIsNumber => int.tryParse(widget.primaryValue) != null;
 
   @override
   Widget build(BuildContext context) {
@@ -215,7 +257,7 @@ class _ValueButton extends StatelessWidget {
           customBorder: CircleBorder(),
           enableFeedback: true,
           onTapDown: _enterValue,
-          onLongPress: replaceWithSecondaryValueOnLongPress
+          onLongPress: widget.replaceWithSecondaryValueOnLongPress
               ? _replaceWithSecondaryValue
               : null,
           child: Column(
@@ -223,7 +265,7 @@ class _ValueButton extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Text(
-                primaryValue,
+                widget.primaryValue,
                 style: TextStyle(
                   fontSize: 32,
                   color: !_primaryIsNumber
@@ -233,9 +275,9 @@ class _ValueButton extends StatelessWidget {
               ),
               // Render an empty string on non-iOS platforms
               // to keep the alignments proper
-              if (secondaryValue != null || !context.isIOS)
+              if (widget.secondaryValue != null || !context.isIOS)
                 Text(
-                  secondaryValue ?? '',
+                  widget.secondaryValue ?? '',
                   style: TextStyle(
                     color: context.brandTheme.grey5,
                     fontSize: 12,
@@ -274,8 +316,13 @@ class _CallButton extends StatelessWidget {
 
 class _DeleteButton extends StatefulWidget {
   final TextEditingController controller;
+  final ValueNotifier<bool> cursorShownNotifier;
 
-  const _DeleteButton({Key key, this.controller}) : super(key: key);
+  const _DeleteButton({
+    Key key,
+    @required this.cursorShownNotifier,
+    @required this.controller,
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _DeleteButtonState();
@@ -290,7 +337,7 @@ class _DeleteButtonState extends State<_DeleteButton> {
   void initState() {
     super.initState();
 
-    _controller?.addListener(() {
+    _controller.addListener(() {
       if (_controller.text.isNotEmpty) {
         setState(() {
           _visible = true;
@@ -303,19 +350,46 @@ class _DeleteButtonState extends State<_DeleteButton> {
     });
   }
 
-  void _deletePrevious() {
-    if (_controller != null && _controller.text.isNotEmpty) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        final text = _controller.text;
-        _controller.text = text.substring(0, text.length - 1);
-      });
+  void _delete() {
+    if (_controller.text.isNotEmpty) {
+      final baseOffset = _controller.selection.baseOffset;
+      final extentOffset = _controller.selection.extentOffset;
+
+      if (baseOffset == 0 && extentOffset == 0) {
+        return;
+      }
+
+      final hasOffset = baseOffset >= 0 && extentOffset >= 0;
+
+      final text = _controller.text;
+
+      final cursorShown = widget.cursorShownNotifier.value;
+
+      String start, end;
+      if (hasOffset) {
+        start = text.substring(
+          0,
+          baseOffset == extentOffset ? baseOffset - 1 : baseOffset,
+        );
+        end = text.substring(extentOffset);
+      } else {
+        start = text.substring(0, text.length - 1);
+        end = '';
+      }
+
+      widget.controller.value = _controller.value.copyWith(
+        text: start + end,
+        selection: TextSelection.collapsed(
+          offset: hasOffset || cursorShown
+              ? baseOffset == extentOffset ? baseOffset - 1 : baseOffset
+              : -1,
+        ),
+      );
     }
   }
 
   void _deleteAll() {
-    if (_controller != null) {
-      _controller.clear();
-    }
+    _controller.clear();
   }
 
   @override
@@ -326,7 +400,7 @@ class _DeleteButtonState extends State<_DeleteButton> {
       curve: Curves.decelerate,
       child: _KeypadButton(
         child: InkResponse(
-          onTap: _visible ? _deletePrevious : null,
+          onTap: _visible ? _delete : null,
           onLongPress: _visible ? _deleteAll : null,
           child: Icon(
             VialerSans.correct,
