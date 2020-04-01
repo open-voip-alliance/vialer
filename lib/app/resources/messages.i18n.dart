@@ -81,12 +81,26 @@ class RecentMainMessages {
 	const RecentMainMessages(this._parent);
 	String get title => "Recent calls";
 	MenuRecentMainMessages get menu => MenuRecentMainMessages(this);
+	ListRecentMainMessages get list => ListRecentMainMessages(this);
 }
 
 class MenuRecentMainMessages {
 	final RecentMainMessages _parent;
 	const MenuRecentMainMessages(this._parent);
 	String get title => "Recent";
+}
+
+class ListRecentMainMessages {
+	final RecentMainMessages _parent;
+	const ListRecentMainMessages(this._parent);
+	EmptyListRecentMainMessages get empty => EmptyListRecentMainMessages(this);
+}
+
+class EmptyListRecentMainMessages {
+	final ListRecentMainMessages _parent;
+	const EmptyListRecentMainMessages(this._parent);
+	String get title => "No recent activity";
+	String get description => "There is no recent call activity to show. Once you make or receive a call, it will appear here.";
 }
 
 class ContactsMainMessages {

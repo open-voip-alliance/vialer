@@ -22,6 +22,12 @@ main:
     title: "Recent calls"
     menu:
       title: "Recent"
+    list:
+      empty:
+        title: "No recent activity"
+        description: >-
+          There is no recent call activity to show. Once you make or
+          receive a call, it will appear here.
 
   contacts:
     title: &contactsTitle "Contacts"

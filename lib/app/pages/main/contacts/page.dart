@@ -17,6 +17,7 @@ import '../../../resources/theme.dart';
 
 import '../../../widgets/stylized_button.dart';
 import '../widgets/header.dart';
+import '../widgets/list_placeholder.dart';
 import 'widgets/item.dart';
 import 'widgets/letter_header.dart';
 
@@ -70,73 +71,52 @@ class _ContactPageState extends ViewState<ContactsPage, ContactsController> {
                 padding: EdgeInsets.symmetric(horizontal: 16),
                 child: Header(context.msg.main.contacts.title),
               ),
-              _listOrPlaceholder(),
+              Expanded(
+                child: ConditionalPlaceholder(
+                  showPlaceholder: controller.contacts.isEmpty,
+                  placeholder: controller.hasPermission
+                      ? ListPlaceholder(
+                          icon: Icon(VialerSans.userOff),
+                          title: Text(
+                            context.msg.main.contacts.list.empty.title,
+                          ),
+                          description: Text(
+                            context.msg.main.contacts.list.empty.description,
+                          ),
+                        )
+                      : ListPlaceholder(
+                          icon: Icon(VialerSans.lockOn),
+                          title: Text(
+                            context.msg.main.contacts.list.noPermission.title,
+                          ),
+                          description: Text(
+                            context.msg.main.contacts.list.noPermission
+                                .description,
+                          ),
+                          children: <Widget>[
+                            SizedBox(height: 40),
+                            StylizedButton.raised(
+                              colored: true,
+                              onPressed: controller.askPermission,
+                              child: Text(
+                                context
+                                    .msg.main.contacts.list.noPermission.button
+                                    .toUpperCaseIfAndroid(context),
+                              ),
+                            ),
+                          ],
+                        ),
+                  child: _AlphabetListView(
+                    bottomLettersPadding: widget.bottomLettersPadding,
+                    children: _mapToWidgets(controller.contacts),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
       ),
     );
-  }
-
-  Widget _listOrPlaceholder() {
-    if (controller.contacts.isNotEmpty) {
-      return Expanded(
-        child: _AlphabetListView(
-          bottomLettersPadding: widget.bottomLettersPadding,
-          children: _mapToWidgets(controller.contacts),
-        ),
-      );
-    } else {
-      const padding = EdgeInsets.symmetric(horizontal: 12);
-
-      return SizedBox(
-        width: double.infinity,
-        child: Padding(
-          padding: EdgeInsets.only(
-            left: 64,
-            right: 64,
-            top: 84,
-          ),
-          child: controller.hasPermission
-              ? Padding(
-                  padding: padding,
-                  child: _Placeholder(
-                    icon: Icon(VialerSans.userOff),
-                    title: Text(context.msg.main.contacts.list.empty.title),
-                    description:
-                        Text(context.msg.main.contacts.list.empty.description),
-                  ),
-                )
-              : Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Padding(
-                      padding: padding,
-                      child: _Placeholder(
-                        icon: Icon(VialerSans.lockOn),
-                        title: Text(
-                          context.msg.main.contacts.list.noPermission.title,
-                        ),
-                        description: Text(
-                          context
-                              .msg.main.contacts.list.noPermission.description,
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 40),
-                    StylizedButton.raised(
-                      colored: true,
-                      onPressed: controller.askPermission,
-                      child: Text(
-                        context.msg.main.contacts.list.noPermission.button
-                            .toUpperCaseIfAndroid(context),
-                      ),
-                    ),
-                  ],
-                ),
-        ),
-      );
-    }
   }
 
   List<Widget> _mapToWidgets(Iterable<Contact> contacts) {
@@ -159,88 +139,6 @@ class _ContactPageState extends ViewState<ContactsPage, ContactsController> {
     }
 
     return widgets;
-  }
-}
-
-class _Placeholder extends StatelessWidget {
-  final Widget icon;
-  final Widget title;
-  final Widget description;
-
-  const _Placeholder({
-    Key key,
-    @required this.icon,
-    @required this.title,
-    @required this.description,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        _Illustration(
-          child: icon,
-        ),
-        SizedBox(height: 20),
-        DefaultTextStyle.merge(
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
-          child: title,
-        ),
-        SizedBox(height: 16),
-        DefaultTextStyle.merge(
-          style: TextStyle(
-            fontSize: 16,
-          ),
-          textAlign: TextAlign.center,
-          child: description,
-        ),
-      ],
-    );
-  }
-}
-
-class _Illustration extends StatelessWidget {
-  final Widget child;
-
-  const _Illustration({Key key, @required this.child}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    const size = 96.0;
-    const borderWidth = 20.0;
-    const padding = 24.0;
-    final backgroundColor = Theme.of(context).primaryColorLight;
-
-    return Container(
-      width: size + padding + borderWidth,
-      height: size + padding + borderWidth,
-      padding: EdgeInsets.all(borderWidth),
-      decoration: BoxDecoration(
-        color: backgroundColor.withOpacity(0.40),
-        shape: BoxShape.circle,
-      ),
-      child: Container(
-        padding: EdgeInsets.all(padding),
-        decoration: BoxDecoration(
-          color: backgroundColor,
-          shape: BoxShape.circle,
-        ),
-        child: IconTheme(
-          data: IconTheme.of(context).copyWith(
-            color: Theme.of(context).primaryColor,
-            size: 48,
-          ),
-          child: Center(
-            child: child,
-          ),
-        ),
-      ),
-    );
   }
 }
 

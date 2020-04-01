@@ -22,6 +22,12 @@ main:
     title: "Recente gesprekken"
     menu:
       title: "Recent"
+    list:
+      empty:
+        title: "Geen recente activiteit"
+        description: >-
+          Er is geen recente gespreks activiteit om te tonen. Zodra je
+          iemand belt of zelf gebeld wordt, zal het hier verschijnen.
 
   contacts:
     title: &contactsTitle "Contacten"

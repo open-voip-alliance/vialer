@@ -82,12 +82,26 @@ class RecentMainMessages_nl extends RecentMainMessages {
 	const RecentMainMessages_nl(this._parent):super(_parent);
 	String get title => "Recente gesprekken";
 	MenuRecentMainMessages_nl get menu => MenuRecentMainMessages_nl(this);
+	ListRecentMainMessages_nl get list => ListRecentMainMessages_nl(this);
 }
 
 class MenuRecentMainMessages_nl extends MenuRecentMainMessages {
 	final RecentMainMessages_nl _parent;
 	const MenuRecentMainMessages_nl(this._parent):super(_parent);
 	String get title => "Recent";
+}
+
+class ListRecentMainMessages_nl extends ListRecentMainMessages {
+	final RecentMainMessages_nl _parent;
+	const ListRecentMainMessages_nl(this._parent):super(_parent);
+	EmptyListRecentMainMessages_nl get empty => EmptyListRecentMainMessages_nl(this);
+}
+
+class EmptyListRecentMainMessages_nl extends EmptyListRecentMainMessages {
+	final ListRecentMainMessages_nl _parent;
+	const EmptyListRecentMainMessages_nl(this._parent):super(_parent);
+	String get title => "Geen recente activiteit";
+	String get description => "Er is geen recente gespreks activiteit om te tonen. Zodra je iemand belt of zelf gebeld wordt, zal het hier verschijnen.";
 }
 
 class ContactsMainMessages_nl extends ContactsMainMessages {

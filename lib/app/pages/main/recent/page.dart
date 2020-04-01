@@ -3,11 +3,14 @@ import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 
 import '../../../../domain/repositories/recent_call.dart';
 
+import '../../../resources/theme.dart';
+import '../../../resources/localizations.dart';
+
 import '../widgets/header.dart';
-import 'controller.dart';
+import '../widgets/list_placeholder.dart';
 import 'widgets/item.dart';
 
-import '../../../resources/localizations.dart';
+import 'controller.dart';
 
 class RecentPage extends View {
   final RecentCallRepository _recentCallRepository;
@@ -44,17 +47,27 @@ class _RecentPageState extends ViewState<RecentPage, RecentController> {
                 child: Header(context.msg.main.recent.title),
               ),
               Expanded(
-                child: ListView.builder(
-                  controller: controller.scrollController,
-                  padding: EdgeInsets.symmetric(horizontal: 16).copyWith(
-                    bottom: widget.listBottomPadding,
+                child: ConditionalPlaceholder(
+                  showPlaceholder: controller.recentCalls.isEmpty,
+                  placeholder: ListPlaceholder(
+                    icon: Icon(VialerSans.missedCall),
+                    title: Text(context.msg.main.recent.list.empty.title),
+                    description: Text(
+                      context.msg.main.recent.list.empty.description,
+                    ),
                   ),
-                  itemCount: controller.recentCalls.length,
-                  itemBuilder: (context, index) {
-                    return RecentCallItem(
-                      call: controller.recentCalls[index],
-                    );
-                  },
+                  child: ListView.builder(
+                    controller: controller.scrollController,
+                    padding: EdgeInsets.symmetric(horizontal: 16).copyWith(
+                      bottom: widget.listBottomPadding,
+                    ),
+                    itemCount: controller.recentCalls.length,
+                    itemBuilder: (context, index) {
+                      return RecentCallItem(
+                        call: controller.recentCalls[index],
+                      );
+                    },
+                  ),
                 ),
               ),
             ],
