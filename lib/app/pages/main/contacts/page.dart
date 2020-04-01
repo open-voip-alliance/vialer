@@ -101,7 +101,7 @@ class _ContactPageState extends ViewState<ContactsPage, ContactsController> {
               ? Padding(
                   padding: padding,
                   child: _Placeholder(
-                    icon: Icon(VialerSans.contacts),
+                    icon: Icon(VialerSans.userOff),
                     title: Text(context.msg.main.contacts.list.empty.title),
                     description:
                         Text(context.msg.main.contacts.list.empty.description),

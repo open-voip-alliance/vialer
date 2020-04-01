@@ -19,7 +19,7 @@ extension CategoryMapper on Category {
     switch (this) {
       case Category.debug:
         return CategoryInfo(
-          VialerSans.speaker,
+          VialerSans.bug,
           context.msg.main.settings.list.debug.title,
         );
       default:

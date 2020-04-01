@@ -165,4 +165,6 @@ abstract class VialerSans {
   static const voicemail = IconData(0xE98B, fontFamily: _family);
   static const mail = IconData(0xE95B, fontFamily: _family);
   static const exclamationMark = IconData(0xE915, fontFamily: _family);
+  static const bug = IconData(0xE90D, fontFamily: _family);
+  static const userOff = IconData(0xE9A9, fontFamily: _family);
 }
