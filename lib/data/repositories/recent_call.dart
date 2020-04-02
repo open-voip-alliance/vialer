@@ -1,5 +1,6 @@
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
+import 'package:timezone/timezone.dart';
 
 import 'db/moor.dart';
 import 'services/voipgrid.dart';
@@ -49,7 +50,27 @@ class DataRecentCallRepository extends RecentCallRepository {
       final objects = response.body['objects'] as List<dynamic> ?? [];
 
       if (objects.isNotEmpty) {
-        calls = objects.map((obj) => Call.fromJson(obj)).toList();
+        calls = objects
+            .map((obj) => Call.fromJson(obj))
+            .map(
+              (c) => c.copyWith(
+                // The wrapper is needed so that it's a normal
+                // DateTime and not a TZDateTime, because we want to call
+                // the DateTime.toLocal method, not TZDateTime.toLocal, because
+                // the latter uses the location set with `setLocation`, which
+                // we can't use becauise we can't get the current time zone
+                // automatically, but DateTime.toLocal  _will_ convert it to the
+                // correct current time zone.
+                date: DateTime.fromMillisecondsSinceEpoch(
+                  TZDateTime.from(
+                    c.date,
+                    getLocation('Europe/Amsterdam'),
+                  ).toUtc().millisecondsSinceEpoch,
+                  isUtc: true,
+                ),
+              ),
+            )
+            .toList();
         _logger.info('Amount of calls from request: ${calls.length}');
         _database.insertCalls(calls);
       }
@@ -57,7 +78,7 @@ class DataRecentCallRepository extends RecentCallRepository {
 
     final contacts = await _contactRepository.getContacts();
 
-    _logger.info('Mapping calls to contacts');
+    _logger.info('Mapping calls to contacts and correct local time');
     calls = calls
         .map(
           (call) => call.copyWith(
@@ -72,6 +93,7 @@ class DataRecentCallRepository extends RecentCallRepository {
                   orElse: () => null,
                 )
                 ?.name,
+            localDate: call.date.toLocal(),
           ),
         )
         .toList();

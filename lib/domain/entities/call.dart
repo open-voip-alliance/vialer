@@ -11,7 +11,11 @@ class Call {
 
   final int id;
 
+  /// Always UTC.
   final DateTime date;
+
+  /// Not saved.
+  final DateTime localDate;
 
   final Duration duration;
 
@@ -23,7 +27,7 @@ class Call {
 
   final String destinationNumber;
 
-  // Not saved, should always be up to date with the current contact
+  /// Not saved, should always be up to date with the current contact.
   final String destinationContactName;
 
   final Direction direction;
@@ -34,6 +38,7 @@ class Call {
   Call({
     this.id,
     this.date,
+    this.localDate,
     this.duration,
     this.callerNumber,
     this.sourceNumber,
@@ -61,6 +66,7 @@ class Call {
   Call copyWith({
     String id,
     DateTime date,
+    DateTime localDate,
     Duration duration,
     String callerNumber,
     String sourceNumber,
@@ -73,6 +79,7 @@ class Call {
     return Call(
       id: id ?? this.id,
       date: date ?? this.date,
+      localDate: localDate ?? this.localDate,
       duration: duration ?? this.duration,
       callerNumber: callerNumber ?? this.callerNumber,
       sourceNumber: sourceNumber ?? this.sourceNumber,

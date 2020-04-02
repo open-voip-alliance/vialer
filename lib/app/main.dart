@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:timezone/data/latest.dart';
 
 import '../domain/entities/brand.dart';
 
@@ -46,6 +47,8 @@ import 'sentry.dart' as sentry;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  initializeTimeZones();
 
   final brand = Voys();
 

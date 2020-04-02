@@ -76,11 +76,11 @@ class _RecentItemSubtitle extends StatelessWidget {
   const _RecentItemSubtitle(this.call, {Key key}) : super(key: key);
 
   String _timeAgo(BuildContext context) => timeago.format(
-        call.date,
+        call.localDate,
         locale: '${VialerLocalizations.of(context).locale.languageCode}_short',
       );
 
-  String _time(BuildContext context) => DateFormat.jm().format(call.date);
+  String _time(BuildContext context) => DateFormat.jm().format(call.localDate);
 
   @override
   Widget build(BuildContext context) {

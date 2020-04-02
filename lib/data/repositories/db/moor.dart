@@ -73,7 +73,10 @@ class Database extends _$Database {
         .map(
           (r) => Call(
             id: r.id,
-            date: r.date,
+            // Because dates in Moor are stored as Unix times and they don't
+            // specify isUtc true in the DateTime Unix time constructor,
+            // the r.date is local and needs to be converted to UTC time.
+            date: r.date.toUtc(),
             duration: r.duration,
             callerNumber: r.callerNumber,
             sourceNumber: r.sourceNumber,
