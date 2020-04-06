@@ -14,7 +14,6 @@ domain.PermissionStatus mapPermissionStatusToDomainPermissionStatus(
 
     case PermissionStatus.neverAskAgain:
     case PermissionStatus.restricted:
-    case PermissionStatus.disabled:
     case PermissionStatus.unknown:
     default:
       return domain.PermissionStatus.unavailable;
