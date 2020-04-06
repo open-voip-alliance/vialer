@@ -47,7 +47,7 @@ class _AuthorizationInterceptor implements RequestInterceptor {
     final user = _authRepository.currentUser;
 
     if (user != null) {
-      return request.replace(
+      return request.copyWith(
         headers: Map.of(request.headers)
           ..addAll({
             'Authorization': 'Token ${user.email}:${user.token}',
