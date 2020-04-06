@@ -70,44 +70,56 @@ class Database extends _$Database {
           ..orderBy(
             [(c) => OrderingTerm.desc(c.date)],
           ))
-        .map(
-          (r) => Call(
-            id: r.id,
-            // Because dates in Moor are stored as Unix times and they don't
-            // specify isUtc true in the DateTime Unix time constructor,
-            // the r.date is local and needs to be converted to UTC time.
-            date: r.date.toUtc(),
-            duration: r.duration,
-            callerNumber: r.callerNumber,
-            sourceNumber: r.sourceNumber,
-            callerId: r.callerId,
-            originalCallerId: r.originalCallerId,
-            destinationNumber: r.destinationNumber,
-            direction: r.direction,
-          ),
-        )
+        .map((r) => r.toCall())
         .get();
   }
 
-  Future<void> insertCalls(List<Call> entries) async {
+  Future<Call> getMostRecentCall() async {
+    return (select(calls)
+          ..orderBy([(c) => OrderingTerm.desc(c.date)])
+          ..limit(1))
+        .map((c) => c.toCall())
+        .getSingle();
+  }
+
+  Future<void> insertCalls(List<Call> values) async {
     await batch((batch) {
-      batch.insertAll(
-          calls,
-          entries
-              .map(
-                (e) => CallRecord(
-                  id: e.id,
-                  date: e.date,
-                  duration: e.duration,
-                  callerNumber: e.callerNumber,
-                  sourceNumber: e.sourceNumber,
-                  callerId: e.callerId,
-                  originalCallerId: e.originalCallerId,
-                  destinationNumber: e.destinationNumber,
-                  direction: e.direction,
-                ),
-              )
-              .toList());
+      batch.insertAll(calls, values.map((c) => c.toRecord()).toList());
     });
+  }
+}
+
+extension on CallRecord {
+  Call toCall() {
+    return Call(
+      id: id,
+      // Because dates in Moor are stored as Unix times and they don't
+      // specify isUtc true in the DateTime Unix time constructor,
+      // the r.date is local and needs to be converted to UTC time.
+      date: date.toUtc(),
+      duration: duration,
+      callerNumber: callerNumber,
+      sourceNumber: sourceNumber,
+      callerId: callerId,
+      originalCallerId: originalCallerId,
+      destinationNumber: destinationNumber,
+      direction: direction,
+    );
+  }
+}
+
+extension on Call {
+  CallRecord toRecord() {
+    return CallRecord(
+      id: id,
+      date: date,
+      duration: duration,
+      callerNumber: callerNumber,
+      sourceNumber: sourceNumber,
+      callerId: callerId,
+      originalCallerId: originalCallerId,
+      destinationNumber: destinationNumber,
+      direction: direction,
+    );
   }
 }

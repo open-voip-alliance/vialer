@@ -25,6 +25,8 @@ class DataRecentCallRepository extends RecentCallRepository {
 
   Logger get _logger => __logger ??= Logger('@$runtimeType');
 
+  int _cacheStartPage;
+
   @override
   Future<List<Call>> getRecentCalls({@required int page}) async {
     const days = 30;
@@ -38,8 +40,13 @@ class DataRecentCallRepository extends RecentCallRepository {
       '${to.toIso8601String()} and ${from.toIso8601String()}',
     );
 
-    calls = await _database.getCalls(from: from, to: to);
-    _logger.info('Amount of calls from cache: ${calls.length}');
+    // Never get from cache for the first page, and then only
+    // from when we're sure there's nothing remote
+    if (page != 0 && page >= (_cacheStartPage ?? 0)) {
+      calls = await _database.getCalls(from: from, to: to);
+      _logger.info('Amount of calls from cache: ${calls.length}');
+    }
+
     if (calls.isEmpty) {
       _logger.info('None cached, request more via API');
       final response = await _service.getPersonalCalls(
@@ -59,18 +66,27 @@ class DataRecentCallRepository extends RecentCallRepository {
                 // the DateTime.toLocal method, not TZDateTime.toLocal, because
                 // the latter uses the location set with `setLocation`, which
                 // we can't use becauise we can't get the current time zone
-                // automatically, but DateTime.toLocal  _will_ convert it to the
+                // automatically, but DateTime.toLocal _will_ convert it to the
                 // correct current time zone.
                 date: DateTime.fromMillisecondsSinceEpoch(
                   TZDateTime.from(
                     c.date,
                     getLocation('Europe/Amsterdam'),
-                  ).toUtc().millisecondsSinceEpoch,
+                  ).millisecondsSinceEpoch,
                   isUtc: true,
                 ),
               ),
             )
             .toList();
+
+        final mostRecentCall = await _database.getMostRecentCall();
+        if (mostRecentCall != null &&
+            calls.any((c) => c.id == mostRecentCall.id)) {
+          // If the response contains the most recent call we got, we can
+          // continue from cache
+          _cacheStartPage = page;
+        }
+
         _logger.info('Amount of calls from request: ${calls.length}');
         _database.insertCalls(calls);
       }
