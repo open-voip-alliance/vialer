@@ -15,13 +15,10 @@ class TransparentStatusBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = brightness == Brightness.dark
-        ? SystemUiOverlayStyle.dark
-        : SystemUiOverlayStyle.light;
-
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: style.copyWith(
+      value: SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
+        statusBarIconBrightness: brightness,
       ),
       child: child,
     );
