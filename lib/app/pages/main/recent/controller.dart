@@ -69,6 +69,12 @@ class RecentController extends Controller {
   }
 
   @override
+  void onResumed() {
+    super.onResumed();
+    getRecentCalls();
+  }
+
+  @override
   void initListeners() {
     _presenter.recentCallsOnNext = _onRecentCallsUpdated;
   }
