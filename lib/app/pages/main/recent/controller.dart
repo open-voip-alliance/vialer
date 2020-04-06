@@ -51,6 +51,7 @@ class RecentController extends Controller {
       _emptyCount++;
 
       if (_emptyCount >= 3) {
+        logger.info('End reached');
         _endReached = true;
       }
 
