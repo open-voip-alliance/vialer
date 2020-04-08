@@ -21,12 +21,6 @@ Future<void> run(
 
   final sentry = SentryClient(dsn: dsn);
 
-  runZoned(
-    f,
-    onError: (error, stackTrace) =>
-        _capture(authRepository, sentry, error, stackTrace),
-  );
-
   FlutterError.onError = (details, {forceReport = false}) => _capture(
         authRepository,
         sentry,
@@ -37,6 +31,12 @@ Future<void> run(
           forceReport: forceReport,
         ),
       );
+
+  runZoned(
+    f,
+    onError: (error, stackTrace) =>
+        _capture(authRepository, sentry, error, stackTrace),
+  );
 }
 
 Future<void> _capture(
