@@ -83,6 +83,7 @@ class _MainPageState extends State<MainPage> {
         ),
         RecentPage(
           Provider.of<RecentCallRepository>(context),
+          Provider.of<CallRepository>(context),
           listBottomPadding: 96,
         ),
         SettingsPage(

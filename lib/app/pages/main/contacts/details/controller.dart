@@ -65,5 +65,5 @@ class ContactDetailsController extends Controller with Caller {
   }
 
   @override
-  void executeCall(String destination) => _presenter.call(destination);
+  void executeCallUseCase(String destination) => _presenter.call(destination);
 }

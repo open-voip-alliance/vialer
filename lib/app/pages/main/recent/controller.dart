@@ -1,20 +1,28 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
+import 'package:flutter_segment/flutter_segment.dart';
 
+import '../dialer/caller.dart';
+
+import '../../../../domain/repositories/call.dart';
 import '../../../../domain/repositories/recent_call.dart';
 import '../../../../domain/entities/call.dart';
 
+import '../../../util/debug.dart';
+
 import 'presenter.dart';
 
-class RecentController extends Controller {
+class RecentController extends Controller with Caller {
   final RecentPresenter _presenter;
 
   final recentCalls = <Call>[];
 
   final scrollController = ScrollController();
 
-  RecentController(RecentCallRepository recentCallRepository)
-      : _presenter = RecentPresenter(recentCallRepository);
+  RecentController(
+    RecentCallRepository recentCallRepository,
+    CallRepository callRepository,
+  ) : _presenter = RecentPresenter(recentCallRepository, callRepository);
 
   int _page = 0;
 
@@ -40,6 +48,17 @@ class RecentController extends Controller {
       }
     });
   }
+
+  @override
+  void call(String destination) {
+    doIfNotDebug(() {
+      Segment.track(eventName: 'call', properties: {'via': 'recent'});
+    });
+    super.call(destination);
+  }
+
+  @override
+  void executeCallUseCase(String destination) => _presenter.call(destination);
 
   void getRecentCalls() {
     _presenter.getRecentCalls(page: _page);

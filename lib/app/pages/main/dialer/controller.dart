@@ -45,7 +45,7 @@ class DialerController extends Controller with Caller {
   void startCall() => call(keypadController.text);
 
   @override
-  void executeCall(String destination) => _presenter.call(destination);
+  void executeCallUseCase(String destination) => _presenter.call(destination);
 
   void _onCheckCallPermissionNext(PermissionStatus status) {
     logger.info('Call permission is: $status');

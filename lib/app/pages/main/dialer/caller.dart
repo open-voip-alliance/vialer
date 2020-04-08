@@ -6,7 +6,7 @@ import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'confirm/page.dart';
 
 mixin Caller on Controller {
-  void executeCall(String destination);
+  void executeCallUseCase(String destination);
 
   void call(String destination) {
     if (Platform.isIOS) {
@@ -17,7 +17,7 @@ mixin Caller on Controller {
       );
     } else {
       logger.info('Calling $destination');
-      executeCall(destination);
+      executeCallUseCase(destination);
     }
   }
 }

@@ -9,13 +9,15 @@ import '../../../../resources/localizations.dart';
 
 class RecentCallItem extends StatelessWidget {
   final Call call;
+  final VoidCallback onPressed;
 
-  const RecentCallItem({Key key, this.call}) : super(key: key);
+  const RecentCallItem({Key key, this.call, this.onPressed}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
       contentPadding: EdgeInsets.zero,
+      onTap: onPressed,
       leading: _RecentItemAvatar(call),
       title: Text(call.destinationName),
       subtitle: _RecentItemSubtitle(call),
