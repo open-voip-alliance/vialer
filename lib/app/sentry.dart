@@ -14,6 +14,11 @@ Future<void> run(
   Function f, {
   @required String dsn,
 }) async {
+  if (dsn == null || dsn.isEmpty) {
+    f();
+    return;
+  }
+
   final sentry = SentryClient(dsn: dsn);
 
   runZoned(
