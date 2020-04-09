@@ -104,7 +104,6 @@ class _KeypadButton extends StatelessWidget {
   static const heightAtPadding = 592;
   static const paddingAtHeight = 4;
 
-
   final Widget child;
 
   const _KeypadButton({Key key, this.child}) : super(key: key);
