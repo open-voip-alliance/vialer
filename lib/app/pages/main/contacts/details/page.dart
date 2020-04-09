@@ -17,6 +17,9 @@ import '../../widgets/header.dart';
 
 import 'controller.dart';
 
+const _horizontalPadding = 24.0;
+const _leadingSize = 48.0;
+
 class ContactDetailsPage extends View {
   final ContactRepository _contactsRepository;
   final CallRepository _callRepository;
@@ -71,32 +74,35 @@ class _ContactDetailsPageState
         child: Column(
           children: <Widget>[
             Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: 24,
-              ).copyWith(
+              padding: EdgeInsets.only(
                 top: 32,
               ),
               child: Column(
                 children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      ContactAvatar(widget.contact, size: 48),
-                      SizedBox(width: 16),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            widget.contact.name,
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: _horizontalPadding,
+                    ),
+                    child: Row(
+                      children: <Widget>[
+                        ContactAvatar(widget.contact, size: _leadingSize),
+                        SizedBox(width: 16),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              widget.contact.name,
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          ),
-                          SizedBox(height: 4),
-                          ContactSubtitle(widget.contact),
-                        ],
-                      )
-                    ],
+                            SizedBox(height: 4),
+                            ContactSubtitle(widget.contact),
+                          ],
+                        )
+                      ],
+                    ),
                   ),
                   SizedBox(height: 24),
                   _DestinationsList(
@@ -180,9 +186,9 @@ class _Item extends StatelessWidget {
     );
 
     return ListTile(
-      contentPadding: EdgeInsets.only(left: 8),
+      contentPadding: EdgeInsets.symmetric(horizontal: _horizontalPadding),
       leading: Container(
-        width: 36,
+        width: _leadingSize,
         alignment: Alignment.center,
         child: Icon(isEmail ? VialerSans.mail : VialerSans.phone),
       ),
