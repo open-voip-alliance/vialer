@@ -47,13 +47,12 @@ class _KeypadState extends State<Keypad> {
 
   @override
   Widget build(BuildContext context) {
-    var rows = <Widget>[];
+    var rows = <TableRow>[];
 
     final amountPerRow = 3;
     for (var i = 0; i < (_buttonValues.length / amountPerRow); i++) {
       rows.add(
-        Row(
-          mainAxisSize: MainAxisSize.min,
+        TableRow(
           children: _buttonValues.entries
               .skip(i * amountPerRow)
               .take(amountPerRow)
@@ -72,12 +71,9 @@ class _KeypadState extends State<Keypad> {
     }
 
     rows.add(
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      TableRow(
         children: <Widget>[
-          SizedBox.fromSize(
-            size: _KeypadButton.size(context),
-          ),
+          SizedBox(),
           // Empty space in the grid
           _CallButton(
             onPressed: widget.onCallButtonPressed,
@@ -90,24 +86,12 @@ class _KeypadState extends State<Keypad> {
       ),
     );
 
-    final buttonSize = _KeypadButton.size(context);
-
-    rows = rows
-        .map(
-          (r) => SizedBox(
-            width: (buttonSize.width * amountPerRow),
-            child: r,
-          ),
-        )
-        .toList();
-
     return Padding(
       padding: EdgeInsets.only(
         bottom: 32,
       ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        crossAxisAlignment: CrossAxisAlignment.center,
+      child: Table(
+        defaultVerticalAlignment: TableCellVerticalAlignment.middle,
         children: rows,
       ),
     );
@@ -115,47 +99,30 @@ class _KeypadState extends State<Keypad> {
 }
 
 class _KeypadButton extends StatelessWidget {
+  // Base values for padding calculation, at a screen height of
+  // 592, 4 logical pixels padding seems good
+  static const heightAtPadding = 592;
+  static const paddingAtHeight = 4;
+
+
   final Widget child;
-
-  static const _baseSize = Size(82, 82);
-
-  static EdgeInsets padding(BuildContext context) =>
-      EdgeInsets.all(_relative(context, 12));
-
-  static Size baseSize(BuildContext context) =>
-      _relativeSize(context, _baseSize);
-
-  static double _relative(BuildContext context, double input) {
-    final screenSize = MediaQuery.of(context).size;
-
-    final dimension =
-        (input * (screenSize.width / 390)).clamp(input * 0.5, input);
-
-    return dimension;
-  }
-
-  static Size _relativeSize(BuildContext context, Size size) {
-    final dimension = _relative(context, size.width);
-
-    return Size(dimension, dimension);
-  }
-
-  static Size size(BuildContext context) =>
-      baseSize(context) +
-      Offset(
-        padding(context).horizontal,
-        padding(context).vertical,
-      );
 
   const _KeypadButton({Key key, this.child}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
+
     return Padding(
-      padding: padding(context),
-      child: SizedBox.fromSize(
-        size: baseSize(context),
-        child: child,
+      padding: EdgeInsets.all((height / heightAtPadding) * paddingAtHeight),
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          maxHeight: 76,
+        ),
+        child: AspectRatio(
+          aspectRatio: 1,
+          child: child,
+        ),
       ),
     );
   }
@@ -247,6 +214,7 @@ class _ValueButtonState extends State<_ValueButton> {
   Widget build(BuildContext context) {
     return _KeypadButton(
       child: Material(
+        color: Colors.transparent,
         shape: CircleBorder(
           side: context.isIOS
               ? BorderSide(color: context.brandTheme.grey3)
@@ -298,17 +266,12 @@ class _CallButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox.fromSize(
-      size: _KeypadButton.size(context),
-      child: Center(
-        child: SizedBox.fromSize(
-          size: _KeypadButton.size(context) * 0.70,
-          child: FloatingActionButton(
-            backgroundColor: context.brandTheme.green1,
-            onPressed: onPressed,
-            child: Icon(VialerSans.phone, size: 32),
-          ),
-        ),
+    return SizedBox(
+      height: 68,
+      child: FloatingActionButton(
+        backgroundColor: context.brandTheme.green1,
+        onPressed: onPressed,
+        child: Icon(VialerSans.phone, size: 32),
       ),
     );
   }
