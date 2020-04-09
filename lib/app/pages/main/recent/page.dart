@@ -65,7 +65,7 @@ class _RecentPageState extends ViewState<RecentPage, RecentController> {
                   ),
                   child: ListView.builder(
                     controller: controller.scrollController,
-                    padding: EdgeInsets.symmetric(horizontal: 16).copyWith(
+                    padding: EdgeInsets.only(
                       bottom: widget.listBottomPadding,
                     ),
                     itemCount: controller.recentCalls.length,
