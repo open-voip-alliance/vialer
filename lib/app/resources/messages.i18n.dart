@@ -81,6 +81,7 @@ class RecentMainMessages {
 	const RecentMainMessages(this._parent);
 	String get title => "Recent calls";
 	MenuRecentMainMessages get menu => MenuRecentMainMessages(this);
+	SnackBarRecentMainMessages get snackBar => SnackBarRecentMainMessages(this);
 	ListRecentMainMessages get list => ListRecentMainMessages(this);
 }
 
@@ -90,10 +91,24 @@ class MenuRecentMainMessages {
 	String get title => "Recent";
 }
 
+class SnackBarRecentMainMessages {
+	final RecentMainMessages _parent;
+	const SnackBarRecentMainMessages(this._parent);
+	String get copied => "Phone number copied";
+}
+
 class ListRecentMainMessages {
 	final RecentMainMessages _parent;
 	const ListRecentMainMessages(this._parent);
+	PopupMenuListRecentMainMessages get popupMenu => PopupMenuListRecentMainMessages(this);
 	EmptyListRecentMainMessages get empty => EmptyListRecentMainMessages(this);
+}
+
+class PopupMenuListRecentMainMessages {
+	final ListRecentMainMessages _parent;
+	const PopupMenuListRecentMainMessages(this._parent);
+	String get copy => "Copy";
+	String get call => "Call";
 }
 
 class EmptyListRecentMainMessages {

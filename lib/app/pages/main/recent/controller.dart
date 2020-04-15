@@ -1,4 +1,5 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:flutter_segment/flutter_segment.dart';
 
@@ -55,6 +56,14 @@ class RecentController extends Controller with Caller {
       Segment.track(eventName: 'call', properties: {'via': 'recent'});
     });
     super.call(destination);
+  }
+
+  void copyNumber(String number) {
+    doIfNotDebug(() {
+      Segment.track(eventName: 'copy-number');
+    });
+
+    Clipboard.setData(ClipboardData(text: number));
   }
 
   @override

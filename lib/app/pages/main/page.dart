@@ -84,7 +84,8 @@ class _MainPageState extends State<MainPage> {
         RecentPage(
           Provider.of<RecentCallRepository>(context),
           Provider.of<CallRepository>(context),
-          listBottomPadding: 96,
+          listBottomPadding: !_dialerIsPage ? 96 : 0,
+          snackBarRightPadding: !_dialerIsPage ? 72 : 0,
         ),
         SettingsPage(
           Provider.of<SettingRepository>(context),

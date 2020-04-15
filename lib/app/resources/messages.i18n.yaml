@@ -22,7 +22,12 @@ main:
     title: "Recent calls"
     menu:
       title: "Recent"
+    snackBar:
+      copied: "Phone number copied"
     list:
+      popupMenu:
+        copy: "Copy"
+        call: "Call"
       empty:
         title: "No recent activity"
         description: >-

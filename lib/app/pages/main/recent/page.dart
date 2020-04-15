@@ -18,12 +18,14 @@ class RecentPage extends View {
   final CallRepository _callRepository;
 
   final double listBottomPadding;
+  final double snackBarRightPadding;
 
   RecentPage(
     this._recentCallRepository,
     this._callRepository, {
     Key key,
     this.listBottomPadding = 0,
+    this.snackBarRightPadding = 0,
   }) : super(key: key);
 
   @override
@@ -36,6 +38,41 @@ class _RecentPageState extends ViewState<RecentPage, RecentController> {
     RecentCallRepository recentCallRepository,
     CallRepository callRepository,
   ) : super(RecentController(recentCallRepository, callRepository));
+
+  void _showSnackBar(BuildContext context) {
+    Scaffold.of(context).showSnackBar(
+      SnackBar(
+        behavior: SnackBarBehavior.fixed,
+        backgroundColor: Theme.of(context).primaryColorLight,
+        content: Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: 16,
+          ),
+          child: Row(
+            children: <Widget>[
+              Icon(
+                VialerSans.copy,
+                color: Theme.of(context).primaryColorDark,
+                size: 16,
+              ),
+              SizedBox(width: 24),
+              Expanded(
+                child: Text(
+                  context.msg.main.recent.snackBar.copied,
+                  style: TextStyle(
+                    color: Theme.of(context).primaryColorDark,
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+              if (widget.snackBarRightPadding != 0)
+                SizedBox(width: widget.snackBarRightPadding),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
   @override
   Widget buildPage() {
@@ -73,8 +110,12 @@ class _RecentPageState extends ViewState<RecentPage, RecentController> {
                       final call = controller.recentCalls[index];
                       return RecentCallItem(
                         call: call,
-                        onPressed: () {
+                        onCallPressed: () {
                           controller.call(call.destinationNumber);
+                        },
+                        onCopyPressed: () {
+                          controller.copyNumber(call.destinationNumber);
+                          _showSnackBar(context);
                         },
                       );
                     },
