@@ -22,7 +22,12 @@ main:
     title: "Recente gesprekken"
     menu:
       title: "Recent"
+    snackBar:
+      copied: "Nummer gekopieerd"
     list:
+      popupMenu:
+        copy: "Kopiëren"
+        call: "Bellen"
       empty:
         title: "Geen recente activiteit"
         description: >-

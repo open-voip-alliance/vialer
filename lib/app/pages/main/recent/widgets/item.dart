@@ -7,27 +7,75 @@ import '../../../../../domain/entities/call.dart';
 
 import '../../../../resources/localizations.dart';
 
+enum _Action {
+  copy,
+  call,
+}
+
 class RecentCallItem extends StatelessWidget {
   final Call call;
-  final VoidCallback onPressed;
 
-  const RecentCallItem({Key key, this.call, this.onPressed}) : super(key: key);
+  /// Also called when whole item is pressed.
+  final VoidCallback onCallPressed;
+  final VoidCallback onCopyPressed;
+
+  const RecentCallItem({
+    Key key,
+    this.call,
+    this.onCopyPressed,
+    this.onCallPressed,
+  }) : super(key: key);
+
+  void _onPopupMenuItemPress(_Action _action) {
+    switch (_action) {
+      case _Action.copy:
+        onCopyPressed();
+        break;
+      case _Action.call:
+        onCallPressed();
+        break;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
       contentPadding: EdgeInsets.symmetric(horizontal: 16),
-      onTap: onPressed,
+      onTap: onCallPressed,
       leading: _RecentItemAvatar(call),
       title: Text(call.destinationName),
       subtitle: _RecentItemSubtitle(call),
-      trailing: IconButton(
+      trailing: PopupMenuButton(
+        onSelected: _onPopupMenuItemPress,
+        itemBuilder: (context) => [
+          PopupMenuItem<_Action>(
+            value: _Action.copy,
+            child: ListTile(
+              leading: Container(
+                width: 24,
+                alignment: Alignment.center,
+                child: Icon(VialerSans.copy, size: 20),
+              ),
+              title: Text(context.msg.main.recent.list.popupMenu.copy),
+            ),
+          ),
+          PopupMenuItem<_Action>(
+            value: _Action.call,
+            child: ListTile(
+              leading: Container(
+                width: 24,
+                alignment: Alignment.center,
+                child: Icon(VialerSans.phone, size: 20),
+              ),
+              title: Text(context.msg.main.recent.list.popupMenu.call),
+            ),
+          ),
+        ],
         icon: Icon(
           VialerSans.ellipsis,
           color: context.brandTheme.grey1,
           size: 16,
         ),
-        onPressed: () {},
       ),
     );
   }

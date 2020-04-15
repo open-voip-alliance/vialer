@@ -82,6 +82,7 @@ class RecentMainMessages_nl extends RecentMainMessages {
 	const RecentMainMessages_nl(this._parent):super(_parent);
 	String get title => "Recente gesprekken";
 	MenuRecentMainMessages_nl get menu => MenuRecentMainMessages_nl(this);
+	SnackBarRecentMainMessages_nl get snackBar => SnackBarRecentMainMessages_nl(this);
 	ListRecentMainMessages_nl get list => ListRecentMainMessages_nl(this);
 }
 
@@ -91,10 +92,24 @@ class MenuRecentMainMessages_nl extends MenuRecentMainMessages {
 	String get title => "Recent";
 }
 
+class SnackBarRecentMainMessages_nl extends SnackBarRecentMainMessages {
+	final RecentMainMessages_nl _parent;
+	const SnackBarRecentMainMessages_nl(this._parent):super(_parent);
+	String get copied => "Nummer gekopieerd";
+}
+
 class ListRecentMainMessages_nl extends ListRecentMainMessages {
 	final RecentMainMessages_nl _parent;
 	const ListRecentMainMessages_nl(this._parent):super(_parent);
+	PopupMenuListRecentMainMessages_nl get popupMenu => PopupMenuListRecentMainMessages_nl(this);
 	EmptyListRecentMainMessages_nl get empty => EmptyListRecentMainMessages_nl(this);
+}
+
+class PopupMenuListRecentMainMessages_nl extends PopupMenuListRecentMainMessages {
+	final ListRecentMainMessages_nl _parent;
+	const PopupMenuListRecentMainMessages_nl(this._parent):super(_parent);
+	String get copy => "Kopiëren";
+	String get call => "Bellen";
 }
 
 class EmptyListRecentMainMessages_nl extends EmptyListRecentMainMessages {

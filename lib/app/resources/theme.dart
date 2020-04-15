@@ -167,4 +167,5 @@ abstract class VialerSans {
   static const exclamationMark = IconData(0xE915, fontFamily: _family);
   static const bug = IconData(0xE90D, fontFamily: _family);
   static const userOff = IconData(0xE9A9, fontFamily: _family);
+  static const copy = IconData(0xE904, fontFamily: _family);
 }
