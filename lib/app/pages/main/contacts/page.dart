@@ -176,13 +176,13 @@ class _AlphabetListViewState extends State<_AlphabetListView> {
     return Size(dimension, dimension);
   }
 
-  void _onPanStart(DragStartDetails details) {
+  void _onDragStart(DragStartDetails details) {
     setState(() {
       _offset = details.localPosition;
     });
   }
 
-  void _onPanUpdate(DragUpdateDetails details, {@required Size parentSize}) {
+  void _onDragUpdate(DragUpdateDetails details, {@required Size parentSize}) {
     setState(() {
       _offset = details.localPosition;
       _letterMarkerVisible = true;
@@ -195,7 +195,7 @@ class _AlphabetListViewState extends State<_AlphabetListView> {
     _controller.jumpTo(index: index);
   }
 
-  void _onPanCancel() => setState(() {
+  void _onDragCancel() => setState(() {
         _letterMarkerVisible = false;
       });
 
@@ -223,78 +223,81 @@ class _AlphabetListViewState extends State<_AlphabetListView> {
 
         final showLetters = _letters.length >= 8;
 
-        return GestureDetector(
-          onPanStart: showLetters ? _onPanStart : null,
-          onPanUpdate:
-              showLetters ? (d) => _onPanUpdate(d, parentSize: maxSize) : null,
-          onPanEnd: showLetters ? (_) => _onPanCancel() : null,
-          onPanCancel: showLetters ? _onPanCancel : null,
-          child: Stack(
-            fit: StackFit.expand,
-            overflow: Overflow.visible,
-            children: <Widget>[
-              ScrollablePositionedList.builder(
-                itemScrollController: _controller,
-                itemCount: widget.children.length,
-                itemBuilder: (context, index) {
-                  if (widget.children.isNotEmpty) {
-                    return Provider<EdgeInsets>(
-                      create: (_) => EdgeInsets.only(
-                        left: 16,
-                        right: 16 + sideLetterSize.width,
-                      ),
-                      child: widget.children[index],
-                    );
-                  } else {
-                    return Container();
-                  }
-                },
-              ),
-              if (showLetters)
-                Positioned(
-                  top: 0,
-                  bottom: 0,
-                  right: 0,
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                      left: 86,
-                      right: 16,
-                      bottom: widget.bottomLettersPadding,
+        return Stack(
+          fit: StackFit.expand,
+          overflow: Overflow.visible,
+          children: <Widget>[
+            ScrollablePositionedList.builder(
+              itemScrollController: _controller,
+              itemCount: widget.children.length,
+              itemBuilder: (context, index) {
+                if (widget.children.isNotEmpty) {
+                  return Provider<EdgeInsets>(
+                    create: (_) => EdgeInsets.only(
+                      left: 16,
+                      right: 16 + sideLetterSize.width,
                     ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: _letters
-                          .map(
-                            (letter) =>
-                                _SideLetter(letter, size: sideLetterSize),
-                          )
-                          .toList(),
+                    child: widget.children[index],
+                  );
+                } else {
+                  return Container();
+                }
+              },
+            ),
+            if (showLetters)
+              Positioned(
+                top: 0,
+                bottom: 0,
+                right: 0,
+                child: GestureDetector(
+                  onVerticalDragStart: showLetters ? _onDragStart : null,
+                  onVerticalDragUpdate: showLetters
+                      ? (d) => _onDragUpdate(d, parentSize: maxSize)
+                      : null,
+                  onVerticalDragEnd:
+                      showLetters ? (_) => _onDragCancel() : null,
+                  onVerticalDragCancel: showLetters ? _onDragCancel : null,
+                  child: AbsorbPointer(
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                        left: 86,
+                        right: 16,
+                        bottom: widget.bottomLettersPadding,
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: _letters.map(
+                          (letter) {
+                            return _SideLetter(letter, size: sideLetterSize);
+                          },
+                        ).toList(),
+                      ),
                     ),
                   ),
                 ),
-              if (showLetters && _offset != null)
-                Positioned(
-                  top: _offset.dy - (_floatingLetterSize.height / 2),
-                  right: 48,
-                  child: AnimatedOpacity(
-                    duration: Duration(milliseconds: 300),
-                    curve: Curves.decelerate,
-                    opacity: _letterMarkerVisible ? 1 : 0,
-                    child: SizedBox.fromSize(
-                      size: _floatingLetterSize,
-                      child: Center(
-                        child: Text(
-                          _letterAt(_offset, parentSize: maxSize),
-                          style: TextStyle(
-                            fontSize: 32,
-                          ),
+              ),
+            if (showLetters && _offset != null)
+              Positioned(
+                top: _offset.dy - (_floatingLetterSize.height / 2),
+                right: 48,
+                child: AnimatedOpacity(
+                  duration: Duration(milliseconds: 300),
+                  curve: Curves.decelerate,
+                  opacity: _letterMarkerVisible ? 1 : 0,
+                  child: SizedBox.fromSize(
+                    size: _floatingLetterSize,
+                    child: Center(
+                      child: Text(
+                        _letterAt(_offset, parentSize: maxSize),
+                        style: TextStyle(
+                          fontSize: 32,
                         ),
                       ),
                     ),
                   ),
                 ),
-            ],
-          ),
+              ),
+          ],
         );
       },
     );
