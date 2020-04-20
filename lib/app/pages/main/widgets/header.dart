@@ -7,12 +7,15 @@ class Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      data,
-      style: TextStyle(
-        color: Theme.of(context).primaryColor,
-        fontSize: 38,
-        fontWeight: FontWeight.bold,
+    return Padding(
+      padding: EdgeInsets.only(bottom: 8),
+      child: Text(
+        data,
+        style: TextStyle(
+          color: Theme.of(context).primaryColor,
+          fontSize: 38,
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
   }
