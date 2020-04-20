@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../../../../resources/theme.dart';
 
-class LetterHeader extends StatelessWidget {
-  final String letter;
+class GroupHeader extends StatelessWidget {
+  final String group;
 
-  const LetterHeader({Key key, @required this.letter}) : super(key: key);
+  const GroupHeader({Key key, @required this.group}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +17,7 @@ class LetterHeader extends StatelessWidget {
         right: 16,
       ),
       child: Text(
-        letter,
+        group,
         style: TextStyle(
           color: context.isIOS
               ? context.brandTheme.grey1
