@@ -294,7 +294,7 @@ class _AlphabetListViewState extends State<_AlphabetListView> {
                   child: AbsorbPointer(
                     child: Padding(
                       padding: EdgeInsets.only(
-                        left: 86,
+                        left: 16,
                         right: 16,
                         bottom: widget.bottomLettersPadding,
                       ),
