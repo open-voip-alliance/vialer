@@ -3,6 +3,8 @@ import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 
 import '../../../../domain/repositories/auth.dart';
 
+import '../../../resources/localizations.dart';
+
 import 'controller.dart';
 
 class WelcomePage extends View {
@@ -30,7 +32,7 @@ class _WelcomePageState extends ViewState<WelcomePage, WelcomeController> {
       child: RichText(
         textAlign: TextAlign.center,
         text: TextSpan(
-          text: 'Welcome\n',
+          text: '${context.msg.onboarding.welcome.title}\n',
           style: TextStyle(
             fontSize: 40,
             fontWeight: FontWeight.w500,

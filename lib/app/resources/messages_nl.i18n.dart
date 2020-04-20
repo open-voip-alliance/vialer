@@ -229,6 +229,7 @@ class OnboardingMessages_nl extends OnboardingMessages {
 	LoginOnboardingMessages_nl get login => LoginOnboardingMessages_nl(this);
 	PermissionOnboardingMessages_nl get permission => PermissionOnboardingMessages_nl(this);
 	VoicemailOnboardingMessages_nl get voicemail => VoicemailOnboardingMessages_nl(this);
+	WelcomeOnboardingMessages_nl get welcome => WelcomeOnboardingMessages_nl(this);
 }
 
 class ButtonOnboardingMessages_nl extends ButtonOnboardingMessages {
@@ -305,5 +306,11 @@ class VoicemailOnboardingMessages_nl extends VoicemailOnboardingMessages {
 	const VoicemailOnboardingMessages_nl(this._parent):super(_parent);
 	String get title => "Voicemail";
 	String get description => "Als je niet een gepersonaliseerde voicemail hebt, kan het zijn dat je persoonlijke nummer wordt genoemd in de voice mail. Mensen die jouw zakelijk nummer bellen kunnen dan je persoonlijke nummer achterhalen.";
+}
+
+class WelcomeOnboardingMessages_nl extends WelcomeOnboardingMessages {
+	final OnboardingMessages_nl _parent;
+	const WelcomeOnboardingMessages_nl(this._parent):super(_parent);
+	String get title => "Welkom";
 }
 

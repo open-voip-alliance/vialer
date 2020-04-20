@@ -228,6 +228,7 @@ class OnboardingMessages {
 	LoginOnboardingMessages get login => LoginOnboardingMessages(this);
 	PermissionOnboardingMessages get permission => PermissionOnboardingMessages(this);
 	VoicemailOnboardingMessages get voicemail => VoicemailOnboardingMessages(this);
+	WelcomeOnboardingMessages get welcome => WelcomeOnboardingMessages(this);
 }
 
 class ButtonOnboardingMessages {
@@ -304,5 +305,11 @@ class VoicemailOnboardingMessages {
 	const VoicemailOnboardingMessages(this._parent);
 	String get title => "Voicemail";
 	String get description => "Please note that if you don't use a personalized voicemail, it may contain your personal number which is then leaked if people call your business number.";
+}
+
+class WelcomeOnboardingMessages {
+	final OnboardingMessages _parent;
+	const WelcomeOnboardingMessages(this._parent);
+	String get title => "Welcome";
 }
 
