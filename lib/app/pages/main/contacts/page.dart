@@ -120,25 +120,59 @@ class _ContactPageState extends ViewState<ContactsPage, ContactsController> {
   }
 
   List<Widget> _mapToWidgets(Iterable<Contact> contacts) {
-    final widgets = <Widget>[];
+    final widgets = <String, List<ContactItem>>{};
 
-    var currentFirstLetter;
+    const numberKey = '#';
+    const specialKey = '&';
+
+    bool isAlpha(String char) =>
+        char != null ? RegExp(r'\p{L}', unicode: true).hasMatch(char) : false;
+
+    bool isNumberlike(String char) =>
+        char != null ? RegExp(r'[0-9\(\+]').hasMatch(char) : false;
 
     for (var contact in contacts) {
-      var firstLetter = contact.initials.characters.firstWhere(
+      var firstCharacter = contact.initials.characters.firstWhere(
         (_) => true,
         orElse: () => null,
       );
 
-      if (firstLetter != currentFirstLetter) {
-        widgets.add(LetterHeader(letter: firstLetter));
-        currentFirstLetter = firstLetter;
-      }
+      final contactItem = ContactItem(contact: contact);
 
-      widgets.add(ContactItem(contact: contact));
+      // Check special groups
+      if (isNumberlike(firstCharacter)) {
+        widgets[numberKey] ??= [];
+        widgets[numberKey].add(contactItem);
+      } else if (isAlpha(firstCharacter)) {
+        widgets[firstCharacter] ??= [];
+        widgets[firstCharacter].add(contactItem);
+      } else {
+        widgets[specialKey] ??= [];
+        widgets[specialKey].add(contactItem);
+      }
     }
 
-    return widgets;
+    final sortedEntries = widgets.entries.toList()
+      ..sort((a, b) {
+        if (a.key == numberKey) {
+          return 1;
+        } else if (a.key == specialKey) {
+          return -1;
+        } else {
+          return a.key.compareTo(b.key);
+        }
+      });
+
+    return sortedEntries
+        .map(
+          (e) => [
+            GroupHeader(group: e.key),
+            ...e.value
+              ..sort((a, b) => a.contact.name.compareTo(b.contact.name)),
+          ],
+        )
+        .expand((widgets) => widgets)
+        .toList();
   }
 }
 
@@ -165,7 +199,7 @@ class _AlphabetListViewState extends State<_AlphabetListView> {
   bool _letterMarkerVisible = false;
 
   List<String> get _letters =>
-      widget.children.whereType<LetterHeader>().map((h) => h.letter).toList();
+      widget.children.whereType<GroupHeader>().map((h) => h.group).toList();
 
   Size _sideLetterSize(Size parentSize) {
     final height = parentSize.height - widget.bottomLettersPadding;
@@ -190,7 +224,7 @@ class _AlphabetListViewState extends State<_AlphabetListView> {
 
     final letter = _letterAt(_offset, parentSize: parentSize);
     final index = widget.children
-        .indexWhere((w) => w is LetterHeader && w.letter == letter);
+        .indexWhere((w) => w is GroupHeader && w.group == letter);
 
     _controller.jumpTo(index: index);
   }
