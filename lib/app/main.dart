@@ -145,7 +145,7 @@ class App extends StatelessWidget {
           ),
         ),
         Provider<CallRepository>(
-          create: (_) => DataCallRepository(),
+          create: (_) => DataCallRepository(service),
         ),
         Provider<SettingRepository>.value(
           value: settingRepository,

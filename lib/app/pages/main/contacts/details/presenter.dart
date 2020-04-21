@@ -12,6 +12,8 @@ import '../../../../../domain/usecases/call.dart';
 class ContactDetailsPresenter extends Presenter {
   Function contactsOnNext;
 
+  Function callOnError;
+
   final GetContactsUseCase _getContactsUseCase;
   final CallUseCase _callUseCase;
 
@@ -66,7 +68,7 @@ class _CallUseCaseObserver extends Observer<void> {
   void onComplete() {}
 
   @override
-  void onError(dynamic e) {}
+  void onError(dynamic e) => presenter.callOnError(e);
 
   @override
   void onNext(_) {}

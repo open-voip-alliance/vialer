@@ -44,4 +44,12 @@ class _$VoipgridService extends VoipgridService {
     final $request = Request('GET', $url, client.baseUrl, parameters: $params);
     return client.send<dynamic, dynamic>($request);
   }
+
+  @override
+  Future<Response<dynamic>> callthrough({String destination}) {
+    final $url = '/api/v2/callthrough';
+    final $params = <String, dynamic>{'destination': destination};
+    final $request = Request('GET', $url, client.baseUrl, parameters: $params);
+    return client.send<dynamic, dynamic>($request);
+  }
 }

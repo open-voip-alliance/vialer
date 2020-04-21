@@ -18,8 +18,9 @@ class SystemUser {
 
   final Uri _appAccount;
 
-  String get appAccountId => _appAccount.pathSegments.lastWhere(
+  String get appAccountId => _appAccount?.pathSegments?.lastWhere(
         (p) => p.isNotEmpty,
+        orElse: () => null,
       );
 
   SystemUser({
@@ -38,7 +39,8 @@ class SystemUser {
       firstName: json[_firstNameKey],
       lastName: json[_lastNameKey],
       token: json[_tokenKey],
-      appAccount: Uri.parse(json[_appAccountKey]),
+      appAccount:
+          json[_appAccountKey] != null ? Uri.parse(json[_appAccountKey]) : null,
     );
   }
 

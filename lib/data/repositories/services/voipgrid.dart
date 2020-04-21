@@ -35,6 +35,11 @@ abstract class VoipgridService extends ChopperService {
     @Query('call_date__gt') String from,
     @Query('call_date__lt') String to,
   });
+
+  @Get(path: 'v2/callthrough')
+  Future<Response> callthrough({
+    @Query('destination') String destination,
+  });
 }
 
 class _AuthorizationInterceptor implements RequestInterceptor {
@@ -47,10 +52,14 @@ class _AuthorizationInterceptor implements RequestInterceptor {
     final user = _authRepository.currentUser;
 
     if (user != null) {
+      final authorization = Uri.parse(request.url).path.endsWith('callthrough')
+          ? 'Bearer ${user.token}'
+          : 'Token ${user.email}:${user.token}';
+
       return request.copyWith(
         headers: Map.of(request.headers)
           ..addAll({
-            'Authorization': 'Token ${user.email}:${user.token}',
+            'Authorization': authorization,
           }),
       );
     } else {

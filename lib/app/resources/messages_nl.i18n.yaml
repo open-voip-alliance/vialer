@@ -1,8 +1,15 @@
 generic:
   button:
+    ok: "Ok"
     cancel: "Annuleren"
 
 main:
+  callThrough:
+    error:
+      title: "Er is een fout opgetreden"
+      unknown: "Onbekende error."
+      invalidDestination: "Het nummer klopt niet."
+
   dialer:
     title: &keypadTitle "Telefoon"
     permissionDenied: >-

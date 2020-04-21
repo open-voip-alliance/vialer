@@ -28,16 +28,32 @@ class GenericMessages_nl extends GenericMessages {
 class ButtonGenericMessages_nl extends ButtonGenericMessages {
 	final GenericMessages_nl _parent;
 	const ButtonGenericMessages_nl(this._parent):super(_parent);
+	String get ok => "Ok";
 	String get cancel => "Annuleren";
 }
 
 class MainMessages_nl extends MainMessages {
 	final Messages_nl _parent;
 	const MainMessages_nl(this._parent):super(_parent);
+	CallThroughMainMessages_nl get callThrough => CallThroughMainMessages_nl(this);
 	DialerMainMessages_nl get dialer => DialerMainMessages_nl(this);
 	RecentMainMessages_nl get recent => RecentMainMessages_nl(this);
 	ContactsMainMessages_nl get contacts => ContactsMainMessages_nl(this);
 	SettingsMainMessages_nl get settings => SettingsMainMessages_nl(this);
+}
+
+class CallThroughMainMessages_nl extends CallThroughMainMessages {
+	final MainMessages_nl _parent;
+	const CallThroughMainMessages_nl(this._parent):super(_parent);
+	ErrorCallThroughMainMessages_nl get error => ErrorCallThroughMainMessages_nl(this);
+}
+
+class ErrorCallThroughMainMessages_nl extends ErrorCallThroughMainMessages {
+	final CallThroughMainMessages_nl _parent;
+	const ErrorCallThroughMainMessages_nl(this._parent):super(_parent);
+	String get title => "Er is een fout opgetreden";
+	String get unknown => "Onbekende error.";
+	String get invalidDestination => "Het nummer klopt niet.";
 }
 
 class DialerMainMessages_nl extends DialerMainMessages {

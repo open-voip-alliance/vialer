@@ -10,6 +10,8 @@ import '../../../../domain/usecases/get_permission_status.dart';
 
 class DialerPresenter extends Presenter {
   Function callOnComplete;
+  Function callOnError;
+
   Function onCheckCallPermissionNext;
 
   final CallUseCase _callUseCase;
@@ -48,10 +50,10 @@ class _CallUseCaseObserver extends Observer<void> {
   _CallUseCaseObserver(this.presenter);
 
   @override
-  void onComplete() => presenter.callOnComplete;
+  void onComplete() => presenter.callOnComplete();
 
   @override
-  void onError(dynamic e) {}
+  void onError(dynamic e) => presenter.callOnError(e);
 
   @override
   void onNext(_) {}

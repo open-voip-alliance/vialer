@@ -1,8 +1,15 @@
 generic:
   button:
+    ok: "Ok"
     cancel: "Cancel"
 
 main:
+  callThrough:
+    error:
+      title: "An error occurred"
+      unknown: "Unknown error."
+      invalidDestination: "Dialed number is invalid."
+
   dialer:
     title: &keypadTitle "Keypad"
     permissionDenied: >-

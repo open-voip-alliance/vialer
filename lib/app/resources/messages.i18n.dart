@@ -27,16 +27,32 @@ class GenericMessages {
 class ButtonGenericMessages {
 	final GenericMessages _parent;
 	const ButtonGenericMessages(this._parent);
+	String get ok => "Ok";
 	String get cancel => "Cancel";
 }
 
 class MainMessages {
 	final Messages _parent;
 	const MainMessages(this._parent);
+	CallThroughMainMessages get callThrough => CallThroughMainMessages(this);
 	DialerMainMessages get dialer => DialerMainMessages(this);
 	RecentMainMessages get recent => RecentMainMessages(this);
 	ContactsMainMessages get contacts => ContactsMainMessages(this);
 	SettingsMainMessages get settings => SettingsMainMessages(this);
+}
+
+class CallThroughMainMessages {
+	final MainMessages _parent;
+	const CallThroughMainMessages(this._parent);
+	ErrorCallThroughMainMessages get error => ErrorCallThroughMainMessages(this);
+}
+
+class ErrorCallThroughMainMessages {
+	final CallThroughMainMessages _parent;
+	const ErrorCallThroughMainMessages(this._parent);
+	String get title => "An error occurred";
+	String get unknown => "Unknown error.";
+	String get invalidDestination => "Dialed number is invalid.";
 }
 
 class DialerMainMessages {

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 
-import '../../../../../data/repositories/call.dart';
+import '../../../../../domain/repositories/call.dart';
 
 import '../../../../widgets/transparent_status_bar.dart';
 import 'controller.dart';
@@ -12,12 +12,17 @@ import 'controller.dart';
 import '../../../../resources/localizations.dart';
 
 class ConfirmPage extends View {
+  final CallRepository _callRepository;
+
   final String destination;
 
-  ConfirmPage(this.destination);
+  ConfirmPage(this._callRepository, {@required this.destination});
 
   @override
-  State<StatefulWidget> createState() => ConfirmPageState(destination);
+  State<StatefulWidget> createState() => ConfirmPageState(
+        _callRepository,
+        destination,
+      );
 }
 
 class ConfirmPageState extends ViewState<ConfirmPage, ConfirmController>
@@ -25,8 +30,8 @@ class ConfirmPageState extends ViewState<ConfirmPage, ConfirmController>
   AnimationController _animationController;
   Animation<double> _animation;
 
-  ConfirmPageState(String destination)
-      : super(ConfirmController(DataCallRepository(), destination));
+  ConfirmPageState(CallRepository callRepository, String destination)
+      : super(ConfirmController(callRepository, destination));
 
   @override
   void initState() {
@@ -138,9 +143,11 @@ class ConfirmPageState extends ViewState<ConfirmPage, ConfirmController>
 }
 
 class ConfirmPageRoute extends PageRoute {
+  final CallRepository _callRepository;
+
   final String destination;
 
-  ConfirmPageRoute({@required this.destination});
+  ConfirmPageRoute(this._callRepository, {@required this.destination});
 
   @override
   bool get opaque => false;
@@ -157,7 +164,7 @@ class ConfirmPageRoute extends PageRoute {
     Animation<double> animation,
     Animation<double> secondaryAnimation,
   ) {
-    return ConfirmPage(destination);
+    return ConfirmPage(_callRepository, destination: destination);
   }
 
   @override
