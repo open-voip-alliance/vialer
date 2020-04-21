@@ -12,6 +12,9 @@ import 'caller.dart';
 import 'presenter.dart';
 
 class DialerController extends Controller with Caller {
+  @override
+  final CallRepository callRepository;
+
   final DialerPresenter _presenter;
 
   final String initialDestination;
@@ -23,7 +26,7 @@ class DialerController extends Controller with Caller {
   bool get canCall => _canCall;
 
   DialerController(
-    CallRepository callRepository,
+    this.callRepository,
     PermissionRepository permissionRepository,
     this.initialDestination,
   ) : _presenter = DialerPresenter(callRepository, permissionRepository);
@@ -63,5 +66,6 @@ class DialerController extends Controller with Caller {
   void initListeners() {
     _presenter.callOnComplete = () {};
     _presenter.onCheckCallPermissionNext = _onCheckCallPermissionNext;
+    _presenter.callOnError = showException;
   }
 }

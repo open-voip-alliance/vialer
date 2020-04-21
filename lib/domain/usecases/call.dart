@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:pedantic/pedantic.dart';
 
+import '../entities/call_through_exception.dart';
+
 import '../repositories/call.dart';
 
 class CallUseCase extends UseCase<void, CallUseCaseParams> {
@@ -14,7 +16,11 @@ class CallUseCase extends UseCase<void, CallUseCaseParams> {
   Future<Stream<bool>> buildUseCaseStream(CallUseCaseParams params) async {
     final controller = StreamController<bool>();
 
-    await _callRepository.call(params.destination);
+    try {
+      await _callRepository.call(params.destination);
+    } on CallThroughException catch (e) {
+      controller.addError(e);
+    }
 
     unawaited(controller.close());
 

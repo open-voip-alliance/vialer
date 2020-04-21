@@ -14,6 +14,9 @@ import '../../../util/debug.dart';
 import 'presenter.dart';
 
 class RecentController extends Controller with Caller {
+  @override
+  final CallRepository callRepository;
+
   final RecentPresenter _presenter;
 
   final recentCalls = <Call>[];
@@ -22,7 +25,7 @@ class RecentController extends Controller with Caller {
 
   RecentController(
     RecentCallRepository recentCallRepository,
-    CallRepository callRepository,
+    this.callRepository,
   ) : _presenter = RecentPresenter(recentCallRepository, callRepository);
 
   int _page = 0;
@@ -105,5 +108,6 @@ class RecentController extends Controller with Caller {
   @override
   void initListeners() {
     _presenter.recentCallsOnNext = _onRecentCallsUpdated;
+    _presenter.callOnError = showException;
   }
 }

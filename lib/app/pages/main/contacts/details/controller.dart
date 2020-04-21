@@ -16,13 +16,16 @@ import '../../../../util/debug.dart';
 import 'presenter.dart';
 
 class ContactDetailsController extends Controller with Caller {
+  @override
+  final CallRepository callRepository;
+
   final ContactDetailsPresenter _presenter;
 
   List<Contact> contacts = [];
 
   ContactDetailsController(
     ContactRepository contactRepository,
-    CallRepository callRepository,
+    this.callRepository,
     PermissionRepository permissionRepository,
   ) : _presenter = ContactDetailsPresenter(
           contactRepository,
@@ -62,6 +65,7 @@ class ContactDetailsController extends Controller with Caller {
   @override
   void initListeners() {
     _presenter.contactsOnNext = _onContactsUpdated;
+    _presenter.callOnError = showException;
   }
 
   @override

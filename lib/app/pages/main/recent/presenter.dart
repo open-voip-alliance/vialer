@@ -12,6 +12,8 @@ import '../../../../domain/usecases/get_recent_calls.dart';
 class RecentPresenter extends Presenter {
   Function recentCallsOnNext;
 
+  Function callOnError;
+
   final GetRecentCallsUseCase _getRecentCallsUseCase;
   final CallUseCase _callUseCase;
 
@@ -31,7 +33,7 @@ class RecentPresenter extends Presenter {
   }
 
   void call(String destination) => _callUseCase.execute(
-        _GetCallUseCaseObserver(this),
+        _CallUseCaseObserver(this),
         CallUseCaseParams(destination),
       );
 
@@ -57,16 +59,16 @@ class _GetRecentCallsUseCaseObserver extends Observer<List<Call>> {
       presenter.recentCallsOnNext(recentCalls);
 }
 
-class _GetCallUseCaseObserver extends Observer<void> {
-  final RecentPresenter presenter;
+class _CallUseCaseObserver extends Observer<void> {
+  final RecentPresenter _presenter;
 
-  _GetCallUseCaseObserver(this.presenter);
+  _CallUseCaseObserver(this._presenter);
 
   @override
   void onComplete() {}
 
   @override
-  void onError(_) {}
+  void onError(dynamic error) => _presenter.callOnError(error);
 
   @override
   void onNext(_) {}
