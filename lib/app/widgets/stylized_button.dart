@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../resources/theme.dart';
+
 class StylizedButton extends StatelessWidget {
   static const _duration = Duration(milliseconds: 300);
   static const _curve = Curves.decelerate;
@@ -68,8 +70,17 @@ class StylizedButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const borderRadius = Radius.circular(2);
-    final primaryLight = Theme.of(context).primaryColorLight;
-    final primaryDark = Theme.of(context).primaryColorDark;
+    final color = BrandTheme.of(context).buttonColor;
+    final shadeColor = BrandTheme.of(context).buttonShadeColor;
+
+    Color textColor;
+    if (_type == _Type.raised) {
+      textColor = colored
+          ? BrandTheme.of(context).buttonColoredRaisedTextColor
+          : Theme.of(context).primaryColorDark;
+    } else {
+      textColor = colored ? Theme.of(context).primaryColor : Colors.white;
+    }
 
     final disabled = onPressed == null;
 
@@ -106,7 +117,7 @@ class StylizedButton extends StatelessWidget {
               // types
               border: isOutline
                   ? Border.all(
-                      color: colored ? primaryLight : Colors.white,
+                      color: colored ? color : Colors.white,
                       width: _borderWidth,
                     )
                   : null,
@@ -114,7 +125,7 @@ class StylizedButton extends StatelessWidget {
               color: disabled
                   ? Color(0xFFF5F5F5)
                   : isRaised
-                      ? (colored ? primaryLight : Colors.white)
+                      ? (colored ? color : Colors.white)
                       : Colors.transparent,
             ),
             child: CustomPaint(
@@ -124,12 +135,8 @@ class StylizedButton extends StatelessWidget {
                     ? _bottomBorderWidth
                     : _bottomBorderWidth - _borderWidth,
                 color: isOutline
-                    ? (colored
-                        ? Theme.of(context).primaryColorLight
-                        : Colors.white)
-                    : (colored
-                        ? Theme.of(context).primaryColor
-                        : Color(0xFFE0E0E0)),
+                    ? (colored ? color : Colors.white)
+                    : (colored ? shadeColor : Color(0xFFE0E0E0)),
               ),
               child: Material(
                 color: Colors.transparent,
@@ -147,11 +154,7 @@ class StylizedButton extends StatelessWidget {
                         duration: _duration,
                         curve: _curve,
                         style: TextStyle(
-                          color: disabled
-                              ? Color(0xFF555555)
-                              : colored || _type == _Type.raised
-                                  ? primaryDark
-                                  : Colors.white,
+                          color: disabled ? Color(0xFF555555) : textColor,
                           fontWeight: FontWeight.bold,
                         ),
                         child: child,

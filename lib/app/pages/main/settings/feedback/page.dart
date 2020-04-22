@@ -43,9 +43,6 @@ class _FeedbackPageState extends ViewState<FeedbackPage, DialerController> {
       appBar: AppBar(
         title: Text(
           'Feedback',
-          style: TextStyle(
-            color: Theme.of(context).primaryColorDark,
-          ),
         ),
         centerTitle: true,
       ),
