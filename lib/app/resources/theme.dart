@@ -24,7 +24,7 @@ abstract class BrandTheme {
       );
 
   get splashScreenGradient => LinearGradient(
-        colors: [primary, primary],
+        colors: [splashScreenColor, splashScreenColor],
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
       );
@@ -47,6 +47,8 @@ abstract class BrandTheme {
   final green2 = Color(0xFFACF5A6);
   final green3 = Color(0xFF046614);
 
+  Color get splashScreenColor;
+
   Color get onboardingGradientStart;
 
   Color get onboardingGradientEnd;
@@ -55,18 +57,19 @@ abstract class BrandTheme {
 
   Color get errorContentColor;
 
+  Color get buttonColor => primaryLight;
+
+  Color get buttonShadeColor => primary;
+
+  Color get buttonRaisedTextColor => primaryDark;
+
+  Color get buttonColoredRaisedTextColor => primaryDark;
+
   ThemeData get themeData {
     return ThemeData(
       primaryColor: primary,
       primaryColorDark: primaryDark,
       primaryColorLight: primaryLight,
-      buttonTheme: ButtonThemeData(
-        height: 42,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(7),
-        ),
-        buttonColor: Colors.white,
-      ),
       appBarTheme: AppBarTheme(
         color: primaryLight,
         textTheme: TextTheme(
@@ -101,6 +104,9 @@ class VialerTheme extends BrandTheme {
   final primaryLight = Color(0xFFFFD0A3);
 
   @override
+  get splashScreenColor => primaryLight;
+
+  @override
   final onboardingGradientStart = Color(0xFFFF8213);
 
   @override
@@ -118,16 +124,19 @@ class VoysTheme extends BrandTheme {
   IconData get logo => VialerSans.brandVoys;
 
   @override
-  final primary = Color(0xFF57B3FF);
+  final primary = Color(0xFF3B14B9);
 
   @override
-  final primaryDark = Color(0xFF0051D4);
+  final primaryDark = Color(0xFF31227A);
 
   @override
-  final primaryLight = Color(0xFFA3E0FF);
+  final primaryLight = Color(0xFFC0B4E8);
 
   @override
-  get onboardingGradientStart => primaryLight;
+  get splashScreenColor => primary;
+
+  @override
+  get onboardingGradientStart => Color(0xFFC0B4E8);
 
   @override
   get onboardingGradientEnd => primaryDark;
@@ -137,6 +146,33 @@ class VoysTheme extends BrandTheme {
 
   @override
   Color get errorContentColor => primaryDark;
+
+  @override
+  Color get buttonColor => primary;
+
+  @override
+  Color get buttonShadeColor => primaryDark;
+
+  @override
+  Color get buttonRaisedTextColor => primary;
+
+  @override
+  Color get buttonColoredRaisedTextColor => Colors.white;
+
+  @override
+  ThemeData get themeData => super.themeData.copyWith(
+        appBarTheme: super.themeData.appBarTheme.copyWith(
+              color: primary,
+              textTheme: TextTheme(
+                title: super.themeData.appBarTheme.textTheme.title.copyWith(
+                      color: Colors.white,
+                    ),
+              ),
+              iconTheme: IconThemeData(
+                color: Colors.white,
+              ),
+            ),
+      );
 }
 
 extension BrandThemeContext on BuildContext {
