@@ -86,8 +86,8 @@ abstract class BrandTheme {
     );
   }
 
-  static BrandTheme of(BuildContext context) =>
-      Provider.of<BrandTheme>(context);
+  static BrandTheme of(BuildContext context, {bool listen = true}) =>
+      Provider.of<BrandTheme>(context, listen: listen);
 }
 
 class VialerTheme extends BrandTheme {

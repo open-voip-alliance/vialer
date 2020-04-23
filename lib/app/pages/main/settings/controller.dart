@@ -9,6 +9,9 @@ import '../../../../domain/repositories/setting.dart';
 import '../../../../domain/entities/setting.dart';
 
 import '../../../routes.dart';
+
+import '../util/stylized_snack_bar.dart';
+
 import 'presenter.dart';
 
 class SettingsController extends Controller {
@@ -54,11 +57,7 @@ class SettingsController extends Controller {
         false;
 
     if (sent) {
-      Scaffold.of(getContext()).showSnackBar(
-        SnackBar(
-          content: Text('Feedback sent'),
-        ),
-      );
+      showSnackBar(getContext(), text: 'Sent feedback');
     }
   }
 
