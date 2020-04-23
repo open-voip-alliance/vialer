@@ -1,9 +1,11 @@
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 
 import '../../../../domain/repositories/auth.dart';
+import '../../../../domain/repositories/setting.dart';
+import '../../../../domain/repositories/logging.dart';
+
 import '../../../../domain/usecases/onboarding/login.dart';
 import '../../../../domain/usecases/reset_to_default_settings.dart';
-import '../../../../domain/repositories/setting.dart';
 
 class LoginPresenter extends Presenter {
   Function loginOnNext;
@@ -17,9 +19,11 @@ class LoginPresenter extends Presenter {
   LoginPresenter(
     AuthRepository authRepository,
     SettingRepository settingRepository,
+    LoggingRepository loggingRepository,
   )   : _loginUseCase = LoginUseCase(authRepository),
         _resetToDefaultSettingsUseCase = ResetToDefaultSettingsUseCase(
           settingRepository,
+          loggingRepository,
         );
 
   void login(String email, String password) {

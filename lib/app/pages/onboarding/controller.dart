@@ -10,6 +10,7 @@ import '../../../domain/entities/brand.dart';
 import '../../../domain/repositories/auth.dart';
 import '../../../domain/repositories/permission.dart';
 import '../../../domain/repositories/setting.dart';
+import '../../../domain/repositories/logging.dart';
 
 import '../../routes.dart';
 import 'presenter.dart';
@@ -44,6 +45,7 @@ class OnboardingController extends Controller {
       LoginPage: (c) => LoginPage(
             Provider.of<AuthRepository>(c),
             Provider.of<SettingRepository>(c),
+            Provider.of<LoggingRepository>(c),
             Provider.of<Brand>(c),
             forward,
           ),
