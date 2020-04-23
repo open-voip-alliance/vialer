@@ -11,6 +11,8 @@ import '../widgets/header.dart';
 import '../widgets/list_placeholder.dart';
 import 'widgets/item.dart';
 
+import '../util/stylized_snack_bar.dart';
+
 import 'controller.dart';
 
 class RecentPage extends View {
@@ -40,36 +42,11 @@ class _RecentPageState extends ViewState<RecentPage, RecentController> {
   ) : super(RecentController(recentCallRepository, callRepository));
 
   void _showSnackBar(BuildContext context) {
-    Scaffold.of(context).showSnackBar(
-      SnackBar(
-        behavior: SnackBarBehavior.fixed,
-        backgroundColor: Theme.of(context).primaryColorLight,
-        content: Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: 16,
-          ),
-          child: Row(
-            children: <Widget>[
-              Icon(
-                VialerSans.copy,
-                color: Theme.of(context).primaryColorDark,
-                size: 16,
-              ),
-              SizedBox(width: 24),
-              Expanded(
-                child: Text(
-                  context.msg.main.recent.snackBar.copied,
-                  style: TextStyle(
-                    color: Theme.of(context).primaryColorDark,
-                    fontSize: 16,
-                  ),
-                ),
-              ),
-              if (widget.snackBarRightPadding != 0)
-                SizedBox(width: widget.snackBarRightPadding),
-            ],
-          ),
-        ),
+    showSnackBar(
+      context,
+      text: context.msg.main.recent.snackBar.copied,
+      padding: EdgeInsets.only(
+        right: widget.snackBarRightPadding,
       ),
     );
   }
