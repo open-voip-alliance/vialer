@@ -109,6 +109,7 @@ class _ContactPageState extends ViewState<ContactsPage, ContactsController> {
                   child: _AlphabetListView(
                     bottomLettersPadding: widget.bottomLettersPadding,
                     children: _mapToWidgets(controller.contacts),
+                    onRefresh: () => controller.updateContacts(),
                   ),
                 ),
               ),
@@ -179,11 +180,13 @@ class _ContactPageState extends ViewState<ContactsPage, ContactsController> {
 class _AlphabetListView extends StatefulWidget {
   final double bottomLettersPadding;
   final List<Widget> children;
+  final Future<void> Function() onRefresh;
 
   const _AlphabetListView({
     Key key,
     this.bottomLettersPadding,
     this.children,
+    this.onRefresh,
   }) : super(key: key);
 
   @override
@@ -242,7 +245,6 @@ class _AlphabetListViewState extends State<_AlphabetListView> {
     final offsetY = _offset.dy - (usableParentHeight - lettersFullHeight) / 2;
 
     var index = ((offsetY - (size.height / 2)) / size.height).round();
-
     index = index.clamp(0, max(0, _letters.length - 1));
 
     return _letters[index];
@@ -254,29 +256,32 @@ class _AlphabetListViewState extends State<_AlphabetListView> {
       builder: (context, constraints) {
         final maxSize = constraints.biggest;
         final sideLetterSize = _sideLetterSize(maxSize);
-
         final showLetters = _letters.length >= 8;
 
         return Stack(
           fit: StackFit.expand,
           overflow: Overflow.visible,
           children: <Widget>[
-            ScrollablePositionedList.builder(
-              itemScrollController: _controller,
-              itemCount: widget.children.length,
-              itemBuilder: (context, index) {
-                if (widget.children.isNotEmpty) {
-                  return Provider<EdgeInsets>(
-                    create: (_) => EdgeInsets.only(
-                      left: 16,
-                      right: 16 + sideLetterSize.width,
-                    ),
-                    child: widget.children[index],
-                  );
-                } else {
-                  return Container();
-                }
-              },
+            RefreshIndicator(
+              onRefresh: widget.onRefresh,
+              child: ScrollablePositionedList.builder(
+                physics: const AlwaysScrollableScrollPhysics(),
+                itemScrollController: _controller,
+                itemCount: widget.children.length,
+                itemBuilder: (context, index) {
+                  if (widget.children.isNotEmpty) {
+                    return Provider<EdgeInsets>(
+                      create: (_) => EdgeInsets.only(
+                        left: 16,
+                        right: 16 + sideLetterSize.width,
+                      ),
+                      child: widget.children[index],
+                    );
+                  } else {
+                    return Container();
+                  }
+                },
+              ),
             ),
             if (showLetters)
               Positioned(

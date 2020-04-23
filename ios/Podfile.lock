@@ -1,0 +1,113 @@
+PODS:
+  - Analytics (3.7.0)
+  - android_intent (0.0.1):
+    - Flutter
+  - contacts_service (0.2.1):
+    - Flutter
+  - device_info (0.0.1):
+    - Flutter
+  - Flutter (1.0.0)
+  - flutter_segment (0.0.1):
+    - Analytics (= 3.7.0)
+    - Flutter
+  - moor_ffi (0.0.1):
+    - Flutter
+  - package_info (0.0.1):
+    - Flutter
+  - path_provider (0.0.1):
+    - Flutter
+  - path_provider_macos (0.0.1):
+    - Flutter
+  - "permission_handler (4.4.0+hotfix.4)":
+    - Flutter
+  - shared_preferences (0.0.1):
+    - Flutter
+  - shared_preferences_macos (0.0.1):
+    - Flutter
+  - shared_preferences_web (0.0.1):
+    - Flutter
+  - url_launcher (0.0.1):
+    - Flutter
+  - url_launcher_macos (0.0.1):
+    - Flutter
+  - url_launcher_web (0.0.1):
+    - Flutter
+
+DEPENDENCIES:
+  - android_intent (from `.symlinks/plugins/android_intent/ios`)
+  - contacts_service (from `.symlinks/plugins/contacts_service/ios`)
+  - device_info (from `.symlinks/plugins/device_info/ios`)
+  - Flutter (from `Flutter`)
+  - flutter_segment (from `.symlinks/plugins/flutter_segment/ios`)
+  - moor_ffi (from `.symlinks/plugins/moor_ffi/ios`)
+  - package_info (from `.symlinks/plugins/package_info/ios`)
+  - path_provider (from `.symlinks/plugins/path_provider/ios`)
+  - path_provider_macos (from `.symlinks/plugins/path_provider_macos/ios`)
+  - permission_handler (from `.symlinks/plugins/permission_handler/ios`)
+  - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
+  - shared_preferences_macos (from `.symlinks/plugins/shared_preferences_macos/ios`)
+  - shared_preferences_web (from `.symlinks/plugins/shared_preferences_web/ios`)
+  - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
+  - url_launcher_macos (from `.symlinks/plugins/url_launcher_macos/ios`)
+  - url_launcher_web (from `.symlinks/plugins/url_launcher_web/ios`)
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - Analytics
+
+EXTERNAL SOURCES:
+  android_intent:
+    :path: ".symlinks/plugins/android_intent/ios"
+  contacts_service:
+    :path: ".symlinks/plugins/contacts_service/ios"
+  device_info:
+    :path: ".symlinks/plugins/device_info/ios"
+  Flutter:
+    :path: Flutter
+  flutter_segment:
+    :path: ".symlinks/plugins/flutter_segment/ios"
+  moor_ffi:
+    :path: ".symlinks/plugins/moor_ffi/ios"
+  package_info:
+    :path: ".symlinks/plugins/package_info/ios"
+  path_provider:
+    :path: ".symlinks/plugins/path_provider/ios"
+  path_provider_macos:
+    :path: ".symlinks/plugins/path_provider_macos/ios"
+  permission_handler:
+    :path: ".symlinks/plugins/permission_handler/ios"
+  shared_preferences:
+    :path: ".symlinks/plugins/shared_preferences/ios"
+  shared_preferences_macos:
+    :path: ".symlinks/plugins/shared_preferences_macos/ios"
+  shared_preferences_web:
+    :path: ".symlinks/plugins/shared_preferences_web/ios"
+  url_launcher:
+    :path: ".symlinks/plugins/url_launcher/ios"
+  url_launcher_macos:
+    :path: ".symlinks/plugins/url_launcher_macos/ios"
+  url_launcher_web:
+    :path: ".symlinks/plugins/url_launcher_web/ios"
+
+SPEC CHECKSUMS:
+  Analytics: 77fd5fb102a4a5eedafa2c2b0245ceb7b7c15e45
+  android_intent: f144b3783d533cc5bc2cd04cdbd1dc2b6950bd69
+  contacts_service: d212985196c101372bb55c42f41dae7be59ab811
+  device_info: cbf09d2ec12aa7110e0b09fabe54b5bd6c8efe74
+  Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  flutter_segment: 31dce829260fc896cd391d7cee4fc3609003f93c
+  moor_ffi: d66c9470c18e9cb333423bbcb493c105c6c774c6
+  package_info: 48b108e75b8802c2d5e126f208ef540561c98aef
+  path_provider: fb74bd0465e96b594bb3b5088ee4a4e7bb1f2a9d
+  path_provider_macos: f760a3c5b04357c380e2fddb6f9db6f3015897e0
+  permission_handler: 8278954f2382902f63f00dd8828769c0bd6d511b
+  shared_preferences: 430726339841afefe5142b9c1f50cb6bd7793e01
+  shared_preferences_macos: f3f29b71ccbb56bf40c9dd6396c9acf15e214087
+  shared_preferences_web: 141cce0c3ed1a1c5bf2a0e44f52d31eeb66e5ea9
+  url_launcher: a1c0cc845906122c4784c542523d8cacbded5626
+  url_launcher_macos: fd7894421cd39320dce5f292fc99ea9270b2a313
+  url_launcher_web: e5527357f037c87560776e36436bf2b0288b965c
+
+PODFILE CHECKSUM: 554b21be5afbc1c73a4e5cbcfef2ce82f4673f67
+
+COCOAPODS: 1.7.5
