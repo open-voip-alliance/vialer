@@ -153,6 +153,7 @@ class _LoginPageState extends ViewState<LoginPage, LoginController>
             prefixIcon: VialerSans.user,
             labelText: context.msg.onboarding.login.placeholder.username,
             keyboardType: TextInputType.emailAddress,
+            hasError: controller.loginFailed,
           ),
           SizedBox(height: 20),
           StylizedTextField(
@@ -160,6 +161,7 @@ class _LoginPageState extends ViewState<LoginPage, LoginController>
             prefixIcon: VialerSans.lockOn,
             labelText: context.msg.onboarding.login.placeholder.password,
             obscureText: true,
+            hasError: controller.loginFailed,
           ),
           SizedBox(height: 32),
           Column(

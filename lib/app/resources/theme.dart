@@ -53,9 +53,9 @@ abstract class BrandTheme {
 
   Color get onboardingGradientEnd;
 
-  Color get errorBorderColor;
+  final Color errorBorderColor = Color(0xFFDA534F).withOpacity(0.32);
 
-  Color get errorContentColor;
+  final Color errorContentColor = Color(0xFF8F0A06);
 
   Color get buttonColor => primaryLight;
 
@@ -111,12 +111,6 @@ class VialerTheme extends BrandTheme {
 
   @override
   final onboardingGradientEnd = Color(0xFFE94E1B);
-
-  @override
-  final Color errorBorderColor = Color(0xFFDA534F).withOpacity(0.32);
-
-  @override
-  final Color errorContentColor = Color(0xFF8F0A06);
 }
 
 class VoysTheme extends BrandTheme {
@@ -140,12 +134,6 @@ class VoysTheme extends BrandTheme {
 
   @override
   get onboardingGradientEnd => primaryDark;
-
-  @override
-  final Color errorBorderColor = Color(0xFF2491FF).withOpacity(0.32);
-
-  @override
-  Color get errorContentColor => primaryDark;
 
   @override
   Color get buttonColor => primary;
