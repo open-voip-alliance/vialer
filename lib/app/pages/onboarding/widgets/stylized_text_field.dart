@@ -1,5 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+import '../../../resources/theme.dart';
 
 class StylizedTextField extends StatelessWidget {
   final TextEditingController controller;
@@ -7,6 +8,7 @@ class StylizedTextField extends StatelessWidget {
   final TextInputType keyboardType;
   final IconData prefixIcon;
   final String labelText;
+  final bool hasError;
 
   StylizedTextField({
     Key key,
@@ -15,6 +17,7 @@ class StylizedTextField extends StatelessWidget {
     this.controller,
     this.obscureText = false,
     this.keyboardType,
+    this.hasError = false,
   }) : super(key: key);
 
   static const color = Colors.grey;
@@ -27,7 +30,11 @@ class StylizedTextField extends StatelessWidget {
       child: TextField(
         controller: controller,
         decoration: InputDecoration(
-          prefixIcon: Icon(prefixIcon, color: color, size: 16),
+          prefixIcon: Icon(
+            prefixIcon,
+            color: hasError ? BrandTheme.of(context).errorContentColor : color,
+            size: 16,
+          ),
           labelText: labelText,
           border: inputBorder,
           enabledBorder: inputBorder,
