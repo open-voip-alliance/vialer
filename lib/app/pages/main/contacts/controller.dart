@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/widgets.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 
@@ -9,6 +11,8 @@ import 'presenter.dart';
 
 class ContactsController extends Controller {
   final ContactsPresenter _presenter;
+
+  Completer _completer;
 
   List<Contact> contacts = [];
 
@@ -31,10 +35,20 @@ class ContactsController extends Controller {
 
   void askPermission() => _presenter.askPermission();
 
+  Future<void> updateContacts() {
+    _completer = Completer();
+
+    getContacts();
+
+    return _completer.future;
+  }
+
   void _onContactsUpdated(List<Contact> contacts) {
     this.contacts = contacts;
 
     refreshUI();
+
+    _completer?.complete();
   }
 
   void _onNoPermission() {
