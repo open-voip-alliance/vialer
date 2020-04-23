@@ -19,7 +19,7 @@ import '../../../widgets/stylized_button.dart';
 import '../widgets/header.dart';
 import '../widgets/list_placeholder.dart';
 import 'widgets/item.dart';
-import 'widgets/letter_header.dart';
+import 'widgets/group_header.dart';
 
 import '../../../util/conditional_capitalization.dart';
 
