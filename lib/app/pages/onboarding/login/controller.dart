@@ -8,6 +8,7 @@ import '../../../../domain/entities/brand.dart';
 
 import '../../../../domain/repositories/auth.dart';
 import '../../../../domain/repositories/setting.dart';
+import '../../../../domain/repositories/logging.dart';
 
 import '../../../util/debug.dart';
 
@@ -38,9 +39,14 @@ class LoginController extends Controller {
   LoginController(
     this._authRepository,
     SettingRepository settingRepository,
+    LoggingRepository loggingRepository,
     this._brand,
     this._forward,
-  ) : _presenter = LoginPresenter(_authRepository, settingRepository);
+  ) : _presenter = LoginPresenter(
+          _authRepository,
+          settingRepository,
+          loggingRepository,
+        );
 
   @override
   void initController(GlobalKey<State<StatefulWidget>> key) {

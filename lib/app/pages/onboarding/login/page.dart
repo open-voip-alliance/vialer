@@ -7,6 +7,7 @@ import '../../../../domain/entities/brand.dart';
 
 import '../../../../domain/repositories/setting.dart';
 import '../../../../domain/repositories/auth.dart';
+import '../../../../domain/repositories/logging.dart';
 
 import '../../../resources/theme.dart';
 import '../../../resources/localizations.dart';
@@ -21,12 +22,15 @@ import 'controller.dart';
 class LoginPage extends View {
   final AuthRepository _authRepository;
   final SettingRepository _settingRepository;
+  final LoggingRepository _loggingRepository;
+
   final Brand _brand;
   final VoidCallback forward;
 
   LoginPage(
     this._authRepository,
     this._settingRepository,
+    this._loggingRepository,
     this._brand,
     this.forward, {
     Key key,
@@ -36,6 +40,7 @@ class LoginPage extends View {
   State<StatefulWidget> createState() => _LoginPageState(
         _authRepository,
         _settingRepository,
+        _loggingRepository,
         _brand,
         forward,
       );
@@ -49,9 +54,11 @@ class _LoginPageState extends ViewState<LoginPage, LoginController>
   _LoginPageState(
     AuthRepository authRepository,
     SettingRepository settingRepository,
+    LoggingRepository loggingRepository,
     Brand brand,
     VoidCallback forward,
-  ) : super(LoginController(authRepository, settingRepository, brand, forward));
+  ) : super(LoginController(authRepository, settingRepository,
+            loggingRepository, brand, forward));
 
   @override
   void didChangeDependencies() {
