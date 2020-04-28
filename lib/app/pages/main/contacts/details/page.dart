@@ -71,49 +71,47 @@ class _ContactDetailsPageState
         iconTheme: IconThemeData(color: Theme.of(context).primaryColor),
       ),
       body: SafeArea(
-        child: Column(
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.only(
-                top: 32,
-              ),
-              child: Column(
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: _horizontalPadding,
-                    ),
-                    child: Row(
+        child: Padding(
+          padding: EdgeInsets.only(
+            top: 32,
+          ),
+          child: Column(
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: _horizontalPadding,
+                ),
+                child: Row(
+                  children: <Widget>[
+                    ContactAvatar(widget.contact, size: _leadingSize),
+                    SizedBox(width: 16),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        ContactAvatar(widget.contact, size: _leadingSize),
-                        SizedBox(width: 16),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text(
-                              widget.contact.name,
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            SizedBox(height: 4),
-                            ContactSubtitle(widget.contact),
-                          ],
-                        )
+                        Text(
+                          widget.contact.name,
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(height: 4),
+                        ContactSubtitle(widget.contact),
                       ],
-                    ),
-                  ),
-                  SizedBox(height: 24),
-                  _DestinationsList(
-                    contact: widget.contact,
-                    onTapNumber: controller.call,
-                    onTapEmail: controller.mail,
-                  ),
-                ],
+                    )
+                  ],
+                ),
               ),
-            ),
-          ],
+              SizedBox(height: 24),
+              Expanded(
+                child: _DestinationsList(
+                  contact: widget.contact,
+                  onTapNumber: controller.call,
+                  onTapEmail: controller.mail,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -136,8 +134,6 @@ class _DestinationsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView(
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
       children: contact.phoneNumbers
           .map(
             (p) => _Item(
