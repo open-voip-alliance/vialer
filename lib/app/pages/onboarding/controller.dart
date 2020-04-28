@@ -15,7 +15,6 @@ import '../../../domain/repositories/logging.dart';
 import '../../routes.dart';
 import 'presenter.dart';
 
-import 'initial/page.dart';
 import 'login/page.dart';
 import 'permission/call/page.dart';
 import 'permission/contacts/page.dart';
@@ -41,7 +40,6 @@ class OnboardingController extends Controller {
     super.initController(key);
 
     _pageBuilders = {
-      InitialPage: (_) => InitialPage(forward),
       LoginPage: (c) => LoginPage(
             Provider.of<AuthRepository>(c),
             Provider.of<SettingRepository>(c),
@@ -64,7 +62,7 @@ class OnboardingController extends Controller {
           ),
     };
 
-    pages = [_pageBuilders[InitialPage]];
+    pages = [_pageBuilders[LoginPage]];
 
     _presenter.getSteps();
   }
