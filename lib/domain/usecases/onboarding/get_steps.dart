@@ -30,7 +30,6 @@ class GetStepsUseCase extends UseCase<List<Step>, void> {
             PermissionStatus.granted;
 
     final steps = [
-      Step.initial,
       Step.login,
       if (callPermissionDenied) Step.callPermission,
       if (contactsPermissionDenied) Step.contactsPermission,
