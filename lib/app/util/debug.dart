@@ -1,3 +1,5 @@
+import 'dart:async';
+
 bool get inDebugMode {
   var _debug = false;
 
@@ -7,4 +9,5 @@ bool get inDebugMode {
   return _debug;
 }
 
-Future<void> doIfNotDebug(Function f) async => !inDebugMode ? f() : null;
+Future<void> doIfNotDebug(FutureOr Function() f) async =>
+    !inDebugMode ? f() : null;

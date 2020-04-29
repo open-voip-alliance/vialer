@@ -3,7 +3,11 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../../domain/repositories/env.dart';
 
 class DeviceEnvRepository extends EnvRepository {
-  static const _sentrDsnKey = 'SENTRY_DSN';
+  static const _sentryDsnKey = 'SENTRY_DSN';
+
+  static const _logentriesAndroidTokenKey = 'LOGENTRIES_ANDROID_TOKEN';
+
+  static const _logentriesIosTokenKey = 'LOGENTRIES_IOS_TOKEN';
 
   Map<String, String> __env;
 
@@ -16,10 +20,14 @@ class DeviceEnvRepository extends EnvRepository {
     return __env;
   }
 
-  @override
-  Future<String> get sentryDsn async {
-    final env = await _env;
+  Future<String> _get(String key) async => (await _env)[key];
 
-    return env[_sentrDsnKey];
-  }
+  @override
+  Future<String> get sentryDsn => _get(_sentryDsnKey);
+
+  @override
+  Future<String> get logentriesAndroidToken => _get(_logentriesAndroidTokenKey);
+
+  @override
+  Future<String> get logentriesIosToken => _get(_logentriesIosTokenKey);
 }
