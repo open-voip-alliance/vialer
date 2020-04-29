@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:logging/logging.dart';
 
@@ -8,15 +9,22 @@ import '../../domain/repositories/logging.dart';
 import '../../domain/repositories/auth.dart';
 import '../../domain/repositories/storage.dart';
 import '../../domain/repositories/setting.dart';
+import '../../domain/repositories/env.dart';
+
+import '../../app/util/debug.dart';
 
 class DataLoggingRepository extends LoggingRepository {
   final AuthRepository _authRepository;
   final StorageRepository _storageRepository;
+  final EnvRepository _envRepository;
   final SettingRepository _settingRepository;
+
+  SecureSocket _remoteLoggingSocket;
 
   DataLoggingRepository(
     this._authRepository,
     this._storageRepository,
+    this._envRepository,
     this._settingRepository,
   );
 
@@ -80,16 +88,32 @@ class DataLoggingRepository extends LoggingRepository {
           orElse: () => null,
         );
 
-    if (setting?.value == true) {
+    if (setting?.value == true && !inDebugMode) {
       await enableRemoteLogging();
     }
   }
 
   @override
   Future<void> enableRemoteLogging() async {
-    _remoteLogSubscription ??= Logger.root.onRecord.listen((record) {
-      // Send it somewhere
-    });
+    _remoteLoggingSocket = await SecureSocket.connect(
+      'data.logentries.com',
+      443,
+    );
+
+    final token = Platform.isAndroid
+        ? await _envRepository.logentriesAndroidToken
+        : await _envRepository.logentriesIosToken;
+
+    if (token != null && token.isNotEmpty) {
+      _remoteLogSubscription ??= Logger.root.onRecord.listen((record) async {
+        final message = _logString(record);
+        if (message == null) {
+          return;
+        }
+
+        _remoteLoggingSocket.writeln('$token $message');
+      });
+    }
   }
 
   @override

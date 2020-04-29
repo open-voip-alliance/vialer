@@ -64,6 +64,7 @@ void main() async {
   final loggingRepo = DataLoggingRepository(
     authRepo,
     storageRepo,
+    envRepo,
     settingRepo,
   );
 
