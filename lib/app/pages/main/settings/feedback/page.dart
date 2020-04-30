@@ -41,9 +41,7 @@ class _FeedbackPageState extends ViewState<FeedbackPage, DialerController> {
     return Scaffold(
       key: globalKey,
       appBar: AppBar(
-        title: Text(
-          'Feedback',
-        ),
+        title: Text(context.msg.main.settings.feedback.title),
         centerTitle: true,
       ),
       body: TransparentStatusBar(

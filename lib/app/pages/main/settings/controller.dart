@@ -12,6 +12,8 @@ import '../../../routes.dart';
 
 import '../util/stylized_snack_bar.dart';
 
+import '../../../resources/localizations.dart';
+
 import 'presenter.dart';
 
 class SettingsController extends Controller {
@@ -57,7 +59,10 @@ class SettingsController extends Controller {
         false;
 
     if (sent) {
-      showSnackBar(getContext(), text: 'Sent feedback');
+      showSnackBar(
+        getContext(),
+        text: getContext().msg.main.settings.feedback.snackBar,
+      );
     }
   }
 

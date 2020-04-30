@@ -220,6 +220,7 @@ class FeedbackSettingsMainMessages {
 	const FeedbackSettingsMainMessages(this._parent);
 	String get title => "Feedback";
 	PlaceholdersFeedbackSettingsMainMessages get placeholders => PlaceholdersFeedbackSettingsMainMessages(this);
+	String get snackBar => "Feedback sent";
 	ButtonsFeedbackSettingsMainMessages get buttons => ButtonsFeedbackSettingsMainMessages(this);
 }
 
