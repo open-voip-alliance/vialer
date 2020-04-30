@@ -11,8 +11,6 @@ import '../../domain/repositories/storage.dart';
 import '../../domain/repositories/setting.dart';
 import '../../domain/repositories/env.dart';
 
-import '../../app/util/debug.dart';
-
 class DataLoggingRepository extends LoggingRepository {
   final AuthRepository _authRepository;
   final StorageRepository _storageRepository;
@@ -88,7 +86,7 @@ class DataLoggingRepository extends LoggingRepository {
           orElse: () => null,
         );
 
-    if (setting?.value == true && !inDebugMode) {
+    if (setting?.value == true) {
       await enableRemoteLogging();
     }
   }
@@ -118,7 +116,7 @@ class DataLoggingRepository extends LoggingRepository {
 
   @override
   Future<void> disableRemoteLogging() async {
-    await _remoteLogSubscription.cancel();
+    await _remoteLogSubscription?.cancel();
     _remoteLogSubscription = null;
   }
 }

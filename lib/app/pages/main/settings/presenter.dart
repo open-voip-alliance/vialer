@@ -10,6 +10,8 @@ import '../../../../domain/usecases/get_settings.dart';
 import '../../../../domain/usecases/change_setting.dart';
 import '../../../../domain/usecases/logout.dart';
 
+import '../../../util/debug.dart';
+
 class SettingsPresenter extends Presenter {
   Function settingsOnNext;
   Function changeSettingsOnNext;
@@ -35,6 +37,10 @@ class SettingsPresenter extends Presenter {
   }
 
   void changeSetting(Setting setting) {
+    if (setting is RemoteLoggingSetting && !inDebugMode) {
+      return;
+    }
+
     _changeSettingUseCase.execute(
       _ChangeSettingUseCaseObserver(this),
       ChangeSettingUseCaseParams(setting),
