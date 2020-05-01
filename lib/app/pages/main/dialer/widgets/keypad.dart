@@ -57,7 +57,7 @@ class _KeypadState extends State<Keypad> {
               .skip(i * amountPerRow)
               .take(amountPerRow)
               .map((entry) {
-            return _ValueButton(
+            return ValueButton(
               controller: _controller,
               cursorShownNotifier: _cursorShownNotifier,
               primaryValue: entry.key,
@@ -141,7 +141,8 @@ class _KeypadButton extends StatelessWidget {
   }
 }
 
-class _ValueButton extends StatefulWidget {
+@visibleForTesting
+class ValueButton extends StatefulWidget {
   final String primaryValue;
   final String secondaryValue;
 
@@ -152,7 +153,7 @@ class _ValueButton extends StatefulWidget {
 
   final ValueNotifier<bool> cursorShownNotifier;
 
-  const _ValueButton({
+  const ValueButton({
     Key key,
     @required this.primaryValue,
     this.secondaryValue,
@@ -165,7 +166,7 @@ class _ValueButton extends StatefulWidget {
   State<StatefulWidget> createState() => _ValueButtonState();
 }
 
-class _ValueButtonState extends State<_ValueButton> {
+class _ValueButtonState extends State<ValueButton> {
   TextEditingController get _controller => widget.controller;
 
   @override
