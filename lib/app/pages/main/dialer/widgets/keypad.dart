@@ -306,8 +306,17 @@ class _DeleteButtonState extends State<_DeleteButton> {
   void initState() {
     super.initState();
 
-    _controller.addListener(() {
-      if (_controller.text.isNotEmpty) {
+    _controller.addListener(_handleStatusChange);
+  }
+
+  @override
+  void dispose() {
+    _controller.removeListener(_handleStatusChange);
+    super.dispose();
+  }
+
+  void _handleStatusChange() {
+    if (_controller.text.isNotEmpty) {
         setState(() {
           _visible = true;
         });
@@ -316,7 +325,6 @@ class _DeleteButtonState extends State<_DeleteButton> {
           _visible = false;
         });
       }
-    });
   }
 
   void _delete() {
