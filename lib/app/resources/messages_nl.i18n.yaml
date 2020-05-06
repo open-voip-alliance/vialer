@@ -77,6 +77,7 @@ main:
       placeholders:
         title: "Titel"
         text: "Vul hier je feedback in"
+      snackBar: "Feedback verstuurd"
       buttons:
         send: *sendFeedbackButton
 

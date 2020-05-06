@@ -221,6 +221,7 @@ class FeedbackSettingsMainMessages_nl extends FeedbackSettingsMainMessages {
 	const FeedbackSettingsMainMessages_nl(this._parent):super(_parent);
 	String get title => "Feedback";
 	PlaceholdersFeedbackSettingsMainMessages_nl get placeholders => PlaceholdersFeedbackSettingsMainMessages_nl(this);
+	String get snackBar => "Feedback verstuurd";
 	ButtonsFeedbackSettingsMainMessages_nl get buttons => ButtonsFeedbackSettingsMainMessages_nl(this);
 }
 
