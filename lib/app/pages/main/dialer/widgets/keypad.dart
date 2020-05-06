@@ -317,14 +317,14 @@ class _DeleteButtonState extends State<_DeleteButton> {
 
   void _handleStatusChange() {
     if (_controller.text.isNotEmpty) {
-        setState(() {
-          _visible = true;
-        });
-      } else {
-        setState(() {
-          _visible = false;
-        });
-      }
+      setState(() {
+        _visible = true;
+      });
+    } else {
+      setState(() {
+        _visible = false;
+      });
+    }
   }
 
   void _delete() {
