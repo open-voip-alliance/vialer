@@ -7,6 +7,8 @@ import '../../../../../domain/entities/call.dart';
 
 import '../../../../resources/localizations.dart';
 
+import '../../util/color.dart';
+
 enum _Action {
   copy,
   call,
@@ -105,7 +107,8 @@ class _RecentItemAvatar extends StatelessWidget {
       alignment: Alignment.center,
       child: CircleAvatar(
         foregroundColor: Colors.white,
-        backgroundColor: context.brandTheme.grey3,
+        backgroundColor:
+            calculateColorForPhoneNumber(context, call.destinationNumber),
         child: call.destinationContactName != null
             ? Text(
                 _letters,
