@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:characters/characters.dart';
 
-import '../../../../resources/theme.dart';
 import '../../../../../domain/entities/contact.dart';
+
+import '../util/color.dart';
 
 class ContactAvatar extends StatelessWidget {
   static const _defaultSize = 36.0;
@@ -35,7 +36,7 @@ class ContactAvatar extends StatelessWidget {
         aspectRatio: 1 / 1,
         child: CircleAvatar(
           foregroundColor: Colors.white,
-          backgroundColor: context.brandTheme.grey3,
+          backgroundColor: contact.calculateColor(context),
           backgroundImage: hasAvatar ? MemoryImage(contact.avatar) : null,
           child: !hasAvatar
               ? Text(
