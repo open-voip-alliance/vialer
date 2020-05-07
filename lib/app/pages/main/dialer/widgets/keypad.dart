@@ -99,6 +99,8 @@ class _KeypadState extends State<Keypad> {
 }
 
 class _KeypadButton extends StatelessWidget {
+  final bool borderOnIos;
+
   // Base values for padding calculation, at a screen height of
   // 592, 4 logical pixels padding seems good
   static const heightAtPadding = 592;
@@ -106,7 +108,11 @@ class _KeypadButton extends StatelessWidget {
 
   final Widget child;
 
-  const _KeypadButton({Key key, this.child}) : super(key: key);
+  const _KeypadButton({
+    Key key,
+    this.borderOnIos = true,
+    this.child,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -120,7 +126,15 @@ class _KeypadButton extends StatelessWidget {
         ),
         child: AspectRatio(
           aspectRatio: 1,
-          child: child,
+          child: Material(
+            color: Colors.transparent,
+            shape: CircleBorder(
+              side: borderOnIos && context.isIOS
+                  ? BorderSide(color: context.brandTheme.grey3)
+                  : BorderSide.none,
+            ),
+            child: child,
+          ),
         ),
       ),
     );
@@ -212,46 +226,38 @@ class _ValueButtonState extends State<_ValueButton> {
   @override
   Widget build(BuildContext context) {
     return _KeypadButton(
-      child: Material(
-        color: Colors.transparent,
-        shape: CircleBorder(
-          side: context.isIOS
-              ? BorderSide(color: context.brandTheme.grey3)
-              : BorderSide.none,
-        ),
-        child: _InkWellOrResponse(
-          isResponse: !context.isIOS,
-          customBorder: CircleBorder(),
-          enableFeedback: true,
-          onTapDown: _enterValue,
-          onLongPress: widget.replaceWithSecondaryValueOnLongPress
-              ? _replaceWithSecondaryValue
-              : null,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
+      child: _InkWellOrResponse(
+        isResponse: !context.isIOS,
+        customBorder: CircleBorder(),
+        enableFeedback: true,
+        onTapDown: _enterValue,
+        onLongPress: widget.replaceWithSecondaryValueOnLongPress
+            ? _replaceWithSecondaryValue
+            : null,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              widget.primaryValue,
+              style: TextStyle(
+                fontSize: 32,
+                color: !_primaryIsNumber
+                    ? context.brandTheme.grey5
+                    : null, // Null means default color
+              ),
+            ),
+            // Render an empty string on non-iOS platforms
+            // to keep the alignments proper
+            if (widget.secondaryValue != null || !context.isIOS)
               Text(
-                widget.primaryValue,
+                widget.secondaryValue ?? '',
                 style: TextStyle(
-                  fontSize: 32,
-                  color: !_primaryIsNumber
-                      ? context.brandTheme.grey5
-                      : null, // Null means default color
+                  color: context.brandTheme.grey5,
+                  fontSize: 12,
                 ),
               ),
-              // Render an empty string on non-iOS platforms
-              // to keep the alignments proper
-              if (widget.secondaryValue != null || !context.isIOS)
-                Text(
-                  widget.secondaryValue ?? '',
-                  style: TextStyle(
-                    color: context.brandTheme.grey5,
-                    fontSize: 12,
-                  ),
-                ),
-            ],
-          ),
+          ],
         ),
       ),
     );
@@ -361,6 +367,7 @@ class _DeleteButtonState extends State<_DeleteButton> {
       duration: Duration(milliseconds: 300),
       curve: Curves.decelerate,
       child: _KeypadButton(
+        borderOnIos: false,
         child: InkResponse(
           onTap: _visible ? _delete : null,
           onLongPress: _visible ? _deleteAll : null,
