@@ -91,6 +91,11 @@ class Call {
       direction: direction ?? this.direction,
     );
   }
+
+  @override
+  String toString() {
+    return '$id: $destinationNumber';
+  }
 }
 
 enum Direction {

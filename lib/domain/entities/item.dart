@@ -3,4 +3,7 @@ class Item {
   final String value;
 
   const Item(this.label, this.value);
+
+  @override
+  String toString() => '$label: $value';
 }

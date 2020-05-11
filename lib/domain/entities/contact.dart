@@ -16,4 +16,8 @@ class Contact {
     this.phoneNumbers = const [],
     this.emails = const [],
   });
+
+  @override
+  String toString() =>
+      phoneNumbers.isEmpty ? '$name' : '$name - ${phoneNumbers.join(', ')}';
 }
