@@ -1,10 +1,10 @@
 import 'package:provider/provider.dart';
-import 'package:vialer_lite/domain/repositories/storage.dart';
 
 import '../domain/repositories/auth.dart';
 import '../domain/repositories/permission.dart';
 import '../domain/repositories/call.dart';
 import '../domain/repositories/feedback.dart';
+import '../domain/repositories/storage.dart';
 
 import 'pages/splash/page.dart';
 import 'pages/onboarding/page.dart';

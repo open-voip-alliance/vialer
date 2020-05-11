@@ -73,7 +73,7 @@ abstract class BrandTheme {
       appBarTheme: AppBarTheme(
         color: primaryLight,
         textTheme: TextTheme(
-          title: TextStyle(
+          headline6: TextStyle(
             color: primaryDark,
             fontSize: 24,
             fontWeight: FontWeight.bold,
@@ -152,9 +152,10 @@ class VoysTheme extends BrandTheme {
         appBarTheme: super.themeData.appBarTheme.copyWith(
               color: primary,
               textTheme: TextTheme(
-                title: super.themeData.appBarTheme.textTheme.title.copyWith(
-                      color: Colors.white,
-                    ),
+                headline6:
+                    super.themeData.appBarTheme.textTheme.headline6.copyWith(
+                          color: Colors.white,
+                        ),
               ),
               iconTheme: IconThemeData(
                 color: Colors.white,

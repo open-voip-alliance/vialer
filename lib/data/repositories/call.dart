@@ -48,8 +48,4 @@ class DataCallRepository extends CallRepository {
       throw CallThroughException();
     }
   }
-
-  @override
-  Future<String> getLatestDialedNumber() async =>
-      _storageRepository.lastDialedNumber;
 }

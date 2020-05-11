@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
-import 'package:vialer_lite/domain/repositories/storage.dart';
 
 import '../../../resources/theme.dart';
 import '../../../resources/localizations.dart';
@@ -12,6 +11,7 @@ import 'widgets/keypad.dart';
 
 import '../../../../domain/repositories/call.dart';
 import '../../../../domain/repositories/permission.dart';
+import '../../../../domain/repositories/storage.dart';
 
 import 'controller.dart';
 

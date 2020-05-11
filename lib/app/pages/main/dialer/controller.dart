@@ -2,9 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
-import 'package:vialer_lite/domain/repositories/storage.dart';
 
 import '../../../../domain/repositories/call.dart';
+import '../../../../domain/repositories/storage.dart';
 
 import '../../../../domain/entities/permission_status.dart';
 import '../../../../domain/repositories/permission.dart';
