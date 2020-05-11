@@ -56,18 +56,18 @@ class DialerController extends Controller with Caller {
   }
 
   void startCall() {
-    var numberToCall = keypadController.text;
+    final currentNumber = keypadController.text;
 
-    if (numberToCall == null || numberToCall.isEmpty) {
+    if (currentNumber == null || currentNumber.isEmpty) {
       if (_latestDialedNumber == null) {
         return;
       }
 
-      numberToCall = _latestDialedNumber;
+      keypadController.text = _latestDialedNumber;
+      return;
     }
 
-    call(numberToCall);
-    _latestDialedNumber = numberToCall;
+    call(currentNumber);
   }
 
   @override
