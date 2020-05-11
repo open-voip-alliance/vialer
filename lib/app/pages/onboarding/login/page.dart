@@ -77,27 +77,36 @@ class _LoginPageState extends ViewState<LoginPage, LoginController>
 
   @override
   Widget buildPage() {
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
+
     return AnimatedContainer(
       key: globalKey,
       curve: _curve,
       duration: _duration,
-      padding: controller.padding,
+      padding: !isLandscape
+          ? controller.padding
+          : controller.padding.copyWith(
+              top: 24,
+            ),
       child: Column(
         children: <Widget>[
-          Text(
-            context.msg.onboarding.login.title,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 26,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
+          if (!isLandscape) ...[
+            Text(
+              context.msg.onboarding.login.title,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 26,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
             ),
-          ),
-          AnimatedContainer(
-            curve: _curve,
-            duration: _duration,
-            height: controller.headerDistance,
-          ),
+            AnimatedContainer(
+              curve: _curve,
+              duration: _duration,
+              height: controller.headerDistance,
+            ),
+          ],
           AnimatedSize(
             curve: _curve,
             duration: _duration,
