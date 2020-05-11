@@ -1,3 +1,4 @@
+import 'package:libphonenumber/libphonenumber.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 import 'package:timezone/timezone.dart';
@@ -41,7 +42,7 @@ class DataRecentCallRepository extends RecentCallRepository {
     );
 
     // Never get from cache for the first page, and then only
-    // from when we're sure there's nothing remote
+    // from when we're sure there's nothing remote.
     if (page != 0 && page >= (_cacheStartPage ?? 0)) {
       calls = await _database.getCalls(from: from, to: to);
       _logger.info('Amount of calls from cache: ${calls.length}');
@@ -65,7 +66,7 @@ class DataRecentCallRepository extends RecentCallRepository {
                 // DateTime and not a TZDateTime, because we want to call
                 // the DateTime.toLocal method, not TZDateTime.toLocal, because
                 // the latter uses the location set with `setLocation`, which
-                // we can't use becauise we can't get the current time zone
+                // we can't use because we can't get the current time zone
                 // automatically, but DateTime.toLocal _will_ convert it to the
                 // correct current time zone.
                 date: DateTime.fromMillisecondsSinceEpoch(
@@ -83,7 +84,7 @@ class DataRecentCallRepository extends RecentCallRepository {
         if (mostRecentCall != null &&
             calls.any((c) => c.id == mostRecentCall.id)) {
           // If the response contains the most recent call we got, we can
-          // continue from cache
+          // continue from cache.
           _cacheStartPage = page;
         }
 
@@ -94,18 +95,35 @@ class DataRecentCallRepository extends RecentCallRepository {
 
     final contacts = await _contactRepository.getContacts();
 
+    // Create a list with all phone numbers found in the calls and contacts.
+    var phoneNumbers = calls.map((call) => call.destinationNumber).toList();
+    for (var contact in contacts) {
+      phoneNumbers.addAll(contact.phoneNumbers
+          .map((phoneNumber) => phoneNumber.value)
+          .toList());
+    }
+
+    phoneNumbers = phoneNumbers.toSet().toList(); // Removes duplicates.
+
+    final normalizedPhoneNumbers = await Future.wait(phoneNumbers.map(
+        (phoneNumber) => PhoneNumberUtil.normalizePhoneNumber(
+            phoneNumber: phoneNumber, isoCode: 'NL')));
+
+    // Create a mapping from the original to the normalized phone number.
+    final mappedPhoneNumbers = {};
+    phoneNumbers.asMap().forEach((k, v) {
+      mappedPhoneNumbers[v] = normalizedPhoneNumbers[k];
+    });
+
     _logger.info('Mapping calls to contacts and correct local time');
     calls = calls
         .map(
           (call) => call.copyWith(
             destinationContactName: contacts
                 .firstWhere(
-                  (contact) => contact.phoneNumbers.any(
-                    // TODO: Proper normalization before equality check
-                    (i) =>
-                        i.value.replaceAll(' ', '') ==
-                        call.destinationNumber.replaceAll(' ', ''),
-                  ),
+                  (contact) => contact.phoneNumbers.any((i) =>
+                      mappedPhoneNumbers[i.value] ==
+                      mappedPhoneNumbers[call.destinationNumber]),
                   orElse: () => null,
                 )
                 ?.name,
