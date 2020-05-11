@@ -1,4 +1,5 @@
 import 'package:provider/provider.dart';
+import 'package:vialer_lite/domain/repositories/storage.dart';
 
 import '../domain/repositories/auth.dart';
 import '../domain/repositories/permission.dart';
@@ -29,6 +30,7 @@ abstract class Routes {
     Routes.dialer: (c) => DialerPage(
           Provider.of<CallRepository>(c),
           Provider.of<PermissionRepository>(c),
+          Provider.of<StorageRepository>(c),
         ),
     Routes.feedback: (c) => FeedbackPage(
           Provider.of<FeedbackRepository>(c),

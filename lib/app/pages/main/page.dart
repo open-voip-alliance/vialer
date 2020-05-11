@@ -64,6 +64,7 @@ class _MainPageState extends State<MainPage> {
           DialerPage(
             Provider.of<CallRepository>(context),
             Provider.of<PermissionRepository>(context),
+            Provider.of<StorageRepository>(context),
           ),
         _Navigator(
           navigatorKey: _navigatorStates[0],

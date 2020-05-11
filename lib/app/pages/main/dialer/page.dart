@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
+import 'package:vialer_lite/domain/repositories/storage.dart';
 
 import '../../../resources/theme.dart';
 import '../../../resources/localizations.dart';
@@ -17,13 +18,15 @@ import 'controller.dart';
 class DialerPage extends View {
   final CallRepository _callRepository;
   final PermissionRepository _permissionRepository;
+  final StorageRepository _storageRepository;
 
   /// If destination is not null, call [destination] on open.
   final String destination;
 
   DialerPage(
     this._callRepository,
-    this._permissionRepository, {
+    this._permissionRepository,
+    this._storageRepository, {
     this.destination,
   });
 
@@ -31,17 +34,22 @@ class DialerPage extends View {
   State<StatefulWidget> createState() => _DialerPageState(
         _callRepository,
         _permissionRepository,
+        _storageRepository,
         destination,
       );
 }
 
 class _DialerPageState extends ViewState<DialerPage, DialerController> {
-  _DialerPageState(CallRepository callRepository,
-      PermissionRepository permissionRepository, String destination)
-      : super(
+  _DialerPageState(
+    CallRepository callRepository,
+    PermissionRepository permissionRepository,
+    StorageRepository storageRepository,
+    String destination,
+  ) : super(
           DialerController(
             callRepository,
             permissionRepository,
+            storageRepository,
             destination,
           ),
         );
