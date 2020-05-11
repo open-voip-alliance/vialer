@@ -1,9 +1,10 @@
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
-import 'package:vialer_lite/domain/repositories/storage.dart';
-import 'package:vialer_lite/domain/usecases/get_latest_dialed_number.dart';
 
 import '../../../../domain/repositories/call.dart';
+import '../../../../domain/repositories/storage.dart';
+
 import '../../../../domain/usecases/call.dart';
+import '../../../../domain/usecases/get_latest_dialed_number.dart';
 
 import '../../../../domain/entities/permission.dart';
 import '../../../../domain/entities/permission_status.dart';

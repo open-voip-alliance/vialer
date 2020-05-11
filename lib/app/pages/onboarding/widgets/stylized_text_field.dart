@@ -47,7 +47,7 @@ class StylizedTextField extends StatelessWidget {
           filled: true,
           fillColor: Colors.white,
           contentPadding: EdgeInsets.all(0),
-          hasFloatingPlaceholder: false,
+          floatingLabelBehavior: FloatingLabelBehavior.never,
         ),
         style: TextStyle(
           color: Colors.black,
