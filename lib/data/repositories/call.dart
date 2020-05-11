@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:android_intent/android_intent.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../domain/repositories/storage.dart';
 import '../../domain/entities/call_through_exception.dart';
 import '../../domain/repositories/call.dart';
 
@@ -11,11 +12,14 @@ import 'services/voipgrid.dart';
 
 class DataCallRepository extends CallRepository {
   final VoipgridService _service;
+  final StorageRepository _storageRepository;
 
-  DataCallRepository(this._service);
+  DataCallRepository(this._service, this._storageRepository);
 
   @override
   Future<void> call(String destination) async {
+    _storageRepository.lastDialedNumber = destination;
+
     // Get real number to call
     final response = await _service.callthrough(destination: destination);
     if (response.isSuccessful) {
@@ -44,4 +48,8 @@ class DataCallRepository extends CallRepository {
       throw CallThroughException();
     }
   }
+
+  @override
+  Future<String> getLatestDialedNumber() async =>
+      _storageRepository.lastDialedNumber;
 }

@@ -72,6 +72,15 @@ class DeviceStorageRepository implements StorageRepository {
     _preferences.setString(_logsKey, '$logs\n$value');
   }
 
+  static const _lastDialedNumberKey = 'last_dialed_number';
+
+  @override
+  String get lastDialedNumber => _preferences.getString(_lastDialedNumberKey);
+
+  @override
+  set lastDialedNumber(String value) =>
+      _preferences.setString(_lastDialedNumberKey, value);
+
   @override
   Future<void> clear() => _preferences.clear();
 }

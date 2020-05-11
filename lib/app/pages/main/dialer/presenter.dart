@@ -1,4 +1,6 @@
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
+import 'package:vialer_lite/domain/repositories/storage.dart';
+import 'package:vialer_lite/domain/usecases/get_latest_dialed_number.dart';
 
 import '../../../../domain/repositories/call.dart';
 import '../../../../domain/usecases/call.dart';
@@ -14,14 +16,22 @@ class DialerPresenter extends Presenter {
 
   Function onCheckCallPermissionNext;
 
+  Function onGetLatestDialedNumberNext;
+
   final CallUseCase _callUseCase;
   final GetPermissionStatusUseCase _getPermissionStatusUseCase;
+  final GetLatestDialedNumber _getLatestDialedNumberUseCase;
 
   DialerPresenter(
-      CallRepository callRepository, PermissionRepository permissionRepository)
-      : _callUseCase = CallUseCase(callRepository),
+    CallRepository callRepository,
+    PermissionRepository permissionRepository,
+    StorageRepository storageRepository,
+  )   : _callUseCase = CallUseCase(callRepository),
         _getPermissionStatusUseCase = GetPermissionStatusUseCase(
           permissionRepository,
+        ),
+        _getLatestDialedNumberUseCase = GetLatestDialedNumber(
+          storageRepository,
         );
 
   void call(String destination) {
@@ -37,6 +47,10 @@ class DialerPresenter extends Presenter {
       GetPermissionStatusUseCaseParams(Permission.phone),
     );
   }
+
+  void getLatestNumber() => _getLatestDialedNumberUseCase.execute(
+        _GetLatestDialedNumberUseObserver(this),
+      );
 
   @override
   void dispose() {
@@ -73,4 +87,19 @@ class _GetPermissionStatusUseCaseObserver extends Observer<PermissionStatus> {
   @override
   void onNext(PermissionStatus status) =>
       presenter.onCheckCallPermissionNext(status);
+}
+
+class _GetLatestDialedNumberUseObserver extends Observer<String> {
+  final DialerPresenter presenter;
+
+  _GetLatestDialedNumberUseObserver(this.presenter);
+
+  @override
+  void onComplete() {}
+
+  @override
+  void onError(_) {}
+
+  @override
+  void onNext(String number) => presenter.onGetLatestDialedNumberNext(number);
 }

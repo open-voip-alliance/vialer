@@ -18,5 +18,9 @@ abstract class StorageRepository {
 
   void appendLogs(String value);
 
+  String get lastDialedNumber;
+
+  set lastDialedNumber(String value);
+
   Future<void> clear();
 }

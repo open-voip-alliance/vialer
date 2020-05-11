@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
+import 'package:vialer_lite/domain/repositories/storage.dart';
 
 import '../../../../domain/repositories/call.dart';
 
@@ -25,11 +26,18 @@ class DialerController extends Controller with Caller {
 
   bool get canCall => _canCall;
 
+  String _latestDialedNumber;
+
   DialerController(
     this.callRepository,
     PermissionRepository permissionRepository,
+    StorageRepository storageRepository,
     this.initialDestination,
-  ) : _presenter = DialerPresenter(callRepository, permissionRepository);
+  ) : _presenter = DialerPresenter(
+          callRepository,
+          permissionRepository,
+          storageRepository,
+        );
 
   @override
   void initController(GlobalKey<State<StatefulWidget>> key) {
@@ -43,9 +51,24 @@ class DialerController extends Controller with Caller {
       logger.info('Checking call permission');
       _presenter.checkCallPermission();
     }
+
+    _presenter.getLatestNumber();
   }
 
-  void startCall() => call(keypadController.text);
+  void startCall() {
+    var numberToCall = keypadController.text;
+
+    if (numberToCall == null || numberToCall.isEmpty) {
+      if (_latestDialedNumber == null) {
+        return;
+      }
+
+      numberToCall = _latestDialedNumber;
+    }
+
+    call(numberToCall);
+    _latestDialedNumber = numberToCall;
+  }
 
   @override
   void executeCallUseCase(String destination) => _presenter.call(destination);
@@ -62,10 +85,16 @@ class DialerController extends Controller with Caller {
     }
   }
 
+  // ignore: use_setters_to_change_properties
+  void _onGetLatestDialedNumber(String number) {
+    _latestDialedNumber = number;
+  }
+
   @override
   void initListeners() {
     _presenter.callOnComplete = () {};
     _presenter.onCheckCallPermissionNext = _onCheckCallPermissionNext;
     _presenter.callOnError = showException;
+    _presenter.onGetLatestDialedNumberNext = _onGetLatestDialedNumber;
   }
 }
