@@ -1,5 +1,6 @@
 stages:
   - check
+  - test
 
 analyze:
   image: cirrusci/flutter:stable
@@ -27,3 +28,16 @@ format:
       dartfmt $(find . -type f
       \( -iname "*.dart" ! -path "./lib/app/resources/messages*.i18n.dart" \))
       --fix -n --set-exit-if-changed
+
+test:
+  image: cirrusci/flutter:stable
+  stage: test
+  script:
+    - cp .env.example .env
+    - flutter pub get
+    - flutter pub global activate junitreport
+    - export PATH="$PATH":"$HOME/.pub-cache/bin"
+    - flutter test --machine | tojunit --output report.xml
+  artifacts:
+    reports:
+      junit: report.xml
