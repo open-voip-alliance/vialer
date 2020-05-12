@@ -7,6 +7,8 @@ import '../../../../domain/repositories/logging.dart';
 import '../../../../domain/usecases/onboarding/login.dart';
 import '../../../../domain/usecases/reset_to_default_settings.dart';
 
+import '../../main/util/observer.dart';
+
 class LoginPresenter extends Presenter {
   Function loginOnNext;
   Function loginOnError;
@@ -28,14 +30,19 @@ class LoginPresenter extends Presenter {
 
   void login(String email, String password) {
     _loginUseCase.execute(
-      _LoginUseCaseObserver(this),
+      Watcher(
+        onError: loginOnError,
+        onNext: loginOnNext,
+      ),
       LoginUseCaseParams(email, password),
     );
   }
 
   void resetSettingsToDefaults() {
     _resetToDefaultSettingsUseCase.execute(
-      _ResetSettingsToDefaultsUseCaseObserver(this),
+      Watcher(
+        onNext: (_) => resetSettingsToDefaultsOnNext(),
+      ),
     );
   }
 
@@ -43,34 +50,4 @@ class LoginPresenter extends Presenter {
   void dispose() {
     _loginUseCase.dispose();
   }
-}
-
-class _LoginUseCaseObserver extends Observer<bool> {
-  final LoginPresenter presenter;
-
-  _LoginUseCaseObserver(this.presenter);
-
-  @override
-  void onComplete() {}
-
-  @override
-  void onError(dynamic e) => presenter.loginOnError(e);
-
-  @override
-  void onNext(bool success) => presenter.loginOnNext(success);
-}
-
-class _ResetSettingsToDefaultsUseCaseObserver extends Observer<bool> {
-  final LoginPresenter presenter;
-
-  _ResetSettingsToDefaultsUseCaseObserver(this.presenter);
-
-  @override
-  void onComplete() {}
-
-  @override
-  void onError(dynamic e) {}
-
-  @override
-  void onNext(_) => presenter.resetSettingsToDefaultsOnNext();
 }

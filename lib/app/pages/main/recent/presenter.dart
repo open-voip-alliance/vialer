@@ -5,9 +5,10 @@ import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import '../../../../domain/repositories/call.dart';
 import '../../../../domain/usecases/call.dart';
 
-import '../../../../domain/entities/call.dart';
 import '../../../../domain/repositories/recent_call.dart';
 import '../../../../domain/usecases/get_recent_calls.dart';
+
+import '../util/observer.dart';
 
 class RecentPresenter extends Presenter {
   Function recentCallsOnNext;
@@ -25,7 +26,9 @@ class RecentPresenter extends Presenter {
 
   void getRecentCalls({@required int page}) {
     _getRecentCallsUseCase.execute(
-      _GetRecentCallsUseCaseObserver(this),
+      Watcher(
+        onNext: recentCallsOnNext,
+      ),
       GetRecentCallsUseCaseParams(
         page: page,
       ),
@@ -33,7 +36,9 @@ class RecentPresenter extends Presenter {
   }
 
   void call(String destination) => _callUseCase.execute(
-        _CallUseCaseObserver(this),
+        Watcher(
+          onError: (e) => callOnError(e),
+        ),
         CallUseCaseParams(destination),
       );
 
@@ -41,35 +46,4 @@ class RecentPresenter extends Presenter {
   void dispose() {
     _getRecentCallsUseCase.dispose();
   }
-}
-
-class _GetRecentCallsUseCaseObserver extends Observer<List<Call>> {
-  final RecentPresenter presenter;
-
-  _GetRecentCallsUseCaseObserver(this.presenter);
-
-  @override
-  void onComplete() {}
-
-  @override
-  void onError(dynamic e) {}
-
-  @override
-  void onNext(List<Call> recentCalls) =>
-      presenter.recentCallsOnNext(recentCalls);
-}
-
-class _CallUseCaseObserver extends Observer<void> {
-  final RecentPresenter _presenter;
-
-  _CallUseCaseObserver(this._presenter);
-
-  @override
-  void onComplete() {}
-
-  @override
-  void onError(dynamic error) => _presenter.callOnError(error);
-
-  @override
-  void onNext(_) {}
 }
