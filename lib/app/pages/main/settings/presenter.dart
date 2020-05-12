@@ -12,6 +12,8 @@ import '../../../../domain/usecases/logout.dart';
 
 import '../../../util/debug.dart';
 
+import '../util/observer.dart';
+
 class SettingsPresenter extends Presenter {
   Function settingsOnNext;
   Function changeSettingsOnNext;
@@ -33,7 +35,7 @@ class SettingsPresenter extends Presenter {
         _logoutUseCase = LogoutUseCase(storageRepository);
 
   void getSettings() {
-    _getSettingsUseCase.execute(_GetSettingsUseCaseObserver(this));
+    _getSettingsUseCase.execute(Watcher(onNext: settingsOnNext));
   }
 
   void changeSetting(Setting setting) {
@@ -42,62 +44,25 @@ class SettingsPresenter extends Presenter {
     }
 
     _changeSettingUseCase.execute(
-      _ChangeSettingUseCaseObserver(this),
+      Watcher(
+        onComplete: changeSettingsOnNext,
+        onNext: (_) => changeSettingsOnNext,
+      ),
       ChangeSettingUseCaseParams(setting),
     );
   }
 
   void logout() {
-    _logoutUseCase.execute(_LogoutUseCaseObserver(this));
+    _logoutUseCase.execute(
+      Watcher(
+        onComplete: logoutOnComplete,
+        onNext: logoutOnComplete,
+      ),
+    );
   }
 
   @override
   void dispose() {
     _getSettingsUseCase.dispose();
   }
-}
-
-class _GetSettingsUseCaseObserver extends Observer<List<Setting>> {
-  final SettingsPresenter presenter;
-
-  _GetSettingsUseCaseObserver(this.presenter);
-
-  @override
-  void onComplete() {}
-
-  @override
-  void onError(dynamic e) {}
-
-  @override
-  void onNext(List<Setting> settings) => presenter.settingsOnNext(settings);
-}
-
-class _ChangeSettingUseCaseObserver extends Observer<void> {
-  final SettingsPresenter presenter;
-
-  _ChangeSettingUseCaseObserver(this.presenter);
-
-  @override
-  void onComplete() => presenter.changeSettingsOnNext();
-
-  @override
-  void onError(dynamic e) {}
-
-  @override
-  void onNext(_) => presenter.changeSettingsOnNext();
-}
-
-class _LogoutUseCaseObserver extends Observer<void> {
-  final SettingsPresenter presenter;
-
-  _LogoutUseCaseObserver(this.presenter);
-
-  @override
-  void onComplete() => presenter.logoutOnComplete();
-
-  @override
-  void onError(dynamic e) {}
-
-  @override
-  void onNext(_) => presenter.logoutOnComplete();
 }

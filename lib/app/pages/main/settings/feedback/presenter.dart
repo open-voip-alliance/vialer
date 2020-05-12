@@ -8,6 +8,8 @@ import '../../../../../domain/repositories/auth.dart';
 
 import '../../../../../domain/usecases/send_feedback.dart';
 
+import '../../util/observer.dart';
+
 class FeedbackPresenter extends Presenter {
   Function feedbackSendOnComplete;
 
@@ -23,7 +25,9 @@ class FeedbackPresenter extends Presenter {
 
   void sendFeedback({@required String title, @required String text}) {
     _sendFeedbackUseCase.execute(
-      _SendFeedbackUseCaseObserver(this),
+      Watcher(
+        onComplete: feedbackSendOnComplete,
+      ),
       SendFeedbackUseCaseParams(
         title: title,
         text: text,
@@ -36,19 +40,4 @@ class FeedbackPresenter extends Presenter {
   void dispose() {
     _sendFeedbackUseCase.dispose();
   }
-}
-
-class _SendFeedbackUseCaseObserver extends Observer<void> {
-  final FeedbackPresenter presenter;
-
-  _SendFeedbackUseCaseObserver(this.presenter);
-
-  @override
-  void onComplete() => presenter.feedbackSendOnComplete();
-
-  @override
-  void onError(dynamic e) {}
-
-  @override
-  void onNext(_) {}
 }

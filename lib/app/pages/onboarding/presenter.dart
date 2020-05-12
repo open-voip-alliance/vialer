@@ -1,8 +1,9 @@
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 
-import '../../../domain/entities/onboarding/step.dart';
 import '../../../domain/repositories/permission.dart';
 import '../../../domain/usecases/onboarding/get_steps.dart';
+
+import '../main/util/observer.dart';
 
 class OnboardingPresenter extends Presenter {
   Function getStepsOnNext;
@@ -13,26 +14,15 @@ class OnboardingPresenter extends Presenter {
       : _getStepsUseCase = GetStepsUseCase(callPermissionRepository);
 
   void getSteps() {
-    _getStepsUseCase.execute(_GetStepsUseCaseObserver(this));
+    _getStepsUseCase.execute(
+      Watcher(
+        onNext: getStepsOnNext,
+      ),
+    );
   }
 
   @override
   void dispose() {
     _getStepsUseCase.dispose();
   }
-}
-
-class _GetStepsUseCaseObserver extends Observer<List<Step>> {
-  final OnboardingPresenter presenter;
-
-  _GetStepsUseCaseObserver(this.presenter);
-
-  @override
-  void onComplete() {}
-
-  @override
-  void onError(dynamic e) {}
-
-  @override
-  void onNext(List<Step> steps) => presenter.getStepsOnNext(steps);
 }
