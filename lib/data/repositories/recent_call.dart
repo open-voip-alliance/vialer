@@ -95,25 +95,38 @@ class DataRecentCallRepository extends RecentCallRepository {
 
     final contacts = await _contactRepository.getContacts();
 
-    // Create a list with all phone numbers found in the calls and contacts.
-    var phoneNumbers = calls.map((call) => call.destinationNumber).toList();
-    for (var contact in contacts) {
-      phoneNumbers.addAll(contact.phoneNumbers
-          .map((phoneNumber) => phoneNumber.value)
-          .toList());
-    }
+    // Create a list with all phone numbers of the recent calls.
+    var phoneNumbers = calls.map((call) => call.destinationNumber);
 
-    phoneNumbers = phoneNumbers.toSet().toList(); // Removes duplicates.
+    // Add all the phone numbers from the contacts.
+    phoneNumbers = phoneNumbers.followedBy(
+      contacts
+          .map(
+            (contact) =>
+                contact.phoneNumbers.map((phoneNumber) => phoneNumber.value),
+          )
+          .expand((pair) => pair),
+    );
 
-    final normalizedPhoneNumbers = await Future.wait(phoneNumbers.map(
+    // Remove duplicate phone numbers.
+    phoneNumbers = phoneNumbers.toSet().toList();
+
+    final normalizedPhoneNumbers = await Future.wait(
+      phoneNumbers.map(
         (phoneNumber) => PhoneNumberUtil.normalizePhoneNumber(
-            phoneNumber: phoneNumber, isoCode: 'NL')));
+          phoneNumber: phoneNumber,
+          isoCode: 'NL',
+        ),
+      ),
+    );
 
     // Create a mapping from the original to the normalized phone number.
-    final mappedPhoneNumbers = {};
-    phoneNumbers.asMap().forEach((k, v) {
-      mappedPhoneNumbers[v] = normalizedPhoneNumbers[k];
-    });
+    final mappedPhoneNumbers = phoneNumbers.toList().asMap().map(
+          (index, phoneNumber) => MapEntry(
+            phoneNumber,
+            normalizedPhoneNumbers[index],
+          ),
+        );
 
     _logger.info('Mapping calls to contacts and correct local time');
     calls = calls
@@ -121,9 +134,11 @@ class DataRecentCallRepository extends RecentCallRepository {
           (call) => call.copyWith(
             destinationContactName: contacts
                 .firstWhere(
-                  (contact) => contact.phoneNumbers.any((i) =>
-                      mappedPhoneNumbers[i.value] ==
-                      mappedPhoneNumbers[call.destinationNumber]),
+                  (contact) => contact.phoneNumbers.any(
+                    (i) =>
+                        mappedPhoneNumbers[i.value] ==
+                        mappedPhoneNumbers[call.destinationNumber],
+                  ),
                   orElse: () => null,
                 )
                 ?.name,
