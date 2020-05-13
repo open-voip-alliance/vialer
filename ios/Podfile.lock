@@ -10,6 +10,10 @@ PODS:
   - flutter_segment (0.0.1):
     - Analytics (= 3.7.0)
     - Flutter
+  - libphonenumber (0.0.1):
+    - Flutter
+    - libPhoneNumber-iOS
+  - libPhoneNumber-iOS (0.9.15)
   - moor_ffi (0.0.1):
     - Flutter
   - package_info (0.0.1):
@@ -39,6 +43,7 @@ DEPENDENCIES:
   - device_info (from `.symlinks/plugins/device_info/ios`)
   - Flutter (from `Flutter`)
   - flutter_segment (from `.symlinks/plugins/flutter_segment/ios`)
+  - libphonenumber (from `.symlinks/plugins/libphonenumber/ios`)
   - moor_ffi (from `.symlinks/plugins/moor_ffi/ios`)
   - package_info (from `.symlinks/plugins/package_info/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
@@ -54,6 +59,7 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - Analytics
+    - libPhoneNumber-iOS
 
 EXTERNAL SOURCES:
   android_intent:
@@ -66,6 +72,8 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_segment:
     :path: ".symlinks/plugins/flutter_segment/ios"
+  libphonenumber:
+    :path: ".symlinks/plugins/libphonenumber/ios"
   moor_ffi:
     :path: ".symlinks/plugins/moor_ffi/ios"
   package_info:
@@ -91,23 +99,25 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Analytics: 77fd5fb102a4a5eedafa2c2b0245ceb7b7c15e45
-  android_intent: f144b3783d533cc5bc2cd04cdbd1dc2b6950bd69
+  android_intent: 367df2f1277a74e4a90e14a8ab3df3112d087052
   contacts_service: d212985196c101372bb55c42f41dae7be59ab811
-  device_info: cbf09d2ec12aa7110e0b09fabe54b5bd6c8efe74
+  device_info: d7d233b645a32c40dfdc212de5cf646ca482f175
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   flutter_segment: 31dce829260fc896cd391d7cee4fc3609003f93c
+  libphonenumber: bd14d5abfc5939ab0b0767234e2d8e2593af258e
+  libPhoneNumber-iOS: 0a32a9525cf8744fe02c5206eb30d571e38f7d75
   moor_ffi: d66c9470c18e9cb333423bbcb493c105c6c774c6
-  package_info: 48b108e75b8802c2d5e126f208ef540561c98aef
-  path_provider: fb74bd0465e96b594bb3b5088ee4a4e7bb1f2a9d
+  package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
+  path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
   path_provider_macos: f760a3c5b04357c380e2fddb6f9db6f3015897e0
   permission_handler: 8278954f2382902f63f00dd8828769c0bd6d511b
-  shared_preferences: 430726339841afefe5142b9c1f50cb6bd7793e01
+  shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
   shared_preferences_macos: f3f29b71ccbb56bf40c9dd6396c9acf15e214087
   shared_preferences_web: 141cce0c3ed1a1c5bf2a0e44f52d31eeb66e5ea9
-  url_launcher: a1c0cc845906122c4784c542523d8cacbded5626
+  url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
   url_launcher_macos: fd7894421cd39320dce5f292fc99ea9270b2a313
   url_launcher_web: e5527357f037c87560776e36436bf2b0288b965c
 
 PODFILE CHECKSUM: 554b21be5afbc1c73a4e5cbcfef2ce82f4673f67
 
-COCOAPODS: 1.8.4
+COCOAPODS: 1.9.1
