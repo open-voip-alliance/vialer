@@ -199,6 +199,7 @@ class ListSettingsMainMessages {
 	final SettingsMainMessages _parent;
 	const ListSettingsMainMessages(this._parent);
 	DebugListSettingsMainMessages get debug => DebugListSettingsMainMessages(this);
+	String get version => "Version";
 }
 
 class DebugListSettingsMainMessages {

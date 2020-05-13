@@ -69,6 +69,7 @@ main:
       debug:
         title: "Debug"
         remoteLogging: "Remote logging"
+      version: "Version"
     buttons:
       sendFeedback: &sendFeedbackButton "Send feedback"
       logout: "Logout"
