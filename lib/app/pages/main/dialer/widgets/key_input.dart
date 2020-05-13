@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class KeyInput extends StatelessWidget {
   final TextEditingController controller;
@@ -9,8 +10,9 @@ class KeyInput extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextField(
       controller: controller,
+      focusNode: _NeverFocusNode(),
+      inputFormatters: [_KeyInputFormatter()],
       showCursor: true,
-      readOnly: true,
       decoration: InputDecoration(
         border: InputBorder.none,
       ),
@@ -18,6 +20,23 @@ class KeyInput extends StatelessWidget {
       style: TextStyle(
         fontSize: 32,
       ),
+    );
+  }
+}
+
+class _NeverFocusNode extends FocusNode {
+  @override
+  bool get hasFocus => false;
+}
+
+class _KeyInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    return newValue.copyWith(
+      text: newValue.text.replaceAll(RegExp(r'[^0-9^+^,^;^(^)^.^-]'), ''),
     );
   }
 }
