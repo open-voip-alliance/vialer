@@ -4,4 +4,6 @@ abstract class EnvRepository {
   Future<String> get logentriesAndroidToken;
 
   Future<String> get logentriesIosToken;
+
+  Future<String> get commitHash;
 }

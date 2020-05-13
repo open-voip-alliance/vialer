@@ -5,8 +5,10 @@ import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import '../../../../domain/repositories/storage.dart';
 import '../../../../domain/repositories/logging.dart';
 import '../../../../domain/repositories/setting.dart';
+import '../../../../domain/repositories/build_info.dart';
 
 import '../../../../domain/entities/setting.dart';
+import '../../../../domain/entities/build_info.dart';
 
 import '../../../routes.dart';
 
@@ -20,13 +22,16 @@ class SettingsController extends Controller {
   final SettingsPresenter _presenter;
 
   List<Setting> settings = [];
+  BuildInfo buildInfo;
 
   SettingsController(
     SettingRepository settingRepository,
+    BuildInfoRepository buildInfoRepository,
     LoggingRepository loggingRepository,
     StorageRepository storageRepository,
   ) : _presenter = SettingsPresenter(
           settingRepository,
+          buildInfoRepository,
           loggingRepository,
           storageRepository,
         );
@@ -36,12 +41,21 @@ class SettingsController extends Controller {
     super.initController(key);
 
     getSettings();
+    getBuildInfo();
   }
 
   void getSettings() => _presenter.getSettings();
 
   void _onSettingsUpdated(List<Setting> settings) {
     this.settings = settings;
+
+    refreshUI();
+  }
+
+  void getBuildInfo() => _presenter.getBuildInfo();
+
+  void _onBuildInfoUpdated(BuildInfo buildInfo) {
+    this.buildInfo = buildInfo;
 
     refreshUI();
   }
@@ -83,6 +97,7 @@ class SettingsController extends Controller {
   @override
   void initListeners() {
     _presenter.settingsOnNext = _onSettingsUpdated;
+    _presenter.buildInfoOnNext = _onBuildInfoUpdated;
     _presenter.changeSettingsOnNext = getSettings;
     _presenter.logoutOnComplete = _logoutOnComplete;
   }

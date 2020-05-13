@@ -7,6 +7,7 @@ import '../../../domain/repositories/permission.dart';
 import '../../../domain/repositories/contact.dart';
 import '../../../domain/repositories/recent_call.dart';
 import '../../../domain/repositories/setting.dart';
+import '../../../domain/repositories/build_info.dart';
 import '../../../domain/repositories/logging.dart';
 import '../../../domain/repositories/storage.dart';
 
@@ -90,6 +91,7 @@ class _MainPageState extends State<MainPage> {
         ),
         SettingsPage(
           Provider.of<SettingRepository>(context),
+          Provider.of<BuildInfoRepository>(context),
           Provider.of<LoggingRepository>(context),
           Provider.of<StorageRepository>(context),
         ),

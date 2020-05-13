@@ -36,6 +36,9 @@ import '../data/repositories/call.dart';
 import '../domain/repositories/setting.dart';
 import '../data/repositories/setting.dart';
 
+import '../domain/repositories/build_info.dart';
+import '../device/builld_info.dart';
+
 import '../domain/repositories/feedback.dart';
 import '../data/repositories/feedback.dart';
 
@@ -150,6 +153,9 @@ class App extends StatelessWidget {
         ),
         Provider<SettingRepository>.value(
           value: settingRepository,
+        ),
+        Provider<BuildInfoRepository>(
+          create: (context) => DeviceBuildInfoRepository(envRepository),
         ),
         Provider<FeedbackRepository>(
           create: (_) => DataFeedbackRepository(),

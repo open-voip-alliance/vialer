@@ -4,6 +4,7 @@ import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import '../../../../domain/repositories/setting.dart';
 import '../../../../domain/repositories/logging.dart';
 import '../../../../domain/repositories/storage.dart';
+import '../../../../domain/repositories/build_info.dart';
 
 import '../../../widgets/stylized_button.dart';
 import '../widgets/header.dart';
@@ -19,11 +20,13 @@ import 'controller.dart';
 
 class SettingsPage extends View {
   final SettingRepository _settingsRepository;
+  final BuildInfoRepository _buildInfoRepository;
   final LoggingRepository _loggingRepository;
   final StorageRepository _storageRepository;
 
   SettingsPage(
     this._settingsRepository,
+    this._buildInfoRepository,
     this._loggingRepository,
     this._storageRepository, {
     Key key,
@@ -32,6 +35,7 @@ class SettingsPage extends View {
   @override
   State<StatefulWidget> createState() => _SettingsPageState(
         _settingsRepository,
+        _buildInfoRepository,
         _loggingRepository,
         _storageRepository,
       );
@@ -40,10 +44,12 @@ class SettingsPage extends View {
 class _SettingsPageState extends ViewState<SettingsPage, SettingsController> {
   _SettingsPageState(
     SettingRepository settingRepository,
+    BuildInfoRepository buildInfoRepository,
     LoggingRepository loggingRepository,
     StorageRepository storageRepository,
   ) : super(SettingsController(
           settingRepository,
+          buildInfoRepository,
           loggingRepository,
           storageRepository,
         ));
@@ -88,6 +94,18 @@ class _SettingsPageState extends ViewState<SettingsPage, SettingsController> {
         ),
       );
     });
+
+    if (controller.buildInfo != null) {
+      widgets.add(
+        Chip(
+          label: Text(
+            '${context.msg.main.settings.list.version}'
+            ' ${controller.buildInfo.version}'
+            ' (${controller.buildInfo.commit})',
+          ),
+        ),
+      );
+    }
 
     return widgets;
   }

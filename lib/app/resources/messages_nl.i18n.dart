@@ -200,6 +200,7 @@ class ListSettingsMainMessages_nl extends ListSettingsMainMessages {
 	final SettingsMainMessages_nl _parent;
 	const ListSettingsMainMessages_nl(this._parent):super(_parent);
 	DebugListSettingsMainMessages_nl get debug => DebugListSettingsMainMessages_nl(this);
+	String get version => "Versie";
 }
 
 class DebugListSettingsMainMessages_nl extends DebugListSettingsMainMessages {

@@ -9,6 +9,8 @@ class DeviceEnvRepository extends EnvRepository {
 
   static const _logentriesIosTokenKey = 'LOGENTRIES_IOS_TOKEN';
 
+  static const _commitHashKey = 'COMMIT_HASH';
+
   Map<String, String> __env;
 
   Future<Map<String, String>> get _env async {
@@ -30,4 +32,7 @@ class DeviceEnvRepository extends EnvRepository {
 
   @override
   Future<String> get logentriesIosToken => _get(_logentriesIosTokenKey);
+
+  @override
+  Future<String> get commitHash => _get(_commitHashKey);
 }
