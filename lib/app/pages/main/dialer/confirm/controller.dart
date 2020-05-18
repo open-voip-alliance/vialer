@@ -5,6 +5,7 @@ import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 
 import '../../../../../domain/repositories/call.dart';
 
+import '../../../../routes.dart';
 import 'presenter.dart';
 
 class ConfirmController extends Controller {
@@ -32,7 +33,14 @@ class ConfirmController extends Controller {
       if (controller.isCompleted && Platform.isIOS && !_madeCall) {
         call();
       } else if (controller.isDismissed) {
-        Navigator.of(getContext()).pop();
+        if (Platform.isIOS) {
+          Navigator.pop(getContext());
+        } else {
+          Navigator.popUntil(
+            getContext(),
+            (route) => route.settings.name != Routes.dialer,
+          );
+        }
       }
     });
 
