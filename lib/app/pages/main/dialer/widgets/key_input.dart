@@ -10,6 +10,8 @@ class KeyInput extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextField(
       controller: controller,
+      // This is needed so that the keyboard doesn't popup. We can't use
+      // readOnly because then pasting is not allowed.
       focusNode: _NeverFocusNode(),
       inputFormatters: [_KeyInputFormatter()],
       showCursor: true,
@@ -29,6 +31,7 @@ class _NeverFocusNode extends FocusNode {
   bool get hasFocus => false;
 }
 
+/// Removes all characters not generally allowed in a phone number.
 class _KeyInputFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
