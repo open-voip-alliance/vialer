@@ -314,8 +314,8 @@ class CallPermissionOnboardingMessages {
 class ContactsPermissionOnboardingMessages {
 	final PermissionOnboardingMessages _parent;
 	const ContactsPermissionOnboardingMessages(this._parent);
-	String get title => "Contacts";
-	String get description => "This permission is required to view contacts in-app.";
+	String get title => "Contacts permission";
+	String get description => "This permission allows Reborn to display information (contact book & call activity) and to search through your contacts.\n\nThe data will be solely used for display and search purposes.";
 }
 
 class VoicemailOnboardingMessages {
