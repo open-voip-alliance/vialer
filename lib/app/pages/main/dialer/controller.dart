@@ -71,7 +71,16 @@ class DialerController extends Controller with Caller {
   }
 
   @override
-  void executeCallUseCase(String destination) => _presenter.call(destination);
+  void executeCallUseCase(String destination) {
+    _presenter.call(destination);
+  }
+
+  void _onCallInitiated() {
+    // Pop the dialer away during a call.
+    Future.delayed(Duration(milliseconds: 200), () {
+      Navigator.of(getContext()).pop();
+    });
+  }
 
   void _onCheckCallPermissionNext(PermissionStatus status) {
     logger.info('Call permission is: $status');
@@ -92,7 +101,7 @@ class DialerController extends Controller with Caller {
 
   @override
   void initListeners() {
-    _presenter.callOnComplete = () {};
+    _presenter.callOnComplete = _onCallInitiated;
     _presenter.onCheckCallPermissionNext = _onCheckCallPermissionNext;
     _presenter.callOnError = showException;
     _presenter.onGetLatestDialedNumberNext = _onGetLatestDialedNumber;
