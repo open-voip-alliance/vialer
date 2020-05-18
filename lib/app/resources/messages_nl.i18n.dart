@@ -315,8 +315,8 @@ class CallPermissionOnboardingMessages_nl extends CallPermissionOnboardingMessag
 class ContactsPermissionOnboardingMessages_nl extends ContactsPermissionOnboardingMessages {
 	final PermissionOnboardingMessages_nl _parent;
 	const ContactsPermissionOnboardingMessages_nl(this._parent):super(_parent);
-	String get title => "Contact permissie";
-	String get description => "Deze permissie is nodig om contacten in de app te bekijken.";
+	String get title => "Toestemming contactenlijst";
+	String get description => "Deze toestemming zorgt ervoor dat Vialer informatie zoals de contactenlijst en gespreksactiviteit inzichtelijk maakt.\n\nDeze data wordt enkel gebruikt voor het tonen en doorzoeken hiervan.";
 }
 
 class VoicemailOnboardingMessages_nl extends VoicemailOnboardingMessages {

@@ -110,9 +110,10 @@ onboarding:
         This permission is required to make calls seamlessly from the
         app using the default call app.
     contacts:
-      title: "Contacts"
+      title: "Contacts permission"
       description: >-
-        This permission is required to view contacts in-app.
+        This permission allows Reborn to display information (contact book & call activity) and to search through your contacts.
+        The data will be solely used for display and search purposes.
 
   voicemail:
     title: "Voicemail"
