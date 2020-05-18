@@ -77,25 +77,29 @@ class _RecentPageState extends ViewState<RecentPage, RecentController> {
                       context.msg.main.recent.list.empty.description,
                     ),
                   ),
-                  child: ListView.builder(
-                    controller: controller.scrollController,
-                    padding: EdgeInsets.only(
-                      bottom: widget.listBottomPadding,
+                  child: RefreshIndicator(
+                    onRefresh: controller.updateRecents,
+                    child: ListView.builder(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      controller: controller.scrollController,
+                      padding: EdgeInsets.only(
+                        bottom: widget.listBottomPadding,
+                      ),
+                      itemCount: controller.recentCalls.length,
+                      itemBuilder: (context, index) {
+                        final call = controller.recentCalls[index];
+                        return RecentCallItem(
+                          call: call,
+                          onCallPressed: () {
+                            controller.call(call.destinationNumber);
+                          },
+                          onCopyPressed: () {
+                            controller.copyNumber(call.destinationNumber);
+                            _showSnackBar(context);
+                          },
+                        );
+                      },
                     ),
-                    itemCount: controller.recentCalls.length,
-                    itemBuilder: (context, index) {
-                      final call = controller.recentCalls[index];
-                      return RecentCallItem(
-                        call: call,
-                        onCallPressed: () {
-                          controller.call(call.destinationNumber);
-                        },
-                        onCopyPressed: () {
-                          controller.copyNumber(call.destinationNumber);
-                          _showSnackBar(context);
-                        },
-                      );
-                    },
                   ),
                 ),
               ),

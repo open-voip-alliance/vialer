@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
@@ -22,6 +24,8 @@ class RecentController extends Controller with Caller {
   final recentCalls = <Call>[];
 
   final scrollController = ScrollController();
+
+  Completer _completer;
 
   RecentController(
     RecentCallRepository recentCallRepository,
@@ -72,6 +76,14 @@ class RecentController extends Controller with Caller {
   @override
   void executeCallUseCase(String destination) => _presenter.call(destination);
 
+  Future<void> updateRecents() {
+    _completer = Completer();
+
+    getRecentCalls();
+
+    return _completer.future;
+  }
+
   void getRecentCalls() {
     _presenter.getRecentCalls(page: _page);
     _page++;
@@ -97,6 +109,8 @@ class RecentController extends Controller with Caller {
 
     _loading = false;
     refreshUI();
+
+    _completer?.complete();
   }
 
   @override
