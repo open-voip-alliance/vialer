@@ -12,11 +12,15 @@ import 'widgets/keypad.dart';
 import '../../../../domain/repositories/call.dart';
 import '../../../../domain/repositories/permission.dart';
 import '../../../../domain/repositories/storage.dart';
+import '../../../../domain/repositories/logging.dart';
+import '../../../../domain/repositories/setting.dart';
 
 import 'controller.dart';
 
 class DialerPage extends View {
   final CallRepository _callRepository;
+  final SettingRepository _settingRepository;
+  final LoggingRepository _loggingRepository;
   final PermissionRepository _permissionRepository;
   final StorageRepository _storageRepository;
 
@@ -25,6 +29,8 @@ class DialerPage extends View {
 
   DialerPage(
     this._callRepository,
+    this._settingRepository,
+    this._loggingRepository,
     this._permissionRepository,
     this._storageRepository, {
     this.destination,
@@ -33,6 +39,8 @@ class DialerPage extends View {
   @override
   State<StatefulWidget> createState() => _DialerPageState(
         _callRepository,
+        _settingRepository,
+        _loggingRepository,
         _permissionRepository,
         _storageRepository,
         destination,
@@ -42,12 +50,16 @@ class DialerPage extends View {
 class _DialerPageState extends ViewState<DialerPage, DialerController> {
   _DialerPageState(
     CallRepository callRepository,
+    SettingRepository settingRepository,
+    LoggingRepository loggingRepository,
     PermissionRepository permissionRepository,
     StorageRepository storageRepository,
     String destination,
   ) : super(
           DialerController(
             callRepository,
+            settingRepository,
+            loggingRepository,
             permissionRepository,
             storageRepository,
             destination,

@@ -5,22 +5,34 @@ import 'package:flutter/services.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 
 import '../../../../../domain/repositories/call.dart';
+import '../../../../../domain/repositories/setting.dart';
+import '../../../../../domain/repositories/logging.dart';
 
 import '../../../../widgets/transparent_status_bar.dart';
 import 'controller.dart';
 
 import '../../../../resources/localizations.dart';
+import '../../../../resources/theme.dart';
 
 class ConfirmPage extends View {
   final CallRepository _callRepository;
+  final SettingRepository _settingRepository;
+  final LoggingRepository _loggingRepository;
 
   final String destination;
 
-  ConfirmPage(this._callRepository, {@required this.destination});
+  ConfirmPage(
+    this._callRepository,
+    this._settingRepository,
+    this._loggingRepository, {
+    @required this.destination,
+  });
 
   @override
   State<StatefulWidget> createState() => ConfirmPageState(
         _callRepository,
+        _settingRepository,
+        _loggingRepository,
         destination,
       );
 }
@@ -30,8 +42,17 @@ class ConfirmPageState extends ViewState<ConfirmPage, ConfirmController>
   AnimationController _animationController;
   Animation<double> _animation;
 
-  ConfirmPageState(CallRepository callRepository, String destination)
-      : super(ConfirmController(callRepository, destination));
+  ConfirmPageState(
+    CallRepository callRepository,
+    SettingRepository settingRepository,
+    LoggingRepository loggingRepository,
+    String destination,
+  ) : super(ConfirmController(
+          callRepository,
+          settingRepository,
+          loggingRepository,
+          destination,
+        ));
 
   @override
   void initState() {
@@ -129,6 +150,20 @@ class ConfirmPageState extends ViewState<ConfirmPage, ConfirmController>
                         ),
                         SizedBox(height: 8),
                         Text(widget.destination, style: _largeStyle),
+                        if (context.isAndroid)
+                          Expanded(
+                            child: _AndroidInputs(
+                              checkboxValue: controller.showConfirmPage,
+                              onCheckboxValueChangd:
+                                  controller.setShowDialogSetting,
+                              onCallButtonPressed: controller.call,
+                              onCancelButtonPressed: controller.pop,
+                              destination: context
+                                  .msg.main.dialer.confirm.button
+                                  .call(widget.destination)
+                                  .toUpperCase(),
+                            ),
+                          ),
                       ],
                     ),
                   ),
@@ -142,12 +177,101 @@ class ConfirmPageState extends ViewState<ConfirmPage, ConfirmController>
   }
 }
 
+class _AndroidInputs extends StatelessWidget {
+  final bool checkboxValue;
+  final ValueChanged<bool> onCheckboxValueChangd;
+  final VoidCallback onCallButtonPressed;
+  final String destination;
+  final VoidCallback onCancelButtonPressed;
+
+  const _AndroidInputs({
+    Key key,
+    this.checkboxValue,
+    this.onCheckboxValueChangd,
+    this.onCallButtonPressed,
+    this.destination,
+    this.onCancelButtonPressed,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        horizontal: 40,
+      ).copyWith(
+        bottom: 16,
+      ),
+      child: Align(
+        alignment: Alignment.bottomCenter,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text('Don\'t show this again'),
+                Checkbox(
+                  value: checkboxValue,
+                  activeColor: Theme.of(context).primaryColor,
+                  onChanged: onCheckboxValueChangd,
+                )
+              ],
+            ),
+            SizedBox(
+              width: double.infinity,
+              child: RaisedButton(
+                elevation: 4,
+                onPressed: onCallButtonPressed,
+                color: context.brandTheme.green2,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Icon(
+                      VialerSans.phone,
+                      size: 16,
+                      color: context.brandTheme.green3,
+                    ),
+                    SizedBox(width: 12),
+                    Text(
+                      destination,
+                      style: TextStyle(
+                        color: context.brandTheme.green3,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(height: 16),
+            SizedBox(
+              width: double.infinity,
+              child: FlatButton(
+                onPressed: onCancelButtonPressed,
+                child: Text(
+                  context.msg.generic.button.cancel.toUpperCase(),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class ConfirmPageRoute extends PageRoute {
   final CallRepository _callRepository;
+  final SettingRepository _settingRepository;
+  final LoggingRepository _loggingRepository;
 
   final String destination;
 
-  ConfirmPageRoute(this._callRepository, {@required this.destination});
+  ConfirmPageRoute(
+    this._callRepository,
+    this._settingRepository,
+    this._loggingRepository, {
+    @required this.destination,
+  });
 
   @override
   bool get opaque => false;
@@ -164,7 +288,12 @@ class ConfirmPageRoute extends PageRoute {
     Animation<double> animation,
     Animation<double> secondaryAnimation,
   ) {
-    return ConfirmPage(_callRepository, destination: destination);
+    return ConfirmPage(
+      _callRepository,
+      _settingRepository,
+      _loggingRepository,
+      destination: destination,
+    );
   }
 
   @override

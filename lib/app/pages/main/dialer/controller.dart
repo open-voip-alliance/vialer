@@ -5,6 +5,8 @@ import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 
 import '../../../../domain/repositories/call.dart';
 import '../../../../domain/repositories/storage.dart';
+import '../../../../domain/repositories/setting.dart';
+import '../../../../domain/repositories/logging.dart';
 
 import '../../../../domain/entities/permission_status.dart';
 import '../../../../domain/repositories/permission.dart';
@@ -15,6 +17,12 @@ import 'presenter.dart';
 class DialerController extends Controller with Caller {
   @override
   final CallRepository callRepository;
+
+  @override
+  final SettingRepository settingRepository;
+
+  @override
+  final LoggingRepository loggingRepository;
 
   final DialerPresenter _presenter;
 
@@ -30,6 +38,8 @@ class DialerController extends Controller with Caller {
 
   DialerController(
     this.callRepository,
+    this.settingRepository,
+    this.loggingRepository,
     PermissionRepository permissionRepository,
     StorageRepository storageRepository,
     this.initialDestination,
@@ -37,11 +47,14 @@ class DialerController extends Controller with Caller {
           callRepository,
           permissionRepository,
           storageRepository,
+          settingRepository,
         );
 
   @override
   void initController(GlobalKey<State<StatefulWidget>> key) {
     super.initController(key);
+
+    executeGetSettingsUseCase();
 
     if (initialDestination != null) {
       keypadController.text = initialDestination;
@@ -100,10 +113,14 @@ class DialerController extends Controller with Caller {
   }
 
   @override
+  void executeGetSettingsUseCase() => _presenter.getSettings();
+
+  @override
   void initListeners() {
     _presenter.callOnComplete = _onCallInitiated;
     _presenter.onCheckCallPermissionNext = _onCheckCallPermissionNext;
     _presenter.callOnError = showException;
     _presenter.onGetLatestDialedNumberNext = _onGetLatestDialedNumber;
+    _presenter.onGetSettingsNext = setSettings;
   }
 }

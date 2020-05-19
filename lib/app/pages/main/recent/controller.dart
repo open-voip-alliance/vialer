@@ -7,9 +7,12 @@ import 'package:flutter_segment/flutter_segment.dart';
 
 import '../dialer/caller.dart';
 
+import '../../../../domain/entities/call.dart';
+
 import '../../../../domain/repositories/call.dart';
 import '../../../../domain/repositories/recent_call.dart';
-import '../../../../domain/entities/call.dart';
+import '../../../../domain/repositories/logging.dart';
+import '../../../../domain/repositories/setting.dart';
 
 import '../../../util/debug.dart';
 
@@ -18,6 +21,12 @@ import 'presenter.dart';
 class RecentController extends Controller with Caller {
   @override
   final CallRepository callRepository;
+
+  @override
+  final SettingRepository settingRepository;
+
+  @override
+  final LoggingRepository loggingRepository;
 
   final RecentPresenter _presenter;
 
@@ -30,7 +39,13 @@ class RecentController extends Controller with Caller {
   RecentController(
     RecentCallRepository recentCallRepository,
     this.callRepository,
-  ) : _presenter = RecentPresenter(recentCallRepository, callRepository);
+    this.settingRepository,
+    this.loggingRepository,
+  ) : _presenter = RecentPresenter(
+          recentCallRepository,
+          callRepository,
+          settingRepository,
+        );
 
   int _page = 0;
 
@@ -44,6 +59,7 @@ class RecentController extends Controller with Caller {
     super.initController(key);
 
     getRecentCalls();
+    executeGetSettingsUseCase();
 
     scrollController.addListener(() {
       final maxScroll = scrollController.position.maxScrollExtent;
@@ -123,5 +139,9 @@ class RecentController extends Controller with Caller {
   void initListeners() {
     _presenter.recentCallsOnNext = _onRecentCallsUpdated;
     _presenter.callOnError = showException;
+    _presenter.settingsOnNext = setSettings;
   }
+
+  @override
+  void executeGetSettingsUseCase() => _presenter.getSettings();
 }

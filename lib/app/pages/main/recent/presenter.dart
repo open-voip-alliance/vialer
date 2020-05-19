@@ -8,6 +8,9 @@ import '../../../../domain/usecases/call.dart';
 import '../../../../domain/repositories/recent_call.dart';
 import '../../../../domain/usecases/get_recent_calls.dart';
 
+import '../../../../domain/repositories/setting.dart';
+import '../../../../domain/usecases/get_settings.dart';
+
 import '../util/observer.dart';
 
 class RecentPresenter extends Presenter {
@@ -15,13 +18,18 @@ class RecentPresenter extends Presenter {
 
   Function callOnError;
 
+  Function settingsOnNext;
+
   final GetRecentCallsUseCase _getRecentCallsUseCase;
   final CallUseCase _callUseCase;
+  final GetSettingsUseCase _getSettingsUseCase;
 
   RecentPresenter(
     RecentCallRepository recentCallRepository,
     CallRepository callRepository,
+    SettingRepository settingRepository,
   )   : _getRecentCallsUseCase = GetRecentCallsUseCase(recentCallRepository),
+        _getSettingsUseCase = GetSettingsUseCase(settingRepository),
         _callUseCase = CallUseCase(callRepository);
 
   void getRecentCalls({@required int page}) {
@@ -41,6 +49,12 @@ class RecentPresenter extends Presenter {
         ),
         CallUseCaseParams(destination),
       );
+
+  void getSettings() {
+    _getSettingsUseCase.execute(
+      Watcher(onNext: settingsOnNext),
+    );
+  }
 
   @override
   void dispose() {

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 
+import '../../../../domain/entities/setting.dart';
+
 import '../../../../domain/repositories/setting.dart';
 import '../../../../domain/repositories/logging.dart';
 import '../../../../domain/repositories/storage.dart';
@@ -55,10 +57,15 @@ class _SettingsPageState extends ViewState<SettingsPage, SettingsController> {
         ));
 
   List<Widget> get settingsList {
-    final settings = controller.settings;
+    Iterable<Setting> settings = controller.settings;
     if (settings == null || settings.isEmpty) {
       return [];
     }
+
+    // Don't show the show dialer setting (for now)
+    settings = settings.where(
+      (setting) => setting is! ShowDialerConfirmPopupSetting,
+    );
 
     final categories = settings
         .map(

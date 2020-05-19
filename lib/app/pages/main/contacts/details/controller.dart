@@ -5,11 +5,13 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../dialer/caller.dart';
 
+import '../../../../../domain/entities/contact.dart';
+
 import '../../../../../domain/repositories/contact.dart';
 import '../../../../../domain/repositories/call.dart';
-
-import '../../../../../domain/entities/contact.dart';
+import '../../../../../domain/repositories/setting.dart';
 import '../../../../../domain/repositories/permission.dart';
+import '../../../../../domain/repositories/logging.dart';
 
 import '../../../../util/debug.dart';
 
@@ -19,6 +21,12 @@ class ContactDetailsController extends Controller with Caller {
   @override
   final CallRepository callRepository;
 
+  @override
+  final SettingRepository settingRepository;
+
+  @override
+  final LoggingRepository loggingRepository;
+
   final ContactDetailsPresenter _presenter;
 
   List<Contact> contacts = [];
@@ -27,10 +35,13 @@ class ContactDetailsController extends Controller with Caller {
     ContactRepository contactRepository,
     this.callRepository,
     PermissionRepository permissionRepository,
+    this.settingRepository,
+    this.loggingRepository,
   ) : _presenter = ContactDetailsPresenter(
           contactRepository,
           callRepository,
           permissionRepository,
+          settingRepository,
         );
 
   @override
@@ -38,6 +49,7 @@ class ContactDetailsController extends Controller with Caller {
     super.initController(key);
 
     getContacts();
+    executeGetSettingsUseCase();
   }
 
   void getContacts() {
@@ -66,8 +78,12 @@ class ContactDetailsController extends Controller with Caller {
   void initListeners() {
     _presenter.contactsOnNext = _onContactsUpdated;
     _presenter.callOnError = showException;
+    _presenter.settingsOnNext = setSettings;
   }
 
   @override
   void executeCallUseCase(String destination) => _presenter.call(destination);
+
+  @override
+  void executeGetSettingsUseCase() => _presenter.getSettings();
 }
