@@ -1,0 +1,168 @@
+workflows:
+  master:
+    name: master
+    max_build_duration: 60
+    environment:
+      vars:
+        LOGENTRIES_ANDROID_TOKEN: Encrypted(Z0FBQUFBQmV3LW9nLVM3OE5IR01BVVFOZ3RJRHBSZHVOXy1MWXE0SHE2SUc4Sk4xTzlETnFqbXRHY2xQSi1hWm9fTlRrYU96SElmNXVTZThkWnVwUEtNdDFEMzU3aHFmVTN2MHlYVENoY0FPMlJRZzBuVGE0czZKNm5XZVk1M3FqVWZRZmMxZlpMQW4=)
+        LOGENTRIES_IOS_TOKEN: Encrypted(Z0FBQUFBQmV3LW9nRE9NN055SXY3R2JYeHlKWjhHTmpWeVVGeHlMYklKRWl2TmRfdEhkdFBuUzJvYXd0eGIxc1lDRm5KUjFlVU1BVVJxXzNzUDVoTEVmRkRRaXFGQjYzbFpwM0NDOHpZUVFibHJmRWVlNXF5bUpkdjh2d2tOcEhuZDQ2QlhDV2Jxdlg=)
+      flutter: stable
+      xcode: latest
+      cocoapods: default
+    cache:
+      cache_paths:
+        - $FCI_BUILD_DIR/build
+        - $HOME/.pub-cache
+        - $HOME/Library/Developer/Xcode/DerivedData
+        - $HOME/.gradle/caches
+    triggering:
+      events:
+        - push
+        - tag
+      branch_patterns:
+        - pattern: master
+          include: true
+          source: true
+        - pattern: master
+          include: true
+          source: false
+    scripts:
+      - |
+        # set up debug keystore
+        rm -f ~/.android/debug.keystore
+        keytool -genkeypair \
+          -alias androiddebugkey \
+          -keypass android \
+          -keystore ~/.android/debug.keystore \
+          -storepass android \
+          -dname 'CN=Android Debug,O=Android,C=US' \
+          -keyalg 'RSA' \
+          -keysize 2048 \
+          -validity 10000
+      - |
+        # set up local properties
+        echo "flutter.sdk=$HOME/programs/flutter" > "$FCI_BUILD_DIR/android/local.properties"
+      - |
+        #!/bin/sh
+        cp .env.example .env
+        sed -i -e "s/LOGENTRIES_ANDROID_TOKEN=/LOGENTRIES_ANDROID_TOKEN=${LOGENTRIES_ANDROID_TOKEN}/g" .env
+        sed -i -e "s/LOGENTRIES_IOS_TOKEN=/LOGENTRIES_IOS_TOKEN=${LOGENTRIES_IOS_TOKEN}/g" .env
+        sed -i -e "s/COMMIT_HASH=/COMMIT_HASH=${FCI_COMMIT}/g" .env
+      - flutter packages pub get
+      - flutter test
+      - flutter build apk --release --target=lib/app/main.dart --build-number=$BUILD_NUMBER
+      - find . -name "Podfile" -execdir pod install \;
+      - flutter build ios --release --target=lib/app/main.dart --build-number=$BUILD_NUMBER
+        --no-codesign
+    artifacts:
+      - build/**/outputs/**/*.apk
+      - build/**/outputs/**/*.aab
+      - build/**/outputs/**/mapping.txt
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+      - flutter_drive.log
+    publishing:
+      slack:
+        channel: '#tmp_vialer_reborn_ci'
+        notify_on_build_start: true
+  merge-requests:
+    name: merge requests
+    max_build_duration: 60
+    environment:
+      vars:
+        LOGENTRIES_ANDROID_TOKEN: Encrypted(Z0FBQUFBQmV3LW9neklMbGVvaXA5bWFqYmViQkVpcm43alRfekp0dTNJT0hlYXBvc0JNVnJ4TWpHM3lDUFpkZHpMSGxrLWtRaFlQRGROSmtuOW9wbzVwbU4tY293YkNQemM1OEJhSWdHY1JrcHVHWklyT0t4aWlULWZTYWpCTFNUWnl3SkxYblQxbUg=)
+        LOGENTRIES_IOS_TOKEN: Encrypted(Z0FBQUFBQmV3LW9nNUxtOEtneTJxV3E5OGJPVlVzaUdaOHlYMHYySUt0NWNySWxfWnZLNDV2SlZUZjR3NGU2azJMOE5OYks5TmgyWlhuRDA2S0N1enQ4YVVxYzFiS2sxV2VuQklDY2RhOUFRU2xIVmlWRlFRMFJzd0x2TnlCbG5CRW1EeWRJQS1QUzk=)
+      flutter: stable
+      xcode: latest
+      cocoapods: default
+    cache:
+      cache_paths:
+        - $FCI_BUILD_DIR/build
+        - $HOME/.pub-cache
+        - $HOME/Library/Developer/Xcode/DerivedData
+        - $HOME/.gradle/caches
+    triggering:
+      events:
+        - pull_request
+      branch_patterns:
+        - pattern: master
+          include: true
+          source: false
+    scripts:
+      - |
+        # set up debug keystore
+        rm -f ~/.android/debug.keystore
+        keytool -genkeypair \
+          -alias androiddebugkey \
+          -keypass android \
+          -keystore ~/.android/debug.keystore \
+          -storepass android \
+          -dname 'CN=Android Debug,O=Android,C=US' \
+          -keyalg 'RSA' \
+          -keysize 2048 \
+          -validity 10000
+      - |
+        # set up local properties
+        echo "flutter.sdk=$HOME/programs/flutter" > "$FCI_BUILD_DIR/android/local.properties"
+      - |
+        #!/bin/sh
+        cp .env.example .env
+        sed -i -e "s/LOGENTRIES_ANDROID_TOKEN=/LOGENTRIES_ANDROID_TOKEN=${LOGENTRIES_ANDROID_TOKEN}/g" .env
+        sed -i -e "s/LOGENTRIES_IOS_TOKEN=/LOGENTRIES_IOS_TOKEN=${LOGENTRIES_IOS_TOKEN}/g" .env
+        sed -i -e "s/COMMIT_HASH=/COMMIT_HASH=${FCI_COMMIT}/g" .env
+      - flutter packages pub get
+      - flutter test
+      - flutter build apk --release --target=lib/app/main.dart --build-number=$BUILD_NUMBER
+      - find . -name "Podfile" -execdir pod install \;
+      - flutter build ios --release --target=lib/app/main.dart --build-number=$BUILD_NUMBER
+        --no-codesign
+    artifacts:
+      - build/**/outputs/**/*.apk
+      - build/**/outputs/**/*.aab
+      - build/**/outputs/**/mapping.txt
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+      - flutter_drive.log
+    publishing:
+      slack:
+        channel: '#tmp_vialer_reborn_ci'
+        notify_on_build_start: true
+  dev-branches:
+    name: dev branches
+    max_build_duration: 30
+    environment:
+      vars:
+        LOGENTRIES_ANDROID_TOKEN: Encrypted(Z0FBQUFBQmV3LW9nVkQ1LV9HQmVMWWl0S0J6QVhMcWZMNVRBUTBub3REQW5WWHpnUHg3Qlp0RVRqNks0UTFTTDhPRGVlanJ2aGV0TkxFaS1CT2RkVHRLaWtBVHN0TGFhQTRaa21TaUtpNHBxbEFSSVZNVzlHY2lVMno5M3ZQc1pDcThoZkNyM2dQZHY=)
+        LOGENTRIES_IOS_TOKEN: Encrypted(Z0FBQUFBQmV3LW9nZG0waUdzQUh4cS1PaDZ5YWRZVlhkZ252YUZEMWZZMWIwbGc0WHFZUGFJSlh1VWg0YzdHRG51cFZSLXdOSG13M0NybGg2dU1aYTNaOXJUNVpHTWx4bHBZc21CeDJSdUtFX1pEc1VEUERfblNzOXZORVMwaF81UkZCcnpnZVJzSV8=)
+      flutter: stable
+      xcode: latest
+      cocoapods: default
+    cache:
+      cache_paths:
+        - $FCI_BUILD_DIR/build
+        - $HOME/.pub-cache
+        - $HOME/Library/Developer/Xcode/DerivedData
+        - $HOME/.gradle/caches
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: '*[!master]*'
+          include: true
+          source: true
+    scripts:
+      - |
+        #!/bin/sh
+        cp .env.example .env
+        sed -i -e "s/LOGENTRIES_ANDROID_TOKEN=/LOGENTRIES_ANDROID_TOKEN=${LOGENTRIES_ANDROID_TOKEN}/g" .env
+        sed -i -e "s/LOGENTRIES_IOS_TOKEN=/LOGENTRIES_IOS_TOKEN=${LOGENTRIES_IOS_TOKEN}/g" .env
+        sed -i -e "s/COMMIT_HASH=/COMMIT_HASH=${FCI_COMMIT}/g" .env
+      - flutter packages pub get
+      - flutter test
+    artifacts:
+      - flutter_drive.log
+    publishing:
+      slack:
+        channel: '#tmp_vialer_reborn_ci'
+        notify_on_build_start: true
+  
