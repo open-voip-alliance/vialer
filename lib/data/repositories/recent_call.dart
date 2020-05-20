@@ -116,7 +116,7 @@ class DataRecentCallRepository extends RecentCallRepository {
         (phoneNumber) => PhoneNumberUtil.normalizePhoneNumber(
           phoneNumber: phoneNumber,
           isoCode: 'NL',
-        ),
+        ).catchError((_) => null),
       ),
     );
 
@@ -127,6 +127,9 @@ class DataRecentCallRepository extends RecentCallRepository {
             normalizedPhoneNumbers[index],
           ),
         );
+
+    // Remove the phone numbers for which the normalization threw an error.
+    mappedPhoneNumbers.removeWhere((_, value) => value == null);
 
     _logger.info('Mapping calls to contacts and correct local time');
     calls = calls
