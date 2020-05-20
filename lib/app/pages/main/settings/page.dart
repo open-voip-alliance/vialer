@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 
@@ -98,14 +96,11 @@ class _SettingsPageState extends ViewState<SettingsPage, SettingsController> {
     });
 
     if (controller.buildInfo != null) {
-      final commit = controller.buildInfo.commit;
-
       widgets.add(
         Chip(
           label: Text(
             '${context.msg.main.settings.list.version}'
-            ' ${controller.buildInfo.version}'
-            ' (${commit.substring(0, min(commit.length, 8))})',
+            ' ${controller.buildInfo.version}',
           ),
         ),
       );
