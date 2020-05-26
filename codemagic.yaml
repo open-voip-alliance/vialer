@@ -9,12 +9,6 @@ workflows:
       flutter: stable
       xcode: latest
       cocoapods: default
-    cache:
-      cache_paths:
-        - $FCI_BUILD_DIR/build
-        - $HOME/.pub-cache
-        - $HOME/Library/Developer/Xcode/DerivedData
-        - $HOME/.gradle/caches
     triggering:
       events:
         - push
@@ -22,10 +16,6 @@ workflows:
       branch_patterns:
         - pattern: master
           include: true
-          source: true
-        - pattern: master
-          include: true
-          source: false
     scripts:
       - |
         # set up debug keystore
@@ -75,19 +65,6 @@ workflows:
       flutter: stable
       xcode: latest
       cocoapods: default
-    cache:
-      cache_paths:
-        - $FCI_BUILD_DIR/build
-        - $HOME/.pub-cache
-        - $HOME/Library/Developer/Xcode/DerivedData
-        - $HOME/.gradle/caches
-    triggering:
-      events:
-        - pull_request
-      branch_patterns:
-        - pattern: master
-          include: true
-          source: false
     scripts:
       - |
         # set up debug keystore
@@ -137,19 +114,14 @@ workflows:
       flutter: stable
       xcode: latest
       cocoapods: default
-    cache:
-      cache_paths:
-        - $FCI_BUILD_DIR/build
-        - $HOME/.pub-cache
-        - $HOME/Library/Developer/Xcode/DerivedData
-        - $HOME/.gradle/caches
     triggering:
       events:
         - push
       branch_patterns:
-        - pattern: '*[!master]*'
+        - pattern: '*'
           include: true
-          source: true
+        - pattern: 'master'
+          include: false
     scripts:
       - |
         #!/bin/sh
@@ -165,4 +137,3 @@ workflows:
       slack:
         channel: '#tmp_vialer_reborn_ci'
         notify_on_build_start: true
-  
