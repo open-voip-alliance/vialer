@@ -33,11 +33,6 @@ class ConfirmController extends Controller {
       : _presenter = DialerPresenter(
             callRepository, settingRepository, loggingRepository);
 
-  @override
-  void initController(GlobalKey<State<StatefulWidget>> key) {
-    super.initController(key);
-  }
-
   void initAnimation(AnimationController controller) {
     _animationController = controller;
 
