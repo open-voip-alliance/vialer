@@ -66,7 +66,7 @@ class SettingsPresenter extends Presenter {
     _logoutUseCase.execute(
       Watcher(
         onComplete: logoutOnComplete,
-        onNext: logoutOnComplete,
+        onNext: (_) => logoutOnComplete,
       ),
     );
   }
