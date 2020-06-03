@@ -153,9 +153,9 @@ class ConfirmPageState extends ViewState<ConfirmPage, ConfirmController>
                         if (context.isAndroid)
                           Expanded(
                             child: _AndroidInputs(
-                              checkboxValue: controller.showConfirmPage,
-                              onCheckboxValueChangd:
-                                  controller.setShowDialogSetting,
+                              checkboxValue: !controller.showConfirmPage,
+                              onCheckboxValueChangd: (v) =>
+                                  controller.setShowDialogSetting(!v),
                               onCallButtonPressed: controller.call,
                               onCancelButtonPressed: controller.pop,
                               destination: context

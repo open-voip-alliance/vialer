@@ -22,13 +22,13 @@ mixin Caller on Controller {
 
   void executeCallUseCase(String destination);
 
-  void call(String destination) {
+  Future<void> call(String destination) async {
     final shouldShowConfirmPage =
         _settings?.get<ShowDialerConfirmPopupSetting>()?.value ?? true;
 
     if (shouldShowConfirmPage) {
       logger.info('Start calling: $destination, going to call through page');
-      Navigator.push(
+      await Navigator.push(
         getContext(),
         ConfirmPageRoute(
           callRepository,
@@ -37,6 +37,8 @@ mixin Caller on Controller {
           destination: destination,
         ),
       );
+
+      executeGetSettingsUseCase();
     } else {
       logger.info('Calling $destination');
       executeCallUseCase(destination);

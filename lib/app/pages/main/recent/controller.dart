@@ -74,7 +74,7 @@ class RecentController extends Controller with Caller {
   }
 
   @override
-  void call(String destination) {
+  Future<void> call(String destination) async {
     doIfNotDebug(() {
       Segment.track(eventName: 'call', properties: {'via': 'recent'});
     });
