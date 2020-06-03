@@ -64,6 +64,8 @@ class _MainPageState extends State<MainPage> {
         if (_dialerIsPage)
           DialerPage(
             Provider.of<CallRepository>(context),
+            Provider.of<SettingRepository>(context),
+            Provider.of<LoggingRepository>(context),
             Provider.of<PermissionRepository>(context),
             Provider.of<StorageRepository>(context),
           ),
@@ -79,6 +81,8 @@ class _MainPageState extends State<MainPage> {
                   Provider.of<ContactRepository>(context),
                   Provider.of<CallRepository>(context),
                   Provider.of<PermissionRepository>(context),
+                  Provider.of<SettingRepository>(context),
+                  Provider.of<LoggingRepository>(context),
                   contact: contact,
                 ),
           },
@@ -86,6 +90,8 @@ class _MainPageState extends State<MainPage> {
         RecentPage(
           Provider.of<RecentCallRepository>(context),
           Provider.of<CallRepository>(context),
+          Provider.of<SettingRepository>(context),
+          Provider.of<LoggingRepository>(context),
           listBottomPadding: !_dialerIsPage ? 96 : 0,
           snackBarRightPadding: !_dialerIsPage ? 72 : 0,
         ),

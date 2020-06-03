@@ -25,6 +25,8 @@ abstract class Setting<T> {
 
     if (type == (RemoteLoggingSetting).toString()) {
       return RemoteLoggingSetting(value);
+    } else if (type == (ShowDialerConfirmPopupSetting).toString()) {
+      return ShowDialerConfirmPopupSetting(value);
     } else {
       throw UnsupportedError('Setting type does not exist');
     }
@@ -47,4 +49,18 @@ class RemoteLoggingSetting extends Setting<bool> {
 
   @override
   Setting<bool> copyWith({bool value}) => RemoteLoggingSetting(value);
+}
+
+class ShowDialerConfirmPopupSetting extends Setting<bool> {
+  // ignore: avoid_positional_boolean_parameters
+  ShowDialerConfirmPopupSetting(bool value) : super(value);
+
+  @override
+  Setting<bool> copyWith({bool value}) => ShowDialerConfirmPopupSetting(value);
+}
+
+extension SettingsByType on List<Setting> {
+  T get<T extends Setting>() {
+    return firstWhere((setting) => setting is T);
+  }
 }

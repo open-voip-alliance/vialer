@@ -3,10 +3,15 @@ import 'dart:io';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 
+import '../../../../../domain/entities/setting.dart';
+import '../../../../../domain/repositories/logging.dart';
+import '../../../../../domain/repositories/setting.dart';
+
 import '../../../../../domain/repositories/call.dart';
 
 import '../../../../routes.dart';
 import 'presenter.dart';
+import 'page.dart';
 
 class ConfirmController extends Controller {
   final DialerPresenter _presenter;
@@ -18,8 +23,15 @@ class ConfirmController extends Controller {
 
   AnimationController _animationController;
 
-  ConfirmController(CallRepository callRepository, this.destination)
-      : _presenter = DialerPresenter(callRepository);
+  bool showConfirmPage = true;
+
+  ConfirmController(
+      CallRepository callRepository,
+      SettingRepository settingRepository,
+      LoggingRepository loggingRepository,
+      this.destination)
+      : _presenter = DialerPresenter(
+            callRepository, settingRepository, loggingRepository);
 
   @override
   void initController(GlobalKey<State<StatefulWidget>> key) {
@@ -38,7 +50,9 @@ class ConfirmController extends Controller {
         } else {
           Navigator.popUntil(
             getContext(),
-            (route) => route.settings.name != Routes.dialer,
+            (route) =>
+                route.settings.name != Routes.dialer &&
+                route is! ConfirmPageRoute,
           );
         }
       }
@@ -89,8 +103,20 @@ class ConfirmController extends Controller {
     _animationController.reverse();
   }
 
+  // ignore: avoid_positional_boolean_parameters
+  void setShowDialogSetting(bool value) {
+    showConfirmPage = value;
+    refreshUI();
+    _presenter.setShowDialogSetting(value);
+  }
+
+  void _onSettingsNext(List<Setting> settings) {
+    showConfirmPage = settings.get<ShowDialerConfirmPopupSetting>().value;
+  }
+
   @override
   void initListeners() {
     _presenter.callOnComplete = () {};
+    _presenter.settingsOnNext = _onSettingsNext;
   }
 }

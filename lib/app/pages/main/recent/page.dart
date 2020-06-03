@@ -3,6 +3,8 @@ import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 
 import '../../../../domain/repositories/call.dart';
 import '../../../../domain/repositories/recent_call.dart';
+import '../../../../domain/repositories/logging.dart';
+import '../../../../domain/repositories/setting.dart';
 
 import '../../../resources/theme.dart';
 import '../../../resources/localizations.dart';
@@ -18,28 +20,45 @@ import 'controller.dart';
 class RecentPage extends View {
   final RecentCallRepository _recentCallRepository;
   final CallRepository _callRepository;
+  final SettingRepository _settingRepository;
+  final LoggingRepository _loggingRepository;
 
   final double listBottomPadding;
   final double snackBarRightPadding;
 
   RecentPage(
     this._recentCallRepository,
-    this._callRepository, {
+    this._callRepository,
+    this._settingRepository,
+    this._loggingRepository, {
     Key key,
     this.listBottomPadding = 0,
     this.snackBarRightPadding = 0,
   }) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() =>
-      _RecentPageState(_recentCallRepository, _callRepository);
+  State<StatefulWidget> createState() => _RecentPageState(
+        _recentCallRepository,
+        _callRepository,
+        _settingRepository,
+        _loggingRepository,
+      );
 }
 
 class _RecentPageState extends ViewState<RecentPage, RecentController> {
   _RecentPageState(
     RecentCallRepository recentCallRepository,
     CallRepository callRepository,
-  ) : super(RecentController(recentCallRepository, callRepository));
+    SettingRepository settingRepository,
+    LoggingRepository loggingRepository,
+  ) : super(
+          RecentController(
+            recentCallRepository,
+            callRepository,
+            settingRepository,
+            loggingRepository,
+          ),
+        );
 
   void _showSnackBar(BuildContext context) {
     showSnackBar(
