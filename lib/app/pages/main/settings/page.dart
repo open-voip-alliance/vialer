@@ -148,7 +148,7 @@ class _SettingsPageState extends ViewState<SettingsPage, SettingsController> {
                         colored: true,
                         onPressed: controller.goToFeedbackPage,
                         child: Text(
-                          sendFeedbackButtonText.toUpperCaseIfAndroid(context),
+                          sendFeedbackButtonText,
                         ),
                       ),
                     ),
@@ -159,7 +159,7 @@ class _SettingsPageState extends ViewState<SettingsPage, SettingsController> {
                         colored: true,
                         onPressed: controller.logout,
                         child: Text(
-                          logoutButtonText.toUpperCaseIfAndroid(context),
+                          logoutButtonText,
                         ),
                       ),
                     ),
