@@ -95,7 +95,7 @@ class LoginController extends Controller {
 
   void login() {
     logger.info('Logging in');
-    _presenter.login(usernameController.text, passwordController.text);
+    _presenter.login(usernameController.text.trim(), passwordController.text);
   }
 
   void _onLogin(bool success) {
