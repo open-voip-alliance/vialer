@@ -1,6 +1,11 @@
+workflow:
+  rules:
+     - if: $CI_MERGE_REQUEST_IID
+
 stages:
   - check
   - test
+  - build
 
 analyze:
   image: cirrusci/flutter:stable
@@ -41,3 +46,11 @@ test:
   artifacts:
     reports:
       junit: report.xml
+
+trigger codemagic build:
+  image: cirrusci/flutter:stable
+  stage: build
+  script:
+    - >-
+      curl -H "Content-Type: application/json" -H "x-auth-token: $CODEMAGIC_API_TOKEN" 
+      \--data '{"appId": "'"$CODEMAGIC_APP_ID"'","workflowId": "'"$CODEMAGIC_MERGE_REQUESTS_WORKFLOW_ID"'","branch": "'"$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME"'"}' https://api.codemagic.io/builds
