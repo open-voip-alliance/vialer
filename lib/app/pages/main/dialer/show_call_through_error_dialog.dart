@@ -1,12 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+<<<<<<< HEAD
 import '../../../../domain/entities/call_through_exception.dart';
 
 import 'confirm/page.dart';
 
 import '../../../resources/localizations.dart';
 import '../../../resources/theme.dart';
+=======
+import '../../../resources/localizations.dart';
+
+import '../../../../domain/entities/call_through_exception.dart';
+>>>>>>> Show errors in confirm page
 
 Future<void> showCallThroughErrorDialog(
   BuildContext context,
@@ -23,6 +29,7 @@ Future<void> showCallThroughErrorDialog(
     context: context,
     barrierDismissible: true,
     builder: (context) {
+<<<<<<< HEAD
       final title = Text(context.msg.main.callThrough.error.title);
       final content = SingleChildScrollView(
         child: Text(message),
@@ -64,6 +71,28 @@ Future<void> showCallThroughErrorDialog(
           ],
         );
       }
+=======
+      return AlertDialog(
+        title: Text(context.msg.main.callThrough.error.title),
+        content: SingleChildScrollView(
+          child: Text(message),
+        ),
+        actions: <Widget>[
+          FlatButton(
+            child: Text(
+              context.msg.generic.button.ok.toUpperCase(),
+              style: TextStyle(
+                color: Theme.of(context).primaryColor,
+              ),
+            ),
+            splashColor: Theme.of(context).primaryColorLight,
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+>>>>>>> Show errors in confirm page
     },
   );
 }
