@@ -28,8 +28,9 @@ mixin Caller on Controller {
 
     if (shouldShowConfirmPage) {
       logger.info('Start calling: $destination, going to call through page');
-      await Navigator.push(
-        getContext(),
+
+      // Push using the root navigator, the popup should be above everything
+      await Navigator.of(getContext(), rootNavigator: true).push(
         ConfirmPageRoute(
           callRepository,
           settingRepository,
