@@ -12,8 +12,9 @@ import '../../../../../domain/repositories/logging.dart';
 
 import '../../util/observer.dart';
 
-class DialerPresenter extends Presenter {
+class ConfirmPresenter extends Presenter {
   Function callOnComplete;
+  Function callOnError;
 
   Function settingsOnNext;
 
@@ -21,7 +22,7 @@ class DialerPresenter extends Presenter {
   final GetSettingsUseCase _getSettingsUseCase;
   final ChangeSettingUseCase _changeSettingUseCase;
 
-  DialerPresenter(
+  ConfirmPresenter(
     CallRepository callRepository,
     SettingRepository settingRepository,
     LoggingRepository loggingRepository,
@@ -36,6 +37,7 @@ class DialerPresenter extends Presenter {
     _callUseCase.execute(
       Watcher(
         onComplete: callOnComplete,
+        onError: callOnError,
       ),
       CallUseCaseParams(destination),
     );
