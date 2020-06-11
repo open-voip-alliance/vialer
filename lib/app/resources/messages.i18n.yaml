@@ -68,7 +68,10 @@ main:
     list:
       debug:
         title: "Debug"
-        remoteLogging: "Remote logging"
+        remoteLogging:
+          title: "Remote logging"
+          description: >-
+            Automatically share your app activity with our developers and support team to help resolve issues and errors.
       version: "Version"
     buttons:
       sendFeedback: &sendFeedbackButton "Send feedback"

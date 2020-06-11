@@ -206,8 +206,15 @@ class ListSettingsMainMessages_nl extends ListSettingsMainMessages {
 class DebugListSettingsMainMessages_nl extends DebugListSettingsMainMessages {
 	final ListSettingsMainMessages_nl _parent;
 	const DebugListSettingsMainMessages_nl(this._parent):super(_parent);
+	RemoteLoggingMainMessages get remoteLogging => RemoteLoggingMainMessages_nl(this);
 	String get title => "Debug";
-	String get remoteLogging => "Remote logging";
+}
+
+class RemoteLoggingMainMessages_nl extends RemoteLoggingMainMessages {
+	final DebugListSettingsMainMessages_nl _parent;
+	const RemoteLoggingMainMessages_nl(this._parent):super(_parent);
+	String get title => "Remote logging";
+	String get description => "Deel automatisch je handelingen in de app met onze ontwikkelaars om problemen en fouten op te sporen.";
 }
 
 class ButtonsSettingsMainMessages_nl extends ButtonsSettingsMainMessages {
