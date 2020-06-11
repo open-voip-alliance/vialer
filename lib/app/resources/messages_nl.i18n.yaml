@@ -68,7 +68,10 @@ main:
     list:
       debug:
         title: "Debug"
-        remoteLogging: "Remote logging"
+        remoteLogging:
+          title: "Remote logging"
+          description: >-
+            Deel automatisch je handelingen in de app met onze ontwikkelaars om problemen en fouten op te sporen.
       version: "Versie"
     buttons:
       sendFeedback: &sendFeedbackButton "Feedback sturen"

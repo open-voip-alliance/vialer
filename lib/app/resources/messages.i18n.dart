@@ -205,8 +205,15 @@ class ListSettingsMainMessages {
 class DebugListSettingsMainMessages {
 	final ListSettingsMainMessages _parent;
 	const DebugListSettingsMainMessages(this._parent);
+	RemoteLoggingMainMessages get remoteLogging => RemoteLoggingMainMessages(this);
 	String get title => "Debug";
-	String get remoteLogging => "Remote logging";
+}
+
+class RemoteLoggingMainMessages {
+	final DebugListSettingsMainMessages _parent;
+	const RemoteLoggingMainMessages(this._parent);
+	String get title => "Remote logging";
+	String get description => "Automatically share your app activity with our developers and support team to help resolve issues and errors.";
 }
 
 class ButtonsSettingsMainMessages {

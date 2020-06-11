@@ -12,7 +12,9 @@ extension SettingMapper on Setting {
     if (this is RemoteLoggingSetting) {
       return SettingInfo(
         category: Category.debug,
-        name: context.msg.main.settings.list.debug.remoteLogging,
+        name: context.msg.main.settings.list.debug.remoteLogging.title,
+        description:
+            context.msg.main.settings.list.debug.remoteLogging.description,
       );
     } else {
       throw UnsupportedError('Unknown setting');
