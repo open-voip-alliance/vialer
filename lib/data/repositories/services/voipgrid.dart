@@ -40,6 +40,9 @@ abstract class VoipgridService extends ChopperService {
   Future<Response> callthrough({
     @Query('destination') String destination,
   });
+
+  @Put(path: 'v2/password')
+  Future<Response> password(@Body() Map<String, dynamic> body);
 }
 
 class _AuthorizationInterceptor implements RequestInterceptor {

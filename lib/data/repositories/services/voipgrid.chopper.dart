@@ -52,4 +52,12 @@ class _$VoipgridService extends VoipgridService {
     final $request = Request('GET', $url, client.baseUrl, parameters: $params);
     return client.send<dynamic, dynamic>($request);
   }
+
+  @override
+  Future<Response<dynamic>> password(Map<String, dynamic> body) {
+    final $url = '/api/v2/password';
+    final $body = body;
+    final $request = Request('PUT', $url, client.baseUrl, body: $body);
+    return client.send<dynamic, dynamic>($request);
+  }
 }
