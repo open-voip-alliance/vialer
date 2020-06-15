@@ -21,6 +21,7 @@ class DataCallRepository extends CallRepository {
   Future<void> call(String destination) async {
     _storageRepository.lastDialedNumber = destination;
 
+    // The call-through API expects a normalized number.
     destination = await PhoneNumberUtil.normalizePhoneNumber(
       phoneNumber: destination,
       isoCode: 'NL',
