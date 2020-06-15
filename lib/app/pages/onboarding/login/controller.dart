@@ -3,6 +3,7 @@ import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:flutter_segment/flutter_segment.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../../domain/entities/onboarding/step.dart';
 import '../../../../domain/entities/need_to_change_password.dart';
 import '../../../../domain/entities/brand.dart';
 
@@ -25,6 +26,7 @@ class LoginController extends Controller {
   final LoginPresenter _presenter;
 
   final VoidCallback _forward;
+  final void Function(Step) _addStep;
 
   EdgeInsets defaultPadding;
   EdgeInsets padding;
@@ -42,6 +44,7 @@ class LoginController extends Controller {
     LoggingRepository loggingRepository,
     this._brand,
     this._forward,
+    this._addStep,
   ) : _presenter = LoginPresenter(
           _authRepository,
           settingRepository,
@@ -124,7 +127,8 @@ class LoginController extends Controller {
 
   void _onLoginError(dynamic e) {
     if (e is NeedToChangePassword) {
-      launch(_brand.baseUrl.resolve('/user/login/').toString());
+      _addStep(Step.password);
+      _forward();
     } else {
       throw e;
     }

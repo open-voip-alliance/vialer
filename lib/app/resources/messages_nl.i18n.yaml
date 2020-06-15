@@ -105,6 +105,10 @@ onboarding:
         Onjuiste gebruikersnaam & wachtwoord combinatie.
         Check je login gegevens en probeer het opnieuw.
 
+  password:
+    title: "Wachtwoord veranderen"
+    button: "Verander"
+
   permission:
     button:
       iUnderstand: "Ik begrijp het"

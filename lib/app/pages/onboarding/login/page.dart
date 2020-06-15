@@ -1,8 +1,9 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Step;
 import 'package:flutter/services.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../domain/entities/onboarding/step.dart';
 import '../../../../domain/entities/brand.dart';
 
 import '../../../../domain/repositories/setting.dart';
@@ -26,13 +27,15 @@ class LoginPage extends View {
 
   final Brand _brand;
   final VoidCallback forward;
+  final void Function(Step) addStep;
 
   LoginPage(
     this._authRepository,
     this._settingRepository,
     this._loggingRepository,
     this._brand,
-    this.forward, {
+    this.forward,
+    this.addStep, {
     Key key,
   }) : super(key: key);
 
@@ -43,6 +46,7 @@ class LoginPage extends View {
         _loggingRepository,
         _brand,
         forward,
+        addStep,
       );
 }
 
@@ -57,8 +61,17 @@ class _LoginPageState extends ViewState<LoginPage, LoginController>
     LoggingRepository loggingRepository,
     Brand brand,
     VoidCallback forward,
-  ) : super(LoginController(authRepository, settingRepository,
-            loggingRepository, brand, forward));
+    void Function(Step) addStep,
+  ) : super(
+          LoginController(
+            authRepository,
+            settingRepository,
+            loggingRepository,
+            brand,
+            forward,
+            addStep,
+          ),
+        );
 
   @override
   void didChangeDependencies() {

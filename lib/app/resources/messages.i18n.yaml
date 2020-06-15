@@ -104,6 +104,10 @@ onboarding:
       wrongCombination: >-
         Incorrect username & password combination. Check your login details and try again.
 
+  password:
+    title: "Change password"
+    button: "Change"
+
   permission:
     button:
       iUnderstand: "I understand"

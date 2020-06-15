@@ -16,6 +16,7 @@ import '../../routes.dart';
 import 'presenter.dart';
 
 import 'login/page.dart';
+import 'password/page.dart';
 import 'permission/call/page.dart';
 import 'permission/contacts/page.dart';
 import 'voicemail/page.dart';
@@ -46,6 +47,15 @@ class OnboardingController extends Controller {
             Provider.of<LoggingRepository>(c),
             Provider.of<Brand>(c),
             forward,
+            addStep,
+          ),
+      PasswordPage: (c) => PasswordPage(
+            Provider.of<AuthRepository>(c),
+            Provider.of<SettingRepository>(c),
+            Provider.of<LoggingRepository>(c),
+            Provider.of<Brand>(c),
+            forward,
+            addStep,
           ),
       CallPermissionPage: (c) => CallPermissionPage(
             Provider.of<PermissionRepository>(c),
@@ -65,6 +75,15 @@ class OnboardingController extends Controller {
     pages = [_pageBuilders[LoginPage]];
 
     _presenter.getSteps();
+  }
+
+  /// Add a new next step.
+  void addStep(Step step) {
+    final currentPage = pageController.page.round();
+
+    pages.insert(currentPage + 1, _pageBuilders[step.widgetType]);
+
+    refreshUI();
   }
 
   void forward() {
@@ -110,9 +129,7 @@ class OnboardingController extends Controller {
   }
 
   void _setRequiredSteps(List<Step> steps) {
-    pages = mapStepsToWidgetTypes(steps)
-        .map((type) => _pageBuilders[type])
-        .toList();
+    pages = steps.widgetTypes.map((type) => _pageBuilders[type]).toList();
 
     refreshUI();
   }

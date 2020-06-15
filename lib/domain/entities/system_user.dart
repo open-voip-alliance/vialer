@@ -11,6 +11,9 @@ class SystemUser {
 
   final String email;
 
+  /// Only used for caching during onboarding, should _not_ be saved, ever.
+  final String password;
+
   final String firstName;
   final String lastName;
 
@@ -26,6 +29,7 @@ class SystemUser {
   SystemUser({
     this.uuid,
     this.email,
+    this.password,
     this.firstName,
     this.lastName,
     this.token,
@@ -58,6 +62,7 @@ class SystemUser {
   SystemUser copyWith({
     String uuid,
     String email,
+    String password,
     String firstName,
     String lastName,
     String token,
@@ -66,6 +71,7 @@ class SystemUser {
     return SystemUser(
       uuid: uuid ?? this.uuid,
       email: email ?? this.email,
+      password: password ?? this.password,
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,
       token: token ?? this.token,
