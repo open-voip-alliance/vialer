@@ -13,7 +13,8 @@ Future<void> showCallThroughErrorDialog(
   CallThroughException exception,
 ) {
   String message;
-  if (exception is InvalidDestinationException) {
+  if (exception is InvalidDestinationException ||
+      exception is NormalizationException) {
     message = context.msg.main.callThrough.error.invalidDestination;
   } else {
     message = context.msg.main.callThrough.error.unknown;

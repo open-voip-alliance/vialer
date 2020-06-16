@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:android_intent/android_intent.dart';
+import 'package:flutter/services.dart';
+import 'package:libphonenumber/libphonenumber.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../domain/repositories/storage.dart';
@@ -19,6 +21,16 @@ class DataCallRepository extends CallRepository {
   @override
   Future<void> call(String destination) async {
     _storageRepository.lastDialedNumber = destination;
+
+    try {
+      // The call-through API expects a normalized number.
+      destination = await PhoneNumberUtil.normalizePhoneNumber(
+        phoneNumber: destination,
+        isoCode: 'NL',
+      );
+    } on PlatformException {
+      throw NormalizationException();
+    }
 
     // Get real number to call
     final response = await _service.callthrough(destination: destination);
