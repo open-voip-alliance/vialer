@@ -11,7 +11,7 @@ import '../../../../domain/repositories/logging.dart';
 
 import 'confirm/page.dart';
 
-import '../../../resources/localizations.dart';
+import 'show_call_through_error_dialog.dart';
 
 mixin Caller on Controller {
   CallRepository get callRepository;
@@ -28,8 +28,9 @@ mixin Caller on Controller {
 
     if (shouldShowConfirmPage) {
       logger.info('Start calling: $destination, going to call through page');
-      await Navigator.push(
-        getContext(),
+
+      // Push using the root navigator, the popup should be above everything
+      await Navigator.of(getContext(), rootNavigator: true).push(
         ConfirmPageRoute(
           callRepository,
           settingRepository,
@@ -45,35 +46,8 @@ mixin Caller on Controller {
     }
   }
 
-  Future<void> showException(CallThroughException exception) {
-    String message;
-    if (exception is InvalidDestinationException) {
-      message = getContext().msg.main.callThrough.error.invalidDestination;
-    } else {
-      message = getContext().msg.main.callThrough.error.unknown;
-    }
-
-    return showDialog<void>(
-      context: getContext(),
-      barrierDismissible: true,
-      builder: (context) {
-        return AlertDialog(
-          title: Text(context.msg.main.callThrough.error.title),
-          content: SingleChildScrollView(
-            child: Text(message),
-          ),
-          actions: <Widget>[
-            FlatButton(
-              child: Text(context.msg.generic.button.ok.toUpperCase()),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
+  Future<void> showException(CallThroughException exception) =>
+      showCallThroughErrorDialog(getContext(), exception);
 
   List<Setting> _settings;
 

@@ -3,18 +3,21 @@ import 'dart:io';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 
+import '../../../../../domain/entities/call_through_exception.dart';
 import '../../../../../domain/entities/setting.dart';
+
 import '../../../../../domain/repositories/logging.dart';
 import '../../../../../domain/repositories/setting.dart';
-
 import '../../../../../domain/repositories/call.dart';
+
+import '../show_call_through_error_dialog.dart';
 
 import '../../../../routes.dart';
 import 'presenter.dart';
 import 'page.dart';
 
 class ConfirmController extends Controller {
-  final DialerPresenter _presenter;
+  final ConfirmPresenter _presenter;
 
   final String destination;
 
@@ -30,7 +33,7 @@ class ConfirmController extends Controller {
       SettingRepository settingRepository,
       LoggingRepository loggingRepository,
       this.destination)
-      : _presenter = DialerPresenter(
+      : _presenter = ConfirmPresenter(
             callRepository, settingRepository, loggingRepository);
 
   void initAnimation(AnimationController controller) {
@@ -64,6 +67,14 @@ class ConfirmController extends Controller {
   void pop() {
     logger.info('Popping call through page');
     _animationController.reverse();
+  }
+
+  void _showException(dynamic exception) {
+    if (exception is CallThroughException) {
+      showCallThroughErrorDialog(getContext(), exception);
+    } else {
+      throw exception;
+    }
   }
 
   Future<bool> onWillPop() async {
@@ -112,6 +123,7 @@ class ConfirmController extends Controller {
   @override
   void initListeners() {
     _presenter.callOnComplete = () {};
+    _presenter.callOnError = _showException;
     _presenter.settingsOnNext = _onSettingsNext;
   }
 }
