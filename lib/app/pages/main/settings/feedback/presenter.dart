@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:meta/meta.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 
@@ -31,7 +29,6 @@ class FeedbackPresenter extends Presenter {
       SendFeedbackUseCaseParams(
         title: title,
         text: text,
-        platform: Platform.operatingSystem,
       ),
     );
   }
