@@ -16,6 +16,8 @@ class ContactsController extends Controller {
 
   List<Contact> contacts = [];
 
+  String searchTerm;
+
   ContactsController(
     ContactRepository contactRepository,
     PermissionRepository permissionRepository,
@@ -29,6 +31,12 @@ class ContactsController extends Controller {
     super.initController(key);
 
     getContacts();
+  }
+
+  void onSearch(String searchTerm) {
+    searchTerm = searchTerm?.isEmpty == true ? null : searchTerm;
+    this.searchTerm = searchTerm;
+    refreshUI();
   }
 
   void getContacts() => _presenter.getContacts();
