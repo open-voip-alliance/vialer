@@ -193,4 +193,5 @@ abstract class VialerSans {
   static const bug = IconData(0xE90D, fontFamily: _family);
   static const userOff = IconData(0xE9A9, fontFamily: _family);
   static const copy = IconData(0xE904, fontFamily: _family);
+  static const search = IconData(0xE937, fontFamily: _family);
 }

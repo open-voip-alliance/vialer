@@ -71,6 +71,10 @@ class _ContactPageState extends ViewState<ContactsPage, ContactsController> {
                 padding: EdgeInsets.symmetric(horizontal: 16),
                 child: Header(context.msg.main.contacts.title),
               ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                child: _SearchTextField(onChanged: controller.onSearch),
+              ),
               Expanded(
                 child: ConditionalPlaceholder(
                   showPlaceholder: controller.contacts.isEmpty,
@@ -106,10 +110,16 @@ class _ContactPageState extends ViewState<ContactsPage, ContactsController> {
                             ),
                           ],
                         ),
-                  child: _AlphabetListView(
-                    bottomLettersPadding: widget.bottomLettersPadding,
-                    children: _mapToWidgets(controller.contacts),
-                    onRefresh: () => controller.updateContacts(),
+                  child: AnimatedSwitcher(
+                    duration: Duration(milliseconds: 200),
+                    switchInCurve: Curves.decelerate,
+                    switchOutCurve: Curves.decelerate.flipped,
+                    child: _AlphabetListView(
+                      key: ValueKey(controller.searchTerm),
+                      bottomLettersPadding: widget.bottomLettersPadding,
+                      children: _mapAndFilterToWidgets(controller.contacts),
+                      onRefresh: () => controller.updateContacts(),
+                    ),
                   ),
                 ),
               ),
@@ -120,7 +130,7 @@ class _ContactPageState extends ViewState<ContactsPage, ContactsController> {
     );
   }
 
-  List<Widget> _mapToWidgets(Iterable<Contact> contacts) {
+  List<Widget> _mapAndFilterToWidgets(Iterable<Contact> contacts) {
     final widgets = <String, List<ContactItem>>{};
 
     const numberKey = '#';
@@ -132,7 +142,23 @@ class _ContactPageState extends ViewState<ContactsPage, ContactsController> {
     bool isNumberlike(String char) =>
         char != null ? RegExp(r'[0-9\(\+]').hasMatch(char) : false;
 
+    final searchTerm = controller.searchTerm?.toLowerCase();
     for (var contact in contacts) {
+      if (searchTerm != null &&
+          !contact.name.toLowerCase().contains(searchTerm) &&
+          !contact.initials.toLowerCase().contains(searchTerm) &&
+          !contact.emails.any(
+            (email) => email.value.toLowerCase().contains(searchTerm),
+          ) &&
+          !contact.phoneNumbers.any(
+            (number) => number.value
+                .toLowerCase()
+                .replaceAll(' ', '')
+                .contains(searchTerm),
+          )) {
+        continue;
+      }
+
       var firstCharacter = contact.initials.characters.firstWhere(
         (_) => true,
         orElse: () => null,
@@ -370,6 +396,34 @@ class _SideLetter extends StatelessWidget {
             color: context.brandTheme.grey5,
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _SearchTextField extends StatelessWidget {
+  final ValueChanged<String> onChanged;
+
+  const _SearchTextField({Key key, @required this.onChanged}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      onChanged: onChanged,
+      cursorColor: context.brandTheme.primary,
+      decoration: InputDecoration(
+        filled: true,
+        fillColor: context.brandTheme.grey3,
+        border: OutlineInputBorder(
+          borderSide: BorderSide.none,
+          gapPadding: 0,
+        ),
+        prefixIcon: Icon(
+          VialerSans.search,
+          size: 20,
+          color: context.brandTheme.grey4,
+        ),
+        contentPadding: EdgeInsets.all(0),
       ),
     );
   }
