@@ -27,7 +27,7 @@ mixin Caller on Controller {
         _settings?.get<ShowDialerConfirmPopupSetting>()?.value ?? true;
 
     if (shouldShowConfirmPage) {
-      logger.info('Start calling: $destination, going to call through page');
+      logger.info('Going to call through page');
 
       // Push using the root navigator, the popup should be above everything
       await Navigator.of(getContext(), rootNavigator: true).push(
@@ -38,7 +38,7 @@ mixin Caller on Controller {
 
       executeGetSettingsUseCase();
     } else {
-      logger.info('Calling $destination');
+      logger.info('Starting call');
       executeCallUseCase(destination);
     }
   }

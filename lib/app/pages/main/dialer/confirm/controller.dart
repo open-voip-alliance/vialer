@@ -74,7 +74,7 @@ class ConfirmController extends Controller {
   }
 
   void call() {
-    logger.info('Initiating call to $destination');
+    logger.info('Initiating call');
     _presenter.call(destination);
   }
 
