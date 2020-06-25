@@ -135,13 +135,14 @@ class _SettingsPageState extends ViewState<SettingsPage, SettingsController> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16).copyWith(
-                  bottom: 24,
-                ),
+                padding: EdgeInsets.symmetric(horizontal: 16),
                 child: Header(context.msg.main.settings.title),
               ),
               Expanded(
                 child: ListView(
+                  padding: EdgeInsets.only(
+                    top: 8,
+                  ),
                   children: settingsList,
                 ),
               ),
