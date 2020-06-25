@@ -24,9 +24,7 @@ class SendFeedbackUseCase extends UseCase<void, SendFeedbackUseCaseParams> {
     await _feedbackRepository.send(
       title: params.title,
       text: params.text,
-      email: user.email,
-      uuid: user.uuid,
-      platform: params.platform,
+      user: user,
       brand: params.brand,
     );
     unawaited(controller.close());
@@ -39,13 +37,11 @@ class SendFeedbackUseCaseParams {
   final String title;
   final String text;
 
-  final String platform;
   final String brand;
 
   SendFeedbackUseCaseParams({
     @required this.title,
     @required this.text,
-    @required this.platform,
     this.brand = 'Vialer',
   });
 }
