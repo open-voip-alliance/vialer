@@ -4,6 +4,7 @@ class SystemUser {
   static const _firstNameKey = 'first_name';
   static const _lastNameKey = 'last_name';
   static const _appAccountKey = 'app_account';
+  static const _outgoingCliKey = 'outgoing_cli';
 
   static const _tokenKey = 'token';
 
@@ -21,6 +22,8 @@ class SystemUser {
 
   final Uri _appAccount;
 
+  final String outgoingCli;
+
   String get appAccountId => _appAccount?.pathSegments?.lastWhere(
         (p) => p.isNotEmpty,
         orElse: () => null,
@@ -34,6 +37,7 @@ class SystemUser {
     this.lastName,
     this.token,
     Uri appAccount,
+    this.outgoingCli,
   }) : _appAccount = appAccount;
 
   factory SystemUser.fromJson(Map<String, dynamic> json) {
@@ -45,6 +49,7 @@ class SystemUser {
       token: json[_tokenKey],
       appAccount:
           json[_appAccountKey] != null ? Uri.parse(json[_appAccountKey]) : null,
+      outgoingCli: json[_outgoingCliKey],
     );
   }
 
@@ -56,6 +61,7 @@ class SystemUser {
       _lastNameKey: lastName,
       if (includeToken) _tokenKey: token,
       _appAccountKey: _appAccount.toString(),
+      _outgoingCliKey: outgoingCli,
     };
   }
 
@@ -67,6 +73,7 @@ class SystemUser {
     String lastName,
     String token,
     Uri appAccount,
+    String outgoingCli,
   }) {
     return SystemUser(
       uuid: uuid ?? this.uuid,
@@ -76,6 +83,7 @@ class SystemUser {
       lastName: lastName ?? this.lastName,
       token: token ?? this.token,
       appAccount: appAccount ?? _appAccount,
+      outgoingCli: outgoingCli ?? this.outgoingCli,
     );
   }
 }

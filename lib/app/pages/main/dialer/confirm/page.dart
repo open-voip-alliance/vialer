@@ -3,7 +3,9 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
+import 'package:provider/provider.dart';
 
+import '../../../../../domain/repositories/auth.dart';
 import '../../../../../domain/repositories/call.dart';
 import '../../../../../domain/repositories/setting.dart';
 import '../../../../../domain/repositories/logging.dart';
@@ -18,13 +20,15 @@ class ConfirmPage extends View {
   final CallRepository _callRepository;
   final SettingRepository _settingRepository;
   final LoggingRepository _loggingRepository;
+  final AuthRepository _authRepository;
 
   final String destination;
 
   ConfirmPage(
     this._callRepository,
     this._settingRepository,
-    this._loggingRepository, {
+    this._loggingRepository,
+    this._authRepository, {
     @required this.destination,
   });
 
@@ -33,6 +37,7 @@ class ConfirmPage extends View {
         _callRepository,
         _settingRepository,
         _loggingRepository,
+        _authRepository,
         destination,
       );
 }
@@ -46,11 +51,13 @@ class ConfirmPageState extends ViewState<ConfirmPage, ConfirmController>
     CallRepository callRepository,
     SettingRepository settingRepository,
     LoggingRepository loggingRepository,
+    AuthRepository authRepository,
     String destination,
   ) : super(ConfirmController(
           callRepository,
           settingRepository,
           loggingRepository,
+          authRepository,
           destination,
         ));
 
@@ -137,7 +144,7 @@ class ConfirmPageState extends ViewState<ConfirmPage, ConfirmController>
                           style: _style,
                         ),
                         SizedBox(height: 8),
-                        Text('(+31) 50 1234567', style: _largeStyle),
+                        Text(controller.outgoingCli, style: _largeStyle),
                         SizedBox(height: 48),
                         Text(
                           context.msg.main.dialer.confirm.description.main,
@@ -260,16 +267,9 @@ class _AndroidInputs extends StatelessWidget {
 }
 
 class ConfirmPageRoute extends PageRoute {
-  final CallRepository _callRepository;
-  final SettingRepository _settingRepository;
-  final LoggingRepository _loggingRepository;
-
   final String destination;
 
-  ConfirmPageRoute(
-    this._callRepository,
-    this._settingRepository,
-    this._loggingRepository, {
+  ConfirmPageRoute({
     @required this.destination,
   });
 
@@ -289,9 +289,10 @@ class ConfirmPageRoute extends PageRoute {
     Animation<double> secondaryAnimation,
   ) {
     return ConfirmPage(
-      _callRepository,
-      _settingRepository,
-      _loggingRepository,
+      Provider.of<CallRepository>(context),
+      Provider.of<SettingRepository>(context),
+      Provider.of<LoggingRepository>(context),
+      Provider.of<AuthRepository>(context),
       destination: destination,
     );
   }
