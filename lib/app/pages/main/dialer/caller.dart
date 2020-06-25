@@ -32,9 +32,6 @@ mixin Caller on Controller {
       // Push using the root navigator, the popup should be above everything
       await Navigator.of(getContext(), rootNavigator: true).push(
         ConfirmPageRoute(
-          callRepository,
-          settingRepository,
-          loggingRepository,
           destination: destination,
         ),
       );

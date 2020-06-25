@@ -6,6 +6,7 @@ import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import '../../../../../domain/entities/call_through_exception.dart';
 import '../../../../../domain/entities/setting.dart';
 
+import '../../../../../domain/repositories/auth.dart';
 import '../../../../../domain/repositories/logging.dart';
 import '../../../../../domain/repositories/setting.dart';
 import '../../../../../domain/repositories/call.dart';
@@ -27,14 +28,27 @@ class ConfirmController extends Controller {
   AnimationController _animationController;
 
   bool showConfirmPage = true;
+  String outgoingCli = '';
 
   ConfirmController(
       CallRepository callRepository,
       SettingRepository settingRepository,
       LoggingRepository loggingRepository,
+      AuthRepository authRepository,
       this.destination)
       : _presenter = ConfirmPresenter(
-            callRepository, settingRepository, loggingRepository);
+          callRepository,
+          settingRepository,
+          loggingRepository,
+          authRepository,
+        );
+
+  @override
+  void initController(GlobalKey<State<StatefulWidget>> key) {
+    super.initController(key);
+
+    _presenter.getOutgoingCli();
+  }
 
   void initAnimation(AnimationController controller) {
     _animationController = controller;
@@ -116,6 +130,11 @@ class ConfirmController extends Controller {
     _presenter.setShowDialogSetting(value);
   }
 
+  void _onOutgoingCliNext(String outgoingCli) {
+    this.outgoingCli = outgoingCli;
+    refreshUI();
+  }
+
   void _onSettingsNext(List<Setting> settings) {
     showConfirmPage = settings.get<ShowDialerConfirmPopupSetting>().value;
   }
@@ -125,5 +144,6 @@ class ConfirmController extends Controller {
     _presenter.callOnComplete = () {};
     _presenter.callOnError = _showException;
     _presenter.settingsOnNext = _onSettingsNext;
+    _presenter.outgoingCliOnNext = _onOutgoingCliNext;
   }
 }
