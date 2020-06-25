@@ -133,7 +133,7 @@ class _RecentItemSubtitle extends StatelessWidget {
         locale: '${VialerLocalizations.of(context).locale.languageCode}_short',
       );
 
-  String _time(BuildContext context) => DateFormat.jm().format(call.localDate);
+  String get _time => DateFormat.Hm().format(call.localDate);
 
   @override
   Widget build(BuildContext context) {
@@ -150,7 +150,7 @@ class _RecentItemSubtitle extends StatelessWidget {
         ),
         SizedBox(width: 8),
         Text(
-          '${_timeAgo(context)}, ${_time(context)}',
+          '${_timeAgo(context)}, $_time',
           style: TextStyle(color: context.brandTheme.grey4),
         ),
       ],
