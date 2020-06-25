@@ -11,7 +11,7 @@ class DataSettingRepository extends SettingRepository {
   @override
   Future<void> resetToDefaults() async {
     _storageRepository.settings = [
-      RemoteLoggingSetting(true),
+      RemoteLoggingSetting(false),
       ShowDialerConfirmPopupSetting(true),
     ];
 
