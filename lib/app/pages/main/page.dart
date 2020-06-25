@@ -105,7 +105,7 @@ class _MainPageState extends State<MainPage> {
     }
 
     if (_currentIndex == null) {
-      _currentIndex = _dialerIsPage ? 2 : 1;
+      _currentIndex = _dialerIsPage ? 1 : 0;
     }
   }
 
