@@ -179,6 +179,8 @@ class _LoginPageState extends ViewState<LoginPage, LoginController>
           ),
           StylizedTextField(
             controller: controller.usernameController,
+            autoCorrect: false,
+            textCapitalization: TextCapitalization.none,
             prefixIcon: VialerSans.user,
             labelText: context.msg.onboarding.login.placeholder.username,
             keyboardType: TextInputType.emailAddress,

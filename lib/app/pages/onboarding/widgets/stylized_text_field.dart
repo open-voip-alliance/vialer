@@ -9,6 +9,8 @@ class StylizedTextField extends StatelessWidget {
   final IconData prefixIcon;
   final String labelText;
   final bool hasError;
+  final bool autoCorrect;
+  final TextCapitalization textCapitalization;
 
   StylizedTextField({
     Key key,
@@ -18,6 +20,8 @@ class StylizedTextField extends StatelessWidget {
     this.obscureText = false,
     this.keyboardType,
     this.hasError = false,
+    this.autoCorrect = true,
+    this.textCapitalization = TextCapitalization.none,
   }) : super(key: key);
 
   static const color = Colors.grey;
@@ -29,6 +33,8 @@ class StylizedTextField extends StatelessWidget {
       elevation: 4,
       child: TextField(
         controller: controller,
+        autocorrect: autoCorrect,
+        textCapitalization: textCapitalization,
         decoration: InputDecoration(
           prefixIcon: Icon(
             prefixIcon,
