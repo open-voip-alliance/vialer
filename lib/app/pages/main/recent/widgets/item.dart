@@ -45,7 +45,9 @@ class RecentCallItem extends StatelessWidget {
       contentPadding: EdgeInsets.symmetric(horizontal: 16),
       onTap: onCallPressed,
       leading: _RecentItemAvatar(call),
-      title: Text(call.destinationName),
+      title: Text(call.direction == Direction.inbound
+          ? call.callerNumber
+          : call.destinationName),
       subtitle: _RecentItemSubtitle(call),
       trailing: PopupMenuButton(
         onSelected: _onPopupMenuItemPress,
