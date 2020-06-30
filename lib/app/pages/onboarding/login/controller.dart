@@ -35,7 +35,7 @@ class LoginController extends Controller {
   double headerDistance;
 
   bool canLogin = false;
-
+  bool loggingIn = false;
   bool loginFailed = false;
 
   LoginController(
@@ -98,10 +98,16 @@ class LoginController extends Controller {
 
   void login() {
     logger.info('Logging in');
+
+    loggingIn = true;
+    refreshUI();
+
     _presenter.login(usernameController.text.trim(), passwordController.text);
   }
 
   void _onLogin(bool success) {
+    loggingIn = false;
+
     if (success) {
       logger.info('Login successful');
       doIfNotDebug(() async {

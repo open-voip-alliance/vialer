@@ -289,6 +289,7 @@ class PlaceholderLoginOnboardingMessages {
 class ButtonLoginOnboardingMessages {
 	final LoginOnboardingMessages _parent;
 	const ButtonLoginOnboardingMessages(this._parent);
+	String get loggingIn => """Logging in""";
 	String get forgotPassword => """Forgot password""";
 }
 

@@ -290,6 +290,7 @@ class PlaceholderLoginOnboardingMessages_nl extends PlaceholderLoginOnboardingMe
 class ButtonLoginOnboardingMessages_nl extends ButtonLoginOnboardingMessages {
 	final LoginOnboardingMessages_nl _parent;
 	const ButtonLoginOnboardingMessages_nl(this._parent):super(_parent);
+	String get loggingIn => """Bezig met inloggen""";
 	String get forgotPassword => """Wachtwoord vergeten""";
 }
 
