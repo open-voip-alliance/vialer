@@ -8,7 +8,7 @@ class Call extends Equatable {
   static const _sourceNumberKey = 'src_number';
   static const _callerIdKey = 'callerid';
   static const _originalCallerIdKey = 'orig_callerid';
-  static const _destinationNumberKey = 'dialed_number';
+  static const _destinationNumberKey = 'dst_number';
   static const _directionKey = 'direction';
 
   final int id;
