@@ -5,6 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../../domain/entities/brand.dart';
+
 import '../../../../../domain/repositories/auth.dart';
 import '../../../../../domain/repositories/call.dart';
 import '../../../../../domain/repositories/setting.dart';
@@ -89,6 +91,8 @@ class ConfirmPageState extends ViewState<ConfirmPage, ConfirmController>
 
   @override
   Widget buildPage() {
+    final appName = Provider.of<Brand>(context).appName;
+
     return WillPopScope(
       key: globalKey,
       onWillPop: controller.onWillPop,
@@ -135,7 +139,7 @@ class ConfirmPageState extends ViewState<ConfirmPage, ConfirmController>
                       children: <Widget>[
                         SizedBox(height: 48),
                         Text(
-                          context.msg.main.dialer.confirm.title,
+                          context.msg.main.dialer.confirm.title(appName),
                           style: _largeStyle,
                         ),
                         SizedBox(height: 48),
@@ -147,7 +151,9 @@ class ConfirmPageState extends ViewState<ConfirmPage, ConfirmController>
                         Text(controller.outgoingCli, style: _largeStyle),
                         SizedBox(height: 48),
                         Text(
-                          context.msg.main.dialer.confirm.description.main,
+                          context.msg.main.dialer.confirm.description.main(
+                            appName,
+                          ),
                           style: _style,
                         ),
                         SizedBox(height: 48),

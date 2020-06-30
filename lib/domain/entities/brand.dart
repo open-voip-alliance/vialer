@@ -14,7 +14,7 @@ class Vialer extends Brand {
 
 class Voys extends Brand {
   @override
-  final String appName = 'Voys';
+  final String appName = 'Voys Freedom';
 
   @override
   final Uri baseUrl = Uri.parse('https://freedom.voys.nl');

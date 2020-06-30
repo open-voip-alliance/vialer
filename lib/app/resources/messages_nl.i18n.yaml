@@ -17,10 +17,11 @@ main:
     menu:
       title: *keypadTitle
     confirm:
-      title: "Vialer Lite Gesprek"
+      title(String appName): "$appName Gesprek"
       description:
         origin: "Er wordt gebeld met je zakelijke nummer"
-        main: "Vialer Lite verbindt je gesprek door,\\nwaardoor je persoonlijke nummer privé blijft"
+        main(String appName):
+          "$appName verbindt je gesprek door,\\nwaardoor je persoonlijke nummer privé blijft"
         action: "Klik op de “Bel” knop om het volgende nummer te bellen:"
       button:
         call(String number): "Bel $number"
