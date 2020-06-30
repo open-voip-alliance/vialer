@@ -84,7 +84,11 @@ class Database extends _$Database {
 
   Future<void> insertCalls(List<Call> values) async {
     await batch((batch) {
-      batch.insertAll(calls, values.map((c) => c.toRecord()).toList());
+      batch.insertAll(
+        calls,
+        values.map((c) => c.toRecord()).toList(),
+        mode: InsertMode.insertOrIgnore,
+      );
     });
   }
 }

@@ -60,6 +60,30 @@ class _RecentPageState extends ViewState<RecentPage, RecentController> {
           ),
         );
 
+  final _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    _scrollController.addListener(_handleScrolling);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _scrollController.dispose();
+  }
+
+  void _handleScrolling() {
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.position.pixels;
+
+    if (currentScroll >= maxScroll - 200) {
+      controller.loadMoreRecents();
+    }
+  }
+
   void _showSnackBar(BuildContext context) {
     showSnackBar(
       context,
@@ -97,10 +121,10 @@ class _RecentPageState extends ViewState<RecentPage, RecentController> {
                     ),
                   ),
                   child: RefreshIndicator(
-                    onRefresh: controller.updateRecents,
+                    onRefresh: controller.refreshRecents,
                     child: ListView.builder(
                       physics: const AlwaysScrollableScrollPhysics(),
-                      controller: controller.scrollController,
+                      controller: _scrollController,
                       padding: EdgeInsets.only(
                         bottom: widget.listBottomPadding,
                       ),
