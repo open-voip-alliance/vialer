@@ -200,9 +200,41 @@ class _LoginPageState extends ViewState<LoginPage, LoginController>
               SizedBox(
                 width: double.infinity,
                 child: StylizedButton.raised(
-                  onPressed: controller.canLogin ? controller.login : null,
-                  child: Text(context.msg.onboarding.button.login
-                      .toUpperCaseIfAndroid(context)),
+                  onPressed: controller.canLogin && !controller.loggingIn
+                      ? controller.login
+                      : null,
+                  child: AnimatedSwitcher(
+                    switchInCurve: Curves.decelerate,
+                    switchOutCurve: Curves.decelerate.flipped,
+                    duration: Duration(milliseconds: 200),
+                    child: !controller.loggingIn
+                        ? Text(
+                            context.msg.onboarding.button.login
+                                .toUpperCaseIfAndroid(context),
+                          )
+                        : Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              SizedBox(
+                                width: 14,
+                                height: 14,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2.5,
+                                  valueColor: AlwaysStoppedAnimation(
+                                    Theme.of(context).primaryColor,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 8),
+                              Flexible(
+                                child: Text(
+                                  context.msg.onboarding.login.button.loggingIn
+                                      .toUpperCaseIfAndroid(context),
+                                ),
+                              ),
+                            ],
+                          ),
+                  ),
                 ),
               ),
               SizedBox(height: 20),
