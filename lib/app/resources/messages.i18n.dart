@@ -73,7 +73,7 @@ class MenuDialerMainMessages {
 class ConfirmDialerMainMessages {
 	final DialerMainMessages _parent;
 	const ConfirmDialerMainMessages(this._parent);
-	String get title => """Vialer Lite Call""";
+	String title(String appName) => """$appName Call""";
 	DescriptionConfirmDialerMainMessages get description => DescriptionConfirmDialerMainMessages(this);
 	ButtonConfirmDialerMainMessages get button => ButtonConfirmDialerMainMessages(this);
 }
@@ -82,7 +82,7 @@ class DescriptionConfirmDialerMainMessages {
 	final ConfirmDialerMainMessages _parent;
 	const DescriptionConfirmDialerMainMessages(this._parent);
 	String get origin => """Dialing from your business number""";
-	String get main => """Vialer Lite will route your call through,\nkeeping your personal number private""";
+	String main(String appName) => """$appName will route your call through,\nkeeping your personal number private""";
 	String get action => """Tap the “Call” button to dial:""";
 }
 
@@ -205,15 +205,15 @@ class ListSettingsMainMessages {
 class DebugListSettingsMainMessages {
 	final ListSettingsMainMessages _parent;
 	const DebugListSettingsMainMessages(this._parent);
-	RemoteLoggingMainMessages get remoteLogging => RemoteLoggingMainMessages(this);
-	String get title => "Debug";
+	String get title => """Debug""";
+	RemoteLoggingDebugListSettingsMainMessages get remoteLogging => RemoteLoggingDebugListSettingsMainMessages(this);
 }
 
-class RemoteLoggingMainMessages {
+class RemoteLoggingDebugListSettingsMainMessages {
 	final DebugListSettingsMainMessages _parent;
-	const RemoteLoggingMainMessages(this._parent);
-	String get title => "Remote logging";
-	String get description => "Automatically share your app activity with our developers and support team to help resolve issues and errors.";
+	const RemoteLoggingDebugListSettingsMainMessages(this._parent);
+	String get title => """Remote logging""";
+	String get description => """Automatically share your app activity with our developers and support team to help resolve issues and errors.""";
 }
 
 class ButtonsSettingsMainMessages {

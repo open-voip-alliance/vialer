@@ -17,10 +17,11 @@ main:
     menu:
       title: *keypadTitle
     confirm:
-      title: "Vialer Lite Call"
+      title(String appName): "$appName Call"
       description:
         origin: "Dialing from your business number"
-        main: "Vialer Lite will route your call through,\\nkeeping your personal number private"
+        main(String appName):
+          "$appName will route your call through,\\nkeeping your personal number private"
         action: "Tap the “Call” button to dial:"
       button:
         call(String number): "Call $number"

@@ -74,7 +74,7 @@ class MenuDialerMainMessages_nl extends MenuDialerMainMessages {
 class ConfirmDialerMainMessages_nl extends ConfirmDialerMainMessages {
 	final DialerMainMessages_nl _parent;
 	const ConfirmDialerMainMessages_nl(this._parent):super(_parent);
-	String get title => """Vialer Lite Gesprek""";
+	String title(String appName) => """$appName Gesprek""";
 	DescriptionConfirmDialerMainMessages_nl get description => DescriptionConfirmDialerMainMessages_nl(this);
 	ButtonConfirmDialerMainMessages_nl get button => ButtonConfirmDialerMainMessages_nl(this);
 }
@@ -83,7 +83,7 @@ class DescriptionConfirmDialerMainMessages_nl extends DescriptionConfirmDialerMa
 	final ConfirmDialerMainMessages_nl _parent;
 	const DescriptionConfirmDialerMainMessages_nl(this._parent):super(_parent);
 	String get origin => """Er wordt gebeld met je zakelijke nummer""";
-	String get main => """Vialer Lite verbindt je gesprek door,\nwaardoor je persoonlijke nummer privé blijft""";
+	String main(String appName) => """$appName verbindt je gesprek door,\nwaardoor je persoonlijke nummer privé blijft""";
 	String get action => """Klik op de “Bel” knop om het volgende nummer te bellen:""";
 }
 
@@ -206,14 +206,15 @@ class ListSettingsMainMessages_nl extends ListSettingsMainMessages {
 class DebugListSettingsMainMessages_nl extends DebugListSettingsMainMessages {
 	final ListSettingsMainMessages_nl _parent;
 	const DebugListSettingsMainMessages_nl(this._parent):super(_parent);
-	String get title => "Debug";
+	String get title => """Debug""";
+	RemoteLoggingDebugListSettingsMainMessages_nl get remoteLogging => RemoteLoggingDebugListSettingsMainMessages_nl(this);
 }
 
-class RemoteLoggingMainMessages_nl extends RemoteLoggingMainMessages {
+class RemoteLoggingDebugListSettingsMainMessages_nl extends RemoteLoggingDebugListSettingsMainMessages {
 	final DebugListSettingsMainMessages_nl _parent;
-	const RemoteLoggingMainMessages_nl(this._parent):super(_parent);
-	String get title => "Remote logging";
-	String get description => "Deel automatisch je handelingen in de app met onze ontwikkelaars om problemen en fouten op te sporen.";
+	const RemoteLoggingDebugListSettingsMainMessages_nl(this._parent):super(_parent);
+	String get title => """Remote logging""";
+	String get description => """Deel automatisch je handelingen in de app met onze ontwikkelaars om problemen en fouten op te sporen.""";
 }
 
 class ButtonsSettingsMainMessages_nl extends ButtonsSettingsMainMessages {
