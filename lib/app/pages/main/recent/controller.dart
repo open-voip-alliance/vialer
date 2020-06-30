@@ -30,11 +30,13 @@ class RecentController extends Controller with Caller {
 
   final RecentPresenter _presenter;
 
-  final recentCalls = <Call>[];
+  var recentCalls = <Call>[];
 
-  final scrollController = ScrollController();
+  int _extraPagesLoaded = 0;
+  final _maxAmountOfExtraPages = 2; // 3 months in total.
 
-  Completer _completer;
+  bool _loadingMoreRecents = false;
+  Completer _refreshCompleter;
 
   RecentController(
     RecentCallRepository recentCallRepository,
@@ -47,30 +49,16 @@ class RecentController extends Controller with Caller {
           settingRepository,
         );
 
-  int _page = 0;
-
-  int _emptyCount = 0;
-
-  bool _endReached = false;
-  bool _loading = false;
-
   @override
   void initController(GlobalKey<State<StatefulWidget>> key) {
     super.initController(key);
 
-    getRecentCalls();
+    _loadInitialRecents();
     executeGetSettingsUseCase();
+  }
 
-    scrollController.addListener(() {
-      final maxScroll = scrollController.position.maxScrollExtent;
-      final currentScroll = scrollController.position.pixels;
-
-      if (!_endReached && !_loading && currentScroll >= maxScroll - 300) {
-        logger.info('Requesting recent calls');
-        _loading = true;
-        getRecentCalls();
-      }
-    });
+  bool get _loadedMaxAmountOfExtraPages {
+    return _extraPagesLoaded == _maxAmountOfExtraPages;
   }
 
   @override
@@ -92,52 +80,69 @@ class RecentController extends Controller with Caller {
   @override
   void executeCallUseCase(String destination) => _presenter.call(destination);
 
-  Future<void> updateRecents() {
-    _completer = Completer();
-
-    getRecentCalls();
-
-    return _completer.future;
+  void _loadInitialRecents() {
+    logger.info('Loading initial recents calls');
+    _getRecentCalls(page: 0);
   }
 
-  void getRecentCalls() {
-    _presenter.getRecentCalls(page: _page);
-    _page++;
+  Future<void> refreshRecents() {
+    logger.info('Refreshing recent calls');
+    _refreshCompleter = Completer();
+
+    _getRecentCalls(page: 0);
+
+    return _refreshCompleter.future;
+  }
+
+  void loadMoreRecents() {
+    if (!_loadedMaxAmountOfExtraPages && !_loadingMoreRecents) {
+      logger.info('Loading more recents calls');
+
+      _loadingMoreRecents = true;
+
+      _getRecentCalls(page: _extraPagesLoaded + 1);
+    }
+  }
+
+  void _getRecentCalls({@required int page}) {
+    _presenter.getRecentCalls(page: page);
   }
 
   void _onRecentCallsUpdated(List<Call> recentCalls) {
-    if (recentCalls.isEmpty) {
-      _emptyCount++;
-
-      if (_emptyCount >= 3) {
-        logger.info('End reached');
-        _endReached = true;
-      }
-
-      if (!_endReached) {
-        getRecentCalls();
-      }
+    if (_loadingMoreRecents) {
+      // We are loading more so add them at the end of the list.
+      this.recentCalls.addAll(recentCalls);
+      _extraPagesLoaded++;
     } else {
-      _emptyCount = 0;
+      // We are refreshing or loading for the first time
+      // so add them at the start of the list.
+      this.recentCalls.insertAll(0, recentCalls);
     }
 
-    this.recentCalls.addAll(recentCalls);
+    // Remove duplicate calls.
+    this.recentCalls = this.recentCalls.toSet().toList();
 
-    _loading = false;
     refreshUI();
 
-    _completer?.complete();
+    _loadingMoreRecents = false;
+    _refreshCompleter?.complete();
+    _refreshCompleter = null;
+  }
+
+  void _onRecentCallsError(_) {
+    _loadingMoreRecents = false;
   }
 
   @override
   void onResumed() {
     super.onResumed();
-    getRecentCalls();
+    _loadInitialRecents();
   }
 
   @override
   void initListeners() {
     _presenter.recentCallsOnNext = _onRecentCallsUpdated;
+    _presenter.recentCallsOnError = _onRecentCallsError;
     _presenter.callOnError = showException;
     _presenter.settingsOnNext = setSettings;
   }

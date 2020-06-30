@@ -1,4 +1,6 @@
-class Call {
+import 'package:equatable/equatable.dart';
+
+class Call extends Equatable {
   static const _idKey = 'id';
   static const _dateKey = 'call_date';
   static const _durationKey = 'atime';
@@ -96,6 +98,9 @@ class Call {
   String toString() {
     return '$id: $destinationNumber';
   }
+
+  @override
+  List<Object> get props => [id];
 }
 
 enum Direction {

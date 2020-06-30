@@ -26,33 +26,42 @@ class DataRecentCallRepository extends RecentCallRepository {
 
   Logger get _logger => __logger ??= Logger('@$runtimeType');
 
+  final _daysPerPage = 28;
   int _cacheStartPage;
 
   @override
   Future<List<Call>> getRecentCalls({@required int page}) async {
-    const days = 30;
-    final to = DateTime.now().subtract(Duration(days: days * page));
+    final today = DateTime.now().add(Duration(days: 1));
+    final fromUtc = today
+        .subtract(
+          Duration(days: _daysPerPage * (page + 1)),
+        )
+        .toUtc();
+    final toUtc = today
+        .subtract(
+          Duration(days: _daysPerPage * page),
+        )
+        .toUtc();
 
     var calls = <Call>[];
-    final from = to.subtract(Duration(days: days));
 
     _logger.info(
       'Fetching recent calls between: '
-      '${to.toIso8601String()} and ${from.toIso8601String()}',
+      '${toUtc.toIso8601String()} and ${fromUtc.toIso8601String()}',
     );
 
     // Never get from cache for the first page, and then only
     // from when we're sure there's nothing remote.
     if (page != 0 && page >= (_cacheStartPage ?? 0)) {
-      calls = await _database.getCalls(from: from, to: to);
+      calls = await _database.getCalls(from: fromUtc, to: toUtc);
       _logger.info('Amount of calls from cache: ${calls.length}');
     }
 
     if (calls.isEmpty) {
       _logger.info('None cached, request more via API');
       final response = await _service.getPersonalCalls(
-        from: from.toIso8601String(),
-        to: to.toIso8601String(),
+        from: fromUtc.toIso8601String(),
+        to: toUtc.toIso8601String(),
       );
 
       final objects = response.body['objects'] as List<dynamic> ?? [];

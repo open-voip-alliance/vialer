@@ -15,6 +15,7 @@ import '../util/observer.dart';
 
 class RecentPresenter extends Presenter {
   Function recentCallsOnNext;
+  Function recentCallsOnError;
 
   Function callOnError;
 
@@ -36,6 +37,7 @@ class RecentPresenter extends Presenter {
     _getRecentCallsUseCase.execute(
       Watcher(
         onNext: recentCallsOnNext,
+        onError: recentCallsOnError,
       ),
       GetRecentCallsUseCaseParams(
         page: page,
