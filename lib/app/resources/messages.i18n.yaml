@@ -119,8 +119,11 @@ onboarding:
         app using the default call app.
     contacts:
       title: "Contacts permission"
-      description: >-
-        This permission allows Reborn to display information (contact book & call activity) and to search through your contacts.
+      description(String appName): >-
+        This permission allows $appName to display information (contact book & call activity)
+        and to search through your contacts.
+
+
         The data will be solely used for display and search purposes.
 
   voicemail:

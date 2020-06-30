@@ -330,7 +330,9 @@ class ContactsPermissionOnboardingMessages {
 	final PermissionOnboardingMessages _parent;
 	const ContactsPermissionOnboardingMessages(this._parent);
 	String get title => """Contacts permission""";
-	String get description => """This permission allows Reborn to display information (contact book & call activity) and to search through your contacts. The data will be solely used for display and search purposes.""";
+	String description(String appName) => """This permission allows $appName to display information (contact book & call activity) and to search through your contacts.
+
+The data will be solely used for display and search purposes.""";
 }
 
 class VoicemailOnboardingMessages {

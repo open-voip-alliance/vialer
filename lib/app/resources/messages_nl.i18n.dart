@@ -331,7 +331,9 @@ class ContactsPermissionOnboardingMessages_nl extends ContactsPermissionOnboardi
 	final PermissionOnboardingMessages_nl _parent;
 	const ContactsPermissionOnboardingMessages_nl(this._parent):super(_parent);
 	String get title => """Toestemming contactenlijst""";
-	String get description => """Deze toestemming zorgt ervoor dat Vialer informatie zoals de contactenlijst en gespreksactiviteit inzichtelijk maakt.\n\nDeze data wordt enkel gebruikt voor het tonen en doorzoeken hiervan.""";
+	String description(String appName) => """Deze toestemming zorgt ervoor dat $appName informatie zoals de contactenlijst en gespreksactiviteit inzichtelijk maakt.
+
+Deze data wordt enkel gebruikt voor het tonen en doorzoeken hiervan.""";
 }
 
 class VoicemailOnboardingMessages_nl extends VoicemailOnboardingMessages {
