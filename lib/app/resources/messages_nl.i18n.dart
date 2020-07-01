@@ -85,6 +85,7 @@ class DescriptionConfirmDialerMainMessages_nl extends DescriptionConfirmDialerMa
 	String get origin => """Er wordt gebeld met je zakelijke nummer""";
 	String main(String appName) => """$appName verbindt je gesprek door,\nwaardoor je persoonlijke nummer privé blijft""";
 	String get action => """Klik op de “Bel” knop om het volgende nummer te bellen:""";
+	String get showPopUpSetting => """Toon dit niet meer""";
 }
 
 class ButtonConfirmDialerMainMessages_nl extends ButtonConfirmDialerMainMessages {

@@ -23,6 +23,7 @@ main:
         main(String appName):
           "$appName will route your call through,\\nkeeping your personal number private"
         action: "Tap the “Call” button to dial:"
+        showPopUpSetting: "Dont't show this again"
       button:
         call(String number): "Call $number"
 
