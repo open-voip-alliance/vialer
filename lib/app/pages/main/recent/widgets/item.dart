@@ -132,26 +132,23 @@ class _RecentItemSubtitle extends StatelessWidget {
   String get _date => DateFormat('dd-MM-yy').format(call.localDate);
 
   String _timeAgo(BuildContext context) {
-    final elapsed = DateTime.now().millisecondsSinceEpoch -
-        call.localDate.millisecondsSinceEpoch;
-    final minutes = (elapsed / (1000 * 60));
-    final hours = (elapsed / (1000 * 60 * 60));
+    final duration = DateTime.now().difference(call.localDate);
 
-    if (hours < 1) {
-      if (minutes.round() == 1) {
-        return (context.msg.main.recent.list.minuteAgo());
+    if (duration.inHours < 1) {
+      if (duration.inMinutes == 1) {
+        return context.msg.main.recent.list.minuteAgo();
       } else {
-        return (context.msg.main.recent.list.minutesAgo(minutes.round()));
+        return context.msg.main.recent.list.minutesAgo(duration.inMinutes);
       }
-    } else if (hours < 24) {
-      if (hours.round() == 1) {
-        return ('${context.msg.main.recent.list.hourAgo()}, $_time');
+    } else if (duration.inHours < Duration.hoursPerDay) {
+      if (duration.inHours == 1) {
+        return '${context.msg.main.recent.list.hourAgo()}, $_time';
       } else {
-        return ('${context.msg.main.recent.list.hoursAgo(hours.round())},'
-            '$_time');
+        return '${context.msg.main.recent.list.hoursAgo(duration.inHours)}, '
+            '$_time';
       }
     } else {
-      return ('$_date, $_time');
+      return '$_date, $_time';
     }
   }
 

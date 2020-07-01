@@ -116,10 +116,10 @@ class SnackBarRecentMainMessages {
 class ListRecentMainMessages {
 	final RecentMainMessages _parent;
 	const ListRecentMainMessages(this._parent);
-	String minuteAgo() => """1 Minute ago""";
-	String minutesAgo(int minutes) => """$minutes Minutes ago""";
-	String hourAgo() => """1 Hour ago""";
-	String hoursAgo(int hours) => """$hours Hours ago""";
+	String minuteAgo() => """1 minute ago""";
+	String minutesAgo(int minutes) => """$minutes minutes ago""";
+	String hourAgo() => """1 hour ago""";
+	String hoursAgo(int hours) => """$hours hours ago""";
 	PopupMenuListRecentMainMessages get popupMenu => PopupMenuListRecentMainMessages(this);
 	EmptyListRecentMainMessages get empty => EmptyListRecentMainMessages(this);
 }

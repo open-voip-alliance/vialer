@@ -33,10 +33,10 @@ main:
     snackBar:
       copied: "Phone number copied"
     list:
-      minuteAgo: "1 Minute ago"
-      minutesAgo(int minutes): "$minutes Minutes ago"
+      minuteAgo: "1 minute ago"
+      minutesAgo(int minutes): "$minutes minutes ago"
       hourAgo: "1 hour ago"
-      hoursAgo(int hours): "$hours Hours ago"
+      hoursAgo(int hours): "$hours hours ago"
       popupMenu:
         copy: "Copy"
         call: "Call"

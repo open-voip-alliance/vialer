@@ -117,10 +117,10 @@ class SnackBarRecentMainMessages_nl extends SnackBarRecentMainMessages {
 class ListRecentMainMessages_nl extends ListRecentMainMessages {
 	final RecentMainMessages_nl _parent;
 	const ListRecentMainMessages_nl(this._parent):super(_parent);
-	String minuteAgo() => """1 Minuut geleden""";
-	String minutesAgo(int minutes) => """$minutes Minuten geleden""";
+	String minuteAgo() => """1 minuut geleden""";
+	String minutesAgo(int minutes) => """$minutes minuten geleden""";
 	String hourAgo() => """1 uur geleden""";
-	String hoursAgo(int hours) => """$hours Uren geleden""";
+	String hoursAgo(int hours) => """$hours uren geleden""";
 	PopupMenuListRecentMainMessages_nl get popupMenu => PopupMenuListRecentMainMessages_nl(this);
 	EmptyListRecentMainMessages_nl get empty => EmptyListRecentMainMessages_nl(this);
 }
