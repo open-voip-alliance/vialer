@@ -84,6 +84,7 @@ class DescriptionConfirmDialerMainMessages {
 	String get origin => """Dialing from your business number""";
 	String main(String appName) => """$appName will route your call through,\nkeeping your personal number private""";
 	String get action => """Tap the “Call” button to dial:""";
+	String get showPopUpSetting => """Dont't show this again""";
 }
 
 class ButtonConfirmDialerMainMessages {

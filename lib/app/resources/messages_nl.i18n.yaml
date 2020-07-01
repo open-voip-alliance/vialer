@@ -23,6 +23,7 @@ main:
         main(String appName):
           "$appName verbindt je gesprek door,\\nwaardoor je persoonlijke nummer privé blijft"
         action: "Klik op de “Bel” knop om het volgende nummer te bellen:"
+        showPopUpSetting: "Toon dit niet meer"
       button:
         call(String number): "Bel $number"
 

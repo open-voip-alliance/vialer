@@ -222,7 +222,9 @@ class _AndroidInputs extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Text('Don\'t show this again'),
+                Text(
+                  context.msg.main.dialer.confirm.description.showPopUpSetting,
+                ),
                 Checkbox(
                   value: checkboxValue,
                   activeColor: Theme.of(context).primaryColor,
