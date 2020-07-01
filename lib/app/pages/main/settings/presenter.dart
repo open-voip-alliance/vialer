@@ -49,7 +49,7 @@ class SettingsPresenter extends Presenter {
   }
 
   void changeSetting(Setting setting) {
-    if (setting is RemoteLoggingSetting && !inDebugMode) {
+    if (setting is RemoteLoggingSetting && inDebugMode) {
       return;
     }
 
