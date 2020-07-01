@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:timeago/timeago.dart' as timeago;
 
 import '../../../../resources/theme.dart';
 import '../../../../../domain/entities/call.dart';
@@ -128,12 +127,33 @@ class _RecentItemSubtitle extends StatelessWidget {
 
   const _RecentItemSubtitle(this.call, {Key key}) : super(key: key);
 
-  String _timeAgo(BuildContext context) => timeago.format(
-        call.localDate,
-        locale: '${VialerLocalizations.of(context).locale.languageCode}_short',
-      );
-
   String get _time => DateFormat.Hm().format(call.localDate);
+
+  String get _date => DateFormat('dd-MM-yy').format(call.localDate);
+
+  String _timeAgo(BuildContext context) {
+    final elapsed = DateTime.now().millisecondsSinceEpoch -
+        call.localDate.millisecondsSinceEpoch;
+    final minutes = (elapsed / (1000 * 60));
+    final hours = (elapsed / (1000 * 60 * 60));
+
+    if (hours < 1) {
+      if (minutes.round() == 1) {
+        return (context.msg.main.recent.list.minuteAgo());
+      } else {
+        return (context.msg.main.recent.list.minutesAgo(minutes.round()));
+      }
+    } else if (hours < 24) {
+      if (hours.round() == 1) {
+        return ('${context.msg.main.recent.list.hourAgo()}, $_time');
+      } else {
+        return ('${context.msg.main.recent.list.hoursAgo(hours.round())},'
+            '$_time');
+      }
+    } else {
+      return ('$_date, $_time');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -150,7 +170,7 @@ class _RecentItemSubtitle extends StatelessWidget {
         ),
         SizedBox(width: 8),
         Text(
-          '${_timeAgo(context)}, $_time',
+          '${_timeAgo(context)}',
           style: TextStyle(color: context.brandTheme.grey4),
         ),
       ],

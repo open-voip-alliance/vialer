@@ -1,17 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import 'package:timeago/timeago.dart' as timeago;
-
 import 'messages.i18n.dart';
 import 'messages_nl.i18n.dart';
 
 class VialerLocalizations {
   final Messages msg;
 
-  VialerLocalizations(this.locale) : msg = _messagesFromLocale(locale) {
-    timeago.setLocaleMessages('nl_short', timeago.NlShortMessages());
-  }
+  VialerLocalizations(this.locale) : msg = _messagesFromLocale(locale);
 
   final Locale locale;
 
