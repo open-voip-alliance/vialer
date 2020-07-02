@@ -53,4 +53,4 @@ trigger codemagic build:
   script:
     - >-
       curl -H "Content-Type: application/json" -H "x-auth-token: $CODEMAGIC_API_TOKEN" 
-      \--data '{"appId": "'"$CODEMAGIC_APP_ID"'","workflowId": "'"$CODEMAGIC_MERGE_REQUESTS_WORKFLOW_ID"'","branch": "'"$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME"'"}' https://api.codemagic.io/builds
+      \--data '{"appId": "'"$CODEMAGIC_APP_ID"'","workflowId": "'"$CODEMAGIC_MERGE_REQUESTS_WORKFLOW_ID"'","branch": "'"$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME"'","environment": {"variables": {"GITLAB_MERGE_REQUEST_IID": "'"$CI_MERGE_REQUEST_IID"'"}}}' https://api.codemagic.io/builds
