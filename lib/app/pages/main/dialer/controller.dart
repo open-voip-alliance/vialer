@@ -81,6 +81,7 @@ class DialerController extends Controller with Caller {
     }
 
     call(currentNumber);
+    keypadController.text = '';
   }
 
   @override
