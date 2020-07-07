@@ -38,6 +38,7 @@ class PermissionController extends Controller {
       _forward();
     } else {
       logger.info('Permission denied for: "${permission.toShortString()}"');
+      _forward();
     }
 
     doIfNotDebug(() {
