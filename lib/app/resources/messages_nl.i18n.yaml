@@ -34,6 +34,10 @@ main:
     snackBar:
       copied: "Nummer gekopieerd"
     list:
+      minuteAgo: "1 minuut geleden"
+      minutesAgo(int minutes): "$minutes minuten geleden"
+      hourAgo: "1 uur geleden"
+      hoursAgo(int hours): "$hours uren geleden"
       popupMenu:
         copy: "Kopiëren"
         call: "Bellen"
