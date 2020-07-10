@@ -117,7 +117,7 @@ class LoginController extends Controller {
         await Segment.track(eventName: 'login');
       });
 
-      FocusScope.of(getContext()).requestFocus(FocusNode());
+      FocusScope.of(getContext()).unfocus();
 
       logger.info('Writing default settings');
       _presenter.resetSettingsToDefaults();

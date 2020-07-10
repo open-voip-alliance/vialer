@@ -52,7 +52,7 @@ class PasswordController extends Controller {
   }
 
   void _onChangePassword() {
-    FocusScope.of(getContext()).requestFocus(FocusNode());
+    FocusScope.of(getContext()).unfocus();
     _forward();
   }
 
