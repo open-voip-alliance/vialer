@@ -272,6 +272,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.0"
+  flutter_launcher_icons:
+    dependency: "direct dev"
+    description:
+      name: flutter_launcher_icons
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.7.5"
   flutter_localizations:
     dependency: "direct main"
     description: flutter
@@ -768,13 +775,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.2.15"
-  timeago:
-    dependency: "direct main"
-    description:
-      name: timeago
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.26"
   timezone:
     dependency: "direct main"
     description:
