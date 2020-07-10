@@ -73,7 +73,9 @@ class _ContactPageState extends ViewState<ContactsPage, ContactsController> {
               ),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16),
-                child: _SearchTextField(onChanged: controller.onSearch),
+                child: _SearchTextField(
+                  onChanged: controller.onSearch,
+                ),
               ),
               Expanded(
                 child: ConditionalPlaceholder(
@@ -401,16 +403,56 @@ class _SideLetter extends StatelessWidget {
   }
 }
 
-class _SearchTextField extends StatelessWidget {
-  final ValueChanged<String> onChanged;
+class _SearchTextField extends StatefulWidget {
+  final void Function(String) onChanged;
 
-  const _SearchTextField({Key key, @required this.onChanged}) : super(key: key);
+  _SearchTextField({
+    Key key,
+    @required this.onChanged,
+  }) : super(key: key);
+
+  @override
+  _SearchTextFieldState createState() => _SearchTextFieldState();
+}
+
+class _SearchTextFieldState extends State<_SearchTextField> {
+  final _searchController = TextEditingController();
+
+  bool _canClear = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _searchController.addListener(_handleSearch);
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+
+    super.dispose();
+  }
+
+  void _handleSearch() {
+    setState(() {
+      _canClear = _searchController.text.isNotEmpty;
+    });
+
+    widget.onChanged(_searchController.text);
+  }
+
+  void _handleClear() {
+    _searchController.clear();
+
+    FocusScope.of(context).unfocus();
+  }
 
   @override
   Widget build(BuildContext context) {
     return TextField(
-      onChanged: onChanged,
       cursorColor: context.brandTheme.primary,
+      controller: _searchController,
       decoration: InputDecoration(
         filled: true,
         fillColor: context.brandTheme.grey3,
@@ -423,6 +465,16 @@ class _SearchTextField extends StatelessWidget {
           size: 20,
           color: context.brandTheme.grey4,
         ),
+        suffixIcon: _canClear
+            ? IconButton(
+                onPressed: _handleClear,
+                icon: Icon(
+                  VialerSans.close,
+                  size: 20,
+                  color: context.brandTheme.grey4,
+                ),
+              )
+            : null,
         contentPadding: EdgeInsets.all(0),
       ),
     );

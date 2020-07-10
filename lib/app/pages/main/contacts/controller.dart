@@ -16,7 +16,7 @@ class ContactsController extends Controller {
 
   List<Contact> contacts = [];
 
-  String searchTerm;
+  String searchTerm = '';
 
   ContactsController(
     ContactRepository contactRepository,
@@ -24,6 +24,7 @@ class ContactsController extends Controller {
   ) : _presenter = ContactsPresenter(contactRepository, permissionRepository);
 
   bool _hasPermission = true;
+
   bool get hasPermission => _hasPermission;
 
   @override
@@ -34,8 +35,7 @@ class ContactsController extends Controller {
   }
 
   void onSearch(String searchTerm) {
-    searchTerm = searchTerm?.isEmpty == true ? null : searchTerm;
-    this.searchTerm = searchTerm;
+    this.searchTerm = searchTerm.isEmpty ? '' : searchTerm;
     refreshUI();
   }
 
