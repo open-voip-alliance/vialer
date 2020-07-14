@@ -104,8 +104,13 @@ class DataRecentCallRepository extends RecentCallRepository {
 
     final contacts = await _contactRepository.getContacts();
 
-    // Create a list with all phone numbers of the recent calls.
-    var phoneNumbers = calls.map((call) => call.destinationNumber);
+    // Create a list with all phone numbers of the recent calls
+    // respecting the call direction.
+    var phoneNumbers = calls.map(
+      (call) => call.direction == Direction.outbound
+          ? call.destinationNumber
+          : call.callerNumber,
+    );
 
     // Add all the phone numbers from the contacts.
     phoneNumbers = phoneNumbers.followedBy(
@@ -149,7 +154,9 @@ class DataRecentCallRepository extends RecentCallRepository {
                   (contact) => contact.phoneNumbers.any(
                     (i) =>
                         mappedPhoneNumbers[i.value] ==
-                        mappedPhoneNumbers[call.destinationNumber],
+                        mappedPhoneNumbers[call.direction == Direction.outbound
+                            ? call.destinationNumber
+                            : call.callerNumber],
                   ),
                   orElse: () => null,
                 )
