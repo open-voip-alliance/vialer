@@ -82,6 +82,7 @@ void main() async {
     authRepository: authRepo,
     settingRepository: settingRepo,
     loggingRepository: loggingRepo,
+    permissionRepository: DevicePermissionRepository(),
   );
 
   sentry.run(
@@ -101,6 +102,7 @@ class App extends StatelessWidget {
   final AuthRepository authRepository;
   final SettingRepository settingRepository;
   final LoggingRepository loggingRepository;
+  final PermissionRepository permissionRepository;
 
   App({
     Key key,
@@ -111,6 +113,7 @@ class App extends StatelessWidget {
     @required this.authRepository,
     @required this.settingRepository,
     @required this.loggingRepository,
+    @required this.permissionRepository,
   }) : super(key: key);
 
   @override
@@ -135,8 +138,8 @@ class App extends StatelessWidget {
         Provider<LoggingRepository>.value(
           value: loggingRepository,
         ),
-        Provider<PermissionRepository>(
-          create: (_) => DevicePermissionRepository(),
+        Provider<PermissionRepository>.value(
+          value: permissionRepository,
         ),
         Provider<ContactRepository>(
           create: (_) => DeviceContactsRepository(),
@@ -146,6 +149,7 @@ class App extends StatelessWidget {
             service,
             Provider.of<Database>(context, listen: false),
             Provider.of<ContactRepository>(context, listen: false),
+            permissionRepository,
           ),
         ),
         Provider<CallRepository>(
