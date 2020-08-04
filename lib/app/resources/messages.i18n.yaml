@@ -54,13 +54,13 @@ main:
     list:
       empty:
         title: "No contacts found"
-        description: >-
-          Vialer was unable to find any contacts in your phone.
-          If you create contacts they will be shown in Vialer.
+        description(String appName): >-
+          $appName was unable to find any contacts in your phone.
+          If you create contacts they will be shown in $appName.
       noPermission:
         title: "No access to contacts"
-        description: >-
-          Vialer needs permission to retrieve your contacts and display them.
+        description(String appName): >-
+          $appName needs permission to retrieve your contacts and display them.
         button: "Give permission"
       item:
         noNumber: "No number"

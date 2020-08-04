@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 
 import '../../../resources/localizations.dart';
 
+import '../../../../domain/entities/brand.dart';
 import '../../../../domain/entities/contact.dart';
 
 import '../../../../domain/repositories/permission.dart';
@@ -87,7 +88,8 @@ class _ContactPageState extends ViewState<ContactsPage, ContactsController> {
                             context.msg.main.contacts.list.empty.title,
                           ),
                           description: Text(
-                            context.msg.main.contacts.list.empty.description,
+                            context.msg.main.contacts.list.empty.description(
+                                Provider.of<Brand>(context).appName),
                           ),
                         )
                       : ListPlaceholder(
@@ -97,7 +99,8 @@ class _ContactPageState extends ViewState<ContactsPage, ContactsController> {
                           ),
                           description: Text(
                             context.msg.main.contacts.list.noPermission
-                                .description,
+                                .description(
+                                    Provider.of<Brand>(context).appName),
                           ),
                           children: <Widget>[
                             SizedBox(height: 40),
