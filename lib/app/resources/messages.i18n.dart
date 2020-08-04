@@ -165,14 +165,14 @@ class EmptyListContactsMainMessages {
 	final ListContactsMainMessages _parent;
 	const EmptyListContactsMainMessages(this._parent);
 	String get title => """No contacts found""";
-	String get description => """Vialer was unable to find any contacts in your phone. If you create contacts they will be shown in Vialer.""";
+	String description(String appName) => """$appName was unable to find any contacts in your phone. If you create contacts they will be shown in $appName.""";
 }
 
 class NoPermissionListContactsMainMessages {
 	final ListContactsMainMessages _parent;
 	const NoPermissionListContactsMainMessages(this._parent);
 	String get title => """No access to contacts""";
-	String get description => """Vialer needs permission to retrieve your contacts and display them.""";
+	String description(String appName) => """$appName needs permission to retrieve your contacts and display them.""";
 	String get button => """Give permission""";
 }
 

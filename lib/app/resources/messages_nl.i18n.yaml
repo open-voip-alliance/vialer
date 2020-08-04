@@ -54,13 +54,13 @@ main:
     list:
       empty:
         title: "Geen contacten gevonden"
-        description: >-
-          Vialer kon geen contacten vinden op je telefoon.
-          Wanneer je een contact aanmaakt zijn te zien in Vialer.
+        description(String appName): >-
+          $appName kon geen contacten vinden op je telefoon.
+          Wanneer je een contact aanmaakt zijn te zien in $appName.
       noPermission:
         title: "Geen toegang tot contacten"
-        description: >-
-          Vialer heeft toestemming nodig om bij je contacten te komen en ze te tonen.
+        description(String appName): >-
+          $appName heeft toestemming nodig om bij je contacten te komen en ze te tonen.
         button: "Geef toestemming"
       item:
         noNumber: "Geen nummer"

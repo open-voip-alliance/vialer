@@ -166,14 +166,14 @@ class EmptyListContactsMainMessages_nl extends EmptyListContactsMainMessages {
 	final ListContactsMainMessages_nl _parent;
 	const EmptyListContactsMainMessages_nl(this._parent):super(_parent);
 	String get title => """Geen contacten gevonden""";
-	String get description => """Vialer kon geen contacten vinden op je telefoon. Wanneer je een contact aanmaakt zijn te zien in Vialer.""";
+	String description(String appName) => """$appName kon geen contacten vinden op je telefoon. Wanneer je een contact aanmaakt zijn te zien in $appName.""";
 }
 
 class NoPermissionListContactsMainMessages_nl extends NoPermissionListContactsMainMessages {
 	final ListContactsMainMessages_nl _parent;
 	const NoPermissionListContactsMainMessages_nl(this._parent):super(_parent);
 	String get title => """Geen toegang tot contacten""";
-	String get description => """Vialer heeft toestemming nodig om bij je contacten te komen en ze te tonen.""";
+	String description(String appName) => """$appName heeft toestemming nodig om bij je contacten te komen en ze te tonen.""";
 	String get button => """Geef toestemming""";
 }
 
