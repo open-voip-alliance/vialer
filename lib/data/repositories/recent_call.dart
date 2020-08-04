@@ -7,7 +7,11 @@ import 'db/moor.dart';
 import 'services/voipgrid.dart';
 
 import '../../domain/entities/call.dart';
+import '../../domain/entities/contact.dart';
+import '../../domain/entities/permission.dart';
+import '../../domain/entities/permission_status.dart';
 
+import '../../domain/repositories/permission.dart';
 import '../../domain/repositories/recent_call.dart';
 import '../../domain/repositories/contact.dart';
 
@@ -15,11 +19,13 @@ class DataRecentCallRepository extends RecentCallRepository {
   final VoipgridService _service;
   final Database _database;
   final ContactRepository _contactRepository;
+  final PermissionRepository _permissionRepository;
 
   DataRecentCallRepository(
     this._service,
     this._database,
     this._contactRepository,
+    this._permissionRepository,
   );
 
   Logger __logger;
@@ -102,7 +108,13 @@ class DataRecentCallRepository extends RecentCallRepository {
       }
     }
 
-    final contacts = await _contactRepository.getContacts();
+    final canAccessContacts =
+        await _permissionRepository.getPermissionStatus(Permission.contacts) ==
+            PermissionStatus.granted;
+
+    final contacts = canAccessContacts
+        ? await _contactRepository.getContacts()
+        : <Contact>[];
 
     // Create a list with all phone numbers of the recent calls
     // respecting the call direction.
