@@ -89,7 +89,8 @@ class _ContactPageState extends ViewState<ContactsPage, ContactsController> {
                           ),
                           description: Text(
                             context.msg.main.contacts.list.empty.description(
-                                Provider.of<Brand>(context).appName),
+                              Provider.of<Brand>(context).appName,
+                            ),
                           ),
                         )
                       : ListPlaceholder(
@@ -100,7 +101,8 @@ class _ContactPageState extends ViewState<ContactsPage, ContactsController> {
                           description: Text(
                             context.msg.main.contacts.list.noPermission
                                 .description(
-                                    Provider.of<Brand>(context).appName),
+                              Provider.of<Brand>(context).appName,
+                            ),
                           ),
                           children: <Widget>[
                             SizedBox(height: 40),
