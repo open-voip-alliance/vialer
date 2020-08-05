@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+LC_ALL=C
+
+printf "Running 'flutter analyze'\n"
+flutter analyze
+if [ $? -ne 0 ]; then
+  printf "Error running 'flutter analyze'\n"
+  exit 1
+fi
+printf "Finished running 'flutter analyze'\n"
+
+exit 0

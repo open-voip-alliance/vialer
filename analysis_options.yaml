@@ -15,3 +15,7 @@ linter:
 analyzer:
   errors:
     missing_required_param: error
+  exclude:
+    - lib/**.i18n.dart
+    - lib/**.chopper.dart
+    - lib/**.g.dart
