@@ -59,7 +59,7 @@ class DialerMainMessages {
 	final MainMessages _parent;
 	const DialerMainMessages(this._parent);
 	String get title => """Keypad""";
-	String get permissionDenied => """The call permission is denied, which is required to make seamless calls.""";
+	String get permissionDenied => """The call permission is denied, which is required to make direct calls.""";
 	MenuDialerMainMessages get menu => MenuDialerMainMessages(this);
 	ConfirmDialerMainMessages get confirm => ConfirmDialerMainMessages(this);
 }
@@ -329,7 +329,7 @@ class CallPermissionOnboardingMessages {
 	final PermissionOnboardingMessages _parent;
 	const CallPermissionOnboardingMessages(this._parent);
 	String get title => """Call permission""";
-	String get description => """This permission is required to make calls seamlessly from the app using the default call app.""";
+	String get description => """This permission is required to make calls directly from the app using the default call app.""";
 }
 
 class ContactsPermissionOnboardingMessages {
