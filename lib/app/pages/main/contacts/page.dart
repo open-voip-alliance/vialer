@@ -18,7 +18,7 @@ import '../../../resources/theme.dart';
 
 import '../../../widgets/stylized_button.dart';
 import '../widgets/header.dart';
-import '../widgets/list_placeholder.dart';
+import '../widgets/conditional_placeholder.dart';
 import 'widgets/item.dart';
 import 'widgets/group_header.dart';
 
@@ -82,7 +82,7 @@ class _ContactPageState extends ViewState<ContactsPage, ContactsController> {
                 child: ConditionalPlaceholder(
                   showPlaceholder: controller.contacts.isEmpty,
                   placeholder: controller.hasPermission
-                      ? ListPlaceholder(
+                      ? Warning(
                           icon: Icon(VialerSans.userOff),
                           title: Text(
                             context.msg.main.contacts.list.empty.title,
@@ -93,7 +93,7 @@ class _ContactPageState extends ViewState<ContactsPage, ContactsController> {
                             ),
                           ),
                         )
-                      : ListPlaceholder(
+                      : Warning(
                           icon: Icon(VialerSans.lockOn),
                           title: Text(
                             context.msg.main.contacts.list.noPermission.title,

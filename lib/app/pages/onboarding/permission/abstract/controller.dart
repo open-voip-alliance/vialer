@@ -3,6 +3,7 @@ import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:flutter_segment/flutter_segment.dart';
 
 import '../../../../../domain/entities/permission.dart';
+import '../../../../../domain/entities/permission_status.dart';
 import '../../../../../domain/repositories/permission.dart';
 
 import '../../../../util/debug.dart';
@@ -32,8 +33,8 @@ class PermissionController extends Controller {
     _presenter.ask(permission);
   }
 
-  void _onAsked(bool granted) {
-    if (granted) {
+  void _onAsked(PermissionStatus status) {
+    if (status == PermissionStatus.granted) {
       logger.info('Permission granted for: "${permission.toShortString()}"');
       _forward();
     } else {
@@ -46,7 +47,7 @@ class PermissionController extends Controller {
         eventName: 'permission',
         properties: {
           'type': permission.toShortString(),
-          'granted': granted,
+          'granted': status == PermissionStatus.granted,
         },
       );
     });

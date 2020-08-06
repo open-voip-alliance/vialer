@@ -21,16 +21,12 @@ class DevicePermissionRepository extends PermissionRepository {
   }
 
   @override
-  Future<bool> enablePermission(domain.Permission permission) async {
+  Future<domain.PermissionStatus> enablePermission(
+    domain.Permission permission,
+  ) async {
     final group = mapDomainPermissionToPermissionGroup(permission);
     final permissions = await PermissionHandler().requestPermissions([group]);
 
-    final status = permissions[group];
-
-    if (status == PermissionStatus.granted) {
-      return true;
-    } else {
-      return false;
-    }
+    return mapPermissionStatusToDomainPermissionStatus(permissions[group]);
   }
 }

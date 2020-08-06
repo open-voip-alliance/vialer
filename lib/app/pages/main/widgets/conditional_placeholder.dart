@@ -20,13 +20,13 @@ class ConditionalPlaceholder extends StatelessWidget {
   }
 }
 
-class ListPlaceholder extends StatelessWidget {
+class Warning extends StatelessWidget {
   final Widget icon;
   final Widget title;
   final Widget description;
   final List<Widget> children;
 
-  const ListPlaceholder({
+  const Warning({
     Key key,
     @required this.icon,
     @required this.title,

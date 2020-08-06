@@ -62,6 +62,7 @@ class DialerMainMessages {
 	String get permissionDenied => """The call permission is denied, which is required to make seamless calls.""";
 	MenuDialerMainMessages get menu => MenuDialerMainMessages(this);
 	ConfirmDialerMainMessages get confirm => ConfirmDialerMainMessages(this);
+	NoPermissionDialerMainMessages get noPermission => NoPermissionDialerMainMessages(this);
 }
 
 class MenuDialerMainMessages {
@@ -93,6 +94,15 @@ class ButtonConfirmDialerMainMessages {
 	String call(String number) => """Call $number""";
 }
 
+class NoPermissionDialerMainMessages {
+	final DialerMainMessages _parent;
+	const NoPermissionDialerMainMessages(this._parent);
+	String get title => """Permission required""";
+	String description(String appName) => """In order to call by using $appName, you need to allow the app to do so. Please press Allow when asked if you want to allow it to make and manage phone calls, so that the app can work properly.""";
+	String permanentDescription(String appName) => """In order to call by using $appName, you need to allow the app to do so. You have denied to give this permission. To change this so the app can work properly, please go to your phone privacy settings and allow $appName to access your phone abilities.""";
+	String get button => """Give permission""";
+}
+
 class RecentMainMessages {
 	final MainMessages _parent;
 	const RecentMainMessages(this._parent);
@@ -117,9 +127,9 @@ class SnackBarRecentMainMessages {
 class ListRecentMainMessages {
 	final RecentMainMessages _parent;
 	const ListRecentMainMessages(this._parent);
-	String minuteAgo() => """1 minute ago""";
+	String get minuteAgo => """1 minute ago""";
 	String minutesAgo(int minutes) => """$minutes minutes ago""";
-	String hourAgo() => """1 hour ago""";
+	String get hourAgo => """1 hour ago""";
 	String hoursAgo(int hours) => """$hours hours ago""";
 	PopupMenuListRecentMainMessages get popupMenu => PopupMenuListRecentMainMessages(this);
 	EmptyListRecentMainMessages get empty => EmptyListRecentMainMessages(this);

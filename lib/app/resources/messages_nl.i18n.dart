@@ -63,6 +63,7 @@ class DialerMainMessages_nl extends DialerMainMessages {
 	String get permissionDenied => """Er is geen permissie om te bellen, wat nodig is om via de app te bellen.""";
 	MenuDialerMainMessages_nl get menu => MenuDialerMainMessages_nl(this);
 	ConfirmDialerMainMessages_nl get confirm => ConfirmDialerMainMessages_nl(this);
+	NoPermissionDialerMainMessages_nl get noPermission => NoPermissionDialerMainMessages_nl(this);
 }
 
 class MenuDialerMainMessages_nl extends MenuDialerMainMessages {
@@ -94,6 +95,15 @@ class ButtonConfirmDialerMainMessages_nl extends ButtonConfirmDialerMainMessages
 	String call(String number) => """Bel $number""";
 }
 
+class NoPermissionDialerMainMessages_nl extends NoPermissionDialerMainMessages {
+	final DialerMainMessages_nl _parent;
+	const NoPermissionDialerMainMessages_nl(this._parent):super(_parent);
+	String get title => """Toestemming vereist""";
+	String description(String appName) => """Om via $appName te kunnen bellen is jouw toestemming nodig. Druk op Toestaan zodra daarom gevraagd wordt, zodat je met $appName oproepen kunt ontvangen en naar behoren kan laten werken.""";
+	String permanentDescription(String appName) => """Om via $appName te kunnen bellen is jouw toestemming nodig. Je hebt deze toestemming niet gegeven. Om deze toestemming alsnog te geven zodat de app naar behoren kan werken, ga je naar de privacyinstellingen op jouw telefoon en geef je daar toestemming om $appName toegang te verlenen tot de telefoonfuncties.""";
+	String get button => """Geef toestemming""";
+}
+
 class RecentMainMessages_nl extends RecentMainMessages {
 	final MainMessages_nl _parent;
 	const RecentMainMessages_nl(this._parent):super(_parent);
@@ -118,9 +128,9 @@ class SnackBarRecentMainMessages_nl extends SnackBarRecentMainMessages {
 class ListRecentMainMessages_nl extends ListRecentMainMessages {
 	final RecentMainMessages_nl _parent;
 	const ListRecentMainMessages_nl(this._parent):super(_parent);
-	String minuteAgo() => """1 minuut geleden""";
+	String get minuteAgo => """1 minuut geleden""";
 	String minutesAgo(int minutes) => """$minutes minuten geleden""";
-	String hourAgo() => """1 uur geleden""";
+	String get hourAgo => """1 uur geleden""";
 	String hoursAgo(int hours) => """$hours uren geleden""";
 	PopupMenuListRecentMainMessages_nl get popupMenu => PopupMenuListRecentMainMessages_nl(this);
 	EmptyListRecentMainMessages_nl get empty => EmptyListRecentMainMessages_nl(this);

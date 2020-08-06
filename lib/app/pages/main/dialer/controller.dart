@@ -34,6 +34,10 @@ class DialerController extends Controller with Caller {
 
   bool get canCall => _canCall;
 
+  bool _showSettingsDirections = false;
+
+  bool get showSettingsDirections => _showSettingsDirections;
+
   String _latestDialedNumber;
 
   DialerController(
@@ -68,6 +72,10 @@ class DialerController extends Controller with Caller {
     _presenter.getLatestNumber();
   }
 
+  void askPermission() {
+    _presenter.askCallPermission();
+  }
+
   void startCall() {
     final currentNumber = keypadController.text;
 
@@ -97,14 +105,13 @@ class DialerController extends Controller with Caller {
   }
 
   void _onCheckCallPermissionNext(PermissionStatus status) {
-    logger.info('Call permission is: $status');
-    if (status != PermissionStatus.granted) {
-      _canCall = false;
-      refreshUI();
-    }
+    _showSettingsDirections = status == PermissionStatus.permanentlyDenied;
+    _canCall = status == PermissionStatus.granted;
 
     if (_canCall && initialDestination != null) {
       call(initialDestination);
+    } else {
+      refreshUI();
     }
   }
 
@@ -119,8 +126,8 @@ class DialerController extends Controller with Caller {
   @override
   void initListeners() {
     _presenter.callOnComplete = _onCallInitiated;
-    _presenter.onCheckCallPermissionNext = _onCheckCallPermissionNext;
     _presenter.callOnError = showException;
+    _presenter.onCheckCallPermissionNext = _onCheckCallPermissionNext;
     _presenter.onGetLatestDialedNumberNext = _onGetLatestDialedNumber;
     _presenter.onGetSettingsNext = setSettings;
   }
