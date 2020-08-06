@@ -319,7 +319,9 @@ class PasswordOnboardingMessages_nl extends PasswordOnboardingMessages {
 	final OnboardingMessages_nl _parent;
 	const PasswordOnboardingMessages_nl(this._parent):super(_parent);
 	String get title => """Wachtwoord veranderen""";
-	String get button => """Verander""";
+	String get button => """Wachtwoord opslaan""";
+	String get error => """Je wachtwoord voldoet niet aan de hieronder gestelde eisen.""";
+	String get requirements => """Je wachtwoord moet bestaan uit minimaal 6 tekens, waarvan 1 niet-alfabetisch.""";
 }
 
 class PermissionOnboardingMessages_nl extends PermissionOnboardingMessages {

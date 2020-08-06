@@ -16,7 +16,7 @@ class PasswordController extends Controller {
 
   bool canSubmit = false;
 
-  bool loginFailed = false;
+  bool passwordChangeFailed = false;
 
   PasswordController(
     AuthRepository _authRepository,
@@ -48,7 +48,15 @@ class PasswordController extends Controller {
 
   void changePassword() {
     logger.info('Changing password');
-    _presenter.changePassword(passwordController.text);
+
+    final password = passwordController.text;
+
+    if (password.length < 6 || !RegExp(r'[^A-z]').hasMatch(password)) {
+      _onChangePasswordError();
+      return;
+    }
+
+    _presenter.changePassword(password);
   }
 
   void _onChangePassword() {
@@ -56,7 +64,10 @@ class PasswordController extends Controller {
     _forward();
   }
 
-  void _onChangePasswordError(dynamic e) => throw e;
+  void _onChangePasswordError([_]) {
+    passwordChangeFailed = true;
+    refreshUI();
+  }
 
   @override
   void initListeners() {

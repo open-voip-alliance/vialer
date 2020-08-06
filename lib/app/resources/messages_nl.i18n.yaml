@@ -126,7 +126,10 @@ onboarding:
 
   password:
     title: "Wachtwoord veranderen"
-    button: "Verander"
+    button: "Wachtwoord opslaan"
+    error: "Je wachtwoord voldoet niet aan de hieronder gestelde eisen."
+    requirements: >-
+      Je wachtwoord moet bestaan uit minimaal 6 tekens, waarvan 1 niet-alfabetisch.
 
   permission:
     button:

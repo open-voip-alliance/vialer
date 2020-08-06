@@ -318,7 +318,9 @@ class PasswordOnboardingMessages {
 	final OnboardingMessages _parent;
 	const PasswordOnboardingMessages(this._parent);
 	String get title => """Change password""";
-	String get button => """Change""";
+	String get button => """Save password""";
+	String get error => """Your password does not comply with the requirements mentioned below.""";
+	String get requirements => """Your password must be at least 6 characters long and include 1 non-alphabetical character.""";
 }
 
 class PermissionOnboardingMessages {

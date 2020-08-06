@@ -15,6 +15,7 @@ import '../../../resources/localizations.dart';
 
 import '../../../widgets/stylized_button.dart';
 import '../widgets/stylized_text_field.dart';
+import '../widgets/error.dart';
 
 import '../../../util/conditional_capitalization.dart';
 
@@ -120,61 +121,10 @@ class _LoginPageState extends ViewState<LoginPage, LoginController>
               height: controller.headerDistance,
             ),
           ],
-          AnimatedSize(
-            curve: _curve,
-            duration: _duration,
-            vsync: this,
-            child: AnimatedOpacity(
-              curve: _curve,
-              duration: _duration,
-              opacity: controller.loginFailed ? 1 : 0,
-              child: Visibility(
-                visible: controller.loginFailed,
-                child: Padding(
-                  padding: EdgeInsets.only(bottom: 16),
-                  child: Container(
-                    padding: EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: context.brandTheme.errorBorderColor,
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Container(
-                      padding: EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: context.brandTheme.errorBorderColor,
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: Container(
-                        padding: EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Row(
-                          children: <Widget>[
-                            Icon(
-                              VialerSans.exclamationMark,
-                              color: context.brandTheme.errorContentColor,
-                            ),
-                            SizedBox(width: 16),
-                            Expanded(
-                              child: Text(
-                                context.msg.onboarding.login.error
-                                    .wrongCombination,
-                                style: TextStyle(
-                                  color: context.brandTheme.errorContentColor,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+          ErrorAlert(
+            visible: controller.loginFailed,
+            child: Text(
+              context.msg.onboarding.login.error.wrongCombination,
             ),
           ),
           StylizedTextField(
