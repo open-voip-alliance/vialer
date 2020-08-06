@@ -34,7 +34,7 @@ dependencies:
 
   shared_preferences: ^0.5.6
 
-  flutter_svg: ^0.17.4
+  flutter_svg: ^0.18.0
 
   android_intent: ^0.3.5
   permission_handler: ^4.2.0+hotfix.3
@@ -43,7 +43,7 @@ dependencies:
 
   contacts_service: ^0.3.10
 
-  characters: ^0.5.0
+  characters: ^1.0.0
 
   flutter_widgets: ^0.1.11
 
