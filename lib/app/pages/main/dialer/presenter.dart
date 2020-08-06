@@ -5,6 +5,7 @@ import '../../../../domain/repositories/storage.dart';
 
 import '../../../../domain/usecases/call.dart';
 import '../../../../domain/usecases/get_latest_dialed_number.dart';
+import '../../../../domain/usecases/onboarding/request_permission.dart';
 
 import '../../../../domain/entities/permission.dart';
 import '../../../../domain/repositories/permission.dart';
@@ -26,9 +27,10 @@ class DialerPresenter extends Presenter {
   Function onGetSettingsNext;
 
   final CallUseCase _callUseCase;
-  final GetPermissionStatusUseCase _getPermissionStatusUseCase;
   final GetLatestDialedNumber _getLatestDialedNumberUseCase;
   final GetSettingsUseCase _getSettingsUseCase;
+  final GetPermissionStatusUseCase _getPermissionStatusUseCase;
+  final RequestPermissionUseCase _requestPermissionUseCase;
 
   DialerPresenter(
     CallRepository callRepository,
@@ -42,26 +44,32 @@ class DialerPresenter extends Presenter {
         _getLatestDialedNumberUseCase = GetLatestDialedNumber(
           storageRepository,
         ),
-        _getSettingsUseCase = GetSettingsUseCase(settingRepository);
+        _getSettingsUseCase = GetSettingsUseCase(settingRepository),
+        _requestPermissionUseCase = RequestPermissionUseCase(
+          permissionRepository,
+        );
 
-  void call(String destination) {
-    _callUseCase.execute(
-      Watcher(
-        onComplete: callOnComplete,
-        onError: (e) => callOnError(e),
-      ),
-      CallUseCaseParams(destination),
-    );
-  }
+  void call(String destination) => _callUseCase.execute(
+        Watcher(
+          onComplete: callOnComplete,
+          onError: (e) => callOnError(e),
+        ),
+        CallUseCaseParams(destination),
+      );
 
-  void checkCallPermission() {
-    _getPermissionStatusUseCase.execute(
-      Watcher(
-        onNext: onCheckCallPermissionNext,
-      ),
-      GetPermissionStatusUseCaseParams(Permission.phone),
-    );
-  }
+  void checkCallPermission() => _getPermissionStatusUseCase.execute(
+        Watcher(
+          onNext: onCheckCallPermissionNext,
+        ),
+        GetPermissionStatusUseCaseParams(Permission.phone),
+      );
+
+  void askCallPermission() => _requestPermissionUseCase.execute(
+        Watcher(
+          onNext: onCheckCallPermissionNext,
+        ),
+        RequestPermissionUseCaseParams(Permission.phone),
+      );
 
   void getLatestNumber() => _getLatestDialedNumberUseCase.execute(
         Watcher(
@@ -70,7 +78,9 @@ class DialerPresenter extends Presenter {
       );
 
   void getSettings() => _getSettingsUseCase.execute(
-        Watcher(onNext: onGetSettingsNext),
+        Watcher(
+          onNext: onGetSettingsNext,
+        ),
       );
 
   @override

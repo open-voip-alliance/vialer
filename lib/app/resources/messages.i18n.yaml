@@ -26,6 +26,17 @@ main:
         showPopUpSetting: "Dont't show this again"
       button:
         call(String number): "Call $number"
+    noPermission:
+      title: "Permission required"
+      description(String appName): >-
+        In order to call by using $appName, you need to allow the app to do so.
+        Please press Allow when asked if you want to allow it to make and manage phone calls,
+        so that the app can work properly.
+      permanentDescription(String appName): >-
+        In order to call by using $appName, you need to allow the app to do so.
+        You have denied to give this permission. To change this so the app can work properly,
+        please go to your phone privacy settings and allow $appName to access your phone abilities.
+      button: "Give permission"
 
   recent:
     title: "Recent calls"

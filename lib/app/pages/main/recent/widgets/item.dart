@@ -140,13 +140,13 @@ class _RecentItemSubtitle extends StatelessWidget {
 
     if (duration.inHours < 1) {
       if (duration.inMinutes == 1) {
-        return context.msg.main.recent.list.minuteAgo();
+        return context.msg.main.recent.list.minuteAgo;
       } else {
         return context.msg.main.recent.list.minutesAgo(duration.inMinutes);
       }
     } else if (duration.inHours < Duration.hoursPerDay) {
       if (duration.inHours == 1) {
-        return '${context.msg.main.recent.list.hourAgo()}, $_time';
+        return '${context.msg.main.recent.list.hourAgo}, $_time';
       } else {
         return '${context.msg.main.recent.list.hoursAgo(duration.inHours)}, '
             '$_time';

@@ -11,9 +11,9 @@ class PermissionPresenter extends Presenter {
 
   final RequestPermissionUseCase _requestPermissionUseCase;
 
-  PermissionPresenter(PermissionRepository callPermissionRepository)
+  PermissionPresenter(PermissionRepository permissionRepository)
       : _requestPermissionUseCase = RequestPermissionUseCase(
-          callPermissionRepository,
+          permissionRepository,
         );
 
   void ask(Permission permission) => _requestPermissionUseCase.execute(

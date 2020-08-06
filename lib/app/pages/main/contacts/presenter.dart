@@ -2,6 +2,7 @@ import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 
 import '../../../../domain/entities/no_permission.dart';
 import '../../../../domain/entities/permission.dart';
+import '../../../../domain/entities/permission_status.dart';
 
 import '../../../../domain/repositories/contact.dart';
 import '../../../../domain/repositories/permission.dart';
@@ -46,8 +47,8 @@ class ContactsPresenter extends Presenter {
   void askPermission() {
     _requestPermissionUseCase.execute(
       Watcher(
-        onNext: (isGranted) {
-          if (isGranted) {
+        onNext: (status) {
+          if (status == PermissionStatus.granted) {
             contactsOnPermissionGranted();
           }
         },

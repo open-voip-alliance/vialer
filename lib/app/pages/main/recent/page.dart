@@ -10,7 +10,7 @@ import '../../../resources/theme.dart';
 import '../../../resources/localizations.dart';
 
 import '../widgets/header.dart';
-import '../widgets/list_placeholder.dart';
+import '../widgets/conditional_placeholder.dart';
 import 'widgets/item.dart';
 
 import '../util/stylized_snack_bar.dart';
@@ -113,7 +113,7 @@ class _RecentPageState extends ViewState<RecentPage, RecentController> {
               Expanded(
                 child: ConditionalPlaceholder(
                   showPlaceholder: controller.recentCalls.isEmpty,
-                  placeholder: ListPlaceholder(
+                  placeholder: Warning(
                     icon: Icon(VialerSans.missedCall),
                     title: Text(context.msg.main.recent.list.empty.title),
                     description: Text(
