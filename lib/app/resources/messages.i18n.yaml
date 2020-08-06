@@ -13,7 +13,7 @@ main:
   dialer:
     title: &keypadTitle "Keypad"
     permissionDenied: >-
-      The call permission is denied, which is required to make seamless calls.
+      The call permission is denied, which is required to make direct calls.
     menu:
       title: *keypadTitle
     confirm:
@@ -121,7 +121,7 @@ onboarding:
     call:
       title: "Call permission"
       description: >-
-        This permission is required to make calls seamlessly from the
+        This permission is required to make calls directly from the
         app using the default call app.
     contacts:
       title: "Contacts permission"
