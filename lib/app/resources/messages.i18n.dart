@@ -117,9 +117,9 @@ class SnackBarRecentMainMessages {
 class ListRecentMainMessages {
 	final RecentMainMessages _parent;
 	const ListRecentMainMessages(this._parent);
-	String minuteAgo() => """1 minute ago""";
+	String get minuteAgo => """1 minute ago""";
 	String minutesAgo(int minutes) => """$minutes minutes ago""";
-	String hourAgo() => """1 hour ago""";
+	String get hourAgo => """1 hour ago""";
 	String hoursAgo(int hours) => """$hours hours ago""";
 	PopupMenuListRecentMainMessages get popupMenu => PopupMenuListRecentMainMessages(this);
 	EmptyListRecentMainMessages get empty => EmptyListRecentMainMessages(this);
@@ -308,7 +308,9 @@ class PasswordOnboardingMessages {
 	final OnboardingMessages _parent;
 	const PasswordOnboardingMessages(this._parent);
 	String get title => """Change password""";
-	String get button => """Change""";
+	String get button => """Save password""";
+	String get error => """Your password does not comply with the requirements mentioned below.""";
+	String get requirements => """Your password must be at least 6 characters long and include 1 non-alphabetical character.""";
 }
 
 class PermissionOnboardingMessages {

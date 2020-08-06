@@ -118,9 +118,9 @@ class SnackBarRecentMainMessages_nl extends SnackBarRecentMainMessages {
 class ListRecentMainMessages_nl extends ListRecentMainMessages {
 	final RecentMainMessages_nl _parent;
 	const ListRecentMainMessages_nl(this._parent):super(_parent);
-	String minuteAgo() => """1 minuut geleden""";
+	String get minuteAgo => """1 minuut geleden""";
 	String minutesAgo(int minutes) => """$minutes minuten geleden""";
-	String hourAgo() => """1 uur geleden""";
+	String get hourAgo => """1 uur geleden""";
 	String hoursAgo(int hours) => """$hours uren geleden""";
 	PopupMenuListRecentMainMessages_nl get popupMenu => PopupMenuListRecentMainMessages_nl(this);
 	EmptyListRecentMainMessages_nl get empty => EmptyListRecentMainMessages_nl(this);
@@ -309,7 +309,9 @@ class PasswordOnboardingMessages_nl extends PasswordOnboardingMessages {
 	final OnboardingMessages_nl _parent;
 	const PasswordOnboardingMessages_nl(this._parent):super(_parent);
 	String get title => """Wachtwoord veranderen""";
-	String get button => """Verander""";
+	String get button => """Wachtwoord opslaan""";
+	String get error => """Je wachtwoord voldoet niet aan de hieronder gestelde eisen.""";
+	String get requirements => """Je wachtwoord moet bestaan uit minimaal 6 tekens, waarvan 1 niet-alfabetisch.""";
 }
 
 class PermissionOnboardingMessages_nl extends PermissionOnboardingMessages {

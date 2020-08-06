@@ -14,6 +14,7 @@ import '../../../resources/localizations.dart';
 
 import '../../../widgets/stylized_button.dart';
 import '../widgets/stylized_text_field.dart';
+import '../widgets/error.dart';
 
 import '../../../util/conditional_capitalization.dart';
 
@@ -71,7 +72,7 @@ class _PasswordPageState extends ViewState<PasswordPage, PasswordController>
   Widget buildPage() {
     return Padding(
       key: globalKey,
-      padding: Provider.of<EdgeInsets>(context),
+      padding: Provider.of<EdgeInsets>(context).copyWith(top: 32),
       child: Column(
         children: <Widget>[
           Text(
@@ -83,11 +84,26 @@ class _PasswordPageState extends ViewState<PasswordPage, PasswordController>
               color: Colors.white,
             ),
           ),
-          SizedBox(height: 24),
+          SizedBox(height: 16),
+          ErrorAlert(
+            visible: controller.passwordChangeFailed,
+            child: Text(context.msg.onboarding.password.error),
+          ),
           StylizedTextField(
             controller: controller.passwordController,
             prefixIcon: VialerSans.lockOn,
             obscureText: true,
+            hasError: controller.passwordChangeFailed,
+          ),
+          SizedBox(height: 16),
+          Text(
+            context.msg.onboarding.password.requirements,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
           ),
           SizedBox(height: 24),
           SizedBox(

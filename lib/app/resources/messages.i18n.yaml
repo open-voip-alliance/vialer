@@ -113,7 +113,10 @@ onboarding:
 
   password:
     title: "Change password"
-    button: "Change"
+    button: "Save password"
+    error: "Your password does not comply with the requirements mentioned below."
+    requirements: >-
+      Your password must be at least 6 characters long and include 1 non-alphabetical character.
 
   permission:
     button:
