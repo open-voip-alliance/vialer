@@ -8,6 +8,7 @@ import '../../../../domain/repositories/contact.dart';
 import '../../../../domain/repositories/permission.dart';
 
 import '../../../../domain/usecases/get_contacts.dart';
+import '../../../../domain/usecases/get_permission_status.dart';
 import '../../../../domain/usecases/onboarding/request_permission.dart';
 
 import '../util/observer.dart';
@@ -16,8 +17,10 @@ class ContactsPresenter extends Presenter {
   Function contactsOnNext;
   Function contactsOnNoPermission;
   Function contactsOnPermissionGranted;
+  Function onCheckContactsPermissionNext;
 
   final GetContactsUseCase _getContactsUseCase;
+  final GetPermissionStatusUseCase _getPermissionStatusUseCase;
   final RequestPermissionUseCase _requestPermissionUseCase;
 
   ContactsPresenter(
@@ -25,6 +28,9 @@ class ContactsPresenter extends Presenter {
     PermissionRepository permissionRepository,
   )   : _getContactsUseCase = GetContactsUseCase(
           contactRepository,
+          permissionRepository,
+        ),
+        _getPermissionStatusUseCase = GetPermissionStatusUseCase(
           permissionRepository,
         ),
         _requestPermissionUseCase = RequestPermissionUseCase(
@@ -44,12 +50,21 @@ class ContactsPresenter extends Presenter {
     );
   }
 
+  void checkContactsPermission() => _getPermissionStatusUseCase.execute(
+        Watcher(
+          onNext: onCheckContactsPermissionNext,
+        ),
+        GetPermissionStatusUseCaseParams(Permission.contacts),
+      );
+
   void askPermission() {
     _requestPermissionUseCase.execute(
       Watcher(
         onNext: (status) {
           if (status == PermissionStatus.granted) {
             contactsOnPermissionGranted();
+          } else {
+            contactsOnNoPermission();
           }
         },
       ),

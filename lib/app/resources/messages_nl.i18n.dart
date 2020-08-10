@@ -184,6 +184,7 @@ class NoPermissionListContactsMainMessages_nl extends NoPermissionListContactsMa
 	const NoPermissionListContactsMainMessages_nl(this._parent):super(_parent);
 	String get title => """Geen toegang tot contacten""";
 	String description(String appName) => """$appName heeft toestemming nodig om bij je contacten te komen en ze te tonen.""";
+	String permanentDescription(String appName) => """$appName heeft jouw toestemming nodig om bij je contacten te komen en ze te tonen. Je hebt deze toestemming niet gegeven. Om deze toestemming alsnog te geven zodat de app naar behoren kan werken, ga je naar de privacyinstellingen op jouw telefoon en geef je daar toestemming om $appName toegang te verlenen tot je contacten.""";
 	String get button => """Geef toestemming""";
 }
 

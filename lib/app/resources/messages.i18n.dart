@@ -183,6 +183,7 @@ class NoPermissionListContactsMainMessages {
 	const NoPermissionListContactsMainMessages(this._parent);
 	String get title => """No access to contacts""";
 	String description(String appName) => """$appName needs permission to retrieve your contacts and display them.""";
+	String permanentDescription(String appName) => """In order to retrieve your contacts and display them, you need to allow the app to do so. You have denied to give this permission. To change this so the app can work properly, please go to your phone privacy settings and allow $appName to access your contacts.""";
 	String get button => """Give permission""";
 }
 
