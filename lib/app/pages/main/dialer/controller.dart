@@ -72,9 +72,7 @@ class DialerController extends Controller with Caller {
     _presenter.getLatestNumber();
   }
 
-  void askPermission() {
-    _presenter.askCallPermission();
-  }
+  void askPermission() => _presenter.askCallPermission();
 
   void startCall() {
     final currentNumber = keypadController.text;

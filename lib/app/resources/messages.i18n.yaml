@@ -72,6 +72,10 @@ main:
         title: "No access to contacts"
         description(String appName): >-
           $appName needs permission to retrieve your contacts and display them.
+        permanentDescription(String appName): >-
+          In order to retrieve your contacts and display them, you need to allow the app to do so.
+          You have denied to give this permission. To change this so the app can work properly,
+          please go to your phone privacy settings and allow $appName to access your contacts.
         button: "Give permission"
       item:
         noNumber: "No number"

@@ -98,24 +98,29 @@ class _ContactPageState extends ViewState<ContactsPage, ContactsController> {
                           title: Text(
                             context.msg.main.contacts.list.noPermission.title,
                           ),
-                          description: Text(
-                            context.msg.main.contacts.list.noPermission
-                                .description(
-                              Provider.of<Brand>(context).appName,
-                            ),
-                          ),
-                          children: <Widget>[
-                            SizedBox(height: 40),
-                            StylizedButton.raised(
-                              colored: true,
-                              onPressed: controller.askPermission,
-                              child: Text(
-                                context
-                                    .msg.main.contacts.list.noPermission.button
-                                    .toUpperCaseIfAndroid(context),
-                              ),
-                            ),
-                          ],
+                          description: !controller.showSettingsDirections
+                              ? Text(context.msg.main.contacts.list.noPermission
+                                  .description(
+                                  Provider.of<Brand>(context).appName,
+                                ))
+                              : Text(context.msg.main.contacts.list.noPermission
+                                  .permanentDescription(
+                                  Provider.of<Brand>(context).appName,
+                                )),
+                          children: !controller.showSettingsDirections
+                              ? <Widget>[
+                                  SizedBox(height: 40),
+                                  StylizedButton.raised(
+                                    colored: true,
+                                    onPressed: controller.askPermission,
+                                    child: Text(
+                                      context.msg.main.contacts.list
+                                          .noPermission.button
+                                          .toUpperCaseIfAndroid(context),
+                                    ),
+                                  ),
+                                ]
+                              : <Widget>[],
                         ),
                   child: AnimatedSwitcher(
                     duration: Duration(milliseconds: 200),

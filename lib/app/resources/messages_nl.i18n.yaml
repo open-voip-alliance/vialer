@@ -73,6 +73,12 @@ main:
         title: "Geen toegang tot contacten"
         description(String appName): >-
           $appName heeft toestemming nodig om bij je contacten te komen en ze te tonen.
+        permanentDescription(String appName): >-
+          $appName heeft jouw toestemming nodig om bij je contacten te komen en ze te tonen.
+          Je hebt deze toestemming niet gegeven. Om deze toestemming alsnog te geven zodat de
+          app naar behoren kan werken, ga je naar de privacyinstellingen op jouw telefoon en
+          geef je daar toestemming om $appName toegang te verlenen tot je contacten.
+
         button: "Geef toestemming"
       item:
         noNumber: "Geen nummer"
