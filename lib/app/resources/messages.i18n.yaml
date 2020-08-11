@@ -153,8 +153,10 @@ onboarding:
   voicemail:
     title: "Voicemail"
     description: >-
-      Please note that if you don't use a personalized voicemail, it may contain your
-      personal number which is then leaked if people call your business number.
+      Please be aware that if you haven't set up your voicemail, the automated message
+      may contain your private number.
+
+      This will be shared with people reaching you through your business number.
 
   welcome:
     title: "Welcome"

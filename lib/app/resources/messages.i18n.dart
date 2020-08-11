@@ -358,7 +358,8 @@ class VoicemailOnboardingMessages {
 	final OnboardingMessages _parent;
 	const VoicemailOnboardingMessages(this._parent);
 	String get title => """Voicemail""";
-	String get description => """Please note that if you don't use a personalized voicemail, it may contain your personal number which is then leaked if people call your business number.""";
+	String get description => """Please be aware that if you haven't set up your voicemail, the automated message may contain your private number.
+This will be shared with people reaching you through your business number.""";
 }
 
 class WelcomeOnboardingMessages {
