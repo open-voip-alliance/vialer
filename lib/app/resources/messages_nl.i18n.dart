@@ -356,7 +356,8 @@ class VoicemailOnboardingMessages_nl extends VoicemailOnboardingMessages {
 	final OnboardingMessages_nl _parent;
 	const VoicemailOnboardingMessages_nl(this._parent):super(_parent);
 	String get title => """Voicemail""";
-	String get description => """Als je niet een gepersonaliseerde voicemail hebt, kan het zijn dat je persoonlijke nummer wordt genoemd in de voice mail. Mensen die jouw zakelijk nummer bellen kunnen dan je persoonlijke nummer achterhalen.""";
+	String get description => """Let op: als je jouw voicemail niet instelt, kan het voorkomen dat jouw privénummer wordt vermeld in de standaard voicemailmelding.
+Deze wordt afgespeeld wanneer je op jouw zakelijke nummer wordt gebeld en niet bereikbaar bent.""";
 }
 
 class WelcomeOnboardingMessages_nl extends WelcomeOnboardingMessages {
