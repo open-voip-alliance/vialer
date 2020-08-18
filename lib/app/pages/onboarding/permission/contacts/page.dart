@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import '../abstract/controller.dart';
 import '../abstract/page.dart';
 
-import '../../../../../domain/repositories/permission.dart';
 import '../../../../../domain/entities/permission.dart';
 import '../../../../../domain/entities/brand.dart';
 
@@ -12,11 +11,9 @@ import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
 
 class ContactsPermissionPage extends StatelessWidget {
-  final PermissionRepository _permissionRepository;
   final VoidCallback forward;
 
   const ContactsPermissionPage(
-    this._permissionRepository,
     this.forward, {
     Key key,
   }) : super(key: key);
@@ -26,7 +23,6 @@ class ContactsPermissionPage extends StatelessWidget {
     return PermissionPage(
       controller: PermissionController(
         Permission.contacts,
-        _permissionRepository,
         forward,
       ),
       icon: Icon(VialerSans.contacts),

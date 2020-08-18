@@ -8,22 +8,22 @@ import '../../../../domain/entities/need_to_change_password.dart';
 import '../../../../domain/entities/brand.dart';
 
 import '../../../../domain/repositories/auth.dart';
-import '../../../../domain/repositories/setting.dart';
-import '../../../../domain/repositories/logging.dart';
 
+import '../../../../dependency_locator.dart';
 import '../../../util/debug.dart';
 
 import 'presenter.dart';
 
 class LoginController extends Controller {
-  final AuthRepository _authRepository;
+  // TODO: Repository used in controller?
+  final _authRepository = dependencyLocator<AuthRepository>();
 
-  final Brand _brand;
+  final _brand = dependencyLocator<Brand>();
 
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
 
-  final LoginPresenter _presenter;
+  final _presenter = LoginPresenter();
 
   final VoidCallback _forward;
   final void Function(Step) _addStep;
@@ -38,18 +38,7 @@ class LoginController extends Controller {
   bool loggingIn = false;
   bool loginFailed = false;
 
-  LoginController(
-    this._authRepository,
-    SettingRepository settingRepository,
-    LoggingRepository loggingRepository,
-    this._brand,
-    this._forward,
-    this._addStep,
-  ) : _presenter = LoginPresenter(
-          _authRepository,
-          settingRepository,
-          loggingRepository,
-        );
+  LoginController(this._forward, this._addStep);
 
   @override
   void initController(GlobalKey<State<StatefulWidget>> key) {

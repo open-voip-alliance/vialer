@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import '../../dependency_locator.dart';
+
 import '../entities/permission.dart';
 import '../entities/permission_status.dart';
 import '../entities/no_permission.dart';
@@ -8,13 +10,12 @@ import '../entities/contact.dart';
 
 import '../repositories/contact.dart';
 import '../repositories/permission.dart';
+
 import '../use_case.dart';
 
 class GetContactsUseCase extends FutureUseCase<List<Contact>> {
-  final ContactRepository _contactsRepository;
-  final PermissionRepository _permissionRepository;
-
-  GetContactsUseCase(this._contactsRepository, this._permissionRepository);
+  final _contactsRepository = dependencyLocator<ContactRepository>();
+  final _permissionRepository = dependencyLocator<PermissionRepository>();
 
   @override
   Future<List<Contact>> call() async {

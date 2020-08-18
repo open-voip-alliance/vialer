@@ -2,11 +2,6 @@ import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 
 import '../../../../domain/entities/setting.dart';
 
-import '../../../../domain/repositories/storage.dart';
-import '../../../../domain/repositories/logging.dart';
-import '../../../../domain/repositories/setting.dart';
-import '../../../../domain/repositories/build_info.dart';
-
 import '../../../../domain/usecases/get_settings.dart';
 import '../../../../domain/usecases/get_build_info.dart';
 import '../../../../domain/usecases/change_setting.dart';
@@ -20,23 +15,10 @@ class SettingsPresenter extends Presenter {
   Function changeSettingsOnNext;
   Function logoutOnComplete;
 
-  final GetSettingsUseCase _getSettings;
-  final GetBuildInfoUseCase _getBuildInfo;
-  final ChangeSettingUseCase _changeSetting;
-  final LogoutUseCase _logout;
-
-  SettingsPresenter(
-    SettingRepository settingRepository,
-    BuildInfoRepository buildInfoRepository,
-    LoggingRepository loggingRepository,
-    StorageRepository storageRepository,
-  )   : _getSettings = GetSettingsUseCase(settingRepository),
-        _getBuildInfo = GetBuildInfoUseCase(buildInfoRepository),
-        _changeSetting = ChangeSettingUseCase(
-          settingRepository,
-          loggingRepository,
-        ),
-        _logout = LogoutUseCase(storageRepository);
+  final _getSettings = GetSettingsUseCase();
+  final _getBuildInfo = GetBuildInfoUseCase();
+  final _changeSetting = ChangeSettingUseCase();
+  final _logout = LogoutUseCase();
 
   void getSettings() {
     _getSettings().then(settingsOnNext);

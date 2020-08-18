@@ -1,9 +1,5 @@
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 
-import '../../../../domain/repositories/auth.dart';
-import '../../../../domain/repositories/setting.dart';
-import '../../../../domain/repositories/logging.dart';
-
 import '../../../../domain/usecases/onboarding/login.dart';
 import '../../../../domain/usecases/reset_settings.dart';
 
@@ -11,20 +7,8 @@ class LoginPresenter extends Presenter {
   Function loginOnNext;
   Function loginOnError;
 
-  Function resetSettingsOnNext;
-
-  final LoginUseCase _login;
-  final ResetSettingsUseCase _resetSettings;
-
-  LoginPresenter(
-    AuthRepository authRepository,
-    SettingRepository settingRepository,
-    LoggingRepository loggingRepository,
-  )   : _login = LoginUseCase(authRepository),
-        _resetSettings = ResetSettingsUseCase(
-          settingRepository,
-          loggingRepository,
-        );
+  final _login = LoginUseCase();
+  final _resetSettings = ResetSettingsUseCase();
 
   void login(String email, String password) {
     _login(email: email, password: password).then(
@@ -33,9 +17,7 @@ class LoginPresenter extends Presenter {
     );
   }
 
-  void resetSettingsToDefaults() {
-    _resetSettings().then((_) => resetSettingsOnNext());
-  }
+  void resetSettingsToDefaults() => _resetSettings();
 
   @override
   void dispose() {}

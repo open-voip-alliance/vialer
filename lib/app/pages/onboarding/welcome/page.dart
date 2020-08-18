@@ -1,30 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 
-import '../../../../domain/repositories/auth.dart';
-
 import '../../../resources/localizations.dart';
 
 import 'controller.dart';
 
 class WelcomePage extends View {
   final VoidCallback forward;
-  final AuthRepository _authRepository;
 
   WelcomePage(
-    this._authRepository,
     this.forward, {
     Key key,
   }) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() =>
-      _WelcomePageState(_authRepository, forward);
+  State<StatefulWidget> createState() => _WelcomePageState(forward);
 }
 
 class _WelcomePageState extends ViewState<WelcomePage, WelcomeController> {
-  _WelcomePageState(AuthRepository authRepository, VoidCallback forward)
-      : super(WelcomeController(authRepository, forward));
+  _WelcomePageState(VoidCallback forward) : super(WelcomeController(forward));
 
   @override
   Widget buildPage() {

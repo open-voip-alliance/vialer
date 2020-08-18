@@ -2,11 +2,6 @@ import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 
 import '../../../../../domain/entities/setting.dart';
 
-import '../../../../../domain/repositories/auth.dart';
-import '../../../../../domain/repositories/call.dart';
-import '../../../../../domain/repositories/logging.dart';
-import '../../../../../domain/repositories/setting.dart';
-
 import '../../../../../domain/usecases/call.dart';
 import '../../../../../domain/usecases/change_setting.dart';
 import '../../../../../domain/usecases/get_outgoing_cli.dart';
@@ -20,23 +15,10 @@ class ConfirmPresenter extends Presenter {
 
   Function outgoingCliOnNext;
 
-  final CallUseCase _call;
-  final GetSettingsUseCase _getSettings;
-  final ChangeSettingUseCase _changeSetting;
-  final GetOutgoingCliUseCase _getOutgoingCli;
-
-  ConfirmPresenter(
-    CallRepository callRepository,
-    SettingRepository settingRepository,
-    LoggingRepository loggingRepository,
-    AuthRepository authRepository,
-  )   : _call = CallUseCase(callRepository),
-        _getSettings = GetSettingsUseCase(settingRepository),
-        _changeSetting = ChangeSettingUseCase(
-          settingRepository,
-          loggingRepository,
-        ),
-        _getOutgoingCli = GetOutgoingCliUseCase(authRepository);
+  final _call = CallUseCase();
+  final _getSettings = GetSettingsUseCase();
+  final _changeSetting = ChangeSettingUseCase();
+  final _getOutgoingCli = GetOutgoingCliUseCase();
 
   void call(String destination) => _call(destination: destination).then(
         callOnComplete,

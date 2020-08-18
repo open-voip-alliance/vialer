@@ -1,16 +1,12 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 
-import '../../../../domain/repositories/auth.dart';
-import '../../../../domain/repositories/setting.dart';
-import '../../../../domain/repositories/logging.dart';
-
 import 'presenter.dart';
 
 class PasswordController extends Controller {
   final passwordController = TextEditingController();
 
-  final PasswordPresenter _presenter;
+  final _presenter = PasswordPresenter();
 
   final VoidCallback _forward;
 
@@ -18,16 +14,7 @@ class PasswordController extends Controller {
 
   bool passwordChangeFailed = false;
 
-  PasswordController(
-    AuthRepository _authRepository,
-    SettingRepository settingRepository,
-    LoggingRepository loggingRepository,
-    this._forward,
-  ) : _presenter = PasswordPresenter(
-          _authRepository,
-          settingRepository,
-          loggingRepository,
-        );
+  PasswordController(this._forward);
 
   @override
   void initController(GlobalKey<State<StatefulWidget>> key) {

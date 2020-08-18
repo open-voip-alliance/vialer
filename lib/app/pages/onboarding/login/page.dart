@@ -4,11 +4,6 @@ import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../domain/entities/onboarding/step.dart';
-import '../../../../domain/entities/brand.dart';
-
-import '../../../../domain/repositories/setting.dart';
-import '../../../../domain/repositories/auth.dart';
-import '../../../../domain/repositories/logging.dart';
 
 import '../../../resources/theme.dart';
 import '../../../resources/localizations.dart';
@@ -22,33 +17,17 @@ import '../../../util/conditional_capitalization.dart';
 import 'controller.dart';
 
 class LoginPage extends View {
-  final AuthRepository _authRepository;
-  final SettingRepository _settingRepository;
-  final LoggingRepository _loggingRepository;
-
-  final Brand _brand;
   final VoidCallback forward;
   final void Function(Step) addStep;
 
   LoginPage(
-    this._authRepository,
-    this._settingRepository,
-    this._loggingRepository,
-    this._brand,
     this.forward,
     this.addStep, {
     Key key,
   }) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _LoginPageState(
-        _authRepository,
-        _settingRepository,
-        _loggingRepository,
-        _brand,
-        forward,
-        addStep,
-      );
+  State<StatefulWidget> createState() => _LoginPageState(forward, addStep);
 }
 
 class _LoginPageState extends ViewState<LoginPage, LoginController>
@@ -57,22 +36,9 @@ class _LoginPageState extends ViewState<LoginPage, LoginController>
   static const _curve = Curves.decelerate;
 
   _LoginPageState(
-    AuthRepository authRepository,
-    SettingRepository settingRepository,
-    LoggingRepository loggingRepository,
-    Brand brand,
     VoidCallback forward,
     void Function(Step) addStep,
-  ) : super(
-          LoginController(
-            authRepository,
-            settingRepository,
-            loggingRepository,
-            brand,
-            forward,
-            addStep,
-          ),
-        );
+  ) : super(LoginController(forward, addStep));
 
   @override
   void didChangeDependencies() {

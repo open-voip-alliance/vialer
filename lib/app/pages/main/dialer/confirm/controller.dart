@@ -6,11 +6,6 @@ import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import '../../../../../domain/entities/call_through_exception.dart';
 import '../../../../../domain/entities/setting.dart';
 
-import '../../../../../domain/repositories/auth.dart';
-import '../../../../../domain/repositories/logging.dart';
-import '../../../../../domain/repositories/setting.dart';
-import '../../../../../domain/repositories/call.dart';
-
 import '../show_call_through_error_dialog.dart';
 
 import '../../../../routes.dart';
@@ -30,18 +25,7 @@ class ConfirmController extends Controller {
   bool showConfirmPage = true;
   String outgoingCli = '';
 
-  ConfirmController(
-      CallRepository callRepository,
-      SettingRepository settingRepository,
-      LoggingRepository loggingRepository,
-      AuthRepository authRepository,
-      this.destination)
-      : _presenter = ConfirmPresenter(
-          callRepository,
-          settingRepository,
-          loggingRepository,
-          authRepository,
-        );
+  ConfirmController(this.destination) : _presenter = ConfirmPresenter();
 
   @override
   void initController(GlobalKey<State<StatefulWidget>> key) {

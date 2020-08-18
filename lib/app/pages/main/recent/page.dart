@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 
-import '../../../../domain/repositories/call.dart';
-import '../../../../domain/repositories/recent_call.dart';
-import '../../../../domain/repositories/logging.dart';
-import '../../../../domain/repositories/setting.dart';
-
 import '../../../resources/theme.dart';
 import '../../../resources/localizations.dart';
 
@@ -18,47 +13,21 @@ import '../util/stylized_snack_bar.dart';
 import 'controller.dart';
 
 class RecentPage extends View {
-  final RecentCallRepository _recentCallRepository;
-  final CallRepository _callRepository;
-  final SettingRepository _settingRepository;
-  final LoggingRepository _loggingRepository;
-
   final double listBottomPadding;
   final double snackBarRightPadding;
 
-  RecentPage(
-    this._recentCallRepository,
-    this._callRepository,
-    this._settingRepository,
-    this._loggingRepository, {
+  RecentPage({
     Key key,
     this.listBottomPadding = 0,
     this.snackBarRightPadding = 0,
   }) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _RecentPageState(
-        _recentCallRepository,
-        _callRepository,
-        _settingRepository,
-        _loggingRepository,
-      );
+  State<StatefulWidget> createState() => _RecentPageState();
 }
 
 class _RecentPageState extends ViewState<RecentPage, RecentController> {
-  _RecentPageState(
-    RecentCallRepository recentCallRepository,
-    CallRepository callRepository,
-    SettingRepository settingRepository,
-    LoggingRepository loggingRepository,
-  ) : super(
-          RecentController(
-            recentCallRepository,
-            callRepository,
-            settingRepository,
-            loggingRepository,
-          ),
-        );
+  _RecentPageState() : super(RecentController());
 
   final _scrollController = ScrollController();
 

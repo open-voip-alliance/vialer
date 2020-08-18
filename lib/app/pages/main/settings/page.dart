@@ -3,11 +3,6 @@ import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 
 import '../../../../domain/entities/setting.dart';
 
-import '../../../../domain/repositories/setting.dart';
-import '../../../../domain/repositories/logging.dart';
-import '../../../../domain/repositories/storage.dart';
-import '../../../../domain/repositories/build_info.dart';
-
 import '../../../widgets/stylized_button.dart';
 import '../widgets/header.dart';
 import 'widgets/tile.dart';
@@ -21,40 +16,14 @@ import '../../../util/conditional_capitalization.dart';
 import 'controller.dart';
 
 class SettingsPage extends View {
-  final SettingRepository _settingsRepository;
-  final BuildInfoRepository _buildInfoRepository;
-  final LoggingRepository _loggingRepository;
-  final StorageRepository _storageRepository;
-
-  SettingsPage(
-    this._settingsRepository,
-    this._buildInfoRepository,
-    this._loggingRepository,
-    this._storageRepository, {
-    Key key,
-  }) : super(key: key);
+  SettingsPage({Key key}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _SettingsPageState(
-        _settingsRepository,
-        _buildInfoRepository,
-        _loggingRepository,
-        _storageRepository,
-      );
+  State<StatefulWidget> createState() => _SettingsPageState();
 }
 
 class _SettingsPageState extends ViewState<SettingsPage, SettingsController> {
-  _SettingsPageState(
-    SettingRepository settingRepository,
-    BuildInfoRepository buildInfoRepository,
-    LoggingRepository loggingRepository,
-    StorageRepository storageRepository,
-  ) : super(SettingsController(
-          settingRepository,
-          buildInfoRepository,
-          loggingRepository,
-          storageRepository,
-        ));
+  _SettingsPageState() : super(SettingsController());
 
   List<Widget> get settingsList {
     Iterable<Setting> settings = controller.settings;

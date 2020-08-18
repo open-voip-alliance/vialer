@@ -1,3 +1,5 @@
+import '../../dependency_locator.dart';
+
 import '../../domain/entities/brand.dart';
 import '../../domain/entities/need_to_change_password.dart';
 
@@ -8,19 +10,14 @@ import '../../domain/entities/system_user.dart';
 
 class AuthRepository {
   final StorageRepository _storageRepository;
-  final Brand _brand;
+  final VoipgridService _service;
 
   AuthRepository(
     this._storageRepository,
-    this._brand,
-  ) {
-    service = VoipgridService.create(
-      baseUrl: _brand.baseUrl,
-      authRepository: this,
-    );
+    Brand brand,
+  ) : _service = VoipgridService.create(baseUrl: brand.baseUrl) {
+    dependencyLocator.registerSingleton<VoipgridService>(_service);
   }
-
-  VoipgridService service;
 
   static const _emailKey = 'email';
   static const _passwordKey = 'password';
@@ -33,7 +30,7 @@ class AuthRepository {
     String password, {
     bool cachePassword = true,
   }) async {
-    final tokenResponse = await service.getToken({
+    final tokenResponse = await _service.getToken({
       _emailKey: email,
       _passwordKey: password,
     });
@@ -56,7 +53,7 @@ class AuthRepository {
         token: token,
       );
 
-      final systemUserResponse = await service.getSystemUser();
+      final systemUserResponse = await _service.getSystemUser();
       if (systemUserResponse.error
           .toString()
           .contains('You need to change your password in the portal')) {
@@ -92,7 +89,7 @@ class AuthRepository {
     String newPassword, {
     String currentPassword,
   }) async {
-    final response = await service.password({
+    final response = await _service.password({
       'email_address': currentUser.email,
       'current_password': currentPassword ?? currentUser.password,
       'new_password': newPassword,

@@ -9,26 +9,12 @@ import '../dialer/caller.dart';
 
 import '../../../../domain/entities/call.dart';
 
-import '../../../../domain/repositories/call.dart';
-import '../../../../domain/repositories/recent_call.dart';
-import '../../../../domain/repositories/logging.dart';
-import '../../../../domain/repositories/setting.dart';
-
 import '../../../util/debug.dart';
 
 import 'presenter.dart';
 
 class RecentController extends Controller with Caller {
-  @override
-  final CallRepository callRepository;
-
-  @override
-  final SettingRepository settingRepository;
-
-  @override
-  final LoggingRepository loggingRepository;
-
-  final RecentPresenter _presenter;
+  final _presenter = RecentPresenter();
 
   var recentCalls = <Call>[];
 
@@ -37,17 +23,6 @@ class RecentController extends Controller with Caller {
 
   bool _loadingMoreRecents = false;
   Completer _refreshCompleter;
-
-  RecentController(
-    RecentCallRepository recentCallRepository,
-    this.callRepository,
-    this.settingRepository,
-    this.loggingRepository,
-  ) : _presenter = RecentPresenter(
-          recentCallRepository,
-          callRepository,
-          settingRepository,
-        );
 
   @override
   void initController(GlobalKey<State<StatefulWidget>> key) {

@@ -4,12 +4,11 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 
 import '../../../../domain/entities/system_user.dart';
-import '../../../../domain/repositories/auth.dart';
 
 import 'presenter.dart';
 
 class WelcomeController extends Controller {
-  final WelcomePresenter _presenter;
+  final _presenter = WelcomePresenter();
 
   final VoidCallback _forward;
 
@@ -17,10 +16,7 @@ class WelcomeController extends Controller {
 
   SystemUser get systemUser => _systemUser;
 
-  WelcomeController(
-    AuthRepository authRepository,
-    this._forward,
-  ) : _presenter = WelcomePresenter(authRepository);
+  WelcomeController(this._forward);
 
   @override
   void initController(GlobalKey<State<StatefulWidget>> key) {

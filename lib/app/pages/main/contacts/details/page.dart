@@ -7,12 +7,6 @@ import '../../../../resources/theme.dart';
 
 import '../../../../../domain/entities/contact.dart';
 
-import '../../../../../domain/repositories/contact.dart';
-import '../../../../../domain/repositories/permission.dart';
-import '../../../../../domain/repositories/call.dart';
-import '../../../../../domain/repositories/logging.dart';
-import '../../../../../domain/repositories/setting.dart';
-
 import '../widgets/avatar.dart';
 import '../widgets/subtitle.dart';
 import '../../widgets/header.dart';
@@ -23,53 +17,22 @@ const _horizontalPadding = 24.0;
 const _leadingSize = 48.0;
 
 class ContactDetailsPage extends View {
-  final ContactRepository _contactsRepository;
-  final CallRepository _callRepository;
-  final PermissionRepository _permissionRepository;
-  final SettingRepository _settingRepository;
-  final LoggingRepository _loggingRepository;
-
   final Contact contact;
   final double bottomLettersPadding;
 
-  ContactDetailsPage(
-    this._contactsRepository,
-    this._callRepository,
-    this._permissionRepository,
-    this._settingRepository,
-    this._loggingRepository, {
+  ContactDetailsPage({
     Key key,
     @required this.contact,
     this.bottomLettersPadding = 0,
   }) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _ContactDetailsPageState(
-        _contactsRepository,
-        _callRepository,
-        _permissionRepository,
-        _settingRepository,
-        _loggingRepository,
-      );
+  State<StatefulWidget> createState() => _ContactDetailsPageState();
 }
 
 class _ContactDetailsPageState
     extends ViewState<ContactDetailsPage, ContactDetailsController> {
-  _ContactDetailsPageState(
-    ContactRepository contactRepository,
-    CallRepository callRepository,
-    PermissionRepository permissionRepository,
-    SettingRepository settingRepository,
-    LoggingRepository loggingRepository,
-  ) : super(
-          ContactDetailsController(
-            contactRepository,
-            callRepository,
-            permissionRepository,
-            settingRepository,
-            loggingRepository,
-          ),
-        );
+  _ContactDetailsPageState() : super(ContactDetailsController());
 
   @override
   Widget buildPage() {

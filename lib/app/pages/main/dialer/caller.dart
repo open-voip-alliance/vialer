@@ -9,16 +9,14 @@ import '../../../../domain/repositories/call.dart';
 import '../../../../domain/repositories/setting.dart';
 import '../../../../domain/repositories/logging.dart';
 
+import '../../../../dependency_locator.dart';
 import 'confirm/page.dart';
-
 import 'show_call_through_error_dialog.dart';
 
 mixin Caller on Controller {
-  CallRepository get callRepository;
-
-  SettingRepository get settingRepository;
-
-  LoggingRepository get loggingRepository;
+  final callRepository = dependencyLocator<CallRepository>();
+  final settingRepository = dependencyLocator<SettingRepository>();
+  final loggingRepository = dependencyLocator<LoggingRepository>();
 
   void executeCallUseCase(String destination);
 

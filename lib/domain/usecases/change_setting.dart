@@ -2,16 +2,17 @@ import 'dart:async';
 
 import 'package:meta/meta.dart';
 
+import '../../dependency_locator.dart';
 import '../entities/setting.dart';
 import '../repositories/setting.dart';
 import '../repositories/logging.dart';
 import '../use_case.dart';
 
 class ChangeSettingUseCase extends FutureUseCase<void> {
-  final SettingRepository _settingRepository;
-  final LoggingRepository _loggingRepository;
+  final _settingRepository = dependencyLocator<SettingRepository>();
+  final _loggingRepository = dependencyLocator<LoggingRepository>();
 
-  ChangeSettingUseCase(this._settingRepository, this._loggingRepository);
+  ChangeSettingUseCase();
 
   @override
   Future<void> call({@required Setting setting}) async {
