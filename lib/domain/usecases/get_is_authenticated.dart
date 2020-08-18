@@ -1,12 +1,11 @@
 import 'dart:async';
 
+import '../../dependency_locator.dart';
 import '../repositories/auth.dart';
 import '../use_case.dart';
 
 class GetIsAuthenticatedUseCase extends FutureUseCase<bool> {
-  final AuthRepository _authRepository;
-
-  GetIsAuthenticatedUseCase(this._authRepository);
+  final _authRepository = dependencyLocator<AuthRepository>();
 
   @override
   Future<bool> call() => _authRepository.isAuthenticated();

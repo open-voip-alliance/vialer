@@ -2,15 +2,14 @@ import 'dart:async';
 
 import 'package:meta/meta.dart';
 
+import '../../dependency_locator.dart';
 import '../repositories/feedback.dart';
 import '../repositories/auth.dart';
 import '../use_case.dart';
 
 class SendFeedbackUseCase extends FutureUseCase<void> {
-  final FeedbackRepository _feedbackRepository;
-  final AuthRepository _authRepository;
-
-  SendFeedbackUseCase(this._feedbackRepository, this._authRepository);
+  final _feedbackRepository = dependencyLocator<FeedbackRepository>();
+  final _authRepository = dependencyLocator<AuthRepository>();
 
   @override
   Future<void> call({

@@ -3,21 +3,19 @@ import 'dart:async';
 import 'package:meta/meta.dart';
 import 'package:chopper/chopper.dart';
 
+import '../../../dependency_locator.dart';
 import '../../../domain/repositories/auth.dart';
 
 part 'voipgrid.chopper.dart';
 
 @ChopperApi(baseUrl: '/api/')
 abstract class VoipgridService extends ChopperService {
-  static VoipgridService create({
-    @required Uri baseUrl,
-    AuthRepository authRepository,
-  }) {
+  static VoipgridService create({@required Uri baseUrl}) {
     return _$VoipgridService(
       ChopperClient(
         baseUrl: baseUrl.toString(),
         converter: JsonConverter(),
-        interceptors: [_AuthorizationInterceptor(authRepository)],
+        interceptors: [_AuthorizationInterceptor()],
       ),
     );
   }
@@ -46,13 +44,11 @@ abstract class VoipgridService extends ChopperService {
 }
 
 class _AuthorizationInterceptor implements RequestInterceptor {
-  final AuthRepository _authRepository;
-
-  _AuthorizationInterceptor(this._authRepository);
-
   @override
   FutureOr<Request> onRequest(Request request) {
-    final user = _authRepository.currentUser;
+    final authRepository = dependencyLocator<AuthRepository>();
+
+    final user = authRepository.currentUser;
 
     if (user != null) {
       final authorization = Uri.parse(request.url).path.endsWith('callthrough')

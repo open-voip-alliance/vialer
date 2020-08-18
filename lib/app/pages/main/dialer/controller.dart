@@ -5,26 +5,11 @@ import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 
 import '../../../../domain/entities/permission_status.dart';
 
-import '../../../../domain/repositories/call.dart';
-import '../../../../domain/repositories/permission.dart';
-import '../../../../domain/repositories/storage.dart';
-import '../../../../domain/repositories/setting.dart';
-import '../../../../domain/repositories/logging.dart';
-
 import 'caller.dart';
 import 'presenter.dart';
 
 class DialerController extends Controller with Caller {
-  @override
-  final CallRepository callRepository;
-
-  @override
-  final SettingRepository settingRepository;
-
-  @override
-  final LoggingRepository loggingRepository;
-
-  final DialerPresenter _presenter;
+  final _presenter = DialerPresenter();
 
   final String initialDestination;
 
@@ -40,19 +25,7 @@ class DialerController extends Controller with Caller {
 
   String _latestDialedNumber;
 
-  DialerController(
-    this.callRepository,
-    this.settingRepository,
-    this.loggingRepository,
-    PermissionRepository permissionRepository,
-    StorageRepository storageRepository,
-    this.initialDestination,
-  ) : _presenter = DialerPresenter(
-          callRepository,
-          permissionRepository,
-          storageRepository,
-          settingRepository,
-        );
+  DialerController(this.initialDestination);
 
   @override
   void initController(GlobalKey<State<StatefulWidget>> key) {

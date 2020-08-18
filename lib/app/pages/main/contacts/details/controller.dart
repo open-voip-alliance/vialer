@@ -7,42 +7,14 @@ import '../../dialer/caller.dart';
 
 import '../../../../../domain/entities/contact.dart';
 
-import '../../../../../domain/repositories/contact.dart';
-import '../../../../../domain/repositories/call.dart';
-import '../../../../../domain/repositories/setting.dart';
-import '../../../../../domain/repositories/permission.dart';
-import '../../../../../domain/repositories/logging.dart';
-
 import '../../../../util/debug.dart';
 
 import 'presenter.dart';
 
 class ContactDetailsController extends Controller with Caller {
-  @override
-  final CallRepository callRepository;
-
-  @override
-  final SettingRepository settingRepository;
-
-  @override
-  final LoggingRepository loggingRepository;
-
-  final ContactDetailsPresenter _presenter;
+  final _presenter = ContactDetailsPresenter();
 
   List<Contact> contacts = [];
-
-  ContactDetailsController(
-    ContactRepository contactRepository,
-    this.callRepository,
-    PermissionRepository permissionRepository,
-    this.settingRepository,
-    this.loggingRepository,
-  ) : _presenter = ContactDetailsPresenter(
-          contactRepository,
-          callRepository,
-          permissionRepository,
-          settingRepository,
-        );
 
   @override
   void initController(GlobalKey<State<StatefulWidget>> key) {

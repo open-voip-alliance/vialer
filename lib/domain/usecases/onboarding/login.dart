@@ -2,13 +2,12 @@ import 'dart:async';
 
 import 'package:meta/meta.dart';
 
+import '../../../dependency_locator.dart';
 import '../../use_case.dart';
 import '../../repositories/auth.dart';
 
 class LoginUseCase extends FutureUseCase<bool> {
-  final AuthRepository _authRepository;
-
-  LoginUseCase(this._authRepository);
+  final _authRepository = dependencyLocator<AuthRepository>();
 
   @override
   Future<bool> call({

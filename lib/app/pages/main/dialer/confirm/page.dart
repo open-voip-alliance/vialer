@@ -7,11 +7,6 @@ import 'package:provider/provider.dart';
 
 import '../../../../../domain/entities/brand.dart';
 
-import '../../../../../domain/repositories/auth.dart';
-import '../../../../../domain/repositories/call.dart';
-import '../../../../../domain/repositories/setting.dart';
-import '../../../../../domain/repositories/logging.dart';
-
 import '../../../../widgets/transparent_status_bar.dart';
 import 'controller.dart';
 
@@ -19,29 +14,12 @@ import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
 
 class ConfirmPage extends View {
-  final CallRepository _callRepository;
-  final SettingRepository _settingRepository;
-  final LoggingRepository _loggingRepository;
-  final AuthRepository _authRepository;
-
   final String destination;
 
-  ConfirmPage(
-    this._callRepository,
-    this._settingRepository,
-    this._loggingRepository,
-    this._authRepository, {
-    @required this.destination,
-  });
+  ConfirmPage({@required this.destination});
 
   @override
-  State<StatefulWidget> createState() => ConfirmPageState(
-        _callRepository,
-        _settingRepository,
-        _loggingRepository,
-        _authRepository,
-        destination,
-      );
+  State<StatefulWidget> createState() => ConfirmPageState(destination);
 }
 
 class ConfirmPageState extends ViewState<ConfirmPage, ConfirmController>
@@ -49,19 +27,7 @@ class ConfirmPageState extends ViewState<ConfirmPage, ConfirmController>
   AnimationController _animationController;
   Animation<double> _animation;
 
-  ConfirmPageState(
-    CallRepository callRepository,
-    SettingRepository settingRepository,
-    LoggingRepository loggingRepository,
-    AuthRepository authRepository,
-    String destination,
-  ) : super(ConfirmController(
-          callRepository,
-          settingRepository,
-          loggingRepository,
-          authRepository,
-          destination,
-        ));
+  ConfirmPageState(String destination) : super(ConfirmController(destination));
 
   @override
   void initState() {
@@ -296,13 +262,7 @@ class ConfirmPageRoute extends PageRoute {
     Animation<double> animation,
     Animation<double> secondaryAnimation,
   ) {
-    return ConfirmPage(
-      Provider.of<CallRepository>(context),
-      Provider.of<SettingRepository>(context),
-      Provider.of<LoggingRepository>(context),
-      Provider.of<AuthRepository>(context),
-      destination: destination,
-    );
+    return ConfirmPage(destination: destination);
   }
 
   @override

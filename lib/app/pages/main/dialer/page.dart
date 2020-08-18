@@ -14,64 +14,22 @@ import '../../../widgets/stylized_button.dart';
 
 import '../../../../domain/entities/brand.dart';
 
-import '../../../../domain/repositories/call.dart';
-import '../../../../domain/repositories/permission.dart';
-import '../../../../domain/repositories/storage.dart';
-import '../../../../domain/repositories/logging.dart';
-import '../../../../domain/repositories/setting.dart';
-
 import '../../../util/conditional_capitalization.dart';
 
 import 'controller.dart';
 
 class DialerPage extends View {
-  final CallRepository _callRepository;
-  final SettingRepository _settingRepository;
-  final LoggingRepository _loggingRepository;
-  final PermissionRepository _permissionRepository;
-  final StorageRepository _storageRepository;
-
   /// If destination is not null, call [destination] on open.
   final String destination;
 
-  DialerPage(
-    this._callRepository,
-    this._settingRepository,
-    this._loggingRepository,
-    this._permissionRepository,
-    this._storageRepository, {
-    this.destination,
-  });
+  DialerPage({this.destination});
 
   @override
-  State<StatefulWidget> createState() => _DialerPageState(
-        _callRepository,
-        _settingRepository,
-        _loggingRepository,
-        _permissionRepository,
-        _storageRepository,
-        destination,
-      );
+  State<StatefulWidget> createState() => _DialerPageState(destination);
 }
 
 class _DialerPageState extends ViewState<DialerPage, DialerController> {
-  _DialerPageState(
-    CallRepository callRepository,
-    SettingRepository settingRepository,
-    LoggingRepository loggingRepository,
-    PermissionRepository permissionRepository,
-    StorageRepository storageRepository,
-    String destination,
-  ) : super(
-          DialerController(
-            callRepository,
-            settingRepository,
-            loggingRepository,
-            permissionRepository,
-            storageRepository,
-            destination,
-          ),
-        );
+  _DialerPageState(String destination) : super(DialerController(destination));
 
   @override
   Widget buildPage() {

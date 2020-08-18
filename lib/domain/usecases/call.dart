@@ -2,13 +2,12 @@ import 'dart:async';
 
 import 'package:meta/meta.dart';
 
+import '../../dependency_locator.dart';
 import '../use_case.dart';
 import '../repositories/call.dart';
 
 class CallUseCase extends FutureUseCase<void> {
-  final CallRepository _callRepository;
-
-  CallUseCase(this._callRepository);
+  final _callRepository = dependencyLocator<CallRepository>();
 
   @override
   Future<void> call({@required String destination}) =>

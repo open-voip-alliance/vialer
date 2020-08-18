@@ -2,11 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 
-import '../../../../domain/repositories/storage.dart';
-import '../../../../domain/repositories/logging.dart';
-import '../../../../domain/repositories/setting.dart';
-import '../../../../domain/repositories/build_info.dart';
-
 import '../../../../domain/entities/setting.dart';
 import '../../../../domain/entities/build_info.dart';
 
@@ -19,22 +14,10 @@ import '../../../resources/localizations.dart';
 import 'presenter.dart';
 
 class SettingsController extends Controller {
-  final SettingsPresenter _presenter;
+  final _presenter = SettingsPresenter();
 
   List<Setting> settings = [];
   BuildInfo buildInfo;
-
-  SettingsController(
-    SettingRepository settingRepository,
-    BuildInfoRepository buildInfoRepository,
-    LoggingRepository loggingRepository,
-    StorageRepository storageRepository,
-  ) : _presenter = SettingsPresenter(
-          settingRepository,
-          buildInfoRepository,
-          loggingRepository,
-          storageRepository,
-        );
 
   @override
   void initController(GlobalKey<State<StatefulWidget>> key) {

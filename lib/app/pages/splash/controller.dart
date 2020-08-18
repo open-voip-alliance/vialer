@@ -1,16 +1,13 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 
-import '../../../domain/repositories/auth.dart';
-
 import '../../routes.dart';
 import 'presenter.dart';
 
 class SplashController extends Controller {
   final SplashPresenter _presenter;
 
-  SplashController(AuthRepository authRepository)
-      : _presenter = SplashPresenter(authRepository);
+  SplashController() : _presenter = SplashPresenter();
 
   @override
   void initController(GlobalKey<State<StatefulWidget>> key) {

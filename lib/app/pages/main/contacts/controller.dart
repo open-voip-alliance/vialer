@@ -7,13 +7,10 @@ import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 import '../../../../domain/entities/contact.dart';
 import '../../../../domain/entities/permission_status.dart';
 
-import '../../../../domain/repositories/contact.dart';
-import '../../../../domain/repositories/permission.dart';
-
 import 'presenter.dart';
 
 class ContactsController extends Controller {
-  final ContactsPresenter _presenter;
+  final _presenter = ContactsPresenter();
 
   bool _showSettingsDirections = false;
 
@@ -24,11 +21,6 @@ class ContactsController extends Controller {
   List<Contact> contacts = [];
 
   String searchTerm = '';
-
-  ContactsController(
-    ContactRepository contactRepository,
-    PermissionRepository permissionRepository,
-  ) : _presenter = ContactsPresenter(contactRepository, permissionRepository);
 
   bool _hasPermission = true;
 

@@ -4,7 +4,6 @@ import 'package:flutter_segment/flutter_segment.dart';
 
 import '../../../../../domain/entities/permission.dart';
 import '../../../../../domain/entities/permission_status.dart';
-import '../../../../../domain/repositories/permission.dart';
 
 import '../../../../util/debug.dart';
 
@@ -13,15 +12,14 @@ import 'presenter.dart';
 class PermissionController extends Controller {
   final Permission permission;
 
-  final PermissionPresenter _presenter;
+  final _presenter = PermissionPresenter();
 
   final VoidCallback _forward;
 
   PermissionController(
     this.permission,
-    PermissionRepository permissionRepository,
     this._forward,
-  ) : _presenter = PermissionPresenter(permissionRepository);
+  );
 
   @override
   void initController(GlobalKey<State<StatefulWidget>> key) {

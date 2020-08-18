@@ -1,16 +1,9 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
-import 'package:provider/provider.dart';
 
 import '../../mappers/step.dart';
 
 import '../../../domain/entities/onboarding/step.dart';
-import '../../../domain/entities/brand.dart';
-
-import '../../../domain/repositories/auth.dart';
-import '../../../domain/repositories/permission.dart';
-import '../../../domain/repositories/setting.dart';
-import '../../../domain/repositories/logging.dart';
 
 import '../../routes.dart';
 import 'presenter.dart';
@@ -26,50 +19,24 @@ class OnboardingController extends Controller {
   static const _duration = Duration(milliseconds: 400);
   static const _curve = Curves.decelerate;
 
-  final OnboardingPresenter _presenter;
+  final _presenter = OnboardingPresenter();
 
   final pageController = PageController();
 
   Map<Type, WidgetBuilder> _pageBuilders;
   List<WidgetBuilder> pages;
 
-  OnboardingController(PermissionRepository permissionRepository)
-      : _presenter = OnboardingPresenter(permissionRepository);
-
   @override
   void initController(GlobalKey<State<StatefulWidget>> key) {
     super.initController(key);
 
     _pageBuilders = {
-      LoginPage: (c) => LoginPage(
-            Provider.of<AuthRepository>(c),
-            Provider.of<SettingRepository>(c),
-            Provider.of<LoggingRepository>(c),
-            Provider.of<Brand>(c),
-            forward,
-            addStep,
-          ),
-      PasswordPage: (c) => PasswordPage(
-            Provider.of<AuthRepository>(c),
-            Provider.of<SettingRepository>(c),
-            Provider.of<LoggingRepository>(c),
-            Provider.of<Brand>(c),
-            forward,
-            addStep,
-          ),
-      CallPermissionPage: (c) => CallPermissionPage(
-            Provider.of<PermissionRepository>(c),
-            forward,
-          ),
-      ContactsPermissionPage: (c) => ContactsPermissionPage(
-            Provider.of<PermissionRepository>(c),
-            forward,
-          ),
+      LoginPage: (c) => LoginPage(forward, addStep),
+      PasswordPage: (c) => PasswordPage(forward, addStep),
+      CallPermissionPage: (c) => CallPermissionPage(forward),
+      ContactsPermissionPage: (c) => ContactsPermissionPage(forward),
       VoicemailPage: (_) => VoicemailPage(forward),
-      WelcomePage: (c) => WelcomePage(
-            Provider.of<AuthRepository>(c),
-            forward,
-          ),
+      WelcomePage: (c) => WelcomePage(forward),
     };
 
     pages = [_pageBuilders[LoginPage]];

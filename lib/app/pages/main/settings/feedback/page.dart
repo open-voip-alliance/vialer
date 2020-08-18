@@ -8,29 +8,17 @@ import '../../../../resources/localizations.dart';
 import '../../../../widgets/transparent_status_bar.dart';
 import '../../../../widgets/stylized_button.dart';
 
-import '../../../../../domain/repositories/feedback.dart';
-import '../../../../../domain/repositories/auth.dart';
-
 import '../../../../util/conditional_capitalization.dart';
 
 import 'controller.dart';
 
 class FeedbackPage extends View {
-  final FeedbackRepository _feedbackRepository;
-  final AuthRepository _authRepository;
-
-  FeedbackPage(this._feedbackRepository, this._authRepository);
-
   @override
-  State<StatefulWidget> createState() =>
-      _FeedbackPageState(_feedbackRepository, _authRepository);
+  State<StatefulWidget> createState() => _FeedbackPageState();
 }
 
 class _FeedbackPageState extends ViewState<FeedbackPage, DialerController> {
-  _FeedbackPageState(
-    FeedbackRepository feedbackRepository,
-    AuthRepository authRepository,
-  ) : super(DialerController(feedbackRepository, authRepository));
+  _FeedbackPageState() : super(DialerController());
 
   @override
   Widget buildPage() {

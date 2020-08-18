@@ -3,17 +3,16 @@ import 'dart:io';
 
 import 'package:device_info/device_info.dart';
 import 'package:flutter/foundation.dart';
-import 'package:meta/meta.dart';
 import 'package:sentry/sentry.dart';
 
+import '../domain/repositories/env.dart';
 import '../domain/repositories/auth.dart';
+import '../dependency_locator.dart';
 import 'util/debug.dart';
 
-Future<void> run(
-  AuthRepository authRepository,
-  Function f, {
-  @required String dsn,
-}) async {
+Future<void> run(Function f) async {
+  final dsn = await dependencyLocator.get<EnvRepository>().sentryDsn;
+
   if (dsn == null || dsn.isEmpty) {
     f();
     return;
@@ -22,7 +21,6 @@ Future<void> run(
   final sentry = SentryClient(dsn: dsn);
 
   FlutterError.onError = (details, {forceReport = false}) => _capture(
-        authRepository,
         sentry,
         details.exception,
         details.stack,
@@ -34,13 +32,11 @@ Future<void> run(
 
   runZoned(
     f,
-    onError: (error, stackTrace) =>
-        _capture(authRepository, sentry, error, stackTrace),
+    onError: (error, stackTrace) => _capture(sentry, error, stackTrace),
   );
 }
 
 Future<void> _capture(
-  AuthRepository authRepository,
   SentryClient client,
   dynamic error,
   StackTrace stackTrace, {
@@ -49,6 +45,8 @@ Future<void> _capture(
   if (inDebugMode) {
     return;
   }
+
+  final authRepository = dependencyLocator<AuthRepository>();
 
   try {
     final user = authRepository.currentUser;

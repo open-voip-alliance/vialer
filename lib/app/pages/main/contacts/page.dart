@@ -11,9 +11,6 @@ import '../../../resources/localizations.dart';
 import '../../../../domain/entities/brand.dart';
 import '../../../../domain/entities/contact.dart';
 
-import '../../../../domain/repositories/permission.dart';
-import '../../../../domain/repositories/contact.dart';
-
 import '../../../resources/theme.dart';
 
 import '../../../widgets/stylized_button.dart';
@@ -32,30 +29,19 @@ abstract class ContactsPageRoutes {
 }
 
 class ContactsPage extends View {
-  final ContactRepository _contactsRepository;
-  final PermissionRepository _permissionRepository;
-
   final double bottomLettersPadding;
 
-  ContactsPage(
-    this._contactsRepository,
-    this._permissionRepository, {
+  ContactsPage({
     Key key,
     this.bottomLettersPadding = 0,
   }) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _ContactPageState(
-        _contactsRepository,
-        _permissionRepository,
-      );
+  State<StatefulWidget> createState() => _ContactPageState();
 }
 
 class _ContactPageState extends ViewState<ContactsPage, ContactsController> {
-  _ContactPageState(
-    ContactRepository contactRepository,
-    PermissionRepository permissionRepository,
-  ) : super(ContactsController(contactRepository, permissionRepository));
+  _ContactPageState() : super(ContactsController());
 
   @override
   Widget buildPage() {

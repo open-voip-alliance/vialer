@@ -4,9 +4,6 @@ import '../../../../domain/entities/no_permission.dart';
 import '../../../../domain/entities/permission.dart';
 import '../../../../domain/entities/permission_status.dart';
 
-import '../../../../domain/repositories/contact.dart';
-import '../../../../domain/repositories/permission.dart';
-
 import '../../../../domain/usecases/get_contacts.dart';
 import '../../../../domain/usecases/get_permission_status.dart';
 import '../../../../domain/usecases/onboarding/request_permission.dart';
@@ -17,23 +14,9 @@ class ContactsPresenter extends Presenter {
   Function contactsOnPermissionGranted;
   Function onCheckContactsPermissionNext;
 
-  final GetContactsUseCase _getContacts;
-  final GetPermissionStatusUseCase _getPermissionStatus;
-  final RequestPermissionUseCase _requestPermission;
-
-  ContactsPresenter(
-    ContactRepository contactRepository,
-    PermissionRepository permissionRepository,
-  )   : _getContacts = GetContactsUseCase(
-          contactRepository,
-          permissionRepository,
-        ),
-        _requestPermission = RequestPermissionUseCase(
-          permissionRepository,
-        ),
-        _getPermissionStatus = GetPermissionStatusUseCase(
-          permissionRepository,
-        );
+  final _getContacts = GetContactsUseCase();
+  final _getPermissionStatus = RequestPermissionUseCase();
+  final _requestPermission = GetPermissionStatusUseCase();
 
   void getContacts() {
     _getContacts().then(

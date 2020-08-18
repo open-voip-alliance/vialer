@@ -1,15 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
-
-import '../../../domain/repositories/call.dart';
-import '../../../domain/repositories/permission.dart';
-import '../../../domain/repositories/contact.dart';
-import '../../../domain/repositories/recent_call.dart';
-import '../../../domain/repositories/setting.dart';
-import '../../../domain/repositories/build_info.dart';
-import '../../../domain/repositories/logging.dart';
-import '../../../domain/repositories/storage.dart';
 
 import '../../resources/theme.dart';
 import '../../resources/localizations.dart';
@@ -61,46 +51,21 @@ class _MainPageState extends State<MainPage> {
 
     if (_pages == null) {
       _pages = [
-        if (_dialerIsPage)
-          DialerPage(
-            Provider.of<CallRepository>(context),
-            Provider.of<SettingRepository>(context),
-            Provider.of<LoggingRepository>(context),
-            Provider.of<PermissionRepository>(context),
-            Provider.of<StorageRepository>(context),
-          ),
+        if (_dialerIsPage) DialerPage(),
         _Navigator(
           navigatorKey: _navigatorStates[0],
           routes: {
-            ContactsPageRoutes.root: (_, __) => ContactsPage(
-                  Provider.of<ContactRepository>(context),
-                  Provider.of<PermissionRepository>(context),
-                  bottomLettersPadding: !_dialerIsPage ? 96 : 0,
-                ),
-            ContactsPageRoutes.details: (_, contact) => ContactDetailsPage(
-                  Provider.of<ContactRepository>(context),
-                  Provider.of<CallRepository>(context),
-                  Provider.of<PermissionRepository>(context),
-                  Provider.of<SettingRepository>(context),
-                  Provider.of<LoggingRepository>(context),
-                  contact: contact,
-                ),
+            ContactsPageRoutes.root: (_, __) =>
+                ContactsPage(bottomLettersPadding: !_dialerIsPage ? 96 : 0),
+            ContactsPageRoutes.details: (_, contact) =>
+                ContactDetailsPage(contact: contact),
           },
         ),
         RecentPage(
-          Provider.of<RecentCallRepository>(context),
-          Provider.of<CallRepository>(context),
-          Provider.of<SettingRepository>(context),
-          Provider.of<LoggingRepository>(context),
           listBottomPadding: !_dialerIsPage ? 96 : 0,
           snackBarRightPadding: !_dialerIsPage ? 72 : 0,
         ),
-        SettingsPage(
-          Provider.of<SettingRepository>(context),
-          Provider.of<BuildInfoRepository>(context),
-          Provider.of<LoggingRepository>(context),
-          Provider.of<StorageRepository>(context),
-        ),
+        SettingsPage(),
       ];
     }
 
