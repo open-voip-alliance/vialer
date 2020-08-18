@@ -7,7 +7,7 @@ import 'package:path_provider/path_provider.dart';
 
 import '../../../domain/entities/call.dart';
 
-part 'moor.g.dart';
+part 'database.g.dart';
 
 @DataClassName('CallRecord')
 class Calls extends Table {

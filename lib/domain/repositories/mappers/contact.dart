@@ -1,6 +1,6 @@
 import 'package:contacts_service/contacts_service.dart';
 
-import '../../domain/entities/contact.dart' as domain;
+import '../../entities/contact.dart' as domain;
 
 import 'item.dart';
 

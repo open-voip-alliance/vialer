@@ -1,6 +1,6 @@
 import 'package:permission_handler/permission_handler.dart';
 
-import '../../domain/entities/permission.dart' as domain;
+import '../../entities/permission.dart' as domain;
 
 PermissionGroup mapDomainPermissionToPermissionGroup(
   domain.Permission permission,
