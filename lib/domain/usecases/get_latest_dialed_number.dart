@@ -1,22 +1,11 @@
-import 'dart:async';
-
-import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
-import 'package:pedantic/pedantic.dart';
-
 import '../repositories/storage.dart';
+import '../use_case.dart';
 
-class GetLatestDialedNumber extends UseCase<String, void> {
+class GetLatestDialedNumber extends UseCase<String> {
   final StorageRepository _storageRepository;
 
   GetLatestDialedNumber(this._storageRepository);
 
   @override
-  Future<Stream<String>> buildUseCaseStream(_) async {
-    final controller = StreamController<String>();
-
-    controller.add(await _storageRepository.lastDialedNumber);
-    unawaited(controller.close());
-
-    return controller.stream;
-  }
+  String call() => _storageRepository.lastDialedNumber;
 }

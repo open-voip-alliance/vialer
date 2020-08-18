@@ -11,8 +11,6 @@ import '../../../../domain/usecases/get_recent_calls.dart';
 import '../../../../domain/repositories/setting.dart';
 import '../../../../domain/usecases/get_settings.dart';
 
-import '../util/observer.dart';
-
 class RecentPresenter extends Presenter {
   Function recentCallsOnNext;
   Function recentCallsOnError;
@@ -21,45 +19,32 @@ class RecentPresenter extends Presenter {
 
   Function settingsOnNext;
 
-  final GetRecentCallsUseCase _getRecentCallsUseCase;
-  final CallUseCase _callUseCase;
-  final GetSettingsUseCase _getSettingsUseCase;
+  final GetRecentCallsUseCase _getRecentCalls;
+  final CallUseCase _call;
+  final GetSettingsUseCase _getSettings;
 
   RecentPresenter(
     RecentCallRepository recentCallRepository,
     CallRepository callRepository,
     SettingRepository settingRepository,
-  )   : _getRecentCallsUseCase = GetRecentCallsUseCase(recentCallRepository),
-        _getSettingsUseCase = GetSettingsUseCase(settingRepository),
-        _callUseCase = CallUseCase(callRepository);
+  )   : _getRecentCalls = GetRecentCallsUseCase(recentCallRepository),
+        _getSettings = GetSettingsUseCase(settingRepository),
+        _call = CallUseCase(callRepository);
 
   void getRecentCalls({@required int page}) {
-    _getRecentCallsUseCase.execute(
-      Watcher(
-        onNext: recentCallsOnNext,
-        onError: recentCallsOnError,
-      ),
-      GetRecentCallsUseCaseParams(
-        page: page,
-      ),
+    _getRecentCalls(page: page).then(
+      recentCallsOnNext,
+      onError: recentCallsOnError,
     );
   }
 
-  void call(String destination) => _callUseCase.execute(
-        Watcher(
-          onError: (e) => callOnError(e),
-        ),
-        CallUseCaseParams(destination),
-      );
+  void call(String destination) =>
+      _call(destination: destination).catchError(callOnError);
 
   void getSettings() {
-    _getSettingsUseCase.execute(
-      Watcher(onNext: settingsOnNext),
-    );
+    _getSettings().then(settingsOnNext);
   }
 
   @override
-  void dispose() {
-    _getRecentCallsUseCase.dispose();
-  }
+  void dispose() {}
 }

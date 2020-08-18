@@ -14,38 +14,36 @@ import '../../../../domain/usecases/logout.dart';
 
 import '../../../util/debug.dart';
 
-import '../util/observer.dart';
-
 class SettingsPresenter extends Presenter {
   Function settingsOnNext;
   Function buildInfoOnNext;
   Function changeSettingsOnNext;
   Function logoutOnComplete;
 
-  final GetSettingsUseCase _getSettingsUseCase;
-  final GetBuildInfoUseCase _getBuildInfoUseCase;
-  final ChangeSettingUseCase _changeSettingUseCase;
-  final LogoutUseCase _logoutUseCase;
+  final GetSettingsUseCase _getSettings;
+  final GetBuildInfoUseCase _getBuildInfo;
+  final ChangeSettingUseCase _changeSetting;
+  final LogoutUseCase _logout;
 
   SettingsPresenter(
     SettingRepository settingRepository,
     BuildInfoRepository buildInfoRepository,
     LoggingRepository loggingRepository,
     StorageRepository storageRepository,
-  )   : _getSettingsUseCase = GetSettingsUseCase(settingRepository),
-        _getBuildInfoUseCase = GetBuildInfoUseCase(buildInfoRepository),
-        _changeSettingUseCase = ChangeSettingUseCase(
+  )   : _getSettings = GetSettingsUseCase(settingRepository),
+        _getBuildInfo = GetBuildInfoUseCase(buildInfoRepository),
+        _changeSetting = ChangeSettingUseCase(
           settingRepository,
           loggingRepository,
         ),
-        _logoutUseCase = LogoutUseCase(storageRepository);
+        _logout = LogoutUseCase(storageRepository);
 
   void getSettings() {
-    _getSettingsUseCase.execute(Watcher(onNext: settingsOnNext));
+    _getSettings().then(settingsOnNext);
   }
 
   void getBuildInfo() {
-    _getBuildInfoUseCase.execute(Watcher(onNext: buildInfoOnNext));
+    _getBuildInfo().then(buildInfoOnNext);
   }
 
   void changeSetting(Setting setting) {
@@ -53,26 +51,15 @@ class SettingsPresenter extends Presenter {
       return;
     }
 
-    _changeSettingUseCase.execute(
-      Watcher(
-        onComplete: changeSettingsOnNext,
-        onNext: (_) => changeSettingsOnNext,
-      ),
-      ChangeSettingUseCaseParams(setting),
-    );
+    _changeSetting(
+      setting: setting,
+    ).then((_) => changeSettingsOnNext());
   }
 
   void logout() {
-    _logoutUseCase.execute(
-      Watcher(
-        onComplete: logoutOnComplete,
-        onNext: (_) => logoutOnComplete,
-      ),
-    );
+    _logout().then((_) => logoutOnComplete());
   }
 
   @override
-  void dispose() {
-    _getSettingsUseCase.dispose();
-  }
+  void dispose() {}
 }

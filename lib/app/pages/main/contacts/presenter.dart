@@ -11,69 +11,57 @@ import '../../../../domain/usecases/get_contacts.dart';
 import '../../../../domain/usecases/get_permission_status.dart';
 import '../../../../domain/usecases/onboarding/request_permission.dart';
 
-import '../util/observer.dart';
-
 class ContactsPresenter extends Presenter {
   Function contactsOnNext;
   Function contactsOnNoPermission;
   Function contactsOnPermissionGranted;
   Function onCheckContactsPermissionNext;
 
-  final GetContactsUseCase _getContactsUseCase;
-  final GetPermissionStatusUseCase _getPermissionStatusUseCase;
-  final RequestPermissionUseCase _requestPermissionUseCase;
+  final GetContactsUseCase _getContacts;
+  final GetPermissionStatusUseCase _getPermissionStatus;
+  final RequestPermissionUseCase _requestPermission;
 
   ContactsPresenter(
     ContactRepository contactRepository,
     PermissionRepository permissionRepository,
-  )   : _getContactsUseCase = GetContactsUseCase(
+  )   : _getContacts = GetContactsUseCase(
           contactRepository,
           permissionRepository,
         ),
-        _getPermissionStatusUseCase = GetPermissionStatusUseCase(
+        _requestPermission = RequestPermissionUseCase(
           permissionRepository,
         ),
-        _requestPermissionUseCase = RequestPermissionUseCase(
+        _getPermissionStatus = GetPermissionStatusUseCase(
           permissionRepository,
         );
 
   void getContacts() {
-    _getContactsUseCase.execute(
-      Watcher(
-        onNext: contactsOnNext,
-        onError: (e) {
-          if (e is NoPermission) {
-            contactsOnNoPermission();
-          }
-        },
-      ),
+    _getContacts().then(
+      contactsOnNext,
+      onError: (e) {
+        if (e is NoPermission) {
+          contactsOnNoPermission();
+        }
+      },
     );
   }
 
-  void checkContactsPermission() => _getPermissionStatusUseCase.execute(
-        Watcher(
-          onNext: onCheckContactsPermissionNext,
-        ),
-        GetPermissionStatusUseCaseParams(Permission.contacts),
-      );
+  void checkContactsPermission() =>
+      _getPermissionStatus(permission: Permission.contacts)
+          .then(onCheckContactsPermissionNext);
 
   void askPermission() {
-    _requestPermissionUseCase.execute(
-      Watcher(
-        onNext: (status) {
-          if (status == PermissionStatus.granted) {
-            contactsOnPermissionGranted();
-          } else {
-            contactsOnNoPermission();
-          }
-        },
-      ),
-      RequestPermissionUseCaseParams(Permission.contacts),
+    _requestPermission(permission: Permission.contacts).then(
+      (status) {
+        if (status == PermissionStatus.granted) {
+          contactsOnPermissionGranted();
+        } else {
+          contactsOnNoPermission();
+        }
+      },
     );
   }
 
   @override
-  void dispose() {
-    _getContactsUseCase.dispose();
-  }
+  void dispose() {}
 }

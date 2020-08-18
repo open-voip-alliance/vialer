@@ -19,7 +19,7 @@ class SplashController extends Controller {
     _presenter.getAuthStatus();
   }
 
-  void _getAuthStatusOnNext(bool authenticated) {
+  void _getIsAuthenticatedOnNext(bool authenticated) {
     if (authenticated) {
       Navigator.pushReplacementNamed(getContext(), Routes.main);
     } else {
@@ -39,6 +39,6 @@ class SplashController extends Controller {
 
   @override
   void initListeners() {
-    _presenter.getAuthStatusOnNext = _getAuthStatusOnNext;
+    _presenter.getIsAuthenticatedOnNext = _getIsAuthenticatedOnNext;
   }
 }
