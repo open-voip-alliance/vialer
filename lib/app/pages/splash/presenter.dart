@@ -1,25 +1,21 @@
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 
 import '../../../domain/repositories/auth.dart';
-import '../../../domain/usecases/get_auth_status.dart';
-
-import '../main/util/observer.dart';
+import '../../../domain/usecases/get_is_authenticated.dart';
 
 class SplashPresenter extends Presenter {
-  Function getAuthStatusOnNext;
+  Function getIsAuthenticatedOnNext;
 
-  final GetAuthStatusUseCase _useCase;
+  final GetIsAuthenticatedUseCase _getIsAuthenticated;
 
   SplashPresenter(AuthRepository authRepository)
-      : _useCase = GetAuthStatusUseCase(authRepository);
+      : _getIsAuthenticated = GetIsAuthenticatedUseCase(authRepository);
 
-  void getAuthStatus() => _useCase.execute(
-        Watcher(
-          onNext: getAuthStatusOnNext,
-          onError: (e) => getAuthStatusOnNext(false),
-        ),
+  void getAuthStatus() => _getIsAuthenticated().then(
+        getIsAuthenticatedOnNext,
+        onError: (_) => getIsAuthenticatedOnNext(false),
       );
 
   @override
-  void dispose() => _useCase.dispose();
+  void dispose() {}
 }

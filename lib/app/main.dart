@@ -5,42 +5,20 @@ import 'package:timezone/data/latest.dart';
 
 import '../domain/entities/brand.dart';
 
-import '../data/repositories/services/voipgrid.dart';
-
-import '../data/repositories/db/moor.dart';
-
 import '../domain/repositories/env.dart';
-import '../device/repositories/env.dart';
-
 import '../domain/repositories/storage.dart';
-import '../data/repositories/storage.dart';
-
 import '../domain/repositories/auth.dart';
-import '../data/repositories/auth.dart';
-
 import '../domain/repositories/logging.dart';
-import '../data/repositories/logging.dart';
-
 import '../domain/repositories/permission.dart';
-import '../device/repositories/permission.dart';
-
 import '../domain/repositories/contact.dart';
-import '../device/repositories/contact.dart';
-
 import '../domain/repositories/recent_call.dart';
-import '../data/repositories/recent_call.dart';
-
 import '../domain/repositories/call.dart';
-import '../data/repositories/call.dart';
-
 import '../domain/repositories/setting.dart';
-import '../data/repositories/setting.dart';
-
 import '../domain/repositories/build_info.dart';
-import '../device/builld_info.dart';
-
 import '../domain/repositories/feedback.dart';
-import '../data/repositories/feedback.dart';
+
+import '../domain/repositories/services/voipgrid.dart';
+import '../domain/repositories/db/database.dart';
 
 import 'resources/localizations.dart';
 import 'resources/theme.dart';
@@ -55,16 +33,16 @@ void main() async {
 
   final brand = Voys();
 
-  final envRepo = DeviceEnvRepository();
+  final envRepo = EnvRepository();
 
-  final storageRepo = DeviceStorageRepository();
+  final storageRepo = StorageRepository();
   await storageRepo.load();
 
-  final authRepo = DataAuthRepository(storageRepo, brand);
+  final authRepo = AuthRepository(storageRepo, brand);
 
-  final settingRepo = DataSettingRepository(storageRepo);
+  final settingRepo = SettingRepository(storageRepo);
 
-  final loggingRepo = DataLoggingRepository(
+  final loggingRepo = LoggingRepository(
     authRepo,
     storageRepo,
     envRepo,
@@ -82,7 +60,7 @@ void main() async {
     authRepository: authRepo,
     settingRepository: settingRepo,
     loggingRepository: loggingRepo,
-    permissionRepository: DevicePermissionRepository(),
+    permissionRepository: PermissionRepository(),
   );
 
   sentry.run(
@@ -142,10 +120,10 @@ class App extends StatelessWidget {
           value: permissionRepository,
         ),
         Provider<ContactRepository>(
-          create: (_) => DeviceContactsRepository(),
+          create: (_) => ContactRepository(),
         ),
         Provider<RecentCallRepository>(
-          create: (context) => DataRecentCallRepository(
+          create: (context) => RecentCallRepository(
             service,
             Provider.of<Database>(context, listen: false),
             Provider.of<ContactRepository>(context, listen: false),
@@ -153,16 +131,16 @@ class App extends StatelessWidget {
           ),
         ),
         Provider<CallRepository>(
-          create: (_) => DataCallRepository(service, storageRepository),
+          create: (_) => CallRepository(service, storageRepository),
         ),
         Provider<SettingRepository>.value(
           value: settingRepository,
         ),
         Provider<BuildInfoRepository>(
-          create: (context) => DeviceBuildInfoRepository(envRepository),
+          create: (context) => BuildInfoRepository(envRepository),
         ),
         Provider<FeedbackRepository>(
-          create: (_) => DataFeedbackRepository(),
+          create: (_) => FeedbackRepository(),
         ),
         Provider<Brand>.value(
           value: brand,

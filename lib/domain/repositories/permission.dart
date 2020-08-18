@@ -1,12 +1,29 @@
-import '../entities/permission.dart';
-import '../entities/permission_status.dart';
+import 'package:permission_handler/permission_handler.dart';
 
-abstract class PermissionRepository {
-  /// Returns whether the permission is `granted`, `denied`,
-  /// `permanentlyDenied` or `unavailable`.
-  Future<PermissionStatus> getPermissionStatus(Permission permission);
+import 'mappers/permission_status.dart';
 
-  /// Enable the permission, perhaps asking the user whether they want
-  /// to grant it. Returns the resulting PermissionStatus.
-  Future<PermissionStatus> enablePermission(Permission permission);
+import '../entities/permission.dart' as domain;
+import '../entities/permission_status.dart' as domain;
+import 'mappers/permission.dart';
+
+class PermissionRepository {
+  Future<domain.PermissionStatus> getPermissionStatus(
+    domain.Permission permission,
+  ) async {
+    final callPermissionStatus =
+        await PermissionHandler().checkPermissionStatus(
+      mapDomainPermissionToPermissionGroup(permission),
+    );
+
+    return mapPermissionStatusToDomainPermissionStatus(callPermissionStatus);
+  }
+
+  Future<domain.PermissionStatus> enablePermission(
+    domain.Permission permission,
+  ) async {
+    final group = mapDomainPermissionToPermissionGroup(permission);
+    final permissions = await PermissionHandler().requestPermissions([group]);
+
+    return mapPermissionStatusToDomainPermissionStatus(permissions[group]);
+  }
 }

@@ -1,9 +1,37 @@
-import '../entities/setting.dart';
+import '../../domain/entities/setting.dart';
 
-abstract class SettingRepository {
-  Future<void> resetToDefaults();
+import '../../domain/repositories/storage.dart';
 
-  Future<List<Setting>> getSettings();
+class SettingRepository {
+  final StorageRepository _storageRepository;
 
-  Future<void> changeSetting(Setting setting);
+  SettingRepository(this._storageRepository);
+
+  Future<void> resetToDefaults() async {
+    _storageRepository.settings = [
+      RemoteLoggingSetting(false),
+      ShowDialerConfirmPopupSetting(true),
+    ];
+
+    return null;
+  }
+
+  Future<List<Setting>> getSettings() async {
+    return _storageRepository.settings;
+  }
+
+  Future<void> changeSetting(Setting setting) async {
+    final settings = await getSettings();
+
+    final newSettings = settings.toList();
+
+    for (final s in settings) {
+      if (s.runtimeType == setting.runtimeType) {
+        newSettings.remove(s);
+        newSettings.add(setting);
+      }
+    }
+
+    _storageRepository.settings = newSettings;
+  }
 }

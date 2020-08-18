@@ -1,6 +1,6 @@
 import 'package:contacts_service/contacts_service.dart';
 
-import '../../domain/entities/item.dart' as domain;
+import '../../entities/item.dart' as domain;
 
 extension ItemMapper on Item {
   domain.Item toDomainEntity() {

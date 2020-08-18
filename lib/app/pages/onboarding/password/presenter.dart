@@ -6,34 +6,29 @@ import '../../../../domain/repositories/auth.dart';
 import '../../../../domain/repositories/setting.dart';
 import '../../../../domain/repositories/logging.dart';
 
-import '../../main/util/observer.dart';
-
 class PasswordPresenter extends Presenter {
   Function changePaswordOnComplete;
   Function changePasswordOnError;
 
   Function loginOnComplete;
 
-  final ChangePasswordUseCase _changePasswordUseCase;
+  final ChangePasswordUseCase _changePassword;
 
   PasswordPresenter(
     AuthRepository authRepository,
     SettingRepository settingRepository,
     LoggingRepository loggingRepository,
-  ) : _changePasswordUseCase = ChangePasswordUseCase(authRepository);
+  ) : _changePassword = ChangePasswordUseCase(authRepository);
 
   void changePassword(String password) {
-    _changePasswordUseCase.execute(
-      Watcher(
-        onError: changePasswordOnError,
-        onComplete: changePaswordOnComplete,
-      ),
-      ChangePasswordUseCaseParams(newPassword: password),
+    _changePassword(
+      newPassword: password,
+    ).then(
+      (_) => changePaswordOnComplete(),
+      onError: changePasswordOnError,
     );
   }
 
   @override
-  void dispose() {
-    _changePasswordUseCase.dispose();
-  }
+  void dispose() {}
 }
