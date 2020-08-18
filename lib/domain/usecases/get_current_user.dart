@@ -1,23 +1,12 @@
-import 'dart:async';
-
-import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
-import 'package:pedantic/pedantic.dart';
-
 import '../entities/system_user.dart';
 import '../repositories/auth.dart';
+import '../use_case.dart';
 
-class GetCurrentUserUseCase extends UseCase<SystemUser, void> {
-  final AuthRepository authRepository;
+class GetCurrentUserUseCase extends UseCase<SystemUser> {
+  final AuthRepository _authRepository;
 
-  GetCurrentUserUseCase(this.authRepository);
+  GetCurrentUserUseCase(this._authRepository);
 
   @override
-  Future<Stream<SystemUser>> buildUseCaseStream(_) async {
-    final controller = StreamController<SystemUser>();
-
-    controller.add(authRepository.currentUser);
-    unawaited(controller.close());
-
-    return controller.stream;
-  }
+  SystemUser call() => _authRepository.currentUser;
 }

@@ -5,49 +5,38 @@ import '../../../../domain/repositories/setting.dart';
 import '../../../../domain/repositories/logging.dart';
 
 import '../../../../domain/usecases/onboarding/login.dart';
-import '../../../../domain/usecases/reset_to_default_settings.dart';
-
-import '../../main/util/observer.dart';
+import '../../../../domain/usecases/reset_settings.dart';
 
 class LoginPresenter extends Presenter {
   Function loginOnNext;
   Function loginOnError;
 
-  Function resetSettingsToDefaultsOnNext;
+  Function resetSettingsOnNext;
 
-  final LoginUseCase _loginUseCase;
-  final ResetToDefaultSettingsUseCase _resetToDefaultSettingsUseCase;
+  final LoginUseCase _login;
+  final ResetSettingsUseCase _resetSettings;
 
   LoginPresenter(
     AuthRepository authRepository,
     SettingRepository settingRepository,
     LoggingRepository loggingRepository,
-  )   : _loginUseCase = LoginUseCase(authRepository),
-        _resetToDefaultSettingsUseCase = ResetToDefaultSettingsUseCase(
+  )   : _login = LoginUseCase(authRepository),
+        _resetSettings = ResetSettingsUseCase(
           settingRepository,
           loggingRepository,
         );
 
   void login(String email, String password) {
-    _loginUseCase.execute(
-      Watcher(
-        onError: loginOnError,
-        onNext: loginOnNext,
-      ),
-      LoginUseCaseParams(email, password),
+    _login(email: email, password: password).then(
+      loginOnNext,
+      onError: loginOnError,
     );
   }
 
   void resetSettingsToDefaults() {
-    _resetToDefaultSettingsUseCase.execute(
-      Watcher(
-        onNext: (_) => resetSettingsToDefaultsOnNext(),
-      ),
-    );
+    _resetSettings().then((_) => resetSettingsOnNext());
   }
 
   @override
-  void dispose() {
-    _loginUseCase.dispose();
-  }
+  void dispose() {}
 }

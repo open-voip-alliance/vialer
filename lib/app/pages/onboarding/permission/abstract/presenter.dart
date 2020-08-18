@@ -4,27 +4,19 @@ import '../../../../../domain/entities/permission.dart';
 import '../../../../../domain/repositories/permission.dart';
 import '../../../../../domain/usecases/onboarding/request_permission.dart';
 
-import '../../../main/util/observer.dart';
-
 class PermissionPresenter extends Presenter {
   Function requestPermissionOnNext;
 
-  final RequestPermissionUseCase _requestPermissionUseCase;
+  final RequestPermissionUseCase _requestPermission;
 
   PermissionPresenter(PermissionRepository permissionRepository)
-      : _requestPermissionUseCase = RequestPermissionUseCase(
+      : _requestPermission = RequestPermissionUseCase(
           permissionRepository,
         );
 
-  void ask(Permission permission) => _requestPermissionUseCase.execute(
-        Watcher(
-          onNext: requestPermissionOnNext,
-        ),
-        RequestPermissionUseCaseParams(permission),
-      );
+  void ask(Permission permission) =>
+      _requestPermission(permission: permission).then(requestPermissionOnNext);
 
   @override
-  void dispose() {
-    _requestPermissionUseCase.dispose();
-  }
+  void dispose() {}
 }

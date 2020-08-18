@@ -14,8 +14,6 @@ import '../../../../domain/usecases/get_permission_status.dart';
 import '../../../../domain/repositories/setting.dart';
 import '../../../../domain/usecases/get_settings.dart';
 
-import '../util/observer.dart';
-
 class DialerPresenter extends Presenter {
   Function callOnComplete;
   Function callOnError;
@@ -26,65 +24,46 @@ class DialerPresenter extends Presenter {
 
   Function onGetSettingsNext;
 
-  final CallUseCase _callUseCase;
-  final GetLatestDialedNumber _getLatestDialedNumberUseCase;
-  final GetSettingsUseCase _getSettingsUseCase;
-  final GetPermissionStatusUseCase _getPermissionStatusUseCase;
-  final RequestPermissionUseCase _requestPermissionUseCase;
+  final CallUseCase _call;
+  final GetLatestDialedNumber _getLatestDialedNumber;
+  final GetSettingsUseCase _getSettings;
+  final GetPermissionStatusUseCase _getPermissionStatus;
+  final RequestPermissionUseCase _requestPermission;
 
   DialerPresenter(
     CallRepository callRepository,
     PermissionRepository permissionRepository,
     StorageRepository storageRepository,
     SettingRepository settingRepository,
-  )   : _callUseCase = CallUseCase(callRepository),
-        _getPermissionStatusUseCase = GetPermissionStatusUseCase(
+  )   : _call = CallUseCase(callRepository),
+        _getPermissionStatus = GetPermissionStatusUseCase(
           permissionRepository,
         ),
-        _getLatestDialedNumberUseCase = GetLatestDialedNumber(
+        _getLatestDialedNumber = GetLatestDialedNumber(
           storageRepository,
         ),
-        _getSettingsUseCase = GetSettingsUseCase(settingRepository),
-        _requestPermissionUseCase = RequestPermissionUseCase(
+        _getSettings = GetSettingsUseCase(settingRepository),
+        _requestPermission = RequestPermissionUseCase(
           permissionRepository,
         );
 
-  void call(String destination) => _callUseCase.execute(
-        Watcher(
-          onComplete: callOnComplete,
-          onError: (e) => callOnError(e),
-        ),
-        CallUseCaseParams(destination),
+  void call(String destination) => _call(destination: destination).then(
+        callOnComplete,
+        onError: callOnError,
       );
 
-  void checkCallPermission() => _getPermissionStatusUseCase.execute(
-        Watcher(
-          onNext: onCheckCallPermissionNext,
-        ),
-        GetPermissionStatusUseCaseParams(Permission.phone),
-      );
+  void checkCallPermission() => _getPermissionStatus(
+        permission: Permission.phone,
+      ).then(onCheckCallPermissionNext);
 
-  void askCallPermission() => _requestPermissionUseCase.execute(
-        Watcher(
-          onNext: onCheckCallPermissionNext,
-        ),
-        RequestPermissionUseCaseParams(Permission.phone),
-      );
+  void askCallPermission() => _requestPermission(permission: Permission.phone)
+      .then(onCheckCallPermissionNext);
 
-  void getLatestNumber() => _getLatestDialedNumberUseCase.execute(
-        Watcher(
-          onNext: onGetLatestDialedNumberNext,
-        ),
-      );
+  void getLatestNumber() =>
+      onGetLatestDialedNumberNext(_getLatestDialedNumber());
 
-  void getSettings() => _getSettingsUseCase.execute(
-        Watcher(
-          onNext: onGetSettingsNext,
-        ),
-      );
+  void getSettings() => _getSettings().then(onGetSettingsNext);
 
   @override
-  void dispose() {
-    _callUseCase.dispose();
-  }
+  void dispose() {}
 }

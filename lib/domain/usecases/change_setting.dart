@@ -1,25 +1,20 @@
 import 'dart:async';
 
-import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
-import 'package:pedantic/pedantic.dart';
+import 'package:meta/meta.dart';
 
 import '../entities/setting.dart';
 import '../repositories/setting.dart';
 import '../repositories/logging.dart';
+import '../use_case.dart';
 
-class ChangeSettingUseCase extends UseCase<void, ChangeSettingUseCaseParams> {
+class ChangeSettingUseCase extends FutureUseCase<void> {
   final SettingRepository _settingRepository;
   final LoggingRepository _loggingRepository;
 
   ChangeSettingUseCase(this._settingRepository, this._loggingRepository);
 
   @override
-  Future<Stream<void>> buildUseCaseStream(
-    ChangeSettingUseCaseParams params,
-  ) async {
-    final controller = StreamController<void>();
-    final setting = params.setting;
-
+  Future<void> call({@required Setting setting}) async {
     await _settingRepository.changeSetting(setting);
 
     if (setting is RemoteLoggingSetting) {
@@ -29,15 +24,5 @@ class ChangeSettingUseCase extends UseCase<void, ChangeSettingUseCaseParams> {
         await _loggingRepository.disableRemoteLogging();
       }
     }
-
-    unawaited(controller.close());
-
-    return controller.stream;
   }
-}
-
-class ChangeSettingUseCaseParams {
-  final Setting setting;
-
-  ChangeSettingUseCaseParams(this.setting);
 }

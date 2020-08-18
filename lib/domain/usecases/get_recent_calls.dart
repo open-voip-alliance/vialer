@@ -1,37 +1,17 @@
 import 'dart:async';
 
 import 'package:meta/meta.dart';
-import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
-import 'package:pedantic/pedantic.dart';
 
 import '../entities/call.dart';
 import '../repositories/recent_call.dart';
+import '../use_case.dart';
 
-class GetRecentCallsUseCase
-    extends UseCase<List<Call>, GetRecentCallsUseCaseParams> {
+class GetRecentCallsUseCase extends FutureUseCase<List<Call>> {
   final RecentCallRepository _recentCallRepository;
 
   GetRecentCallsUseCase(this._recentCallRepository);
 
   @override
-  Future<Stream<List<Call>>> buildUseCaseStream(
-    GetRecentCallsUseCaseParams params,
-  ) async {
-    final controller = StreamController<List<Call>>();
-
-    controller.add(
-      await _recentCallRepository.getRecentCalls(
-        page: params.page,
-      ),
-    );
-    unawaited(controller.close());
-
-    return controller.stream;
-  }
-}
-
-class GetRecentCallsUseCaseParams {
-  final int page;
-
-  GetRecentCallsUseCaseParams({@required this.page});
+  Future<List<Call>> call({@required int page}) =>
+      _recentCallRepository.getRecentCalls(page: page);
 }

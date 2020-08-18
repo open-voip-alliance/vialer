@@ -9,8 +9,6 @@ import '../../../../../domain/usecases/get_contacts.dart';
 import '../../../../../domain/usecases/call.dart';
 import '../../../../../domain/usecases/get_settings.dart';
 
-import '../../util/observer.dart';
-
 class ContactDetailsPresenter extends Presenter {
   Function contactsOnNext;
 
@@ -18,51 +16,36 @@ class ContactDetailsPresenter extends Presenter {
 
   Function settingsOnNext;
 
-  final GetContactsUseCase _getContactsUseCase;
-  final CallUseCase _callUseCase;
-  final GetSettingsUseCase _getSettingsUseCase;
+  final GetContactsUseCase _getContacts;
+  final CallUseCase _call;
+  final GetSettingsUseCase _getSettings;
 
   ContactDetailsPresenter(
     ContactRepository contactRepository,
     CallRepository callRepository,
     PermissionRepository permissionRepository,
     SettingRepository settingRepository,
-  )   : _getContactsUseCase = GetContactsUseCase(
+  )   : _getContacts = GetContactsUseCase(
           contactRepository,
           permissionRepository,
         ),
-        _callUseCase = CallUseCase(callRepository),
-        _getSettingsUseCase = GetSettingsUseCase(
+        _call = CallUseCase(callRepository),
+        _getSettings = GetSettingsUseCase(
           settingRepository,
         );
 
   void getContacts() {
-    _getContactsUseCase.execute(
-      Watcher(
-        onNext: contactsOnNext,
-      ),
-    );
+    _getContacts().then(contactsOnNext);
   }
 
   void call(String destination) {
-    _callUseCase.execute(
-      Watcher(
-        onError: (e) => callOnError(e),
-      ),
-      CallUseCaseParams(destination),
-    );
+    _call(destination: destination).catchError(callOnError);
   }
 
   void getSettings() {
-    _getSettingsUseCase.execute(
-      Watcher(
-        onNext: settingsOnNext,
-      ),
-    );
+    _getSettings().then(settingsOnNext);
   }
 
   @override
-  void dispose() {
-    _getContactsUseCase.dispose();
-  }
+  void dispose() {}
 }

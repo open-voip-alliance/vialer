@@ -6,35 +6,26 @@ import '../../../../../domain/repositories/auth.dart';
 
 import '../../../../../domain/usecases/send_feedback.dart';
 
-import '../../util/observer.dart';
-
 class FeedbackPresenter extends Presenter {
   Function feedbackSendOnComplete;
 
-  final SendFeedbackUseCase _sendFeedbackUseCase;
+  final SendFeedbackUseCase _sendFeedback;
 
   FeedbackPresenter(
     FeedbackRepository feedbackRepository,
     AuthRepository authRepository,
-  ) : _sendFeedbackUseCase = SendFeedbackUseCase(
+  ) : _sendFeedback = SendFeedbackUseCase(
           feedbackRepository,
           authRepository,
         );
 
   void sendFeedback({@required String title, @required String text}) {
-    _sendFeedbackUseCase.execute(
-      Watcher(
-        onComplete: feedbackSendOnComplete,
-      ),
-      SendFeedbackUseCaseParams(
-        title: title,
-        text: text,
-      ),
-    );
+    _sendFeedback(
+      title: title,
+      text: text,
+    ).then((_) => feedbackSendOnComplete());
   }
 
   @override
-  void dispose() {
-    _sendFeedbackUseCase.dispose();
-  }
+  void dispose() {}
 }

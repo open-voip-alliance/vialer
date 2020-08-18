@@ -12,8 +12,6 @@ import '../../../../../domain/usecases/change_setting.dart';
 import '../../../../../domain/usecases/get_outgoing_cli.dart';
 import '../../../../../domain/usecases/get_settings.dart';
 
-import '../../util/observer.dart';
-
 class ConfirmPresenter extends Presenter {
   Function callOnComplete;
   Function callOnError;
@@ -22,52 +20,40 @@ class ConfirmPresenter extends Presenter {
 
   Function outgoingCliOnNext;
 
-  final CallUseCase _callUseCase;
-  final GetSettingsUseCase _getSettingsUseCase;
-  final ChangeSettingUseCase _changeSettingUseCase;
-  final GetOutgoingCliUseCase _getOutgoingCliUseCase;
+  final CallUseCase _call;
+  final GetSettingsUseCase _getSettings;
+  final ChangeSettingUseCase _changeSetting;
+  final GetOutgoingCliUseCase _getOutgoingCli;
 
   ConfirmPresenter(
     CallRepository callRepository,
     SettingRepository settingRepository,
     LoggingRepository loggingRepository,
     AuthRepository authRepository,
-  )   : _callUseCase = CallUseCase(callRepository),
-        _getSettingsUseCase = GetSettingsUseCase(settingRepository),
-        _changeSettingUseCase = ChangeSettingUseCase(
+  )   : _call = CallUseCase(callRepository),
+        _getSettings = GetSettingsUseCase(settingRepository),
+        _changeSetting = ChangeSettingUseCase(
           settingRepository,
           loggingRepository,
         ),
-        _getOutgoingCliUseCase = GetOutgoingCliUseCase(authRepository);
+        _getOutgoingCli = GetOutgoingCliUseCase(authRepository);
 
-  void call(String destination) {
-    _callUseCase.execute(
-      Watcher(
-        onComplete: callOnComplete,
+  void call(String destination) => _call(destination: destination).then(
+        callOnComplete,
         onError: callOnError,
-      ),
-      CallUseCaseParams(destination),
-    );
-  }
-
-  void getOutgoingCli() => _getOutgoingCliUseCase.execute(
-        Watcher(onNext: outgoingCliOnNext),
       );
 
-  void getSettings() => _getSettingsUseCase.execute(
-        Watcher(onNext: settingsOnNext),
-      );
+  void getOutgoingCli() => outgoingCliOnNext(_getOutgoingCli());
+
+  void getSettings() => _getSettings().then(settingsOnNext);
 
   @override
-  void dispose() {
-    _callUseCase.dispose();
-  }
+  void dispose() {}
 
   // ignore: avoid_positional_boolean_parameters
   void setShowDialogSetting(bool value) {
-    _changeSettingUseCase.execute(
-      Watcher(),
-      ChangeSettingUseCaseParams(ShowDialerConfirmPopupSetting(value)),
+    _changeSetting(
+      setting: ShowDialerConfirmPopupSetting(value),
     );
   }
 }

@@ -1,39 +1,23 @@
 import 'dart:async';
 
 import 'package:meta/meta.dart';
-import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
-import 'package:pedantic/pedantic.dart';
 
 import '../repositories/auth.dart';
+import '../use_case.dart';
 
-class ChangePasswordUseCase extends UseCase<void, ChangePasswordUseCaseParams> {
+class ChangePasswordUseCase extends FutureUseCase<void> {
   final AuthRepository _authRepository;
 
   ChangePasswordUseCase(this._authRepository);
 
   @override
-  Future<Stream<void>> buildUseCaseStream(
-    ChangePasswordUseCaseParams params,
-  ) async {
-    final controller = StreamController<void>();
-
+  Future<void> call({
+    String currentPassword,
+    @required String newPassword,
+  }) async {
     await _authRepository.changePassword(
-      params.newPassword,
-      currentPassword: params.currentPassword,
+      newPassword,
+      currentPassword: currentPassword,
     );
-
-    unawaited(controller.close());
-
-    return controller.stream;
   }
-}
-
-class ChangePasswordUseCaseParams {
-  final String currentPassword;
-  final String newPassword;
-
-  ChangePasswordUseCaseParams({
-    this.currentPassword,
-    @required this.newPassword,
-  });
 }

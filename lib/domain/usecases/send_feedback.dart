@@ -1,47 +1,30 @@
 import 'dart:async';
 
 import 'package:meta/meta.dart';
-import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
-import 'package:pedantic/pedantic.dart';
 
 import '../repositories/feedback.dart';
 import '../repositories/auth.dart';
+import '../use_case.dart';
 
-class SendFeedbackUseCase extends UseCase<void, SendFeedbackUseCaseParams> {
+class SendFeedbackUseCase extends FutureUseCase<void> {
   final FeedbackRepository _feedbackRepository;
   final AuthRepository _authRepository;
 
   SendFeedbackUseCase(this._feedbackRepository, this._authRepository);
 
   @override
-  Future<Stream<void>> buildUseCaseStream(
-    SendFeedbackUseCaseParams params,
-  ) async {
-    final controller = StreamController<void>();
-
+  Future<void> call({
+    @required String title,
+    @required String text,
+    String brand = 'Vialer',
+  }) async {
     final user = _authRepository.currentUser;
 
     await _feedbackRepository.send(
-      title: params.title,
-      text: params.text,
+      title: title,
+      text: text,
       user: user,
-      brand: params.brand,
+      brand: brand,
     );
-    unawaited(controller.close());
-
-    return controller.stream;
   }
-}
-
-class SendFeedbackUseCaseParams {
-  final String title;
-  final String text;
-
-  final String brand;
-
-  SendFeedbackUseCaseParams({
-    @required this.title,
-    @required this.text,
-    this.brand = 'Vialer',
-  });
 }
