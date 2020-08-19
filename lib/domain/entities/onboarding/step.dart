@@ -1,4 +1,4 @@
-enum Step {
+enum OnboardingStep {
   login,
   password,
   callPermission,

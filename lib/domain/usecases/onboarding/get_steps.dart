@@ -3,17 +3,16 @@ import 'dart:io';
 
 import '../../../dependency_locator.dart';
 import '../../use_case.dart';
-
 import '../../repositories/permission.dart';
 import '../../entities/permission.dart';
 import '../../entities/permission_status.dart';
 import '../../entities/onboarding/step.dart';
 
-class GetStepsUseCase extends FutureUseCase<List<Step>> {
+class GetOnboardingStepsUseCase extends FutureUseCase<List<OnboardingStep>> {
   final _permissionRepository = dependencyLocator<PermissionRepository>();
 
   @override
-  Future<List<Step>> call() async {
+  Future<List<OnboardingStep>> call() async {
     var callPermissionDenied = false;
     if (Platform.isAndroid) {
       callPermissionDenied =
@@ -26,11 +25,11 @@ class GetStepsUseCase extends FutureUseCase<List<Step>> {
             PermissionStatus.granted;
 
     return [
-      Step.login,
-      if (callPermissionDenied) Step.callPermission,
-      if (contactsPermissionDenied) Step.contactsPermission,
-      Step.voicemail,
-      Step.welcome,
+      OnboardingStep.login,
+      if (callPermissionDenied) OnboardingStep.callPermission,
+      if (contactsPermissionDenied) OnboardingStep.contactsPermission,
+      OnboardingStep.voicemail,
+      OnboardingStep.welcome,
     ];
   }
 }
