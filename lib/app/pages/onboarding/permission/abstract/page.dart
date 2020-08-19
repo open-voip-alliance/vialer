@@ -1,39 +1,49 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../cubit.dart';
 import '../../info/page.dart';
 
-import 'controller.dart';
+import '../../../../../domain/entities/permission.dart';
 
-class PermissionPage extends View {
+import 'cubit.dart';
+
+class PermissionPage extends StatelessWidget {
   final Widget icon;
   final Widget title;
   final Widget description;
-  final PermissionController controller;
+  final Permission permission;
 
   PermissionPage({
     Key key,
     @required this.icon,
     @required this.title,
     @required this.description,
-    @required this.controller,
+    @required this.permission,
   }) : super(key: key);
 
-  @override
-  State<StatefulWidget> createState() => _PermissionPageState(controller);
-}
-
-class _PermissionPageState
-    extends ViewState<PermissionPage, PermissionController> {
-  _PermissionPageState(PermissionController controller) : super(controller);
+  void _onStateChanged(BuildContext context, PermissionState state) {
+    if (state is PermissionGranted) {
+      context.bloc<OnboardingCubit>().forward();
+    }
+  }
 
   @override
-  Widget buildPage() {
-    return InfoPage(
-      icon: widget.icon,
-      title: widget.title,
-      description: widget.description,
-      onPressed: controller.ask,
+  Widget build(BuildContext context) {
+    return BlocProvider<PermissionCubit>(
+      create: (_) => PermissionCubit(permission),
+      child: Builder(
+        builder: (context) {
+          return BlocListener<PermissionCubit, PermissionState>(
+            listener: _onStateChanged,
+            child: InfoPage(
+              icon: icon,
+              title: title,
+              description: description,
+              onPressed: context.bloc<PermissionCubit>().request,
+            ),
+          );
+        },
+      ),
     );
   }
 }

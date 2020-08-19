@@ -22,6 +22,8 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
+  flutter_bloc: ^6.0.1
+
   flutter_clean_architecture: ^3.0.2
 
   pedantic: ^1.8.0

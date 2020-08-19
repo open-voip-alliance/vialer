@@ -17,5 +17,5 @@ class Voys extends Brand {
   final String appName = 'Voys Freedom';
 
   @override
-  final Uri baseUrl = Uri.parse('https://freedom.voys.nl');
+  final Uri baseUrl = Uri.parse('https://staging.voipgrid.nl');
 }

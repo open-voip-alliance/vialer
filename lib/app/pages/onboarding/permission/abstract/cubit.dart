@@ -1,43 +1,34 @@
-import 'package:flutter/widgets.dart';
-import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_segment/flutter_segment.dart';
 
+import '../../../../../domain/usecases/onboarding/request_permission.dart';
 import '../../../../../domain/entities/permission.dart';
 import '../../../../../domain/entities/permission_status.dart';
 
 import '../../../../util/debug.dart';
+import '../../../../util/loggable.dart';
 
-import 'presenter.dart';
+import 'state.dart';
+export 'state.dart';
 
-class PermissionController extends Controller {
+class PermissionCubit extends Cubit<PermissionState> with Loggable {
+  final _requestPermission = RequestPermissionUseCase();
+
   final Permission permission;
 
-  final _presenter = PermissionPresenter();
+  PermissionCubit(this.permission) : super(PermissionNotRequested());
 
-  final VoidCallback _forward;
-
-  PermissionController(
-    this.permission,
-    this._forward,
-  );
-
-  @override
-  void initController(GlobalKey<State<StatefulWidget>> key) {
-    super.initController(key);
-  }
-
-  void ask() {
+  Future<void> request() async {
     logger.info('Asking permission for "${permission.toShortString()}"');
-    _presenter.ask(permission);
-  }
 
-  void _onAsked(PermissionStatus status) {
+    final status = await _requestPermission(permission: permission);
+
     if (status == PermissionStatus.granted) {
       logger.info('Permission granted for: "${permission.toShortString()}"');
-      _forward();
+      emit(PermissionGranted());
     } else {
       logger.info('Permission denied for: "${permission.toShortString()}"');
-      _forward();
+      emit(PermissionDenied());
     }
 
     doIfNotDebug(() {
@@ -51,10 +42,5 @@ class PermissionController extends Controller {
     });
 
     // TODO: Show error on fail
-  }
-
-  @override
-  void initListeners() {
-    _presenter.requestPermissionOnNext = _onAsked;
   }
 }
