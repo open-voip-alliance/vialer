@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:meta/meta.dart';
 import 'package:chopper/chopper.dart';
 
@@ -14,7 +13,7 @@ abstract class VoipgridService extends ChopperService {
     return _$VoipgridService(
       ChopperClient(
         baseUrl: baseUrl.toString(),
-        converter: JsonConverter(),
+        converter: _JsonConverter(),
         interceptors: [_AuthorizationInterceptor()],
       ),
     );
@@ -64,5 +63,18 @@ class _AuthorizationInterceptor implements RequestInterceptor {
     } else {
       return request;
     }
+  }
+}
+
+class _JsonConverter extends JsonConverter {
+  @override
+  Response decodeJson<BodyType, InnerType>(Response response) {
+    if (response.body == '') {
+      return response.copyWith(
+        body: <String, dynamic>{},
+      );
+    }
+
+    return super.decodeJson(response);
   }
 }

@@ -11,12 +11,12 @@ class ChangePasswordUseCase extends FutureUseCase<void> {
 
   @override
   Future<void> call({
-    String currentPassword,
+    @required String currentPassword,
     @required String newPassword,
   }) async {
     await _authRepository.changePassword(
-      newPassword,
       currentPassword: currentPassword,
+      newPassword: newPassword,
     );
   }
 }

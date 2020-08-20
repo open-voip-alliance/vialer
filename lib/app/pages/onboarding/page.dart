@@ -47,8 +47,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
   }
 
   void _onStateChange(BuildContext context, OnboardingState state) {
-    // Update current pages only once, if there's still 1
-    if (_currentPages.length == 1) {
+    // Update current pages only if there's a size change
+    if (_currentPages.length != state.allSteps.length) {
       _currentPages = Map.fromEntries(
         _allPages.entries.where((e) => state.allSteps.contains(e.key)),
       );

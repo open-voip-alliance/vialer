@@ -12,25 +12,31 @@ class OnboardingState extends Equatable {
   final Iterable<OnboardingStep> allSteps;
   final OnboardingStep currentStep;
 
+  /// User entered password, saved for if they need to change their password.
+  final String password;
+
   final bool completed;
 
   OnboardingState({
     @required this.allSteps,
     @required this.currentStep,
+    this.password,
     this.completed = false,
   });
 
   @override
-  List<Object> get props => [allSteps, currentStep, completed];
+  List<Object> get props => [allSteps, currentStep, password, completed];
 
   OnboardingState copyWith({
     Iterable<OnboardingStep> allSteps,
     OnboardingStep currentStep,
+    String password,
     bool completed,
   }) {
     return OnboardingState(
       allSteps: allSteps ?? this.allSteps,
       currentStep: currentStep ?? this.currentStep,
+      password: password ?? this.password,
       completed: completed ?? this.completed,
     );
   }
