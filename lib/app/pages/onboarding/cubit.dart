@@ -31,7 +31,7 @@ class OnboardingCubit extends Cubit<OnboardingState> with Loggable {
 
     final indexOfCurrent = currentSteps.indexOf(state.currentStep);
 
-    currentSteps.insert(indexOfCurrent, step);
+    currentSteps.insert(indexOfCurrent + 1, step);
 
     emit(
       state.copyWith(
@@ -40,7 +40,9 @@ class OnboardingCubit extends Cubit<OnboardingState> with Loggable {
     );
   }
 
-  void forward() {
+  /// If [password] is set, it will be saved in the [OnboardingState], to
+  /// be used by following steps.
+  void forward({String password}) {
     final currentSteps = state.allSteps.toList();
 
     final indexOfCurrent = currentSteps.indexOf(state.currentStep);
@@ -50,7 +52,7 @@ class OnboardingCubit extends Cubit<OnboardingState> with Loggable {
 
       emit(state.copyWith(completed: true));
     } else {
-      _goTo(currentSteps[indexOfCurrent + 1]);
+      _goTo(currentSteps[indexOfCurrent + 1], password: password);
     }
   }
 
@@ -64,9 +66,9 @@ class OnboardingCubit extends Cubit<OnboardingState> with Loggable {
     }
   }
 
-  void _goTo(OnboardingStep step) {
+  void _goTo(OnboardingStep step, {String password}) {
     logger.info('Progress step: ${state.currentStep} -> $step');
 
-    emit(state.copyWith(currentStep: step));
+    emit(state.copyWith(currentStep: step, password: password));
   }
 }

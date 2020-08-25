@@ -1,3 +1,5 @@
+import 'package:meta/meta.dart';
+
 import '../../dependency_locator.dart';
 
 import '../../domain/entities/brand.dart';
@@ -40,12 +42,6 @@ class AuthRepository {
     if (body != null && body.containsKey(_apiTokenKey)) {
       final token = body[_apiTokenKey];
 
-      final passwordToCache = cachePassword
-          ? password
-          : _currentUser?.password != null
-              ? '' // If password is already set we want to clear it using ''
-              : null;
-
       // Set a temporary system user that the authorization interceptor will
       // use
       _currentUser = SystemUser(
@@ -64,7 +60,6 @@ class AuthRepository {
         systemUserResponse.body,
       ).copyWith(
         token: token,
-        password: passwordToCache,
       );
 
       _currentUser = _storageRepository.systemUser;
@@ -85,13 +80,13 @@ class AuthRepository {
     return _currentUser;
   }
 
-  Future<bool> changePassword(
-    String newPassword, {
-    String currentPassword,
+  Future<bool> changePassword({
+    @required String currentPassword,
+    @required String newPassword,
   }) async {
     final response = await _service.password({
       'email_address': currentUser.email,
-      'current_password': currentPassword ?? currentUser.password,
+      'current_password': currentPassword,
       'new_password': newPassword,
     });
 

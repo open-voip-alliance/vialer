@@ -80,7 +80,7 @@ class _LoginPageState extends State<LoginPage>
       }
 
       FocusScope.of(context).unfocus();
-      onboarding.forward();
+      onboarding.forward(password: _passwordController.text);
     }
   }
 
