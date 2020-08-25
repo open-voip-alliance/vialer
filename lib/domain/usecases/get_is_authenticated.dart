@@ -8,5 +8,5 @@ class GetIsAuthenticatedUseCase extends FutureUseCase<bool> {
   final _authRepository = dependencyLocator<AuthRepository>();
 
   @override
-  Future<bool> call() => _authRepository.isAuthenticated();
+  Future<bool> call() async => _authRepository.currentUser?.token != null;
 }

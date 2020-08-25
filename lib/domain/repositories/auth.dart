@@ -75,10 +75,6 @@ class AuthRepository {
     }
   }
 
-  Future<bool> isAuthenticated() async {
-    return currentUser?.token != null;
-  }
-
   SystemUser get currentUser {
     _currentUser ??= _storageRepository.systemUser;
 
