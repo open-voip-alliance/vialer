@@ -3,6 +3,7 @@ import 'dart:async';
 import '../../dependency_locator.dart';
 import '../repositories/setting.dart';
 import '../repositories/logging.dart';
+import '../entities/setting.dart';
 import '../use_case.dart';
 
 class ResetSettingsUseCase extends FutureUseCase<void> {
@@ -11,7 +12,10 @@ class ResetSettingsUseCase extends FutureUseCase<void> {
 
   @override
   Future<void> call() async {
-    await _settingRepository.resetToDefaults();
+    _settingRepository
+      ..changeSetting(RemoteLoggingSetting(false))
+      ..changeSetting(ShowDialerConfirmPopupSetting(true));
+
     await _loggingRepository.enableRemoteLoggingIfSettingEnabled();
   }
 }

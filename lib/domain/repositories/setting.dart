@@ -7,15 +7,6 @@ class SettingRepository {
 
   SettingRepository(this._storageRepository);
 
-  Future<void> resetToDefaults() async {
-    _storageRepository.settings = [
-      RemoteLoggingSetting(false),
-      ShowDialerConfirmPopupSetting(true),
-    ];
-
-    return null;
-  }
-
   Future<List<Setting>> getSettings() async {
     return _storageRepository.settings;
   }
