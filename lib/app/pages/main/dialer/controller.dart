@@ -2,13 +2,15 @@ import 'dart:io';
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../widgets/caller.dart';
 
 import '../../../../domain/entities/permission_status.dart';
 
-import 'caller.dart';
 import 'presenter.dart';
 
-class DialerController extends Controller with Caller {
+class DialerController extends Controller {
   final _presenter = DialerPresenter();
 
   final String initialDestination;
@@ -30,8 +32,6 @@ class DialerController extends Controller with Caller {
   @override
   void initController(GlobalKey<State<StatefulWidget>> key) {
     super.initController(key);
-
-    executeGetSettingsUseCase();
 
     if (initialDestination != null) {
       keypadController.text = initialDestination;
@@ -59,13 +59,8 @@ class DialerController extends Controller with Caller {
       return;
     }
 
-    call(currentNumber);
+    getContext().bloc<CallerCubit>().call(currentNumber);
     keypadController.text = '';
-  }
-
-  @override
-  void executeCallUseCase(String destination) {
-    _presenter.call(destination);
   }
 
   void _onCallInitiated() {
@@ -80,7 +75,7 @@ class DialerController extends Controller with Caller {
     _canCall = status == PermissionStatus.granted;
 
     if (_canCall && initialDestination != null) {
-      call(initialDestination);
+      getContext().bloc<CallerCubit>().call(initialDestination);
     } else {
       refreshUI();
     }
@@ -92,14 +87,9 @@ class DialerController extends Controller with Caller {
   }
 
   @override
-  void executeGetSettingsUseCase() => _presenter.getSettings();
-
-  @override
   void initListeners() {
     _presenter.callOnComplete = _onCallInitiated;
-    _presenter.callOnError = showException;
     _presenter.onCheckCallPermissionNext = _onCheckCallPermissionNext;
     _presenter.onGetLatestDialedNumberNext = _onGetLatestDialedNumber;
-    _presenter.onGetSettingsNext = setSettings;
   }
 }

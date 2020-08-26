@@ -3,9 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_segment/flutter_segment.dart';
 
-import '../dialer/caller.dart';
+import '../widgets/caller.dart';
 
 import '../../../../domain/entities/call.dart';
 
@@ -13,7 +14,7 @@ import '../../../util/debug.dart';
 
 import 'presenter.dart';
 
-class RecentController extends Controller with Caller {
+class RecentController extends Controller {
   final _presenter = RecentPresenter();
 
   var recentCalls = <Call>[];
@@ -29,19 +30,18 @@ class RecentController extends Controller with Caller {
     super.initController(key);
 
     _loadInitialRecents();
-    executeGetSettingsUseCase();
   }
 
   bool get _loadedMaxAmountOfExtraPages {
     return _extraPagesLoaded == _maxAmountOfExtraPages;
   }
 
-  @override
   Future<void> call(String destination) async {
     doIfNotDebug(() {
       Segment.track(eventName: 'call', properties: {'via': 'recent'});
     });
-    super.call(destination);
+
+    getContext().bloc<CallerCubit>().call(destination);
   }
 
   void copyNumber(String number) {
@@ -51,9 +51,6 @@ class RecentController extends Controller with Caller {
 
     Clipboard.setData(ClipboardData(text: number));
   }
-
-  @override
-  void executeCallUseCase(String destination) => _presenter.call(destination);
 
   void _loadInitialRecents() {
     logger.info('Loading initial recents calls');
@@ -118,10 +115,5 @@ class RecentController extends Controller with Caller {
   void initListeners() {
     _presenter.recentCallsOnNext = _onRecentCallsUpdated;
     _presenter.recentCallsOnError = _onRecentCallsError;
-    _presenter.callOnError = showException;
-    _presenter.settingsOnNext = setSettings;
   }
-
-  @override
-  void executeGetSettingsUseCase() => _presenter.getSettings();
 }
