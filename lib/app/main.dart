@@ -7,6 +7,7 @@ import 'package:timezone/data/latest.dart';
 import '../domain/entities/brand.dart';
 
 import '../dependency_locator.dart';
+import 'pages/main/widgets/caller/widget.dart';
 import 'resources/localizations.dart';
 import 'resources/theme.dart';
 import 'routes.dart';
@@ -18,12 +19,14 @@ void main() async {
 
   initializeTimeZones();
 
-  initializeDependencies();
+  await initializeDependencies();
 
   await sentry.run(() => runApp(App()));
 }
 
 class App extends StatelessWidget {
+  static final _navigatorKey = GlobalKey<NavigatorState>();
+
   App({Key key}) : super(key: key);
 
   @override
@@ -41,21 +44,25 @@ class App extends StatelessWidget {
       ],
       child: Builder(
         builder: (context) {
-          return MaterialApp(
-            title: Provider.of<Brand>(context).appName,
-            theme: context.brandTheme.themeData,
-            initialRoute: Routes.root,
-            routes: Routes.mapped,
-            localizationsDelegates: [
-              VialerLocalizations.delegate,
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
-            supportedLocales: [
-              Locale('en'),
-              Locale('nl'),
-            ],
+          return Caller.create(
+            navigatorKey: _navigatorKey,
+            child: MaterialApp(
+              navigatorKey: _navigatorKey,
+              title: Provider.of<Brand>(context).appName,
+              theme: context.brandTheme.themeData,
+              initialRoute: Routes.root,
+              routes: Routes.mapped,
+              localizationsDelegates: [
+                VialerLocalizations.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              supportedLocales: [
+                Locale('en'),
+                Locale('nl'),
+              ],
+            ),
           );
         },
       ),

@@ -21,7 +21,7 @@ class ConfirmPresenter extends Presenter {
   final _getOutgoingCli = GetOutgoingCliUseCase();
 
   void call(String destination) => _call(destination: destination).then(
-        callOnComplete,
+        (_) => callOnComplete(),
         onError: callOnError,
       );
 
