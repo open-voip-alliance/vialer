@@ -48,7 +48,7 @@ class RemoteLoggingSetting extends Setting<bool> {
   RemoteLoggingSetting(bool value) : super(value);
 
   @override
-  Setting<bool> copyWith({bool value}) => RemoteLoggingSetting(value);
+  RemoteLoggingSetting copyWith({bool value}) => RemoteLoggingSetting(value);
 }
 
 class ShowDialerConfirmPopupSetting extends Setting<bool> {
@@ -56,7 +56,8 @@ class ShowDialerConfirmPopupSetting extends Setting<bool> {
   ShowDialerConfirmPopupSetting(bool value) : super(value);
 
   @override
-  Setting<bool> copyWith({bool value}) => ShowDialerConfirmPopupSetting(value);
+  ShowDialerConfirmPopupSetting copyWith({bool value}) =>
+      ShowDialerConfirmPopupSetting(value);
 }
 
 extension SettingsByType on List<Setting> {
