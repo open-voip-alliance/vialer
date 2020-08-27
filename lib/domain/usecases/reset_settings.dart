@@ -12,9 +12,8 @@ class ResetSettingsUseCase extends FutureUseCase<void> {
 
   @override
   Future<void> call() async {
-    _settingRepository
-      ..changeSetting(RemoteLoggingSetting(false))
-      ..changeSetting(ShowDialerConfirmPopupSetting(true));
+    await _settingRepository.changeSetting(RemoteLoggingSetting(false));
+    await _settingRepository.changeSetting(ShowDialerConfirmPopupSetting(true));
 
     await _loggingRepository.enableRemoteLoggingIfSettingEnabled();
   }

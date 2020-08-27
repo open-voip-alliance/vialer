@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../resources/localizations.dart';
@@ -7,89 +7,87 @@ import '../../../../resources/theme.dart';
 
 import '../../../../../domain/entities/contact.dart';
 
+import '../../widgets/caller.dart';
 import '../widgets/avatar.dart';
 import '../widgets/subtitle.dart';
 import '../../widgets/header.dart';
 
-import 'controller.dart';
+import 'cubit.dart';
 
 const _horizontalPadding = 24.0;
 const _leadingSize = 48.0;
 
-class ContactDetailsPage extends View {
+class ContactDetailsPage extends StatelessWidget {
   final Contact contact;
-  final double bottomLettersPadding;
 
   ContactDetailsPage({
     Key key,
     @required this.contact,
-    this.bottomLettersPadding = 0,
   }) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _ContactDetailsPageState();
-}
-
-class _ContactDetailsPageState
-    extends ViewState<ContactDetailsPage, ContactDetailsController> {
-  _ContactDetailsPageState() : super(ContactDetailsController());
-
-  @override
-  Widget buildPage() {
+  Widget build(BuildContext context) {
     return Scaffold(
-      key: globalKey,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: Header(context.msg.main.contacts.title),
-        centerTitle: false,
-        iconTheme: IconThemeData(color: Theme.of(context).primaryColor),
-      ),
-      body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.only(
-            top: 32,
-          ),
-          child: Column(
-            children: <Widget>[
-              Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: _horizontalPadding,
-                ),
-                child: Row(
-                  children: <Widget>[
-                    ContactAvatar(widget.contact, size: _leadingSize),
-                    SizedBox(width: 16),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          widget.contact.name,
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        SizedBox(height: 4),
-                        ContactSubtitle(widget.contact),
-                      ],
-                    )
-                  ],
-                ),
-              ),
-              SizedBox(height: 24),
-              Expanded(
-                child: _DestinationsList(
-                  contact: widget.contact,
-                  onTapNumber: controller.call,
-                  onTapEmail: controller.mail,
-                ),
-              ),
-            ],
-          ),
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          title: Header(context.msg.main.contacts.title),
+          centerTitle: false,
+          iconTheme: IconThemeData(color: Theme.of(context).primaryColor),
         ),
-      ),
-    );
+        body: BlocProvider<ContactDetailsCubit>(
+          create: (_) => ContactDetailsCubit(context.bloc<CallerCubit>()),
+          child: Builder(
+            builder: (context) {
+              final cubit = context.bloc<ContactDetailsCubit>();
+
+              return SafeArea(
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    top: 32,
+                  ),
+                  child: Column(
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: _horizontalPadding,
+                        ),
+                        child: Row(
+                          children: <Widget>[
+                            ContactAvatar(contact, size: _leadingSize),
+                            SizedBox(width: 16),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text(
+                                  contact.name,
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(height: 4),
+                                ContactSubtitle(contact),
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 24),
+                      Expanded(
+                        child: _DestinationsList(
+                          contact: contact,
+                          onTapNumber: cubit.call,
+                          onTapEmail: cubit.mail,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ));
   }
 }
 

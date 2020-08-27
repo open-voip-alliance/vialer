@@ -77,6 +77,7 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       floatingActionButton: _currentIndex != 2 && !_dialerIsPage
           ? SizedBox(
               height: 62,

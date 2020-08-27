@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:characters/characters.dart';
 import 'package:flutter_widgets/flutter_widgets.dart';
 import 'package:provider/provider.dart';
@@ -21,14 +21,14 @@ import 'widgets/group_header.dart';
 
 import '../../../util/conditional_capitalization.dart';
 
-import 'controller.dart';
+import 'cubit.dart';
 
 abstract class ContactsPageRoutes {
   static const root = '/';
   static const details = '/details';
 }
 
-class ContactsPage extends View {
+class ContactsPage extends StatefulWidget {
   final double bottomLettersPadding;
 
   ContactsPage({
@@ -37,91 +37,68 @@ class ContactsPage extends View {
   }) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _ContactPageState();
+  _ContactPageState createState() => _ContactPageState();
 }
 
-class _ContactPageState extends ViewState<ContactsPage, ContactsController> {
-  _ContactPageState() : super(ContactsController());
+class _ContactPageState extends State<ContactsPage> {
+  String _searchTerm;
+
+  void _onSearchTermChanged(String searchTerm) {
+    setState(() {
+      _searchTerm = searchTerm;
+    });
+  }
 
   @override
-  Widget buildPage() {
+  Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.only(
             top: 16,
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Header(context.msg.main.contacts.title),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: _SearchTextField(
-                  onChanged: controller.onSearch,
-                ),
-              ),
-              Expanded(
-                child: ConditionalPlaceholder(
-                  showPlaceholder: controller.contacts.isEmpty,
-                  placeholder: controller.hasPermission
-                      ? Warning(
-                          icon: Icon(VialerSans.userOff),
-                          title: Text(
-                            context.msg.main.contacts.list.empty.title,
-                          ),
-                          description: Text(
-                            context.msg.main.contacts.list.empty.description(
-                              Provider.of<Brand>(context).appName,
-                            ),
-                          ),
-                        )
-                      : Warning(
-                          icon: Icon(VialerSans.lockOn),
-                          title: Text(
-                            context.msg.main.contacts.list.noPermission.title,
-                          ),
-                          description: !controller.showSettingsDirections
-                              ? Text(context.msg.main.contacts.list.noPermission
-                                  .description(
-                                  Provider.of<Brand>(context).appName,
-                                ))
-                              : Text(context.msg.main.contacts.list.noPermission
-                                  .permanentDescription(
-                                  Provider.of<Brand>(context).appName,
-                                )),
-                          children: !controller.showSettingsDirections
-                              ? <Widget>[
-                                  SizedBox(height: 40),
-                                  StylizedButton.raised(
-                                    colored: true,
-                                    onPressed: controller.askPermission,
-                                    child: Text(
-                                      context.msg.main.contacts.list
-                                          .noPermission.button
-                                          .toUpperCaseIfAndroid(context),
-                                    ),
-                                  ),
-                                ]
-                              : <Widget>[],
-                        ),
-                  child: AnimatedSwitcher(
-                    duration: Duration(milliseconds: 200),
-                    switchInCurve: Curves.decelerate,
-                    switchOutCurve: Curves.decelerate.flipped,
-                    child: _AlphabetListView(
-                      key: ValueKey(controller.searchTerm),
-                      bottomLettersPadding: widget.bottomLettersPadding,
-                      children: _mapAndFilterToWidgets(controller.contacts),
-                      onRefresh: () => controller.updateContacts(),
+          child: BlocProvider<ContactsCubit>(
+            create: (_) => ContactsCubit(),
+            child: BlocBuilder<ContactsCubit, ContactsState>(
+              builder: (context, state) {
+                final cubit = context.bloc<ContactsCubit>();
+
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      child: Header(context.msg.main.contacts.title),
                     ),
-                  ),
-                ),
-              ),
-            ],
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      child: _SearchTextField(
+                        onChanged: _onSearchTermChanged,
+                      ),
+                    ),
+                    Expanded(
+                      child: _Placeholder(
+                        state: state,
+                        child: AnimatedSwitcher(
+                          duration: Duration(milliseconds: 200),
+                          switchInCurve: Curves.decelerate,
+                          switchOutCurve: Curves.decelerate.flipped,
+                          child: _AlphabetListView(
+                            key: ValueKey(_searchTerm),
+                            bottomLettersPadding: widget.bottomLettersPadding,
+                            children: _mapAndFilterToWidgets(
+                              state is ContactsLoaded ? state.contacts : [],
+                            ),
+                            onRefresh: cubit.loadContacts,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
           ),
         ),
       ),
@@ -140,7 +117,7 @@ class _ContactPageState extends ViewState<ContactsPage, ContactsController> {
     bool isNumberlike(String char) =>
         char != null ? RegExp(r'[0-9\(\+]').hasMatch(char) : false;
 
-    final searchTerm = controller.searchTerm?.toLowerCase();
+    final searchTerm = _searchTerm?.toLowerCase();
     for (var contact in contacts) {
       if (searchTerm != null &&
           !contact.name.toLowerCase().contains(searchTerm) &&
@@ -198,6 +175,74 @@ class _ContactPageState extends ViewState<ContactsPage, ContactsController> {
         )
         .expand((widgets) => widgets)
         .toList();
+  }
+}
+
+class _Placeholder extends StatelessWidget {
+  final ContactsState state;
+  final Widget child;
+
+  const _Placeholder({
+    Key key,
+    @required this.state,
+    @required this.child,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    // Needed for auto cast
+    final state = this.state;
+
+    final cubit = context.bloc<ContactsCubit>();
+
+    return ConditionalPlaceholder(
+      showPlaceholder: state is! ContactsLoaded ||
+          (state is ContactsLoaded && state.contacts.isEmpty),
+      placeholder: state is NoPermission
+          ? Warning(
+              icon: Icon(VialerSans.lockOn),
+              title: Text(
+                context.msg.main.contacts.list.noPermission.title,
+              ),
+              description: !state.dontAskAgain
+                  ? Text(
+                      context.msg.main.contacts.list.noPermission.description(
+                        Provider.of<Brand>(context).appName,
+                      ),
+                    )
+                  : Text(
+                      context.msg.main.contacts.list.noPermission
+                          .permanentDescription(
+                        Provider.of<Brand>(context).appName,
+                      ),
+                    ),
+              children: !state.dontAskAgain
+                  ? <Widget>[
+                      SizedBox(height: 40),
+                      StylizedButton.raised(
+                        colored: true,
+                        onPressed: cubit.askPermission,
+                        child: Text(
+                          context.msg.main.contacts.list.noPermission.button
+                              .toUpperCaseIfAndroid(context),
+                        ),
+                      ),
+                    ]
+                  : <Widget>[],
+            )
+          : Warning(
+              icon: Icon(VialerSans.userOff),
+              title: Text(
+                context.msg.main.contacts.list.empty.title,
+              ),
+              description: Text(
+                context.msg.main.contacts.list.empty.description(
+                  Provider.of<Brand>(context).appName,
+                ),
+              ),
+            ),
+      child: child,
+    );
   }
 }
 

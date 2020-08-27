@@ -16,11 +16,18 @@ class SettingRepository {
 
     final newSettings = settings.toList();
 
+    var changed = false;
     for (final s in settings) {
       if (s.runtimeType == setting.runtimeType) {
         newSettings.remove(s);
         newSettings.add(setting);
+        changed = true;
+        break;
       }
+    }
+
+    if (!changed) {
+      newSettings.add(setting);
     }
 
     _storageRepository.settings = newSettings;
