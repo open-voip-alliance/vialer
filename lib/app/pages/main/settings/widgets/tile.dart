@@ -11,20 +11,26 @@ import '../../../../mappers/setting.dart';
 
 import '../../../../util/conditional_capitalization.dart';
 
-class SettingTile extends StatelessWidget {
-  final Setting setting;
-  final ValueChanged<bool> onChanged;
+class SettingTile<S extends Setting> extends StatelessWidget {
+  final S setting;
+  final ValueChanged<S> onChanged;
 
   const SettingTile(
     this.setting, {
     Key key,
     @required this.onChanged,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
+    // Needed for auto cast
+    final setting = this.setting;
+
     if (setting is Setting<bool>) {
-      return _BoolSettingTile(setting, onChanged);
+      return _BoolSettingTile<Setting<bool>>(
+        setting,
+        (setting) => onChanged(setting as S),
+      );
     } else {
       throw UnsupportedError('Unknown setting generic type');
     }
@@ -84,9 +90,9 @@ class SettingTileCategory extends StatelessWidget {
   }
 }
 
-class _BoolSettingTile extends StatefulWidget {
-  final Setting<bool> setting;
-  final ValueChanged<bool> onChanged;
+class _BoolSettingTile<S extends Setting<bool>> extends StatelessWidget {
+  final S setting;
+  final ValueChanged<S> onChanged;
 
   const _BoolSettingTile(
     this.setting,
@@ -95,15 +101,8 @@ class _BoolSettingTile extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _BoolSettingTileState();
-}
-
-class _BoolSettingTileState extends State<_BoolSettingTile> {
-  _BoolSettingTileState();
-
-  @override
   Widget build(BuildContext context) {
-    final info = widget.setting.toInfo(context);
+    final info = setting.toInfo(context);
 
     return Column(
       children: <Widget>[
@@ -134,8 +133,10 @@ class _BoolSettingTileState extends State<_BoolSettingTile> {
                 ),
               ),
               _Switch(
-                value: widget.setting.value,
-                onChanged: widget.onChanged,
+                value: setting.value,
+                onChanged: (value) => onChanged(
+                  setting.copyWith(value: value),
+                ),
               )
             ],
           ),
