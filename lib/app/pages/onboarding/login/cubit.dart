@@ -43,7 +43,7 @@ class LoginCubit extends Cubit<LoginState> with Loggable {
       });
 
       logger.info('Writing default settings');
-      _resetSettings();
+      await _resetSettings();
 
       emit(LoggedIn());
     } else {
