@@ -2,19 +2,19 @@ import 'package:permission_handler/permission_handler.dart';
 
 import '../../entities/permission.dart' as domain;
 
-Permission mapDomainPermissionToPermission(
-  domain.Permission permission,
-) {
-  switch (permission) {
-    case domain.Permission.phone:
-      return Permission.phone;
+extension PermissionMapper on domain.Permission {
+  Permission toThirdPartyEntity() {
+    switch (this) {
+      case domain.Permission.phone:
+        return Permission.phone;
 
-    case domain.Permission.contacts:
-      return Permission.contacts;
+      case domain.Permission.contacts:
+        return Permission.contacts;
 
-    default:
-      throw UnsupportedError(
-        'PermissionGroup has no equivalent domain entity Permission',
-      );
+      default:
+        throw UnsupportedError(
+          'Domain Permission has no equivalent package Permission: $this',
+        );
+    }
   }
 }
