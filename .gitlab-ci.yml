@@ -12,6 +12,7 @@ analyze:
   stage: check
   script:
     - flutter pub get
+    - flutter pub run build_runner build
     # This next line is necessary because the analyzer's exclude functionality is currently
     # not working. See here for more: https://github.com/dart-lang/sdk/issues/25551
     # If any analysis errors occur in the generated messages file, there probably
@@ -29,10 +30,7 @@ format:
   image: google/dart:latest
   stage: check
   script:
-    - >-
-      dartfmt $(find . -type f
-      \( -iname "*.dart" ! -path "./lib/app/resources/messages*.i18n.dart" \))
-      --fix -n --set-exit-if-changed
+    - dartfmt --fix -n --set-exit-if-changed .
 
 test:
   image: cirrusci/flutter:1.20.1
@@ -40,6 +38,7 @@ test:
   script:
     - cp .env.example .env
     - flutter pub get
+    - flutter pub run build_runner build
     - flutter pub global activate junitreport
     - export PATH="$PATH":"$HOME/.pub-cache/bin"
     - flutter test --machine | tojunit --output report.xml
