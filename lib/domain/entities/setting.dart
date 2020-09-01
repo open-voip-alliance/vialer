@@ -1,4 +1,5 @@
 import 'package:meta/meta.dart';
+import 'package:dartx/dartx.dart';
 
 @immutable
 abstract class Setting<T> {
@@ -62,6 +63,6 @@ class ShowDialerConfirmPopupSetting extends Setting<bool> {
 
 extension SettingsByType on List<Setting> {
   T get<T extends Setting>() {
-    return firstWhere((setting) => setting is T);
+    return firstOrNullWhere((setting) => setting is T);
   }
 }
