@@ -8,7 +8,7 @@ class OnboardingState extends Equatable {
   /// added later on during the onboarding process.
   ///
   /// For example, when the user is required to change their password,
-  /// the `Step.password` will be added.
+  /// the `OnboardingStep.password` will be added.
   final Iterable<OnboardingStep> allSteps;
   final OnboardingStep currentStep;
 
