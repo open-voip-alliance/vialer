@@ -15,7 +15,6 @@ class SendFeedbackUseCase extends FutureUseCase<void> {
   Future<void> call({
     @required String title,
     @required String text,
-    String brand = 'Vialer',
   }) async {
     final user = _authRepository.currentUser;
 
@@ -23,7 +22,6 @@ class SendFeedbackUseCase extends FutureUseCase<void> {
       title: title,
       text: text,
       user: user,
-      brand: brand,
     );
   }
 }

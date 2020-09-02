@@ -13,7 +13,6 @@ class FeedbackRepository {
     @required String title,
     @required String text,
     @required SystemUser user,
-    @required String brand,
   }) async {
     final service = FeedbackService.create();
 
