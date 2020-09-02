@@ -23,4 +23,7 @@ class ContactsLoaded extends ContactsState {
   final Iterable<Contact> contacts;
 
   ContactsLoaded(this.contacts);
+
+  @override
+  List<Object> get props => [contacts];
 }
