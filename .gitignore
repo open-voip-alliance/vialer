@@ -37,3 +37,8 @@ lib/generated_plugin_registrant.dart
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 
 .env
+
+# Generated files
+*.g.dart
+*.chopper.dart
+*.i18n.dart
