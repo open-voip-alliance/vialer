@@ -110,10 +110,7 @@ class LoggingRepository {
 
   Future<void> enableRemoteLoggingIfSettingEnabled() async {
     final settings = await _settingRepository.getSettings();
-    final setting = settings.whereType<RemoteLoggingSetting>().firstWhere(
-          (_) => true,
-          orElse: () => null,
-        );
+    final setting = settings.get<RemoteLoggingSetting>();
 
     if (setting?.value == true) {
       await enableRemoteLogging();
