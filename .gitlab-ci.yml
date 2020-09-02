@@ -20,7 +20,7 @@ analyze:
     - >-
       echo "// ignore_for_file: unused_element, lines_longer_than_80_chars,
       annotate_overrides, camel_case_types, prefer_single_quotes, unused_field,
-      avoid_equals_and_hash_code_on_mutable_classes"
+      avoid_equals_and_hash_code_on_mutable_classes, avoid_positional_boolean_parameters"
       | tee -a lib/app/resources/messages*.i18n.dart
       lib/domain/repositories/services/*.chopper.dart
       lib/domain/repositories/db/*.g.dart
