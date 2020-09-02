@@ -12,12 +12,14 @@ domain.PermissionStatus mapPermissionStatusToDomainPermissionStatus(
     case PermissionStatus.denied:
       return domain.PermissionStatus.denied;
 
-    case PermissionStatus.neverAskAgain:
+    case PermissionStatus.permanentlyDenied:
       return domain.PermissionStatus.permanentlyDenied;
 
     case PermissionStatus.restricted:
-    case PermissionStatus.unknown:
+      return domain.PermissionStatus.restricted;
+
+    case PermissionStatus.undetermined:
     default:
-      return domain.PermissionStatus.unavailable;
+      return domain.PermissionStatus.undetermined;
   }
 }
