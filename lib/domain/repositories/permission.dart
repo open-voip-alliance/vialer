@@ -10,19 +10,17 @@ class PermissionRepository {
   Future<domain.PermissionStatus> getPermissionStatus(
     domain.Permission permission,
   ) async {
-    final callPermissionStatus =
-        await mapDomainPermissionToPermission(permission).status;
+    final callPermissionStatus = await permission.toThirdPartyEntity().status;
 
-    return mapPermissionStatusToDomainPermissionStatus(callPermissionStatus);
+    return callPermissionStatus.toDomainEntity();
   }
 
   Future<domain.PermissionStatus> enablePermission(
     domain.Permission permission,
   ) async {
-    final mappedPermission = mapDomainPermissionToPermission(permission);
+    final mappedPermission = permission.toThirdPartyEntity();
 
     final status = await mappedPermission.request();
-
-    return mapPermissionStatusToDomainPermissionStatus(status);
+    return status.toDomainEntity();
   }
 }
