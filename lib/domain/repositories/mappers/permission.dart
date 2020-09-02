@@ -2,15 +2,15 @@ import 'package:permission_handler/permission_handler.dart';
 
 import '../../entities/permission.dart' as domain;
 
-PermissionGroup mapDomainPermissionToPermissionGroup(
+Permission mapDomainPermissionToPermission(
   domain.Permission permission,
 ) {
   switch (permission) {
     case domain.Permission.phone:
-      return PermissionGroup.phone;
+      return Permission.phone;
 
     case domain.Permission.contacts:
-      return PermissionGroup.contacts;
+      return Permission.contacts;
 
     default:
       throw UnsupportedError(

@@ -11,9 +11,7 @@ class PermissionRepository {
     domain.Permission permission,
   ) async {
     final callPermissionStatus =
-        await PermissionHandler().checkPermissionStatus(
-      mapDomainPermissionToPermissionGroup(permission),
-    );
+        await mapDomainPermissionToPermission(permission).status;
 
     return mapPermissionStatusToDomainPermissionStatus(callPermissionStatus);
   }
@@ -21,9 +19,10 @@ class PermissionRepository {
   Future<domain.PermissionStatus> enablePermission(
     domain.Permission permission,
   ) async {
-    final group = mapDomainPermissionToPermissionGroup(permission);
-    final permissions = await PermissionHandler().requestPermissions([group]);
+    final mappedPermission = mapDomainPermissionToPermission(permission);
 
-    return mapPermissionStatusToDomainPermissionStatus(permissions[group]);
+    final status = await mappedPermission.request();
+
+    return mapPermissionStatusToDomainPermissionStatus(status);
   }
 }
