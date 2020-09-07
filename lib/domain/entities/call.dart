@@ -94,6 +94,10 @@ class Call extends Equatable {
     );
   }
 
+  bool get isInbound => direction == Direction.inbound;
+
+  bool get isOutbound => direction == Direction.outbound;
+
   @override
   String toString() {
     return '$id: $destinationNumber';

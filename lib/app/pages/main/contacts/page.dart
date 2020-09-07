@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:characters/characters.dart';
 import 'package:flutter_widgets/flutter_widgets.dart';
 import 'package:provider/provider.dart';
+import 'package:dartx/dartx.dart';
 
 import '../../../resources/localizations.dart';
 
@@ -134,10 +135,10 @@ class _ContactPageState extends State<ContactsPage> {
         continue;
       }
 
-      var firstCharacter = contact.initials.characters.firstWhere(
-        (_) => true,
-        orElse: () => null,
-      );
+      var firstCharacter = contact.initials.characters.firstOrNull ??
+          contact.phoneNumbers
+              .firstOrNullWhere((number) => number?.value != null)
+              ?.value;
 
       final contactItem = ContactItem(contact: contact);
 
@@ -154,26 +155,23 @@ class _ContactPageState extends State<ContactsPage> {
       }
     }
 
-    final sortedEntries = widgets.entries.toList()
-      ..sort((a, b) {
-        if (a.key == numberKey) {
-          return 1;
-        } else if (a.key == specialKey) {
-          return -1;
-        } else {
-          return a.key.compareTo(b.key);
-        }
-      });
-
-    return sortedEntries
+    return widgets.entries
+        .sortedWith((a, b) {
+          if (a.key == numberKey) {
+            return 1;
+          } else if (a.key == specialKey) {
+            return -1;
+          } else {
+            return a.key.compareTo(b.key);
+          }
+        })
         .map(
           (e) => [
             GroupHeader(group: e.key),
-            ...e.value
-              ..sort((a, b) => a.contact.name.compareTo(b.contact.name)),
+            ...e.value.sortedBy((e) => e.contact.name),
           ],
         )
-        .expand((widgets) => widgets)
+        .flatten()
         .toList();
   }
 }

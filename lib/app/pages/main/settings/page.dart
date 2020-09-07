@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
+import 'package:dartx/dartx.dart';
 
 import '../../../../domain/entities/build_info.dart';
 import '../../../../domain/entities/setting.dart';
@@ -19,15 +19,10 @@ import '../util/stylized_snack_bar.dart';
 
 import 'cubit.dart';
 
-class SettingsPage extends View {
+class SettingsPage extends StatelessWidget {
   SettingsPage({Key key}) : super(key: key);
 
-  @override
-  State<StatefulWidget> createState() => _SettingsPageState();
-}
-
-class _SettingsPageState extends State<SettingsPage> {
-  Future<void> _goToFeedbackPage() async {
+  Future<void> _goToFeedbackPage(BuildContext context) async {
     final sent = await Navigator.pushNamed(
           context,
           Routes.feedback,
@@ -95,7 +90,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             width: double.infinity,
                             child: StylizedButton.raised(
                               colored: true,
-                              onPressed: _goToFeedbackPage,
+                              onPressed: () => _goToFeedbackPage(context),
                               child: Text(
                                 sendFeedbackButtonText,
                               ),
@@ -153,7 +148,7 @@ class _Content extends StatelessWidget {
         .map(
           (s) => s.toInfo(context).category,
         )
-        .toSet();
+        .distinct();
 
     final settingsByCategory = Map.fromEntries(
       categories.map(
