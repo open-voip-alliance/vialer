@@ -1,3 +1,5 @@
+import 'package:dartx/dartx.dart';
+
 class SystemUser {
   static const _uuidKey = 'uuid';
   static const _emailKey = 'email';
@@ -21,9 +23,8 @@ class SystemUser {
 
   final String outgoingCli;
 
-  String get appAccountId => _appAccount?.pathSegments?.lastWhere(
+  String get appAccountId => _appAccount?.pathSegments?.lastOrNullWhere(
         (p) => p.isNotEmpty,
-        orElse: () => null,
       );
 
   SystemUser({

@@ -2,6 +2,7 @@ import 'package:libphonenumber/libphonenumber.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 import 'package:timezone/timezone.dart';
+import 'package:dartx/dartx.dart';
 
 import 'db/database.dart';
 import 'services/voipgrid.dart';
@@ -114,62 +115,54 @@ class RecentCallRepository {
         ? await _contactRepository.getContacts()
         : <Contact>[];
 
-    // Create a list with all phone numbers of the recent calls
-    // respecting the call direction.
-    var phoneNumbers = calls.map(
-      (call) => call.direction == Direction.outbound
-          ? call.destinationNumber
-          : call.callerNumber,
-    );
-
-    // Add all the phone numbers from the contacts.
-    phoneNumbers = phoneNumbers.followedBy(
-      contacts
-          .map(
-            (contact) =>
-                contact.phoneNumbers.map((phoneNumber) => phoneNumber.value),
-          )
-          .expand((pair) => pair),
-    );
-
-    // Remove duplicate phone numbers.
-    phoneNumbers = phoneNumbers.toSet().toList();
-
-    final normalizedPhoneNumbers = await Future.wait(
-      phoneNumbers.map(
-        (phoneNumber) => PhoneNumberUtil.normalizePhoneNumber(
-          phoneNumber: phoneNumber,
+    Future<String> normalizeNumber(String number) =>
+        PhoneNumberUtil.normalizePhoneNumber(
+          phoneNumber: number,
           isoCode: 'NL',
-        ).catchError((_) => null),
+        );
+
+    // Map phone numbers by contact.
+    final phoneNumbersByContact = Map.fromEntries(
+      await Future.wait(
+        contacts.map(
+          (contact) async => MapEntry(
+            contact,
+            await Future.wait(
+              contact.phoneNumbers
+                  .map((phoneNumber) => normalizeNumber(phoneNumber.value))
+                  .toList(),
+            ),
+          ),
+        ),
       ),
     );
 
-    // Create a mapping from the original to the normalized phone number.
-    final mappedPhoneNumbers = phoneNumbers.toList().asMap().map(
-          (index, phoneNumber) => MapEntry(
-            phoneNumber,
-            normalizedPhoneNumbers[index],
-          ),
-        );
-
-    // Remove the phone numbers for which the normalization threw an error.
-    mappedPhoneNumbers.removeWhere((_, value) => value == null);
+    final normalizedCalls = await Future.wait(
+      calls.map(
+        (c) async => c.copyWith(
+          destinationNumber:
+              c.isOutbound ? await normalizeNumber(c.destinationNumber) : null,
+          callerNumber:
+              c.isInbound ? await normalizeNumber(c.callerNumber) : null,
+        ),
+      ),
+    );
 
     _logger.info('Mapping calls to contacts and correct local time');
-    calls = calls
+    calls = normalizedCalls
         .map(
           (call) => call.copyWith(
-            destinationContactName: contacts
-                .firstWhere(
-                  (contact) => contact.phoneNumbers.any(
-                    (i) =>
-                        mappedPhoneNumbers[i.value] ==
-                        mappedPhoneNumbers[call.direction == Direction.outbound
-                            ? call.destinationNumber
-                            : call.callerNumber],
-                  ),
-                  orElse: () => null,
-                )
+            destinationContactName: phoneNumbersByContact.entries
+                .firstOrNullWhere((entry) {
+                  final numbers = entry.value;
+
+                  final relevantCallNumber = call.isOutbound
+                      ? call.destinationNumber
+                      : call.callerNumber;
+
+                  return numbers.contains(relevantCallNumber);
+                })
+                ?.key // The contact.
                 ?.name,
             localDate: call.date.toLocal(),
           ),
