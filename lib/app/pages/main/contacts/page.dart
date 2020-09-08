@@ -32,22 +32,54 @@ abstract class ContactsPageRoutes {
 class ContactsPage extends StatefulWidget {
   final double bottomLettersPadding;
 
-  ContactsPage({
+  ContactsPage._({
     Key key,
     this.bottomLettersPadding = 0,
   }) : super(key: key);
+
+  static Widget create({
+    Key key,
+    double bottomLettersPadding = 0,
+  }) {
+    return BlocProvider<ContactsCubit>(
+      create: (_) => ContactsCubit(),
+      child: ContactsPage._(
+        key: key,
+        bottomLettersPadding: bottomLettersPadding,
+      ),
+    );
+  }
 
   @override
   _ContactPageState createState() => _ContactPageState();
 }
 
-class _ContactPageState extends State<ContactsPage> {
+class _ContactPageState extends State<ContactsPage>
+    with
+        // ignore: prefer_mixin
+        WidgetsBindingObserver {
   String _searchTerm;
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addObserver(this);
+  }
 
   void _onSearchTermChanged(String searchTerm) {
     setState(() {
       _searchTerm = searchTerm;
     });
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+
+    if (state == AppLifecycleState.resumed) {
+      context.bloc<ContactsCubit>().loadContacts();
+    }
   }
 
   @override
@@ -59,47 +91,44 @@ class _ContactPageState extends State<ContactsPage> {
           padding: EdgeInsets.only(
             top: 16,
           ),
-          child: BlocProvider<ContactsCubit>(
-            create: (_) => ContactsCubit(),
-            child: BlocBuilder<ContactsCubit, ContactsState>(
-              builder: (context, state) {
-                final cubit = context.bloc<ContactsCubit>();
+          child: BlocBuilder<ContactsCubit, ContactsState>(
+            builder: (context, state) {
+              final cubit = context.bloc<ContactsCubit>();
 
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16),
-                      child: Header(context.msg.main.contacts.title),
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: Header(context.msg.main.contacts.title),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: _SearchTextField(
+                      onChanged: _onSearchTermChanged,
                     ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16),
-                      child: _SearchTextField(
-                        onChanged: _onSearchTermChanged,
-                      ),
-                    ),
-                    Expanded(
-                      child: _Placeholder(
-                        state: state,
-                        child: AnimatedSwitcher(
-                          duration: Duration(milliseconds: 200),
-                          switchInCurve: Curves.decelerate,
-                          switchOutCurve: Curves.decelerate.flipped,
-                          child: _AlphabetListView(
-                            key: ValueKey(_searchTerm),
-                            bottomLettersPadding: widget.bottomLettersPadding,
-                            children: _mapAndFilterToWidgets(
-                              state is ContactsLoaded ? state.contacts : [],
-                            ),
-                            onRefresh: cubit.loadContacts,
+                  ),
+                  Expanded(
+                    child: _Placeholder(
+                      state: state,
+                      child: AnimatedSwitcher(
+                        duration: Duration(milliseconds: 200),
+                        switchInCurve: Curves.decelerate,
+                        switchOutCurve: Curves.decelerate.flipped,
+                        child: _AlphabetListView(
+                          key: ValueKey(_searchTerm),
+                          bottomLettersPadding: widget.bottomLettersPadding,
+                          children: _mapAndFilterToWidgets(
+                            state is ContactsLoaded ? state.contacts : [],
                           ),
+                          onRefresh: cubit.loadContacts,
                         ),
                       ),
                     ),
-                  ],
-                );
-              },
-            ),
+                  ),
+                ],
+              );
+            },
           ),
         ),
       ),
@@ -173,6 +202,13 @@ class _ContactPageState extends State<ContactsPage> {
         )
         .flatten()
         .toList();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+
+    super.dispose();
   }
 }
 
