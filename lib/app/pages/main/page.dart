@@ -55,8 +55,9 @@ class _MainPageState extends State<MainPage> {
         _Navigator(
           navigatorKey: _navigatorStates[0],
           routes: {
-            ContactsPageRoutes.root: (_, __) =>
-                ContactsPage(bottomLettersPadding: !_dialerIsPage ? 96 : 0),
+            ContactsPageRoutes.root: (_, __) => ContactsPage.create(
+                  bottomLettersPadding: !_dialerIsPage ? 96 : 0,
+                ),
             ContactsPageRoutes.details: (_, contact) =>
                 ContactDetailsPage(contact: contact),
           },
