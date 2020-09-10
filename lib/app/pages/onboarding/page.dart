@@ -68,7 +68,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
     );
   }
 
-  Future<void> _backward(BuildContext context) async {
+  Future<bool> _backward(BuildContext context) async {
     final cubit = context.bloc<OnboardingCubit>();
 
     if (cubit.state.currentStep == cubit.state.allSteps.first) {

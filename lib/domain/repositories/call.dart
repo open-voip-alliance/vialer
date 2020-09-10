@@ -33,7 +33,7 @@ class CallRepository {
     // Get real number to call.
     final response = await _service.callthrough(destination: destination);
     if (response.isSuccessful) {
-      destination = response.body['phonenumber'];
+      destination = response.body['phonenumber'] as String;
 
       if (Platform.isAndroid) {
         final intent = AndroidIntent(
@@ -46,7 +46,8 @@ class CallRepository {
         await launch('tel:$destination');
       }
     } else {
-      final error = json.decode(response.error) as Map<String, dynamic>;
+      final error =
+          json.decode(response.error as String) as Map<String, dynamic>;
       final destinationError = error['destination'] as List<dynamic>;
       if (destinationError != null && destinationError.isNotEmpty) {
         final first = destinationError.first as Map<String, dynamic>;

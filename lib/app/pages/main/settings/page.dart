@@ -26,7 +26,7 @@ class SettingsPage extends StatelessWidget {
     final sent = await Navigator.pushNamed(
           context,
           Routes.feedback,
-        ) ??
+        ) as bool ??
         false;
 
     if (sent) {

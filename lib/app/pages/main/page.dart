@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../../domain/entities/contact.dart';
+
 import '../../resources/theme.dart';
 import '../../resources/localizations.dart';
 import '../../routes.dart';
@@ -60,7 +62,7 @@ class _MainPageState extends State<MainPage> {
                   bottomLettersPadding: !_dialerIsPage ? 96 : 0,
                 ),
             ContactsPageRoutes.details: (_, contact) =>
-                ContactDetailsPage(contact: contact),
+                ContactDetailsPage(contact: contact as Contact),
           },
         ),
         RecentCallsPage(

@@ -37,10 +37,10 @@ class AuthRepository {
       _passwordKey: password,
     });
 
-    final body = tokenResponse.body;
+    final body = tokenResponse.body as Map<String, dynamic>;
 
     if (body != null && body.containsKey(_apiTokenKey)) {
-      final token = body[_apiTokenKey];
+      final token = body[_apiTokenKey] as String;
 
       // Set a temporary system user that the authorization interceptor will
       // use
@@ -57,7 +57,7 @@ class AuthRepository {
       }
 
       _storageRepository.systemUser = SystemUser.fromJson(
-        systemUserResponse.body,
+        systemUserResponse.body as Map<String, dynamic>,
       ).copyWith(
         token: token,
       );

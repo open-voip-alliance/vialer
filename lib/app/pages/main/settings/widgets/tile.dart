@@ -135,7 +135,7 @@ class _BoolSettingTile<S extends Setting<bool>> extends StatelessWidget {
               _Switch(
                 value: setting.value,
                 onChanged: (value) => onChanged(
-                  setting.copyWith(value: value),
+                  setting.copyWith(value: value) as S,
                 ),
               )
             ],
