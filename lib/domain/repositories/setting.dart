@@ -14,7 +14,7 @@ class SettingRepository {
   Future<void> changeSetting(Setting setting) async {
     final settings = await getSettings();
 
-    final newSettings = List.from(settings)
+    final newSettings = List<Setting>.from(settings)
       ..removeWhere((e) => e.runtimeType == setting.runtimeType)
       ..add(setting);
 

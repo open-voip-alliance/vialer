@@ -132,7 +132,7 @@ class _Content extends StatelessWidget {
     @required this.settings,
     @required this.buildInfo,
     @required this.onSettingChanged,
-  })  : assert(settings != null && settings.isNotEmpty),
+  })  : assert(settings != null),
         super(key: key);
 
   @override
