@@ -1,8 +1,12 @@
 PODS:
+  - Amplitude-iOS (4.8.2)
   - Analytics (3.7.0)
   - android_intent (0.0.1):
     - Flutter
-  - contacts_service (0.2.1):
+  - Branch (0.33.1):
+    - Branch/Core (= 0.33.1)
+  - Branch/Core (0.33.1)
+  - contacts_service (0.2.2):
     - Flutter
   - device_info (0.0.1):
     - Flutter
@@ -10,12 +14,12 @@ PODS:
   - flutter_segment (0.0.1):
     - Analytics (= 3.7.0)
     - Flutter
+    - Segment-Amplitude (= 3.0.1)
+    - Segment-Branch (= 0.1.22)
   - libphonenumber (0.0.1):
     - Flutter
     - libPhoneNumber-iOS
   - libPhoneNumber-iOS (0.9.15)
-  - moor_ffi (0.0.1):
-    - Flutter
   - package_info (0.0.1):
     - Flutter
   - path_provider (0.0.1):
@@ -24,15 +28,43 @@ PODS:
     - Flutter
   - path_provider_macos (0.0.1):
     - Flutter
-  - "permission_handler (4.4.0+hotfix.4)":
+  - "permission_handler (5.0.1+1)":
     - Flutter
+  - Segment-Amplitude (3.0.1):
+    - Amplitude-iOS (~> 4.8.0)
+    - Analytics (~> 3.7.0)
+  - Segment-Branch (0.1.22):
+    - Analytics
+    - Branch (~> 0.33.0)
   - shared_preferences (0.0.1):
+    - Flutter
+  - shared_preferences_linux (0.0.1):
     - Flutter
   - shared_preferences_macos (0.0.1):
     - Flutter
   - shared_preferences_web (0.0.1):
     - Flutter
+  - sqlite3 (3.32.3):
+    - sqlite3/common (= 3.32.3)
+  - sqlite3/common (3.32.3)
+  - sqlite3/fts5 (3.32.3):
+    - sqlite3/common
+  - sqlite3/json1 (3.32.3):
+    - sqlite3/common
+  - sqlite3/perf-threadsafe (3.32.3):
+    - sqlite3/common
+  - sqlite3/rtree (3.32.3):
+    - sqlite3/common
+  - sqlite3_flutter_libs (0.0.1):
+    - Flutter
+    - sqlite3 (~> 3.32.3)
+    - sqlite3/fts5
+    - sqlite3/json1
+    - sqlite3/perf-threadsafe
+    - sqlite3/rtree
   - url_launcher (0.0.1):
+    - Flutter
+  - url_launcher_linux (0.0.1):
     - Flutter
   - url_launcher_macos (0.0.1):
     - Flutter
@@ -46,23 +78,30 @@ DEPENDENCIES:
   - Flutter (from `Flutter`)
   - flutter_segment (from `.symlinks/plugins/flutter_segment/ios`)
   - libphonenumber (from `.symlinks/plugins/libphonenumber/ios`)
-  - moor_ffi (from `.symlinks/plugins/moor_ffi/ios`)
   - package_info (from `.symlinks/plugins/package_info/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - path_provider_linux (from `.symlinks/plugins/path_provider_linux/ios`)
   - path_provider_macos (from `.symlinks/plugins/path_provider_macos/ios`)
   - permission_handler (from `.symlinks/plugins/permission_handler/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
+  - shared_preferences_linux (from `.symlinks/plugins/shared_preferences_linux/ios`)
   - shared_preferences_macos (from `.symlinks/plugins/shared_preferences_macos/ios`)
   - shared_preferences_web (from `.symlinks/plugins/shared_preferences_web/ios`)
+  - sqlite3_flutter_libs (from `.symlinks/plugins/sqlite3_flutter_libs/ios`)
   - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
+  - url_launcher_linux (from `.symlinks/plugins/url_launcher_linux/ios`)
   - url_launcher_macos (from `.symlinks/plugins/url_launcher_macos/ios`)
   - url_launcher_web (from `.symlinks/plugins/url_launcher_web/ios`)
 
 SPEC REPOS:
   trunk:
+    - Amplitude-iOS
     - Analytics
+    - Branch
     - libPhoneNumber-iOS
+    - Segment-Amplitude
+    - Segment-Branch
+    - sqlite3
 
 EXTERNAL SOURCES:
   android_intent:
@@ -77,8 +116,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_segment/ios"
   libphonenumber:
     :path: ".symlinks/plugins/libphonenumber/ios"
-  moor_ffi:
-    :path: ".symlinks/plugins/moor_ffi/ios"
   package_info:
     :path: ".symlinks/plugins/package_info/ios"
   path_provider:
@@ -91,39 +128,52 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/permission_handler/ios"
   shared_preferences:
     :path: ".symlinks/plugins/shared_preferences/ios"
+  shared_preferences_linux:
+    :path: ".symlinks/plugins/shared_preferences_linux/ios"
   shared_preferences_macos:
     :path: ".symlinks/plugins/shared_preferences_macos/ios"
   shared_preferences_web:
     :path: ".symlinks/plugins/shared_preferences_web/ios"
+  sqlite3_flutter_libs:
+    :path: ".symlinks/plugins/sqlite3_flutter_libs/ios"
   url_launcher:
     :path: ".symlinks/plugins/url_launcher/ios"
+  url_launcher_linux:
+    :path: ".symlinks/plugins/url_launcher_linux/ios"
   url_launcher_macos:
     :path: ".symlinks/plugins/url_launcher_macos/ios"
   url_launcher_web:
     :path: ".symlinks/plugins/url_launcher_web/ios"
 
 SPEC CHECKSUMS:
+  Amplitude-iOS: 46c8e6e65c49bb1ad1909a9add1a68e1f8562b3f
   Analytics: 77fd5fb102a4a5eedafa2c2b0245ceb7b7c15e45
   android_intent: 367df2f1277a74e4a90e14a8ab3df3112d087052
-  contacts_service: d212985196c101372bb55c42f41dae7be59ab811
+  Branch: 65d05ffb137ef504777cff6bd4fb6f770f17145a
+  contacts_service: 849e1f84281804c8bfbec1b4c3eedcb23c5d3eca
   device_info: d7d233b645a32c40dfdc212de5cf646ca482f175
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
-  flutter_segment: 31dce829260fc896cd391d7cee4fc3609003f93c
+  flutter_segment: 2998835d0955a5d2c0708bed5c9d083db608efca
   libphonenumber: bd14d5abfc5939ab0b0767234e2d8e2593af258e
   libPhoneNumber-iOS: 0a32a9525cf8744fe02c5206eb30d571e38f7d75
-  moor_ffi: d66c9470c18e9cb333423bbcb493c105c6c774c6
   package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
   path_provider_linux: 4d630dc393e1f20364f3e3b4a2ff41d9674a84e4
   path_provider_macos: f760a3c5b04357c380e2fddb6f9db6f3015897e0
-  permission_handler: 8278954f2382902f63f00dd8828769c0bd6d511b
+  permission_handler: eac8e15b4a1a3fba55b761d19f3f4e6b005d15b6
+  Segment-Amplitude: 1b3b02a2e92f4b08a413a72bf7aa44f78566ab3b
+  Segment-Branch: f255ba1354f6aa1bc8654d450b3b933380f2558d
   shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
+  shared_preferences_linux: afefbfe8d921e207f01ede8b60373d9e3b566b78
   shared_preferences_macos: f3f29b71ccbb56bf40c9dd6396c9acf15e214087
   shared_preferences_web: 141cce0c3ed1a1c5bf2a0e44f52d31eeb66e5ea9
+  sqlite3: 8f7d2078ae27778699a622a94b853285793422a2
+  sqlite3_flutter_libs: 5651f8ff48e3b44d910863c4ea5916085b1b245f
   url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
+  url_launcher_linux: ac237cb7a8058736e4aae38bdbcc748a4b394cc0
   url_launcher_macos: fd7894421cd39320dce5f292fc99ea9270b2a313
   url_launcher_web: e5527357f037c87560776e36436bf2b0288b965c
 
-PODFILE CHECKSUM: 554b21be5afbc1c73a4e5cbcfef2ce82f4673f67
+PODFILE CHECKSUM: 6720ddc6bac63e152db8500fe9b5e792a997078a
 
 COCOAPODS: 1.8.4
