@@ -1,14 +1,19 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../routes.dart';
-import 'presenter.dart';
+import '../../../domain/usecases/get_is_authenticated.dart';
 
-class SplashController extends Controller {
-  final SplashPresenter _presenter;
+import 'state.dart';
+export 'state.dart';
 
-  SplashController() : _presenter = SplashPresenter();
+class SplashScreenCubit extends Cubit<SplashScreenState> {
+  final _getIsAuthenticated = GetIsAuthenticatedUseCase();
 
+  SplashScreenCubit() : super(SplashScreenShowing()) {
+    
+  }
+  
   @override
   void initController(GlobalKey<State<StatefulWidget>> key) {
     super.initController(key);
