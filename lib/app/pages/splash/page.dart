@@ -1,24 +1,43 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../routes.dart';
 import 'cubit.dart';
 import '../../widgets/splash_screen.dart';
 import '../../widgets/transparent_status_bar.dart';
 
-class SplashPage extends View {
-  @override
-  State<StatefulWidget> createState() => _SplashPageState();
-}
+class SplashPage extends StatelessWidget {
+  void _onStateChanged(BuildContext context, SplashState state) {
+    if (state is IsAuthenticated) {
+      Navigator.pushReplacementNamed(context, Routes.main);
+    }
 
-class _SplashPageState extends ViewState<SplashPage, SplashController> {
-  _SplashPageState() : super(SplashController());
+    if (state is IsNotAuthenticated) {
+      // Push without animation, so the two splash screens appear
+      // to be a seamless transition.
+      Navigator.pushReplacement(
+        context,
+        PageRouteBuilder(
+          transitionDuration: Duration.zero,
+          pageBuilder: (context, _, __) {
+            return Routes.mapped[Routes.onboarding](context);
+          },
+        ),
+      );
+    }
+  }
 
   @override
-  Widget buildPage() {
+  Widget build(BuildContext context) {
     return TransparentStatusBar(
-      key: globalKey,
       brightness: Brightness.light,
-      child: SplashScreen(),
+      child: BlocProvider<SplashCubit>(
+        create: (_) => SplashCubit(),
+        child: BlocListener<SplashCubit, SplashState>(
+          listener: _onStateChanged,
+          child: SplashScreen(),
+        ),
+      ),
     );
   }
 }

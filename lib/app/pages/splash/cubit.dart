@@ -1,46 +1,22 @@
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../routes.dart';
 import '../../../domain/usecases/get_is_authenticated.dart';
 
 import 'state.dart';
 export 'state.dart';
 
-class SplashScreenCubit extends Cubit<SplashScreenState> {
+class SplashCubit extends Cubit<SplashState> {
   final _getIsAuthenticated = GetIsAuthenticatedUseCase();
 
-  SplashScreenCubit() : super(SplashScreenShowing()) {
-    
-  }
-  
-  @override
-  void initController(GlobalKey<State<StatefulWidget>> key) {
-    super.initController(key);
-
-    _presenter.getAuthStatus();
+  SplashCubit() : super(CheckingIsAuthenticated()) {
+    _getIsAuthenticated().then(_emitStateBasedOnAuthentication);
   }
 
-  void _getIsAuthenticatedOnNext(bool authenticated) {
-    if (authenticated) {
-      Navigator.pushReplacementNamed(getContext(), Routes.main);
+  void _emitStateBasedOnAuthentication(bool isAuthenticated) {
+    if (isAuthenticated) {
+      emit(IsAuthenticated());
     } else {
-      // Push without animation, so the two splash screens appear
-      // to be a seamless transition.
-      Navigator.pushReplacement(
-        getContext(),
-        PageRouteBuilder(
-          transitionDuration: Duration.zero,
-          pageBuilder: (context, _, __) {
-            return Routes.mapped[Routes.onboarding](context);
-          },
-        ),
-      );
+      emit(IsNotAuthenticated());
     }
-  }
-
-  @override
-  void initListeners() {
-    _presenter.getIsAuthenticatedOnNext = _getIsAuthenticatedOnNext;
   }
 }

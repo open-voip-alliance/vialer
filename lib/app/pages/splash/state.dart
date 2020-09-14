@@ -1,11 +1,12 @@
 import 'package:equatable/equatable.dart';
 
-abstract class SplashScreenState extends Equatable {
-
+abstract class SplashState extends Equatable {
   @override
   List<Object> get props => [];
 }
 
-class SplashScreenShowing extends SplashScreenState {}
+class CheckingIsAuthenticated extends SplashState {}
 
-class SplashScreenShown extends SplashScreenState {}
+class IsAuthenticated extends SplashState {}
+
+class IsNotAuthenticated extends SplashState {}
