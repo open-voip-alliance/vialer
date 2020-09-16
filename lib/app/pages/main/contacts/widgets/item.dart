@@ -26,7 +26,7 @@ class ContactItem extends StatelessWidget {
         arguments: contact,
       ),
       leading: ContactAvatar(contact),
-      title: Text(contact.name ?? contact.phoneNumbers.first),
+      title: Text(contact.name ?? contact.phoneNumbers.first.value),
       subtitle: ContactSubtitle(contact),
     );
   }

@@ -22,13 +22,13 @@ class LoadingInitialRecentCalls extends RecentCallsState {
 }
 
 class RefreshingRecentCalls extends RecentCallsState {
-  RefreshingRecentCalls(List<Call> calls, pages) : super(calls, pages);
+  RefreshingRecentCalls(List<Call> calls, int page) : super(calls, page);
 }
 
 class LoadingMoreRecentCalls extends RecentCallsState {
-  LoadingMoreRecentCalls(List<Call> calls, pages) : super(calls, pages);
+  LoadingMoreRecentCalls(List<Call> calls, int page) : super(calls, page);
 }
 
 class RecentCallsLoaded extends RecentCallsState {
-  RecentCallsLoaded(List<Call> calls, pages) : super(calls, pages);
+  RecentCallsLoaded(List<Call> calls, int page) : super(calls, page);
 }

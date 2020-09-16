@@ -25,9 +25,9 @@ abstract class Setting<T> {
     assert(value != null);
 
     if (type == (RemoteLoggingSetting).toString()) {
-      return RemoteLoggingSetting(value);
+      return RemoteLoggingSetting(value as bool);
     } else if (type == (ShowDialerConfirmPopupSetting).toString()) {
-      return ShowDialerConfirmPopupSetting(value);
+      return ShowDialerConfirmPopupSetting(value as bool);
     } else {
       throw UnsupportedError('Setting type does not exist');
     }
@@ -63,6 +63,6 @@ class ShowDialerConfirmPopupSetting extends Setting<bool> {
 
 extension SettingsByType on List<Setting> {
   T get<T extends Setting>() {
-    return firstOrNullWhere((setting) => setting is T);
+    return firstOrNullWhere((setting) => setting is T) as T;
   }
 }

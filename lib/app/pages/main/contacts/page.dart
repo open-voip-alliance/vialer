@@ -348,7 +348,7 @@ class _AlphabetListViewState extends State<_AlphabetListView> {
     final offsetY = _offset.dy - (usableParentHeight - lettersFullHeight) / 2;
 
     var index = ((offsetY - (size.height / 2)) / size.height).round();
-    index = index.clamp(0, max(0, _letters.length - 1));
+    index = index.clamp(0, max(0, _letters.length - 1)).toInt();
 
     return _letters[index];
   }

@@ -9,7 +9,8 @@ Color calculateColorForPhoneNumber(BuildContext context, String phoneNumber) {
 
   final lightness = (hsl.lightness -
           ((phoneNumber.hashCode % shadesCount) - (shadesCount / 2)) * 0.2)
-      .clamp(0.2, 0.8);
+      .clamp(0.2, 0.8)
+      .toDouble();
 
   return hsl.withLightness(lightness).toColor();
 }

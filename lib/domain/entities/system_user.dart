@@ -39,14 +39,15 @@ class SystemUser {
 
   factory SystemUser.fromJson(Map<String, dynamic> json) {
     return SystemUser(
-      uuid: json[_uuidKey],
-      email: json[_emailKey],
-      firstName: json[_firstNameKey],
-      lastName: json[_lastNameKey],
-      token: json[_tokenKey],
-      appAccount:
-          json[_appAccountKey] != null ? Uri.parse(json[_appAccountKey]) : null,
-      outgoingCli: json[_outgoingCliKey],
+      uuid: json[_uuidKey] as String,
+      email: json[_emailKey] as String,
+      firstName: json[_firstNameKey] as String,
+      lastName: json[_lastNameKey] as String,
+      token: json[_tokenKey] as String,
+      appAccount: json[_appAccountKey] != null
+          ? Uri.parse(json[_appAccountKey] as String)
+          : null,
+      outgoingCli: json[_outgoingCliKey] as String,
     );
   }
 

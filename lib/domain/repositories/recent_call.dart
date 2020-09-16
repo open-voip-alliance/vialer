@@ -73,7 +73,7 @@ class RecentCallRepository {
 
       if (objects.isNotEmpty) {
         calls = objects
-            .map((obj) => Call.fromJson(obj))
+            .map((obj) => Call.fromJson(obj as Map<String, dynamic>))
             .map(
               (c) => c.copyWith(
                 // The wrapper is needed so that it's a normal

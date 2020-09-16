@@ -20,7 +20,7 @@ class StorageRepository {
       return null;
     }
 
-    return SystemUser.fromJson(json.decode(preference));
+    return SystemUser.fromJson(json.decode(preference) as Map<String, dynamic>);
   }
 
   set systemUser(SystemUser user) => _preferences.setString(
@@ -38,7 +38,7 @@ class StorageRepository {
       return (json.decode(preference) as List)
           // Tear-off won't work here
           // ignore: unnecessary_lambdas
-          .map((s) => Setting.fromJson(s))
+          .map((s) => Setting.fromJson(s as Map<String, dynamic>))
           .toList();
     } else {
       return [];

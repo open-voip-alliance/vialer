@@ -69,7 +69,7 @@ class StylizedButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const borderRadius = Radius.circular(2);
+    final borderRadius = BorderRadius.circular(2);
     final color = BrandTheme.of(context).buttonColor;
     final shadeColor = BrandTheme.of(context).buttonShadeColor;
 
@@ -85,7 +85,7 @@ class StylizedButton extends StatelessWidget {
     final disabled = onPressed == null;
 
     final shape = RoundedRectangleBorder(
-      borderRadius: BorderRadius.all(borderRadius),
+      borderRadius: borderRadius,
     );
 
     final isRaised = _type == _Type.raised;
@@ -108,7 +108,7 @@ class StylizedButton extends StatelessWidget {
           ],
         ),
         child: ClipRRect(
-          borderRadius: shape.borderRadius,
+          borderRadius: borderRadius,
           child: AnimatedContainer(
             duration: _duration,
             curve: _curve,

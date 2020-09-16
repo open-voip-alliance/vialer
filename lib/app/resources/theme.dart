@@ -8,7 +8,7 @@ extension ThemeTargetPlatform on BuildContext {
 }
 
 abstract class BrandTheme {
-  get onboardingGradient => LinearGradient(
+  LinearGradient get onboardingGradient => LinearGradient(
         colors: [
           onboardingGradientStart,
           onboardingGradientEnd,
@@ -17,13 +17,13 @@ abstract class BrandTheme {
         end: Alignment.bottomCenter,
       );
 
-  get onboardingGradientReversed => LinearGradient(
+  LinearGradient get onboardingGradientReversed => LinearGradient(
         colors: onboardingGradient.colors,
         begin: onboardingGradient.end,
         end: onboardingGradient.begin,
       );
 
-  get splashScreenGradient => LinearGradient(
+  LinearGradient get splashScreenGradient => LinearGradient(
         colors: [splashScreenColor, splashScreenColor],
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,

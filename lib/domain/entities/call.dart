@@ -53,20 +53,20 @@ class Call extends Equatable {
 
   factory Call.fromJson(Map<String, dynamic> json) {
     return Call(
-      id: json[_idKey],
-      date: DateTime.parse(json[_dateKey]),
-      duration: Duration(seconds: json[_durationKey]),
-      callerNumber: json[_callerNumberKey],
-      sourceNumber: json[_sourceNumberKey],
-      callerId: json[_callerIdKey],
-      originalCallerId: json[_originalCallerIdKey],
-      destinationNumber: json[_destinationNumberKey],
-      direction: _directionFromJson(json[_directionKey]),
+      id: json[_idKey] as int,
+      date: DateTime.parse(json[_dateKey] as String),
+      duration: Duration(seconds: json[_durationKey] as int),
+      callerNumber: json[_callerNumberKey] as String,
+      sourceNumber: json[_sourceNumberKey] as String,
+      callerId: json[_callerIdKey] as String,
+      originalCallerId: json[_originalCallerIdKey] as String,
+      destinationNumber: json[_destinationNumberKey] as String,
+      direction: _directionFromJson(json[_directionKey] as String),
     );
   }
 
   Call copyWith({
-    String id,
+    int id,
     DateTime date,
     DateTime localDate,
     Duration duration,
@@ -76,7 +76,7 @@ class Call extends Equatable {
     String originalCallerId,
     String destinationContactName,
     String destinationNumber,
-    String direction,
+    Direction direction,
   }) {
     return Call(
       id: id ?? this.id,
