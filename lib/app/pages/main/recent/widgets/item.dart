@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../../../../resources/theme.dart';
 import '../../../../../domain/entities/call.dart';
+import '../../../../../domain/entities/call_with_contact.dart';
 
+import '../../../../resources/theme.dart';
 import '../../../../resources/localizations.dart';
 
 import '../../util/color.dart';
@@ -14,7 +15,7 @@ enum _Action {
 }
 
 class RecentCallItem extends StatelessWidget {
-  final Call call;
+  final CallWithContact call;
 
   /// Also called when whole item is pressed.
   final VoidCallback onCallPressed;
@@ -87,7 +88,7 @@ class RecentCallItem extends StatelessWidget {
 }
 
 class _RecentItemAvatar extends StatelessWidget {
-  final Call call;
+  final CallWithContact call;
 
   const _RecentItemAvatar(this.call, {Key key}) : super(key: key);
 
@@ -112,7 +113,7 @@ class _RecentItemAvatar extends StatelessWidget {
         foregroundColor: Colors.white,
         backgroundColor:
             calculateColorForPhoneNumber(context, call.destinationNumber),
-        child: call.destinationContactName != null
+        child: call.contact?.name != null
             ? Text(
                 _letters,
                 style: TextStyle(
@@ -131,12 +132,12 @@ class _RecentItemSubtitle extends StatelessWidget {
 
   const _RecentItemSubtitle(this.call, {Key key}) : super(key: key);
 
-  String get _time => DateFormat.Hm().format(call.localDate);
+  String get _time => DateFormat.Hm().format(call.date.toLocal());
 
-  String get _date => DateFormat('dd-MM-yy').format(call.localDate);
+  String get _date => DateFormat('dd-MM-yy').format(call.date.toLocal());
 
   String _timeAgo(BuildContext context) {
-    final duration = DateTime.now().difference(call.localDate);
+    final duration = DateTime.now().difference(call.date.toLocal());
 
     if (duration.inHours < 1) {
       if (duration.inMinutes == 1) {
@@ -179,6 +180,6 @@ class _RecentItemSubtitle extends StatelessWidget {
   }
 }
 
-extension CallDestinationName on Call {
-  String get destinationName => destinationContactName ?? destinationNumber;
+extension CallDestinationName on CallWithContact {
+  String get destinationName => contact?.name ?? destinationNumber;
 }

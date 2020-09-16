@@ -6,7 +6,7 @@ import '../widgets/header.dart';
 import '../widgets/conditional_placeholder.dart';
 import 'widgets/item.dart';
 
-import '../../../../domain/entities/call.dart';
+import '../../../../domain/entities/call_with_contact.dart';
 import '../../../resources/theme.dart';
 import '../../../resources/localizations.dart';
 
@@ -72,7 +72,7 @@ class _RecentCallsList extends StatefulWidget {
   final double listBottomPadding;
   final double snackBarRightPadding;
 
-  final List<Call> calls;
+  final List<CallWithContact> calls;
   final Future<void> Function() onRefresh;
   final void Function(String) onCallPressed;
   final void Function(String) onCopyPressed;

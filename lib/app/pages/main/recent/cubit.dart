@@ -8,7 +8,7 @@ import 'package:dartx/dartx.dart';
 
 import '../widgets/caller/cubit.dart';
 
-import '../../../../domain/entities/call.dart';
+import '../../../../domain/entities/call_with_contact.dart';
 import '../../../../domain/usecases/get_recent_calls.dart';
 
 import '../../../util/debug.dart';
@@ -57,7 +57,7 @@ class RecentCallsCubit extends Cubit<RecentCallsState> {
 
   Future<void> _loadRecentCalls({@required int page}) async {
     final recentCalls = await _getRecentCalls(page: page);
-    List<Call> currentCalls;
+    List<CallWithContact> currentCalls;
 
     if (state is LoadingMoreRecentCalls) {
       currentCalls = [
