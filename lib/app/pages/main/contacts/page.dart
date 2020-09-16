@@ -255,7 +255,7 @@ class _Placeholder extends StatelessWidget {
                       SizedBox(height: 40),
                       StylizedButton.raised(
                         colored: true,
-                        onPressed: cubit.askPermission,
+                        onPressed: cubit.requestPermission,
                         child: Text(
                           context.msg.main.contacts.list.noPermission.button
                               .toUpperCaseIfAndroid(context),
