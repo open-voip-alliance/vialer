@@ -47,6 +47,7 @@ class _MainPageState extends State<MainPage> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
+    // Only on iOS is the dialer a separate bottom nav page.
     _dialerIsPage = context.isIOS;
 
     if (_pages == null) {
@@ -62,7 +63,7 @@ class _MainPageState extends State<MainPage> {
                 ContactDetailsPage(contact: contact),
           },
         ),
-        RecentPage(
+        RecentCallsPage(
           listBottomPadding: !_dialerIsPage ? 96 : 0,
           snackBarRightPadding: !_dialerIsPage ? 72 : 0,
         ),
