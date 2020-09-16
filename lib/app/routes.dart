@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 import 'pages/splash/page.dart';
 import 'pages/onboarding/page.dart';
 import 'pages/main/page.dart';
@@ -14,7 +16,7 @@ abstract class Routes {
 
   static const feedback = '/feedback';
 
-  static final mapped = {
+  static final mapped = <String, WidgetBuilder>{
     Routes.root: (_) => SplashPage(),
     Routes.onboarding: (_) => OnboardingPage(),
     Routes.main: (_) => MainPage(),
