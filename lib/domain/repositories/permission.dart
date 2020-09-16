@@ -15,7 +15,7 @@ class PermissionRepository {
     return callPermissionStatus.toDomainEntity();
   }
 
-  Future<domain.PermissionStatus> enablePermission(
+  Future<domain.PermissionStatus> requestPermission(
     domain.Permission permission,
   ) async {
     final mappedPermission = permission.toThirdPartyEntity();

@@ -14,5 +14,5 @@ class RequestPermissionUseCase extends FutureUseCase<PermissionStatus> {
 
   @override
   Future<PermissionStatus> call({@required Permission permission}) =>
-      _permissionRepository.enablePermission(permission);
+      _permissionRepository.requestPermission(permission);
 }

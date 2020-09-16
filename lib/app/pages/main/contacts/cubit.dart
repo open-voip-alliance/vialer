@@ -49,7 +49,7 @@ class ContactsCubit extends Cubit<ContactsState> {
     emit(ContactsLoaded(await _getContacts()));
   }
 
-  Future<void> askPermission() async {
+  Future<void> requestPermission() async {
     final status = await _requestPermission(permission: Permission.contacts);
 
     await _loadContactsIfAllowed(status);
