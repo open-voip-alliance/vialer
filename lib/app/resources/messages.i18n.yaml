@@ -41,7 +41,7 @@ main:
   recent:
     title: "Recent calls"
     menu:
-      title: "Recent"
+      title: "Recents"
     snackBar:
       copied: "Phone number copied"
     list:

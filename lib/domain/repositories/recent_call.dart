@@ -119,7 +119,7 @@ class RecentCallRepository {
         PhoneNumberUtil.normalizePhoneNumber(
           phoneNumber: number,
           isoCode: 'NL',
-        );
+        ).catchError((_) => null);
 
     // Map phone numbers by contact.
     final phoneNumbersByContact = Map.fromEntries(
