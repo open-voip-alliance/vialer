@@ -16,9 +16,6 @@ class Call extends Equatable {
   /// Always UTC.
   final DateTime date;
 
-  /// Not saved.
-  final DateTime localDate;
-
   final Duration duration;
 
   final String callerNumber;
@@ -29,9 +26,6 @@ class Call extends Equatable {
 
   final String destinationNumber;
 
-  /// Not saved, should always be up to date with the current contact.
-  final String destinationContactName;
-
   final Direction direction;
 
   bool get wasMissed =>
@@ -40,13 +34,11 @@ class Call extends Equatable {
   Call({
     this.id,
     this.date,
-    this.localDate,
     this.duration,
     this.callerNumber,
     this.sourceNumber,
     this.callerId,
     this.originalCallerId,
-    this.destinationContactName,
     this.destinationNumber,
     this.direction,
   });
@@ -68,27 +60,22 @@ class Call extends Equatable {
   Call copyWith({
     int id,
     DateTime date,
-    DateTime localDate,
     Duration duration,
     String callerNumber,
     String sourceNumber,
     String callerId,
     String originalCallerId,
-    String destinationContactName,
     String destinationNumber,
     Direction direction,
   }) {
     return Call(
       id: id ?? this.id,
       date: date ?? this.date,
-      localDate: localDate ?? this.localDate,
       duration: duration ?? this.duration,
       callerNumber: callerNumber ?? this.callerNumber,
       sourceNumber: sourceNumber ?? this.sourceNumber,
       callerId: callerId ?? this.callerId,
       originalCallerId: originalCallerId ?? this.originalCallerId,
-      destinationContactName:
-          destinationContactName ?? this.destinationContactName,
       destinationNumber: destinationNumber ?? this.destinationNumber,
       direction: direction ?? this.direction,
     );

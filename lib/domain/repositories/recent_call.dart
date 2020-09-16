@@ -8,6 +8,7 @@ import 'db/database.dart';
 import 'services/voipgrid.dart';
 
 import '../../domain/entities/call.dart';
+import '../../domain/entities/call_with_contact.dart';
 import '../../domain/entities/contact.dart';
 import '../../domain/entities/permission.dart';
 import '../../domain/entities/permission_status.dart';
@@ -35,7 +36,7 @@ class RecentCallRepository {
   final _daysPerPage = 28;
   int _cacheStartPage;
 
-  Future<List<Call>> getRecentCalls({@required int page}) async {
+  Future<List<CallWithContact>> getRecentCalls({@required int page}) async {
     final today = DateTime.now().add(Duration(days: 1));
     final fromUtc = today
         .subtract(
@@ -148,27 +149,20 @@ class RecentCallRepository {
       ),
     );
 
-    _logger.info('Mapping calls to contacts and correct local time');
-    calls = normalizedCalls
+    _logger.info('Mapping calls to contacts');
+    return normalizedCalls
         .map(
-          (call) => call.copyWith(
-            destinationContactName: phoneNumbersByContact.entries
-                .firstOrNullWhere((entry) {
-                  final numbers = entry.value;
+          (call) => call.withContact(
+            phoneNumbersByContact.entries.firstOrNullWhere((entry) {
+              final numbers = entry.value;
 
-                  final relevantCallNumber = call.isOutbound
-                      ? call.destinationNumber
-                      : call.callerNumber;
+              final relevantCallNumber =
+                  call.isOutbound ? call.destinationNumber : call.callerNumber;
 
-                  return numbers.contains(relevantCallNumber);
-                })
-                ?.key // The contact.
-                ?.name,
-            localDate: call.date.toLocal(),
+              return numbers.contains(relevantCallNumber);
+            })?.key, // The contact.
           ),
         )
         .toList();
-
-    return calls;
   }
 }
