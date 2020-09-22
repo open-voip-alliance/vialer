@@ -116,11 +116,12 @@ class RecentCallRepository {
         ? await _contactRepository.getContacts()
         : <Contact>[];
 
-    Future<String> normalizeNumber(String number) =>
-        PhoneNumberUtil.normalizePhoneNumber(
-          phoneNumber: number,
-          isoCode: 'NL',
-        ).catchError((_) => null);
+    Future<String> normalizeNumber(String number) async => number.length > 3
+        ? await PhoneNumberUtil.normalizePhoneNumber(
+            phoneNumber: number,
+            isoCode: 'NL',
+          ).catchError((_) => null)
+        : number;
 
     // Map phone numbers by contact.
     final phoneNumbersByContact = Map.fromEntries(
