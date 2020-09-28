@@ -116,6 +116,8 @@ flutter:
   assets:
     - .env
     - assets/background_cloud.svg
+    - assets/survey/help.png
+    - assets/survey/yay.png
 
   fonts:
     - family: 'VialerSans'

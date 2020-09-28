@@ -2,6 +2,12 @@ generic:
   button:
     ok: "Ok"
     cancel: "Cancel"
+    yes: "Yes"
+    noThanks: "No, thanks"
+    previous: "Previous"
+    next: "Next"
+    close: "Close"
+    done: "Done"
 
 main:
   callThrough:
@@ -105,6 +111,21 @@ main:
       snackBar: "Feedback sent"
       buttons:
         send: *sendFeedbackButton
+
+  survey:
+    helpUs:
+      title: "Help us improve the app"
+      content(int questionCount): >-
+        Would you like to help improve the app? You can do so by
+        answering $questionCount short questions.
+      dontAskAgain: "Don't ask me again"
+
+    question:
+      title(int current, int total): "Question $current/$total"
+
+    thankYou:
+      title: "Thank you for your feedback!"
+      content: "We'll use it to make the app even better."
 
 onboarding:
   button:

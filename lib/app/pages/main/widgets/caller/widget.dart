@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../domain/entities/survey/survey_location.dart';
+
+import '../../survey/dialog.dart';
 import '../../dialer/confirm/page.dart';
 
 import 'cubit.dart';
@@ -50,6 +53,20 @@ class _CallerState extends State<Caller> with WidgetsBindingObserver {
 
       // Once popped off, we can call again
       context.bloc<CallerCubit>().notifyCanCall();
+    }
+
+    if (state is ShowCallThroughSurvey) {
+      if (state.popPrevious) {
+        widget.navigatorKey.currentState.pop();
+      }
+
+      await SurveyDialog.show(
+        // We use the context of the navigator key, because that key is
+        // associated with the MaterialApp which has Localizations, which
+        // the SurveyDialog needs.
+        widget.navigatorKey.currentContext,
+        location: SurveyLocation.afterThreeCallThroughCalls,
+      );
     }
   }
 

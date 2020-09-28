@@ -5,8 +5,8 @@ import '../../../domain/entities/contact.dart';
 
 import '../../resources/theme.dart';
 import '../../resources/localizations.dart';
-import '../../routes.dart';
 
+import '../../routes.dart';
 import 'contacts/details/page.dart';
 import 'dialer/page.dart';
 import 'contacts/page.dart';

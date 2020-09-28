@@ -28,6 +28,8 @@ abstract class Setting<T> {
       return RemoteLoggingSetting(value as bool);
     } else if (type == (ShowDialerConfirmPopupSetting).toString()) {
       return ShowDialerConfirmPopupSetting(value as bool);
+    } else if (type == (ShowSurveyDialogSetting).toString()) {
+      return ShowSurveyDialogSetting(value as bool);
     } else {
       throw UnsupportedError('Setting type does not exist');
     }
@@ -59,6 +61,15 @@ class ShowDialerConfirmPopupSetting extends Setting<bool> {
   @override
   ShowDialerConfirmPopupSetting copyWith({bool value}) =>
       ShowDialerConfirmPopupSetting(value);
+}
+
+class ShowSurveyDialogSetting extends Setting<bool> {
+  // ignore: avoid_positional_boolean_parameters
+  ShowSurveyDialogSetting(bool value) : super(value);
+
+  @override
+  ShowSurveyDialogSetting copyWith({bool value}) =>
+      ShowSurveyDialogSetting(value);
 }
 
 extension SettingsByType on List<Setting> {

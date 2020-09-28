@@ -1,7 +1,14 @@
 generic:
+  dontShowThisAgain: "Toon dit niet meer"
   button:
     ok: "Ok"
     cancel: "Annuleren"
+    yes: "Ja"
+    noThanks: "Nee, bedankt"
+    previous: "Vorige"
+    next: "Volgende"
+    close: "Sluiten"
+    done: "Klaar"
 
 main:
   callThrough:
@@ -108,6 +115,21 @@ main:
       snackBar: "Feedback verstuurd"
       buttons:
         send: *sendFeedbackButton
+
+  survey:
+    helpUs:
+      title: "Help ons de app te verbeteren"
+      content(int questionCount): >-
+        Wil je helpen om de app beter te maken? Je kunt dit doen
+        door $questionCount korte vragen te beantwoorden.
+      dontAskAgain: "Niet weer vragen"
+
+    question:
+      title(int current, int total): "Vraag $current/$total"
+
+    thankYou:
+      title: "Bedankt voor je feedback!"
+      content: "We zullen het gebruiken om de app nog beter te maken."
 
 onboarding:
   button:

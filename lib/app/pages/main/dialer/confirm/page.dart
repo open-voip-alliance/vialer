@@ -10,7 +10,7 @@ import '../../../../../domain/entities/brand.dart';
 
 import '../../../../routes.dart';
 import '../../../../widgets/transparent_status_bar.dart';
-import '../show_call_through_error_dialog.dart';
+import '../../widgets/caller.dart';
 import 'cubit.dart';
 
 import '../../../../resources/localizations.dart';
@@ -23,7 +23,10 @@ class ConfirmPage extends StatefulWidget {
 
   static Widget _({@required String destination}) {
     return BlocProvider<ConfirmCubit>(
-      create: (_) => ConfirmCubit(destination),
+      create: (context) => ConfirmCubit(
+        context.bloc<CallerCubit>(),
+        destination,
+      ),
       child: ConfirmPage.__(destination: destination),
     );
   }
@@ -103,12 +106,6 @@ class ConfirmPageState extends State<ConfirmPage>
     return false;
   }
 
-  void _onStateChanged(BuildContext context, ConfirmState state) {
-    if (state is ConfirmError) {
-      showCallThroughErrorDialog(context, state.exception);
-    }
-  }
-
   static const _style = TextStyle(
     fontSize: 16,
   );
@@ -136,8 +133,7 @@ class ConfirmPageState extends State<ConfirmPage>
               topLeft: Radius.circular(24),
               topRight: Radius.circular(24),
             ),
-            child: BlocConsumer<ConfirmCubit, ConfirmState>(
-              listener: _onStateChanged,
+            child: BlocBuilder<ConfirmCubit, ConfirmState>(
               builder: (context, state) {
                 final cubit = context.bloc<ConfirmCubit>();
 
