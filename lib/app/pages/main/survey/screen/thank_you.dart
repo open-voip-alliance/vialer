@@ -43,7 +43,8 @@ class ThankYouScreen extends StatelessWidget {
                   onPressed: () => _dismiss(context),
                   textColor: context.brandTheme.primary,
                   child: Text(
-                    context.msg.generic.button.close.toUpperCaseIfAndroid(),
+                    context.msg.generic.button.close
+                        .toUpperCaseIfAndroid(context),
                   ),
                 ),
               ),
