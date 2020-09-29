@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
 
@@ -41,7 +42,7 @@ class ConfirmPageState extends State<ConfirmPage>
         // ignore: prefer_mixin
         WidgetsBindingObserver {
   bool _madeCall = false;
-  bool _triedToPop = false;
+  bool _canPop = true;
 
   @override
   void initState() {
@@ -67,6 +68,10 @@ class ConfirmPageState extends State<ConfirmPage>
 
     if (state == AppLifecycleState.inactive) {
       _madeCall = true;
+
+      if (Platform.isIOS) {
+        _canPop = false;
+      }
     } else if (state == AppLifecycleState.resumed) {
       // We keep track on whether we tried to pop once on iOS, because once the
       // calling app is opened the app is immediately in a resumed state, while
@@ -78,12 +83,18 @@ class ConfirmPageState extends State<ConfirmPage>
       // quite jarring. Popping when the app is actually visible again prevents
       // this jarring effect, at the cost of 250ms of seeing the route
       // transition.
-      if (Platform.isIOS && !_triedToPop) {
-        _triedToPop = true;
-        return;
+      if (Platform.isIOS) {
+        _canPop = true;
       }
 
-      pop();
+      // We use a timer so that if we do actually want to call, the app state
+      // will be inactive a second time, and _canPop will be false when the
+      // callback runs, and we won't pop yet.
+      Timer(Duration(milliseconds: 200), () {
+        if (_canPop) {
+          pop();
+        }
+      });
     }
   }
 
