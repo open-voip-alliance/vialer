@@ -44,7 +44,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
         _incrementCallThroughCallsCount();
 
         final count = _getCallThroughCallsCount();
-        if (count >= 3) {
+        if (count == 3) {
           emit(ShowCallThroughSurvey(popPrevious: showingConfirmPage));
         }
       } on CallThroughException catch (e) {
