@@ -6,6 +6,8 @@ enum SurveyLocation {
 }
 
 extension SurveyLocationToJson on SurveyLocation {
+  /// Converts for example `SurveyLocation.afterThreeCallThroughCalls` to
+  /// `'after-three-call-through-calls'`.
   String toJson() {
     final camelCaseSplit =
         toString().split('.')[1].split(RegExp(r'(?<=[a-z])(?=[A-Z])'));
