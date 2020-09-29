@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../../../../resources/theme.dart';
 import '../../../../resources/localizations.dart';
 
+import '../../../../util/conditional_capitalization.dart';
+
 import '../widgets/big_header.dart';
 
 class ThankYouScreen extends StatelessWidget {
@@ -40,7 +42,9 @@ class ThankYouScreen extends StatelessWidget {
                 child: FlatButton(
                   onPressed: () => _dismiss(context),
                   textColor: context.brandTheme.primary,
-                  child: Text('CLOSE'),
+                  child: Text(
+                    context.msg.generic.button.close.toUpperCaseIfAndroid(),
+                  ),
                 ),
               ),
             ),
