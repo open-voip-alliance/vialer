@@ -2,7 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_segment/flutter_segment.dart';
 import 'package:meta/meta.dart';
 
-import '../../../../domain/entities/survey/survey_location.dart';
+import '../../../../domain/entities/survey/survey_trigger.dart';
 import '../../../../domain/entities/setting.dart';
 
 import '../../../../domain/usecases/get_survey.dart';
@@ -22,9 +22,9 @@ class SurveyCubit extends Cubit<SurveyState> with Loggable {
 
   SurveyCubit({
     @required String language,
-    @required SurveyLocation location,
+    @required SurveyTrigger trigger,
   }) : super(ShowHelpUsPrompt(dontShowThisAgain: false)) {
-    _getSurvey(language: language, location: location).then((survey) {
+    _getSurvey(language: language, trigger: trigger).then((survey) {
       emit(state.copyWith(survey: survey));
     });
 
@@ -97,7 +97,7 @@ class SurveyCubit extends Cubit<SurveyState> with Loggable {
         properties: {
           'id': survey.id,
           'language': survey.language,
-          'location': survey.location.toJson(),
+          'trigger': survey.trigger.toJson(),
           'questions': [
             for (var s = state; s != null; s = s.previous)
               {

@@ -1,15 +1,15 @@
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
-import 'survey_location.dart';
+import 'survey_trigger.dart';
 
 import 'question.dart';
 
 class Survey extends Equatable {
   final String id;
 
-  /// Where the survey is shown in the app.
-  final SurveyLocation location;
+  /// Where and when the survey is shown in the app.
+  final SurveyTrigger trigger;
 
   /// The ISO 639-1 language code of the language the questions are in.
   final String language;
@@ -18,14 +18,14 @@ class Survey extends Equatable {
 
   Survey({
     @required this.id,
-    @required this.location,
+    @required this.trigger,
     @required this.language,
     @required this.questions,
   })  : assert(id != null),
-        assert(location != null),
+        assert(trigger != null),
         assert(language != null),
         assert(questions != null && questions.isNotEmpty);
 
   @override
-  List<Object> get props => [id, location, language, questions];
+  List<Object> get props => [id, trigger, language, questions];
 }

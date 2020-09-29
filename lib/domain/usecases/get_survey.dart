@@ -5,14 +5,14 @@ import 'package:meta/meta.dart';
 import '../use_case.dart';
 
 import '../entities/survey/survey.dart';
-import '../entities/survey/survey_location.dart';
+import '../entities/survey/survey_trigger.dart';
 import '../entities/survey/question.dart';
 
 class GetSurveyUseCase extends FutureUseCase<Survey> {
   @override
   Future<Survey> call({
     @required String language,
-    @required SurveyLocation location,
+    @required SurveyTrigger trigger,
   }) async {
     // This use case acts like an API could in the future.
 
@@ -26,7 +26,7 @@ class GetSurveyUseCase extends FutureUseCase<Survey> {
       case 'nl':
         return Survey(
           id: surveyId,
-          location: location,
+          trigger: trigger,
           language: language,
           questions: [
             Question(
@@ -70,7 +70,7 @@ class GetSurveyUseCase extends FutureUseCase<Survey> {
       default:
         return Survey(
           id: surveyId,
-          location: location,
+          trigger: trigger,
           language: language,
           questions: [
             Question(

@@ -1,14 +1,15 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../util/loggable.dart';
 import '../../../../../domain/entities/call_through_exception.dart';
 import '../../../../../domain/entities/setting.dart';
-import '../../../../../domain/usecases/call.dart';
+import '../../../../../domain/entities/survey/survey_trigger.dart';
 
+import '../../../../../domain/usecases/call.dart';
 import '../../../../../domain/usecases/get_call_through_calls_count.dart';
 import '../../../../../domain/usecases/increment_call_through_calls_count.dart';
-
 import '../../../../../domain/usecases/get_settings.dart';
+
+import '../../../../util/loggable.dart';
 
 import 'state.dart';
 export 'state.dart';
@@ -44,7 +45,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
         _incrementCallThroughCallsCount();
 
         final count = _getCallThroughCallsCount();
-        if (count == 3) {
+        if (count == AfterThreeCallThroughCallsTrigger.callCount) {
           emit(ShowCallThroughSurvey(popPrevious: showingConfirmPage));
         }
       } on CallThroughException catch (e) {

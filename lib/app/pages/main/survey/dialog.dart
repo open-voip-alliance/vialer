@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../domain/entities/survey/survey_location.dart';
+import '../../../../domain/entities/survey/survey_trigger.dart';
 
 import 'screen/help_us.dart';
 import 'screen/question.dart';
@@ -10,21 +10,21 @@ import 'cubit.dart';
 import 'screen/thank_you.dart';
 
 class SurveyDialog extends StatelessWidget {
-  final SurveyLocation location;
+  final SurveyTrigger trigger;
 
   static Future<void> show(
     BuildContext context, {
-    @required SurveyLocation location,
+    @required SurveyTrigger trigger,
   }) async {
     await showDialog(
       context: context,
       builder: (context) {
-        return SurveyDialog._(location: location);
+        return SurveyDialog._(trigger: trigger);
       },
     );
   }
 
-  SurveyDialog._({Key key, @required this.location}) : super(key: key);
+  SurveyDialog._({Key key, @required this.trigger}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +32,7 @@ class SurveyDialog extends StatelessWidget {
       child: BlocProvider<SurveyCubit>(
         create: (_) => SurveyCubit(
           language: Localizations.localeOf(context).languageCode,
-          location: location,
+          trigger: trigger,
         ),
         child: BlocBuilder<SurveyCubit, SurveyState>(
           builder: (context, state) {

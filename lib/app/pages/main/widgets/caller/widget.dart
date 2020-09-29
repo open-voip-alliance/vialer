@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../../domain/entities/survey/survey_location.dart';
+import '../../../../../domain/entities/survey/survey_trigger.dart';
 
 import '../../survey/dialog.dart';
 import '../../dialer/confirm/page.dart';
@@ -65,7 +65,7 @@ class _CallerState extends State<Caller> with WidgetsBindingObserver {
         // associated with the MaterialApp which has Localizations, which
         // the SurveyDialog needs.
         widget.navigatorKey.currentContext,
-        location: SurveyLocation.afterThreeCallThroughCalls,
+        trigger: SurveyTrigger.afterThreeCallThroughCalls,
       );
     }
   }
