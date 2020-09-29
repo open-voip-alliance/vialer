@@ -6,7 +6,7 @@ class SurveyTrigger {
 
   const SurveyTrigger();
 
-  /// Converts for example `SurveyTrigger.afterThreeCallThroughCalls` to
+  /// Converts for example `AfterThreeCallThroughCallsTrigger` to
   /// `'after-three-call-through-calls'`.
   String toJson() {
     final camelCaseSplit = runtimeType
