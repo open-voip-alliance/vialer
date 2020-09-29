@@ -9,8 +9,10 @@ class SurveyTrigger {
   /// Converts for example `SurveyTrigger.afterThreeCallThroughCalls` to
   /// `'after-three-call-through-calls'`.
   String toJson() {
-    final camelCaseSplit =
-        toString().split('.')[1].split(RegExp(r'(?<=[a-z])(?=[A-Z])'));
+    final camelCaseSplit = runtimeType
+        .toString()
+        .replaceAll('Trigger', '')
+        .split(RegExp(r'(?<=[a-z])(?=[A-Z])'));
 
     return camelCaseSplit
         .mapIndexed(
