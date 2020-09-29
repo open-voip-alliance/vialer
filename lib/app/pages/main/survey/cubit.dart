@@ -28,8 +28,9 @@ class SurveyCubit extends Cubit<SurveyState> with Loggable {
       emit(state.copyWith(survey: survey));
     });
 
-    // Although technically dontShowThisAgain should be false, otherwise
-    // we would not show the dialog anyway, sync initially with the setting
+    // Although technically at this point dontShowThisAgain should be false
+    // (because otherwise we would not show the dialog anyway),
+    // sync initially with the setting
     _getSettings().then((settings) {
       // Necessary for auto cast
       final state = this.state;
