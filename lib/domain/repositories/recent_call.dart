@@ -119,7 +119,9 @@ class RecentCallRepository {
     Future<String> normalizeNumber(String number) async => number.length > 3
         ? await PhoneNumberUtil.normalizePhoneNumber(
             phoneNumber: number,
-            isoCode: 'NL',
+            // TODO: Temporary fix. We should use a different normalization
+            // library for this, or just strip all non-digits.
+            isoCode: 'DE',
           ).catchError((_) => null)
         : number;
 
