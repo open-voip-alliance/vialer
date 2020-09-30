@@ -153,14 +153,23 @@ class RecentCallRepository {
     );
 
     _logger.info('Mapping calls to contacts');
-    return normalizedCalls
+    return calls
         .map(
           (call) => call.withContact(
             phoneNumbersByContact.entries.firstOrNullWhere((entry) {
+              final normalizedCall = normalizedCalls.firstOrNullWhere(
+                (normalizedCall) => normalizedCall.id == call.id,
+              );
+
+              if (normalizedCall == null) {
+                return false;
+              }
+
               final numbers = entry.value;
 
-              final relevantCallNumber =
-                  call.isOutbound ? call.destinationNumber : call.callerNumber;
+              final relevantCallNumber = normalizedCall.isOutbound
+                  ? normalizedCall.destinationNumber
+                  : normalizedCall.callerNumber;
 
               return numbers.contains(relevantCallNumber);
             })?.key, // The contact.
