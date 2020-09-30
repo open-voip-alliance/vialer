@@ -124,7 +124,7 @@ class RecentCallRepository {
             phoneNumber: number,
             // TODO: Temporary fix. Preferably we'd could pass a prefix
             // directly and have another method that fetches the prefix from the
-            // outgoingCli (although that it's _too_ complicated), or we need
+            // outgoingCli (although that isn't _too_ complicated), or we need
             // to map  all prefixes against two-letter ISO country codes and
             // pass that.
             isoCode: _authRepository.currentUser.outgoingCli.startsWith('+31')
