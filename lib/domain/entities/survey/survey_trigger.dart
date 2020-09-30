@@ -23,6 +23,8 @@ class SurveyTrigger {
   }
 }
 
+// WARNING: Do not change the name of this or any other subclasses of
+// SurveyTrigger, because the name of the class is used for JSON serialization.
 class AfterThreeCallThroughCallsTrigger extends SurveyTrigger {
   static const callCount = 3;
 
