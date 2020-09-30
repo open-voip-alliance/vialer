@@ -59,6 +59,7 @@ Future<void> initializeDependencies() async {
         dependencyLocator<Database>(),
         dependencyLocator<ContactRepository>(),
         dependencyLocator<PermissionRepository>(),
+        dependencyLocator<AuthRepository>(),
       ),
       dependsOn: [StorageRepository],
     )

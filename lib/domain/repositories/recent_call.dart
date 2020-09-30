@@ -7,26 +7,29 @@ import 'package:dartx/dartx.dart';
 import 'db/database.dart';
 import 'services/voipgrid.dart';
 
-import '../../domain/entities/call.dart';
-import '../../domain/entities/call_with_contact.dart';
-import '../../domain/entities/contact.dart';
-import '../../domain/entities/permission.dart';
-import '../../domain/entities/permission_status.dart';
+import '../entities/call.dart';
+import '../entities/call_with_contact.dart';
+import '../entities/contact.dart';
+import '../entities/permission.dart';
+import '../entities/permission_status.dart';
 
-import '../../domain/repositories/permission.dart';
-import '../../domain/repositories/contact.dart';
+import 'permission.dart';
+import 'contact.dart';
+import 'auth.dart';
 
 class RecentCallRepository {
   final VoipgridService _service;
   final Database _database;
   final ContactRepository _contactRepository;
   final PermissionRepository _permissionRepository;
+  final AuthRepository _authRepository;
 
   RecentCallRepository(
     this._service,
     this._database,
     this._contactRepository,
     this._permissionRepository,
+    this._authRepository,
   );
 
   Logger __logger;
@@ -119,9 +122,14 @@ class RecentCallRepository {
     Future<String> normalizeNumber(String number) async => number.length > 3
         ? await PhoneNumberUtil.normalizePhoneNumber(
             phoneNumber: number,
-            // TODO: Temporary fix. We should use a different normalization
-            // library for this, or just strip all non-digits.
-            isoCode: 'DE',
+            // TODO: Temporary fix. Preferably we'd could pass a prefix
+            // directly and have another method that fetches the prefix from the
+            // outgoingCli (although that it's _too_ complicated), or we need
+            // to map  all prefixes against two-letter ISO country codes and
+            // pass that.
+            isoCode: _authRepository.currentUser.outgoingCli.startsWith('+31')
+                ? 'NL'
+                : 'DE',
           ).catchError((_) => null)
         : number;
 
