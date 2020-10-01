@@ -27,7 +27,7 @@ analyze:
     - dartanalyzer . --fatal-infos --fatal-warnings
 
 format:
-  image: google/dart:latest
+  image: google/dart:2.9.2
   stage: check
   script:
     - dartfmt --fix -n --set-exit-if-changed .
