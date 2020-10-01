@@ -7,15 +7,16 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../../domain/entities/brand.dart';
+import '../../../../../../domain/entities/brand.dart';
 
-import '../../../../routes.dart';
-import '../../../../widgets/transparent_status_bar.dart';
-import '../../widgets/caller.dart';
+import '../../../../../routes.dart';
+import '../../../../../widgets/transparent_status_bar.dart';
+import '../../../widgets/caller.dart';
+
+import '../../../../../resources/localizations.dart';
+import '../../../../../resources/theme.dart';
+
 import 'cubit.dart';
-
-import '../../../../resources/localizations.dart';
-import '../../../../resources/theme.dart';
 
 class ConfirmPage extends StatefulWidget {
   final String destination;

@@ -9,7 +9,7 @@ import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
 
 import '../../survey/dialog.dart';
-import '../../dialer/confirm/page.dart';
+import 'confirm/page.dart';
 
 import 'cubit.dart';
 
