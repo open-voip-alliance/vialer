@@ -59,6 +59,7 @@ Future<void> initializeDependencies() async {
         dependencyLocator<Database>(),
         dependencyLocator<ContactRepository>(),
         dependencyLocator<PermissionRepository>(),
+        dependencyLocator<AuthRepository>(),
       ),
       dependsOn: [StorageRepository],
     )
@@ -66,6 +67,7 @@ Future<void> initializeDependencies() async {
       () => CallRepository(
         dependencyLocator<VoipgridService>(),
         dependencyLocator<StorageRepository>(),
+        dependencyLocator<AuthRepository>(),
       ),
       dependsOn: [StorageRepository],
     )

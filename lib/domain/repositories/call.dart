@@ -6,25 +6,32 @@ import 'package:flutter/services.dart';
 import 'package:libphonenumber/libphonenumber.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../domain/repositories/storage.dart';
-import '../../domain/entities/call_through_exception.dart';
+import '../entities/call_through_exception.dart';
+
+import 'storage.dart';
+import 'auth.dart';
 
 import 'services/voipgrid.dart';
 
 class CallRepository {
   final VoipgridService _service;
   final StorageRepository _storageRepository;
+  final AuthRepository _authRepository;
 
-  CallRepository(this._service, this._storageRepository);
+  CallRepository(this._service, this._storageRepository, this._authRepository);
 
   Future<void> call(String destination) async {
     _storageRepository.lastDialedNumber = destination;
 
     try {
       // The call-through API expects a normalized number.
+      // TODO: Don't normalize locally when the API has improved
+      // normalization. Remove normalization here when that has happened.
       destination = await PhoneNumberUtil.normalizePhoneNumber(
         phoneNumber: destination,
-        isoCode: 'NL',
+        isoCode: _authRepository.currentUser.outgoingCli.startsWith('+31')
+            ? 'NL'
+            : 'DE',
       );
     } on PlatformException {
       throw NormalizationException();
