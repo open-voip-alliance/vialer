@@ -143,28 +143,20 @@ class _BottomNavigationBar extends StatelessWidget {
         items: [
           if (dialerIsPage)
             BottomNavigationBarItem(
-              icon: Icon(VialerSans.dialpad),
-              title: _BottomNavigationBarText(
-                context.msg.main.dialer.menu.title,
-              ),
+              icon: _BottomNavigationBarIcon(VialerSans.dialpad),
+              label: context.msg.main.dialer.menu.title,
             ),
           BottomNavigationBarItem(
-            icon: Icon(VialerSans.contacts),
-            title: _BottomNavigationBarText(
-              context.msg.main.contacts.menu.title,
-            ),
+            icon: _BottomNavigationBarIcon(VialerSans.contacts),
+            label: context.msg.main.contacts.menu.title,
           ),
           BottomNavigationBarItem(
-            icon: Icon(VialerSans.clock),
-            title: _BottomNavigationBarText(
-              context.msg.main.recent.menu.title,
-            ),
+            icon: _BottomNavigationBarIcon(VialerSans.clock),
+            label: context.msg.main.recent.menu.title,
           ),
           BottomNavigationBarItem(
-            icon: Icon(VialerSans.settings),
-            title: _BottomNavigationBarText(
-              context.msg.main.settings.menu.title,
-            ),
+            icon: _BottomNavigationBarIcon(VialerSans.settings),
+            label: context.msg.main.settings.menu.title,
           ),
         ],
       ),
@@ -172,16 +164,16 @@ class _BottomNavigationBar extends StatelessWidget {
   }
 }
 
-class _BottomNavigationBarText extends StatelessWidget {
-  final String data;
+class _BottomNavigationBarIcon extends StatelessWidget {
+  final IconData icon;
 
-  const _BottomNavigationBarText(this.data, {Key key}) : super(key: key);
+  const _BottomNavigationBarIcon(this.icon, {Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(top: 4),
-      child: Text(data),
+      padding: EdgeInsets.only(bottom: 4),
+      child: Icon(icon),
     );
   }
 }
