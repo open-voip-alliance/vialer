@@ -358,7 +358,9 @@ class _DeleteButtonState extends State<_DeleteButton> {
         text: start + end,
         selection: TextSelection.collapsed(
           offset: hasOffset || cursorShown
-              ? baseOffset == extentOffset ? baseOffset - 1 : baseOffset
+              ? baseOffset == extentOffset
+                  ? baseOffset - 1
+                  : baseOffset
               : -1,
         ),
       );
