@@ -3,7 +3,7 @@ LC_ALL=C
 
 local_branch="$(git rev-parse --abbrev-ref HEAD)"
 
-valid_branch_regex="^[0-9]+\-[a-z\-]+$"
+valid_branch_regex="^[0-9]+\-[a-z0-9\-]+$"
 
 message="Your commit will be rejected. You should rename your branch to a valid name (e.g.: 123-short-description) and try again.\n\nRename your branch by:\tgit branch -m 123-new-name\n"
 
