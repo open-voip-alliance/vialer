@@ -51,7 +51,7 @@ class DialerCubit extends Cubit<DialerState> {
   }
 
   Future<void> startCall(String destination) async {
-    // Necessary for auto cast
+    // Necessary for auto cast.
     final state = this.state;
 
     if (state is CanCall) {
@@ -67,6 +67,8 @@ class DialerCubit extends Cubit<DialerState> {
   }
 
   void clearLastCalledDestination() {
-    emit(CanCall());
+    if (state is CanCall) {
+      emit(CanCall());
+    }
   }
 }
