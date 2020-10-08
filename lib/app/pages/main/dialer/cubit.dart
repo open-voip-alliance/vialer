@@ -65,4 +65,8 @@ class DialerCubit extends Cubit<DialerState> {
       await _caller.call(destination);
     }
   }
+
+  void clearLastCalledDestination() {
+    emit(CanCall());
+  }
 }

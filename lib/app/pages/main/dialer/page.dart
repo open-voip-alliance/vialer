@@ -119,6 +119,9 @@ class _DialerPageState extends State<DialerPage> {
                                   ? () =>
                                       cubit.startCall(_keypadController.text)
                                   : null,
+                              onDeleteButtonPressed: state is Connected
+                                  ? cubit.clearLastCalledDestination
+                                  : null,
                             );
                           },
                         ),
