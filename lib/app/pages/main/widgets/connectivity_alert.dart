@@ -36,7 +36,7 @@ class _ConnectivityAlertState extends State<ConnectivityAlert> {
         // Hacky way off showing the snack bar 'forever'
         duration: Duration(days: 365),
         icon: Icon(VialerSans.exclamationMark),
-        label: Text(context.msg.main.connectivity.noConnection),
+        label: Text(context.msg.connectivity.noConnection),
       );
     }
 

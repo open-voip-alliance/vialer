@@ -10,6 +10,9 @@ generic:
     close: "Sluiten"
     done: "Klaar"
 
+connectivity:
+  noConnection: "Geen internetverbinding"
+
 main:
   connectivity:
     noConnection: "Geen internetverbinding"
