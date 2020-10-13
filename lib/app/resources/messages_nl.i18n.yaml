@@ -1,7 +1,14 @@
 generic:
+  dontShowThisAgain: "Toon dit niet meer"
   button:
     ok: "Ok"
     cancel: "Annuleren"
+    yes: "Ja"
+    noThanks: "Nee, bedankt"
+    previous: "Vorige"
+    next: "Volgende"
+    close: "Sluiten"
+    done: "Klaar"
 
 main:
   callThrough:
@@ -53,8 +60,11 @@ main:
       popupMenu:
         copy: "Kopiëren"
         call: "Bellen"
+      loading:
+        title: "Gesprekken worden opgehaald"
+        description: "Je recente gesprekken komen hier zo te staan, nog even geduld."
       empty:
-        title: "Geen recente activiteit"
+        title: "Geen recente gesprekken"
         description: >-
           Er is geen recente gespreks activiteit om te tonen. Zodra je
           iemand belt of zelf gebeld wordt, zal het hier verschijnen.
@@ -64,6 +74,12 @@ main:
     menu:
       title: *contactsTitle
     list:
+      loading:
+        # UX wants to have the line break specifically at 2 words
+        title: |-
+          Je contacten
+          worden geladen
+        description: "De contacten van je telefoon zijn bijna beschikbaar, nog even geduld. Als je veel contacten op je telefoon hebt staan, kan het wat langer duren."
       empty:
         title: "Geen contacten gevonden"
         description(String appName): >-
@@ -108,6 +124,21 @@ main:
       snackBar: "Feedback verstuurd"
       buttons:
         send: *sendFeedbackButton
+
+  survey:
+    helpUs:
+      title: "Help ons de app te verbeteren"
+      content(int questionCount): >-
+        Wil je helpen om de app beter te maken? Je kunt dit doen
+        door $questionCount korte vragen te beantwoorden.
+      dontAskAgain: "Niet weer vragen"
+
+    question:
+      title(int current, int total): "Vraag $current/$total"
+
+    thankYou:
+      title: "Bedankt voor je feedback!"
+      content: "We zullen het gebruiken om de app nog beter te maken."
 
 onboarding:
   button:

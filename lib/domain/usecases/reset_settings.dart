@@ -14,6 +14,7 @@ class ResetSettingsUseCase extends FutureUseCase<void> {
   Future<void> call() async {
     await _settingRepository.changeSetting(RemoteLoggingSetting(false));
     await _settingRepository.changeSetting(ShowDialerConfirmPopupSetting(true));
+    await _settingRepository.changeSetting(ShowSurveyDialogSetting(true));
 
     await _loggingRepository.enableRemoteLoggingIfSettingEnabled();
   }

@@ -139,9 +139,11 @@ class _Content extends StatelessWidget {
   Widget build(BuildContext context) {
     Iterable<Setting> settings = this.settings;
 
-    // Don't show the show dialer setting (for now)
+    // Don't show the show dialer and show survey setting (for now)
     settings = settings.where(
-      (setting) => setting is! ShowDialerConfirmPopupSetting,
+      (setting) =>
+          setting is! ShowDialerConfirmPopupSetting &&
+          setting is! ShowSurveyDialogSetting,
     );
 
     final categories = settings
