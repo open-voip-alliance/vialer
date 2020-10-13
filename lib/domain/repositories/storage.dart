@@ -69,5 +69,13 @@ class StorageRepository {
   set lastDialedNumber(String value) =>
       _preferences.setString(_lastDialedNumberKey, value);
 
+  static const _callThroughCallsCountKey = 'call_through_calls_count';
+
+  int get callThroughCallsCount =>
+      _preferences.getInt(_callThroughCallsCountKey);
+
+  set callThroughCallsCount(int value) =>
+      _preferences.setInt(_callThroughCallsCountKey, value);
+
   Future<void> clear() => _preferences.clear();
 }

@@ -57,6 +57,7 @@ class Warning extends StatelessWidget {
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
+              textAlign: TextAlign.center,
               child: title,
             ),
             SizedBox(height: 16),
@@ -71,6 +72,35 @@ class Warning extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class LoadingIndicator extends StatelessWidget {
+  final Widget title;
+  final Widget description;
+
+  const LoadingIndicator({
+    Key key,
+    this.title,
+    this.description,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Warning(
+      icon: SizedBox(
+        width: 48,
+        height: 48,
+        child: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation(
+            Theme.of(context).primaryColor,
+          ),
+          strokeWidth: 6,
+        ),
+      ),
+      title: title,
+      description: description,
     );
   }
 }
