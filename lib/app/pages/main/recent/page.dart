@@ -138,7 +138,8 @@ class _RecentCallsListState extends State<_RecentCallsList>
   void _showSnackBar(BuildContext context) {
     showSnackBar(
       context,
-      text: context.msg.main.recent.snackBar.copied,
+      icon: Icon(VialerSans.copy),
+      label: Text(context.msg.main.recent.snackBar.copied),
       padding: EdgeInsets.only(
         right: widget.snackBarRightPadding,
       ),
