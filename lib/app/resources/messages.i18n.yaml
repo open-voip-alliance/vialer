@@ -9,6 +9,9 @@ generic:
     close: "Close"
     done: "Done"
 
+connectivity:
+  noConnection: "No internet connection"
+
 main:
   connectivity:
     noConnection: "No internet connection"
