@@ -11,6 +11,9 @@ generic:
     done: "Klaar"
 
 main:
+  connectivity:
+    noConnection: "Geen internetverbinding"
+
   callThrough:
     error:
       title: "Er is een fout opgetreden"

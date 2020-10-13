@@ -4,8 +4,10 @@ import '../../../resources/theme.dart';
 
 void showSnackBar(
   BuildContext context, {
-  @required String text,
+  @required Widget icon,
+  @required Widget label,
   EdgeInsets padding = EdgeInsets.zero,
+  Duration duration = const Duration(seconds: 4),
 }) {
   final backgroundColor = BrandTheme.of(
     context,
@@ -19,6 +21,7 @@ void showSnackBar(
 
   Scaffold.of(context).showSnackBar(
     SnackBar(
+      duration: duration,
       behavior: SnackBarBehavior.fixed,
       backgroundColor: backgroundColor,
       content: Padding(
@@ -27,21 +30,23 @@ void showSnackBar(
         ),
         child: Row(
           children: <Widget>[
-            Icon(
-              VialerSans.copy,
-              color: contentColor,
-              size: 16,
+            IconTheme.merge(
+              data: IconThemeData(
+                color: contentColor,
+                size: 16,
+              ),
+              child: icon,
             ),
             SizedBox(width: 24),
             Expanded(
               child: Padding(
                 padding: padding,
-                child: Text(
-                  text,
+                child: DefaultTextStyle.merge(
                   style: TextStyle(
                     color: contentColor,
                     fontSize: 16,
                   ),
+                  child: label,
                 ),
               ),
             ),

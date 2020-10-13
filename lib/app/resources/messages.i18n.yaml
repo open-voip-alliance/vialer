@@ -10,6 +10,9 @@ generic:
     done: "Done"
 
 main:
+  connectivity:
+    noConnection: "No internet connection"
+
   callThrough:
     error:
       title: "An error occurred"

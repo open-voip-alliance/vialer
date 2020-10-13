@@ -10,3 +10,5 @@ abstract class UseCase<T> {
 }
 
 abstract class FutureUseCase<T> extends UseCase<Future<T>> {}
+
+abstract class StreamUseCase<T> extends UseCase<Stream<T>> {}

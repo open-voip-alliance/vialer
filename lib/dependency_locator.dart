@@ -13,6 +13,7 @@ import 'domain/repositories/call.dart';
 import 'domain/repositories/setting.dart';
 import 'domain/repositories/build_info.dart';
 import 'domain/repositories/feedback.dart';
+import 'domain/repositories/connectivity_repository.dart';
 
 import 'domain/repositories/services/voipgrid.dart';
 import 'domain/repositories/db/database.dart';
@@ -79,7 +80,8 @@ Future<void> initializeDependencies() async {
         dependencyLocator<AuthRepository>(),
       ),
       dependsOn: [StorageRepository],
-    );
+    )
+    ..registerSingleton(ConnectivityRepository());
 
   await dependencyLocator.allReady();
 }

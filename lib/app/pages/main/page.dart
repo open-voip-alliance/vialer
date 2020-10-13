@@ -14,6 +14,7 @@ import 'recent/page.dart';
 import 'settings/page.dart';
 
 import '../../widgets/transparent_status_bar.dart';
+import 'widgets/connectivity_alert.dart';
 
 typedef WidgetWithArgumentsBuilder = Widget Function(BuildContext, Object);
 
@@ -54,7 +55,7 @@ class _MainPageState extends State<MainPage> {
 
     if (_pages == null) {
       _pages = [
-        if (_dialerIsPage) DialerPage(),
+        if (_dialerIsPage) DialerPage(isInBottomNavBar: true),
         _Navigator(
           navigatorKey: _navigatorStates[0],
           routes: {
@@ -100,9 +101,11 @@ class _MainPageState extends State<MainPage> {
       ),
       body: TransparentStatusBar(
         brightness: Brightness.dark,
-        child: _AnimatedIndexedStack(
-          index: _currentIndex,
-          children: _pages,
+        child: ConnectivityAlert(
+          child: _AnimatedIndexedStack(
+            index: _currentIndex,
+            children: _pages,
+          ),
         ),
       ),
     );
