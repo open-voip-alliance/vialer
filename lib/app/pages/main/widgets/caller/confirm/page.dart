@@ -9,12 +9,12 @@ import 'package:provider/provider.dart';
 
 import '../../../../../../domain/entities/brand.dart';
 
+import '../../../../../resources/theme.dart';
+import '../../../../../resources/localizations.dart';
+
 import '../../../../../routes.dart';
 import '../../../../../widgets/transparent_status_bar.dart';
 import '../../../widgets/caller.dart';
-
-import '../../../../../resources/localizations.dart';
-import '../../../../../resources/theme.dart';
 
 import 'cubit.dart';
 

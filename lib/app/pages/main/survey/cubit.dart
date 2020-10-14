@@ -28,11 +28,8 @@ class SurveyCubit extends Cubit<SurveyState> with Loggable {
       emit(state.copyWith(survey: survey));
     });
 
-    // Although technically at this point dontShowThisAgain should be false
-    // (because otherwise we would not show the dialog anyway),
-    // sync initially with the setting
     _getSettings().then((settings) {
-      // Necessary for auto cast
+      // Necessary for auto cast.
       final state = this.state;
 
       if (state is ShowHelpUsPrompt) {
@@ -89,6 +86,9 @@ class SurveyCubit extends Cubit<SurveyState> with Loggable {
 
     if (indexOfCurrent == state.survey.questions.length - 1) {
       emit(ShowThankYou(state.survey));
+
+      // The survey is finished, so don't show it again
+      _changeSetting(setting: ShowSurveyDialogSetting(false));
 
       final survey = state.survey;
 
