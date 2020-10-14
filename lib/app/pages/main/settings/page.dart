@@ -11,6 +11,7 @@ import '../widgets/header.dart';
 import 'widgets/tile.dart';
 
 import '../../../resources/localizations.dart';
+import '../../../resources/theme.dart';
 
 import '../../../mappers/setting.dart';
 
@@ -32,7 +33,8 @@ class SettingsPage extends StatelessWidget {
     if (sent) {
       showSnackBar(
         context,
-        text: context.msg.main.settings.feedback.snackBar,
+        icon: Icon(VialerSans.check),
+        label: Text(context.msg.main.settings.feedback.snackBar),
       );
     }
   }

@@ -264,17 +264,26 @@ class _Placeholder extends StatelessWidget {
                     ]
                   : <Widget>[],
             )
-          : Warning(
-              icon: Icon(VialerSans.userOff),
-              title: Text(
-                context.msg.main.contacts.list.empty.title,
-              ),
-              description: Text(
-                context.msg.main.contacts.list.empty.description(
-                  Provider.of<Brand>(context).appName,
+          : state is LoadingContacts
+              ? LoadingIndicator(
+                  title: Text(
+                    context.msg.main.contacts.list.loading.title,
+                  ),
+                  description: Text(
+                    context.msg.main.contacts.list.loading.description,
+                  ),
+                )
+              : Warning(
+                  icon: Icon(VialerSans.userOff),
+                  title: Text(
+                    context.msg.main.contacts.list.empty.title,
+                  ),
+                  description: Text(
+                    context.msg.main.contacts.list.empty.description(
+                      Provider.of<Brand>(context).appName,
+                    ),
+                  ),
                 ),
-              ),
-            ),
       child: child,
     );
   }

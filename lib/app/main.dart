@@ -7,9 +7,13 @@ import 'package:timezone/data/latest.dart';
 import '../domain/entities/brand.dart';
 
 import '../dependency_locator.dart';
-import 'pages/main/widgets/caller/widget.dart';
+
 import 'resources/localizations.dart';
 import 'resources/theme.dart';
+
+import 'pages/main/widgets/caller/widget.dart';
+import 'widgets/connectivity_checker/widget.dart';
+
 import 'routes.dart';
 
 import 'sentry.dart' as sentry;
@@ -46,22 +50,24 @@ class App extends StatelessWidget {
         builder: (context) {
           return Caller.create(
             navigatorKey: _navigatorKey,
-            child: MaterialApp(
-              navigatorKey: _navigatorKey,
-              title: Provider.of<Brand>(context).appName,
-              theme: context.brandTheme.themeData,
-              initialRoute: Routes.root,
-              routes: Routes.mapped,
-              localizationsDelegates: [
-                VialerLocalizations.delegate,
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-                GlobalCupertinoLocalizations.delegate,
-              ],
-              supportedLocales: [
-                Locale('en'),
-                Locale('nl'),
-              ],
+            child: ConnectivityChecker(
+              child: MaterialApp(
+                navigatorKey: _navigatorKey,
+                title: Provider.of<Brand>(context).appName,
+                theme: context.brandTheme.themeData,
+                initialRoute: Routes.root,
+                routes: Routes.mapped,
+                localizationsDelegates: [
+                  VialerLocalizations.delegate,
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate,
+                ],
+                supportedLocales: [
+                  Locale('en'),
+                  Locale('nl'),
+                ],
+              ),
             ),
           );
         },

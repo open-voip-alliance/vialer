@@ -51,6 +51,7 @@ class RecentCallsPage extends StatelessWidget {
                       child: _RecentCallsList(
                         listBottomPadding: listBottomPadding,
                         snackBarRightPadding: snackBarRightPadding,
+                        isLoadingInitial: state is LoadingInitialRecentCalls,
                         calls: recentCalls,
                         onRefresh: cubit.refreshRecentCalls,
                         onCallPressed: cubit.call,
@@ -72,6 +73,8 @@ class _RecentCallsList extends StatefulWidget {
   final double listBottomPadding;
   final double snackBarRightPadding;
 
+  final bool isLoadingInitial;
+
   final List<CallWithContact> calls;
   final Future<void> Function() onRefresh;
   final void Function(String) onCallPressed;
@@ -81,6 +84,7 @@ class _RecentCallsList extends StatefulWidget {
     Key key,
     this.listBottomPadding,
     this.snackBarRightPadding,
+    this.isLoadingInitial = false,
     this.calls,
     this.onRefresh,
     this.onCallPressed,
@@ -134,7 +138,8 @@ class _RecentCallsListState extends State<_RecentCallsList>
   void _showSnackBar(BuildContext context) {
     showSnackBar(
       context,
-      text: context.msg.main.recent.snackBar.copied,
+      icon: Icon(VialerSans.copy),
+      label: Text(context.msg.main.recent.snackBar.copied),
       padding: EdgeInsets.only(
         right: widget.snackBarRightPadding,
       ),
@@ -144,14 +149,23 @@ class _RecentCallsListState extends State<_RecentCallsList>
   @override
   Widget build(BuildContext context) {
     return ConditionalPlaceholder(
-      showPlaceholder: widget.calls.isEmpty,
-      placeholder: Warning(
-        icon: Icon(VialerSans.missedCall),
-        title: Text(context.msg.main.recent.list.empty.title),
-        description: Text(
-          context.msg.main.recent.list.empty.description,
-        ),
-      ),
+      showPlaceholder: widget.calls.isEmpty || widget.isLoadingInitial,
+      placeholder: widget.isLoadingInitial
+          ? LoadingIndicator(
+              title: Text(
+                context.msg.main.recent.list.loading.title,
+              ),
+              description: Text(
+                context.msg.main.recent.list.loading.description,
+              ),
+            )
+          : Warning(
+              icon: Icon(VialerSans.missedCall),
+              title: Text(context.msg.main.recent.list.empty.title),
+              description: Text(
+                context.msg.main.recent.list.empty.description,
+              ),
+            ),
       child: RefreshIndicator(
         onRefresh: widget.onRefresh,
         child: ListView.builder(

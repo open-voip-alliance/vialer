@@ -195,4 +195,5 @@ abstract class VialerSans {
   static const copy = IconData(0xE904, fontFamily: _family);
   static const search = IconData(0xE937, fontFamily: _family);
   static const close = IconData(0xE9A2, fontFamily: _family);
+  static const check = IconData(0xE911, fontFamily: _family);
 }

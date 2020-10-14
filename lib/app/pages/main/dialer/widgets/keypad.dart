@@ -275,7 +275,9 @@ class _CallButton extends StatelessWidget {
     return SizedBox(
       height: 68,
       child: FloatingActionButton(
-        backgroundColor: context.brandTheme.green1,
+        backgroundColor: onPressed != null
+            ? context.brandTheme.green1
+            : context.brandTheme.grey1,
         onPressed: onPressed,
         child: Icon(VialerSans.phone, size: 32),
       ),

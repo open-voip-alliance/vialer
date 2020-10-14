@@ -9,7 +9,13 @@ generic:
     close: "Close"
     done: "Done"
 
+connectivity:
+  noConnection: "No internet connection"
+
 main:
+  connectivity:
+    noConnection: "No internet connection"
+
   callThrough:
     error:
       title: "An error occurred"
@@ -58,17 +64,22 @@ main:
       popupMenu:
         copy: "Copy"
         call: "Call"
+      loading:
+        title: "Loading your call history"
+        description: "Your recent calls will show here soon, please wait a moment."
       empty:
-        title: "No recent activity"
+        title: "No call history"
         description: >-
-          There is no recent call activity to show. Once you make or
-          receive a call, it will appear here.
+          After you made or received your first call, it shows up here.
 
   contacts:
     title: &contactsTitle "Contacts"
     menu:
       title: *contactsTitle
     list:
+      loading:
+        title: "Loading your contacts"
+        description: "The contacts from your phone are almost available, please wait a moment. If there are a lot of contacts stored on your phone, it may take a little longer."
       empty:
         title: "No contacts found"
         description(String appName): >-
