@@ -30,11 +30,6 @@ class InitiatingCallFailed extends CallerState {
   List<Object> get props => [exception];
 }
 
-class ShowCallThroughSurvey extends CallerState {
-  final bool popPrevious;
+class Calling extends CallerState {}
 
-  ShowCallThroughSurvey({@required this.popPrevious});
-
-  @override
-  List<Object> get props => [popPrevious];
-}
+class ShowCallThroughSurvey extends CallerState {}

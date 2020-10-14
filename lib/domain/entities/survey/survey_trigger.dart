@@ -28,5 +28,10 @@ class SurveyTrigger {
 class AfterThreeCallThroughCallsTrigger extends SurveyTrigger {
   static const callCount = 3;
 
+  /// Amount of calls when the survey should not be shown anymore, at least
+  /// by default.
+  static const ignoreCallCount = callCount * 2;
+  static const minimumCallDuration = Duration(seconds: 30);
+
   const AfterThreeCallThroughCallsTrigger();
 }

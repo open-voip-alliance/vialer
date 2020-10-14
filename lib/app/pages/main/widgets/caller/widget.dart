@@ -5,8 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../domain/entities/call_through_exception.dart';
 import '../../../../../domain/entities/survey/survey_trigger.dart';
 
-import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
+import '../../../../resources/localizations.dart';
 
 import '../../survey/dialog.dart';
 import 'confirm/page.dart';
@@ -35,6 +35,8 @@ class Caller extends StatefulWidget {
 
 // ignore: prefer_mixin
 class _CallerState extends State<Caller> with WidgetsBindingObserver {
+  bool _resumedOnceDuringCalling = false;
+
   @override
   void initState() {
     super.initState();
@@ -44,9 +46,18 @@ class _CallerState extends State<Caller> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    // A call can be made as soon as we're in the app again
+    final cubit = context.bloc<CallerCubit>();
+
     if (state == AppLifecycleState.resumed) {
-      context.bloc<CallerCubit>().notifyCanCall();
+      if (cubit.state is Calling && !_resumedOnceDuringCalling) {
+        // We keep track of this so we don't prematurely say we can call again,
+        // because the app state will be resumed too soon.
+        _resumedOnceDuringCalling = true;
+        return;
+      }
+
+      cubit.notifyCanCall();
+      _resumedOnceDuringCalling = false;
     }
   }
 
@@ -55,16 +66,9 @@ class _CallerState extends State<Caller> with WidgetsBindingObserver {
       await widget.navigatorKey.currentState.push(
         ConfirmPageRoute(destination: state.destination),
       );
-
-      // Once popped off, we can call again
-      context.bloc<CallerCubit>().notifyCanCall();
     }
 
     if (state is ShowCallThroughSurvey) {
-      if (state.popPrevious) {
-        widget.navigatorKey.currentState.pop();
-      }
-
       await SurveyDialog.show(
         // We use the context of the navigator key, because that key is
         // associated with the MaterialApp which has Localizations, which
