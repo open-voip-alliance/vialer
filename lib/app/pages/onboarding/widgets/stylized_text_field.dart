@@ -7,6 +7,7 @@ class StylizedTextField extends StatelessWidget {
   final bool obscureText;
   final TextInputType keyboardType;
   final IconData prefixIcon;
+  final Widget suffix;
   final String labelText;
   final bool hasError;
   final bool autoCorrect;
@@ -16,6 +17,7 @@ class StylizedTextField extends StatelessWidget {
     Key key,
     this.labelText,
     this.prefixIcon,
+    this.suffix,
     this.controller,
     this.obscureText = false,
     this.keyboardType,
@@ -41,6 +43,7 @@ class StylizedTextField extends StatelessWidget {
             color: hasError ? BrandTheme.of(context).errorContentColor : color,
             size: 16,
           ),
+          suffixIcon: suffix,
           labelText: labelText,
           border: inputBorder,
           enabledBorder: inputBorder,
