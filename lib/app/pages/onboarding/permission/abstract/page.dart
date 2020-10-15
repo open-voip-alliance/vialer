@@ -22,7 +22,7 @@ class PermissionPage extends StatelessWidget {
   }) : super(key: key);
 
   void _onStateChanged(BuildContext context, PermissionState state) {
-    if (state is PermissionGranted) {
+    if (state is PermissionGranted || state is PermissionDenied) {
       context.bloc<OnboardingCubit>().forward();
     }
   }
