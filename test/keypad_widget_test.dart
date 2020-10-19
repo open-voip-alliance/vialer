@@ -12,6 +12,7 @@ void main() {
   final keypad = Keypad(
     controller: textController,
     onCallButtonPressed: () => initiateFakeCall(controller: textController),
+    onDeleteButtonPressed: () => {},
   );
 
   final testWidget = TestApp(

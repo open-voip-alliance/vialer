@@ -4,11 +4,13 @@ import '../../../../resources/theme.dart';
 class Keypad extends StatefulWidget {
   final TextEditingController controller;
   final VoidCallback onCallButtonPressed;
+  final VoidCallback onDeleteButtonPressed;
 
   const Keypad({
     Key key,
     this.controller,
     this.onCallButtonPressed,
+    this.onDeleteButtonPressed,
   }) : super(key: key);
 
   @override
@@ -81,6 +83,7 @@ class _KeypadState extends State<Keypad> {
           _DeleteButton(
             controller: _controller,
             cursorShownNotifier: _cursorShownNotifier,
+            onPressed: widget.onDeleteButtonPressed,
           ),
         ],
       ),
@@ -288,11 +291,13 @@ class _CallButton extends StatelessWidget {
 class _DeleteButton extends StatefulWidget {
   final TextEditingController controller;
   final ValueNotifier<bool> cursorShownNotifier;
+  final VoidCallback onPressed;
 
   const _DeleteButton({
     Key key,
     @required this.cursorShownNotifier,
     @required this.controller,
+    @required this.onPressed,
   }) : super(key: key);
 
   @override
@@ -371,6 +376,7 @@ class _DeleteButtonState extends State<_DeleteButton> {
 
   void _deleteAll() {
     _controller.clear();
+    widget.onPressed();
   }
 
   @override
