@@ -222,59 +222,59 @@ class _LoginPageState extends State<LoginPage>
                   Column(
                     children: <Widget>[
                       SizedBox(
-                          width: double.infinity,
-                          child: BlocBuilder<ConnectivityCheckerCubit,
-                              ConnectivityState>(
-                            builder: (context, connectivityState) {
-                              return StylizedButton.raised(
-                                onPressed: _canLogin &&
-                                        state is! LoggingIn &&
-                                        connectivityState is! Disconnected
-                                    ? () => context.bloc<LoginCubit>().login(
-                                          _usernameController.text,
-                                          _passwordController.text,
-                                        )
-                                    : null,
-                                child: AnimatedSwitcher(
-                                  switchInCurve: Curves.decelerate,
-                                  switchOutCurve: Curves.decelerate.flipped,
-                                  duration: Duration(milliseconds: 200),
-                                  child: state is! LoggingIn
-                                      ? Text(
-                                          context.msg.onboarding.button.login
-                                              .toUpperCaseIfAndroid(context),
-                                        )
-                                      : Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: <Widget>[
-                                            SizedBox(
-                                              width: 14,
-                                              height: 14,
-                                              child: CircularProgressIndicator(
-                                                strokeWidth: 2.5,
-                                                valueColor:
-                                                    AlwaysStoppedAnimation(
-                                                  Theme.of(context)
-                                                      .primaryColor,
-                                                ),
+                        width: double.infinity,
+                        child: BlocBuilder<ConnectivityCheckerCubit,
+                            ConnectivityState>(
+                          builder: (context, connectivityState) {
+                            return StylizedButton.raised(
+                              onPressed: _canLogin &&
+                                      state is! LoggingIn &&
+                                      connectivityState is! Disconnected
+                                  ? () => context.bloc<LoginCubit>().login(
+                                        _usernameController.text,
+                                        _passwordController.text,
+                                      )
+                                  : null,
+                              child: AnimatedSwitcher(
+                                switchInCurve: Curves.decelerate,
+                                switchOutCurve: Curves.decelerate.flipped,
+                                duration: Duration(milliseconds: 200),
+                                child: state is! LoggingIn
+                                    ? Text(
+                                        context.msg.onboarding.button.login
+                                            .toUpperCaseIfAndroid(context),
+                                      )
+                                    : Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: <Widget>[
+                                          SizedBox(
+                                            width: 14,
+                                            height: 14,
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: 2.5,
+                                              valueColor:
+                                                  AlwaysStoppedAnimation(
+                                                Theme.of(context).primaryColor,
                                               ),
                                             ),
-                                            SizedBox(width: 8),
-                                            Flexible(
-                                              child: Text(
-                                                context.msg.onboarding.login
-                                                    .button.loggingIn
-                                                    .toUpperCaseIfAndroid(
-                                                        context),
-                                              ),
+                                          ),
+                                          SizedBox(width: 8),
+                                          Flexible(
+                                            child: Text(
+                                              context.msg.onboarding.login
+                                                  .button.loggingIn
+                                                  .toUpperCaseIfAndroid(
+                                                      context),
                                             ),
-                                          ],
-                                        ),
-                                ),
-                              );
-                            },
-                          )),
+                                          ),
+                                        ],
+                                      ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
                       SizedBox(height: 20),
                       SizedBox(
                         width: double.infinity,
