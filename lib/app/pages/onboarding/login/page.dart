@@ -194,6 +194,7 @@ class _LoginPageState extends State<LoginPage>
                         context.msg.onboarding.login.placeholder.username,
                     keyboardType: TextInputType.emailAddress,
                     hasError: state is LoginFailed,
+                    autofillHints: [AutofillHints.email],
                   ),
                   SizedBox(height: 20),
                   StylizedTextField(
@@ -215,6 +216,7 @@ class _LoginPageState extends State<LoginPage>
                         context.msg.onboarding.login.placeholder.password,
                     obscureText: _hidePassword,
                     hasError: state is LoginFailed,
+                    autofillHints: [AutofillHints.password],
                   ),
                   SizedBox(height: 32),
                   Column(
