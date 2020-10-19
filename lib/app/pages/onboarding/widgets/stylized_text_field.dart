@@ -12,6 +12,7 @@ class StylizedTextField extends StatelessWidget {
   final bool hasError;
   final bool autoCorrect;
   final TextCapitalization textCapitalization;
+  final List<String> autofillHints;
 
   StylizedTextField({
     Key key,
@@ -24,6 +25,7 @@ class StylizedTextField extends StatelessWidget {
     this.hasError = false,
     this.autoCorrect = true,
     this.textCapitalization = TextCapitalization.none,
+    this.autofillHints = const [],
   }) : super(key: key);
 
   static const color = Colors.grey;
@@ -63,6 +65,7 @@ class StylizedTextField extends StatelessWidget {
         ),
         obscureText: obscureText,
         keyboardType: keyboardType,
+        autofillHints: autofillHints,
       ),
     );
   }
