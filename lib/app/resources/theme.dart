@@ -196,4 +196,6 @@ abstract class VialerSans {
   static const search = IconData(0xE937, fontFamily: _family);
   static const close = IconData(0xE9A2, fontFamily: _family);
   static const check = IconData(0xE911, fontFamily: _family);
+  static const eye = IconData(0xE914, fontFamily: _family);
+  static const eyeOff = IconData(0xE9A5, fontFamily: _family);
 }

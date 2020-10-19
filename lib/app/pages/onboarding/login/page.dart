@@ -49,6 +49,8 @@ class _LoginPageState extends State<LoginPage>
 
   bool _canLogin = false;
 
+  bool _hidePassword = true;
+
   void _goToPasswordReset() {
     launch(
       Provider.of<Brand>(context)
@@ -70,6 +72,12 @@ class _LoginPageState extends State<LoginPage>
     if (oldCanLogin != _canLogin) {
       setState(() {});
     }
+  }
+
+  void _toggleHidePassword() {
+    setState(() {
+      _hidePassword = !_hidePassword;
+    });
   }
 
   void _onStateChanged(BuildContext context, LoginState state) {
@@ -189,8 +197,20 @@ class _LoginPageState extends State<LoginPage>
                 StylizedTextField(
                   controller: _passwordController,
                   prefixIcon: VialerSans.lockOn,
+                  suffix: IconButton(
+                    icon: AnimatedSwitcher(
+                      duration: Duration(milliseconds: 200),
+                      switchInCurve: Curves.decelerate,
+                      switchOutCurve: Curves.decelerate.flipped,
+                      child: Icon(
+                        _hidePassword ? VialerSans.eyeOff : VialerSans.eye,
+                        key: ValueKey(_hidePassword),
+                      ),
+                    ),
+                    onPressed: _toggleHidePassword,
+                  ),
                   labelText: context.msg.onboarding.login.placeholder.password,
-                  obscureText: true,
+                  obscureText: _hidePassword,
                   hasError: state is LoginFailed,
                 ),
                 SizedBox(height: 32),
