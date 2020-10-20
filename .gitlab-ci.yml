@@ -13,24 +13,15 @@ analyze:
   script:
     - flutter pub get
     - flutter pub run build_runner build
-    # This next line is necessary because the analyzer's exclude functionality is currently
-    # not working. See here for more: https://github.com/dart-lang/sdk/issues/25551
-    # If any analysis errors occur in the generated messages file, there probably
-    # needs to be another rule to be ignored added to the comment below.
-    - >-
-      echo "// ignore_for_file: unused_element, lines_longer_than_80_chars,
-      annotate_overrides, camel_case_types, prefer_single_quotes, unused_field,
-      avoid_equals_and_hash_code_on_mutable_classes, avoid_positional_boolean_parameters"
-      | tee -a lib/app/resources/messages*.i18n.dart
-      lib/domain/repositories/services/*.chopper.dart
-      lib/domain/repositories/db/*.g.dart
-    - dartanalyzer . --fatal-infos --fatal-warnings
+    - touch .env # We add an empty .env so the analyzer is happy.
+    - dart analyze . --fatal-infos --fatal-warnings
 
 format:
   image: cirrusci/flutter:stable
   stage: check
   script:
-    - dartfmt --fix -n --set-exit-if-changed .
+    # We don't generate any code, because we don't want to check that anyway.
+    - dart format -o none --fix --set-exit-if-changed .
 
 test:
   image: cirrusci/flutter:stable
