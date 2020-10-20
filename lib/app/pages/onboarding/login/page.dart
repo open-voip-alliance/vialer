@@ -152,71 +152,76 @@ class _LoginPageState extends State<LoginPage>
         child: BlocConsumer<LoginCubit, LoginState>(
           listener: _onStateChanged,
           builder: (context, state) {
-            return Column(
-              children: <Widget>[
-                if (!isLandscape) ...[
-                  Text(
-                    context.msg.onboarding.login.title,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 26,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                  AnimatedContainer(
-                    curve: _curve,
-                    duration: _duration,
-                    height: _headerDistance,
-                  ),
-                ],
-                BlocBuilder<ConnectivityCheckerCubit, ConnectivityState>(
-                  builder: (context, connectivityState) {
-                    return ErrorAlert(
-                      visible: state is LoginFailed ||
-                          connectivityState is Disconnected,
-                      child: Text(
-                        state is LoginFailed
-                            ? context
-                                .msg.onboarding.login.error.wrongCombination
-                            : context.msg.connectivity.noConnection,
-                      ),
-                    );
-                  },
-                ),
-                StylizedTextField(
-                  controller: _usernameController,
-                  autoCorrect: false,
-                  textCapitalization: TextCapitalization.none,
-                  prefixIcon: VialerSans.user,
-                  labelText: context.msg.onboarding.login.placeholder.username,
-                  keyboardType: TextInputType.emailAddress,
-                  hasError: state is LoginFailed,
-                ),
-                SizedBox(height: 20),
-                StylizedTextField(
-                  controller: _passwordController,
-                  prefixIcon: VialerSans.lockOn,
-                  suffix: IconButton(
-                    icon: AnimatedSwitcher(
-                      duration: Duration(milliseconds: 200),
-                      switchInCurve: Curves.decelerate,
-                      switchOutCurve: Curves.decelerate.flipped,
-                      child: Icon(
-                        _hidePassword ? VialerSans.eyeOff : VialerSans.eye,
-                        key: ValueKey(_hidePassword),
+            return AutofillGroup(
+              child: Column(
+                children: <Widget>[
+                  if (!isLandscape) ...[
+                    Text(
+                      context.msg.onboarding.login.title,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
                       ),
                     ),
-                    onPressed: _toggleHidePassword,
+                    AnimatedContainer(
+                      curve: _curve,
+                      duration: _duration,
+                      height: _headerDistance,
+                    ),
+                  ],
+                  BlocBuilder<ConnectivityCheckerCubit, ConnectivityState>(
+                    builder: (context, connectivityState) {
+                      return ErrorAlert(
+                        visible: state is LoginFailed ||
+                            connectivityState is Disconnected,
+                        child: Text(
+                          state is LoginFailed
+                              ? context
+                                  .msg.onboarding.login.error.wrongCombination
+                              : context.msg.connectivity.noConnection,
+                        ),
+                      );
+                    },
                   ),
-                  labelText: context.msg.onboarding.login.placeholder.password,
-                  obscureText: _hidePassword,
-                  hasError: state is LoginFailed,
-                ),
-                SizedBox(height: 32),
-                Column(
-                  children: <Widget>[
-                    SizedBox(
+                  StylizedTextField(
+                    controller: _usernameController,
+                    autoCorrect: false,
+                    textCapitalization: TextCapitalization.none,
+                    prefixIcon: VialerSans.user,
+                    labelText:
+                        context.msg.onboarding.login.placeholder.username,
+                    keyboardType: TextInputType.emailAddress,
+                    hasError: state is LoginFailed,
+                    autofillHints: [AutofillHints.email],
+                  ),
+                  SizedBox(height: 20),
+                  StylizedTextField(
+                    controller: _passwordController,
+                    prefixIcon: VialerSans.lockOn,
+                    suffix: IconButton(
+                      icon: AnimatedSwitcher(
+                        duration: Duration(milliseconds: 200),
+                        switchInCurve: Curves.decelerate,
+                        switchOutCurve: Curves.decelerate.flipped,
+                        child: Icon(
+                          _hidePassword ? VialerSans.eyeOff : VialerSans.eye,
+                          key: ValueKey(_hidePassword),
+                        ),
+                      ),
+                      onPressed: _toggleHidePassword,
+                    ),
+                    labelText:
+                        context.msg.onboarding.login.placeholder.password,
+                    obscureText: _hidePassword,
+                    hasError: state is LoginFailed,
+                    autofillHints: [AutofillHints.password],
+                  ),
+                  SizedBox(height: 32),
+                  Column(
+                    children: <Widget>[
+                      SizedBox(
                         width: double.infinity,
                         child: BlocBuilder<ConnectivityCheckerCubit,
                             ConnectivityState>(
@@ -268,21 +273,23 @@ class _LoginPageState extends State<LoginPage>
                               ),
                             );
                           },
-                        )),
-                    SizedBox(height: 20),
-                    SizedBox(
-                      width: double.infinity,
-                      child: StylizedButton.outline(
-                        onPressed: _goToPasswordReset,
-                        child: Text(
-                          context.msg.onboarding.login.button.forgotPassword
-                              .toUpperCaseIfAndroid(context),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                      SizedBox(height: 20),
+                      SizedBox(
+                        width: double.infinity,
+                        child: StylizedButton.outline(
+                          onPressed: _goToPasswordReset,
+                          child: Text(
+                            context.msg.onboarding.login.button.forgotPassword
+                                .toUpperCaseIfAndroid(context),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             );
           },
         ),
