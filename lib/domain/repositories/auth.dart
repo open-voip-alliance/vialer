@@ -27,6 +27,22 @@ class AuthRepository {
 
   SystemUser _currentUser;
 
+  /// Fetches the latest user from the portal.
+  Future<SystemUser> fetchLatestUser() async {
+    final systemUserResponse = await _service.getSystemUser();
+    if (systemUserResponse.error
+        .toString()
+        .contains('You need to change your password in the portal')) {
+      throw NeedToChangePassword();
+    }
+
+    return _currentUser = _storageRepository.systemUser = SystemUser.fromJson(
+      systemUserResponse.body as Map<String, dynamic>,
+    ).copyWith(
+      token: _currentUser.token,
+    );
+  }
+
   Future<bool> authenticate(
     String email,
     String password, {
@@ -49,20 +65,7 @@ class AuthRepository {
         token: token,
       );
 
-      final systemUserResponse = await _service.getSystemUser();
-      if (systemUserResponse.error
-          .toString()
-          .contains('You need to change your password in the portal')) {
-        throw NeedToChangePassword();
-      }
-
-      _storageRepository.systemUser = SystemUser.fromJson(
-        systemUserResponse.body as Map<String, dynamic>,
-      ).copyWith(
-        token: token,
-      );
-
-      _currentUser = _storageRepository.systemUser;
+      await fetchLatestUser();
 
       return true;
     } else {

@@ -6,7 +6,7 @@ import 'state.dart';
 export 'state.dart';
 
 class WelcomeCubit extends Cubit<WelcomeState> {
-  final _getUser = GetCurrentUserUseCase();
+  final _getUser = GetStoredUserUseCase();
 
   WelcomeCubit() : super(WelcomeState()) {
     emit(WelcomeState(user: _getUser()));

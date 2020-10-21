@@ -16,7 +16,7 @@ class PasswordCubit extends Cubit<PasswordState> with Loggable {
 
   final _changePassword = ChangePasswordUseCase();
   final _login = LoginUseCase();
-  final _getCurrentUser = GetCurrentUserUseCase();
+  final _getStoredUser = GetStoredUserUseCase();
 
   PasswordCubit(this._onboarding) : super(PasswordNotChanged());
 
@@ -34,7 +34,7 @@ class PasswordCubit extends Cubit<PasswordState> with Loggable {
         newPassword: password,
       );
       await _login(
-        email: _getCurrentUser().email,
+        email: _getStoredUser().email,
         password: password,
       );
 

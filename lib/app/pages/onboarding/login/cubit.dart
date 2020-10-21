@@ -14,7 +14,7 @@ import 'state.dart';
 export 'state.dart';
 
 class LoginCubit extends Cubit<LoginState> with Loggable {
-  final _getCurrentUser = GetCurrentUserUseCase();
+  final _getStoredUser = GetStoredUserUseCase();
   final _login = LoginUseCase();
   final _resetSettings = ResetSettingsUseCase();
 
@@ -37,7 +37,7 @@ class LoginCubit extends Cubit<LoginState> with Loggable {
       logger.info('Login successful');
       doIfNotDebug(() async {
         await Segment.identify(
-          userId: (await _getCurrentUser()).uuid,
+          userId: (await _getStoredUser()).uuid,
         );
         await Segment.track(eventName: 'login');
       });
