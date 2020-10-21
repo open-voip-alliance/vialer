@@ -1,4 +1,7 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import '../../../../resources/theme.dart';
 
 class Keypad extends StatefulWidget {
@@ -47,34 +50,31 @@ class _KeypadState extends State<Keypad> {
 
   @override
   Widget build(BuildContext context) {
-    var rows = <TableRow>[];
+    const bottomPadding = 32.0;
 
-    final amountPerRow = 3;
-    for (var i = 0; i < (_buttonValues.length / amountPerRow); i++) {
-      rows.add(
-        TableRow(
-          children: _buttonValues.entries
-              .skip(i * amountPerRow)
-              .take(amountPerRow)
-              .map((entry) {
-            return ValueButton(
+    return GridView.custom(
+      padding: const EdgeInsets.only(bottom: bottomPadding),
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      gridDelegate: _KeypadGridDelegate(
+        bottomPadding: bottomPadding,
+        // Because of the iOS design, we want a slimmer keypad. On Android we
+        // have a wider keypad, as to follow native dialers there.
+        slim: context.isIOS,
+      ),
+      childrenDelegate: SliverChildListDelegate.fixed(
+        [
+          ..._buttonValues.entries.map(
+            (entry) => ValueButton(
               controller: _controller,
               cursorShownNotifier: _cursorShownNotifier,
               primaryValue: entry.key,
               secondaryValue: entry.value,
               replaceWithSecondaryValueOnLongPress:
                   entry.key == '0' && entry.value == '+',
-            );
-          }).toList(),
-        ),
-      );
-    }
-
-    rows.add(
-      TableRow(
-        children: <Widget>[
-          SizedBox(),
-          // Empty space in the grid
+            ),
+          ),
+          const SizedBox(), // Empty space in the grid.
           _CallButton(
             onPressed: widget.onCallButtonPressed,
           ),
@@ -85,26 +85,121 @@ class _KeypadState extends State<Keypad> {
         ],
       ),
     );
+  }
+}
 
-    return Padding(
-      padding: EdgeInsets.only(
-        bottom: 32,
-      ),
-      child: Table(
-        defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-        children: rows,
-      ),
+class _KeypadGridDelegate extends SliverGridDelegate {
+  final double bottomPadding;
+
+  /// Whether the keypad should be slimmed down, meaning it will be less
+  /// wide.
+  final bool slim;
+
+  _KeypadGridDelegate({this.bottomPadding = 0, this.slim = false});
+
+  @override
+  SliverGridLayout getLayout(SliverConstraints constraints) {
+    const itemsPerRow = 3;
+    const itemsPerColumn = 5;
+
+    const maxCrossAxisExtent = 164.0;
+    final maxMainAxisExtent = slim ? 104.0 : 96.0;
+
+    var crossAxisExtent = min(
+      constraints.crossAxisExtent / itemsPerRow,
+      maxCrossAxisExtent,
+    );
+
+    final height = constraints.viewportMainAxisExtent - bottomPadding;
+
+    var mainAxisExtent = min(
+      height / itemsPerColumn,
+      maxMainAxisExtent,
+    );
+
+    if (slim) {
+      // We use the smallest extent, and we use the same extent for the cross
+      // and main axis, so the children will have square constraints.
+      final smallestExtent = min(crossAxisExtent, mainAxisExtent);
+
+      crossAxisExtent = smallestExtent;
+      mainAxisExtent = smallestExtent;
+    }
+
+    // Stride will be the extent, without padding (possibly) substracted.
+    final crossAxisStride = crossAxisExtent;
+    final mainAxisStride = mainAxisExtent;
+
+    const padding = 4;
+
+    // We add some padding between items if the buttons are smaller than the
+    // max size, because in that case there will be no extra space between them.
+    if (crossAxisExtent < ValueButton.maxSize) {
+      crossAxisExtent -= padding;
+    }
+
+    if (mainAxisExtent < ValueButton.maxSize) {
+      mainAxisExtent -= padding;
+    }
+
+    return _CenteredSliverGridRegularTileLayout(
+      constraints: constraints,
+      childCrossAxisExtent: crossAxisExtent,
+      childMainAxisExtent: mainAxisExtent,
+      crossAxisCount: itemsPerRow,
+      crossAxisStride: crossAxisStride,
+      mainAxisStride: mainAxisStride,
+      reverseCrossAxis: false,
+    );
+  }
+
+  @override
+  bool shouldRelayout(covariant _KeypadGridDelegate oldDelegate) {
+    return oldDelegate.bottomPadding != bottomPadding ||
+        oldDelegate.slim != slim;
+  }
+}
+
+class _CenteredSliverGridRegularTileLayout extends SliverGridRegularTileLayout {
+  final SliverConstraints constraints;
+
+  _CenteredSliverGridRegularTileLayout({
+    this.constraints,
+    int crossAxisCount,
+    double mainAxisStride,
+    double crossAxisStride,
+    double childMainAxisExtent,
+    double childCrossAxisExtent,
+    bool reverseCrossAxis = false,
+  }) : super(
+          crossAxisCount: crossAxisCount,
+          mainAxisStride: mainAxisStride,
+          crossAxisStride: crossAxisStride,
+          childMainAxisExtent: childMainAxisExtent,
+          childCrossAxisExtent: childCrossAxisExtent,
+          reverseCrossAxis: reverseCrossAxis,
+        );
+
+  @override
+  SliverGridGeometry getGeometryForChildIndex(int index) {
+    final geometry = super.getGeometryForChildIndex(index);
+
+    // This is needed so the items as a whole are centered.
+    final width = crossAxisStride * crossAxisCount;
+    final maxWidth = constraints.crossAxisExtent;
+    final padding = (maxWidth - width) / 2;
+
+    return SliverGridGeometry(
+      scrollOffset: geometry.scrollOffset,
+      crossAxisExtent: geometry.crossAxisExtent,
+      crossAxisOffset: geometry.crossAxisOffset + padding,
+      mainAxisExtent: geometry.mainAxisExtent,
     );
   }
 }
 
 class _KeypadButton extends StatelessWidget {
   final bool borderOnIos;
-
-  // Base values for padding calculation, at a screen height of
-  // 592, 4 logical pixels padding seems good
-  static const heightAtPadding = 592;
-  static const paddingAtHeight = 4;
 
   final Widget child;
 
@@ -116,26 +211,16 @@ class _KeypadButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
-
-    return Padding(
-      padding: EdgeInsets.all((height / heightAtPadding) * paddingAtHeight),
-      child: ConstrainedBox(
-        constraints: BoxConstraints(
-          maxHeight: 76,
-        ),
-        child: AspectRatio(
-          aspectRatio: 1,
-          child: Material(
-            color: Colors.transparent,
-            shape: CircleBorder(
-              side: borderOnIos && context.isIOS
-                  ? BorderSide(color: context.brandTheme.grey3)
-                  : BorderSide.none,
-            ),
-            child: child,
-          ),
-        ),
+    return Material(
+      color: Colors.transparent,
+      shape: CircleBorder(
+        side: borderOnIos && context.isIOS
+            ? BorderSide(color: context.brandTheme.grey3)
+            : BorderSide.none,
+      ),
+      child: AspectRatio(
+        aspectRatio: 1 / 1,
+        child: child,
       ),
     );
   }
@@ -143,6 +228,8 @@ class _KeypadButton extends StatelessWidget {
 
 @visibleForTesting
 class ValueButton extends StatefulWidget {
+  static const maxSize = 80.0;
+
   final String primaryValue;
   final String secondaryValue;
 
@@ -226,39 +313,56 @@ class _ValueButtonState extends State<ValueButton> {
 
   @override
   Widget build(BuildContext context) {
-    return _KeypadButton(
-      child: _InkWellOrResponse(
-        isResponse: !context.isIOS,
-        customBorder: CircleBorder(),
-        enableFeedback: true,
-        onTapDown: _enterValue,
-        onLongPress: widget.replaceWithSecondaryValueOnLongPress
-            ? _replaceWithSecondaryValue
-            : null,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              widget.primaryValue,
-              style: TextStyle(
-                fontSize: 32,
-                color: !_primaryIsNumber
-                    ? context.brandTheme.grey5
-                    : null, // Null means default color
-              ),
-            ),
-            // Render an empty string on non-iOS platforms
-            // to keep the alignments proper
-            if (widget.secondaryValue != null || !context.isIOS)
-              Text(
-                widget.secondaryValue ?? '',
-                style: TextStyle(
-                  color: context.brandTheme.grey5,
-                  fontSize: 12,
+    return Center(
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          maxWidth: ValueButton.maxSize,
+          maxHeight: ValueButton.maxSize,
+        ),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return _KeypadButton(
+              child: _InkWellOrResponse(
+                isResponse: !context.isIOS,
+                customBorder: CircleBorder(),
+                enableFeedback: true,
+                onTapDown: _enterValue,
+                onLongPress: widget.replaceWithSecondaryValueOnLongPress
+                    ? _replaceWithSecondaryValue
+                    : null,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      widget.primaryValue,
+                      style: TextStyle(
+                        fontSize: 32,
+                        color: !_primaryIsNumber
+                            ? context.brandTheme.grey5
+                            : null, // Null means default color
+                      ),
+                      // The font size is based on the available space, and we
+                      // never make the font size bigger
+                      textScaleFactor: min(
+                        constraints.maxWidth / ValueButton.maxSize,
+                        MediaQuery.textScaleFactorOf(context),
+                      ),
+                    ),
+                    Text(
+                      // Render an empty string if there's no secondary value
+                      // to keep the alignments proper.
+                      widget.secondaryValue ?? '',
+                      style: TextStyle(
+                        color: context.brandTheme.grey5,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-          ],
+            );
+          },
         ),
       ),
     );
@@ -272,14 +376,26 @@ class _CallButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 68,
-      child: FloatingActionButton(
-        backgroundColor: onPressed != null
-            ? context.brandTheme.green1
-            : context.brandTheme.grey1,
-        onPressed: onPressed,
-        child: Icon(VialerSans.phone, size: 32),
+    // On iOS we want the call button to be the same size as the
+    // other buttons. Even though we set the max size as the min size,
+    // a ConstrainedBox will never impose impossible constraints, so it's not
+    // a problem. In this case, it basically means: 'Biggest size possible, but
+    // with a certain limit'.
+    final minSize = context.isIOS ? ValueButton.maxSize : 64.0;
+
+    return Center(
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          minWidth: minSize,
+          minHeight: minSize,
+        ),
+        child: FloatingActionButton(
+          backgroundColor: onPressed != null
+              ? context.brandTheme.green1
+              : context.brandTheme.grey1,
+          onPressed: onPressed,
+          child: Icon(VialerSans.phone, size: 32),
+        ),
       ),
     );
   }
