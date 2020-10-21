@@ -23,16 +23,23 @@ class SettingTile<S extends Setting> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Needed for auto cast
+    // Needed for auto cast.
     final setting = this.setting;
 
     if (setting is Setting<bool>) {
       return _BoolSettingTile<Setting<bool>>(
         setting,
-        (setting) => onChanged(setting as S),
+        setting.mutable ? (setting) => onChanged(setting as S) : null,
+      );
+    } else if (setting is Setting<String>) {
+      return _StringSettingTile<Setting<String>>(
+        setting,
+        setting.mutable ? (setting) => onChanged(setting as S) : null,
       );
     } else {
-      throw UnsupportedError('Unknown setting generic type');
+      throw UnsupportedError(
+          'Vialer error, unsupported operation: Unknown setting generic type. '
+          'Please add a widget that can handle this generic type.');
     }
   }
 }
@@ -53,39 +60,42 @@ class SettingTileCategory extends StatelessWidget {
   Widget build(BuildContext context) {
     final info = category.toInfo(context);
 
-    return Column(
-      children: <Widget>[
-        Padding(
-          padding: padding,
-          child: Column(
-            children: <Widget>[
-              Row(
-                children: <Widget>[
-                  Icon(
-                    info.icon,
-                    color: context.brandTheme.grey1,
-                    size: !context.isIOS ? 16 : null,
-                  ),
-                  SizedBox(width: 8),
-                  Text(
-                    info.title.toUpperCaseIfAndroid(context),
-                    style: TextStyle(
-                      color: !context.isIOS
-                          ? Theme.of(context).primaryColor
-                          : null,
-                      fontSize: context.isIOS ? 18 : 12,
-                      fontWeight: context.isIOS ? null : FontWeight.bold,
+    return Container(
+      color: category == Category.info ? context.brandTheme.grey6 : null,
+      child: Column(
+        children: <Widget>[
+          Padding(
+            padding: padding,
+            child: Column(
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    Icon(
+                      info.icon,
+                      color: context.brandTheme.grey1,
+                      size: !context.isIOS ? 16 : null,
                     ),
-                  ),
-                ],
-              ),
-              if (context.isIOS) SizedBox(height: 16),
-              ...children,
-            ],
+                    SizedBox(width: 8),
+                    Text(
+                      info.title.toUpperCaseIfAndroid(context),
+                      style: TextStyle(
+                        color: !context.isIOS
+                            ? Theme.of(context).primaryColor
+                            : null,
+                        fontSize: context.isIOS ? 18 : 12,
+                        fontWeight: context.isIOS ? null : FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+                if (context.isIOS) SizedBox(height: 16),
+                ...children,
+              ],
+            ),
           ),
-        ),
-        if (!context.isIOS) Divider()
-      ],
+          if (!context.isIOS) Divider()
+        ],
+      ),
     );
   }
 }
@@ -182,5 +192,81 @@ class _Switch extends StatelessWidget {
         activeColor: Theme.of(context).primaryColor,
       );
     }
+  }
+}
+
+class _StringSettingTile<S extends Setting<String>> extends StatelessWidget {
+  final S setting;
+  final ValueChanged<S> onChanged;
+
+  const _StringSettingTile(
+    this.setting,
+    this.onChanged, {
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final info = setting.toInfo(context);
+
+    return Column(
+      children: <Widget>[
+        Container(
+          constraints: const BoxConstraints(
+            minWidth: double.infinity,
+            minHeight: 48,
+          ),
+          decoration: context.isIOS
+              ? BoxDecoration(
+                  border: Border.all(
+                    color: context.brandTheme.grey2,
+                  ),
+                  borderRadius: BorderRadius.circular(8),
+                )
+              : null,
+          padding: EdgeInsets.only(
+            top: context.isIOS ? 8 : 0,
+            left: context.isIOS ? 16 : 24,
+            right: 8,
+            bottom: context.isIOS ? 8 : 0,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Text(
+                info.name,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: !context.isIOS ? FontWeight.bold : null,
+                ),
+              ),
+              Text(
+                setting.value,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: !context.isIOS ? FontWeight.bold : null,
+                ),
+              ),
+            ],
+          ),
+        ),
+        if (info.description != null) ...[
+          Padding(
+            padding: EdgeInsets.only(
+              left: context.isIOS ? 8 : 24,
+              right: 8,
+              top: context.isIOS ? 8 : 0,
+              bottom: 16,
+            ),
+            child: Text(
+              info.description,
+              style: TextStyle(
+                color: context.brandTheme.grey4,
+              ),
+            ),
+          ),
+        ],
+      ],
+    );
   }
 }

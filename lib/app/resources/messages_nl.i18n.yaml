@@ -118,6 +118,12 @@ main:
           title: "Remote logging"
           description: >-
             Deel automatisch je handelingen in de app met onze ontwikkelaars om problemen en fouten op te sporen.
+      info:
+        title: "Account informatie"
+        phoneNumber:
+          title: "Jouw zakelijke nummer"
+          description: >-
+            Dit is het telefoonnummer dat anderen in hun scherm zien of opslaan als je belt via deze app.
       version: "Versie"
     buttons:
       sendFeedback: &sendFeedbackButton "Feedback sturen"

@@ -7,8 +7,9 @@ abstract class Setting<T> {
   static const _valueKey = 'value';
 
   final T value;
+  final bool mutable;
 
-  Setting(this.value);
+  Setting(this.value, {this.mutable = false});
 
   Map<String, dynamic> toJson() {
     return {
@@ -30,6 +31,8 @@ abstract class Setting<T> {
       return ShowDialerConfirmPopupSetting(value as bool);
     } else if (type == (ShowSurveyDialogSetting).toString()) {
       return ShowSurveyDialogSetting(value as bool);
+    } else if (type == (PhoneNumberSetting).toString()) {
+      return PhoneNumberSetting(value as String);
     } else {
       throw UnsupportedError('Setting type does not exist');
     }
@@ -48,7 +51,7 @@ abstract class Setting<T> {
 
 class RemoteLoggingSetting extends Setting<bool> {
   // ignore: avoid_positional_boolean_parameters
-  RemoteLoggingSetting(bool value) : super(value);
+  RemoteLoggingSetting(bool value) : super(value, mutable: true);
 
   @override
   RemoteLoggingSetting copyWith({bool value}) => RemoteLoggingSetting(value);
@@ -56,13 +59,14 @@ class RemoteLoggingSetting extends Setting<bool> {
 
 class ShowDialerConfirmPopupSetting extends Setting<bool> {
   // ignore: avoid_positional_boolean_parameters
-  ShowDialerConfirmPopupSetting(bool value) : super(value);
+  ShowDialerConfirmPopupSetting(bool value) : super(value, mutable: true);
 
   @override
   ShowDialerConfirmPopupSetting copyWith({bool value}) =>
       ShowDialerConfirmPopupSetting(value);
 }
 
+<<<<<<< HEAD
 class ShowSurveyDialogSetting extends Setting<bool> {
   // ignore: avoid_positional_boolean_parameters
   ShowSurveyDialogSetting(bool value) : super(value);
@@ -70,6 +74,13 @@ class ShowSurveyDialogSetting extends Setting<bool> {
   @override
   ShowSurveyDialogSetting copyWith({bool value}) =>
       ShowSurveyDialogSetting(value);
+=======
+class PhoneNumberSetting extends Setting<String> {
+  PhoneNumberSetting(String value) : super(value);
+
+  @override
+  Setting<String> copyWith({String value}) => PhoneNumberSetting(value);
+>>>>>>> df4a349... Added business phone number to settings screen
 }
 
 extension SettingsByType on List<Setting> {

@@ -5,13 +5,19 @@ import '../resources/localizations.dart';
 
 enum Category {
   debug,
+  info,
 }
 
 class CategoryInfo {
   final IconData icon;
   final String title;
+  final int order;
 
-  CategoryInfo(this.icon, this.title);
+  CategoryInfo({
+    @required this.icon,
+    @required this.title,
+    @required this.order,
+  });
 }
 
 extension CategoryMapper on Category {
@@ -19,11 +25,18 @@ extension CategoryMapper on Category {
     switch (this) {
       case Category.debug:
         return CategoryInfo(
-          VialerSans.bug,
-          context.msg.main.settings.list.debug.title,
+          icon: VialerSans.bug,
+          title: context.msg.main.settings.list.debug.title,
+          order: 1,
+        );
+      case Category.info:
+        return CategoryInfo(
+          icon: VialerSans.user,
+          title: context.msg.main.settings.list.info.title,
+          order: 0,
         );
       default:
-        throw UnsupportedError('Unknown category');
+        throw UnsupportedError('Vialer error, unknown category');
     }
   }
 }

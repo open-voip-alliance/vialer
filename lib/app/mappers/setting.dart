@@ -15,9 +15,18 @@ extension SettingMapper on Setting {
         name: context.msg.main.settings.list.debug.remoteLogging.title,
         description:
             context.msg.main.settings.list.debug.remoteLogging.description,
+        order: 0,
+      );
+    } else if (this is PhoneNumberSetting) {
+      return SettingInfo(
+        category: Category.info,
+        name: context.msg.main.settings.list.info.phoneNumber.title,
+        description:
+            context.msg.main.settings.list.info.phoneNumber.description,
+        order: 1,
       );
     } else {
-      throw UnsupportedError('Unknown setting');
+      throw UnsupportedError('Vialer error, unknown setting');
     }
   }
 }

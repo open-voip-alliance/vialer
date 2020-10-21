@@ -1,6 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dartx/dartx.dart';
+
+import '../../../entities/category.dart';
 
 import '../../../../domain/entities/build_info.dart';
 import '../../../../domain/entities/setting.dart';
@@ -152,7 +155,8 @@ class _Content extends StatelessWidget {
         .map(
           (s) => s.toInfo(context).category,
         )
-        .distinct();
+        .distinct()
+        .sortedBy((c) => c.toInfo(context).order);
 
     final settingsByCategory = Map.fromEntries(
       categories.map(
@@ -160,7 +164,8 @@ class _Content extends StatelessWidget {
           category,
           settings
               .where((s) => s.toInfo(context).category == category)
-              .toList(growable: false),
+              .toList(growable: false)
+              .sortedBy((s) => s.toInfo(context).order),
         ),
       ),
     );
@@ -170,7 +175,7 @@ class _Content extends StatelessWidget {
       widgets.add(
         SettingTileCategory(
           category: category,
-          padding: EdgeInsets.symmetric(horizontal: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 16).copyWith(top: 16),
           children: settings.map((setting) {
             return SettingTile(
               setting,
