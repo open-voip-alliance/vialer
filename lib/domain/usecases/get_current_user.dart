@@ -3,7 +3,7 @@ import '../entities/system_user.dart';
 import '../repositories/auth.dart';
 import '../use_case.dart';
 
-class GetCurrentUserUseCase extends UseCase<SystemUser> {
+class GetStoredUserUseCase extends UseCase<SystemUser> {
   final _authRepository = dependencyLocator<AuthRepository>();
 
   @override

@@ -15,6 +15,7 @@ import 'settings/page.dart';
 
 import '../../widgets/transparent_status_bar.dart';
 import 'widgets/connectivity_alert.dart';
+import 'widgets/user_refresher/widget.dart';
 
 typedef WidgetWithArgumentsBuilder = Widget Function(BuildContext, Object);
 
@@ -101,10 +102,12 @@ class _MainPageState extends State<MainPage> {
       ),
       body: TransparentStatusBar(
         brightness: Brightness.dark,
-        child: ConnectivityAlert(
-          child: _AnimatedIndexedStack(
-            index: _currentIndex,
-            children: _pages,
+        child: UserRefresher(
+          child: ConnectivityAlert(
+            child: _AnimatedIndexedStack(
+              index: _currentIndex,
+              children: _pages,
+            ),
           ),
         ),
       ),
