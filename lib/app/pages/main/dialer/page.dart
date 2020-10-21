@@ -107,7 +107,7 @@ class _DialerPageState extends State<DialerPage> {
                   ),
                   Expanded(
                     child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 32),
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
                       child: Align(
                         alignment: Alignment.bottomCenter,
                         child: BlocBuilder<ConnectivityCheckerCubit,
