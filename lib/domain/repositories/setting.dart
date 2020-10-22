@@ -11,25 +11,26 @@ class SettingRepository {
   SettingRepository(this._storageRepository, this._authRepository);
 
   Future<List<Setting>> getSettings() async {
-    final phoneNumberSetting = PhoneNumberSetting(
-      _authRepository.currentUser?.outgoingCli,
-    );
-
-    if (!_storageRepository.settings.contains(phoneNumberSetting)) {
-      return [
-        ..._storageRepository.settings,
-        phoneNumberSetting,
-      ];
-    } else {
-      return _storageRepository.settings;
-    }
+    return [
+      ..._storageRepository.settings,
+      PhoneNumberSetting(
+        _authRepository.currentUser?.outgoingCli,
+      ),
+    ];
   }
 
   Future<void> changeSetting(Setting setting) async {
     if (!setting.mutable) {
       throw UnsupportedError(
         'Vialer error: Unsupported operation: '
-        'don\'t save an immutable setting.',
+        'Don\'t save an immutable setting.',
+      );
+    }
+
+    if (setting.external) {
+      throw UnsupportedError(
+        'Vialer error: Unsupported operation: '
+        'Don\'t save an external setting.',
       );
     }
 
@@ -39,6 +40,8 @@ class SettingRepository {
       ..removeWhere((e) => e.runtimeType == setting.runtimeType)
       ..add(setting);
 
-    _storageRepository.settings = newSettings;
+    // We only want to save mutable and non-external settings.
+    _storageRepository.settings =
+        newSettings.where((s) => s.mutable && !s.external).toList();
   }
 }

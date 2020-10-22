@@ -26,7 +26,7 @@ extension SettingMapper on Setting {
             context.msg.main.settings.list.info.phoneNumber.description,
       );
     } else {
-      throw UnsupportedError('Vialer error: Unknown setting');
+      throw UnsupportedError('Vialer error: Unknown setting: $this');
     }
   }
 }
