@@ -61,7 +61,9 @@ class SettingTileCategory extends StatelessWidget {
     final info = category.toInfo(context);
 
     return Container(
-      color: category == Category.accountInfo ? context.brandTheme.grey6 : null,
+      color: category == Category.accountInfo
+          ? context.brandTheme.settingsBackgroundHighlight
+          : null,
       child: Column(
         children: <Widget>[
           Padding(
