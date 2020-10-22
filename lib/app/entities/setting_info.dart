@@ -3,15 +3,15 @@ import 'package:meta/meta.dart';
 import 'category.dart';
 
 class SettingInfo {
+  final int order;
   final Category category;
   final String name;
   final String description;
-  final int order;
 
   SettingInfo({
+    @required this.order,
     @required this.category,
     @required this.name,
-    @required this.order,
     this.description,
   });
 }

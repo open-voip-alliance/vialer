@@ -9,14 +9,14 @@ enum Category {
 }
 
 class CategoryInfo {
+  final int order;
   final IconData icon;
   final String title;
-  final int order;
 
   CategoryInfo({
+    @required this.order,
     @required this.icon,
     @required this.title,
-    @required this.order,
   });
 }
 
