@@ -11,8 +11,9 @@ class SettingRepository {
   SettingRepository(this._storageRepository, this._authRepository);
 
   Future<List<Setting>> getSettings() async {
-    final phoneNumberSetting =
-        PhoneNumberSetting(_authRepository.currentUser?.outgoingCli);
+    final phoneNumberSetting = PhoneNumberSetting(
+      _authRepository.currentUser?.outgoingCli,
+    );
 
     if (!_storageRepository.settings.contains(phoneNumberSetting)) {
       return [
@@ -26,8 +27,10 @@ class SettingRepository {
 
   Future<void> changeSetting(Setting setting) async {
     if (!setting.mutable) {
-      throw UnsupportedError('Vialer error, unsupported operation: '
-          'don\'t save an immutable setting.');
+      throw UnsupportedError(
+        'Vialer error: Unsupported operation: '
+        'don\'t save an immutable setting.',
+      );
     }
 
     final settings = await getSettings();

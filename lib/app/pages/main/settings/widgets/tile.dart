@@ -38,7 +38,7 @@ class SettingTile<S extends Setting> extends StatelessWidget {
       );
     } else {
       throw UnsupportedError(
-          'Vialer error, unsupported operation: Unknown setting generic type. '
+          'Vialer error: Unsupported operation: Unknown setting generic type. '
           'Please add a widget that can handle this generic type.');
     }
   }
@@ -61,7 +61,7 @@ class SettingTileCategory extends StatelessWidget {
     final info = category.toInfo(context);
 
     return Container(
-      color: category == Category.info ? context.brandTheme.grey6 : null,
+      color: category == Category.accountInfo ? context.brandTheme.grey6 : null,
       child: Column(
         children: <Widget>[
           Padding(

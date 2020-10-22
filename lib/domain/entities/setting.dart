@@ -9,7 +9,7 @@ abstract class Setting<T> {
   final T value;
   final bool mutable;
 
-  Setting(this.value, {this.mutable = false});
+  Setting(this.value, {this.mutable = true});
 
   Map<String, dynamic> toJson() {
     return {
@@ -51,7 +51,7 @@ abstract class Setting<T> {
 
 class RemoteLoggingSetting extends Setting<bool> {
   // ignore: avoid_positional_boolean_parameters
-  RemoteLoggingSetting(bool value) : super(value, mutable: true);
+  RemoteLoggingSetting(bool value) : super(value);
 
   @override
   RemoteLoggingSetting copyWith({bool value}) => RemoteLoggingSetting(value);
@@ -59,14 +59,13 @@ class RemoteLoggingSetting extends Setting<bool> {
 
 class ShowDialerConfirmPopupSetting extends Setting<bool> {
   // ignore: avoid_positional_boolean_parameters
-  ShowDialerConfirmPopupSetting(bool value) : super(value, mutable: true);
+  ShowDialerConfirmPopupSetting(bool value) : super(value);
 
   @override
   ShowDialerConfirmPopupSetting copyWith({bool value}) =>
       ShowDialerConfirmPopupSetting(value);
 }
 
-<<<<<<< HEAD
 class ShowSurveyDialogSetting extends Setting<bool> {
   // ignore: avoid_positional_boolean_parameters
   ShowSurveyDialogSetting(bool value) : super(value);
@@ -74,13 +73,13 @@ class ShowSurveyDialogSetting extends Setting<bool> {
   @override
   ShowSurveyDialogSetting copyWith({bool value}) =>
       ShowSurveyDialogSetting(value);
-=======
+}
+
 class PhoneNumberSetting extends Setting<String> {
-  PhoneNumberSetting(String value) : super(value);
+  PhoneNumberSetting(String value) : super(value, mutable: false);
 
   @override
   Setting<String> copyWith({String value}) => PhoneNumberSetting(value);
->>>>>>> df4a349... Added business phone number to settings screen
 }
 
 extension SettingsByType on List<Setting> {

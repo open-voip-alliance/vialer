@@ -5,7 +5,7 @@ import '../resources/localizations.dart';
 
 enum Category {
   debug,
-  info,
+  accountInfo,
 }
 
 class CategoryInfo {
@@ -23,20 +23,20 @@ class CategoryInfo {
 extension CategoryMapper on Category {
   CategoryInfo toInfo(BuildContext context) {
     switch (this) {
-      case Category.debug:
+      case Category.accountInfo:
         return CategoryInfo(
-          icon: VialerSans.bug,
-          title: context.msg.main.settings.list.debug.title,
-          order: 1,
-        );
-      case Category.info:
-        return CategoryInfo(
+          order: 0,
           icon: VialerSans.user,
           title: context.msg.main.settings.list.info.title,
-          order: 0,
+        );
+      case Category.debug:
+        return CategoryInfo(
+          order: 1,
+          icon: VialerSans.bug,
+          title: context.msg.main.settings.list.debug.title,
         );
       default:
-        throw UnsupportedError('Vialer error, unknown category');
+        throw UnsupportedError('Vialer error: Unknown category');
     }
   }
 }
