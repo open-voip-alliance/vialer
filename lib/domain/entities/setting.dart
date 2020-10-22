@@ -9,7 +9,11 @@ abstract class Setting<T> {
   final T value;
   final bool mutable;
 
-  Setting(this.value, {this.mutable = true});
+  /// Whether the setting is external, meaning: The setting has a source that's
+  /// not our local storage (the portal, VoIP library, etc.)
+  final bool external;
+
+  Setting(this.value, {this.mutable = true, this.external = false});
 
   Map<String, dynamic> toJson() {
     return {
@@ -76,7 +80,8 @@ class ShowSurveyDialogSetting extends Setting<bool> {
 }
 
 class PhoneNumberSetting extends Setting<String> {
-  PhoneNumberSetting(String value) : super(value, mutable: false);
+  PhoneNumberSetting(String value)
+      : super(value, mutable: false, external: true);
 
   @override
   Setting<String> copyWith({String value}) => PhoneNumberSetting(value);

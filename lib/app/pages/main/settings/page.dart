@@ -142,66 +142,59 @@ class _Content extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Iterable<Setting> settings = this.settings;
-
-    // Don't show the show dialer and show survey setting (for now)
-    settings = settings.where(
-      (setting) =>
-          setting is! ShowDialerConfirmPopupSetting &&
-          setting is! ShowSurveyDialogSetting,
-    );
-
-    final categories = settings
-        .map(
-          (s) => s.toInfo(context).category,
-        )
-        .distinct()
-        .sortedBy((c) => c.toInfo(context).order);
-
-    final settingsByCategory = Map.fromEntries(
-      categories.map(
-        (category) => MapEntry(
-          category,
-          settings
-              .where((s) => s.toInfo(context).category == category)
-              .toList(growable: false)
-              .sortedBy((s) => s.toInfo(context).order),
-        ),
-      ),
-    );
-
-    final widgets = <Widget>[];
-    settingsByCategory.forEach((category, settings) {
-      widgets.add(
-        SettingTileCategory(
-          category: category,
-          padding: const EdgeInsets.symmetric(horizontal: 16).copyWith(top: 16),
-          children: settings.map((setting) {
-            return SettingTile(
-              setting,
-              onChanged: onSettingChanged,
-            );
-          }).toList(growable: false),
-        ),
-      );
-    });
-
-    if (buildInfo != null) {
-      widgets.add(
-        Chip(
-          label: Text(
-            '${context.msg.main.settings.list.version}'
-            ' ${buildInfo.version}',
-          ),
-        ),
-      );
-    }
+    // Don't show the show dialer and show survey setting (for now).
+    final settings = this.settings.where(
+          (setting) =>
+              setting is! ShowDialerConfirmPopupSetting &&
+              setting is! ShowSurveyDialogSetting,
+        );
 
     return ListView(
-      padding: EdgeInsets.only(
+      padding: const EdgeInsets.only(
         top: 8,
       ),
-      children: widgets,
+      children: [
+        ...settings
+            .map((s) => s.toInfo(context).category)
+            .distinct()
+            .sortedBy((c) => c.toInfo(context).order)
+            .map(
+              (category) => MapEntry(
+                category,
+                settings
+                    .where((s) => s.toInfo(context).category == category)
+                    .sortedBy((s) => s.toInfo(context).order),
+              ),
+            )
+            .mapEntries(
+              (category, settings) => SettingTileCategory(
+                category: category,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                ).copyWith(top: 16),
+                children: [
+                  ...settings.map(
+                    (setting) => SettingTile(
+                      setting,
+                      onChanged: onSettingChanged,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+        if (buildInfo != null)
+          Chip(
+            label: Text(
+              '${context.msg.main.settings.list.version}'
+              ' ${buildInfo.version}',
+            ),
+          ),
+      ],
     );
   }
+}
+
+extension _MapEntries<K, V> on Iterable<MapEntry<K, V>> {
+  Iterable<T> mapEntries<T>(T Function(K key, V value) mapper) =>
+      map((e) => mapper(e.key, e.value));
 }
