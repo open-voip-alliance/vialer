@@ -38,7 +38,10 @@ Future<void> initializeDependencies() async {
       dependsOn: [StorageRepository],
     )
     ..registerSingletonWithDependencies<SettingRepository>(
-      () => SettingRepository(dependencyLocator.get<StorageRepository>()),
+      () => SettingRepository(
+        dependencyLocator.get<StorageRepository>(),
+        dependencyLocator.get<AuthRepository>(),
+      ),
       dependsOn: [StorageRepository],
     )
     ..registerSingletonWithDependencies<LoggingRepository>(

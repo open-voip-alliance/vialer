@@ -43,6 +43,8 @@ abstract class BrandTheme {
   final grey4 = Color(0xFF8F8F8F);
   final grey5 = Color(0xFF8B95A3);
 
+  final settingsBackgroundHighlight = Color(0xFFEFF0F8);
+
   final green1 = Color(0xFF28CA42);
   final green2 = Color(0xFFACF5A6);
   final green3 = Color(0xFF046614);

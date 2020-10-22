@@ -110,6 +110,12 @@ main:
           title: "Remote logging"
           description: >-
             Automatically share your app activity with our developers and support team to help resolve issues and errors.
+      info:
+        title: "Account information"
+        phoneNumber:
+          title: "Your business number"
+          description: >-
+            This is the phone number others will see on their screen or records when you call them through this app.
       version: "Version"
     buttons:
       sendFeedback: &sendFeedbackButton "Send feedback"

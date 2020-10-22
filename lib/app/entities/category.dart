@@ -5,25 +5,38 @@ import '../resources/localizations.dart';
 
 enum Category {
   debug,
+  accountInfo,
 }
 
 class CategoryInfo {
+  final int order;
   final IconData icon;
   final String title;
 
-  CategoryInfo(this.icon, this.title);
+  CategoryInfo({
+    @required this.order,
+    @required this.icon,
+    @required this.title,
+  });
 }
 
 extension CategoryMapper on Category {
   CategoryInfo toInfo(BuildContext context) {
     switch (this) {
+      case Category.accountInfo:
+        return CategoryInfo(
+          order: 0,
+          icon: VialerSans.user,
+          title: context.msg.main.settings.list.info.title,
+        );
       case Category.debug:
         return CategoryInfo(
-          VialerSans.bug,
-          context.msg.main.settings.list.debug.title,
+          order: 1,
+          icon: VialerSans.bug,
+          title: context.msg.main.settings.list.debug.title,
         );
       default:
-        throw UnsupportedError('Unknown category');
+        throw UnsupportedError('Vialer error: Unknown category');
     }
   }
 }

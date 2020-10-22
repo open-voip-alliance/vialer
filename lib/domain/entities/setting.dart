@@ -7,8 +7,9 @@ abstract class Setting<T> {
   static const _valueKey = 'value';
 
   final T value;
+  final bool mutable;
 
-  Setting(this.value);
+  Setting(this.value, {this.mutable = true});
 
   Map<String, dynamic> toJson() {
     return {
@@ -30,6 +31,8 @@ abstract class Setting<T> {
       return ShowDialerConfirmPopupSetting(value as bool);
     } else if (type == (ShowSurveyDialogSetting).toString()) {
       return ShowSurveyDialogSetting(value as bool);
+    } else if (type == (PhoneNumberSetting).toString()) {
+      return PhoneNumberSetting(value as String);
     } else {
       throw UnsupportedError('Setting type does not exist');
     }
@@ -70,6 +73,13 @@ class ShowSurveyDialogSetting extends Setting<bool> {
   @override
   ShowSurveyDialogSetting copyWith({bool value}) =>
       ShowSurveyDialogSetting(value);
+}
+
+class PhoneNumberSetting extends Setting<String> {
+  PhoneNumberSetting(String value) : super(value, mutable: false);
+
+  @override
+  Setting<String> copyWith({String value}) => PhoneNumberSetting(value);
 }
 
 extension SettingsByType on List<Setting> {
