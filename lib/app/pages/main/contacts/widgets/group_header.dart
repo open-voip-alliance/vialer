@@ -10,7 +10,7 @@ class GroupHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(
+      padding: const EdgeInsets.only(
         top: 16,
         bottom: 4,
         left: 16,

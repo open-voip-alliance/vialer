@@ -42,7 +42,7 @@ class RecentCallItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      contentPadding: EdgeInsets.symmetric(horizontal: 16),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16),
       onTap: onCallPressed,
       leading: _RecentItemAvatar(call),
       title: Text(

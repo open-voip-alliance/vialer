@@ -102,7 +102,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                         final page = entry.value;
                         return SafeArea(
                           child: Provider<EdgeInsets>(
-                            create: (_) => EdgeInsets.all(48).copyWith(
+                            create: (_) => const EdgeInsets.all(48).copyWith(
                               top: 128,
                               bottom: 32,
                             ),

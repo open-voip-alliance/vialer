@@ -88,7 +88,7 @@ class _ContactPageState extends State<ContactsPage>
       resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Padding(
-          padding: EdgeInsets.only(
+          padding: const EdgeInsets.only(
             top: 16,
           ),
           child: BlocBuilder<ContactsCubit, ContactsState>(
@@ -99,11 +99,11 @@ class _ContactPageState extends State<ContactsPage>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Header(context.msg.main.contacts.title),
                   ),
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: _SearchTextField(
                       onChanged: _onSearchTermChanged,
                     ),
@@ -559,7 +559,7 @@ class _SearchTextFieldState extends State<_SearchTextField> {
                 ),
               )
             : null,
-        contentPadding: EdgeInsets.all(0),
+        contentPadding: EdgeInsets.zero,
       ),
     );
   }

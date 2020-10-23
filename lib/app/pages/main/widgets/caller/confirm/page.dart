@@ -142,7 +142,7 @@ class ConfirmPageState extends State<ConfirmPage>
       child: TransparentStatusBar(
         brightness: Brightness.dark,
         child: Padding(
-          padding: EdgeInsets.only(
+          padding: const EdgeInsets.only(
             top: 64,
           ),
           child: Material(
@@ -155,48 +155,51 @@ class ConfirmPageState extends State<ConfirmPage>
               builder: (context, state) {
                 final cubit = context.bloc<ConfirmCubit>();
 
-                return Column(
-                  children: <Widget>[
-                    SizedBox(height: 48),
-                    Text(
-                      context.msg.main.dialer.confirm.title(appName),
-                      style: _largeStyle,
-                    ),
-                    SizedBox(height: 48),
-                    Text(
-                      context.msg.main.dialer.confirm.description.origin,
-                      style: _style,
-                    ),
-                    SizedBox(height: 8),
-                    Text(state.outgoingCli, style: _largeStyle),
-                    SizedBox(height: 48),
-                    Text(
-                      context.msg.main.dialer.confirm.description.main(
-                        appName,
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 48),
+                  child: Column(
+                    children: <Widget>[
+                      SizedBox(height: 48),
+                      Text(
+                        context.msg.main.dialer.confirm.title(appName),
+                        style: _largeStyle,
                       ),
-                      style: _style,
-                    ),
-                    SizedBox(height: 48),
-                    Text(
-                      context.msg.main.dialer.confirm.description.action,
-                      style: _style,
-                    ),
-                    SizedBox(height: 8),
-                    Text(widget.destination, style: _largeStyle),
-                    if (context.isAndroid)
-                      Expanded(
-                        child: _AndroidInputs(
-                          checkboxValue: !state.showConfirmPage,
-                          onCheckboxValueChangd: (v) =>
-                              cubit.updateShowPopupSetting(!v),
-                          onCallButtonPressed: cubit.call,
-                          onCancelButtonPressed: pop,
-                          destination: context.msg.main.dialer.confirm.button
-                              .call(widget.destination)
-                              .toUpperCase(),
+                      SizedBox(height: 48),
+                      Text(
+                        context.msg.main.dialer.confirm.description.origin,
+                        style: _style,
+                      ),
+                      SizedBox(height: 8),
+                      Text(state.outgoingCli, style: _largeStyle),
+                      SizedBox(height: 48),
+                      Text(
+                        context.msg.main.dialer.confirm.description.main(
+                          appName,
                         ),
+                        style: _style,
                       ),
-                  ],
+                      SizedBox(height: 48),
+                      Text(
+                        context.msg.main.dialer.confirm.description.action,
+                        style: _style,
+                      ),
+                      SizedBox(height: 8),
+                      Text(widget.destination, style: _largeStyle),
+                      if (context.isAndroid)
+                        Expanded(
+                          child: _AndroidInputs(
+                            checkboxValue: !state.showConfirmPage,
+                            onCheckboxValueChangd: (v) =>
+                                cubit.updateShowPopupSetting(!v),
+                            onCallButtonPressed: cubit.call,
+                            onCancelButtonPressed: pop,
+                            destination: context.msg.main.dialer.confirm.button
+                                .call(widget.destination)
+                                .toUpperCase(),
+                          ),
+                        ),
+                    ],
+                  ),
                 );
               },
             ),
@@ -233,7 +236,7 @@ class _AndroidInputs extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(
+      padding: const EdgeInsets.symmetric(
         horizontal: 40,
       ).copyWith(
         bottom: 16,

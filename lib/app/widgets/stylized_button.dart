@@ -93,7 +93,7 @@ class StylizedButton extends StatelessWidget {
     final isFlat = _type == _Type.flat;
 
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 24),
+      padding: const EdgeInsets.symmetric(horizontal: 24),
       child: AnimatedContainer(
         duration: _duration,
         curve: _curve,

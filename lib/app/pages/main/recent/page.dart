@@ -30,7 +30,7 @@ class RecentCallsPage extends StatelessWidget {
       resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Padding(
-          padding: EdgeInsets.only(
+          padding: const EdgeInsets.only(
             top: 16,
           ),
           child: BlocProvider<RecentCallsCubit>(
@@ -44,7 +44,7 @@ class RecentCallsPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: Header(context.msg.main.recent.title),
                     ),
                     Expanded(

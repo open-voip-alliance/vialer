@@ -39,7 +39,7 @@ class Warning extends StatelessWidget {
     return SizedBox(
       width: double.infinity,
       child: Padding(
-        padding: EdgeInsets.only(
+        padding: const EdgeInsets.only(
           left: 64,
           right: 64,
           top: 84,
@@ -120,13 +120,13 @@ class _Illustration extends StatelessWidget {
     return Container(
       width: size + padding + borderWidth,
       height: size + padding + borderWidth,
-      padding: EdgeInsets.all(borderWidth),
+      padding: const EdgeInsets.all(borderWidth),
       decoration: BoxDecoration(
         color: backgroundColor.withOpacity(0.40),
         shape: BoxShape.circle,
       ),
       child: Container(
-        padding: EdgeInsets.all(padding),
+        padding: const EdgeInsets.all(padding),
         decoration: BoxDecoration(
           color: backgroundColor,
           shape: BoxShape.circle,

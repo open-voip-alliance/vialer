@@ -63,7 +63,7 @@ class SettingsPage extends StatelessWidget {
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: EdgeInsets.only(
+          padding: const EdgeInsets.only(
             top: 16,
           ),
           child: BlocProvider<SettingsCubit>(
@@ -77,7 +77,7 @@ class SettingsPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: Header(context.msg.main.settings.title),
                     ),
                     Expanded(
@@ -88,7 +88,7 @@ class SettingsPage extends StatelessWidget {
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 48),
+                      padding: const EdgeInsets.symmetric(horizontal: 48),
                       child: Column(
                         children: <Widget>[
                           SizedBox(
@@ -198,7 +198,7 @@ class _Content extends StatelessWidget {
     }
 
     return ListView(
-      padding: EdgeInsets.only(
+      padding: const EdgeInsets.only(
         top: 8,
       ),
       children: widgets,
