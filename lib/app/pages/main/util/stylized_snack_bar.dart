@@ -25,7 +25,7 @@ void showSnackBar(
       behavior: SnackBarBehavior.fixed,
       backgroundColor: backgroundColor,
       content: Padding(
-        padding: EdgeInsets.symmetric(
+        padding: const EdgeInsets.symmetric(
           horizontal: 16,
         ),
         child: Row(

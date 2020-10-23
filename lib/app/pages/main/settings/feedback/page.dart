@@ -57,7 +57,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                         hintText: context
                             .msg.main.settings.feedback.placeholders.title,
                         border: InputBorder.none,
-                        contentPadding: EdgeInsets.symmetric(
+                        contentPadding: const EdgeInsets.symmetric(
                           horizontal: 24,
                           vertical: 16,
                         ),
@@ -79,7 +79,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                           hintText: context
                               .msg.main.settings.feedback.placeholders.text,
                           border: InputBorder.none,
-                          contentPadding: EdgeInsets.symmetric(
+                          contentPadding: const EdgeInsets.symmetric(
                             horizontal: 24,
                             vertical: 16,
                           ),
@@ -90,7 +90,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.symmetric(
+                      padding: const EdgeInsets.symmetric(
                         horizontal: 40,
                       ).copyWith(
                         bottom: 16,

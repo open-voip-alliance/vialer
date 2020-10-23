@@ -43,13 +43,13 @@ class ContactDetailsPage extends StatelessWidget {
 
               return SafeArea(
                 child: Padding(
-                  padding: EdgeInsets.only(
+                  padding: const EdgeInsets.only(
                     top: 32,
                   ),
                   child: Column(
                     children: <Widget>[
                       Padding(
-                        padding: EdgeInsets.symmetric(
+                        padding: const EdgeInsets.symmetric(
                           horizontal: _horizontalPadding,
                         ),
                         child: Row(
@@ -155,7 +155,9 @@ class _Item extends StatelessWidget {
     );
 
     return ListTile(
-      contentPadding: EdgeInsets.symmetric(horizontal: _horizontalPadding),
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: _horizontalPadding,
+      ),
       leading: Container(
         width: _leadingSize,
         alignment: Alignment.center,

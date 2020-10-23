@@ -33,9 +33,9 @@ main:
       description:
         origin: "Dialing from your business number"
         main(String appName):
-          "$appName will route your call through,\\nkeeping your personal number private"
+          "$appName will route your call through, keeping your personal number private."
         action: "Tap the “Call” button to dial:"
-        showPopUpSetting: "Dont't show this again"
+        showPopUpSetting: "Don't show this again"
       button:
         call(String number): "Call $number"
     noPermission:

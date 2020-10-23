@@ -38,19 +38,19 @@ class _ErrorAlertState extends State<ErrorAlert> with TickerProviderStateMixin {
           child: Padding(
             padding: widget.padding,
             child: Container(
-              padding: EdgeInsets.all(8),
+              padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
                 color: context.brandTheme.errorBorderColor,
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Container(
-                padding: EdgeInsets.all(8),
+                padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
                   color: context.brandTheme.errorBorderColor,
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Container(
-                  padding: EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(8),
