@@ -13,6 +13,10 @@ class ContactDetailsCubit extends Cubit<ContactDetailsState> {
   Future<void> call(String destination) =>
       _caller.call(destination, origin: CallOrigin.contacts);
 
+  Future<void> requestPermission() async {
+    await _caller.requestPermission();
+  }
+
   void mail(String destination) {
     launch('mailto:$destination');
   }

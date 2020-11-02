@@ -76,6 +76,8 @@ main:
     title: &contactsTitle "Contacts"
     menu:
       title: *contactsTitle
+    snackBar:
+      noPermission: "Call permission permanently denied"
     list:
       loading:
         title: "Loading your contacts"

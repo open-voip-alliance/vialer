@@ -24,6 +24,15 @@ class RecentCallsPage extends StatelessWidget {
     this.snackBarRightPadding = 0,
   }) : super(key: key);
 
+  void _showSnackBar(BuildContext context) {
+    showSnackBar(
+      context,
+      icon: Icon(VialerSans.exclamationMark),
+      label: Text(context.msg.main.contacts.snackBar.noPermission),
+      padding: const EdgeInsets.only(right: 72),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,29 +45,42 @@ class RecentCallsPage extends StatelessWidget {
           child: BlocProvider<RecentCallsCubit>(
             create: (_) => RecentCallsCubit(context.bloc<CallerCubit>()),
             child: BlocBuilder<RecentCallsCubit, RecentCallsState>(
-              builder: (context, state) {
+              builder: (context, recentCallState) {
                 final cubit = context.bloc<RecentCallsCubit>();
-                final recentCalls = state.calls;
+                final recentCalls = recentCallState.calls;
 
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Header(context.msg.main.recent.title),
-                    ),
-                    Expanded(
-                      child: _RecentCallsList(
-                        listBottomPadding: listBottomPadding,
-                        snackBarRightPadding: snackBarRightPadding,
-                        isLoadingInitial: state is LoadingInitialRecentCalls,
-                        calls: recentCalls,
-                        onRefresh: cubit.refreshRecentCalls,
-                        onCallPressed: cubit.call,
-                        onCopyPressed: cubit.copyNumber,
-                      ),
-                    ),
-                  ],
+                return BlocBuilder<CallerCubit, CallerState>(
+                  builder: (context, callerState) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: Header(context.msg.main.recent.title),
+                        ),
+                        Expanded(
+                          child: _RecentCallsList(
+                            listBottomPadding: listBottomPadding,
+                            snackBarRightPadding: snackBarRightPadding,
+                            isLoadingInitial:
+                                recentCallState is LoadingInitialRecentCalls,
+                            calls: recentCalls,
+                            onRefresh: cubit.refreshRecentCalls,
+                            onCallPressed: callerState is CanCall
+                                ? cubit.call
+                                : (callerState is NoPermission &&
+                                        !callerState.dontAskAgain)
+                                    ? (n) {
+                                        cubit.requestPermission();
+                                        cubit.call(n);
+                                      }
+                                    : (_) => _showSnackBar(context),
+                            onCopyPressed: cubit.copyNumber,
+                          ),
+                        ),
+                      ],
+                    );
+                  },
                 );
               },
             ),

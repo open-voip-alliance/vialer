@@ -79,6 +79,8 @@ main:
     title: &contactsTitle "Contacten"
     menu:
       title: *contactsTitle
+    snackBar:
+      noPermission: "Toestemming voor bellen geweigerd"
     list:
       loading:
         # UX wants to have the line break specifically at 2 words

@@ -9,9 +9,10 @@ import '../../../resources/localizations.dart';
 import '../../../widgets/transparent_status_bar.dart';
 import 'widgets/key_input.dart';
 import 'widgets/keypad.dart';
+import '../widgets/caller/state.dart';
 import '../widgets/conditional_placeholder.dart';
 import '../../../widgets/stylized_button.dart';
-import '../widgets/caller.dart' hide CanCall;
+import '../widgets/caller.dart';
 import '../widgets/connectivity_alert.dart';
 import '../../../widgets/connectivity_checker.dart';
 
@@ -36,14 +37,14 @@ class DialerPage extends StatefulWidget {
 class _DialerPageState extends State<DialerPage> {
   final _keypadController = TextEditingController();
 
-  void _onStateChanged(BuildContext context, DialerState state) {
-    if (state is CanCall &&
-        state.lastCalledDestination != null &&
-        _keypadController.text.isEmpty) {
+  void _onDialerStateChanged(BuildContext context, DialerState state) {
+    if (state.lastCalledDestination != null && _keypadController.text.isEmpty) {
       _keypadController.text = state.lastCalledDestination;
     }
+  }
 
-    if (state is CallInitiated) {
+  void _onCallerStateChanged(BuildContext context, CallerState state) {
+    if (state is InitiatingCall) {
       Future.delayed(Duration(milliseconds: 200), () {
         Navigator.of(context).pop();
       });
@@ -51,7 +52,7 @@ class _DialerPageState extends State<DialerPage> {
   }
 
   void _call(BuildContext context) {
-    context.bloc<DialerCubit>().startCall(_keypadController.text);
+    context.bloc<DialerCubit>().call(_keypadController.text);
     _keypadController.clear();
   }
 
@@ -61,81 +62,85 @@ class _DialerPageState extends State<DialerPage> {
       brightness: Brightness.dark,
       child: BlocProvider<DialerCubit>(
         create: (_) => DialerCubit(context.bloc<CallerCubit>()),
-        child: BlocConsumer<DialerCubit, DialerState>(
-          listener: _onStateChanged,
-          builder: (context, state) {
-            final cubit = context.bloc<DialerCubit>();
-            final appName = Provider.of<Brand>(context).appName;
+        child: BlocListener<DialerCubit, DialerState>(
+          listener: _onDialerStateChanged,
+          child: BlocConsumer<CallerCubit, CallerState>(
+            listener: _onCallerStateChanged,
+            builder: (context, state) {
+              final callerCubit = context.bloc<CallerCubit>();
+              final dialerCubit = context.bloc<DialerCubit>();
+              final appName = Provider.of<Brand>(context).appName;
 
-            return ConditionalPlaceholder(
-              showPlaceholder: state is! CanCall,
-              placeholder: Warning(
-                title: Text(context.msg.main.dialer.noPermission.title),
-                description: state is NoPermission && !state.dontAskAgain
-                    ? Text(
-                        context.msg.main.dialer.noPermission
-                            .description(appName),
-                      )
-                    : Text(
-                        context.msg.main.dialer.noPermission
-                            .permanentDescription(appName),
-                      ),
-                icon: Icon(VialerSans.missedCall),
-                children: state is NoPermission && !state.dontAskAgain
-                    ? <Widget>[
-                        SizedBox(height: 40),
-                        StylizedButton.raised(
-                          colored: true,
-                          onPressed: cubit.requestPermission,
-                          child: Text(
-                            context.msg.main.dialer.noPermission.button
-                                .toUpperCaseIfAndroid(context),
-                          ),
+              return ConditionalPlaceholder(
+                showPlaceholder: state is NoPermission,
+                placeholder: Warning(
+                  title: Text(context.msg.main.dialer.noPermission.title),
+                  description: state is NoPermission && !state.dontAskAgain
+                      ? Text(
+                          context.msg.main.dialer.noPermission
+                              .description(appName),
+                        )
+                      : Text(
+                          context.msg.main.dialer.noPermission
+                              .permanentDescription(appName),
                         ),
-                      ]
-                    : <Widget>[],
-              ),
-              child: Column(
-                children: <Widget>[
-                  Material(
-                    elevation: context.isIOS ? 0 : 8,
-                    child: SafeArea(
-                      child: SizedBox(
-                        height: 96,
-                        child: Center(
-                          child: KeyInput(
-                            controller: _keypadController,
+                  icon: Icon(VialerSans.missedCall),
+                  children: state is NoPermission && !state.dontAskAgain
+                      ? <Widget>[
+                          SizedBox(height: 40),
+                          StylizedButton.raised(
+                            colored: true,
+                            onPressed: callerCubit.requestPermission,
+                            child: Text(
+                              context.msg.main.dialer.noPermission.button
+                                  .toUpperCaseIfAndroid(context),
+                            ),
                           ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: Align(
-                        alignment: Alignment.bottomCenter,
-                        child: BlocBuilder<ConnectivityCheckerCubit,
-                            ConnectivityState>(
-                          builder: (context, state) {
-                            return Keypad(
+                        ]
+                      : <Widget>[],
+                ),
+                child: Column(
+                  children: <Widget>[
+                    Material(
+                      elevation: context.isIOS ? 0 : 8,
+                      child: SafeArea(
+                        child: SizedBox(
+                          height: 96,
+                          child: Center(
+                            child: KeyInput(
                               controller: _keypadController,
-                              onCallButtonPressed: state is Connected
-                                  ? () => _call(context)
-                                  : null,
-                              onDeleteButtonPressed: state is Connected
-                                  ? cubit.clearLastCalledDestination
-                                  : null,
-                            );
-                          },
+                            ),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-            );
-          },
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: Align(
+                          alignment: Alignment.bottomCenter,
+                          child: BlocBuilder<ConnectivityCheckerCubit,
+                              ConnectivityState>(
+                            builder: (context, state) {
+                              return Keypad(
+                                controller: _keypadController,
+                                onCallButtonPressed: state is Connected
+                                    ? () => _call(context)
+                                    : null,
+                                onDeleteButtonPressed: state is Connected
+                                    ? dialerCubit.clearLastCalledDestination
+                                    : null,
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
         ),
       ),
     );
