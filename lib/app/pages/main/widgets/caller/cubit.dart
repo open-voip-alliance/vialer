@@ -61,15 +61,11 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
         settings.get<ShowDialerConfirmPopupSetting>().value &&
             !showingConfirmPage;
 
-    // First check and possibly request to allow to make phone calls,
+    // First request to allow to make phone calls,
     // otherwise don't show the call through page at all.
-    if (!Platform.isIOS) {
-      var status = await _getPermissionStatus(permission: Permission.phone);
-
-      if (status == PermissionStatus.denied) {
-        await requestPermission();
-        status = await _getPermissionStatus(permission: Permission.phone);
-      }
+    if (Platform.isAndroid) {
+      // Requesting already allowed permissions won't reshow the dialog.
+      final status = await _requestPhonePermission();
 
       if (status == PermissionStatus.denied ||
           status == PermissionStatus.permanentlyDenied) {
@@ -155,14 +151,18 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
     await super.close();
   }
 
+  Future<PermissionStatus> _requestPhonePermission() {
+    return _requestPermission(permission: Permission.phone);
+  }
+
   Future<void> requestPermission() async {
-    final status = await _requestPermission(permission: Permission.phone);
+    final status = await _requestPhonePermission();
 
     _updateWhetherCanCall(status);
   }
 
   Future<void> _checkCallPermission() async {
-    if (!Platform.isIOS) {
+    if (Platform.isAndroid) {
       final status = await _getPermissionStatus(permission: Permission.phone);
       _updateWhetherCanCall(status);
     }
