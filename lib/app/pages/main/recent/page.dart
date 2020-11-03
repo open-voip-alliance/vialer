@@ -51,6 +51,14 @@ class RecentCallsPage extends StatelessWidget {
 
                 return BlocBuilder<CallerCubit, CallerState>(
                   builder: (context, callerState) {
+                    void onCallPressed(String n) {
+                      return (callerState is CanCall ||
+                              (callerState is NoPermission &&
+                                  !callerState.dontAskAgain))
+                          ? cubit.call(n)
+                          : _showSnackBar(context);
+                    }
+
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
@@ -66,15 +74,7 @@ class RecentCallsPage extends StatelessWidget {
                                 recentCallState is LoadingInitialRecentCalls,
                             calls: recentCalls,
                             onRefresh: cubit.refreshRecentCalls,
-                            onCallPressed: callerState is CanCall
-                                ? cubit.call
-                                : (callerState is NoPermission &&
-                                        !callerState.dontAskAgain)
-                                    ? (n) {
-                                        cubit.requestPermission();
-                                        cubit.call(n);
-                                      }
-                                    : (_) => _showSnackBar(context),
+                            onCallPressed: onCallPressed,
                             onCopyPressed: cubit.copyNumber,
                           ),
                         ),

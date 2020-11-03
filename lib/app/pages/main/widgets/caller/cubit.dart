@@ -61,6 +61,23 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
         settings.get<ShowDialerConfirmPopupSetting>().value &&
             !showingConfirmPage;
 
+    // First check and possibly request to allow to make phone calls,
+    // otherwise don't show the call through page at all.
+    if (!Platform.isIOS) {
+      var status = await _getPermissionStatus(permission: Permission.phone);
+
+      if (status == PermissionStatus.denied) {
+        await requestPermission();
+        status = await _getPermissionStatus(permission: Permission.phone);
+      }
+
+      if (status == PermissionStatus.denied ||
+          status == PermissionStatus.permanentlyDenied) {
+        _updateWhetherCanCall(status);
+        return;
+      }
+    }
+
     if (shouldShowConfirmPage) {
       logger.info('Going to call through page');
 

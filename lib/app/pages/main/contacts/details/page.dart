@@ -88,16 +88,17 @@ class ContactDetailsPage extends StatelessWidget {
                     Expanded(
                       child: BlocBuilder<CallerCubit, CallerState>(
                         builder: (context, state) {
+                          void onTapNumber(String n) {
+                            return (state is CanCall ||
+                                    (state is NoPermission &&
+                                        !state.dontAskAgain))
+                                ? cubit.call(n)
+                                : _showSnackBar(context);
+                          }
+
                           return _DestinationsList(
                             contact: contact,
-                            onTapNumber: state is CanCall
-                                ? cubit.call
-                                : (state is NoPermission && !state.dontAskAgain)
-                                    ? (n) {
-                                        cubit.requestPermission();
-                                        cubit.call(n);
-                                      }
-                                    : (_) => _showSnackBar(context),
+                            onTapNumber: onTapNumber,
                             onTapEmail: cubit.mail,
                           );
                         },
