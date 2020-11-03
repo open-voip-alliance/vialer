@@ -50,6 +50,11 @@ class _DialerPageState extends State<DialerPage> {
     }
   }
 
+  void _call(BuildContext context) {
+    context.bloc<DialerCubit>().startCall(_keypadController.text);
+    _keypadController.clear();
+  }
+
   @override
   Widget build(BuildContext context) {
     var body = TransparentStatusBar(
@@ -116,8 +121,7 @@ class _DialerPageState extends State<DialerPage> {
                             return Keypad(
                               controller: _keypadController,
                               onCallButtonPressed: state is Connected
-                                  ? () =>
-                                      cubit.startCall(_keypadController.text)
+                                  ? () => _call(context)
                                   : null,
                               onDeleteButtonPressed: state is Connected
                                   ? cubit.clearLastCalledDestination

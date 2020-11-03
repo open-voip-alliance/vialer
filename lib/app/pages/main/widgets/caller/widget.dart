@@ -64,7 +64,10 @@ class _CallerState extends State<Caller> with WidgetsBindingObserver {
   Future<void> _onStateChanged(BuildContext context, CallerState state) async {
     if (state is ShowConfirmPage) {
       await widget.navigatorKey.currentState.push(
-        ConfirmPageRoute(destination: state.destination),
+        ConfirmPageRoute(
+          destination: state.destination,
+          origin: state.origin,
+        ),
       );
     }
 
@@ -76,6 +79,8 @@ class _CallerState extends State<Caller> with WidgetsBindingObserver {
         widget.navigatorKey.currentContext,
         trigger: SurveyTrigger.afterThreeCallThroughCalls,
       );
+
+      context.bloc<CallerCubit>().notifySurveyShown();
     }
 
     if (state is InitiatingCallFailed) {

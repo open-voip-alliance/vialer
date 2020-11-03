@@ -20,16 +20,23 @@ import 'cubit.dart';
 
 class ConfirmPage extends StatefulWidget {
   final String destination;
+  final CallOrigin origin;
 
-  ConfirmPage.__({@required this.destination});
+  ConfirmPage.__({@required this.destination, @required this.origin});
 
-  static Widget _({@required String destination}) {
+  static Widget _({
+    @required String destination,
+    @required CallOrigin origin,
+  }) {
     return BlocProvider<ConfirmCubit>(
       create: (context) => ConfirmCubit(
         context.bloc<CallerCubit>(),
         destination,
       ),
-      child: ConfirmPage.__(destination: destination),
+      child: ConfirmPage.__(
+        destination: destination,
+        origin: origin,
+      ),
     );
   }
 
@@ -59,7 +66,7 @@ class ConfirmPageState extends State<ConfirmPage>
     final cubit = context.bloc<ConfirmCubit>();
 
     if (Platform.isIOS && !_madeCall) {
-      cubit.call();
+      cubit.call(origin: widget.origin);
     }
   }
 
@@ -98,27 +105,34 @@ class ConfirmPageState extends State<ConfirmPage>
       // The duration of 200ms is not based on or in relation to anything,
       // except of the fact that it works.
       Timer(Duration(milliseconds: 200), () {
-        if (_canPop) {
-          pop();
+        // We need to make sure the state is mounted, because the timer can be
+        // executed after the state has been disposed of.
+        if (mounted &&
+            _canPop &&
+            context.bloc<CallerCubit>().state is! ShowCallThroughSurvey) {
+          _pop();
         }
       });
     }
   }
 
-  void pop() {
-    if (Platform.isIOS) {
-      Navigator.pop(context);
-    } else {
-      Navigator.popUntil(
-        context,
-        (route) =>
-            route.settings.name != Routes.dialer && route is! ConfirmPageRoute,
-      );
+  void _onCallerStateChanged(BuildContext context, CallerState state) {
+    // Pop if we showed the call-through survey.
+    if (state is ShowedCallThroughSurvey) {
+      _pop();
     }
   }
 
-  Future<bool> onWillPop() async {
-    pop();
+  void _pop() {
+    context.bloc<CallerCubit>().notifyCanCall();
+    Navigator.popUntil(
+      context,
+      (route) => route.settings.name == Routes.main,
+    );
+  }
+
+  Future<bool> _onWillPop() async {
+    _pop();
 
     // We pop ourselves
     return false;
@@ -137,71 +151,76 @@ class ConfirmPageState extends State<ConfirmPage>
   Widget build(BuildContext context) {
     final appName = Provider.of<Brand>(context).appName;
 
-    return WillPopScope(
-      onWillPop: onWillPop,
-      child: TransparentStatusBar(
-        brightness: Brightness.dark,
-        child: Padding(
-          padding: const EdgeInsets.only(
-            top: 64,
-          ),
-          child: Material(
-            elevation: 8,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(24),
-              topRight: Radius.circular(24),
+    return BlocListener<CallerCubit, CallerState>(
+      listener: _onCallerStateChanged,
+      child: WillPopScope(
+        onWillPop: _onWillPop,
+        child: TransparentStatusBar(
+          brightness: Brightness.dark,
+          child: Padding(
+            padding: EdgeInsets.only(
+              top: 64,
             ),
-            child: BlocBuilder<ConfirmCubit, ConfirmState>(
-              builder: (context, state) {
-                final cubit = context.bloc<ConfirmCubit>();
+            child: Material(
+              elevation: 8,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(24),
+                topRight: Radius.circular(24),
+              ),
+              child: BlocBuilder<ConfirmCubit, ConfirmState>(
+                builder: (context, state) {
+                  final cubit = context.bloc<ConfirmCubit>();
 
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 48),
-                  child: Column(
-                    children: <Widget>[
-                      SizedBox(height: 48),
-                      Text(
-                        context.msg.main.dialer.confirm.title(appName),
-                        style: _largeStyle,
-                      ),
-                      SizedBox(height: 48),
-                      Text(
-                        context.msg.main.dialer.confirm.description.origin,
-                        style: _style,
-                      ),
-                      SizedBox(height: 8),
-                      Text(state.outgoingCli, style: _largeStyle),
-                      SizedBox(height: 48),
-                      Text(
-                        context.msg.main.dialer.confirm.description.main(
-                          appName,
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 48),
+                    child: Column(
+                      children: <Widget>[
+                        SizedBox(height: 48),
+                        Text(
+                          context.msg.main.dialer.confirm.title(appName),
+                          style: _largeStyle,
                         ),
-                        style: _style,
-                      ),
-                      SizedBox(height: 48),
-                      Text(
-                        context.msg.main.dialer.confirm.description.action,
-                        style: _style,
-                      ),
-                      SizedBox(height: 8),
-                      Text(widget.destination, style: _largeStyle),
-                      if (context.isAndroid)
-                        Expanded(
-                          child: _AndroidInputs(
-                            checkboxValue: !state.showConfirmPage,
-                            onCheckboxValueChangd: (v) =>
-                                cubit.updateShowPopupSetting(!v),
-                            onCallButtonPressed: cubit.call,
-                            onCancelButtonPressed: pop,
-                            destination: context.msg.main.dialer.confirm.button
-                                .call(widget.destination)
-                                .toUpperCase(),
+                        SizedBox(height: 48),
+                        Text(
+                          context.msg.main.dialer.confirm.description.origin,
+                          style: _style,
+                        ),
+                        SizedBox(height: 8),
+                        Text(state.outgoingCli, style: _largeStyle),
+                        SizedBox(height: 48),
+                        Text(
+                          context.msg.main.dialer.confirm.description.main(
+                            appName,
                           ),
+                          style: _style,
                         ),
-                    ],
-                  ),
-                );
-              },
+                        SizedBox(height: 48),
+                        Text(
+                          context.msg.main.dialer.confirm.description.action,
+                          style: _style,
+                        ),
+                        SizedBox(height: 8),
+                        Text(widget.destination, style: _largeStyle),
+                        if (context.isAndroid)
+                          Expanded(
+                            child: _AndroidInputs(
+                              checkboxValue: !state.showConfirmPage,
+                              onCheckboxValueChangd: (v) =>
+                                  cubit.updateShowPopupSetting(!v),
+                              onCallButtonPressed: () =>
+                                  cubit.call(origin: widget.origin),
+                              onCancelButtonPressed: _pop,
+                              destination: context
+                                  .msg.main.dialer.confirm.button
+                                  .call(widget.destination)
+                                  .toUpperCase(),
+                            ),
+                          ),
+                      ],
+                    ),
+                  );
+                },
+              ),
             ),
           ),
         ),
@@ -306,9 +325,11 @@ class ConfirmPageRoute extends PageRoute {
   static final _barrierColor = Colors.black.withOpacity(0.8);
 
   final String destination;
+  final CallOrigin origin;
 
   ConfirmPageRoute({
     @required this.destination,
+    @required this.origin,
   });
 
   @override
@@ -327,12 +348,16 @@ class ConfirmPageRoute extends PageRoute {
     Animation<double> animation,
     Animation<double> secondaryAnimation,
   ) {
-    return ConfirmPage._(destination: destination);
+    return ConfirmPage._(destination: destination, origin: origin);
   }
 
   @override
-  Widget buildTransitions(BuildContext context, Animation<double> animation,
-      Animation<double> secondaryAnimation, Widget child) {
+  Widget buildTransitions(
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) {
     final curved = CurvedAnimation(
       parent: animation,
       curve: _curve,
