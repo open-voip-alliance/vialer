@@ -20,14 +20,11 @@ Future<void> run(void Function() f) async {
 
   final sentry = SentryClient(dsn: dsn);
 
-  FlutterError.onError = (details, {forceReport = false}) => _capture(
+  FlutterError.onError = (details) => _capture(
         sentry,
         details.exception,
         details.stack,
-        always: () => FlutterError.dumpErrorToConsole(
-          details,
-          forceReport: forceReport as bool,
-        ),
+        always: () => FlutterError.dumpErrorToConsole(details),
       );
 
   runZoned(
@@ -43,23 +40,21 @@ Future<void> _capture(
   StackTrace stackTrace, {
   Function always,
 }) async {
-  if (inDebugMode) {
-    return;
-  }
-
   final authRepository = dependencyLocator<AuthRepository>();
 
   try {
     final user = authRepository.currentUser;
 
-    client.capture(
-      event: Event(
-        exception: error,
-        stackTrace: stackTrace,
-        contexts: await _contexts,
-        userContext: user != null ? User(id: user.uuid) : null,
-      ),
-    );
+    doIfNotDebug(() async {
+      client.capture(
+        event: Event(
+          exception: error,
+          stackTrace: stackTrace,
+          contexts: await _contexts,
+          userContext: user != null ? User(id: user.uuid) : null,
+        ),
+      );
+    });
     // ignore: avoid_catches_without_on_clauses
   } catch (e) {
     print('Sending report to sentry.io failed: $e');
