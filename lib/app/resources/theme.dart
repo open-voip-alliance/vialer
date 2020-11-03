@@ -200,4 +200,5 @@ abstract class VialerSans {
   static const check = IconData(0xE911, fontFamily: _family);
   static const eye = IconData(0xE914, fontFamily: _family);
   static const eyeOff = IconData(0xE9A5, fontFamily: _family);
+  static const caretRight = IconData(0xE98D, fontFamily: _family);
 }

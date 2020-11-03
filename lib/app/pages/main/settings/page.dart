@@ -1,25 +1,25 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart' hide Category;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:dartx/dartx.dart';
 
-import '../../../entities/category.dart';
+import '../../../entities/setting_route_info.dart';
+import '../../../entities/setting_route.dart';
 
-import '../../../../domain/entities/build_info.dart';
 import '../../../../domain/entities/setting.dart';
+import '../../../../domain/entities/build_info.dart';
 
 import '../../../routes.dart';
 import '../../../widgets/stylized_button.dart';
 import '../widgets/header.dart';
-import 'widgets/tile.dart';
+import 'widgets/settings_list_view.dart';
 
 import '../../../resources/localizations.dart';
 import '../../../resources/theme.dart';
 
-import '../../../mappers/setting.dart';
-
 import '../../../util/conditional_capitalization.dart';
 import '../util/stylized_snack_bar.dart';
+
+import 'sub_page.dart';
 
 import 'cubit.dart';
 
@@ -52,6 +52,22 @@ class SettingsPage extends StatelessWidget {
     }
   }
 
+  void _goToSubPage(
+    BuildContext context,
+    SettingsCubit cubit,
+    SettingRouteInfo routeInfo,
+  ) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) {
+        return SettingsSubPage(
+          cubit: cubit,
+          routeInfo: routeInfo,
+        );
+      }),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final sendFeedbackButtonText = context
@@ -81,10 +97,16 @@ class SettingsPage extends StatelessWidget {
                       child: Header(context.msg.main.settings.title),
                     ),
                     Expanded(
-                      child: _Content(
-                        settings: cubit.state.settings,
-                        buildInfo: cubit.state.buildInfo,
+                      child: SettingsListView(
+                        route: SettingRoute.main,
+                        settings: state.settings,
                         onSettingChanged: cubit.changeSetting,
+                        onRouteLinkTapped: (info) =>
+                            _goToSubPage(context, cubit, info),
+                        children: [
+                          if (state.buildInfo != null)
+                            _BuildInfo(state.buildInfo)
+                        ],
                       ),
                     ),
                     Padding(
@@ -127,74 +149,72 @@ class SettingsPage extends StatelessWidget {
   }
 }
 
-class _Content extends StatelessWidget {
-  final List<Setting> settings;
+class _BuildInfo extends StatefulWidget {
   final BuildInfo buildInfo;
-  final ValueChanged<Setting> onSettingChanged;
 
-  _Content({
-    Key key,
-    @required this.settings,
-    @required this.buildInfo,
-    @required this.onSettingChanged,
-  })  : assert(settings != null),
-        super(key: key);
+  const _BuildInfo(this.buildInfo, {Key key}) : super(key: key);
+
+  @override
+  _BuildInfoState createState() => _BuildInfoState();
+}
+
+class _BuildInfoState extends State<_BuildInfo> {
+  static const _tapCountToShowHiddenSettings = 10;
+
+  int _tapCount = 0;
+
+  void _onTap() {
+    _tapCount++;
+
+    if (_tapCount >= 4 && _tapCount <= _tapCountToShowHiddenSettings) {
+      Scaffold.of(context).removeCurrentSnackBar();
+
+      final gainedAccess = _tapCount == _tapCountToShowHiddenSettings;
+
+      if (gainedAccess) {
+        context.bloc<SettingsCubit>().changeSetting(
+              ShowTroubleshootingSettingsSetting(true),
+            );
+      }
+
+      Scaffold.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            gainedAccess
+                ? context.msg.main.settings.troubleshootingUnlockedPopUp
+                : context.msg.main.settings.troubleshootingProgressPopUp(
+                    _tapCountToShowHiddenSettings - _tapCount,
+                  ),
+          ),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    // Don't show the show dialer and show survey setting (for now).
-    final settings = this.settings.where(
-          (setting) =>
-              setting is! ShowDialerConfirmPopupSetting &&
-              setting is! ShowSurveyDialogSetting,
-        );
+    return BlocBuilder<SettingsCubit, SettingsState>(
+      builder: (context, state) {
+        final hasAccessToTroubleshooting =
+            state.settings.get<ShowTroubleshootingSettingsSetting>()?.value ??
+                false;
 
-    return ListView(
-      padding: const EdgeInsets.only(
-        top: 8,
-      ),
-      children: [
-        ...settings
-            .map((s) => s.toInfo(context).category)
-            .distinct()
-            .sortedBy((c) => c.toInfo(context).order)
-            .map(
-              (category) => MapEntry(
-                category,
-                settings
-                    .where((s) => s.toInfo(context).category == category)
-                    .sortedBy((s) => s.toInfo(context).order),
+        return GestureDetector(
+          onTap: !hasAccessToTroubleshooting ? _onTap : null,
+          behavior: HitTestBehavior.opaque,
+          child: Center(
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 8),
+              child: Chip(
+                label: Text(
+                  '${context.msg.main.settings.list.version} '
+                  '${widget.buildInfo.version}',
+                ),
               ),
-            )
-            .mapEntries(
-              (category, settings) => SettingTileCategory(
-                category: category,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                ).copyWith(top: 16),
-                children: [
-                  ...settings.map(
-                    (setting) => SettingTile(
-                      setting,
-                      onChanged: onSettingChanged,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-        if (buildInfo != null)
-          Chip(
-            label: Text(
-              '${context.msg.main.settings.list.version}'
-              ' ${buildInfo.version}',
             ),
           ),
-      ],
+        );
+      },
     );
   }
-}
-
-extension _MapEntries<K, V> on Iterable<MapEntry<K, V>> {
-  Iterable<T> mapEntries<T>(T Function(K key, V value) mapper) =>
-      map((e) => mapper(e.key, e.value));
 }

@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import '../entities/audio_codec.dart';
+
 import '../../dependency_locator.dart';
 import '../repositories/setting.dart';
 import '../repositories/logging.dart';
@@ -15,6 +17,11 @@ class ResetSettingsUseCase extends FutureUseCase<void> {
     await _settingRepository.changeSetting(RemoteLoggingSetting(false));
     await _settingRepository.changeSetting(ShowDialerConfirmPopupSetting(true));
     await _settingRepository.changeSetting(ShowSurveyDialogSetting(true));
+    await _settingRepository.changeSetting(
+      ShowTroubleshootingSettingsSetting(false),
+    );
+    await _settingRepository.changeSetting(UseEncryptionSetting(true));
+    await _settingRepository.changeSetting(AudioCodecSetting(AudioCodec.opus));
 
     await _loggingRepository.enableRemoteLoggingIfSettingEnabled();
   }
