@@ -124,7 +124,24 @@ main:
           title: "Jouw zakelijke nummer"
           description: >-
             Dit is het telefoonnummer dat anderen in hun scherm zien of opslaan als je belt via deze app.
+      advancedSettings:
+        title: "Geavanceerde instellingen"
+        troubleshooting:
+          title: "Problemen oplossen"
+          description: >-
+            Deze instellingen horen alleen gebruikt te worden om een probleem op te lossen in
+            de app. Wees voorzichtig!
+          list:
+            calling:
+              title: "Bellen"
+              useEncryption: "Gebruik encryptie"
+            audio:
+              title: "Audio"
+              audioCodec: "Audio codec"
       version: "Versie"
+    troubleshootingProgressPopUp(int remainingTaps): >-
+      Na $remainingTaps taps kan je bij instelling voor probleemoplossing!
+    troubleshootingUnlockedPopUp: "Je hebt nu toegang tot instellingen voor probleemoplossing!"
     buttons:
       sendFeedback: &sendFeedbackButton "Feedback sturen"
       logout: "Uitloggen"

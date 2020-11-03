@@ -1,6 +1,8 @@
 import 'package:meta/meta.dart';
 import 'package:dartx/dartx.dart';
 
+import 'audio_codec.dart';
+
 @immutable
 abstract class Setting<T> {
   static const _typeKey = 'type';
@@ -37,6 +39,12 @@ abstract class Setting<T> {
       return ShowSurveyDialogSetting(value as bool);
     } else if (type == (PhoneNumberSetting).toString()) {
       return PhoneNumberSetting(value as String);
+    } else if (type == (ShowTroubleshootingSettingsSetting).toString()) {
+      return ShowTroubleshootingSettingsSetting(value as bool);
+    } else if (type == (UseEncryptionSetting).toString()) {
+      return UseEncryptionSetting(value as bool);
+    } else if (type == (AudioCodecSetting).toString()) {
+      return AudioCodecSetting(AudioCodec.fromJson(value));
     } else {
       throw UnsupportedError('Setting type does not exist');
     }
@@ -87,7 +95,31 @@ class PhoneNumberSetting extends Setting<String> {
   Setting<String> copyWith({String value}) => PhoneNumberSetting(value);
 }
 
-extension SettingsByType on List<Setting> {
+class ShowTroubleshootingSettingsSetting extends Setting<bool> {
+  // ignore: avoid_positional_boolean_parameters
+  ShowTroubleshootingSettingsSetting(bool value) : super(value);
+
+  @override
+  ShowTroubleshootingSettingsSetting copyWith({bool value}) =>
+      ShowTroubleshootingSettingsSetting(value);
+}
+
+class UseEncryptionSetting extends Setting<bool> {
+  // ignore: avoid_positional_boolean_parameters
+  UseEncryptionSetting(bool value) : super(value);
+
+  @override
+  UseEncryptionSetting copyWith({bool value}) => UseEncryptionSetting(value);
+}
+
+class AudioCodecSetting extends Setting<AudioCodec> {
+  AudioCodecSetting(AudioCodec value) : super(value);
+
+  @override
+  AudioCodecSetting copyWith({AudioCodec value}) => AudioCodecSetting(value);
+}
+
+extension SettingsByType on Iterable<Setting> {
   T get<T extends Setting>() {
     return firstOrNullWhere((setting) => setting is T) as T;
   }

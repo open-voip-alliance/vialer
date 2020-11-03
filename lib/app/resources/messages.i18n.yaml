@@ -116,7 +116,24 @@ main:
           title: "Your business number"
           description: >-
             This is the phone number others will see on their screen or records when you call them through this app.
+      advancedSettings:
+        title: "Advanced settings"
+        troubleshooting:
+          title: "Troubleshooting"
+          description: >-
+            These settings are to be used only when trying to solve an issue in the app.
+            Use with caution!
+          list:
+            calling:
+              title: "Calling"
+              useEncryption: "Use encryption"
+            audio:
+              title: "Audio"
+              audioCodec: "Audio codec"
       version: "Version"
+    troubleshootingProgressPopUp(int remainingTaps): >-
+      You can access troubleshooting settings after $remainingTaps more taps!
+    troubleshootingUnlockedPopUp: "You now have access to troubleshooting settings!"
     buttons:
       sendFeedback: &sendFeedbackButton "Send feedback"
       logout: "Logout"

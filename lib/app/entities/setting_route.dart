@@ -1,0 +1,4 @@
+enum SettingRoute {
+  main,
+  troubleshooting,
+}
