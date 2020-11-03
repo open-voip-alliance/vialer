@@ -40,7 +40,7 @@ class RecentCallRepository {
   int _cacheStartPage;
 
   Future<List<CallWithContact>> getRecentCalls({@required int page}) async {
-    final today = DateTime.now().add(Duration(days: 1));
+    final today = DateTime.now().add(const Duration(days: 1));
     final fromUtc = today
         .subtract(
           Duration(days: _daysPerPage * (page + 1)),

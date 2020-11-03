@@ -112,7 +112,7 @@ class _ContactPageState extends State<ContactsPage>
                     child: _Placeholder(
                       state: state,
                       child: AnimatedSwitcher(
-                        duration: Duration(milliseconds: 200),
+                        duration: const Duration(milliseconds: 200),
                         switchInCurve: Curves.decelerate,
                         switchOutCurve: Curves.decelerate.flipped,
                         child: _AlphabetListView(
@@ -234,7 +234,7 @@ class _Placeholder extends StatelessWidget {
           (state is ContactsLoaded && state.contacts.isEmpty),
       placeholder: state is NoPermission
           ? Warning(
-              icon: Icon(VialerSans.lockOn),
+              icon: const Icon(VialerSans.lockOn),
               title: Text(
                 context.msg.main.contacts.list.noPermission.title,
               ),
@@ -252,7 +252,7 @@ class _Placeholder extends StatelessWidget {
                     ),
               children: !state.dontAskAgain
                   ? <Widget>[
-                      SizedBox(height: 40),
+                      const SizedBox(height: 40),
                       StylizedButton.raised(
                         colored: true,
                         onPressed: cubit.requestPermission,
@@ -274,7 +274,7 @@ class _Placeholder extends StatelessWidget {
                   ),
                 )
               : Warning(
-                  icon: Icon(VialerSans.userOff),
+                  icon: const Icon(VialerSans.userOff),
                   title: Text(
                     context.msg.main.contacts.list.empty.title,
                   ),
@@ -432,7 +432,7 @@ class _AlphabetListViewState extends State<_AlphabetListView> {
                 top: _offset.dy - (_floatingLetterSize.height / 2),
                 right: 48,
                 child: AnimatedOpacity(
-                  duration: Duration(milliseconds: 300),
+                  duration: const Duration(milliseconds: 300),
                   curve: Curves.decelerate,
                   opacity: _letterMarkerVisible ? 1 : 0,
                   child: SizedBox.fromSize(
@@ -440,7 +440,7 @@ class _AlphabetListViewState extends State<_AlphabetListView> {
                     child: Center(
                       child: Text(
                         _letterAt(_offset, parentSize: maxSize),
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 32,
                         ),
                       ),
@@ -540,7 +540,7 @@ class _SearchTextFieldState extends State<_SearchTextField> {
       decoration: InputDecoration(
         filled: true,
         fillColor: context.brandTheme.grey3,
-        border: OutlineInputBorder(
+        border: const OutlineInputBorder(
           borderSide: BorderSide.none,
           gapPadding: 0,
         ),

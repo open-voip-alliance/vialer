@@ -6,7 +6,7 @@ class BuildInfo {
   final String mergeRequestNumber;
   final String branchName;
 
-  BuildInfo({
+  const BuildInfo({
     @required this.version,
     this.buildNumber,
     this.mergeRequestNumber,

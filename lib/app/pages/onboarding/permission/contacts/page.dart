@@ -16,7 +16,7 @@ class ContactsPermissionPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return PermissionPage(
       permission: Permission.contacts,
-      icon: Icon(VialerSans.contacts),
+      icon: const Icon(VialerSans.contacts),
       title: Text(
         context.msg.onboarding.permission.contacts.title,
         textAlign: TextAlign.center,

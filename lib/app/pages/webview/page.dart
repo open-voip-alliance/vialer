@@ -70,10 +70,10 @@ class _PortalWebViewPageState extends State<PortalWebViewPage> {
             if (state is LoadPortalUrlError || state is LoadWebviewError) {
               return Warning(
                 description: Text(context.msg.webview.error.description),
-                icon: Icon(VialerSans.exclamationMark),
+                icon: const Icon(VialerSans.exclamationMark),
                 title: Text(context.msg.webview.error.title),
                 children: [
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   StylizedButton.raised(
                     colored: true,
                     onPressed: () => _onTryAgainButtonPressed(context),
@@ -100,13 +100,13 @@ class _PortalWebViewPageState extends State<PortalWebViewPage> {
                     gestureNavigationEnabled: true,
                   ),
                   if (state is! LoadedWebview)
-                    Center(
+                    const Center(
                       child: CircularProgressIndicator(),
                     )
                 ],
               );
             }
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(),
             );
           },

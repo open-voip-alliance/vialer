@@ -37,17 +37,17 @@ abstract class BrandTheme {
 
   Color get primaryLight;
 
-  final grey1 = Color(0xFFCCCCCC);
-  final grey2 = Color(0xFFD8D8D8);
-  final grey3 = Color(0xFFE0E0E0);
-  final grey4 = Color(0xFF8F8F8F);
-  final grey5 = Color(0xFF8B95A3);
+  final grey1 = const Color(0xFFCCCCCC);
+  final grey2 = const Color(0xFFD8D8D8);
+  final grey3 = const Color(0xFFE0E0E0);
+  final grey4 = const Color(0xFF8F8F8F);
+  final grey5 = const Color(0xFF8B95A3);
 
-  final settingsBackgroundHighlight = Color(0xFFEFF0F8);
+  final settingsBackgroundHighlight = const Color(0xFFEFF0F8);
 
-  final green1 = Color(0xFF28CA42);
-  final green2 = Color(0xFFACF5A6);
-  final green3 = Color(0xFF046614);
+  final green1 = const Color(0xFF28CA42);
+  final green2 = const Color(0xFFACF5A6);
+  final green3 = const Color(0xFF046614);
 
   Color get splashScreenColor;
 
@@ -55,9 +55,9 @@ abstract class BrandTheme {
 
   Color get onboardingGradientEnd;
 
-  final Color errorBorderColor = Color(0xFFDA534F).withOpacity(0.32);
+  final Color errorBorderColor = const Color(0xFFDA534F).withOpacity(0.32);
 
-  final Color errorContentColor = Color(0xFF8F0A06);
+  final Color errorContentColor = const Color(0xFF8F0A06);
 
   Color get buttonColor => primaryLight;
 
@@ -97,22 +97,22 @@ class VialerTheme extends BrandTheme {
   IconData get logo => VialerSans.brandVialer;
 
   @override
-  final primary = Color(0xFFFFA257);
+  final primary = const Color(0xFFFFA257);
 
   @override
-  final primaryDark = Color(0xFFD45400);
+  final primaryDark = const Color(0xFFD45400);
 
   @override
-  final primaryLight = Color(0xFFFFD0A3);
+  final primaryLight = const Color(0xFFFFD0A3);
 
   @override
   get splashScreenColor => primaryLight;
 
   @override
-  final onboardingGradientStart = Color(0xFFFF8213);
+  final onboardingGradientStart = const Color(0xFFFF8213);
 
   @override
-  final onboardingGradientEnd = Color(0xFFE94E1B);
+  final onboardingGradientEnd = const Color(0xFFE94E1B);
 }
 
 class VoysTheme extends BrandTheme {
@@ -120,19 +120,19 @@ class VoysTheme extends BrandTheme {
   IconData get logo => VialerSans.brandVoys;
 
   @override
-  final primary = Color(0xFF3B14B9);
+  final primary = const Color(0xFF3B14B9);
 
   @override
-  final primaryDark = Color(0xFF31227A);
+  final primaryDark = const Color(0xFF31227A);
 
   @override
-  final primaryLight = Color(0xFFC0B4E8);
+  final primaryLight = const Color(0xFFC0B4E8);
 
   @override
   get splashScreenColor => primary;
 
   @override
-  get onboardingGradientStart => Color(0xFFC0B4E8);
+  get onboardingGradientStart => const Color(0xFFC0B4E8);
 
   @override
   get onboardingGradientEnd => primaryDark;
@@ -159,7 +159,7 @@ class VoysTheme extends BrandTheme {
                           color: Colors.white,
                         ),
               ),
-              iconTheme: IconThemeData(
+              iconTheme: const IconThemeData(
                 color: Colors.white,
               ),
             ),

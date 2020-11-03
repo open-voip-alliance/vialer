@@ -88,7 +88,7 @@ class SurveyCubit extends Cubit<SurveyState> with Loggable {
       emit(ShowThankYou(state.survey));
 
       // The survey is finished, so don't show it again
-      _changeSetting(setting: ShowSurveyDialogSetting(false));
+      _changeSetting(setting: const ShowSurveyDialogSetting(false));
 
       final survey = state.survey;
 

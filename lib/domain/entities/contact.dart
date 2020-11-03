@@ -9,7 +9,7 @@ class Contact {
   final List<Item> phoneNumbers;
   final List<Item> emails;
 
-  Contact({
+  const Contact({
     this.initials,
     this.name,
     this.avatar,

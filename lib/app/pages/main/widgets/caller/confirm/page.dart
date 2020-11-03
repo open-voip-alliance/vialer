@@ -104,7 +104,7 @@ class ConfirmPageState extends State<ConfirmPage>
       //
       // The duration of 200ms is not based on or in relation to anything,
       // except of the fact that it works.
-      Timer(Duration(milliseconds: 200), () {
+      Timer(const Duration(milliseconds: 200), () {
         // We need to make sure the state is mounted, because the timer can be
         // executed after the state has been disposed of.
         if (mounted &&
@@ -164,12 +164,12 @@ class ConfirmPageState extends State<ConfirmPage>
         child: TransparentStatusBar(
           brightness: Brightness.dark,
           child: Padding(
-            padding: EdgeInsets.only(
+            padding: const EdgeInsets.only(
               top: 64,
             ),
             child: Material(
               elevation: 8,
-              borderRadius: BorderRadius.only(
+              borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(24),
                 topRight: Radius.circular(24),
               ),
@@ -202,7 +202,7 @@ class ConfirmPageState extends State<ConfirmPage>
                                       .origin,
                                   style: _style,
                                 ),
-                                SizedBox(height: 8),
+                                const SizedBox(height: 8),
                                 Text(state.outgoingCli, style: _largeStyle),
                                 SizedBox(height: paragraphDistance),
                                 Text(
@@ -218,7 +218,7 @@ class ConfirmPageState extends State<ConfirmPage>
                                       .action,
                                   style: _style,
                                 ),
-                                SizedBox(height: 8),
+                                const SizedBox(height: 8),
                                 Text(widget.destination, style: _largeStyle),
                               ],
                             ),
@@ -313,7 +313,7 @@ class _AndroidInputs extends StatelessWidget {
                       size: 16,
                       color: context.brandTheme.green3,
                     ),
-                    SizedBox(width: 12),
+                    const SizedBox(width: 12),
                     Text(
                       destination,
                       style: TextStyle(
@@ -324,7 +324,7 @@ class _AndroidInputs extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             SizedBox(
               width: double.infinity,
               child: FlatButton(
@@ -398,8 +398,8 @@ class ConfirmPageRoute extends PageRoute {
       child: SlideTransition(
         position: curved.drive(
           Tween<Offset>(
-            begin: Offset(0, 0.25),
-            end: Offset(0, 0),
+            begin: const Offset(0, 0.25),
+            end: const Offset(0, 0),
           ),
         ),
         child: FadeTransition(
@@ -414,5 +414,5 @@ class ConfirmPageRoute extends PageRoute {
   bool get maintainState => true;
 
   @override
-  Duration get transitionDuration => Duration(milliseconds: 250);
+  Duration get transitionDuration => const Duration(milliseconds: 250);
 }

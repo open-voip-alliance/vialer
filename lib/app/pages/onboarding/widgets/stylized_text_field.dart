@@ -51,7 +51,7 @@ class StylizedTextField extends StatelessWidget {
           enabledBorder: inputBorder,
           disabledBorder: inputBorder,
           focusedBorder: inputBorder,
-          labelStyle: TextStyle(
+          labelStyle: const TextStyle(
             color: color,
           ),
           focusColor: color,
@@ -60,7 +60,7 @@ class StylizedTextField extends StatelessWidget {
           contentPadding: EdgeInsets.zero,
           floatingLabelBehavior: FloatingLabelBehavior.never,
         ),
-        style: TextStyle(
+        style: const TextStyle(
           color: Colors.black,
         ),
         obscureText: obscureText,
@@ -72,7 +72,7 @@ class StylizedTextField extends StatelessWidget {
 
   final InputBorder inputBorder = OutlineInputBorder(
     borderRadius: BorderRadius.circular(4),
-    borderSide: BorderSide(
+    borderSide: const BorderSide(
       style: BorderStyle.none,
       width: 0,
     ),

@@ -35,7 +35,7 @@ class SplashPage extends StatelessWidget {
         create: (_) => SplashCubit(),
         child: BlocListener<SplashCubit, SplashState>(
           listener: _onStateChanged,
-          child: SplashScreen(),
+          child: const SplashScreen(),
         ),
       ),
     );

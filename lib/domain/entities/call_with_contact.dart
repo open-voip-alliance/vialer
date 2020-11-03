@@ -5,7 +5,7 @@ class CallWithContact extends Call {
   /// Contact that relates to the [destinationNumber].
   final Contact contact;
 
-  CallWithContact({
+  const CallWithContact({
     int id,
     DateTime date,
     Duration duration,

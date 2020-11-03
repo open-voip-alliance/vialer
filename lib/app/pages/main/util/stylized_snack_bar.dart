@@ -37,7 +37,7 @@ void showSnackBar(
               ),
               child: icon,
             ),
-            SizedBox(width: 24),
+            const SizedBox(width: 24),
             Expanded(
               child: Padding(
                 padding: padding,

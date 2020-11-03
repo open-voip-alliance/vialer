@@ -124,7 +124,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
                   // dismiss again, it won't be shown anymore.
                   if (count == callTriggerIgnoreCount) {
                     await _changeSetting(
-                      setting: ShowSurveyDialogSetting(false),
+                      setting: const ShowSurveyDialogSetting(false),
                     );
                   }
 

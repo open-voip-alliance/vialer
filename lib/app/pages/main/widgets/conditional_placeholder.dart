@@ -51,18 +51,18 @@ class Warning extends StatelessWidget {
             _Illustration(
               child: icon,
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             DefaultTextStyle.merge(
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
               textAlign: TextAlign.center,
               child: title,
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             DefaultTextStyle.merge(
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 16,
               ),
               textAlign: TextAlign.center,

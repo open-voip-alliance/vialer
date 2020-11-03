@@ -27,7 +27,7 @@ class RecentCallsPage extends StatelessWidget {
   void _showSnackBar(BuildContext context) {
     showSnackBar(
       context,
-      icon: Icon(VialerSans.exclamationMark),
+      icon: const Icon(VialerSans.exclamationMark),
       label: Text(context.msg.main.contacts.snackBar.noPermission),
       padding: const EdgeInsets.only(right: 72),
     );
@@ -160,7 +160,7 @@ class _RecentCallsListState extends State<_RecentCallsList>
   void _showSnackBar(BuildContext context) {
     showSnackBar(
       context,
-      icon: Icon(VialerSans.copy),
+      icon: const Icon(VialerSans.copy),
       label: Text(context.msg.main.recent.snackBar.copied),
       padding: EdgeInsets.only(
         right: widget.snackBarRightPadding,
@@ -182,7 +182,7 @@ class _RecentCallsListState extends State<_RecentCallsList>
               ),
             )
           : Warning(
-              icon: Icon(VialerSans.missedCall),
+              icon: const Icon(VialerSans.missedCall),
               title: Text(context.msg.main.recent.list.empty.title),
               description: Text(
                 context.msg.main.recent.list.empty.description,

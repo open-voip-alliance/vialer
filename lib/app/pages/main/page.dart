@@ -61,7 +61,7 @@ class _MainPageState extends State<MainPage> {
 
     if (_pages == null) {
       _pages = [
-        if (_dialerIsPage) DialerPage(isInBottomNavBar: true),
+        if (_dialerIsPage) const DialerPage(isInBottomNavBar: true),
         _Navigator(
           navigatorKey: _navigatorStates[0],
           routes: {
@@ -177,7 +177,7 @@ class _BottomNavigationBar extends StatelessWidget {
             label: context.msg.main.recent.menu.title,
           ),
           BottomNavigationBarItem(
-            icon: _BottomNavigationBarIcon(VialerSans.settings),
+            icon: const _BottomNavigationBarIcon(VialerSans.settings),
             label: context.msg.main.settings.menu.title,
           ),
         ],

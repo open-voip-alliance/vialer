@@ -101,10 +101,10 @@ class _DialerPageState extends State<DialerPage> with WidgetsBindingObserver {
                           context.msg.main.dialer.noPermission
                               .permanentDescription(appName),
                         ),
-                  icon: Icon(VialerSans.missedCall),
+                  icon: const Icon(VialerSans.missedCall),
                   children: state is NoPermission && !state.dontAskAgain
                       ? <Widget>[
-                          SizedBox(height: 40),
+                          const SizedBox(height: 40),
                           StylizedButton.raised(
                             colored: true,
                             onPressed: callerCubit.requestPermission,
@@ -123,12 +123,12 @@ class _DialerPageState extends State<DialerPage> with WidgetsBindingObserver {
                         child:
                             T9ContactsListView(controller: _keypadController),
                       ),
-                      Divider(
+                      const Divider(
                         height: 1,
                         thickness: 1,
                       ),
                     ] else if (context.isIOS)
-                      SafeArea(
+                      const SafeArea(
                         child: SizedBox(
                           height: 95,
                         ),

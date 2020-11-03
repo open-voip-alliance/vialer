@@ -60,7 +60,7 @@ class RecentCallItem extends StatelessWidget {
               leading: Container(
                 width: 24,
                 alignment: Alignment.center,
-                child: Icon(VialerSans.copy, size: 20),
+                child: const Icon(VialerSans.copy, size: 20),
               ),
               title: Text(context.msg.main.recent.list.popupMenu.copy),
             ),
@@ -71,7 +71,7 @@ class RecentCallItem extends StatelessWidget {
               leading: Container(
                 width: 24,
                 alignment: Alignment.center,
-                child: Icon(VialerSans.phone, size: 20),
+                child: const Icon(VialerSans.phone, size: 20),
               ),
               title: Text(context.msg.main.recent.list.popupMenu.call),
             ),
@@ -116,12 +116,12 @@ class _RecentItemAvatar extends StatelessWidget {
         child: call.contact?.name != null
             ? Text(
                 _letters,
-                style: TextStyle(
+                style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
                 ),
               )
-            : Icon(VialerSans.phone, size: 20),
+            : const Icon(VialerSans.phone, size: 20),
       ),
     );
   }
@@ -170,7 +170,7 @@ class _RecentItemSubtitle extends StatelessWidget {
           color: call.wasMissed ? Colors.red : context.brandTheme.green1,
           size: 12,
         ),
-        SizedBox(width: 8),
+        const SizedBox(width: 8),
         Text(
           '${_timeAgo(context)}',
           style: TextStyle(color: context.brandTheme.grey4),

@@ -31,7 +31,7 @@ class Call extends Equatable {
   bool get wasMissed =>
       direction == Direction.inbound && duration == Duration.zero;
 
-  Call({
+  const Call({
     this.id,
     this.date,
     this.duration,

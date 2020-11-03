@@ -61,7 +61,7 @@ class _ErrorAlertState extends State<ErrorAlert> with TickerProviderStateMixin {
                         VialerSans.exclamationMark,
                         color: context.brandTheme.errorContentColor,
                       ),
-                      SizedBox(width: 16),
+                      const SizedBox(width: 16),
                       Expanded(
                         child: DefaultTextStyle.merge(
                           child: widget.child,

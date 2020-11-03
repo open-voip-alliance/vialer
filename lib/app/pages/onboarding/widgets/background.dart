@@ -29,11 +29,11 @@ class _BackgroundState extends State<Background> with TickerProviderStateMixin {
   bool _showForm = false;
 
   final List<Alignment> _cloudAlignments = [
-    Alignment(-1.2, -1.05),
-    Alignment(1.2, -0.7),
-    Alignment(-1.9, -0.2),
-    Alignment(1.1, 0.8),
-    Alignment(-1.2, 1.1),
+    const Alignment(-1.2, -1.05),
+    const Alignment(1.2, -0.7),
+    const Alignment(-1.9, -0.2),
+    const Alignment(1.1, 0.8),
+    const Alignment(-1.2, 1.1),
   ];
 
   List<Widget> _clouds;
@@ -44,7 +44,7 @@ class _BackgroundState extends State<Background> with TickerProviderStateMixin {
 
     _controller = AnimationController(
       vsync: this,
-      duration: Duration(seconds: 2),
+      duration: const Duration(seconds: 2),
     );
 
     _cloudAnimations = List.generate(_cloudAlignments.length, (i) {
@@ -114,7 +114,7 @@ class _BackgroundState extends State<Background> with TickerProviderStateMixin {
           ..._clouds,
           AnimatedOpacity(
             opacity: _showForm ? 1 : 0,
-            duration: Duration(seconds: 2),
+            duration: const Duration(seconds: 2),
             child: widget.child,
           )
         ],

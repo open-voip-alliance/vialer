@@ -30,7 +30,7 @@ class ContactDetailsPage extends StatelessWidget {
   void _showSnackBar(BuildContext context) {
     showSnackBar(
       context,
-      icon: Icon(VialerSans.exclamationMark),
+      icon: const Icon(VialerSans.exclamationMark),
       label: Text(context.msg.main.contacts.snackBar.noPermission),
       padding: const EdgeInsets.only(right: 72),
     );
@@ -66,25 +66,25 @@ class ContactDetailsPage extends StatelessWidget {
                       child: Row(
                         children: <Widget>[
                           ContactAvatar(contact, size: _leadingSize),
-                          SizedBox(width: 16),
+                          const SizedBox(width: 16),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               Text(
                                 contact.name,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              SizedBox(height: 4),
+                              const SizedBox(height: 4),
                               ContactSubtitle(contact),
                             ],
                           )
                         ],
                       ),
                     ),
-                    SizedBox(height: 24),
+                    const SizedBox(height: 24),
                     Expanded(
                       child: BlocBuilder<CallerCubit, CallerState>(
                         builder: (context, state) {

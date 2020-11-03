@@ -16,7 +16,7 @@ class CallPermissionPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return PermissionPage(
       permission: Permission.phone,
-      icon: Icon(VialerSans.phone),
+      icon: const Icon(VialerSans.phone),
       title: Text(
         context.msg.onboarding.permission.call.title,
         textAlign: TextAlign.center,

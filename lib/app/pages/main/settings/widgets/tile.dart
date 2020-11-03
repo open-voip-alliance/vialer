@@ -71,7 +71,7 @@ class SettingTile extends StatelessWidget {
               ],
             )),
         if (description == null)
-          SizedBox(height: 16)
+          const SizedBox(height: 16)
         else
           Padding(
             padding: EdgeInsets.only(

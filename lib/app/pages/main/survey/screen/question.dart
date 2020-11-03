@@ -49,17 +49,17 @@ class QuestionScreen extends StatelessWidget {
           total: survey.questions.length,
         ),
         Padding(
-          padding: EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
           child: Text(
             question.phrase,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
             ),
           ),
         ),
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: question.answers
@@ -128,15 +128,15 @@ class _QuestionHeader extends StatelessWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         color: context.brandTheme.primary,
-        borderRadius: BorderRadius.only(
+        borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(4),
           topRight: Radius.circular(4),
         ),
       ),
-      padding: EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
       child: Text(
         context.msg.main.survey.question.title(index + 1, total),
-        style: TextStyle(
+        style: const TextStyle(
           fontSize: 14,
           color: Colors.white,
         ),
@@ -177,7 +177,7 @@ class _Choice extends StatelessWidget {
       children: [
         InkWell(
           onTap: onPressed,
-          customBorder: CircleBorder(),
+          customBorder: const CircleBorder(),
           child: AnimatedContainer(
             duration: duration,
             curve: curve,
@@ -190,7 +190,7 @@ class _Choice extends StatelessWidget {
                     : context.brandTheme.grey4,
               ),
             ),
-            padding: EdgeInsets.all(12),
+            padding: const EdgeInsets.all(12),
             child: AnimatedDefaultTextStyle(
               duration: duration,
               curve: curve,
@@ -212,7 +212,7 @@ class _Choice extends StatelessWidget {
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.center,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 10,
             ),
             child: label,
