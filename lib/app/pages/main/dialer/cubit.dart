@@ -62,7 +62,7 @@ class DialerCubit extends Cubit<DialerState> {
         return;
       }
 
-      await _caller.call(destination);
+      await _caller.call(destination, origin: CallOrigin.dialer);
     }
   }
 

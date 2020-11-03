@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../domain/entities/contact.dart';
 
@@ -14,6 +15,7 @@ import 'recent/page.dart';
 import 'settings/page.dart';
 
 import '../../widgets/transparent_status_bar.dart';
+import 'widgets/caller.dart';
 import 'widgets/connectivity_alert.dart';
 import 'widgets/user_refresher/widget.dart';
 
@@ -26,6 +28,7 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   int _currentIndex;
+  int _previousIndex;
 
   List<Widget> _pages;
 
@@ -36,6 +39,8 @@ class _MainPageState extends State<MainPage> {
   ];
 
   void _navigateTo(int index) {
+    _previousIndex = _currentIndex;
+
     setState(() {
       _currentIndex = index;
 
@@ -80,33 +85,44 @@ class _MainPageState extends State<MainPage> {
     }
   }
 
+  void _onCallerStateChanged(BuildContext context, CallerState state) {
+    if (context.isIOS &&
+        state is FinishedCalling &&
+        state.origin == CallOrigin.dialer) {
+      _navigateTo(_previousIndex);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      floatingActionButton: _currentIndex != 2 && !_dialerIsPage
-          ? SizedBox(
-              height: 62,
-              width: 62,
-              child: FloatingActionButton(
-                backgroundColor: context.brandTheme.green1,
-                onPressed: () => Navigator.pushNamed(context, Routes.dialer),
-                child: Icon(VialerSans.dialpad, size: 31),
+    return BlocListener<CallerCubit, CallerState>(
+      listener: _onCallerStateChanged,
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        floatingActionButton: _currentIndex != 2 && !_dialerIsPage
+            ? SizedBox(
+                height: 62,
+                width: 62,
+                child: FloatingActionButton(
+                  backgroundColor: context.brandTheme.green1,
+                  onPressed: () => Navigator.pushNamed(context, Routes.dialer),
+                  child: Icon(VialerSans.dialpad, size: 31),
+                ),
+              )
+            : null,
+        bottomNavigationBar: _BottomNavigationBar(
+          currentIndex: _currentIndex,
+          dialerIsPage: _dialerIsPage,
+          onTap: _navigateTo,
+        ),
+        body: TransparentStatusBar(
+          brightness: Brightness.dark,
+          child: UserRefresher(
+            child: ConnectivityAlert(
+              child: _AnimatedIndexedStack(
+                index: _currentIndex,
+                children: _pages,
               ),
-            )
-          : null,
-      bottomNavigationBar: _BottomNavigationBar(
-        currentIndex: _currentIndex,
-        dialerIsPage: _dialerIsPage,
-        onTap: _navigateTo,
-      ),
-      body: TransparentStatusBar(
-        brightness: Brightness.dark,
-        child: UserRefresher(
-          child: ConnectivityAlert(
-            child: _AnimatedIndexedStack(
-              index: _currentIndex,
-              children: _pages,
             ),
           ),
         ),

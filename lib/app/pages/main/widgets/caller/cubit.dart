@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_segment/flutter_segment.dart';
+import 'package:meta/meta.dart';
 
 import '../../../../../domain/entities/call_through_exception.dart';
 import '../../../../../domain/entities/setting.dart';
@@ -13,6 +15,7 @@ import '../../../../../domain/usecases/get_settings.dart';
 import '../../../../../domain/usecases/change_setting.dart';
 
 import '../../../../util/loggable.dart';
+import '../../../../util/debug.dart';
 
 import 'state.dart';
 export 'state.dart';
@@ -31,8 +34,18 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
 
   Future<void> call(
     String destination, {
+    @required CallOrigin origin,
     bool showingConfirmPage = false,
   }) async {
+    doIfNotDebug(() {
+      Segment.track(
+        eventName: 'call',
+        properties: {
+          'via': origin.toSegmentString(),
+        },
+      );
+    });
+
     final settings = await _getSettings();
 
     final shouldShowConfirmPage =
@@ -42,13 +55,18 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
     if (shouldShowConfirmPage) {
       logger.info('Going to call through page');
 
-      emit(ShowConfirmPage(destination: destination));
+      emit(
+        ShowConfirmPage(
+          destination: destination,
+          origin: origin,
+        ),
+      );
     } else {
       logger.info('Initiating call');
       try {
-        emit(InitiatingCall());
+        emit(InitiatingCall(origin: origin));
         await _call(destination: destination);
-        emit(Calling());
+        emit(Calling(origin: origin));
 
         _callThroughTimer = Timer(
           AfterThreeCallThroughCallsTrigger.minimumCallDuration,
@@ -74,25 +92,54 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
                   await _changeSetting(setting: ShowSurveyDialogSetting(false));
                 }
 
-                emit(ShowCallThroughSurvey());
+                emit(ShowCallThroughSurvey(origin: origin));
               }
             }
           },
         );
       } on CallThroughException catch (e) {
-        emit(InitiatingCallFailed(e));
+        emit(InitiatingCallFailed(e, origin: origin));
       }
     }
   }
 
   void notifyCanCall() {
+    // Necessary for auto cast.
+    final state = this.state;
+
     _callThroughTimer?.cancel();
-    emit(CanCall());
+    if (state is! ShowCallThroughSurvey) {
+      emit(state is Calling ? state.finished() : CanCall());
+    }
+  }
+
+  void notifySurveyShown() {
+    final state = this.state as ShowCallThroughSurvey;
+
+    emit(state.showed());
   }
 
   @override
   Future<void> close() async {
     _callThroughTimer?.cancel();
     await super.close();
+  }
+}
+
+extension on CallOrigin {
+  String toSegmentString() {
+    switch (this) {
+      case CallOrigin.dialer:
+        return 'dialer';
+      case CallOrigin.recents:
+        return 'recent';
+      case CallOrigin.contacts:
+        return 'contact';
+    }
+
+    throw UnsupportedError(
+      'Vialer error: Unknown CallOrigin: $this. '
+      'Please add a case to toSegmentString.',
+    );
   }
 }

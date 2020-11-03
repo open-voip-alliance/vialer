@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:meta/meta.dart';
 
 import '../../../../../../domain/entities/setting.dart';
 
@@ -33,6 +34,9 @@ class ConfirmCubit extends Cubit<ConfirmState> with Loggable {
     emit(ConfirmState(showConfirmPage: showConfirmPage));
   }
 
-  Future<void> call() async =>
-      _caller.call(_destination, showingConfirmPage: true);
+  Future<void> call({@required CallOrigin origin}) => _caller.call(
+        _destination,
+        origin: origin,
+        showingConfirmPage: true,
+      );
 }
