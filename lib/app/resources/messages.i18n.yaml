@@ -130,6 +130,13 @@ main:
             audio:
               title: "Audio"
               audioCodec: "Audio codec"
+      audio:
+        title: "Audio"
+        usePhoneRingtone:
+          title: "Use phone ringtone"
+          description(String appName): >-
+            When enabled $appName will use the ringtone configured on this phone rather than the
+            app's ringtone.
       version: "Version"
     troubleshootingProgressPopUp(int remainingTaps): >-
       You can access troubleshooting settings after $remainingTaps more taps!

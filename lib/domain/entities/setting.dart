@@ -45,6 +45,8 @@ abstract class Setting<T> {
       return UseEncryptionSetting(value as bool);
     } else if (type == (AudioCodecSetting).toString()) {
       return AudioCodecSetting(AudioCodec.fromJson(value));
+    } else if (type == (UsePhoneRingtoneSetting).toString()) {
+      return UsePhoneRingtoneSetting(value as bool);
     } else {
       throw UnsupportedError('Setting type does not exist');
     }
@@ -117,6 +119,15 @@ class AudioCodecSetting extends Setting<AudioCodec> {
 
   @override
   AudioCodecSetting copyWith({AudioCodec value}) => AudioCodecSetting(value);
+}
+
+class UsePhoneRingtoneSetting extends Setting<bool> {
+  // ignore: avoid_positional_boolean_parameters
+  UsePhoneRingtoneSetting(bool value) : super(value);
+
+  @override
+  UsePhoneRingtoneSetting copyWith({bool value}) =>
+      UsePhoneRingtoneSetting(value);
 }
 
 extension SettingsByType on Iterable<Setting> {
