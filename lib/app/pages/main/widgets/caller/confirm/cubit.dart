@@ -39,4 +39,8 @@ class ConfirmCubit extends Cubit<ConfirmState> with Loggable {
         origin: origin,
         showingConfirmPage: true,
       );
+
+  void notifyCanCall() {
+    _caller.notifyCanCall();
+  }
 }

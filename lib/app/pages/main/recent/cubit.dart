@@ -25,8 +25,17 @@ class RecentCallsCubit extends Cubit<RecentCallsState> {
     _loadRecentCalls(page: 0);
   }
 
-  Future<void> call(String destination) =>
-      _caller.call(destination, origin: CallOrigin.recents);
+  Future<void> requestPermission() async {
+    await _caller.requestPermission();
+  }
+
+  Future<void> call(String destination) async {
+    doIfNotDebug(() {
+      Segment.track(eventName: 'call', properties: {'via': 'recents'});
+    });
+
+    _caller.call(destination, origin: CallOrigin.recents);
+  }
 
   void copyNumber(String number) {
     doIfNotDebug(() {

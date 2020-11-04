@@ -8,6 +8,15 @@ abstract class CallerState extends Equatable {
   List<Object> get props => [];
 }
 
+class NoPermission extends CallerState {
+  final bool dontAskAgain;
+
+  NoPermission({@required this.dontAskAgain});
+
+  @override
+  List<Object> get props => [dontAskAgain];
+}
+
 class CanCall extends CallerState {}
 
 class ShowConfirmPage extends CallerState with CallProcessState {

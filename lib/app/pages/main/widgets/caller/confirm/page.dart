@@ -131,6 +131,11 @@ class ConfirmPageState extends State<ConfirmPage>
     );
   }
 
+  void _onCancelButtonPressed(ConfirmCubit cubit) {
+    _pop();
+    cubit.notifyCanCall();
+  }
+
   Future<bool> _onWillPop() async {
     _pop();
 
@@ -209,7 +214,8 @@ class ConfirmPageState extends State<ConfirmPage>
                                   cubit.updateShowPopupSetting(!v),
                               onCallButtonPressed: () =>
                                   cubit.call(origin: widget.origin),
-                              onCancelButtonPressed: _pop,
+                              onCancelButtonPressed: () =>
+                                  _onCancelButtonPressed(cubit),
                               destination: context
                                   .msg.main.dialer.confirm.button
                                   .call(widget.destination)

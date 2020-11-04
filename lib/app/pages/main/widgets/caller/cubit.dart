@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_segment/flutter_segment.dart';
@@ -7,12 +8,16 @@ import 'package:meta/meta.dart';
 import '../../../../../domain/entities/call_through_exception.dart';
 import '../../../../../domain/entities/setting.dart';
 import '../../../../../domain/entities/survey/survey_trigger.dart';
+import '../../../../../domain/entities/permission_status.dart';
+import '../../../../../domain/entities/permission.dart';
 
 import '../../../../../domain/usecases/call.dart';
 import '../../../../../domain/usecases/get_call_through_calls_count.dart';
 import '../../../../../domain/usecases/increment_call_through_calls_count.dart';
 import '../../../../../domain/usecases/get_settings.dart';
 import '../../../../../domain/usecases/change_setting.dart';
+import '../../../../../domain/usecases/get_permission_status.dart';
+import '../../../../../domain/usecases/onboarding/request_permission.dart';
 
 import '../../../../util/loggable.dart';
 import '../../../../util/debug.dart';
@@ -27,10 +32,14 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
   final _getCallThroughCallsCount = GetCallThroughCallsCountUseCase();
   final _incrementCallThroughCallsCount =
       IncrementCallThroughCallsCountUseCase();
+  final _getPermissionStatus = GetPermissionStatusUseCase();
+  final _requestPermission = RequestPermissionUseCase();
 
   Timer _callThroughTimer;
 
-  CallerCubit() : super(CanCall());
+  CallerCubit() : super(CanCall()) {
+    _checkCallPermission();
+  }
 
   Future<void> call(
     String destination, {
@@ -51,6 +60,19 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
     final shouldShowConfirmPage =
         settings.get<ShowDialerConfirmPopupSetting>().value &&
             !showingConfirmPage;
+
+    // First request to allow to make phone calls,
+    // otherwise don't show the call through page at all.
+    if (Platform.isAndroid) {
+      // Requesting already allowed permissions won't reshow the dialog.
+      final status = await _requestPhonePermission();
+
+      if (status == PermissionStatus.denied ||
+          status == PermissionStatus.permanentlyDenied) {
+        _updateWhetherCanCall(status);
+        return;
+      }
+    }
 
     if (shouldShowConfirmPage) {
       logger.info('Going to call through page');
@@ -109,7 +131,11 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
 
     _callThroughTimer?.cancel();
     if (state is! ShowCallThroughSurvey) {
-      emit(state is Calling ? state.finished() : CanCall());
+      if (state is Calling) {
+        emit(state.finished());
+      } else if (state is! NoPermission) {
+        emit(CanCall());
+      }
     }
   }
 
@@ -123,6 +149,35 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
   Future<void> close() async {
     _callThroughTimer?.cancel();
     await super.close();
+  }
+
+  Future<PermissionStatus> _requestPhonePermission() {
+    return _requestPermission(permission: Permission.phone);
+  }
+
+  Future<void> requestPermission() async {
+    final status = await _requestPhonePermission();
+
+    _updateWhetherCanCall(status);
+  }
+
+  Future<void> _checkCallPermission() async {
+    if (Platform.isAndroid) {
+      final status = await _getPermissionStatus(permission: Permission.phone);
+      _updateWhetherCanCall(status);
+    }
+  }
+
+  void _updateWhetherCanCall(PermissionStatus status) {
+    if (status == PermissionStatus.granted) {
+      emit(CanCall());
+    } else {
+      emit(
+        NoPermission(
+          dontAskAgain: status == PermissionStatus.permanentlyDenied,
+        ),
+      );
+    }
   }
 }
 

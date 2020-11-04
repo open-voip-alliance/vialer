@@ -7,6 +7,8 @@ import '../../../../resources/theme.dart';
 
 import '../../../../../domain/entities/contact.dart';
 
+import '../../util/stylized_snack_bar.dart';
+
 import '../../widgets/caller.dart';
 import '../widgets/avatar.dart';
 import '../widgets/subtitle.dart';
@@ -25,69 +27,91 @@ class ContactDetailsPage extends StatelessWidget {
     @required this.contact,
   }) : super(key: key);
 
+  void _showSnackBar(BuildContext context) {
+    showSnackBar(
+      context,
+      icon: Icon(VialerSans.exclamationMark),
+      label: Text(context.msg.main.contacts.snackBar.noPermission),
+      padding: const EdgeInsets.only(right: 72),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          title: Header(context.msg.main.contacts.title),
-          centerTitle: false,
-          iconTheme: IconThemeData(color: Theme.of(context).primaryColor),
-        ),
-        body: BlocProvider<ContactDetailsCubit>(
-          create: (_) => ContactDetailsCubit(context.bloc<CallerCubit>()),
-          child: Builder(
-            builder: (context) {
-              final cubit = context.bloc<ContactDetailsCubit>();
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: Header(context.msg.main.contacts.title),
+        centerTitle: false,
+        iconTheme: IconThemeData(color: Theme.of(context).primaryColor),
+      ),
+      body: BlocProvider<ContactDetailsCubit>(
+        create: (_) => ContactDetailsCubit(context.bloc<CallerCubit>()),
+        child: Builder(
+          builder: (context) {
+            final cubit = context.bloc<ContactDetailsCubit>();
 
-              return SafeArea(
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                    top: 32,
-                  ),
-                  child: Column(
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: _horizontalPadding,
-                        ),
-                        child: Row(
-                          children: <Widget>[
-                            ContactAvatar(contact, size: _leadingSize),
-                            SizedBox(width: 16),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Text(
-                                  contact.name,
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(height: 4),
-                                ContactSubtitle(contact),
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 24),
-                      Expanded(
-                        child: _DestinationsList(
-                          contact: contact,
-                          onTapNumber: cubit.call,
-                          onTapEmail: cubit.mail,
-                        ),
-                      ),
-                    ],
-                  ),
+            return SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.only(
+                  top: 32,
                 ),
-              );
-            },
-          ),
-        ));
+                child: Column(
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: _horizontalPadding,
+                      ),
+                      child: Row(
+                        children: <Widget>[
+                          ContactAvatar(contact, size: _leadingSize),
+                          SizedBox(width: 16),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text(
+                                contact.name,
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              SizedBox(height: 4),
+                              ContactSubtitle(contact),
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 24),
+                    Expanded(
+                      child: BlocBuilder<CallerCubit, CallerState>(
+                        builder: (context, state) {
+                          void onTapNumber(String n) {
+                            return (state is CanCall ||
+                                    (state is NoPermission &&
+                                        !state.dontAskAgain))
+                                ? cubit.call(n)
+                                : _showSnackBar(context);
+                          }
+
+                          return _DestinationsList(
+                            contact: contact,
+                            onTapNumber: onTapNumber,
+                            onTapEmail: cubit.mail,
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
   }
 }
 
