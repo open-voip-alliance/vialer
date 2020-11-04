@@ -22,6 +22,7 @@ class ResetSettingsUseCase extends FutureUseCase<void> {
     );
     await _settingRepository.changeSetting(UseEncryptionSetting(true));
     await _settingRepository.changeSetting(AudioCodecSetting(AudioCodec.opus));
+    await _settingRepository.changeSetting(UsePhoneRingtoneSetting(false));
 
     await _loggingRepository.enableRemoteLoggingIfSettingEnabled();
   }

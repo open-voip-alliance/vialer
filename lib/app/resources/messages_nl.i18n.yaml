@@ -138,6 +138,13 @@ main:
             audio:
               title: "Audio"
               audioCodec: "Audio codec"
+      audio:
+        title: "Audio"
+        usePhoneRingtone:
+          title: "Gebruik de beltoon van deze telefoon"
+          description(String appName): >-
+            Wanneer dit aanstaat zal $appName de beltoon van deze telefoon gebruiken, in plaats van
+            de beltoon van de app.
       version: "Versie"
     troubleshootingProgressPopUp(int remainingTaps): >-
       Na $remainingTaps taps kan je bij instelling voor probleemoplossing!

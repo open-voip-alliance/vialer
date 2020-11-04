@@ -17,17 +17,24 @@ extension CategoryMapper on Category {
           icon: VialerSans.user,
           title: context.msg.main.settings.list.info.title,
         );
-      case Category.debug:
+      case Category.audio:
         return CategoryInfo(
           item: this,
           order: 1,
+          icon: VialerSans.speaker,
+          title: context.msg.main.settings.list.audio.title,
+        );
+      case Category.debug:
+        return CategoryInfo(
+          item: this,
+          order: 2,
           icon: VialerSans.bug,
           title: context.msg.main.settings.list.debug.title,
         );
       case Category.advancedSettings:
         return CategoryInfo(
           item: this,
-          order: 2,
+          order: 3,
           icon: VialerSans.bug,
           title: context.msg.main.settings.list.advancedSettings.title,
         );

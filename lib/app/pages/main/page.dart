@@ -106,7 +106,7 @@ class _MainPageState extends State<MainPage> {
                 child: FloatingActionButton(
                   backgroundColor: context.brandTheme.green1,
                   onPressed: () => Navigator.pushNamed(context, Routes.dialer),
-                  child: Icon(VialerSans.dialpad, size: 31),
+                  child: const Icon(VialerSans.dialpad, size: 31),
                 ),
               )
             : null,
@@ -165,15 +165,15 @@ class _BottomNavigationBar extends StatelessWidget {
         items: [
           if (dialerIsPage)
             BottomNavigationBarItem(
-              icon: _BottomNavigationBarIcon(VialerSans.dialpad),
+              icon: const _BottomNavigationBarIcon(VialerSans.dialpad),
               label: context.msg.main.dialer.menu.title,
             ),
           BottomNavigationBarItem(
-            icon: _BottomNavigationBarIcon(VialerSans.contacts),
+            icon: const _BottomNavigationBarIcon(VialerSans.contacts),
             label: context.msg.main.contacts.menu.title,
           ),
           BottomNavigationBarItem(
-            icon: _BottomNavigationBarIcon(VialerSans.clock),
+            icon: const _BottomNavigationBarIcon(VialerSans.clock),
             label: context.msg.main.recent.menu.title,
           ),
           BottomNavigationBarItem(
@@ -255,7 +255,7 @@ class _AnimatedIndexedStackState extends State<_AnimatedIndexedStack>
     super.initState();
 
     _controller = AnimationController(
-      duration: Duration(milliseconds: 100),
+      duration: const Duration(milliseconds: 100),
       vsync: this,
     );
 
