@@ -13,7 +13,8 @@ import '../../../../../domain/entities/permission.dart';
 
 import '../../../../../domain/usecases/call.dart';
 import '../../../../../domain/usecases/get_call_through_calls_count.dart';
-import '../../../../../domain/usecases/increment_call_through_calls_count.dart';
+
+//import '../../../../../domain/usecases/increment_call_through_calls_count.dart';
 import '../../../../../domain/usecases/get_settings.dart';
 import '../../../../../domain/usecases/change_setting.dart';
 import '../../../../../domain/usecases/get_permission_status.dart';
@@ -30,8 +31,9 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
   final _changeSetting = ChangeSettingUseCase();
   final _call = CallUseCase();
   final _getCallThroughCallsCount = GetCallThroughCallsCountUseCase();
-  final _incrementCallThroughCallsCount =
-      IncrementCallThroughCallsCountUseCase();
+
+  /*final _incrementCallThroughCallsCount =
+      IncrementCallThroughCallsCountUseCase();*/
   final _getPermissionStatus = GetPermissionStatusUseCase();
   final _requestPermission = RequestPermissionUseCase();
 
@@ -94,7 +96,8 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
           AfterThreeCallThroughCallsTrigger.minimumCallDuration,
           () async {
             if (state is Calling) {
-              _incrementCallThroughCallsCount();
+              // TODO: Uncomment when we're sure we can show the survey.
+              //_incrementCallThroughCallsCount();
 
               final showSurvey = settings.get<ShowSurveyDialogSetting>().value;
 
