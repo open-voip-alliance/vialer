@@ -1,37 +1,6 @@
 #!/usr/bin/env bash
-LC_ALL=C
 
-local_branch="$(git rev-parse --abbrev-ref HEAD)"
-
-valid_branch_regex="^[0-9]+\-[a-z0-9\-]+$"
-
-message="Your commit will be rejected. You should rename your branch to a valid name (e.g.: 123-short-description) and try again.\n\nRename your branch by:\tgit branch -m 123-new-name\n"
-
-if [[ ! $local_branch =~ $valid_branch_regex ]]
-then
-    printf "$message"
-    exit 1
-fi
-
-printf "Running build runner to generate translation, chopper and moor files.\n"
-flutter pub run build_runner build
-
-printf "Running 'dart format'\n"
-files=$(find . \
-\( -name '*.dart' ! -name '*.i18n.dart' ! -name '*.g.dart' ! -name '*.chopper.dart' \) -print0 \
- | xargs -0)
-
-if ! dart format -o none --fix --set-exit-if-changed $files
-then
-  printf "The above files need to be formatted.\n"
+# Check (g)eneration, (f)ormatting, (b)ranch and (a)nalysis.
+if ! dart .githooks/check.dart gfba; then
   exit 1
 fi
-
-printf "Running 'dart analyze'\n"
-if ! dart analyze; then
-  printf "Error running 'dart analyze'\n"
-  exit 1
-fi
-printf "Finished running 'dart analyze'\n"
-
-exit 0
