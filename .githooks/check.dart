@@ -140,7 +140,7 @@ Future<void> _checkAnalysisIfNeeded(Iterable<String> files) async {
     return;
   }
 
-  final process = await Process.start('dart', ['analyze']);
+  final process = await Process.start('dart', _analyze);
 
   await _writeAndExitIfNotZero(
     process,
@@ -154,7 +154,7 @@ Future<void> _runGenerationIfNeeded(
 ) async {
   if (runOnError) {
     print('Checking if we should run code generation..');
-    final analyzeResult = await Process.start('dart', ['analyze']);
+    final analyzeResult = await Process.start('dart', _analyze);
 
     if (await analyzeResult.exitCode == 0) {
       print('No code generation needed!');
@@ -185,3 +185,9 @@ Future<void> _runGenerationIfNeeded(
     messageOnFail: 'File generation has failed.',
   );
 }
+
+const _analyze = [
+  'analyze',
+  '--fatal-infos',
+  '--fatal-warnings',
+];
