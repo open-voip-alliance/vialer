@@ -7,8 +7,6 @@ class EnvRepository {
 
   static const _logentriesIosTokenKey = 'LOGENTRIES_IOS_TOKEN';
 
-  static const _commitHashKey = 'COMMIT_HASH';
-
   Map<String, String> __env;
 
   Future<Map<String, String>> get _env async {
@@ -27,6 +25,4 @@ class EnvRepository {
   Future<String> get logentriesAndroidToken => _get(_logentriesAndroidTokenKey);
 
   Future<String> get logentriesIosToken => _get(_logentriesIosTokenKey);
-
-  Future<String> get commitHash => _get(_commitHashKey);
 }

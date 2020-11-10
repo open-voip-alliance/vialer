@@ -76,7 +76,7 @@ Future<void> initializeDependencies() async {
       dependsOn: [StorageRepository],
     )
     ..registerSingleton<BuildInfoRepository>(
-      BuildInfoRepository(dependencyLocator<EnvRepository>()),
+      BuildInfoRepository(),
     )
     ..registerSingletonWithDependencies<FeedbackRepository>(
       () => FeedbackRepository(

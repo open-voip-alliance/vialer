@@ -195,21 +195,77 @@ class _BuildInfoState extends State<_BuildInfo> {
   Widget build(BuildContext context) {
     return BlocBuilder<SettingsCubit, SettingsState>(
       builder: (context, state) {
+        final buildInfo = widget.buildInfo;
+
         final hasAccessToTroubleshooting =
             state.settings.get<ShowTroubleshootingSettingsSetting>()?.value ??
                 false;
+
+        const emphasisStyle = TextStyle(fontWeight: FontWeight.bold);
+
+        final showDetails = buildInfo.mergeRequestNumber != null ||
+            buildInfo.branchName != null;
 
         return GestureDetector(
           onTap: !hasAccessToTroubleshooting ? _onTap : null,
           behavior: HitTestBehavior.opaque,
           child: Center(
             child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 8),
-              child: Chip(
-                label: Text(
-                  '${context.msg.main.settings.list.version} '
-                  '${widget.buildInfo.version}',
-                ),
+              padding: EdgeInsets.only(
+                top: 8,
+                bottom: showDetails ? 16 : 8,
+              ),
+              child: Column(
+                children: [
+                  Chip(
+                    label: Text(
+                      '${context.msg.main.settings.list.version} '
+                      '${widget.buildInfo.version}',
+                    ),
+                  ),
+                  if (showDetails)
+                    Text.rich(
+                      TextSpan(
+                        children: [
+                          // These don't have to be translated,
+                          // for developers only.
+                          TextSpan(
+                            children: [
+                              const TextSpan(text: 'Build: '),
+                              TextSpan(
+                                text: buildInfo.buildNumber,
+                                style: emphasisStyle,
+                              ),
+                            ],
+                          ),
+                          if (buildInfo.mergeRequestNumber != null)
+                            TextSpan(
+                              children: [
+                                const TextSpan(text: ' — MR: '),
+                                TextSpan(
+                                  text: '!${buildInfo.mergeRequestNumber}',
+                                  style: emphasisStyle,
+                                ),
+                              ],
+                            ),
+                          if (buildInfo.branchName != null)
+                            TextSpan(
+                              children: [
+                                const TextSpan(text: ' — Branch: '),
+                                TextSpan(
+                                  text: buildInfo.branchName,
+                                  style: emphasisStyle.copyWith(
+                                    fontFamily: 'monospace',
+                                    fontSize: 13,
+                                  ),
+                                ),
+                              ],
+                            ),
+                        ],
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                ],
               ),
             ),
           ),
