@@ -4,7 +4,7 @@ import '../../dependency_locator.dart';
 
 import '../entities/permission.dart';
 import '../entities/permission_status.dart';
-import '../entities/no_permission.dart';
+import '../entities/exceptions/no_permission.dart';
 
 import '../entities/contact.dart';
 
@@ -24,7 +24,7 @@ class GetContactsUseCase extends FutureUseCase<List<Contact>> {
     );
 
     if (status != PermissionStatus.granted) {
-      throw NoPermission();
+      throw NoPermissionException();
     } else {
       return await _contactsRepository.getContacts();
     }

@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:libphonenumber/libphonenumber.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../entities/call_through_exception.dart';
+import '../entities/exceptions/call_through.dart';
 
 import 'storage.dart';
 import 'auth.dart';

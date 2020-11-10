@@ -3,7 +3,7 @@ import 'package:meta/meta.dart';
 import '../../dependency_locator.dart';
 
 import '../../domain/entities/brand.dart';
-import '../../domain/entities/need_to_change_password.dart';
+import '../entities/exceptions/need_to_change_password.dart';
 
 import '../../domain/repositories/storage.dart';
 
@@ -33,7 +33,7 @@ class AuthRepository {
     if (systemUserResponse.error
         .toString()
         .contains('You need to change your password in the portal')) {
-      throw NeedToChangePassword();
+      throw NeedToChangePasswordException();
     }
 
     return _currentUser = _storageRepository.systemUser = SystemUser.fromJson(
