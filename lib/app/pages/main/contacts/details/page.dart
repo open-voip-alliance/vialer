@@ -47,7 +47,7 @@ class ContactDetailsPage extends StatelessWidget {
         iconTheme: IconThemeData(color: Theme.of(context).primaryColor),
       ),
       body: BlocProvider<ContactDetailsCubit>(
-        create: (_) => ContactDetailsCubit(context.read<CallerCubit>()),
+        create: (context) => ContactDetailsCubit(context.read<CallerCubit>()),
         child: Builder(
           builder: (context) {
             final cubit = context.watch<ContactDetailsCubit>();

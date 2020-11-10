@@ -54,7 +54,7 @@ class _PasswordPageState extends State<PasswordPage>
     return Padding(
         padding: Provider.of<EdgeInsets>(context).copyWith(top: 32),
         child: BlocProvider<PasswordCubit>(
-          create: (_) => PasswordCubit(context.read<OnboardingCubit>()),
+          create: (context) => PasswordCubit(context.read<OnboardingCubit>()),
           child: BlocConsumer<PasswordCubit, PasswordState>(
             listener: _onStateChanged,
             builder: (context, state) {

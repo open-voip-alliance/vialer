@@ -61,7 +61,7 @@ class _DialerPageState extends State<DialerPage> {
     var body = TransparentStatusBar(
       brightness: Brightness.dark,
       child: BlocProvider<DialerCubit>(
-        create: (_) => DialerCubit(context.read<CallerCubit>()),
+        create: (context) => DialerCubit(context.read<CallerCubit>()),
         child: BlocListener<DialerCubit, DialerState>(
           listener: _onDialerStateChanged,
           child: BlocConsumer<CallerCubit, CallerState>(
