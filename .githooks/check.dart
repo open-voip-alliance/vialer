@@ -177,7 +177,7 @@ Future<void> _runGenerationIfNeeded(
 
   final process = await Process.start(
     'flutter',
-    ['pub', 'run', 'build_runner', 'build'],
+    ['pub', 'run', 'build_runner', 'build', '--delete-conflicting-outputs'],
   );
 
   await _writeAndExitIfNotZero(
