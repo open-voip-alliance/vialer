@@ -25,15 +25,15 @@ class QuestionScreen extends StatelessWidget {
   }) : super(key: key);
 
   void _changeAnswer(BuildContext context, int index) {
-    context.bloc<SurveyCubit>().answerQuestion(index);
+    context.read<SurveyCubit>().answerQuestion(index);
   }
 
   void _previous(BuildContext context) {
-    context.bloc<SurveyCubit>().previous();
+    context.read<SurveyCubit>().previous();
   }
 
   void _next(BuildContext context) {
-    context.bloc<SurveyCubit>().next();
+    context.read<SurveyCubit>().next();
   }
 
   @override

@@ -30,7 +30,7 @@ class ConfirmPage extends StatefulWidget {
   }) {
     return BlocProvider<ConfirmCubit>(
       create: (context) => ConfirmCubit(
-        context.bloc<CallerCubit>(),
+        context.read<CallerCubit>(),
         destination,
       ),
       child: ConfirmPage.__(
@@ -63,7 +63,7 @@ class ConfirmPageState extends State<ConfirmPage>
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    final cubit = context.bloc<ConfirmCubit>();
+    final cubit = context.read<ConfirmCubit>();
 
     if (Platform.isIOS && !_madeCall) {
       cubit.call(origin: widget.origin);
@@ -109,7 +109,7 @@ class ConfirmPageState extends State<ConfirmPage>
         // executed after the state has been disposed of.
         if (mounted &&
             _canPop &&
-            context.bloc<CallerCubit>().state is! ShowCallThroughSurvey) {
+            context.read<CallerCubit>().state is! ShowCallThroughSurvey) {
           _pop();
         }
       });
@@ -124,7 +124,7 @@ class ConfirmPageState extends State<ConfirmPage>
   }
 
   void _pop() {
-    context.bloc<CallerCubit>().notifyCanCall();
+    context.read<CallerCubit>().notifyCanCall();
     Navigator.popUntil(
       context,
       (route) => route.settings.name == Routes.main,
@@ -174,7 +174,7 @@ class ConfirmPageState extends State<ConfirmPage>
               ),
               child: BlocBuilder<ConfirmCubit, ConfirmState>(
                 builder: (context, state) {
-                  final cubit = context.bloc<ConfirmCubit>();
+                  final cubit = context.watch<ConfirmCubit>();
 
                   final paragraphDistance = 48 *
                       (1.0 - (MediaQuery.textScaleFactorOf(context) - 1.0));

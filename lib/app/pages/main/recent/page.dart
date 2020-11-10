@@ -43,10 +43,10 @@ class RecentCallsPage extends StatelessWidget {
             top: 16,
           ),
           child: BlocProvider<RecentCallsCubit>(
-            create: (_) => RecentCallsCubit(context.bloc<CallerCubit>()),
+            create: (context) => RecentCallsCubit(context.read<CallerCubit>()),
             child: BlocBuilder<RecentCallsCubit, RecentCallsState>(
               builder: (context, recentCallState) {
-                final cubit = context.bloc<RecentCallsCubit>();
+                final cubit = context.watch<RecentCallsCubit>();
                 final recentCalls = recentCallState.calls;
 
                 return BlocBuilder<CallerCubit, CallerState>(
@@ -134,7 +134,7 @@ class _RecentCallsListState extends State<_RecentCallsList>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      context.bloc<RecentCallsCubit>().refreshRecentCalls();
+      context.read<RecentCallsCubit>().refreshRecentCalls();
     }
   }
 
@@ -150,7 +150,7 @@ class _RecentCallsListState extends State<_RecentCallsList>
     final maxScroll = _scrollController.position.maxScrollExtent;
     final currentScroll = _scrollController.position.pixels;
 
-    final cubit = context.bloc<RecentCallsCubit>();
+    final cubit = context.read<RecentCallsCubit>();
 
     if (currentScroll >= maxScroll - 200) {
       cubit.loadMoreRecentCalls();

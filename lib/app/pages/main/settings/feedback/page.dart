@@ -100,7 +100,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                         child: StylizedButton.raised(
                           colored: true,
                           onPressed: () =>
-                              context.bloc<FeedbackCubit>().sendFeedback(
+                              context.read<FeedbackCubit>().sendFeedback(
                                     title: _titleController.text,
                                     text: _textController.text,
                                   ),
