@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
-import '../../../../../domain/entities/call_through_exception.dart';
+import '../../../../../domain/entities/exceptions/call_through.dart';
 
 abstract class CallerState extends Equatable {
   @override

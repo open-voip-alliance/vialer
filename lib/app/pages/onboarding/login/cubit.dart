@@ -5,7 +5,7 @@ import '../../../../domain/usecases/reset_settings.dart';
 import '../../../../domain/usecases/get_current_user.dart';
 import '../../../../domain/usecases/onboarding/login.dart';
 
-import '../../../../domain/entities/need_to_change_password.dart';
+import '../../../../domain/entities/exceptions/need_to_change_password.dart';
 
 import '../../../util/loggable.dart';
 import '../../../util/debug.dart';
@@ -28,7 +28,7 @@ class LoginCubit extends Cubit<LoginState> with Loggable {
     var loginSuccesful = false;
     try {
       loginSuccesful = await _login(email: username, password: password);
-    } on NeedToChangePassword {
+    } on NeedToChangePasswordException {
       emit(LoggedInAndNeedToChangePassword());
       return;
     }

@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_segment/flutter_segment.dart';
 import 'package:meta/meta.dart';
 
-import '../../../../../domain/entities/call_through_exception.dart';
+import '../../../../../domain/entities/exceptions/call_through.dart';
 import '../../../../../domain/entities/setting.dart';
 import '../../../../../domain/entities/survey/survey_trigger.dart';
 import '../../../../../domain/entities/permission_status.dart';

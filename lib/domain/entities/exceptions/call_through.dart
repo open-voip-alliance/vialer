@@ -1,4 +1,6 @@
-class CallThroughException implements Exception {}
+import 'vialer.dart';
+
+class CallThroughException extends VialerException {}
 
 class InvalidDestinationException extends CallThroughException {}
 
