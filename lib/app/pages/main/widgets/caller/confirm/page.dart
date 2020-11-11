@@ -176,51 +176,65 @@ class ConfirmPageState extends State<ConfirmPage>
                 builder: (context, state) {
                   final cubit = context.bloc<ConfirmCubit>();
 
+                  final paragraphDistance = 48 *
+                      (1.0 - (MediaQuery.textScaleFactorOf(context) - 1.0));
+
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 48),
                     child: Column(
                       children: <Widget>[
-                        SizedBox(height: 48),
-                        Text(
-                          context.msg.main.dialer.confirm.title(appName),
-                          style: _largeStyle,
-                        ),
-                        SizedBox(height: 48),
-                        Text(
-                          context.msg.main.dialer.confirm.description.origin,
-                          style: _style,
-                        ),
-                        SizedBox(height: 8),
-                        Text(state.outgoingCli, style: _largeStyle),
-                        SizedBox(height: 48),
-                        Text(
-                          context.msg.main.dialer.confirm.description.main(
-                            appName,
-                          ),
-                          style: _style,
-                        ),
-                        SizedBox(height: 48),
-                        Text(
-                          context.msg.main.dialer.confirm.description.action,
-                          style: _style,
-                        ),
-                        SizedBox(height: 8),
-                        Text(widget.destination, style: _largeStyle),
-                        if (context.isAndroid)
-                          Expanded(
-                            child: _AndroidInputs(
-                              checkboxValue: !state.showConfirmPage,
-                              onCheckboxValueChangd: (v) =>
-                                  cubit.updateShowPopupSetting(!v),
-                              onCallButtonPressed: () =>
-                                  cubit.call(origin: widget.origin),
-                              onCancelButtonPressed: () =>
-                                  _onCancelButtonPressed(cubit),
-                              destination: context
-                                  .msg.main.dialer.confirm.button
-                                  .call(widget.destination)
-                                  .toUpperCase(),
+                        Flexible(
+                          // ScrollView is here in case even with the altered
+                          // paragraph distance the text doesn't fit.
+                          child: SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                SizedBox(height: paragraphDistance),
+                                Text(
+                                  context.msg.main.dialer.confirm
+                                      .title(appName),
+                                  style: _largeStyle,
+                                ),
+                                SizedBox(height: paragraphDistance),
+                                Text(
+                                  context.msg.main.dialer.confirm.description
+                                      .origin,
+                                  style: _style,
+                                ),
+                                SizedBox(height: 8),
+                                Text(state.outgoingCli, style: _largeStyle),
+                                SizedBox(height: paragraphDistance),
+                                Text(
+                                  context.msg.main.dialer.confirm.description
+                                      .main(
+                                    appName,
+                                  ),
+                                  style: _style,
+                                ),
+                                SizedBox(height: paragraphDistance),
+                                Text(
+                                  context.msg.main.dialer.confirm.description
+                                      .action,
+                                  style: _style,
+                                ),
+                                SizedBox(height: 8),
+                                Text(widget.destination, style: _largeStyle),
+                              ],
                             ),
+                          ),
+                        ),
+                        if (context.isAndroid)
+                          _AndroidInputs(
+                            checkboxValue: !state.showConfirmPage,
+                            onCheckboxValueChangd: (v) =>
+                                cubit.updateShowPopupSetting(!v),
+                            onCallButtonPressed: () =>
+                                cubit.call(origin: widget.origin),
+                            onCancelButtonPressed: () =>
+                                _onCancelButtonPressed(cubit),
+                            destination: context.msg.main.dialer.confirm.button
+                                .call(widget.destination)
+                                .toUpperCase(),
                           ),
                       ],
                     ),

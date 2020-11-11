@@ -59,7 +59,9 @@ class SettingTile extends StatelessWidget {
                           fontSize: 16,
                           fontWeight: !context.isIOS ? FontWeight.bold : null,
                         ),
-                        child: label,
+                        child: Expanded(
+                          child: label,
+                        ),
                       ),
                       if (!childFillWidth) child,
                     ],
