@@ -31,7 +31,7 @@ class ConfirmCubit extends Cubit<ConfirmState> with Loggable {
       setting: ShowDialerConfirmPopupSetting(showConfirmPage),
     );
 
-    emit(ConfirmState(showConfirmPage: showConfirmPage));
+    emit(state.copyWith(showConfirmPage: showConfirmPage));
   }
 
   Future<void> call({@required CallOrigin origin}) => _caller.call(
