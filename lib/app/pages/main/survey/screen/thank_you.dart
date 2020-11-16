@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../../resources/theme.dart';
 import '../../../../resources/localizations.dart';
-
+import '../../../../resources/theme.dart';
 import '../../../../util/conditional_capitalization.dart';
-
 import '../widgets/big_header.dart';
 
 class ThankYouScreen extends StatelessWidget {

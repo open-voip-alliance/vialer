@@ -1,22 +1,20 @@
 import 'package:get_it/get_it.dart';
 
 import 'domain/entities/brand.dart';
-
-import 'domain/repositories/env.dart';
-import 'domain/repositories/storage.dart';
 import 'domain/repositories/auth.dart';
+import 'domain/repositories/build_info.dart';
+import 'domain/repositories/call.dart';
+import 'domain/repositories/connectivity_repository.dart';
+import 'domain/repositories/contact.dart';
+import 'domain/repositories/db/database.dart';
+import 'domain/repositories/env.dart';
+import 'domain/repositories/feedback.dart';
 import 'domain/repositories/logging.dart';
 import 'domain/repositories/permission.dart';
-import 'domain/repositories/contact.dart';
 import 'domain/repositories/recent_call.dart';
-import 'domain/repositories/call.dart';
-import 'domain/repositories/setting.dart';
-import 'domain/repositories/build_info.dart';
-import 'domain/repositories/feedback.dart';
-import 'domain/repositories/connectivity_repository.dart';
-
 import 'domain/repositories/services/voipgrid.dart';
-import 'domain/repositories/db/database.dart';
+import 'domain/repositories/setting.dart';
+import 'domain/repositories/storage.dart';
 
 final dependencyLocator = GetIt.instance;
 

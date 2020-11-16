@@ -6,25 +6,22 @@ import 'package:flutter_segment/flutter_segment.dart';
 import 'package:meta/meta.dart';
 
 import '../../../../../domain/entities/exceptions/call_through.dart';
+import '../../../../../domain/entities/permission.dart';
+import '../../../../../domain/entities/permission_status.dart';
 import '../../../../../domain/entities/setting.dart';
 import '../../../../../domain/entities/survey/survey_trigger.dart';
-import '../../../../../domain/entities/permission_status.dart';
-import '../../../../../domain/entities/permission.dart';
-
 import '../../../../../domain/usecases/call.dart';
-import '../../../../../domain/usecases/get_call_through_calls_count.dart';
-
-import '../../../../../domain/usecases/increment_call_through_calls_count.dart';
-import '../../../../../domain/usecases/get_settings.dart';
 import '../../../../../domain/usecases/change_setting.dart';
-import '../../../../../domain/usecases/get_permission_status.dart';
-import '../../../../../domain/usecases/onboarding/request_permission.dart';
+import '../../../../../domain/usecases/get_call_through_calls_count.dart';
 import '../../../../../domain/usecases/get_has_voip.dart';
-
-import '../../../../util/loggable.dart';
+import '../../../../../domain/usecases/get_permission_status.dart';
+import '../../../../../domain/usecases/get_settings.dart';
+import '../../../../../domain/usecases/increment_call_through_calls_count.dart';
+import '../../../../../domain/usecases/onboarding/request_permission.dart';
 import '../../../../util/debug.dart';
-
+import '../../../../util/loggable.dart';
 import 'state.dart';
+
 export 'state.dart';
 
 class CallerCubit extends Cubit<CallerState> with Loggable {

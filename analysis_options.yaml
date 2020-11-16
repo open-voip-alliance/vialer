@@ -3,7 +3,6 @@ include: package:effective_dart/analysis_options.1.2.0.yaml
 linter:
   rules:
     public_member_api_docs: false
-    directives_ordering: false
     avoid_classes_with_only_static_members: false
     type_annotate_public_apis: false
 

@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../entities/setting_route_info.dart';
-
-import 'widgets/settings_list_view.dart';
-
 import 'cubit.dart';
+import 'widgets/settings_list_view.dart';
 
 class SettingsSubPage extends StatelessWidget {
   final SettingsCubit cubit;

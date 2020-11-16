@@ -1,28 +1,23 @@
 import 'dart:math';
 
+import 'package:characters/characters.dart';
+import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:characters/characters.dart';
 import 'package:flutter_widgets/flutter_widgets.dart';
 import 'package:provider/provider.dart';
-import 'package:dartx/dartx.dart';
-
-import '../../../resources/localizations.dart';
 
 import '../../../../domain/entities/brand.dart';
 import '../../../../domain/entities/contact.dart';
-
+import '../../../resources/localizations.dart';
 import '../../../resources/theme.dart';
-
-import '../../../widgets/stylized_button.dart';
-import '../widgets/header.dart';
-import '../widgets/conditional_placeholder.dart';
-import 'widgets/item.dart';
-import 'widgets/group_header.dart';
-
 import '../../../util/conditional_capitalization.dart';
-
+import '../../../widgets/stylized_button.dart';
+import '../widgets/conditional_placeholder.dart';
+import '../widgets/header.dart';
 import 'cubit.dart';
+import 'widgets/group_header.dart';
+import 'widgets/item.dart';
 
 abstract class ContactsPageRoutes {
   static const root = '/';

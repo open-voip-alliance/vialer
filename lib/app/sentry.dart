@@ -5,9 +5,9 @@ import 'package:device_info/device_info.dart';
 import 'package:flutter/foundation.dart';
 import 'package:sentry/sentry.dart';
 
-import '../domain/repositories/env.dart';
-import '../domain/repositories/auth.dart';
 import '../dependency_locator.dart';
+import '../domain/repositories/auth.dart';
+import '../domain/repositories/env.dart';
 import 'util/debug.dart';
 
 Future<void> run(void Function() f) async {

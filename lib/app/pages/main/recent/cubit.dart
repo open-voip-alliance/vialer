@@ -1,19 +1,17 @@
 import 'dart:async';
 
-import 'package:meta/meta.dart';
+import 'package:dartx/dartx.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_segment/flutter_segment.dart';
-import 'package:dartx/dartx.dart';
-
-import '../widgets/caller/cubit.dart';
+import 'package:meta/meta.dart';
 
 import '../../../../domain/entities/call_with_contact.dart';
 import '../../../../domain/usecases/get_recent_calls.dart';
-
 import '../../../util/debug.dart';
-
+import '../widgets/caller/cubit.dart';
 import 'state.dart';
+
 export 'state.dart';
 
 class RecentCallsCubit extends Cubit<RecentCallsState> {

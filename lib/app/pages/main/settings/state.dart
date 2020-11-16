@@ -1,9 +1,8 @@
 import 'package:equatable/equatable.dart';
 
-import '../../../entities/category.dart';
-
 import '../../../../domain/entities/build_info.dart';
 import '../../../../domain/entities/setting.dart';
+import '../../../entities/category.dart';
 
 class SettingsState extends Equatable {
   final List<Setting> settings;

@@ -2,14 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../resources/theme.dart';
 import '../../../../resources/localizations.dart';
-
-import '../../../../widgets/transparent_status_bar.dart';
-import '../../../../widgets/stylized_button.dart';
-
+import '../../../../resources/theme.dart';
 import '../../../../util/conditional_capitalization.dart';
-
+import '../../../../widgets/stylized_button.dart';
+import '../../../../widgets/transparent_status_bar.dart';
 import 'cubit.dart';
 
 class FeedbackPage extends StatefulWidget {

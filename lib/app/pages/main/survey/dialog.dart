@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../domain/entities/survey/survey_trigger.dart';
-
+import 'cubit.dart';
 import 'screen/help_us.dart';
 import 'screen/question.dart';
-
-import 'cubit.dart';
 import 'screen/thank_you.dart';
 
 class SurveyDialog extends StatelessWidget {

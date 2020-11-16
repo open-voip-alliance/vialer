@@ -2,13 +2,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_segment/flutter_segment.dart';
 
-import '../../pages/webview/state.dart';
-import '../../util/debug.dart';
-import '../../util/loggable.dart';
-
 import '../../../domain/entities/exceptions/auto_login.dart';
 import '../../../domain/entities/portal_page.dart';
 import '../../../domain/usecases/get_portal_webview_url.dart';
+import '../../pages/webview/state.dart';
+import '../../util/debug.dart';
+import '../../util/loggable.dart';
 
 class PortalWebViewCubit extends Cubit<PortalWebViewState> with Loggable {
   final getPortalWebviewUrl = GetPortalWebviewUrlUseCase();

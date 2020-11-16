@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:meta/meta.dart';
 
 import '../../../dependency_locator.dart';
-import '../../use_case.dart';
 import '../../repositories/auth.dart';
+import '../../use_case.dart';
 
 class LoginUseCase extends FutureUseCase<bool> {
   final _authRepository = dependencyLocator<AuthRepository>();

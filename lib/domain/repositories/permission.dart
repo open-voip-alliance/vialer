@@ -1,10 +1,9 @@
 import 'package:permission_handler/permission_handler.dart';
 
-import 'mappers/permission_status.dart';
-
 import '../entities/permission.dart' as domain;
 import '../entities/permission_status.dart' as domain;
 import 'mappers/permission.dart';
+import 'mappers/permission_status.dart';
 
 class PermissionRepository {
   Future<domain.PermissionStatus> getPermissionStatus(

@@ -1,18 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../widgets/caller/cubit.dart';
-import '../widgets/header.dart';
-import '../widgets/conditional_placeholder.dart';
-import 'widgets/item.dart';
-
 import '../../../../domain/entities/call_with_contact.dart';
-import '../../../resources/theme.dart';
 import '../../../resources/localizations.dart';
-
+import '../../../resources/theme.dart';
 import '../util/stylized_snack_bar.dart';
-
+import '../widgets/caller/cubit.dart';
+import '../widgets/conditional_placeholder.dart';
+import '../widgets/header.dart';
 import 'cubit.dart';
+import 'widgets/item.dart';
 
 class RecentCallsPage extends StatelessWidget {
   final double listBottomPadding;

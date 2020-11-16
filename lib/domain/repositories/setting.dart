@@ -1,8 +1,6 @@
-import 'auth.dart';
-
 import '../../domain/entities/setting.dart';
-
 import '../../domain/repositories/storage.dart';
+import 'auth.dart';
 
 class SettingRepository {
   final StorageRepository _storageRepository;

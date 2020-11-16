@@ -1,7 +1,7 @@
 import 'package:meta/meta.dart';
 
-import 'ordered_info.dart';
 import 'category.dart';
+import 'ordered_info.dart';
 
 abstract class CategorizedInfo<T> extends OrderedInfo<T> {
   @override

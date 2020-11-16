@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../resources/localizations.dart';
-import '../../../widgets/stylized_button.dart';
 import '../../../util/conditional_capitalization.dart';
+import '../../../widgets/stylized_button.dart';
 
 class InfoPage extends StatelessWidget {
   final Widget icon;

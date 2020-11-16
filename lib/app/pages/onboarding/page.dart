@@ -3,18 +3,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/entities/onboarding/step.dart';
-
 import '../../routes.dart';
-import 'widgets/background.dart';
-
+import 'cubit.dart';
 import 'login/page.dart';
 import 'password/page.dart';
 import 'permission/call/page.dart';
 import 'permission/contacts/page.dart';
 import 'voicemail/page.dart';
 import 'welcome/page.dart';
-
-import 'cubit.dart';
+import 'widgets/background.dart';
 
 class OnboardingPage extends StatefulWidget {
   @override

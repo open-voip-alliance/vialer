@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../domain/entities/setting.dart';
 import '../../../../../domain/entities/audio_codec.dart';
+import '../../../../../domain/entities/setting.dart';
 
 /// Value for use in [_SettingValueTile] specifically for [AudioCodecSetting].
 // Might be generalized into a MultipleChoiceSettingValue widget later on.

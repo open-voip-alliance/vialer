@@ -1,7 +1,7 @@
 import 'package:meta/meta.dart';
-import 'categorized_info.dart';
-import '../../domain/entities/setting.dart';
 
+import '../../domain/entities/setting.dart';
+import 'categorized_info.dart';
 import 'category.dart';
 
 class SettingInfo extends CategorizedInfo<Setting> {

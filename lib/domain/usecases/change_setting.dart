@@ -4,8 +4,8 @@ import 'package:meta/meta.dart';
 
 import '../../dependency_locator.dart';
 import '../entities/setting.dart';
-import '../repositories/setting.dart';
 import '../repositories/logging.dart';
+import '../repositories/setting.dart';
 import '../use_case.dart';
 
 class ChangeSettingUseCase extends FutureUseCase<void> {

@@ -1,10 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../widgets/caller/cubit.dart';
-
 import '../../../../domain/usecases/get_latest_dialed_number.dart';
-
+import '../widgets/caller/cubit.dart';
 import 'state.dart';
+
 export 'state.dart';
 
 class DialerCubit extends Cubit<DialerState> {

@@ -8,14 +8,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../../domain/entities/brand.dart';
-
-import '../../../../../resources/theme.dart';
 import '../../../../../resources/localizations.dart';
-
+import '../../../../../resources/theme.dart';
 import '../../../../../routes.dart';
 import '../../../../../widgets/transparent_status_bar.dart';
 import '../../../widgets/caller.dart';
-
 import 'cubit.dart';
 
 class ConfirmPage extends StatefulWidget {

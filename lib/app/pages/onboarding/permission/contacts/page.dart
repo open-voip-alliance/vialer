@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../abstract/page.dart';
-
-import '../../../../../domain/entities/permission.dart';
 import '../../../../../domain/entities/brand.dart';
-
+import '../../../../../domain/entities/permission.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
+import '../abstract/page.dart';
 
 class ContactsPermissionPage extends StatelessWidget {
   const ContactsPermissionPage({Key key}) : super(key: key);

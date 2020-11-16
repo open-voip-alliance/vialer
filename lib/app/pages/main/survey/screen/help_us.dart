@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../resources/theme.dart';
 import '../../../../resources/localizations.dart';
-
+import '../../../../resources/theme.dart';
 import '../../../../util/conditional_capitalization.dart';
-import '../widgets/big_header.dart';
 import '../cubit.dart';
+import '../widgets/big_header.dart';
 
 class HelpUsScreen extends StatelessWidget {
   final bool dontShowThisAgain;

@@ -1,21 +1,18 @@
-import 'package:flutter/material.dart';
 import 'package:dartx/dartx.dart';
+import 'package:flutter/material.dart';
 
+import '../../../../../domain/entities/setting.dart';
 import '../../../../entities/categorized_info.dart';
 import '../../../../entities/category.dart';
 import '../../../../entities/setting_info.dart';
 import '../../../../entities/setting_route.dart';
 import '../../../../entities/setting_route_info.dart';
-
-import '../../../../../domain/entities/setting.dart';
-
 import '../../../../mappers/category.dart';
 import '../../../../mappers/setting.dart';
 import '../../../../mappers/setting_route.dart';
-
+import 'page_tile.dart';
 import 'tile_category.dart';
 import 'value_tile.dart';
-import 'page_tile.dart';
 
 class SettingsListView extends StatelessWidget {
   final Iterable<Setting> settings;

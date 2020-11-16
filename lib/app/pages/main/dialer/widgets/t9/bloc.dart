@@ -1,23 +1,21 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:dartx/dartx.dart';
 import 'package:diacritic/diacritic.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:dartx/dartx.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../../../../../../domain/entities/permission.dart';
 import '../../../../../../domain/entities/permission_status.dart';
 import '../../../../../../domain/entities/t9_contact.dart';
-
 import '../../../../../../domain/usecases/get_contacts.dart';
 import '../../../../../../domain/usecases/get_permission_status.dart';
-
 import 'event.dart';
 import 'state.dart';
 
-export 'state.dart';
 export 'event.dart';
+export 'state.dart';
 
 class T9ContactsBloc extends Bloc<T9ContactsEvent, T9ContactsState> {
   final _getContacts = GetContactsUseCase();

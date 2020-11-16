@@ -1,12 +1,10 @@
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
-import '../entities/category.dart';
-import '../entities/setting_info.dart';
-
 import '../../domain/entities/brand.dart';
 import '../../domain/entities/setting.dart';
-
+import '../entities/category.dart';
+import '../entities/setting_info.dart';
 import '../resources/localizations.dart';
 
 extension SettingMapper on Setting {

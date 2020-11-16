@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:meta/meta.dart';
 
 import '../../dependency_locator.dart';
-import '../use_case.dart';
 import '../repositories/call.dart';
+import '../use_case.dart';
 
 class CallUseCase extends FutureUseCase<void> {
   final _callRepository = dependencyLocator<CallRepository>();

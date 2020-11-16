@@ -1,11 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../resources/theme.dart';
-
 import '../../../../../domain/entities/setting.dart';
 import '../../../../entities/setting_info.dart';
-
+import '../../../../resources/theme.dart';
 import 'audio_codec_value.dart';
 import 'tile.dart';
 

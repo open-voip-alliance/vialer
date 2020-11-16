@@ -4,13 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../domain/entities/exceptions/call_through.dart';
 import '../../../../../domain/entities/survey/survey_trigger.dart';
-
-import '../../../../resources/theme.dart';
 import '../../../../resources/localizations.dart';
-
+import '../../../../resources/theme.dart';
 import '../../survey/dialog.dart';
 import 'confirm/page.dart';
-
 import 'cubit.dart';
 
 class Caller extends StatefulWidget {

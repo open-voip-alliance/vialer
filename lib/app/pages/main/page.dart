@@ -3,18 +3,15 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../domain/entities/contact.dart';
-
-import '../../resources/theme.dart';
 import '../../resources/localizations.dart';
-
+import '../../resources/theme.dart';
 import '../../routes.dart';
+import '../../widgets/transparent_status_bar.dart';
 import 'contacts/details/page.dart';
-import 'dialer/page.dart';
 import 'contacts/page.dart';
+import 'dialer/page.dart';
 import 'recent/page.dart';
 import 'settings/page.dart';
-
-import '../../widgets/transparent_status_bar.dart';
 import 'widgets/caller.dart';
 import 'widgets/connectivity_alert.dart';
 import 'widgets/user_refresher/widget.dart';
