@@ -12,6 +12,7 @@ class PermissionPage extends StatelessWidget {
   final Widget title;
   final Widget description;
   final Permission permission;
+  final VoidCallback onPermissionGranted;
 
   PermissionPage({
     Key key,
@@ -19,11 +20,16 @@ class PermissionPage extends StatelessWidget {
     @required this.title,
     @required this.description,
     @required this.permission,
+    this.onPermissionGranted,
   }) : super(key: key);
 
   void _onStateChanged(BuildContext context, PermissionState state) {
     if (state is PermissionGranted || state is PermissionDenied) {
       context.bloc<OnboardingCubit>().forward();
+
+      if (state is PermissionGranted) {
+        onPermissionGranted?.call();
+      }
     }
   }
 
