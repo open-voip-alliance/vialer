@@ -25,6 +25,7 @@ class _PasswordPageState extends State<PasswordPage>
     with TickerProviderStateMixin {
   final _passwordController = TextEditingController();
   bool _canSubmit = false;
+  bool _hidePassword = true;
 
   @override
   void initState() {
@@ -47,6 +48,12 @@ class _PasswordPageState extends State<PasswordPage>
     if (_canSubmit) {
       context.bloc<PasswordCubit>().changePassword(_passwordController.text);
     }
+  }
+
+  void _toggleHidePassword() {
+    setState(() {
+      _hidePassword = !_hidePassword;
+    });
   }
 
   @override
@@ -77,8 +84,20 @@ class _PasswordPageState extends State<PasswordPage>
                   StylizedTextField(
                     controller: _passwordController,
                     prefixIcon: VialerSans.lockOn,
-                    obscureText: true,
+                    obscureText: _hidePassword,
                     hasError: state is PasswordNotAllowed,
+                    suffix: AnimatedSwitcher(
+                      duration: Duration(milliseconds: 200),
+                      switchInCurve: Curves.decelerate,
+                      switchOutCurve: Curves.decelerate.flipped,
+                      child: IconButton(
+                        key: ValueKey(_hidePassword),
+                        icon: Icon(
+                          _hidePassword ? VialerSans.eyeOff : VialerSans.eye,
+                        ),
+                        onPressed: _toggleHidePassword,
+                      ),
+                    ),
                   ),
                   SizedBox(height: 16),
                   Text(
