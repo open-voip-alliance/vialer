@@ -2,11 +2,14 @@ import 'package:flutter/foundation.dart' hide Category;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../webview/page.dart';
+
 import '../../../entities/setting_route_info.dart';
 import '../../../entities/setting_route.dart';
 
-import '../../../../domain/entities/setting.dart';
 import '../../../../domain/entities/build_info.dart';
+import '../../../../domain/entities/portal_page.dart';
+import '../../../../domain/entities/setting.dart';
 
 import '../../../routes.dart';
 import '../../../widgets/stylized_button.dart';
@@ -52,20 +55,55 @@ class SettingsPage extends StatelessWidget {
     }
   }
 
+  void _goToWebView(
+    BuildContext context,
+    SettingRouteInfo routeInfo,
+  ) {
+    PortalPage page;
+    switch (routeInfo.item) {
+      case SettingRoute.webViewDialplan:
+        page = PortalPage.dialPlan;
+        break;
+      case SettingRoute.webViewStats:
+        page = PortalPage.stats;
+        break;
+      default:
+        throw UnsupportedError(
+          'Vialer error: Unsupported routeInfo for webview',
+        );
+        break;
+    }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PortalWebViewPage(page),
+        fullscreenDialog: true,
+      ),
+    );
+  }
+
   void _goToSubPage(
     BuildContext context,
     SettingsCubit cubit,
     SettingRouteInfo routeInfo,
   ) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) {
-        return SettingsSubPage(
-          cubit: cubit,
-          routeInfo: routeInfo,
-        );
-      }),
-    );
+    if ([
+      SettingRoute.webViewDialplan,
+      SettingRoute.webViewStats,
+    ].contains(routeInfo.item)) {
+      _goToWebView(context, routeInfo);
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) {
+          return SettingsSubPage(
+            cubit: cubit,
+            routeInfo: routeInfo,
+          );
+        }),
+      );
+    }
   }
 
   @override
@@ -100,6 +138,7 @@ class SettingsPage extends StatelessWidget {
                       child: SettingsListView(
                         route: SettingRoute.main,
                         settings: state.settings,
+                        allowedCategories: state.allowedCategories,
                         onSettingChanged: cubit.changeSetting,
                         onRouteLinkTapped: (info) =>
                             _goToSubPage(context, cubit, info),

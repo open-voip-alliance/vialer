@@ -3,12 +3,14 @@ import 'package:meta/meta.dart';
 import '../../dependency_locator.dart';
 
 import '../../domain/entities/brand.dart';
+
+import '../entities/exceptions/auto_login.dart';
 import '../entities/exceptions/need_to_change_password.dart';
+import '../entities/brand.dart';
+import '../entities/system_user.dart';
+import '../repositories/storage.dart';
 
-import '../../domain/repositories/storage.dart';
-
-import 'services/voipgrid.dart';
-import '../../domain/entities/system_user.dart';
+import './services/voipgrid.dart';
 
 class AuthRepository {
   final StorageRepository _storageRepository;
@@ -96,5 +98,14 @@ class AuthRepository {
     } else {
       return false;
     }
+  }
+
+  Future<String> fetchAutoLoginToken() async {
+    final response = await _service.getAutoLoginToken();
+    if (!response.isSuccessful) {
+      throw AutoLoginException();
+    }
+    final body = response.body as Map<String, dynamic>;
+    return body['token'] as String;
   }
 }

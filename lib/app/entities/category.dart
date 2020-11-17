@@ -6,4 +6,5 @@ enum Category {
   troubleshootingAudio,
   audio,
   debug,
+  portalLinks,
 }

@@ -201,4 +201,7 @@ abstract class VialerSans {
   static const eye = IconData(0xE914, fontFamily: _family);
   static const eyeOff = IconData(0xE9A5, fontFamily: _family);
   static const caretRight = IconData(0xE98D, fontFamily: _family);
+  static const caretLeft = IconData(0xE98E, fontFamily: _family);
+  static const voipCloud = IconData(0xE902, fontFamily: _family);
+  static const refresh = IconData(0xE9A8, fontFamily: _family);
 }

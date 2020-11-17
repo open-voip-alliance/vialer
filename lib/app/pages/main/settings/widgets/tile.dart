@@ -70,7 +70,9 @@ class SettingTile extends StatelessWidget {
                 if (childFillWidth) child,
               ],
             )),
-        if (description != null) ...[
+        if (description == null)
+          SizedBox(height: 16)
+        else
           Padding(
             padding: EdgeInsets.only(
               left: context.isIOS ? 8 : 24,
@@ -85,7 +87,6 @@ class SettingTile extends StatelessWidget {
               child: description,
             ),
           ),
-        ],
       ],
     );
   }
