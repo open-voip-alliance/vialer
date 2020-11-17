@@ -27,14 +27,14 @@ extension CategoryMapper on Category {
       case Category.debug:
         return CategoryInfo(
           item: this,
-          order: 2,
+          order: 3,
           icon: VialerSans.bug,
           title: context.msg.main.settings.list.debug.title,
         );
       case Category.advancedSettings:
         return CategoryInfo(
           item: this,
-          order: 3,
+          order: 10,
           icon: VialerSans.bug,
           title: context.msg.main.settings.list.advancedSettings.title,
         );
@@ -56,6 +56,13 @@ extension CategoryMapper on Category {
           icon: VialerSans.speaker,
           title: context.msg.main.settings.list.advancedSettings.troubleshooting
               .list.audio.title,
+        );
+      case Category.portalLinks:
+        return CategoryInfo(
+          item: this,
+          order: 2,
+          icon: VialerSans.voipCloud,
+          title: context.msg.main.settings.list.portalLinks.title,
         );
       default:
         throw UnsupportedError('Vialer error: Unknown category');

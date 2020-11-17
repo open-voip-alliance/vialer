@@ -8,6 +8,7 @@ generic:
     next: "Next"
     close: "Close"
     done: "Done"
+    tryAgain: "Try again"
 
 connectivity:
   noConnection: "No internet connection"
@@ -140,6 +141,12 @@ main:
             When enabled $appName will use the ringtone configured on this phone rather than the
             app's ringtone.
       version: "Version"
+      portalLinks:
+        title: "VoIP platform"
+        dialplan:
+          title: "Dial plan"
+        stats:
+          title: "Statistics"
     troubleshootingProgressPopUp(int remainingTaps): >-
       You can access troubleshooting settings after $remainingTaps more taps!
     troubleshootingUnlockedPopUp: "You now have access to troubleshooting settings!"
@@ -224,3 +231,10 @@ onboarding:
 
   welcome:
     title: "Welcome"
+
+webview:
+  error:
+    title: "Loading page failed"
+    description: >-
+      An error occurred when opening the requested page. Please check your
+      internet connection and try again.

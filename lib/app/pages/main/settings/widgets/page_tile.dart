@@ -18,7 +18,7 @@ class SettingRouteTile extends StatelessWidget {
       borderRadius: BorderRadius.circular(4),
       child: SettingTile(
         label: Text(info.title),
-        description: Text(info.description),
+        description: info.description != null ? Text(info.description) : null,
         child: Icon(
           VialerSans.caretRight,
           color: context.brandTheme.grey4,

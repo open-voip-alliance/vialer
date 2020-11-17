@@ -58,7 +58,7 @@ class SystemUser {
       _firstNameKey: firstName,
       _lastNameKey: lastName,
       if (includeToken) _tokenKey: token,
-      _appAccountKey: _appAccount.toString(),
+      _appAccountKey: _appAccount != null ? _appAccount.toString() : null,
       _outgoingCliKey: outgoingCli,
     };
   }

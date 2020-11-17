@@ -23,6 +23,20 @@ extension SettingRouteMapper on SettingRoute {
           description: context.msg.main.settings.list.advancedSettings
               .troubleshooting.description,
         );
+      case SettingRoute.webViewDialplan:
+        return SettingRouteInfo(
+          item: this,
+          order: 0,
+          category: Category.portalLinks,
+          title: context.msg.main.settings.list.portalLinks.dialplan.title,
+        );
+      case SettingRoute.webViewStats:
+        return SettingRouteInfo(
+          item: this,
+          order: 1,
+          category: Category.portalLinks,
+          title: context.msg.main.settings.list.portalLinks.stats.title,
+        );
     }
 
     throw UnsupportedError('Vialer error: Unknown SettingPage: $this');

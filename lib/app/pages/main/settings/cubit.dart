@@ -1,10 +1,13 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../entities/category.dart';
+
 import '../../../../domain/entities/setting.dart';
 
 import '../../../../domain/usecases/get_build_info.dart';
 import '../../../../domain/usecases/get_settings.dart';
 import '../../../../domain/usecases/change_setting.dart';
+import '../../../../domain/usecases/get_has_voip.dart';
 
 import '../../../../domain/usecases/logout.dart';
 
@@ -17,6 +20,7 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
   final _getSettings = GetSettingsUseCase();
   final _changeSetting = ChangeSettingUseCase();
   final _getBuildInfo = GetBuildInfoUseCase();
+  final _getHasVoip = GetHasVoipUseCase();
   final _logout = LogoutUseCase();
 
   SettingsCubit() : super(SettingsState()) {
@@ -24,10 +28,25 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
   }
 
   Future<void> _emitUpdatedState() async {
+    var allowedCategories = [
+      Category.accountInfo,
+      Category.debug,
+    ];
+    if (await _getHasVoip()) {
+      allowedCategories.addAll([
+        Category.audio,
+        Category.portalLinks,
+        Category.advancedSettings,
+        Category.troubleshootingCalling,
+        Category.troubleshootingAudio,
+      ]);
+    }
+
     emit(
       SettingsState(
         settings: await _getSettings(),
         buildInfo: await _getBuildInfo(),
+        allowedCategories: allowedCategories,
       ),
     );
   }

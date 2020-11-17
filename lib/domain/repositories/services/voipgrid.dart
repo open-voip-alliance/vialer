@@ -40,6 +40,9 @@ abstract class VoipgridService extends ChopperService {
 
   @Put(path: 'v2/password')
   Future<Response> password(@Body() Map<String, dynamic> body);
+
+  @Get(path: 'autologin/token/')
+  Future<Response> getAutoLoginToken();
 }
 
 class _AuthorizationInterceptor implements RequestInterceptor {

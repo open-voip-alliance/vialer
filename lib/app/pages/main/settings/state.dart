@@ -1,13 +1,20 @@
 import 'package:equatable/equatable.dart';
 
+import '../../../entities/category.dart';
+
 import '../../../../domain/entities/build_info.dart';
 import '../../../../domain/entities/setting.dart';
 
 class SettingsState extends Equatable {
   final List<Setting> settings;
   final BuildInfo buildInfo;
+  final List<Category> allowedCategories;
 
-  SettingsState({this.settings = const [], this.buildInfo});
+  SettingsState({
+    this.settings = const [],
+    this.buildInfo,
+    this.allowedCategories = const [],
+  });
 
   SettingsState withChanged(Setting setting) {
     return SettingsState(
@@ -17,6 +24,7 @@ class SettingsState extends Equatable {
         ..removeWhere((s) => s.runtimeType == setting.runtimeType)
         ..add(setting),
       buildInfo: buildInfo,
+      allowedCategories: allowedCategories,
     );
   }
 

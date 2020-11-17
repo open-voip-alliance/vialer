@@ -19,6 +19,7 @@ import 'page_tile.dart';
 
 class SettingsListView extends StatelessWidget {
   final Iterable<Setting> settings;
+  final List<Category> allowedCategories;
   final ValueChanged<Setting> onSettingChanged;
   final ValueChanged<SettingRouteInfo> onRouteLinkTapped;
 
@@ -32,6 +33,7 @@ class SettingsListView extends StatelessWidget {
     Key key,
     @required this.route,
     @required this.settings,
+    @required this.allowedCategories,
     @required this.onSettingChanged,
     this.onRouteLinkTapped,
     this.children = const [],
@@ -48,6 +50,7 @@ class SettingsListView extends StatelessWidget {
       ),
       children: [
         ...Category.values
+            .where(allowedCategories.contains)
             .map((c) => c.toInfo(context))
             .where((i) => i.route == route)
             .sortedBy((i) => i.order)

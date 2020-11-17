@@ -9,6 +9,7 @@ generic:
     next: "Volgende"
     close: "Sluiten"
     done: "Klaar"
+    tryAgain: "Probeer nogmaals"
 
 connectivity:
   noConnection: "Geen internetverbinding"
@@ -148,6 +149,12 @@ main:
             Wanneer dit aanstaat zal $appName de beltoon van deze telefoon gebruiken, in plaats van
             de beltoon van de app.
       version: "Versie"
+      portalLinks:
+        title: "VoIP platform"
+        dialplan:
+          title: "Belplan"
+        stats:
+          title: "Statistieken"
     troubleshootingProgressPopUp(int remainingTaps): >-
       Na $remainingTaps taps kan je bij instelling voor probleemoplossing!
     troubleshootingUnlockedPopUp: "Je hebt nu toegang tot instellingen voor probleemoplossing!"
@@ -233,3 +240,10 @@ onboarding:
 
   welcome:
     title: "Welkom"
+
+webview:
+  error:
+    title: "Pagina laden mislukt"
+    description: >-
+      Er is een probleem opgetreden bij het laden van de pagina. Controleer je
+      internetverbinding en probeer nogmaals.

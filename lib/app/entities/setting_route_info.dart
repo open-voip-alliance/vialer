@@ -23,6 +23,6 @@ class SettingRouteInfo extends CategorizedInfo<SettingRoute> {
     @required this.order,
     @required this.category,
     @required this.title,
-    @required this.description,
+    this.description,
   });
 }

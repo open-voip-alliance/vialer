@@ -30,6 +30,7 @@ class SettingsSubPage extends StatelessWidget {
           return SettingsListView(
             route: routeInfo.item,
             settings: state.settings,
+            allowedCategories: state.allowedCategories,
             onSettingChanged: cubit.changeSetting,
           );
         },
