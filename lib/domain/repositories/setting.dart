@@ -11,8 +11,15 @@ class SettingRepository {
   SettingRepository(this._storageRepository, this._authRepository);
 
   Future<List<Setting>> getSettings() async {
+    final storedSettings = _storageRepository.settings;
+
     return [
-      ..._storageRepository.settings,
+      ...storedSettings,
+      ...Setting.presets.where(
+        (s) => !storedSettings.any(
+          (stored) => stored.runtimeType == s.runtimeType,
+        ),
+      ),
       PhoneNumberSetting(
         _authRepository.currentUser?.outgoingCli,
       ),

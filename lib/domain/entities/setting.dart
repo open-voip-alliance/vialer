@@ -9,13 +9,28 @@ abstract class Setting<T> {
   static const _valueKey = 'value';
 
   final T value;
+
   final bool mutable;
 
   /// Whether the setting is external, meaning: The setting has a source that's
   /// not our local storage (the portal, VoIP library, etc.)
   final bool external;
 
-  Setting(this.value, {this.mutable = true, this.external = false});
+  Setting(
+    this.value, {
+    this.mutable = true,
+    this.external = false,
+  });
+
+  static final List<Setting> presets = [
+    RemoteLoggingSetting.preset(),
+    ShowDialerConfirmPopupSetting.preset(),
+    ShowSurveyDialogSetting.preset(),
+    ShowTroubleshootingSettingsSetting.preset(),
+    UseEncryptionSetting.preset(),
+    AudioCodecSetting.preset(),
+    UsePhoneRingtoneSetting.preset(),
+  ];
 
   Map<String, dynamic> toJson() {
     return {
@@ -67,6 +82,8 @@ class RemoteLoggingSetting extends Setting<bool> {
   // ignore: avoid_positional_boolean_parameters
   RemoteLoggingSetting(bool value) : super(value);
 
+  RemoteLoggingSetting.preset() : this(false);
+
   @override
   RemoteLoggingSetting copyWith({bool value}) => RemoteLoggingSetting(value);
 }
@@ -74,6 +91,8 @@ class RemoteLoggingSetting extends Setting<bool> {
 class ShowDialerConfirmPopupSetting extends Setting<bool> {
   // ignore: avoid_positional_boolean_parameters
   ShowDialerConfirmPopupSetting(bool value) : super(value);
+
+  ShowDialerConfirmPopupSetting.preset() : this(true);
 
   @override
   ShowDialerConfirmPopupSetting copyWith({bool value}) =>
@@ -83,6 +102,8 @@ class ShowDialerConfirmPopupSetting extends Setting<bool> {
 class ShowSurveyDialogSetting extends Setting<bool> {
   // ignore: avoid_positional_boolean_parameters
   ShowSurveyDialogSetting(bool value) : super(value);
+
+  ShowSurveyDialogSetting.preset() : this(true);
 
   @override
   ShowSurveyDialogSetting copyWith({bool value}) =>
@@ -101,6 +122,8 @@ class ShowTroubleshootingSettingsSetting extends Setting<bool> {
   // ignore: avoid_positional_boolean_parameters
   ShowTroubleshootingSettingsSetting(bool value) : super(value);
 
+  ShowTroubleshootingSettingsSetting.preset() : this(false);
+
   @override
   ShowTroubleshootingSettingsSetting copyWith({bool value}) =>
       ShowTroubleshootingSettingsSetting(value);
@@ -110,12 +133,16 @@ class UseEncryptionSetting extends Setting<bool> {
   // ignore: avoid_positional_boolean_parameters
   UseEncryptionSetting(bool value) : super(value);
 
+  UseEncryptionSetting.preset() : this(true);
+
   @override
   UseEncryptionSetting copyWith({bool value}) => UseEncryptionSetting(value);
 }
 
 class AudioCodecSetting extends Setting<AudioCodec> {
   AudioCodecSetting(AudioCodec value) : super(value);
+
+  AudioCodecSetting.preset() : this(AudioCodec.opus);
 
   @override
   AudioCodecSetting copyWith({AudioCodec value}) => AudioCodecSetting(value);
@@ -124,6 +151,8 @@ class AudioCodecSetting extends Setting<AudioCodec> {
 class UsePhoneRingtoneSetting extends Setting<bool> {
   // ignore: avoid_positional_boolean_parameters
   UsePhoneRingtoneSetting(bool value) : super(value);
+
+  UsePhoneRingtoneSetting.preset() : this(false);
 
   @override
   UsePhoneRingtoneSetting copyWith({bool value}) =>
