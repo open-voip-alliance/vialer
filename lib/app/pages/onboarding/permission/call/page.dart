@@ -22,7 +22,7 @@ class CallPermissionPage extends StatelessWidget {
         textAlign: TextAlign.center,
       ),
       description: Text(context.msg.onboarding.permission.call.description),
-      onPermissionGranted: context.bloc<CallerCubit>().notifyCanCall,
+      onPermissionGranted: context.watch<CallerCubit>().notifyCanCall,
     );
   }
 }
