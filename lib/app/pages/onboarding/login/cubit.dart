@@ -1,7 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_segment/flutter_segment.dart';
 
-import '../../../../domain/usecases/reset_settings.dart';
 import '../../../../domain/usecases/get_current_user.dart';
 import '../../../../domain/usecases/onboarding/login.dart';
 
@@ -16,7 +15,6 @@ export 'state.dart';
 class LoginCubit extends Cubit<LoginState> with Loggable {
   final _getStoredUser = GetStoredUserUseCase();
   final _login = LoginUseCase();
-  final _resetSettings = ResetSettingsUseCase();
 
   LoginCubit() : super(NotLoggedIn());
 
@@ -25,15 +23,15 @@ class LoginCubit extends Cubit<LoginState> with Loggable {
 
     emit(LoggingIn());
 
-    var loginSuccesful = false;
+    var loginSuccessful = false;
     try {
-      loginSuccesful = await _login(email: username, password: password);
+      loginSuccessful = await _login(email: username, password: password);
     } on NeedToChangePasswordException {
       emit(LoggedInAndNeedToChangePassword());
       return;
     }
 
-    if (loginSuccesful) {
+    if (loginSuccessful) {
       logger.info('Login successful');
       doIfNotDebug(() async {
         await Segment.identify(
@@ -41,9 +39,6 @@ class LoginCubit extends Cubit<LoginState> with Loggable {
         );
         await Segment.track(eventName: 'login');
       });
-
-      logger.info('Writing default settings');
-      await _resetSettings();
 
       emit(LoggedIn());
     } else {
