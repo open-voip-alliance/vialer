@@ -48,15 +48,6 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
     @required CallOrigin origin,
     bool showingConfirmPage = false,
   }) async {
-    doIfNotDebug(() {
-      Segment.track(
-        eventName: 'call',
-        properties: {
-          'via': origin.toSegmentString(),
-        },
-      );
-    });
-
     final settings = await _getSettings();
 
     final shouldShowConfirmPage =
@@ -88,6 +79,15 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
     } else {
       logger.info('Initiating call');
       try {
+        doIfNotDebug(() {
+          Segment.track(
+            eventName: 'call',
+            properties: {
+              'via': origin.toSegmentString(),
+            },
+          );
+        });
+
         emit(InitiatingCall(origin: origin));
         await _call(destination: destination);
         emit(Calling(origin: origin));
