@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,6 +8,7 @@ import 'package:provider/provider.dart';
 import '../../../resources/theme.dart';
 import '../../../resources/localizations.dart';
 
+import '../../../routes.dart';
 import '../../../widgets/transparent_status_bar.dart';
 import 'widgets/key_input.dart';
 import 'widgets/keypad.dart';
@@ -34,20 +37,34 @@ class DialerPage extends StatefulWidget {
   _DialerPageState createState() => _DialerPageState();
 }
 
-class _DialerPageState extends State<DialerPage> {
+// ignore: prefer_mixin
+class _DialerPageState extends State<DialerPage> with WidgetsBindingObserver {
   final _keypadController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.inactive) {
+      final callerState = context.bloc<CallerCubit>().state;
+
+      // We pop the dialer on Android if we're initiating a call.
+      if (Platform.isAndroid && callerState is InitiatingCall) {
+        Navigator.of(context).popUntil(
+          (route) => route.settings.name == Routes.main,
+        );
+      }
+    }
+  }
 
   void _onDialerStateChanged(BuildContext context, DialerState state) {
     if (state.lastCalledDestination != null && _keypadController.text.isEmpty) {
       _keypadController.text = state.lastCalledDestination;
-    }
-  }
-
-  void _onCallerStateChanged(BuildContext context, CallerState state) {
-    if (state is InitiatingCall) {
-      Future.delayed(Duration(milliseconds: 200), () {
-        Navigator.of(context).pop();
-      });
     }
   }
 
@@ -64,8 +81,7 @@ class _DialerPageState extends State<DialerPage> {
         create: (_) => DialerCubit(context.bloc<CallerCubit>()),
         child: BlocListener<DialerCubit, DialerState>(
           listener: _onDialerStateChanged,
-          child: BlocConsumer<CallerCubit, CallerState>(
-            listener: _onCallerStateChanged,
+          child: BlocBuilder<CallerCubit, CallerState>(
             builder: (context, state) {
               final callerCubit = context.bloc<CallerCubit>();
               final dialerCubit = context.bloc<DialerCubit>();
@@ -152,5 +168,12 @@ class _DialerPageState extends State<DialerPage> {
             )
           : body,
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+
+    WidgetsBinding.instance.removeObserver(this);
   }
 }
