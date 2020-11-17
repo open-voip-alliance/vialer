@@ -138,6 +138,8 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
         emit(state.finished());
       } else if (state is! NoPermission) {
         emit(CanCall());
+      } else {
+        _checkCallPermission();
       }
     }
   }
