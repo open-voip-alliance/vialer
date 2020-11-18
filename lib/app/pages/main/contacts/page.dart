@@ -78,7 +78,7 @@ class _ContactPageState extends State<ContactsPage>
     super.didChangeAppLifecycleState(state);
 
     if (state == AppLifecycleState.resumed) {
-      context.bloc<ContactsCubit>().loadContacts();
+      context.read<ContactsCubit>().loadContacts();
     }
   }
 
@@ -93,7 +93,7 @@ class _ContactPageState extends State<ContactsPage>
           ),
           child: BlocBuilder<ContactsCubit, ContactsState>(
             builder: (context, state) {
-              final cubit = context.bloc<ContactsCubit>();
+              final cubit = context.watch<ContactsCubit>();
 
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -227,7 +227,7 @@ class _Placeholder extends StatelessWidget {
     // Needed for auto cast
     final state = this.state;
 
-    final cubit = context.bloc<ContactsCubit>();
+    final cubit = context.watch<ContactsCubit>();
 
     return ConditionalPlaceholder(
       showPlaceholder: state is! ContactsLoaded ||

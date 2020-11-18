@@ -25,7 +25,7 @@ class PermissionPage extends StatelessWidget {
 
   void _onStateChanged(BuildContext context, PermissionState state) {
     if (state is PermissionGranted || state is PermissionDenied) {
-      context.bloc<OnboardingCubit>().forward();
+      context.read<OnboardingCubit>().forward();
 
       if (state is PermissionGranted) {
         onPermissionGranted?.call();
@@ -45,7 +45,7 @@ class PermissionPage extends StatelessWidget {
               icon: icon,
               title: title,
               description: description,
-              onPressed: context.bloc<PermissionCubit>().request,
+              onPressed: context.watch<PermissionCubit>().request,
             ),
           );
         },

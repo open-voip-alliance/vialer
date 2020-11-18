@@ -24,7 +24,7 @@ class _ConnectivityAlertState extends State<ConnectivityAlert> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _showOrHideSnackBar(
         context,
-        context.bloc<ConnectivityCheckerCubit>().state,
+        context.read<ConnectivityCheckerCubit>().state,
       );
     });
   }

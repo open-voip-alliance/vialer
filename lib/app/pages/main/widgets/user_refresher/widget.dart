@@ -40,7 +40,7 @@ class _UserCheckerState extends State<_UserChecker>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    final cubit = context.bloc<UserRefresherCubit>();
+    final cubit = context.read<UserRefresherCubit>();
 
     if (state == AppLifecycleState.resumed) {
       cubit.check();

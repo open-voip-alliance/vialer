@@ -69,7 +69,7 @@ class _DialerPageState extends State<DialerPage> with WidgetsBindingObserver {
   }
 
   void _call(BuildContext context) {
-    context.bloc<DialerCubit>().call(_keypadController.text);
+    context.read<DialerCubit>().call(_keypadController.text);
     _keypadController.clear();
   }
 
@@ -78,13 +78,13 @@ class _DialerPageState extends State<DialerPage> with WidgetsBindingObserver {
     var body = TransparentStatusBar(
       brightness: Brightness.dark,
       child: BlocProvider<DialerCubit>(
-        create: (_) => DialerCubit(context.bloc<CallerCubit>()),
+        create: (context) => DialerCubit(context.read<CallerCubit>()),
         child: BlocListener<DialerCubit, DialerState>(
           listener: _onDialerStateChanged,
           child: BlocBuilder<CallerCubit, CallerState>(
             builder: (context, state) {
-              final callerCubit = context.bloc<CallerCubit>();
-              final dialerCubit = context.bloc<DialerCubit>();
+              final callerCubit = context.watch<CallerCubit>();
+              final dialerCubit = context.watch<DialerCubit>();
               final appName = Provider.of<Brand>(context).appName;
 
               return ConditionalPlaceholder(

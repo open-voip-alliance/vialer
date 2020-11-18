@@ -17,7 +17,7 @@ class HelpUsScreen extends StatelessWidget {
   }) : super(key: key);
 
   void _onDontShowThisAgainChanged(BuildContext context, bool value) {
-    context.bloc<SurveyCubit>().setDontShowThisAgain(value);
+    context.read<SurveyCubit>().setDontShowThisAgain(value);
   }
 
   void _dismiss(BuildContext context) {
@@ -25,7 +25,7 @@ class HelpUsScreen extends StatelessWidget {
   }
 
   void _next(BuildContext context) {
-    context.bloc<SurveyCubit>().next();
+    context.read<SurveyCubit>().next();
   }
 
   @override
@@ -46,7 +46,7 @@ class HelpUsScreen extends StatelessWidget {
                 context.msg.main.survey.helpUs.content(
                   // We don't except the questions length to change after, so we
                   // don't use a BlocBuilder
-                  context.bloc<SurveyCubit>().state.survey.questions.length,
+                  context.read<SurveyCubit>().state.survey.questions.length,
                 ),
               ),
             ),

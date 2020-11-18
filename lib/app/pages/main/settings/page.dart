@@ -125,7 +125,7 @@ class SettingsPage extends StatelessWidget {
             child: BlocConsumer<SettingsCubit, SettingsState>(
               listener: _onStateChanged,
               builder: (context, state) {
-                final cubit = context.bloc<SettingsCubit>();
+                final cubit = context.watch<SettingsCubit>();
 
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -167,7 +167,7 @@ class SettingsPage extends StatelessWidget {
                             width: double.infinity,
                             child: StylizedButton.outline(
                               colored: true,
-                              onPressed: context.bloc<SettingsCubit>().logout,
+                              onPressed: context.watch<SettingsCubit>().logout,
                               child: Text(
                                 logoutButtonText,
                               ),
@@ -211,7 +211,7 @@ class _BuildInfoState extends State<_BuildInfo> {
       final gainedAccess = _tapCount == _tapCountToShowHiddenSettings;
 
       if (gainedAccess) {
-        context.bloc<SettingsCubit>().changeSetting(
+        context.read<SettingsCubit>().changeSetting(
               ShowTroubleshootingSettingsSetting(true),
             );
       }

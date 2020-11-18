@@ -46,7 +46,7 @@ class _CallerState extends State<Caller> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    final cubit = context.bloc<CallerCubit>();
+    final cubit = context.read<CallerCubit>();
 
     if (state == AppLifecycleState.resumed) {
       if (cubit.state is Calling && !_resumedOnceDuringCalling) {
@@ -80,7 +80,7 @@ class _CallerState extends State<Caller> with WidgetsBindingObserver {
         trigger: SurveyTrigger.afterThreeCallThroughCalls,
       );
 
-      context.bloc<CallerCubit>().notifySurveyShown();
+      context.read<CallerCubit>().notifySurveyShown();
     }
 
     if (state is InitiatingCallFailed) {

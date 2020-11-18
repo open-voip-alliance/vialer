@@ -22,7 +22,7 @@ class _WelcomePageState extends State<WelcomePage> {
 
     Timer(
       Duration(milliseconds: 1500),
-      context.bloc<OnboardingCubit>().forward,
+      context.read<OnboardingCubit>().forward,
     );
   }
 

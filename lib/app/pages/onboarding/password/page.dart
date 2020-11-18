@@ -40,13 +40,13 @@ class _PasswordPageState extends State<PasswordPage>
   void _onStateChanged(BuildContext context, PasswordState state) {
     if (state is PasswordChanged) {
       FocusScope.of(context).unfocus();
-      context.bloc<OnboardingCubit>().forward();
+      context.read<OnboardingCubit>().forward();
     }
   }
 
   void _onChangePasswordButtonPressed(BuildContext context) {
     if (_canSubmit) {
-      context.bloc<PasswordCubit>().changePassword(_passwordController.text);
+      context.watch<PasswordCubit>().changePassword(_passwordController.text);
     }
   }
 
@@ -61,7 +61,7 @@ class _PasswordPageState extends State<PasswordPage>
     return Padding(
         padding: Provider.of<EdgeInsets>(context).copyWith(top: 32),
         child: BlocProvider<PasswordCubit>(
-          create: (_) => PasswordCubit(context.bloc<OnboardingCubit>()),
+          create: (context) => PasswordCubit(context.read<OnboardingCubit>()),
           child: BlocConsumer<PasswordCubit, PasswordState>(
             listener: _onStateChanged,
             builder: (context, state) {

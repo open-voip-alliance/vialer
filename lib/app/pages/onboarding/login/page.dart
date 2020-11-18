@@ -81,7 +81,7 @@ class _LoginPageState extends State<LoginPage>
   }
 
   void _onStateChanged(BuildContext context, LoginState state) {
-    final onboarding = context.bloc<OnboardingCubit>();
+    final onboarding = context.read<OnboardingCubit>();
 
     if (state is LoggedIn) {
       if (state is LoggedInAndNeedToChangePassword) {
@@ -230,7 +230,7 @@ class _LoginPageState extends State<LoginPage>
                               onPressed: _canLogin &&
                                       state is! LoggingIn &&
                                       connectivityState is! Disconnected
-                                  ? () => context.bloc<LoginCubit>().login(
+                                  ? () => context.read<LoginCubit>().login(
                                         _usernameController.text,
                                         _passwordController.text,
                                       )

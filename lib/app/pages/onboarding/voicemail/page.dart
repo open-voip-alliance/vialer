@@ -16,7 +16,7 @@ class VoicemailPage extends StatelessWidget {
       icon: Icon(VialerSans.voicemail),
       title: Text(context.msg.onboarding.voicemail.title),
       description: Text(context.msg.onboarding.voicemail.description),
-      onPressed: context.bloc<OnboardingCubit>().forward,
+      onPressed: context.watch<OnboardingCubit>().forward,
     );
   }
 }
