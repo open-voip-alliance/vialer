@@ -1,3 +1,4 @@
+// ignore_for_file: avoid_positional_boolean_parameters
 import 'package:meta/meta.dart';
 import 'package:dartx/dartx.dart';
 
@@ -26,6 +27,7 @@ abstract class Setting<T> {
     RemoteLoggingSetting.preset(),
     ShowDialerConfirmPopupSetting.preset(),
     ShowSurveyDialogSetting.preset(),
+    UseVoipSetting.preset(),
     ShowTroubleshootingSettingsSetting.preset(),
     UseEncryptionSetting.preset(),
     AudioCodecSetting.preset(),
@@ -62,8 +64,10 @@ abstract class Setting<T> {
       return AudioCodecSetting(AudioCodec.fromJson(value));
     } else if (type == (UsePhoneRingtoneSetting).toString()) {
       return UsePhoneRingtoneSetting(value as bool);
+    } else if (type == (UseVoipSetting).toString()) {
+      return UseVoipSetting(value as bool);
     } else {
-      throw UnsupportedError('Setting type does not exist');
+      throw UnsupportedError('Setting type does not exist: $type');
     }
   }
 
@@ -79,7 +83,6 @@ abstract class Setting<T> {
 }
 
 class RemoteLoggingSetting extends Setting<bool> {
-  // ignore: avoid_positional_boolean_parameters
   RemoteLoggingSetting(bool value) : super(value);
 
   RemoteLoggingSetting.preset() : this(false);
@@ -89,7 +92,6 @@ class RemoteLoggingSetting extends Setting<bool> {
 }
 
 class ShowDialerConfirmPopupSetting extends Setting<bool> {
-  // ignore: avoid_positional_boolean_parameters
   ShowDialerConfirmPopupSetting(bool value) : super(value);
 
   ShowDialerConfirmPopupSetting.preset() : this(true);
@@ -100,7 +102,6 @@ class ShowDialerConfirmPopupSetting extends Setting<bool> {
 }
 
 class ShowSurveyDialogSetting extends Setting<bool> {
-  // ignore: avoid_positional_boolean_parameters
   ShowSurveyDialogSetting(bool value) : super(value);
 
   ShowSurveyDialogSetting.preset() : this(true);
@@ -115,11 +116,19 @@ class PhoneNumberSetting extends Setting<String> {
       : super(value, mutable: false, external: true);
 
   @override
-  Setting<String> copyWith({String value}) => PhoneNumberSetting(value);
+  PhoneNumberSetting copyWith({String value}) => PhoneNumberSetting(value);
+}
+
+class UseVoipSetting extends Setting<bool> {
+  UseVoipSetting(bool value) : super(value);
+
+  @override
+  UseVoipSetting copyWith({bool value}) => UseVoipSetting(value);
+
+  UseVoipSetting.preset() : this(true);
 }
 
 class ShowTroubleshootingSettingsSetting extends Setting<bool> {
-  // ignore: avoid_positional_boolean_parameters
   ShowTroubleshootingSettingsSetting(bool value) : super(value);
 
   ShowTroubleshootingSettingsSetting.preset() : this(false);
@@ -130,7 +139,6 @@ class ShowTroubleshootingSettingsSetting extends Setting<bool> {
 }
 
 class UseEncryptionSetting extends Setting<bool> {
-  // ignore: avoid_positional_boolean_parameters
   UseEncryptionSetting(bool value) : super(value);
 
   UseEncryptionSetting.preset() : this(true);
@@ -149,7 +157,6 @@ class AudioCodecSetting extends Setting<AudioCodec> {
 }
 
 class UsePhoneRingtoneSetting extends Setting<bool> {
-  // ignore: avoid_positional_boolean_parameters
   UsePhoneRingtoneSetting(bool value) : super(value);
 
   UsePhoneRingtoneSetting.preset() : this(false);

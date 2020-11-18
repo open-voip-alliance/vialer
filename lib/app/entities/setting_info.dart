@@ -8,6 +8,8 @@ class SettingInfo extends CategorizedInfo<Setting> {
   @override
   final Setting item;
 
+  /// Order _in that category_. _Not_ the order in the settings list
+  /// overall.
   @override
   final int order;
 

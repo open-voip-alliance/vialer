@@ -112,13 +112,15 @@ main:
         remoteLogging:
           title: "Remote logging"
           description: >-
-            Automatically share your app activity with our developers and support team to help resolve issues and errors.
-      info:
+            Automatically share your app activity with our developers and support team to
+            help resolve issues and errors.
+      accountInfo:
         title: "Account information"
         phoneNumber:
           title: "Your business number"
           description: >-
-            This is the phone number others will see on their screen or records when you call them through this app.
+            This is the phone number others will see on their screen or records when you
+            call them through this app.
       advancedSettings:
         title: "Advanced settings"
         troubleshooting:
@@ -140,6 +142,13 @@ main:
           description(String appName): >-
             When enabled $appName will use the ringtone configured on this phone rather than the
             app's ringtone.
+      calling:
+        title: "Calling"
+        useVoip:
+          title: "Use VoIP"
+          description: >-
+            VoIP uses your internet for calling. If VoIP is disabled, call-through will be used, and
+            your regular call carrier service costs apply.
       version: "Version"
       portalLinks:
         title: "VoIP platform"

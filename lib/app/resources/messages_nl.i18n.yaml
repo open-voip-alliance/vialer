@@ -120,13 +120,15 @@ main:
         remoteLogging:
           title: "Remote logging"
           description: >-
-            Deel automatisch je handelingen in de app met onze ontwikkelaars om problemen en fouten op te sporen.
-      info:
+            Deel automatisch je handelingen in de app met onze ontwikkelaars om
+            problemen en fouten op te sporen.
+      accountInfo:
         title: "Account informatie"
         phoneNumber:
           title: "Jouw zakelijke nummer"
           description: >-
-            Dit is het telefoonnummer dat anderen in hun scherm zien of opslaan als je belt via deze app.
+            Dit is het telefoonnummer dat anderen in hun scherm zien of opslaan als
+            je belt via deze app.
       advancedSettings:
         title: "Geavanceerde instellingen"
         troubleshooting:
@@ -148,6 +150,13 @@ main:
           description(String appName): >-
             Wanneer dit aanstaat zal $appName de beltoon van deze telefoon gebruiken, in plaats van
             de beltoon van de app.
+      calling:
+        title: "Bellen"
+        useVoip:
+          title: "Gebruik VoIP"
+          description: >-
+            VoIP gaat via internet en gebruikt je databundel om te bellen. Als VoIP uitstaat, wordt er gebruik gemaakt
+            van call-through. De reguliere abonnementskosten van je 06-nummer zijn dan van toepassing.
       version: "Versie"
       portalLinks:
         title: "VoIP platform"

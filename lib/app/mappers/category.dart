@@ -15,7 +15,7 @@ extension CategoryMapper on Category {
           item: this,
           order: 0,
           icon: VialerSans.user,
-          title: context.msg.main.settings.list.info.title,
+          title: context.msg.main.settings.list.accountInfo.title,
         );
       case Category.audio:
         return CategoryInfo(
@@ -23,6 +23,13 @@ extension CategoryMapper on Category {
           order: 1,
           icon: VialerSans.speaker,
           title: context.msg.main.settings.list.audio.title,
+        );
+      case Category.calling:
+        return CategoryInfo(
+          item: this,
+          order: 2,
+          icon: VialerSans.phone,
+          title: context.msg.main.settings.list.calling.title,
         );
       case Category.debug:
         return CategoryInfo(
@@ -38,7 +45,7 @@ extension CategoryMapper on Category {
           icon: VialerSans.bug,
           title: context.msg.main.settings.list.advancedSettings.title,
         );
-      // Troubleshooting page
+      // Troubleshooting page starts here, so the order starts 0 again.
       case Category.troubleshootingCalling:
         return CategoryInfo(
           item: this,
@@ -65,7 +72,7 @@ extension CategoryMapper on Category {
           title: context.msg.main.settings.list.portalLinks.title,
         );
       default:
-        throw UnsupportedError('Vialer error: Unknown category');
+        throw UnsupportedError('Vialer error: Unknown category: $this');
     }
   }
 }

@@ -125,6 +125,7 @@ class ConfirmPageState extends State<ConfirmPage>
 
   void _pop() {
     context.read<CallerCubit>().notifyCanCall();
+
     Navigator.popUntil(
       context,
       (route) => route.settings.name == Routes.main,
