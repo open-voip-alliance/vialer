@@ -25,7 +25,14 @@ class ShowConfirmPage extends CallerState with CallProcessState {
   @override
   final CallOrigin origin;
 
-  ShowConfirmPage({@required this.destination, @required this.origin});
+  @override
+  final bool useVoip;
+
+  ShowConfirmPage({
+    @required this.destination,
+    @required this.origin,
+    this.useVoip,
+  });
 
   @override
   List<Object> get props => [...super.props, destination];
@@ -35,23 +42,30 @@ class InitiatingCall extends CallerState with CallProcessState {
   @override
   final CallOrigin origin;
 
-  InitiatingCall({@required this.origin});
+  @override
+  final bool useVoip;
+
+  InitiatingCall({@required this.origin, @required this.useVoip});
 
   InitiatingCallFailed failed(CallThroughException exception) =>
-      InitiatingCallFailed(exception, origin: origin);
+      InitiatingCallFailed(exception, origin: origin, useVoip: useVoip);
 
-  Calling calling() => Calling(origin: origin);
+  Calling calling() => Calling(origin: origin, useVoip: useVoip);
 }
 
 class InitiatingCallFailed extends CallerState with CallProcessState {
   @override
   final CallOrigin origin;
 
+  @override
+  final bool useVoip;
+
   final CallThroughException exception;
 
   InitiatingCallFailed(
     this.exception, {
     @required this.origin,
+    @required this.useVoip,
   });
 
   @override
@@ -62,31 +76,53 @@ class Calling extends CallerState with CallProcessState {
   @override
   final CallOrigin origin;
 
-  Calling({@required this.origin});
+  @override
+  final bool useVoip;
 
-  FinishedCalling finished() => FinishedCalling(origin: origin);
+  Calling({
+    @required this.origin,
+    @required this.useVoip,
+  });
+
+  FinishedCalling finished() => FinishedCalling(
+        origin: origin,
+        useVoip: useVoip,
+      );
 
   ShowCallThroughSurvey showCallThroughSurvey() =>
-      ShowCallThroughSurvey(origin: origin);
+      ShowCallThroughSurvey(origin: origin, useVoip: useVoip);
 }
 
 class FinishedCalling extends CanCall with CallProcessState {
   @override
   final CallOrigin origin;
 
-  FinishedCalling({@required this.origin});
+  @override
+  final bool useVoip;
+
+  FinishedCalling({
+    @required this.origin,
+    @required this.useVoip,
+  });
 }
 
 class ShowCallThroughSurvey extends FinishedCalling {
-  ShowCallThroughSurvey({@required CallOrigin origin}) : super(origin: origin);
+  ShowCallThroughSurvey({
+    @required CallOrigin origin,
+    @required bool useVoip,
+  }) : super(origin: origin, useVoip: useVoip);
 
-  ShowedCallThroughSurvey showed() => ShowedCallThroughSurvey(origin: origin);
+  ShowedCallThroughSurvey showed() => ShowedCallThroughSurvey(
+        origin: origin,
+        useVoip: useVoip,
+      );
 }
 
 class ShowedCallThroughSurvey extends FinishedCalling {
   ShowedCallThroughSurvey({
     @required CallOrigin origin,
-  }) : super(origin: origin);
+    @required bool useVoip,
+  }) : super(origin: origin, useVoip: useVoip);
 }
 
 /// Any state that is part of the actual call process:
@@ -94,8 +130,10 @@ class ShowedCallThroughSurvey extends FinishedCalling {
 mixin CallProcessState on CallerState {
   CallOrigin get origin;
 
+  bool get useVoip;
+
   @override
-  List<Object> get props => [...super.props, origin];
+  List<Object> get props => [...super.props, origin, useVoip];
 }
 
 /// Where the call started in the UI: dialer, recents, contacts, etc.

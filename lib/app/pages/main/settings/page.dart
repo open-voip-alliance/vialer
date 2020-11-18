@@ -173,7 +173,6 @@ class SettingsPage extends StatelessWidget {
                               ),
                             ),
                           ),
-                          SizedBox(height: 16),
                         ],
                       ),
                     ),

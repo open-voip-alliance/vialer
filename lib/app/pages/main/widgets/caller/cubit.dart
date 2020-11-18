@@ -19,6 +19,7 @@ import '../../../../../domain/usecases/get_settings.dart';
 import '../../../../../domain/usecases/change_setting.dart';
 import '../../../../../domain/usecases/get_permission_status.dart';
 import '../../../../../domain/usecases/onboarding/request_permission.dart';
+import '../../../../../domain/usecases/get_has_voip.dart';
 
 import '../../../../util/loggable.dart';
 import '../../../../util/debug.dart';
@@ -36,6 +37,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
       IncrementCallThroughCallsCountUseCase();
   final _getPermissionStatus = GetPermissionStatusUseCase();
   final _requestPermission = RequestPermissionUseCase();
+  final _getHasVoip = GetHasVoipUseCase();
 
   Timer _callThroughTimer;
 
@@ -50,20 +52,26 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
   }) async {
     final settings = await _getSettings();
 
-    final shouldShowConfirmPage =
+    // TODO: Using VoIP might be determined by other factors like internet
+    // connection quality in the future.
+    final useVoip = _getHasVoip() && settings.get<UseVoipSetting>().value;
+
+    final shouldShowConfirmPage = !useVoip &&
         settings.get<ShowDialerConfirmPopupSetting>().value &&
-            !showingConfirmPage;
+        !showingConfirmPage;
 
-    // First request to allow to make phone calls,
-    // otherwise don't show the call through page at all.
-    if (Platform.isAndroid) {
-      // Requesting already allowed permissions won't reshow the dialog.
-      final status = await _requestPhonePermission();
+    if (!useVoip) {
+      // First request to allow to make phone calls,
+      // otherwise don't show the call through page at all.
+      if (Platform.isAndroid) {
+        // Requesting already allowed permissions won't reshow the dialog.
+        final status = await _requestPhonePermission();
 
-      if (status == PermissionStatus.denied ||
-          status == PermissionStatus.permanentlyDenied) {
-        _updateWhetherCanCall(status);
-        return;
+        if (status == PermissionStatus.denied ||
+            status == PermissionStatus.permanentlyDenied) {
+          _updateWhetherCanCall(status);
+          return;
+        }
       }
     }
 
@@ -88,41 +96,51 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
           );
         });
 
-        emit(InitiatingCall(origin: origin));
-        await _call(destination: destination);
-        emit(Calling(origin: origin));
+        emit(InitiatingCall(origin: origin, useVoip: useVoip));
+        await _call(destination: destination, useVoip: useVoip);
+        emit(Calling(origin: origin, useVoip: useVoip));
 
-        _callThroughTimer = Timer(
-          AfterThreeCallThroughCallsTrigger.minimumCallDuration,
-          () async {
-            if (state is Calling) {
-              _incrementCallThroughCallsCount();
+        if (!useVoip) {
+          _callThroughTimer = Timer(
+            AfterThreeCallThroughCallsTrigger.minimumCallDuration,
+            () async {
+              if (state is Calling) {
+                _incrementCallThroughCallsCount();
 
-              final showSurvey = settings.get<ShowSurveyDialogSetting>().value;
+                final showSurvey =
+                    settings.get<ShowSurveyDialogSetting>().value;
 
-              const callTriggerCount =
-                  AfterThreeCallThroughCallsTrigger.callCount;
-              const callTriggerIgnoreCount =
-                  AfterThreeCallThroughCallsTrigger.ignoreCallCount;
+                const callTriggerCount =
+                    AfterThreeCallThroughCallsTrigger.callCount;
+                const callTriggerIgnoreCount =
+                    AfterThreeCallThroughCallsTrigger.ignoreCallCount;
 
-              final count = _getCallThroughCallsCount();
-              if (showSurvey && count >= callTriggerCount) {
-                // At 6 calls, we set "Don't show this again"
-                // to true by default. This means that after dismissing the
-                // survey for 3 times, the survey will be shown one last time
-                // with "Don't show this again" enabled by default. So if they
-                // dismiss again, it won't be shown anymore.
-                if (count == callTriggerIgnoreCount) {
-                  await _changeSetting(setting: ShowSurveyDialogSetting(false));
+                final count = _getCallThroughCallsCount();
+                if (showSurvey && count >= callTriggerCount) {
+                  // At 6 calls, we set "Don't show this again"
+                  // to true by default. This means that after dismissing the
+                  // survey for 3 times, the survey will be shown one last time
+                  // with "Don't show this again" enabled by default. So if they
+                  // dismiss again, it won't be shown anymore.
+                  if (count == callTriggerIgnoreCount) {
+                    await _changeSetting(
+                      setting: ShowSurveyDialogSetting(false),
+                    );
+                  }
+
+                  emit(
+                    ShowCallThroughSurvey(
+                      origin: origin,
+                      useVoip: useVoip,
+                    ),
+                  );
                 }
-
-                emit(ShowCallThroughSurvey(origin: origin));
               }
-            }
-          },
-        );
+            },
+          );
+        }
       } on CallThroughException catch (e) {
-        emit(InitiatingCallFailed(e, origin: origin));
+        emit(InitiatingCallFailed(e, origin: origin, useVoip: useVoip));
       }
     }
   }

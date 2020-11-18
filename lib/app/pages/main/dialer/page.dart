@@ -51,7 +51,7 @@ class _DialerPageState extends State<DialerPage> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.inactive) {
-      final callerState = context.bloc<CallerCubit>().state;
+      final callerState = context.read<CallerCubit>().state;
 
       // We pop the dialer on Android if we're initiating a call.
       if (Platform.isAndroid && callerState is InitiatingCall) {
