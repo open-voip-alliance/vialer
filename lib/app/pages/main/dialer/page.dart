@@ -13,6 +13,7 @@ import '../../../widgets/transparent_status_bar.dart';
 import 'widgets/key_input.dart';
 import 'widgets/keypad.dart';
 import '../widgets/caller/state.dart';
+import 'widgets/t9/widget.dart';
 import '../widgets/conditional_placeholder.dart';
 import '../../../widgets/stylized_button.dart';
 import '../widgets/caller.dart';
@@ -117,17 +118,24 @@ class _DialerPageState extends State<DialerPage> with WidgetsBindingObserver {
                 ),
                 child: Column(
                   children: <Widget>[
-                    Material(
-                      elevation: context.isIOS ? 0 : 8,
-                      child: SafeArea(
+                    if (context.isAndroid) ...[
+                      SafeArea(
+                        child:
+                            T9ContactsListView(controller: _keypadController),
+                      ),
+                      Divider(
+                        height: 1,
+                        thickness: 1,
+                      ),
+                    ] else if (context.isIOS)
+                      SafeArea(
                         child: SizedBox(
-                          height: 96,
-                          child: Center(
-                            child: KeyInput(
-                              controller: _keypadController,
-                            ),
-                          ),
+                          height: 95,
                         ),
+                      ),
+                    Material(
+                      child: KeyInput(
+                        controller: _keypadController,
                       ),
                     ),
                     Expanded(
