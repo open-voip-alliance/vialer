@@ -150,14 +150,26 @@ Future<void> _checkAnalysisIfNeeded(Iterable<String> files) async {
 
 Future<void> _runGenerationIfNeeded(
   Iterable<String> files,
-  bool runOnError,
-) async {
+  bool runOnError, {
+  bool firstTry = true,
+}) async {
   if (runOnError) {
     print('Checking if we should run code generation..');
     final analyzeResult = await Process.start('dart', _analyze);
+    final analyzeExitCode = await analyzeResult.exitCode;
 
-    if (await analyzeResult.exitCode == 0) {
+    if (analyzeExitCode == 0) {
       print('No code generation needed!');
+      return;
+      // .packages file is outdated, run flutter pub get.
+    } else if (firstTry && analyzeExitCode == 65) {
+      final pubGet = await Process.start('flutter', ['pub', 'get']);
+      await pubGet.exitCode;
+
+      // Try again.
+      await _runGenerationIfNeeded(files, runOnError, firstTry: false);
+    } else {
+      print('Check failed. Please run the generation command yourself.');
       return;
     }
   } else {
