@@ -32,6 +32,7 @@ dependencies:
   contacts_service: ^0.4.6
 
   characters: ^1.0.0
+  diacritic: ^0.1.1
 
   flutter_widgets: ^0.1.11
 

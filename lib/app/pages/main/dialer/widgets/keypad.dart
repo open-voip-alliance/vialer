@@ -11,7 +11,7 @@ class Keypad extends StatefulWidget {
 
   const Keypad({
     Key key,
-    this.controller,
+    @required this.controller,
     this.onCallButtonPressed,
     this.onDeleteButtonPressed,
   }) : super(key: key);
@@ -21,8 +21,6 @@ class Keypad extends StatefulWidget {
 }
 
 class _KeypadState extends State<Keypad> {
-  TextEditingController _controller;
-
   /// This is necessary to keep track of because if the cursor has been shown
   /// once in a readOnly text field, the cursor will be shown forever, even if
   /// the offset is reported as -1. We need to update the position of the
@@ -47,7 +45,6 @@ class _KeypadState extends State<Keypad> {
   @override
   void initState() {
     super.initState();
-    _controller = widget.controller ?? TextEditingController();
   }
 
   @override
@@ -68,7 +65,7 @@ class _KeypadState extends State<Keypad> {
         [
           ..._buttonValues.entries.map(
             (entry) => ValueButton(
-              controller: _controller,
+              controller: widget.controller,
               cursorShownNotifier: _cursorShownNotifier,
               primaryValue: entry.key,
               secondaryValue: entry.value,
@@ -81,7 +78,7 @@ class _KeypadState extends State<Keypad> {
             onPressed: widget.onCallButtonPressed,
           ),
           _DeleteButton(
-            controller: _controller,
+            controller: widget.controller,
             cursorShownNotifier: _cursorShownNotifier,
             onPressed: widget.onDeleteButtonPressed,
           ),
@@ -105,7 +102,7 @@ class _KeypadGridDelegate extends SliverGridDelegate {
     const itemsPerRow = 3;
     const itemsPerColumn = 5;
 
-    const maxCrossAxisExtent = 164.0;
+    final maxCrossAxisExtent = slim ? 96.0 : 164.0;
     final maxMainAxisExtent = slim ? 104.0 : 96.0;
 
     var crossAxisExtent = min(
@@ -120,20 +117,11 @@ class _KeypadGridDelegate extends SliverGridDelegate {
       maxMainAxisExtent,
     );
 
-    if (slim) {
-      // We use the smallest extent, and we use the same extent for the cross
-      // and main axis, so the children will have square constraints.
-      final smallestExtent = min(crossAxisExtent, mainAxisExtent);
-
-      crossAxisExtent = smallestExtent;
-      mainAxisExtent = smallestExtent;
-    }
-
     // Stride will be the extent, without padding (possibly) substracted.
     final crossAxisStride = crossAxisExtent;
     final mainAxisStride = mainAxisExtent;
 
-    const padding = 4;
+    const padding = 8;
 
     // We add some padding between items if the buttons are smaller than the
     // max size, because in that case there will be no extra space between them.
@@ -435,6 +423,7 @@ class _DeleteButtonState extends State<_DeleteButton> {
   @override
   void dispose() {
     _controller.removeListener(_handleStatusChange);
+
     super.dispose();
   }
 

@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 class KeyInput extends StatelessWidget {
   final TextEditingController controller;
 
-  const KeyInput({Key key, this.controller}) : super(key: key);
+  const KeyInput({Key key, @required this.controller}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
