@@ -1,9 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
-import 'survey_trigger.dart';
-
 import 'question.dart';
+import 'survey_trigger.dart';
 
 class Survey extends Equatable {
   final String id;

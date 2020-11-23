@@ -4,11 +4,10 @@ import 'dart:io';
 import 'package:logging/logging.dart';
 
 import '../../domain/entities/setting.dart';
-
 import '../../domain/repositories/auth.dart';
-import '../../domain/repositories/storage.dart';
-import '../../domain/repositories/setting.dart';
 import '../../domain/repositories/env.dart';
+import '../../domain/repositories/setting.dart';
+import '../../domain/repositories/storage.dart';
 
 class LoggingRepository {
   final AuthRepository _authRepository;

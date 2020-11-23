@@ -1,22 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-
 import 'package:provider/provider.dart';
 import 'package:timezone/data/latest.dart';
 
-import '../domain/entities/brand.dart';
-
 import '../dependency_locator.dart';
-
+import '../domain/entities/brand.dart';
+import 'pages/main/widgets/caller/widget.dart';
 import 'resources/localizations.dart';
 import 'resources/theme.dart';
-
-import 'pages/main/widgets/caller/widget.dart';
-import 'widgets/connectivity_checker/widget.dart';
-
 import 'routes.dart';
-
 import 'sentry.dart' as sentry;
+import 'widgets/connectivity_checker/widget.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

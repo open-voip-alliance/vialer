@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../domain/entities/system_user.dart';
-import '../../domain/entities/setting.dart';
+import '../entities/setting.dart';
+import '../entities/system_user.dart';
 
 class StorageRepository {
   SharedPreferences _preferences;

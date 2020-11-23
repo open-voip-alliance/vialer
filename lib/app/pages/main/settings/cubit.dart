@@ -1,19 +1,15 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../entities/category.dart';
-
 import '../../../../domain/entities/setting.dart';
-
-import '../../../../domain/usecases/get_build_info.dart';
-import '../../../../domain/usecases/get_settings.dart';
-import '../../../../domain/usecases/get_has_voip.dart';
 import '../../../../domain/usecases/change_setting.dart';
-
+import '../../../../domain/usecases/get_build_info.dart';
+import '../../../../domain/usecases/get_has_voip.dart';
+import '../../../../domain/usecases/get_settings.dart';
 import '../../../../domain/usecases/logout.dart';
-
+import '../../../entities/category.dart';
 import '../../../util/loggable.dart';
-
 import 'state.dart';
+
 export 'state.dart';
 
 class SettingsCubit extends Cubit<SettingsState> with Loggable {

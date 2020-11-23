@@ -7,11 +7,9 @@ import 'package:libphonenumber/libphonenumber.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../entities/exceptions/call_through.dart';
-
-import 'storage.dart';
 import 'auth.dart';
-
 import 'services/voipgrid.dart';
+import 'storage.dart';
 
 class CallRepository {
   final VoipgridService _service;

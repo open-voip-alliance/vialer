@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../domain/entities/contact.dart';
-
 import '../page.dart';
-
-import 'subtitle.dart';
 import 'avatar.dart';
+import 'subtitle.dart';
 
 class ContactItem extends StatelessWidget {
   final Contact contact;

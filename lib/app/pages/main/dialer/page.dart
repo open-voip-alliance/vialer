@@ -5,26 +5,22 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
-import '../../../resources/theme.dart';
+import '../../../../domain/entities/brand.dart';
 import '../../../resources/localizations.dart';
-
+import '../../../resources/theme.dart';
 import '../../../routes.dart';
+import '../../../util/conditional_capitalization.dart';
+import '../../../widgets/connectivity_checker.dart';
+import '../../../widgets/stylized_button.dart';
 import '../../../widgets/transparent_status_bar.dart';
+import '../widgets/caller.dart';
+import '../widgets/caller/state.dart';
+import '../widgets/conditional_placeholder.dart';
+import '../widgets/connectivity_alert.dart';
+import 'cubit.dart';
 import 'widgets/key_input.dart';
 import 'widgets/keypad.dart';
-import '../widgets/caller/state.dart';
 import 'widgets/t9/widget.dart';
-import '../widgets/conditional_placeholder.dart';
-import '../../../widgets/stylized_button.dart';
-import '../widgets/caller.dart';
-import '../widgets/connectivity_alert.dart';
-import '../../../widgets/connectivity_checker.dart';
-
-import '../../../../domain/entities/brand.dart';
-
-import '../../../util/conditional_capitalization.dart';
-
-import 'cubit.dart';
 
 class DialerPage extends StatefulWidget {
   final bool isInBottomNavBar;

@@ -1,8 +1,7 @@
 import '../../dependency_locator.dart';
-import '../use_case.dart';
-
-import '../repositories/connectivity_repository.dart';
 import '../connectivity_status.dart';
+import '../repositories/connectivity_repository.dart';
+import '../use_case.dart';
 
 class GetCurrentConnectivityStatusUseCase
     extends FutureUseCase<ConnectivityStatus> {

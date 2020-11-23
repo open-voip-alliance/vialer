@@ -1,11 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../util/loggable.dart';
-
-import '../../../domain/usecases/onboarding/get_steps.dart';
 import '../../../domain/entities/onboarding/step.dart';
-
+import '../../../domain/usecases/onboarding/get_steps.dart';
+import '../../util/loggable.dart';
 import 'state.dart';
+
 export 'state.dart';
 
 class OnboardingCubit extends Cubit<OnboardingState> with Loggable {

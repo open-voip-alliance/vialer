@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../resources/theme.dart';
 import '../../../resources/localizations.dart';
-
+import '../../../resources/theme.dart';
 import '../cubit.dart';
 import '../info/page.dart';
 

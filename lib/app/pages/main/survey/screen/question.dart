@@ -1,15 +1,12 @@
+import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:dartx/dartx.dart';
 
 import '../../../../../domain/entities/survey/question.dart';
 import '../../../../../domain/entities/survey/survey.dart';
-
-import '../../../../resources/theme.dart';
 import '../../../../resources/localizations.dart';
-
+import '../../../../resources/theme.dart';
 import '../../../../util/conditional_capitalization.dart';
-
 import '../cubit.dart';
 
 class QuestionScreen extends StatelessWidget {

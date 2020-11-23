@@ -2,11 +2,11 @@ import 'dart:async';
 import 'dart:io';
 
 import '../../../dependency_locator.dart';
-import '../../use_case.dart';
-import '../../repositories/permission.dart';
+import '../../entities/onboarding/step.dart';
 import '../../entities/permission.dart';
 import '../../entities/permission_status.dart';
-import '../../entities/onboarding/step.dart';
+import '../../repositories/permission.dart';
+import '../../use_case.dart';
 
 class GetOnboardingStepsUseCase extends FutureUseCase<List<OnboardingStep>> {
   final _permissionRepository = dependencyLocator<PermissionRepository>();

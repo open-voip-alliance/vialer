@@ -1,11 +1,10 @@
 import 'package:flutter/widgets.dart';
 
-import '../entities/category_info.dart';
 import '../entities/category.dart';
+import '../entities/category_info.dart';
 import '../entities/setting_route.dart';
-
-import '../resources/theme.dart';
 import '../resources/localizations.dart';
+import '../resources/theme.dart';
 
 extension CategoryMapper on Category {
   CategoryInfo toInfo(BuildContext context) {

@@ -1,16 +1,13 @@
 import 'package:meta/meta.dart';
 
 import '../../dependency_locator.dart';
-
 import '../../domain/entities/brand.dart';
-
+import '../entities/brand.dart';
 import '../entities/exceptions/auto_login.dart';
 import '../entities/exceptions/need_to_change_password.dart';
-import '../entities/brand.dart';
 import '../entities/system_user.dart';
 import '../repositories/storage.dart';
-
-import './services/voipgrid.dart';
+import 'services/voipgrid.dart';
 
 class AuthRepository {
   final StorageRepository _storageRepository;

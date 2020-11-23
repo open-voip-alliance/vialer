@@ -1,21 +1,19 @@
+import 'package:dartx/dartx.dart';
 import 'package:libphonenumber/libphonenumber.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 import 'package:timezone/timezone.dart';
-import 'package:dartx/dartx.dart';
-
-import 'db/database.dart';
-import 'services/voipgrid.dart';
 
 import '../entities/call.dart';
 import '../entities/call_with_contact.dart';
 import '../entities/contact.dart';
 import '../entities/permission.dart';
 import '../entities/permission_status.dart';
-
-import 'permission.dart';
-import 'contact.dart';
 import 'auth.dart';
+import 'contact.dart';
+import 'db/database.dart';
+import 'permission.dart';
+import 'services/voipgrid.dart';
 
 class RecentCallRepository {
   final VoipgridService _service;

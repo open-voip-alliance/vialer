@@ -5,20 +5,15 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../domain/entities/brand.dart';
-
 import '../../../../domain/entities/onboarding/step.dart';
-
-import '../../../resources/theme.dart';
 import '../../../resources/localizations.dart';
-
-import '../../../widgets/stylized_button.dart';
-import '../widgets/stylized_text_field.dart';
-import '../widgets/error.dart';
-import '../../../widgets/connectivity_checker.dart';
-
+import '../../../resources/theme.dart';
 import '../../../util/conditional_capitalization.dart';
-
+import '../../../widgets/connectivity_checker.dart';
+import '../../../widgets/stylized_button.dart';
 import '../cubit.dart';
+import '../widgets/error.dart';
+import '../widgets/stylized_text_field.dart';
 import 'cubit.dart';
 
 class LoginPage extends StatefulWidget {

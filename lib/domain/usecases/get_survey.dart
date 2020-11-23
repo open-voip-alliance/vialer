@@ -2,11 +2,10 @@ import 'dart:async';
 
 import 'package:meta/meta.dart';
 
-import '../use_case.dart';
-
+import '../entities/survey/question.dart';
 import '../entities/survey/survey.dart';
 import '../entities/survey/survey_trigger.dart';
-import '../entities/survey/question.dart';
+import '../use_case.dart';
 
 class GetSurveyUseCase extends FutureUseCase<Survey> {
   @override

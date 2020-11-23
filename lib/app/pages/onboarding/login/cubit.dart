@@ -1,15 +1,13 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_segment/flutter_segment.dart';
+import '../../../../domain/entities/exceptions/need_to_change_password.dart';
 
 import '../../../../domain/usecases/get_current_user.dart';
 import '../../../../domain/usecases/onboarding/login.dart';
-
-import '../../../../domain/entities/exceptions/need_to_change_password.dart';
-
-import '../../../util/loggable.dart';
 import '../../../util/debug.dart';
-
+import '../../../util/loggable.dart';
 import 'state.dart';
+
 export 'state.dart';
 
 class LoginCubit extends Cubit<LoginState> with Loggable {

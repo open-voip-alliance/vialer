@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../cubit.dart';
-import '../../info/page.dart';
 
 import '../../../../../domain/entities/permission.dart';
-
+import '../../cubit.dart';
+import '../../info/page.dart';
 import 'cubit.dart';
 
 class PermissionPage extends StatelessWidget {

@@ -2,29 +2,22 @@ import 'package:flutter/foundation.dart' hide Category;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../webview/page.dart';
-
-import '../../../entities/setting_route_info.dart';
-import '../../../entities/setting_route.dart';
-
 import '../../../../domain/entities/build_info.dart';
 import '../../../../domain/entities/portal_page.dart';
 import '../../../../domain/entities/setting.dart';
-
-import '../../../routes.dart';
-import '../../../widgets/stylized_button.dart';
-import '../widgets/header.dart';
-import 'widgets/settings_list_view.dart';
-
+import '../../../entities/setting_route.dart';
+import '../../../entities/setting_route_info.dart';
 import '../../../resources/localizations.dart';
 import '../../../resources/theme.dart';
-
+import '../../../routes.dart';
 import '../../../util/conditional_capitalization.dart';
+import '../../../widgets/stylized_button.dart';
+import '../../webview/page.dart';
 import '../util/stylized_snack_bar.dart';
-
-import 'sub_page.dart';
-
+import '../widgets/header.dart';
 import 'cubit.dart';
+import 'sub_page.dart';
+import 'widgets/settings_list_view.dart';
 
 class SettingsPage extends StatelessWidget {
   SettingsPage({Key key}) : super(key: key);

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../routes.dart';
-import 'cubit.dart';
 import '../../widgets/splash_screen.dart';
 import '../../widgets/transparent_status_bar.dart';
+import 'cubit.dart';
 
 class SplashPage extends StatelessWidget {
   void _onStateChanged(BuildContext context, SplashState state) {

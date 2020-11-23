@@ -3,10 +3,8 @@ import 'package:intl/intl.dart';
 
 import '../../../../../domain/entities/call.dart';
 import '../../../../../domain/entities/call_with_contact.dart';
-
-import '../../../../resources/theme.dart';
 import '../../../../resources/localizations.dart';
-
+import '../../../../resources/theme.dart';
 import '../../util/color.dart';
 
 enum _Action {

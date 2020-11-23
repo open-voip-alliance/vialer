@@ -2,16 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
-import '../../../resources/theme.dart';
 import '../../../resources/localizations.dart';
-
-import '../../../widgets/stylized_button.dart';
-import '../widgets/stylized_text_field.dart';
-import '../widgets/error.dart';
-
+import '../../../resources/theme.dart';
 import '../../../util/conditional_capitalization.dart';
-
+import '../../../widgets/stylized_button.dart';
 import '../cubit.dart';
+import '../widgets/error.dart';
+import '../widgets/stylized_text_field.dart';
 import 'cubit.dart';
 
 class PasswordPage extends StatefulWidget {

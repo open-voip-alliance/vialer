@@ -1,16 +1,12 @@
 import 'dart:async';
 
 import '../../dependency_locator.dart';
-
+import '../entities/contact.dart';
+import '../entities/exceptions/no_permission.dart';
 import '../entities/permission.dart';
 import '../entities/permission_status.dart';
-import '../entities/exceptions/no_permission.dart';
-
-import '../entities/contact.dart';
-
 import '../repositories/contact.dart';
 import '../repositories/permission.dart';
-
 import '../use_case.dart';
 
 class GetContactsUseCase extends FutureUseCase<List<Contact>> {

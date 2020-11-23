@@ -2,18 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../../domain/entities/contact.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
-
-import '../../../../../domain/entities/contact.dart';
-
 import '../../util/stylized_snack_bar.dart';
-
 import '../../widgets/caller.dart';
+import '../../widgets/header.dart';
 import '../widgets/avatar.dart';
 import '../widgets/subtitle.dart';
-import '../../widgets/header.dart';
-
 import 'cubit.dart';
 
 const _horizontalPadding = 24.0;
