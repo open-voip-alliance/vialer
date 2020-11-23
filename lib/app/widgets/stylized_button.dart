@@ -102,7 +102,7 @@ class StylizedButton extends StatelessWidget {
             if (!disabled && isRaised)
               BoxShadow(
                 color: Colors.black.withOpacity(0.16),
-                offset: Offset(0, 2),
+                offset: const Offset(0, 2),
                 blurRadius: 4,
               ),
           ],
@@ -123,7 +123,7 @@ class StylizedButton extends StatelessWidget {
                   : null,
               borderRadius: shape.borderRadius,
               color: disabled
-                  ? Color(0xFFF5F5F5)
+                  ? const Color(0xFFF5F5F5)
                   : isRaised
                       ? (colored ? color : Colors.white)
                       : Colors.transparent,
@@ -136,7 +136,7 @@ class StylizedButton extends StatelessWidget {
                     : _bottomBorderWidth - _borderWidth,
                 color: isOutline
                     ? (colored ? color : Colors.white)
-                    : (colored ? shadeColor : Color(0xFFE0E0E0)),
+                    : (colored ? shadeColor : const Color(0xFFE0E0E0)),
               ),
               child: Material(
                 color: Colors.transparent,
@@ -154,7 +154,7 @@ class StylizedButton extends StatelessWidget {
                         duration: _duration,
                         curve: _curve,
                         style: TextStyle(
-                          color: disabled ? Color(0xFF555555) : textColor,
+                          color: disabled ? const Color(0xFF555555) : textColor,
                           fontWeight: FontWeight.bold,
                         ),
                         child: child,

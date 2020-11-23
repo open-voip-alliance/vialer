@@ -21,7 +21,7 @@ class _WelcomePageState extends State<WelcomePage> {
     super.didChangeDependencies();
 
     Timer(
-      Duration(milliseconds: 1500),
+      const Duration(milliseconds: 1500),
       context.read<OnboardingCubit>().forward,
     );
   }
@@ -37,14 +37,14 @@ class _WelcomePageState extends State<WelcomePage> {
               textAlign: TextAlign.center,
               text: TextSpan(
                 text: '${context.msg.onboarding.welcome.title}\n',
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 40,
                   fontWeight: FontWeight.w500,
                 ),
                 children: [
                   TextSpan(
                     text: state.user?.firstName ?? '',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 50,
                     ),
                   ),

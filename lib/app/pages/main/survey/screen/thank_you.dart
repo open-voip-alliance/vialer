@@ -25,7 +25,7 @@ class ThankYouScreen extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Padding(
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
@@ -36,7 +36,7 @@ class ThankYouScreen extends StatelessWidget {
             Align(
               alignment: Alignment.centerRight,
               child: Padding(
-                padding: EdgeInsets.only(right: 6),
+                padding: const EdgeInsets.only(right: 6),
                 child: FlatButton(
                   onPressed: () => _dismiss(context),
                   textColor: context.brandTheme.primary,

@@ -40,7 +40,7 @@ class HelpUsScreen extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Padding(
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               child: Text(
                 context.msg.main.survey.helpUs.content(
                   // We don't except the questions length to change after, so we

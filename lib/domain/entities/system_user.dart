@@ -27,7 +27,7 @@ class SystemUser {
         (p) => p.isNotEmpty,
       );
 
-  SystemUser({
+  const SystemUser({
     this.uuid,
     this.email,
     this.firstName,

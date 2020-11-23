@@ -28,22 +28,22 @@ class InfoPage extends StatelessWidget {
       ),
       child: Column(
         children: <Widget>[
-          SizedBox(height: 64),
+          const SizedBox(height: 64),
           IconTheme(
             data: IconTheme.of(context).copyWith(size: 54),
             child: icon,
           ),
-          SizedBox(height: 24),
+          const SizedBox(height: 24),
           DefaultTextStyle(
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 40,
               fontWeight: FontWeight.bold,
             ),
             child: title,
           ),
-          SizedBox(height: 24),
+          const SizedBox(height: 24),
           DefaultTextStyle(
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 18,
             ),
             child: description,

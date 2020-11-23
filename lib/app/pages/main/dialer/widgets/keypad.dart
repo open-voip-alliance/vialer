@@ -54,7 +54,7 @@ class _KeypadState extends State<Keypad> {
     return GridView.custom(
       padding: const EdgeInsets.only(bottom: bottomPadding),
       shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       gridDelegate: _KeypadGridDelegate(
         bottomPadding: bottomPadding,
         // Because of the iOS design, we want a slimmer keypad. On Android we
@@ -306,7 +306,7 @@ class _ValueButtonState extends State<ValueButton> {
   Widget build(BuildContext context) {
     return Center(
       child: ConstrainedBox(
-        constraints: BoxConstraints(
+        constraints: const BoxConstraints(
           maxWidth: ValueButton.maxSize,
           maxHeight: ValueButton.maxSize,
         ),
@@ -315,7 +315,7 @@ class _ValueButtonState extends State<ValueButton> {
             return _KeypadButton(
               child: _InkWellOrResponse(
                 isResponse: !context.isIOS,
-                customBorder: CircleBorder(),
+                customBorder: const CircleBorder(),
                 enableFeedback: true,
                 onTapDown: _enterValue,
                 onLongPress: widget.replaceWithSecondaryValueOnLongPress
@@ -385,7 +385,7 @@ class _CallButton extends StatelessWidget {
               ? context.brandTheme.green1
               : context.brandTheme.grey1,
           onPressed: onPressed,
-          child: Icon(VialerSans.phone, size: 32),
+          child: const Icon(VialerSans.phone, size: 32),
         ),
       ),
     );
@@ -488,7 +488,7 @@ class _DeleteButtonState extends State<_DeleteButton> {
   Widget build(BuildContext context) {
     return AnimatedOpacity(
       opacity: _visible ? 1 : 0,
-      duration: Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 300),
       curve: Curves.decelerate,
       child: _KeypadButton(
         borderOnIos: false,

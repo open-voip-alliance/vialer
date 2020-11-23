@@ -41,9 +41,9 @@ class _VialerLocalizationsDelegate
 Messages _messagesFromLocale(Locale locale) {
   switch (locale.languageCode) {
     case 'en':
-      return Messages();
+      return const Messages();
     case 'nl':
-      return Messages_nl();
+      return const Messages_nl();
     default:
       throw UnsupportedError('Unsupported locale');
   }

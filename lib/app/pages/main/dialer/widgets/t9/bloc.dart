@@ -45,7 +45,7 @@ class T9ContactsBloc extends Bloc<T9ContactsEvent, T9ContactsState> {
 
     final debounceStream = events
         .where((event) => event is FilterT9Contacts)
-        .debounceTime(Duration(milliseconds: 200));
+        .debounceTime(const Duration(milliseconds: 200));
 
     return super.transformEvents(
       MergeStream([nonDebounceStream, debounceStream]),

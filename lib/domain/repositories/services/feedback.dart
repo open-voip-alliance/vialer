@@ -10,7 +10,7 @@ abstract class FeedbackService extends ChopperService {
     return _$FeedbackService(
       ChopperClient(
         baseUrl: 'https://feedback.spindle.dev/',
-        converter: JsonConverter(),
+        converter: const JsonConverter(),
       ),
     );
   }

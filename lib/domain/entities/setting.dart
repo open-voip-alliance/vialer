@@ -17,13 +17,13 @@ abstract class Setting<T> {
   /// not our local storage (the portal, VoIP library, etc.)
   final bool external;
 
-  Setting(
+  const Setting(
     this.value, {
     this.mutable = true,
     this.external = false,
   });
 
-  static final List<Setting> presets = [
+  static const List<Setting> presets = [
     RemoteLoggingSetting.preset(),
     ShowDialerConfirmPopupSetting.preset(),
     ShowSurveyDialogSetting.preset(),
@@ -83,18 +83,18 @@ abstract class Setting<T> {
 }
 
 class RemoteLoggingSetting extends Setting<bool> {
-  RemoteLoggingSetting(bool value) : super(value);
+  const RemoteLoggingSetting(bool value) : super(value);
 
-  RemoteLoggingSetting.preset() : this(false);
+  const RemoteLoggingSetting.preset() : this(false);
 
   @override
   RemoteLoggingSetting copyWith({bool value}) => RemoteLoggingSetting(value);
 }
 
 class ShowDialerConfirmPopupSetting extends Setting<bool> {
-  ShowDialerConfirmPopupSetting(bool value) : super(value);
+  const ShowDialerConfirmPopupSetting(bool value) : super(value);
 
-  ShowDialerConfirmPopupSetting.preset() : this(true);
+  const ShowDialerConfirmPopupSetting.preset() : this(true);
 
   @override
   ShowDialerConfirmPopupSetting copyWith({bool value}) =>
@@ -102,9 +102,9 @@ class ShowDialerConfirmPopupSetting extends Setting<bool> {
 }
 
 class ShowSurveyDialogSetting extends Setting<bool> {
-  ShowSurveyDialogSetting(bool value) : super(value);
+  const ShowSurveyDialogSetting(bool value) : super(value);
 
-  ShowSurveyDialogSetting.preset() : this(true);
+  const ShowSurveyDialogSetting.preset() : this(true);
 
   @override
   ShowSurveyDialogSetting copyWith({bool value}) =>
@@ -112,7 +112,7 @@ class ShowSurveyDialogSetting extends Setting<bool> {
 }
 
 class PhoneNumberSetting extends Setting<String> {
-  PhoneNumberSetting(String value)
+  const PhoneNumberSetting(String value)
       : super(value, mutable: false, external: true);
 
   @override
@@ -120,18 +120,18 @@ class PhoneNumberSetting extends Setting<String> {
 }
 
 class UseVoipSetting extends Setting<bool> {
-  UseVoipSetting(bool value) : super(value);
+  const UseVoipSetting(bool value) : super(value);
+
+  const UseVoipSetting.preset() : this(true);
 
   @override
   UseVoipSetting copyWith({bool value}) => UseVoipSetting(value);
-
-  UseVoipSetting.preset() : this(true);
 }
 
 class ShowTroubleshootingSettingsSetting extends Setting<bool> {
-  ShowTroubleshootingSettingsSetting(bool value) : super(value);
+  const ShowTroubleshootingSettingsSetting(bool value) : super(value);
 
-  ShowTroubleshootingSettingsSetting.preset() : this(false);
+  const ShowTroubleshootingSettingsSetting.preset() : this(false);
 
   @override
   ShowTroubleshootingSettingsSetting copyWith({bool value}) =>
@@ -139,27 +139,27 @@ class ShowTroubleshootingSettingsSetting extends Setting<bool> {
 }
 
 class UseEncryptionSetting extends Setting<bool> {
-  UseEncryptionSetting(bool value) : super(value);
+  const UseEncryptionSetting(bool value) : super(value);
 
-  UseEncryptionSetting.preset() : this(true);
+  const UseEncryptionSetting.preset() : this(true);
 
   @override
   UseEncryptionSetting copyWith({bool value}) => UseEncryptionSetting(value);
 }
 
 class AudioCodecSetting extends Setting<AudioCodec> {
-  AudioCodecSetting(AudioCodec value) : super(value);
+  const AudioCodecSetting(AudioCodec value) : super(value);
 
-  AudioCodecSetting.preset() : this(AudioCodec.opus);
+  const AudioCodecSetting.preset() : this(AudioCodec.opus);
 
   @override
   AudioCodecSetting copyWith({AudioCodec value}) => AudioCodecSetting(value);
 }
 
 class UsePhoneRingtoneSetting extends Setting<bool> {
-  UsePhoneRingtoneSetting(bool value) : super(value);
+  const UsePhoneRingtoneSetting(bool value) : super(value);
 
-  UsePhoneRingtoneSetting.preset() : this(false);
+  const UsePhoneRingtoneSetting.preset() : this(false);
 
   @override
   UsePhoneRingtoneSetting copyWith({bool value}) =>

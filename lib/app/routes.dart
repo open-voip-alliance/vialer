@@ -20,7 +20,7 @@ abstract class Routes {
     Routes.root: (_) => SplashPage(),
     Routes.onboarding: (_) => OnboardingPage(),
     Routes.main: (_) => MainPage(),
-    Routes.dialer: (_) => DialerPage(isInBottomNavBar: false),
+    Routes.dialer: (_) => const DialerPage(isInBottomNavBar: false),
     Routes.feedback: (_) => FeedbackPage(),
   };
 }

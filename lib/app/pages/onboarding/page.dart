@@ -34,9 +34,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
     _allPages = {
       OnboardingStep.login: (_) => LoginPage(),
       OnboardingStep.password: (_) => PasswordPage(),
-      OnboardingStep.callPermission: (_) => CallPermissionPage(),
-      OnboardingStep.contactsPermission: (_) => ContactsPermissionPage(),
-      OnboardingStep.voicemail: (_) => VoicemailPage(),
+      OnboardingStep.callPermission: (_) => const CallPermissionPage(),
+      OnboardingStep.contactsPermission: (_) => const ContactsPermissionPage(),
+      OnboardingStep.voicemail: (_) => const VoicemailPage(),
       OnboardingStep.welcome: (_) => WelcomePage(),
     };
 
@@ -90,9 +90,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
               return WillPopScope(
                 onWillPop: () => _backward(context),
                 child: DefaultTextStyle(
-                  style: TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.white),
                   child: IconTheme(
-                    data: IconThemeData(color: Colors.white),
+                    data: const IconThemeData(color: Colors.white),
                     child: PageView(
                       controller: _pageController,
                       children: _currentPages.entries.map((entry) {
@@ -107,7 +107,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                           ),
                         );
                       }).toList(),
-                      physics: NeverScrollableScrollPhysics(),
+                      physics: const NeverScrollableScrollPhysics(),
                     ),
                   ),
                 ),

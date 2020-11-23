@@ -154,7 +154,7 @@ class _LoginPageState extends State<LoginPage>
                     Text(
                       context.msg.onboarding.login.title,
                       textAlign: TextAlign.center,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 26,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
@@ -191,13 +191,13 @@ class _LoginPageState extends State<LoginPage>
                     hasError: state is LoginFailed,
                     autofillHints: [AutofillHints.email],
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   StylizedTextField(
                     controller: _passwordController,
                     prefixIcon: VialerSans.lockOn,
                     suffix: IconButton(
                       icon: AnimatedSwitcher(
-                        duration: Duration(milliseconds: 200),
+                        duration: const Duration(milliseconds: 200),
                         switchInCurve: Curves.decelerate,
                         switchOutCurve: Curves.decelerate.flipped,
                         child: Icon(
@@ -213,7 +213,7 @@ class _LoginPageState extends State<LoginPage>
                     hasError: state is LoginFailed,
                     autofillHints: [AutofillHints.password],
                   ),
-                  SizedBox(height: 32),
+                  const SizedBox(height: 32),
                   Column(
                     children: <Widget>[
                       SizedBox(
@@ -233,7 +233,7 @@ class _LoginPageState extends State<LoginPage>
                               child: AnimatedSwitcher(
                                 switchInCurve: Curves.decelerate,
                                 switchOutCurve: Curves.decelerate.flipped,
-                                duration: Duration(milliseconds: 200),
+                                duration: const Duration(milliseconds: 200),
                                 child: state is! LoggingIn
                                     ? Text(
                                         context.msg.onboarding.button.login
@@ -254,7 +254,7 @@ class _LoginPageState extends State<LoginPage>
                                               ),
                                             ),
                                           ),
-                                          SizedBox(width: 8),
+                                          const SizedBox(width: 8),
                                           Flexible(
                                             child: Text(
                                               context.msg.onboarding.login
@@ -270,7 +270,7 @@ class _LoginPageState extends State<LoginPage>
                           },
                         ),
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       SizedBox(
                         width: double.infinity,
                         child: StylizedButton.outline(

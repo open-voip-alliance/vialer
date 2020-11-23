@@ -15,11 +15,11 @@ class KeyInput extends StatelessWidget {
       focusNode: _NeverFocusNode(),
       inputFormatters: [_KeyInputFormatter()],
       showCursor: true,
-      decoration: InputDecoration(
+      decoration: const InputDecoration(
         border: InputBorder.none,
       ),
       textAlign: TextAlign.center,
-      style: TextStyle(
+      style: const TextStyle(
         fontSize: 32,
       ),
     );

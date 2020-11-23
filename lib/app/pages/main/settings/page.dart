@@ -32,7 +32,7 @@ class SettingsPage extends StatelessWidget {
     if (sent) {
       showSnackBar(
         context,
-        icon: Icon(VialerSans.check),
+        icon: const Icon(VialerSans.check),
         label: Text(context.msg.main.settings.feedback.snackBar),
       );
     }
@@ -155,7 +155,7 @@ class SettingsPage extends StatelessWidget {
                               ),
                             ),
                           ),
-                          SizedBox(height: 16),
+                          const SizedBox(height: 16),
                           SizedBox(
                             width: double.infinity,
                             child: StylizedButton.outline(
@@ -204,7 +204,7 @@ class _BuildInfoState extends State<_BuildInfo> {
 
       if (gainedAccess) {
         context.read<SettingsCubit>().changeSetting(
-              ShowTroubleshootingSettingsSetting(true),
+              const ShowTroubleshootingSettingsSetting(true),
             );
       }
 

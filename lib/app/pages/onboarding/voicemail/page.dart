@@ -12,7 +12,7 @@ class VoicemailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InfoPage(
-      icon: Icon(VialerSans.voicemail),
+      icon: const Icon(VialerSans.voicemail),
       title: Text(context.msg.onboarding.voicemail.title),
       description: Text(context.msg.onboarding.voicemail.description),
       onPressed: context.watch<OnboardingCubit>().forward,

@@ -15,7 +15,7 @@ class BigHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.only(
+      borderRadius: const BorderRadius.only(
         topLeft: Radius.circular(4),
         topRight: Radius.circular(4),
       ),
@@ -27,47 +27,47 @@ class BigHeader extends StatelessWidget {
         child: Stack(
           children: [
             _HeaderBackgroundIcon.small(
-              alignment: Alignment(-1.025, -1.2),
+              alignment: const Alignment(-1.025, -1.2),
               child: icon,
             ),
             _HeaderBackgroundIcon.medium(
-              alignment: Alignment(-0.95, 1),
+              alignment: const Alignment(-0.95, 1),
               child: icon,
             ),
             _HeaderBackgroundIcon.large(
-              alignment: Alignment(-0.6, -1),
+              alignment: const Alignment(-0.6, -1),
               child: icon,
             ),
             _HeaderBackgroundIcon.small(
-              alignment: Alignment(-0.3, 0.9),
+              alignment: const Alignment(-0.3, 0.9),
               child: icon,
             ),
             _HeaderBackgroundIcon.small(
-              alignment: Alignment(0, -0.95),
+              alignment: const Alignment(0, -0.95),
               child: icon,
             ),
             _HeaderBackgroundIcon.medium(
-              alignment: Alignment(0.4, -0.1),
+              alignment: const Alignment(0.4, -0.1),
               child: icon,
             ),
             _HeaderBackgroundIcon.small(
-              alignment: Alignment(0.1, 1.5),
+              alignment: const Alignment(0.1, 1.5),
               child: icon,
             ),
             _HeaderBackgroundIcon.medium(
-              alignment: Alignment(0.4, -0.1),
+              alignment: const Alignment(0.4, -0.1),
               child: icon,
             ),
             _HeaderBackgroundIcon.small(
-              alignment: Alignment(0.65, 1.2),
+              alignment: const Alignment(0.65, 1.2),
               child: icon,
             ),
             _HeaderBackgroundIcon.large(
-              alignment: Alignment(0.9, -1.75),
+              alignment: const Alignment(0.9, -1.75),
               child: icon,
             ),
             _HeaderBackgroundIcon.small(
-              alignment: Alignment(1.05, 0.7),
+              alignment: const Alignment(1.05, 0.7),
               child: icon,
             ),
             Container(
@@ -83,13 +83,16 @@ class BigHeader extends StatelessWidget {
                 ),
               ),
               child: DefaultTextStyle.merge(
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 16,
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                 ),
                 child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 24,
+                    horizontal: 16,
+                  ),
                   child: text,
                 ),
               ),

@@ -62,12 +62,12 @@ class _FeedbackPageState extends State<FeedbackPage> {
                           color: context.brandTheme.grey4,
                         ),
                       ),
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    Divider(height: 1),
+                    const Divider(height: 1),
                     Expanded(
                       child: TextField(
                         controller: _textController,

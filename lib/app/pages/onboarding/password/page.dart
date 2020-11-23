@@ -67,13 +67,13 @@ class _PasswordPageState extends State<PasswordPage>
                   Text(
                     context.msg.onboarding.password.title,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 26,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   ErrorAlert(
                     visible: state is PasswordNotAllowed,
                     child: Text(context.msg.onboarding.password.error),
@@ -84,7 +84,7 @@ class _PasswordPageState extends State<PasswordPage>
                     obscureText: _hidePassword,
                     hasError: state is PasswordNotAllowed,
                     suffix: AnimatedSwitcher(
-                      duration: Duration(milliseconds: 200),
+                      duration: const Duration(milliseconds: 200),
                       switchInCurve: Curves.decelerate,
                       switchOutCurve: Curves.decelerate.flipped,
                       child: IconButton(
@@ -96,17 +96,17 @@ class _PasswordPageState extends State<PasswordPage>
                       ),
                     ),
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   Text(
                     context.msg.onboarding.password.requirements,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
                   ),
-                  SizedBox(height: 24),
+                  const SizedBox(height: 24),
                   SizedBox(
                     width: double.infinity,
                     child: StylizedButton.raised(
