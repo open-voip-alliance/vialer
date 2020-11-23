@@ -161,8 +161,8 @@ Future<void> _runGenerationIfNeeded(
     if (analyzeExitCode == 0) {
       print('No code generation needed!');
       return;
-      // .packages file is outdated, run flutter pub get.
-    } else if (firstTry && analyzeExitCode == 65) {
+      // .packages file is possibly outdated, run flutter pub get.
+    } else if (firstTry && analyzeExitCode != 0) {
       final pubGet = await Process.start('flutter', ['pub', 'get']);
       await pubGet.exitCode;
 
