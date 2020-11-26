@@ -1,37 +1,77 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../entities/setting_route_info.dart';
+import '../../../../domain/entities/setting.dart';
+import '../../../resources/localizations.dart';
 import 'cubit.dart';
-import 'widgets/settings_list_view.dart';
+import 'widgets/tile.dart';
+import 'widgets/tile_category.dart';
+
+typedef MultiChildStateBuilder = List<Widget> Function(SettingsState state);
 
 class SettingsSubPage extends StatelessWidget {
   final SettingsCubit cubit;
-  final SettingRouteInfo routeInfo;
+  final Widget title;
+  final MultiChildStateBuilder children;
 
   const SettingsSubPage({
     Key key,
     @required this.cubit,
-    @required this.routeInfo,
+    @required this.title,
+    @required this.children,
   }) : super(key: key);
+
+  static Widget troubleshooting({@required SettingsCubit cubit}) {
+    return Builder(
+      builder: (context) {
+        return SettingsSubPage(
+          cubit: cubit,
+          title: Text(
+            context
+                .msg.main.settings.list.advancedSettings.troubleshooting.title,
+          ),
+          children: (state) {
+            final settings = state.settings;
+
+            return [
+              SettingTileCategory.troubleshootingCalling(
+                children: [
+                  SettingTile.useEncryption(
+                    settings.get<UseEncryptionSetting>(),
+                  ),
+                ],
+              ),
+              SettingTileCategory.troubleshootingAudio(
+                children: [
+                  SettingTile.audioCodec(
+                    settings.get<AudioCodecSetting>(),
+                  ),
+                ],
+              ),
+            ];
+          },
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(routeInfo.title),
+        title: title,
         centerTitle: true,
       ),
-      body: BlocBuilder<SettingsCubit, SettingsState>(
-        cubit: cubit,
-        builder: (context, state) {
-          return SettingsListView(
-            route: routeInfo.item,
-            settings: state.settings,
-            allowedCategories: state.allowedCategories,
-            onSettingChanged: cubit.changeSetting,
-          );
-        },
+      body: BlocProvider.value(
+        value: cubit,
+        child: BlocBuilder<SettingsCubit, SettingsState>(
+          builder: (context, state) {
+            return ListView(
+              padding: const EdgeInsets.only(top: 8),
+              children: children(state),
+            );
+          },
+        ),
       ),
     );
   }
