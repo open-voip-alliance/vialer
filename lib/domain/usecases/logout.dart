@@ -1,10 +1,20 @@
 import '../../dependency_locator.dart';
+import '../entities/setting.dart';
 import '../repositories/storage.dart';
 import '../use_case.dart';
 
-class LogoutUseCase extends FutureUseCase<void> {
+class LogoutUseCase extends UseCase<void> {
   final _storageRepository = dependencyLocator<StorageRepository>();
 
   @override
-  Future<void> call() => _storageRepository.clear();
+  void call() {
+    final remoteLoggingSetting =
+        _storageRepository.settings.get<RemoteLoggingSetting>();
+
+    _storageRepository
+      ..clear()
+      ..settings = [
+        remoteLoggingSetting,
+      ];
+  }
 }

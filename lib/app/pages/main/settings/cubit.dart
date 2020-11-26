@@ -49,7 +49,7 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
 
   Future<void> logout() async {
     logger.info('Logging out');
-    await _logout();
+    _logout();
 
     emit(LoggedOut());
 
