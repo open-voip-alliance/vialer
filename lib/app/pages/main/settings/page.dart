@@ -3,21 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../domain/entities/build_info.dart';
-import '../../../../domain/entities/portal_page.dart';
 import '../../../../domain/entities/setting.dart';
-import '../../../entities/setting_route.dart';
-import '../../../entities/setting_route_info.dart';
 import '../../../resources/localizations.dart';
 import '../../../resources/theme.dart';
 import '../../../routes.dart';
 import '../../../util/conditional_capitalization.dart';
 import '../../../widgets/stylized_button.dart';
-import '../../webview/page.dart';
 import '../util/stylized_snack_bar.dart';
 import '../widgets/header.dart';
 import 'cubit.dart';
-import 'sub_page.dart';
-import 'widgets/settings_list_view.dart';
+import 'widgets/link_tile.dart';
+import 'widgets/tile.dart';
+import 'widgets/tile_category.dart';
 
 class SettingsPage extends StatelessWidget {
   SettingsPage({Key key}) : super(key: key);
@@ -48,57 +45,6 @@ class SettingsPage extends StatelessWidget {
     }
   }
 
-  void _goToWebView(
-    BuildContext context,
-    SettingRouteInfo routeInfo,
-  ) {
-    PortalPage page;
-    switch (routeInfo.item) {
-      case SettingRoute.webViewDialplan:
-        page = PortalPage.dialPlan;
-        break;
-      case SettingRoute.webViewStats:
-        page = PortalPage.stats;
-        break;
-      default:
-        throw UnsupportedError(
-          'Vialer error: Unsupported routeInfo for webview',
-        );
-        break;
-    }
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => PortalWebViewPage(page),
-        fullscreenDialog: true,
-      ),
-    );
-  }
-
-  void _goToSubPage(
-    BuildContext context,
-    SettingsCubit cubit,
-    SettingRouteInfo routeInfo,
-  ) {
-    if ([
-      SettingRoute.webViewDialplan,
-      SettingRoute.webViewStats,
-    ].contains(routeInfo.item)) {
-      _goToWebView(context, routeInfo);
-    } else {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) {
-          return SettingsSubPage(
-            cubit: cubit,
-            routeInfo: routeInfo,
-          );
-        }),
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final sendFeedbackButtonText = context
@@ -118,7 +64,9 @@ class SettingsPage extends StatelessWidget {
             child: BlocConsumer<SettingsCubit, SettingsState>(
               listener: _onStateChanged,
               builder: (context, state) {
-                final cubit = context.watch<SettingsCubit>();
+                final settings = state.settings;
+                final hasVoip = state.hasVoip;
+                final showTroubleshooting = state.showTroubleshooting;
 
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -127,48 +75,92 @@ class SettingsPage extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: Header(context.msg.main.settings.title),
                     ),
-                    Expanded(
-                      child: SettingsListView(
-                        route: SettingRoute.main,
-                        settings: state.settings,
-                        allowedCategories: state.allowedCategories,
-                        onSettingChanged: cubit.changeSetting,
-                        onRouteLinkTapped: (info) =>
-                            _goToSubPage(context, cubit, info),
-                        children: [
-                          if (state.buildInfo != null)
-                            _BuildInfo(state.buildInfo)
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 48),
-                      child: Column(
-                        children: <Widget>[
-                          SizedBox(
-                            width: double.infinity,
-                            child: StylizedButton.raised(
-                              colored: true,
-                              onPressed: () => _goToFeedbackPage(context),
-                              child: Text(
-                                sendFeedbackButtonText,
+                    if (!state.isLoading)
+                      Expanded(
+                        child: ListView(
+                          padding: const EdgeInsets.only(top: 8),
+                          children: [
+                            SettingTileCategory.accountInfo(
+                              children: [
+                                SettingTile.phoneNumber(
+                                  settings.get<PhoneNumberSetting>(),
+                                ),
+                              ],
+                            ),
+                            if (hasVoip) ...[
+                              SettingTileCategory.audio(
+                                children: [
+                                  SettingTile.usePhoneRingtone(
+                                    settings.get<UsePhoneRingtoneSetting>(),
+                                  ),
+                                ],
+                              ),
+                              SettingTileCategory.calling(
+                                children: [
+                                  SettingTile.useVoip(
+                                    settings.get<UseVoipSetting>(),
+                                  ),
+                                ],
+                              ),
+                              SettingTileCategory.portalLinks(
+                                children: [
+                                  SettingLinkTile.dialPlan(),
+                                  SettingLinkTile.stats(),
+                                ],
+                              ),
+                            ],
+                            SettingTileCategory.debug(
+                              children: [
+                                SettingTile.remoteLogging(
+                                  settings.get<RemoteLoggingSetting>(),
+                                ),
+                              ],
+                            ),
+                            // Show advanced settings only if allowed.
+                            if (hasVoip && showTroubleshooting)
+                              SettingTileCategory.advancedSettings(
+                                children: [
+                                  SettingLinkTile.troubleshooting(),
+                                ],
+                              ),
+                            if (state.buildInfo != null)
+                              _BuildInfo(state.buildInfo),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 48,
+                              ),
+                              child: Column(
+                                children: <Widget>[
+                                  SizedBox(
+                                    width: double.infinity,
+                                    child: StylizedButton.raised(
+                                      colored: true,
+                                      onPressed: () =>
+                                          _goToFeedbackPage(context),
+                                      child: Text(
+                                        sendFeedbackButtonText,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 16),
+                                  SizedBox(
+                                    width: double.infinity,
+                                    child: StylizedButton.outline(
+                                      colored: true,
+                                      onPressed:
+                                          context.watch<SettingsCubit>().logout,
+                                      child: Text(
+                                        logoutButtonText,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 16),
+                                ],
                               ),
                             ),
-                          ),
-                          const SizedBox(height: 16),
-                          SizedBox(
-                            width: double.infinity,
-                            child: StylizedButton.outline(
-                              colored: true,
-                              onPressed: context.watch<SettingsCubit>().logout,
-                              child: Text(
-                                logoutButtonText,
-                              ),
-                            ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
                   ],
                 );
               },

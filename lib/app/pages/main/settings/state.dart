@@ -2,18 +2,21 @@ import 'package:equatable/equatable.dart';
 
 import '../../../../domain/entities/build_info.dart';
 import '../../../../domain/entities/setting.dart';
-import '../../../entities/category.dart';
 
 class SettingsState extends Equatable {
   final List<Setting> settings;
   final BuildInfo buildInfo;
-  final List<Category> allowedCategories;
+  final bool hasVoip;
+  final bool showTroubleshooting;
+
+  bool get isLoading => settings.isEmpty;
 
   SettingsState({
     this.settings = const [],
     this.buildInfo,
-    this.allowedCategories = const [],
-  });
+    this.hasVoip = true,
+  }) : showTroubleshooting =
+            settings.get<ShowTroubleshootingSettingsSetting>()?.value ?? false;
 
   SettingsState withChanged(Setting setting) {
     return SettingsState(
@@ -23,12 +26,12 @@ class SettingsState extends Equatable {
         ..removeWhere((s) => s.runtimeType == setting.runtimeType)
         ..add(setting),
       buildInfo: buildInfo,
-      allowedCategories: allowedCategories,
+      hasVoip: hasVoip,
     );
   }
 
   @override
-  List<Object> get props => [settings, buildInfo];
+  List<Object> get props => [settings, buildInfo, hasVoip, showTroubleshooting];
 }
 
 class LoggedOut extends SettingsState {}

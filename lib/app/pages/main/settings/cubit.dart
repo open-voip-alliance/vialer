@@ -6,7 +6,6 @@ import '../../../../domain/usecases/get_build_info.dart';
 import '../../../../domain/usecases/get_has_voip.dart';
 import '../../../../domain/usecases/get_settings.dart';
 import '../../../../domain/usecases/logout.dart';
-import '../../../entities/category.dart';
 import '../../../util/loggable.dart';
 import 'state.dart';
 
@@ -24,24 +23,11 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
   }
 
   Future<void> _emitUpdatedState() async {
-    final allowedCategories = [
-      Category.accountInfo,
-      Category.debug,
-      if (await _getHasVoip()) ...[
-        Category.audio,
-        Category.portalLinks,
-        Category.advancedSettings,
-        Category.calling,
-        Category.troubleshootingCalling,
-        Category.troubleshootingAudio,
-      ],
-    ];
-
     emit(
       SettingsState(
         settings: await _getSettings(),
         buildInfo: await _getBuildInfo(),
-        allowedCategories: allowedCategories,
+        hasVoip: await _getHasVoip(),
       ),
     );
   }
