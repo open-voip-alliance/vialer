@@ -25,9 +25,11 @@ class StorageRepository {
 
   set systemUser(SystemUser user) => _preferences.setString(
         _systemUserKey,
-        json.encode(
-          user.toJson(includeToken: true),
-        ),
+        user != null
+            ? json.encode(
+                user.toJson(includeToken: true),
+              )
+            : null,
       );
 
   static const _settingsKey = 'settings';
@@ -36,8 +38,6 @@ class StorageRepository {
     final preference = _preferences.getString(_settingsKey);
     if (preference != null) {
       return (json.decode(preference) as List)
-          // Tear-off won't work here
-          // ignore: unnecessary_lambdas
           .map((s) => Setting.fromJson(s as Map<String, dynamic>))
           .toList();
     } else {
@@ -47,9 +47,11 @@ class StorageRepository {
 
   set settings(List<Setting> settings) => _preferences.setString(
         _settingsKey,
-        json.encode(
-          settings.map((s) => s.toJson()).toList(),
-        ),
+        settings != null
+            ? json.encode(
+                settings.map((s) => s.toJson()).toList(),
+              )
+            : null,
       );
 
   static const _logsKey = 'logs';
