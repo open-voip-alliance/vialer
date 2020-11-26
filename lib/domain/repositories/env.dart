@@ -1,12 +1,6 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class EnvRepository {
-  static const _sentryDsnKey = 'SENTRY_DSN';
-
-  static const _logentriesAndroidTokenKey = 'LOGENTRIES_ANDROID_TOKEN';
-
-  static const _logentriesIosTokenKey = 'LOGENTRIES_IOS_TOKEN';
-
   Map<String, String> __env;
 
   Future<Map<String, String>> get _env async {
@@ -20,9 +14,13 @@ class EnvRepository {
 
   Future<String> _get(String key) async => (await _env)[key];
 
-  Future<String> get sentryDsn => _get(_sentryDsnKey);
+  Future<String> get sentryDsn => _get('SENTRY_DSN');
 
-  Future<String> get logentriesAndroidToken => _get(_logentriesAndroidTokenKey);
+  Future<String> get logentriesAndroidToken => _get('LOGENTRIES_ANDROID_TOKEN');
 
-  Future<String> get logentriesIosToken => _get(_logentriesIosTokenKey);
+  Future<String> get logentriesIosToken => _get('LOGENTRIES_IOS_TOKEN');
+
+  Future<String> get mergeRequest => _get('MERGE_REQUEST');
+
+  Future<String> get branch => _get('BRANCH');
 }
