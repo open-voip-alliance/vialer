@@ -56,6 +56,8 @@ class _DialerPageState extends State<DialerPage> with WidgetsBindingObserver {
           (route) => route.settings.name == Routes.main,
         );
       }
+    } else if (state == AppLifecycleState.resumed) {
+      context.read<CallerCubit>().checkCallPermission();
     }
   }
 
@@ -98,19 +100,26 @@ class _DialerPageState extends State<DialerPage> with WidgetsBindingObserver {
                               .permanentDescription(appName),
                         ),
                   icon: const Icon(VialerSans.missedCall),
-                  children: state is NoPermission && !state.dontAskAgain
-                      ? <Widget>[
-                          const SizedBox(height: 40),
-                          StylizedButton.raised(
-                            colored: true,
-                            onPressed: callerCubit.requestPermission,
-                            child: Text(
-                              context.msg.main.dialer.noPermission.button
+                  children: <Widget>[
+                    const SizedBox(height: 40),
+                    StylizedButton.raised(
+                      colored: true,
+                      onPressed: state is NoPermission && !state.dontAskAgain
+                          ? callerCubit.requestPermission
+                          : callerCubit.openAppSettings,
+                      child: state is NoPermission && !state.dontAskAgain
+                          ? Text(
+                              context
+                                  .msg.main.dialer.noPermission.buttonPermission
+                                  .toUpperCaseIfAndroid(context),
+                            )
+                          : Text(
+                              context.msg.main.dialer.noPermission
+                                  .buttonOpenSettings
                                   .toUpperCaseIfAndroid(context),
                             ),
-                          ),
-                        ]
-                      : <Widget>[],
+                    ),
+                  ],
                 ),
                 child: Column(
                   children: <Widget>[

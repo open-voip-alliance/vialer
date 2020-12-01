@@ -1,4 +1,5 @@
-import 'package:permission_handler/permission_handler.dart';
+import 'package:permission_handler/permission_handler.dart'
+    as permission_handler;
 
 import '../entities/permission.dart' as domain;
 import '../entities/permission_status.dart' as domain;
@@ -21,5 +22,9 @@ class PermissionRepository {
 
     final status = await mappedPermission.request();
     return status.toDomainEntity();
+  }
+
+  Future<bool> openAppSettings() {
+    return permission_handler.openAppSettings();
   }
 }

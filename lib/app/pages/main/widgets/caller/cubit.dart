@@ -18,6 +18,7 @@ import '../../../../../domain/usecases/get_permission_status.dart';
 import '../../../../../domain/usecases/get_settings.dart';
 import '../../../../../domain/usecases/increment_call_through_calls_count.dart';
 import '../../../../../domain/usecases/onboarding/request_permission.dart';
+import '../../../../../domain/usecases/open_settings.dart';
 import '../../../../util/debug.dart';
 import '../../../../util/loggable.dart';
 import 'state.dart';
@@ -35,11 +36,12 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
   final _getPermissionStatus = GetPermissionStatusUseCase();
   final _requestPermission = RequestPermissionUseCase();
   final _getHasVoip = GetHasVoipUseCase();
+  final _openAppSettings = OpenSettingsAppUseCase();
 
   Timer _callThroughTimer;
 
   CallerCubit() : super(CanCall()) {
-    _checkCallPermission();
+    checkCallPermission();
   }
 
   Future<void> call(
@@ -153,7 +155,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
       } else if (state is! NoPermission) {
         emit(CanCall());
       } else {
-        _checkCallPermission();
+        checkCallPermission();
       }
     }
   }
@@ -180,7 +182,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
     _updateWhetherCanCall(status);
   }
 
-  Future<void> _checkCallPermission() async {
+  Future<void> checkCallPermission() async {
     if (Platform.isAndroid) {
       final status = await _getPermissionStatus(permission: Permission.phone);
       _updateWhetherCanCall(status);
@@ -197,6 +199,10 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
         ),
       );
     }
+  }
+
+  void openAppSettings() async {
+    await _openAppSettings();
   }
 }
 

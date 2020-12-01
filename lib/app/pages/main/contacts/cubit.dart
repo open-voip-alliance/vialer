@@ -9,6 +9,7 @@ import '../../../../domain/entities/permission_status.dart';
 import '../../../../domain/usecases/get_contacts.dart';
 import '../../../../domain/usecases/get_permission_status.dart';
 import '../../../../domain/usecases/onboarding/request_permission.dart';
+import '../../../../domain/usecases/open_settings.dart';
 
 import 'state.dart';
 export 'state.dart';
@@ -17,6 +18,7 @@ class ContactsCubit extends Cubit<ContactsState> {
   final _getContacts = GetContactsUseCase();
   final _getPermissionStatus = GetPermissionStatusUseCase();
   final _requestPermission = RequestPermissionUseCase();
+  final _openAppSettings = OpenSettingsAppUseCase();
 
   ContactsCubit() : super(LoadingContacts()) {
     _checkContactsPermission();
@@ -30,7 +32,7 @@ class ContactsCubit extends Cubit<ContactsState> {
 
   Future<void> _loadContactsIfAllowed(PermissionStatus status) async {
     if (status == PermissionStatus.granted) {
-      await loadContacts();
+      await _loadContacts();
     } else {
       emit(
         NoPermission(
@@ -41,7 +43,7 @@ class ContactsCubit extends Cubit<ContactsState> {
     }
   }
 
-  Future<void> loadContacts() async {
+  Future<void> _loadContacts() async {
     if (state is! ContactsLoaded) {
       emit(LoadingContacts());
     }
@@ -49,9 +51,17 @@ class ContactsCubit extends Cubit<ContactsState> {
     emit(ContactsLoaded(await _getContacts()));
   }
 
+  Future<void> reloadContacts() async {
+    await _checkContactsPermission();
+  }
+
   Future<void> requestPermission() async {
     final status = await _requestPermission(permission: Permission.contacts);
 
     await _loadContactsIfAllowed(status);
+  }
+
+  void openAppSettings() async {
+    await _openAppSettings();
   }
 }
