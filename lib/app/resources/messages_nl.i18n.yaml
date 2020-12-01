@@ -48,10 +48,10 @@ main:
         naar behoren kan laten werken.
       permanentDescription(String appName): >-
         Om via $appName te kunnen bellen is jouw toestemming nodig. Je hebt deze toestemming
-        niet gegeven. Om deze toestemming alsnog te geven zodat de app naar behoren kan werken,
-        ga je naar de privacyinstellingen op jouw telefoon en geef je daar toestemming om
-        $appName toegang te verlenen tot de telefoonfuncties.
-      button: "Geef toestemming"
+        niet gegeven. Ga je naar de privacyinstellingen op jouw telefoon en geef je daar toestemming
+        om $appName toegang te verlenen tot de telefoonfuncties.
+      buttonPermission: "Geef toestemming"
+      buttonOpenSettings: "Open instellingen"
 
   recent:
     title: "Recente gesprekken"
@@ -100,11 +100,10 @@ main:
           $appName heeft toestemming nodig om bij je contacten te komen en ze te tonen.
         permanentDescription(String appName): >-
           $appName heeft jouw toestemming nodig om bij je contacten te komen en ze te tonen.
-          Je hebt deze toestemming niet gegeven. Om deze toestemming alsnog te geven zodat de
-          app naar behoren kan werken, ga je naar de privacyinstellingen op jouw telefoon en
-          geef je daar toestemming om $appName toegang te verlenen tot je contacten.
-
-        button: "Geef toestemming"
+          Je hebt deze toestemming niet gegeven. Ga je naar de privacyinstellingen op jouw telefoon
+          en geef je daar toestemming om $appName toegang te verlenen tot je contacten.
+        buttonPermission: "Geef toestemming"
+        buttonOpenSettings: "Open instellingen"
       item:
         noNumber: "Geen nummer"
         numbers(int count): "$count ${_plural(count, one: 'nummer', many: 'nummers')}"

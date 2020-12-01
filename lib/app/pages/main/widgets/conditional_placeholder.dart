@@ -40,9 +40,9 @@ class Warning extends StatelessWidget {
       width: double.infinity,
       child: Padding(
         padding: const EdgeInsets.only(
-          left: 64,
-          right: 64,
-          top: 84,
+          left: 54,
+          right: 54,
+          top: 54,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,

@@ -47,9 +47,10 @@ main:
         so that the app can work properly.
       permanentDescription(String appName): >-
         In order to call by using $appName, you need to allow the app to do so.
-        You have denied to give this permission. To change this so the app can work properly,
-        please go to your phone privacy settings and allow $appName to access your phone abilities.
-      button: "Give permission"
+        You have denied to give this permission. Please go to your phone privacy settings and
+        allow $appName to access your phone abilities.
+      buttonPermission: "Give permission"
+      buttonOpenSettings: "Open settings"
 
   recent:
     title: "Recent calls"
@@ -94,9 +95,10 @@ main:
           $appName needs permission to retrieve your contacts and display them.
         permanentDescription(String appName): >-
           In order to retrieve your contacts and display them, you need to allow the app to do so.
-          You have denied to give this permission. To change this so the app can work properly,
-          please go to your phone privacy settings and allow $appName to access your contacts.
-        button: "Give permission"
+          You have denied to give this permission. Please go to your phone privacy settings and
+          allow $appName to access your contacts.
+        buttonPermission: "Give permission"
+        buttonOpenSettings: "Open settings"
       item:
         noNumber: "No number"
         numbers(int count): "$count ${_plural(count, one: 'number', many: 'numbers')}"

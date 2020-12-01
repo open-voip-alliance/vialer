@@ -73,7 +73,7 @@ class _ContactPageState extends State<ContactsPage>
     super.didChangeAppLifecycleState(state);
 
     if (state == AppLifecycleState.resumed) {
-      context.read<ContactsCubit>().loadContacts();
+      context.read<ContactsCubit>().reloadContacts();
     }
   }
 
@@ -116,7 +116,7 @@ class _ContactPageState extends State<ContactsPage>
                           children: _mapAndFilterToWidgets(
                             state is ContactsLoaded ? state.contacts : [],
                           ),
-                          onRefresh: cubit.loadContacts,
+                          onRefresh: cubit.reloadContacts,
                         ),
                       ),
                     ),
@@ -245,19 +245,26 @@ class _Placeholder extends StatelessWidget {
                         Provider.of<Brand>(context).appName,
                       ),
                     ),
-              children: !state.dontAskAgain
-                  ? <Widget>[
-                      const SizedBox(height: 40),
-                      StylizedButton.raised(
-                        colored: true,
-                        onPressed: cubit.requestPermission,
-                        child: Text(
-                          context.msg.main.contacts.list.noPermission.button
+              children: <Widget>[
+                const SizedBox(height: 40),
+                StylizedButton.raised(
+                  colored: true,
+                  onPressed: !state.dontAskAgain
+                      ? cubit.requestPermission
+                      : cubit.openAppSettings,
+                  child: !state.dontAskAgain
+                      ? Text(
+                          context.msg.main.contacts.list.noPermission
+                              .buttonPermission
+                              .toUpperCaseIfAndroid(context),
+                        )
+                      : Text(
+                          context.msg.main.contacts.list.noPermission
+                              .buttonOpenSettings
                               .toUpperCaseIfAndroid(context),
                         ),
-                      ),
-                    ]
-                  : <Widget>[],
+                ),
+              ],
             )
           : state is LoadingContacts
               ? LoadingIndicator(
