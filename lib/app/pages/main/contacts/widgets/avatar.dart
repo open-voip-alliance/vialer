@@ -6,7 +6,7 @@ import '../../../../../domain/entities/contact.dart';
 import '../util/color.dart';
 
 class ContactAvatar extends StatelessWidget {
-  static const _defaultSize = 36.0;
+  static const defaultSize = 36.0;
 
   final Contact contact;
   final double size;
@@ -14,7 +14,7 @@ class ContactAvatar extends StatelessWidget {
   const ContactAvatar(
     this.contact, {
     Key key,
-    this.size = _defaultSize,
+    this.size = defaultSize,
   }) : super(key: key);
 
   String get _letters {
@@ -43,7 +43,7 @@ class ContactAvatar extends StatelessWidget {
                   _letters,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 16 * (size / _defaultSize),
+                    fontSize: 16 * (size / defaultSize),
                   ),
                 )
               : null,

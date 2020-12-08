@@ -86,86 +86,83 @@ class _DialerPageState extends State<DialerPage> with WidgetsBindingObserver {
               final dialerCubit = context.watch<DialerCubit>();
               final appName = Provider.of<Brand>(context).appName;
 
-              return ConditionalPlaceholder(
-                showPlaceholder: state is NoPermission,
-                placeholder: Warning(
-                  title: Text(context.msg.main.dialer.noPermission.title),
-                  description: state is NoPermission && !state.dontAskAgain
-                      ? Text(
-                          context.msg.main.dialer.noPermission
-                              .description(appName),
-                        )
-                      : Text(
-                          context.msg.main.dialer.noPermission
-                              .permanentDescription(appName),
+              return SafeArea(
+                child: ConditionalPlaceholder(
+                  showPlaceholder: state is NoPermission,
+                  placeholder: Warning(
+                    title: Text(context.msg.main.dialer.noPermission.title),
+                    description: state is NoPermission && !state.dontAskAgain
+                        ? Text(
+                            context.msg.main.dialer.noPermission
+                                .description(appName),
+                          )
+                        : Text(
+                            context.msg.main.dialer.noPermission
+                                .permanentDescription(appName),
+                          ),
+                    icon: const Icon(VialerSans.missedCall),
+                    children: <Widget>[
+                      const SizedBox(height: 40),
+                      StylizedButton.raised(
+                        colored: true,
+                        onPressed: state is NoPermission && !state.dontAskAgain
+                            ? callerCubit.requestPermission
+                            : callerCubit.openAppSettings,
+                        child: state is NoPermission && !state.dontAskAgain
+                            ? Text(
+                                context.msg.main.dialer.noPermission
+                                    .buttonPermission
+                                    .toUpperCaseIfAndroid(context),
+                              )
+                            : Text(
+                                context.msg.main.dialer.noPermission
+                                    .buttonOpenSettings
+                                    .toUpperCaseIfAndroid(context),
+                              ),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    children: <Widget>[
+                      if (context.isAndroid) ...[
+                        T9ContactsListView(controller: _keypadController),
+                        const Divider(
+                          height: 1,
+                          thickness: 1,
                         ),
-                  icon: const Icon(VialerSans.missedCall),
-                  children: <Widget>[
-                    const SizedBox(height: 40),
-                    StylizedButton.raised(
-                      colored: true,
-                      onPressed: state is NoPermission && !state.dontAskAgain
-                          ? callerCubit.requestPermission
-                          : callerCubit.openAppSettings,
-                      child: state is NoPermission && !state.dontAskAgain
-                          ? Text(
-                              context
-                                  .msg.main.dialer.noPermission.buttonPermission
-                                  .toUpperCaseIfAndroid(context),
-                            )
-                          : Text(
-                              context.msg.main.dialer.noPermission
-                                  .buttonOpenSettings
-                                  .toUpperCaseIfAndroid(context),
+                      ] else if (context.isIOS)
+                        const SizedBox(
+                          height: 24,
+                        ),
+                      Material(
+                        child: KeyInput(
+                          controller: _keypadController,
+                        ),
+                      ),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          child: Align(
+                            alignment: Alignment.bottomCenter,
+                            child: BlocBuilder<ConnectivityCheckerCubit,
+                                ConnectivityState>(
+                              builder: (context, state) {
+                                return Keypad(
+                                  controller: _keypadController,
+                                  onCallButtonPressed: state is Connected
+                                      ? () => _call(context)
+                                      : null,
+                                  onDeleteButtonPressed: state is Connected
+                                      ? dialerCubit.clearLastCalledDestination
+                                      : null,
+                                );
+                              },
                             ),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  children: <Widget>[
-                    if (context.isAndroid) ...[
-                      SafeArea(
-                        child:
-                            T9ContactsListView(controller: _keypadController),
-                      ),
-                      const Divider(
-                        height: 1,
-                        thickness: 1,
-                      ),
-                    ] else if (context.isIOS)
-                      const SafeArea(
-                        child: SizedBox(
-                          height: 95,
-                        ),
-                      ),
-                    Material(
-                      child: KeyInput(
-                        controller: _keypadController,
-                      ),
-                    ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: Align(
-                          alignment: Alignment.bottomCenter,
-                          child: BlocBuilder<ConnectivityCheckerCubit,
-                              ConnectivityState>(
-                            builder: (context, state) {
-                              return Keypad(
-                                controller: _keypadController,
-                                onCallButtonPressed: state is Connected
-                                    ? () => _call(context)
-                                    : null,
-                                onDeleteButtonPressed: state is Connected
-                                    ? dialerCubit.clearLastCalledDestination
-                                    : null,
-                              );
-                            },
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               );
             },
