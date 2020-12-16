@@ -1,5 +1,4 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_segment/flutter_segment.dart';
 import 'package:meta/meta.dart';
 
 import '../../../../domain/entities/setting.dart';
@@ -7,6 +6,7 @@ import '../../../../domain/entities/survey/survey_trigger.dart';
 import '../../../../domain/usecases/change_setting.dart';
 import '../../../../domain/usecases/get_settings.dart';
 import '../../../../domain/usecases/get_survey.dart';
+import '../../../../domain/usecases/send_survey_results.dart';
 import '../../../util/loggable.dart';
 import 'state.dart';
 
@@ -14,6 +14,7 @@ export 'state.dart';
 
 class SurveyCubit extends Cubit<SurveyState> with Loggable {
   final _getSurvey = GetSurveyUseCase();
+  final _sendSurveyResults = SendSurveyResultsUseCase();
 
   final _getSettings = GetSettingsUseCase();
   final _changeSetting = ChangeSettingUseCase();
@@ -90,9 +91,8 @@ class SurveyCubit extends Cubit<SurveyState> with Loggable {
 
       final survey = state.survey;
 
-      Segment.track(
-        eventName: 'survey',
-        properties: {
+      _sendSurveyResults(
+        data: {
           'id': survey.id,
           'language': survey.language,
           'trigger': survey.trigger.toJson(),

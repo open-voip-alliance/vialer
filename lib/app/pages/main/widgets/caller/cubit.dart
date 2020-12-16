@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_segment/flutter_segment.dart';
 import 'package:meta/meta.dart';
 
 import '../../../../../domain/entities/exceptions/call_through.dart';
@@ -17,9 +16,9 @@ import '../../../../../domain/usecases/get_has_voip.dart';
 import '../../../../../domain/usecases/get_permission_status.dart';
 import '../../../../../domain/usecases/get_settings.dart';
 import '../../../../../domain/usecases/increment_call_through_calls_count.dart';
+import '../../../../../domain/usecases/metrics/track_call.dart';
 import '../../../../../domain/usecases/onboarding/request_permission.dart';
 import '../../../../../domain/usecases/open_settings.dart';
-import '../../../../util/debug.dart';
 import '../../../../util/loggable.dart';
 import 'state.dart';
 
@@ -30,6 +29,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
   final _changeSetting = ChangeSettingUseCase();
   final _call = CallUseCase();
   final _getCallThroughCallsCount = GetCallThroughCallsCountUseCase();
+  final _trackCall = TrackCallUseCase();
 
   final _incrementCallThroughCallsCount =
       IncrementCallThroughCallsCountUseCase();
@@ -86,14 +86,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
     } else {
       logger.info('Initiating call');
       try {
-        doIfNotDebug(() {
-          Segment.track(
-            eventName: 'call',
-            properties: {
-              'via': origin.toSegmentString(),
-            },
-          );
-        });
+        _trackCall(via: origin.toTrackString());
 
         emit(InitiatingCall(origin: origin, useVoip: useVoip));
         await _call(destination: destination, useVoip: useVoip);
@@ -207,7 +200,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
 }
 
 extension on CallOrigin {
-  String toSegmentString() {
+  String toTrackString() {
     switch (this) {
       case CallOrigin.dialer:
         return 'dialer';

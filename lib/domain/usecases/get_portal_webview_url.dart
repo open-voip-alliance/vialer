@@ -7,7 +7,7 @@ import '../entities/portal_page.dart';
 import '../repositories/auth.dart';
 import '../use_case.dart';
 
-class GetPortalWebviewUrlUseCase extends UseCase {
+class GetPortalWebViewUrlUseCase extends UseCase {
   final _authRepository = dependencyLocator<AuthRepository>();
   final _brand = dependencyLocator<Brand>();
 

@@ -38,6 +38,7 @@ class _PortalWebViewPageState extends State<PortalWebViewPage> {
     setState(() {
       _controller = null;
     });
+
     context.read<PortalWebViewCubit>().reloadAll();
   }
 
@@ -48,11 +49,11 @@ class _PortalWebViewPageState extends State<PortalWebViewPage> {
   }
 
   void _onPageFinishedLoading(BuildContext context, String portalUrl) {
-    context.read<PortalWebViewCubit>().notifyWebviewLoaded(portalUrl);
+    context.read<PortalWebViewCubit>().notifyWebViewLoaded(portalUrl);
   }
 
   void _onPageLoadError(BuildContext context) {
-    context.read<PortalWebViewCubit>().notifyWebviewHadError();
+    context.read<PortalWebViewCubit>().notifyWebViewHadError();
   }
 
   @override

@@ -1,10 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_segment/flutter_segment.dart';
 
 import '../../../../../domain/entities/permission.dart';
 import '../../../../../domain/entities/permission_status.dart';
+import '../../../../../domain/usecases/metrics/track_permission.dart';
 import '../../../../../domain/usecases/onboarding/request_permission.dart';
-import '../../../../util/debug.dart';
 import '../../../../util/loggable.dart';
 import 'state.dart';
 
@@ -12,6 +11,7 @@ export 'state.dart';
 
 class PermissionCubit extends Cubit<PermissionState> with Loggable {
   final _requestPermission = RequestPermissionUseCase();
+  final _trackPermission = TrackPermissionUseCase();
 
   final Permission permission;
 
@@ -30,16 +30,9 @@ class PermissionCubit extends Cubit<PermissionState> with Loggable {
       emit(PermissionDenied());
     }
 
-    doIfNotDebug(() {
-      Segment.track(
-        eventName: 'permission',
-        properties: {
-          'type': permission.toShortString(),
-          'granted': status == PermissionStatus.granted,
-        },
-      );
-    });
-
-    // TODO: Show error on fail
+    _trackPermission(
+      type: permission.toShortString(),
+      granted: status == PermissionStatus.granted,
+    );
   }
 }

@@ -1,18 +1,18 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_segment/flutter_segment.dart';
-import '../../../../domain/entities/exceptions/need_to_change_password.dart';
 
-import '../../../../domain/usecases/get_current_user.dart';
+import '../../../../domain/entities/exceptions/need_to_change_password.dart';
+import '../../../../domain/usecases/metrics/identify_for_tracking.dart';
+import '../../../../domain/usecases/metrics/track_login.dart';
 import '../../../../domain/usecases/onboarding/login.dart';
-import '../../../util/debug.dart';
 import '../../../util/loggable.dart';
 import 'state.dart';
 
 export 'state.dart';
 
 class LoginCubit extends Cubit<LoginState> with Loggable {
-  final _getStoredUser = GetStoredUserUseCase();
   final _login = LoginUseCase();
+  final _identifyForTracking = IdentifyForTrackingUseCase();
+  final _trackLogin = TrackLoginUseCase();
 
   LoginCubit() : super(NotLoggedIn());
 
@@ -31,12 +31,9 @@ class LoginCubit extends Cubit<LoginState> with Loggable {
 
     if (loginSuccessful) {
       logger.info('Login successful');
-      doIfNotDebug(() async {
-        await Segment.identify(
-          userId: (await _getStoredUser()).uuid,
-        );
-        await Segment.track(eventName: 'login');
-      });
+
+      _identifyForTracking();
+      _trackLogin();
 
       emit(LoggedIn());
     } else {
