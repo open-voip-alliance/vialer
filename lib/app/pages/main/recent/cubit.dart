@@ -3,12 +3,11 @@ import 'dart:async';
 import 'package:dartx/dartx.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_segment/flutter_segment.dart';
 import 'package:meta/meta.dart';
 
 import '../../../../domain/entities/call_with_contact.dart';
 import '../../../../domain/usecases/get_recent_calls.dart';
-import '../../../util/debug.dart';
+import '../../../../domain/usecases/metrics/track_copy_number.dart';
 import '../widgets/caller/cubit.dart';
 import 'state.dart';
 
@@ -16,6 +15,7 @@ export 'state.dart';
 
 class RecentCallsCubit extends Cubit<RecentCallsState> {
   final _getRecentCalls = GetRecentCallsUseCase();
+  final _trackCopyNumber = TrackCopyNumberUseCase();
 
   final CallerCubit _caller;
 
@@ -28,17 +28,11 @@ class RecentCallsCubit extends Cubit<RecentCallsState> {
   }
 
   Future<void> call(String destination) async {
-    doIfNotDebug(() {
-      Segment.track(eventName: 'call', properties: {'via': 'recents'});
-    });
-
     _caller.call(destination, origin: CallOrigin.recents);
   }
 
   void copyNumber(String number) {
-    doIfNotDebug(() {
-      Segment.track(eventName: 'copy-number');
-    });
+    _trackCopyNumber();
 
     Clipboard.setData(ClipboardData(text: number));
   }

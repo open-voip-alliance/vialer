@@ -1,16 +1,17 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_segment/flutter_segment.dart';
 
 import '../../../domain/entities/exceptions/auto_login.dart';
 import '../../../domain/entities/portal_page.dart';
 import '../../../domain/usecases/get_portal_webview_url.dart';
-import '../../pages/webview/state.dart';
-import '../../util/debug.dart';
+import '../../../domain/usecases/metrics/track_web_view.dart';
 import '../../util/loggable.dart';
+import 'state.dart';
 
 class PortalWebViewCubit extends Cubit<PortalWebViewState> with Loggable {
-  final getPortalWebviewUrl = GetPortalWebviewUrlUseCase();
+  final _getPortalWebviewUrl = GetPortalWebViewUrlUseCase();
+  final _trackWebView = TrackWebViewUseCase();
+
   final PortalPage _portalPage;
 
   PortalWebViewCubit(this._portalPage) : super(LoadingPortalUrl()) {
@@ -22,26 +23,19 @@ class PortalWebViewCubit extends Cubit<PortalWebViewState> with Loggable {
     _loadPortalUrl();
   }
 
-  void notifyWebviewLoaded(String portalUrl) {
+  void notifyWebViewLoaded(String portalUrl) {
     emit(LoadedWebview(portalUrl: portalUrl));
   }
 
-  void notifyWebviewHadError() {
+  void notifyWebViewHadError() {
     emit(LoadWebviewError());
   }
 
   void _loadPortalUrl() async {
     try {
-      final url = await getPortalWebviewUrl(page: _portalPage);
+      final url = await _getPortalWebviewUrl(page: _portalPage);
 
-      doIfNotDebug(() {
-        Segment.track(
-          eventName: 'webview',
-          properties: {
-            'page': describeEnum(_portalPage),
-          },
-        );
-      });
+      _trackWebView(page: describeEnum(_portalPage));
 
       emit(LoadedPortalUrl(portalUrl: url));
     } on AutoLoginException {

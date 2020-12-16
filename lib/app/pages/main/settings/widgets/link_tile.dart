@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../domain/entities/portal_page.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
-import '../../../webview/page.dart';
+import '../../../web_view/page.dart';
 import '../cubit.dart';
 import '../sub_page.dart';
 import 'tile.dart';
