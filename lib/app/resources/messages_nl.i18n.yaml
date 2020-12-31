@@ -50,7 +50,7 @@ main:
       permanentDescription(String appName): >-
         Om via $appName te bellen is jouw toestemming nodig. Je hebt deze toestemming
         nog niet gegeven waardoor je niet kunt bellen. Ga naar de privacy-instellingen van je telefoon
-        om daar $appName alsnog toegang te geven.
+        om daar $appName alsnog toegang te geven tot de "Telefoon"-rechten.
       buttonPermission: "Geef toestemming"
       buttonOpenSettings: "Open instellingen"
 
