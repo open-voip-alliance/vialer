@@ -1,6 +1,6 @@
 import '../../dependency_locator.dart';
 import '../connectivity_status.dart';
-import '../repositories/connectivity_repository.dart';
+import '../repositories/connectivity.dart';
 import '../use_case.dart';
 
 class GetConnectivityStatusStreamUseCase

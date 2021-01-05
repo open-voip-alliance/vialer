@@ -4,6 +4,9 @@ import 'package:provider/provider.dart';
 
 import '../../../../../domain/entities/audio_codec.dart';
 import '../../../../../domain/entities/brand.dart';
+import '../../../../../domain/entities/destination.dart';
+import '../../../../../domain/entities/fixed_destination.dart';
+import '../../../../../domain/entities/phone_account.dart';
 import '../../../../../domain/entities/setting.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
@@ -113,25 +116,57 @@ class SettingTile extends StatelessWidget {
                 .calling.useEncryption,
           ),
           childFillWidth: true,
-          // Might be generalized into a _MultipleChoiceSettingValue
-          // widget later on.
-          child: Padding(
-            padding: const EdgeInsets.only(right: 16),
-            child: DropdownButton<AudioCodec>(
-              value: setting.value,
-              isExpanded: true,
-              items: [
-                // TODO: Get values from PIL.
-                DropdownMenuItem(
-                  value: AudioCodec.opus,
-                  child: Text(AudioCodec.opus.value.toUpperCase()),
+          child: _MultipleChoiceSettingValue<AudioCodec>(
+            value: setting.value,
+            isExpanded: true,
+            items: [
+              // TODO: Get values from PIL.
+              DropdownMenuItem(
+                value: AudioCodec.opus,
+                child: Text(AudioCodec.opus.value.toUpperCase()),
+              ),
+            ],
+            onChanged: (codec) => defaultOnChanged(
+              context,
+              setting.copyWith(value: codec),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  static Widget availability(AvailabilitySetting setting) {
+    final availability = setting.value;
+    return Builder(
+      builder: (context) {
+        return SettingTile(
+          label: Text(
+            context.msg.main.settings.list.calling.availability.title,
+          ),
+          description: Text(
+            context.msg.main.settings.list.calling.availability.description,
+          ),
+          childFillWidth: true,
+          child: _MultipleChoiceSettingValue<Destination>(
+            value: availability.activeDestination,
+            items: availability.destinations
+                .map(
+                  (destination) => DropdownMenuItem<Destination>(
+                    child: Text(destination.dropdownValue(context)),
+                    value: destination,
+                  ),
+                )
+                .toList(),
+            onChanged: (destination) => defaultOnChanged(
+              context,
+              setting.copyWith(
+                value: availability.copyWithSelectedDestination(
+                  destination: destination,
                 ),
-              ],
-              onChanged: (codec) => defaultOnChanged(
-                context,
-                setting.copyWith(value: codec),
               ),
             ),
+            isExpanded: true,
           ),
         );
       },
@@ -275,5 +310,54 @@ class _StringSettingValue extends StatelessWidget {
         fontWeight: !context.isIOS ? FontWeight.bold : null,
       ),
     );
+  }
+}
+
+class _MultipleChoiceSettingValue<T> extends StatelessWidget {
+  final T value;
+  final List<DropdownMenuItem<T>> items;
+  final bool isExpanded;
+  final ValueChanged<T> onChanged;
+
+  const _MultipleChoiceSettingValue({
+    Key key,
+    this.value,
+    this.items,
+    this.isExpanded = false,
+    this.onChanged,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 16),
+      child: DropdownButton<T>(
+        value: value,
+        items: items,
+        isExpanded: isExpanded,
+        onChanged: onChanged,
+      ),
+    );
+  }
+}
+
+extension DestinationDescription on Destination {
+  String dropdownValue(BuildContext context) {
+    final destination = this;
+
+    if (destination == FixedDestination.notAvailable) {
+      return context.msg.main.settings.list.calling.notAvailable;
+    } else {
+      if (destination is FixedDestination) {
+        if (destination.phoneNumber == null) {
+          return '${destination.description}';
+        }
+
+        return '${destination.phoneNumber} / ${destination.description}';
+      } else {
+        return '${(destination as PhoneAccount).internalNumber} / '
+            '${(destination as PhoneAccount).description}';
+      }
+    }
   }
 }

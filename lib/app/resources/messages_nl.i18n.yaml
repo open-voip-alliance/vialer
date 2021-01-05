@@ -151,6 +151,11 @@ main:
             de beltoon van de app.
       calling:
         title: "Bellen"
+        availability:
+          title: "Beschikbaarheid"
+          description: >-
+            Kies het VoIP-account waarop je oproepen wilt ontvangen wanneer iemand je belt.
+        notAvailable: "Geen eindbestemming"
         useVoip:
           title: "Gebruik VoIP"
           description: >-

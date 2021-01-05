@@ -4,9 +4,10 @@ import 'domain/entities/brand.dart';
 import 'domain/repositories/auth.dart';
 import 'domain/repositories/build_info.dart';
 import 'domain/repositories/call.dart';
-import 'domain/repositories/connectivity_repository.dart';
+import 'domain/repositories/connectivity.dart';
 import 'domain/repositories/contact.dart';
 import 'domain/repositories/db/database.dart';
+import 'domain/repositories/destination.dart';
 import 'domain/repositories/env.dart';
 import 'domain/repositories/feedback.dart';
 import 'domain/repositories/logging.dart';
@@ -84,7 +85,13 @@ Future<void> initializeDependencies() async {
       dependsOn: [StorageRepository],
     )
     ..registerSingleton<ConnectivityRepository>(ConnectivityRepository())
-    ..registerSingleton<MetricsRepository>(MetricsRepository());
+    ..registerSingleton<MetricsRepository>(MetricsRepository())
+    ..registerSingletonWithDependencies<DestinationRepository>(
+      () => DestinationRepository(
+        dependencyLocator<VoipgridService>(),
+      ),
+      dependsOn: [StorageRepository],
+    );
 
   await dependencyLocator.allReady();
 }

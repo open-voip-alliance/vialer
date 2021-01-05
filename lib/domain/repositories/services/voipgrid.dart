@@ -43,6 +43,15 @@ abstract class VoipgridService extends ChopperService {
 
   @Get(path: 'autologin/token/')
   Future<Response> getAutoLoginToken();
+
+  @Get(path: 'userdestination/')
+  Future<Response> getAvailability();
+
+  @Put(path: 'selecteduserdestination/{id}/')
+  Future<Response> setAvailability(
+    @Path() String id,
+    @Body() Map<String, dynamic> body,
+  );
 }
 
 class _AuthorizationInterceptor implements RequestInterceptor {

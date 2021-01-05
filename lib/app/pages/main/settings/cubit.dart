@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../domain/entities/setting.dart';
@@ -7,6 +9,7 @@ import '../../../../domain/usecases/get_has_voip.dart';
 import '../../../../domain/usecases/get_settings.dart';
 import '../../../../domain/usecases/logout.dart';
 import '../../../util/loggable.dart';
+import '../widgets/user_refresher/cubit.dart';
 import 'state.dart';
 
 export 'state.dart';
@@ -18,8 +21,17 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
   final _getHasVoip = GetHasVoipUseCase();
   final _logout = LogoutUseCase();
 
-  SettingsCubit() : super(SettingsState()) {
+  StreamSubscription _userRefresherSubscription;
+
+  SettingsCubit(UserRefresherCubit userRefresher) : super(SettingsState()) {
     _emitUpdatedState();
+    _userRefresherSubscription = userRefresher.listen(
+      (state) {
+        if (state is NotRefreshing) {
+          _emitUpdatedState();
+        }
+      },
+    );
   }
 
   Future<void> _emitUpdatedState() async {
@@ -54,5 +66,11 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
     emit(LoggedOut());
 
     logger.info('Logged out');
+  }
+
+  @override
+  Future<void> close() async {
+    await _userRefresherSubscription.cancel();
+    await super.close();
   }
 }

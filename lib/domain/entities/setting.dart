@@ -3,6 +3,7 @@ import 'package:meta/meta.dart';
 import 'package:dartx/dartx.dart';
 
 import 'audio_codec.dart';
+import 'availability.dart';
 
 @immutable
 abstract class Setting<T> {
@@ -32,13 +33,21 @@ abstract class Setting<T> {
     UseEncryptionSetting.preset(),
     AudioCodecSetting.preset(),
     UsePhoneRingtoneSetting.preset(),
+    AvailabilitySetting.preset(),
   ];
 
   Map<String, dynamic> toJson() {
-    return {
-      _typeKey: runtimeType.toString(),
-      _valueKey: value,
-    };
+    if (runtimeType is AvailabilitySetting) {
+      return {
+        _typeKey: runtimeType.toString(),
+        _valueKey: (value as Availability).toJson(),
+      };
+    } else {
+      return {
+        _typeKey: runtimeType.toString(),
+        _valueKey: value,
+      };
+    }
   }
 
   static Setting fromJson(Map<String, dynamic> json) {
@@ -66,6 +75,10 @@ abstract class Setting<T> {
       return UsePhoneRingtoneSetting(value as bool);
     } else if (type == (UseVoipSetting).toString()) {
       return UseVoipSetting(value as bool);
+    } else if (type == (AvailabilitySetting).toString()) {
+      return AvailabilitySetting(
+        Availability.fromJson(value as Map<String, dynamic>),
+      );
     } else {
       throw UnsupportedError('Setting type does not exist: $type');
     }
@@ -164,6 +177,17 @@ class UsePhoneRingtoneSetting extends Setting<bool> {
   @override
   UsePhoneRingtoneSetting copyWith({bool value}) =>
       UsePhoneRingtoneSetting(value);
+}
+
+class AvailabilitySetting extends Setting<Availability> {
+  const AvailabilitySetting(Availability value)
+      : super(value, mutable: true, external: true);
+
+  const AvailabilitySetting.preset() : this(null);
+
+  @override
+  AvailabilitySetting copyWith({Availability value}) =>
+      AvailabilitySetting(value);
 }
 
 extension SettingsByType on Iterable<Setting> {

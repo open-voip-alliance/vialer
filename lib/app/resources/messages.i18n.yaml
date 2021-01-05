@@ -146,6 +146,11 @@ main:
             app's ringtone.
       calling:
         title: "Calling"
+        availability:
+          title: "Availability"
+          description: >-
+            Choose the VoIP account you want to receive the call on when someone calls you.
+        notAvailable: "No destination"
         useVoip:
           title: "Use VoIP"
           description: >-
