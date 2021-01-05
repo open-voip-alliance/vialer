@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../domain/entities/exceptions/need_to_change_password.dart';
+import '../../../../domain/usecases/get_latest_availability.dart';
 import '../../../../domain/usecases/metrics/identify_for_tracking.dart';
 import '../../../../domain/usecases/metrics/track_login.dart';
 import '../../../../domain/usecases/onboarding/login.dart';
@@ -13,6 +14,7 @@ class LoginCubit extends Cubit<LoginState> with Loggable {
   final _login = LoginUseCase();
   final _identifyForTracking = IdentifyForTrackingUseCase();
   final _trackLogin = TrackLoginUseCase();
+  final _getLatestAvailability = GetLatestAvailabilityUseCase();
 
   LoginCubit() : super(NotLoggedIn());
 
@@ -30,12 +32,14 @@ class LoginCubit extends Cubit<LoginState> with Loggable {
     }
 
     if (loginSuccessful) {
+      emit(LoggedIn());
+
       logger.info('Login successful');
 
       _identifyForTracking();
       _trackLogin();
 
-      emit(LoggedIn());
+      _getLatestAvailability();
     } else {
       logger.info('Login failed');
       emit(LoginFailed());

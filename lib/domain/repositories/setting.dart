@@ -13,6 +13,7 @@ class SettingRepository {
 
     return [
       ...storedSettings,
+      // Add presets for which no stored setting is found.
       ...Setting.presets.where(
         (s) => !storedSettings.any(
           (stored) => stored.runtimeType == s.runtimeType,
@@ -32,21 +33,13 @@ class SettingRepository {
       );
     }
 
-    if (setting.external) {
-      throw UnsupportedError(
-        'Vialer error: Unsupported operation: '
-        'Don\'t save an external setting.',
-      );
-    }
-
     final settings = await getSettings();
 
     final newSettings = List<Setting>.from(settings)
       ..removeWhere((e) => e.runtimeType == setting.runtimeType)
       ..add(setting);
 
-    // We only want to save mutable and non-external settings.
-    _storageRepository.settings =
-        newSettings.where((s) => s.mutable && !s.external).toList();
+    // We only want to save mutable settings.
+    _storageRepository.settings = newSettings.where((s) => s.mutable).toList();
   }
 }
