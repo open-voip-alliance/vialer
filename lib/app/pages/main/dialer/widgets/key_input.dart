@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../../../resources/theme.dart';
+
 class KeyInput extends StatelessWidget {
   final TextEditingController controller;
 
@@ -15,8 +17,10 @@ class KeyInput extends StatelessWidget {
       focusNode: _NeverFocusNode(),
       inputFormatters: [_KeyInputFormatter()],
       showCursor: true,
-      decoration: const InputDecoration(
+      decoration: InputDecoration(
         border: InputBorder.none,
+        filled: true,
+        fillColor: context.brandTheme.grey3.withOpacity(0.5),
       ),
       textAlign: TextAlign.center,
       style: const TextStyle(

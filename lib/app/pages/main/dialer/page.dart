@@ -131,14 +131,17 @@ class _DialerPageState extends State<DialerPage> with WidgetsBindingObserver {
                           thickness: 1,
                         ),
                       ] else if (context.isIOS)
-                        const SizedBox(
-                          height: 24,
+                        const SafeArea(
+                          child: SizedBox(
+                            height: 48,
+                          ),
                         ),
                       Material(
                         child: KeyInput(
                           controller: _keypadController,
                         ),
                       ),
+                      if (context.isIOS) const SizedBox(height: 24),
                       Expanded(
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8),

@@ -3,18 +3,21 @@ import '../entities/setting.dart';
 import '../repositories/storage.dart';
 import '../use_case.dart';
 
-class LogoutUseCase extends UseCase<void> {
+class LogoutUseCase extends FutureUseCase<void> {
   final _storageRepository = dependencyLocator<StorageRepository>();
 
   @override
-  void call() {
+  Future<void> call() async {
     final remoteLoggingSetting =
         _storageRepository.settings.get<RemoteLoggingSetting>();
 
-    _storageRepository
-      ..clear()
-      ..settings = [
+    await _storageRepository.clear();
+
+    // If the setting was null, it was not set yet, and we leave it like that.
+    if (remoteLoggingSetting != null) {
+      _storageRepository.settings = [
         remoteLoggingSetting,
       ];
+    }
   }
 }
