@@ -27,7 +27,7 @@ class StorageRepository {
         _systemUserKey,
         user != null
             ? json.encode(
-                user.toJson(includeToken: true),
+                user.toJson(),
               )
             : null,
       );

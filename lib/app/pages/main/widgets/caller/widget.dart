@@ -112,6 +112,8 @@ Future<void> _showCallThroughErrorDialog(
   if (exception is InvalidDestinationException ||
       exception is NormalizationException) {
     message = context.msg.main.callThrough.error.invalidDestination;
+  } else if (exception is NoMobileNumberException) {
+    message = context.msg.main.callThrough.error.noMobileNumber;
   } else {
     message = context.msg.main.callThrough.error.unknown;
   }

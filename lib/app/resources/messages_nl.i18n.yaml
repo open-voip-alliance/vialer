@@ -23,6 +23,8 @@ main:
       title: "Er is een fout opgetreden"
       unknown: "Onbekende error."
       invalidDestination: "Het nummer klopt niet."
+      noMobileNumber: >-
+        De app gebruikt je mobiele nummer om te bellen, maar deze is nog niet toegevoegd aan je account. Graag contact opnemen met je provider, aangezien alleen zij je mobiele nummer aan je account toe kunnen voegen.
 
   dialer:
     title: &keypadTitle "Telefoon"

@@ -19,6 +19,12 @@ class CallRepository {
   CallRepository(this._service, this._storageRepository, this._authRepository);
 
   Future<void> call(String destination) async {
+    final mobileNumber = _authRepository.currentUser?.mobileNumber;
+    // If there's no mobile number set, throw an exception.
+    if (mobileNumber == null || mobileNumber?.isEmpty == true) {
+      throw NoMobileNumberException();
+    }
+
     _storageRepository.lastDialedNumber = destination;
 
     try {

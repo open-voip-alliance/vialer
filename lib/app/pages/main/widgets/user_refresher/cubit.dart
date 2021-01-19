@@ -13,10 +13,12 @@ class UserRefresherCubit extends Cubit<UserRefresherState> with Loggable {
   final _getLatestUser = GetLatestUserUseCase();
   final _getLatestAvailability = GetLatestAvailabilityUseCase();
 
-  UserRefresherCubit() : super(NotRefreshing());
+  UserRefresherCubit() : super(NotRefreshing()) {
+    refresh();
+  }
 
-  Future<void> check() async {
-    logger.info('Refreshing latest user data');
+  Future<void> refresh() async {
+    logger.info('Refreshing latest user');
     emit(Refreshing());
     await _getLatestUser();
     await _getLatestAvailability();

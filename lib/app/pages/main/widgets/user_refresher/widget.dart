@@ -12,6 +12,7 @@ class UserRefresher extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider<UserRefresherCubit>(
       create: (_) => UserRefresherCubit(),
+      lazy: false,
       child: _UserChecker(child),
     );
   }
@@ -43,7 +44,7 @@ class _UserCheckerState extends State<_UserChecker>
     final cubit = context.read<UserRefresherCubit>();
 
     if (state == AppLifecycleState.resumed) {
-      cubit.check();
+      cubit.refresh();
     }
   }
 

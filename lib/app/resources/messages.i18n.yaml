@@ -22,6 +22,8 @@ main:
       title: "An error occurred"
       unknown: "Unknown error."
       invalidDestination: "Dialed number is invalid."
+      noMobileNumber: >-
+        The app uses your mobile number to call, but it has not been added to your account yet. Please contact your provider, as only they can add your mobile number to your account.
 
   dialer:
     title: &keypadTitle "Keypad"
