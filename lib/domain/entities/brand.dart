@@ -1,10 +1,15 @@
 abstract class Brand {
+  String get identifier;
+
   String get appName;
 
   Uri get baseUrl;
 }
 
 class Vialer extends Brand {
+  @override
+  final String identifier = 'vialer';
+
   @override
   final String appName = 'Vialer';
 
@@ -13,6 +18,9 @@ class Vialer extends Brand {
 }
 
 class Voys extends Brand {
+  @override
+  final String identifier = 'voys';
+
   @override
   final String appName = 'Voys Freedom';
 

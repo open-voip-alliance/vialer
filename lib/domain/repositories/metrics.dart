@@ -15,9 +15,14 @@ class MetricsRepository {
     });
   }
 
-  Future<void> identify(String userId) async {
+  Future<void> identify(String userId, String brandIdentifier) async {
     await doIfNotDebug(() async {
-      await Segment.identify(userId: userId);
+      await Segment.identify(
+        userId: userId,
+        traits: {
+          'brand': brandIdentifier,
+        },
+      );
     });
   }
 
