@@ -15,6 +15,7 @@ class GetPortalWebViewUrlUseCase extends UseCase {
     PortalPage.dialPlan: '/dialplan/',
     PortalPage.stats: '/stats/dashboard/',
     PortalPage.passwordReset: '/user/password_reset/',
+    PortalPage.addDestination: '/fixeddestination/add/'
   };
   final _unauthenticatedPages = [PortalPage.passwordReset];
 

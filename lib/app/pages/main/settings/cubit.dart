@@ -6,6 +6,7 @@ import '../../../../domain/entities/setting.dart';
 import '../../../../domain/usecases/change_setting.dart';
 import '../../../../domain/usecases/get_build_info.dart';
 import '../../../../domain/usecases/get_has_voip.dart';
+import '../../../../domain/usecases/get_latest_availability.dart';
 import '../../../../domain/usecases/get_settings.dart';
 import '../../../../domain/usecases/logout.dart';
 import '../../../util/loggable.dart';
@@ -19,6 +20,7 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
   final _changeSetting = ChangeSettingUseCase();
   final _getBuildInfo = GetBuildInfoUseCase();
   final _getHasVoip = GetHasVoipUseCase();
+  final _getLatestAvailability = GetLatestAvailabilityUseCase();
   final _logout = LogoutUseCase();
 
   StreamSubscription _userRefresherSubscription;
@@ -56,6 +58,13 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
     // TODO (possibly): Use something like the built_value package for lists
     // in states, so that if there's no difference in the setting after it has
     // been changed for real, we don't emit the basically same state again.
+    await _emitUpdatedState();
+  }
+
+  Future<void> refreshAvailability() async {
+    logger.info('Refreshing availability');
+
+    await _getLatestAvailability();
     await _emitUpdatedState();
   }
 

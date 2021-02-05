@@ -153,6 +153,7 @@ main:
           description: >-
             Choose the VoIP account you want to receive the call on when someone calls you.
         notAvailable: "No destination"
+        addAvailability: "Add availability"
         useVoip:
           title: "Use VoIP"
           description: >-

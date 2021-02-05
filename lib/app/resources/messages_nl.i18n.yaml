@@ -158,6 +158,7 @@ main:
           description: >-
             Kies het VoIP-account waarop je oproepen wilt ontvangen wanneer iemand je belt.
         notAvailable: "Geen eindbestemming"
+        addAvailability: "Bereikbaarheid toevoegen"
         useVoip:
           title: "Gebruik VoIP"
           description: >-
