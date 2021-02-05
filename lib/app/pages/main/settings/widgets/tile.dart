@@ -7,9 +7,11 @@ import '../../../../../domain/entities/brand.dart';
 import '../../../../../domain/entities/destination.dart';
 import '../../../../../domain/entities/fixed_destination.dart';
 import '../../../../../domain/entities/phone_account.dart';
+import '../../../../../domain/entities/portal_page.dart';
 import '../../../../../domain/entities/setting.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
+import '../../../web_view/page.dart';
 import '../cubit.dart';
 
 class SettingTile extends StatelessWidget {
@@ -140,6 +142,21 @@ class SettingTile extends StatelessWidget {
     final availability = setting.value;
     return Builder(
       builder: (context) {
+        void openAddAvailabilityWebView() {
+          WidgetsBinding.instance.addPostFrameCallback((_) async {
+            await Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => PortalWebViewPage(
+                  PortalPage.addDestination,
+                ),
+              ),
+            );
+
+            context.read<SettingsCubit>().refreshAvailability();
+          });
+        }
+
         return SettingTile(
           label: Text(
             context.msg.main.settings.list.calling.availability.title,
@@ -150,22 +167,31 @@ class SettingTile extends StatelessWidget {
           childFillWidth: true,
           child: _MultipleChoiceSettingValue<Destination>(
             value: availability.activeDestination,
-            items: availability.destinations
-                .map(
-                  (destination) => DropdownMenuItem<Destination>(
-                    child: Text(destination.dropdownValue(context)),
-                    value: destination,
-                  ),
-                )
-                .toList(),
-            onChanged: (destination) => defaultOnChanged(
-              context,
-              setting.copyWith(
-                value: availability.copyWithSelectedDestination(
-                  destination: destination,
+            items: [
+              ...availability.destinations.map(
+                (destination) => DropdownMenuItem<Destination>(
+                  child: Text(destination.dropdownValue(context)),
+                  value: destination,
                 ),
               ),
-            ),
+              DropdownMenuItem<Destination>(
+                child: Text(
+                  context.msg.main.settings.list.calling.addAvailability,
+                ),
+                value: null,
+                onTap: openAddAvailabilityWebView,
+              ),
+            ],
+            onChanged: (destination) => destination != null
+                ? defaultOnChanged(
+                    context,
+                    setting.copyWith(
+                      value: availability.copyWithSelectedDestination(
+                        destination: destination,
+                      ),
+                    ),
+                  )
+                : () {},
             isExpanded: true,
           ),
         );
