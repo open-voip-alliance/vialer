@@ -10,7 +10,7 @@ import '../../../../domain/usecases/get_latest_availability.dart';
 import '../../../../domain/usecases/get_settings.dart';
 import '../../../../domain/usecases/logout.dart';
 import '../../../util/loggable.dart';
-import '../widgets/user_refresher/cubit.dart';
+import '../widgets/user_data_refresher/cubit.dart';
 import 'state.dart';
 
 export 'state.dart';
@@ -25,9 +25,11 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
 
   StreamSubscription _userRefresherSubscription;
 
-  SettingsCubit(UserRefresherCubit userRefresher) : super(SettingsState()) {
+  SettingsCubit(
+    UserDataRefresherCubit userDataRefresher,
+  ) : super(SettingsState()) {
     _emitUpdatedState();
-    _userRefresherSubscription = userRefresher.listen(
+    _userRefresherSubscription = userDataRefresher.listen(
       (state) {
         if (state is NotRefreshing) {
           _emitUpdatedState();

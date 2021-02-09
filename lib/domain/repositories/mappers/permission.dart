@@ -11,6 +11,9 @@ extension PermissionMapper on domain.Permission {
       case domain.Permission.contacts:
         return Permission.contacts;
 
+      case domain.Permission.microphone:
+        return Permission.microphone;
+
       default:
         throw UnsupportedError(
           'Domain Permission has no equivalent package Permission: $this',

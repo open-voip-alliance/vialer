@@ -42,6 +42,7 @@ abstract class BrandTheme {
   final grey3 = const Color(0xFFE0E0E0);
   final grey4 = const Color(0xFF8F8F8F);
   final grey5 = const Color(0xFF8B95A3);
+  final grey6 = const Color(0xFF666666);
 
   final settingsBackgroundHighlight = const Color(0xFFEFF0F8);
 
@@ -49,11 +50,17 @@ abstract class BrandTheme {
   final green2 = const Color(0xFFACF5A6);
   final green3 = const Color(0xFF046614);
 
+  final red1 = const Color(0xFFDA534F);
+
   Color get splashScreenColor;
 
   Color get onboardingGradientStart;
 
   Color get onboardingGradientEnd;
+
+  Color get callGradientStart;
+
+  Color get callGradientEnd;
 
   final Color errorBorderColor = const Color(0xFFDA534F).withOpacity(0.32);
 
@@ -113,6 +120,12 @@ class VialerTheme extends BrandTheme {
 
   @override
   final onboardingGradientEnd = const Color(0xFFE94E1B);
+
+  @override
+  get callGradientStart => onboardingGradientStart;
+
+  @override
+  get callGradientEnd => onboardingGradientEnd;
 }
 
 class VoysTheme extends BrandTheme {
@@ -136,6 +149,12 @@ class VoysTheme extends BrandTheme {
 
   @override
   get onboardingGradientEnd => primaryDark;
+
+  @override
+  get callGradientStart => primary;
+
+  @override
+  final callGradientEnd = const Color(0xFF7F67D1);
 
   @override
   Color get buttonColor => primary;
@@ -204,4 +223,8 @@ abstract class VialerSans {
   static const caretLeft = IconData(0xE98E, fontFamily: _family);
   static const voipCloud = IconData(0xE902, fontFamily: _family);
   static const refresh = IconData(0xE9A8, fontFamily: _family);
+  static const mute = IconData(0xE945, fontFamily: _family);
+  static const transfer = IconData(0xE92C, fontFamily: _family);
+  static const onHold = IconData(0xE91F, fontFamily: _family);
+  static const hangUp = IconData(0xE96B, fontFamily: _family);
 }

@@ -11,12 +11,16 @@ import 'auth.dart';
 import 'services/voipgrid.dart';
 import 'storage.dart';
 
-class CallRepository {
+class CallThroughRepository {
   final VoipgridService _service;
   final StorageRepository _storageRepository;
   final AuthRepository _authRepository;
 
-  CallRepository(this._service, this._storageRepository, this._authRepository);
+  CallThroughRepository(
+    this._service,
+    this._storageRepository,
+    this._authRepository,
+  );
 
   Future<void> call(String destination) async {
     final mobileNumber = _authRepository.currentUser?.mobileNumber;

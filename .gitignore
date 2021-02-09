@@ -42,3 +42,6 @@ lib/generated_plugin_registrant.dart
 *.g.dart
 *.chopper.dart
 *.i18n.dart
+
+local.properties
+google-services.json

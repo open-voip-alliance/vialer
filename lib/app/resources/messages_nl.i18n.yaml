@@ -55,6 +55,17 @@ main:
       buttonPermission: "Geef toestemming"
       buttonOpenSettings: "Open instellingen"
 
+  call:
+    actions:
+      mute: "dempen"
+      keypad: "toetsen"
+      speaker: "luidspreker"
+      transfer: "doorverbinden"
+      hold: "wacht"
+    state:
+      calling: Bellen
+      callEnded: Gesprek beëindigd
+
   recent:
     title: "Recente gesprekken"
     menu:

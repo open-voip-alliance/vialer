@@ -25,9 +25,10 @@ class ChangeSettingUseCase extends FutureUseCase<void> {
     } else if (remote && setting is AvailabilitySetting) {
       var availability = (setting as AvailabilitySetting).value;
       await _destinationRepository.setAvailability(
-        selectedDestinationId: availability.selectedDestination.id,
-        phoneAccountId: availability.selectedDestination.phoneAccountId,
-        fixedDestinationId: availability.selectedDestination.fixedDestinationId,
+        selectedDestinationId: availability.selectedDestinationInfo.id,
+        phoneAccountId: availability.selectedDestinationInfo.phoneAccountId,
+        fixedDestinationId:
+            availability.selectedDestinationInfo.fixedDestinationId,
       );
 
       availability = await _destinationRepository.getLatestAvailability();

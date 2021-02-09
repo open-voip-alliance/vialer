@@ -7,7 +7,7 @@ import '../../app/util/json_converter.dart';
 import 'destination.dart';
 import 'fixed_destination.dart';
 import 'phone_account.dart';
-import 'selected_user_destination.dart';
+import 'selected_destination_info.dart';
 
 part 'availability.g.dart';
 
@@ -23,16 +23,18 @@ class Availability extends Equatable {
   final List<PhoneAccount> phoneAccounts;
 
   @JsonKey(name: 'selecteduserdestination')
-  final SelectedDestination selectedDestination;
+  final SelectedDestinationInfo selectedDestinationInfo;
 
   Destination get activeDestination {
-    if (selectedDestination?.phoneAccountId == null &&
-        selectedDestination?.fixedDestinationId == null) {
+    if (selectedDestinationInfo?.phoneAccountId == null &&
+        selectedDestinationInfo?.fixedDestinationId == null) {
       return FixedDestination.notAvailable;
     } else {
-      return _destinations.firstOrNullWhere((destination) =>
-          destination.id == selectedDestination?.phoneAccountId ||
-          destination.id == selectedDestination?.fixedDestinationId);
+      return _destinations.firstOrNullWhere(
+        (destination) =>
+            destination.id == selectedDestinationInfo?.phoneAccountId ||
+            destination.id == selectedDestinationInfo?.fixedDestinationId,
+      );
     }
   }
 
@@ -50,30 +52,25 @@ class Availability extends Equatable {
     ];
   }
 
-  @override
-  String toString() => '$id, \n'
-      'fixed destinations: $fixedDestinations, \n'
-      'phone accounts: $phoneAccounts, \n'
-      'selected destination: $selectedDestination';
-
   const Availability({
     this.id,
     this.fixedDestinations,
     this.phoneAccounts,
-    this.selectedDestination,
+    this.selectedDestinationInfo,
   });
 
   Availability copyWith({
     int id,
     List<FixedDestination> fixedDestinations,
     List<PhoneAccount> phoneAccounts,
-    SelectedDestination selectedDestination,
+    SelectedDestinationInfo selectedDestinationInfo,
   }) {
     return Availability(
       id: id ?? this.id,
       fixedDestinations: fixedDestinations ?? this.fixedDestinations,
       phoneAccounts: phoneAccounts ?? this.phoneAccounts,
-      selectedDestination: selectedDestination ?? this.selectedDestination,
+      selectedDestinationInfo:
+          selectedDestinationInfo ?? this.selectedDestinationInfo,
     );
   }
 
@@ -81,11 +78,18 @@ class Availability extends Equatable {
     @required Destination destination,
   }) {
     return copyWith(
-      selectedDestination: selectedDestination.replaceDestination(
+      selectedDestinationInfo: selectedDestinationInfo.replaceDestination(
         destination: destination,
       ),
     );
   }
+
+  @override
+  String toString() => '$runtimeType('
+      'id: $id, '
+      'fixedDestinations: $fixedDestinations, '
+      'phoneAccounts: $phoneAccounts, '
+      'selectedDestinationInfo: $selectedDestinationInfo)';
 
   factory Availability.fromJson(Map<String, dynamic> json) =>
       _$AvailabilityFromJson(json);
@@ -97,6 +101,6 @@ class Availability extends Equatable {
         id,
         fixedDestinations,
         phoneAccounts,
-        selectedDestination,
+        selectedDestinationInfo,
       ];
 }

@@ -52,6 +52,9 @@ abstract class VoipgridService extends ChopperService {
     @Path() String id,
     @Body() Map<String, dynamic> body,
   );
+
+  @Get(path: 'phoneaccount/basic/phoneaccount/{id}/')
+  Future<Response> getPhoneAccount(@Path() String id);
 }
 
 class _AuthorizationInterceptor implements RequestInterceptor {

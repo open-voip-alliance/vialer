@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
+import '../entities/phone_account.dart';
 
 import '../entities/setting.dart';
 import '../entities/system_user.dart';
@@ -78,6 +79,30 @@ class StorageRepository {
 
   set callThroughCallsCount(int value) =>
       _preferences.setInt(_callThroughCallsCountKey, value);
+
+  static const _tokenKey = 'token';
+
+  String get token => _preferences.getString(_tokenKey);
+
+  set token(String value) => _preferences.setString(_tokenKey, value);
+
+  static const _appAccountKey = 'app_account';
+
+  PhoneAccount get appAccount {
+    final preference = _preferences.getString(_appAccountKey);
+    if (preference == null) {
+      return null;
+    }
+
+    return PhoneAccount.fromJson(
+      json.decode(preference) as Map<String, dynamic>,
+    );
+  }
+
+  set appAccount(PhoneAccount user) => _preferences.setString(
+        _appAccountKey,
+        user != null ? json.encode(user.toJson()) : null,
+      );
 
   Future<void> clear() => _preferences.clear();
 }

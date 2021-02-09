@@ -21,3 +21,5 @@ analyzer:
     - lib/**.i18n.dart
     - lib/**.chopper.dart
     - lib/**.g.dart
+    # TODO: Remove when pub package
+    - voip_flutter_integration
