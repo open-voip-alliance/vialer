@@ -3,32 +3,32 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'cubit.dart';
 
-class UserRefresher extends StatelessWidget {
+class UserDataRefresher extends StatelessWidget {
   final Widget child;
 
-  const UserRefresher({Key key, this.child}) : super(key: key);
+  const UserDataRefresher({Key key, this.child}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<UserRefresherCubit>(
-      create: (_) => UserRefresherCubit(),
+    return BlocProvider<UserDataRefresherCubit>(
       lazy: false,
-      child: _UserChecker(child),
+      create: (_) => UserDataRefresherCubit(),
+      child: _UserDataRefresher(child),
     );
   }
 }
 
-/// Private widget with a context that has access to [UserRefresherCubit].
-class _UserChecker extends StatefulWidget {
+/// Private widget with a context that has access to [UserDataRefresher].
+class _UserDataRefresher extends StatefulWidget {
   final Widget child;
 
-  _UserChecker(this.child);
+  _UserDataRefresher(this.child);
 
   @override
-  _UserCheckerState createState() => _UserCheckerState();
+  _UserDataRefresherState createState() => _UserDataRefresherState();
 }
 
-class _UserCheckerState extends State<_UserChecker>
+class _UserDataRefresherState extends State<_UserDataRefresher>
     with
         // ignore: prefer_mixin
         WidgetsBindingObserver {
@@ -41,7 +41,7 @@ class _UserCheckerState extends State<_UserChecker>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    final cubit = context.read<UserRefresherCubit>();
+    final cubit = context.read<UserDataRefresherCubit>();
 
     if (state == AppLifecycleState.resumed) {
       cubit.refresh();

@@ -15,13 +15,17 @@ class PhoneAccount extends Destination {
 
   final int internalNumber;
 
+  @override
   final String description;
+
+  final String password;
 
   const PhoneAccount({
     this.id,
     this.accountId,
     this.internalNumber,
     this.description,
+    this.password,
   });
 
   PhoneAccount copyWith({
@@ -29,12 +33,14 @@ class PhoneAccount extends Destination {
     int accountId,
     int internalNumber,
     String description,
+    String password,
   }) {
     return PhoneAccount(
       id: id ?? this.id,
       accountId: accountId ?? this.accountId,
       internalNumber: internalNumber ?? this.internalNumber,
       description: description ?? this.description,
+      password: password ?? this.password,
     );
   }
 
@@ -53,5 +59,6 @@ class PhoneAccount extends Destination {
         accountId,
         internalNumber,
         description,
+        password,
       ];
 }

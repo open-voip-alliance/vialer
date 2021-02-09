@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../../domain/entities/onboarding/step.dart';
 import '../../routes.dart';
+import '../main/widgets/caller.dart';
 import 'cubit.dart';
 import 'login/page.dart';
 import 'password/page.dart';
@@ -83,7 +84,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
         backgroundColor: Colors.transparent,
         resizeToAvoidBottomInset: false,
         body: BlocProvider<OnboardingCubit>(
-          create: (_) => OnboardingCubit(),
+          create: (_) => OnboardingCubit(
+            context.watch<CallerCubit>(),
+          ),
           child: BlocConsumer<OnboardingCubit, OnboardingState>(
             listener: _onStateChange,
             builder: (context, state) {

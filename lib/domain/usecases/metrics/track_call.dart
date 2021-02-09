@@ -10,8 +10,15 @@ class TrackCallUseCase extends FutureUseCase<void> {
   final _metricsRepository = dependencyLocator<MetricsRepository>();
 
   @override
-  Future<void> call({@required String via}) => _metricsRepository.track(
+  Future<void> call({
+    @required String via,
+    @required bool voip,
+  }) =>
+      _metricsRepository.track(
         'call',
-        {'via': via},
+        {
+          'via': via,
+          'voip': voip,
+        },
       );
 }

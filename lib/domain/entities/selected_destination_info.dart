@@ -1,15 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:voip_flutter_integration/util/equatable.dart';
 
 import 'destination.dart';
 import 'fixed_destination.dart';
 import 'phone_account.dart';
 
-part 'selected_user_destination.g.dart';
+part 'selected_destination_info.g.dart';
 
 @JsonSerializable(fieldRename: FieldRename.snake)
-class SelectedDestination extends Destination {
-  @override
+class SelectedDestinationInfo extends Equatable {
   final int id;
 
   @JsonKey(name: 'fixeddestination')
@@ -18,28 +18,28 @@ class SelectedDestination extends Destination {
   @JsonKey(name: 'phoneaccount')
   final int phoneAccountId;
 
-  const SelectedDestination({
+  const SelectedDestinationInfo({
     this.id,
     this.fixedDestinationId,
     this.phoneAccountId,
   });
 
-  SelectedDestination copyWith({
+  SelectedDestinationInfo copyWith({
     int id,
     int fixedDestinationId,
     int phoneAccountId,
   }) {
-    return SelectedDestination(
+    return SelectedDestinationInfo(
       id: id ?? this.id,
       fixedDestinationId: fixedDestinationId ?? this.fixedDestinationId,
       phoneAccountId: phoneAccountId ?? this.phoneAccountId,
     );
   }
 
-  SelectedDestination replaceDestination({
+  SelectedDestinationInfo replaceDestination({
     @required Destination destination,
   }) {
-    return SelectedDestination(
+    return SelectedDestinationInfo(
       id: id,
       fixedDestinationId:
           (destination is FixedDestination) ? destination.id : null,
@@ -47,20 +47,19 @@ class SelectedDestination extends Destination {
     );
   }
 
-  factory SelectedDestination.fromJson(Map<String, dynamic> json) =>
-      _$SelectedDestinationFromJson(json);
+  factory SelectedDestinationInfo.fromJson(Map<String, dynamic> json) =>
+      _$SelectedDestinationInfoFromJson(json);
 
-  Map<String, dynamic> toJson() => _$SelectedDestinationToJson(this);
+  Map<String, dynamic> toJson() => _$SelectedDestinationInfoToJson(this);
 
   @override
   String toString() => '$runtimeType('
       'id: $id, '
-      'fixed destination: $fixedDestinationId, '
-      'phone account: $phoneAccountId)';
+      'fixedDestinationId: $fixedDestinationId, '
+      'phoneAccountId: $phoneAccountId)';
 
   @override
   List<Object> get props => [
-        ...super.props,
         id,
         fixedDestinationId,
         phoneAccountId,

@@ -26,7 +26,7 @@ apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 30
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
@@ -34,36 +34,39 @@ android {
 
     lintOptions {
         disable 'InvalidPackage'
+        checkReleaseBuilds false
     }
 
     defaultConfig {
-        // TODO: When we start building the full app with VoIP for all brands, change the app id here to be an env variable.
+        // TODO: When we start building the full app with VoIP for all brands,
+        // change the app id here to be an env variable.
         applicationId "com.voys.freedom"
-        minSdkVersion 16
-        targetSdkVersion 29
+        minSdkVersion 26
+        targetSdkVersion 30
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     def KEYSTORE_FILE_NAME = "keystore.jks"
-     signingConfigs {
-               release {
-                   if (System.getenv()["CI"]) { // CI=true is exported by Codemagic
-                       storeFile file(System.getenv()["FCI_BUILD_DIR"] + "/" + KEYSTORE_FILE_NAME)
-                       storePassword System.getenv()["FCI_KEYSTORE_PASSWORD"]
-                       keyAlias System.getenv()["FCI_KEY_ALIAS"]
-                       keyPassword System.getenv()["FCI_KEY_PASSWORD"]
-                   }
-               }
-           }
+    signingConfigs {
+        release {
+            if (System.getenv()["CI"]) { // CI=true is exported by Codemagic
+                storeFile file(System.getenv()["FCI_BUILD_DIR"] + "/" + KEYSTORE_FILE_NAME)
+                storePassword System.getenv()["FCI_KEYSTORE_PASSWORD"]
+                keyAlias System.getenv()["FCI_KEY_ALIAS"]
+                keyPassword System.getenv()["FCI_KEY_PASSWORD"]
+            }
+        }
+    }
 
     buildTypes {
         release {
+            shrinkResources false
+            minifyEnabled false
             if (System.getenv()["CI"]) { // CI=true is exported by Codemagic
                 signingConfig signingConfigs.release
-            }
-            else {
+            } else {
                 // Signing with the debug keys outside of CI.
                 signingConfig signingConfigs.debug
             }

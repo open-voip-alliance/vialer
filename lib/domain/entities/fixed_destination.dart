@@ -16,6 +16,7 @@ class FixedDestination extends Destination {
   @JsonKey(name: 'phonenumber', fromJson: _normalizedPhoneNumber)
   final String phoneNumber;
 
+  @override
   final String description;
 
   static String _normalizedPhoneNumber(String json) =>

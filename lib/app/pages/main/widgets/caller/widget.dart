@@ -6,6 +6,7 @@ import '../../../../../domain/entities/exceptions/call_through.dart';
 import '../../../../../domain/entities/survey/survey_trigger.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
+import '../../call/page.dart';
 import '../../survey/dialog.dart';
 import 'confirm/page.dart';
 import 'cubit.dart';
@@ -58,7 +59,17 @@ class _CallerState extends State<Caller> with WidgetsBindingObserver {
     }
   }
 
+  // NOTE: Only called when the state type changes, not when the same state
+  // with a different `call` is emitted.
   Future<void> _onStateChanged(BuildContext context, CallerState state) async {
+    if (state is InitiatingCall && state.isVoip) {
+      await widget.navigatorKey.currentState.push(
+        MaterialPageRoute(
+          builder: (_) => const CallPage(),
+        ),
+      );
+    }
+
     if (state is ShowConfirmPage) {
       await widget.navigatorKey.currentState.push(
         ConfirmPageRoute(
@@ -91,6 +102,8 @@ class _CallerState extends State<Caller> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return BlocListener<CallerCubit, CallerState>(
+      listenWhen: (previous, current) =>
+          previous.runtimeType != current.runtimeType,
       listener: _onStateChanged,
       child: widget.child,
     );

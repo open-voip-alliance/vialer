@@ -39,7 +39,7 @@ class LoginCubit extends Cubit<LoginState> with Loggable {
       _identifyForTracking();
       _trackLogin();
 
-      _getLatestAvailability();
+      await _getLatestAvailability();
     } else {
       logger.info('Login failed');
       emit(LoginFailed());

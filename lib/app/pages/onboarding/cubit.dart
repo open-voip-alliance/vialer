@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../domain/entities/onboarding/step.dart';
 import '../../../domain/usecases/onboarding/get_steps.dart';
 import '../../util/loggable.dart';
+import '../main/widgets/caller.dart';
 import 'state.dart';
 
 export 'state.dart';
@@ -10,7 +11,9 @@ export 'state.dart';
 class OnboardingCubit extends Cubit<OnboardingState> with Loggable {
   final _getSteps = GetOnboardingStepsUseCase();
 
-  OnboardingCubit()
+  final CallerCubit _caller;
+
+  OnboardingCubit(this._caller)
       : super(
           OnboardingState(
             currentStep: OnboardingStep.login,
@@ -49,6 +52,7 @@ class OnboardingCubit extends Cubit<OnboardingState> with Loggable {
     if (indexOfCurrent + 1 >= allSteps.length) {
       logger.info('Onboarding complete');
 
+      _caller.initialize();
       emit(state.copyWith(completed: true));
     } else {
       _goTo(allSteps[indexOfCurrent + 1], password: password);

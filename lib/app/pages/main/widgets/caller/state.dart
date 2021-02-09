@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
+import 'package:voip_flutter_integration/voip_flutter_integration.dart';
 
 import '../../../../../domain/entities/exceptions/call_through.dart';
 
@@ -26,12 +27,12 @@ class ShowConfirmPage extends CallerState with CallProcessState {
   final CallOrigin origin;
 
   @override
-  final bool useVoip;
+  final FilCall call;
 
   ShowConfirmPage({
     @required this.destination,
     @required this.origin,
-    this.useVoip,
+    this.call,
   });
 
   @override
@@ -43,14 +44,9 @@ class InitiatingCall extends CallerState with CallProcessState {
   final CallOrigin origin;
 
   @override
-  final bool useVoip;
+  final FilCall call;
 
-  InitiatingCall({@required this.origin, @required this.useVoip});
-
-  InitiatingCallFailed failed(CallThroughException exception) =>
-      InitiatingCallFailed(exception, origin: origin, useVoip: useVoip);
-
-  Calling calling() => Calling(origin: origin, useVoip: useVoip);
+  InitiatingCall({@required this.origin, this.call});
 }
 
 class InitiatingCallFailed extends CallerState with CallProcessState {
@@ -58,14 +54,14 @@ class InitiatingCallFailed extends CallerState with CallProcessState {
   final CallOrigin origin;
 
   @override
-  final bool useVoip;
+  final FilCall call;
 
   final CallThroughException exception;
 
   InitiatingCallFailed(
     this.exception, {
     @required this.origin,
-    @required this.useVoip,
+    @required this.call,
   });
 
   @override
@@ -77,20 +73,12 @@ class Calling extends CallerState with CallProcessState {
   final CallOrigin origin;
 
   @override
-  final bool useVoip;
+  final FilCall call;
 
   Calling({
     @required this.origin,
-    @required this.useVoip,
+    @required this.call,
   });
-
-  FinishedCalling finished() => FinishedCalling(
-        origin: origin,
-        useVoip: useVoip,
-      );
-
-  ShowCallThroughSurvey showCallThroughSurvey() =>
-      ShowCallThroughSurvey(origin: origin, useVoip: useVoip);
 }
 
 class FinishedCalling extends CanCall with CallProcessState {
@@ -98,31 +86,29 @@ class FinishedCalling extends CanCall with CallProcessState {
   final CallOrigin origin;
 
   @override
-  final bool useVoip;
+  final FilCall call;
 
   FinishedCalling({
     @required this.origin,
-    @required this.useVoip,
+    @required this.call,
   });
 }
 
 class ShowCallThroughSurvey extends FinishedCalling {
-  ShowCallThroughSurvey({
-    @required CallOrigin origin,
-    @required bool useVoip,
-  }) : super(origin: origin, useVoip: useVoip);
+  ShowCallThroughSurvey({@required CallOrigin origin})
+      // Call does not need to be passed here since it's for call-through.
+      : super(origin: origin, call: null);
 
   ShowedCallThroughSurvey showed() => ShowedCallThroughSurvey(
         origin: origin,
-        useVoip: useVoip,
       );
 }
 
 class ShowedCallThroughSurvey extends FinishedCalling {
   ShowedCallThroughSurvey({
     @required CallOrigin origin,
-    @required bool useVoip,
-  }) : super(origin: origin, useVoip: useVoip);
+  }) // Call does not need to be passed here since it's for call-through.
+  : super(origin: origin, call: null);
 }
 
 /// Any state that is part of the actual call process:
@@ -130,10 +116,36 @@ class ShowedCallThroughSurvey extends FinishedCalling {
 mixin CallProcessState on CallerState {
   CallOrigin get origin;
 
-  bool get useVoip;
+  FilCall get call;
+
+  // `call` is only available when it's a VoIP call.
+  bool get isVoip => call != null;
 
   @override
-  List<Object> get props => [...super.props, origin, useVoip];
+  List<Object> get props => [...super.props, origin, call, isVoip];
+
+  InitiatingCallFailed failed(CallThroughException exception) {
+    assert(this is InitiatingCall);
+
+    return InitiatingCallFailed(exception, origin: origin, call: call);
+  }
+
+  Calling calling({FilCall call}) {
+    return Calling(origin: origin, call: call ?? this.call);
+  }
+
+  ShowCallThroughSurvey showCallThroughSurvey() {
+    assert(this is Calling);
+
+    return ShowCallThroughSurvey(origin: origin);
+  }
+
+  FinishedCalling finished() {
+    return FinishedCalling(
+      origin: origin,
+      call: call,
+    );
+  }
 }
 
 /// Where the call started in the UI: dialer, recents, contacts, etc.

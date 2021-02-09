@@ -1,3 +1,6 @@
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive
+
 workflow:
   rules:
     - if: $CI_MERGE_REQUEST_IID
@@ -13,6 +16,11 @@ analyze:
   script:
     - flutter pub get
     - flutter pub run build_runner build
+    # TODO: Remove when pub package
+    - cd voip_flutter_integration
+    - flutter pub get
+    - flutter pub run build_runner build
+    - cd ..
     - touch .env # We add an empty .env so the analyzer is happy.
     - dart analyze . --fatal-infos --fatal-warnings
 
@@ -21,7 +29,7 @@ format:
   stage: check
   script:
     # We don't generate any code, because we don't want to check that anyway.
-    - dart format -o none --fix --set-exit-if-changed .
+    - dart format -o none --fix --set-exit-if-changed lib/
 
 test:
   image: cirrusci/flutter:stable
@@ -30,6 +38,11 @@ test:
     - cp .env.example .env
     - flutter pub get
     - flutter pub run build_runner build
+    # TODO: Remove when pub package
+    - cd voip_flutter_integration
+    - flutter pub get
+    - flutter pub run build_runner build
+    - cd ..
     - flutter pub global activate junitreport
     - export PATH="$PATH":"$HOME/.pub-cache/bin"
     - flutter test --machine | tojunit --output report.xml

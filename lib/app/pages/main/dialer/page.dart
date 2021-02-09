@@ -57,7 +57,7 @@ class _DialerPageState extends State<DialerPage> with WidgetsBindingObserver {
         );
       }
     } else if (state == AppLifecycleState.resumed) {
-      context.read<CallerCubit>().checkCallPermission();
+      context.read<CallerCubit>().checkCallPermissionIfNotVoip();
     }
   }
 

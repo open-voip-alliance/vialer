@@ -1,6 +1,7 @@
 enum Permission {
   phone,
   contacts,
+  microphone,
 }
 
 extension PermissionString on Permission {
