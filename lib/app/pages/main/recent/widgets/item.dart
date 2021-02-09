@@ -6,6 +6,7 @@ import '../../../../../domain/entities/call_with_contact.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
 import '../../util/color.dart';
+import '../../widgets/avatar.dart';
 
 enum _Action {
   copy,
@@ -22,8 +23,8 @@ class RecentCallItem extends StatelessWidget {
   const RecentCallItem({
     Key key,
     this.call,
-    this.onCopyPressed,
-    this.onCallPressed,
+    @required this.onCopyPressed,
+    @required this.onCallPressed,
   }) : super(key: key);
 
   void _onPopupMenuItemPress(_Action _action) {
@@ -42,7 +43,15 @@ class RecentCallItem extends StatelessWidget {
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 16),
       onTap: onCallPressed,
-      leading: _RecentItemAvatar(call),
+      leading: Avatar(
+        name: call.destinationName,
+        backgroundColor: calculateColorForPhoneNumber(
+          context,
+          call.destinationNumber,
+        ),
+        showFallback: call.contact?.name == null,
+        fallback: const Icon(VialerSans.phone, size: 20),
+      ),
       title: Text(
         call.direction == Direction.inbound
             ? call.callerNumber
@@ -80,46 +89,6 @@ class RecentCallItem extends StatelessWidget {
           color: context.brandTheme.grey1,
           size: 16,
         ),
-      ),
-    );
-  }
-}
-
-class _RecentItemAvatar extends StatelessWidget {
-  final CallWithContact call;
-
-  const _RecentItemAvatar(this.call, {Key key}) : super(key: key);
-
-  String get _letters {
-    final letters = call.destinationName.split(' ').map(
-          (word) => word.substring(0, 1).toUpperCase(),
-        );
-
-    if (letters.length == 1) {
-      return letters.first;
-    } else {
-      return letters.first + letters.last;
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 36,
-      alignment: Alignment.center,
-      child: CircleAvatar(
-        foregroundColor: Colors.white,
-        backgroundColor:
-            calculateColorForPhoneNumber(context, call.destinationNumber),
-        child: call.contact?.name != null
-            ? Text(
-                _letters,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
-              )
-            : const Icon(VialerSans.phone, size: 20),
       ),
     );
   }
