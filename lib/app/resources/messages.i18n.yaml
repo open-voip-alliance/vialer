@@ -129,6 +129,12 @@ main:
           description: >-
             Automatically share your app activity with our developers and support team to
             help resolve issues and errors.
+          sendToRemoteDialog:
+            title: Send the logs from today as well
+            description: >-
+              By allowing this, our team can see problems that happened today before you
+              turned Remote Logging on. This helps us understand the problem better.
+            confirm: Send to remote
       accountInfo:
         title: "Account information"
         phoneNumber:

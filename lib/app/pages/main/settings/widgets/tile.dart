@@ -11,6 +11,7 @@ import '../../../../../domain/entities/portal_page.dart';
 import '../../../../../domain/entities/setting.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
+import '../../../../util/conditional_capitalization.dart';
 import '../../../web_view/page.dart';
 import '../cubit.dart';
 
@@ -89,7 +90,22 @@ class SettingTile extends StatelessWidget {
           description: Text(
             context.msg.main.settings.list.debug.remoteLogging.description,
           ),
-          child: _BoolSettingValue(setting),
+          child: _BoolSettingValue(
+            setting,
+            onChanged: (context, setting) {
+              // Show a popup, asking if the user wants to send their locally
+              // saved logs to the remote.
+              if (setting.value) {
+                showDialog(
+                  context: context,
+                  builder: (_) => _RemoteLoggingSendLogsDialog(
+                    cubit: context.read<SettingsCubit>(),
+                  ),
+                );
+              }
+              defaultOnChanged(context, setting);
+            },
+          ),
         );
       },
     );
@@ -364,6 +380,76 @@ class _MultipleChoiceSettingValue<T> extends StatelessWidget {
         onChanged: onChanged,
       ),
     );
+  }
+}
+
+class _RemoteLoggingSendLogsDialog extends StatelessWidget {
+  final SettingsCubit cubit;
+
+  const _RemoteLoggingSendLogsDialog({
+    Key key,
+    @required this.cubit,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final title = Text(
+      context
+          .msg.main.settings.list.debug.remoteLogging.sendToRemoteDialog.title,
+    );
+    final content = Text(
+      context.msg.main.settings.list.debug.remoteLogging.sendToRemoteDialog
+          .description,
+    );
+
+    final deny = Text(
+      context.msg.generic.button.noThanks.toUpperCaseIfAndroid(context),
+    );
+    final confirm = Text(
+      context
+          .msg.main.settings.list.debug.remoteLogging.sendToRemoteDialog.confirm
+          .toUpperCaseIfAndroid(context),
+    );
+
+    void onDenyPressed() => Navigator.pop(context);
+    void onConfirmPressed() {
+      cubit.sendSavedLogsToRemote();
+      Navigator.pop(context);
+    }
+
+    if (context.isAndroid) {
+      return AlertDialog(
+        title: title,
+        content: content,
+        actions: [
+          FlatButton(
+            textColor: context.brandTheme.primary,
+            onPressed: onDenyPressed,
+            child: deny,
+          ),
+          FlatButton(
+            textColor: context.brandTheme.primary,
+            onPressed: onConfirmPressed,
+            child: confirm,
+          ),
+        ],
+      );
+    } else {
+      return CupertinoAlertDialog(
+        title: title,
+        content: content,
+        actions: [
+          CupertinoDialogAction(
+            onPressed: onDenyPressed,
+            child: deny,
+          ),
+          CupertinoDialogAction(
+            onPressed: onConfirmPressed,
+            child: confirm,
+          ),
+        ],
+      );
+    }
   }
 }
 

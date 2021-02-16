@@ -80,13 +80,13 @@ class LoggingRepository {
     );
 
     // Sanitize the logs, if this ever fires code should be changed to not
-    // make this happen
+    // make this happen.
     sanitizedMessage = sanitizedMessage
         .replaceAll(phoneNumberRegex, '[REDACTED PHONE NUMBER]')
         .replaceAll(emailRegex, '[REDACTED EMAIL]');
 
-    // If log message is the same as the sanitized message, no sanitization
-    // has taken place and we're good
+    // If log message is the same as the sanitized message, no sanitation
+    // has taken place and we're good.
     assert(record.message == sanitizedMessage);
 
     final user = _authRepository.currentUser;
@@ -116,15 +116,17 @@ class LoggingRepository {
     }
   }
 
+  Future<String> get _logentriesToken => Platform.isAndroid
+      ? _envRepository.logentriesAndroidToken
+      : _envRepository.logentriesIosToken;
+
   Future<void> enableRemoteLogging() async {
     _remoteLoggingSocket = await SecureSocket.connect(
       'data.logentries.com',
       443,
     );
 
-    final token = Platform.isAndroid
-        ? await _envRepository.logentriesAndroidToken
-        : await _envRepository.logentriesIosToken;
+    final token = await _logentriesToken;
 
     if (token != null && token.isNotEmpty) {
       _remoteLogSubscription ??= Logger.root.onRecord.listen((record) async {
@@ -136,6 +138,20 @@ class LoggingRepository {
         _remoteLoggingSocket.writeln('$token $message');
       });
     }
+  }
+
+  Future<void> sendSavedLogsToRemote() async {
+    assert(_remoteLoggingSocket != null);
+
+    final token = await _logentriesToken;
+    final savedLogs = _storageRepository.logs.split('\n');
+
+    _remoteLoggingSocket.write(
+      savedLogs.map((line) => '$token $line').join('\n'),
+    );
+
+    // We clear the saved logs after sending.
+    _storageRepository.logs = null;
   }
 
   Future<void> disableRemoteLogging() async {

@@ -9,6 +9,7 @@ import '../../../../domain/usecases/get_has_voip.dart';
 import '../../../../domain/usecases/get_latest_availability.dart';
 import '../../../../domain/usecases/get_settings.dart';
 import '../../../../domain/usecases/logout.dart';
+import '../../../../domain/usecases/send_saved_logs_to_remote.dart';
 import '../../../util/loggable.dart';
 import '../widgets/user_data_refresher/cubit.dart';
 import 'state.dart';
@@ -21,6 +22,7 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
   final _getBuildInfo = GetBuildInfoUseCase();
   final _getHasVoip = GetHasVoipUseCase();
   final _getLatestAvailability = GetLatestAvailabilityUseCase();
+  final _sendSavedLogsToRemote = SendSavedLogsToRemoteUseCase();
   final _logout = LogoutUseCase();
 
   StreamSubscription _userRefresherSubscription;
@@ -69,6 +71,8 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
     await _getLatestAvailability();
     await _emitUpdatedState();
   }
+
+  Future<void> sendSavedLogsToRemote() => _sendSavedLogsToRemote();
 
   Future<void> logout() async {
     logger.info('Logging out');
