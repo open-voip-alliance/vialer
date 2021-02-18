@@ -36,13 +36,7 @@ Future<void> initializeDependencies() async {
         dependencyLocator<VoipgridService>(),
       ),
     )
-    ..registerSingletonWithDependencies<LoggingRepository>(
-      () => LoggingRepository(
-        dependencyLocator<StorageRepository>(),
-        dependencyLocator<EnvRepository>(),
-      ),
-      dependsOn: [StorageRepository],
-    )
+    ..registerSingleton<LoggingRepository>(LoggingRepository())
     ..registerSingleton<PermissionRepository>(PermissionRepository())
     ..registerSingleton<ContactRepository>(ContactRepository())
     ..registerSingletonWithDependencies<RecentCallRepository>(
