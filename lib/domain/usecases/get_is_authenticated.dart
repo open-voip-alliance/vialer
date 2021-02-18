@@ -9,7 +9,6 @@ class GetIsAuthenticatedUseCase extends FutureUseCase<bool> {
   @override
   Future<bool> call() async {
     final user = await _getUser(latest: false);
-
     return user?.token != null;
   }
 }

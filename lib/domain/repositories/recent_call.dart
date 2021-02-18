@@ -7,24 +7,16 @@ import 'package:timezone/timezone.dart';
 import '../entities/call.dart';
 import '../entities/call_with_contact.dart';
 import '../entities/contact.dart';
-import '../entities/permission.dart';
-import '../entities/permission_status.dart';
-import 'contact.dart';
 import 'db/database.dart';
-import 'permission.dart';
 import 'services/voipgrid.dart';
 
 class RecentCallRepository {
   final VoipgridService _service;
   final Database _database;
-  final ContactRepository _contactRepository;
-  final PermissionRepository _permissionRepository;
 
   RecentCallRepository(
     this._service,
     this._database,
-    this._contactRepository,
-    this._permissionRepository,
   );
 
   Logger __logger;
@@ -37,6 +29,7 @@ class RecentCallRepository {
   Future<List<CallWithContact>> getRecentCalls({
     @required int page,
     @required String outgoingNumber,
+    Iterable<Contact> contacts = const [],
   }) async {
     final today = DateTime.now().add(const Duration(days: 1));
     final fromUtc = today
@@ -108,14 +101,6 @@ class RecentCallRepository {
         _database.insertCalls(calls);
       }
     }
-
-    final canAccessContacts =
-        await _permissionRepository.getPermissionStatus(Permission.contacts) ==
-            PermissionStatus.granted;
-
-    final contacts = canAccessContacts
-        ? await _contactRepository.getContacts()
-        : <Contact>[];
 
     Future<String> normalizeNumber(String number) async => number.length > 3
         ? await PhoneNumberUtil.normalizePhoneNumber(

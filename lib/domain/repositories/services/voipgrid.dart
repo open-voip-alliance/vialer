@@ -61,7 +61,6 @@ class _AuthorizationInterceptor implements RequestInterceptor {
   @override
   FutureOr<Request> onRequest(Request request) async {
     final getUser = GetUserUseCase();
-
     final user = await getUser(latest: false);
 
     if (user != null) {
