@@ -86,15 +86,7 @@ dev_dependencies:
 
   json_serializable: ^3.5.0
 
-  flutter_launcher_icons: ^0.7.5
-
-flutter_icons:
-  android: true
-  ios: true
-  image_path_ios: assets/app_icon/ios.png
-  image_path_android: assets/app_icon/android_legacy.png
-  adaptive_icon_background: assets/app_icon/android_background.png
-  adaptive_icon_foreground: assets/app_icon/android_foreground.png
+  flutter_launcher_icons: ^0.8.1
 
 
 # For information on the generic Dart part of this file, see the

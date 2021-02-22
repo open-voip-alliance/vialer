@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../resources/theme.dart';
+import '../util/brand.dart';
 
 class StylizedButton extends StatelessWidget {
   static const _duration = Duration(milliseconds: 300);
@@ -70,13 +70,13 @@ class StylizedButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final borderRadius = BorderRadius.circular(2);
-    final color = BrandTheme.of(context).buttonColor;
-    final shadeColor = BrandTheme.of(context).buttonShadeColor;
+    final color = context.brand.theme.buttonColor;
+    final shadeColor = context.brand.theme.buttonShadeColor;
 
     Color textColor;
     if (_type == _Type.raised) {
       textColor = colored
-          ? BrandTheme.of(context).buttonColoredRaisedTextColor
+          ? context.brand.theme.buttonColoredRaisedTextColor
           : Theme.of(context).primaryColorDark;
     } else {
       textColor = colored ? Theme.of(context).primaryColor : Colors.white;

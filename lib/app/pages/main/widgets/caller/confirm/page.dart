@@ -7,10 +7,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../../../domain/entities/brand.dart';
 import '../../../../../resources/localizations.dart';
 import '../../../../../resources/theme.dart';
 import '../../../../../routes.dart';
+import '../../../../../util/brand.dart';
 import '../../../../../widgets/transparent_status_bar.dart';
 import '../../../widgets/caller.dart';
 import 'cubit.dart';
@@ -152,7 +152,7 @@ class ConfirmPageState extends State<ConfirmPage>
 
   @override
   Widget build(BuildContext context) {
-    final appName = Provider.of<Brand>(context).appName;
+    final appName = context.brand.appName;
 
     return BlocListener<CallerCubit, CallerState>(
       listener: _onCallerStateChanged,
@@ -301,20 +301,20 @@ class _AndroidInputs extends StatelessWidget {
               child: RaisedButton(
                 elevation: 4,
                 onPressed: onCallButtonPressed,
-                color: context.brandTheme.green2,
+                color: context.brand.theme.green2,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Icon(
                       VialerSans.phone,
                       size: 16,
-                      color: context.brandTheme.green3,
+                      color: context.brand.theme.green3,
                     ),
                     const SizedBox(width: 12),
                     Text(
                       destination,
                       style: TextStyle(
-                        color: context.brandTheme.green3,
+                        color: context.brand.theme.green3,
                       ),
                     ),
                   ],

@@ -7,10 +7,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_widgets/flutter_widgets.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../domain/entities/brand.dart';
 import '../../../../domain/entities/contact.dart';
 import '../../../resources/localizations.dart';
 import '../../../resources/theme.dart';
+import '../../../util/brand.dart';
 import '../../../util/conditional_capitalization.dart';
 import '../../../widgets/stylized_button.dart';
 import '../widgets/conditional_placeholder.dart';
@@ -236,13 +236,13 @@ class _Placeholder extends StatelessWidget {
               description: !state.dontAskAgain
                   ? Text(
                       context.msg.main.contacts.list.noPermission.description(
-                        Provider.of<Brand>(context).appName,
+                        context.brand.appName,
                       ),
                     )
                   : Text(
                       context.msg.main.contacts.list.noPermission
                           .permanentDescription(
-                        Provider.of<Brand>(context).appName,
+                        context.brand.appName,
                       ),
                     ),
               children: <Widget>[
@@ -282,7 +282,7 @@ class _Placeholder extends StatelessWidget {
                   ),
                   description: Text(
                     context.msg.main.contacts.list.empty.description(
-                      Provider.of<Brand>(context).appName,
+                      context.brand.appName,
                     ),
                   ),
                 ),
@@ -481,7 +481,7 @@ class _SideLetter extends StatelessWidget {
           style: TextStyle(
             fontSize: fontSize,
             fontWeight: FontWeight.w500,
-            color: context.brandTheme.grey5,
+            color: context.brand.theme.grey5,
           ),
         ),
       ),
@@ -537,11 +537,11 @@ class _SearchTextFieldState extends State<_SearchTextField> {
   @override
   Widget build(BuildContext context) {
     return TextField(
-      cursorColor: context.brandTheme.primary,
+      cursorColor: context.brand.theme.primary,
       controller: _searchController,
       decoration: InputDecoration(
         filled: true,
-        fillColor: context.brandTheme.grey3,
+        fillColor: context.brand.theme.grey3,
         border: const OutlineInputBorder(
           borderSide: BorderSide.none,
           gapPadding: 0,
@@ -549,7 +549,7 @@ class _SearchTextFieldState extends State<_SearchTextField> {
         prefixIcon: Icon(
           VialerSans.search,
           size: 20,
-          color: context.brandTheme.grey4,
+          color: context.brand.theme.grey4,
         ),
         suffixIcon: _canClear
             ? IconButton(
@@ -557,7 +557,7 @@ class _SearchTextFieldState extends State<_SearchTextField> {
                 icon: Icon(
                   VialerSans.close,
                   size: 20,
-                  color: context.brandTheme.grey4,
+                  color: context.brand.theme.grey4,
                 ),
               )
             : null,

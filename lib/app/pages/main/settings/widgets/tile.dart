@@ -11,6 +11,7 @@ import '../../../../../domain/entities/portal_page.dart';
 import '../../../../../domain/entities/setting.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
+import '../../../../util/brand.dart';
 import '../../../../util/conditional_capitalization.dart';
 import '../../../web_view/page.dart';
 import '../cubit.dart';
@@ -224,7 +225,7 @@ class SettingTile extends StatelessWidget {
           decoration: context.isIOS
               ? BoxDecoration(
                   border: Border.all(
-                    color: context.brandTheme.grey2,
+                    color: context.brand.theme.grey2,
                   ),
                   borderRadius: BorderRadius.circular(8),
                 )
@@ -274,7 +275,7 @@ class SettingTile extends StatelessWidget {
             ),
             child: DefaultTextStyle.merge(
               style: TextStyle(
-                color: context.brandTheme.grey4,
+                color: context.brand.theme.grey4,
               ),
               child: description,
             ),
@@ -423,12 +424,12 @@ class _RemoteLoggingSendLogsDialog extends StatelessWidget {
         content: content,
         actions: [
           FlatButton(
-            textColor: context.brandTheme.primary,
+            textColor: context.brand.theme.primary,
             onPressed: onDenyPressed,
             child: deny,
           ),
           FlatButton(
-            textColor: context.brandTheme.primary,
+            textColor: context.brand.theme.primary,
             onPressed: onConfirmPressed,
             child: confirm,
           ),

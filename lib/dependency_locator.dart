@@ -1,7 +1,7 @@
 import 'package:get_it/get_it.dart';
 
-import 'domain/entities/brand.dart';
 import 'domain/repositories/auth.dart';
+import 'domain/repositories/brand.dart';
 import 'domain/repositories/build_info.dart';
 import 'domain/repositories/call_through.dart';
 import 'domain/repositories/connectivity.dart';
@@ -24,7 +24,6 @@ final dependencyLocator = GetIt.instance;
 
 Future<void> initializeDependencies() async {
   dependencyLocator
-    ..registerSingleton<Brand>(Voys())
     ..registerSingleton<Database>(Database())
     ..registerSingleton<EnvRepository>(EnvRepository())
     ..registerSingletonAsync<StorageRepository>(() async {
@@ -32,10 +31,11 @@ Future<void> initializeDependencies() async {
       await storageRepository.load();
       return storageRepository;
     })
+    ..registerSingleton<VoipgridService>(VoipgridService.create())
     ..registerSingletonWithDependencies<AuthRepository>(
       () => AuthRepository(
         dependencyLocator<StorageRepository>(),
-        dependencyLocator<Brand>(),
+        dependencyLocator<VoipgridService>(),
       ),
       dependsOn: [StorageRepository],
     )
@@ -103,7 +103,8 @@ Future<void> initializeDependencies() async {
         dependencyLocator<VoipgridService>(),
       ),
       dependsOn: [StorageRepository],
-    );
+    )
+    ..registerSingleton<BrandRepository>(BrandRepository());
 
   await dependencyLocator.allReady();
 }

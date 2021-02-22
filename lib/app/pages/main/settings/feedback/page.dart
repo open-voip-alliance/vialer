@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../resources/localizations.dart';
-import '../../../../resources/theme.dart';
+import '../../../../util/brand.dart';
 import '../../../../util/conditional_capitalization.dart';
 import '../../../../widgets/stylized_button.dart';
 import '../../../../widgets/transparent_status_bar.dart';
@@ -59,7 +59,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                           vertical: 16,
                         ),
                         hintStyle: TextStyle(
-                          color: context.brandTheme.grey4,
+                          color: context.brand.theme.grey4,
                         ),
                       ),
                       style: const TextStyle(
@@ -81,7 +81,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                             vertical: 16,
                           ),
                           hintStyle: TextStyle(
-                            color: context.brandTheme.grey4,
+                            color: context.brand.theme.grey4,
                           ),
                         ),
                       ),

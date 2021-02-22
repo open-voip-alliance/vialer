@@ -4,10 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../../../domain/entities/brand.dart';
 import '../../../../domain/entities/onboarding/step.dart';
 import '../../../resources/localizations.dart';
 import '../../../resources/theme.dart';
+import '../../../util/brand.dart';
 import '../../../util/conditional_capitalization.dart';
 import '../../../widgets/connectivity_checker.dart';
 import '../../../widgets/stylized_button.dart';
@@ -48,10 +48,7 @@ class _LoginPageState extends State<LoginPage>
 
   void _goToPasswordReset() {
     launch(
-      Provider.of<Brand>(context)
-          .baseUrl
-          .resolve('/user/password_reset/')
-          .toString(),
+      context.brand.url.resolve('/user/password_reset/').toString(),
     );
   }
 

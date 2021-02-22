@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 extension ThemeTargetPlatform on BuildContext {
   bool get isIOS => Theme.of(this).platform == TargetPlatform.iOS;
@@ -8,6 +7,8 @@ extension ThemeTargetPlatform on BuildContext {
 }
 
 abstract class BrandTheme {
+  const BrandTheme();
+
   LinearGradient get onboardingGradient => LinearGradient(
         colors: [
           onboardingGradientStart,
@@ -62,7 +63,7 @@ abstract class BrandTheme {
 
   Color get callGradientEnd;
 
-  final Color errorBorderColor = const Color(0xFFDA534F).withOpacity(0.32);
+  final Color errorBorderColor = const Color(0x57DA534F);
 
   final Color errorContentColor = const Color(0xFF8F0A06);
 
@@ -94,12 +95,11 @@ abstract class BrandTheme {
       ),
     );
   }
-
-  static BrandTheme of(BuildContext context, {bool listen = true}) =>
-      Provider.of<BrandTheme>(context, listen: listen);
 }
 
 class VialerTheme extends BrandTheme {
+  const VialerTheme();
+
   @override
   IconData get logo => VialerSans.brandVialer;
 
@@ -129,6 +129,8 @@ class VialerTheme extends BrandTheme {
 }
 
 class VoysTheme extends BrandTheme {
+  const VoysTheme();
+
   @override
   IconData get logo => VialerSans.brandVoys;
 
@@ -183,10 +185,6 @@ class VoysTheme extends BrandTheme {
               ),
             ),
       );
-}
-
-extension BrandThemeContext on BuildContext {
-  BrandTheme get brandTheme => BrandTheme.of(this);
 }
 
 abstract class VialerSans {

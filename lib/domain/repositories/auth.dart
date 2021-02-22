@@ -1,8 +1,5 @@
 import 'package:meta/meta.dart';
 
-import '../../dependency_locator.dart';
-import '../../domain/entities/brand.dart';
-import '../entities/brand.dart';
 import '../entities/exceptions/auto_login.dart';
 import '../entities/exceptions/need_to_change_password.dart';
 import '../entities/system_user.dart';
@@ -13,12 +10,7 @@ class AuthRepository {
   final StorageRepository _storageRepository;
   final VoipgridService _service;
 
-  AuthRepository(
-    this._storageRepository,
-    Brand brand,
-  ) : _service = VoipgridService.create(baseUrl: brand.baseUrl) {
-    dependencyLocator.registerSingleton<VoipgridService>(_service);
-  }
+  AuthRepository(this._storageRepository, this._service);
 
   static const _emailKey = 'email';
   static const _passwordKey = 'password';

@@ -6,6 +6,7 @@ import '../../../domain/entities/contact.dart';
 import '../../resources/localizations.dart';
 import '../../resources/theme.dart';
 import '../../routes.dart';
+import '../../util/brand.dart';
 import '../../widgets/transparent_status_bar.dart';
 import 'contacts/details/page.dart';
 import 'contacts/page.dart';
@@ -101,7 +102,7 @@ class _MainPageState extends State<MainPage> {
                 height: 62,
                 width: 62,
                 child: FloatingActionButton(
-                  backgroundColor: context.brandTheme.green1,
+                  backgroundColor: context.brand.theme.green1,
                   onPressed: () => Navigator.pushNamed(context, Routes.dialer),
                   child: const Icon(VialerSans.dialpad, size: 31),
                 ),
@@ -146,7 +147,7 @@ class _BottomNavigationBar extends StatelessWidget {
       decoration: BoxDecoration(
         border: Border(
           top: BorderSide(
-            color: context.brandTheme.grey2,
+            color: context.brand.theme.grey2,
           ),
         ),
       ),
@@ -154,9 +155,9 @@ class _BottomNavigationBar extends StatelessWidget {
         type: BottomNavigationBarType.fixed,
         iconSize: 24,
         selectedFontSize: 9,
-        selectedItemColor: context.brandTheme.primary,
+        selectedItemColor: context.brand.theme.primary,
         unselectedFontSize: 9,
-        unselectedItemColor: context.brandTheme.grey1,
+        unselectedItemColor: context.brand.theme.grey1,
         currentIndex: currentIndex,
         onTap: onTap,
         items: [

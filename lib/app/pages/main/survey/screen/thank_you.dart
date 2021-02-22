@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../resources/localizations.dart';
-import '../../../../resources/theme.dart';
+import '../../../../util/brand.dart';
 import '../../../../util/conditional_capitalization.dart';
 import '../widgets/big_header.dart';
 
@@ -39,7 +39,7 @@ class ThankYouScreen extends StatelessWidget {
                 padding: const EdgeInsets.only(right: 6),
                 child: FlatButton(
                   onPressed: () => _dismiss(context),
-                  textColor: context.brandTheme.primary,
+                  textColor: context.brand.theme.primary,
                   child: Text(
                     context.msg.generic.button.close
                         .toUpperCaseIfAndroid(context),

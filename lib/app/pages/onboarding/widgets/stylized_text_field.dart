@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../resources/theme.dart';
+import '../../../util/brand.dart';
 
 class StylizedTextField extends StatelessWidget {
   final TextEditingController controller;
@@ -42,7 +42,7 @@ class StylizedTextField extends StatelessWidget {
         decoration: InputDecoration(
           prefixIcon: Icon(
             prefixIcon,
-            color: hasError ? BrandTheme.of(context).errorContentColor : color,
+            color: hasError ? context.brand.theme.errorContentColor : color,
             size: 16,
           ),
           suffixIcon: suffix,

@@ -5,6 +5,7 @@ import '../../../../../domain/entities/call.dart';
 import '../../../../../domain/entities/call_with_contact.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
+import '../../../../util/brand.dart';
 import '../../util/color.dart';
 import '../../widgets/avatar.dart';
 
@@ -86,7 +87,7 @@ class RecentCallItem extends StatelessWidget {
         ],
         icon: Icon(
           VialerSans.ellipsis,
-          color: context.brandTheme.grey1,
+          color: context.brand.theme.grey1,
           size: 16,
         ),
       ),
@@ -134,13 +135,13 @@ class _RecentItemSubtitle extends StatelessWidget {
               : call.direction == Direction.outbound
                   ? VialerSans.outgoingCall
                   : VialerSans.incomingCall,
-          color: call.wasMissed ? Colors.red : context.brandTheme.green1,
+          color: call.wasMissed ? Colors.red : context.brand.theme.green1,
           size: 12,
         ),
         const SizedBox(width: 8),
         Text(
           '${_timeAgo(context)}',
-          style: TextStyle(color: context.brandTheme.grey4),
+          style: TextStyle(color: context.brand.theme.grey4),
         ),
       ],
     );

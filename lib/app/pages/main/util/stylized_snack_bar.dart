@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../resources/theme.dart';
+import '../../../util/brand.dart';
 
 void showSnackBar(
   BuildContext context, {
@@ -9,15 +9,9 @@ void showSnackBar(
   EdgeInsets padding = EdgeInsets.zero,
   Duration duration = const Duration(seconds: 4),
 }) {
-  final backgroundColor = BrandTheme.of(
-    context,
-    listen: false,
-  ).buttonColor;
+  final backgroundColor = context.brand.theme.buttonColor;
 
-  final contentColor = BrandTheme.of(
-    context,
-    listen: false,
-  ).buttonColoredRaisedTextColor;
+  final contentColor = context.brand.theme.buttonColoredRaisedTextColor;
 
   Scaffold.of(context).showSnackBar(
     SnackBar(

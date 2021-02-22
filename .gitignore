@@ -43,5 +43,14 @@ lib/generated_plugin_registrant.dart
 *.chopper.dart
 *.i18n.dart
 
+# Android
 local.properties
+
+# Firebase
 google-services.json
+
+# iOS icons, because they're set by a pre-build script.
+ios/Runner/Assets.xcassets/AppIcon.appiconset
+
+# Generated file by pre-build script.
+ios/Flutter/Brand.xconfig
