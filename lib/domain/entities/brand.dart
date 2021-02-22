@@ -1,29 +1,28 @@
-abstract class Brand {
-  String get identifier;
+import 'package:equatable/equatable.dart';
+import 'package:meta/meta.dart';
 
-  String get appName;
+@immutable
+class Brand extends Equatable {
+  final String identifier;
+  final String appName;
+  final Uri url;
 
-  Uri get baseUrl;
-}
-
-class Vialer extends Brand {
-  @override
-  final String identifier = 'vialer';
-
-  @override
-  final String appName = 'Vialer';
-
-  @override
-  final Uri baseUrl = Uri.parse('https://partner.voipgrid.nl');
-}
-
-class Voys extends Brand {
-  @override
-  final String identifier = 'voys';
+  const Brand({
+    @required this.identifier,
+    @required this.appName,
+    @required this.url,
+  });
 
   @override
-  final String appName = 'Voys Freedom';
+  List<Object> get props => [identifier, appName, url];
+
+  bool get isVialer => identifier == 'vialer';
+
+  bool get isVoys => identifier == 'voys';
+
+  bool get isVoysFreedom => identifier == 'voysFreedom';
 
   @override
-  final Uri baseUrl = Uri.parse('https://freedom.voys.nl');
+  String toString() =>
+      '$runtimeType(identifier: $identifier, appName: $appName, url: $url)';
 }

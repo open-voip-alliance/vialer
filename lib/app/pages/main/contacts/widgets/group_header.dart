@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../resources/theme.dart';
+import '../../../../util/brand.dart';
 
 class GroupHeader extends StatelessWidget {
   final String group;
@@ -20,8 +21,8 @@ class GroupHeader extends StatelessWidget {
         group,
         style: TextStyle(
           color: context.isIOS
-              ? context.brandTheme.grey1
-              : context.brandTheme.grey5,
+              ? context.brand.theme.grey1
+              : context.brand.theme.grey5,
           fontSize: 16,
           fontWeight: context.isIOS ? FontWeight.normal : FontWeight.bold,
         ),

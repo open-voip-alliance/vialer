@@ -5,10 +5,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../domain/entities/brand.dart';
 import '../../../resources/localizations.dart';
 import '../../../resources/theme.dart';
 import '../../../routes.dart';
+import '../../../util/brand.dart';
 import '../../../util/conditional_capitalization.dart';
 import '../../../widgets/connectivity_checker.dart';
 import '../../../widgets/stylized_button.dart';
@@ -84,7 +84,7 @@ class _DialerPageState extends State<DialerPage> with WidgetsBindingObserver {
             builder: (context, state) {
               final callerCubit = context.watch<CallerCubit>();
               final dialerCubit = context.watch<DialerCubit>();
-              final appName = Provider.of<Brand>(context).appName;
+              final appName = context.brand.appName;
 
               return SafeArea(
                 child: ConditionalPlaceholder(

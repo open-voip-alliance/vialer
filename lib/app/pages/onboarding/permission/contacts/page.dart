@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-import '../../../../../domain/entities/brand.dart';
 import '../../../../../domain/entities/permission.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
+import '../../../../util/brand.dart';
 import '../abstract/page.dart';
 
 class ContactsPermissionPage extends StatelessWidget {
@@ -21,7 +20,7 @@ class ContactsPermissionPage extends StatelessWidget {
       ),
       description: Text(
         context.msg.onboarding.permission.contacts.description(
-          Provider.of<Brand>(context).appName,
+          context.brand.appName,
         ),
       ),
     );

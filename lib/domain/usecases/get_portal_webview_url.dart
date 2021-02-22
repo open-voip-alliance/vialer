@@ -1,15 +1,14 @@
 import 'package:flutter/foundation.dart';
 
 import '../../dependency_locator.dart';
-
-import '../entities/brand.dart';
 import '../entities/portal_page.dart';
 import '../repositories/auth.dart';
 import '../use_case.dart';
+import 'get_brand.dart';
 
 class GetPortalWebViewUrlUseCase extends UseCase {
   final _authRepository = dependencyLocator<AuthRepository>();
-  final _brand = dependencyLocator<Brand>();
+  final _getBrand = GetBrandUseCase();
 
   final _pagePathMapping = {
     PortalPage.dialPlan: '/dialplan/',
@@ -21,8 +20,10 @@ class GetPortalWebViewUrlUseCase extends UseCase {
 
   @override
   Future<String> call({@required PortalPage page}) async {
+    final brand = await _getBrand();
+
     if (_unauthenticatedPages.contains(page)) {
-      return _brand.baseUrl.replace(path: _pagePathMapping[page]).toString();
+      return brand.url.replace(path: _pagePathMapping[page]).toString();
     }
 
     final autoLoginToken = await _authRepository.fetchAutoLoginToken();
@@ -32,7 +33,7 @@ class GetPortalWebViewUrlUseCase extends UseCase {
       'token': autoLoginToken,
       'next': _pagePathMapping[page],
     };
-    final portalUrl = _brand.baseUrl.replace(
+    final portalUrl = brand.url.replace(
       path: '/user/autologin/',
       queryParameters: queryParams,
     );

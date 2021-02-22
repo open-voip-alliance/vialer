@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
+import '../../../../util/brand.dart';
 import '../../../../util/conditional_capitalization.dart';
 
 class SettingTileCategory extends StatelessWidget {
@@ -132,8 +133,9 @@ class SettingTileCategory extends StatelessWidget {
     return Column(
       children: <Widget>[
         Container(
-          color:
-              highlight ? context.brandTheme.settingsBackgroundHighlight : null,
+          color: highlight
+              ? context.brand.theme.settingsBackgroundHighlight
+              : null,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16).copyWith(
               top: 8 + dividerPadding,
@@ -145,7 +147,7 @@ class SettingTileCategory extends StatelessWidget {
                   children: <Widget>[
                     Icon(
                       icon,
-                      color: context.brandTheme.grey1,
+                      color: context.brand.theme.grey1,
                       size: !context.isIOS ? 16 : null,
                     ),
                     const SizedBox(width: 8),

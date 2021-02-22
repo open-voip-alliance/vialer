@@ -1,3 +1,5 @@
+import groovy.json.JsonSlurper
+
 def localProperties = new Properties()
 def localPropertiesFile = rootProject.file('local.properties')
 if (localPropertiesFile.exists()) {
@@ -21,6 +23,35 @@ if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
 
+def getBrand() {
+    // Read brands from file.
+    def brandsFile = file('../../lib/brands.dart')
+    // Remove the first four and last two lines to make it valid JSON.
+    def content = brandsFile.readLines().drop(4).dropRight(1).join()
+
+    List<Map<String, String>> dartEnv = project
+            .findProperty('dart-defines')
+            ?.split(',')
+            ?.collect {
+                def split = it.split('%3D') // %3D is '=' encoded
+
+                return [(split[0]): split[1]]
+            }
+
+    String brandId
+    if (dartEnv == null || dartEnv.every { !it.containsKey('BRAND') }) {
+        brandId = 'vialer'
+    } else {
+        brandId = dartEnv.find { it.containsKey('BRAND') }['BRAND']
+    }
+
+    def brands = new JsonSlurper().parseText(content)
+
+    return brands.find { it.identifier == brandId }
+}
+
+def brand = getBrand()
+
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
@@ -30,6 +61,7 @@ android {
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
+        main.res.srcDirs += "src/${brand.identifier}/res"
     }
 
     lintOptions {
@@ -38,9 +70,8 @@ android {
     }
 
     defaultConfig {
-        // TODO: When we start building the full app with VoIP for all brands,
-        // change the app id here to be an env variable.
-        applicationId "com.voys.freedom"
+        applicationId brand.appId
+        resValue "string", "app_name", brand.appName
         minSdkVersion 26
         targetSdkVersion 30
         versionCode flutterVersionCode.toInteger()
@@ -51,7 +82,7 @@ android {
     def KEYSTORE_FILE_NAME = "keystore.jks"
     signingConfigs {
         release {
-            if (System.getenv()["CI"]) { // CI=true is exported by Codemagic
+            if (System.getenv()["CI"]) { // CI=true is exported by CodeMagic.
                 storeFile file(System.getenv()["FCI_BUILD_DIR"] + "/" + KEYSTORE_FILE_NAME)
                 storePassword System.getenv()["FCI_KEYSTORE_PASSWORD"]
                 keyAlias System.getenv()["FCI_KEY_ALIAS"]

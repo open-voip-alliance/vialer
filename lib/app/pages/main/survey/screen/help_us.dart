@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../resources/localizations.dart';
-import '../../../../resources/theme.dart';
+import '../../../../util/brand.dart';
 import '../../../../util/conditional_capitalization.dart';
 import '../cubit.dart';
 import '../widgets/big_header.dart';
@@ -67,7 +67,7 @@ class HelpUsScreen extends StatelessWidget {
               children: [
                 FlatButton(
                   onPressed: () => _dismiss(context),
-                  textColor: context.brandTheme.primary,
+                  textColor: context.brand.theme.primary,
                   child: Text(
                     context.msg.generic.button.noThanks
                         .toUpperCaseIfAndroid(context),
@@ -75,7 +75,7 @@ class HelpUsScreen extends StatelessWidget {
                 ),
                 FlatButton(
                   onPressed: () => _next(context),
-                  textColor: context.brandTheme.primary,
+                  textColor: context.brand.theme.primary,
                   child: Text(
                     context.msg.generic.button.yes
                         .toUpperCaseIfAndroid(context),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../resources/theme.dart';
+import '../util/brand.dart';
 
 class SplashScreen extends StatelessWidget {
   final Color iconColor;
@@ -16,11 +16,11 @@ class SplashScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        gradient: gradient ?? context.brandTheme.splashScreenGradient,
+        gradient: gradient ?? context.brand.theme.splashScreenGradient,
       ),
       child: Center(
         child: Icon(
-          context.brandTheme.logo,
+          context.brand.theme.logo,
           size: 64,
           color: iconColor,
         ),

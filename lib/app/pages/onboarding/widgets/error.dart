@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../resources/theme.dart';
+import '../../../util/brand.dart';
 
 class ErrorAlert extends StatefulWidget {
   /// Whether the error box is visible.
@@ -40,13 +41,13 @@ class _ErrorAlertState extends State<ErrorAlert> with TickerProviderStateMixin {
             child: Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: context.brandTheme.errorBorderColor,
+                color: context.brand.theme.errorBorderColor,
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: context.brandTheme.errorBorderColor,
+                  color: context.brand.theme.errorBorderColor,
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Container(
@@ -59,14 +60,14 @@ class _ErrorAlertState extends State<ErrorAlert> with TickerProviderStateMixin {
                     children: <Widget>[
                       Icon(
                         VialerSans.exclamationMark,
-                        color: context.brandTheme.errorContentColor,
+                        color: context.brand.theme.errorContentColor,
                       ),
                       const SizedBox(width: 16),
                       Expanded(
                         child: DefaultTextStyle.merge(
                           child: widget.child,
                           style: TextStyle(
-                            color: context.brandTheme.errorContentColor,
+                            color: context.brand.theme.errorContentColor,
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
                           ),

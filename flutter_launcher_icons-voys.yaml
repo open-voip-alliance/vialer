@@ -1,0 +1,7 @@
+flutter_icons:
+  android: true
+  ios: true
+  image_path_ios: assets/app_icon/voys/ios.png
+  image_path_android: assets/app_icon/voys/android_legacy.png
+  adaptive_icon_background: assets/app_icon/voys/android_background.png
+  adaptive_icon_foreground: assets/app_icon/voys/android_foreground.png

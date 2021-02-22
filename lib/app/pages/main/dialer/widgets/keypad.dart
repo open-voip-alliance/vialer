@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import '../../../../resources/theme.dart';
+import '../../../../util/brand.dart';
 
 class Keypad extends StatefulWidget {
   final TextEditingController controller;
@@ -206,7 +207,7 @@ class _KeypadButton extends StatelessWidget {
       color: Colors.transparent,
       shape: CircleBorder(
         side: borderOnIos && context.isIOS
-            ? BorderSide(color: context.brandTheme.grey3)
+            ? BorderSide(color: context.brand.theme.grey3)
             : BorderSide.none,
       ),
       child: AspectRatio(
@@ -330,7 +331,7 @@ class _ValueButtonState extends State<ValueButton> {
                       style: TextStyle(
                         fontSize: 32,
                         color: !_primaryIsNumber
-                            ? context.brandTheme.grey5
+                            ? context.brand.theme.grey5
                             : null, // Null means default color
                       ),
                       // The font size is based on the available space, and we
@@ -345,7 +346,7 @@ class _ValueButtonState extends State<ValueButton> {
                       // to keep the alignments proper.
                       widget.secondaryValue ?? '',
                       style: TextStyle(
-                        color: context.brandTheme.grey5,
+                        color: context.brand.theme.grey5,
                         fontSize: 12,
                       ),
                     ),
@@ -382,8 +383,8 @@ class _CallButton extends StatelessWidget {
         ),
         child: FloatingActionButton(
           backgroundColor: onPressed != null
-              ? context.brandTheme.green1
-              : context.brandTheme.grey1,
+              ? context.brand.theme.green1
+              : context.brand.theme.grey1,
           onPressed: onPressed,
           child: const Icon(VialerSans.phone, size: 32),
         ),
@@ -497,7 +498,7 @@ class _DeleteButtonState extends State<_DeleteButton> {
           onLongPress: _visible ? _deleteAll : null,
           child: Icon(
             VialerSans.correct,
-            color: context.brandTheme.grey5,
+            color: context.brand.theme.grey5,
             size: 32,
           ),
         ),

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:provider/provider.dart';
-
 import 'package:vialer_lite/app/pages/main/dialer/widgets/keypad.dart';
 import 'package:vialer_lite/app/resources/theme.dart';
+import 'package:vialer_lite/app/widgets/brand_provider/widget.dart';
 import 'package:vialer_lite/domain/entities/brand.dart';
+import 'package:vialer_lite/app/util/brand.dart';
 
 void main() {
   final textController = TextEditingController();
@@ -483,25 +483,21 @@ void initiateFakeCall({TextEditingController controller}) {
 
 class TestApp extends StatelessWidget {
   final Widget child;
-  final BrandTheme theme = VoysTheme();
 
   TestApp({this.child});
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        Provider<Brand>(
-          create: (_) => Voys(),
-        ),
-        Provider<BrandTheme>(
-          create: (_) => VoysTheme(),
-        ),
-      ],
+    return BrandProvider(
+      brand: Brand(
+        identifier: 'vialer',
+        appName: 'Vialer',
+        url: Uri.parse('https://partner.voipgrid.nl'),
+      ),
       child: Builder(builder: (context) {
         return MaterialApp(
-          title: Provider.of<Brand>(context).appName,
-          theme: context.brandTheme.themeData,
+          title: context.brand.appName,
+          theme: context.brand.theme.themeData,
           home: Scaffold(
             body: child,
           ),

@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../../../resources/localizations.dart';
 import '../../../resources/theme.dart';
+import '../../../util/brand.dart';
 import '../widgets/caller.dart';
 import '../widgets/connectivity_alert.dart';
 
@@ -75,8 +76,8 @@ class _CallPageState extends State<CallPage> {
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       colors: [
-                        context.brandTheme.callGradientStart,
-                        context.brandTheme.callGradientEnd,
+                        context.brand.theme.callGradientStart,
+                        context.brand.theme.callGradientEnd,
                       ],
                     ),
                   ),
@@ -103,7 +104,7 @@ class _CallPageState extends State<CallPage> {
                         Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(13.5),
-                            color: context.brandTheme.callGradientStart,
+                            color: context.brand.theme.callGradientStart,
                           ),
                           padding: const EdgeInsets.symmetric(
                             horizontal: 16,
@@ -178,8 +179,8 @@ class _CallPageState extends State<CallPage> {
                     child: FloatingActionButton(
                       onPressed: state is! FinishedCalling ? _hangUp : null,
                       backgroundColor: state is! FinishedCalling
-                          ? context.brandTheme.red1
-                          : context.brandTheme.grey3,
+                          ? context.brand.theme.red1
+                          : context.brand.theme.grey3,
                       child: const Icon(
                         VialerSans.hangUp,
                         size: 32,
@@ -214,7 +215,8 @@ class _ActionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final enabled = onPressed != null;
-    final color = enabled ? context.brandTheme.grey6 : context.brandTheme.grey4;
+    final color =
+        enabled ? context.brand.theme.grey6 : context.brand.theme.grey4;
 
     return Expanded(
       flex: 2,

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../../../resources/theme.dart';
+import '../../../util/brand.dart';
 import '../../../widgets/splash_screen.dart';
 import '../../../widgets/transparent_status_bar.dart';
 
@@ -72,8 +72,8 @@ class _BackgroundState extends State<Background> with TickerProviderStateMixin {
     });
 
     _gradientAnimation = _LinearGradientTween(
-      begin: context.brandTheme.splashScreenGradient,
-      end: context.brandTheme.onboardingGradient,
+      begin: context.brand.theme.splashScreenGradient,
+      end: context.brand.theme.onboardingGradient,
     ).animate(_controller);
 
     _iconColorAnimation = ColorTween(
