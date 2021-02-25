@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:vialer_lite/app/pages/main/dialer/widgets/keypad.dart';
-import 'package:vialer_lite/app/resources/theme.dart';
-import 'package:vialer_lite/app/widgets/brand_provider/widget.dart';
-import 'package:vialer_lite/domain/entities/brand.dart';
-import 'package:vialer_lite/app/util/brand.dart';
+import 'package:vialer/app/pages/main/dialer/widgets/keypad.dart';
+import 'package:vialer/app/resources/theme.dart';
+import 'package:vialer/app/widgets/brand_provider/widget.dart';
+import 'package:vialer/domain/entities/brand.dart';
+import 'package:vialer/app/util/brand.dart';
 
 void main() {
   final textController = TextEditingController();

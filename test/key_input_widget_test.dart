@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/material.dart';
 
-import 'package:vialer_lite/app/pages/main/dialer/widgets/key_input.dart';
-import 'package:vialer_lite/app/widgets/brand_provider/widget.dart';
-import 'package:vialer_lite/domain/entities/brand.dart';
+import 'package:vialer/app/pages/main/dialer/widgets/key_input.dart';
+import 'package:vialer/app/widgets/brand_provider/widget.dart';
+import 'package:vialer/domain/entities/brand.dart';
 
 void main() {
   final controller = TextEditingController();
