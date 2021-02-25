@@ -5,13 +5,15 @@ import 'dart:io';
 import '../../lib/brands.dart';
 
 Future<void> main(List<String> arguments) async {
-  final dartDefines = Map.fromEntries(
-    arguments[0].split(',').map((keyValuePair) {
-      final split = keyValuePair.split('%3D'); // %3D is '=' encoded
+  final dartDefines = arguments.isNotEmpty
+      ? Map.fromEntries(
+          arguments[0].split(',').map((keyValuePair) {
+            final split = keyValuePair.split('%3D'); // %3D is '=' encoded
 
-      return MapEntry(split[0], split[1]);
-    }),
-  );
+            return MapEntry(split[0], split[1]);
+          }),
+        )
+      : {};
 
   final brandId = dartDefines['BRAND'] ?? 'vialer';
   final root = Directory(Platform.environment['SRCROOT']);

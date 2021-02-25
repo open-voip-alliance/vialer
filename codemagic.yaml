@@ -110,17 +110,19 @@ workflows:
       - &build_android_for_dev
         name: Building Android for dev and QA purposes
         script: |
-          cd . && flutter build apk --release --target=lib/app/main.dart --build-number=$BUILD_NUMBER -v
-      - &build_ios_for_dev
-        name: Building iOS with ad-hoc provisioning profile for dev and QA purposes
-        script: |
-          find . -name "Podfile" -execdir pod install \;
-          keychain initialize
-          app-store-connect fetch-signing-files "com.voys.freedom" --type IOS_APP_ADHOC --create
-          keychain add-certificates
-          cd . && flutter build ios --release --target=lib/app/main.dart --build-number=$BUILD_NUMBER --no-codesign
-          xcode-project use-profiles
-          cd . && xcode-project build-ipa --workspace "ios/Runner.xcworkspace" --scheme "Runner"
+          cd . && flutter build apk --release --target=lib/app/main.dart --build-number=$BUILD_NUMBER -v --dart-define BRAND=voys
+      # TODO: Enable iOS builds again when we find a fix for the provisioning profile issue with branding
+      # - &build_ios_for_dev
+      #   name: Building iOS with ad-hoc provisioning profile for dev and QA purposes
+      #   script: |
+      #     sed -i '' "s/XXXXX/$IOS_TEAM_ID/g" ios/Runner.xcodeproj/project.pbxproj
+      #     find . -name "Podfile" -execdir pod install \;
+      #     keychain initialize
+      #     app-store-connect fetch-signing-files "com.voys.app" --type IOS_APP_ADHOC --create
+      #     keychain add-certificates
+      #     flutter build ios --release --target=lib/app/main.dart --build-number=$BUILD_NUMBER --no-codesign --dart-define BRAND=voys
+      #     xcode-project use-profiles
+      #     xcode-project build-ipa --workspace "ios/Runner.xcworkspace" --scheme "Runner"
     artifacts:
       - build/**/outputs/**/*.apk
       - build/**/outputs/**/*.aab
@@ -152,6 +154,7 @@ workflows:
         APP_STORE_CONNECT_PRIVATE_KEY: Encrypted(Z0FBQUFBQmZxX25LaWVRYll3dFJJOElvbExpZ3VueEtEcG82ZzhFY1RCZWlOSTNfN2tjY3NNOG1STDVBVmRyY3BWS2FDUFk1WHExVFkzLWxyMHo3YmtQMENYMnpQV3B3RXQ4bzd6MWhKYmdPLW94eFVlWXhjN0V4R3JGRm1ZM1lVREUwQlFFaDJ6c0ZoRHNWajN0MDVsbFVfb3M3V0VXOFk4U2RBOV9EVkpsZTZjVS1oN0NaQnRRZGI1NVJVWFlONFRvN0tZYXNXR1hjTUZ2WnNIdmVqdzZkZGp1SXdPYUNMTmlXSk1KMjI2OHEwZ2RJZWlkWkJMS09RVlNuQ1oteXpicm9BQUwxazdiNmpnWW81Um4ydGlPWVltOEpWdFJZNHRuSDduQlpicV9JanFYX0ZvblNRR3hpT0NCVFh1cnAtWFNSZnlJM2lpdmlkRFRQejlzYTVzSWM1ZWl4cm13MXpjejJiS1ZWME9SdXdmcE1LcHlBRWRoOG93aDdPZllVMWhSd01lamtUd0NHS3VFU0Jvd3hKRzRPd3JyMTV3d0V5WVFSa0RJR01MdGhDRmpiaF9MRWh1Zz0=)
         CERTIFICATE_PRIVATE_KEY: Encrypted(Z0FBQUFBQmZxX25LNXhRenZTLUJsaUtZVm85SkhEMlhFcVdRQTZzNzVwYUMtUDhYcElrcHdOUVJOd0NkRWlKdEcwdk5pUmx3MGdrTGN1VElkUUNJcnlXZGZzVGdmMlJGaWEzaUR6ektOT3c4TFoyZWNzRy1hZlpFdmYyb05BNmtoVmpxVmk1Vko1YmVYZDNSSW1RRG9iM1g2UmwxcFRXbUd6MnlnODA5NHdUN2FmRzdXMEZZTUxCcWkzNkltcTFvVE1NTGlxWEtzT1dGVXZvVHN6N2o3cUVOQm9LcXNVRlJuTW9fcUhWVVBsTFMtM2pkNHBuQ2VsS0VQNkZXU3lTS3ZmNXotMG00LVUwQlpXM3gyTHJFY0xhNkRFVjV1NjNSeHp6cGFmVWJuaVZacGN5aDJuUzVFbElpVkM3MjMydkFuU1pPcmxPNW5JVlF0eFJXMTJVZ0FNb3luSEdpZXFaclc5MlZRM3RLR1hiQk5CS2RYT3NzV0k4cUdYMHdtTFNZY3pWUVBjcDgwdXlrUkpmTUMwQjBUeGlUeUQ0TGwwT2lZUkxMZjhIR09WeDE5VlkyeHROWVNFaUtYX29DbW1TUkxMYmF3MnJaTGtlS1diMW1RaXlhWTBvUWQwLWlHS2ZaSUJRUnFxbWtJbHhvQU54SzdUNi01ekNmTk5ybG1jZ3dkeVFPSTRVcGZ0X2dQS01ya1NzMFBtbUlEc1RkVF9jTnc1QnVmdmNZQkZKZUFFZXRqR09BQXVOSlhZREZQejlTbk9iM3REaEhCbXFjWEdWR0tiSHJueVRQX24yVlZyRlJVUWxGX2VFMkZGWFZRcWM0OEpBUlZ4UTE3cTZkRVF3UHhPRlRlYlJ1YUJ6UVVmQmEwaDBGUWRKSmgySXl3alVOV3FCazhQZWhIUG5XZ3hldkpnS0FXaTFWLTFyMXg5VTJMbGtwNlRWRDlsNXUzX3AwWk9FZUpwdmFHYTdDX05vNXFTQWNEVDdMMkV6cVFVRFBfa3FaTnFkNURXcGlYTWVhRUM4UmVnZkR6Nk00eVdNRTBkaUxKMF9sUURGMzhDVjEyZFBFVnpLVGxCUGRjeXRULU5qRWpTdFJBZXMxUzRLakNLWEQwNWs1WUZqeVBvTDhCck9ZOWZFc0p2NUJUQWdUb1Z3bS1ETXZ3UlZSQXNDc1plN2VOWlFoZmRfdndCa3U1VUsyU3BwNUdSa3RWemJ0VFlpS09xUXIyZXFRWXUweFM0UUNLOGNVYWpxVW9pVzZRVjhDNUt0ZUdoQ09lTXZ4LXJXUlRMQS1pQ0FNUy1iVjUwQ1lJaXViU3N5TUJzWVZ0bXk4dUFPWG5QUDBoVEFwa1BqdGcycDJrenlTdFdweEJIeHMtZk1iZ1kwVGFYOTI1MnVjZnYwcnNybHZzMHJJOGZjSERVQnVMVE1vWGU4el9Pd1dsLURhdS1mcFhLak5udjRpcmwwZGczNGZGbnZ0TzB4QlVqQk5icGQ3d2paM3NvMUpNRUtnZWpBMFp3ellTWGROLUxVb2hOeGpMT25pa0FJb3NsTGQyWnRGdzEyeHhKaGJINHRPUGRIZnktYUc1S0FRMW9zdERPa29rS2huRXBQa05tRDJyRVp2MU1SLUFKMS1uUHRJa0s0ajctOUpQSm5BNmU3S2ZxUmVKenE1Z093S25ZTXNXc0pkelV5VkdxcDBZSW9KUF9lZW5XMmRwV1FGN0FoUUUyT3BjakU2MDUxOTg2RTl6RmtBXzRfRTdFampQSlRNdmdzTVVCS0xIS2ZhWUpwU1d5NkFfOXdqM0l0N180aU5YY1ZObWNGeXk3UDVjdi1ZZXB5dXNyVV83eFFOa2h4N29mTFg4Ym8xSTZ0c2FxNTUwWm1pem1JRHlEU1lFUngyV1pJVi1keVZ5a0NaS28xNGdFczl1VUYwMkd4QXUyelU4ZnhsaFFrdkZEcGxfM19UbkRjdDNzSTJMRjdnREZVOWM3bmtNVkFkRlhxUlpMODBrYlRQV19jdGdOcXhEUFU2ekRoUEFaRW84ck83UVE2RThuY3RTMnhBQzRXaWU3UENMTi1sRTFZRzh0UFUzSHdvQzJFeWJUVkpwUnV4Y1E5dXlodEdJZGxBcTJlTHM3SkZmb0tzNXZZU013anpKVzVibkVocUtGNmxvNE9VV2JNVXlVdTBPOXd5Mm5ycHhJVGhaWHA0NDFLanU4NmpONnk3dVZINS1sTUJDQVdBMDhwMklZbUNXQUx2b1RKOHZEYjRNVUUyc3VocUpTclMtM09iWk1KTW1JS1R0c1B5d002LVhnbm5zQm5iQ2RKTmlnWF9EOG9KRHNrTWhJeXpaQnJUbWVFNGpKeFJnM3F3cFRQTkFHWjJSdGs4bFFtREdPZmdWajNnWkRyYy16bEZjZVdzREFNQlllbnEtMENDMGt4NHlyb3A3SnBaT3R2T2dKVEFrbW1FdEtsOG9iMUMwcVBaMThORkdMb2t5alJkTllnU2Z6bGlpdTFfdjZnMmdJS29JRU9VQWVDVENQeFRfTHBHeGdQdmc2eUtDTTFmX0phYWpKTlZ5OV9zU1ZhTUd0Q2JzZlVZUHN3Yno2RjlkTzFCemhFaTFzbTR1aWlQUDBCa3RCVk81SjJTbVZZRDFRNGxIOFVyMkhKQUZEMkZmYjA4VHBJbTZHSWxmX3NRTDBCVTFVMmNtV0FLUUpmQ1k1cHNCSE9Ia2pTYkdGVTdCanBxalFTVWlaZkdMM0llcVdURXRndEQxaW9RckVzR19pTVVoVEFLMjdtak5DRkQ1MnlidGxuUzRaT0VRREJhb1RSMy1hOWwzYlloRlBLSlk2R2psd2Y3Z1FPTUJMYl9mZEFESTRjcHJMU19JQnVUS1BiMVZFb1hkTU1TMkF5bnI0VDhFUzBlQm1XODd5WU9KLU02VWdGWnllbUFhSzZWTk0tc1FQSVZlaEpMZXM0eHpmWHlPdzFqbENaaTIzY1dMWlRfNlpLLTBGa2pHUWkxd3N1M2JoQ0xWNWRybGxhY09DTXp0TzZjTTc3UjRWRnpOMWJZZkxINWxEdmlYcThIYmtIOWY2QklvRUZvWXBFWW9ISlNpaWJp)
         ANDROID_FIREBASE_SECRET: Encrypted(Z0FBQUFBQmdCcktiNzlPY2g3NHJ5MGc4NDdyMjNtOFNwUkJ3dG9Td2RGV0lxS1NGamhFMFp3TUwwM0JpQXp0SjlSMGVxellMNFRiVkJSZXVQR3ZGWEdocW1aSjVMbURrMldZak5WdjA3VndUQ3hGWmVOVkhkLXRDdFVYNlBkZFhFSGFfZ20xRElzd3JjM3VSd25iWUdrV014VGZUMThmRnZZTmtaU0t6UHZBTUZxTE52Q2lYdVhVTFo1VGxXNHBib1dYQzBPZTd0T3dDMHpfZjEwakFnb19lTjJoQ3QycU9tc0NOb01rQkhOV2Itc0VlUkZ3TTUzd0Y5S1FQSTdqd0dQdHZoOGZRa21lM2E5Zjg3VzVVemJ2MnQ1dFRsdjU1c0RxRDVEdGVHOTRvOXBYVGl1S19jWTFxNWtyekJ2dktZY18ySmdSQnVuQ3lQdEQ2cXFSdlRtNmFraUFGV1ZzYkdfYjMyT19IcUFVTk1wSThodVhPa09OTE5laGd6LTFRUU9rLURtZmk2X0VpVmxwUjkzdndDVGtDSzJXNk5UOTZGMmtSS1JwcF9Ia25vQzNPaTNDOHNDNE94RFBaVDNsZWVSSFNFektWSHhjNVZRVmJlN1RWM0s4LW9zQ3NfTEdQejRjeFhhcTJBNHNkbklRQnQxSlhVb1Y5N09sTlkxdEh2TUM5Q0Y0TlFkLVc5QTN1enFNWWwzaGhhQklaem1WNDhxLVdLY1hRUGNDTDFTY0xoQUUwUEFwcThrY1ROSm81VV81M2hza3puNnA4NllQZVRoanRodzNVWlh5Zzg0TWhuMllfODBGNVZMY1gxY3FoOXA4UjR5dk9uRDVyNkRDWnRBa2JoV0NxaHBRY2FmRnppTno0aHgyZ0thZEhyVzktU2RKb05YT2NmQThvRkRvR0llTEVjSVJ5eXNtWDQxQnBpa2dTZnlUVTVkZ2V5Z3dwR2Q1NWdqRHhYVXJEX3laWFJDd0t1RGpvRm12NUM5akYyTURJdDNZcU0xelZFbWJhVUNVZHpJMHBfZktHX1NrRU01Y3Fyb0prXzd2VkpqU0NUSENaYjZqc0hCWm05cHpob2dTSndSQkFnLTlSUVp0SElGcHpsZ3g5aVMtVUEwbXRUQ09zZkNodVNfWHgwOVRDZjZzRkEyMXJoVFFES1dza3A3eGFOTVlQdk5hODJ1WWxpcVBybks1MlV5RUpVS3VEem1mSlFoOElVdlFMTVVpbDBDYkNyVXphb05MZUx6ZGNQRndXbTNmRW80Wm1mSkRhdEM0YVpLQWpsVE5MUVY3V08zeEVEZG5HY1V1Z1duakJVdmM3UUJPNjJzcVRRd1hNd2ZkbUVwTERFUUpLODlFaXQ0dTVZMkx1UTBDMjdjbFozbVpfSlNhdVRkc0t2bHY2cnZuNUNFQUc1c0RzY0ZnY2dYQ3FWdUQ3RmlHaXNEeW1QYUpsNFFaM2I4OGZNN3R0LWN4MnJncTFZbGU3d2F3RE1pRURuWG9YbXNiSHRCNTFpeXpqWDFlbmJHUlViT1pfZEF5Y2taZHFHVkxzS2NtRDRBN29mejd3UzVucHZ0c285d0UtUFh4SDlLQW9VbDZZRV9hbGVsRFdTTWFhVVZCLXptZzNSLXhWRmlKSC1FYjBHZDNTdUZlZEhxdnJVUmROSmlzMU1JaG1oMGVQSWlCcWdqYnR6dnpCNWdWWHB1bjFHaFdjeXI2S2RseEFxVTJYbnROeDNfMmp2RThFSGRJanZrTzFmUkpIMk4yQTN3OG1CcV9qdmlnNWVHc2hVWEcxT0xoS2NfQm9menZlallPVXZnZzVnUEpzVThJT2R0Y1FnV0lFRnI5WjBKMXlMY2xKSEhUTmpyV0RnSjlKYWtRc1FPd2pHWHFnUjF3MWJTNnZ3cExuYTYxUVp6V0hFZWVYbkNrMU9STUdXbVZPM1JiMmotZTc4OTI3dmVPM1JzNERDMGtUdldJbWZQclJSdlRiRmRLdkJDQUR0c3pyclJGR2dWS1NhRm9Gcnl6M05TMGhVWFNCc3NKMnVGc1lMQjJQdGp3OUtEdHMyLUNOUEhraGhVTnNVVHQ4Mzh3UUF3ckNfaFQxUlR5bUUzNEtZb01Calplc3lVY0tTaW5FY0Rzc1N5dWpkQ3dqalppMUZJc3h5Rk5MRDNWZXdlbnRzQ0NlNkZlWk4wUmlwZ3pUdUxWUjRaY01iR1U0SHJYeG5IWnhCU0lYTFhNY1FKX3dudFNlaHMtQ3pWMXpkeUNWNUJ3NGg1cmFSNm5sN2dqTDJCWlNKTW1uV0pITnozZU1CZGZCLUkxaFdvaFU5Z3VYT1g3QTVFWWtsRUpWam85Yzc1ZHhicHpTYThCQkRHWWtiZzBxM0xWOTZqOFVfMEdOLTVlQ1VGbGMzdUY4VFBwZkRMWHF3QVJ3UUJJNlRubG5pRW5rVkVuVC1uSHdKYk9NSF9xenJhTEF2U01LRFFWRGtGSVZmS09jU3RqRkM5bWM=)
+        IOS_TEAM_ID: Encrypted(Z0FBQUFBQmdOaEQzaVNxcnFLdWtJSHd1NV9sSjRpSDVTX3h6c2RMOUxxcjBFV0RGMHB3eFJpM3JxbnZ3RXFTUUtPb1Z2NTdwX2RKa2JsY2VKb1U0SFRLb0pOYVVXLVJOWXc9PQ==)
         flutter: stable
       xcode: latest
       cocoapods: default
@@ -181,7 +184,8 @@ workflows:
       - *upgrade_gradle_in_device_info
       - *flutter_test
       - *build_android_for_dev
-      - *build_ios_for_dev
+      # TODO: Enable iOS builds again when we find a fix for the provisioning profile issue with branding
+      # - *build_ios_for_dev
     artifacts:
       - build/**/outputs/**/*.apk
       - build/**/outputs/**/*.aab
@@ -250,7 +254,8 @@ workflows:
       - *upgrade_gradle_in_device_info
       - *flutter_test
       - *build_android_for_dev
-      - *build_ios_for_dev
+      # TODO: Enable iOS builds again when we find a fix for the provisioning profile issue with branding
+      #- *build_ios_for_dev
     artifacts:
       - build/**/outputs/**/*.apk
       - build/**/outputs/**/*.aab
