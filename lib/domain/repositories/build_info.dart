@@ -1,14 +1,13 @@
+import 'package:meta/meta.dart';
 import 'package:package_info/package_info.dart';
 
 import '../entities/build_info.dart';
-import 'env.dart';
 
 class BuildInfoRepository {
-  final EnvRepository _envRepository;
-
-  BuildInfoRepository(this._envRepository);
-
-  Future<BuildInfo> getBuildInfo() async {
+  Future<BuildInfo> getBuildInfo({
+    @required String mergeRequestNumber,
+    @required String branch,
+  }) async {
     final info = await PackageInfo.fromPlatform();
 
     // Split the complete version string on dots and dashes, and
@@ -19,8 +18,8 @@ class BuildInfoRepository {
     return BuildInfo(
       version: version,
       buildNumber: info.buildNumber,
-      mergeRequestNumber: await _envRepository.mergeRequest,
-      branchName: await _envRepository.branch,
+      mergeRequestNumber: mergeRequestNumber,
+      branchName: branch,
     );
   }
 }
