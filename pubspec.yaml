@@ -1,5 +1,7 @@
-name: vialer_lite
-description: Lite version of Vialer.
+name: vialer
+description: >-
+  Mobile app that serves as both a VoIP client
+  and a management tool for accounts on the VoIPGRID platform.
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
