@@ -50,7 +50,7 @@ main:
       permanentDescription(String appName): >-
         Your permission is required to call via $appName.
         You haven't given this permission yet. Please go to your phone's privacy settings and
-        allow the "Phone" permission for $appName.
+        allow the “Phone” permission for $appName.
       buttonPermission: "Give permission"
       buttonOpenSettings: "Open settings"
 
