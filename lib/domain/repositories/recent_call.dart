@@ -9,7 +9,6 @@ import '../entities/call_with_contact.dart';
 import '../entities/contact.dart';
 import '../entities/permission.dart';
 import '../entities/permission_status.dart';
-import 'auth.dart';
 import 'contact.dart';
 import 'db/database.dart';
 import 'permission.dart';
@@ -20,14 +19,12 @@ class RecentCallRepository {
   final Database _database;
   final ContactRepository _contactRepository;
   final PermissionRepository _permissionRepository;
-  final AuthRepository _authRepository;
 
   RecentCallRepository(
     this._service,
     this._database,
     this._contactRepository,
     this._permissionRepository,
-    this._authRepository,
   );
 
   Logger __logger;
@@ -37,7 +34,10 @@ class RecentCallRepository {
   final _daysPerPage = 28;
   int _cacheStartPage;
 
-  Future<List<CallWithContact>> getRecentCalls({@required int page}) async {
+  Future<List<CallWithContact>> getRecentCalls({
+    @required int page,
+    @required String outgoingNumber,
+  }) async {
     final today = DateTime.now().add(const Duration(days: 1));
     final fromUtc = today
         .subtract(
@@ -125,9 +125,7 @@ class RecentCallRepository {
             // outgoingCli (although that isn't _too_ complicated), or we need
             // to map  all prefixes against two-letter ISO country codes and
             // pass that.
-            isoCode: _authRepository.currentUser.outgoingCli.startsWith('+31')
-                ? 'NL'
-                : 'DE',
+            isoCode: outgoingNumber.startsWith('+31') ? 'NL' : 'DE',
           ).catchError((_) => null)
         : number;
 

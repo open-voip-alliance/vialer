@@ -1,12 +1,15 @@
 import 'dart:async';
 
-import '../../dependency_locator.dart';
-import '../repositories/auth.dart';
 import '../use_case.dart';
+import 'get_user.dart';
 
 class GetIsAuthenticatedUseCase extends FutureUseCase<bool> {
-  final _authRepository = dependencyLocator<AuthRepository>();
+  final _getUser = GetUserUseCase();
 
   @override
-  Future<bool> call() async => _authRepository.currentUser?.token != null;
+  Future<bool> call() async {
+    final user = await _getUser(latest: false);
+
+    return user?.token != null;
+  }
 }

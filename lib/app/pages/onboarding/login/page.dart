@@ -33,7 +33,7 @@ class _LoginPageState extends State<LoginPage>
   static const _duration = Duration(milliseconds: 200);
   static const _curve = Curves.decelerate;
 
-  final _usernameController = TextEditingController();
+  final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
   EdgeInsets _defaultPadding;
@@ -55,7 +55,7 @@ class _LoginPageState extends State<LoginPage>
   void _toggleLoginButton() {
     final isValidEmail = RegExp(
       r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$",
-    ).hasMatch(_usernameController.text);
+    ).hasMatch(_emailController.text);
 
     final oldCanLogin = _canLogin;
 
@@ -81,7 +81,10 @@ class _LoginPageState extends State<LoginPage>
       }
 
       FocusScope.of(context).unfocus();
-      onboarding.forward(password: _passwordController.text);
+      onboarding.forward(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
     }
   }
 
@@ -91,7 +94,7 @@ class _LoginPageState extends State<LoginPage>
 
     WidgetsBinding.instance.addObserver(this);
 
-    _usernameController.addListener(_toggleLoginButton);
+    _emailController.addListener(_toggleLoginButton);
     _passwordController.addListener(_toggleLoginButton);
   }
 
@@ -178,12 +181,11 @@ class _LoginPageState extends State<LoginPage>
                     },
                   ),
                   StylizedTextField(
-                    controller: _usernameController,
+                    controller: _emailController,
                     autoCorrect: false,
                     textCapitalization: TextCapitalization.none,
                     prefixIcon: VialerSans.user,
-                    labelText:
-                        context.msg.onboarding.login.placeholder.username,
+                    labelText: context.msg.onboarding.login.placeholder.email,
                     keyboardType: TextInputType.emailAddress,
                     hasError: state is LoginFailed,
                     autofillHints: [AutofillHints.email],
@@ -223,7 +225,7 @@ class _LoginPageState extends State<LoginPage>
                                       state is! LoggingIn &&
                                       connectivityState is! Disconnected
                                   ? () => context.read<LoginCubit>().login(
-                                        _usernameController.text,
+                                        _emailController.text,
                                         _passwordController.text,
                                       )
                                   : null,

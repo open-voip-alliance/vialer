@@ -5,22 +5,27 @@ import 'package:meta/meta.dart';
 import '../../dependency_locator.dart';
 import '../entities/setting.dart';
 import '../repositories/destination.dart';
-import '../repositories/logging.dart';
-import '../repositories/setting.dart';
+import '../repositories/storage.dart';
 import '../use_case.dart';
+import 'disable_remote_logging.dart';
+import 'enable_remote_logging.dart';
+import 'get_settings.dart';
 
 class ChangeSettingUseCase extends FutureUseCase<void> {
-  final _settingRepository = dependencyLocator<SettingRepository>();
-  final _loggingRepository = dependencyLocator<LoggingRepository>();
+  final _storageRepository = dependencyLocator<StorageRepository>();
   final _destinationRepository = dependencyLocator<DestinationRepository>();
+
+  final _getSettings = GetSettingsUseCase();
+  final _enableRemoteLogging = EnableRemoteLoggingUseCase();
+  final _disableRemoteLogging = DisableRemoteLoggingUseCase();
 
   @override
   Future<void> call({@required Setting setting, bool remote = true}) async {
     if (setting is RemoteLoggingSetting) {
       if (setting.value) {
-        await _loggingRepository.enableRemoteLogging();
+        await _enableRemoteLogging();
       } else {
-        await _loggingRepository.disableRemoteLogging();
+        await _disableRemoteLogging();
       }
     } else if (remote && setting is AvailabilitySetting) {
       var availability = (setting as AvailabilitySetting).value;
@@ -35,6 +40,20 @@ class ChangeSettingUseCase extends FutureUseCase<void> {
       setting = AvailabilitySetting(availability);
     }
 
-    await _settingRepository.changeSetting(setting);
+    if (!setting.mutable) {
+      throw UnsupportedError(
+        'Vialer error: Unsupported operation: '
+        'Don\'t save an immutable setting.',
+      );
+    }
+
+    final settings = await _getSettings();
+
+    final newSettings = List<Setting>.from(settings)
+      ..removeWhere((e) => e.runtimeType == setting.runtimeType)
+      ..add(setting);
+
+    // We only want to save mutable settings.
+    _storageRepository.settings = newSettings.where((s) => s.mutable).toList();
   }
 }

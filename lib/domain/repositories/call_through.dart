@@ -4,26 +4,28 @@ import 'dart:io';
 import 'package:android_intent/android_intent.dart';
 import 'package:flutter/services.dart';
 import 'package:libphonenumber/libphonenumber.dart';
+import 'package:meta/meta.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../entities/exceptions/call_through.dart';
-import 'auth.dart';
+import '../entities/system_user.dart';
 import 'services/voipgrid.dart';
 import 'storage.dart';
 
 class CallThroughRepository {
   final VoipgridService _service;
   final StorageRepository _storageRepository;
-  final AuthRepository _authRepository;
 
   CallThroughRepository(
     this._service,
     this._storageRepository,
-    this._authRepository,
   );
 
-  Future<void> call(String destination) async {
-    final mobileNumber = _authRepository.currentUser?.mobileNumber;
+  Future<void> call(
+    String destination, {
+    @required SystemUser user,
+  }) async {
+    final mobileNumber = user?.mobileNumber;
     // If there's no mobile number set, throw an exception.
     if (mobileNumber == null || mobileNumber?.isEmpty == true) {
       throw NoMobileNumberException();
@@ -37,9 +39,7 @@ class CallThroughRepository {
       // normalization. Remove normalization here when that has happened.
       destination = await PhoneNumberUtil.normalizePhoneNumber(
         phoneNumber: destination,
-        isoCode: _authRepository.currentUser.outgoingCli.startsWith('+31')
-            ? 'NL'
-            : 'DE',
+        isoCode: user.outgoingCli.startsWith('+31') ? 'NL' : 'DE',
       );
     } on PlatformException {
       throw NormalizationException();

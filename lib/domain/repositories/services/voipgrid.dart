@@ -1,8 +1,7 @@
 import 'dart:async';
 import 'package:chopper/chopper.dart';
 
-import '../../../dependency_locator.dart';
-import '../../../domain/repositories/auth.dart';
+import '../../usecases/get_user.dart';
 
 part 'voipgrid.chopper.dart';
 
@@ -22,7 +21,9 @@ abstract class VoipgridService extends ChopperService {
   Future<Response> getToken(@Body() Map<String, dynamic> body);
 
   @Get(path: 'permission/systemuser/profile/')
-  Future<Response> getSystemUser();
+  Future<Response> getSystemUser({
+    @Header('Authorization') String authorization,
+  });
 
   @Get(path: 'cdr/record/personalized/')
   Future<Response> getPersonalCalls({
@@ -58,10 +59,10 @@ abstract class VoipgridService extends ChopperService {
 
 class _AuthorizationInterceptor implements RequestInterceptor {
   @override
-  FutureOr<Request> onRequest(Request request) {
-    final authRepository = dependencyLocator<AuthRepository>();
+  FutureOr<Request> onRequest(Request request) async {
+    final getUser = GetUserUseCase();
 
-    final user = authRepository.currentUser;
+    final user = await getUser(latest: false);
 
     if (user != null) {
       final authorization = Uri.parse(request.url).path.endsWith('callthrough')

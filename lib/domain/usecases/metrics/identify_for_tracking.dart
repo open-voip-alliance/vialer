@@ -1,22 +1,24 @@
 import 'dart:async';
 
 import '../../../dependency_locator.dart';
-import '../../repositories/auth.dart';
 import '../../repositories/metrics.dart';
 import '../../use_case.dart';
 import '../get_brand.dart';
+import '../get_user.dart';
 
 class IdentifyForTrackingUseCase extends FutureUseCase<void> {
   final _metricsRepository = dependencyLocator<MetricsRepository>();
-  final _authRepository = dependencyLocator<AuthRepository>();
 
   final _getBrand = GetBrandUseCase();
+  final _getUser = GetUserUseCase();
 
   @override
   Future<void> call() async {
-    assert(_authRepository.currentUser != null);
+    final user = await _getUser(latest: false);
+
+    assert(user != null);
     await _metricsRepository.identify(
-      _authRepository.currentUser.uuid,
+      user.uuid,
       _getBrand().identifier,
     );
   }

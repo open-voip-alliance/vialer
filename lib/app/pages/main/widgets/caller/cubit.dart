@@ -71,7 +71,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
 
     // TODO: Using VoIP might be determined by other factors like internet
     // connection quality in the future.
-    return _getHasVoip() && settings.get<UseVoipSetting>().value;
+    return await _getHasVoip() && settings.get<UseVoipSetting>().value;
   }
 
   Future<void> _startVoipIfNecessary() async {

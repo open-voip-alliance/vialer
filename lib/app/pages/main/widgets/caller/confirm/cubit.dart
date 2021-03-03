@@ -19,7 +19,11 @@ class ConfirmCubit extends Cubit<ConfirmState> with Loggable {
 
   ConfirmCubit(this._caller, this._destination)
       : super(ConfirmState(showConfirmPage: true)) {
-    emit(state.copyWith(outgoingCli: _getOutgoingCli()));
+    _emitInitialState();
+  }
+
+  Future<void> _emitInitialState() async {
+    emit(state.copyWith(outgoingCli: await _getOutgoingCli()));
   }
 
   // ignore: avoid_positional_boolean_parameters

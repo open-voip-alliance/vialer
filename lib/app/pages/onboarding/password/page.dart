@@ -43,7 +43,7 @@ class _PasswordPageState extends State<PasswordPage>
 
   void _onChangePasswordButtonPressed(BuildContext context) {
     if (_canSubmit) {
-      context.watch<PasswordCubit>().changePassword(_passwordController.text);
+      context.read<PasswordCubit>().changePassword(_passwordController.text);
     }
   }
 
