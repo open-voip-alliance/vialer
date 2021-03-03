@@ -1,10 +1,12 @@
-import '../../dependency_locator.dart';
-import '../repositories/auth.dart';
 import '../use_case.dart';
+import 'get_user.dart';
 
-class GetOutgoingCliUseCase extends UseCase<String> {
-  final _authRepository = dependencyLocator<AuthRepository>();
+class GetOutgoingCliUseCase extends FutureUseCase<String> {
+  final _getUser = GetUserUseCase();
 
   @override
-  String call() => _authRepository.currentUser?.outgoingCli;
+  Future<String> call() async {
+    final user = await _getUser(latest: false);
+    return user.outgoingCli;
+  }
 }

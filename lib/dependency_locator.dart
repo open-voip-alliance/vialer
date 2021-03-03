@@ -16,7 +16,6 @@ import 'domain/repositories/permission.dart';
 import 'domain/repositories/phone_account.dart';
 import 'domain/repositories/recent_call.dart';
 import 'domain/repositories/services/voipgrid.dart';
-import 'domain/repositories/setting.dart';
 import 'domain/repositories/storage.dart';
 import 'domain/repositories/voip.dart';
 
@@ -32,29 +31,16 @@ Future<void> initializeDependencies() async {
       return storageRepository;
     })
     ..registerSingleton<VoipgridService>(VoipgridService.create())
-    ..registerSingletonWithDependencies<AuthRepository>(
-      () => AuthRepository(
-        dependencyLocator<StorageRepository>(),
+    ..registerSingleton<AuthRepository>(
+      AuthRepository(
         dependencyLocator<VoipgridService>(),
       ),
-      dependsOn: [StorageRepository],
-    )
-    ..registerSingletonWithDependencies<SettingRepository>(
-      () => SettingRepository(
-        dependencyLocator.get<StorageRepository>(),
-        dependencyLocator.get<AuthRepository>(),
-      ),
-      dependsOn: [StorageRepository],
     )
     ..registerSingletonWithDependencies<LoggingRepository>(
       () => LoggingRepository(
-        dependencyLocator<AuthRepository>(),
         dependencyLocator<StorageRepository>(),
         dependencyLocator<EnvRepository>(),
-        dependencyLocator<SettingRepository>(),
-      )
-        ..enableConsoleLogging()
-        ..enableRemoteLoggingIfSettingEnabled(),
+      ),
       dependsOn: [StorageRepository],
     )
     ..registerSingleton<PermissionRepository>(PermissionRepository())
@@ -65,7 +51,6 @@ Future<void> initializeDependencies() async {
         dependencyLocator<Database>(),
         dependencyLocator<ContactRepository>(),
         dependencyLocator<PermissionRepository>(),
-        dependencyLocator<AuthRepository>(),
       ),
       dependsOn: [StorageRepository],
     )
@@ -73,16 +58,12 @@ Future<void> initializeDependencies() async {
       () => CallThroughRepository(
         dependencyLocator<VoipgridService>(),
         dependencyLocator<StorageRepository>(),
-        dependencyLocator<AuthRepository>(),
       ),
       dependsOn: [StorageRepository],
     )
     ..registerSingleton<BuildInfoRepository>(BuildInfoRepository())
-    ..registerSingletonWithDependencies<FeedbackRepository>(
-      () => FeedbackRepository(
-        dependencyLocator<AuthRepository>(),
-      ),
-      dependsOn: [StorageRepository],
+    ..registerSingleton<FeedbackRepository>(
+      FeedbackRepository(),
     )
     ..registerSingleton<ConnectivityRepository>(ConnectivityRepository())
     ..registerSingleton<MetricsRepository>(MetricsRepository())

@@ -5,10 +5,13 @@ import '../entities/portal_page.dart';
 import '../repositories/auth.dart';
 import '../use_case.dart';
 import 'get_brand.dart';
+import 'get_user.dart';
 
 class GetPortalWebViewUrlUseCase extends UseCase {
   final _authRepository = dependencyLocator<AuthRepository>();
   final _getBrand = GetBrandUseCase();
+
+  final _getUser = GetUserUseCase();
 
   final _pagePathMapping = {
     PortalPage.dialPlan: '/dialplan/',
@@ -26,8 +29,9 @@ class GetPortalWebViewUrlUseCase extends UseCase {
       return brand.url.replace(path: _pagePathMapping[page]).toString();
     }
 
-    final autoLoginToken = await _authRepository.fetchAutoLoginToken();
-    final username = _authRepository.currentUser.email;
+    final user = await _getUser(latest: false);
+    final autoLoginToken = await _authRepository.getAutoLoginToken();
+    final username = user.email;
     final queryParams = {
       'username': username,
       'token': autoLoginToken,

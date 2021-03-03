@@ -12,6 +12,9 @@ class OnboardingState extends Equatable {
   final Iterable<OnboardingStep> allSteps;
   final OnboardingStep currentStep;
 
+  /// User entered email, saved for if they need to change their password.
+  final String email;
+
   /// User entered password, saved for if they need to change their password.
   final String password;
 
@@ -21,6 +24,7 @@ class OnboardingState extends Equatable {
     @required this.allSteps,
     @required this.currentStep,
     this.password,
+    this.email,
     this.completed = false,
   });
 
@@ -30,12 +34,14 @@ class OnboardingState extends Equatable {
   OnboardingState copyWith({
     Iterable<OnboardingStep> allSteps,
     OnboardingStep currentStep,
+    String email,
     String password,
     bool completed,
   }) {
     return OnboardingState(
       allSteps: allSteps ?? this.allSteps,
       currentStep: currentStep ?? this.currentStep,
+      email: email ?? this.email,
       password: password ?? this.password,
       completed: completed ?? this.completed,
     );

@@ -3,6 +3,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:timezone/data/latest.dart';
 
 import '../dependency_locator.dart';
+import '../domain/usecases/enable_console_logging.dart';
+import '../domain/usecases/enable_remote_logging_if_needed.dart';
 import 'pages/main/widgets/caller/widget.dart';
 import 'resources/localizations.dart';
 import 'routes.dart';
@@ -17,6 +19,9 @@ void main() async {
   initializeTimeZones();
 
   await initializeDependencies();
+
+  EnableConsoleLoggingUseCase()();
+  EnableRemoteLoggingIfNeededUseCase()();
 
   await sentry.run(() => runApp(const App()));
 }

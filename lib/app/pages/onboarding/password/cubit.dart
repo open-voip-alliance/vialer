@@ -1,7 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../domain/usecases/change_password.dart';
-import '../../../../domain/usecases/get_current_user.dart';
 import '../../../../domain/usecases/onboarding/login.dart';
 import '../../../util/loggable.dart';
 import '../cubit.dart';
@@ -14,7 +13,6 @@ class PasswordCubit extends Cubit<PasswordState> with Loggable {
 
   final _changePassword = ChangePasswordUseCase();
   final _login = LoginUseCase();
-  final _getStoredUser = GetStoredUserUseCase();
 
   PasswordCubit(this._onboarding) : super(PasswordNotChanged());
 
@@ -27,12 +25,16 @@ class PasswordCubit extends Cubit<PasswordState> with Loggable {
     }
 
     try {
+      final email = _onboarding.state.email;
+      final currentPassword = _onboarding.state.password;
+
       await _changePassword(
-        currentPassword: _onboarding.state.password,
+        email: email,
+        currentPassword: currentPassword,
         newPassword: password,
       );
       await _login(
-        email: _getStoredUser().email,
+        email: email,
         password: password,
       );
 

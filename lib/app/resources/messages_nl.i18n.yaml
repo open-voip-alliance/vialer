@@ -229,7 +229,7 @@ onboarding:
   login:
     title: *loginButton
     placeholder:
-      username: "Gebruikersnaam"
+      email: "Gebruikersnaam"
       password: "Wachtwoord"
     button:
       loggingIn: "Bezig met inloggen"

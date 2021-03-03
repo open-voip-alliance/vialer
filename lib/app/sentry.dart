@@ -6,8 +6,8 @@ import 'package:flutter/foundation.dart';
 import 'package:sentry/sentry.dart';
 
 import '../dependency_locator.dart';
-import '../domain/repositories/auth.dart';
 import '../domain/repositories/env.dart';
+import '../domain/usecases/get_user.dart';
 import 'util/debug.dart';
 
 Future<void> run(void Function() f) async {
@@ -40,10 +40,10 @@ Future<void> _capture(
   StackTrace stackTrace, {
   Function always,
 }) async {
-  final authRepository = dependencyLocator<AuthRepository>();
+  final getUser = GetUserUseCase();
 
   try {
-    final user = authRepository.currentUser;
+    final user = await getUser(latest: false);
 
     doIfNotDebug(() async {
       client.capture(

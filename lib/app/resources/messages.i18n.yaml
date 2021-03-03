@@ -224,7 +224,7 @@ onboarding:
   login:
     title: *loginButton
     placeholder:
-      username: "Username"
+      email: "Username"
       password: "Password"
     button:
       loggingIn: "Logging in"

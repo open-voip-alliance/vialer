@@ -3,21 +3,16 @@ import 'dart:io';
 import 'package:meta/meta.dart';
 import 'package:device_info/device_info.dart';
 import 'package:package_info/package_info.dart';
-
-import '../../domain/repositories/auth.dart';
+import '../entities/system_user.dart';
 
 import 'services/feedback.dart';
 
 class FeedbackRepository {
-  final AuthRepository _authRepository;
-
-  FeedbackRepository(this._authRepository);
-
   Future<void> send({
     @required String title,
     @required String text,
+    @required SystemUser user,
   }) async {
-    final user = _authRepository.currentUser;
     final service = FeedbackService.create();
     final packageInfo = await PackageInfo.fromPlatform();
 

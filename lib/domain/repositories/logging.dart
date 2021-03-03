@@ -2,18 +2,15 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:logging/logging.dart';
+import 'package:meta/meta.dart';
 
-import '../../domain/entities/setting.dart';
-import '../../domain/repositories/auth.dart';
 import '../../domain/repositories/env.dart';
-import '../../domain/repositories/setting.dart';
 import '../../domain/repositories/storage.dart';
+import '../entities/system_user.dart';
 
 class LoggingRepository {
-  final AuthRepository _authRepository;
   final StorageRepository _storageRepository;
   final EnvRepository _envRepository;
-  final SettingRepository _settingRepository;
 
   SecureSocket _remoteLoggingSocket;
 
@@ -22,10 +19,8 @@ class LoggingRepository {
   Logger get _logger => __logger ??= Logger('@$runtimeType');
 
   LoggingRepository(
-    this._authRepository,
     this._storageRepository,
     this._envRepository,
-    this._settingRepository,
   );
 
   StreamSubscription _remoteLogSubscription;
@@ -55,7 +50,7 @@ class LoggingRepository {
     }
   }
 
-  String _logString(LogRecord record) {
+  String _logString(LogRecord record, {@required SystemUser user}) {
     var sanitizedMessage = record.message;
 
     // Source: https://stackoverflow.com/a/6967885
@@ -89,17 +84,16 @@ class LoggingRepository {
     // has taken place and we're good.
     assert(record.message == sanitizedMessage);
 
-    final user = _authRepository.currentUser;
     final uuid = user != null ? '${user.uuid} ' : '';
 
     return '[${record.time}] ${record.level.name} $uuid${record.loggerName}:'
         ' $sanitizedMessage';
   }
 
-  Future<void> enableConsoleLogging() async {
+  Future<void> enableConsoleLogging({@required SystemUser user}) async {
     _clearLogHistoryOnNewDay();
     Logger.root.onRecord.listen((record) {
-      final logString = _logString(record);
+      final logString = _logString(record, user: user);
       if (logString != null) {
         _storageRepository.appendLogs(logString);
         print(logString);
@@ -107,20 +101,11 @@ class LoggingRepository {
     });
   }
 
-  Future<void> enableRemoteLoggingIfSettingEnabled() async {
-    final settings = await _settingRepository.getSettings();
-    final setting = settings.get<RemoteLoggingSetting>();
-
-    if (setting?.value == true) {
-      await enableRemoteLogging();
-    }
-  }
-
   Future<String> get _logentriesToken => Platform.isAndroid
       ? _envRepository.logentriesAndroidToken
       : _envRepository.logentriesIosToken;
 
-  Future<void> enableRemoteLogging() async {
+  Future<void> enableRemoteLogging({@required SystemUser user}) async {
     _remoteLoggingSocket = await SecureSocket.connect(
       'data.logentries.com',
       443,
@@ -130,7 +115,7 @@ class LoggingRepository {
 
     if (token != null && token.isNotEmpty) {
       _remoteLogSubscription ??= Logger.root.onRecord.listen((record) async {
-        final message = _logString(record);
+        final message = _logString(record, user: user);
         if (message == null) {
           return;
         }

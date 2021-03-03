@@ -3,38 +3,42 @@ import 'package:meta/meta.dart';
 import '../entities/exceptions/auto_login.dart';
 import '../entities/exceptions/need_to_change_password.dart';
 import '../entities/system_user.dart';
-import '../repositories/storage.dart';
 import 'services/voipgrid.dart';
 
 class AuthRepository {
-  final StorageRepository _storageRepository;
   final VoipgridService _service;
 
-  AuthRepository(this._storageRepository, this._service);
+  AuthRepository(this._service);
 
   static const _emailKey = 'email';
   static const _passwordKey = 'password';
   static const _apiTokenKey = 'api_token';
 
-  SystemUser _currentUser;
+  /// Returns the latest user from the portal.
+  Future<SystemUser> getUser() => _getUser();
 
-  /// Fetches the latest user from the portal.
-  Future<SystemUser> fetchLatestUser() async {
-    final systemUserResponse = await _service.getSystemUser();
+  Future<SystemUser> _getUser({String email, String token}) async {
+    assert(
+      (email == null && token == null) || (email != null && token != null),
+    );
+
+    final systemUserResponse = await _service.getSystemUser(
+      authorization:
+          email != null && token != null ? 'Token $email:$token' : null,
+    );
     if (systemUserResponse.error
         .toString()
         .contains('You need to change your password in the portal')) {
       throw NeedToChangePasswordException();
     }
 
-    return _currentUser = _storageRepository.systemUser = SystemUser.fromJson(
+    return SystemUser.fromJson(
       systemUserResponse.body as Map<String, dynamic>,
-    ).copyWith(
-      token: _currentUser.token,
     );
   }
 
-  Future<bool> authenticate(
+  /// If null is returned, authentication failed.
+  Future<SystemUser> authenticate(
     String email,
     String password, {
     bool cachePassword = true,
@@ -48,40 +52,27 @@ class AuthRepository {
 
     if (body != null && body.containsKey(_apiTokenKey)) {
       final token = body[_apiTokenKey] as String;
+      final user = await _getUser(email: email, token: token);
 
-      // Set a temporary system user that the authorization interceptor will
-      // use
-      _currentUser = SystemUser(
-        email: email,
-        token: token,
-      );
-
-      await fetchLatestUser();
-
-      return true;
-    } else {
-      return false;
+      return user.copyWith(token: token);
     }
-  }
 
-  SystemUser get currentUser {
-    _currentUser ??= _storageRepository.systemUser;
-
-    return _currentUser;
+    return null;
   }
 
   Future<bool> changePassword({
+    @required String email,
     @required String currentPassword,
     @required String newPassword,
   }) async {
     final response = await _service.password({
-      'email_address': currentUser.email,
+      'email_address': email,
       'current_password': currentPassword,
       'new_password': newPassword,
     });
 
     if (response.isSuccessful) {
-      await authenticate(currentUser.email, newPassword, cachePassword: false);
+      await authenticate(email, newPassword, cachePassword: false);
 
       return true;
     } else {
@@ -89,7 +80,7 @@ class AuthRepository {
     }
   }
 
-  Future<String> fetchAutoLoginToken() async {
+  Future<String> getAutoLoginToken() async {
     final response = await _service.getAutoLoginToken();
     if (!response.isSuccessful) {
       throw AutoLoginException();

@@ -1,11 +1,12 @@
-import '../../dependency_locator.dart';
-
-import '../repositories/auth.dart';
 import '../use_case.dart';
+import 'get_user.dart';
 
-class GetHasVoipUseCase extends UseCase<bool> {
-  final _authRepository = dependencyLocator<AuthRepository>();
+class GetHasVoipUseCase extends FutureUseCase<bool> {
+  final _getUser = GetUserUseCase();
 
   @override
-  bool call() => _authRepository.currentUser?.appAccountId != null;
+  Future<bool> call() async {
+    final user = await _getUser(latest: false);
+    return user?.appAccountId != null;
+  }
 }
