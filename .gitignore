@@ -52,5 +52,6 @@ google-services.json
 # iOS icons, because they're set by a pre-build script.
 ios/Runner/Assets.xcassets/AppIcon.appiconset
 
-# Generated file by pre-build script.
+# Generated file by pre-build scripts.
 ios/Flutter/Brand.xconfig
+ios/Flutter/Segment.xconfig

@@ -5,13 +5,15 @@ import '../../app/util/debug.dart';
 class MetricsRepository {
   MetricsRepository() {
     // Ensure some sensitive tracking stuff is always redacted.
-    Segment.setContext({
-      'ip': '0.0.0.0',
-      'device': {
-        'id': '',
-        'advertisingId': '',
-        'token': '',
-      },
+    doIfNotDebug(() {
+      Segment.setContext({
+        'ip': '0.0.0.0',
+        'device': {
+          'id': '',
+          'advertisingId': '',
+          'token': '',
+        },
+      });
     });
   }
 
