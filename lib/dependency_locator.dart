@@ -45,14 +45,11 @@ Future<void> initializeDependencies() async {
     )
     ..registerSingleton<PermissionRepository>(PermissionRepository())
     ..registerSingleton<ContactRepository>(ContactRepository())
-    ..registerSingletonWithDependencies<RecentCallRepository>(
-      () => RecentCallRepository(
+    ..registerSingleton<RecentCallRepository>(
+      RecentCallRepository(
         dependencyLocator<VoipgridService>(),
         dependencyLocator<Database>(),
-        dependencyLocator<ContactRepository>(),
-        dependencyLocator<PermissionRepository>(),
       ),
-      dependsOn: [StorageRepository],
     )
     ..registerSingletonWithDependencies<CallThroughRepository>(
       () => CallThroughRepository(
