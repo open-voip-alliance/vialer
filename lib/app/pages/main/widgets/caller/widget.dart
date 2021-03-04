@@ -188,15 +188,19 @@ Future<void> _showCallThroughErrorDialog(
           title: title,
           content: content,
           actions: <Widget>[
-            FlatButton(
+            TextButton(
               onPressed: buttonOnPressed,
+              style: ButtonStyle(
+                overlayColor: MaterialStateProperty.all(
+                  Theme.of(context).primaryColorLight,
+                ),
+              ),
               child: Text(
                 buttonText.toUpperCase(),
                 style: TextStyle(
                   color: Theme.of(context).primaryColor,
                 ),
               ),
-              splashColor: Theme.of(context).primaryColorLight,
             ),
           ],
         );

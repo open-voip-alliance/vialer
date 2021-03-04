@@ -13,7 +13,7 @@ void showSnackBar(
 
   final contentColor = context.brand.theme.buttonColoredRaisedTextColor;
 
-  Scaffold.of(context).showSnackBar(
+  ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
       duration: duration,
       behavior: SnackBarBehavior.fixed,

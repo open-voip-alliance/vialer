@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../resources/localizations.dart';
-import '../../../../util/brand.dart';
 import '../../../../util/conditional_capitalization.dart';
 import '../cubit.dart';
 import '../widgets/big_header.dart';
@@ -65,17 +64,15 @@ class HelpUsScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                FlatButton(
+                TextButton(
                   onPressed: () => _dismiss(context),
-                  textColor: context.brand.theme.primary,
                   child: Text(
                     context.msg.generic.button.noThanks
                         .toUpperCaseIfAndroid(context),
                   ),
                 ),
-                FlatButton(
+                TextButton(
                   onPressed: () => _next(context),
-                  textColor: context.brand.theme.primary,
                   child: Text(
                     context.msg.generic.button.yes
                         .toUpperCaseIfAndroid(context),

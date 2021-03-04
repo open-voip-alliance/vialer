@@ -1,6 +1,8 @@
 # Automatically generated on 2020-11-11 UTC from https://codemagic.io/app/5e78b819064d840016d04c7a/settings
 # Note that this configuration is not an exact match to UI settings. Review and adjust as necessary.
 
+flutter_version: &flutter_version 2.0.0
+
 workflows:
   master:
     name: master

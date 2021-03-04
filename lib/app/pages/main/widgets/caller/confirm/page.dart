@@ -292,10 +292,14 @@ class _AndroidInputs extends StatelessWidget {
                 )
               ],
             ),
-            RaisedButton(
-              elevation: 4,
+            ElevatedButton(
               onPressed: onCallButtonPressed,
-              color: context.brand.theme.green2,
+              style: ButtonStyle(
+                elevation: MaterialStateProperty.all(4),
+                backgroundColor: MaterialStateProperty.all(
+                  context.brand.theme.green2,
+                ),
+              ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -322,7 +326,15 @@ class _AndroidInputs extends StatelessWidget {
             const SizedBox(height: 16),
             SizedBox(
               width: double.infinity,
-              child: FlatButton(
+              child: TextButton(
+                style: ButtonStyle(
+                  foregroundColor: MaterialStateProperty.all(
+                    context.brand.theme.grey6,
+                  ),
+                  overlayColor: MaterialStateProperty.all(
+                    context.brand.theme.grey4.withOpacity(0.25),
+                  ),
+                ),
                 onPressed: onCancelButtonPressed,
                 child: Text(
                   context.msg.generic.button.cancel.toUpperCase(),

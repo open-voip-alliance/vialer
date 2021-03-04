@@ -43,7 +43,7 @@ Messages _messagesFromLocale(Locale locale) {
     case 'en':
       return const Messages();
     case 'nl':
-      return const Messages_nl();
+      return const MessagesNl();
     default:
       throw UnsupportedError('Unsupported locale');
   }

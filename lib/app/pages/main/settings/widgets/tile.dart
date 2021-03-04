@@ -423,13 +423,11 @@ class _RemoteLoggingSendLogsDialog extends StatelessWidget {
         title: title,
         content: content,
         actions: [
-          FlatButton(
-            textColor: context.brand.theme.primary,
+          TextButton(
             onPressed: onDenyPressed,
             child: deny,
           ),
-          FlatButton(
-            textColor: context.brand.theme.primary,
+          TextButton(
             onPressed: onConfirmPressed,
             child: confirm,
           ),

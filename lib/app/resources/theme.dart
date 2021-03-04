@@ -193,6 +193,11 @@ class VoysTheme extends BrandTheme {
                 color: Colors.white,
               ),
             ),
+        textButtonTheme: TextButtonThemeData(
+          style: ButtonStyle(
+            foregroundColor: MaterialStateProperty.all(primary),
+          ),
+        ),
       );
 }
 

@@ -80,19 +80,17 @@ class QuestionScreen extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            FlatButton(
+            TextButton(
               onPressed: survey.questions.indexOf(question) != 0
                   ? () => _previous(context)
                   : null,
-              textColor: context.brand.theme.primary,
               child: Text(
                 context.msg.generic.button.previous
                     .toUpperCaseIfAndroid(context),
               ),
             ),
-            FlatButton(
+            TextButton(
               onPressed: () => _next(context),
-              textColor: context.brand.theme.primary,
               child: Text(
                 isLastQuestion
                     ? context.msg.generic.button.done

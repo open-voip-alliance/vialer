@@ -10,11 +10,11 @@ import '../domain/repositories/env.dart';
 import '../domain/usecases/get_user.dart';
 import 'util/debug.dart';
 
-Future<void> run(void Function() f) async {
+Future<void> run(void Function() function) async {
   final dsn = await dependencyLocator.get<EnvRepository>().sentryDsn;
 
   if (dsn == null || dsn.isEmpty) {
-    f();
+    function();
     return;
   }
 
@@ -27,10 +27,9 @@ Future<void> run(void Function() f) async {
         always: () => FlutterError.dumpErrorToConsole(details),
       );
 
-  runZoned(
-    f,
-    onError: (error, stackTrace) =>
-        _capture(sentry, error, stackTrace as StackTrace),
+  runZonedGuarded(
+    function,
+    (error, stackTrace) => _capture(sentry, error, stackTrace),
   );
 }
 

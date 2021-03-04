@@ -196,7 +196,7 @@ class _BuildInfoState extends State<_BuildInfo> {
     _tapCount++;
 
     if (_tapCount >= 4 && _tapCount <= _tapCountToShowHiddenSettings) {
-      Scaffold.of(context).removeCurrentSnackBar();
+      ScaffoldMessenger.of(context).removeCurrentSnackBar();
 
       final gainedAccess = _tapCount == _tapCountToShowHiddenSettings;
 
@@ -206,7 +206,7 @@ class _BuildInfoState extends State<_BuildInfo> {
             );
       }
 
-      Scaffold.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
             gainedAccess

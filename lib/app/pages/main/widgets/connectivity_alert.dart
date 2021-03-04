@@ -41,7 +41,7 @@ class _ConnectivityAlertState extends State<ConnectivityAlert> {
     }
 
     if (state is Connected) {
-      Scaffold.of(context).hideCurrentSnackBar();
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
     }
   }
 

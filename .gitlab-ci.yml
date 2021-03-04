@@ -25,7 +25,7 @@ analyze:
     - dart analyze . --fatal-infos --fatal-warnings
 
 format:
-  image: cirrusci/flutter:stable
+  image: cirrusci/flutter:2.0.0
   stage: check
   script:
     # We don't generate any code, because we don't want to check that anyway.

@@ -4,8 +4,8 @@ import 'package:characters/characters.dart';
 import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_widgets/flutter_widgets.dart';
 import 'package:provider/provider.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import '../../../../domain/entities/contact.dart';
 import '../../../resources/localizations.dart';
@@ -359,7 +359,7 @@ class _AlphabetListViewState extends State<_AlphabetListView> {
 
         return Stack(
           fit: StackFit.expand,
-          overflow: Overflow.visible,
+          clipBehavior: Clip.none,
           children: <Widget>[
             RefreshIndicator(
               onRefresh: widget.onRefresh,
