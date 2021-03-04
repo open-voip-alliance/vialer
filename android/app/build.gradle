@@ -23,26 +23,24 @@ if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
 
-def getBrand() {
+def dartEnv = project.findProperty('dart-defines')
+        ?.split(',')
+        ?.collectEntries {
+            def split = it.split('%3D') // %3D is '=' encoded
+            return [(split[0]), split[1]]
+        }
+
+def getBrand = {
     // Read brands from file.
     def brandsFile = file('../../lib/brands.dart')
     // Remove the first four and last two lines to make it valid JSON.
     def content = brandsFile.readLines().drop(4).dropRight(1).join()
 
-    List<Map<String, String>> dartEnv = project
-            .findProperty('dart-defines')
-            ?.split(',')
-            ?.collect {
-                def split = it.split('%3D') // %3D is '=' encoded
-
-                return [(split[0]): split[1]]
-            }
-
     String brandId
-    if (dartEnv == null || dartEnv.every { !it.containsKey('BRAND') }) {
+    if (dartEnv == null || !dartEnv.containsKey('BRAND')) {
         brandId = 'vialer'
     } else {
-        brandId = dartEnv.find { it.containsKey('BRAND') }['BRAND']
+        brandId = dartEnv['BRAND']
     }
 
     def brands = new JsonSlurper().parseText(content)
@@ -51,6 +49,7 @@ def getBrand() {
 }
 
 def brand = getBrand()
+def segmentKey = dartEnv['SEGMENT_ANDROID_KEY'] ?: ""
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
@@ -72,6 +71,7 @@ android {
     defaultConfig {
         applicationId brand.appId
         resValue "string", "app_name", brand.appName
+        resValue "string", "segment_key", segmentKey
         minSdkVersion 26
         targetSdkVersion 30
         versionCode flutterVersionCode.toInteger()

@@ -9,6 +9,8 @@ workflows:
       vars:
         LOGENTRIES_ANDROID_TOKEN: Encrypted(Z0FBQUFBQmZxX25Lb1NncHBiSXRUcF9DdmI4cktaSTQtLW8wLXJvQ3hrV1NWRHZvb3BwWWlXOGpkVEJfU0VpV0o0d1NvYnVtTU13cktrY250ankzMGl0V1RWbjBkUk5tTHlGbWs5cVNBUWRSbzg4ZkcxS1g2SDdYYjdlX0VvUUlwQjVCd0V1THF2b24=)
         LOGENTRIES_IOS_TOKEN: Encrypted(Z0FBQUFBQmZxX25LelBKMG9FaFBUUUt1NFVVWEJ0a3VpRmFMa2kzcWxjVG0zSlU0SmRqeHJheURPUUNSRXdvV2ltUnR5Z3pmOXlWVTdBVjdfaG1XLV9PVWMtZjB5X0ZmRG5JU29qTHZ4bTZpS0lpNkxSVGprNGFRN0h2djNZVGlLd2E0MEU4VF9NVlE=)
+        SEGMENT_ANDROID_WRITE_KEY: Encrypted(Z0FBQUFBQmdQbHBNRjFseGJqWDYzOWhMNDNVUXV3bjNwV0ZwdklnazVIRlM4dFhSQTR5TmMtSnNnWVNDWWFQSUFqN0VNd0tnQnZYNWd5WWkyR1lZX2g1eDBCNko2eEdoRG5UNVpmUlQwa3VkZE85VHB4cWh5N3E4Zzd4cGctMUlxQmJiQU9Pdmd2ZkY=)
+        SEGMENT_IOS_WRITE_KEY: Encrypted(Z0FBQUFBQmdQbGxMX1BlUF83NWp4UW81UW1Wbk4yVEVkYS0wREhzT0hDVURKZmVud3RnZE4ycnBsU3o5Nlp5NFBzOF9XTks4QWlyNnlOUl9rdGxxNmJRSk5vTWxvSjBzVXozckdaNE15cm9tdnRtSFZsT2RMTVFqTUs0SWJEMXRJNzJ3Nnk4R0ZRWlQ=)
         FCI_KEYSTORE_PASSWORD: Encrypted(Z0FBQUFBQmZxX25Lc0RRV2pEcU5XYTRQdUFhRDF0dVhydXJVMEg5RmFMX1pWTGVQaUxIR2hEd3dtQUN0SGE5aF9Jbml6bFZRM3I4T3phLU9GUWtQODNvZ0h4cnhDNm9CUHROaDBlZVphejFjVmtlZnJDeUY3Rms9)
         FCI_KEY_PASSWORD: Encrypted(Z0FBQUFBQmZxX25Lb0dTYVVFMlJubVJrTXA4a0hiczhzeHpnUlhVWktFbllLNWF2OFlsTlQ5dzgzUWFiaU1idTRJN1ZDWkxtR1VCMjFjUGt4QUNkNzZsazE3UU16a2NMbGt3eVhibHB5SHlSZmlyZzVQbl9lWlU9)
         FCI_KEY_ALIAS: Encrypted(Z0FBQUFBQmZxX25LTW5Oc0JlUi14aVZ0Z1VOX0p0SE1WU2JXTEx2NEpYeHJMdUtKd0xTZnhTRkZUaUVqNkgwdGY4R0hmdGlZZkY4dGZWX1k0S2hKQmVlRjl1cm93WXpwRFE9PQ==)
@@ -110,7 +112,7 @@ workflows:
       - &build_android_for_dev
         name: Building Android for dev and QA purposes
         script: |
-          cd . && flutter build apk --release --target=lib/app/main.dart --build-number=$BUILD_NUMBER -v --dart-define BRAND=voys
+          cd . && flutter build apk --release --target=lib/app/main.dart --build-number=$BUILD_NUMBER -v --dart-define BRAND=voys --dart-define SEGMENT_ANDROID_KEY=$SEGMENT_ANDROID_WRITE_KEY
       # TODO: Enable iOS builds again when we find a fix for the provisioning profile issue with branding
       # - &build_ios_for_dev
       #   name: Building iOS with ad-hoc provisioning profile for dev and QA purposes
@@ -120,7 +122,7 @@ workflows:
       #     keychain initialize
       #     app-store-connect fetch-signing-files "com.voys.app" --type IOS_APP_ADHOC --create
       #     keychain add-certificates
-      #     flutter build ios --release --target=lib/app/main.dart --build-number=$BUILD_NUMBER --no-codesign --dart-define BRAND=voys
+      #     flutter build ios --release --target=lib/app/main.dart --build-number=$BUILD_NUMBER --no-codesign --dart-define BRAND=voys --dart-define SEGMENT_IOS_KEY=$SEGMENT_IOS_WRITE_KEY
       #     xcode-project use-profiles
       #     xcode-project build-ipa --workspace "ios/Runner.xcworkspace" --scheme "Runner"
     artifacts:
@@ -141,6 +143,8 @@ workflows:
       vars:
         LOGENTRIES_ANDROID_TOKEN: Encrypted(Z0FBQUFBQmZxX25LN3RDR0RVcHRab2NSdnBOM1RRVVIxTUNVUmNCNGU3UDVoVzRwdXNwRFFjWUluTDN4cXRuekNpUzg2bEpUWEV3c0NidEhicGR4a0E2elA4OS1oTDJjbnlmR0txRnNzbUNVTHkyM3NYTFhaU1lvaXI1bDMyUG96TUJyejJHZGIxTE8=)
         LOGENTRIES_IOS_TOKEN: Encrypted(Z0FBQUFBQmZxX25LYTJqTnY4ZnRFQUhMNTlCTlE0ekhIaUhCdVpiVE9ELWhHVFd1SGtoODJ6YkhFYnBJam1ubFNIdTEwZmxVX2MyUWRtSDk0YmtDMDdUbHg3YnB2a19BdGFxV1RtUFpKTGFTTG9pdmRjRVJ0V0RSVUZxZ2wxRWVWWmVpLXEzUDdkbTc=)
+        SEGMENT_ANDROID_WRITE_KEY: Encrypted(Z0FBQUFBQmdQbHBNRjFseGJqWDYzOWhMNDNVUXV3bjNwV0ZwdklnazVIRlM4dFhSQTR5TmMtSnNnWVNDWWFQSUFqN0VNd0tnQnZYNWd5WWkyR1lZX2g1eDBCNko2eEdoRG5UNVpmUlQwa3VkZE85VHB4cWh5N3E4Zzd4cGctMUlxQmJiQU9Pdmd2ZkY=)
+        SEGMENT_IOS_WRITE_KEY: Encrypted(Z0FBQUFBQmdQbGxMX1BlUF83NWp4UW81UW1Wbk4yVEVkYS0wREhzT0hDVURKZmVud3RnZE4ycnBsU3o5Nlp5NFBzOF9XTks4QWlyNnlOUl9rdGxxNmJRSk5vTWxvSjBzVXozckdaNE15cm9tdnRtSFZsT2RMTVFqTUs0SWJEMXRJNzJ3Nnk4R0ZRWlQ=)
         FCI_KEYSTORE_PASSWORD: Encrypted(Z0FBQUFBQmZxX25Lc1J2N0NjMUtVeUo5RFd1QTlGdS1tRGJ2eUFzZ1lCTGg5eFBUendyVTNheGxYTHRCc1RQMG85X0dRZ3hLZE1Eckl1TlVZOVI4RmR6ZU5XZ3VLU3ZURUlxUHNmdlFCVm94NmhFTVJ6NHIyMzg9)
         FCI_KEY_ALIAS: Encrypted(Z0FBQUFBQmZxX25LYXdDUjh5b2VqV1Fpdm9rT3VXT0l1bXRoOTJOckczYVY3cTNRZWw4ZEQtYkhNQ05OamR3VW90V0lXREdZbFRCaTZQbElGdDdUbEJndVlZeVpNRUdUdFE9PQ==)
         FCI_KEY_PASSWORD: Encrypted(Z0FBQUFBQmZxX25LUXRMZEplOWt3RjFyQ2VrTDhjOTM0MXlvVmNSaGEybnVGTWxVNmNla1Jhc3lidF92VHAxemVYU2FHZjRVZkktMVB4aHlrak5nR05uY0x4WnRwOE56WHdrQWU2MzQyQzFmQUdNN0pDcWFFRDg9)
@@ -214,6 +218,8 @@ workflows:
       vars:
         LOGENTRIES_ANDROID_TOKEN: Encrypted(Z0FBQUFBQmZxX25MVG1hZTVmS1lIYlFiZ1BJc1Y5V1R2UXBhbWVvZ2thcVZKYm56WDFRU2p1SmQwVEM2RVBPcjVneWFrZkp1dUpsVFV2YmlXNk5MT29BUThfVmp1MzRQVEZZbGdSbDgxYTdxV2hDaEJtb2JBSFdWcXd2cDhSSGZHd2ptS2xhMzE5X2I=)
         LOGENTRIES_IOS_TOKEN: Encrypted(Z0FBQUFBQmZxX25MTldpUTBXalFhekJBLUMzd1B5M2JvVkVVT1ViVkNIaWJsMmI4T21TS0RnZlF0SF96dFhEMm1KQkhsVE5vVWR4a0N3ZURVaWh1QWRzY3JmQ0lsMUNURC1PRVJsOC1HbVU1VXowejVIRFQ4ZE1nTkpRUUI2c0dqRzMya2E4ZDN3alo=)
+        SEGMENT_ANDROID_WRITE_KEY: Encrypted(Z0FBQUFBQmdQbHBNRjFseGJqWDYzOWhMNDNVUXV3bjNwV0ZwdklnazVIRlM4dFhSQTR5TmMtSnNnWVNDWWFQSUFqN0VNd0tnQnZYNWd5WWkyR1lZX2g1eDBCNko2eEdoRG5UNVpmUlQwa3VkZE85VHB4cWh5N3E4Zzd4cGctMUlxQmJiQU9Pdmd2ZkY=)
+        SEGMENT_IOS_WRITE_KEY: Encrypted(Z0FBQUFBQmdQbGxMX1BlUF83NWp4UW81UW1Wbk4yVEVkYS0wREhzT0hDVURKZmVud3RnZE4ycnBsU3o5Nlp5NFBzOF9XTks4QWlyNnlOUl9rdGxxNmJRSk5vTWxvSjBzVXozckdaNE15cm9tdnRtSFZsT2RMTVFqTUs0SWJEMXRJNzJ3Nnk4R0ZRWlQ=)
         FCI_KEYSTORE_PASSWORD: Encrypted(Z0FBQUFBQmZxX25LRndRZmRNQVkxRDFnMkoycllNbXdVbjJsR3JkZlNIcUM5MTF5eG5rMkQ3MHZrd1Nza2V0SW5hU2t3NHY3WW5tTk1XcHVEbk1Jb05kbVQ0NlNORExMd2haV2lCSTNsNlU5UU55SUdIX05XVmc9)
         FCI_KEY_ALIAS: Encrypted(Z0FBQUFBQmZxX25MMVprWWRUWXp4eUhuYUdZSFNQUndkZm14MVV4d2IyR21uYUV4NEdCemtPLXFvUEtiQmVsQlQ4Q2lib1ZEM2FVWWdYVlFKNldGb281NW9QMWs5c2t3MEE9PQ==)
         FCI_KEY_PASSWORD: Encrypted(Z0FBQUFBQmZxX25Mamt2WkE0Z3BqQnBRZ0hGelZrR0laUHNhdjNjYThOMGlZeGNHWmJRS0Y5dG9IZXBRaEtwMk1rV1hRajN1eWhueW92ellXZm4tU1REM1dDMTlwVm11WmFQR2JYTEpNc3VVRGUtMXFLOGdrMzA9)
@@ -313,12 +319,9 @@ workflows:
       - *set_up_keystore_file
       - *set_up_firebase
       - *set_up_env_file
-      - name: Setting up Sentry and Segment
+      - name: Setting up Sentry
         script: |
           sed -i -e "s|SENTRY_DSN=|SENTRY_DSN=${SENTRY_DSN}|g" .env
-          sed -i -e "s/SEGMENT_ANDROID_WRITE_KEY=/SEGMENT_ANDROID_WRITE_KEY=${SEGMENT_ANDROID_WRITE_KEY}/g" .env
-          sed -i -e "s/SEGMENT_IOS_WRITE_KEY=/SEGMENT_IOS_WRITE_KEY=${SEGMENT_IOS_WRITE_KEY}/g" .env
-          ./set_segment_write_key.sh
       - name: Setting version string
         script: |
           # get version tag
@@ -333,7 +336,7 @@ workflows:
       - &build_android_for_publish
         name: Building Android for publishing to Google Play Store
         script: |
-          cd . && flutter build appbundle --release --target=lib/app/main.dart --build-number=$BUILD_NUMBER
+          cd . && flutter build appbundle --release --target=lib/app/main.dart --build-number=$BUILD_NUMBER --dart-define BRAND=voys --dart-define SEGMENT_ANDROID_KEY=$SEGMENT_ANDROID_WRITE_KEY
           # generate signed universal apk with user specified keys
           android-app-bundle build-universal-apk \
             --bundle build/**/outputs/**/*.aab \
@@ -348,7 +351,7 @@ workflows:
           keychain initialize
           app-store-connect fetch-signing-files "com.voys.freedom" --type IOS_APP_STORE --create
           keychain add-certificates
-          cd . && flutter build ios --release --target=lib/app/main.dart --build-number=$BUILD_NUMBER --no-codesign
+          cd . && flutter build ios --release --target=lib/app/main.dart --build-number=$BUILD_NUMBER --no-codesign --dart-define BRAND=voys --dart-define SEGMENT_IOS_KEY=$SEGMENT_IOS_WRITE_KEY
           xcode-project use-profiles
           cd . && xcode-project build-ipa --workspace "ios/Runner.xcworkspace" --scheme "Runner"
     artifacts:

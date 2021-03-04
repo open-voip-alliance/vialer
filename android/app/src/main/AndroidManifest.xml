@@ -28,7 +28,7 @@
             </intent-filter>
         </activity>
 
-        <meta-data android:name="com.claimsforce.segment.WRITE_KEY" android:value="SEGMENT_WRITE_KEY" />
+        <meta-data android:name="com.claimsforce.segment.WRITE_KEY" android:value="@string/segment_key" />
         <meta-data
             android:name="com.claimsforce.segment.TRACK_APPLICATION_LIFECYCLE_EVENTS"
             android:value="false" />
