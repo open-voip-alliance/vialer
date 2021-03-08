@@ -25,7 +25,10 @@ class VoipRepository with Loggable {
           );
 
         return ApplicationSetup(
-          logger: (msg, level) => logger.log(level.toLoggerLevel(), msg),
+          logger: (msg, level) => logger.log(
+            level.toLoggerLevel(),
+            msg.redact(),
+          ),
           // TODO: Base on brand
           userAgent: 'Voys Freedom',
         );
@@ -40,6 +43,27 @@ class VoipRepository with Loggable {
   Future<void> endCall() => _fil.actions.end();
 
   Stream<Event> get events => _fil.events;
+}
+
+extension on String {
+  String redact() {
+    return replaceAll(RegExp('caller_id=(.+?),'), 'callerid=[REDACTED]')
+        .replaceAll(RegExp('phonenumber=(.+?),'), 'phonenumber=[REDACTED]')
+        .replaceAll(RegExp(r'sip:\+?\d+'), 'sip:[REDACTED]')
+        .replaceAll(RegExp('To:(.+?)>'), 'To: [REDACTED]')
+        .replaceAll(RegExp('From:(.+?)>'), 'From: [REDACTED]')
+        .replaceAll(RegExp('Contact:(.+?)>'), 'Contact: [REDACTED]')
+        .replaceAll(RegExp('username=(.+?)&'), 'username=[REDACTED]')
+        .replaceAll(RegExp('nonce="(.+?)"'), 'nonce="[REDACTED]"')
+        .replaceAll(
+          RegExp('"caller_id" = (.+?);'),
+          '"caller_id" = [REDACTED];',
+        )
+        .replaceAll(
+          RegExp('Digest username="(.+?)"'),
+          'Digest username="[REDACTED]"',
+        );
+  }
 }
 
 extension on LogLevel {
