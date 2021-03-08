@@ -11,7 +11,7 @@ stages:
   - build
 
 analyze:
-  image: cirrusci/flutter:stable
+  image: cirrusci/flutter:1.22.6
   stage: check
   script:
     - flutter pub get
@@ -32,7 +32,7 @@ format:
     - dart format -o none --fix --set-exit-if-changed lib/
 
 test:
-  image: cirrusci/flutter:stable
+  image: cirrusci/flutter:1.22.6
   stage: test
   script:
     - cp .env.example .env
