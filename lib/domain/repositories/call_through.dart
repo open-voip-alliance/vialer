@@ -10,16 +10,11 @@ import 'package:url_launcher/url_launcher.dart';
 import '../entities/exceptions/call_through.dart';
 import '../entities/system_user.dart';
 import 'services/voipgrid.dart';
-import 'storage.dart';
 
 class CallThroughRepository {
   final VoipgridService _service;
-  final StorageRepository _storageRepository;
 
-  CallThroughRepository(
-    this._service,
-    this._storageRepository,
-  );
+  CallThroughRepository(this._service);
 
   Future<void> call(
     String destination, {
@@ -30,8 +25,6 @@ class CallThroughRepository {
     if (mobileNumber == null || mobileNumber?.isEmpty == true) {
       throw NoMobileNumberException();
     }
-
-    _storageRepository.lastDialedNumber = destination;
 
     try {
       // The call-through API expects a normalized number.
