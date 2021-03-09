@@ -75,7 +75,7 @@ class LoggingRepository {
 
     if (token != null && token.isNotEmpty) {
       _remoteLogSubscription ??= Logger.root.onRecord.listen((record) async {
-        final message = _logString(record, user: user);
+        final message = _logString(record, user: user).redactVoipDetails();
         if (message == null) {
           return;
         }
@@ -101,5 +101,26 @@ class LoggingRepository {
   Future<void> disableRemoteLogging() async {
     await _remoteLogSubscription?.cancel();
     _remoteLogSubscription = null;
+  }
+}
+
+extension on String {
+  String redactVoipDetails() {
+    return replaceAll(RegExp('caller_id=(.+?),'), 'callerid=[REDACTED]')
+        .replaceAll(RegExp('phonenumber=(.+?),'), 'phonenumber=[REDACTED]')
+        .replaceAll(RegExp(r'sip:\+?\d+'), 'sip:[REDACTED]')
+        .replaceAll(RegExp('To:(.+?)>'), 'To: [REDACTED]')
+        .replaceAll(RegExp('From:(.+?)>'), 'From: [REDACTED]')
+        .replaceAll(RegExp('Contact:(.+?)>'), 'Contact: [REDACTED]')
+        .replaceAll(RegExp('username=(.+?)&'), 'username=[REDACTED]')
+        .replaceAll(RegExp('nonce="(.+?)"'), 'nonce="[REDACTED]"')
+        .replaceAll(
+          RegExp('"caller_id" = (.+?);'),
+          '"caller_id" = [REDACTED];',
+        )
+        .replaceAll(
+          RegExp('Digest username="(.+?)"'),
+          'Digest username="[REDACTED]"',
+        );
   }
 }
