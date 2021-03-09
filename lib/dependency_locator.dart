@@ -48,7 +48,6 @@ Future<void> initializeDependencies() async {
     ..registerSingletonWithDependencies<CallThroughRepository>(
       () => CallThroughRepository(
         dependencyLocator<VoipgridService>(),
-        dependencyLocator<StorageRepository>(),
       ),
       dependsOn: [StorageRepository],
     )

@@ -4,6 +4,7 @@ import 'package:meta/meta.dart';
 
 import '../../dependency_locator.dart';
 import '../repositories/call_through.dart';
+import '../repositories/storage.dart';
 import '../repositories/voip.dart';
 import '../use_case.dart';
 import 'get_user.dart';
@@ -11,6 +12,7 @@ import 'get_user.dart';
 class CallUseCase extends FutureUseCase<void> {
   final _callThroughRepository = dependencyLocator<CallThroughRepository>();
   final _voipRepository = dependencyLocator<VoipRepository>();
+  final _storageRepository = dependencyLocator<StorageRepository>();
 
   final _getUser = GetUserUseCase();
 
@@ -26,5 +28,7 @@ class CallUseCase extends FutureUseCase<void> {
       final user = await _getUser(latest: false);
       await _callThroughRepository.call(destination, user: user);
     }
+
+    _storageRepository.lastDialedNumber = destination;
   }
 }
