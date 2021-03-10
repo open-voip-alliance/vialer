@@ -106,9 +106,7 @@ class LoggingRepository {
 
 extension on String {
   String redactVoipDetails() {
-    return replaceAll(RegExp('caller_id=(.+?),'), 'callerid=[REDACTED]')
-        .replaceAll(RegExp('phonenumber=(.+?),'), 'phonenumber=[REDACTED]')
-        .replaceAll(RegExp(r'sip:\+?\d+'), 'sip:[REDACTED]')
+    return replaceAll(RegExp(r'sip:\+?\d+'), 'sip:[REDACTED]')
         .replaceAll(RegExp('To:(.+?)>'), 'To: [REDACTED]')
         .replaceAll(RegExp('From:(.+?)>'), 'From: [REDACTED]')
         .replaceAll(RegExp('Contact:(.+?)>'), 'Contact: [REDACTED]')
