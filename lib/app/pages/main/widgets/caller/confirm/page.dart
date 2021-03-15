@@ -200,13 +200,13 @@ class ConfirmPageState extends State<ConfirmPage>
                                   style: _style,
                                 ),
                                 const SizedBox(height: 8),
-                                Text(state.outgoingCli, style: _largeStyle),
+                                // Is null for the first (few) frame(s).
+                                if (state.outgoingCli != null)
+                                  Text(state.outgoingCli, style: _largeStyle),
                                 SizedBox(height: paragraphDistance),
                                 Text(
                                   context.msg.main.dialer.confirm.description
-                                      .main(
-                                    appName,
-                                  ),
+                                      .main(appName),
                                   style: _style,
                                 ),
                                 SizedBox(height: paragraphDistance),
