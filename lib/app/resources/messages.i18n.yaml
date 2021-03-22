@@ -103,9 +103,9 @@ main:
           $appName was unable to find any contacts on your phone.
           When you add contacts, they will be shown here.
       noPermission:
-        title: "No access was given to your contacts"
+        title(String appName): "No access was given to your contacts"
         description(String appName): >-
-          $apName needs permission to display your contacts.
+          $appName needs permission to display your contacts.
         permanentDescription(String appName): >-
           In order to display your contacts, you need to allow the app to do so.
           You haven't given this permission yet. Please go to your phone privacy settings and
@@ -225,7 +225,7 @@ onboarding:
   login:
     title: *loginButton
     placeholder:
-      username: "Email address"
+      email: "Email address"
       password: "Password"
     button:
       loggingIn: "Logging in"

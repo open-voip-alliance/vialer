@@ -106,7 +106,7 @@ main:
           $appName kon geen contacten vinden op je telefoon.
           Wanneer je een contact toevoegt, wordt deze hier weergegeven.
       noPermission:
-        title: "$appName heeft nog geen toegang tot contacten"
+        title(String appName): "$appName heeft nog geen toegang tot contacten"
         description(String appName): >-
           $appName heeft jouw toestemming nodig om je contacten weer te geven.
         permanentDescription(String appName): >-
@@ -228,7 +228,7 @@ onboarding:
   login:
     title: *loginButton
     placeholder:
-      username: "E-mailadres"
+      email: "E-mailadres"
       password: "Wachtwoord"
     button:
       loggingIn: "Bezig met inloggen"

@@ -223,6 +223,7 @@ class _Placeholder extends StatelessWidget {
     final state = this.state;
 
     final cubit = context.watch<ContactsCubit>();
+    final appName = context.brand.appName;
 
     return ConditionalPlaceholder(
       showPlaceholder: state is! ContactsLoaded ||
@@ -231,19 +232,16 @@ class _Placeholder extends StatelessWidget {
           ? Warning(
               icon: const Icon(VialerSans.lockOn),
               title: Text(
-                context.msg.main.contacts.list.noPermission.title,
+                context.msg.main.contacts.list.noPermission.title(appName),
               ),
               description: !state.dontAskAgain
                   ? Text(
-                      context.msg.main.contacts.list.noPermission.description(
-                        context.brand.appName,
-                      ),
+                      context.msg.main.contacts.list.noPermission
+                          .description(appName),
                     )
                   : Text(
                       context.msg.main.contacts.list.noPermission
-                          .permanentDescription(
-                        context.brand.appName,
-                      ),
+                          .permanentDescription(appName),
                     ),
               children: <Widget>[
                 const SizedBox(height: 40),
