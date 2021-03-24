@@ -36,21 +36,21 @@ main:
       description:
         origin: "Dialing from your business number"
         main(String appName):
-          "$appName will route your call through, keeping your personal number private."
+          "$appName will route your call through, keeping your mobile number private."
         action: "Tap the “Call” button to dial:"
         showPopUpSetting: "Don't show this again"
       button:
         call(String number): "Call $number"
     noPermission:
-      title: "Permission required"
+      title: "Please give your permission"
       description(String appName): >-
-        In order to call by using $appName, you need to allow the app to do so.
-        Please press Allow when asked if you want to allow it to make and manage phone calls,
+        Your permission is required to call via $appName.
+        Please tap Allow when asked to allow it to make and manage phone calls,
         so that the app can work properly.
       permanentDescription(String appName): >-
-        In order to call by using $appName, you need to allow the app to do so.
-        You have denied to give this permission. Please go to your phone privacy settings and
-        allow $appName to access your phone abilities.
+        Your permission is required to call via $appName.
+        You haven't given this permission yet. Please go to your phone's privacy settings and
+        allow the “Phone” permission for $appName.
       buttonPermission: "Give permission"
       buttonOpenSettings: "Open settings"
 
@@ -81,7 +81,7 @@ main:
         call: "Call"
       loading:
         title: "Loading your call history"
-        description: "Your recent calls will show here soon, please wait a moment."
+        description: "Your recent calls will show here soon. Please wait a moment."
       empty:
         title: "No call history"
         description: >-
@@ -92,7 +92,7 @@ main:
     menu:
       title: *contactsTitle
     snackBar:
-      noPermission: "Call permission permanently denied"
+      noPermission: "Unable to call without the Phone permission"
     list:
       loading:
         title: "Loading your contacts"
@@ -100,15 +100,15 @@ main:
       empty:
         title: "No contacts found"
         description(String appName): >-
-          $appName was unable to find any contacts in your phone.
-          If you create contacts they will be shown in $appName.
+          $appName was unable to find any contacts on your phone.
+          When you add contacts, they will be shown here.
       noPermission:
-        title: "No access to contacts"
+        title(String appName): "No access was given to your contacts"
         description(String appName): >-
-          $appName needs permission to retrieve your contacts and display them.
+          $appName needs permission to display your contacts.
         permanentDescription(String appName): >-
-          In order to retrieve your contacts and display them, you need to allow the app to do so.
-          You have denied to give this permission. Please go to your phone privacy settings and
+          In order to display your contacts, you need to allow the app to do so.
+          You haven't given this permission yet. Please go to your phone privacy settings and
           allow $appName to access your contacts.
         buttonPermission: "Give permission"
         buttonOpenSettings: "Open settings"
@@ -123,12 +123,12 @@ main:
       title: *settingsTitle
     list:
       debug:
-        title: "Debug"
+        title: "Debugging"
         remoteLogging:
           title: "Remote logging"
           description: >-
-            Automatically share your app activity with our developers and support team to
-            help resolve issues and errors.
+            By choosing to automatically log your app activity, our developers and support team
+            will be able to help you more efficiently if needed.
           sendToRemoteDialog:
             title: Send the logs from today as well
             description: >-
@@ -140,15 +140,15 @@ main:
         phoneNumber:
           title: "Your business number"
           description: >-
-            This is the phone number others will see on their screen or records when you
+            This is the phone number others see on their screen when you
             call them through this app.
       advancedSettings:
         title: "Advanced settings"
         troubleshooting:
           title: "Troubleshooting"
           description: >-
-            These settings are to be used only when trying to solve an issue in the app.
-            Use with caution!
+            Only adjust these settings when trying to solve any issues.
+            Any changes might cause new issues, so please use with caution.
           list:
             calling:
               title: "Calling"
@@ -161,8 +161,8 @@ main:
         usePhoneRingtone:
           title: "Use phone ringtone"
           description(String appName): >-
-            When enabled $appName will use the ringtone configured on this phone rather than the
-            app's ringtone.
+            Your phone's ringtone plays instead of the app
+            when receiving a call.
       calling:
         title: "Calling"
         availability:
@@ -174,8 +174,8 @@ main:
         useVoip:
           title: "Use VoIP"
           description: >-
-            VoIP uses your internet for calling. If VoIP is disabled, call-through will be used, and
-            your regular call carrier service costs apply.
+            With VoIP you call via internet which uses your data bundle. If VoIP is disabled, 
+            calls go through the regular phone app and your call carrier service costs apply.
       version: "Version"
       portalLinks:
         title: "VoIP platform"
@@ -184,19 +184,20 @@ main:
         stats:
           title: "Statistics"
     troubleshootingProgressPopUp(int remainingTaps): >-
-      You can access troubleshooting settings after $remainingTaps more taps!
-    troubleshootingUnlockedPopUp: "You now have access to troubleshooting settings!"
+      You can access troubleshooting settings after $remainingTaps more taps on your screen.
+    troubleshootingUnlockedPopUp: "You now have access to troubleshooting settings."
     buttons:
-      sendFeedback: &sendFeedbackButton "Send feedback"
-      logout: "Logout"
+      sendFeedback: "Contact us"
+      sendFeedbackButton: "Send feedback"
+      logout: "Log out"
     feedback:
-      title: "Feedback"
+      title: "Send feedback"
       placeholders:
         title: "Title"
-        text: "Enter your feedback here"
-      snackBar: "Feedback sent"
+        text: "Enter your message here"
+      snackBar: "Feedback sent, thank you!"
       buttons:
-        send: *sendFeedbackButton
+        send: "Send feedback"
 
   survey:
     helpUs:
@@ -224,21 +225,21 @@ onboarding:
   login:
     title: *loginButton
     placeholder:
-      email: "Username"
+      email: "Email address"
       password: "Password"
     button:
       loggingIn: "Logging in"
-      forgotPassword: "Forgot password"
+      forgotPassword: "Forgot password?"
     error:
       wrongCombination: >-
-        Incorrect username & password combination. Check your login details and try again.
+        The email address or password you entered is invalid. Please check and try again.
 
   password:
-    title: "Change password"
+    title: "Change your current password"
     button: "Save password"
-    error: "Your password does not comply with the requirements mentioned below."
+    error: "Your new password does not comply with the requirements mentioned below."
     requirements: >-
-      Your password must be at least 6 characters long and include 1 non-alphabetical character.
+      Password must be at least 6 characters long and include 1 non-alphabetical character.
 
   permission:
     button:
@@ -246,31 +247,31 @@ onboarding:
     call:
       title: "Call permission"
       description: >-
-        This permission is required to make calls directly from the
-        app using the default call app.
+        This permission is required to be able to make calls with the
+        app by using the default call app.
     contacts:
       title: "Contacts permission"
       description(String appName): >-
-        This permission allows $appName to display information (contact book & call activity)
-        and to search through your contacts.
+        This permission allows $appName to show your contacts, call history, 
+        and makes it possible for you to search through them.
 
 
-        The data will be solely used for display and search purposes.
+        $appName only displays your contacts and won't share them with third parties.
 
   voicemail:
     title: "Voicemail"
     description: >-
-      Please be aware that if you haven't set up your voicemail, the automated message
-      may contain your private number.
+      Please be aware that if you have not set up your voicemail, 
+      your mobile phone number may be mentioned in the default voicemail message.
 
-      This will be shared with people reaching you through your business number.
+      This will be shared with people reaching you through your business number when you are not available.
 
   welcome:
     title: "Welcome"
 
 webview:
   error:
-    title: "Loading page failed"
+    title: "Unable to load the page"
     description: >-
-      An error occurred when opening the requested page. Please check your
+      There was a problem loading the page. Please check your
       internet connection and try again.

@@ -21,15 +21,15 @@ main:
   callThrough:
     error:
       title: "Er is een fout opgetreden"
-      unknown: "Onbekende error."
-      invalidDestination: "Het nummer klopt niet."
+      unknown: "Onbekende fout."
+      invalidDestination: "Gekozen nummer is ongeldig."
       noMobileNumber: >-
         De app gebruikt je mobiele nummer om te bellen, maar deze is nog niet toegevoegd aan je account. Graag contact opnemen met je provider, aangezien alleen zij je mobiele nummer aan je account toe kunnen voegen.
 
   dialer:
-    title: &keypadTitle "Telefoon"
+    title: &keypadTitle "Toetsen"
     permissionDenied: >-
-      Er is geen permissie om te bellen, wat nodig is om via de app te bellen.
+      Er is geen toestemming om te bellen, wat nodig is om via de app te bellen.
     menu:
       title: *keypadTitle
     confirm:
@@ -37,21 +37,20 @@ main:
       description:
         origin: "Er wordt gebeld met je zakelijke nummer"
         main(String appName):
-          "$appName verbindt je gesprek door, waardoor je persoonlijke nummer privé blijft."
-        action: "Klik op de “Bel” knop om het volgende nummer te bellen:"
+          "$appName verbindt je gesprek door, waardoor je mobiele nummer privé blijft."
+        action: "Tik op de “Bel” knop om het volgende nummer te bellen:"
         showPopUpSetting: "Toon dit niet meer"
       button:
         call(String number): "Bel $number"
     noPermission:
-      title: "Toestemming vereist"
+      title: "Graag je toestemming geven"
       description(String appName): >-
-        Om via $appName te kunnen bellen is jouw toestemming nodig. Druk op Toestaan
-        zodra daarom gevraagd wordt, zodat je met $appName oproepen kunt ontvangen en
-        naar behoren kan laten werken.
+        Om via $appName te bellen is jouw toestemming nodig. Tik hierna op Toestaan
+        als je wilt dat $appName gesprekken kan opzetten en beheren, zodat de app goed werkt.
       permanentDescription(String appName): >-
-        Om via $appName te kunnen bellen is jouw toestemming nodig. Je hebt deze toestemming
-        niet gegeven. Ga je naar de privacyinstellingen op jouw telefoon en geef je daar toestemming
-        om $appName toegang te verlenen tot de telefoonfuncties.
+        Om via $appName te bellen is jouw toestemming nodig. Je hebt deze toestemming
+        nog niet gegeven waardoor je niet kunt bellen. Ga naar de privacy-instellingen van je telefoon
+        om daar $appName alsnog toegang te geven tot de "Telefoon"-rechten.
       buttonPermission: "Geef toestemming"
       buttonOpenSettings: "Open instellingen"
 
@@ -71,7 +70,7 @@ main:
     menu:
       title: "Recent"
     snackBar:
-      copied: "Nummer gekopieerd"
+      copied: "Telefoonnummer gekopieerd"
     list:
       minuteAgo: "1 minuut geleden"
       minutesAgo(int minutes): "$minutes minuten geleden"
@@ -82,19 +81,18 @@ main:
         call: "Bellen"
       loading:
         title: "Gesprekken worden opgehaald"
-        description: "Je recente gesprekken komen hier zo te staan, nog even geduld."
+        description: "Je recente gesprekken komen hier zo te staan. Graag nog even geduld."
       empty:
         title: "Geen recente gesprekken"
         description: >-
-          Er is geen recente gespreks activiteit om te tonen. Zodra je
-          iemand belt of zelf gebeld wordt, zal het hier verschijnen.
+          Nadat je eerste gesprek is afgelopen, wordt deze hier weergegeven.
 
   contacts:
     title: &contactsTitle "Contacten"
     menu:
       title: *contactsTitle
     snackBar:
-      noPermission: "Toestemming voor bellen geweigerd"
+      noPermission: "Je hebt de app hiervoor geen toestemming gegeven"
     list:
       loading:
         # UX wants to have the line break specifically at 2 words
@@ -106,21 +104,21 @@ main:
         title: "Geen contacten gevonden"
         description(String appName): >-
           $appName kon geen contacten vinden op je telefoon.
-          Wanneer je een contact aanmaakt zijn te zien in $appName.
+          Wanneer je een contact toevoegt, wordt deze hier weergegeven.
       noPermission:
-        title: "Geen toegang tot contacten"
+        title(String appName): "$appName heeft nog geen toegang tot contacten"
         description(String appName): >-
-          $appName heeft toestemming nodig om bij je contacten te komen en ze te tonen.
+          $appName heeft jouw toestemming nodig om je contacten weer te geven.
         permanentDescription(String appName): >-
-          $appName heeft jouw toestemming nodig om bij je contacten te komen en ze te tonen.
-          Je hebt deze toestemming niet gegeven. Ga je naar de privacyinstellingen op jouw telefoon
-          en geef je daar toestemming om $appName toegang te verlenen tot je contacten.
+          $appName heeft jouw toestemming nodig om je contacten weer te geven.
+          Je hebt deze toestemming nog niet gegeven. Ga naar de privacy-instellingen van je telefoon
+          om daar $appName alsnog toegang tot je contacten te geven.
         buttonPermission: "Geef toestemming"
         buttonOpenSettings: "Open instellingen"
       item:
         noNumber: "Geen nummer"
         numbers(int count): "$count ${_plural(count, one: 'nummer', many: 'nummers')}"
-        emails(int count): "$count ${_plural(count, one: 'email', many: 'emails')}"
+        emails(int count): "$count ${_plural(count, one: 'e-mailadres', many: 'e-mailadressen')}"
 
   settings:
     title: &settingsTitle "Instellingen"
@@ -128,12 +126,12 @@ main:
       title: *settingsTitle
     list:
       debug:
-        title: "Debug"
+        title: "Foutopsporing"
         remoteLogging:
           title: "Remote logging"
           description: >-
-            Deel automatisch je handelingen in de app met onze ontwikkelaars om
-            problemen en fouten op te sporen.
+            Door ervoor te kiezen om je app-activiteit te delen,
+            kunnen onze ontwikkelaars en het ondersteuningsteam je beter helpen.
           sendToRemoteDialog:
             title: Verstuur ook de logs van vandaag
             description: >-
@@ -141,19 +139,19 @@ main:
               voordat u Remote Logging inschakelde. Dit helpt ons problemen beter te begrijpen.
             confirm: Verstuur
       accountInfo:
-        title: "Account informatie"
+        title: "Accountinformatie"
         phoneNumber:
           title: "Jouw zakelijke nummer"
           description: >-
-            Dit is het telefoonnummer dat anderen in hun scherm zien of opslaan als
-            je belt via deze app.
+            Dit is het telefoonnummer dat anderen op hun scherm zien als
+            je ze belt via deze app.
       advancedSettings:
         title: "Geavanceerde instellingen"
         troubleshooting:
           title: "Problemen oplossen"
           description: >-
-            Deze instellingen horen alleen gebruikt te worden om een probleem op te lossen in
-            de app. Wees voorzichtig!
+            Pas deze instellingen alleen aan als je problemen probeert op te lossen.
+            Aanpassingen kunnen leiden tot nieuwe problemen, dus wees voorzichtig.
           list:
             calling:
               title: "Bellen"
@@ -166,8 +164,8 @@ main:
         usePhoneRingtone:
           title: "Gebruik de beltoon van deze telefoon"
           description(String appName): >-
-            Wanneer dit aanstaat zal $appName de beltoon van deze telefoon gebruiken, in plaats van
-            de beltoon van de app.
+            De beltoon van je telefoon wordt afgespeeld in plaats van
+            de beltoon van de app als iemand je belt.
       calling:
         title: "Bellen"
         availability:
@@ -179,29 +177,30 @@ main:
         useVoip:
           title: "Gebruik VoIP"
           description: >-
-            VoIP gaat via internet en gebruikt je databundel om te bellen. Als VoIP uitstaat, wordt er gebruik gemaakt
-            van call-through. De reguliere abonnementskosten van je 06-nummer zijn dan van toepassing.
+            Met VoIP bel je via internet waarvoor je databundel wordt gebruikt. Als VoIP uitstaat, wordt een gesprek opgezet 
+            via de gewone telefoon-app. De reguliere abonnementskosten van je mobiele nummer zijn dan van toepassing.
       version: "Versie"
       portalLinks:
-        title: "VoIP platform"
+        title: "VoIP-platform"
         dialplan:
           title: "Belplan"
         stats:
           title: "Statistieken"
     troubleshootingProgressPopUp(int remainingTaps): >-
-      Na $remainingTaps taps kan je bij instelling voor probleemoplossing!
-    troubleshootingUnlockedPopUp: "Je hebt nu toegang tot instellingen voor probleemoplossing!"
+      Nog $remainingTaps keer tikken en de geavanceerde instellingen worden beschikbaar.
+    troubleshootingUnlockedPopUp: "Je hebt nu toegang tot de geavanceerde instellingen."
     buttons:
-      sendFeedback: &sendFeedbackButton "Feedback sturen"
+      sendFeedback: "Neem contact op"
+      sendFeedbackButton: "Feedback versturen"
       logout: "Uitloggen"
     feedback:
       title: "Feedback"
       placeholders:
         title: "Titel"
-        text: "Vul hier je feedback in"
-      snackBar: "Feedback verstuurd"
+        text: "Typ hier je bericht"
+      snackBar: "Feedback verstuurd bedankt!"
       buttons:
-        send: *sendFeedbackButton
+        send: "Feedback"
 
   survey:
     helpUs:
@@ -229,18 +228,18 @@ onboarding:
   login:
     title: *loginButton
     placeholder:
-      email: "Gebruikersnaam"
+      email: "E-mailadres"
       password: "Wachtwoord"
     button:
       loggingIn: "Bezig met inloggen"
-      forgotPassword: "Wachtwoord vergeten"
+      forgotPassword: "Wachtwoord vergeten?"
     error:
       wrongCombination: >-
-        Onjuiste gebruikersnaam & wachtwoord combinatie.
-        Check je login gegevens en probeer het opnieuw.
+        Het gebruikte e-mailadres of wachtwoord is onjuist.
+        Controleer op eventuele fouten en probeer het nog een keer.
 
   password:
-    title: "Wachtwoord veranderen"
+    title: "Wijzig je huidige wachtwoord"
     button: "Wachtwoord opslaan"
     error: "Je wachtwoord voldoet niet aan de hieronder gestelde eisen."
     requirements: >-
@@ -250,23 +249,23 @@ onboarding:
     button:
       iUnderstand: "Ik begrijp het"
     call:
-      title: "Bel permissie"
+      title: "Toestemming voor telefonie"
       description: >-
-        Deze permissie is nodig om te bellen met de standaard telefoon app.
+        Je toestemming is nodig zodat je met de app kunt bellen door gebruik te maken van de standaard telefoon app.
     contacts:
-      title: "Toestemming contactenlijst"
+      title: "Toestemming voor contacten"
       description(String appName): >-
-        Deze toestemming zorgt ervoor dat $appName informatie zoals de contactenlijst en
-        gespreksactiviteit inzichtelijk maakt.
+        Door toestemming te geven worden je contacten en recente gesprekken
+        in $appName zichtbaar en kun je ze makkelijk doorzoeken.
 
 
-        Deze data wordt enkel gebruikt voor het tonen en doorzoeken hiervan.
+        $appName geeft alleen je contacten weer en ze worden nooit gedeeld met derden.
 
   voicemail:
     title: "Voicemail"
     description: >-
-      Let op: als je jouw voicemail niet instelt, kan het voorkomen dat jouw privénummer
-      wordt vermeld in de standaard voicemailmelding.
+      Houd er rekening mee dat als je jouw voicemail niet hebt ingesteld, het kan zijn dat jouw mobiele nummer
+      wordt genoemd in de standaard voicemailmelding.
 
       Deze wordt afgespeeld wanneer je op jouw zakelijke nummer wordt gebeld
       en niet bereikbaar bent.
@@ -276,7 +275,7 @@ onboarding:
 
 webview:
   error:
-    title: "Pagina laden mislukt"
+    title: "Kan de pagina niet laden"
     description: >-
       Er is een probleem opgetreden bij het laden van de pagina. Controleer je
       internetverbinding en probeer nogmaals.

@@ -90,7 +90,9 @@ class _DialerPageState extends State<DialerPage> with WidgetsBindingObserver {
                 child: ConditionalPlaceholder(
                   showPlaceholder: state is NoPermission,
                   placeholder: Warning(
-                    title: Text(context.msg.main.dialer.noPermission.title),
+                    title: Text(
+                      context.msg.main.dialer.noPermission.title,
+                    ),
                     description: state is NoPermission && !state.dontAskAgain
                         ? Text(
                             context.msg.main.dialer.noPermission
