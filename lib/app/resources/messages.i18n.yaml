@@ -247,7 +247,7 @@ onboarding:
     call:
       title: "Call permission"
       description: >-
-        This permission is required to be able to make calls with the 
+        This permission is required to be able to make calls with the
         app by using the default call app.
     contacts:
       title: "Contacts permission"
@@ -256,7 +256,7 @@ onboarding:
         and makes it possible for you to search through them.
 
 
-        $appName will solely display your contacts and never shares them with third-parties.
+        $appName only displays your contacts and won't share them with third parties.
 
   voicemail:
     title: "Voicemail"

@@ -256,7 +256,7 @@ onboarding:
       title: "Toestemming voor contacten"
       description(String appName): >-
         Door toestemming te geven worden je contacten en recente gesprekken
-         in $appName zichtbaar en kun je ze makkelijk doorzoeken.
+        in $appName zichtbaar en kun je ze makkelijk doorzoeken.
 
 
         $appName geeft alleen je contacten weer en ze worden nooit gedeeld met derden.
