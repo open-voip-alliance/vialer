@@ -3,6 +3,7 @@ enum OnboardingStep {
   password,
   callPermission,
   contactsPermission,
+  microphonePermission,
   voicemail,
   welcome,
 }

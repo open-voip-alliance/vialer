@@ -249,6 +249,10 @@ onboarding:
       description: >-
         This permission is required to be able to make calls with the
         app by using the default call app.
+    microphone:
+      title: "Microphone permission"
+      description(String appName): >-
+        $appName needs access to the microphone so you can make and receive calls.
     contacts:
       title: "Contacts permission"
       description(String appName): >-

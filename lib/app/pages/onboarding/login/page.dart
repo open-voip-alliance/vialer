@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../../../domain/entities/onboarding/step.dart';
 import '../../../resources/localizations.dart';
 import '../../../resources/theme.dart';
 import '../../../util/brand.dart';
@@ -72,14 +71,10 @@ class _LoginPageState extends State<LoginPage>
     });
   }
 
-  void _onStateChanged(BuildContext context, LoginState state) {
+  Future<void> _onStateChanged(BuildContext context, LoginState state) async {
     final onboarding = context.read<OnboardingCubit>();
 
     if (state is LoggedIn) {
-      if (state is LoggedInAndNeedToChangePassword) {
-        onboarding.addStep(OnboardingStep.password);
-      }
-
       FocusScope.of(context).unfocus();
       onboarding.forward(
         email: _emailController.text,
@@ -143,7 +138,7 @@ class _LoginPageState extends State<LoginPage>
       duration: _duration,
       padding: !isLandscape ? _padding : _padding.copyWith(top: 24),
       child: BlocProvider<LoginCubit>(
-        create: (_) => LoginCubit(),
+        create: (_) => LoginCubit(context.read<OnboardingCubit>()),
         child: BlocConsumer<LoginCubit, LoginState>(
           listener: _onStateChanged,
           builder: (context, state) {
