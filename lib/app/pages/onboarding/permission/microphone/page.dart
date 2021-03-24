@@ -6,17 +6,17 @@ import '../../../../resources/theme.dart';
 import '../../../../util/brand.dart';
 import '../abstract/page.dart';
 
-class ContactsPermissionPage extends StatelessWidget {
-  const ContactsPermissionPage({Key key}) : super(key: key);
+class MicrophonePermissionPage extends StatelessWidget {
+  const MicrophonePermissionPage({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return PermissionPage(
-      permission: Permission.contacts,
-      icon: const Icon(VialerSans.contacts),
-      title: Text(context.msg.onboarding.permission.contacts.title),
+      permission: Permission.microphone,
+      icon: const Icon(VialerSans.phone),
+      title: Text(context.msg.onboarding.permission.microphone.title),
       description: Text(
-        context.msg.onboarding.permission.contacts.description(
+        context.msg.onboarding.permission.microphone.description(
           context.brand.appName,
         ),
       ),

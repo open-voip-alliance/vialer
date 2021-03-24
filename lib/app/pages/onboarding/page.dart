@@ -10,6 +10,7 @@ import 'login/page.dart';
 import 'password/page.dart';
 import 'permission/call/page.dart';
 import 'permission/contacts/page.dart';
+import 'permission/microphone/page.dart';
 import 'voicemail/page.dart';
 import 'welcome/page.dart';
 import 'widgets/background.dart';
@@ -36,6 +37,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
       OnboardingStep.login: (_) => LoginPage(),
       OnboardingStep.password: (_) => PasswordPage(),
       OnboardingStep.callPermission: (_) => const CallPermissionPage(),
+      OnboardingStep.microphonePermission: (_) =>
+          const MicrophonePermissionPage(),
       OnboardingStep.contactsPermission: (_) => const ContactsPermissionPage(),
       OnboardingStep.voicemail: (_) => const VoicemailPage(),
       OnboardingStep.welcome: (_) => WelcomePage(),
@@ -45,7 +48,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
   }
 
   void _onStateChange(BuildContext context, OnboardingState state) {
-    // Update current pages only if there's a size change
+    // Update current pages only if there's a size change.
     if (_currentPages.length != state.allSteps.length) {
       _currentPages = Map.fromEntries(
         _allPages.entries.where((e) => state.allSteps.contains(e.key)),

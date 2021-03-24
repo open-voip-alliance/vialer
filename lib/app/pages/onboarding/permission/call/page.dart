@@ -15,10 +15,7 @@ class CallPermissionPage extends StatelessWidget {
     return PermissionPage(
       permission: Permission.phone,
       icon: const Icon(VialerSans.phone),
-      title: Text(
-        context.msg.onboarding.permission.call.title,
-        textAlign: TextAlign.center,
-      ),
+      title: Text(context.msg.onboarding.permission.call.title),
       description: Text(context.msg.onboarding.permission.call.description),
       onPermissionGranted: context.watch<CallerCubit>().notifyCanCall,
     );

@@ -252,6 +252,10 @@ onboarding:
       title: "Toestemming voor telefonie"
       description: >-
         Je toestemming is nodig zodat je met de app kunt bellen door gebruik te maken van de standaard telefoon app.
+    microphone:
+      title: "Toestemming voor microfoon"
+      description(String appName): >-
+        $appName heeft toegang tot de microfoon nodig zodat je gesprekken op kunt zetten en ontvangen.
     contacts:
       title: "Toestemming voor contacten"
       description(String appName): >-
