@@ -1,6 +1,42 @@
 import 'package:equatable/equatable.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+
+@JsonSerializable(fieldRename: FieldRename.snake)
 class Call extends Equatable {
+  final String id;
+
+  @JsonKey(fromJson: _directionFromJson)
+  final Direction direction;
+  final bool answered;
+
+  @JsonKey(name: 'duration_in_seconds', fromJson: _durationFromJson)
+  final Duration duration;
+
+  @JsonKey(name: 'start_time')
+  final Datetime date
+
+  bool get wasMissed => !answered;
+
+  bool get isInbound => direction == Direction.inbound;
+
+  bool get isOutbound => direction == Direction.outbound;
+
+  @override
+  // TODO: implement props
+  List<Object> get props => throw UnimplementedError();
+}
+
+Direction _directionFromJson(String json) {
+  return json == 'outbound' ? Direction.outbound : Direction.inbound;
+}
+
+Duration _durationFromJson(String json) => Duration(seconds: json as int);
+
+
+
+
+class XCall extends Equatable {
   static const _idKey = 'id';
   static const _dateKey = 'call_date';
   static const _durationKey = 'atime';
