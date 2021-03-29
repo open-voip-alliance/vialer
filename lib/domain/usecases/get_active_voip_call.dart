@@ -1,14 +1,15 @@
 import 'dart:async';
 
-import 'package:voip_flutter_integration/voip_flutter_integration.dart';
+
+import 'package:flutter_phone_lib/flutter_phone_lib.dart';
 
 import '../../dependency_locator.dart';
 import '../repositories/voip.dart';
 import '../use_case.dart';
 
-class GetActiveCall extends FutureUseCase<FilCall> {
+class GetActiveVoipCall extends FutureUseCase<Call> {
   final _voipRepository = dependencyLocator<VoipRepository>();
 
   @override
-  Future<FilCall> call() => _voipRepository.activeCall;
+  Future<Call> call() => _voipRepository.activeCall;
 }

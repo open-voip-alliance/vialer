@@ -62,8 +62,12 @@ main:
       transfer: "doorverbinden"
       hold: "wacht"
     state:
-      calling: Bellen
-      callEnded: Gesprek beëindigd
+      calling: "Bellen"
+      callEnded: "Gesprek beëindigd"
+    incoming:
+      answer: "Opnemen"
+      decline: "Weigeren"
+      subtitle(String remoteNumber): "Inkomend gesprek - $remoteNumber"
 
   recent:
     title: "Recente gesprekken"

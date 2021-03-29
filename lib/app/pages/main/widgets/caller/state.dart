@@ -1,10 +1,12 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter_phone_lib/call/call.dart';
 import 'package:meta/meta.dart';
-import 'package:voip_flutter_integration/voip_flutter_integration.dart';
 
 import '../../../../../domain/entities/exceptions/call_through.dart';
 
 abstract class CallerState extends Equatable {
+  const CallerState();
+
   @override
   List<Object> get props => [];
 }
@@ -12,31 +14,53 @@ abstract class CallerState extends Equatable {
 class NoPermission extends CallerState {
   final bool dontAskAgain;
 
-  NoPermission({@required this.dontAskAgain});
+  const NoPermission({@required this.dontAskAgain});
 
   @override
   List<Object> get props => [dontAskAgain];
 }
 
-class CanCall extends CallerState {}
+class CanCall extends CallerState {
+  const CanCall();
+}
 
-class ShowConfirmPage extends CallerState with CallProcessState {
-  final String destination;
-
-  @override
+/// Used only to pass the [origin] to future states.
+class CallOriginDetermined extends CallerState {
+  /// Where the call started in the UI: dialer, recents, contacts, etc.
+  /// Can be null if it's an incoming call.
   final CallOrigin origin;
 
-  @override
-  final FilCall call;
+  const CallOriginDetermined(this.origin);
 
-  ShowConfirmPage({
+  @override
+  List<Object> get props => [...super.props, origin];
+}
+
+class ShowCallThroughConfirmPage extends CallOriginDetermined {
+  final String destination;
+
+  const ShowCallThroughConfirmPage({
     @required this.destination,
-    @required this.origin,
-    this.call,
-  });
+    CallOrigin origin,
+  }) : super(origin);
 
   @override
   List<Object> get props => [...super.props, destination];
+}
+
+/// Not to be confused with SIP's Ringing method. Because of the layers of
+/// abstraction, we only use [Ringing] to indicate that our app is ringing
+/// because of an incoming call.
+///
+/// See [InitiatingCall] for the outgoing equivalent.
+class Ringing extends CallerState with CallProcessState {
+  @override
+  final origin = CallOrigin.incoming;
+
+  @override
+  final Call call;
+
+  const Ringing({@required this.call});
 }
 
 class InitiatingCall extends CallerState with CallProcessState {
@@ -44,9 +68,16 @@ class InitiatingCall extends CallerState with CallProcessState {
   final CallOrigin origin;
 
   @override
-  final FilCall call;
+  final Call call;
 
-  InitiatingCall({@required this.origin, this.call});
+  const InitiatingCall({@required this.origin, this.call});
+
+  InitiatingCall copyWith({CallOrigin origin, Call call}) {
+    return InitiatingCall(
+      origin: origin ?? this.origin,
+      call: call ?? this.call,
+    );
+  }
 }
 
 class InitiatingCallFailed extends CallerState with CallProcessState {
@@ -54,11 +85,11 @@ class InitiatingCallFailed extends CallerState with CallProcessState {
   final CallOrigin origin;
 
   @override
-  final FilCall call;
+  final Call call;
 
   final CallThroughException exception;
 
-  InitiatingCallFailed(
+  const InitiatingCallFailed(
     this.exception, {
     @required this.origin,
     @required this.call,
@@ -73,12 +104,19 @@ class Calling extends CallerState with CallProcessState {
   final CallOrigin origin;
 
   @override
-  final FilCall call;
+  final Call call;
 
-  Calling({
+  const Calling({
     @required this.origin,
     @required this.call,
   });
+
+  Calling copyWith({CallOrigin origin, Call call}) {
+    return Calling(
+      origin: origin ?? this.origin,
+      call: call ?? this.call,
+    );
+  }
 }
 
 class FinishedCalling extends CanCall with CallProcessState {
@@ -86,9 +124,9 @@ class FinishedCalling extends CanCall with CallProcessState {
   final CallOrigin origin;
 
   @override
-  final FilCall call;
+  final Call call;
 
-  FinishedCalling({
+  const FinishedCalling({
     @required this.origin,
     @required this.call,
   });
@@ -105,7 +143,7 @@ class ShowCallThroughSurvey extends FinishedCalling {
 }
 
 class ShowedCallThroughSurvey extends FinishedCalling {
-  ShowedCallThroughSurvey({
+  const ShowedCallThroughSurvey({
     @required CallOrigin origin,
   }) // Call does not need to be passed here since it's for call-through.
   : super(origin: origin, call: null);
@@ -113,10 +151,11 @@ class ShowedCallThroughSurvey extends FinishedCalling {
 
 /// Any state that is part of the actual call process:
 /// start, during, end, etc.
-mixin CallProcessState on CallerState {
+mixin CallProcessState on CallerState implements CallOriginDetermined {
+  @override
   CallOrigin get origin;
 
-  FilCall get call;
+  Call get call;
 
   // `call` is only available when it's a VoIP call.
   bool get isVoip => call != null;
@@ -130,7 +169,7 @@ mixin CallProcessState on CallerState {
     return InitiatingCallFailed(exception, origin: origin, call: call);
   }
 
-  Calling calling({FilCall call}) {
+  Calling calling({Call call}) {
     return Calling(origin: origin, call: call ?? this.call);
   }
 
@@ -140,16 +179,16 @@ mixin CallProcessState on CallerState {
     return ShowCallThroughSurvey(origin: origin);
   }
 
-  FinishedCalling finished() {
+  FinishedCalling finished({Call call}) {
     return FinishedCalling(
       origin: origin,
-      call: call,
+      call: call ?? this.call,
     );
   }
 }
 
-/// Where the call started in the UI: dialer, recents, contacts, etc.
 enum CallOrigin {
+  incoming,
   dialer,
   recents,
   contacts,

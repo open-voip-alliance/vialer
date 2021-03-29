@@ -9,6 +9,7 @@ import '../../../resources/theme.dart';
 import '../../../util/brand.dart';
 import '../widgets/caller.dart';
 import '../widgets/connectivity_alert.dart';
+import 'widgets/call_button.dart';
 
 class CallPage extends StatefulWidget {
   const CallPage({
@@ -82,8 +83,8 @@ class _CallPageState extends State<CallPage> {
                     ),
                   ),
                   child: DefaultTextStyle.merge(
-                    style: const TextStyle(
-                      color: Colors.white,
+                    style: TextStyle(
+                      color: context.brand.theme.onCallGradientColor,
                     ),
                     child: Column(
                       children: [
@@ -173,19 +174,8 @@ class _CallPageState extends State<CallPage> {
                 ),
                 const SizedBox(height: 48),
                 Center(
-                  child: SizedBox(
-                    height: 64,
-                    width: 64,
-                    child: FloatingActionButton(
-                      onPressed: state is! FinishedCalling ? _hangUp : null,
-                      backgroundColor: state is! FinishedCalling
-                          ? context.brand.theme.red1
-                          : context.brand.theme.grey3,
-                      child: const Icon(
-                        VialerSans.hangUp,
-                        size: 32,
-                      ),
-                    ),
+                  child: CallButton.hangUp(
+                    onPressed: state is! FinishedCalling ? _hangUp : null,
                   ),
                 ),
                 const SizedBox(height: 32),

@@ -62,8 +62,12 @@ main:
       transfer: "transfer"
       hold: "hold"
     state:
-      calling: Calling
-      callEnded: Call ended
+      calling: "Calling"
+      callEnded: "Call ended"
+    incoming:
+      answer: "Answer"
+      decline: "Decline"
+      subtitle(String remoteNumber): "Incoming call - $remoteNumber"
 
   recent:
     title: "Recent calls"

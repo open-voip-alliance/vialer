@@ -2,8 +2,10 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+
 import '../../../../resources/theme.dart';
 import '../../../../util/brand.dart';
+import '../../call/widgets/call_button.dart';
 
 class Keypad extends StatefulWidget {
   final TextEditingController controller;
@@ -376,18 +378,12 @@ class _CallButton extends StatelessWidget {
     final minSize = context.isIOS ? ValueButton.maxSize : 64.0;
 
     return Center(
-      child: ConstrainedBox(
+      child: CallButton.call(
         constraints: BoxConstraints(
           minWidth: minSize,
           minHeight: minSize,
         ),
-        child: FloatingActionButton(
-          backgroundColor: onPressed != null
-              ? context.brand.theme.green1
-              : context.brand.theme.grey1,
-          onPressed: onPressed,
-          child: const Icon(VialerSans.phone, size: 32),
-        ),
+        onPressed: onPressed,
       ),
     );
   }

@@ -13,7 +13,7 @@ dependencies:
     sdk: flutter
 
   # TODO: Use pub dependency.
-  voip_flutter_integration:
+  flutter_phone_lib:
     path: voip_flutter_integration
 
   flutter_bloc: ^6.1.0

@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../domain/entities/setting.dart';
 import '../../../../domain/usecases/change_setting.dart';
 import '../../../../domain/usecases/get_build_info.dart';
-import '../../../../domain/usecases/get_has_voip.dart';
+import '../../../../domain/usecases/get_is_voip_allowed.dart';
 import '../../../../domain/usecases/get_latest_availability.dart';
 import '../../../../domain/usecases/get_settings.dart';
 import '../../../../domain/usecases/logout.dart';
@@ -20,9 +20,9 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
   final _getSettings = GetSettingsUseCase();
   final _changeSetting = ChangeSettingUseCase();
   final _getBuildInfo = GetBuildInfoUseCase();
-  final _getHasVoip = GetHasVoipUseCase();
   final _getLatestAvailability = GetLatestAvailabilityUseCase();
   final _sendSavedLogsToRemote = SendSavedLogsToRemoteUseCase();
+  final _getIsVoipAllowed = GetIsVoipAllowed();
   final _logout = LogoutUseCase();
 
   StreamSubscription _userRefresherSubscription;
@@ -45,7 +45,7 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
       SettingsState(
         settings: await _getSettings(),
         buildInfo: await _getBuildInfo(),
-        hasVoip: await _getHasVoip(),
+        isVoipAllowed: await _getIsVoipAllowed(),
       ),
     );
   }

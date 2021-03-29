@@ -11,8 +11,16 @@ class LoggingRepository {
 
   StreamSubscription _remoteLogSubscription;
 
-  String _logString(LogRecord record, {@required SystemUser user}) {
+  String _logStringOf(
+    LogRecord record, {
+    @required SystemUser user,
+    @required bool remote,
+  }) {
     var sanitizedMessage = record.message;
+
+    if (remote) {
+      sanitizedMessage = sanitizedMessage.redactVoipDetails();
+    }
 
     // Source: https://stackoverflow.com/a/6967885
     final phoneNumberRegex = RegExp(
@@ -56,7 +64,14 @@ class LoggingRepository {
     void Function(String log) onLog,
   }) async {
     Logger.root.onRecord.listen((record) {
-      final logString = _logString(record, user: user);
+      // TODO: Temporary way of marking logs as VoIP logs, which should not
+      // be logged to console. We should replace the loggers with our own anyway
+      // because of Clean Architecture.
+      if (record.error is VoipLog) {
+        return;
+      }
+
+      final logString = _logStringOf(record, user: user, remote: false);
       if (logString != null) {
         onLog?.call(logString);
         print(logString);
@@ -75,7 +90,7 @@ class LoggingRepository {
 
     if (token != null && token.isNotEmpty) {
       _remoteLogSubscription ??= Logger.root.onRecord.listen((record) async {
-        final message = _logString(record, user: user);
+        final message = _logStringOf(record, user: user, remote: true);
         if (message == null) {
           return;
         }
@@ -101,5 +116,28 @@ class LoggingRepository {
   Future<void> disableRemoteLogging() async {
     await _remoteLogSubscription?.cancel();
     _remoteLogSubscription = null;
+  }
+}
+
+// Temporary measure to mark logs as VoIP logs, they should not be logged to the
+// console because of performance reasons.
+class VoipLog {}
+
+extension on String {
+  String redactVoipDetails() {
+    return replaceAll(RegExp(r'sip:\+?\d+'), 'sip:[REDACTED]')
+        .replaceAll(RegExp('To:(.+?)>'), 'To: [REDACTED]')
+        .replaceAll(RegExp('From:(.+?)>'), 'From: [REDACTED]')
+        .replaceAll(RegExp('Contact:(.+?)>'), 'Contact: [REDACTED]')
+        .replaceAll(RegExp('username=(.+?)&'), 'username=[REDACTED]')
+        .replaceAll(RegExp('nonce="(.+?)"'), 'nonce="[REDACTED]"')
+        .replaceAll(
+          RegExp('"caller_id" = (.+?);'),
+          '"caller_id" = [REDACTED];',
+        )
+        .replaceAll(
+          RegExp('Digest username="(.+?)"'),
+          'Digest username="[REDACTED]"',
+        );
   }
 }

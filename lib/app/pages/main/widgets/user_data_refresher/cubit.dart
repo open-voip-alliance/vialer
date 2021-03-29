@@ -2,9 +2,10 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../../domain/usecases/get_latest_app_account.dart';
 import '../../../../../domain/usecases/get_latest_availability.dart';
 import '../../../../../domain/usecases/get_user.dart';
+import '../../../../../domain/usecases/get_voip_config.dart';
+import '../../../../../domain/usecases/register_to_voip_middleware.dart';
 import '../../../../util/loggable.dart';
 import 'state.dart';
 
@@ -14,7 +15,8 @@ class UserDataRefresherCubit extends Cubit<UserDataRefresherState>
     with Loggable {
   final _getUser = GetUserUseCase();
   final _getLatestAvailability = GetLatestAvailabilityUseCase();
-  final _getLatestAppAccount = GetLatestAppAccountUseCase();
+  final _getVoipConfig = GetVoipConfigUseCase();
+  final _registerToVoipMiddleware = RegisterToVoipMiddlewareUseCase();
 
   UserDataRefresherCubit() : super(const NotRefreshing()) {
     refresh();
@@ -25,7 +27,8 @@ class UserDataRefresherCubit extends Cubit<UserDataRefresherState>
     emit(const Refreshing());
     await _getUser(latest: true);
     await _getLatestAvailability();
-    await _getLatestAppAccount();
+    await _getVoipConfig(latest: true);
+    await _registerToVoipMiddleware();
     emit(const NotRefreshing());
     logger.info('Finished refreshing latest user data');
   }
