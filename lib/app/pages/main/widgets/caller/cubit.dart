@@ -2,23 +2,26 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_phone_lib/flutter_phone_lib.dart';
 import 'package:meta/meta.dart';
-import 'package:voip_flutter_integration/voip_flutter_integration.dart';
 
 import '../../../../../domain/entities/exceptions/call_through.dart';
+import '../../../../../domain/entities/exceptions/voip_not_enabled.dart';
 import '../../../../../domain/entities/permission.dart';
 import '../../../../../domain/entities/permission_status.dart';
 import '../../../../../domain/entities/setting.dart';
 import '../../../../../domain/entities/survey/survey_trigger.dart';
+import '../../../../../domain/usecases/answer_voip_call.dart';
 import '../../../../../domain/usecases/call.dart';
 import '../../../../../domain/usecases/change_setting.dart';
-import '../../../../../domain/usecases/end_current_call.dart';
-import '../../../../../domain/usecases/get_call_event_stream.dart';
+import '../../../../../domain/usecases/end_voip_call.dart';
+import '../../../../../domain/usecases/get_active_voip_call.dart';
 import '../../../../../domain/usecases/get_call_through_calls_count.dart';
-import '../../../../../domain/usecases/get_has_voip.dart';
+import '../../../../../domain/usecases/get_has_voip_enabled.dart';
 import '../../../../../domain/usecases/get_is_authenticated.dart';
 import '../../../../../domain/usecases/get_permission_status.dart';
 import '../../../../../domain/usecases/get_settings.dart';
+import '../../../../../domain/usecases/get_voip_call_event_stream.dart';
 import '../../../../../domain/usecases/increment_call_through_calls_count.dart';
 import '../../../../../domain/usecases/metrics/track_call.dart';
 import '../../../../../domain/usecases/onboarding/request_permission.dart';
@@ -43,17 +46,20 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
   final _requestPermission = RequestPermissionUseCase();
   final _openAppSettings = OpenSettingsAppUseCase();
 
-  final _getHasVoip = GetHasVoipUseCase();
+  final _getHasVoipEnabled = GetHasVoipEnabledUseCase();
   final _startVoip = StartVoipUseCase();
-  final _getCallEventStream = GetCallEventStream();
-  final _endCurrentCall = EndCurrentCall();
+  final _getVoipCallEventStream = GetVoipCallEventStream();
+  final _getActiveVoipCall = GetActiveVoipCall();
+
+  final _answerCall = AnswerVoipCallUseCase();
+  final _endCurrentCall = EndVoipCallUseCase();
 
   Timer _callThroughTimer;
 
   // For VoIP.
-  StreamSubscription _callEventSubscription;
+  StreamSubscription _voipCallEventSubscription;
 
-  CallerCubit() : super(CanCall()) {
+  CallerCubit() : super(const CanCall()) {
     _isAuthenticated().then((isAuthenticated) {
       if (isAuthenticated) {
         initialize();
@@ -66,18 +72,25 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
     _startVoipIfNecessary();
   }
 
-  Future<bool> get _useVoip async {
-    final settings = await _getSettings();
-
-    // TODO: Using VoIP might be determined by other factors like internet
-    // connection quality in the future.
-    return await _getHasVoip() && settings.get<UseVoipSetting>().value;
-  }
-
   Future<void> _startVoipIfNecessary() async {
-    if (await _useVoip) {
+    try {
       await _startVoip();
-    }
+      _voipCallEventSubscription =
+          _getVoipCallEventStream().listen(_onVoipCallEvent);
+
+      // We need to go to the incoming/ongoing call screen if we were opened by the
+      // notification.
+      final activeCall = await _getActiveVoipCall();
+      if (activeCall != null &&
+          activeCall.direction.isInbound &&
+          activeCall.state != CallState.ended) {
+        if (activeCall.state == CallState.initializing) {
+          emit(Ringing(call: activeCall));
+        } else {
+          emit(Calling(origin: CallOrigin.incoming, call: activeCall));
+        }
+      }
+    } on VoipNotEnabledException {}
   }
 
   Future<void> call(
@@ -85,11 +98,32 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
     @required CallOrigin origin,
     bool showingConfirmPage = false,
   }) async {
-    if (await _useVoip) {
+    if (await _getHasVoipEnabled()) {
       await _callViaVoip(destination, origin: origin);
     } else {
       await _callViaCallThrough(destination, origin: origin);
     }
+  }
+
+  Future<bool> _hasMicPermission() async {
+    final permissionStatus = await _requestPermission(
+      permission: Permission.microphone,
+    );
+
+    final granted = permissionStatus == PermissionStatus.granted;
+
+    if (!granted) {
+      logger.info('Microphone permission is denied, stopping/ignoring call');
+    }
+
+    return granted;
+  }
+
+
+  Future<void> answerCall() async {
+    if (!await _hasMicPermission()) return;
+
+    await _answerCall();
   }
 
   Future<void> _callViaCallThrough(
@@ -120,7 +154,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
       logger.info('Going to call through page');
 
       emit(
-        ShowConfirmPage(
+        ShowCallThroughConfirmPage(
           destination: destination,
           origin: origin,
         ),
@@ -175,18 +209,14 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
     String destination, {
     @required CallOrigin origin,
   }) async {
-    // TODO: Remove from here
-    _requestPermission(permission: Permission.microphone);
+    if (!await _hasMicPermission()) return;
 
     logger.info('Starting VoIP call');
     try {
       _trackCall(via: origin.toTrackString(), voip: true);
 
-      _callEventSubscription = _getCallEventStream().listen(
-        (e) => _onCallEvent(e, origin),
-      );
-
       await _call(destination: destination, useVoip: true);
+      emit(CallOriginDetermined(origin));
 
       // When using VoIP, we emit states in _onCallEvent. That's why we don't
       // emit them here like in _callViaCallThrough.
@@ -197,22 +227,35 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
     }
   }
 
-  Future<void> _onCallEvent(Event event, CallOrigin origin) async {
-    if (event is OutgoingCallStarted) {
-      emit(InitiatingCall(origin: origin, call: event.call));
+  Future<void> _onVoipCallEvent(Event event) async {
+    if (event is IncomingCallReceived) {
+      emit(Ringing(call: event.call));
+      logger.info('Incoming VoIP call, ringing');
+    } else if (event is OutgoingCallStarted) {
+      final originState = state as CallOriginDetermined;
+      emit(InitiatingCall(origin: originState.origin, call: event.call));
       logger.info('Initiating VoIP call');
     } else if (event is CallConnected) {
       emit(processState.calling(call: event.call));
       logger.info('VoIP call connected');
     } else if (event is CallUpdated) {
-      if (processState is InitiatingCall) {
-        emit(InitiatingCall(origin: origin, call: event.call));
-      } else if (processState is Calling) {
-        emit(processState.calling(call: event.call));
+      final currentState = processState;
+      if (currentState is InitiatingCall) {
+        emit(
+          currentState.copyWith(origin: processState.origin, call: event.call),
+        );
+      } else if (currentState is Calling) {
+        emit(currentState.copyWith(call: event.call));
       }
     } else if (event is CallEnded) {
-      emit(processState.finished());
-      await _callEventSubscription.cancel();
+      // It's possible the call ended so fast that we were not in
+      // a CallProcessState yet.
+      if (state is CallProcessState) {
+        emit(processState.finished(call: event.call));
+      } else {
+        emit(const CanCall());
+      }
+
       logger.info('VoIP call ended');
     }
   }
@@ -223,13 +266,18 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
     // Necessary for auto cast.
     final state = this.state;
 
+    // Ignored for VoIP calls.
+    if (state is CallProcessState && state.isVoip) {
+      return;
+    }
+
     _callThroughTimer?.cancel();
     if (state is! ShowCallThroughSurvey) {
       if (state is Calling) {
         emit(state.finished());
         logger.info('Call-through call ended');
       } else if (state is! NoPermission) {
-        emit(CanCall());
+        emit(const CanCall());
       } else {
         checkCallPermissionIfNotVoip();
       }
@@ -247,7 +295,8 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
 
   @override
   Future<void> close() async {
-    _callThroughTimer?.cancel();
+    await _callThroughTimer?.cancel();
+    await _voipCallEventSubscription?.cancel();
     await super.close();
   }
 
@@ -262,7 +311,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
   }
 
   Future<void> checkCallPermissionIfNotVoip() async {
-    if (Platform.isAndroid && !(await _useVoip)) {
+    if (Platform.isAndroid && !(await _getHasVoipEnabled())) {
       final status = await _getPermissionStatus(permission: Permission.phone);
       _updateWhetherCanCall(status);
     }
@@ -270,7 +319,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
 
   void _updateWhetherCanCall(PermissionStatus status) {
     if (status == PermissionStatus.granted) {
-      emit(CanCall());
+      emit(const CanCall());
     } else {
       emit(
         NoPermission(
@@ -288,6 +337,8 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
 extension on CallOrigin {
   String toTrackString() {
     switch (this) {
+      case CallOrigin.incoming:
+        return 'incoming';
       case CallOrigin.dialer:
         return 'dialer';
       case CallOrigin.recents:

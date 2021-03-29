@@ -12,25 +12,55 @@ import 'domain/repositories/env.dart';
 import 'domain/repositories/feedback.dart';
 import 'domain/repositories/logging.dart';
 import 'domain/repositories/metrics.dart';
+import 'domain/repositories/operating_system_info.dart';
 import 'domain/repositories/permission.dart';
-import 'domain/repositories/phone_account.dart';
 import 'domain/repositories/recent_call.dart';
+import 'domain/repositories/services/middleware.dart';
 import 'domain/repositories/services/voipgrid.dart';
 import 'domain/repositories/storage.dart';
 import 'domain/repositories/voip.dart';
+import 'domain/repositories/voip_config.dart';
 
 final dependencyLocator = GetIt.instance;
 
-Future<void> initializeDependencies() async {
+/// Pass `ui: false` to skip dependencies that are only used for the UI.
+Future<void> initializeDependencies({bool ui = true}) async {
   dependencyLocator
-    ..registerSingleton<Database>(Database())
-    ..registerSingleton<EnvRepository>(EnvRepository())
+    ..registerSingleton<VoipgridService>(
+      VoipgridService.create(),
+    )
+    ..registerSingleton<MiddlewareService>(
+      MiddlewareService.create(),
+    )
     ..registerSingletonAsync<StorageRepository>(() async {
       final storageRepository = StorageRepository();
       await storageRepository.load();
       return storageRepository;
-    })
-    ..registerSingleton<VoipgridService>(VoipgridService.create())
+    });
+
+  if (ui) {
+    dependencyLocator
+      ..registerSingleton<Database>(Database())
+      ..registerSingleton<RecentCallRepository>(
+        RecentCallRepository(
+          dependencyLocator<VoipgridService>(),
+          dependencyLocator<Database>(),
+        ),
+      )
+      ..registerSingleton<MetricsRepository>(MetricsRepository())
+      ..registerSingleton<ConnectivityRepository>(ConnectivityRepository())
+      ..registerSingletonWithDependencies<DestinationRepository>(
+        () => DestinationRepository(
+          dependencyLocator<VoipgridService>(),
+        ),
+        dependsOn: [StorageRepository],
+      )
+      ..registerSingleton<FeedbackRepository>(FeedbackRepository())
+      ..registerSingleton<ContactRepository>(ContactRepository());
+  }
+
+  dependencyLocator
+    ..registerSingleton<EnvRepository>(EnvRepository())
     ..registerSingleton<AuthRepository>(
       AuthRepository(
         dependencyLocator<VoipgridService>(),
@@ -38,13 +68,6 @@ Future<void> initializeDependencies() async {
     )
     ..registerSingleton<LoggingRepository>(LoggingRepository())
     ..registerSingleton<PermissionRepository>(PermissionRepository())
-    ..registerSingleton<ContactRepository>(ContactRepository())
-    ..registerSingleton<RecentCallRepository>(
-      RecentCallRepository(
-        dependencyLocator<VoipgridService>(),
-        dependencyLocator<Database>(),
-      ),
-    )
     ..registerSingletonWithDependencies<CallThroughRepository>(
       () => CallThroughRepository(
         dependencyLocator<VoipgridService>(),
@@ -52,23 +75,12 @@ Future<void> initializeDependencies() async {
       dependsOn: [StorageRepository],
     )
     ..registerSingleton<BuildInfoRepository>(BuildInfoRepository())
-    ..registerSingleton<FeedbackRepository>(
-      FeedbackRepository(),
+    ..registerSingleton<OperatingSystemInfoRepository>(
+      OperatingSystemInfoRepository(),
     )
-    ..registerSingleton<ConnectivityRepository>(ConnectivityRepository())
-    ..registerSingleton<MetricsRepository>(MetricsRepository())
-    ..registerSingletonWithDependencies<DestinationRepository>(
-      () => DestinationRepository(
-        dependencyLocator<VoipgridService>(),
-      ),
-      dependsOn: [StorageRepository],
-    )
-    ..registerSingletonWithDependencies<VoipRepository>(
-      () => VoipRepository(),
-      dependsOn: [StorageRepository],
-    )
-    ..registerSingletonWithDependencies<PhoneAccountRepository>(
-      () => PhoneAccountRepository(
+    ..registerSingleton<VoipRepository>(VoipRepository())
+    ..registerSingletonWithDependencies<VoipConfigRepository>(
+      () => VoipConfigRepository(
         dependencyLocator<VoipgridService>(),
       ),
       dependsOn: [StorageRepository],

@@ -1,10 +1,10 @@
 import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
-import '../entities/phone_account.dart';
 
 import '../entities/setting.dart';
 import '../entities/system_user.dart';
+import '../entities/voip_config.dart';
 
 class StorageRepository {
   SharedPreferences _preferences;
@@ -86,21 +86,21 @@ class StorageRepository {
 
   set token(String value) => _preferences.setString(_tokenKey, value);
 
-  static const _appAccountKey = 'app_account';
+  static const _voipConfigKey = 'voip_config';
 
-  PhoneAccount get appAccount {
-    final preference = _preferences.getString(_appAccountKey);
+  VoipConfig get voipConfig {
+    final preference = _preferences.getString(_voipConfigKey);
     if (preference == null) {
       return null;
     }
 
-    return PhoneAccount.fromJson(
+    return VoipConfig.fromJson(
       json.decode(preference) as Map<String, dynamic>,
     );
   }
 
-  set appAccount(PhoneAccount user) => _preferences.setString(
-        _appAccountKey,
+  set voipConfig(VoipConfig user) => _preferences.setString(
+        _voipConfigKey,
         user != null ? json.encode(user.toJson()) : null,
       );
 

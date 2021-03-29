@@ -9,6 +9,7 @@ class Avatar extends StatelessWidget {
   final String name;
   final Uint8List image;
 
+  final Color foregroundColor;
   final Color backgroundColor;
   final double size;
 
@@ -24,6 +25,7 @@ class Avatar extends StatelessWidget {
     this.name,
     this.image,
     this.size = defaultSize,
+    this.foregroundColor = Colors.white,
     this.backgroundColor,
     this.showFallback,
     this.fallback,
@@ -52,7 +54,7 @@ class Avatar extends StatelessWidget {
       child: AspectRatio(
         aspectRatio: 1 / 1,
         child: CircleAvatar(
-          foregroundColor: Colors.white,
+          foregroundColor: foregroundColor,
           backgroundColor: backgroundColor,
           backgroundImage: hasImage ? MemoryImage(image) : null,
           child: showFallback

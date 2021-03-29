@@ -68,7 +68,7 @@ class SettingsPage extends StatelessWidget {
               listener: _onStateChanged,
               builder: (context, state) {
                 final settings = state.settings;
-                final hasVoip = state.hasVoip;
+                final isVoipAllowed = state.isVoipAllowed;
                 final showTroubleshooting = state.showTroubleshooting;
 
                 return Column(
@@ -90,7 +90,7 @@ class SettingsPage extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            if (hasVoip) ...[
+                            if (isVoipAllowed) ...[
                               SettingTileCategory.audio(
                                 children: [
                                   SettingTile.usePhoneRingtone(
@@ -123,7 +123,7 @@ class SettingsPage extends StatelessWidget {
                               ],
                             ),
                             // Show advanced settings only if allowed.
-                            if (hasVoip && showTroubleshooting)
+                            if (isVoipAllowed && showTroubleshooting)
                               SettingTileCategory.advancedSettings(
                                 children: [
                                   SettingLinkTile.troubleshooting(),

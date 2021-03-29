@@ -37,17 +37,10 @@ abstract class Setting<T> {
   ];
 
   Map<String, dynamic> toJson() {
-    if (runtimeType is AvailabilitySetting) {
-      return {
-        _typeKey: runtimeType.toString(),
-        _valueKey: (value as Availability).toJson(),
-      };
-    } else {
-      return {
-        _typeKey: runtimeType.toString(),
-        _valueKey: value,
-      };
-    }
+    return {
+      _typeKey: runtimeType.toString(),
+      _valueKey: value,
+    };
   }
 
   static Setting fromJson(Map<String, dynamic> json) {

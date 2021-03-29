@@ -29,6 +29,7 @@ def dartEnv = project.findProperty('dart-defines')
             def split = it.split('%3D') // %3D is '=' encoded
             return [(split[0]), split[1]]
         }
+        ?: [:]
 
 def getBrand = {
     // Read brands from file.
@@ -114,4 +115,7 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+    implementation 'com.google.firebase:firebase-messaging:21.0.0'
 }
+
+apply plugin: 'com.google.gms.google-services'

@@ -8,6 +8,7 @@ import '../../resources/theme.dart';
 import '../../routes.dart';
 import '../../util/brand.dart';
 import '../../widgets/transparent_status_bar.dart';
+import 'call/widgets/call_button.dart';
 import 'contacts/details/page.dart';
 import 'contacts/page.dart';
 import 'dialer/page.dart';
@@ -102,6 +103,9 @@ class _MainPageState extends State<MainPage> {
                 height: 62,
                 width: 62,
                 child: FloatingActionButton(
+                  // We use the CallButton's hero tag for a nice transition
+                  // between the dialer and call button.
+                  heroTag: CallButton.defaultHeroTag,
                   backgroundColor: context.brand.theme.green1,
                   onPressed: () => Navigator.pushNamed(context, Routes.dialer),
                   child: const Icon(VialerSans.dialpad, size: 31),

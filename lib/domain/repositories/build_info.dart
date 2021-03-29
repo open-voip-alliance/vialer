@@ -20,6 +20,7 @@ class BuildInfoRepository {
       buildNumber: info.buildNumber,
       mergeRequestNumber: mergeRequestNumber,
       branchName: branch,
+      packageName: info.packageName,
     );
   }
 }

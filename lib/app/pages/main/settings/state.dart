@@ -6,7 +6,7 @@ import '../../../../domain/entities/setting.dart';
 class SettingsState extends Equatable {
   final List<Setting> settings;
   final BuildInfo buildInfo;
-  final bool hasVoip;
+  final bool isVoipAllowed;
   final bool showTroubleshooting;
 
   bool get isLoading => settings.isEmpty;
@@ -14,7 +14,7 @@ class SettingsState extends Equatable {
   SettingsState({
     this.settings = const [],
     this.buildInfo,
-    this.hasVoip = true,
+    this.isVoipAllowed = true,
   }) : showTroubleshooting =
             settings.get<ShowTroubleshootingSettingsSetting>()?.value ?? false;
 
@@ -26,12 +26,17 @@ class SettingsState extends Equatable {
         ..removeWhere((s) => s.runtimeType == setting.runtimeType)
         ..add(setting),
       buildInfo: buildInfo,
-      hasVoip: hasVoip,
+      isVoipAllowed: isVoipAllowed,
     );
   }
 
   @override
-  List<Object> get props => [settings, buildInfo, hasVoip, showTroubleshooting];
+  List<Object> get props => [
+        settings,
+        buildInfo,
+        isVoipAllowed,
+        showTroubleshooting,
+      ];
 }
 
 class LoggedOut extends SettingsState {}

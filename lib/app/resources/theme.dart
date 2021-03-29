@@ -38,6 +38,9 @@ abstract class BrandTheme {
 
   Color get primaryLight;
 
+  /// Color for use when the [primary] color is the background.
+  final Color onPrimaryColor = Colors.white;
+
   final grey1 = const Color(0xFFCCCCCC);
   final grey2 = const Color(0xFFD8D8D8);
   final grey3 = const Color(0xFFE0E0E0);
@@ -62,6 +65,9 @@ abstract class BrandTheme {
   Color get callGradientStart;
 
   Color get callGradientEnd;
+
+  /// Color for use when the call gradient is the background.
+  Color get onCallGradientColor => onPrimaryColor;
 
   final Color errorBorderColor = const Color(0x57DA534F);
 

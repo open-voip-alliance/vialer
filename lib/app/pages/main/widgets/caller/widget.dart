@@ -6,6 +6,7 @@ import '../../../../../domain/entities/exceptions/call_through.dart';
 import '../../../../../domain/entities/survey/survey_trigger.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
+import '../../call/incoming/page.dart';
 import '../../call/page.dart';
 import '../../survey/dialog.dart';
 import 'confirm/page.dart';
@@ -35,6 +36,10 @@ class Caller extends StatefulWidget {
 class _CallerState extends State<Caller> with WidgetsBindingObserver {
   bool _resumedOnceDuringCalling = false;
 
+  NavigatorState get _navigatorState => widget.navigatorKey.currentState;
+
+  BuildContext get _navigatorContext => widget.navigatorKey.currentContext;
+
   @override
   void initState() {
     super.initState();
@@ -59,19 +64,36 @@ class _CallerState extends State<Caller> with WidgetsBindingObserver {
     }
   }
 
+  static const _ringingRouteName = 'ringing';
+
   // NOTE: Only called when the state type changes, not when the same state
   // with a different `call` is emitted.
   Future<void> _onStateChanged(BuildContext context, CallerState state) async {
-    if (state is InitiatingCall && state.isVoip) {
-      await widget.navigatorKey.currentState.push(
+    if (state is Ringing) {
+      await _navigatorState.push(
         MaterialPageRoute(
-          builder: (_) => const CallPage(),
+          settings: const RouteSettings(
+            name: _ringingRouteName,
+          ),
+          builder: (_) => const IncomingCallPage(),
         ),
       );
     }
 
-    if (state is ShowConfirmPage) {
-      await widget.navigatorKey.currentState.push(
+    if (state is InitiatingCall && state.isVoip ||
+        (state is Calling && state.isVoip && state.call.direction.isInbound)) {
+      await _navigatorState.pushAndRemoveUntil(
+        MaterialPageRoute(
+          builder: (_) => const CallPage(),
+        ),
+        // If we had an incoming call, we want to remove the ringing route
+        // already once we accept the call.
+        (route) => route.settings.name != _ringingRouteName,
+      );
+    }
+
+    if (state is ShowCallThroughConfirmPage) {
+      await _navigatorState.push(
         ConfirmPageRoute(
           destination: state.destination,
           origin: state.origin,
@@ -84,7 +106,7 @@ class _CallerState extends State<Caller> with WidgetsBindingObserver {
         // We use the context of the navigator key, because that key is
         // associated with the MaterialApp which has Localizations, which
         // the SurveyDialog needs.
-        widget.navigatorKey.currentContext,
+        _navigatorContext,
         trigger: SurveyTrigger.afterThreeCallThroughCalls,
       );
 
@@ -92,10 +114,7 @@ class _CallerState extends State<Caller> with WidgetsBindingObserver {
     }
 
     if (state is InitiatingCallFailed) {
-      await _showCallThroughErrorDialog(
-        widget.navigatorKey.currentContext,
-        state.exception,
-      );
+      await _showCallThroughErrorDialog(_navigatorContext, state.exception);
     }
   }
 
