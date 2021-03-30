@@ -1,5 +1,5 @@
+import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:voip_flutter_integration/util/equatable.dart';
 
 part 'voipgrid_call_record.g.dart';
 

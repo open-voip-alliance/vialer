@@ -24,7 +24,7 @@ class RecentCallRepository with Loggable {
   );
 
   final _daysPerPage = 28;
-  int? _cacheStartPage;
+  // int _cacheStartPage;
 
   Future<List<CallRecordWithContact>> getRecentCalls({
     @required int page,
@@ -97,7 +97,7 @@ class RecentCallRepository with Loggable {
             calls.any((c) => c.id == mostRecentCall.id)) {
           // If the response contains the most recent call we got, we can
           // continue from cache.
-          _cacheStartPage = page;
+          // _cacheStartPage = page;
         }
 
         logger.info('Amount of calls from request: ${calls.length}');
