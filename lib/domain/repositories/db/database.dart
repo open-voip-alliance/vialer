@@ -18,9 +18,9 @@ class Calls extends Table {
   BoolColumn get answeredElsewhere => boolean()();
   IntColumn get duration => integer().map(DurationConverter())();
   DateTimeColumn get date => dateTime()();
-  TextColumn get callerName => text()();
+  TextColumn get callerName => text().nullable()();
   TextColumn get callerNumber => text()();
-  TextColumn get destinationName => text()();
+  TextColumn get destinationName => text().nullable()();
   TextColumn get destinationNumber => text()();
 }
 
