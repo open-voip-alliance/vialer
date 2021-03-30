@@ -2,7 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../domain/entities/exceptions/need_to_change_password.dart';
 import '../../../../domain/entities/onboarding/step.dart';
-import '../../../../domain/usecases/get_has_voip.dart';
+import '../../../../domain/usecases/get_is_voip_allowed.dart';
 import '../../../../domain/usecases/get_latest_availability.dart';
 import '../../../../domain/usecases/metrics/identify_for_tracking.dart';
 import '../../../../domain/usecases/metrics/track_login.dart';
@@ -20,7 +20,7 @@ class LoginCubit extends Cubit<LoginState> with Loggable {
   final _identifyForTracking = IdentifyForTrackingUseCase();
   final _trackLogin = TrackLoginUseCase();
   final _getLatestAvailability = GetLatestAvailabilityUseCase();
-  final _getHasVoip = GetHasVoipUseCase();
+  final _getIsVoipAllowed = GetIsVoipAllowed();
 
   LoginCubit(this._onboarding) : super(NotLoggedIn());
 
@@ -41,8 +41,8 @@ class LoginCubit extends Cubit<LoginState> with Loggable {
     }
 
     if (loginSuccessful) {
-      final hasVoip = await _getHasVoip();
-      if (hasVoip) {
+      final isVoipAllowed = await _getIsVoipAllowed();
+      if (isVoipAllowed) {
         _onboarding.addStep(OnboardingStep.microphonePermission);
       }
 
