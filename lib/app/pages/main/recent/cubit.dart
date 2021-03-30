@@ -4,7 +4,7 @@ import 'package:dartx/dartx.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../domain/entities/call_with_contact.dart';
+import '../../../../domain/entities/call_record_with_contact.dart';
 import '../../../../domain/usecases/get_recent_calls.dart';
 import '../../../../domain/usecases/metrics/track_copy_number.dart';
 import '../widgets/caller/cubit.dart';
@@ -19,7 +19,7 @@ class RecentCallsCubit extends Cubit<RecentCallsState> {
   final CallerCubit _caller;
 
   RecentCallsCubit(this._caller) : super(LoadingInitialRecentCalls()) {
-    _loadRecentCalls(page: 0);
+    _loadRecentCalls(page: 1);
   }
 
   Future<void> requestPermission() async {
@@ -39,7 +39,7 @@ class RecentCallsCubit extends Cubit<RecentCallsState> {
   Future<void> refreshRecentCalls() async {
     emit(RefreshingRecentCalls(state.calls, state.page));
 
-    _loadRecentCalls(page: 0);
+    _loadRecentCalls(page: 1);
   }
 
   Future<void> loadMoreRecentCalls() async {
@@ -52,7 +52,7 @@ class RecentCallsCubit extends Cubit<RecentCallsState> {
 
   Future<void> _loadRecentCalls({required int page}) async {
     final recentCalls = await _getRecentCalls(page: page);
-    List<CallWithContact> currentCalls;
+    List<CallRecordWithContact> currentCalls;
 
     if (state is LoadingMoreRecentCalls) {
       currentCalls = [

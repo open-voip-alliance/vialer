@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../domain/entities/call_with_contact.dart';
+import '../../../../domain/entities/call_record_with_contact.dart';
 import '../../../resources/localizations.dart';
 import '../../../resources/theme.dart';
 import '../../../util/widgets_binding_observer_registrar.dart';
@@ -95,7 +95,7 @@ class _RecentCallsList extends StatefulWidget {
 
   final bool isLoadingInitial;
 
-  final List<CallWithContact> calls;
+  final List<CallRecordWithContact> calls;
   final Future<void> Function() onRefresh;
   final void Function(String) onCallPressed;
   final void Function(String) onCopyPressed;

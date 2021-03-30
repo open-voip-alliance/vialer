@@ -4,9 +4,13 @@ import 'package:libphonenumber/libphonenumber.dart';
 import 'package:timezone/timezone.dart';
 import '../../app/util/loggable.dart';
 
-import '../entities/call.dart';
-import '../entities/call_with_contact.dart';
+import '../../app/util/loggable.dart';
+import '../../data/mappers/call_record.dart';
+import '../../data/models/voipgrid_call_record.dart';
+import '../entities/call_record.dart';
+import '../entities/call_record_with_contact.dart';
 import '../entities/contact.dart';
+
 import 'db/database.dart';
 import 'services/voipgrid.dart';
 
@@ -22,9 +26,9 @@ class RecentCallRepository with Loggable {
   final _daysPerPage = 28;
   int? _cacheStartPage;
 
-  Future<List<CallWithContact>> getRecentCalls({
-    required int page,
-    required String outgoingNumber,
+  Future<List<CallRecordWithContact>> getRecentCalls({
+    @required int page,
+    @required String outgoingNumber,
     Iterable<Contact> contacts = const [],
   }) async {
     final today = DateTime.now().add(const Duration(days: 1));
@@ -39,7 +43,7 @@ class RecentCallRepository with Loggable {
         )
         .toUtc();
 
-    var calls = <Call>[];
+    var calls = <CallRecord>[];
 
     logger.info(
       'Fetching recent calls between: '
@@ -48,50 +52,43 @@ class RecentCallRepository with Loggable {
 
     // Never get from cache for the first page, and then only
     // from when we're sure there's nothing remote.
-    if (page != 0 && page >= (_cacheStartPage ?? 0)) {
-      calls = await _database.getCalls(from: fromUtc, to: toUtc);
-      logger.info('Amount of calls from cache: ${calls.length}');
-    }
+    // if (page != 0 && page >= (_cacheStartPage ?? 0)) {
+    //   calls = await _database.getCalls(from: fromUtc, to: toUtc);
+    //   logger.info('Amount of calls from cache: ${calls.length}');
+    // }
 
     if (calls.isEmpty) {
       logger.info('None cached, request more via API');
       final response = await _service.getPersonalCalls(
-        from: fromUtc.toIso8601String(),
-        to: toUtc.toIso8601String(),
+        pageNumber: page,
       );
 
       final objects = response.body['objects'] as List<dynamic>? ?? [];
 
       if (objects.isNotEmpty) {
         calls = objects
-            .map((obj) => Call.fromJson(obj as Map<String, dynamic>))
+            .map((obj) =>
+                VoipgridCallRecord.fromJson(obj as Map<String, dynamic>))
+            // .map(
+            //   (c) => c.copyWith(
+            //     // The wrapper is needed so that it's a normal
+            //     // DateTime and not a TZDateTime, because we want to call
+            //     // the DateTime.toLocal method, not TZDateTime.toLocal, because
+            //     // the latter uses the location set with `setLocation`, which
+            //     // we can't use because we can't get the current time zone
+            //     // automatically, but DateTime.toLocal _will_ convert it to the
+            //     // correct current time zone.
+            //     date: DateTime.fromMillisecondsSinceEpoch(
+            //       TZDateTime.from(
+            //         c.date,
+            //         getLocation('Europe/Amsterdam'),
+            //       ).millisecondsSinceEpoch,
+            //       isUtc: true,
+            //     ),
+            //   ),
+            // )
             .map(
-              (c) => c.copyWith(
-                // The wrapper is needed so that it's a normal
-                // DateTime and not a TZDateTime, because we want to call
-                // the DateTime.toLocal method, not TZDateTime.toLocal, because
-                // the latter uses the location set with `setLocation`, which
-                // we can't use because we can't get the current time zone
-                // automatically, but DateTime.toLocal _will_ convert it to the
-                // correct current time zone.
-                date: DateTime.fromMillisecondsSinceEpoch(
-                  // Using this constructor so we can make sure the private
-                  // [_utcFromLocalDateTime] method is called and the object
-                  // is initialized with the correct location and no
-                  // conversions are performed on it.
-                  TZDateTime(
-                    getLocation('Europe/Amsterdam'),
-                    c.date.year,
-                    c.date.month,
-                    c.date.day,
-                    c.date.hour,
-                    c.date.minute,
-                    c.date.second,
-                    c.date.microsecond,
-                  ).toUtc().millisecondsSinceEpoch,
-                  isUtc: true,
-                ),
-              ),
+              (voipgridCallRecord) => voipgridCallRecord.toCallRecord(),
             )
             .toList();
 

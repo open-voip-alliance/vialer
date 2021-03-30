@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import '../../dependency_locator.dart';
-import '../entities/call_with_contact.dart';
+import '../entities/call_record_with_contact.dart';
 import '../entities/contact.dart';
 import '../entities/exceptions/no_permission.dart';
 import '../repositories/recent_call.dart';

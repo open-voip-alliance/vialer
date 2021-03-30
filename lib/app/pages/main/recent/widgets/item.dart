@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../../../../../domain/entities/call.dart';
-import '../../../../../domain/entities/call_with_contact.dart';
+import '../../../../../domain/entities/call_record.dart';
+import '../../../../../domain/entities/call_record_with_contact.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
 import '../../../../util/brand.dart';
@@ -15,7 +15,7 @@ enum _Action {
 }
 
 class RecentCallItem extends StatelessWidget {
-  final CallWithContact call;
+  final CallRecordWithContact call;
 
   /// Also called when whole item is pressed.
   final VoidCallback onCallPressed;
@@ -96,16 +96,16 @@ class RecentCallItem extends StatelessWidget {
 }
 
 class _RecentItemSubtitle extends StatelessWidget {
-  final Call call;
+  final CallRecord callRecord;
 
   const _RecentItemSubtitle(this.call, {Key? key}) : super(key: key);
 
-  String get _time => DateFormat.Hm().format(call.date.toLocal());
+  String get _time => DateFormat.Hm().format(callRecord.date.toLocal());
 
-  String get _date => DateFormat('dd-MM-yy').format(call.date.toLocal());
+  String get _date => DateFormat('dd-MM-yy').format(callRecord.date.toLocal());
 
   String _timeAgo(BuildContext context) {
-    final duration = DateTime.now().difference(call.date.toLocal());
+    final duration = DateTime.now().difference(callRecord.date.toLocal());
 
     if (duration.inHours < 1) {
       if (duration.inMinutes == 1) {
@@ -130,12 +130,12 @@ class _RecentItemSubtitle extends StatelessWidget {
     return Row(
       children: <Widget>[
         Icon(
-          call.wasMissed
+          callRecord.wasMissed
               ? VialerSans.missedCall
-              : call.direction == Direction.outbound
+              : callRecord.isOutbound
                   ? VialerSans.outgoingCall
                   : VialerSans.incomingCall,
-          color: call.wasMissed ? Colors.red : context.brand.theme.green1,
+          color: callRecord.wasMissed ? Colors.red : context.brand.theme.green1,
           size: 12,
         ),
         const SizedBox(width: 8),
@@ -148,6 +148,6 @@ class _RecentItemSubtitle extends StatelessWidget {
   }
 }
 
-extension CallDestinationName on CallWithContact {
+extension CallDestinationName on CallRecordWithContact {
   String get destinationName => contact?.name ?? destinationNumber;
 }
