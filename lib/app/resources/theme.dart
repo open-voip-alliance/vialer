@@ -66,7 +66,8 @@ abstract class BrandTheme {
 
   Color get callGradientEnd;
 
-  /// Color for use when the call gradient is the background.
+  /// Color used when a gradient from [callGradientStart] to [callGradientEnd]
+  /// is the background.
   Color get onCallGradientColor => onPrimaryColor;
 
   final Color errorBorderColor = const Color(0x57DA534F);

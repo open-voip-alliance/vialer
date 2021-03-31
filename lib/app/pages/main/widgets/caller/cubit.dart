@@ -12,9 +12,12 @@ import '../../../../../domain/entities/permission_status.dart';
 import '../../../../../domain/entities/setting.dart';
 import '../../../../../domain/entities/survey/survey_trigger.dart';
 import '../../../../../domain/usecases/answer_voip_call.dart';
-import '../../../../../domain/usecases/call.dart';
+import '../../../../../domain/usecases/call/call.dart';
+import '../../../../../domain/usecases/call/voip/end.dart';
+import '../../../../../domain/usecases/call/voip/get_is_muted.dart';
+import '../../../../../domain/usecases/call/voip/toggle_hold.dart';
+import '../../../../../domain/usecases/call/voip/toggle_mute.dart';
 import '../../../../../domain/usecases/change_setting.dart';
-import '../../../../../domain/usecases/end_voip_call.dart';
 import '../../../../../domain/usecases/get_active_voip_call.dart';
 import '../../../../../domain/usecases/get_call_through_calls_count.dart';
 import '../../../../../domain/usecases/get_has_voip_enabled.dart';
@@ -48,11 +51,15 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
 
   final _getHasVoipEnabled = GetHasVoipEnabledUseCase();
   final _startVoip = StartVoipUseCase();
-  final _getVoipCallEventStream = GetVoipCallEventStream();
+  final _getVoipCallEventStream = GetVoipCallEventStreamUseCase();
   final _getActiveVoipCall = GetActiveVoipCall();
 
   final _answerCall = AnswerVoipCallUseCase();
-  final _endCurrentCall = EndVoipCallUseCase();
+  final _getIsVoipCallMuted = GetIsVoipCallMutedUseCase();
+
+  final _toggleMuteVoipCall = ToggleMuteVoipCallUseCase();
+  final _toggleHoldVoipCall = ToggleHoldVoipCallUseCase();
+  final _endVoipCall = EndVoipCallUseCase();
 
   Timer _callThroughTimer;
 
@@ -85,9 +92,9 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
           activeCall.direction.isInbound &&
           activeCall.state != CallState.ended) {
         if (activeCall.state == CallState.initializing) {
-          emit(Ringing(call: activeCall));
+          emit(Ringing(voipCall: activeCall));
         } else {
-          emit(Calling(origin: CallOrigin.incoming, call: activeCall));
+          emit(Calling(origin: CallOrigin.incoming, voipCall: activeCall));
         }
       }
     } on VoipNotEnabledException {}
@@ -120,7 +127,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
   }
 
 
-  Future<void> answerCall() async {
+  Future<void> answerVoipCall() async {
     if (!await _hasMicPermission()) return;
 
     await _answerCall();
@@ -229,29 +236,22 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
 
   Future<void> _onVoipCallEvent(Event event) async {
     if (event is IncomingCallReceived) {
-      emit(Ringing(call: event.call));
+      emit(Ringing(voipCall: event.call));
       logger.info('Incoming VoIP call, ringing');
     } else if (event is OutgoingCallStarted) {
       final originState = state as CallOriginDetermined;
-      emit(InitiatingCall(origin: originState.origin, call: event.call));
+      emit(InitiatingCall(origin: originState.origin, voipCall: event.call));
       logger.info('Initiating VoIP call');
     } else if (event is CallConnected) {
-      emit(processState.calling(call: event.call));
+      emit(processState.calling(voipCall: event.call));
       logger.info('VoIP call connected');
     } else if (event is CallUpdated) {
-      final currentState = processState;
-      if (currentState is InitiatingCall) {
-        emit(
-          currentState.copyWith(origin: processState.origin, call: event.call),
-        );
-      } else if (currentState is Calling) {
-        emit(currentState.copyWith(call: event.call));
-      }
+      emit(processState.copyWith(voipCall: event.call));
     } else if (event is CallEnded) {
       // It's possible the call ended so fast that we were not in
       // a CallProcessState yet.
       if (state is CallProcessState) {
-        emit(processState.finished(call: event.call));
+        emit(processState.finished(voipCall: event.call));
       } else {
         emit(const CanCall());
       }
@@ -260,7 +260,17 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
     }
   }
 
-  Future<void> endCall() => _endCurrentCall();
+  Future<void> toggleMute() async {
+    await _toggleMuteVoipCall();
+
+    final isMuted = await _getIsVoipCallMuted();
+
+    emit(processState.copyWith(isVoipCallMuted: isMuted));
+  }
+
+  Future<void> toggleHoldVoipCall() => _toggleHoldVoipCall();
+
+  Future<void> endVoipCall() => _endVoipCall();
 
   void notifyCanCall() {
     // Necessary for auto cast.
@@ -349,7 +359,7 @@ extension on CallOrigin {
 
     throw UnsupportedError(
       'Vialer error: Unknown CallOrigin: $this. '
-      'Please add a case to toSegmentString.',
+      'Please add a case to toTrackString.',
     );
   }
 }
