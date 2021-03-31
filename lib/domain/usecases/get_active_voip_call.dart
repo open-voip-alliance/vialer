@@ -1,6 +1,5 @@
 import 'dart:async';
 
-
 import 'package:flutter_phone_lib/flutter_phone_lib.dart';
 
 import '../../dependency_locator.dart';

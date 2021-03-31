@@ -105,4 +105,6 @@ class StorageRepository {
       );
 
   Future<void> clear() => _preferences.clear();
+
+  Future<void> reload() => _preferences.reload();
 }
