@@ -107,10 +107,14 @@ class _Middleware with Loggable {
   VoipConfig get _config => _storageRepository.voipConfig;
 
   Future<void> register(VoipConfig voipConfig) async {
-    assert(voipConfig?.sipUserId != null);
     assert(Platform.isAndroid); // TODO: Remove when iOS is supported.
 
     logger.info('Registering..');
+
+    if (voipConfig?.sipUserId == null) {
+      logger.info('Registration cancelled: No SIP user ID set');
+      return;
+    }
 
     final user = await _getUser(latest: false);
     assert(user != null);

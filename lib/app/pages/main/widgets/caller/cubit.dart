@@ -126,7 +126,6 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
     return granted;
   }
 
-
   Future<void> answerVoipCall() async {
     if (!await _hasMicPermission()) return;
 
