@@ -81,7 +81,9 @@ class _CallerState extends State<Caller> with WidgetsBindingObserver {
     }
 
     if (state is InitiatingCall && state.isVoip ||
-        (state is Calling && state.isVoip && state.call.direction.isInbound)) {
+        (state is Calling &&
+            state.isVoip &&
+            state.voipCall.direction.isInbound)) {
       await _navigatorState.pushAndRemoveUntil(
         MaterialPageRoute(
           builder: (_) => const CallPage(),
@@ -113,8 +115,11 @@ class _CallerState extends State<Caller> with WidgetsBindingObserver {
       context.read<CallerCubit>().notifySurveyShown();
     }
 
-    if (state is InitiatingCallFailed) {
-      await _showCallThroughErrorDialog(_navigatorContext, state.exception);
+    if (state is InitiatingCallFailed && !state.isVoip) {
+      await _showCallThroughErrorDialog(
+        _navigatorContext,
+        state.exception as CallThroughException,
+      );
     }
   }
 

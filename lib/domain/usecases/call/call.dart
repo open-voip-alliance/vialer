@@ -2,12 +2,12 @@ import 'dart:async';
 
 import 'package:meta/meta.dart';
 
-import '../../dependency_locator.dart';
-import '../repositories/call_through.dart';
-import '../repositories/storage.dart';
-import '../repositories/voip.dart';
-import '../use_case.dart';
-import 'get_user.dart';
+import '../../../dependency_locator.dart';
+import '../../repositories/call_through.dart';
+import '../../repositories/storage.dart';
+import '../../repositories/voip.dart';
+import '../../use_case.dart';
+import '../get_user.dart';
 
 class CallUseCase extends FutureUseCase<void> {
   final _callThroughRepository = dependencyLocator<CallThroughRepository>();

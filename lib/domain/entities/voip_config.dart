@@ -34,7 +34,7 @@ class VoipConfig extends Equatable {
 
   @override
   String toString() => '$runtimeType('
-      'id: $sipUserId, '
+      'sipUserId: $sipUserId, '
       'useEncryption: $useEncryption, '
       'useOpus: $useOpus)';
 

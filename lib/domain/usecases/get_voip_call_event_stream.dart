@@ -6,7 +6,7 @@ import '../../dependency_locator.dart';
 import '../repositories/voip.dart';
 import '../use_case.dart';
 
-class GetVoipCallEventStream extends UseCase<Stream<Event>> {
+class GetVoipCallEventStreamUseCase extends UseCase<Stream<Event>> {
   final _voipRepository = dependencyLocator<VoipRepository>();
 
   @override

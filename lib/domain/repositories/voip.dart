@@ -83,6 +83,12 @@ class VoipRepository with Loggable {
 
   Future<void> unregister(VoipConfig voipConfig) =>
       _Middleware().unregister(voipConfig);
+
+  Future<bool> get isMuted => _phoneLib.audio.isMicrophoneMuted;
+
+  Future<void> toggleMute() => _phoneLib.audio.toggleMute();
+
+  Future<void> toggleHold() => _phoneLib.actions.toggleHold();
 }
 
 // This class should not keep any state of it's own.

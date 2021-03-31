@@ -21,7 +21,7 @@ class CallPage extends StatefulWidget {
 }
 
 class _CallPageState extends State<CallPage> {
-  void _toggleMute() {}
+  void _toggleMute() => context.read<CallerCubit>().toggleMute();
 
   void _toggleKeypad() {}
 
@@ -29,10 +29,10 @@ class _CallPageState extends State<CallPage> {
 
   void _transfer() {}
 
-  void _toggleOnHold() {}
+  void _toggleHold() => context.read<CallerCubit>().toggleHoldVoipCall();
 
   void _hangUp() {
-    context.read<CallerCubit>().endCall();
+    context.read<CallerCubit>().endVoipCall();
 
     _popAfter(const Duration(seconds: 1));
   }
@@ -66,7 +66,7 @@ class _CallPageState extends State<CallPage> {
             // the process of a call (state is CallProcessState),
             // this page wouldn't show anyway.
             final processState = state as CallProcessState;
-            final call = processState.call;
+            final call = processState.voipCall;
 
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -136,7 +136,10 @@ class _CallPageState extends State<CallPage> {
                     _ActionButton(
                       icon: const Icon(VialerSans.mute),
                       text: Text(context.msg.main.call.actions.mute),
-                      onPressed: _toggleMute,
+                      active: processState.isVoipCallMuted,
+                      // We can't mute when on hold.
+                      onPressed:
+                          !processState.voipCall.isOnHold ? _toggleMute : null,
                     ),
                     const Spacer(),
                     _ActionButton(
@@ -167,7 +170,8 @@ class _CallPageState extends State<CallPage> {
                     _ActionButton(
                       icon: const Icon(VialerSans.onHold),
                       text: Text(context.msg.main.call.actions.hold),
-                      onPressed: _toggleOnHold,
+                      active: processState.voipCall.isOnHold,
+                      onPressed: _toggleHold,
                     ),
                     const Spacer(flex: 3),
                   ],
@@ -188,10 +192,11 @@ class _CallPageState extends State<CallPage> {
   }
 }
 
-/// Meant to be used in a [Flex] widget (e.g. [Row] or [Column]).
 class _ActionButton extends StatelessWidget {
   final Widget icon;
   final Widget text;
+
+  final bool active;
 
   final VoidCallback onPressed;
 
@@ -199,38 +204,53 @@ class _ActionButton extends StatelessWidget {
     Key key,
     @required this.icon,
     @required this.text,
+    this.active = false,
     @required this.onPressed,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final enabled = onPressed != null;
-    final color =
-        enabled ? context.brand.theme.grey6 : context.brand.theme.grey4;
+    final color = onPressed != null
+        ? active
+            ? context.brand.theme.onPrimaryColor
+            : context.brand.theme.grey6
+        : context.brand.theme.grey4;
 
-    return Expanded(
-      flex: 2,
-      child: InkResponse(
-        onTap: onPressed,
-        radius: 48,
-        child: Column(
-          children: [
-            IconTheme.merge(
-              data: IconThemeData(
-                size: 32,
-                color: color,
+    const size = 96.0;
+
+    return SizedBox(
+      width: size,
+      height: size,
+      child: Material(
+        shape: const CircleBorder(),
+        color: active
+            ? context.brand.theme.primary
+            : context.brand.theme.primary.withOpacity(0),
+        child: InkResponse(
+          onTap: onPressed,
+          containedInkWell: active,
+          radius: active ? size : size / 2,
+          customBorder: const CircleBorder(),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              IconTheme.merge(
+                data: IconThemeData(
+                  size: 32,
+                  color: color,
+                ),
+                child: icon,
               ),
-              child: icon,
-            ),
-            const SizedBox(height: 8),
-            DefaultTextStyle.merge(
-              style: TextStyle(
-                fontSize: 16,
-                color: color,
+              const SizedBox(height: 8),
+              DefaultTextStyle.merge(
+                style: TextStyle(
+                  fontSize: 16,
+                  color: color,
+                ),
+                child: text,
               ),
-              child: text,
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

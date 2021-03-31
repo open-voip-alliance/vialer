@@ -1,6 +1,8 @@
 import 'dart:async';
+
 import 'package:meta/meta.dart';
 import 'package:chopper/chopper.dart' hide JsonConverter;
+
 import 'util.dart';
 
 part 'middleware.chopper.dart';
@@ -12,9 +14,7 @@ abstract class MiddlewareService extends ChopperService {
       ChopperClient(
         baseUrl: 'https://vialerpush.voipgrid.nl',
         converter: JsonConverter(),
-        interceptors: [
-          const AuthorizationInterceptor(),
-        ],
+        interceptors: [const AuthorizationInterceptor()],
       ),
     );
   }

@@ -28,11 +28,11 @@ class _IncomingCallPageState extends State<IncomingCallPage>
   }
 
   void _onDeclineButtonPressed() {
-    context.read<CallerCubit>().endCall();
+    context.read<CallerCubit>().endVoipCall();
   }
 
   void _onAnswerButtonPressed() {
-    context.read<CallerCubit>().answerCall();
+    context.read<CallerCubit>().answerVoipCall();
   }
 
   @override
@@ -101,7 +101,7 @@ class _IncomingCallPageState extends State<IncomingCallPage>
                 builder: (context, state) {
                   if (state is CallProcessState) {
                     return _Info(
-                      call: state.call,
+                      call: state.voipCall,
                     );
                   }
 
