@@ -41,28 +41,12 @@ class _LoginPageState extends State<LoginPage>
   final _defaultHeaderDistance = 48.0;
   double _headerDistance;
 
-  bool _canLogin = false;
-
   bool _hidePassword = true;
 
   void _goToPasswordReset() {
     launch(
       context.brand.url.resolve('/user/password_reset/').toString(),
     );
-  }
-
-  void _toggleLoginButton() {
-    final isValidEmail = RegExp(
-      r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$",
-    ).hasMatch(_emailController.text);
-
-    final oldCanLogin = _canLogin;
-
-    _canLogin = isValidEmail && _passwordController.text.isNotEmpty;
-
-    if (oldCanLogin != _canLogin) {
-      setState(() {});
-    }
   }
 
   void _toggleHidePassword() {
@@ -88,9 +72,6 @@ class _LoginPageState extends State<LoginPage>
     super.initState();
 
     WidgetsBinding.instance.addObserver(this);
-
-    _emailController.addListener(_toggleLoginButton);
-    _passwordController.addListener(_toggleLoginButton);
   }
 
   @override
@@ -141,7 +122,7 @@ class _LoginPageState extends State<LoginPage>
         create: (_) => LoginCubit(context.read<OnboardingCubit>()),
         child: BlocConsumer<LoginCubit, LoginState>(
           listener: _onStateChanged,
-          builder: (context, state) {
+          builder: (context, loginState) {
             return AutofillGroup(
               child: Column(
                 children: <Widget>[
@@ -164,14 +145,17 @@ class _LoginPageState extends State<LoginPage>
                   BlocBuilder<ConnectivityCheckerCubit, ConnectivityState>(
                     builder: (context, connectivityState) {
                       return ErrorAlert(
-                        visible: state is LoginFailed ||
+                        visible: loginState is LoginFailed ||
                             connectivityState is Disconnected,
-                        child: Text(
-                          state is LoginFailed
-                              ? context
-                                  .msg.onboarding.login.error.wrongCombination
-                              : context.msg.connectivity.noConnection,
-                        ),
+                        inline: false,
+                        title: loginState is LoginFailed
+                            ? context.msg.onboarding.login.error
+                                .wrongCombination.title
+                            : context.msg.connectivity.noConnection.title,
+                        message: loginState is LoginFailed
+                            ? context.msg.onboarding.login.error
+                                .wrongCombination.message
+                            : context.msg.connectivity.noConnection.message,
                       );
                     },
                   ),
@@ -182,8 +166,17 @@ class _LoginPageState extends State<LoginPage>
                     prefixIcon: VialerSans.user,
                     labelText: context.msg.onboarding.login.placeholder.email,
                     keyboardType: TextInputType.emailAddress,
-                    hasError: state is LoginFailed,
+                    hasError: loginState is LoginFailed ||
+                        (loginState is LoginNotSubmitted &&
+                            !loginState.hasValidEmailFormat),
                     autofillHints: [AutofillHints.email],
+                  ),
+                  ErrorAlert(
+                    visible: (loginState is LoginNotSubmitted &&
+                        !loginState.hasValidEmailFormat),
+                    inline: true,
+                    message:
+                        context.msg.onboarding.login.error.wrongEmailFormat,
                   ),
                   const SizedBox(height: 20),
                   StylizedTextField(
@@ -204,8 +197,17 @@ class _LoginPageState extends State<LoginPage>
                     labelText:
                         context.msg.onboarding.login.placeholder.password,
                     obscureText: _hidePassword,
-                    hasError: state is LoginFailed,
+                    hasError: loginState is LoginFailed ||
+                        (loginState is LoginNotSubmitted &&
+                            !loginState.hasValidPasswordFormat),
                     autofillHints: [AutofillHints.password],
+                  ),
+                  ErrorAlert(
+                    visible: (loginState is LoginNotSubmitted &&
+                        !loginState.hasValidPasswordFormat),
+                    inline: true,
+                    message:
+                        context.msg.onboarding.login.error.wrongPasswordFormat,
                   ),
                   const SizedBox(height: 32),
                   Column(
@@ -216,8 +218,7 @@ class _LoginPageState extends State<LoginPage>
                             ConnectivityState>(
                           builder: (context, connectivityState) {
                             return StylizedButton.raised(
-                              onPressed: _canLogin &&
-                                      state is! LoggingIn &&
+                              onPressed: loginState is! LoggingIn &&
                                       connectivityState is! Disconnected
                                   ? () => context.read<LoginCubit>().login(
                                         _emailController.text,
@@ -228,7 +229,7 @@ class _LoginPageState extends State<LoginPage>
                                 switchInCurve: Curves.decelerate,
                                 switchOutCurve: Curves.decelerate.flipped,
                                 duration: const Duration(milliseconds: 200),
-                                child: state is! LoggingIn
+                                child: loginState is! LoggingIn
                                     ? Text(
                                         context.msg.onboarding.button.login
                                             .toUpperCaseIfAndroid(context),

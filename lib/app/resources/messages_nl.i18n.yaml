@@ -12,12 +12,12 @@ generic:
     tryAgain: "Probeer nogmaals"
 
 connectivity:
-  noConnection: "Geen internetverbinding"
+  noConnection:
+    title: "Geen internetverbinding"
+    message: >-
+      Het lijkt erop dat je geen verbinding hebt met internet. Controleer je wifi- of mobiele dataverbinding en probeer het opnieuw.
 
 main:
-  connectivity:
-    noConnection: "Geen internetverbinding"
-
   callThrough:
     error:
       title: "Er is een fout opgetreden"
@@ -238,14 +238,21 @@ onboarding:
       loggingIn: "Bezig met inloggen"
       forgotPassword: "Wachtwoord vergeten?"
     error:
-      wrongCombination: >-
-        Het gebruikte e-mailadres of wachtwoord is onjuist.
-        Controleer op eventuele fouten en probeer het nog een keer.
+      wrongCombination:
+        title: "Onjuiste inloggegevens"
+        message: >-
+          Het gebruikte e-mailadres of wachtwoord is onjuist.
+          Controleer op eventuele fouten en probeer het nog een keer.
+      wrongEmailFormat: Het e-mailadres heeft niet het juiste formaat.
+      wrongPasswordFormat: >-
+        Het wachtwoord heeft niet het juiste formaat. Je wachtwoord moet bestaan uit minimaal 6 tekens, waarvan 1 niet-alfabetisch.
 
   password:
     title: "Wijzig je huidige wachtwoord"
     button: "Wachtwoord opslaan"
-    error: "Je wachtwoord voldoet niet aan de hieronder gestelde eisen."
+    error:
+      title: "Onjuist wachtwoord"
+      message: "Je wachtwoord voldoet niet aan de hieronder gestelde eisen."
     requirements: >-
       Je wachtwoord moet bestaan uit minimaal 6 tekens, waarvan 1 niet-alfabetisch.
 

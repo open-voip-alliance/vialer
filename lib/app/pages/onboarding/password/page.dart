@@ -7,6 +7,7 @@ import '../../../resources/theme.dart';
 import '../../../util/conditional_capitalization.dart';
 import '../../../widgets/stylized_button.dart';
 import '../cubit.dart';
+import '../login/util.dart';
 import '../widgets/error.dart';
 import '../widgets/stylized_text_field.dart';
 import 'cubit.dart';
@@ -29,8 +30,7 @@ class _PasswordPageState extends State<PasswordPage>
     super.initState();
 
     _passwordController.addListener(() {
-      _canSubmit = _passwordController.text != null &&
-          _passwordController.text.isNotEmpty;
+      _canSubmit = hasValidPasswordFormat(_passwordController.text);
     });
   }
 
@@ -76,7 +76,9 @@ class _PasswordPageState extends State<PasswordPage>
                   const SizedBox(height: 16),
                   ErrorAlert(
                     visible: state is PasswordNotAllowed,
-                    child: Text(context.msg.onboarding.password.error),
+                    inline: false,
+                    title: context.msg.onboarding.password.error.title,
+                    message: context.msg.onboarding.password.error.message,
                   ),
                   StylizedTextField(
                     controller: _passwordController,

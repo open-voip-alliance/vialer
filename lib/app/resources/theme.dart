@@ -72,7 +72,9 @@ abstract class BrandTheme {
 
   final Color errorBorderColor = const Color(0x57DA534F);
 
-  final Color errorContentColor = const Color(0xFF8F0A06);
+  final Color errorContentColor = const Color(0xFFDA534F);
+
+  final Color errorBackgroundColor = const Color(0x4D000000);
 
   Color get buttonColor => primaryLight;
 

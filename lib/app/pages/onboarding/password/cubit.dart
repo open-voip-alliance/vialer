@@ -5,6 +5,7 @@ import '../../../../domain/usecases/change_password.dart';
 import '../../../../domain/usecases/onboarding/login.dart';
 import '../../../util/loggable.dart';
 import '../cubit.dart';
+import '../login/util.dart';
 import 'state.dart';
 
 export 'state.dart';
@@ -20,7 +21,7 @@ class PasswordCubit extends Cubit<PasswordState> with Loggable {
   Future<void> changePassword(String password) async {
     logger.info('Changing password');
 
-    if (password.length < 6 || !RegExp(r'[^A-z]').hasMatch(password)) {
+    if (!hasValidPasswordFormat(password)) {
       emit(PasswordNotAllowed());
       return;
     }
