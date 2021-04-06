@@ -11,12 +11,12 @@ generic:
     tryAgain: "Try again"
 
 connectivity:
-  noConnection: "No internet connection"
+  noConnection:
+    title: "No internet connection"
+    message: >-
+      You don't seem to be connected to the internet. Please check your WiFi or mobile data connection and try again.
 
 main:
-  connectivity:
-    noConnection: "No internet connection"
-
   callThrough:
     error:
       title: "An error occurred"
@@ -220,7 +220,7 @@ main:
 
 onboarding:
   button:
-    login: &loginButton "Login"
+    login: &loginButton "Log in"
 
   initial:
     title: "Private\\nbusiness calls"
@@ -235,13 +235,20 @@ onboarding:
       loggingIn: "Logging in"
       forgotPassword: "Forgot password?"
     error:
-      wrongCombination: >-
-        The email address or password you entered is invalid. Please check and try again.
+      wrongCombination:
+        title: "Incorrect credentials"
+        message: >-
+          The email address or password you entered is invalid. Please check and try again.
+      wrongEmailFormat: Email address is incorrectly formatted.
+      wrongPasswordFormat:  >-
+        Password is incorrectly formatted. Your password must be at least 6 characters long and include 1 non-alphabetical character.
 
   password:
     title: "Change your current password"
     button: "Save password"
-    error: "Your new password does not comply with the requirements mentioned below."
+    error:
+      title: "Incorrect password"
+      message: "Your password does not comply with the requirements mentioned below."
     requirements: >-
       Password must be at least 6 characters long and include 1 non-alphabetical character.
 

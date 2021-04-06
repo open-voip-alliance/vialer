@@ -6,18 +6,25 @@ import '../../../util/brand.dart';
 class ErrorAlert extends StatefulWidget {
   /// Whether the error box is visible.
   final bool visible;
+
+  /// An inline error box is related to a specific input field,
+  /// use a non-inline error box for general errors.
+  final bool inline;
   final EdgeInsets padding;
-  final Widget child;
+  final String title;
+  final String message;
 
   const ErrorAlert({
     Key key,
     @required this.visible,
-    this.padding = const EdgeInsets.only(bottom: 16),
-    @required this.child,
+    @required this.inline,
+    this.padding = const EdgeInsets.all(4),
+    @required this.message,
+    this.title,
   }) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _ErrorAlertState();
+  _ErrorAlertState createState() => _ErrorAlertState();
 }
 
 class _ErrorAlertState extends State<ErrorAlert> with TickerProviderStateMixin {
@@ -37,46 +44,81 @@ class _ErrorAlertState extends State<ErrorAlert> with TickerProviderStateMixin {
         child: Visibility(
           visible: widget.visible,
           child: Padding(
-            padding: widget.padding,
-            child: Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: context.brand.theme.errorBorderColor,
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: context.brand.theme.errorBorderColor,
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Row(
-                    children: <Widget>[
-                      Icon(
-                        VialerSans.exclamationMark,
-                        color: context.brand.theme.errorContentColor,
+            padding: widget.inline
+                ? const EdgeInsets.all(0)
+                : const EdgeInsets.only(bottom: 16),
+            child: Column(
+              children: <Widget>[
+                const SizedBox(height: 5),
+                ClipPath(
+                  clipper: const ShapeBorderClipper(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(4),
                       ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: DefaultTextStyle.merge(
-                          child: widget.child,
-                          style: TextStyle(
-                            color: context.brand.theme.errorContentColor,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                          ),
+                    ),
+                  ),
+                  child: Container(
+                    padding: widget.padding,
+                    decoration: BoxDecoration(
+                      color: context.brand.theme.errorBackgroundColor,
+                      border: Border(
+                        top: BorderSide(
+                          color: context.brand.theme.errorContentColor,
+                          width: 3.0,
                         ),
                       ),
-                    ],
+                    ),
+                    child: Row(
+                      children: <Widget>[
+                        const SizedBox(width: 9),
+                        Container(
+                          padding: const EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.black.withOpacity(0.5),
+                          ),
+                          child: Icon(
+                            VialerSans.exclamationMark,
+                            size: 12,
+                            color: context.brand.theme.errorContentColor,
+                          ),
+                        ),
+                        const SizedBox(width: 13),
+                        Expanded(
+                          child: DefaultTextStyle.merge(
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.only(top: 6.0, bottom: 6.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  if (widget.title != null)
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 4.0),
+                                      child: Text(
+                                        widget.title,
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  Text(widget.message),
+                                ],
+                              ),
+                            ),
+                            style: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.normal,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
+              ],
             ),
           ),
         ),

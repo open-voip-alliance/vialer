@@ -10,6 +10,7 @@ import '../../../../domain/usecases/onboarding/login.dart';
 import '../../../util/loggable.dart';
 import '../cubit.dart';
 import 'state.dart';
+import 'util.dart' as util;
 
 export 'state.dart';
 
@@ -24,14 +25,33 @@ class LoginCubit extends Cubit<LoginState> with Loggable {
 
   LoginCubit(this._onboarding) : super(NotLoggedIn());
 
-  Future<void> login(String username, String password) async {
+  Future<void> login(String email, String password) async {
     logger.info('Logging in');
 
     emit(LoggingIn());
 
+    final local = r"[a-z0-9.!#$%&'*+/=?^_`{|}~-]+";
+    final domain = '[a-z0-9](?:[a-z0-9-]{0,253}[a-z0-9])?';
+    final tld = '(?:\.[a-z0-9](?:[a-z0-9-]{0,253}[a-z0-9])?)+';
+    final hasValidEmailFormat = RegExp(
+      '^$local@$domain$tld\$',
+      caseSensitive: false,
+    ).hasMatch(email);
+    final hasValidPasswordFormat = util.hasValidPasswordFormat(password);
+
+    if (!hasValidEmailFormat || !hasValidPasswordFormat) {
+      emit(
+        LoginNotSubmitted(
+          hasValidEmailFormat: hasValidEmailFormat,
+          hasValidPasswordFormat: hasValidPasswordFormat,
+        ),
+      );
+      return;
+    }
+
     var loginSuccessful = false;
     try {
-      loginSuccessful = await _login(email: username, password: password);
+      loginSuccessful = await _login(email: email, password: password);
     } on NeedToChangePasswordException {
       _onboarding.addStep(OnboardingStep.password);
 
