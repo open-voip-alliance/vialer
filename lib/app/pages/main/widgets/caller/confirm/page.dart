@@ -273,7 +273,11 @@ class _AndroidInputs extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 40,
+      ).copyWith(
+        bottom: 16,
+      ),
       child: Align(
         alignment: Alignment.bottomCenter,
         child: Column(
@@ -292,31 +296,29 @@ class _AndroidInputs extends StatelessWidget {
                 )
               ],
             ),
-            RaisedButton(
-              elevation: 4,
-              onPressed: onCallButtonPressed,
-              color: context.brand.theme.green2,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Icon(
-                    VialerSans.phone,
-                    size: 16,
-                    color: context.brand.theme.green3,
-                  ),
-                  const SizedBox(width: 12),
-                  Flexible(
-                    child: Text(
+            SizedBox(
+              width: double.infinity,
+              child: RaisedButton(
+                elevation: 4,
+                onPressed: onCallButtonPressed,
+                color: context.brand.theme.green2,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Icon(
+                      VialerSans.phone,
+                      size: 16,
+                      color: context.brand.theme.green3,
+                    ),
+                    const SizedBox(width: 12),
+                    Text(
                       destination,
                       style: TextStyle(
                         color: context.brand.theme.green3,
                       ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 16),
