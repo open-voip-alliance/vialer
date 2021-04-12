@@ -6,6 +6,7 @@ import '../../../../../domain/entities/exceptions/call_through.dart';
 import '../../../../../domain/entities/survey/survey_trigger.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
+import '../../../../routes.dart';
 import '../../call/incoming/page.dart';
 import '../../call/page.dart';
 import '../../survey/dialog.dart';
@@ -88,9 +89,9 @@ class _CallerState extends State<Caller> with WidgetsBindingObserver {
         MaterialPageRoute(
           builder: (_) => const CallPage(),
         ),
-        // If we had an incoming call, we want to remove the ringing route
-        // already once we accept the call.
-        (route) => route.settings.name != _ringingRouteName,
+        // We want to go back to the main screen after a call
+        // (not the dialer or possibly ringing screen).
+        (route) => route.settings.name == Routes.main,
       );
     }
 
