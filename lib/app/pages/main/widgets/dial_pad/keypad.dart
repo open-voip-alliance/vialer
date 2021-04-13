@@ -5,18 +5,23 @@ import 'package:flutter/rendering.dart';
 
 import '../../../../resources/theme.dart';
 import '../../../../util/brand.dart';
-import '../../call/widgets/call_button.dart';
 
 class Keypad extends StatefulWidget {
   final TextEditingController controller;
-  final VoidCallback onCallButtonPressed;
-  final VoidCallback onDeleteButtonPressed;
+  final BoxConstraints constraints;
+  final bool canDelete;
+  final Widget primaryButton;
+  final Widget secondaryButton;
+  final VoidCallback onDeleteAll;
 
   const Keypad({
     Key key,
     @required this.controller,
-    this.onCallButtonPressed,
-    this.onDeleteButtonPressed,
+    this.constraints,
+    this.canDelete = true,
+    @required this.primaryButton,
+    this.secondaryButton,
+    this.onDeleteAll,
   }) : super(key: key);
 
   @override
@@ -46,11 +51,6 @@ class _KeypadState extends State<Keypad> {
   };
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     const bottomPadding = 32.0;
 
@@ -59,15 +59,16 @@ class _KeypadState extends State<Keypad> {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       gridDelegate: _KeypadGridDelegate(
+        constraints: widget.constraints,
         bottomPadding: bottomPadding,
-        // Because of the iOS design, we want a slimmer keypad. On Android we
-        // have a wider keypad, as to follow native dialers there.
+        // Because of the iOS design, we want a slimmer keypad. On Android
+        // we have a wider keypad, as to follow native dialers there.
         slim: context.isIOS,
       ),
       childrenDelegate: SliverChildListDelegate.fixed(
         [
           ..._buttonValues.entries.map(
-            (entry) => ValueButton(
+            (entry) => KeypadValueButton._(
               controller: widget.controller,
               cursorShownNotifier: _cursorShownNotifier,
               primaryValue: entry.key,
@@ -76,14 +77,15 @@ class _KeypadState extends State<Keypad> {
                   entry.key == '0' && entry.value == '+',
             ),
           ),
-          const SizedBox(), // Empty space in the grid.
-          _CallButton(
-            onPressed: widget.onCallButtonPressed,
+          widget.secondaryButton ?? const SizedBox(),
+          Center(
+            child: widget.primaryButton,
           ),
           _DeleteButton(
             controller: widget.controller,
             cursorShownNotifier: _cursorShownNotifier,
-            onPressed: widget.onDeleteButtonPressed,
+            canDelete: widget.canDelete,
+            onDeleteAll: widget.onDeleteAll,
           ),
         ],
       ),
@@ -92,16 +94,23 @@ class _KeypadState extends State<Keypad> {
 }
 
 class _KeypadGridDelegate extends SliverGridDelegate {
+  final BoxConstraints constraints;
   final double bottomPadding;
 
   /// Whether the keypad should be slimmed down, meaning it will be less
   /// wide.
   final bool slim;
 
-  _KeypadGridDelegate({this.bottomPadding = 0, this.slim = false});
+  _KeypadGridDelegate({
+    @required this.constraints,
+    this.bottomPadding = 0,
+    this.slim = false,
+  });
 
   @override
   SliverGridLayout getLayout(SliverConstraints constraints) {
+    final boxConstraints = this.constraints;
+
     const itemsPerRow = 3;
     const itemsPerColumn = 5;
 
@@ -113,14 +122,16 @@ class _KeypadGridDelegate extends SliverGridDelegate {
       maxCrossAxisExtent,
     );
 
-    final height = constraints.viewportMainAxisExtent - bottomPadding;
+    final maxHeight =
+        boxConstraints?.maxHeight ?? constraints.viewportMainAxisExtent;
+    final height = maxHeight - bottomPadding;
 
     var mainAxisExtent = min(
       height / itemsPerColumn,
       maxMainAxisExtent,
     );
 
-    // Stride will be the extent, without padding (possibly) substracted.
+    // Stride will be the extent, without padding (possibly) subtracted.
     final crossAxisStride = crossAxisExtent;
     final mainAxisStride = mainAxisExtent;
 
@@ -128,11 +139,11 @@ class _KeypadGridDelegate extends SliverGridDelegate {
 
     // We add some padding between items if the buttons are smaller than the
     // max size, because in that case there will be no extra space between them.
-    if (crossAxisExtent < ValueButton.maxSize) {
+    if (crossAxisExtent < KeypadValueButton.maxSize) {
       crossAxisExtent -= padding;
     }
 
-    if (mainAxisExtent < ValueButton.maxSize) {
+    if (mainAxisExtent < KeypadValueButton.maxSize) {
       mainAxisExtent -= padding;
     }
 
@@ -192,12 +203,12 @@ class _CenteredSliverGridRegularTileLayout extends SliverGridRegularTileLayout {
   }
 }
 
-class _KeypadButton extends StatelessWidget {
+class KeypadButton extends StatelessWidget {
   final bool borderOnIos;
 
   final Widget child;
 
-  const _KeypadButton({
+  const KeypadButton({
     Key key,
     this.borderOnIos = true,
     this.child,
@@ -220,8 +231,7 @@ class _KeypadButton extends StatelessWidget {
   }
 }
 
-@visibleForTesting
-class ValueButton extends StatefulWidget {
+class KeypadValueButton extends StatefulWidget {
   static const maxSize = 80.0;
 
   final String primaryValue;
@@ -234,7 +244,7 @@ class ValueButton extends StatefulWidget {
 
   final ValueNotifier<bool> cursorShownNotifier;
 
-  const ValueButton({
+  const KeypadValueButton._({
     Key key,
     @required this.primaryValue,
     this.secondaryValue,
@@ -244,10 +254,10 @@ class ValueButton extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _ValueButtonState();
+  State<StatefulWidget> createState() => _KeypadValueButtonState();
 }
 
-class _ValueButtonState extends State<ValueButton> {
+class _KeypadValueButtonState extends State<KeypadValueButton> {
   TextEditingController get _controller => widget.controller;
 
   @override
@@ -310,12 +320,12 @@ class _ValueButtonState extends State<ValueButton> {
     return Center(
       child: ConstrainedBox(
         constraints: const BoxConstraints(
-          maxWidth: ValueButton.maxSize,
-          maxHeight: ValueButton.maxSize,
+          maxWidth: KeypadValueButton.maxSize,
+          maxHeight: KeypadValueButton.maxSize,
         ),
         child: LayoutBuilder(
           builder: (context, constraints) {
-            return _KeypadButton(
+            return KeypadButton(
               child: _InkWellOrResponse(
                 isResponse: !context.isIOS,
                 customBorder: const CircleBorder(),
@@ -339,7 +349,7 @@ class _ValueButtonState extends State<ValueButton> {
                       // The font size is based on the available space, and we
                       // never make the font size bigger
                       textScaleFactor: min(
-                        constraints.maxWidth / ValueButton.maxSize,
+                        constraints.maxWidth / KeypadValueButton.maxSize,
                         MediaQuery.textScaleFactorOf(context),
                       ),
                     ),
@@ -363,42 +373,18 @@ class _ValueButtonState extends State<ValueButton> {
   }
 }
 
-class _CallButton extends StatelessWidget {
-  final VoidCallback onPressed;
-
-  const _CallButton({Key key, this.onPressed}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    // On iOS we want the call button to be the same size as the
-    // other buttons. Even though we set the max size as the min size,
-    // a ConstrainedBox will never impose impossible constraints, so it's not
-    // a problem. In this case, it basically means: 'Biggest size possible, but
-    // with a certain limit'.
-    final minSize = context.isIOS ? ValueButton.maxSize : 64.0;
-
-    return Center(
-      child: CallButton.call(
-        constraints: BoxConstraints(
-          minWidth: minSize,
-          minHeight: minSize,
-        ),
-        onPressed: onPressed,
-      ),
-    );
-  }
-}
-
 class _DeleteButton extends StatefulWidget {
   final TextEditingController controller;
   final ValueNotifier<bool> cursorShownNotifier;
-  final VoidCallback onPressed;
+  final bool canDelete;
+  final VoidCallback onDeleteAll;
 
   const _DeleteButton({
     Key key,
-    @required this.cursorShownNotifier,
     @required this.controller,
-    @required this.onPressed,
+    @required this.cursorShownNotifier,
+    this.canDelete = true,
+    this.onDeleteAll,
   }) : super(key: key);
 
   @override
@@ -408,7 +394,9 @@ class _DeleteButton extends StatefulWidget {
 class _DeleteButtonState extends State<_DeleteButton> {
   TextEditingController get _controller => widget.controller;
 
-  bool _visible = false;
+  bool __canDelete = false;
+
+  bool get _canDelete => widget.canDelete && __canDelete;
 
   @override
   void initState() {
@@ -427,11 +415,11 @@ class _DeleteButtonState extends State<_DeleteButton> {
   void _handleStatusChange() {
     if (_controller.text.isNotEmpty) {
       setState(() {
-        _visible = true;
+        __canDelete = true;
       });
     } else {
       setState(() {
-        _visible = false;
+        __canDelete = false;
       });
     }
   }
@@ -478,23 +466,28 @@ class _DeleteButtonState extends State<_DeleteButton> {
 
   void _deleteAll() {
     _controller.clear();
-    widget.onPressed();
+    widget.onDeleteAll?.call();
   }
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedOpacity(
-      opacity: _visible ? 1 : 0,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.decelerate,
-      child: _KeypadButton(
-        borderOnIos: false,
-        child: InkResponse(
-          onTap: _visible ? _delete : null,
-          onLongPress: _visible ? _deleteAll : null,
-          child: Icon(
+    return KeypadButton(
+      borderOnIos: false,
+      child: InkResponse(
+        onTap: _canDelete ? _delete : null,
+        onLongPress: _canDelete ? _deleteAll : null,
+        child: AnimatedTheme(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.decelerate,
+          data: Theme.of(context).copyWith(
+            iconTheme: Theme.of(context).iconTheme.copyWith(
+                  color: _canDelete
+                      ? context.brand.theme.grey5
+                      : context.brand.theme.grey2,
+                ),
+          ),
+          child: const Icon(
             VialerSans.correct,
-            color: context.brand.theme.grey5,
             size: 32,
           ),
         ),

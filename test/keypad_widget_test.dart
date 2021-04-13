@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:vialer/app/pages/main/dialer/widgets/keypad.dart';
+import 'package:vialer/app/pages/main/widgets/dial_pad/keypad.dart';
 import 'package:vialer/app/resources/theme.dart';
 import 'package:vialer/app/widgets/brand_provider/widget.dart';
 import 'package:vialer/domain/entities/brand.dart';
@@ -11,8 +11,10 @@ void main() {
   final textController = TextEditingController();
   final keypad = Keypad(
     controller: textController,
-    onCallButtonPressed: () => initiateFakeCall(controller: textController),
-    onDeleteButtonPressed: () => {},
+    primaryButton: GestureDetector(
+      onTap: () => initiateFakeCall(controller: textController),
+    ),
+    onDeleteAll: () => {},
   );
 
   final testWidget = TestApp(
@@ -37,18 +39,9 @@ void main() {
       expect(
         find.descendant(
           of: find.byType(Keypad),
-          matching: find.byType(ValueButton),
+          matching: find.byType(KeypadValueButton),
         ),
         findsNWidgets(12),
-      );
-    });
-
-    testWidgets('Call button', (tester) async {
-      await tester.pumpWidget(testWidget);
-
-      expect(
-        find.byIcon(VialerSans.phone),
-        findsOneWidget,
       );
     });
 
@@ -68,7 +61,7 @@ void main() {
 
       expect(
         find.descendant(
-          of: find.byType(ValueButton).at(0),
+          of: find.byType(KeypadValueButton).at(0),
           matching: find.text('1'),
         ),
         findsOneWidget,
@@ -80,14 +73,14 @@ void main() {
 
       expect(
         find.descendant(
-          of: find.byType(ValueButton).at(1),
+          of: find.byType(KeypadValueButton).at(1),
           matching: find.text('2'),
         ),
         findsOneWidget,
       );
       expect(
         find.descendant(
-          of: find.byType(ValueButton).at(1),
+          of: find.byType(KeypadValueButton).at(1),
           matching: find.text('ABC'),
         ),
         findsOneWidget,
@@ -99,13 +92,13 @@ void main() {
 
       expect(
           find.descendant(
-            of: find.byType(ValueButton).at(2),
+            of: find.byType(KeypadValueButton).at(2),
             matching: find.text('3'),
           ),
           findsOneWidget);
       expect(
         find.descendant(
-          of: find.byType(ValueButton).at(2),
+          of: find.byType(KeypadValueButton).at(2),
           matching: find.text('DEF'),
         ),
         findsOneWidget,
@@ -117,14 +110,14 @@ void main() {
 
       expect(
         find.descendant(
-          of: find.byType(ValueButton).at(3),
+          of: find.byType(KeypadValueButton).at(3),
           matching: find.text('4'),
         ),
         findsOneWidget,
       );
       expect(
         find.descendant(
-          of: find.byType(ValueButton).at(3),
+          of: find.byType(KeypadValueButton).at(3),
           matching: find.text('GHI'),
         ),
         findsOneWidget,
@@ -136,14 +129,14 @@ void main() {
 
       expect(
         find.descendant(
-          of: find.byType(ValueButton).at(4),
+          of: find.byType(KeypadValueButton).at(4),
           matching: find.text('5'),
         ),
         findsOneWidget,
       );
       expect(
         find.descendant(
-          of: find.byType(ValueButton).at(4),
+          of: find.byType(KeypadValueButton).at(4),
           matching: find.text('JKL'),
         ),
         findsOneWidget,
@@ -155,14 +148,14 @@ void main() {
 
       expect(
         find.descendant(
-          of: find.byType(ValueButton).at(5),
+          of: find.byType(KeypadValueButton).at(5),
           matching: find.text('6'),
         ),
         findsOneWidget,
       );
       expect(
         find.descendant(
-          of: find.byType(ValueButton).at(5),
+          of: find.byType(KeypadValueButton).at(5),
           matching: find.text('MNO'),
         ),
         findsOneWidget,
@@ -174,14 +167,14 @@ void main() {
 
       expect(
         find.descendant(
-          of: find.byType(ValueButton).at(6),
+          of: find.byType(KeypadValueButton).at(6),
           matching: find.text('7'),
         ),
         findsOneWidget,
       );
       expect(
         find.descendant(
-          of: find.byType(ValueButton).at(6),
+          of: find.byType(KeypadValueButton).at(6),
           matching: find.text('PQRS'),
         ),
         findsOneWidget,
@@ -193,14 +186,14 @@ void main() {
 
       expect(
         find.descendant(
-          of: find.byType(ValueButton).at(7),
+          of: find.byType(KeypadValueButton).at(7),
           matching: find.text('8'),
         ),
         findsOneWidget,
       );
       expect(
         find.descendant(
-          of: find.byType(ValueButton).at(7),
+          of: find.byType(KeypadValueButton).at(7),
           matching: find.text('TUV'),
         ),
         findsOneWidget,
@@ -212,14 +205,14 @@ void main() {
 
       expect(
         find.descendant(
-          of: find.byType(ValueButton).at(8),
+          of: find.byType(KeypadValueButton).at(8),
           matching: find.text('9'),
         ),
         findsOneWidget,
       );
       expect(
         find.descendant(
-          of: find.byType(ValueButton).at(8),
+          of: find.byType(KeypadValueButton).at(8),
           matching: find.text('WXYZ'),
         ),
         findsOneWidget,
@@ -231,7 +224,7 @@ void main() {
 
       expect(
         find.descendant(
-          of: find.byType(ValueButton).at(9),
+          of: find.byType(KeypadValueButton).at(9),
           matching: find.text('*'),
         ),
         findsOneWidget,
@@ -243,14 +236,14 @@ void main() {
 
       expect(
         find.descendant(
-          of: find.byType(ValueButton).at(10),
+          of: find.byType(KeypadValueButton).at(10),
           matching: find.text('0'),
         ),
         findsOneWidget,
       );
       expect(
         find.descendant(
-          of: find.byType(ValueButton).at(10),
+          of: find.byType(KeypadValueButton).at(10),
           matching: find.text('+'),
         ),
         findsOneWidget,
@@ -262,7 +255,7 @@ void main() {
 
       expect(
         find.descendant(
-          of: find.byType(ValueButton).at(11),
+          of: find.byType(KeypadValueButton).at(11),
           matching: find.text('#'),
         ),
         findsOneWidget,
@@ -277,7 +270,7 @@ void main() {
 
     testWidgets('Longpress 0 -> +', (tester) async {
       await tester.pumpWidget(testWidget);
-      await tester.longPress(find.widgetWithText(ValueButton, '0'));
+      await tester.longPress(find.widgetWithText(KeypadValueButton, '0'));
       await tester.pumpAndSettle();
       expect(
         find.widgetWithText(TextField, '+'),
@@ -287,7 +280,7 @@ void main() {
 
     testWidgets('Press 0', (tester) async {
       await tester.pumpWidget(testWidget);
-      await tester.tap(find.widgetWithText(ValueButton, '0'));
+      await tester.tap(find.widgetWithText(KeypadValueButton, '0'));
       await tester.pumpAndSettle();
       expect(
         find.widgetWithText(TextField, '0'),
@@ -297,7 +290,7 @@ void main() {
 
     testWidgets('Press 1', (tester) async {
       await tester.pumpWidget(testWidget);
-      await tester.tap(find.widgetWithText(ValueButton, '1'));
+      await tester.tap(find.widgetWithText(KeypadValueButton, '1'));
       await tester.pumpAndSettle();
       expect(
         find.widgetWithText(TextField, '1'),
@@ -307,7 +300,7 @@ void main() {
 
     testWidgets('Press 2', (tester) async {
       await tester.pumpWidget(testWidget);
-      await tester.tap(find.widgetWithText(ValueButton, '2'));
+      await tester.tap(find.widgetWithText(KeypadValueButton, '2'));
       await tester.pumpAndSettle();
       expect(
         find.widgetWithText(TextField, '2'),
@@ -317,7 +310,7 @@ void main() {
 
     testWidgets('Press 3', (tester) async {
       await tester.pumpWidget(testWidget);
-      await tester.tap(find.widgetWithText(ValueButton, '3'));
+      await tester.tap(find.widgetWithText(KeypadValueButton, '3'));
       await tester.pumpAndSettle();
       expect(
         find.widgetWithText(TextField, '3'),
@@ -327,7 +320,7 @@ void main() {
 
     testWidgets('Press 4', (tester) async {
       await tester.pumpWidget(testWidget);
-      await tester.tap(find.widgetWithText(ValueButton, '4'));
+      await tester.tap(find.widgetWithText(KeypadValueButton, '4'));
       await tester.pumpAndSettle();
       expect(
         find.widgetWithText(TextField, '4'),
@@ -337,7 +330,7 @@ void main() {
 
     testWidgets('Press 5', (tester) async {
       await tester.pumpWidget(testWidget);
-      await tester.tap(find.widgetWithText(ValueButton, '5'));
+      await tester.tap(find.widgetWithText(KeypadValueButton, '5'));
       await tester.pumpAndSettle();
       expect(
         find.widgetWithText(TextField, '5'),
@@ -347,7 +340,7 @@ void main() {
 
     testWidgets('Press 6', (tester) async {
       await tester.pumpWidget(testWidget);
-      await tester.tap(find.widgetWithText(ValueButton, '6'));
+      await tester.tap(find.widgetWithText(KeypadValueButton, '6'));
       await tester.pump();
       expect(
         find.widgetWithText(TextField, '6'),
@@ -357,7 +350,7 @@ void main() {
 
     testWidgets('Press 7', (tester) async {
       await tester.pumpWidget(testWidget);
-      await tester.tap(find.widgetWithText(ValueButton, '7'));
+      await tester.tap(find.widgetWithText(KeypadValueButton, '7'));
       await tester.pump();
       expect(
         find.widgetWithText(TextField, '7'),
@@ -367,7 +360,7 @@ void main() {
 
     testWidgets('Press 8', (tester) async {
       await tester.pumpWidget(testWidget);
-      await tester.tap(find.widgetWithText(ValueButton, '8'));
+      await tester.tap(find.widgetWithText(KeypadValueButton, '8'));
       await tester.pump();
       expect(
         find.widgetWithText(TextField, '8'),
@@ -377,7 +370,7 @@ void main() {
 
     testWidgets('Press 9', (tester) async {
       await tester.pumpWidget(testWidget);
-      await tester.tap(find.widgetWithText(ValueButton, '9'));
+      await tester.tap(find.widgetWithText(KeypadValueButton, '9'));
       await tester.pump();
       expect(
         find.widgetWithText(TextField, '9'),
@@ -387,7 +380,7 @@ void main() {
 
     testWidgets('Press *', (tester) async {
       await tester.pumpWidget(testWidget);
-      await tester.tap(find.widgetWithText(ValueButton, '*'));
+      await tester.tap(find.widgetWithText(KeypadValueButton, '*'));
       await tester.pump();
       expect(
         find.widgetWithText(TextField, '*'),
@@ -397,7 +390,7 @@ void main() {
 
     testWidgets('Press #', (tester) async {
       await tester.pumpWidget(testWidget);
-      await tester.tap(find.widgetWithText(ValueButton, '#'));
+      await tester.tap(find.widgetWithText(KeypadValueButton, '#'));
       await tester.pump();
       expect(
         find.widgetWithText(TextField, '#'),
@@ -407,19 +400,19 @@ void main() {
 
     testWidgets('Press All keypad buttons', (tester) async {
       await tester.pumpWidget(testWidget);
-      await tester.longPress(find.widgetWithText(ValueButton, '0'));
-      await tester.tap(find.widgetWithText(ValueButton, '0'));
-      await tester.tap(find.widgetWithText(ValueButton, '1'));
-      await tester.tap(find.widgetWithText(ValueButton, '2'));
-      await tester.tap(find.widgetWithText(ValueButton, '3'));
-      await tester.tap(find.widgetWithText(ValueButton, '4'));
-      await tester.tap(find.widgetWithText(ValueButton, '5'));
-      await tester.tap(find.widgetWithText(ValueButton, '6'));
-      await tester.tap(find.widgetWithText(ValueButton, '7'));
-      await tester.tap(find.widgetWithText(ValueButton, '8'));
-      await tester.tap(find.widgetWithText(ValueButton, '9'));
-      await tester.tap(find.widgetWithText(ValueButton, '*'));
-      await tester.tap(find.widgetWithText(ValueButton, '#'));
+      await tester.longPress(find.widgetWithText(KeypadValueButton, '0'));
+      await tester.tap(find.widgetWithText(KeypadValueButton, '0'));
+      await tester.tap(find.widgetWithText(KeypadValueButton, '1'));
+      await tester.tap(find.widgetWithText(KeypadValueButton, '2'));
+      await tester.tap(find.widgetWithText(KeypadValueButton, '3'));
+      await tester.tap(find.widgetWithText(KeypadValueButton, '4'));
+      await tester.tap(find.widgetWithText(KeypadValueButton, '5'));
+      await tester.tap(find.widgetWithText(KeypadValueButton, '6'));
+      await tester.tap(find.widgetWithText(KeypadValueButton, '7'));
+      await tester.tap(find.widgetWithText(KeypadValueButton, '8'));
+      await tester.tap(find.widgetWithText(KeypadValueButton, '9'));
+      await tester.tap(find.widgetWithText(KeypadValueButton, '*'));
+      await tester.tap(find.widgetWithText(KeypadValueButton, '#'));
       await tester.pump();
       expect(
         find.widgetWithText(TextField, '+0123456789*#'),
@@ -455,22 +448,6 @@ void main() {
       );
       expect(
         find.widgetWithText(TextField, ''),
-        findsOneWidget,
-      );
-    });
-
-    testWidgets('Press call button', (tester) async {
-      await tester.pumpWidget(testWidget);
-      textController.text = '+0123456789';
-      await tester.pump();
-      await tester.tap(
-        find.ancestor(
-          of: find.byIcon(VialerSans.phone),
-          matching: find.byType(FloatingActionButton),
-        ),
-      );
-      expect(
-        find.widgetWithText(TextField, 'Call started'),
         findsOneWidget,
       );
     });

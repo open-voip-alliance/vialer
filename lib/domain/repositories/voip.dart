@@ -76,6 +76,8 @@ class VoipRepository with Loggable {
 
   Future<void> endCall() => _phoneLib.actions.end();
 
+  Future<void> sendDtmf(String dtmf) => _phoneLib.actions.sendDtmf(dtmf);
+
   Stream<Event> get events => _phoneLib.events;
 
   Future<void> register(VoipConfig voipConfig) =>

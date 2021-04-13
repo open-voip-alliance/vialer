@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/material.dart';
 
-import 'package:vialer/app/pages/main/dialer/widgets/key_input.dart';
+import 'package:vialer/app/pages/main/widgets/dial_pad/key_input.dart';
 import 'package:vialer/app/widgets/brand_provider/widget.dart';
 import 'package:vialer/domain/entities/brand.dart';
 

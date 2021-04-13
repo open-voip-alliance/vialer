@@ -10,16 +10,16 @@ import '../../../resources/theme.dart';
 import '../../../routes.dart';
 import '../../../util/brand.dart';
 import '../../../util/conditional_capitalization.dart';
-import '../../../widgets/connectivity_checker.dart';
 import '../../../widgets/stylized_button.dart';
 import '../../../widgets/transparent_status_bar.dart';
+import '../call/widgets/call_button.dart';
 import '../widgets/caller.dart';
 import '../widgets/caller/state.dart';
 import '../widgets/conditional_placeholder.dart';
 import '../widgets/connectivity_alert.dart';
+import '../widgets/dial_pad/keypad.dart';
+import '../widgets/dial_pad/widget.dart';
 import 'cubit.dart';
-import 'widgets/key_input.dart';
-import 'widgets/keypad.dart';
 import 'widgets/t9/widget.dart';
 
 class DialerPage extends StatefulWidget {
@@ -36,7 +36,7 @@ class DialerPage extends StatefulWidget {
 
 // ignore: prefer_mixin
 class _DialerPageState extends State<DialerPage> with WidgetsBindingObserver {
-  final _keypadController = TextEditingController();
+  final _dialPadController = TextEditingController();
 
   @override
   void initState() {
@@ -62,14 +62,15 @@ class _DialerPageState extends State<DialerPage> with WidgetsBindingObserver {
   }
 
   void _onDialerStateChanged(BuildContext context, DialerState state) {
-    if (state.lastCalledDestination != null && _keypadController.text.isEmpty) {
-      _keypadController.text = state.lastCalledDestination;
+    if (state.lastCalledDestination != null &&
+        _dialPadController.text.isEmpty) {
+      _dialPadController.text = state.lastCalledDestination;
     }
   }
 
   void _call(BuildContext context) {
-    context.read<DialerCubit>().call(_keypadController.text);
-    _keypadController.clear();
+    context.read<DialerCubit>().call(_dialPadController.text);
+    _dialPadController.clear();
   }
 
   @override
@@ -127,7 +128,7 @@ class _DialerPageState extends State<DialerPage> with WidgetsBindingObserver {
                   child: Column(
                     children: <Widget>[
                       if (context.isAndroid) ...[
-                        T9ContactsListView(controller: _keypadController),
+                        T9ContactsListView(controller: _dialPadController),
                         const Divider(
                           height: 1,
                           thickness: 1,
@@ -138,32 +139,14 @@ class _DialerPageState extends State<DialerPage> with WidgetsBindingObserver {
                             height: 48,
                           ),
                         ),
-                      Material(
-                        child: KeyInput(
-                          controller: _keypadController,
-                        ),
-                      ),
-                      if (context.isIOS) const SizedBox(height: 24),
                       Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8),
-                          child: Align(
-                            alignment: Alignment.bottomCenter,
-                            child: BlocBuilder<ConnectivityCheckerCubit,
-                                ConnectivityState>(
-                              builder: (context, state) {
-                                return Keypad(
-                                  controller: _keypadController,
-                                  onCallButtonPressed: state is Connected
-                                      ? () => _call(context)
-                                      : null,
-                                  onDeleteButtonPressed: state is Connected
-                                      ? dialerCubit.clearLastCalledDestination
-                                      : null,
-                                );
-                              },
-                            ),
+                        child: DialPad(
+                          controller: _dialPadController,
+                          primaryButton: _CallButton(
+                            onPressed: () => _call(context),
                           ),
+                          onDeleteAll:
+                              dialerCubit.clearLastCalledDestination,
                         ),
                       ),
                     ],
@@ -190,5 +173,31 @@ class _DialerPageState extends State<DialerPage> with WidgetsBindingObserver {
     super.dispose();
 
     WidgetsBinding.instance.removeObserver(this);
+  }
+}
+
+class _CallButton extends StatelessWidget {
+  final VoidCallback onPressed;
+
+  const _CallButton({Key key, this.onPressed}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    // On iOS we want the call button to be the same size as the
+    // other buttons. Even though we set the max size as the min size,
+    // a ConstrainedBox will never impose impossible constraints, so it's not
+    // a problem. In this case, it basically means: 'Biggest size possible, but
+    // with a certain limit'.
+    final minSize = context.isIOS ? KeypadValueButton.maxSize : 64.0;
+
+    return Center(
+      child: CallButton.call(
+        constraints: BoxConstraints(
+          minWidth: minSize,
+          minHeight: minSize,
+        ),
+        onPressed: onPressed,
+      ),
+    );
   }
 }
