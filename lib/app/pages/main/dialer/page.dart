@@ -50,8 +50,10 @@ class _DialerPageState extends State<DialerPage> with WidgetsBindingObserver {
     if (state == AppLifecycleState.inactive) {
       final callerState = context.read<CallerCubit>().state;
 
-      // We pop the dialer on Android if we're initiating a call.
-      if (Platform.isAndroid && callerState is InitiatingCall) {
+      // We pop the dialer on Android if we're initiating a call-through call.
+      if (Platform.isAndroid &&
+          callerState is InitiatingCall &&
+          !callerState.isVoip) {
         Navigator.of(context).popUntil(
           (route) => route.settings.name == Routes.main,
         );
