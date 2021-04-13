@@ -29,6 +29,7 @@ import '../../../../../domain/usecases/increment_call_through_calls_count.dart';
 import '../../../../../domain/usecases/metrics/track_call.dart';
 import '../../../../../domain/usecases/onboarding/request_permission.dart';
 import '../../../../../domain/usecases/open_settings.dart';
+import '../../../../../domain/usecases/send_voip_dtmf.dart';
 import '../../../../../domain/usecases/start_voip.dart';
 import '../../../../util/loggable.dart';
 import 'state.dart';
@@ -53,12 +54,11 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
   final _startVoip = StartVoipUseCase();
   final _getVoipCallEventStream = GetVoipCallEventStreamUseCase();
   final _getActiveVoipCall = GetActiveVoipCall();
-
-  final _answerCall = AnswerVoipCallUseCase();
+  final _answerVoipCall = AnswerVoipCallUseCase();
   final _getIsVoipCallMuted = GetIsVoipCallMutedUseCase();
-
   final _toggleMuteVoipCall = ToggleMuteVoipCallUseCase();
   final _toggleHoldVoipCall = ToggleHoldVoipCallUseCase();
+  final _sendVoipDtmf = SendVoipDtmfUseCase();
   final _endVoipCall = EndVoipCallUseCase();
 
   Timer _callThroughTimer;
@@ -133,7 +133,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
   Future<void> answerVoipCall() async {
     if (!await _hasMicPermission()) return;
 
-    await _answerCall();
+    await _answerVoipCall();
   }
 
   Future<void> _callViaCallThrough(
@@ -272,6 +272,8 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
   }
 
   Future<void> toggleHoldVoipCall() => _toggleHoldVoipCall();
+
+  Future<void> sendVoipDtmf(String dtmf) => _sendVoipDtmf(dtmf: dtmf);
 
   Future<void> endVoipCall() => _endVoipCall();
 
