@@ -249,6 +249,19 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
       emit(processState.calling(voipCall: event.call));
       logger.info('VoIP call connected');
     } else if (event is CallUpdated) {
+      // It's possible we're not in a CallProcessState yet, because we missed an
+      // event, if that's the case we'll emit the state necessary to get there.
+      if (state is! CallProcessState) {
+        if (event.call.direction.isInbound) {
+          emit(Calling(origin: CallOrigin.incoming, voipCall: event.call));
+          logger.info('VoIP call connected (recovered)');
+        } else {
+          throw UnsupportedError(
+            'Can\'t recover from missed events of outgoing call',
+          );
+        }
+      }
+
       emit(processState.copyWith(voipCall: event.call));
     } else if (event is CallEnded) {
       // It's possible the call ended so fast that we were not in
