@@ -3,11 +3,14 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_phone_lib/audio/audio_route.dart';
+import 'package:flutter_phone_lib/audio/audio_state.dart';
 import 'package:provider/provider.dart';
 
 import '../../../resources/localizations.dart';
 import '../../../resources/theme.dart';
 import '../../../util/brand.dart';
+import '../util/text_extension.dart';
 import '../widgets/caller.dart';
 import '../widgets/connectivity_alert.dart';
 import '../widgets/dial_pad/keypad.dart';
@@ -197,6 +200,173 @@ class _ActionButton extends StatelessWidget {
   }
 }
 
+class _AudioRouteButton extends StatelessWidget {
+  const _AudioRouteButton();
+
+  Future<void> _showAudioPopupMenu(
+      BuildContext context, AudioState audioState) async {
+    final bluetoothDeviceName = audioState?.bluetoothDeviceName ?? '';
+    final currentRoute = audioState?.currentRoute ?? AudioRoute.phone;
+
+    var selectedRoute = await showDialog<AudioRoute>(
+        context: context,
+        builder: (context) {
+          return SimpleDialog(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 5),
+                child: SimpleDialogOption(
+                  onPressed: () => Navigator.pop(context, AudioRoute.phone),
+                  child: Row(
+                    children: <Widget>[
+                      const Padding(
+                        padding: EdgeInsets.only(right: 10),
+                        child: Icon(VialerSans.phone),
+                      ),
+                      Text(context.msg.main.call.actions.phone).capitalize(),
+                      const Spacer(),
+                      if (currentRoute == AudioRoute.phone)
+                        const Icon(VialerSans.check)
+                    ],
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 5),
+                child: SimpleDialogOption(
+                  onPressed: () => Navigator.pop(context, AudioRoute.speaker),
+                  child: Row(
+                    children: <Widget>[
+                      const Padding(
+                        padding: EdgeInsets.only(right: 10),
+                        child: Icon(VialerSans.speaker),
+                      ),
+                      Text(context.msg.main.call.actions.speaker).capitalize(),
+                      const Spacer(),
+                      if (currentRoute == AudioRoute.speaker)
+                        const Icon(VialerSans.check)
+                    ],
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 5),
+                child: SimpleDialogOption(
+                  onPressed: () => Navigator.pop(context, AudioRoute.bluetooth),
+                  child: Row(
+                    children: <Widget>[
+                      const Padding(
+                        padding: EdgeInsets.only(right: 10),
+                        child: Icon(VialerSans.bluetooth),
+                      ),
+                      formatBluetoothLabel(
+                        context: context,
+                        bluetoothDeviceName: bluetoothDeviceName,
+                      ),
+                      const Spacer(),
+                      if (currentRoute == AudioRoute.bluetooth)
+                        const Icon(VialerSans.check)
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          );
+        });
+
+    if (selectedRoute != null) {
+      context.read<CallerCubit>().routeAudio(selectedRoute);
+    }
+  }
+
+  Text formatBluetoothLabel({
+    @required BuildContext context,
+    @required String bluetoothDeviceName,
+  }) {
+    final label = context.msg.main.call.actions.bluetooth;
+
+    return Text(bluetoothDeviceName.isNotEmpty
+            ? '$label ($bluetoothDeviceName)'
+            : label)
+        .capitalize();
+  }
+
+  Icon findIcon({
+    @required BuildContext context,
+    @required bool hasBluetooth,
+    @required AudioRoute currentRoute,
+  }) {
+    if (!hasBluetooth || currentRoute == AudioRoute.speaker) {
+      return const Icon(VialerSans.speaker);
+    }
+
+    if (currentRoute == AudioRoute.bluetooth) {
+      return const Icon(VialerSans.bluetooth);
+    }
+
+    return const Icon(VialerSans.phone);
+  }
+
+  Text findText({
+    @required BuildContext context,
+    @required bool hasBluetooth,
+    @required AudioRoute currentRoute,
+    @required String bluetoothDeviceName,
+  }) {
+    if (!hasBluetooth || currentRoute == AudioRoute.speaker) {
+      return Text(context.msg.main.call.actions.speaker);
+    }
+
+    if (currentRoute == AudioRoute.bluetooth) {
+      return bluetoothDeviceName.isNotEmpty
+          ? Text(bluetoothDeviceName)
+          : Text(context.msg.main.call.actions.bluetooth);
+    }
+
+    return Text(context.msg.main.call.actions.phone);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<CallerCubit, CallerState>(builder: (context, state) {
+      final processState = state as CallProcessState;
+
+      final currentRoute =
+          processState.audioState?.currentRoute ?? AudioRoute.phone;
+      final hasBluetooth = processState.audioState != null &&
+          processState.audioState.availableRoutes
+              .contains(AudioRoute.bluetooth);
+
+      return _ActionButton(
+        icon: findIcon(
+          context: context,
+          hasBluetooth: hasBluetooth,
+          currentRoute: currentRoute,
+        ),
+        text: findText(
+          context: context,
+          hasBluetooth: hasBluetooth,
+          currentRoute: currentRoute,
+          bluetoothDeviceName:
+              processState.audioState?.bluetoothDeviceName ?? '',
+        ),
+        active: !hasBluetooth && (currentRoute == AudioRoute.speaker),
+        onPressed: () {
+          if (processState.audioState != null && hasBluetooth) {
+            _showAudioPopupMenu(context, processState.audioState);
+          } else {
+            context.read<CallerCubit>().routeAudio(
+                  currentRoute == AudioRoute.phone
+                      ? AudioRoute.speaker
+                      : AudioRoute.phone,
+                );
+          }
+        },
+      );
+    });
+  }
+}
+
 class _CallActions extends StatefulWidget {
   final void Function(Duration) popAfter;
 
@@ -305,8 +475,6 @@ class _CallActionButtons extends StatelessWidget {
     Navigator.pushNamed(context, 'dial-pad');
   }
 
-  void _toggleSpeaker() {}
-
   void _transfer() {}
 
   void _toggleHold(BuildContext context) =>
@@ -341,11 +509,7 @@ class _CallActionButtons extends StatelessWidget {
                   onPressed: () => _toggleDialPad(context),
                 ),
                 const Spacer(),
-                _ActionButton(
-                  icon: const Icon(VialerSans.speaker),
-                  text: Text(context.msg.main.call.actions.speaker),
-                  onPressed: _toggleSpeaker,
-                ),
+                const _AudioRouteButton(),
                 const Spacer(flex: 2),
               ],
             ),

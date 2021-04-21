@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:flutter_phone_lib/audio/audio_route.dart';
+import 'package:flutter_phone_lib/audio/audio_state.dart';
 import 'package:flutter_phone_lib/flutter_phone_lib.dart' hide Logger;
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
@@ -91,6 +93,11 @@ class VoipRepository with Loggable {
   Future<void> toggleMute() => _phoneLib.audio.toggleMute();
 
   Future<void> toggleHold() => _phoneLib.actions.toggleHold();
+
+  Future<void> routeAudio(AudioRoute route) =>
+      _phoneLib.audio.routeAudio(route);
+
+  Future<AudioState> get audioState => _phoneLib.audio.state;
 }
 
 // This class should not keep any state of it's own.

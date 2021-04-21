@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_phone_lib/audio/audio_route.dart';
 import 'package:flutter_phone_lib/flutter_phone_lib.dart';
 import 'package:meta/meta.dart';
 
@@ -14,7 +15,9 @@ import '../../../../../domain/entities/survey/survey_trigger.dart';
 import '../../../../../domain/usecases/answer_voip_call.dart';
 import '../../../../../domain/usecases/call/call.dart';
 import '../../../../../domain/usecases/call/voip/end.dart';
+import '../../../../../domain/usecases/call/voip/get_audio_state.dart';
 import '../../../../../domain/usecases/call/voip/get_is_muted.dart';
+import '../../../../../domain/usecases/call/voip/route_audio.dart';
 import '../../../../../domain/usecases/call/voip/toggle_hold.dart';
 import '../../../../../domain/usecases/call/voip/toggle_mute.dart';
 import '../../../../../domain/usecases/change_setting.dart';
@@ -60,6 +63,8 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
   final _toggleHoldVoipCall = ToggleHoldVoipCallUseCase();
   final _sendVoipDtmf = SendVoipDtmfUseCase();
   final _endVoipCall = EndVoipCallUseCase();
+  final _getVoipAudioState = GetVoipCallAudioStateUseCase();
+  final _routeAudio = RouteAudioUseCase();
 
   Timer _callThroughTimer;
 
@@ -249,11 +254,17 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
       emit(processState.calling(voipCall: event.call));
       logger.info('VoIP call connected');
     } else if (event is CallUpdated) {
+      final audioState = await _getVoipAudioState();
+
       // It's possible we're not in a CallProcessState yet, because we missed an
       // event, if that's the case we'll emit the state necessary to get there.
       if (state is! CallProcessState) {
         if (event.call.direction.isInbound) {
-          emit(Calling(origin: CallOrigin.incoming, voipCall: event.call));
+          emit(Calling(
+            origin: CallOrigin.incoming,
+            voipCall: event.call,
+            audioState: audioState,
+          ));
           logger.info('VoIP call connected (recovered)');
         } else {
           throw UnsupportedError(
@@ -262,7 +273,10 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
         }
       }
 
-      emit(processState.copyWith(voipCall: event.call));
+      emit(processState.copyWith(
+        voipCall: event.call,
+        audioState: audioState,
+      ));
     } else if (event is CallEnded) {
       // It's possible the call ended so fast that we were not in
       // a CallProcessState yet.
@@ -289,6 +303,14 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
   Future<void> sendVoipDtmf(String dtmf) => _sendVoipDtmf(dtmf: dtmf);
 
   Future<void> endVoipCall() => _endVoipCall();
+
+  Future<void> routeAudio(AudioRoute route) async {
+    _routeAudio(route: route);
+
+    final audioState = await _getVoipAudioState();
+
+    emit(processState.copyWith(audioState: audioState));
+  }
 
   void notifyCanCall() {
     // Necessary for auto cast.

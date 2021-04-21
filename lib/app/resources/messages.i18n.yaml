@@ -60,6 +60,8 @@ main:
       keypad: "keypad"
       speaker: "speaker"
       transfer: "transfer"
+      bluetooth: "bluetooth"
+      phone: "phone"
       hold: "hold"
     state:
       calling: "Calling"

@@ -60,6 +60,8 @@ main:
       keypad: "toetsen"
       speaker: "luidspreker"
       transfer: "doorverbinden"
+      bluetooth: "bluetooth"
+      phone: "telefoon"
       hold: "wacht"
     state:
       calling: "Bellen"

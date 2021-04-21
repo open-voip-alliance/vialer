@@ -147,8 +147,7 @@ class _DialerPageState extends State<DialerPage> with WidgetsBindingObserver {
                           primaryButton: _CallButton(
                             onPressed: () => _call(context),
                           ),
-                          onDeleteAll:
-                              dialerCubit.clearLastCalledDestination,
+                          onDeleteAll: dialerCubit.clearLastCalledDestination,
                         ),
                       ),
                     ],
