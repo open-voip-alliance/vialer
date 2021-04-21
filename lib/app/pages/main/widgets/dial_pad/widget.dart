@@ -8,9 +8,11 @@ import 'keypad.dart';
 
 class DialPad extends StatelessWidget {
   final TextEditingController controller;
+
   /// Whether input can be deleted with the delete button. If false, the
   /// delete button will stay greyed-out, even if input is present.
   final bool canDelete;
+
   /// Called when the delete button has been long-pressed, and all input is
   /// deleted.
   final VoidCallback onDeleteAll;

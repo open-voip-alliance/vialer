@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter_phone_lib/audio/audio_state.dart';
 import 'package:flutter_phone_lib/call/call.dart';
 import 'package:meta/meta.dart';
 
@@ -41,6 +42,8 @@ class CallOriginDetermined extends CallerState {
 abstract class CallProcessState extends CallOriginDetermined {
   final Call voipCall;
 
+  final AudioState audioState;
+
   // `voipCall` is only available when it's a VoIP call.
   bool get isVoip => voipCall != null;
 
@@ -51,6 +54,7 @@ abstract class CallProcessState extends CallOriginDetermined {
     @required CallOrigin origin,
     @required this.voipCall,
     bool isVoipCallMuted,
+    this.audioState,
   })  : isVoipCallMuted = isVoipCallMuted ?? false,
         super(origin);
 
@@ -61,12 +65,14 @@ abstract class CallProcessState extends CallOriginDetermined {
         voipCall,
         isVoip,
         isVoipCallMuted,
+        audioState,
       ];
 
   CallProcessState copyWith({
     CallOrigin origin,
     Call voipCall,
     bool isVoipCallMuted,
+    AudioState audioState,
   });
 
   InitiatingCallFailed failed(CallThroughException exception) {
@@ -76,7 +82,11 @@ abstract class CallProcessState extends CallOriginDetermined {
   }
 
   Calling calling({Call voipCall}) {
-    return Calling(origin: origin, voipCall: voipCall ?? this.voipCall);
+    return Calling(
+      origin: origin,
+      voipCall: voipCall ?? this.voipCall,
+      audioState: audioState,
+    );
   }
 
   ShowCallThroughSurvey showCallThroughSurvey() {
@@ -126,6 +136,7 @@ class Ringing extends CallProcessState {
     CallOrigin origin,
     Call voipCall,
     bool isVoipCallMuted,
+    AudioState audioState,
   }) {
     return Ringing(
       voipCall: voipCall ?? this.voipCall,
@@ -150,6 +161,7 @@ class InitiatingCall extends CallProcessState {
     CallOrigin origin,
     Call voipCall,
     bool isVoipCallMuted,
+    AudioState audioState,
   }) {
     return InitiatingCall(
       origin: origin ?? this.origin,
@@ -182,6 +194,7 @@ class InitiatingCallFailed extends CallProcessState {
     CallOrigin origin,
     Call voipCall,
     bool isVoipCallMuted,
+    AudioState audioState,
   }) {
     return InitiatingCallFailed(
       exception ?? this.exception,
@@ -197,23 +210,26 @@ class Calling extends CallProcessState {
     @required CallOrigin origin,
     @required Call voipCall,
     bool isVoipCallMuted,
+    AudioState audioState,
   }) : super(
           origin: origin,
           voipCall: voipCall,
           isVoipCallMuted: isVoipCallMuted,
+          audioState: audioState,
         );
-  
+
   @override
   Calling copyWith({
     CallOrigin origin,
     Call voipCall,
     bool isVoipCallMuted,
+    AudioState audioState,
   }) {
     return Calling(
-      origin: origin ?? this.origin,
-      voipCall: voipCall ?? this.voipCall,
-      isVoipCallMuted: isVoipCallMuted ?? this.isVoipCallMuted,
-    );
+        origin: origin ?? this.origin,
+        voipCall: voipCall ?? this.voipCall,
+        isVoipCallMuted: isVoipCallMuted ?? this.isVoipCallMuted,
+        audioState: audioState);
   }
 }
 
@@ -227,12 +243,13 @@ class FinishedCalling extends CallProcessState implements CanCall {
           voipCall: voipCall,
           isVoipCallMuted: isVoipCallMuted,
         );
-  
+
   @override
   FinishedCalling copyWith({
     CallOrigin origin,
     Call voipCall,
     bool isVoipCallMuted,
+    AudioState audioState,
   }) {
     return FinishedCalling(
       origin: origin ?? this.origin,
@@ -255,6 +272,7 @@ class ShowCallThroughSurvey extends FinishedCalling {
     CallOrigin origin,
     Call voipCall,
     bool isVoipCallMuted,
+    AudioState audioState,
   }) {
     return ShowCallThroughSurvey(
       origin: origin ?? this.origin,
@@ -267,12 +285,13 @@ class ShowedCallThroughSurvey extends FinishedCalling {
     @required CallOrigin origin,
   }) // Call does not need to be passed here since it's for call-through.
   : super(origin: origin, voipCall: null);
-  
+
   @override
   ShowedCallThroughSurvey copyWith({
     CallOrigin origin,
     Call voipCall,
     bool isVoipCallMuted,
+    AudioState audioState,
   }) {
     return ShowedCallThroughSurvey(
       origin: origin ?? this.origin,

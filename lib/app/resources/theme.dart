@@ -234,4 +234,5 @@ abstract class VialerSans {
   static const transfer = IconData(0xE92C, fontFamily: _family);
   static const onHold = IconData(0xE91F, fontFamily: _family);
   static const hangUp = IconData(0xE96B, fontFamily: _family);
+  static const bluetooth = IconData(0xE917, fontFamily: _family);
 }
