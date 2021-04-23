@@ -47,8 +47,8 @@ class VoipRepository with Loggable {
           port: config.useEncryption ? 5061 : 5060,
           secure: config.useEncryption,
         )
-        ..preferences = const Preferences(
-          codecs: Codec.values,
+        ..preferences = Preferences(
+          codecs: [config.useOpus ? Codec.opus : Codec.ilbc],
           useApplicationProvidedRingtone: false,
         );
 
