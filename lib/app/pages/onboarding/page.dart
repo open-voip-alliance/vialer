@@ -26,8 +26,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   final _pageController = PageController();
 
-  Map<OnboardingStep, WidgetBuilder> _allPages;
-  Map<OnboardingStep, WidgetBuilder> _currentPages;
+  late Map<OnboardingStep, WidgetBuilder> _allPages;
+  late Map<OnboardingStep, WidgetBuilder> _currentPages;
 
   @override
   void initState() {

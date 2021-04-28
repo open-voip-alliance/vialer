@@ -10,8 +10,8 @@ class ContactItem extends StatelessWidget {
   final Contact contact;
 
   const ContactItem({
-    Key key,
-    @required this.contact,
+    Key? key,
+    required this.contact,
   }) : super(key: key);
 
   @override
@@ -24,7 +24,7 @@ class ContactItem extends StatelessWidget {
         arguments: contact,
       ),
       leading: ContactAvatar(contact),
-      title: Text(contact.name ?? contact.phoneNumbers.first.value),
+      title: Text(contact.name),
       subtitle: ContactSubtitle(contact),
     );
   }

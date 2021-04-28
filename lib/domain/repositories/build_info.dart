@@ -1,12 +1,11 @@
-import 'package:meta/meta.dart';
 import 'package:package_info/package_info.dart';
 
 import '../entities/build_info.dart';
 
 class BuildInfoRepository {
   Future<BuildInfo> getBuildInfo({
-    @required String mergeRequestNumber,
-    @required String branch,
+    String? mergeRequestNumber,
+    String? branch,
   }) async {
     final info = await PackageInfo.fromPlatform();
 

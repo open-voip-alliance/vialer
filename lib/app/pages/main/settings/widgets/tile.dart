@@ -18,7 +18,7 @@ import '../cubit.dart';
 
 class SettingTile extends StatelessWidget {
   final Widget label;
-  final Widget description;
+  final Widget? description;
 
   /// The widget that presents the [setting]s value.
   final Widget child;
@@ -28,10 +28,10 @@ class SettingTile extends StatelessWidget {
   final bool childFillWidth;
 
   const SettingTile({
-    Key key,
-    @required this.label,
+    Key? key,
+    required this.label,
     this.description,
-    this.child,
+    required this.child,
     this.childFillWidth = false,
   }) : super(key: key);
 
@@ -157,10 +157,11 @@ class SettingTile extends StatelessWidget {
 
   static Widget availability(AvailabilitySetting setting) {
     final availability = setting.value;
+
     return Builder(
       builder: (context) {
         void openAddAvailabilityWebView() {
-          WidgetsBinding.instance.addPostFrameCallback((_) async {
+          WidgetsBinding.instance!.addPostFrameCallback((_) async {
             await Navigator.push(
               context,
               MaterialPageRoute(
@@ -182,15 +183,16 @@ class SettingTile extends StatelessWidget {
             context.msg.main.settings.list.calling.availability.description,
           ),
           childFillWidth: true,
-          child: _MultipleChoiceSettingValue<Destination>(
-            value: availability.activeDestination,
+          child: _MultipleChoiceSettingValue<Destination?>(
+            value: availability?.activeDestination,
             items: [
-              ...availability.destinations.map(
-                (destination) => DropdownMenuItem<Destination>(
-                  child: Text(destination.dropdownValue(context)),
-                  value: destination,
-                ),
-              ),
+              ...availability?.destinations.map(
+                    (destination) => DropdownMenuItem<Destination>(
+                      child: Text(destination.dropdownValue(context)),
+                      value: destination,
+                    ),
+                  ) ??
+                  [],
               DropdownMenuItem<Destination>(
                 child: Text(
                   context.msg.main.settings.list.calling.addAvailability,
@@ -203,7 +205,7 @@ class SettingTile extends StatelessWidget {
                 ? defaultOnChanged(
                     context,
                     setting.copyWith(
-                      value: availability.copyWithSelectedDestination(
+                      value: availability?.copyWithSelectedDestination(
                         destination: destination,
                       ),
                     ),
@@ -277,7 +279,7 @@ class SettingTile extends StatelessWidget {
               style: TextStyle(
                 color: context.brand.theme.grey4,
               ),
-              child: description,
+              child: description!,
             ),
           ),
       ],
@@ -298,7 +300,7 @@ class _BoolSettingValue extends StatelessWidget {
   const _BoolSettingValue(
     this.setting, {
     this.onChanged = defaultOnChanged,
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -317,7 +319,11 @@ class _Switch extends StatelessWidget {
   final bool value;
   final ValueChanged<bool> onChanged;
 
-  const _Switch({Key key, this.value, this.onChanged}) : super(key: key);
+  const _Switch({
+    Key? key,
+    required this.value,
+    required this.onChanged,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -341,7 +347,7 @@ class _StringSettingValue extends StatelessWidget {
 
   const _StringSettingValue(
     this.setting, {
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -363,11 +369,11 @@ class _MultipleChoiceSettingValue<T> extends StatelessWidget {
   final ValueChanged<T> onChanged;
 
   const _MultipleChoiceSettingValue({
-    Key key,
-    this.value,
-    this.items,
+    Key? key,
+    required this.value,
+    required this.items,
     this.isExpanded = false,
-    this.onChanged,
+    required this.onChanged,
   }) : super(key: key);
 
   @override
@@ -378,7 +384,7 @@ class _MultipleChoiceSettingValue<T> extends StatelessWidget {
         value: value,
         items: items,
         isExpanded: isExpanded,
-        onChanged: onChanged,
+        onChanged: (v) => onChanged(v!),
       ),
     );
   }
@@ -388,8 +394,8 @@ class _RemoteLoggingSendLogsDialog extends StatelessWidget {
   final SettingsCubit cubit;
 
   const _RemoteLoggingSendLogsDialog({
-    Key key,
-    @required this.cubit,
+    Key? key,
+    required this.cubit,
   }) : super(key: key);
 
   @override
@@ -467,7 +473,7 @@ extension DestinationDescription on Destination {
         return '${destination.phoneNumber} / ${destination.description}';
       } else {
         return '${(destination as PhoneAccount).internalNumber} / '
-            '${(destination as PhoneAccount).description}';
+            '${destination.description}';
       }
     }
   }

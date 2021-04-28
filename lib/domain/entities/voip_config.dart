@@ -18,14 +18,14 @@ class VoipConfig extends Equatable {
   final bool useOpus;
 
   const VoipConfig({
-    this.sipUserId,
-    this.password,
-    this.useEncryption,
-    this.useOpus,
+    required this.sipUserId,
+    required this.password,
+    required this.useEncryption,
+    required this.useOpus,
   });
 
   @override
-  List<Object> get props => [
+  List<Object?> get props => [
         sipUserId,
         password,
         useEncryption,

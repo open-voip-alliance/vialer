@@ -1,7 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_phone_lib/audio/audio_state.dart';
 import 'package:flutter_phone_lib/call/call.dart';
-import 'package:meta/meta.dart';
 
 import '../../../../../domain/entities/exceptions/call_through.dart';
 
@@ -9,16 +8,16 @@ abstract class CallerState extends Equatable {
   const CallerState();
 
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
 class NoPermission extends CallerState {
   final bool dontAskAgain;
 
-  const NoPermission({@required this.dontAskAgain});
+  const NoPermission({required this.dontAskAgain});
 
   @override
-  List<Object> get props => [dontAskAgain];
+  List<Object?> get props => [dontAskAgain];
 }
 
 class CanCall extends CallerState {
@@ -34,15 +33,15 @@ class CallOriginDetermined extends CallerState {
   const CallOriginDetermined(this.origin);
 
   @override
-  List<Object> get props => [...super.props, origin];
+  List<Object?> get props => [...super.props, origin];
 }
 
 /// Any state that is part of the actual call process:
 /// start, during, end, etc.
 abstract class CallProcessState extends CallOriginDetermined {
-  final Call voipCall;
+  final Call? voipCall;
 
-  final AudioState audioState;
+  final AudioState? audioState;
 
   // `voipCall` is only available when it's a VoIP call.
   bool get isVoip => voipCall != null;
@@ -51,15 +50,14 @@ abstract class CallProcessState extends CallOriginDetermined {
   final bool isVoipCallMuted;
 
   const CallProcessState({
-    @required CallOrigin origin,
-    @required this.voipCall,
-    bool isVoipCallMuted,
+    required CallOrigin origin,
+    required this.voipCall,
+    this.isVoipCallMuted = false,
     this.audioState,
-  })  : isVoipCallMuted = isVoipCallMuted ?? false,
-        super(origin);
+  }) : super(origin);
 
   @override
-  List<Object> get props => [
+  List<Object?> get props => [
         ...super.props,
         origin,
         voipCall,
@@ -70,7 +68,7 @@ abstract class CallProcessState extends CallOriginDetermined {
 
   CallProcessState copyWith({
     CallOrigin origin,
-    Call voipCall,
+    Call? voipCall,
     bool isVoipCallMuted,
     AudioState audioState,
   });
@@ -81,7 +79,7 @@ abstract class CallProcessState extends CallOriginDetermined {
     return InitiatingCallFailed(exception, origin: origin, voipCall: voipCall);
   }
 
-  Calling calling({Call voipCall}) {
+  Calling calling({Call? voipCall}) {
     return Calling(
       origin: origin,
       voipCall: voipCall ?? this.voipCall,
@@ -95,7 +93,7 @@ abstract class CallProcessState extends CallOriginDetermined {
     return ShowCallThroughSurvey(origin: origin);
   }
 
-  FinishedCalling finished({Call voipCall}) {
+  FinishedCalling finished({Call? voipCall}) {
     return FinishedCalling(
       origin: origin,
       voipCall: voipCall ?? this.voipCall,
@@ -107,12 +105,12 @@ class ShowCallThroughConfirmPage extends CallOriginDetermined {
   final String destination;
 
   const ShowCallThroughConfirmPage({
-    @required this.destination,
-    CallOrigin origin,
+    required this.destination,
+    required CallOrigin origin,
   }) : super(origin);
 
   @override
-  List<Object> get props => [...super.props, destination];
+  List<Object?> get props => [...super.props, destination];
 }
 
 /// Not to be confused with SIP's Ringing method. Because of the layers of
@@ -122,8 +120,8 @@ class ShowCallThroughConfirmPage extends CallOriginDetermined {
 /// See [InitiatingCall] for the outgoing equivalent.
 class Ringing extends CallProcessState {
   const Ringing({
-    @required Call voipCall,
-    bool isVoipCallMuted,
+    Call? voipCall,
+    bool isVoipCallMuted = false,
   }) : super(
           origin: CallOrigin.incoming,
           voipCall: voipCall,
@@ -133,13 +131,13 @@ class Ringing extends CallProcessState {
   /// [origin] never gets copied (is always [CallOrigin.incoming]).
   @override
   Ringing copyWith({
-    CallOrigin origin,
-    Call voipCall,
-    bool isVoipCallMuted,
-    AudioState audioState,
+    CallOrigin? origin,
+    Call? voipCall,
+    bool? isVoipCallMuted,
+    AudioState? audioState,
   }) {
     return Ringing(
-      voipCall: voipCall ?? this.voipCall,
+      voipCall: voipCall ?? this.voipCall!,
       isVoipCallMuted: isVoipCallMuted ?? this.isVoipCallMuted,
     );
   }
@@ -147,8 +145,8 @@ class Ringing extends CallProcessState {
 
 class InitiatingCall extends CallProcessState {
   const InitiatingCall({
-    @required CallOrigin origin,
-    Call voipCall,
+    required CallOrigin origin,
+    Call? voipCall,
     bool isVoipCallMuted = false,
   }) : super(
           origin: origin,
@@ -158,10 +156,10 @@ class InitiatingCall extends CallProcessState {
 
   @override
   InitiatingCall copyWith({
-    CallOrigin origin,
-    Call voipCall,
-    bool isVoipCallMuted,
-    AudioState audioState,
+    CallOrigin? origin,
+    Call? voipCall,
+    bool? isVoipCallMuted,
+    AudioState? audioState,
   }) {
     return InitiatingCall(
       origin: origin ?? this.origin,
@@ -176,9 +174,9 @@ class InitiatingCallFailed extends CallProcessState {
 
   const InitiatingCallFailed(
     this.exception, {
-    @required CallOrigin origin,
-    @required Call voipCall,
-    bool isVoipCallMuted,
+    required CallOrigin origin,
+    required Call? voipCall,
+    bool isVoipCallMuted = false,
   }) : super(
           origin: origin,
           voipCall: voipCall,
@@ -186,15 +184,15 @@ class InitiatingCallFailed extends CallProcessState {
         );
 
   @override
-  List<Object> get props => [...super.props, exception];
+  List<Object?> get props => [...super.props, exception];
 
   @override
   InitiatingCallFailed copyWith({
-    Exception exception,
-    CallOrigin origin,
-    Call voipCall,
-    bool isVoipCallMuted,
-    AudioState audioState,
+    Exception? exception,
+    CallOrigin? origin,
+    Call? voipCall,
+    bool? isVoipCallMuted,
+    AudioState? audioState,
   }) {
     return InitiatingCallFailed(
       exception ?? this.exception,
@@ -207,10 +205,10 @@ class InitiatingCallFailed extends CallProcessState {
 
 class Calling extends CallProcessState {
   const Calling({
-    @required CallOrigin origin,
-    @required Call voipCall,
-    bool isVoipCallMuted,
-    AudioState audioState,
+    required CallOrigin origin,
+    required Call? voipCall,
+    bool isVoipCallMuted = false,
+    AudioState? audioState,
   }) : super(
           origin: origin,
           voipCall: voipCall,
@@ -220,10 +218,10 @@ class Calling extends CallProcessState {
 
   @override
   Calling copyWith({
-    CallOrigin origin,
-    Call voipCall,
-    bool isVoipCallMuted,
-    AudioState audioState,
+    CallOrigin? origin,
+    Call? voipCall,
+    bool? isVoipCallMuted,
+    AudioState? audioState,
   }) {
     return Calling(
         origin: origin ?? this.origin,
@@ -235,9 +233,9 @@ class Calling extends CallProcessState {
 
 class FinishedCalling extends CallProcessState implements CanCall {
   const FinishedCalling({
-    @required CallOrigin origin,
-    @required Call voipCall,
-    bool isVoipCallMuted,
+    required CallOrigin origin,
+    Call? voipCall,
+    bool isVoipCallMuted = false,
   }) : super(
           origin: origin,
           voipCall: voipCall,
@@ -246,10 +244,10 @@ class FinishedCalling extends CallProcessState implements CanCall {
 
   @override
   FinishedCalling copyWith({
-    CallOrigin origin,
-    Call voipCall,
-    bool isVoipCallMuted,
-    AudioState audioState,
+    CallOrigin? origin,
+    Call? voipCall,
+    bool? isVoipCallMuted,
+    AudioState? audioState,
   }) {
     return FinishedCalling(
       origin: origin ?? this.origin,
@@ -260,7 +258,7 @@ class FinishedCalling extends CallProcessState implements CanCall {
 }
 
 class ShowCallThroughSurvey extends FinishedCalling {
-  ShowCallThroughSurvey({@required CallOrigin origin})
+  ShowCallThroughSurvey({required CallOrigin origin})
       // Call does not need to be passed here since it's for call-through.
       : super(origin: origin, voipCall: null);
 
@@ -269,10 +267,10 @@ class ShowCallThroughSurvey extends FinishedCalling {
   /// [voipCall] and [isVoipCallMuted] never get copied.
   @override
   ShowCallThroughSurvey copyWith({
-    CallOrigin origin,
-    Call voipCall,
-    bool isVoipCallMuted,
-    AudioState audioState,
+    CallOrigin? origin,
+    Call? voipCall,
+    bool? isVoipCallMuted,
+    AudioState? audioState,
   }) {
     return ShowCallThroughSurvey(
       origin: origin ?? this.origin,
@@ -282,16 +280,16 @@ class ShowCallThroughSurvey extends FinishedCalling {
 
 class ShowedCallThroughSurvey extends FinishedCalling {
   const ShowedCallThroughSurvey({
-    @required CallOrigin origin,
+    required CallOrigin origin,
   }) // Call does not need to be passed here since it's for call-through.
   : super(origin: origin, voipCall: null);
 
   @override
   ShowedCallThroughSurvey copyWith({
-    CallOrigin origin,
-    Call voipCall,
-    bool isVoipCallMuted,
-    AudioState audioState,
+    CallOrigin? origin,
+    Call? voipCall,
+    bool? isVoipCallMuted,
+    AudioState? audioState,
   }) {
     return ShowedCallThroughSurvey(
       origin: origin ?? this.origin,

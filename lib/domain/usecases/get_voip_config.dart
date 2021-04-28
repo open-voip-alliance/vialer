@@ -1,19 +1,16 @@
-import 'package:meta/meta.dart';
-
 import '../../dependency_locator.dart';
 import '../entities/voip_config.dart';
 import '../repositories/storage.dart';
 import '../repositories/voip_config.dart';
 import '../use_case.dart';
 
-class GetVoipConfigUseCase extends FutureUseCase<VoipConfig> {
+class GetVoipConfigUseCase extends UseCase {
   final _storageRepository = dependencyLocator<StorageRepository>();
   final _voipConfigRepository = dependencyLocator<VoipConfigRepository>();
 
   /// Gets the currently saved app account. If it's null or [latest]
   /// is true, it's fetched from the API.
-  @override
-  Future<VoipConfig> call({@required bool latest}) async {
+  Future<VoipConfig> call({required bool latest}) async {
     // The StorageRepository is reloaded, because the VoipConfig could've been
     // changed in the foreground or background, something that's not reflected
     // in the cache since the change happened in a different isolate.

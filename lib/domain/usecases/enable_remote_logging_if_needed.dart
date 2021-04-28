@@ -1,19 +1,16 @@
 import '../entities/setting.dart';
 import '../use_case.dart';
 import 'enable_remote_logging.dart';
-import 'get_settings.dart';
+import 'get_setting.dart';
 
-class EnableRemoteLoggingIfNeededUseCase extends FutureUseCase<void> {
-  // TODO: Use GetSettingUseCase (singular)
-  final _getSettings = GetSettingsUseCase();
+class EnableRemoteLoggingIfNeededUseCase extends UseCase {
+  final _getSetting = GetSettingUseCase<RemoteLoggingSetting>();
   final _enableRemoteLogging = EnableRemoteLoggingUseCase();
 
-  @override
   Future<void> call() async {
-    final settings = await _getSettings();
-    final setting = settings.get<RemoteLoggingSetting>();
+    final setting = await _getSetting();
 
-    if (setting?.value == true) {
+    if (setting.value == true) {
       await _enableRemoteLogging();
     }
   }

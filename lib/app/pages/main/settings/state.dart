@@ -5,7 +5,7 @@ import '../../../../domain/entities/setting.dart';
 
 class SettingsState extends Equatable {
   final List<Setting> settings;
-  final BuildInfo buildInfo;
+  final BuildInfo? buildInfo;
   final bool isVoipAllowed;
   final bool showTroubleshooting;
 
@@ -16,7 +16,8 @@ class SettingsState extends Equatable {
     this.buildInfo,
     this.isVoipAllowed = true,
   }) : showTroubleshooting =
-            settings.get<ShowTroubleshootingSettingsSetting>()?.value ?? false;
+            settings.getOrNull<ShowTroubleshootingSettingsSetting>()?.value ??
+                false;
 
   SettingsState withChanged(Setting setting) {
     return SettingsState(
@@ -31,7 +32,7 @@ class SettingsState extends Equatable {
   }
 
   @override
-  List<Object> get props => [
+  List<Object?> get props => [
         settings,
         buildInfo,
         isVoipAllowed,

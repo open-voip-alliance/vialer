@@ -1,16 +1,17 @@
 import 'package:equatable/equatable.dart';
-import 'package:meta/meta.dart';
 
 import '../../../../domain/entities/survey/question.dart';
 import '../../../../domain/entities/survey/survey.dart';
 
 abstract class SurveyState extends Equatable {
-  final Survey survey;
+  late final Survey survey;
 
   SurveyState(this.survey);
 
+  SurveyState.uninitialized();
+
   @override
-  List<Object> get props => [survey];
+  List<Object?> get props => [survey];
 
   SurveyState copyWith({Survey survey});
 }
@@ -19,15 +20,19 @@ class ShowHelpUsPrompt extends SurveyState {
   final bool dontShowThisAgain;
 
   ShowHelpUsPrompt({
-    Survey survey,
-    @required this.dontShowThisAgain,
+    required Survey survey,
+    required this.dontShowThisAgain,
   }) : super(survey);
 
-  @override
-  List<Object> get props => [...super.props, dontShowThisAgain];
+  ShowHelpUsPrompt.uninitialized({
+    required this.dontShowThisAgain,
+  }) : super.uninitialized();
 
   @override
-  ShowHelpUsPrompt copyWith({Survey survey, bool dontShowThisAgain}) {
+  List<Object?> get props => [...super.props, dontShowThisAgain];
+
+  @override
+  ShowHelpUsPrompt copyWith({Survey? survey, bool? dontShowThisAgain}) {
     return ShowHelpUsPrompt(
       survey: survey ?? this.survey,
       dontShowThisAgain: dontShowThisAgain ?? this.dontShowThisAgain,
@@ -37,26 +42,26 @@ class ShowHelpUsPrompt extends SurveyState {
 
 class ShowQuestion extends SurveyState {
   final Question question;
-  final int answer;
+  final int? answer;
 
-  final ShowQuestion previous;
+  final ShowQuestion? previous;
 
   ShowQuestion(
     this.question, {
-    @required Survey survey,
+    required Survey survey,
     this.answer,
     this.previous,
   }) : super(survey);
 
   @override
-  List<Object> get props => [...super.props, question, answer, previous];
+  List<Object?> get props => [...super.props, question, answer, previous];
 
   @override
   ShowQuestion copyWith({
-    Survey survey,
-    Question question,
-    int answer,
-    ShowQuestion previous,
+    Survey? survey,
+    Question? question,
+    int? answer,
+    ShowQuestion? previous,
   }) {
     return ShowQuestion(
       question ?? this.question,
@@ -81,7 +86,7 @@ class ShowThankYou extends SurveyState {
   ShowThankYou(Survey survey) : super(survey);
 
   @override
-  ShowThankYou copyWith({Survey survey}) {
+  ShowThankYou copyWith({Survey? survey}) {
     return ShowThankYou(survey ?? this.survey);
   }
 }

@@ -18,13 +18,13 @@ import 'widgets/tile.dart';
 import 'widgets/tile_category.dart';
 
 class SettingsPage extends StatelessWidget {
-  SettingsPage({Key key}) : super(key: key);
+  SettingsPage({Key? key}) : super(key: key);
 
   Future<void> _goToFeedbackPage(BuildContext context) async {
     final sent = await Navigator.pushNamed(
           context,
           Routes.feedback,
-        ) as bool ??
+        ) as bool? ??
         false;
 
     if (sent) {
@@ -130,7 +130,7 @@ class SettingsPage extends StatelessWidget {
                                 ],
                               ),
                             if (state.buildInfo != null)
-                              _BuildInfo(state.buildInfo),
+                              _BuildInfo(state.buildInfo!),
                             Padding(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 48,
@@ -181,7 +181,7 @@ class SettingsPage extends StatelessWidget {
 class _BuildInfo extends StatefulWidget {
   final BuildInfo buildInfo;
 
-  const _BuildInfo(this.buildInfo, {Key key}) : super(key: key);
+  const _BuildInfo(this.buildInfo, {Key? key}) : super(key: key);
 
   @override
   _BuildInfoState createState() => _BuildInfoState();
@@ -227,8 +227,7 @@ class _BuildInfoState extends State<_BuildInfo> {
         final buildInfo = widget.buildInfo;
 
         final hasAccessToTroubleshooting =
-            state.settings.get<ShowTroubleshootingSettingsSetting>()?.value ??
-                false;
+            state.settings.get<ShowTroubleshootingSettingsSetting>().value;
 
         const emphasisStyle = TextStyle(fontWeight: FontWeight.bold);
 

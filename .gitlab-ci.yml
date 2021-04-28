@@ -11,7 +11,7 @@ stages:
   - build
 
 analyze:
-  image: cirrusci/flutter:1.22.6
+  image: cirrusci/flutter:2.0.4
   stage: check
   script:
     - flutter pub get
@@ -32,7 +32,7 @@ format:
     - dart format -o none --fix --set-exit-if-changed lib/
 
 test:
-  image: cirrusci/flutter:1.22.6
+  image: cirrusci/flutter:2.0.4
   stage: test
   script:
     - cp .env.example .env
@@ -45,7 +45,7 @@ test:
     - cd ..
     - flutter pub global activate junitreport
     - export PATH="$PATH":"$HOME/.pub-cache/bin"
-    - flutter test --machine | tojunit --output report.xml
+    - flutter test --machine --no-sound-null-safety | tojunit --output report.xml
   artifacts:
     reports:
       junit: report.xml

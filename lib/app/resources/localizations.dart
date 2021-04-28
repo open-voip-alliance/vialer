@@ -12,7 +12,7 @@ class VialerLocalizations {
   final Locale locale;
 
   static VialerLocalizations of(BuildContext context) {
-    return Localizations.of<VialerLocalizations>(context, VialerLocalizations);
+    return Localizations.of<VialerLocalizations>(context, VialerLocalizations)!;
   }
 
   static const delegate = _VialerLocalizationsDelegate();

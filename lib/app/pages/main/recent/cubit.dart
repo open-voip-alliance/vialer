@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:dartx/dartx.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:meta/meta.dart';
 
 import '../../../../domain/entities/call_with_contact.dart';
 import '../../../../domain/usecases/get_recent_calls.dart';
@@ -51,7 +50,7 @@ class RecentCallsCubit extends Cubit<RecentCallsState> {
     }
   }
 
-  Future<void> _loadRecentCalls({@required int page}) async {
+  Future<void> _loadRecentCalls({required int page}) async {
     final recentCalls = await _getRecentCalls(page: page);
     List<CallWithContact> currentCalls;
 

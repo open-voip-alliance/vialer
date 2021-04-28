@@ -185,7 +185,7 @@ class VoysTheme extends BrandTheme {
               color: primary,
               textTheme: TextTheme(
                 headline6:
-                    super.themeData.appBarTheme.textTheme.headline6.copyWith(
+                    super.themeData.appBarTheme.textTheme!.headline6!.copyWith(
                           color: Colors.white,
                         ),
               ),

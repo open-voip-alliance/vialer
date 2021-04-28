@@ -4,8 +4,8 @@ import '../../../util/brand.dart';
 
 void showSnackBar(
   BuildContext context, {
-  @required Widget icon,
-  @required Widget label,
+  required Widget icon,
+  required Widget label,
   EdgeInsets padding = EdgeInsets.zero,
   Duration duration = const Duration(seconds: 4),
 }) {

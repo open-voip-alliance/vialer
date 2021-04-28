@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+
 import 'package:meta/meta.dart';
 
 @immutable
@@ -8,13 +9,13 @@ class Brand extends Equatable {
   final Uri url;
 
   const Brand({
-    @required this.identifier,
-    @required this.appName,
-    @required this.url,
+    required this.identifier,
+    required this.appName,
+    required this.url,
   });
 
   @override
-  List<Object> get props => [identifier, appName, url];
+  List<Object?> get props => [identifier, appName, url];
 
   bool get isVialer => identifier == 'vialer';
 

@@ -25,13 +25,13 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
   final _getIsVoipAllowed = GetIsVoipAllowed();
   final _logout = LogoutUseCase();
 
-  StreamSubscription _userRefresherSubscription;
+  late StreamSubscription _userRefresherSubscription;
 
   SettingsCubit(
     UserDataRefresherCubit userDataRefresher,
   ) : super(SettingsState()) {
     _emitUpdatedState();
-    _userRefresherSubscription = userDataRefresher.listen(
+    _userRefresherSubscription = userDataRefresher.stream.listen(
       (state) {
         if (state is NotRefreshing) {
           _emitUpdatedState();

@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:android_intent/android_intent.dart';
 import 'package:flutter/services.dart';
 import 'package:libphonenumber/libphonenumber.dart';
-import 'package:meta/meta.dart';
+
 import 'package:url_launcher/url_launcher.dart';
 
 import '../entities/exceptions/call_through.dart';
@@ -18,11 +18,11 @@ class CallThroughRepository {
 
   Future<void> call(
     String destination, {
-    @required SystemUser user,
+    required SystemUser user,
   }) async {
-    final mobileNumber = user?.mobileNumber;
+    final mobileNumber = user.mobileNumber;
     // If there's no mobile number set, throw an exception.
-    if (mobileNumber == null || mobileNumber?.isEmpty == true) {
+    if (mobileNumber == null || mobileNumber.isEmpty) {
       throw NoMobileNumberException();
     }
 
@@ -30,10 +30,16 @@ class CallThroughRepository {
       // The call-through API expects a normalized number.
       // TODO: Don't normalize locally when the API has improved
       // normalization. Remove normalization here when that has happened.
-      destination = await PhoneNumberUtil.normalizePhoneNumber(
+      final possibleDestination = await PhoneNumberUtil.normalizePhoneNumber(
         phoneNumber: destination,
-        isoCode: user.outgoingCli.startsWith('+31') ? 'NL' : 'DE',
+        isoCode: user.outgoingCli!.startsWith('+31') ? 'NL' : 'DE',
       );
+
+      if (possibleDestination == null) {
+        throw NormalizationException();
+      }
+
+      destination = possibleDestination;
     } on PlatformException {
       throw NormalizationException();
     }
@@ -56,7 +62,7 @@ class CallThroughRepository {
     } else {
       final error =
           json.decode(response.error as String) as Map<String, dynamic>;
-      final destinationError = error['destination'] as List<dynamic>;
+      final destinationError = error['destination'] as List<dynamic>?;
       if (destinationError != null && destinationError.isNotEmpty) {
         final first = destinationError.first as Map<String, dynamic>;
         if (first['code'] == 'invalid_destination') {

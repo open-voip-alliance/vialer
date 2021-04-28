@@ -9,11 +9,10 @@ import '../repositories/contact.dart';
 import '../repositories/permission.dart';
 import '../use_case.dart';
 
-class GetContactsUseCase extends FutureUseCase<List<Contact>> {
+class GetContactsUseCase extends UseCase {
   final _contactsRepository = dependencyLocator<ContactRepository>();
   final _permissionRepository = dependencyLocator<PermissionRepository>();
 
-  @override
   Future<List<Contact>> call() async {
     final status = await _permissionRepository.getPermissionStatus(
       Permission.contacts,

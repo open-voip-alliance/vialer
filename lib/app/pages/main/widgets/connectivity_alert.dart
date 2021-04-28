@@ -10,7 +10,7 @@ import '../util/stylized_snack_bar.dart';
 class ConnectivityAlert extends StatefulWidget {
   final Widget child;
 
-  const ConnectivityAlert({Key key, this.child}) : super(key: key);
+  const ConnectivityAlert({Key? key, required this.child}) : super(key: key);
 
   @override
   _ConnectivityAlertState createState() => _ConnectivityAlertState();
@@ -21,7 +21,7 @@ class _ConnectivityAlertState extends State<ConnectivityAlert> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
       _showOrHideSnackBar(
         context,
         context.read<ConnectivityCheckerCubit>().state,

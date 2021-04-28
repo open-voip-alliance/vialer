@@ -19,11 +19,11 @@ class ConfirmPage extends StatefulWidget {
   final String destination;
   final CallOrigin origin;
 
-  ConfirmPage.__({@required this.destination, @required this.origin});
+  ConfirmPage.__({required this.destination, required this.origin});
 
   static Widget _({
-    @required String destination,
-    @required CallOrigin origin,
+    required String destination,
+    required CallOrigin origin,
   }) {
     return BlocProvider<ConfirmCubit>(
       create: (context) => ConfirmCubit(
@@ -53,7 +53,7 @@ class ConfirmPageState extends State<ConfirmPage>
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance!.addObserver(this);
   }
 
   @override
@@ -202,7 +202,7 @@ class ConfirmPageState extends State<ConfirmPage>
                                 const SizedBox(height: 8),
                                 // Is null for the first (few) frame(s).
                                 if (state.outgoingCli != null)
-                                  Text(state.outgoingCli, style: _largeStyle),
+                                  Text(state.outgoingCli!, style: _largeStyle),
                                 SizedBox(height: paragraphDistance),
                                 Text(
                                   context.msg.main.dialer.confirm.description
@@ -224,7 +224,7 @@ class ConfirmPageState extends State<ConfirmPage>
                         if (context.isAndroid)
                           _AndroidInputs(
                             checkboxValue: !state.showConfirmPage,
-                            onCheckboxValueChangd: (v) =>
+                            onCheckboxValueChanged: (v) =>
                                 cubit.updateShowPopupSetting(!v),
                             onCallButtonPressed: () =>
                                 cubit.call(origin: widget.origin),
@@ -250,24 +250,24 @@ class ConfirmPageState extends State<ConfirmPage>
   void dispose() {
     super.dispose();
 
-    WidgetsBinding.instance.removeObserver(this);
+    WidgetsBinding.instance!.removeObserver(this);
   }
 }
 
 class _AndroidInputs extends StatelessWidget {
   final bool checkboxValue;
-  final ValueChanged<bool> onCheckboxValueChangd;
+  final ValueChanged<bool> onCheckboxValueChanged;
   final VoidCallback onCallButtonPressed;
   final String destination;
   final VoidCallback onCancelButtonPressed;
 
   const _AndroidInputs({
-    Key key,
-    this.checkboxValue,
-    this.onCheckboxValueChangd,
-    this.onCallButtonPressed,
-    this.destination,
-    this.onCancelButtonPressed,
+    Key? key,
+    required this.checkboxValue,
+    required this.onCheckboxValueChanged,
+    required this.onCallButtonPressed,
+    required this.destination,
+    required this.onCancelButtonPressed,
   }) : super(key: key);
 
   @override
@@ -288,7 +288,7 @@ class _AndroidInputs extends StatelessWidget {
                 Checkbox(
                   value: checkboxValue,
                   activeColor: Theme.of(context).primaryColor,
-                  onChanged: onCheckboxValueChangd,
+                  onChanged: (v) => onCheckboxValueChanged(v!),
                 )
               ],
             ),
@@ -356,8 +356,8 @@ class ConfirmPageRoute extends PageRoute {
   final CallOrigin origin;
 
   ConfirmPageRoute({
-    @required this.destination,
-    @required this.origin,
+    required this.destination,
+    required this.origin,
   });
 
   @override
@@ -365,10 +365,10 @@ class ConfirmPageRoute extends PageRoute {
 
   // We don't use this because the entry animation doesn't seem to work
   @override
-  Color get barrierColor => null;
+  Color? get barrierColor => null;
 
   @override
-  String get barrierLabel => null;
+  String? get barrierLabel => null;
 
   @override
   Widget buildPage(

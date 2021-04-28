@@ -16,42 +16,42 @@ dependencies:
   flutter_phone_lib:
     path: voip_flutter_integration
 
-  flutter_bloc: ^6.1.0
+  flutter_bloc: ^7.0.0
 
   pedantic: ^1.9.0
-  provider: ^4.0.2
+  provider: ^5.0.0
   equatable: ^2.0.0
   chopper: ^4.0.0-nullsafety.0
-  shared_preferences: ^0.5.12+4
-  flutter_svg: ^0.21.0+1
-  android_intent: ^0.3.5
-  permission_handler: ^5.0.1+1
-  url_launcher: ^5.4.1
-  contacts_service: ^0.4.6
+  shared_preferences: ^2.0.5
+  flutter_svg: ^0.22.0
+  android_intent: ^2.0.0
+  permission_handler: ^7.1.0
+  url_launcher: ^6.0.3
+  contacts_service: ^0.6.1
   characters: ^1.0.0
   diacritic: ^0.1.1
-  scrollable_positioned_list: ^0.1.10
+  scrollable_positioned_list: ^0.2.0-nullsafety.0
   i18n: ^3.1.0
   intl: ^0.17.0
-  flutter_dotenv: ^2.1.0
-  sentry: ^3.0.1
+  flutter_dotenv: ^4.0.0-nullsafety.0
+  sentry_flutter: ^5.0.0
   flutter_segment: ^3.0.0
-  device_info: ^1.0.0
-  package_info: '>=0.4.0+18 <2.0.0'
+  device_info: ^2.0.0
+  package_info: ^2.0.0
   moor: ^4.2.1
   sqlite3_flutter_libs: ^0.4.1
-  path_provider: ^1.6.5
+  path_provider: ^2.0.1
   path: ^1.6.4
-  timezone: ^0.5.6
+  timezone: ^0.7.0
   logging: ^1.0.0
-  libphonenumber: ^1.0.1
-  get_it: ^5.0.1
+  libphonenumber: ^2.0.0
+  get_it: ^7.0.0
   dartx: ^0.7.1
-  connectivity: ^2.0.2
-  webview_flutter: ^1.0.5
+  connectivity: ^3.0.3
+  webview_flutter: ^2.0.4
   json_annotation: ^4.0.1
 
-  flutter_rating_bar: ^3.2.0
+  flutter_rating_bar: ^4.0.0
 
 dev_dependencies:
   flutter_test:

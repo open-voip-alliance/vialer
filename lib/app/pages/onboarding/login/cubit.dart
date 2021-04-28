@@ -8,9 +8,9 @@ import '../../../../domain/usecases/metrics/identify_for_tracking.dart';
 import '../../../../domain/usecases/metrics/track_login.dart';
 import '../../../../domain/usecases/onboarding/login.dart';
 import '../../../util/loggable.dart';
+import '../../../util/password.dart' as util;
 import '../cubit.dart';
 import 'state.dart';
-import 'util.dart' as util;
 
 export 'state.dart';
 

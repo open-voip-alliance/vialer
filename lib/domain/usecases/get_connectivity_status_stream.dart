@@ -3,9 +3,8 @@ import '../connectivity_type.dart';
 import '../repositories/connectivity.dart';
 import '../use_case.dart';
 
-class GetConnectivityTypeStreamUseCase extends StreamUseCase<ConnectivityType> {
+class GetConnectivityTypeStreamUseCase extends UseCase {
   final _connectivityRepository = dependencyLocator<ConnectivityRepository>();
 
-  @override
   Stream<ConnectivityType> call() => _connectivityRepository.statusStream;
 }

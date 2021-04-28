@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 import '../../dependency_locator.dart';
 import '../entities/portal_page.dart';
 import '../repositories/auth.dart';
@@ -21,8 +19,7 @@ class GetPortalWebViewUrlUseCase extends UseCase {
   };
   final _unauthenticatedPages = [PortalPage.passwordReset];
 
-  @override
-  Future<String> call({@required PortalPage page}) async {
+  Future<String> call({required PortalPage page}) async {
     final brand = await _getBrand();
 
     if (_unauthenticatedPages.contains(page)) {
@@ -31,7 +28,7 @@ class GetPortalWebViewUrlUseCase extends UseCase {
 
     final user = await _getUser(latest: false);
     final autoLoginToken = await _authRepository.getAutoLoginToken();
-    final username = user.email;
+    final username = user!.email;
     final queryParams = {
       'username': username,
       'token': autoLoginToken,

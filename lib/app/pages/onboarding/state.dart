@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:meta/meta.dart';
 
 import '../../../domain/entities/onboarding/step.dart';
 
@@ -13,30 +12,30 @@ class OnboardingState extends Equatable {
   final OnboardingStep currentStep;
 
   /// User entered email, saved for if they need to change their password.
-  final String email;
+  final String? email;
 
   /// User entered password, saved for if they need to change their password.
-  final String password;
+  final String? password;
 
   final bool completed;
 
-  OnboardingState({
-    @required this.allSteps,
-    @required this.currentStep,
+  const OnboardingState({
+    required this.allSteps,
+    required this.currentStep,
     this.password,
     this.email,
     this.completed = false,
   });
 
   @override
-  List<Object> get props => [allSteps, currentStep, password, completed];
+  List<Object?> get props => [allSteps, currentStep, password, completed];
 
   OnboardingState copyWith({
-    Iterable<OnboardingStep> allSteps,
-    OnboardingStep currentStep,
-    String email,
-    String password,
-    bool completed,
+    Iterable<OnboardingStep>? allSteps,
+    OnboardingStep? currentStep,
+    String? email,
+    String? password,
+    bool? completed,
   }) {
     return OnboardingState(
       allSteps: allSteps ?? this.allSteps,

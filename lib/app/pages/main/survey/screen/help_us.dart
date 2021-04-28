@@ -10,8 +10,8 @@ class HelpUsScreen extends StatelessWidget {
   final bool dontShowThisAgain;
 
   const HelpUsScreen({
-    Key key,
-    @required this.dontShowThisAgain,
+    Key? key,
+    required this.dontShowThisAgain,
   }) : super(key: key);
 
   void _onDontShowThisAgainChanged(BuildContext context, bool value) {
@@ -54,7 +54,7 @@ class HelpUsScreen extends StatelessWidget {
                   value: dontShowThisAgain,
                   onChanged: (value) => _onDontShowThisAgainChanged(
                     context,
-                    value,
+                    value ?? false,
                   ),
                   activeColor: Theme.of(context).primaryColor,
                 ),

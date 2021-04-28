@@ -4,10 +4,10 @@ import '../../../../resources/theme.dart';
 import '../../../../util/brand.dart';
 
 class CallButton extends StatelessWidget {
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final Color backgroundColor;
   final IconData icon;
-  final Object heroTag;
+  final Object? heroTag;
   final BoxConstraints constraints;
 
   static const defaultHeroTag = _DefaultCallButtonHeroTag();
@@ -17,18 +17,18 @@ class CallButton extends StatelessWidget {
   );
 
   const CallButton({
-    Key key,
-    @required this.onPressed,
-    @required this.backgroundColor,
-    @required this.icon,
+    Key? key,
+    this.onPressed,
+    required this.backgroundColor,
+    required this.icon,
     this.heroTag = defaultHeroTag,
     this.constraints = defaultConstraints,
   }) : super(key: key);
 
   static Widget answer({
-    Key key,
-    @required VoidCallback onPressed,
-    Object heroTag = defaultHeroTag,
+    Key? key,
+    VoidCallback? onPressed,
+    Object? heroTag = defaultHeroTag,
     BoxConstraints constraints = defaultConstraints,
   }) {
     return Builder(
@@ -45,9 +45,9 @@ class CallButton extends StatelessWidget {
   }
 
   static Widget decline({
-    Key key,
-    @required VoidCallback onPressed,
-    Object heroTag = defaultHeroTag,
+    Key? key,
+    VoidCallback? onPressed,
+    Object? heroTag = defaultHeroTag,
     BoxConstraints constraints = defaultConstraints,
   }) {
     return Builder(
@@ -66,9 +66,9 @@ class CallButton extends StatelessWidget {
   // Different names for different contexts.
 
   static Widget call({
-    Key key,
-    @required VoidCallback onPressed,
-    Object heroTag = defaultHeroTag,
+    Key? key,
+    VoidCallback? onPressed,
+    Object? heroTag = defaultHeroTag,
     BoxConstraints constraints = defaultConstraints,
   }) =>
       answer(
@@ -79,9 +79,9 @@ class CallButton extends StatelessWidget {
       );
 
   static Widget hangUp({
-    Key key,
-    @required VoidCallback onPressed,
-    Object heroTag = defaultHeroTag,
+    Key? key,
+    VoidCallback? onPressed,
+    Object? heroTag = defaultHeroTag,
     BoxConstraints constraints = defaultConstraints,
   }) =>
       decline(

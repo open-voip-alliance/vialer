@@ -8,5 +8,5 @@ class BrandProviderState extends Equatable {
   const BrandProviderState(this.brand);
 
   @override
-  List<Object> get props => [brand];
+  List<Object?> get props => [brand];
 }

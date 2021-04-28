@@ -3,17 +3,18 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:timezone/data/latest.dart';
 
 import '../dependency_locator.dart';
+import '../domain/repositories/env.dart';
+import '../domain/repositories/error_tracking_repository.dart';
 import '../domain/usecases/enable_console_logging.dart';
 import '../domain/usecases/enable_remote_logging_if_needed.dart';
 import 'pages/main/widgets/caller/widget.dart';
 import 'resources/localizations.dart';
 import 'routes.dart';
-import 'sentry.dart' as sentry;
 import 'util/brand.dart';
 import 'widgets/brand_provider/widget.dart';
 import 'widgets/connectivity_checker/widget.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   initializeTimeZones();
@@ -23,13 +24,20 @@ void main() async {
   EnableConsoleLoggingUseCase()();
   EnableRemoteLoggingIfNeededUseCase()();
 
-  await sentry.run(() => runApp(const App()));
+  final errorTrackingRepository = dependencyLocator<ErrorTrackingRepository>();
+  final dsn = await dependencyLocator<EnvRepository>().errorTrackingDsn;
+
+  if (dsn == null) {
+    runApp(const App());
+  } else {
+    await errorTrackingRepository.run(() => runApp(const App()), dsn);
+  }
 }
 
 class App extends StatelessWidget {
   static final _navigatorKey = GlobalKey<NavigatorState>();
 
-  const App({Key key}) : super(key: key);
+  const App({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
