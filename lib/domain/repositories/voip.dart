@@ -111,7 +111,7 @@ class _Middleware with Loggable {
   final _operatingSystemInfoRepository =
       dependencyLocator<OperatingSystemInfoRepository>();
 
-  String get _token => _storageRepository.token;
+  String get _token => _storageRepository.pushToken;
 
   VoipConfig get _config => _storageRepository.voipConfig;
 
@@ -204,7 +204,7 @@ class _Middleware with Loggable {
   void tokenReceived(String token) {
     logger.info('Token received');
 
-    _storageRepository.token = token;
+    _storageRepository.pushToken = token;
 
     register(_config);
   }

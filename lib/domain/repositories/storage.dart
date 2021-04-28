@@ -80,11 +80,11 @@ class StorageRepository {
   set callThroughCallsCount(int value) =>
       _preferences.setInt(_callThroughCallsCountKey, value);
 
-  static const _tokenKey = 'token';
+  static const _pushTokenKey = 'push_token';
 
-  String get token => _preferences.getString(_tokenKey);
+  String get pushToken => _preferences.getString(_pushTokenKey);
 
-  set token(String value) => _preferences.setString(_tokenKey, value);
+  set pushToken(String value) => _preferences.setString(_pushTokenKey, value);
 
   static const _voipConfigKey = 'voip_config';
 
