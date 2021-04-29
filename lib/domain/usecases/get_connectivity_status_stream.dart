@@ -1,12 +1,11 @@
 import '../../dependency_locator.dart';
-import '../connectivity_status.dart';
+import '../connectivity_type.dart';
 import '../repositories/connectivity.dart';
 import '../use_case.dart';
 
-class GetConnectivityStatusStreamUseCase
-    extends StreamUseCase<ConnectivityStatus> {
+class GetConnectivityTypeStreamUseCase extends StreamUseCase<ConnectivityType> {
   final _connectivityRepository = dependencyLocator<ConnectivityRepository>();
 
   @override
-  Stream<ConnectivityStatus> call() => _connectivityRepository.statusStream;
+  Stream<ConnectivityType> call() => _connectivityRepository.statusStream;
 }

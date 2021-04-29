@@ -1,12 +1,12 @@
 import '../../dependency_locator.dart';
-import '../connectivity_status.dart';
+import '../connectivity_type.dart';
 import '../repositories/connectivity.dart';
 import '../use_case.dart';
 
-class GetCurrentConnectivityStatusUseCase
-    extends FutureUseCase<ConnectivityStatus> {
+class GetCurrentConnectivityTypeUseCase
+    extends FutureUseCase<ConnectivityType> {
   final _connectivityRepository = dependencyLocator<ConnectivityRepository>();
 
   @override
-  Future<ConnectivityStatus> call() => _connectivityRepository.currentStatus;
+  Future<ConnectivityType> call() => _connectivityRepository.currentType;
 }

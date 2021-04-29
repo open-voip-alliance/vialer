@@ -361,6 +361,13 @@ packages:
       relative: true
     source: path
     version: "0.0.1"
+  flutter_rating_bar:
+    dependency: "direct main"
+    description:
+      name: flutter_rating_bar
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.2.0+1"
   flutter_segment:
     dependency: "direct main"
     description:

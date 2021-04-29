@@ -1,8 +1,11 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_phone_lib/call/call_state.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_phone_lib/audio/audio_route.dart';
 import 'package:flutter_phone_lib/audio/audio_state.dart';
 import 'package:provider/provider.dart';
@@ -26,7 +29,29 @@ class CallPage extends StatefulWidget {
   _CallPageState createState() => _CallPageState();
 }
 
-class _CallPageState extends State<CallPage> {
+// ignore: prefer_mixin
+class _CallPageState extends State<CallPage> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+
+    // When the user dismisses the call screen, it will hide if
+    // there is no call ongoing.
+    if (state == AppLifecycleState.paused) {
+      final call = context.read<CallerCubit>().processState.voipCall;
+
+      if (call == null || call.state == CallState.ended) {
+        Navigator.of(context).pop();
+      }
+    }
+  }
+
   void _popAfter(Duration duration) {
     Timer(duration, () {
       if (mounted) {
@@ -37,10 +62,104 @@ class _CallPageState extends State<CallPage> {
 
   // Only called when the state type has changed, not when a state with the same
   // type but different call information has been emitted.
-  void _onStateChanged(BuildContext context, CallerState state) {
+  Future<void> _onStateChanged(BuildContext context, CallerState state) async {
     if (state is FinishedCalling) {
-      _popAfter(const Duration(seconds: 3));
+      if (state.voipCall != null && state.voipCall.duration >= 1) {
+        _requestCallRating(context, state).then((_) => Navigator.pop(context));
+      } else {
+        _popAfter(const Duration(seconds: 3));
+      }
     }
+  }
+
+  Future<void> _requestCallRating(BuildContext context, FinishedCalling state) {
+    Timer(const Duration(seconds: 10), () {
+      if (mounted) {
+        Navigator.of(context, rootNavigator: true).pop();
+      }
+    });
+
+    return showDialog<double>(
+        context: context,
+        builder: (context) {
+          return BackdropFilter(
+            filter: ImageFilter.blur(
+              sigmaX: 10,
+              sigmaY: 10,
+            ),
+            child: AlertDialog(
+              title: Text(
+                context.msg.main.call.rate.title,
+                textScaleFactor: 0.8,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              content: SingleChildScrollView(
+                child: ListBody(
+                  children: [
+                    RatingBar(
+                      initialRating: 0,
+                      direction: Axis.horizontal,
+                      allowHalfRating: false,
+                      itemCount: 5,
+                      tapOnlyMode: true,
+                      ratingWidget: RatingWidget(
+                        full: Icon(
+                          VialerSans.star,
+                          color: context.brand.theme.primary,
+                        ),
+                        half: null,
+                        empty: Icon(
+                          VialerSans.starOutline,
+                          color: context.brand.theme.grey4,
+                        ),
+                      ),
+                      itemPadding: const EdgeInsets.symmetric(
+                        horizontal: 6.0,
+                      ),
+                      onRatingUpdate: (rating) =>
+                          _submitCallRating(rating, state),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: 10,
+                        right: 10,
+                        top: 10,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            context.msg.main.call.rate.lowerLabel,
+                            textScaleFactor: 0.9,
+                          ),
+                          Text(
+                            context.msg.main.call.rate.upperLabel,
+                            textScaleFactor: 0.9,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        });
+  }
+
+  void _submitCallRating(double rating, FinishedCalling state) {
+    context.read<CallerCubit>().rateVoipCall(
+          rating: rating.toInt(),
+          call: state.voipCall,
+        );
+
+    Timer(const Duration(seconds: 1), () {
+      if (mounted) {
+        Navigator.of(context, rootNavigator: true).pop(rating);
+      }
+    });
   }
 
   @override
@@ -132,6 +251,12 @@ class _CallPageState extends State<CallPage> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 }
 
@@ -390,7 +515,6 @@ class _CallActionsState extends State<_CallActions> {
 
   void _hangUp() {
     context.read<CallerCubit>().endVoipCall();
-    widget.popAfter(const Duration(seconds: 1));
   }
 
   @override

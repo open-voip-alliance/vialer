@@ -2,21 +2,21 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../domain/connectivity_status.dart';
+import '../../../domain/connectivity_type.dart';
 import '../../../domain/usecases/get_connectivity_status_stream.dart';
 
 import 'state.dart';
 export 'state.dart';
 
 class ConnectivityCheckerCubit extends Cubit<ConnectivityState> {
-  final _getConnectivityStatusStream = GetConnectivityStatusStreamUseCase();
+  final _getConnectivityTypeStream = GetConnectivityTypeStreamUseCase();
 
   StreamSubscription _subscription;
 
   ConnectivityCheckerCubit() : super(Connected()) {
-    _subscription = _getConnectivityStatusStream().listen((status) {
+    _subscription = _getConnectivityTypeStream().listen((status) {
       emit(
-        status == ConnectivityStatus.connected ? Connected() : Disconnected(),
+        status.isConnected ? Connected() : Disconnected(),
       );
     });
   }

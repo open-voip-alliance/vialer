@@ -70,6 +70,10 @@ main:
       answer: "Answer"
       decline: "Decline"
       subtitle(String remoteNumber): "Incoming call - $remoteNumber"
+    rate:
+      title: "How was the call quality?"
+      lowerLabel: "Very poor"
+      upperLabel: "Very good"
 
   recent:
     title: "Recent calls"

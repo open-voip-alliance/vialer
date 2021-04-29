@@ -1,16 +1,16 @@
 import 'package:connectivity/connectivity.dart';
 
-import '../../connectivity_status.dart';
+import '../../connectivity_type.dart';
 
-extension ConnectivityStatusMapper on ConnectivityResult {
-  ConnectivityStatus toDomainEntity() {
+extension ConnectivityTypeMapper on ConnectivityResult {
+  ConnectivityType toDomainEntity() {
     switch (this) {
       case ConnectivityResult.mobile:
+        return ConnectivityType.mobile;
       case ConnectivityResult.wifi:
-        return ConnectivityStatus.connected;
-      case ConnectivityResult.none:
+        return ConnectivityType.wifi;
       default:
-        return ConnectivityStatus.disconnected;
+        return ConnectivityType.none;
     }
   }
 }
