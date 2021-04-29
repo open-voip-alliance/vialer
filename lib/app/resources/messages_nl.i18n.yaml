@@ -70,6 +70,10 @@ main:
       answer: "Opnemen"
       decline: "Weigeren"
       subtitle(String remoteNumber): "Inkomend gesprek - $remoteNumber"
+    rate:
+      title: "Hoe was de gesprekskwaliteit?"
+      lowerLabel: "Zeer slecht"
+      upperLabel: "Zeer goed"
 
   recent:
     title: "Recente gesprekken"

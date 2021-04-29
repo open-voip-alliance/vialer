@@ -17,6 +17,7 @@ import '../../../../../domain/usecases/call/call.dart';
 import '../../../../../domain/usecases/call/voip/end.dart';
 import '../../../../../domain/usecases/call/voip/get_audio_state.dart';
 import '../../../../../domain/usecases/call/voip/get_is_muted.dart';
+import '../../../../../domain/usecases/call/voip/rate_voip_call.dart';
 import '../../../../../domain/usecases/call/voip/route_audio.dart';
 import '../../../../../domain/usecases/call/voip/toggle_hold.dart';
 import '../../../../../domain/usecases/call/voip/toggle_mute.dart';
@@ -63,6 +64,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
   final _toggleHoldVoipCall = ToggleHoldVoipCallUseCase();
   final _sendVoipDtmf = SendVoipDtmfUseCase();
   final _endVoipCall = EndVoipCallUseCase();
+  final _rateVoipCall = RateVoipCallUseCase();
   final _getVoipAudioState = GetVoipCallAudioStateUseCase();
   final _routeAudio = RouteAudioUseCase();
 
@@ -140,6 +142,12 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
 
     await _answerVoipCall();
   }
+
+  Future<void> rateVoipCall({
+    @required int rating,
+    @required Call call,
+  }) async =>
+      await _rateVoipCall(rating: rating, call: call);
 
   Future<void> _callViaCallThrough(
     String destination, {
