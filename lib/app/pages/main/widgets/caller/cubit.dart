@@ -70,7 +70,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
 
   Timer _callThroughTimer;
 
-  // Track the routes that are used during a call
+  // Track the routes that are used during a call.
   final usedAudioRoutes = <AudioRoute>[];
 
   // For VoIP.

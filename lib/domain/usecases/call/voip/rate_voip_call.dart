@@ -34,13 +34,12 @@ class RateVoipCallUseCase extends FutureUseCase<void> {
     });
   }
 
-  _createAudioRouteString(List<AudioRoute> routes) {
-    var usedRoutes = [
-      if (routes.contains(AudioRoute.phone)) 'phone',
-      if (routes.contains(AudioRoute.speaker)) 'speaker',
-      if (routes.contains(AudioRoute.bluetooth)) 'bluetooth',
-    ];
-
-    return usedRoutes.join('|');
-  }
+  /// Create a string such as phone|bluetooth that will include
+  /// the combination of routes used. This is to provide
+  /// alternative ways to view the events in a dashboard.
+  String _createAudioRouteString(List<AudioRoute> routes) => [
+        if (routes.contains(AudioRoute.phone)) 'phone',
+        if (routes.contains(AudioRoute.speaker)) 'speaker',
+        if (routes.contains(AudioRoute.bluetooth)) 'bluetooth',
+      ].join('|');
 }
