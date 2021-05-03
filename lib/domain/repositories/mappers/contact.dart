@@ -12,6 +12,7 @@ extension ContactMapper on Contact {
       avatar: avatar,
       phoneNumbers: phones.toDomainEntities().toList(growable: false),
       emails: emails.toDomainEntities().toList(growable: false),
+      identifier: identifier,
     );
   }
 }

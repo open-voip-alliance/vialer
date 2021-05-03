@@ -8,6 +8,7 @@ class Contact {
   final Uint8List avatar;
   final List<Item> phoneNumbers;
   final List<Item> emails;
+  final String identifier;
 
   const Contact({
     this.initials,
@@ -15,6 +16,7 @@ class Contact {
     this.avatar,
     this.phoneNumbers = const [],
     this.emails = const [],
+    this.identifier,
   });
 
   @override

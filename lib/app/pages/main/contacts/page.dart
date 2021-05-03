@@ -27,23 +27,10 @@ abstract class ContactsPageRoutes {
 class ContactsPage extends StatefulWidget {
   final double bottomLettersPadding;
 
-  ContactsPage._({
+  const ContactsPage({
     Key key,
     this.bottomLettersPadding = 0,
   }) : super(key: key);
-
-  static Widget create({
-    Key key,
-    double bottomLettersPadding = 0,
-  }) {
-    return BlocProvider<ContactsCubit>(
-      create: (_) => ContactsCubit(),
-      child: ContactsPage._(
-        key: key,
-        bottomLettersPadding: bottomLettersPadding,
-      ),
-    );
-  }
 
   @override
   _ContactPageState createState() => _ContactPageState();
@@ -401,13 +388,11 @@ class _AlphabetListViewState extends State<_AlphabetListView> {
                 bottom: 0,
                 right: 0,
                 child: GestureDetector(
-                  onVerticalDragStart: showLetters ? _onDragStart : null,
-                  onVerticalDragUpdate: showLetters
-                      ? (d) => _onDragUpdate(d, parentSize: maxSize)
-                      : null,
-                  onVerticalDragEnd:
-                      showLetters ? (_) => _onDragCancel() : null,
-                  onVerticalDragCancel: showLetters ? _onDragCancel : null,
+                  onVerticalDragStart: _onDragStart,
+                  onVerticalDragUpdate: (d) =>
+                      _onDragUpdate(d, parentSize: maxSize),
+                  onVerticalDragEnd: (_) => _onDragCancel(),
+                  onVerticalDragCancel: _onDragCancel,
                   child: AbsorbPointer(
                     child: Padding(
                       padding: EdgeInsets.only(

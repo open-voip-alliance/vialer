@@ -99,6 +99,7 @@ main:
       title: *contactsTitle
     snackBar:
       noPermission: "Unable to call without the Phone permission"
+    edit: "Edit"
     list:
       loading:
         title: "Loading your contacts"
