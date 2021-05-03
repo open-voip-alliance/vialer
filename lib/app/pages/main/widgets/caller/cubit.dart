@@ -70,6 +70,9 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
 
   Timer _callThroughTimer;
 
+  // Track the routes that are used during a call
+  final usedAudioRoutes = <AudioRoute>[];
+
   // For VoIP.
   StreamSubscription _voipCallEventSubscription;
 
@@ -147,7 +150,11 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
     @required int rating,
     @required Call call,
   }) async =>
-      await _rateVoipCall(rating: rating, call: call);
+      await _rateVoipCall(
+        rating: rating,
+        call: call,
+        usedRoutes: usedAudioRoutes,
+      );
 
   Future<void> _callViaCallThrough(
     String destination, {
@@ -259,10 +266,15 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
       emit(InitiatingCall(origin: originState.origin, voipCall: event.call));
       logger.info('Initiating VoIP call');
     } else if (event is CallConnected) {
+      usedAudioRoutes.clear();
       emit(processState.calling(voipCall: event.call));
       logger.info('VoIP call connected');
     } else if (event is CallUpdated) {
       final audioState = await _getVoipAudioState();
+
+      if (!usedAudioRoutes.contains(audioState.currentRoute)) {
+        usedAudioRoutes.add(audioState.currentRoute);
+      }
 
       // It's possible we're not in a CallProcessState yet, because we missed an
       // event, if that's the case we'll emit the state necessary to get there.
