@@ -103,6 +103,7 @@ main:
       title: *contactsTitle
     snackBar:
       noPermission: "Je hebt de app hiervoor geen toestemming gegeven"
+    edit: "Wijzig"
     list:
       loading:
         # UX wants to have the line break specifically at 2 words

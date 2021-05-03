@@ -9,6 +9,7 @@ import '../../routes.dart';
 import '../../util/brand.dart';
 import '../../widgets/transparent_status_bar.dart';
 import 'call/widgets/call_button.dart';
+import 'contacts/cubit.dart';
 import 'contacts/details/page.dart';
 import 'contacts/page.dart';
 import 'dialer/page.dart';
@@ -61,15 +62,17 @@ class _MainPageState extends State<MainPage> {
     if (_pages == null) {
       _pages = [
         if (_dialerIsPage) const DialerPage(isInBottomNavBar: true),
-        _Navigator(
-          navigatorKey: _navigatorStates[0],
-          routes: {
-            ContactsPageRoutes.root: (_, __) => ContactsPage.create(
-                  bottomLettersPadding: !_dialerIsPage ? 96 : 0,
-                ),
-            ContactsPageRoutes.details: (_, contact) =>
-                ContactDetailsPage(contact: contact as Contact),
-          },
+        BlocProvider<ContactsCubit>(
+          create: (_) => ContactsCubit(),
+          child: _Navigator(
+            navigatorKey: _navigatorStates[0],
+            routes: {
+              ContactsPageRoutes.root: (_, __) =>
+                  ContactsPage(bottomLettersPadding: !_dialerIsPage ? 96 : 0),
+              ContactsPageRoutes.details: (_, contact) =>
+                  ContactDetailsPage(contact: contact as Contact),
+            },
+          ),
         ),
         RecentCallsPage(
           listBottomPadding: !_dialerIsPage ? 96 : 0,
