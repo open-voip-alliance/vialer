@@ -12,15 +12,12 @@ class DestinationRepository {
     final response = await _service.getAvailability();
     final objects = response.body['objects'] as List<dynamic>? ?? [];
 
-    Availability? availability;
-    if (objects.isNotEmpty) {
-      availability = objects
-          .map((obj) => Availability.fromJson(obj as Map<String, dynamic>))
-          .toList()
-          .first;
-    }
+    if (objects.isEmpty) return null;
 
-    return availability;
+    return objects
+        .map((obj) => Availability.fromJson(obj as Map<String, dynamic>))
+        .toList()
+        .first;
   }
 
   Future<void> setAvailability({
