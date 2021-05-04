@@ -255,7 +255,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
 
   Future<void> _onVoipCallEvent(Event event) async {
     if (event is IncomingCallReceived) {
-      emit(Ringing(voipCall: event.call));
+      emit(Ringing(voipCall: event.call!));
       logger.info('Incoming VoIP call, ringing');
     } else if (event is OutgoingCallStarted) {
       final originState = state as CallOriginDetermined;

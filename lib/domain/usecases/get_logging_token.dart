@@ -10,15 +10,19 @@ import '../use_case.dart';
 class GetLoggingTokenUseCase extends UseCase {
   final _envRepository = dependencyLocator<EnvRepository>();
 
-  Future<String> call() {
-    if (Platform.isAndroid) {
-      return _envRepository.logentriesAndroidToken.then((t) => t!);
-    } else if (Platform.isIOS) {
-      return _envRepository.logentriesIosToken.then((t) => t!);
-    } else {
+  Future<String> call() async {
+    final token = Platform.isAndroid
+        ? await _envRepository.logentriesAndroidToken
+        : Platform.isIOS
+            ? await _envRepository.logentriesIosToken
+            : '';
+
+    if (token.isEmpty) {
       throw UnsupportedError(
         'No logging token for platform: ${Platform.operatingSystem}',
       );
     }
+
+    return token;
   }
 }

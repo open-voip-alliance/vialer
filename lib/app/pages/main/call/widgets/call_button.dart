@@ -18,7 +18,7 @@ class CallButton extends StatelessWidget {
 
   const CallButton({
     Key? key,
-    this.onPressed,
+    required this.onPressed,
     required this.backgroundColor,
     required this.icon,
     this.heroTag = defaultHeroTag,

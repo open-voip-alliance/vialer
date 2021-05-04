@@ -17,8 +17,9 @@ class BuildInfoRepository {
     return BuildInfo(
       version: version,
       buildNumber: info.buildNumber,
-      mergeRequestNumber: mergeRequestNumber,
-      branchName: branch,
+      mergeRequestNumber:
+          mergeRequestNumber?.isNotEmpty == true ? mergeRequestNumber : null,
+      branchName: branch?.isNotEmpty == true ? branch : null,
       packageName: info.packageName,
     );
   }

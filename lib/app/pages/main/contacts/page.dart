@@ -123,10 +123,14 @@ class _ContactPageState extends State<ContactsPage>
     const numberKey = '#';
     const specialKey = '&';
 
-    bool isAlpha(String? char) =>
+    /// Whether the [char] is part of the *letter group*, which consists of
+    /// any letter in any language (including non-latin alphabets)
+    bool isInLetterGroup(String? char) =>
         char != null ? RegExp(r'\p{L}', unicode: true).hasMatch(char) : false;
 
-    bool isNumberlike(String? char) =>
+    /// Whether the [char] is part of the *number group*, which consists of
+    /// any number (`0-9`, `(`, and `+`).
+    bool isInNumberGroup(String? char) =>
         char != null ? RegExp(r'[0-9\(\+]').hasMatch(char) : false;
 
     final searchTerm = _searchTerm?.toLowerCase();
@@ -152,10 +156,10 @@ class _ContactPageState extends State<ContactsPage>
       final contactItem = ContactItem(contact: contact);
 
       // Check special groups
-      if (isNumberlike(firstCharacter)) {
+      if (isInNumberGroup(firstCharacter)) {
         widgets[numberKey] ??= [];
         widgets[numberKey]!.add(contactItem);
-      } else if (isAlpha(firstCharacter)) {
+      } else if (isInLetterGroup(firstCharacter)) {
         widgets[firstCharacter!] ??= [];
         widgets[firstCharacter]!.add(contactItem);
       } else {

@@ -384,7 +384,7 @@ class _MultipleChoiceSettingValue<T> extends StatelessWidget {
         value: value,
         items: items,
         isExpanded: isExpanded,
-        onChanged: (v) => onChanged(v!),
+        onChanged: (value) => onChanged(value!),
       ),
     );
   }

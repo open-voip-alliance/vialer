@@ -27,7 +27,7 @@ Future<void> main() async {
   final errorTrackingRepository = dependencyLocator<ErrorTrackingRepository>();
   final dsn = await dependencyLocator<EnvRepository>().errorTrackingDsn;
 
-  if (dsn == null) {
+  if (dsn.isEmpty) {
     runApp(const App());
   } else {
     await errorTrackingRepository.run(() => runApp(const App()), dsn);

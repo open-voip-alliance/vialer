@@ -120,7 +120,7 @@ class ShowCallThroughConfirmPage extends CallOriginDetermined {
 /// See [InitiatingCall] for the outgoing equivalent.
 class Ringing extends CallProcessState {
   const Ringing({
-    Call? voipCall,
+    required Call voipCall,
     bool isVoipCallMuted = false,
   }) : super(
           origin: CallOrigin.incoming,
