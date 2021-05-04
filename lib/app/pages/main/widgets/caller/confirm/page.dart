@@ -288,7 +288,7 @@ class _AndroidInputs extends StatelessWidget {
                 Checkbox(
                   value: checkboxValue,
                   activeColor: Theme.of(context).primaryColor,
-                  onChanged: (v) => onCheckboxValueChanged(v!),
+                  onChanged: (value) => onCheckboxValueChanged(value!),
                 )
               ],
             ),
