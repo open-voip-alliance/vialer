@@ -21,7 +21,7 @@ class SurveyCubit extends Cubit<SurveyState> with Loggable {
   SurveyCubit({
     required String language,
     required SurveyTrigger trigger,
-  }) : super(ShowHelpUsPrompt.uninitialized(dontShowThisAgain: false)) {
+  }) : super(const ShowHelpUsPrompt(dontShowThisAgain: false)) {
     _getSurvey(language: language, trigger: trigger).then((survey) {
       emit(state.copyWith(survey: survey));
 
@@ -60,7 +60,7 @@ class SurveyCubit extends Cubit<SurveyState> with Loggable {
 
   void next() {
     if (state is ShowHelpUsPrompt) {
-      emit(ShowQuestion(state.survey.questions.first, survey: state.survey));
+      emit(ShowQuestion(state.survey!.questions.first, survey: state.survey));
     } else if (state is ShowQuestion) {
       _progressToNextQuestion();
     }
@@ -79,16 +79,16 @@ class SurveyCubit extends Cubit<SurveyState> with Loggable {
 
   void _progressToNextQuestion() {
     final state = this.state as ShowQuestion;
+    final survey = state.survey!;
 
-    final indexOfCurrent = state.survey.questions.indexOf(state.question);
+    final indexOfCurrent = survey.questions.indexOf(state.question);
 
-    if (indexOfCurrent == state.survey.questions.length - 1) {
+    if (indexOfCurrent == survey.questions.length - 1) {
       emit(ShowThankYou(state.survey));
 
       // The survey is finished, so don't show it again
       _changeSetting(setting: const ShowSurveyDialogSetting(false));
 
-      final survey = state.survey;
 
       _sendSurveyResults(
         data: {
@@ -114,8 +114,8 @@ class SurveyCubit extends Cubit<SurveyState> with Loggable {
 
     emit(
       ShowQuestion(
-        state.survey.questions[indexOfCurrent + 1],
-        survey: state.survey,
+        survey.questions[indexOfCurrent + 1],
+        survey: survey,
         previous: state,
       ),
     );

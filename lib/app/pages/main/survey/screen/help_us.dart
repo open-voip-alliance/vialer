@@ -44,7 +44,7 @@ class HelpUsScreen extends StatelessWidget {
                 context.msg.main.survey.helpUs.content(
                   // We don't except the questions length to change after, so we
                   // don't use a BlocBuilder
-                  context.read<SurveyCubit>().state.survey.questions.length,
+                  context.read<SurveyCubit>().state.survey!.questions.length,
                 ),
               ),
             ),

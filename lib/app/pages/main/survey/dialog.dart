@@ -42,7 +42,7 @@ class SurveyDialog extends StatelessWidget {
               return QuestionScreen(
                 key: ValueKey(state.question),
                 question: state.question,
-                survey: state.survey,
+                survey: state.survey!,
                 answer: state.answer,
               );
             } else if (state is ShowThankYou) {

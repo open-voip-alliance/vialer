@@ -4,11 +4,9 @@ import '../../../../domain/entities/survey/question.dart';
 import '../../../../domain/entities/survey/survey.dart';
 
 abstract class SurveyState extends Equatable {
-  late final Survey survey;
+  final Survey? survey;
 
-  SurveyState(this.survey);
-
-  SurveyState.uninitialized();
+  const SurveyState(this.survey);
 
   @override
   List<Object?> get props => [survey];
@@ -19,14 +17,10 @@ abstract class SurveyState extends Equatable {
 class ShowHelpUsPrompt extends SurveyState {
   final bool dontShowThisAgain;
 
-  ShowHelpUsPrompt({
-    required Survey survey,
+  const ShowHelpUsPrompt({
+    Survey? survey,
     required this.dontShowThisAgain,
   }) : super(survey);
-
-  ShowHelpUsPrompt.uninitialized({
-    required this.dontShowThisAgain,
-  }) : super.uninitialized();
 
   @override
   List<Object?> get props => [...super.props, dontShowThisAgain];
@@ -46,9 +40,9 @@ class ShowQuestion extends SurveyState {
 
   final ShowQuestion? previous;
 
-  ShowQuestion(
+  const ShowQuestion(
     this.question, {
-    required Survey survey,
+    Survey? survey,
     this.answer,
     this.previous,
   }) : super(survey);
@@ -83,7 +77,7 @@ class ShowQuestion extends SurveyState {
 }
 
 class ShowThankYou extends SurveyState {
-  ShowThankYou(Survey survey) : super(survey);
+  const ShowThankYou(Survey? survey) : super(survey);
 
   @override
   ShowThankYou copyWith({Survey? survey}) {
