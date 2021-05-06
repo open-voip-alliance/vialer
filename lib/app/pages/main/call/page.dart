@@ -98,35 +98,33 @@ class _CallPageState extends State<CallPage> with WidgetsBindingObserver {
               content: SingleChildScrollView(
                 child: ListBody(
                   children: [
-                    RatingBar(
-                      initialRating: 0,
-                      direction: Axis.horizontal,
-                      allowHalfRating: false,
-                      itemCount: 5,
-                      tapOnlyMode: true,
-                      ratingWidget: RatingWidget(
-                        full: Icon(
-                          VialerSans.star,
-                          color: context.brand.theme.primary,
-                        ),
-                        half: null,
-                        empty: Icon(
-                          VialerSans.starOutline,
-                          color: context.brand.theme.grey4,
+                    Positioned.fill(
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: RatingBar(
+                          initialRating: 0,
+                          direction: Axis.horizontal,
+                          allowHalfRating: false,
+                          itemCount: 5,
+                          tapOnlyMode: true,
+                          ratingWidget: RatingWidget(
+                            full: Icon(
+                              VialerSans.star,
+                              color: context.brand.theme.primary,
+                            ),
+                            half: null,
+                            empty: Icon(
+                              VialerSans.starOutline,
+                              color: context.brand.theme.grey4,
+                            ),
+                          ),
+                          onRatingUpdate: (rating) =>
+                              _submitCallRating(rating, state),
                         ),
                       ),
-                      itemPadding: const EdgeInsets.symmetric(
-                        horizontal: 6.0,
-                      ),
-                      onRatingUpdate: (rating) =>
-                          _submitCallRating(rating, state),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(
-                        left: 10,
-                        right: 10,
-                        top: 10,
-                      ),
+                      padding: const EdgeInsets.only(top: 10),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
