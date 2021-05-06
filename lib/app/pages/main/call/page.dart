@@ -95,52 +95,47 @@ class _CallPageState extends State<CallPage> with WidgetsBindingObserver {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              content: SingleChildScrollView(
-                child: ListBody(
-                  children: [
-                    Positioned.fill(
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: RatingBar(
-                          initialRating: 0,
-                          direction: Axis.horizontal,
-                          allowHalfRating: false,
-                          itemCount: 5,
-                          tapOnlyMode: true,
-                          ratingWidget: RatingWidget(
-                            full: Icon(
-                              VialerSans.star,
-                              color: context.brand.theme.primary,
-                            ),
-                            half: null,
-                            empty: Icon(
-                              VialerSans.starOutline,
-                              color: context.brand.theme.grey4,
-                            ),
-                          ),
-                          onRatingUpdate: (rating) =>
-                              _submitCallRating(rating, state),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  RatingBar(
+                    initialRating: 0,
+                    direction: Axis.horizontal,
+                    allowHalfRating: false,
+                    itemCount: 5,
+                    tapOnlyMode: true,
+                    ratingWidget: RatingWidget(
+                      full: Icon(
+                        VialerSans.star,
+                        color: context.brand.theme.primary,
+                      ),
+                      half: null,
+                      empty: Icon(
+                        VialerSans.starOutline,
+                        color: context.brand.theme.grey4,
+                      ),
+                    ),
+                    itemPadding: const EdgeInsets.symmetric(horizontal: 3),
+                    onRatingUpdate: (rating) =>
+                        _submitCallRating(rating, state),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          context.msg.main.call.rate.lowerLabel,
+                          textScaleFactor: 0.9,
                         ),
-                      ),
+                        Text(
+                          context.msg.main.call.rate.upperLabel,
+                          textScaleFactor: 0.9,
+                        ),
+                      ],
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            context.msg.main.call.rate.lowerLabel,
-                            textScaleFactor: 0.9,
-                          ),
-                          Text(
-                            context.msg.main.call.rate.upperLabel,
-                            textScaleFactor: 0.9,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           );
