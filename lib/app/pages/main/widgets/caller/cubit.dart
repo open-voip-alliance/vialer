@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_phone_lib/audio/audio_route.dart';
 import 'package:flutter_phone_lib/flutter_phone_lib.dart';
+import 'package:vialer/domain/usecases/get_call_session_state.dart';
 
 import '../../../../../domain/entities/exceptions/call_through.dart';
 import '../../../../../domain/entities/exceptions/voip_not_enabled.dart';
@@ -62,6 +63,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
   final _startVoip = StartVoipUseCase();
   final _getVoipCallEventStream = GetVoipCallEventStreamUseCase();
   final _getActiveVoipCall = GetActiveVoipCall();
+  final _getCallSessionState = GetCallSessionState();
   final _answerVoipCall = AnswerVoipCallUseCase();
   final _getIsVoipCallMuted = GetIsVoipCallMutedUseCase();
   final _toggleMuteVoipCall = ToggleMuteVoipCallUseCase();
@@ -95,17 +97,19 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
       await _startVoip();
       _voipCallEventSubscription =
           _getVoipCallEventStream().listen(_onVoipCallEvent);
-
+      print("TEST123");
       // We need to go to the incoming/ongoing call screen if we were opened by the
       // notification.
-      final activeCall = await _getActiveVoipCall();
+      final voip = await _getCallSessionState();
+      final activeCall = voip.activeCall;
+      print("Aasdasdsd");
       if (activeCall != null &&
           activeCall.direction.isInbound &&
           activeCall.state != CallState.ended) {
         if (activeCall.state == CallState.initializing) {
-          emit(Ringing(voipCall: activeCall));
+          emit(Ringing(voip: voip));
         } else {
-          emit(Calling(origin: CallOrigin.incoming, voipCall: activeCall));
+          emit(Calling(origin: CallOrigin.incoming, voip: voip));
         }
       }
     } on VoipNotEnabledException {}
@@ -254,28 +258,28 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
   }
 
   Future<void> _onVoipCallEvent(Event event) async {
+    print("ON voip call event...");
     if (event is IncomingCallReceived) {
-      emit(Ringing(voipCall: event.call!));
+      emit(Ringing(voip: event.state!));
       logger.info('Incoming VoIP call, ringing');
     } else if (event is OutgoingCallStarted) {
       final originState = state as CallOriginDetermined;
-      emit(InitiatingCall(origin: originState.origin, voipCall: event.call));
+      emit(InitiatingCall(origin: originState.origin, voip: event.state!));
       logger.info('Initiating VoIP call');
     } else if (event is CallConnected) {
-      emit(processState.calling(voipCall: event.call));
+      emit(processState.calling(voip: event.state!));
       logger.info('VoIP call connected');
-    } else if (event is CallUpdated) {
+    } else if (event is CallSessionEvent) {
       final audioState = await _getVoipAudioState();
 
       // It's possible we're not in a CallProcessState yet, because we missed an
       // event, if that's the case we'll emit the state necessary to get there.
       if (state is! CallProcessState) {
-        if (event.call?.direction.isInbound == true) {
+        if (event.state?.activeCall?.direction.isInbound == true) {
           emit(
             Calling(
               origin: CallOrigin.incoming,
-              voipCall: event.call,
-              audioState: audioState,
+              voip: event.state,
             ),
           );
           logger.info('VoIP call connected (recovered)');
@@ -287,14 +291,13 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
       }
 
       emit(processState.copyWith(
-        voipCall: event.call,
-        audioState: audioState,
+        voip: event.state,
       ));
     } else if (event is CallEnded) {
       // It's possible the call ended so fast that we were not in
       // a CallProcessState yet.
       if (state is CallProcessState) {
-        emit(processState.finished(voipCall: event.call));
+        emit(processState.finished(voip: event.state));
       } else {
         emit(const CanCall());
       }
@@ -303,13 +306,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
     }
   }
 
-  Future<void> toggleMute() async {
-    await _toggleMuteVoipCall();
-
-    final isMuted = await _getIsVoipCallMuted();
-
-    emit(processState.copyWith(isVoipCallMuted: isMuted));
-  }
+  Future<void> toggleMute() async => await _toggleMuteVoipCall();
 
   Future<void> toggleHoldVoipCall() => _toggleHoldVoipCall();
 
@@ -317,13 +314,8 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
 
   Future<void> endVoipCall() => _endVoipCall();
 
-  Future<void> routeAudio(AudioRoute route) async {
-    _routeAudio(route: route);
-
-    final audioState = await _getVoipAudioState();
-
-    emit(processState.copyWith(audioState: audioState));
-  }
+  Future<void> routeAudio(AudioRoute route) async =>
+      await _routeAudio(route: route);
 
   void notifyCanCall() {
     // Necessary for auto cast.

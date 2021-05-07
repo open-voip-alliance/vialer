@@ -84,7 +84,7 @@ class _CallerState extends State<Caller> with WidgetsBindingObserver {
     if (state is InitiatingCall && state.isVoip ||
         (state is Calling &&
             state.isVoip &&
-            state.voipCall!.direction.isInbound)) {
+            state.voip!.activeCall!.direction.isInbound)) {
       await _navigatorState.pushAndRemoveUntil(
         MaterialPageRoute(
           builder: (_) => const CallPage(),

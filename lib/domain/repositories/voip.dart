@@ -4,6 +4,7 @@ import 'dart:ui';
 
 import 'package:flutter_phone_lib/audio/audio_route.dart';
 import 'package:flutter_phone_lib/audio/audio_state.dart';
+import 'package:flutter_phone_lib/call_session_state.dart';
 import 'package:flutter_phone_lib/flutter_phone_lib.dart' hide Logger;
 import 'package:logging/logging.dart';
 
@@ -72,6 +73,8 @@ class VoipRepository with Loggable {
   Future<void> answerCall() => _phoneLib.actions.answer();
 
   Future<Call?> get activeCall => _phoneLib.calls.active;
+
+  Future<CallSessionState> get sessionState => _phoneLib.sessionState;
 
   Future<void> endCall() => _phoneLib.actions.end();
 
