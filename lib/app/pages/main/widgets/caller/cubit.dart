@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_phone_lib/audio/audio_route.dart';
 import 'package:flutter_phone_lib/flutter_phone_lib.dart';
-import 'package:vialer/domain/usecases/get_call_session_state.dart';
 
 import '../../../../../domain/entities/exceptions/call_through.dart';
 import '../../../../../domain/entities/exceptions/voip_not_enabled.dart';
@@ -15,14 +14,12 @@ import '../../../../../domain/entities/survey/survey_trigger.dart';
 import '../../../../../domain/usecases/answer_voip_call.dart';
 import '../../../../../domain/usecases/call/call.dart';
 import '../../../../../domain/usecases/call/voip/end.dart';
-import '../../../../../domain/usecases/call/voip/get_audio_state.dart';
-import '../../../../../domain/usecases/call/voip/get_is_muted.dart';
 import '../../../../../domain/usecases/call/voip/rate_voip_call.dart';
 import '../../../../../domain/usecases/call/voip/route_audio.dart';
 import '../../../../../domain/usecases/call/voip/toggle_hold.dart';
 import '../../../../../domain/usecases/call/voip/toggle_mute.dart';
 import '../../../../../domain/usecases/change_setting.dart';
-import '../../../../../domain/usecases/get_active_voip_call.dart';
+import '../../../../../domain/usecases/get_call_session_state.dart';
 import '../../../../../domain/usecases/get_call_through_calls_count.dart';
 import '../../../../../domain/usecases/get_has_voip_enabled.dart';
 import '../../../../../domain/usecases/get_is_authenticated.dart';
@@ -62,16 +59,13 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
   final _getHasVoipEnabled = GetHasVoipEnabledUseCase();
   final _startVoip = StartVoipUseCase();
   final _getVoipCallEventStream = GetVoipCallEventStreamUseCase();
-  final _getActiveVoipCall = GetActiveVoipCall();
   final _getCallSessionState = GetCallSessionState();
   final _answerVoipCall = AnswerVoipCallUseCase();
-  final _getIsVoipCallMuted = GetIsVoipCallMutedUseCase();
   final _toggleMuteVoipCall = ToggleMuteVoipCallUseCase();
   final _toggleHoldVoipCall = ToggleHoldVoipCallUseCase();
   final _sendVoipDtmf = SendVoipDtmfUseCase();
   final _endVoipCall = EndVoipCallUseCase();
   final _rateVoipCall = RateVoipCallUseCase();
-  final _getVoipAudioState = GetVoipCallAudioStateUseCase();
   final _routeAudio = RouteAudioUseCase();
 
   Timer? _callThroughTimer;
@@ -97,12 +91,12 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
       await _startVoip();
       _voipCallEventSubscription =
           _getVoipCallEventStream().listen(_onVoipCallEvent);
-      print("TEST123");
+
       // We need to go to the incoming/ongoing call screen if we were opened by the
       // notification.
       final voip = await _getCallSessionState();
       final activeCall = voip.activeCall;
-      print("Aasdasdsd");
+
       if (activeCall != null &&
           activeCall.direction.isInbound &&
           activeCall.state != CallState.ended) {
@@ -258,7 +252,6 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
   }
 
   Future<void> _onVoipCallEvent(Event event) async {
-    print("ON voip call event...");
     if (event is IncomingCallReceived) {
       emit(Ringing(voip: event.state!));
       logger.info('Incoming VoIP call, ringing');
@@ -270,7 +263,6 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
       emit(processState.calling(voip: event.state!));
       logger.info('VoIP call connected');
     } else if (event is CallSessionEvent) {
-      final audioState = await _getVoipAudioState();
 
       // It's possible we're not in a CallProcessState yet, because we missed an
       // event, if that's the case we'll emit the state necessary to get there.

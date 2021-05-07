@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter_phone_lib/call_session_state.dart';
-import 'package:flutter_phone_lib/flutter_phone_lib.dart';
 
 import '../../dependency_locator.dart';
 import '../repositories/voip.dart';
