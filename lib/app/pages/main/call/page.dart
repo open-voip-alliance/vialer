@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_phone_lib/call/call.dart';
 import 'package:flutter_phone_lib/call/call_state.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_phone_lib/audio/audio_route.dart';
@@ -65,7 +66,15 @@ class _CallPageState extends State<CallPage> with WidgetsBindingObserver {
   Future<void> _onStateChanged(BuildContext context, CallerState state) async {
     if (state is FinishedCalling) {
       if (state.voipCall != null && state.voipCall!.duration >= 1) {
-        _requestCallRating(context, state).then((_) => Navigator.pop(context));
+        final duration =
+            Duration(seconds: (state is AttendedTransferComplete) ? 3 : 0);
+
+        Timer(duration, () {
+          if (mounted) {
+            _requestCallRating(context, state)
+                .then((_) => Navigator.pop(context));
+          }
+        });
       } else {
         _popAfter(const Duration(seconds: 3));
       }
@@ -180,6 +189,9 @@ class _CallPageState extends State<CallPage> with WidgetsBindingObserver {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                if (state is AttendedTransfer ||
+                    state is AttendedTransferComplete)
+                  _CallTransferBar(inactiveCall: state.voip!.inactiveCall!),
                 Container(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -237,6 +249,11 @@ class _CallPageState extends State<CallPage> with WidgetsBindingObserver {
                     ),
                   ),
                 ),
+                if (state is AttendedTransferComplete)
+                  _InformationBox(
+                    icon: VialerSans.check,
+                    text: context.msg.main.call.state.transferComplete,
+                  ),
                 Expanded(
                   child: Align(
                     alignment: Alignment.bottomCenter,
@@ -257,6 +274,113 @@ class _CallPageState extends State<CallPage> with WidgetsBindingObserver {
   void dispose() {
     WidgetsBinding.instance!.removeObserver(this);
     super.dispose();
+  }
+}
+
+class _InformationBox extends StatelessWidget {
+  final IconData icon;
+  final String text;
+
+  const _InformationBox({required this.icon, required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Padding(
+            padding: const EdgeInsets.only(top: 30, bottom: 20),
+            child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(13.5),
+                  color: context.brand.theme.callGradientStart,
+                ),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 4,
+                ),
+                child: DefaultTextStyle.merge(
+                    child: RichText(
+                  text: TextSpan(
+                    style: TextStyle(
+                      color: context.brand.theme.onCallGradientColor,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    children: [
+                      WidgetSpan(
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 4.0, right: 8.0),
+                          child: Icon(
+                            icon,
+                            color: context.brand.theme.onCallGradientColor,
+                            size: 22,
+                          ),
+                        ),
+                      ),
+                      TextSpan(text: text),
+                    ],
+                  ),
+                ))))
+      ],
+    );
+  }
+}
+
+class _CallTransferBar extends StatelessWidget {
+  final Call inactiveCall;
+
+  const _CallTransferBar({required this.inactiveCall});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        border: const Border(
+          bottom: BorderSide(
+            width: 2.0,
+            color: Colors.white,
+          ),
+        ),
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            context.brand.theme.callGradientStart,
+            context.brand.theme.callGradientEnd,
+          ],
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.only(top: 30, bottom: 15),
+        child: DefaultTextStyle.merge(
+          style: TextStyle(
+            color: context.brand.theme.onCallGradientColor,
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Wrap(
+                spacing: 5,
+                children: [
+                  Text(
+                    '${inactiveCall.remotePartyHeading}',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  const Text('-'),
+                  Text('${inactiveCall.prettyDuration}'),
+                  const Text('-'),
+                  Text(inactiveCall.isOnHold
+                      ? context.msg.main.call.state.callOnHold
+                      : context.msg.main.call.state.callEnded),
+                ],
+              )
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
 
@@ -614,7 +738,11 @@ class _CallActionButtons extends StatelessWidget {
     Navigator.pushNamed(context, 'dial-pad');
   }
 
-  void _transfer() {}
+  void _transfer(BuildContext context) =>
+      context.read<CallerCubit>().beginTransfer('244');
+
+  void _merge(BuildContext context) =>
+      context.read<CallerCubit>().mergeTransfer();
 
   void _toggleHold(BuildContext context) =>
       context.read<CallerCubit>().toggleHoldVoipCall();
@@ -657,9 +785,13 @@ class _CallActionButtons extends StatelessWidget {
               children: [
                 const Spacer(flex: 3),
                 _ActionButton(
-                  icon: const Icon(VialerSans.transfer),
+                  icon: processState.isInTransfer
+                      ? const Icon(VialerSans.merge)
+                      : const Icon(VialerSans.transfer),
                   text: Text(context.msg.main.call.actions.transfer),
-                  onPressed: _transfer,
+                  onPressed: () => processState.isInTransfer
+                      ? _merge(context)
+                      : _transfer(context),
                 ),
                 const Spacer(),
                 _ActionButton(

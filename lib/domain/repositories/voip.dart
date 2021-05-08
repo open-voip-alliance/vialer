@@ -98,6 +98,12 @@ class VoipRepository with Loggable {
       _phoneLib.audio.routeAudio(route);
 
   Future<AudioState> get audioState => _phoneLib.audio.state;
+
+  Future<void> beginTransfer(String number) =>
+      _phoneLib.actions.beginAttendedTransfer(number);
+
+  Future<void> mergeTransferCalls() =>
+      _phoneLib.actions.completeAttendedTransfer();
 }
 
 // This class should not keep any state of it's own.

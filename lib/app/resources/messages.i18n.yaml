@@ -66,6 +66,8 @@ main:
     state:
       calling: "Calling"
       callEnded: "Call ended"
+      callOnHold: "Call on hold"
+      transferComplete: "Transferring successful"
     incoming:
       answer: "Answer"
       decline: "Decline"

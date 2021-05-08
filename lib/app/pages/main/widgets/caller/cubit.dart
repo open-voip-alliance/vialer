@@ -13,7 +13,9 @@ import '../../../../../domain/entities/setting.dart';
 import '../../../../../domain/entities/survey/survey_trigger.dart';
 import '../../../../../domain/usecases/answer_voip_call.dart';
 import '../../../../../domain/usecases/call/call.dart';
+import '../../../../../domain/usecases/call/voip/begin_transfer.dart';
 import '../../../../../domain/usecases/call/voip/end.dart';
+import '../../../../../domain/usecases/call/voip/merge_transfer.dart';
 import '../../../../../domain/usecases/call/voip/rate_voip_call.dart';
 import '../../../../../domain/usecases/call/voip/route_audio.dart';
 import '../../../../../domain/usecases/call/voip/toggle_hold.dart';
@@ -67,6 +69,8 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
   final _endVoipCall = EndVoipCallUseCase();
   final _rateVoipCall = RateVoipCallUseCase();
   final _routeAudio = RouteAudioUseCase();
+  final _beginTransfer = BeginTransferUseCase();
+  final _mergeTransfer = MergeTransferUseCase();
 
   Timer? _callThroughTimer;
 
@@ -252,6 +256,11 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
   }
 
   Future<void> _onVoipCallEvent(Event event) async {
+    if (state is FinishedCalling) {
+      logger.info('State is call ended, not updating state any further');
+      return;
+    }
+
     if (event is IncomingCallReceived) {
       emit(Ringing(voip: event.state!));
       logger.info('Incoming VoIP call, ringing');
@@ -262,8 +271,26 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
     } else if (event is CallConnected) {
       emit(processState.calling(voip: event.state!));
       logger.info('VoIP call connected');
-    } else if (event is CallSessionEvent) {
+    } else if (event is AttendedTransferStarted) {
+      emit(processState.transferStarted(voip: event.state!));
+      logger.info('Starting attended transfer!');
+    } else if (event is AttendedTransferAborted) {
+      emit(processState.calling(voip: event.state!));
+      logger.info('Transfer has been aborted!');
+    } else if (event is AttendedTransferEnded) {
+      emit(processState.transferComplete(voip: event.state!));
+      logger.info('Completed attended transfer!');
+    } else if (event is CallEnded) {
+      // It's possible the call ended so fast that we were not in
+      // a CallProcessState yet.
+      if (state is CallProcessState) {
+        emit(processState.finished(voip: event.state));
+      } else {
+        emit(const CanCall());
+      }
 
+      logger.info('VoIP call ended');
+    } else if (event is CallSessionEvent) {
       // It's possible we're not in a CallProcessState yet, because we missed an
       // event, if that's the case we'll emit the state necessary to get there.
       if (state is! CallProcessState) {
@@ -285,22 +312,16 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
       emit(processState.copyWith(
         voip: event.state,
       ));
-    } else if (event is CallEnded) {
-      // It's possible the call ended so fast that we were not in
-      // a CallProcessState yet.
-      if (state is CallProcessState) {
-        emit(processState.finished(voip: event.state));
-      } else {
-        emit(const CanCall());
-      }
-
-      logger.info('VoIP call ended');
     }
   }
 
   Future<void> toggleMute() async => await _toggleMuteVoipCall();
 
   Future<void> toggleHoldVoipCall() => _toggleHoldVoipCall();
+
+  Future<void> beginTransfer(String number) => _beginTransfer(number: number);
+
+  Future<void> mergeTransfer() => _mergeTransfer();
 
   Future<void> sendVoipDtmf(String dtmf) => _sendVoipDtmf(dtmf: dtmf);
 

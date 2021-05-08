@@ -51,6 +51,9 @@ abstract class CallProcessState extends CallOriginDetermined {
   // `voipCall` is only available when it's a VoIP call.
   bool get isVoip => voip != null;
 
+  bool get isInTransfer =>
+      (this is AttendedTransfer) || (this is AttendedTransferComplete);
+
   const CallProcessState({
     required CallOrigin origin,
     required this.voip,
@@ -87,6 +90,18 @@ abstract class CallProcessState extends CallOriginDetermined {
   }
 
   FinishedCalling finished({CallSessionState? voip}) => FinishedCalling(
+        origin: origin,
+        voip: voip ?? this.voip,
+      );
+
+  AttendedTransfer transferStarted({CallSessionState? voip}) =>
+      AttendedTransfer(
+        origin: origin,
+        voip: voip ?? this.voip,
+      );
+
+  AttendedTransferComplete transferComplete({CallSessionState? voip}) =>
+      AttendedTransferComplete(
         origin: origin,
         voip: voip ?? this.voip,
       );
@@ -170,13 +185,12 @@ class InitiatingCallFailed extends CallProcessState {
     Exception? exception,
     CallOrigin? origin,
     CallSessionState? voip,
-  }) {
-    return InitiatingCallFailed(
-      exception ?? this.exception,
-      origin: origin ?? this.origin,
-      voip: voip ?? this.voip,
-    );
-  }
+  }) =>
+      InitiatingCallFailed(
+        exception ?? this.exception,
+        origin: origin ?? this.origin,
+        voip: voip ?? this.voip,
+      );
 }
 
 class Calling extends CallProcessState {
@@ -194,6 +208,26 @@ class Calling extends CallProcessState {
     CallSessionState? voip,
   }) =>
       Calling(
+        origin: origin ?? this.origin,
+        voip: voip ?? this.voip,
+      );
+}
+
+class AttendedTransfer extends CallProcessState {
+  const AttendedTransfer({
+    required CallOrigin origin,
+    required CallSessionState? voip,
+  }) : super(
+          origin: origin,
+          voip: voip,
+        );
+
+  @override
+  AttendedTransfer copyWith({
+    CallOrigin? origin,
+    CallSessionState? voip,
+  }) =>
+      AttendedTransfer(
         origin: origin ?? this.origin,
         voip: voip ?? this.voip,
       );
@@ -219,6 +253,26 @@ class FinishedCalling extends CallProcessState implements CanCall {
       );
 }
 
+class AttendedTransferComplete extends FinishedCalling {
+  const AttendedTransferComplete({
+    required CallOrigin origin,
+    CallSessionState? voip,
+  }) : super(
+          origin: origin,
+          voip: voip,
+        );
+
+  @override
+  AttendedTransferComplete copyWith({
+    CallOrigin? origin,
+    CallSessionState? voip,
+  }) =>
+      AttendedTransferComplete(
+        origin: origin ?? this.origin,
+        voip: voip ?? this.voip,
+      );
+}
+
 class ShowCallThroughSurvey extends FinishedCalling {
   ShowCallThroughSurvey({required CallOrigin origin})
       // Call does not need to be passed here since it's for call-through.
@@ -231,28 +285,26 @@ class ShowCallThroughSurvey extends FinishedCalling {
   ShowCallThroughSurvey copyWith({
     CallOrigin? origin,
     CallSessionState? voip,
-  }) {
-    return ShowCallThroughSurvey(
-      origin: origin ?? this.origin,
-    );
-  }
+  }) =>
+      ShowCallThroughSurvey(
+        origin: origin ?? this.origin,
+      );
 }
 
 class ShowedCallThroughSurvey extends FinishedCalling {
+  // Call does not need to be passed here since it's for call-through.
   const ShowedCallThroughSurvey({
     required CallOrigin origin,
-  }) // Call does not need to be passed here since it's for call-through.
-  : super(origin: origin, voip: null);
+  }) : super(origin: origin, voip: null);
 
   @override
   ShowedCallThroughSurvey copyWith({
     CallOrigin? origin,
     CallSessionState? voip,
-  }) {
-    return ShowedCallThroughSurvey(
-      origin: origin ?? this.origin,
-    );
-  }
+  }) =>
+      ShowedCallThroughSurvey(
+        origin: origin ?? this.origin,
+      );
 }
 
 enum CallOrigin {
