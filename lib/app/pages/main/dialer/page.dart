@@ -24,11 +24,12 @@ import 'widgets/t9/widget.dart';
 
 class DialerPage extends StatefulWidget {
   final bool isInBottomNavBar;
+  final CallButton? callButton;
+  final Widget? header;
 
-  const DialerPage({
-    Key? key,
-    required this.isInBottomNavBar,
-  }) : super(key: key);
+  const DialerPage(
+      {Key? key, required this.isInBottomNavBar, this.callButton, this.header})
+      : super(key: key);
 
   @override
   _DialerPageState createState() => _DialerPageState();
@@ -71,7 +72,14 @@ class _DialerPageState extends State<DialerPage> with WidgetsBindingObserver {
   }
 
   void _call(BuildContext context) {
-    context.read<DialerCubit>().call(_dialPadController.text);
+    final number = _dialPadController.text;
+
+    if (widget.onCall != null) {
+      widget.onCall!(number);
+    } else {
+      context.read<DialerCubit>().call(number);
+    }
+
     _dialPadController.clear();
   }
 
@@ -129,6 +137,14 @@ class _DialerPageState extends State<DialerPage> with WidgetsBindingObserver {
                   ),
                   child: Column(
                     children: <Widget>[
+                      if (widget.header != null)
+                        Row(
+                            children: [
+                              Expanded(
+                                child: widget.header!,
+                              ),
+                            ],
+                        ),
                       if (context.isAndroid) ...[
                         T9ContactsListView(controller: _dialPadController),
                         const Divider(
@@ -145,7 +161,7 @@ class _DialerPageState extends State<DialerPage> with WidgetsBindingObserver {
                         child: DialPad(
                           controller: _dialPadController,
                           primaryButton: _CallButton(
-                            onPressed: () => _call(context),
+                            onPressed: () => { _call(context) },
                           ),
                           onDeleteAll: dialerCubit.clearLastCalledDestination,
                         ),

@@ -11,6 +11,8 @@ import 'package:flutter_phone_lib/audio/audio_route.dart';
 import 'package:flutter_phone_lib/audio/audio_state.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:vialer/app/pages/main/dialer/page.dart';
+import 'package:vialer/app/pages/main/dialer/widgets/t9/widget.dart';
 
 import '../../../resources/localizations.dart';
 import '../../../resources/theme.dart';
@@ -48,7 +50,7 @@ class _CallPageState extends State<CallPage> with WidgetsBindingObserver {
       final call = context.read<CallerCubit>().processState.voipCall;
 
       if (call == null || call.state == CallState.ended) {
-        Navigator.of(context).pop();
+        _popCallScreen(context);
       }
     }
   }
@@ -61,6 +63,9 @@ class _CallPageState extends State<CallPage> with WidgetsBindingObserver {
     });
   }
 
+  void _popCallScreen(BuildContext context) =>
+      Navigator.popUntil(context, (route) => route.isFirst);
+
   // Only called when the state type has changed, not when a state with the same
   // type but different call information has been emitted.
   Future<void> _onStateChanged(BuildContext context, CallerState state) async {
@@ -72,7 +77,7 @@ class _CallPageState extends State<CallPage> with WidgetsBindingObserver {
         Timer(duration, () {
           if (mounted) {
             _requestCallRating(context, state)
-                .then((_) => Navigator.pop(context));
+                .then((_) => _popCallScreen(context));
           }
         });
       } else {
@@ -84,7 +89,7 @@ class _CallPageState extends State<CallPage> with WidgetsBindingObserver {
   Future<void> _requestCallRating(BuildContext context, FinishedCalling state) {
     Timer(const Duration(seconds: 10), () {
       if (mounted) {
-        Navigator.of(context, rootNavigator: true).pop();
+        _popCallScreen(context);
       }
     });
 
@@ -165,9 +170,7 @@ class _CallPageState extends State<CallPage> with WidgetsBindingObserver {
         );
 
     Timer(const Duration(seconds: 1), () {
-      if (mounted) {
-        Navigator.of(context, rootNavigator: true).pop(rating);
-      }
+      _popCallScreen(context);
     });
   }
 
@@ -254,12 +257,10 @@ class _CallPageState extends State<CallPage> with WidgetsBindingObserver {
                     icon: VialerSans.check,
                     text: context.msg.main.call.state.transferComplete,
                   ),
-                Expanded(
+                const Expanded(
                   child: Align(
                     alignment: Alignment.bottomCenter,
-                    child: _CallActions(
-                      popAfter: _popAfter,
-                    ),
+                    child: _CallActions(),
                   ),
                 ),
               ],
@@ -321,16 +322,20 @@ class _InformationBox extends StatelessWidget {
                       TextSpan(text: text),
                     ],
                   ),
-                ))))
+                ),
+                ),
+            ),
+        ),
       ],
     );
   }
 }
 
 class _CallTransferBar extends StatelessWidget {
-  final Call inactiveCall;
+  final Call? inactiveCall;
+  final Widget? text;
 
-  const _CallTransferBar({required this.inactiveCall});
+  const _CallTransferBar({this.inactiveCall, this.text});
 
   @override
   Widget build(BuildContext context) {
@@ -364,16 +369,10 @@ class _CallTransferBar extends StatelessWidget {
               Wrap(
                 spacing: 5,
                 children: [
-                  Text(
-                    '${inactiveCall.remotePartyHeading}',
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  const Text('-'),
-                  Text('${inactiveCall.prettyDuration}'),
-                  const Text('-'),
-                  Text(inactiveCall.isOnHold
-                      ? context.msg.main.call.state.callOnHold
-                      : context.msg.main.call.state.callEnded),
+                  if (text != null)
+                    text!,
+                  if (inactiveCall != null)
+                    _buildInactiveCallText(context, inactiveCall!),
                 ],
               )
             ],
@@ -382,7 +381,24 @@ class _CallTransferBar extends StatelessWidget {
       ),
     );
   }
+
+  Widget _buildInactiveCallText(BuildContext context, Call inactiveCall) =>
+      RichText(
+        text: TextSpan(
+          children: [
+            TextSpan(
+                text: '${inactiveCall.remotePartyHeading}',
+                style: const TextStyle(fontWeight: FontWeight.bold)),
+            TextSpan(text: '- ${inactiveCall.prettyDuration} - '),
+            TextSpan(
+                text: inactiveCall.isOnHold
+                    ? context.msg.main.call.state.callOnHold
+                    : context.msg.main.call.state.callEnded),
+          ],
+        ),
+      );
 }
+
 
 class _ActionButton extends StatelessWidget {
   final Widget icon;
@@ -630,11 +646,8 @@ class _AudioRouteButton extends StatelessWidget {
 }
 
 class _CallActions extends StatefulWidget {
-  final void Function(Duration) popAfter;
-
   const _CallActions({
     Key? key,
-    required this.popAfter,
   }) : super(key: key);
 
   @override
@@ -738,8 +751,36 @@ class _CallActionButtons extends StatelessWidget {
     Navigator.pushNamed(context, 'dial-pad');
   }
 
-  void _transfer(BuildContext context) =>
-      context.read<CallerCubit>().beginTransfer('244');
+  void _transfer(BuildContext context) {
+    Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
+      builder: (context) =>
+          BlocBuilder<CallerCubit, CallerState>(builder: (context, state) {
+        final processState = state as CallProcessState;
+
+        return DialerPage(
+          isInBottomNavBar: false,
+          callButton: CallButton.transfer(
+              onCall: (number) {
+                context.read<CallerCubit>().beginTransfer(number);
+                Navigator.of(context).pop();
+              }
+          ),
+          header: _CallTransferBar(
+            text: RichText(
+              text: TextSpan(children: [
+                const TextSpan(text: 'Transferring '),
+                TextSpan(
+                  text: '${processState.voip!.activeCall!.remotePartyHeading}',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                const TextSpan(text: ' to'),
+              ]),
+            ),
+          ),
+        );
+      }),
+    ));
+  }
 
   void _merge(BuildContext context) =>
       context.read<CallerCubit>().mergeTransfer();

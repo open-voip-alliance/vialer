@@ -9,6 +9,7 @@ class CallButton extends StatelessWidget {
   final IconData icon;
   final Object? heroTag;
   final BoxConstraints constraints;
+  final Function(String)? onCall;
 
   static const defaultHeroTag = _DefaultCallButtonHeroTag();
   static const defaultConstraints = BoxConstraints.tightFor(
@@ -23,6 +24,7 @@ class CallButton extends StatelessWidget {
     required this.icon,
     this.heroTag = defaultHeroTag,
     this.constraints = defaultConstraints,
+    this.onCall
   }) : super(key: key);
 
   static Widget answer({
@@ -56,6 +58,26 @@ class CallButton extends StatelessWidget {
           onPressed: onPressed,
           backgroundColor: context.brand.theme.red1,
           icon: VialerSans.hangUp,
+          heroTag: heroTag,
+          constraints: constraints,
+        );
+      },
+    );
+  }
+
+  static Widget transfer({
+    Key? key,
+    VoidCallback? onPressed,
+    Object? heroTag = defaultHeroTag,
+    BoxConstraints constraints = defaultConstraints,
+    Function(String)? onCall
+  }) {
+    return Builder(
+      builder: (context) {
+        return CallButton(
+          onPressed: onPressed,
+          backgroundColor: context.brand.theme.green1,
+          icon: VialerSans.transfer,
           heroTag: heroTag,
           constraints: constraints,
         );
