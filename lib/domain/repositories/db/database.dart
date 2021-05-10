@@ -32,18 +32,20 @@ class Calls extends Table {
 
 class DirectionConverter extends TypeConverter<Direction, int> {
   @override
-  Direction mapToDart(int fromDb) => Direction.values[fromDb];
+  Direction? mapToDart(int? fromDb) =>
+      fromDb != null ? Direction.values[fromDb] : null;
 
   @override
-  int mapToSql(Direction value) => value.index;
+  int? mapToSql(Direction? value) => value?.index;
 }
 
 class DurationConverter extends TypeConverter<Duration, int> {
   @override
-  Duration mapToDart(int fromDb) => Duration(seconds: fromDb);
+  Duration? mapToDart(int? fromDb) =>
+      fromDb != null ? Duration(seconds: fromDb) : null;
 
   @override
-  int mapToSql(Duration value) => value.inSeconds;
+  int? mapToSql(Duration? value) => value?.inSeconds;
 }
 
 @UseMoor(tables: [Calls])
@@ -62,8 +64,8 @@ class Database extends _$Database {
   int get schemaVersion => 1;
 
   Future<List<Call>> getCalls({
-    @required DateTime from,
-    @required DateTime to,
+    required DateTime from,
+    required DateTime to,
   }) async {
     return (select(calls)
           ..where((c) => c.date.isBetweenValues(from, to))
@@ -74,12 +76,12 @@ class Database extends _$Database {
         .get();
   }
 
-  Future<Call> getMostRecentCall() async {
+  Future<Call?> getMostRecentCall() async {
     return (select(calls)
           ..orderBy([(c) => OrderingTerm.desc(c.date)])
           ..limit(1))
         .map((c) => c.toCall())
-        .getSingle();
+        .getSingleOrNull();
   }
 
   Future<void> insertCalls(List<Call> values) async {

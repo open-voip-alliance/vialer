@@ -20,7 +20,7 @@ class SplashPage extends StatelessWidget {
         PageRouteBuilder(
           transitionDuration: Duration.zero,
           pageBuilder: (context, _, __) {
-            return Routes.mapped[Routes.onboarding](context);
+            return Routes.mapped[Routes.onboarding]!(context);
           },
         ),
       );

@@ -19,7 +19,7 @@ class DialerCubit extends Cubit<DialerState> {
         );
 
   Future<void> call(String destination) async {
-    if (destination == null || destination.isEmpty) {
+    if (destination.isEmpty) {
       emit(
         DialerState(lastCalledDestination: _getLatestDialedNumber()),
       );

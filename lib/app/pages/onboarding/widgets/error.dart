@@ -11,15 +11,15 @@ class ErrorAlert extends StatefulWidget {
   /// use a non-inline error box for general errors.
   final bool inline;
   final EdgeInsets padding;
-  final String title;
+  final String? title;
   final String message;
 
   const ErrorAlert({
-    Key key,
-    @required this.visible,
-    @required this.inline,
+    Key? key,
+    required this.visible,
+    required this.inline,
     this.padding = const EdgeInsets.all(4),
-    @required this.message,
+    required this.message,
     this.title,
   }) : super(key: key);
 
@@ -98,7 +98,7 @@ class _ErrorAlertState extends State<ErrorAlert> with TickerProviderStateMixin {
                                       padding:
                                           const EdgeInsets.only(bottom: 4.0),
                                       child: Text(
-                                        widget.title,
+                                        widget.title!,
                                         style: const TextStyle(
                                           fontWeight: FontWeight.bold,
                                         ),

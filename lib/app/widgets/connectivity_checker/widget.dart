@@ -6,7 +6,7 @@ import 'cubit.dart';
 class ConnectivityChecker extends StatelessWidget {
   final Widget child;
 
-  const ConnectivityChecker({this.child});
+  const ConnectivityChecker({required this.child});
 
   @override
   Widget build(BuildContext context) {

@@ -1,17 +1,14 @@
-import 'package:meta/meta.dart';
-
 import '../../dependency_locator.dart';
 import '../entities/system_user.dart';
 import '../repositories/auth.dart';
 import '../repositories/storage.dart';
 import '../use_case.dart';
 
-class GetUserUseCase extends FutureUseCase<SystemUser> {
+class GetUserUseCase extends UseCase {
   final _storageRepository = dependencyLocator<StorageRepository>();
   final _authRepository = dependencyLocator<AuthRepository>();
 
-  @override
-  Future<SystemUser> call({@required bool latest}) async {
+  Future<SystemUser?> call({required bool latest}) async {
     if (!latest) {
       return _storageRepository.systemUser;
     }

@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:path/path.dart' as path;
-import 'package:meta/meta.dart';
+
 import 'package:dartx/dartx.dart';
 
 Future<void> main(List<String> args) async {
@@ -56,7 +56,7 @@ Future<void> main(List<String> args) async {
 
 Future<void> _writeAndExitIfNotZero(
   Process process, {
-  @required String messageOnFail,
+  required String messageOnFail,
 }) async {
   // We need to do it like this instead of waiting on process.exitCode, because
   // that doesn't work.

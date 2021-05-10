@@ -15,13 +15,13 @@ class SettingsSubPage extends StatelessWidget {
   final MultiChildStateBuilder children;
 
   const SettingsSubPage({
-    Key key,
-    @required this.cubit,
-    @required this.title,
-    @required this.children,
+    Key? key,
+    required this.cubit,
+    required this.title,
+    required this.children,
   }) : super(key: key);
 
-  static Widget troubleshooting({@required SettingsCubit cubit}) {
+  static Widget troubleshooting({required SettingsCubit cubit}) {
     return Builder(
       builder: (context) {
         return SettingsSubPage(

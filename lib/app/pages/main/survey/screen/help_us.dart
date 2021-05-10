@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../resources/localizations.dart';
-import '../../../../util/brand.dart';
 import '../../../../util/conditional_capitalization.dart';
 import '../cubit.dart';
 import '../widgets/big_header.dart';
@@ -11,8 +10,8 @@ class HelpUsScreen extends StatelessWidget {
   final bool dontShowThisAgain;
 
   const HelpUsScreen({
-    Key key,
-    @required this.dontShowThisAgain,
+    Key? key,
+    required this.dontShowThisAgain,
   }) : super(key: key);
 
   void _onDontShowThisAgainChanged(BuildContext context, bool value) {
@@ -45,7 +44,7 @@ class HelpUsScreen extends StatelessWidget {
                 context.msg.main.survey.helpUs.content(
                   // We don't except the questions length to change after, so we
                   // don't use a BlocBuilder
-                  context.read<SurveyCubit>().state.survey.questions.length,
+                  context.read<SurveyCubit>().state.survey!.questions.length,
                 ),
               ),
             ),
@@ -55,7 +54,7 @@ class HelpUsScreen extends StatelessWidget {
                   value: dontShowThisAgain,
                   onChanged: (value) => _onDontShowThisAgainChanged(
                     context,
-                    value,
+                    value ?? false,
                   ),
                   activeColor: Theme.of(context).primaryColor,
                 ),
@@ -65,17 +64,15 @@ class HelpUsScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                FlatButton(
+                TextButton(
                   onPressed: () => _dismiss(context),
-                  textColor: context.brand.theme.primary,
                   child: Text(
                     context.msg.generic.button.noThanks
                         .toUpperCaseIfAndroid(context),
                   ),
                 ),
-                FlatButton(
+                TextButton(
                   onPressed: () => _next(context),
-                  textColor: context.brand.theme.primary,
                   child: Text(
                     context.msg.generic.button.yes
                         .toUpperCaseIfAndroid(context),

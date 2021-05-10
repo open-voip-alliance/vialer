@@ -11,7 +11,7 @@ export 'state.dart';
 class ConnectivityCheckerCubit extends Cubit<ConnectivityState> {
   final _getConnectivityTypeStream = GetConnectivityTypeStreamUseCase();
 
-  StreamSubscription _subscription;
+  late StreamSubscription _subscription;
 
   ConnectivityCheckerCubit() : super(Connected()) {
     _subscription = _getConnectivityTypeStream().listen((status) {

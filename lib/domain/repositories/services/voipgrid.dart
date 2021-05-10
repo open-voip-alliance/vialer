@@ -28,20 +28,20 @@ abstract class VoipgridService extends ChopperService {
 
   @Get(path: 'permission/systemuser/profile/')
   Future<Response> getSystemUser({
-    @Header('Authorization') String authorization,
+    @Header('Authorization') String? authorization,
   });
 
   @Get(path: 'cdr/record/personalized/')
   Future<Response> getPersonalCalls({
-    @Query('limit') int limit,
-    @Query('offset') int offset,
-    @Query('call_date__gt') String from,
-    @Query('call_date__lt') String to,
+    @Query('limit') int? limit,
+    @Query('offset') int? offset,
+    @Query('call_date__gt') required String from,
+    @Query('call_date__lt') required String to,
   });
 
   @Get(path: 'v2/callthrough')
   Future<Response> callthrough({
-    @Query('destination') String destination,
+    @Query('destination') required String destination,
   });
 
   @Put(path: 'v2/password')

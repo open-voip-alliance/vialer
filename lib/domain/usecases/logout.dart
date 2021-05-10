@@ -4,11 +4,10 @@ import '../repositories/storage.dart';
 import '../use_case.dart';
 import 'unregister_to_voip_middleware.dart';
 
-class LogoutUseCase extends FutureUseCase<void> {
+class LogoutUseCase extends UseCase {
   final _storageRepository = dependencyLocator<StorageRepository>();
   final _unregisterToVoipMiddleware = UnregisterToVoipMiddlewareUseCase();
 
-  @override
   Future<void> call() async {
     await _unregisterToVoipMiddleware();
 
@@ -18,7 +17,7 @@ class LogoutUseCase extends FutureUseCase<void> {
   /// Clear the storage of all user-specific values.
   Future<void> _clearStorage() async {
     final remoteLoggingSetting =
-        _storageRepository.settings.get<RemoteLoggingSetting>();
+        _storageRepository.settings.getOrNull<RemoteLoggingSetting>();
 
     final pushToken = _storageRepository.pushToken;
 

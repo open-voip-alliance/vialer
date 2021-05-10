@@ -15,17 +15,17 @@ class DialPad extends StatelessWidget {
 
   /// Called when the delete button has been long-pressed, and all input is
   /// deleted.
-  final VoidCallback onDeleteAll;
+  final VoidCallback? onDeleteAll;
 
   final Widget primaryButton;
-  final Widget secondaryButton;
+  final Widget? secondaryButton;
 
   const DialPad({
-    Key key,
-    @required this.controller,
+    Key? key,
+    required this.controller,
     this.onDeleteAll,
     this.canDelete = true,
-    @required this.primaryButton,
+    required this.primaryButton,
     this.secondaryButton,
   }) : super(key: key);
 

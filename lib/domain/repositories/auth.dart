@@ -1,5 +1,3 @@
-import 'package:meta/meta.dart';
-
 import '../entities/exceptions/auto_login.dart';
 import '../entities/exceptions/need_to_change_password.dart';
 import '../entities/system_user.dart';
@@ -17,7 +15,7 @@ class AuthRepository {
   /// Returns the latest user from the portal.
   Future<SystemUser> getUser() => _getUser();
 
-  Future<SystemUser> _getUser({String email, String token}) async {
+  Future<SystemUser> _getUser({String? email, String? token}) async {
     assert(
       (email == null && token == null) || (email != null && token != null),
     );
@@ -38,7 +36,7 @@ class AuthRepository {
   }
 
   /// If null is returned, authentication failed.
-  Future<SystemUser> authenticate(
+  Future<SystemUser?> authenticate(
     String email,
     String password, {
     bool cachePassword = true,
@@ -48,7 +46,7 @@ class AuthRepository {
       _passwordKey: password,
     });
 
-    final body = tokenResponse.body as Map<String, dynamic>;
+    final body = tokenResponse.body as Map<String, dynamic>?;
 
     if (body != null && body.containsKey(_apiTokenKey)) {
       final token = body[_apiTokenKey] as String;
@@ -61,9 +59,9 @@ class AuthRepository {
   }
 
   Future<bool> changePassword({
-    @required String email,
-    @required String currentPassword,
-    @required String newPassword,
+    required String email,
+    required String currentPassword,
+    required String newPassword,
   }) async {
     final response = await _service.password({
       'email_address': email,

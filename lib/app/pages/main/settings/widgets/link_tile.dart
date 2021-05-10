@@ -12,13 +12,13 @@ import 'tile.dart';
 
 class SettingLinkTile extends StatelessWidget {
   final Widget title;
-  final Widget description;
+  final Widget? description;
 
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   const SettingLinkTile({
-    Key key,
-    @required this.title,
+    Key? key,
+    required this.title,
     this.description,
     this.onTap,
   }) : super(key: key);

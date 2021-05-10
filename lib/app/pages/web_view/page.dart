@@ -26,7 +26,7 @@ class PortalWebViewPage extends StatefulWidget {
 }
 
 class _PortalWebViewPageState extends State<PortalWebViewPage> {
-  WebViewController _controller;
+  WebViewController? _controller;
 
   @override
   void initState() {

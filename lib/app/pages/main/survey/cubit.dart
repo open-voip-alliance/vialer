@@ -1,5 +1,4 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:meta/meta.dart';
 
 import '../../../../domain/entities/setting.dart';
 import '../../../../domain/entities/survey/survey_trigger.dart';
@@ -20,24 +19,24 @@ class SurveyCubit extends Cubit<SurveyState> with Loggable {
   final _changeSetting = ChangeSettingUseCase();
 
   SurveyCubit({
-    @required String language,
-    @required SurveyTrigger trigger,
-  }) : super(ShowHelpUsPrompt(dontShowThisAgain: false)) {
+    required String language,
+    required SurveyTrigger trigger,
+  }) : super(const ShowHelpUsPrompt(dontShowThisAgain: false)) {
     _getSurvey(language: language, trigger: trigger).then((survey) {
       emit(state.copyWith(survey: survey));
-    });
 
-    _getSettings().then((settings) {
-      // Necessary for auto cast.
-      final state = this.state;
+      _getSettings().then((settings) {
+        // Necessary for auto cast.
+        final state = this.state;
 
-      if (state is ShowHelpUsPrompt) {
-        emit(
-          state.copyWith(
-            dontShowThisAgain: !settings.get<ShowSurveyDialogSetting>().value,
-          ),
-        );
-      }
+        if (state is ShowHelpUsPrompt) {
+          emit(
+            state.copyWith(
+              dontShowThisAgain: !settings.get<ShowSurveyDialogSetting>().value,
+            ),
+          );
+        }
+      });
     });
   }
 
@@ -61,7 +60,7 @@ class SurveyCubit extends Cubit<SurveyState> with Loggable {
 
   void next() {
     if (state is ShowHelpUsPrompt) {
-      emit(ShowQuestion(state.survey.questions.first, survey: state.survey));
+      emit(ShowQuestion(state.survey!.questions.first, survey: state.survey));
     } else if (state is ShowQuestion) {
       _progressToNextQuestion();
     }
@@ -80,16 +79,16 @@ class SurveyCubit extends Cubit<SurveyState> with Loggable {
 
   void _progressToNextQuestion() {
     final state = this.state as ShowQuestion;
+    final survey = state.survey!;
 
-    final indexOfCurrent = state.survey.questions.indexOf(state.question);
+    final indexOfCurrent = survey.questions.indexOf(state.question);
 
-    if (indexOfCurrent == state.survey.questions.length - 1) {
+    if (indexOfCurrent == survey.questions.length - 1) {
       emit(ShowThankYou(state.survey));
 
       // The survey is finished, so don't show it again
       _changeSetting(setting: const ShowSurveyDialogSetting(false));
 
-      final survey = state.survey;
 
       _sendSurveyResults(
         data: {
@@ -97,13 +96,13 @@ class SurveyCubit extends Cubit<SurveyState> with Loggable {
           'language': survey.language,
           'trigger': survey.trigger.toJson(),
           'questions': [
-            for (var s = state; s != null; s = s.previous)
+            for (ShowQuestion? s = state; s != null; s = s.previous)
               {
                 'id': s.question.id,
                 'phrase': s.question.phrase,
                 'answer': {
                   'id': s.answer,
-                  'phrase': s.question.answers[s.answer],
+                  'phrase': s.question.answers[s.answer!],
                 }
               },
           ].reversed.toList(),
@@ -115,8 +114,8 @@ class SurveyCubit extends Cubit<SurveyState> with Loggable {
 
     emit(
       ShowQuestion(
-        state.survey.questions[indexOfCurrent + 1],
-        survey: state.survey,
+        survey.questions[indexOfCurrent + 1],
+        survey: survey,
         previous: state,
       ),
     );
@@ -125,6 +124,8 @@ class SurveyCubit extends Cubit<SurveyState> with Loggable {
   void _progressToPreviousQuestion() {
     final state = this.state as ShowQuestion;
 
-    emit(state.previous);
+    if (state.previous != null) {
+      emit(state.previous!);
+    }
   }
 }

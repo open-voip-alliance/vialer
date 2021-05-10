@@ -1,6 +1,5 @@
 import 'package:dartx/dartx.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import '../../app/util/json_converter.dart';
 
@@ -14,7 +13,7 @@ part 'availability.g.dart';
 @JsonSerializable(fieldRename: FieldRename.snake)
 class Availability extends Equatable {
   @JsonIdConverter()
-  final int id;
+  final int? id;
 
   @JsonKey(name: 'fixeddestinations')
   final List<FixedDestination> fixedDestinations;
@@ -23,9 +22,9 @@ class Availability extends Equatable {
   final List<PhoneAccount> phoneAccounts;
 
   @JsonKey(name: 'selecteduserdestination')
-  final SelectedDestinationInfo selectedDestinationInfo;
+  final SelectedDestinationInfo? selectedDestinationInfo;
 
-  Destination get activeDestination {
+  Destination? get activeDestination {
     if (selectedDestinationInfo?.phoneAccountId == null &&
         selectedDestinationInfo?.fixedDestinationId == null) {
       return FixedDestination.notAvailable;
@@ -40,8 +39,8 @@ class Availability extends Equatable {
 
   List<Destination> get _destinations {
     return <Destination>[
-      ...fixedDestinations ?? [],
-      ...phoneAccounts ?? [],
+      ...fixedDestinations,
+      ...phoneAccounts,
     ];
   }
 
@@ -53,17 +52,17 @@ class Availability extends Equatable {
   }
 
   const Availability({
-    this.id,
-    this.fixedDestinations,
-    this.phoneAccounts,
-    this.selectedDestinationInfo,
+    required this.id,
+    required this.fixedDestinations,
+    required this.phoneAccounts,
+    required this.selectedDestinationInfo,
   });
 
   Availability copyWith({
-    int id,
-    List<FixedDestination> fixedDestinations,
-    List<PhoneAccount> phoneAccounts,
-    SelectedDestinationInfo selectedDestinationInfo,
+    int? id,
+    List<FixedDestination>? fixedDestinations,
+    List<PhoneAccount>? phoneAccounts,
+    SelectedDestinationInfo? selectedDestinationInfo,
   }) {
     return Availability(
       id: id ?? this.id,
@@ -75,10 +74,10 @@ class Availability extends Equatable {
   }
 
   Availability copyWithSelectedDestination({
-    @required Destination destination,
+    required Destination destination,
   }) {
     return copyWith(
-      selectedDestinationInfo: selectedDestinationInfo.replaceDestination(
+      selectedDestinationInfo: selectedDestinationInfo!.replaceDestination(
         destination: destination,
       ),
     );
@@ -97,7 +96,7 @@ class Availability extends Equatable {
   Map<String, dynamic> toJson() => _$AvailabilityToJson(this);
 
   @override
-  List<Object> get props => [
+  List<Object?> get props => [
         id,
         fixedDestinations,
         phoneAccounts,

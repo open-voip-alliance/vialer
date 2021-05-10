@@ -6,7 +6,6 @@ import 'package:flutter_phone_lib/audio/audio_route.dart';
 import 'package:flutter_phone_lib/audio/audio_state.dart';
 import 'package:flutter_phone_lib/flutter_phone_lib.dart' hide Logger;
 import 'package:logging/logging.dart';
-import 'package:meta/meta.dart';
 
 import '../../app/util/loggable.dart';
 import '../../dependency_locator.dart';
@@ -23,19 +22,17 @@ import 'services/middleware.dart';
 import 'storage.dart';
 
 class VoipRepository with Loggable {
-  PhoneLib _phoneLib;
+  late PhoneLib _phoneLib;
 
   final _hasStartedCompleter = Completer<bool>();
 
   Future<bool> get hasStarted => _hasStartedCompleter.future;
 
   Future<void> start({
-    @required VoipConfig config,
-    @required Brand brand,
-    @required BuildInfo buildInfo,
+    required VoipConfig config,
+    required Brand brand,
+    required BuildInfo buildInfo,
   }) async {
-    assert(config?.sipUserId != null && config?.password != null);
-
     _phoneLib = await startPhoneLib((builder) {
       builder
         ..auth = Auth(
@@ -74,7 +71,7 @@ class VoipRepository with Loggable {
 
   Future<void> answerCall() => _phoneLib.actions.answer();
 
-  Future<Call> get activeCall => _phoneLib.calls.active;
+  Future<Call?> get activeCall => _phoneLib.calls.active;
 
   Future<void> endCall() => _phoneLib.actions.end();
 
@@ -111,11 +108,11 @@ class _Middleware with Loggable {
   final _operatingSystemInfoRepository =
       dependencyLocator<OperatingSystemInfoRepository>();
 
-  String get _token => _storageRepository.pushToken;
+  String? get _token => _storageRepository.pushToken;
 
-  VoipConfig get _config => _storageRepository.voipConfig;
+  VoipConfig? get _config => _storageRepository.voipConfig;
 
-  Future<void> register(VoipConfig voipConfig) async {
+  Future<void> register(VoipConfig? voipConfig) async {
     assert(Platform.isAndroid); // TODO: Remove when iOS is supported.
 
     logger.info('Registering..');
@@ -126,7 +123,6 @@ class _Middleware with Loggable {
     }
 
     final user = await _getUser(latest: false);
-    assert(user != null);
 
     if (_token == null) {
       logger.info('Registration cancelled: No token');
@@ -137,9 +133,9 @@ class _Middleware with Loggable {
 
     // TODO: Check for errors
     final response = await _service.postAndroidDevice(
-      name: user.email,
-      token: _token,
-      sipUserId: voipConfig.sipUserId,
+      name: user!.email,
+      token: _token!,
+      sipUserId: voipConfig!.sipUserId,
       osVersion: await _operatingSystemInfoRepository
           .getOperatingSystemInfo()
           .then((i) => i.version),
@@ -157,7 +153,7 @@ class _Middleware with Loggable {
     logger.info('Registered!');
   }
 
-  Future<void> unregister(VoipConfig voipConfig) async {
+  Future<void> unregister(VoipConfig? voipConfig) async {
     assert(_token != null);
 
     assert(voipConfig?.sipUserId != null);
@@ -167,8 +163,8 @@ class _Middleware with Loggable {
 
     // TODO: Check for errors
     await _service.deleteAndroidDevice(
-      token: _token,
-      sipUserId: voipConfig.sipUserId,
+      token: _token!,
+      sipUserId: voipConfig!.sipUserId,
       app: await _getBuildInfo().then((i) => i.packageName),
     );
 
@@ -187,10 +183,10 @@ class _Middleware with Loggable {
     }
 
     final response = await _service.callResponse(
-      uniqueKey: remoteMessage.data['unique_key'],
+      uniqueKey: remoteMessage.data['unique_key']!,
       available: available.toString(),
-      messageStartTime: remoteMessage.data['message_start_time'],
-      sipUserId: _config.sipUserId,
+      messageStartTime: remoteMessage.data['message_start_time']!,
+      sipUserId: _config!.sipUserId,
     );
 
     if (!response.isSuccessful) {

@@ -185,7 +185,7 @@ class VoysTheme extends BrandTheme {
               color: primary,
               textTheme: TextTheme(
                 headline6:
-                    super.themeData.appBarTheme.textTheme.headline6.copyWith(
+                    super.themeData.appBarTheme.textTheme!.headline6!.copyWith(
                           color: Colors.white,
                         ),
               ),
@@ -193,6 +193,11 @@ class VoysTheme extends BrandTheme {
                 color: Colors.white,
               ),
             ),
+        textButtonTheme: TextButtonThemeData(
+          style: ButtonStyle(
+            foregroundColor: MaterialStateProperty.all(primary),
+          ),
+        ),
       );
 }
 

@@ -7,7 +7,7 @@ import '../cubit.dart';
 import '../info/page.dart';
 
 class VoicemailPage extends StatelessWidget {
-  const VoicemailPage({Key key}) : super(key: key);
+  const VoicemailPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -3,19 +3,19 @@ import 'package:flutter/material.dart';
 import '../../../util/brand.dart';
 
 class StylizedTextField extends StatelessWidget {
-  final TextEditingController controller;
+  final TextEditingController? controller;
   final bool obscureText;
-  final TextInputType keyboardType;
-  final IconData prefixIcon;
-  final Widget suffix;
-  final String labelText;
+  final TextInputType? keyboardType;
+  final IconData? prefixIcon;
+  final Widget? suffix;
+  final String? labelText;
   final bool hasError;
   final bool autoCorrect;
   final TextCapitalization textCapitalization;
   final List<String> autofillHints;
 
   StylizedTextField({
-    Key key,
+    Key? key,
     this.labelText,
     this.prefixIcon,
     this.suffix,

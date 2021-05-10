@@ -11,22 +11,22 @@ class StylizedButton extends StatelessWidget {
 
   final _Type _type;
   final bool colored;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final Widget child;
 
   StylizedButton._(
     this._type, {
-    Key key,
+    Key? key,
     this.colored = false,
     this.onPressed,
-    this.child,
+    required this.child,
   }) : super(key: key);
 
   factory StylizedButton.raised({
-    Key key,
+    Key? key,
     bool colored = false,
-    VoidCallback onPressed,
-    Widget child,
+    VoidCallback? onPressed,
+    required Widget child,
   }) {
     return StylizedButton._(
       _Type.raised,
@@ -38,10 +38,10 @@ class StylizedButton extends StatelessWidget {
   }
 
   factory StylizedButton.outline({
-    Key key,
+    Key? key,
     bool colored = false,
-    VoidCallback onPressed,
-    Widget child,
+    VoidCallback? onPressed,
+    required Widget child,
   }) {
     return StylizedButton._(
       _Type.outline,
@@ -53,10 +53,10 @@ class StylizedButton extends StatelessWidget {
   }
 
   factory StylizedButton.flat({
-    Key key,
+    Key? key,
     bool colored = false,
-    VoidCallback onPressed,
-    Widget child,
+    VoidCallback? onPressed,
+    required Widget child,
   }) {
     return StylizedButton._(
       _Type.flat,
@@ -184,8 +184,8 @@ class _BottomBorderPainter extends CustomPainter {
 
   _BottomBorderPainter({
     this.enabled = true,
-    @required this.color,
-    @required this.thickness,
+    required this.color,
+    required this.thickness,
   });
 
   @override

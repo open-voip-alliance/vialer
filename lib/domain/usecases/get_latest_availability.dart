@@ -5,12 +5,11 @@ import '../repositories/destination.dart';
 import '../use_case.dart';
 import 'change_setting.dart';
 
-class GetLatestAvailabilityUseCase extends FutureUseCase<Availability> {
+class GetLatestAvailabilityUseCase extends UseCase {
   final _destinationRepository = dependencyLocator<DestinationRepository>();
   final _changeSetting = ChangeSettingUseCase();
 
-  @override
-  Future<Availability> call() async {
+  Future<Availability?> call() async {
     final availability = await _destinationRepository.getLatestAvailability();
 
     await _changeSetting(

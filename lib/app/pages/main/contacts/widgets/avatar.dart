@@ -12,7 +12,7 @@ class ContactAvatar extends StatelessWidget {
 
   const ContactAvatar(
     this.contact, {
-    Key key,
+    Key? key,
     this.size = defaultSize,
   }) : super(key: key);
 

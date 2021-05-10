@@ -1,8 +1,8 @@
 import 'package:dartx/dartx.dart';
 import 'package:libphonenumber/libphonenumber.dart';
-import 'package:logging/logging.dart';
-import 'package:meta/meta.dart';
+
 import 'package:timezone/timezone.dart';
+import '../../app/util/loggable.dart';
 
 import '../entities/call.dart';
 import '../entities/call_with_contact.dart';
@@ -10,7 +10,7 @@ import '../entities/contact.dart';
 import 'db/database.dart';
 import 'services/voipgrid.dart';
 
-class RecentCallRepository {
+class RecentCallRepository with Loggable {
   final VoipgridService _service;
   final Database _database;
 
@@ -19,16 +19,12 @@ class RecentCallRepository {
     this._database,
   );
 
-  Logger __logger;
-
-  Logger get _logger => __logger ??= Logger('@$runtimeType');
-
   final _daysPerPage = 28;
-  int _cacheStartPage;
+  int? _cacheStartPage;
 
   Future<List<CallWithContact>> getRecentCalls({
-    @required int page,
-    @required String outgoingNumber,
+    required int page,
+    required String outgoingNumber,
     Iterable<Contact> contacts = const [],
   }) async {
     final today = DateTime.now().add(const Duration(days: 1));
@@ -45,7 +41,7 @@ class RecentCallRepository {
 
     var calls = <Call>[];
 
-    _logger.info(
+    logger.info(
       'Fetching recent calls between: '
       '${toUtc.toIso8601String()} and ${fromUtc.toIso8601String()}',
     );
@@ -54,17 +50,17 @@ class RecentCallRepository {
     // from when we're sure there's nothing remote.
     if (page != 0 && page >= (_cacheStartPage ?? 0)) {
       calls = await _database.getCalls(from: fromUtc, to: toUtc);
-      _logger.info('Amount of calls from cache: ${calls.length}');
+      logger.info('Amount of calls from cache: ${calls.length}');
     }
 
     if (calls.isEmpty) {
-      _logger.info('None cached, request more via API');
+      logger.info('None cached, request more via API');
       final response = await _service.getPersonalCalls(
         from: fromUtc.toIso8601String(),
         to: toUtc.toIso8601String(),
       );
 
-      final objects = response.body['objects'] as List<dynamic> ?? [];
+      final objects = response.body['objects'] as List<dynamic>? ?? [];
 
       if (objects.isNotEmpty) {
         calls = objects
@@ -97,12 +93,12 @@ class RecentCallRepository {
           _cacheStartPage = page;
         }
 
-        _logger.info('Amount of calls from request: ${calls.length}');
+        logger.info('Amount of calls from request: ${calls.length}');
         _database.insertCalls(calls);
       }
     }
 
-    Future<String> normalizeNumber(String number) async => number.length > 3
+    Future<String?> normalizeNumber(String number) async => number.length > 3
         ? await PhoneNumberUtil.normalizePhoneNumber(
             phoneNumber: number,
             // TODO: Temporary fix. Preferably we'd could pass a prefix
@@ -141,7 +137,7 @@ class RecentCallRepository {
       ),
     );
 
-    _logger.info('Mapping calls to contacts');
+    logger.info('Mapping calls to contacts');
     return calls
         .map(
           (call) => call.withContact(

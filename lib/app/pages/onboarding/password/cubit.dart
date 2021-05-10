@@ -1,11 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../domain/usecases/change_password.dart';
-
 import '../../../../domain/usecases/onboarding/login.dart';
 import '../../../util/loggable.dart';
+import '../../../util/password.dart';
 import '../cubit.dart';
-import '../login/util.dart';
 import 'state.dart';
 
 export 'state.dart';
@@ -27,8 +26,8 @@ class PasswordCubit extends Cubit<PasswordState> with Loggable {
     }
 
     try {
-      final email = _onboarding.state.email;
-      final currentPassword = _onboarding.state.password;
+      final email = _onboarding.state.email!;
+      final currentPassword = _onboarding.state.password!;
 
       await _changePassword(
         email: email,

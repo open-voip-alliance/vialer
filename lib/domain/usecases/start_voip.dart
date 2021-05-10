@@ -8,7 +8,7 @@ import 'get_has_voip_enabled.dart';
 import 'get_voip_config.dart';
 import 'register_to_voip_middleware.dart';
 
-class StartVoipUseCase extends FutureUseCase<void> {
+class StartVoipUseCase extends UseCase {
   final _voipRepository = dependencyLocator<VoipRepository>();
 
   final _getHasVoipEnabled = GetHasVoipEnabledUseCase();
@@ -17,7 +17,6 @@ class StartVoipUseCase extends FutureUseCase<void> {
   final _getBrand = GetBrandUseCase();
   final _getBuildInfo = GetBuildInfoUseCase();
 
-  @override
   Future<void> call() async {
     if (!await _getHasVoipEnabled()) {
       throw VoipNotEnabledException();

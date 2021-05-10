@@ -1,3 +1,4 @@
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:flutter_segment/flutter_segment.dart';
 
 import '../../app/util/debug.dart';
@@ -30,7 +31,7 @@ class MetricsRepository {
 
   Future<void> track(
     String eventName, [
-    Map<String, dynamic> properties,
+    Map<String, dynamic>? properties,
   ]) async {
     await doIfNotDebug(() async {
       await Segment.track(eventName: eventName, properties: properties);

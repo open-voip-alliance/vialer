@@ -5,15 +5,15 @@ import 'package:provider/provider.dart';
 import '../../../resources/localizations.dart';
 import '../../../resources/theme.dart';
 import '../../../util/conditional_capitalization.dart';
+import '../../../util/password.dart';
 import '../../../widgets/stylized_button.dart';
 import '../cubit.dart';
-import '../login/util.dart';
 import '../widgets/error.dart';
 import '../widgets/stylized_text_field.dart';
 import 'cubit.dart';
 
 class PasswordPage extends StatefulWidget {
-  PasswordPage({Key key}) : super(key: key);
+  PasswordPage({Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _PasswordPageState();
