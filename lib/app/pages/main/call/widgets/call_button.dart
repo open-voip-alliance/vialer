@@ -9,7 +9,6 @@ class CallButton extends StatelessWidget {
   final IconData icon;
   final Object? heroTag;
   final BoxConstraints constraints;
-  final Function(String)? onCall;
 
   static const defaultHeroTag = _DefaultCallButtonHeroTag();
   static const defaultConstraints = BoxConstraints.tightFor(
@@ -17,28 +16,28 @@ class CallButton extends StatelessWidget {
     height: 64,
   );
 
-  const CallButton(
-      {Key? key,
-      required this.onPressed,
-      required this.backgroundColor,
-      required this.icon,
-      this.heroTag = defaultHeroTag,
-      this.constraints = defaultConstraints,
-      this.onCall})
-      : super(key: key);
+  const CallButton({
+    Key? key,
+    required this.onPressed,
+    required this.backgroundColor,
+    required this.icon,
+    this.heroTag = defaultHeroTag,
+    this.constraints = defaultConstraints,
+  }) : super(key: key);
 
   static Widget answer({
     Key? key,
     VoidCallback? onPressed,
     Object? heroTag = defaultHeroTag,
     BoxConstraints constraints = defaultConstraints,
+    IconData? icon,
   }) {
     return Builder(
       builder: (context) {
         return CallButton(
           onPressed: onPressed,
           backgroundColor: context.brand.theme.green1,
-          icon: VialerSans.phone,
+          icon: icon ?? VialerSans.phone,
           heroTag: heroTag,
           constraints: constraints,
         );
@@ -65,25 +64,6 @@ class CallButton extends StatelessWidget {
     );
   }
 
-  static Widget transfer(
-      {Key? key,
-      VoidCallback? onPressed,
-      Object? heroTag = defaultHeroTag,
-      BoxConstraints constraints = defaultConstraints,
-      Function(String)? onCall}) {
-    return Builder(
-      builder: (context) {
-        return CallButton(
-          onPressed: onPressed,
-          backgroundColor: context.brand.theme.green1,
-          icon: VialerSans.transfer,
-          heroTag: heroTag,
-          constraints: constraints,
-        );
-      },
-    );
-  }
-
   // Different names for different contexts.
 
   static Widget call({
@@ -91,12 +71,14 @@ class CallButton extends StatelessWidget {
     VoidCallback? onPressed,
     Object? heroTag = defaultHeroTag,
     BoxConstraints constraints = defaultConstraints,
+    IconData? icon,
   }) =>
       answer(
         key: key,
         onPressed: onPressed,
         heroTag: heroTag,
         constraints: constraints,
+        icon: icon
       );
 
   static Widget hangUp({

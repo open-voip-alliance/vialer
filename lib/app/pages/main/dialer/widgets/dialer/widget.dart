@@ -17,8 +17,9 @@ import '../t9/widget.dart';
 
 class Dialer extends StatefulWidget {
   final Function(String) onCall;
+  final IconData? callButtonIcon;
 
-  Dialer({required this.onCall});
+  Dialer({required this.onCall, this.callButtonIcon,});
 
   @override
   _DialerState createState() => _DialerState();
@@ -128,8 +129,10 @@ class _DialerState extends State<Dialer> {
 
 class _CallButton extends StatelessWidget {
   final VoidCallback? onPressed;
+  final IconData? callButtonIcon;
 
-  const _CallButton({Key? key, this.onPressed}) : super(key: key);
+  const _CallButton({Key? key, this.onPressed, this.callButtonIcon})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -147,6 +150,7 @@ class _CallButton extends StatelessWidget {
           minHeight: minSize,
         ),
         onPressed: onPressed,
+        icon: callButtonIcon
       ),
     );
   }

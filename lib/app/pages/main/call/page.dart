@@ -4,27 +4,24 @@ import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_phone_lib/call/call.dart';
-import 'package:flutter_phone_lib/call/call_state.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_phone_lib/audio/audio_route.dart';
 import 'package:flutter_phone_lib/audio/audio_state.dart';
+import 'package:flutter_phone_lib/call/call.dart';
+import 'package:flutter_phone_lib/call/call_state.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:vialer/app/pages/main/call/widgets/call_rating.dart';
-import 'package:vialer/app/pages/main/dialer/cubit.dart';
-import 'package:vialer/app/pages/main/dialer/page.dart';
-import 'package:vialer/app/pages/main/dialer/widgets/dialer/widget.dart';
-import 'package:vialer/app/pages/main/dialer/widgets/t9/widget.dart';
 
 import '../../../resources/localizations.dart';
 import '../../../resources/theme.dart';
 import '../../../util/brand.dart';
+import '../dialer/cubit.dart';
+import '../dialer/widgets/dialer/widget.dart';
 import '../widgets/caller.dart';
 import '../widgets/connectivity_alert.dart';
 import '../widgets/dial_pad/keypad.dart';
 import '../widgets/dial_pad/widget.dart';
 import 'widgets/call_button.dart';
+import 'widgets/call_rating.dart';
 
 class CallPage extends StatefulWidget {
   const CallPage({
@@ -62,8 +59,6 @@ class _CallPageState extends State<CallPage> with WidgetsBindingObserver {
     pop() {
       Navigator.popUntil(context, (route) => route.isFirst);
     }
-
-    ;
 
     if (popIn == null) {
       pop();
@@ -730,6 +725,7 @@ class _CallActionButtons extends StatelessWidget {
                     ),
                     Expanded(
                       child: Dialer(
+                        callButtonIcon: VialerSans.transfer,
                         onCall: (number) {
                           context.read<CallerCubit>().beginTransfer(number);
                           Navigator.of(context).pop();

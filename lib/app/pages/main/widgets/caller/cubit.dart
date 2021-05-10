@@ -256,35 +256,42 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
   }
 
   Future<void> _onVoipCallEvent(Event event) async {
+    if (event is! CallSessionEvent) {
+      logger.info('Ignoring event as it is not a CallSessionEvent');
+      return;
+    }
+
     if (state is FinishedCalling) {
       logger.info('State is call ended, not updating state any further');
       return;
     }
 
+    final callSessionState = event.state!;
+
     if (event is IncomingCallReceived) {
-      emit(Ringing(voip: event.state!));
+      emit(Ringing(voip: callSessionState));
       logger.info('Incoming VoIP call, ringing');
     } else if (event is OutgoingCallStarted) {
       final originState = state as CallOriginDetermined;
-      emit(InitiatingCall(origin: originState.origin, voip: event.state!));
+      emit(InitiatingCall(origin: originState.origin, voip: callSessionState));
       logger.info('Initiating VoIP call');
     } else if (event is CallConnected) {
-      emit(processState.calling(voip: event.state!));
+      emit(processState.calling(voip: callSessionState));
       logger.info('VoIP call connected');
     } else if (event is AttendedTransferStarted) {
-      emit(processState.transferStarted(voip: event.state!));
-      logger.info('Starting attended transfer!');
+      emit(processState.transferStarted(voip: callSessionState));
+      logger.info('Starting attended transfer');
     } else if (event is AttendedTransferAborted) {
-      emit(processState.calling(voip: event.state!));
-      logger.info('Transfer has been aborted!');
+      emit(processState.calling(voip: callSessionState));
+      logger.info('Transfer has been aborted');
     } else if (event is AttendedTransferEnded) {
-      emit(processState.transferComplete(voip: event.state!));
-      logger.info('Completed attended transfer!');
+      emit(processState.transferComplete(voip: callSessionState));
+      logger.info('Completed attended transfer');
     } else if (event is CallEnded) {
       // It's possible the call ended so fast that we were not in
       // a CallProcessState yet.
       if (state is CallProcessState) {
-        emit(processState.finished(voip: event.state));
+        emit(processState.finished(voip: callSessionState));
       } else {
         emit(const CanCall());
       }
@@ -294,13 +301,8 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
       // It's possible we're not in a CallProcessState yet, because we missed an
       // event, if that's the case we'll emit the state necessary to get there.
       if (state is! CallProcessState) {
-        if (event.state?.activeCall?.direction.isInbound == true) {
-          emit(
-            Calling(
-              origin: CallOrigin.incoming,
-              voip: event.state,
-            ),
-          );
+        if (callSessionState.activeCall?.direction.isInbound == true) {
+          emit(Calling(origin: CallOrigin.incoming, voip: callSessionState,),);
           logger.info('VoIP call connected (recovered)');
         } else {
           throw UnsupportedError(
@@ -309,9 +311,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
         }
       }
 
-      emit(processState.copyWith(
-        voip: event.state,
-      ));
+      emit(processState.copyWith(voip: callSessionState,));
     }
   }
 
