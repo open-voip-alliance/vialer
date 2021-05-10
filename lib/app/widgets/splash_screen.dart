@@ -4,10 +4,10 @@ import '../util/brand.dart';
 
 class SplashScreen extends StatelessWidget {
   final Color iconColor;
-  final Gradient gradient;
+  final Gradient? gradient;
 
   const SplashScreen({
-    Key key,
+    Key? key,
     this.iconColor = Colors.white,
     this.gradient,
   }) : super(key: key);

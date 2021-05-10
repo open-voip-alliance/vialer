@@ -1,17 +1,15 @@
 import 'dart:async';
 
-import 'package:flutter_phone_lib/audio/audio_route.dart';
-import 'package:meta/meta.dart';
+import 'package:flutter_phone_lib/flutter_phone_lib.dart';
 
 import '../../../dependency_locator.dart';
 import '../../repositories/metrics.dart';
 import '../../use_case.dart';
 
-class TrackRouteAudioUseCase extends FutureUseCase<void> {
+class TrackRouteAudioUseCase extends UseCase {
   final _metricsRepository = dependencyLocator<MetricsRepository>();
 
-  @override
-  Future<void> call({@required AudioRoute route}) {
+  Future<void> call({required AudioRoute route}) {
     if (route == AudioRoute.speaker) {
       return _metricsRepository.track('route-audio-speaker');
     } else if (route == AudioRoute.bluetooth) {

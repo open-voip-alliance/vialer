@@ -9,7 +9,7 @@ part 'phone_account.g.dart';
 class PhoneAccount extends Destination {
   @override
   @JsonIdConverter()
-  final int id;
+  final int? id;
 
   final int accountId;
 
@@ -21,19 +21,19 @@ class PhoneAccount extends Destination {
   final String password;
 
   const PhoneAccount({
-    this.id,
-    this.accountId,
-    this.internalNumber,
-    this.description,
-    this.password,
+    required this.id,
+    required this.accountId,
+    required this.internalNumber,
+    required this.description,
+    required this.password,
   });
 
   PhoneAccount copyWith({
-    int id,
-    int accountId,
-    int internalNumber,
-    String description,
-    String password,
+    int? id,
+    int? accountId,
+    int? internalNumber,
+    String? description,
+    String? password,
   }) {
     return PhoneAccount(
       id: id ?? this.id,
@@ -53,7 +53,7 @@ class PhoneAccount extends Destination {
   String toString() => '$runtimeType(id: $id, $internalNumber, $description)';
 
   @override
-  List<Object> get props => [
+  List<Object?> get props => [
         ...super.props,
         id,
         accountId,

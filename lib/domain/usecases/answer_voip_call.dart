@@ -4,9 +4,8 @@ import '../../dependency_locator.dart';
 import '../repositories/voip.dart';
 import '../use_case.dart';
 
-class AnswerVoipCallUseCase extends FutureUseCase<void> {
+class AnswerVoipCallUseCase extends UseCase {
   final _voipRepository = dependencyLocator<VoipRepository>();
 
-  @override
   Future<void> call() => _voipRepository.answerCall();
 }

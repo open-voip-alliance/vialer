@@ -8,12 +8,12 @@ import 'package:flutter_phone_lib/call/call_state.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_phone_lib/audio/audio_route.dart';
 import 'package:flutter_phone_lib/audio/audio_state.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../resources/localizations.dart';
 import '../../../resources/theme.dart';
 import '../../../util/brand.dart';
-import '../util/text_extension.dart';
 import '../widgets/caller.dart';
 import '../widgets/connectivity_alert.dart';
 import '../widgets/dial_pad/keypad.dart';
@@ -22,7 +22,7 @@ import 'widgets/call_button.dart';
 
 class CallPage extends StatefulWidget {
   const CallPage({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -34,7 +34,7 @@ class _CallPageState extends State<CallPage> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance!.addObserver(this);
   }
 
   @override
@@ -64,7 +64,7 @@ class _CallPageState extends State<CallPage> with WidgetsBindingObserver {
   // type but different call information has been emitted.
   Future<void> _onStateChanged(BuildContext context, CallerState state) async {
     if (state is FinishedCalling) {
-      if (state.voipCall != null && state.voipCall.duration >= 1) {
+      if (state.voipCall != null && state.voipCall!.duration >= 1) {
         _requestCallRating(context, state).then((_) => Navigator.pop(context));
       } else {
         _popAfter(const Duration(seconds: 3));
@@ -109,7 +109,7 @@ class _CallPageState extends State<CallPage> with WidgetsBindingObserver {
                           VialerSans.star,
                           color: context.brand.theme.primary,
                         ),
-                        half: null,
+                        half: const SizedBox(),
                         empty: Icon(
                           VialerSans.starOutline,
                           color: context.brand.theme.grey4,
@@ -152,7 +152,7 @@ class _CallPageState extends State<CallPage> with WidgetsBindingObserver {
   void _submitCallRating(double rating, FinishedCalling state) {
     context.read<CallerCubit>().rateVoipCall(
           rating: rating.toInt(),
-          call: state.voipCall,
+          call: state.voipCall!,
         );
 
     Timer(const Duration(seconds: 1), () {
@@ -175,7 +175,7 @@ class _CallPageState extends State<CallPage> with WidgetsBindingObserver {
             // the process of a call (state is CallProcessState),
             // this page wouldn't show anyway.
             final processState = state as CallProcessState;
-            final call = processState.voipCall;
+            final call = processState.voipCall!;
 
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -255,7 +255,7 @@ class _CallPageState extends State<CallPage> with WidgetsBindingObserver {
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
+    WidgetsBinding.instance!.removeObserver(this);
     super.dispose();
   }
 }
@@ -266,14 +266,14 @@ class _ActionButton extends StatelessWidget {
 
   final bool active;
 
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
 
   const _ActionButton({
-    Key key,
-    @required this.icon,
-    @required this.text,
+    Key? key,
+    required this.icon,
+    required this.text,
     this.active = false,
-    @required this.onPressed,
+    this.onPressed,
   }) : super(key: key);
 
   @override
@@ -329,7 +329,9 @@ class _AudioRouteButton extends StatelessWidget {
   const _AudioRouteButton();
 
   Future<void> _showAudioPopupMenu(
-      BuildContext context, AudioState audioState) async {
+    BuildContext context,
+    AudioState? audioState,
+  ) async {
     final bluetoothDeviceName = audioState?.bluetoothDeviceName ?? '';
     final currentRoute = audioState?.currentRoute ?? AudioRoute.phone;
 
@@ -348,7 +350,11 @@ class _AudioRouteButton extends StatelessWidget {
                         padding: EdgeInsets.only(right: 10),
                         child: Icon(VialerSans.phone),
                       ),
-                      Text(context.msg.main.call.actions.phone).capitalize(),
+                      Text(
+                        toBeginningOfSentenceCase(
+                          context.msg.main.call.actions.phone,
+                        )!,
+                      ),
                       const Spacer(),
                       if (currentRoute == AudioRoute.phone)
                         const Icon(VialerSans.check)
@@ -366,7 +372,11 @@ class _AudioRouteButton extends StatelessWidget {
                         padding: EdgeInsets.only(right: 10),
                         child: Icon(VialerSans.speaker),
                       ),
-                      Text(context.msg.main.call.actions.speaker).capitalize(),
+                      Text(
+                        toBeginningOfSentenceCase(
+                          context.msg.main.call.actions.speaker,
+                        )!,
+                      ),
                       const Spacer(),
                       if (currentRoute == AudioRoute.speaker)
                         const Icon(VialerSans.check)
@@ -405,21 +415,24 @@ class _AudioRouteButton extends StatelessWidget {
   }
 
   Text formatBluetoothLabel({
-    @required BuildContext context,
-    @required String bluetoothDeviceName,
+    required BuildContext context,
+    required String bluetoothDeviceName,
   }) {
     final label = context.msg.main.call.actions.bluetooth;
 
-    return Text(bluetoothDeviceName.isNotEmpty
+    return Text(
+      toBeginningOfSentenceCase(
+        bluetoothDeviceName.isNotEmpty
             ? '$label ($bluetoothDeviceName)'
-            : label)
-        .capitalize();
+            : label,
+      )!,
+    );
   }
 
   Icon findIcon({
-    @required BuildContext context,
-    @required bool hasBluetooth,
-    @required AudioRoute currentRoute,
+    required BuildContext context,
+    required bool hasBluetooth,
+    required AudioRoute currentRoute,
   }) {
     if (!hasBluetooth || currentRoute == AudioRoute.speaker) {
       return const Icon(VialerSans.speaker);
@@ -433,10 +446,10 @@ class _AudioRouteButton extends StatelessWidget {
   }
 
   Text findText({
-    @required BuildContext context,
-    @required bool hasBluetooth,
-    @required AudioRoute currentRoute,
-    @required String bluetoothDeviceName,
+    required BuildContext context,
+    required bool hasBluetooth,
+    required AudioRoute currentRoute,
+    required String bluetoothDeviceName,
   }) {
     if (!hasBluetooth || currentRoute == AudioRoute.speaker) {
       return Text(context.msg.main.call.actions.speaker);
@@ -459,7 +472,7 @@ class _AudioRouteButton extends StatelessWidget {
       final currentRoute =
           processState.audioState?.currentRoute ?? AudioRoute.phone;
       final hasBluetooth = processState.audioState != null &&
-          processState.audioState.availableRoutes
+          processState.audioState!.availableRoutes
               .contains(AudioRoute.bluetooth);
 
       return _ActionButton(
@@ -496,8 +509,8 @@ class _CallActions extends StatefulWidget {
   final void Function(Duration) popAfter;
 
   const _CallActions({
-    Key key,
-    @required this.popAfter,
+    Key? key,
+    required this.popAfter,
   }) : super(key: key);
 
   @override
@@ -509,9 +522,11 @@ class _CallActionsState extends State<_CallActions> {
   static const _dialPadRouteName = 'dial-pad';
 
   final _navigatorKey = GlobalKey<NavigatorState>();
-  final _dialPadController = TextEditingController();
 
-  String _latestDialPadValue;
+  NavigatorState get _navigatorState => _navigatorKey.currentState!;
+
+  final _dialPadController = TextEditingController();
+  late String _latestDialPadValue;
 
   void _hangUp() {
     context.read<CallerCubit>().endVoipCall();
@@ -537,8 +552,8 @@ class _CallActionsState extends State<_CallActions> {
   // we use WillPopScope to capture that event, and pop the nested navigator
   // route if possible.
   Future<bool> _onWillPop(BuildContext context) {
-    if (_navigatorKey.currentState.canPop()) {
-      _navigatorKey.currentState.pop();
+    if (_navigatorState.canPop()) {
+      _navigatorState.pop();
       return SynchronousFuture(false);
     }
 
@@ -571,7 +586,7 @@ class _CallActionsState extends State<_CallActions> {
                 return _DialPad(
                   dialPadController: _dialPadController,
                   onHangUpButtonPressed: _hangUp,
-                  onCancelButtonPressed: _navigatorKey.currentState.pop,
+                  onCancelButtonPressed: _navigatorState.pop,
                 );
               });
             }
@@ -588,8 +603,8 @@ class _CallActionButtons extends StatelessWidget {
   final void Function() onHangUpButtonPressed;
 
   const _CallActionButtons({
-    Key key,
-    @required this.onHangUpButtonPressed,
+    Key? key,
+    required this.onHangUpButtonPressed,
   }) : super(key: key);
 
   void _toggleMute(BuildContext context) =>
@@ -609,6 +624,7 @@ class _CallActionButtons extends StatelessWidget {
     return BlocBuilder<CallerCubit, CallerState>(
       builder: (context, state) {
         final processState = state as CallProcessState;
+        final call = processState.voipCall!;
 
         return Column(
           mainAxisAlignment: MainAxisAlignment.end,
@@ -622,9 +638,7 @@ class _CallActionButtons extends StatelessWidget {
                   text: Text(context.msg.main.call.actions.mute),
                   active: processState.isVoipCallMuted,
                   // We can't mute when on hold.
-                  onPressed: !processState.voipCall.isOnHold
-                      ? () => _toggleMute(context)
-                      : null,
+                  onPressed: !call.isOnHold ? () => _toggleMute(context) : null,
                 ),
                 const Spacer(),
                 _ActionButton(
@@ -651,7 +665,7 @@ class _CallActionButtons extends StatelessWidget {
                 _ActionButton(
                   icon: const Icon(VialerSans.onHold),
                   text: Text(context.msg.main.call.actions.hold),
-                  active: processState.voipCall.isOnHold,
+                  active: call.isOnHold,
                   onPressed: () => _toggleHold(context),
                 ),
                 const Spacer(flex: 3),
@@ -678,10 +692,10 @@ class _DialPad extends StatelessWidget {
   final VoidCallback onCancelButtonPressed;
 
   const _DialPad({
-    Key key,
-    @required this.dialPadController,
-    @required this.onHangUpButtonPressed,
-    @required this.onCancelButtonPressed,
+    Key? key,
+    required this.dialPadController,
+    required this.onHangUpButtonPressed,
+    required this.onCancelButtonPressed,
   }) : super(key: key);
 
   @override

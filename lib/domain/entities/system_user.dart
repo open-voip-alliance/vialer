@@ -10,7 +10,7 @@ class SystemUser {
   final String email;
 
   @JsonKey(name: 'mobile_nr')
-  final String mobileNumber;
+  final String? mobileNumber;
 
   final String firstName;
   final String lastName;
@@ -18,34 +18,34 @@ class SystemUser {
   final String token;
 
   @JsonKey(name: 'app_account')
-  final Uri appAccountUrl;
+  final Uri? appAccountUrl;
 
-  final String outgoingCli;
+  final String? outgoingCli;
 
-  String get appAccountId => appAccountUrl?.pathSegments?.lastOrNullWhere(
+  String? get appAccountId => appAccountUrl?.pathSegments.lastOrNullWhere(
         (p) => p.isNotEmpty,
       );
 
   const SystemUser({
-    this.uuid,
-    this.email,
+    required this.uuid,
+    required this.email,
     this.mobileNumber,
-    this.firstName,
-    this.lastName,
-    this.token,
+    required this.firstName,
+    required this.lastName,
+    required this.token,
     this.appAccountUrl,
     this.outgoingCli,
   });
 
   SystemUser copyWith({
-    String uuid,
-    String email,
-    String mobileNumber,
-    String firstName,
-    String lastName,
-    String token,
-    Uri appAccount,
-    String outgoingCli,
+    String? uuid,
+    String? email,
+    String? mobileNumber,
+    String? firstName,
+    String? lastName,
+    String? token,
+    Uri? appAccount,
+    String? outgoingCli,
   }) {
     return SystemUser(
       uuid: uuid ?? this.uuid,

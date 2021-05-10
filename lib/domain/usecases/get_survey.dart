@@ -1,17 +1,14 @@
 import 'dart:async';
 
-import 'package:meta/meta.dart';
-
 import '../entities/survey/question.dart';
 import '../entities/survey/survey.dart';
 import '../entities/survey/survey_trigger.dart';
 import '../use_case.dart';
 
-class GetSurveyUseCase extends FutureUseCase<Survey> {
-  @override
+class GetSurveyUseCase extends UseCase {
   Future<Survey> call({
-    @required String language,
-    @required SurveyTrigger trigger,
+    required String language,
+    required SurveyTrigger trigger,
   }) async {
     // This use case acts like an API could in the future.
 

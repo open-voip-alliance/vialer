@@ -4,8 +4,8 @@ import '../../../util/brand.dart';
 
 void showSnackBar(
   BuildContext context, {
-  @required Widget icon,
-  @required Widget label,
+  required Widget icon,
+  required Widget label,
   EdgeInsets padding = EdgeInsets.zero,
   Duration duration = const Duration(seconds: 4),
 }) {
@@ -13,7 +13,7 @@ void showSnackBar(
 
   final contentColor = context.brand.theme.buttonColoredRaisedTextColor;
 
-  Scaffold.of(context).showSnackBar(
+  ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
       duration: duration,
       behavior: SnackBarBehavior.fixed,

@@ -1,10 +1,9 @@
 import '../use_case.dart';
 import 'get_user.dart';
 
-class GetIsVoipAllowed extends FutureUseCase<bool> {
+class GetIsVoipAllowed extends UseCase {
   final _getUser = GetUserUseCase();
 
-  @override
   Future<bool> call() async {
     final user = await _getUser(latest: false);
     return user?.appAccountId != null;

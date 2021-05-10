@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:meta/meta.dart';
 import 'package:chopper/chopper.dart' hide JsonConverter;
 
 import 'util.dart';
@@ -21,26 +20,26 @@ abstract class MiddlewareService extends ChopperService {
 
   @Post(path: 'android-device/')
   Future<Response> postAndroidDevice({
-    @required @Field() String name,
-    @required @Field() String token,
-    @required @Field('sip_user_id') String sipUserId,
-    @required @Field('os_version') String osVersion,
-    @required @Field('client_version') String clientVersion,
-    @required @Field() String app,
+    @Field() required String name,
+    @Field() required String token,
+    @Field('sip_user_id') required String sipUserId,
+    @Field('os_version') required String osVersion,
+    @Field('client_version') required String clientVersion,
+    @Field() required String app,
   });
 
   @Delete(path: 'android-device/')
   Future<Response> deleteAndroidDevice({
-    @required @Field() String token,
-    @required @Field('sip_user_id') String sipUserId,
-    @required @Field() String app,
+    @Field() required String token,
+    @Field('sip_user_id') required String sipUserId,
+    @Field() required String app,
   });
 
   @Post(path: 'call-response/')
   Future<Response> callResponse({
-    @required @Field('unique_key') String uniqueKey,
-    @required @Field() String available,
-    @required @Field('message_start_time') String messageStartTime,
-    @required @Field('sip_user_id') String sipUserId,
+    @Field('unique_key') required String uniqueKey,
+    @Field() required String available,
+    @Field('message_start_time') required String messageStartTime,
+    @Field('sip_user_id') required String sipUserId,
   });
 }

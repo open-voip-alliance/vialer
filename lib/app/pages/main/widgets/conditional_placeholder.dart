@@ -8,10 +8,10 @@ class ConditionalPlaceholder extends StatelessWidget {
   final Widget child;
 
   const ConditionalPlaceholder({
-    Key key,
-    @required this.showPlaceholder,
-    @required this.placeholder,
-    @required this.child,
+    Key? key,
+    required this.showPlaceholder,
+    required this.placeholder,
+    required this.child,
   }) : super(key: key);
 
   @override
@@ -27,10 +27,10 @@ class Warning extends StatelessWidget {
   final List<Widget> children;
 
   const Warning({
-    Key key,
-    @required this.icon,
-    @required this.title,
-    @required this.description,
+    Key? key,
+    required this.icon,
+    required this.title,
+    required this.description,
     this.children = const [],
   }) : super(key: key);
 
@@ -81,9 +81,9 @@ class LoadingIndicator extends StatelessWidget {
   final Widget description;
 
   const LoadingIndicator({
-    Key key,
-    this.title,
-    this.description,
+    Key? key,
+    required this.title,
+    required this.description,
   }) : super(key: key);
 
   @override
@@ -108,7 +108,7 @@ class LoadingIndicator extends StatelessWidget {
 class _Illustration extends StatelessWidget {
   final Widget child;
 
-  const _Illustration({Key key, @required this.child}) : super(key: key);
+  const _Illustration({Key? key, required this.child}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

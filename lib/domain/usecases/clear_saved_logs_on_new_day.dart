@@ -4,12 +4,11 @@ import '../../dependency_locator.dart';
 import '../repositories/storage.dart';
 import '../use_case.dart';
 
-class ClearSavedLogsOnNewDayUseCase extends FutureUseCase<void> {
+class ClearSavedLogsOnNewDayUseCase extends UseCase {
   final _storageRepository = dependencyLocator<StorageRepository>();
 
-  @override
   Future<void> call() async {
-    final lastLog = _storageRepository.logs?.split('\n')?.last;
+    final lastLog = _storageRepository.logs?.split('\n').last;
     if (lastLog == null) {
       return;
     }

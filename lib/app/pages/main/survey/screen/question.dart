@@ -12,12 +12,12 @@ import '../cubit.dart';
 class QuestionScreen extends StatelessWidget {
   final Question question;
   final Survey survey;
-  final int answer;
+  final int? answer;
 
   const QuestionScreen({
-    Key key,
-    @required this.question,
-    @required this.survey,
+    Key? key,
+    required this.question,
+    required this.survey,
     this.answer,
   }) : super(key: key);
 
@@ -80,19 +80,17 @@ class QuestionScreen extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            FlatButton(
+            TextButton(
               onPressed: survey.questions.indexOf(question) != 0
                   ? () => _previous(context)
                   : null,
-              textColor: context.brand.theme.primary,
               child: Text(
                 context.msg.generic.button.previous
                     .toUpperCaseIfAndroid(context),
               ),
             ),
-            FlatButton(
+            TextButton(
               onPressed: () => _next(context),
-              textColor: context.brand.theme.primary,
               child: Text(
                 isLastQuestion
                     ? context.msg.generic.button.done
@@ -114,9 +112,9 @@ class _QuestionHeader extends StatelessWidget {
   final int total;
 
   const _QuestionHeader({
-    Key key,
-    @required this.index,
-    @required this.total,
+    Key? key,
+    required this.index,
+    required this.total,
   }) : super(key: key);
 
   @override
@@ -154,14 +152,14 @@ class _Choice extends StatelessWidget {
   final Widget label;
 
   const _Choice({
-    Key key,
-    @required this.selected,
-    @required this.beforeSelected,
-    @required this.extreme,
-    @required this.hasSelection,
-    @required this.onPressed,
-    @required this.value,
-    @required this.label,
+    Key? key,
+    required this.selected,
+    required this.beforeSelected,
+    required this.extreme,
+    required this.hasSelection,
+    required this.onPressed,
+    required this.value,
+    required this.label,
   }) : super(key: key);
 
   @override

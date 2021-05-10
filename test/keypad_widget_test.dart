@@ -454,14 +454,14 @@ void main() {
   });
 }
 
-void initiateFakeCall({TextEditingController controller}) {
+void initiateFakeCall({required TextEditingController controller}) {
   controller.text = 'Call started';
 }
 
 class TestApp extends StatelessWidget {
   final Widget child;
 
-  TestApp({this.child});
+  TestApp({required this.child});
 
   @override
   Widget build(BuildContext context) {

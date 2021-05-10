@@ -15,7 +15,7 @@ class OnboardingCubit extends Cubit<OnboardingState> with Loggable {
 
   OnboardingCubit(this._caller)
       : super(
-          OnboardingState(
+          const OnboardingState(
             currentStep: OnboardingStep.login,
             allSteps: [OnboardingStep.login],
           ),
@@ -44,7 +44,7 @@ class OnboardingCubit extends Cubit<OnboardingState> with Loggable {
 
   /// If [email] and/or [password] is set, it will be saved in
   /// the [OnboardingState], to be used by following steps.
-  void forward({String email, String password}) {
+  void forward({String? email, String? password}) {
     final allSteps = state.allSteps.toList();
 
     final indexOfCurrent = allSteps.indexOf(state.currentStep);
@@ -69,7 +69,7 @@ class OnboardingCubit extends Cubit<OnboardingState> with Loggable {
     }
   }
 
-  void _goTo(OnboardingStep step, [String email, String password]) {
+  void _goTo(OnboardingStep step, [String? email, String? password]) {
     logger.info('Progress step: ${state.currentStep} -> $step');
 
     emit(

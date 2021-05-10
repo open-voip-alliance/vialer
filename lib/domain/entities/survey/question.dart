@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:meta/meta.dart';
 
 class Question extends Equatable {
   final int id;
@@ -11,13 +10,11 @@ class Question extends Equatable {
   final List<String> answers;
 
   const Question({
-    @required this.id,
-    @required this.phrase,
-    @required this.answers,
-  })  : assert(id != null),
-        assert(phrase != null),
-        assert(answers?.length == 5);
+    required this.id,
+    required this.phrase,
+    required this.answers,
+  }) : assert(answers.length == 5);
 
   @override
-  List<Object> get props => [id, phrase, answers];
+  List<Object?> get props => [id, phrase, answers];
 }

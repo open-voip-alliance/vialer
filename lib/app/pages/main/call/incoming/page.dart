@@ -101,7 +101,7 @@ class _IncomingCallPageState extends State<IncomingCallPage>
                 builder: (context, state) {
                   if (state is CallProcessState) {
                     return _Info(
-                      call: state.voipCall,
+                      call: state.voipCall!,
                     );
                   }
 
@@ -151,8 +151,8 @@ class _Info extends StatelessWidget {
   final Call call;
 
   const _Info({
-    Key key,
-    @required this.call,
+    Key? key,
+    required this.call,
   }) : super(key: key);
 
   @override
@@ -228,9 +228,9 @@ class _ActionButton extends StatelessWidget {
   final Widget child;
 
   const _ActionButton({
-    Key key,
-    @required this.label,
-    @required this.child,
+    Key? key,
+    required this.label,
+    required this.child,
   }) : super(key: key);
 
   @override

@@ -14,7 +14,7 @@ abstract class RecentCallsState extends Equatable {
   RecentCallsState(this.calls, this.page);
 
   @override
-  List<Object> get props => [calls, page];
+  List<Object?> get props => [calls, page];
 }
 
 class LoadingInitialRecentCalls extends RecentCallsState {
