@@ -11,7 +11,10 @@ import 'package:flutter_phone_lib/audio/audio_route.dart';
 import 'package:flutter_phone_lib/audio/audio_state.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:vialer/app/pages/main/call/widgets/call_rating.dart';
+import 'package:vialer/app/pages/main/dialer/cubit.dart';
 import 'package:vialer/app/pages/main/dialer/page.dart';
+import 'package:vialer/app/pages/main/dialer/widgets/dialer/widget.dart';
 import 'package:vialer/app/pages/main/dialer/widgets/t9/widget.dart';
 
 import '../../../resources/localizations.dart';
@@ -55,16 +58,21 @@ class _CallPageState extends State<CallPage> with WidgetsBindingObserver {
     }
   }
 
-  void _popAfter(Duration duration) {
-    Timer(duration, () {
-      if (mounted) {
-        Navigator.pop(context);
-      }
-    });
-  }
-
-  void _popCallScreen(BuildContext context) =>
+  void _popCallScreen(BuildContext context, {Duration? popIn}) {
+    pop() {
       Navigator.popUntil(context, (route) => route.isFirst);
+    }
+
+    ;
+
+    if (popIn == null) {
+      pop();
+    } else {
+      Timer(popIn, () {
+        if (mounted) pop();
+      });
+    }
+  }
 
   // Only called when the state type has changed, not when a state with the same
   // type but different call information has been emitted.
@@ -81,97 +89,29 @@ class _CallPageState extends State<CallPage> with WidgetsBindingObserver {
           }
         });
       } else {
-        _popAfter(const Duration(seconds: 3));
+        _popCallScreen(context, popIn: const Duration(seconds: 3));
       }
     }
   }
 
   Future<void> _requestCallRating(BuildContext context, FinishedCalling state) {
-    Timer(const Duration(seconds: 10), () {
-      if (mounted) {
-        _popCallScreen(context);
-      }
-    });
+    _popCallScreen(context, popIn: const Duration(seconds: 10));
 
     return showDialog<double>(
         context: context,
-        builder: (context) {
-          return BackdropFilter(
-            filter: ImageFilter.blur(
-              sigmaX: 10,
-              sigmaY: 10,
-            ),
-            child: AlertDialog(
-              title: Text(
-                context.msg.main.call.rate.title,
-                textScaleFactor: 0.8,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              content: SingleChildScrollView(
-                child: ListBody(
-                  children: [
-                    RatingBar(
-                      initialRating: 0,
-                      direction: Axis.horizontal,
-                      allowHalfRating: false,
-                      itemCount: 5,
-                      tapOnlyMode: true,
-                      ratingWidget: RatingWidget(
-                        full: Icon(
-                          VialerSans.star,
-                          color: context.brand.theme.primary,
-                        ),
-                        half: const SizedBox(),
-                        empty: Icon(
-                          VialerSans.starOutline,
-                          color: context.brand.theme.grey4,
-                        ),
-                      ),
-                      itemPadding: const EdgeInsets.symmetric(
-                        horizontal: 6.0,
-                      ),
-                      onRatingUpdate: (rating) =>
-                          _submitCallRating(rating, state),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        left: 10,
-                        right: 10,
-                        top: 10,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            context.msg.main.call.rate.lowerLabel,
-                            textScaleFactor: 0.9,
-                          ),
-                          Text(
-                            context.msg.main.call.rate.upperLabel,
-                            textScaleFactor: 0.9,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          );
-        });
+        builder: (context) => CallRating(
+              onCallRated: (rating) =>
+                  _submitCallRating(rating, state.voipCall!),
+            ));
   }
 
-  void _submitCallRating(double rating, FinishedCalling state) {
+  void _submitCallRating(double rating, Call call) {
     context.read<CallerCubit>().rateVoipCall(
           rating: rating.toInt(),
-          call: state.voipCall!,
+          call: call,
         );
 
-    Timer(const Duration(seconds: 1), () {
-      _popCallScreen(context);
-    });
+    _popCallScreen(context, popIn: const Duration(seconds: 1));
   }
 
   @override
@@ -194,7 +134,8 @@ class _CallPageState extends State<CallPage> with WidgetsBindingObserver {
               children: [
                 if (state is AttendedTransfer ||
                     state is AttendedTransferComplete)
-                  _CallTransferBar(inactiveCall: state.voip!.inactiveCall!),
+                  _CallTransferInProgressBar(
+                      inactiveCall: state.voip!.inactiveCall!),
                 Container(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -290,41 +231,41 @@ class _InformationBox extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Padding(
-            padding: const EdgeInsets.only(top: 30, bottom: 20),
-            child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(13.5),
-                  color: context.brand.theme.callGradientStart,
-                ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 4,
-                ),
-                child: DefaultTextStyle.merge(
-                    child: RichText(
-                  text: TextSpan(
-                    style: TextStyle(
-                      color: context.brand.theme.onCallGradientColor,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    children: [
-                      WidgetSpan(
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 4.0, right: 8.0),
-                          child: Icon(
-                            icon,
-                            color: context.brand.theme.onCallGradientColor,
-                            size: 22,
-                          ),
+          padding: const EdgeInsets.only(top: 30, bottom: 20),
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(13.5),
+              color: context.brand.theme.callGradientStart,
+            ),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 4,
+            ),
+            child: DefaultTextStyle.merge(
+              child: RichText(
+                text: TextSpan(
+                  style: TextStyle(
+                    color: context.brand.theme.onCallGradientColor,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  children: [
+                    WidgetSpan(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 4.0, right: 8.0),
+                        child: Icon(
+                          icon,
+                          color: context.brand.theme.onCallGradientColor,
+                          size: 22,
                         ),
                       ),
-                      TextSpan(text: text),
-                    ],
-                  ),
+                    ),
+                    TextSpan(text: text),
+                  ],
                 ),
-                ),
+              ),
             ),
+          ),
         ),
       ],
     );
@@ -332,58 +273,67 @@ class _InformationBox extends StatelessWidget {
 }
 
 class _CallTransferBar extends StatelessWidget {
-  final Call? inactiveCall;
-  final Widget? text;
+  final Widget text;
 
-  const _CallTransferBar({this.inactiveCall, this.text});
+  const _CallTransferBar({required this.text});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        border: const Border(
-          bottom: BorderSide(
-            width: 2.0,
-            color: Colors.white,
-          ),
-        ),
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            context.brand.theme.callGradientStart,
-            context.brand.theme.callGradientEnd,
-          ],
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.only(top: 30, bottom: 15),
-        child: DefaultTextStyle.merge(
-          style: TextStyle(
-            color: context.brand.theme.onCallGradientColor,
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Wrap(
-                spacing: 5,
-                children: [
-                  if (text != null)
-                    text!,
-                  if (inactiveCall != null)
-                    _buildInactiveCallText(context, inactiveCall!),
+    return Row(
+      children: [
+        Expanded(
+          child: Container(
+            decoration: BoxDecoration(
+              border: const Border(
+                bottom: BorderSide(
+                  width: 2.0,
+                  color: Colors.white,
+                ),
+              ),
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  context.brand.theme.callGradientStart,
+                  context.brand.theme.callGradientEnd,
                 ],
-              )
-            ],
+              ),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.only(top: 30, bottom: 15),
+              child: DefaultTextStyle.merge(
+                style: TextStyle(
+                  color: context.brand.theme.onCallGradientColor,
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Wrap(
+                      spacing: 5,
+                      children: [
+                        text,
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            ),
           ),
         ),
-      ),
+      ],
     );
   }
+}
 
-  Widget _buildInactiveCallText(BuildContext context, Call inactiveCall) =>
-      RichText(
+class _CallTransferInProgressBar extends StatelessWidget {
+  final Call inactiveCall;
+
+  _CallTransferInProgressBar({required this.inactiveCall});
+
+  @override
+  Widget build(BuildContext context) => _CallTransferBar(
+          text: RichText(
         text: TextSpan(
           children: [
             TextSpan(
@@ -396,9 +346,8 @@ class _CallTransferBar extends StatelessWidget {
                     : context.msg.main.call.state.callEnded),
           ],
         ),
-      );
+      ));
 }
-
 
 class _ActionButton extends StatelessWidget {
   final Widget icon;
@@ -752,34 +701,49 @@ class _CallActionButtons extends StatelessWidget {
   }
 
   void _transfer(BuildContext context) {
-    Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
-      builder: (context) =>
-          BlocBuilder<CallerCubit, CallerState>(builder: (context, state) {
-        final processState = state as CallProcessState;
+    showGeneralDialog(
+      context: context,
+      pageBuilder: (_, __, ___) => BlocProvider<DialerCubit>(
+        create: (context) => DialerCubit(context.read<CallerCubit>()),
+        child: BlocBuilder<CallerCubit, CallerState>(
+          builder: (context, state) {
+            final activeCall = (state as CallProcessState).voipCall!;
 
-        return DialerPage(
-          isInBottomNavBar: false,
-          callButton: CallButton.transfer(
-              onCall: (number) {
-                context.read<CallerCubit>().beginTransfer(number);
-                Navigator.of(context).pop();
-              }
-          ),
-          header: _CallTransferBar(
-            text: RichText(
-              text: TextSpan(children: [
-                const TextSpan(text: 'Transferring '),
-                TextSpan(
-                  text: '${processState.voip!.activeCall!.remotePartyHeading}',
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+            return Scaffold(
+              body: Container(
+                alignment: Alignment.center,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _CallTransferBar(
+                      text: RichText(
+                        text: TextSpan(children: [
+                          const TextSpan(text: 'Transferring '),
+                          TextSpan(
+                            text:
+                                '${activeCall.remotePartyHeading}',
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          const TextSpan(text: ' to'),
+                        ]),
+                      ),
+                    ),
+                    Expanded(
+                      child: Dialer(
+                        onCall: (number) {
+                          context.read<CallerCubit>().beginTransfer(number);
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ),
+                  ],
                 ),
-                const TextSpan(text: ' to'),
-              ]),
-            ),
-          ),
-        );
-      }),
-    ));
+              ),
+            );
+          },
+        ),
+      ),
+    );
   }
 
   void _merge(BuildContext context) =>

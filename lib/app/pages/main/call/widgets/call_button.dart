@@ -17,15 +17,15 @@ class CallButton extends StatelessWidget {
     height: 64,
   );
 
-  const CallButton({
-    Key? key,
-    required this.onPressed,
-    required this.backgroundColor,
-    required this.icon,
-    this.heroTag = defaultHeroTag,
-    this.constraints = defaultConstraints,
-    this.onCall
-  }) : super(key: key);
+  const CallButton(
+      {Key? key,
+      required this.onPressed,
+      required this.backgroundColor,
+      required this.icon,
+      this.heroTag = defaultHeroTag,
+      this.constraints = defaultConstraints,
+      this.onCall})
+      : super(key: key);
 
   static Widget answer({
     Key? key,
@@ -65,13 +65,12 @@ class CallButton extends StatelessWidget {
     );
   }
 
-  static Widget transfer({
-    Key? key,
-    VoidCallback? onPressed,
-    Object? heroTag = defaultHeroTag,
-    BoxConstraints constraints = defaultConstraints,
-    Function(String)? onCall
-  }) {
+  static Widget transfer(
+      {Key? key,
+      VoidCallback? onPressed,
+      Object? heroTag = defaultHeroTag,
+      BoxConstraints constraints = defaultConstraints,
+      Function(String)? onCall}) {
     return Builder(
       builder: (context) {
         return CallButton(
