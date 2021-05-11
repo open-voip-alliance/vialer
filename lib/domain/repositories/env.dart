@@ -16,8 +16,7 @@ class EnvRepository {
 
   Future<String> get errorTrackingDsn => _get('SENTRY_DSN');
 
-  Future<String> get logentriesAndroidToken =>
-      _get('LOGENTRIES_ANDROID_TOKEN');
+  Future<String> get logentriesAndroidToken => _get('LOGENTRIES_ANDROID_TOKEN');
 
   Future<String> get logentriesIosToken => _get('LOGENTRIES_IOS_TOKEN');
 
