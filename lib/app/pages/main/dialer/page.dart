@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
+import '../../../resources/theme.dart';
 import '../../../routes.dart';
+import '../../../util/brand.dart';
 import '../widgets/caller.dart';
 import '../widgets/caller/state.dart';
 import '../widgets/connectivity_alert.dart';
@@ -53,6 +55,8 @@ class _DialerPageState extends State<DialerPage> with WidgetsBindingObserver {
         create: (context) => DialerCubit(context.read<CallerCubit>()),
         child: BlocBuilder<CallerCubit, CallerState>(builder: (context, state) {
           final body = Dialer(
+            buttonColor: context.brand.theme.green1,
+            buttonIcon: VialerSans.phone,
             onCall: (number) {
               context.read<DialerCubit>().call(number);
             },

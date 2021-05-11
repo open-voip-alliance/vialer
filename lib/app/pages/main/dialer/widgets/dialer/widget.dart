@@ -17,9 +17,13 @@ import '../t9/widget.dart';
 
 class Dialer extends StatefulWidget {
   final Function(String) onCall;
-  final IconData? callButtonIcon;
+  final IconData buttonIcon;
+  final Color buttonColor;
 
-  Dialer({required this.onCall, this.callButtonIcon,});
+  Dialer(
+      {required this.onCall,
+      required this.buttonIcon,
+      required this.buttonColor});
 
   @override
   _DialerState createState() => _DialerState();
@@ -110,8 +114,10 @@ class _DialerState extends State<Dialer> {
                     Expanded(
                       child: DialPad(
                         controller: _dialPadController,
-                        primaryButton: _CallButton(
-                          onPressed: () => {_call(context)},
+                        primaryButton: _DialerPrimaryButton(
+                          onPressed: () => _call(context),
+                          icon: widget.buttonIcon,
+                          color: widget.buttonColor,
                         ),
                         onDeleteAll: dialerCubit.clearLastCalledDestination,
                       ),
@@ -127,11 +133,13 @@ class _DialerState extends State<Dialer> {
   }
 }
 
-class _CallButton extends StatelessWidget {
+class _DialerPrimaryButton extends StatelessWidget {
   final VoidCallback? onPressed;
-  final IconData? callButtonIcon;
+  final IconData icon;
+  final Color color;
 
-  const _CallButton({Key? key, this.onPressed, this.callButtonIcon})
+  const _DialerPrimaryButton(
+      {Key? key, this.onPressed, required this.icon, required this.color})
       : super(key: key);
 
   @override
@@ -144,13 +152,14 @@ class _CallButton extends StatelessWidget {
     final minSize = context.isIOS ? KeypadValueButton.maxSize : 64.0;
 
     return Center(
-      child: CallButton.call(
+      child: CallButton(
+        onPressed: onPressed,
+        backgroundColor: color,
+        icon: icon,
         constraints: BoxConstraints(
           minWidth: minSize,
           minHeight: minSize,
         ),
-        onPressed: onPressed,
-        icon: callButtonIcon
       ),
     );
   }

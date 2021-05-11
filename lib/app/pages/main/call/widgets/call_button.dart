@@ -30,14 +30,13 @@ class CallButton extends StatelessWidget {
     VoidCallback? onPressed,
     Object? heroTag = defaultHeroTag,
     BoxConstraints constraints = defaultConstraints,
-    IconData? icon,
   }) {
     return Builder(
       builder: (context) {
         return CallButton(
           onPressed: onPressed,
           backgroundColor: context.brand.theme.green1,
-          icon: icon ?? VialerSans.phone,
+          icon: VialerSans.phone,
           heroTag: heroTag,
           constraints: constraints,
         );
@@ -78,7 +77,6 @@ class CallButton extends StatelessWidget {
         onPressed: onPressed,
         heroTag: heroTag,
         constraints: constraints,
-        icon: icon
       );
 
   static Widget hangUp({

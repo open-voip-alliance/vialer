@@ -715,8 +715,7 @@ class _CallActionButtons extends StatelessWidget {
                         text: TextSpan(children: [
                           const TextSpan(text: 'Transferring '),
                           TextSpan(
-                            text:
-                                '${activeCall.remotePartyHeading}',
+                            text: '${activeCall.remotePartyHeading}',
                             style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                           const TextSpan(text: ' to'),
@@ -725,7 +724,8 @@ class _CallActionButtons extends StatelessWidget {
                     ),
                     Expanded(
                       child: Dialer(
-                        callButtonIcon: VialerSans.transfer,
+                        buttonIcon: VialerSans.transfer,
+                        buttonColor: context.brand.theme.green1,
                         onCall: (number) {
                           context.read<CallerCubit>().beginTransfer(number);
                           Navigator.of(context).pop();

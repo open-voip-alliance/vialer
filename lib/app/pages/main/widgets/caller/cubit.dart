@@ -302,7 +302,12 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
       // event, if that's the case we'll emit the state necessary to get there.
       if (state is! CallProcessState) {
         if (callSessionState.activeCall?.direction.isInbound == true) {
-          emit(Calling(origin: CallOrigin.incoming, voip: callSessionState,),);
+          emit(
+            Calling(
+              origin: CallOrigin.incoming,
+              voip: callSessionState,
+            ),
+          );
           logger.info('VoIP call connected (recovered)');
         } else {
           throw UnsupportedError(
@@ -311,7 +316,9 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
         }
       }
 
-      emit(processState.copyWith(voip: callSessionState,));
+      emit(processState.copyWith(
+        voip: callSessionState,
+      ));
     }
   }
 
