@@ -86,4 +86,10 @@ class AuthRepository {
     final body = response.body as Map<String, dynamic>;
     return body['token'] as String;
   }
+
+  Future<bool> changeMobileNumber(String mobileNumber) async {
+    final response =
+        await _service.changeMobileNumber({'mobile_nr': mobileNumber});
+    return response.isSuccessful;
+  }
 }

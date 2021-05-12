@@ -64,6 +64,7 @@ class LoginCubit extends Cubit<LoginState> with Loggable {
       final isVoipAllowed = await _getIsVoipAllowed();
       if (isVoipAllowed) {
         _onboarding.addStep(OnboardingStep.microphonePermission);
+        _onboarding.addStep(OnboardingStep.mobileNumber);
       }
 
       emit(LoggedIn());
