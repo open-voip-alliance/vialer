@@ -288,6 +288,15 @@ onboarding:
 
       This will be shared with people reaching you through your business number when you are not available.
 
+  mobileNumber:
+    title: "Mobile number"
+    button: "Continue"
+    error: "Invalid mobile number"
+    description(String appName): >-
+      $appName is configuring your account. Please enter your mobile number down below:
+    info: >-
+      Your outgoing number will be set after configuration. You will be able to view it in your settings.
+
   welcome:
     title: "Welcome"
 
