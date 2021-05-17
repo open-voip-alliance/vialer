@@ -11,11 +11,11 @@ class InfoPage extends StatelessWidget {
   final VoidCallback onPressed;
 
   InfoPage({
-    Key key,
-    @required this.icon,
-    @required this.title,
-    @required this.description,
-    @required this.onPressed,
+    Key? key,
+    required this.icon,
+    required this.title,
+    required this.description,
+    required this.onPressed,
   }) : super(key: key);
 
   @override

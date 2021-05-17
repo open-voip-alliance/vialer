@@ -16,7 +16,7 @@ class RecentCallsPage extends StatelessWidget {
   final double snackBarRightPadding;
 
   RecentCallsPage({
-    Key key,
+    Key? key,
     this.listBottomPadding = 0,
     this.snackBarRightPadding = 0,
   }) : super(key: key);
@@ -100,14 +100,14 @@ class _RecentCallsList extends StatefulWidget {
   final void Function(String) onCopyPressed;
 
   const _RecentCallsList({
-    Key key,
-    this.listBottomPadding,
-    this.snackBarRightPadding,
+    Key? key,
+    required this.listBottomPadding,
+    required this.snackBarRightPadding,
     this.isLoadingInitial = false,
-    this.calls,
-    this.onRefresh,
-    this.onCallPressed,
-    this.onCopyPressed,
+    required this.calls,
+    required this.onRefresh,
+    required this.onCallPressed,
+    required this.onCopyPressed,
   }) : super(key: key);
 
   @override
@@ -124,7 +124,7 @@ class _RecentCallsListState extends State<_RecentCallsList>
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance!.addObserver(this);
     _scrollController.addListener(_handleScrolling);
   }
 
@@ -138,7 +138,7 @@ class _RecentCallsListState extends State<_RecentCallsList>
   @override
   void dispose() {
     _scrollController.dispose();
-    WidgetsBinding.instance.removeObserver(this);
+    WidgetsBinding.instance!.removeObserver(this);
 
     super.dispose();
   }

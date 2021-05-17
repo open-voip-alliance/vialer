@@ -17,7 +17,6 @@ extension PermissionStatusMapper on PermissionStatus {
       case PermissionStatus.restricted:
         return domain.PermissionStatus.restricted;
 
-      case PermissionStatus.undetermined:
       default:
         return domain.PermissionStatus.undetermined;
     }

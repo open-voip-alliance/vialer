@@ -1,7 +1,5 @@
 import 'dart:async';
 
-import 'package:meta/meta.dart';
-
 import '../../dependency_locator.dart';
 import '../entities/setting.dart';
 import '../repositories/destination.dart';
@@ -13,7 +11,7 @@ import 'get_settings.dart';
 import 'register_to_voip_middleware.dart';
 import 'start_voip.dart';
 
-class ChangeSettingUseCase extends FutureUseCase<void> {
+class ChangeSettingUseCase extends UseCase {
   final _storageRepository = dependencyLocator<StorageRepository>();
   final _destinationRepository = dependencyLocator<DestinationRepository>();
 
@@ -23,8 +21,7 @@ class ChangeSettingUseCase extends FutureUseCase<void> {
   final _registerToVoipMiddleware = RegisterToVoipMiddlewareUseCase();
   final _startVoip = StartVoipUseCase();
 
-  @override
-  Future<void> call({@required Setting setting, bool remote = true}) async {
+  Future<void> call({required Setting setting, bool remote = true}) async {
     if (setting is RemoteLoggingSetting) {
       if (setting.value) {
         await _enableRemoteLogging();
@@ -32,12 +29,12 @@ class ChangeSettingUseCase extends FutureUseCase<void> {
         await _disableRemoteLogging();
       }
     } else if (remote && setting is AvailabilitySetting) {
-      var availability = (setting as AvailabilitySetting).value;
+      var availability = setting.value;
       await _destinationRepository.setAvailability(
-        selectedDestinationId: availability.selectedDestinationInfo.id,
-        phoneAccountId: availability.selectedDestinationInfo.phoneAccountId,
+        selectedDestinationId: availability!.selectedDestinationInfo!.id,
+        phoneAccountId: availability.selectedDestinationInfo!.phoneAccountId,
         fixedDestinationId:
-            availability.selectedDestinationInfo.fixedDestinationId,
+            availability.selectedDestinationInfo!.fixedDestinationId,
       );
 
       availability = await _destinationRepository.getLatestAvailability();

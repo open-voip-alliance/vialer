@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:collection/collection.dart';
 
 import '../../../../../domain/entities/contact.dart';
 import '../../../../resources/localizations.dart';
@@ -8,6 +10,7 @@ import '../../../../resources/theme.dart';
 import '../../util/stylized_snack_bar.dart';
 import '../../widgets/caller.dart';
 import '../../widgets/header.dart';
+import '../cubit.dart' hide NoPermission;
 import '../widgets/avatar.dart';
 import '../widgets/subtitle.dart';
 import 'cubit.dart';
@@ -15,13 +18,39 @@ import 'cubit.dart';
 const _horizontalPadding = 24.0;
 const _leadingSize = 48.0;
 
-class ContactDetailsPage extends StatelessWidget {
+class ContactDetailsPage extends StatefulWidget {
   final Contact contact;
 
-  ContactDetailsPage({
-    Key key,
-    @required this.contact,
+  const ContactDetailsPage({
+    Key? key,
+    required this.contact,
   }) : super(key: key);
+
+  @override
+  _ContactDetailsPageState createState() => _ContactDetailsPageState();
+}
+
+class _ContactDetailsPageState extends State<ContactDetailsPage>
+    with
+        // ignore: prefer_mixin
+        WidgetsBindingObserver {
+  bool _madeEdit = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance!.addObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+
+    if (state == AppLifecycleState.inactive) {
+      _madeEdit = true;
+    }
+  }
 
   void _showSnackBar(BuildContext context) {
     showSnackBar(
@@ -32,23 +61,65 @@ class ContactDetailsPage extends StatelessWidget {
     );
   }
 
+  void _onStateChanged(BuildContext context, ContactsState state) {
+    if (state is ContactsLoaded) {
+      final contact = state.contacts.firstWhereOrNull(
+        (contact) => contact.identifier == widget.contact.identifier,
+      );
+      if (contact == null && _madeEdit) {
+        // Contact doesn't exist anymore after returning back to the app,
+        // it's probably deleted, so close this detail screen.
+        Navigator.pop(context, true);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: Header(context.msg.main.contacts.title),
-        centerTitle: false,
-        iconTheme: IconThemeData(color: Theme.of(context).primaryColor),
-      ),
-      body: BlocProvider<ContactDetailsCubit>(
-        create: (context) => ContactDetailsCubit(context.read<CallerCubit>()),
-        child: Builder(
-          builder: (context) {
-            final cubit = context.watch<ContactDetailsCubit>();
+    return BlocProvider<ContactDetailsCubit>(
+      create: (_) => ContactDetailsCubit(context.read<CallerCubit>()),
+      child: BlocConsumer<ContactsCubit, ContactsState>(
+        listener: _onStateChanged,
+        builder: (context, state) {
+          final cubit = context.watch<ContactDetailsCubit>();
 
-            return SafeArea(
+          var contact = widget.contact;
+
+          if (state is ContactsLoaded) {
+            contact = state.contacts.firstWhere(
+              (contact) => contact.identifier == widget.contact.identifier,
+              orElse: () => widget.contact,
+            );
+          }
+
+          return Scaffold(
+            appBar: AppBar(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              title: Header(context.msg.main.contacts.title),
+              centerTitle: false,
+              iconTheme: IconThemeData(color: Theme.of(context).primaryColor),
+              actions: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(right: 20),
+                  child: GestureDetector(
+                    onTap: () => cubit.edit(contact),
+                    child: context.isIOS
+                        ? Padding(
+                            padding: const EdgeInsets.only(top: 24),
+                            child: Text(
+                              context.msg.main.contacts.edit,
+                              style: TextStyle(
+                                color: Theme.of(context).primaryColor,
+                              ),
+                            ),
+                          )
+                        : const Icon(Icons.edit),
+                  ),
+                ),
+              ],
+            ),
+            body: SafeArea(
               child: Padding(
                 padding: const EdgeInsets.only(
                   top: 32,
@@ -83,19 +154,23 @@ class ContactDetailsPage extends StatelessWidget {
                     const SizedBox(height: 24),
                     Expanded(
                       child: BlocBuilder<CallerCubit, CallerState>(
-                        builder: (context, state) {
+                        builder: (context, callerState) {
                           void onTapNumber(String n) {
-                            return (state is CanCall ||
-                                    (state is NoPermission &&
-                                        !state.dontAskAgain))
+                            return (callerState is CanCall ||
+                                    (callerState is NoPermission &&
+                                        !callerState.dontAskAgain))
                                 ? cubit.call(n)
                                 : _showSnackBar(context);
                           }
 
-                          return _DestinationsList(
-                            contact: contact,
-                            onTapNumber: onTapNumber,
-                            onTapEmail: cubit.mail,
+                          return RefreshIndicator(
+                            onRefresh: () =>
+                                context.read<ContactsCubit>().reloadContacts(),
+                            child: _DestinationsList(
+                              contact: contact,
+                              onTapNumber: onTapNumber,
+                              onTapEmail: cubit.mail,
+                            ),
                           );
                         },
                       ),
@@ -103,11 +178,18 @@ class ContactDetailsPage extends StatelessWidget {
                   ],
                 ),
               ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance!.removeObserver(this);
+
+    super.dispose();
   }
 }
 
@@ -118,10 +200,10 @@ class _DestinationsList extends StatelessWidget {
   final ValueChanged<String> onTapEmail;
 
   const _DestinationsList({
-    Key key,
-    @required this.contact,
-    this.onTapNumber,
-    this.onTapEmail,
+    Key? key,
+    required this.contact,
+    required this.onTapNumber,
+    required this.onTapEmail,
   }) : super(key: key);
 
   @override
@@ -157,13 +239,13 @@ class _Item extends StatelessWidget {
 
   final bool isEmail;
 
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   const _Item({
-    Key key,
-    @required this.value,
-    @required this.label,
-    @required this.isEmail,
+    Key? key,
+    required this.value,
+    required this.label,
+    required this.isEmail,
     this.onTap,
   }) : super(key: key);
 
@@ -172,7 +254,7 @@ class _Item extends StatelessWidget {
     final label = toBeginningOfSentenceCase(
       this.label,
       VialerLocalizations.of(context).locale.languageCode,
-    );
+    )!;
 
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(

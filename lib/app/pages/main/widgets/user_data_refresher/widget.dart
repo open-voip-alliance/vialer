@@ -6,7 +6,7 @@ import 'cubit.dart';
 class UserDataRefresher extends StatelessWidget {
   final Widget child;
 
-  const UserDataRefresher({Key key, this.child}) : super(key: key);
+  const UserDataRefresher({Key? key, required this.child}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +36,7 @@ class _UserDataRefresherState extends State<_UserDataRefresher>
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance!.addObserver(this);
   }
 
   @override
@@ -55,6 +55,6 @@ class _UserDataRefresherState extends State<_UserDataRefresher>
   void dispose() {
     super.dispose();
 
-    WidgetsBinding.instance.removeObserver(this);
+    WidgetsBinding.instance!.removeObserver(this);
   }
 }

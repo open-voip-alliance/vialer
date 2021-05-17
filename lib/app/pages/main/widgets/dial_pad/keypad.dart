@@ -8,18 +8,18 @@ import '../../../../util/brand.dart';
 
 class Keypad extends StatefulWidget {
   final TextEditingController controller;
-  final BoxConstraints constraints;
+  final BoxConstraints? constraints;
   final bool canDelete;
   final Widget primaryButton;
-  final Widget secondaryButton;
-  final VoidCallback onDeleteAll;
+  final Widget? secondaryButton;
+  final VoidCallback? onDeleteAll;
 
   const Keypad({
-    Key key,
-    @required this.controller,
+    Key? key,
+    required this.controller,
     this.constraints,
     this.canDelete = true,
-    @required this.primaryButton,
+    required this.primaryButton,
     this.secondaryButton,
     this.onDeleteAll,
   }) : super(key: key);
@@ -94,7 +94,7 @@ class _KeypadState extends State<Keypad> {
 }
 
 class _KeypadGridDelegate extends SliverGridDelegate {
-  final BoxConstraints constraints;
+  final BoxConstraints? constraints;
   final double bottomPadding;
 
   /// Whether the keypad should be slimmed down, meaning it will be less
@@ -102,7 +102,7 @@ class _KeypadGridDelegate extends SliverGridDelegate {
   final bool slim;
 
   _KeypadGridDelegate({
-    @required this.constraints,
+    this.constraints,
     this.bottomPadding = 0,
     this.slim = false,
   });
@@ -168,13 +168,13 @@ class _KeypadGridDelegate extends SliverGridDelegate {
 class _CenteredSliverGridRegularTileLayout extends SliverGridRegularTileLayout {
   final SliverConstraints constraints;
 
-  _CenteredSliverGridRegularTileLayout({
-    this.constraints,
-    int crossAxisCount,
-    double mainAxisStride,
-    double crossAxisStride,
-    double childMainAxisExtent,
-    double childCrossAxisExtent,
+  const _CenteredSliverGridRegularTileLayout({
+    required this.constraints,
+    required int crossAxisCount,
+    required double mainAxisStride,
+    required double crossAxisStride,
+    required double childMainAxisExtent,
+    required double childCrossAxisExtent,
     bool reverseCrossAxis = false,
   }) : super(
           crossAxisCount: crossAxisCount,
@@ -209,9 +209,9 @@ class KeypadButton extends StatelessWidget {
   final Widget child;
 
   const KeypadButton({
-    Key key,
+    Key? key,
     this.borderOnIos = true,
-    this.child,
+    required this.child,
   }) : super(key: key);
 
   @override
@@ -235,7 +235,7 @@ class KeypadValueButton extends StatefulWidget {
   static const maxSize = 80.0;
 
   final String primaryValue;
-  final String secondaryValue;
+  final String? secondaryValue;
 
   final bool replaceWithSecondaryValueOnLongPress;
 
@@ -245,13 +245,16 @@ class KeypadValueButton extends StatefulWidget {
   final ValueNotifier<bool> cursorShownNotifier;
 
   const KeypadValueButton._({
-    Key key,
-    @required this.primaryValue,
+    Key? key,
+    required this.primaryValue,
     this.secondaryValue,
     this.replaceWithSecondaryValueOnLongPress = false,
-    @required this.controller,
-    @required this.cursorShownNotifier,
-  }) : super(key: key);
+    required this.controller,
+    required this.cursorShownNotifier,
+  })   : assert(
+          !replaceWithSecondaryValueOnLongPress || secondaryValue != null,
+        ),
+        super(key: key);
 
   @override
   State<StatefulWidget> createState() => _KeypadValueButtonState();
@@ -309,7 +312,7 @@ class _KeypadValueButtonState extends State<KeypadValueButton> {
     final end = hasOffset ? text.substring(offset) : '';
 
     _controller.value = _controller.value.copyWith(
-      text: start + widget.secondaryValue + end,
+      text: start + widget.secondaryValue! + end,
     );
   }
 
@@ -377,12 +380,12 @@ class _DeleteButton extends StatefulWidget {
   final TextEditingController controller;
   final ValueNotifier<bool> cursorShownNotifier;
   final bool canDelete;
-  final VoidCallback onDeleteAll;
+  final VoidCallback? onDeleteAll;
 
   const _DeleteButton({
-    Key key,
-    @required this.controller,
-    @required this.cursorShownNotifier,
+    Key? key,
+    required this.controller,
+    required this.cursorShownNotifier,
     this.canDelete = true,
     this.onDeleteAll,
   }) : super(key: key);
@@ -497,28 +500,28 @@ class _DeleteButtonState extends State<_DeleteButton> {
 }
 
 class _InkWellOrResponse extends StatelessWidget {
-  final Widget child;
+  final Widget? child;
   final VoidCallback onTapDown;
-  final VoidCallback onLongPress;
+  final VoidCallback? onLongPress;
   final bool enableFeedback;
-  final ShapeBorder customBorder;
+  final ShapeBorder? customBorder;
 
   final bool isResponse;
 
   const _InkWellOrResponse({
-    Key key,
-    this.onTapDown,
+    Key? key,
+    required this.onTapDown,
     this.onLongPress,
     this.isResponse = false,
     this.customBorder,
-    this.enableFeedback,
+    this.enableFeedback = true,
     this.child,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     // onTap needs to be defined for onTapDown to work
-    final onTap = this.onTapDown != null ? () {} : null;
+    void onTap() {}
     void onTapDown(_) => this.onTapDown();
 
     return isResponse

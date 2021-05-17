@@ -5,16 +5,18 @@ import 'item.dart';
 class Contact {
   final String initials;
   final String name;
-  final Uint8List avatar;
+  final Uint8List? avatar;
   final List<Item> phoneNumbers;
   final List<Item> emails;
+  final String? identifier;
 
   const Contact({
-    this.initials,
-    this.name,
+    required this.initials,
+    required this.name,
     this.avatar,
     this.phoneNumbers = const [],
     this.emails = const [],
+    this.identifier,
   });
 
   @override

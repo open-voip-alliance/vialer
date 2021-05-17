@@ -11,13 +11,13 @@ class FixedDestination extends Destination {
 
   @override
   @JsonIdConverter()
-  final int id;
+  final int? id;
 
   @JsonKey(name: 'phonenumber', fromJson: _normalizedPhoneNumber)
-  final String phoneNumber;
+  final String? phoneNumber;
 
   @override
-  final String description;
+  final String? description;
 
   static String _normalizedPhoneNumber(String json) =>
       json.startsWith('+') ? json : '+$json';
@@ -29,9 +29,9 @@ class FixedDestination extends Destination {
   });
 
   FixedDestination copyWith({
-    int id,
-    String phoneNumber,
-    String description,
+    int? id,
+    String? phoneNumber,
+    String? description,
   }) {
     return FixedDestination(
       id: id ?? this.id,
@@ -49,5 +49,5 @@ class FixedDestination extends Destination {
   String toString() => '$runtimeType(id: $id, $phoneNumber, $description)';
 
   @override
-  List<Object> get props => [...super.props, id, phoneNumber, description];
+  List<Object?> get props => [...super.props, id, phoneNumber, description];
 }

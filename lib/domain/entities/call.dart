@@ -32,15 +32,15 @@ class Call extends Equatable {
       direction == Direction.inbound && duration == Duration.zero;
 
   const Call({
-    this.id,
-    this.date,
-    this.duration,
-    this.callerNumber,
-    this.sourceNumber,
-    this.callerId,
-    this.originalCallerId,
-    this.destinationNumber,
-    this.direction,
+    required this.id,
+    required this.date,
+    required this.duration,
+    required this.callerNumber,
+    required this.sourceNumber,
+    required this.callerId,
+    required this.originalCallerId,
+    required this.destinationNumber,
+    required this.direction,
   });
 
   factory Call.fromJson(Map<String, dynamic> json) {
@@ -58,15 +58,15 @@ class Call extends Equatable {
   }
 
   Call copyWith({
-    int id,
-    DateTime date,
-    Duration duration,
-    String callerNumber,
-    String sourceNumber,
-    String callerId,
-    String originalCallerId,
-    String destinationNumber,
-    Direction direction,
+    int? id,
+    DateTime? date,
+    Duration? duration,
+    String? callerNumber,
+    String? sourceNumber,
+    String? callerId,
+    String? originalCallerId,
+    String? destinationNumber,
+    Direction? direction,
   }) {
     return Call(
       id: id ?? this.id,
@@ -91,7 +91,7 @@ class Call extends Equatable {
   }
 
   @override
-  List<Object> get props => [id];
+  List<Object?> get props => [id];
 }
 
 enum Direction {

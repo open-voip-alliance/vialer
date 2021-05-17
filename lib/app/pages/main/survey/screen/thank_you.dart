@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 
 import '../../../../resources/localizations.dart';
-import '../../../../util/brand.dart';
 import '../../../../util/conditional_capitalization.dart';
 import '../widgets/big_header.dart';
 
 class ThankYouScreen extends StatelessWidget {
-  const ThankYouScreen({Key key}) : super(key: key);
+  const ThankYouScreen({Key? key}) : super(key: key);
 
   void _dismiss(BuildContext context) {
     Navigator.of(context).pop();
@@ -37,9 +36,8 @@ class ThankYouScreen extends StatelessWidget {
               alignment: Alignment.centerRight,
               child: Padding(
                 padding: const EdgeInsets.only(right: 6),
-                child: FlatButton(
+                child: TextButton(
                   onPressed: () => _dismiss(context),
-                  textColor: context.brand.theme.primary,
                   child: Text(
                     context.msg.generic.button.close
                         .toUpperCaseIfAndroid(context),

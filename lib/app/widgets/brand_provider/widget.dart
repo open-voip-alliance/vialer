@@ -9,20 +9,20 @@ import 'cubit.dart';
 class BrandProvider extends StatelessWidget {
   /// If set, this is the Brand that will always be provided, regardless
   /// of build settings. Useful for testing.
-  final Brand brand;
+  final Brand? brand;
   final Widget child;
 
   /// Provides a [Brand] and [BrandTheme] to its children.
   const BrandProvider({
     this.brand,
-    this.child,
+    required this.child,
   });
 
   @override
   Widget build(BuildContext context) {
     if (brand != null) {
       return Provider<Brand>.value(
-        value: brand,
+        value: brand!,
         child: child,
       );
     }

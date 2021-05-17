@@ -8,7 +8,7 @@ import '../../../repositories/connectivity.dart';
 import '../../../repositories/metrics.dart';
 import '../../../use_case.dart';
 
-class RateVoipCallUseCase extends FutureUseCase<void> {
+class RateVoipCallUseCase extends UseCase {
   final _metricsRepository = dependencyLocator<MetricsRepository>();
   final _connectivityRepository = dependencyLocator<ConnectivityRepository>();
 

@@ -1,11 +1,10 @@
 import 'package:equatable/equatable.dart';
-import 'package:meta/meta.dart';
 
 import '../../../../domain/entities/contact.dart';
 
 abstract class ContactsState extends Equatable {
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
 class LoadingContacts extends ContactsState {}
@@ -13,10 +12,10 @@ class LoadingContacts extends ContactsState {}
 class NoPermission extends ContactsState {
   final bool dontAskAgain;
 
-  NoPermission({@required this.dontAskAgain});
+  NoPermission({required this.dontAskAgain});
 
   @override
-  List<Object> get props => [dontAskAgain];
+  List<Object?> get props => [dontAskAgain];
 }
 
 class ContactsLoaded extends ContactsState {
@@ -25,5 +24,5 @@ class ContactsLoaded extends ContactsState {
   ContactsLoaded(this.contacts);
 
   @override
-  List<Object> get props => [contacts];
+  List<Object?> get props => [contacts];
 }

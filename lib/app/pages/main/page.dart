@@ -9,6 +9,7 @@ import '../../routes.dart';
 import '../../util/brand.dart';
 import '../../widgets/transparent_status_bar.dart';
 import 'call/widgets/call_button.dart';
+import 'contacts/cubit.dart';
 import 'contacts/details/page.dart';
 import 'contacts/page.dart';
 import 'dialer/page.dart';
@@ -18,7 +19,7 @@ import 'widgets/caller.dart';
 import 'widgets/connectivity_alert.dart';
 import 'widgets/user_data_refresher/widget.dart';
 
-typedef WidgetWithArgumentsBuilder = Widget Function(BuildContext, Object);
+typedef WidgetWithArgumentsBuilder = Widget Function(BuildContext, Object?);
 
 class MainPage extends StatefulWidget {
   @override
@@ -26,18 +27,20 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  int _currentIndex;
-  int _previousIndex;
+  int? _currentIndex;
+  int? _previousIndex;
 
-  List<Widget> _pages;
+  List<Widget>? _pages;
 
-  bool _dialerIsPage;
+  bool _dialerIsPage = false;
 
   final _navigatorStates = [
     GlobalKey<NavigatorState>(),
   ];
 
-  void _navigateTo(int index) {
+  void _navigateTo(int? index) {
+    if (index == null) return;
+
     _previousIndex = _currentIndex;
 
     setState(() {
@@ -45,7 +48,7 @@ class _MainPageState extends State<MainPage> {
 
       if (context.isAndroid) {
         for (final state in _navigatorStates) {
-          state.currentState.popUntil(ModalRoute.withName('/'));
+          state.currentState!.popUntil(ModalRoute.withName('/'));
         }
       }
     });
@@ -61,15 +64,17 @@ class _MainPageState extends State<MainPage> {
     if (_pages == null) {
       _pages = [
         if (_dialerIsPage) const DialerPage(isInBottomNavBar: true),
-        _Navigator(
-          navigatorKey: _navigatorStates[0],
-          routes: {
-            ContactsPageRoutes.root: (_, __) => ContactsPage.create(
-                  bottomLettersPadding: !_dialerIsPage ? 96 : 0,
-                ),
-            ContactsPageRoutes.details: (_, contact) =>
-                ContactDetailsPage(contact: contact as Contact),
-          },
+        BlocProvider<ContactsCubit>(
+          create: (_) => ContactsCubit(),
+          child: _Navigator(
+            navigatorKey: _navigatorStates[0],
+            routes: {
+              ContactsPageRoutes.root: (_, __) =>
+                  ContactsPage(bottomLettersPadding: !_dialerIsPage ? 96 : 0),
+              ContactsPageRoutes.details: (_, contact) =>
+                  ContactDetailsPage(contact: contact as Contact),
+            },
+          ),
         ),
         RecentCallsPage(
           listBottomPadding: !_dialerIsPage ? 96 : 0,
@@ -113,7 +118,7 @@ class _MainPageState extends State<MainPage> {
               )
             : null,
         bottomNavigationBar: _BottomNavigationBar(
-          currentIndex: _currentIndex,
+          currentIndex: _currentIndex!,
           dialerIsPage: _dialerIsPage,
           onTap: _navigateTo,
         ),
@@ -122,8 +127,8 @@ class _MainPageState extends State<MainPage> {
           child: UserDataRefresher(
             child: ConnectivityAlert(
               child: _AnimatedIndexedStack(
-                index: _currentIndex,
-                children: _pages,
+                index: _currentIndex!,
+                children: _pages!,
               ),
             ),
           ),
@@ -139,9 +144,9 @@ class _BottomNavigationBar extends StatelessWidget {
   final bool dialerIsPage;
 
   const _BottomNavigationBar({
-    Key key,
-    this.currentIndex,
-    this.onTap,
+    Key? key,
+    required this.currentIndex,
+    required this.onTap,
     this.dialerIsPage = false,
   }) : super(key: key);
 
@@ -191,7 +196,7 @@ class _BottomNavigationBar extends StatelessWidget {
 class _BottomNavigationBarIcon extends StatelessWidget {
   final IconData icon;
 
-  const _BottomNavigationBarIcon(this.icon, {Key key}) : super(key: key);
+  const _BottomNavigationBarIcon(this.icon, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -207,21 +212,21 @@ class _Navigator extends StatelessWidget {
   final Map<String, WidgetWithArgumentsBuilder> routes;
 
   _Navigator({
-    Key key,
-    @required this.routes,
-    this.navigatorKey,
+    Key? key,
+    required this.routes,
+    required this.navigatorKey,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async => !await navigatorKey.currentState.maybePop(),
+      onWillPop: () async => !await navigatorKey.currentState!.maybePop(),
       child: Navigator(
         key: navigatorKey,
         initialRoute: routes.keys.first,
         onGenerateRoute: (settings) => MaterialPageRoute(
           settings: settings,
-          builder: (context) => routes[settings.name](
+          builder: (context) => routes[settings.name]!(
             context,
             settings.arguments,
           ),
@@ -236,8 +241,8 @@ class _AnimatedIndexedStack extends StatefulWidget {
   final List<Widget> children;
 
   const _AnimatedIndexedStack({
-    Key key,
-    this.index,
+    Key? key,
+    required this.index,
     this.children = const [],
   }) : super(key: key);
 
@@ -247,10 +252,10 @@ class _AnimatedIndexedStack extends StatefulWidget {
 
 class _AnimatedIndexedStackState extends State<_AnimatedIndexedStack>
     with TickerProviderStateMixin {
-  AnimationController _controller;
+  late AnimationController _controller;
 
   bool _animating = false;
-  int _previousIndex;
+  int? _previousIndex;
 
   @override
   void initState() {

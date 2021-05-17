@@ -7,9 +7,9 @@ class BigHeader extends StatelessWidget {
   final Widget text;
 
   const BigHeader({
-    Key key,
-    @required this.icon,
-    @required this.text,
+    Key? key,
+    required this.icon,
+    required this.text,
   }) : super(key: key);
 
   @override
@@ -110,31 +110,31 @@ class _HeaderBackgroundIcon extends StatelessWidget {
   final Widget child;
 
   const _HeaderBackgroundIcon({
-    Key key,
-    @required this.alignment,
-    @required this.widthFactor,
-    @required this.child,
+    Key? key,
+    required this.alignment,
+    required this.widthFactor,
+    required this.child,
   }) : super(key: key);
 
   const _HeaderBackgroundIcon.small({
-    Key key,
-    @required this.alignment,
-    @required this.child,
-  })  : widthFactor = 0.075,
+    Key? key,
+    required this.alignment,
+    required this.child,
+  })   : widthFactor = 0.075,
         super(key: key);
 
   const _HeaderBackgroundIcon.medium({
-    Key key,
-    @required this.alignment,
-    @required this.child,
-  })  : widthFactor = 0.125,
+    Key? key,
+    required this.alignment,
+    required this.child,
+  })   : widthFactor = 0.125,
         super(key: key);
 
   const _HeaderBackgroundIcon.large({
-    Key key,
-    @required this.alignment,
-    @required this.child,
-  })  : widthFactor = 0.150,
+    Key? key,
+    required this.alignment,
+    required this.child,
+  })   : widthFactor = 0.150,
         super(key: key);
 
   @override

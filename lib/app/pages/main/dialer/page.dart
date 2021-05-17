@@ -26,8 +26,8 @@ class DialerPage extends StatefulWidget {
   final bool isInBottomNavBar;
 
   const DialerPage({
-    Key key,
-    @required this.isInBottomNavBar,
+    Key? key,
+    required this.isInBottomNavBar,
   }) : super(key: key);
 
   @override
@@ -42,7 +42,7 @@ class _DialerPageState extends State<DialerPage> with WidgetsBindingObserver {
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance!.addObserver(this);
   }
 
   @override
@@ -66,7 +66,7 @@ class _DialerPageState extends State<DialerPage> with WidgetsBindingObserver {
   void _onDialerStateChanged(BuildContext context, DialerState state) {
     if (state.lastCalledDestination != null &&
         _dialPadController.text.isEmpty) {
-      _dialPadController.text = state.lastCalledDestination;
+      _dialPadController.text = state.lastCalledDestination!;
     }
   }
 
@@ -173,14 +173,14 @@ class _DialerPageState extends State<DialerPage> with WidgetsBindingObserver {
   void dispose() {
     super.dispose();
 
-    WidgetsBinding.instance.removeObserver(this);
+    WidgetsBinding.instance!.removeObserver(this);
   }
 }
 
 class _CallButton extends StatelessWidget {
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
 
-  const _CallButton({Key key, this.onPressed}) : super(key: key);
+  const _CallButton({Key? key, this.onPressed}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

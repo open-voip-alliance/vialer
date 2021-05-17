@@ -11,14 +11,14 @@ class PermissionPage extends StatelessWidget {
   final Widget title;
   final Widget description;
   final Permission permission;
-  final VoidCallback onPermissionGranted;
+  final VoidCallback? onPermissionGranted;
 
   PermissionPage({
-    Key key,
-    @required this.icon,
-    @required this.title,
-    @required this.description,
-    @required this.permission,
+    Key? key,
+    required this.icon,
+    required this.title,
+    required this.description,
+    required this.permission,
     this.onPermissionGranted,
   }) : super(key: key);
 

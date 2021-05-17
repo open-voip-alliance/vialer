@@ -11,7 +11,7 @@ import '../../../widgets/transparent_status_bar.dart';
 class Background extends StatefulWidget {
   final Widget child;
 
-  const Background({Key key, this.child}) : super(key: key);
+  const Background({Key? key, required this.child}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _BackgroundState();
@@ -20,11 +20,15 @@ class Background extends StatefulWidget {
 class _BackgroundState extends State<Background> with TickerProviderStateMixin {
   static const _splashScreenTime = Duration(seconds: 3);
 
-  AnimationController _controller;
-  Animation<LinearGradient> _gradientAnimation;
-  Animation<Color> _iconColorAnimation;
+  AnimationController? __controller;
+  Animation<LinearGradient>? __gradientAnimation;
+  Animation<Color?>? __iconColorAnimation;
 
-  List<Animation<double>> _cloudAnimations;
+  AnimationController get _controller => __controller!;
+  Animation<LinearGradient> get _gradientAnimation => __gradientAnimation!;
+  Animation<Color?> get _iconColorAnimation => __iconColorAnimation!;
+
+  List<Animation<double>> _cloudAnimations = [];
 
   bool _showForm = false;
 
@@ -36,13 +40,13 @@ class _BackgroundState extends State<Background> with TickerProviderStateMixin {
     const Alignment(-1.2, 1.1),
   ];
 
-  List<Widget> _clouds;
+  List<Widget> _clouds = [];
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    _controller = AnimationController(
+    __controller = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 2),
     );
@@ -71,12 +75,12 @@ class _BackgroundState extends State<Background> with TickerProviderStateMixin {
       );
     });
 
-    _gradientAnimation = _LinearGradientTween(
+    __gradientAnimation = _LinearGradientTween(
       begin: context.brand.theme.splashScreenGradient,
       end: context.brand.theme.onboardingGradient,
     ).animate(_controller);
 
-    _iconColorAnimation = ColorTween(
+    __iconColorAnimation = ColorTween(
       begin: Colors.white,
       end: Colors.white.withOpacity(0),
     ).animate(
@@ -107,7 +111,7 @@ class _BackgroundState extends State<Background> with TickerProviderStateMixin {
             builder: (context, _) {
               return SplashScreen(
                 gradient: _gradientAnimation.value,
-                iconColor: _iconColorAnimation.value,
+                iconColor: _iconColorAnimation.value!,
               );
             },
           ),
@@ -125,12 +129,12 @@ class _BackgroundState extends State<Background> with TickerProviderStateMixin {
 
 class _LinearGradientTween extends Tween<LinearGradient> {
   _LinearGradientTween({
-    LinearGradient begin,
-    LinearGradient end,
+    required LinearGradient begin,
+    required LinearGradient end,
   }) : super(begin: begin, end: end);
 
   @override
-  LinearGradient lerp(double t) => LinearGradient.lerp(begin, end, t);
+  LinearGradient lerp(double t) => LinearGradient.lerp(begin, end, t)!;
 }
 
 class _Cloud extends StatelessWidget {

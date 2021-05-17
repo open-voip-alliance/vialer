@@ -8,8 +8,8 @@ class TransparentStatusBar extends StatelessWidget {
   final Brightness brightness;
 
   const TransparentStatusBar({
-    Key key,
-    @required this.child,
+    Key? key,
+    required this.child,
     this.brightness = Brightness.dark,
   }) : super(key: key);
 

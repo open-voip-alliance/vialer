@@ -1,4 +1,5 @@
 // ignore_for_file: avoid_positional_boolean_parameters
+
 import 'package:meta/meta.dart';
 import 'package:dartx/dartx.dart';
 
@@ -80,8 +81,8 @@ abstract class Setting<T> {
   Setting<T> copyWith({T value});
 
   @override
-  bool operator ==(other) {
-    return other.runtimeType == runtimeType && other.value == value;
+  bool operator ==(Object? other) {
+    return other is Setting<T> && other.value == value;
   }
 
   @override
@@ -94,7 +95,8 @@ class RemoteLoggingSetting extends Setting<bool> {
   const RemoteLoggingSetting.preset() : this(false);
 
   @override
-  RemoteLoggingSetting copyWith({bool value}) => RemoteLoggingSetting(value);
+  RemoteLoggingSetting copyWith({bool? value}) =>
+      RemoteLoggingSetting(value ?? this.value);
 }
 
 class ShowDialerConfirmPopupSetting extends Setting<bool> {
@@ -103,8 +105,8 @@ class ShowDialerConfirmPopupSetting extends Setting<bool> {
   const ShowDialerConfirmPopupSetting.preset() : this(true);
 
   @override
-  ShowDialerConfirmPopupSetting copyWith({bool value}) =>
-      ShowDialerConfirmPopupSetting(value);
+  ShowDialerConfirmPopupSetting copyWith({bool? value}) =>
+      ShowDialerConfirmPopupSetting(value ?? this.value);
 }
 
 class ShowSurveyDialogSetting extends Setting<bool> {
@@ -113,8 +115,8 @@ class ShowSurveyDialogSetting extends Setting<bool> {
   const ShowSurveyDialogSetting.preset() : this(true);
 
   @override
-  ShowSurveyDialogSetting copyWith({bool value}) =>
-      ShowSurveyDialogSetting(value);
+  ShowSurveyDialogSetting copyWith({bool? value}) =>
+      ShowSurveyDialogSetting(value ?? this.value);
 }
 
 class PhoneNumberSetting extends Setting<String> {
@@ -122,7 +124,8 @@ class PhoneNumberSetting extends Setting<String> {
       : super(value, mutable: false, external: true);
 
   @override
-  PhoneNumberSetting copyWith({String value}) => PhoneNumberSetting(value);
+  PhoneNumberSetting copyWith({String? value}) =>
+      PhoneNumberSetting(value ?? this.value);
 }
 
 class UseVoipSetting extends Setting<bool> {
@@ -131,7 +134,7 @@ class UseVoipSetting extends Setting<bool> {
   const UseVoipSetting.preset() : this(true);
 
   @override
-  UseVoipSetting copyWith({bool value}) => UseVoipSetting(value);
+  UseVoipSetting copyWith({bool? value}) => UseVoipSetting(value ?? this.value);
 }
 
 class ShowTroubleshootingSettingsSetting extends Setting<bool> {
@@ -140,8 +143,8 @@ class ShowTroubleshootingSettingsSetting extends Setting<bool> {
   const ShowTroubleshootingSettingsSetting.preset() : this(false);
 
   @override
-  ShowTroubleshootingSettingsSetting copyWith({bool value}) =>
-      ShowTroubleshootingSettingsSetting(value);
+  ShowTroubleshootingSettingsSetting copyWith({bool? value}) =>
+      ShowTroubleshootingSettingsSetting(value ?? this.value);
 }
 
 class UseEncryptionSetting extends Setting<bool> {
@@ -150,7 +153,8 @@ class UseEncryptionSetting extends Setting<bool> {
   const UseEncryptionSetting.preset() : this(true);
 
   @override
-  UseEncryptionSetting copyWith({bool value}) => UseEncryptionSetting(value);
+  UseEncryptionSetting copyWith({bool? value}) =>
+      UseEncryptionSetting(value ?? this.value);
 }
 
 class AudioCodecSetting extends Setting<AudioCodec> {
@@ -159,7 +163,8 @@ class AudioCodecSetting extends Setting<AudioCodec> {
   const AudioCodecSetting.preset() : this(AudioCodec.opus);
 
   @override
-  AudioCodecSetting copyWith({AudioCodec value}) => AudioCodecSetting(value);
+  AudioCodecSetting copyWith({AudioCodec? value}) =>
+      AudioCodecSetting(value ?? this.value);
 }
 
 class UsePhoneRingtoneSetting extends Setting<bool> {
@@ -168,23 +173,25 @@ class UsePhoneRingtoneSetting extends Setting<bool> {
   const UsePhoneRingtoneSetting.preset() : this(false);
 
   @override
-  UsePhoneRingtoneSetting copyWith({bool value}) =>
-      UsePhoneRingtoneSetting(value);
+  UsePhoneRingtoneSetting copyWith({bool? value}) =>
+      UsePhoneRingtoneSetting(value ?? this.value);
 }
 
-class AvailabilitySetting extends Setting<Availability> {
-  const AvailabilitySetting(Availability value)
+class AvailabilitySetting extends Setting<Availability?> {
+  const AvailabilitySetting(Availability? value)
       : super(value, mutable: true, external: true);
 
   const AvailabilitySetting.preset() : this(null);
 
   @override
-  AvailabilitySetting copyWith({Availability value}) =>
-      AvailabilitySetting(value);
+  AvailabilitySetting copyWith({Availability? value}) =>
+      AvailabilitySetting(value ?? this.value);
 }
 
 extension SettingsByType on Iterable<Setting> {
-  T get<T extends Setting>() {
-    return firstOrNullWhere((setting) => setting is T) as T;
+  T get<T extends Setting>() => getOrNull<T>()!;
+
+  T? getOrNull<T extends Setting>() {
+    return firstOrNullWhere((setting) => setting is T) as T?;
   }
 }
