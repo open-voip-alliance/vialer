@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:collection/collection.dart';
 
 import '../../../../../domain/entities/contact.dart';
 import '../../../../resources/localizations.dart';
@@ -21,8 +22,8 @@ class ContactDetailsPage extends StatefulWidget {
   final Contact contact;
 
   const ContactDetailsPage({
-    Key key,
-    @required this.contact,
+    Key? key,
+    required this.contact,
   }) : super(key: key);
 
   @override
@@ -39,7 +40,7 @@ class _ContactDetailsPageState extends State<ContactDetailsPage>
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance!.addObserver(this);
   }
 
   @override
@@ -62,9 +63,8 @@ class _ContactDetailsPageState extends State<ContactDetailsPage>
 
   void _onStateChanged(BuildContext context, ContactsState state) {
     if (state is ContactsLoaded) {
-      final contact = state.contacts.firstWhere(
+      final contact = state.contacts.firstWhereOrNull(
         (contact) => contact.identifier == widget.contact.identifier,
-        orElse: () => null,
       );
       if (contact == null && _madeEdit) {
         // Contact doesn't exist anymore after returning back to the app,
@@ -187,7 +187,7 @@ class _ContactDetailsPageState extends State<ContactDetailsPage>
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
+    WidgetsBinding.instance!.removeObserver(this);
 
     super.dispose();
   }
@@ -200,10 +200,10 @@ class _DestinationsList extends StatelessWidget {
   final ValueChanged<String> onTapEmail;
 
   const _DestinationsList({
-    Key key,
-    @required this.contact,
-    this.onTapNumber,
-    this.onTapEmail,
+    Key? key,
+    required this.contact,
+    required this.onTapNumber,
+    required this.onTapEmail,
   }) : super(key: key);
 
   @override
@@ -239,13 +239,13 @@ class _Item extends StatelessWidget {
 
   final bool isEmail;
 
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   const _Item({
-    Key key,
-    @required this.value,
-    @required this.label,
-    @required this.isEmail,
+    Key? key,
+    required this.value,
+    required this.label,
+    required this.isEmail,
     this.onTap,
   }) : super(key: key);
 
@@ -254,7 +254,7 @@ class _Item extends StatelessWidget {
     final label = toBeginningOfSentenceCase(
       this.label,
       VialerLocalizations.of(context).locale.languageCode,
-    );
+    )!;
 
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(

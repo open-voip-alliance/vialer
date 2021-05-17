@@ -4,8 +4,8 @@ import 'package:characters/characters.dart';
 import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_widgets/flutter_widgets.dart';
 import 'package:provider/provider.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import '../../../../domain/entities/contact.dart';
 import '../../../resources/localizations.dart';
@@ -28,7 +28,7 @@ class ContactsPage extends StatefulWidget {
   final double bottomLettersPadding;
 
   const ContactsPage({
-    Key key,
+    Key? key,
     this.bottomLettersPadding = 0,
   }) : super(key: key);
 
@@ -40,13 +40,13 @@ class _ContactPageState extends State<ContactsPage>
     with
         // ignore: prefer_mixin
         WidgetsBindingObserver {
-  String _searchTerm;
+  String? _searchTerm;
 
   @override
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance!.addObserver(this);
   }
 
   void _onSearchTermChanged(String searchTerm) {
@@ -123,10 +123,14 @@ class _ContactPageState extends State<ContactsPage>
     const numberKey = '#';
     const specialKey = '&';
 
-    bool isAlpha(String char) =>
+    /// Whether the [char] is part of the *letter group*, which consists of
+    /// any letter in any language (including non-latin alphabets)
+    bool isInLetterGroup(String? char) =>
         char != null ? RegExp(r'\p{L}', unicode: true).hasMatch(char) : false;
 
-    bool isNumberlike(String char) =>
+    /// Whether the [char] is part of the *number group*, which consists of
+    /// any number (`0-9`, `(`, and `+`).
+    bool isInNumberGroup(String? char) =>
         char != null ? RegExp(r'[0-9\(\+]').hasMatch(char) : false;
 
     final searchTerm = _searchTerm?.toLowerCase();
@@ -147,22 +151,20 @@ class _ContactPageState extends State<ContactsPage>
       }
 
       var firstCharacter = contact.initials.characters.firstOrNull ??
-          contact.phoneNumbers
-              .firstOrNullWhere((number) => number?.value != null)
-              ?.value;
+          contact.phoneNumbers.firstOrNull?.value;
 
       final contactItem = ContactItem(contact: contact);
 
       // Check special groups
-      if (isNumberlike(firstCharacter)) {
+      if (isInNumberGroup(firstCharacter)) {
         widgets[numberKey] ??= [];
-        widgets[numberKey].add(contactItem);
-      } else if (isAlpha(firstCharacter)) {
-        widgets[firstCharacter] ??= [];
-        widgets[firstCharacter].add(contactItem);
+        widgets[numberKey]!.add(contactItem);
+      } else if (isInLetterGroup(firstCharacter)) {
+        widgets[firstCharacter!] ??= [];
+        widgets[firstCharacter]!.add(contactItem);
       } else {
         widgets[specialKey] ??= [];
-        widgets[specialKey].add(contactItem);
+        widgets[specialKey]!.add(contactItem);
       }
     }
 
@@ -188,7 +190,7 @@ class _ContactPageState extends State<ContactsPage>
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
+    WidgetsBinding.instance!.removeObserver(this);
 
     super.dispose();
   }
@@ -199,9 +201,9 @@ class _Placeholder extends StatelessWidget {
   final Widget child;
 
   const _Placeholder({
-    Key key,
-    @required this.state,
-    @required this.child,
+    Key? key,
+    required this.state,
+    required this.child,
   }) : super(key: key);
 
   @override
@@ -282,10 +284,10 @@ class _AlphabetListView extends StatefulWidget {
   final Future<void> Function() onRefresh;
 
   const _AlphabetListView({
-    Key key,
-    this.bottomLettersPadding,
-    this.children,
-    this.onRefresh,
+    Key? key,
+    required this.bottomLettersPadding,
+    required this.children,
+    required this.onRefresh,
   }) : super(key: key);
 
   @override
@@ -297,7 +299,7 @@ class _AlphabetListViewState extends State<_AlphabetListView> {
 
   final _controller = ItemScrollController();
 
-  Offset _offset;
+  Offset? _offset;
   bool _letterMarkerVisible = false;
 
   List<String> get _letters =>
@@ -318,13 +320,13 @@ class _AlphabetListViewState extends State<_AlphabetListView> {
     });
   }
 
-  void _onDragUpdate(DragUpdateDetails details, {@required Size parentSize}) {
+  void _onDragUpdate(DragUpdateDetails details, {required Size parentSize}) {
     setState(() {
       _offset = details.localPosition;
       _letterMarkerVisible = true;
     });
 
-    final letter = _letterAt(_offset, parentSize: parentSize);
+    final letter = _letterAtCurrentOffset(parentSize: parentSize);
     final index = widget.children
         .indexWhere((w) => w is GroupHeader && w.group == letter);
 
@@ -335,13 +337,13 @@ class _AlphabetListViewState extends State<_AlphabetListView> {
         _letterMarkerVisible = false;
       });
 
-  String _letterAt(Offset offset, {@required Size parentSize}) {
+  String _letterAtCurrentOffset({required Size parentSize}) {
     final size = _sideLetterSize(parentSize);
 
     final usableParentHeight = parentSize.height - widget.bottomLettersPadding;
     final lettersFullHeight = _letters.length * size.height;
 
-    final offsetY = _offset.dy - (usableParentHeight - lettersFullHeight) / 2;
+    final offsetY = _offset!.dy - (usableParentHeight - lettersFullHeight) / 2;
 
     var index = ((offsetY - (size.height / 2)) / size.height).round();
     index = index.clamp(0, max(0, _letters.length - 1)).toInt();
@@ -359,7 +361,7 @@ class _AlphabetListViewState extends State<_AlphabetListView> {
 
         return Stack(
           fit: StackFit.expand,
-          overflow: Overflow.visible,
+          clipBehavior: Clip.none,
           children: <Widget>[
             RefreshIndicator(
               onRefresh: widget.onRefresh,
@@ -414,7 +416,7 @@ class _AlphabetListViewState extends State<_AlphabetListView> {
               ),
             if (showLetters && _offset != null)
               Positioned(
-                top: _offset.dy - (_floatingLetterSize.height / 2),
+                top: _offset!.dy - (_floatingLetterSize.height / 2),
                 right: 48,
                 child: AnimatedOpacity(
                   duration: const Duration(milliseconds: 300),
@@ -424,7 +426,7 @@ class _AlphabetListViewState extends State<_AlphabetListView> {
                     size: _floatingLetterSize,
                     child: Center(
                       child: Text(
-                        _letterAt(_offset, parentSize: maxSize),
+                        _letterAtCurrentOffset(parentSize: maxSize),
                         style: const TextStyle(
                           fontSize: 32,
                         ),
@@ -448,8 +450,8 @@ class _SideLetter extends StatelessWidget {
 
   const _SideLetter(
     this.letter, {
-    Key key,
-    @required this.size,
+    Key? key,
+    required this.size,
   }) : super(key: key);
 
   @override
@@ -476,8 +478,8 @@ class _SearchTextField extends StatefulWidget {
   final void Function(String) onChanged;
 
   _SearchTextField({
-    Key key,
-    @required this.onChanged,
+    Key? key,
+    required this.onChanged,
   }) : super(key: key);
 
   @override

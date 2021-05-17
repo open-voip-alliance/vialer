@@ -4,7 +4,7 @@ abstract class UserDataRefresherState extends Equatable {
   const UserDataRefresherState();
 
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
 class NotRefreshing extends UserDataRefresherState {

@@ -17,14 +17,14 @@ class SettingTileCategory extends StatelessWidget {
   final List<Widget> children;
 
   const SettingTileCategory({
-    Key key,
-    @required this.icon,
-    @required this.title,
+    Key? key,
+    required this.icon,
+    required this.title,
     this.highlight = false,
     this.children = const [],
   }) : super(key: key);
 
-  static Widget accountInfo({List<Widget> children}) {
+  static Widget accountInfo({List<Widget> children = const []}) {
     return Builder(
       builder: (context) {
         return SettingTileCategory(
@@ -37,7 +37,7 @@ class SettingTileCategory extends StatelessWidget {
     );
   }
 
-  static Widget audio({List<Widget> children}) {
+  static Widget audio({List<Widget> children = const []}) {
     return Builder(
       builder: (context) {
         return SettingTileCategory(
@@ -49,7 +49,7 @@ class SettingTileCategory extends StatelessWidget {
     );
   }
 
-  static Widget calling({List<Widget> children}) {
+  static Widget calling({List<Widget> children = const []}) {
     return Builder(
       builder: (context) {
         return SettingTileCategory(
@@ -61,7 +61,7 @@ class SettingTileCategory extends StatelessWidget {
     );
   }
 
-  static Widget debug({List<Widget> children}) {
+  static Widget debug({List<Widget> children = const []}) {
     return Builder(
       builder: (context) {
         return SettingTileCategory(
@@ -73,7 +73,7 @@ class SettingTileCategory extends StatelessWidget {
     );
   }
 
-  static Widget advancedSettings({List<Widget> children}) {
+  static Widget advancedSettings({List<Widget> children = const []}) {
     return Builder(
       builder: (context) {
         return SettingTileCategory(
@@ -85,7 +85,7 @@ class SettingTileCategory extends StatelessWidget {
     );
   }
 
-  static Widget troubleshootingCalling({List<Widget> children}) {
+  static Widget troubleshootingCalling({List<Widget> children = const []}) {
     return Builder(
       builder: (context) {
         return SettingTileCategory(
@@ -98,7 +98,7 @@ class SettingTileCategory extends StatelessWidget {
     );
   }
 
-  static Widget troubleshootingAudio({List<Widget> children}) {
+  static Widget troubleshootingAudio({List<Widget> children = const []}) {
     return Builder(
       builder: (context) {
         return SettingTileCategory(
@@ -111,7 +111,7 @@ class SettingTileCategory extends StatelessWidget {
     );
   }
 
-  static Widget portalLinks({List<Widget> children}) {
+  static Widget portalLinks({List<Widget> children = const []}) {
     return Builder(
       builder: (context) {
         return SettingTileCategory(

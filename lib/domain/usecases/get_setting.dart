@@ -4,11 +4,8 @@ import '../entities/setting.dart';
 import '../use_case.dart';
 import 'get_settings.dart';
 
-class GetSettingUseCase<S extends Setting> extends FutureUseCase<S> {
+class GetSettingUseCase<S extends Setting> extends UseCase {
   final _getSettings = GetSettingsUseCase();
 
-  @override
-  Future<S> call() => _getSettings().then(
-        (settings) => settings.get<S>(),
-      );
+  Future<S> call() => _getSettings().then((settings) => settings.get<S>());
 }

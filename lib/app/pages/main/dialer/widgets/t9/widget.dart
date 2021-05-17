@@ -13,8 +13,8 @@ class T9ContactsListView extends StatelessWidget {
   final TextEditingController controller;
 
   const T9ContactsListView({
-    Key key,
-    @required this.controller,
+    Key? key,
+    required this.controller,
   }) : super(key: key);
 
   @override
@@ -31,7 +31,7 @@ class T9ContactsListView extends StatelessWidget {
 class _T9ContactsList extends StatefulWidget {
   final TextEditingController controller;
 
-  const _T9ContactsList({Key key, this.controller}) : super(key: key);
+  const _T9ContactsList({Key? key, required this.controller}) : super(key: key);
 
   @override
   _T9ContactsListState createState() => _T9ContactsListState();
@@ -42,7 +42,7 @@ class _T9ContactsListState extends State<_T9ContactsList> {
 
   final _scrollController = ScrollController();
 
-  double _height;
+  double? _height;
   bool _notifiedScrollbar = false;
 
   @override
@@ -51,8 +51,9 @@ class _T9ContactsListState extends State<_T9ContactsList> {
 
     widget.controller.addListener(_onInputChanged);
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final renderBox = _listKey.currentContext.findRenderObject() as RenderBox;
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      final renderBox =
+          _listKey.currentContext!.findRenderObject() as RenderBox;
 
       setState(() {
         // Height of the list will be 2 items.
@@ -72,7 +73,7 @@ class _T9ContactsListState extends State<_T9ContactsList> {
     if (!_notifiedScrollbar &&
         state is ContactsLoaded &&
         state.filteredContacts.length >= 2) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
+      WidgetsBinding.instance!.addPostFrameCallback((_) {
         // The empty scroll notification.
         _scrollController.position.didUpdateScrollPositionBy(0);
         _notifiedScrollbar = true;

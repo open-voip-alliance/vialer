@@ -7,7 +7,7 @@ import '../../../../util/brand.dart';
 class ContactSubtitle extends StatelessWidget {
   final Contact contact;
 
-  const ContactSubtitle(this.contact, {Key key}) : super(key: key);
+  const ContactSubtitle(this.contact, {Key? key}) : super(key: key);
 
   String _text(BuildContext context) {
     final phoneNumbers = contact.phoneNumbers;
@@ -20,7 +20,7 @@ class ContactSubtitle extends StatelessWidget {
     } else if (phoneNumbers.isEmpty && emails.isEmpty) {
       return context.msg.main.contacts.list.item.noNumber;
     } else {
-      String phoneNumbersText, emailsText;
+      String? phoneNumbersText, emailsText;
       if (phoneNumbers.isNotEmpty) {
         phoneNumbersText = context.msg.main.contacts.list.item.numbers(
           phoneNumbers.length,

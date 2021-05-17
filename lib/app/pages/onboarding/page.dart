@@ -7,6 +7,7 @@ import '../../routes.dart';
 import '../main/widgets/caller.dart';
 import 'cubit.dart';
 import 'login/page.dart';
+import 'mobile_number/page.dart';
 import 'password/page.dart';
 import 'permission/call/page.dart';
 import 'permission/contacts/page.dart';
@@ -26,8 +27,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   final _pageController = PageController();
 
-  Map<OnboardingStep, WidgetBuilder> _allPages;
-  Map<OnboardingStep, WidgetBuilder> _currentPages;
+  late Map<OnboardingStep, WidgetBuilder> _allPages;
+  late Map<OnboardingStep, WidgetBuilder> _currentPages;
 
   @override
   void initState() {
@@ -36,6 +37,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
     _allPages = {
       OnboardingStep.login: (_) => LoginPage(),
       OnboardingStep.password: (_) => PasswordPage(),
+      OnboardingStep.mobileNumber: (_) => MobileNumberPage(),
       OnboardingStep.callPermission: (_) => const CallPermissionPage(),
       OnboardingStep.microphonePermission: (_) =>
           const MicrophonePermissionPage(),

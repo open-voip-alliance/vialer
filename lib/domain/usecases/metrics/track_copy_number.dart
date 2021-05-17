@@ -4,9 +4,8 @@ import '../../../dependency_locator.dart';
 import '../../repositories/metrics.dart';
 import '../../use_case.dart';
 
-class TrackCopyNumberUseCase extends FutureUseCase<void> {
+class TrackCopyNumberUseCase extends UseCase {
   final _metricsRepository = dependencyLocator<MetricsRepository>();
 
-  @override
   Future<void> call() => _metricsRepository.track('copy-number');
 }

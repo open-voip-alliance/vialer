@@ -6,7 +6,7 @@ import '../../../../util/brand.dart';
 class GroupHeader extends StatelessWidget {
   final String group;
 
-  const GroupHeader({Key key, @required this.group}) : super(key: key);
+  const GroupHeader({Key? key, required this.group}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

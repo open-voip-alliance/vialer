@@ -22,10 +22,10 @@ class RecentCallItem extends StatelessWidget {
   final VoidCallback onCopyPressed;
 
   const RecentCallItem({
-    Key key,
-    this.call,
-    @required this.onCopyPressed,
-    @required this.onCallPressed,
+    Key? key,
+    required this.call,
+    required this.onCopyPressed,
+    required this.onCallPressed,
   }) : super(key: key);
 
   void _onPopupMenuItemPress(_Action _action) {
@@ -98,7 +98,7 @@ class RecentCallItem extends StatelessWidget {
 class _RecentItemSubtitle extends StatelessWidget {
   final Call call;
 
-  const _RecentItemSubtitle(this.call, {Key key}) : super(key: key);
+  const _RecentItemSubtitle(this.call, {Key? key}) : super(key: key);
 
   String get _time => DateFormat.Hm().format(call.date.toLocal());
 

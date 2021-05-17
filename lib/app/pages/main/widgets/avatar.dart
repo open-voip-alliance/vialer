@@ -6,22 +6,22 @@ import 'package:flutter/material.dart';
 class Avatar extends StatelessWidget {
   static const defaultSize = 36.0;
 
-  final String name;
-  final Uint8List image;
+  final String? name;
+  final Uint8List? image;
 
-  final Color foregroundColor;
-  final Color backgroundColor;
+  final Color? foregroundColor;
+  final Color? backgroundColor;
   final double size;
 
   /// Whether to show the [fallback]. By default this is true when [name]
   /// and [image] are null.
-  final bool showFallback;
+  final bool? showFallback;
 
   /// Fallback shown [showFallback] is true.
-  final Widget fallback;
+  final Widget? fallback;
 
   const Avatar({
-    Key key,
+    Key? key,
     this.name,
     this.image,
     this.size = defaultSize,
@@ -32,7 +32,7 @@ class Avatar extends StatelessWidget {
   }) : super(key: key);
 
   String get _letters {
-    final letters = name.split(' ').map(
+    final letters = name!.split(' ').map(
           (word) => word.characters.first.toUpperCase(),
         );
 
@@ -45,7 +45,7 @@ class Avatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hasImage = image != null && image.isNotEmpty;
+    final hasImage = image != null && image!.isNotEmpty;
     final showFallback = this.showFallback ?? name == null && !hasImage;
 
     return Container(
@@ -56,7 +56,7 @@ class Avatar extends StatelessWidget {
         child: CircleAvatar(
           foregroundColor: foregroundColor,
           backgroundColor: backgroundColor,
-          backgroundImage: hasImage ? MemoryImage(image) : null,
+          backgroundImage: hasImage ? MemoryImage(image!) : null,
           child: showFallback
               ? fallback
               : name != null && !hasImage

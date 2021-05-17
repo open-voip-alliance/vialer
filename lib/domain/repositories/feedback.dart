@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:meta/meta.dart';
 import 'package:device_info/device_info.dart';
 import 'package:package_info/package_info.dart';
 import '../entities/system_user.dart';
@@ -9,9 +8,9 @@ import 'services/feedback.dart';
 
 class FeedbackRepository {
   Future<void> send({
-    @required String title,
-    @required String text,
-    @required SystemUser user,
+    required String title,
+    required String text,
+    required SystemUser user,
   }) async {
     final service = FeedbackService.create();
     final packageInfo = await PackageInfo.fromPlatform();

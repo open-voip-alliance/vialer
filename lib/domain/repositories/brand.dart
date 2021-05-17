@@ -4,8 +4,9 @@ import '../../brands.dart';
 import '../entities/brand.dart';
 
 class BrandRepository {
-  String getCurrentBrandIdentifier() =>
-      const String.fromEnvironment('BRAND', defaultValue: null);
+  String? get currentBrandIdentifier => const bool.hasEnvironment('BRAND')
+      ? const String.fromEnvironment('BRAND')
+      : null;
 
   Iterable<Brand> getBrands() {
     final data = json.decode(brands) as List<dynamic>;

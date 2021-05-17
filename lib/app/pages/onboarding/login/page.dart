@@ -17,7 +17,7 @@ import 'cubit.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -35,11 +35,11 @@ class _LoginPageState extends State<LoginPage>
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  EdgeInsets _defaultPadding;
-  EdgeInsets _padding;
+  EdgeInsets? _defaultPadding;
+  EdgeInsets? _padding;
 
   final _defaultHeaderDistance = 48.0;
-  double _headerDistance;
+  double? _headerDistance;
 
   bool _hidePassword = true;
 
@@ -71,7 +71,7 @@ class _LoginPageState extends State<LoginPage>
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance!.addObserver(this);
   }
 
   @override
@@ -96,8 +96,8 @@ class _LoginPageState extends State<LoginPage>
     setState(() {
       // If there's a bottom view inset, there's most likely a keyboard
       // displaying.
-      if (WidgetsBinding.instance.window.viewInsets.bottom > 0) {
-        _padding = _defaultPadding.copyWith(
+      if (WidgetsBinding.instance!.window.viewInsets.bottom > 0) {
+        _padding = _defaultPadding!.copyWith(
           top: 24,
         );
 
@@ -117,7 +117,7 @@ class _LoginPageState extends State<LoginPage>
     return AnimatedContainer(
       curve: _curve,
       duration: _duration,
-      padding: !isLandscape ? _padding : _padding.copyWith(top: 24),
+      padding: !isLandscape ? _padding : _padding!.copyWith(top: 24),
       child: BlocProvider<LoginCubit>(
         create: (_) => LoginCubit(context.read<OnboardingCubit>()),
         child: BlocConsumer<LoginCubit, LoginState>(
@@ -291,6 +291,6 @@ class _LoginPageState extends State<LoginPage>
   void dispose() {
     super.dispose();
 
-    WidgetsBinding.instance.removeObserver(this);
+    WidgetsBinding.instance!.removeObserver(this);
   }
 }

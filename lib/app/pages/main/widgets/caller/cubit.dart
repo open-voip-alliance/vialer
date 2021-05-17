@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_phone_lib/audio/audio_route.dart';
 import 'package:flutter_phone_lib/flutter_phone_lib.dart';
-import 'package:meta/meta.dart';
 
 import '../../../../../domain/entities/exceptions/call_through.dart';
 import '../../../../../domain/entities/exceptions/voip_not_enabled.dart';
@@ -27,7 +26,7 @@ import '../../../../../domain/usecases/get_call_through_calls_count.dart';
 import '../../../../../domain/usecases/get_has_voip_enabled.dart';
 import '../../../../../domain/usecases/get_is_authenticated.dart';
 import '../../../../../domain/usecases/get_permission_status.dart';
-import '../../../../../domain/usecases/get_settings.dart';
+import '../../../../../domain/usecases/get_setting.dart';
 import '../../../../../domain/usecases/get_voip_call_event_stream.dart';
 import '../../../../../domain/usecases/increment_call_through_calls_count.dart';
 import '../../../../../domain/usecases/metrics/track_call.dart';
@@ -42,8 +41,13 @@ export 'state.dart';
 
 class CallerCubit extends Cubit<CallerState> with Loggable {
   final _isAuthenticated = GetIsAuthenticatedUseCase();
-  final _getSettings = GetSettingsUseCase();
+
+  final _getShowDialerConfirmPopUpSetting =
+      GetSettingUseCase<ShowDialerConfirmPopupSetting>();
+  final _getShowSurveyDialogSetting =
+      GetSettingUseCase<ShowSurveyDialogSetting>();
   final _changeSetting = ChangeSettingUseCase();
+
   final _call = CallUseCase();
   final _getCallThroughCallsCount = GetCallThroughCallsCountUseCase();
   final _trackCall = TrackCallUseCase();
@@ -68,10 +72,10 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
   final _getVoipAudioState = GetVoipCallAudioStateUseCase();
   final _routeAudio = RouteAudioUseCase();
 
-  Timer _callThroughTimer;
+  Timer? _callThroughTimer;
 
   // For VoIP.
-  StreamSubscription _voipCallEventSubscription;
+  StreamSubscription? _voipCallEventSubscription;
 
   CallerCubit() : super(const CanCall()) {
     _isAuthenticated().then((isAuthenticated) {
@@ -109,7 +113,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
 
   Future<void> call(
     String destination, {
-    @required CallOrigin origin,
+    required CallOrigin origin,
     bool showingConfirmPage = false,
   }) async {
     if (await _getHasVoipEnabled()) {
@@ -144,21 +148,19 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
   }
 
   Future<void> rateVoipCall({
-    @required int rating,
-    @required Call call,
+    required int rating,
+    required Call call,
   }) async =>
       await _rateVoipCall(rating: rating, call: call);
 
   Future<void> _callViaCallThrough(
     String destination, {
-    @required CallOrigin origin,
+    required CallOrigin origin,
     bool showingConfirmPage = false,
   }) async {
-    final settings = await _getSettings();
-
-    final shouldShowConfirmPage =
-        settings.get<ShowDialerConfirmPopupSetting>().value &&
-            !showingConfirmPage;
+    final shouldShowConfirmPage = await _getShowDialerConfirmPopUpSetting()
+            .then((setting) => setting.value) &&
+        !showingConfirmPage;
 
     // First request to allow to make phone calls,
     // otherwise don't show the call through page at all.
@@ -197,7 +199,8 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
             if (state is Calling) {
               _incrementCallThroughCallsCount();
 
-              final showSurvey = settings.get<ShowSurveyDialogSetting>().value;
+              final showSurvey = await _getShowSurveyDialogSetting()
+                  .then((setting) => setting.value);
 
               const callTriggerCount =
                   AfterThreeCallThroughCallsTrigger.callCount;
@@ -230,7 +233,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
 
   Future<void> _callViaVoip(
     String destination, {
-    @required CallOrigin origin,
+    required CallOrigin origin,
   }) async {
     if (!await _hasMicPermission()) return;
 
@@ -252,7 +255,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
 
   Future<void> _onVoipCallEvent(Event event) async {
     if (event is IncomingCallReceived) {
-      emit(Ringing(voipCall: event.call));
+      emit(Ringing(voipCall: event.call!));
       logger.info('Incoming VoIP call, ringing');
     } else if (event is OutgoingCallStarted) {
       final originState = state as CallOriginDetermined;
@@ -267,12 +270,14 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
       // It's possible we're not in a CallProcessState yet, because we missed an
       // event, if that's the case we'll emit the state necessary to get there.
       if (state is! CallProcessState) {
-        if (event.call.direction.isInbound) {
-          emit(Calling(
-            origin: CallOrigin.incoming,
-            voipCall: event.call,
-            audioState: audioState,
-          ));
+        if (event.call?.direction.isInbound == true) {
+          emit(
+            Calling(
+              origin: CallOrigin.incoming,
+              voipCall: event.call,
+              audioState: audioState,
+            ),
+          );
           logger.info('VoIP call connected (recovered)');
         } else {
           throw UnsupportedError(
@@ -353,7 +358,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
 
   @override
   Future<void> close() async {
-    await _callThroughTimer?.cancel();
+    _callThroughTimer?.cancel();
     await _voipCallEventSubscription?.cancel();
     await super.close();
   }
@@ -404,10 +409,5 @@ extension on CallOrigin {
       case CallOrigin.contacts:
         return 'contact';
     }
-
-    throw UnsupportedError(
-      'Vialer error: Unknown CallOrigin: $this. '
-      'Please add a case to toTrackString.',
-    );
   }
 }

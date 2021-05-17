@@ -2,19 +2,18 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:logging/logging.dart';
-import 'package:meta/meta.dart';
 
 import '../entities/system_user.dart';
 
 class LoggingRepository {
-  SecureSocket _remoteLoggingSocket;
+  SecureSocket? _remoteLoggingSocket;
 
-  StreamSubscription _remoteLogSubscription;
+  StreamSubscription? _remoteLogSubscription;
 
   String _logStringOf(
     LogRecord record, {
-    @required SystemUser user,
-    @required bool remote,
+    SystemUser? user,
+    required bool remote,
   }) {
     var sanitizedMessage = record.message;
 
@@ -60,8 +59,8 @@ class LoggingRepository {
   }
 
   Future<void> enableConsoleLogging({
-    @required SystemUser user,
-    void Function(String log) onLog,
+    SystemUser? user,
+    void Function(String log)? onLog,
   }) async {
     Logger.root.onRecord.listen((record) {
       // TODO: Temporary way of marking logs as VoIP logs, which should not
@@ -72,43 +71,37 @@ class LoggingRepository {
       }
 
       final logString = _logStringOf(record, user: user, remote: false);
-      if (logString != null) {
-        onLog?.call(logString);
-        print(logString);
-      }
+      onLog?.call(logString);
+      print(logString);
     });
   }
 
   Future<void> enableRemoteLogging({
-    @required SystemUser user,
-    @required String token,
+    required SystemUser user,
+    required String token,
   }) async {
     _remoteLoggingSocket = await SecureSocket.connect(
       'data.logentries.com',
       443,
     );
 
-    if (token != null && token.isNotEmpty) {
+    if (token.isNotEmpty) {
       _remoteLogSubscription ??= Logger.root.onRecord.listen((record) async {
         final message = _logStringOf(record, user: user, remote: true);
-        if (message == null) {
-          return;
-        }
-
-        _remoteLoggingSocket.writeln('$token $message');
+        _remoteLoggingSocket!.writeln('$token $message');
       });
     }
   }
 
   Future<void> sendLogsToRemote(
     String logs, {
-    @required String token,
+    required String token,
   }) async {
     assert(_remoteLoggingSocket != null);
 
     final savedLogs = logs.split('\n');
 
-    _remoteLoggingSocket.write(
+    _remoteLoggingSocket!.write(
       savedLogs.map((line) => '$token $line').join('\n'),
     );
   }

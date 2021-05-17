@@ -9,6 +9,7 @@ import 'domain/repositories/contact.dart';
 import 'domain/repositories/db/database.dart';
 import 'domain/repositories/destination.dart';
 import 'domain/repositories/env.dart';
+import 'domain/repositories/error_tracking_repository.dart';
 import 'domain/repositories/feedback.dart';
 import 'domain/repositories/logging.dart';
 import 'domain/repositories/metrics.dart';
@@ -26,6 +27,7 @@ final dependencyLocator = GetIt.instance;
 /// Pass `ui: false` to skip dependencies that are only used for the UI.
 Future<void> initializeDependencies({bool ui = true}) async {
   dependencyLocator
+    ..registerSingleton<ErrorTrackingRepository>(ErrorTrackingRepository())
     ..registerSingleton<VoipgridService>(
       VoipgridService.create(),
     )

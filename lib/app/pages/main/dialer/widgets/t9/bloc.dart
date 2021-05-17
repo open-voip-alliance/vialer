@@ -98,6 +98,7 @@ class T9ContactsBloc extends Bloc<T9ContactsEvent, T9ContactsState> {
           .map(
             (contact) => contact.phoneNumbers.map(
               (number) => T9Contact(
+                initials: contact.initials,
                 name: contact.name,
                 avatar: contact.avatar,
                 relevantPhoneNumber: number,

@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import 'destination.dart';
@@ -13,21 +12,21 @@ class SelectedDestinationInfo extends Equatable {
   final int id;
 
   @JsonKey(name: 'fixeddestination')
-  final int fixedDestinationId;
+  final int? fixedDestinationId;
 
   @JsonKey(name: 'phoneaccount')
-  final int phoneAccountId;
+  final int? phoneAccountId;
 
   const SelectedDestinationInfo({
-    this.id,
+    required this.id,
     this.fixedDestinationId,
     this.phoneAccountId,
   });
 
   SelectedDestinationInfo copyWith({
-    int id,
-    int fixedDestinationId,
-    int phoneAccountId,
+    int? id,
+    int? fixedDestinationId,
+    int? phoneAccountId,
   }) {
     return SelectedDestinationInfo(
       id: id ?? this.id,
@@ -37,7 +36,7 @@ class SelectedDestinationInfo extends Equatable {
   }
 
   SelectedDestinationInfo replaceDestination({
-    @required Destination destination,
+    required Destination destination,
   }) {
     return SelectedDestinationInfo(
       id: id,
@@ -59,7 +58,7 @@ class SelectedDestinationInfo extends Equatable {
       'phoneAccountId: $phoneAccountId)';
 
   @override
-  List<Object> get props => [
+  List<Object?> get props => [
         id,
         fixedDestinationId,
         phoneAccountId,

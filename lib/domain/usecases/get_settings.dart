@@ -6,12 +6,11 @@ import '../repositories/storage.dart';
 import '../use_case.dart';
 import 'get_user.dart';
 
-class GetSettingsUseCase extends FutureUseCase<List<Setting>> {
+class GetSettingsUseCase extends UseCase {
   final _storageRepository = dependencyLocator<StorageRepository>();
 
   final _getUser = GetUserUseCase();
 
-  @override
   Future<List<Setting>> call() async {
     final user = await _getUser(latest: false);
     final storedSettings = _storageRepository.settings;
@@ -24,7 +23,7 @@ class GetSettingsUseCase extends FutureUseCase<List<Setting>> {
           (stored) => stored.runtimeType == s.runtimeType,
         ),
       ),
-      PhoneNumberSetting(user?.outgoingCli),
+      if (user?.outgoingCli != null) PhoneNumberSetting(user!.outgoingCli!),
     ];
   }
 }

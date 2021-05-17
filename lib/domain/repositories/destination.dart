@@ -1,7 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
-
 import '../entities/availability.dart';
 import 'services/voipgrid.dart';
 
@@ -10,27 +8,23 @@ class DestinationRepository {
 
   DestinationRepository(this._service);
 
-  Future<Availability> getLatestAvailability() async {
+  Future<Availability?> getLatestAvailability() async {
     final response = await _service.getAvailability();
-    final objects = response.body['objects'] as List<dynamic> ?? [];
+    final objects = response.body['objects'] as List<dynamic>? ?? [];
 
-    Availability availability;
-    if (objects.isNotEmpty) {
-      availability = objects
-          .map((obj) => Availability.fromJson(obj as Map<String, dynamic>))
-          .toList()
-          .first;
-    }
+    if (objects.isEmpty) return null;
 
-    return availability;
+    return objects
+        .map((obj) => Availability.fromJson(obj as Map<String, dynamic>))
+        .toList()
+        .first;
   }
 
   Future<void> setAvailability({
-    @required int selectedDestinationId,
-    int phoneAccountId,
-    int fixedDestinationId,
+    required int selectedDestinationId,
+    int? phoneAccountId,
+    int? fixedDestinationId,
   }) async {
-    assert(selectedDestinationId != null);
     assert(!(phoneAccountId != null && fixedDestinationId != null));
 
     await _service.setAvailability(

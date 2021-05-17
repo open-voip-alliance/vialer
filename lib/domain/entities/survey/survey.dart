@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:meta/meta.dart';
 
 import 'question.dart';
 import 'survey_trigger.dart';
@@ -16,15 +15,12 @@ class Survey extends Equatable {
   final List<Question> questions;
 
   Survey({
-    @required this.id,
-    @required this.trigger,
-    @required this.language,
-    @required this.questions,
-  })  : assert(id != null),
-        assert(trigger != null),
-        assert(language != null),
-        assert(questions != null && questions.isNotEmpty);
+    required this.id,
+    required this.trigger,
+    required this.language,
+    required this.questions,
+  }) : assert(questions.isNotEmpty);
 
   @override
-  List<Object> get props => [id, trigger, language, questions];
+  List<Object?> get props => [id, trigger, language, questions];
 }

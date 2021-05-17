@@ -185,7 +185,7 @@ class VoysTheme extends BrandTheme {
               color: primary,
               textTheme: TextTheme(
                 headline6:
-                    super.themeData.appBarTheme.textTheme.headline6.copyWith(
+                    super.themeData.appBarTheme.textTheme!.headline6!.copyWith(
                           color: Colors.white,
                         ),
               ),
@@ -193,6 +193,11 @@ class VoysTheme extends BrandTheme {
                 color: Colors.white,
               ),
             ),
+        textButtonTheme: TextButtonThemeData(
+          style: ButtonStyle(
+            foregroundColor: MaterialStateProperty.all(primary),
+          ),
+        ),
       );
 }
 
@@ -237,4 +242,5 @@ abstract class VialerSans {
   static const star = IconData(0xE940, fontFamily: _family);
   static const starOutline = IconData(0xE93F, fontFamily: _family);
   static const bluetooth = IconData(0xE917, fontFamily: _family);
+  static const mobilePhone = IconData(0xE97B, fontFamily: _family);
 }

@@ -20,8 +20,8 @@ class Caller extends StatefulWidget {
   Caller._(this.navigatorKey, this.child);
 
   static Widget create({
-    @required GlobalKey<NavigatorState> navigatorKey,
-    @required Widget child,
+    required GlobalKey<NavigatorState> navigatorKey,
+    required Widget child,
   }) {
     return BlocProvider<CallerCubit>(
       create: (_) => CallerCubit(),
@@ -37,15 +37,15 @@ class Caller extends StatefulWidget {
 class _CallerState extends State<Caller> with WidgetsBindingObserver {
   bool _resumedOnceDuringCalling = false;
 
-  NavigatorState get _navigatorState => widget.navigatorKey.currentState;
+  NavigatorState get _navigatorState => widget.navigatorKey.currentState!;
 
-  BuildContext get _navigatorContext => widget.navigatorKey.currentContext;
+  BuildContext get _navigatorContext => widget.navigatorKey.currentContext!;
 
   @override
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance!.addObserver(this);
   }
 
   @override
@@ -84,7 +84,7 @@ class _CallerState extends State<Caller> with WidgetsBindingObserver {
     if (state is InitiatingCall && state.isVoip ||
         (state is Calling &&
             state.isVoip &&
-            state.voipCall.direction.isInbound)) {
+            state.voipCall!.direction.isInbound)) {
       await _navigatorState.pushAndRemoveUntil(
         MaterialPageRoute(
           builder: (_) => const CallPage(),
@@ -138,7 +138,7 @@ class _CallerState extends State<Caller> with WidgetsBindingObserver {
   void dispose() {
     super.dispose();
 
-    WidgetsBinding.instance.removeObserver(this);
+    WidgetsBinding.instance!.removeObserver(this);
   }
 }
 
@@ -188,15 +188,19 @@ Future<void> _showCallThroughErrorDialog(
           title: title,
           content: content,
           actions: <Widget>[
-            FlatButton(
+            TextButton(
               onPressed: buttonOnPressed,
+              style: ButtonStyle(
+                overlayColor: MaterialStateProperty.all(
+                  Theme.of(context).primaryColorLight,
+                ),
+              ),
               child: Text(
                 buttonText.toUpperCase(),
                 style: TextStyle(
                   color: Theme.of(context).primaryColor,
                 ),
               ),
-              splashColor: Theme.of(context).primaryColorLight,
             ),
           ],
         );

@@ -12,7 +12,7 @@ class SurveyDialog extends StatelessWidget {
 
   static Future<void> show(
     BuildContext context, {
-    @required SurveyTrigger trigger,
+    required SurveyTrigger trigger,
   }) async {
     await showDialog(
       context: context,
@@ -22,7 +22,7 @@ class SurveyDialog extends StatelessWidget {
     );
   }
 
-  SurveyDialog._({Key key, @required this.trigger}) : super(key: key);
+  SurveyDialog._({Key? key, required this.trigger}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +42,7 @@ class SurveyDialog extends StatelessWidget {
               return QuestionScreen(
                 key: ValueKey(state.question),
                 question: state.question,
-                survey: state.survey,
+                survey: state.survey!,
                 answer: state.answer,
               );
             } else if (state is ShowThankYou) {
