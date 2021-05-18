@@ -42,7 +42,12 @@ class StorageRepository {
     }
   }
 
-  set settings(List<Setting>? settings) => _preferences.setOrRemoveString(
+  /// If you need to `await` completion of the write, use [setSettings].
+  set settings(List<Setting>? settings) => setSettings(settings);
+
+  /// Set (replace) the settings. Future completes when writing is done.
+  Future<void> setSettings(List<Setting>? settings) async =>
+      await _preferences.setOrRemoveString(
         _settingsKey,
         settings != null
             ? json.encode(settings.map((s) => s.toJson()).toList())

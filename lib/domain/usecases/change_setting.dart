@@ -55,12 +55,16 @@ class ChangeSettingUseCase extends UseCase {
       ..add(setting);
 
     // We only want to save mutable settings.
-    _storageRepository.settings = newSettings.where((s) => s.mutable).toList();
+    await _storageRepository
+        .setSettings(newSettings.where((s) => s.mutable).toList());
 
     // We do this after writing the setting so setting checks work.
     if (setting is UseVoipSetting && setting.value == true) {
-      await _registerToVoipMiddleware();
-      await _startVoip();
+      try {
+        await _registerToVoipMiddleware();
+        await _startVoip();
+        // ignore: avoid_catching_errors
+      } on Error {}
     }
   }
 }
