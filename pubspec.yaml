@@ -17,7 +17,6 @@ dependencies:
     path: voip_flutter_integration
 
   flutter_bloc: ^7.0.0
-
   pedantic: ^1.9.0
   provider: ^5.0.0
   equatable: ^2.0.0
@@ -50,7 +49,6 @@ dependencies:
   connectivity: ^3.0.3
   webview_flutter: ^2.0.4
   json_annotation: ^4.0.1
-
   flutter_rating_bar: ^4.0.0
 
 dev_dependencies:
