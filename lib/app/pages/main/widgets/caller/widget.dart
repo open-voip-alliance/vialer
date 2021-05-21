@@ -134,11 +134,16 @@ Future<void> _showCallThroughErrorDialog(
   CallThroughException exception,
 ) {
   String message;
+  var title = context.msg.main.callThrough.error.title;
   if (exception is InvalidDestinationException ||
       exception is NormalizationException) {
     message = context.msg.main.callThrough.error.invalidDestination;
   } else if (exception is NoMobileNumberException) {
-    message = context.msg.main.callThrough.error.noMobileNumber;
+    message = context.msg.main.callThrough.error.mobile.noMobileNumber;
+    title = context.msg.main.callThrough.error.mobile.title;
+  } else if (exception is NumberTooLongException) {
+    message = context.msg.main.callThrough.error.numberTooLong.numberTooLong;
+    title = context.msg.main.callThrough.error.numberTooLong.title;
   } else {
     message = context.msg.main.callThrough.error.unknown;
   }
@@ -147,7 +152,7 @@ Future<void> _showCallThroughErrorDialog(
     context: context,
     barrierDismissible: true,
     builder: (context) {
-      final title = Text(context.msg.main.callThrough.error.title);
+      final titleText = Text(title);
       final content = SingleChildScrollView(
         child: Text(message),
       );
@@ -161,7 +166,7 @@ Future<void> _showCallThroughErrorDialog(
 
       if (context.isIOS) {
         return CupertinoAlertDialog(
-          title: title,
+          title: titleText,
           content: content,
           actions: <Widget>[
             CupertinoButton(
@@ -172,7 +177,7 @@ Future<void> _showCallThroughErrorDialog(
         );
       } else {
         return AlertDialog(
-          title: title,
+          title: titleText,
           content: content,
           actions: <Widget>[
             TextButton(
