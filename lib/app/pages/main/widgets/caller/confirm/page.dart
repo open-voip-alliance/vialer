@@ -11,6 +11,7 @@ import '../../../../../resources/localizations.dart';
 import '../../../../../resources/theme.dart';
 import '../../../../../routes.dart';
 import '../../../../../util/brand.dart';
+import '../../../../../util/widgets_binding_observer_registrar.dart';
 import '../../../../../widgets/transparent_status_bar.dart';
 import '../../../widgets/caller.dart';
 import 'cubit.dart';
@@ -44,17 +45,10 @@ class ConfirmPage extends StatefulWidget {
 class ConfirmPageState extends State<ConfirmPage>
     with
         TickerProviderStateMixin,
-        // ignore: prefer_mixin
-        WidgetsBindingObserver {
+        WidgetsBindingObserver,
+        WidgetsBindingObserverRegistrar {
   bool _madeCall = false;
   bool _canPop = true;
-
-  @override
-  void initState() {
-    super.initState();
-
-    WidgetsBinding.instance!.addObserver(this);
-  }
 
   @override
   void didChangeDependencies() {
@@ -244,13 +238,6 @@ class ConfirmPageState extends State<ConfirmPage>
         ),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-
-    WidgetsBinding.instance!.removeObserver(this);
   }
 }
 

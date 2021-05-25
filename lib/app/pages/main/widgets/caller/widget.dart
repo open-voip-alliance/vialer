@@ -7,6 +7,7 @@ import '../../../../../domain/entities/survey/survey_trigger.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
 import '../../../../routes.dart';
+import '../../../../util/widgets_binding_observer_registrar.dart';
 import '../../call/incoming/page.dart';
 import '../../call/page.dart';
 import '../../survey/dialog.dart';
@@ -33,20 +34,13 @@ class Caller extends StatefulWidget {
   _CallerState createState() => _CallerState();
 }
 
-// ignore: prefer_mixin
-class _CallerState extends State<Caller> with WidgetsBindingObserver {
+class _CallerState extends State<Caller>
+    with WidgetsBindingObserver, WidgetsBindingObserverRegistrar {
   bool _resumedOnceDuringCalling = false;
 
   NavigatorState get _navigatorState => widget.navigatorKey.currentState!;
 
   BuildContext get _navigatorContext => widget.navigatorKey.currentContext!;
-
-  @override
-  void initState() {
-    super.initState();
-
-    WidgetsBinding.instance!.addObserver(this);
-  }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
@@ -132,13 +126,6 @@ class _CallerState extends State<Caller> with WidgetsBindingObserver {
       listener: _onStateChanged,
       child: widget.child,
     );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-
-    WidgetsBinding.instance!.removeObserver(this);
   }
 }
 

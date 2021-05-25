@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 import '../../../resources/localizations.dart';
 import '../../../resources/theme.dart';
 import '../../../util/brand.dart';
+import '../../../util/widgets_binding_observer_registrar.dart';
 import '../widgets/caller.dart';
 import '../widgets/connectivity_alert.dart';
 import 'widgets/call_actions.dart';
@@ -24,14 +25,8 @@ class CallPage extends StatefulWidget {
   _CallPageState createState() => _CallPageState();
 }
 
-// ignore: prefer_mixin
-class _CallPageState extends State<CallPage> with WidgetsBindingObserver {
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance!.addObserver(this);
-  }
-
+class _CallPageState extends State<CallPage>
+    with WidgetsBindingObserver, WidgetsBindingObserverRegistrar {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
@@ -177,18 +172,11 @@ class _CallPageState extends State<CallPage> with WidgetsBindingObserver {
               children: [
                 Container(
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        context.brand.theme.callGradientStart,
-                        context.brand.theme.callGradientEnd,
-                      ],
-                    ),
+                    gradient: context.brand.theme.primaryGradient,
                   ),
                   child: DefaultTextStyle.merge(
                     style: TextStyle(
-                      color: context.brand.theme.onCallGradientColor,
+                      color: context.brand.theme.onPrimaryGradientColor,
                     ),
                     child: Column(
                       children: [
@@ -209,7 +197,8 @@ class _CallPageState extends State<CallPage> with WidgetsBindingObserver {
                         Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(13.5),
-                            color: context.brand.theme.callGradientStart,
+                            color:
+                                context.brand.theme.primaryGradientStartColor,
                           ),
                           padding: const EdgeInsets.symmetric(
                             horizontal: 16,
@@ -246,11 +235,5 @@ class _CallPageState extends State<CallPage> with WidgetsBindingObserver {
         ),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance!.removeObserver(this);
-    super.dispose();
   }
 }

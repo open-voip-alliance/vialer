@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../util/widgets_binding_observer_registrar.dart';
 
 import 'cubit.dart';
 
@@ -18,7 +19,7 @@ class UserDataRefresher extends StatelessWidget {
   }
 }
 
-/// Private widget with a context that has access to [UserDataRefresher].
+/// Private widget with a context that has access to [UserDataRefresherCubit].
 class _UserDataRefresher extends StatefulWidget {
   final Widget child;
 
@@ -29,16 +30,7 @@ class _UserDataRefresher extends StatefulWidget {
 }
 
 class _UserDataRefresherState extends State<_UserDataRefresher>
-    with
-        // ignore: prefer_mixin
-        WidgetsBindingObserver {
-  @override
-  void initState() {
-    super.initState();
-
-    WidgetsBinding.instance!.addObserver(this);
-  }
-
+    with WidgetsBindingObserver, WidgetsBindingObserverRegistrar {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     final cubit = context.read<UserDataRefresherCubit>();
@@ -50,11 +42,4 @@ class _UserDataRefresherState extends State<_UserDataRefresher>
 
   @override
   Widget build(BuildContext context) => widget.child;
-
-  @override
-  void dispose() {
-    super.dispose();
-
-    WidgetsBinding.instance!.removeObserver(this);
-  }
 }

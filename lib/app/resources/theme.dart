@@ -62,13 +62,22 @@ abstract class BrandTheme {
 
   Color get onboardingGradientEnd;
 
-  Color get callGradientStart;
+  Color get primaryGradientStartColor;
 
-  Color get callGradientEnd;
+  Color get primaryGradientEndColor;
 
-  /// Color used when a gradient from [callGradientStart] to [callGradientEnd]
-  /// is the background.
-  Color get onCallGradientColor => onPrimaryColor;
+  LinearGradient get primaryGradient => LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [
+          primaryGradientStartColor,
+          primaryGradientEndColor,
+        ],
+      );
+
+  /// Color used when a gradient from [primaryGradientStartColor]
+  /// to [primaryGradientEndColor] is the background.
+  Color get onPrimaryGradientColor => onPrimaryColor;
 
   final Color errorBorderColor = const Color(0x57DA534F);
 
@@ -131,10 +140,10 @@ class VialerTheme extends BrandTheme {
   final onboardingGradientEnd = const Color(0xFFE94E1B);
 
   @override
-  get callGradientStart => onboardingGradientStart;
+  get primaryGradientStartColor => onboardingGradientStart;
 
   @override
-  get callGradientEnd => onboardingGradientEnd;
+  get primaryGradientEndColor => onboardingGradientEnd;
 }
 
 class VoysTheme extends BrandTheme {
@@ -162,10 +171,10 @@ class VoysTheme extends BrandTheme {
   get onboardingGradientEnd => primaryDark;
 
   @override
-  get callGradientStart => primary;
+  get primaryGradientStartColor => primary;
 
   @override
-  final callGradientEnd = const Color(0xFF7F67D1);
+  final primaryGradientEndColor = const Color(0xFF7F67D1);
 
   @override
   Color get buttonColor => primary;

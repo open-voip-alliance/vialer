@@ -1,12 +1,13 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:collection/collection.dart';
 
 import '../../../../../domain/entities/contact.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
+import '../../../../util/widgets_binding_observer_registrar.dart';
 import '../../util/stylized_snack_bar.dart';
 import '../../widgets/caller.dart';
 import '../../widgets/header.dart';
@@ -31,17 +32,8 @@ class ContactDetailsPage extends StatefulWidget {
 }
 
 class _ContactDetailsPageState extends State<ContactDetailsPage>
-    with
-        // ignore: prefer_mixin
-        WidgetsBindingObserver {
+    with WidgetsBindingObserver, WidgetsBindingObserverRegistrar {
   bool _madeEdit = false;
-
-  @override
-  void initState() {
-    super.initState();
-
-    WidgetsBinding.instance!.addObserver(this);
-  }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
@@ -183,13 +175,6 @@ class _ContactDetailsPageState extends State<ContactDetailsPage>
         },
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance!.removeObserver(this);
-
-    super.dispose();
   }
 }
 

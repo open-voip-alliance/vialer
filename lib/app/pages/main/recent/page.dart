@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../domain/entities/call_with_contact.dart';
 import '../../../resources/localizations.dart';
 import '../../../resources/theme.dart';
+import '../../../util/widgets_binding_observer_registrar.dart';
 import '../util/stylized_snack_bar.dart';
 import '../widgets/caller/cubit.dart';
 import '../widgets/conditional_placeholder.dart';
@@ -115,16 +116,12 @@ class _RecentCallsList extends StatefulWidget {
 }
 
 class _RecentCallsListState extends State<_RecentCallsList>
-    with
-        // ignore: prefer_mixin
-        WidgetsBindingObserver {
+    with WidgetsBindingObserver, WidgetsBindingObserverRegistrar {
   final _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
-
-    WidgetsBinding.instance!.addObserver(this);
     _scrollController.addListener(_handleScrolling);
   }
 
@@ -138,7 +135,6 @@ class _RecentCallsListState extends State<_RecentCallsList>
   @override
   void dispose() {
     _scrollController.dispose();
-    WidgetsBinding.instance!.removeObserver(this);
 
     super.dispose();
   }

@@ -8,6 +8,7 @@ import '../../../resources/localizations.dart';
 import '../../../resources/theme.dart';
 import '../../../util/brand.dart';
 import '../../../util/conditional_capitalization.dart';
+import '../../../util/widgets_binding_observer_registrar.dart';
 import '../../../widgets/connectivity_checker.dart';
 import '../../../widgets/stylized_button.dart';
 import '../cubit.dart';
@@ -27,8 +28,8 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage>
     with
         TickerProviderStateMixin,
-        // ignore: prefer_mixin
-        WidgetsBindingObserver {
+        WidgetsBindingObserver,
+        WidgetsBindingObserverRegistrar {
   static const _duration = Duration(milliseconds: 200);
   static const _curve = Curves.decelerate;
 
@@ -65,13 +66,6 @@ class _LoginPageState extends State<LoginPage>
         password: _passwordController.text,
       );
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    WidgetsBinding.instance!.addObserver(this);
   }
 
   @override
@@ -285,12 +279,5 @@ class _LoginPageState extends State<LoginPage>
         ),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-
-    WidgetsBinding.instance!.removeObserver(this);
   }
 }

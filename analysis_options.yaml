@@ -5,6 +5,7 @@ linter:
     public_member_api_docs: false
     avoid_classes_with_only_static_members: false
     type_annotate_public_apis: false
+    prefer_mixin: false
 
     annotate_overrides: true
     omit_local_variable_types: true
