@@ -17,6 +17,7 @@ import 'recent/page.dart';
 import 'settings/page.dart';
 import 'widgets/caller.dart';
 import 'widgets/connectivity_alert.dart';
+import 'widgets/notice/widget.dart';
 import 'widgets/user_data_refresher/widget.dart';
 
 typedef WidgetWithArgumentsBuilder = Widget Function(BuildContext, Object?);
@@ -126,9 +127,13 @@ class _MainPageState extends State<MainPage> {
           brightness: Brightness.dark,
           child: UserDataRefresher(
             child: ConnectivityAlert(
-              child: _AnimatedIndexedStack(
-                index: _currentIndex!,
-                children: _pages!,
+              child: SafeArea(
+                child: Notice(
+                  child: _AnimatedIndexedStack(
+                    index: _currentIndex!,
+                    children: _pages!,
+                  ),
+                ),
               ),
             ),
           ),

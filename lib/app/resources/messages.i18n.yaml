@@ -185,7 +185,7 @@ main:
         useVoip:
           title: "Use VoIP"
           description: >-
-            With VoIP you call via internet which uses your data bundle. If VoIP is disabled, 
+            With VoIP you call via internet which uses your data bundle. If VoIP is disabled,
             calls go through the regular phone app and your call carrier service costs apply.
       version: "Version"
       portalLinks:
@@ -209,6 +209,15 @@ main:
       snackBar: "Feedback sent, thank you!"
       buttons:
         send: "Send feedback"
+
+  notice:
+    microphone:
+      title: "No microphone permission"
+      content(String appName): >-
+        Without access to the microphone, you don't hear audio when calling.
+        Please allow "Microphone" permission for $appName.
+      actions:
+        givePermissioon: "Give permission"
 
   survey:
     helpUs:
@@ -248,7 +257,8 @@ onboarding:
           The email address or password you entered is invalid. Please check and try again.
       wrongEmailFormat: Email address is incorrectly formatted.
       wrongPasswordFormat:  >-
-        Password is incorrectly formatted. Your password must be at least 6 characters long and include 1 non-alphabetical character.
+        Password is incorrectly formatted. Your password must be at least 6 characters long and
+        include 1 non-alphabetical character.
 
   password:
     title: "Change your current password"
@@ -286,7 +296,8 @@ onboarding:
       Please be aware that if you have not set up your voicemail, 
       your mobile phone number may be mentioned in the default voicemail message.
 
-      This will be shared with people reaching you through your business number when you are not available.
+      This will be shared with people reaching you through your business number
+      when you are not available.
 
   mobileNumber:
     title: "Mobile number"

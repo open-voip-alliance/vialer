@@ -213,6 +213,15 @@ main:
       buttons:
         send: "Feedback"
 
+  notice:
+    microphone:
+      title: "Geen microfoon toestemming"
+      content(String appName): >-
+        Zonder toegang tot de microfoon hoor je geen geluid tijdens gesprekken.
+        Graag $appName toegang geven tot de "Microfoon"-rechten.
+      actions:
+        givePermissioon: "Geef toestemming"
+
   survey:
     helpUs:
       title: "Help ons de app te verbeteren"

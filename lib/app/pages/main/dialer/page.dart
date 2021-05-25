@@ -10,6 +10,7 @@ import '../../../resources/theme.dart';
 import '../../../routes.dart';
 import '../../../util/brand.dart';
 import '../../../util/conditional_capitalization.dart';
+import '../../../util/widgets_binding_observer_registrar.dart';
 import '../../../widgets/stylized_button.dart';
 import '../../../widgets/transparent_status_bar.dart';
 import '../call/widgets/call_button.dart';
@@ -34,16 +35,9 @@ class DialerPage extends StatefulWidget {
   _DialerPageState createState() => _DialerPageState();
 }
 
-// ignore: prefer_mixin
-class _DialerPageState extends State<DialerPage> with WidgetsBindingObserver {
+class _DialerPageState extends State<DialerPage>
+    with WidgetsBindingObserver, WidgetsBindingObserverRegistrar {
   final _dialPadController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-
-    WidgetsBinding.instance!.addObserver(this);
-  }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
@@ -167,13 +161,6 @@ class _DialerPageState extends State<DialerPage> with WidgetsBindingObserver {
             )
           : body,
     );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-
-    WidgetsBinding.instance!.removeObserver(this);
   }
 }
 

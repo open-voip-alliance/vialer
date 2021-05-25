@@ -12,6 +12,7 @@ import '../../../resources/localizations.dart';
 import '../../../resources/theme.dart';
 import '../../../util/brand.dart';
 import '../../../util/conditional_capitalization.dart';
+import '../../../util/widgets_binding_observer_registrar.dart';
 import '../../../widgets/stylized_button.dart';
 import '../widgets/conditional_placeholder.dart';
 import '../widgets/header.dart';
@@ -37,17 +38,8 @@ class ContactsPage extends StatefulWidget {
 }
 
 class _ContactPageState extends State<ContactsPage>
-    with
-        // ignore: prefer_mixin
-        WidgetsBindingObserver {
+    with WidgetsBindingObserver, WidgetsBindingObserverRegistrar {
   String? _searchTerm;
-
-  @override
-  void initState() {
-    super.initState();
-
-    WidgetsBinding.instance!.addObserver(this);
-  }
 
   void _onSearchTermChanged(String searchTerm) {
     setState(() {
@@ -187,13 +179,6 @@ class _ContactPageState extends State<ContactsPage>
         .flatten()
         .toList();
   }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance!.removeObserver(this);
-
-    super.dispose();
-  }
 }
 
 class _Placeholder extends StatelessWidget {
@@ -217,62 +202,64 @@ class _Placeholder extends StatelessWidget {
     return ConditionalPlaceholder(
       showPlaceholder: state is! ContactsLoaded ||
           (state is ContactsLoaded && state.contacts.isEmpty),
-      placeholder: state is NoPermission
-          ? Warning(
-              icon: const Icon(VialerSans.lockOn),
-              title: Text(
-                context.msg.main.contacts.list.noPermission.title(appName),
-              ),
-              description: !state.dontAskAgain
-                  ? Text(
-                      context.msg.main.contacts.list.noPermission
-                          .description(appName),
-                    )
-                  : Text(
-                      context.msg.main.contacts.list.noPermission
-                          .permanentDescription(appName),
-                    ),
-              children: <Widget>[
-                const SizedBox(height: 40),
-                StylizedButton.raised(
-                  colored: true,
-                  onPressed: !state.dontAskAgain
-                      ? cubit.requestPermission
-                      : cubit.openAppSettings,
-                  child: !state.dontAskAgain
-                      ? Text(
-                          context.msg.main.contacts.list.noPermission
-                              .buttonPermission
-                              .toUpperCaseIfAndroid(context),
-                        )
-                      : Text(
-                          context.msg.main.contacts.list.noPermission
-                              .buttonOpenSettings
-                              .toUpperCaseIfAndroid(context),
-                        ),
+      placeholder: SingleChildScrollView(
+        child: state is NoPermission
+            ? Warning(
+                icon: const Icon(VialerSans.lockOn),
+                title: Text(
+                  context.msg.main.contacts.list.noPermission.title(appName),
                 ),
-              ],
-            )
-          : state is LoadingContacts
-              ? LoadingIndicator(
-                  title: Text(
-                    context.msg.main.contacts.list.loading.title,
+                description: !state.dontAskAgain
+                    ? Text(
+                        context.msg.main.contacts.list.noPermission
+                            .description(appName),
+                      )
+                    : Text(
+                        context.msg.main.contacts.list.noPermission
+                            .permanentDescription(appName),
+                      ),
+                children: <Widget>[
+                  const SizedBox(height: 40),
+                  StylizedButton.raised(
+                    colored: true,
+                    onPressed: !state.dontAskAgain
+                        ? cubit.requestPermission
+                        : cubit.openAppSettings,
+                    child: !state.dontAskAgain
+                        ? Text(
+                            context.msg.main.contacts.list.noPermission
+                                .buttonPermission
+                                .toUpperCaseIfAndroid(context),
+                          )
+                        : Text(
+                            context.msg.main.contacts.list.noPermission
+                                .buttonOpenSettings
+                                .toUpperCaseIfAndroid(context),
+                          ),
                   ),
-                  description: Text(
-                    context.msg.main.contacts.list.loading.description,
-                  ),
-                )
-              : Warning(
-                  icon: const Icon(VialerSans.userOff),
-                  title: Text(
-                    context.msg.main.contacts.list.empty.title,
-                  ),
-                  description: Text(
-                    context.msg.main.contacts.list.empty.description(
-                      context.brand.appName,
+                ],
+              )
+            : state is LoadingContacts
+                ? LoadingIndicator(
+                    title: Text(
+                      context.msg.main.contacts.list.loading.title,
+                    ),
+                    description: Text(
+                      context.msg.main.contacts.list.loading.description,
+                    ),
+                  )
+                : Warning(
+                    icon: const Icon(VialerSans.userOff),
+                    title: Text(
+                      context.msg.main.contacts.list.empty.title,
+                    ),
+                    description: Text(
+                      context.msg.main.contacts.list.empty.description(
+                        context.brand.appName,
+                      ),
                     ),
                   ),
-                ),
+      ),
       child: child,
     );
   }
