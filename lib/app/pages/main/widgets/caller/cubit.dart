@@ -13,15 +13,15 @@ import '../../../../../domain/entities/setting.dart';
 import '../../../../../domain/entities/survey/survey_trigger.dart';
 import '../../../../../domain/usecases/answer_voip_call.dart';
 import '../../../../../domain/usecases/call/call.dart';
+import '../../../../../domain/usecases/call/voip/begin_transfer.dart';
 import '../../../../../domain/usecases/call/voip/end.dart';
-import '../../../../../domain/usecases/call/voip/get_audio_state.dart';
-import '../../../../../domain/usecases/call/voip/get_is_muted.dart';
+import '../../../../../domain/usecases/call/voip/get_call_session_state.dart';
+import '../../../../../domain/usecases/call/voip/merge_transfer.dart';
 import '../../../../../domain/usecases/call/voip/rate_voip_call.dart';
 import '../../../../../domain/usecases/call/voip/route_audio.dart';
 import '../../../../../domain/usecases/call/voip/toggle_hold.dart';
 import '../../../../../domain/usecases/call/voip/toggle_mute.dart';
 import '../../../../../domain/usecases/change_setting.dart';
-import '../../../../../domain/usecases/get_active_voip_call.dart';
 import '../../../../../domain/usecases/get_call_through_calls_count.dart';
 import '../../../../../domain/usecases/get_has_voip_enabled.dart';
 import '../../../../../domain/usecases/get_is_authenticated.dart';
@@ -35,7 +35,7 @@ import '../../../../../domain/usecases/open_settings.dart';
 import '../../../../../domain/usecases/send_voip_dtmf.dart';
 import '../../../../../domain/usecases/start_voip.dart';
 import '../../../../util/loggable.dart';
-import 'state.dart';
+import 'state.dart' hide AttendedTransferStarted;
 
 export 'state.dart';
 
@@ -61,16 +61,16 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
   final _getHasVoipEnabled = GetHasVoipEnabledUseCase();
   final _startVoip = StartVoipUseCase();
   final _getVoipCallEventStream = GetVoipCallEventStreamUseCase();
-  final _getActiveVoipCall = GetActiveVoipCall();
   final _answerVoipCall = AnswerVoipCallUseCase();
-  final _getIsVoipCallMuted = GetIsVoipCallMutedUseCase();
+  final _getCallSessionState = GetCallSessionState();
   final _toggleMuteVoipCall = ToggleMuteVoipCallUseCase();
   final _toggleHoldVoipCall = ToggleHoldVoipCallUseCase();
   final _sendVoipDtmf = SendVoipDtmfUseCase();
   final _endVoipCall = EndVoipCallUseCase();
   final _rateVoipCall = RateVoipCallUseCase();
-  final _getVoipAudioState = GetVoipCallAudioStateUseCase();
   final _routeAudio = RouteAudioUseCase();
+  final _beginTransfer = BeginTransferUseCase();
+  final _mergeTransfer = MergeTransferUseCase();
 
   Timer? _callThroughTimer;
 
@@ -98,14 +98,16 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
 
       // We need to go to the incoming/ongoing call screen if we were opened by the
       // notification.
-      final activeCall = await _getActiveVoipCall();
+      final voip = await _getCallSessionState();
+      final activeCall = voip.activeCall;
+
       if (activeCall != null &&
           activeCall.direction.isInbound &&
           activeCall.state != CallState.ended) {
         if (activeCall.state == CallState.initializing) {
-          emit(Ringing(voipCall: activeCall));
+          emit(Ringing(voip: voip));
         } else {
-          emit(Calling(origin: CallOrigin.incoming, voipCall: activeCall));
+          emit(Calling(origin: CallOrigin.incoming, voip: voip));
         }
       }
     } on VoipNotEnabledException {}
@@ -254,28 +256,68 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
   }
 
   Future<void> _onVoipCallEvent(Event event) async {
+    // The call UI isn't interested in any non-call-session-events.
+    if (event is! CallSessionEvent) {
+      logger.info('Ignoring event as it is not a CallSessionEvent');
+      return;
+    }
+
+    final callSessionState = event.state!;
+
+    // We will immediately handle any setup call events to make sure these are
+    // always emitted.
     if (event is IncomingCallReceived) {
-      emit(Ringing(voipCall: event.call!));
+      emit(Ringing(voip: callSessionState));
       logger.info('Incoming VoIP call, ringing');
     } else if (event is OutgoingCallStarted) {
       final originState = state as CallOriginDetermined;
-      emit(InitiatingCall(origin: originState.origin, voipCall: event.call));
+      emit(InitiatingCall(origin: originState.origin, voip: callSessionState));
       logger.info('Initiating VoIP call');
-    } else if (event is CallConnected) {
-      emit(processState.calling(voipCall: event.call));
-      logger.info('VoIP call connected');
-    } else if (event is CallUpdated) {
-      final audioState = await _getVoipAudioState();
+    }
 
+    // When we have reached a state where the call session is finished, we do
+    // not want to continue updating the UI further as we may no longer
+    // get call objects.
+    if (state is FinishedCalling) {
+      logger.info('State is call ended, not updating state any further');
+      return;
+    }
+
+    if (event is CallConnected) {
+      emit(processState.calling(voip: callSessionState));
+      logger.info('VoIP call connected');
+    } else if (event is AttendedTransferStarted) {
+      emit(processState.transferStarted(voip: callSessionState));
+      logger.info('VoIP attended transfer started');
+    } else if (event is AttendedTransferAborted) {
+      emit(processState.calling(voip: callSessionState));
+      logger.info('VoIP attended transfer aborted');
+    } else if (event is AttendedTransferEnded) {
+      emit(processState.transferComplete(voip: callSessionState));
+      logger.info('VoIP attended transfer completed');
+    } else if (event is CallEnded) {
+      // It's possible the call ended so fast that we were not in
+      // a CallProcessState yet.
+      if (state is CallProcessState) {
+        emit(processState.finished(voip: callSessionState));
+      } else {
+        emit(const CanCall());
+      }
+
+      logger.info('VoIP call ended');
+    }
+    // In the event of any other type of CallSessionEvent we just want to update
+    // the UI with the latest information from the PIL, we do not want to
+    // change the state.
+    else if (event is CallSessionEvent) {
       // It's possible we're not in a CallProcessState yet, because we missed an
       // event, if that's the case we'll emit the state necessary to get there.
       if (state is! CallProcessState) {
-        if (event.call?.direction.isInbound == true) {
+        if (callSessionState.activeCall?.direction.isInbound == true) {
           emit(
             Calling(
               origin: CallOrigin.incoming,
-              voipCall: event.call,
-              audioState: audioState,
+              voip: callSessionState,
             ),
           );
           logger.info('VoIP call connected (recovered)');
@@ -286,30 +328,15 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
         }
       }
 
-      emit(processState.copyWith(
-        voipCall: event.call,
-        audioState: audioState,
-      ));
-    } else if (event is CallEnded) {
-      // It's possible the call ended so fast that we were not in
-      // a CallProcessState yet.
-      if (state is CallProcessState) {
-        emit(processState.finished(voipCall: event.call));
-      } else {
-        emit(const CanCall());
-      }
-
-      logger.info('VoIP call ended');
+      emit(processState.copyWith(voip: callSessionState));
     }
   }
 
-  Future<void> toggleMute() async {
-    await _toggleMuteVoipCall();
+  Future<void> toggleMute() async => await _toggleMuteVoipCall();
 
-    final isMuted = await _getIsVoipCallMuted();
+  Future<void> beginTransfer(String number) => _beginTransfer(number: number);
 
-    emit(processState.copyWith(isVoipCallMuted: isMuted));
-  }
+  Future<void> mergeTransfer() => _mergeTransfer();
 
   Future<void> toggleHoldVoipCall() => _toggleHoldVoipCall();
 
@@ -317,13 +344,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
 
   Future<void> endVoipCall() => _endVoipCall();
 
-  Future<void> routeAudio(AudioRoute route) async {
-    _routeAudio(route: route);
-
-    final audioState = await _getVoipAudioState();
-
-    emit(processState.copyWith(audioState: audioState));
-  }
+  Future<void> routeAudio(AudioRoute route) => _routeAudio(route: route);
 
   void notifyCanCall() {
     // Necessary for auto cast.

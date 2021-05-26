@@ -20,7 +20,6 @@ class AnimatedVisibility extends StatefulWidget {
 
 class _AnimatedVisibilityState extends State<AnimatedVisibility>
     with TickerProviderStateMixin {
-
   // Not called 'visible' since that can be confused with `widget.visible`.
   bool _visibilityEnabled = false;
 

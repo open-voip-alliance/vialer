@@ -60,12 +60,17 @@ main:
       keypad: "keypad"
       speaker: "speaker"
       transfer: "transfer"
+      merge: "merge calls"
       bluetooth: "bluetooth"
       phone: "phone"
       hold: "hold"
     state:
       calling: "Calling"
       callEnded: "Call ended"
+      callOnHold: "Call on hold"
+      transferComplete: "Transfer completed"
+      transferToStart: "Transferring"
+      transferToEnd: "to"
     incoming:
       answer: "Answer"
       decline: "Decline"
