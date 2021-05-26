@@ -5,16 +5,16 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_phone_lib/call/call_state.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
 
 import '../../../resources/localizations.dart';
-import '../../../resources/theme.dart';
 import '../../../util/brand.dart';
 import '../../../util/widgets_binding_observer_registrar.dart';
 import '../widgets/caller.dart';
 import '../widgets/connectivity_alert.dart';
 import 'widgets/call_actions.dart';
+import 'widgets/call_rating.dart';
+import 'widgets/call_transfer_bar.dart';
 
 class CallPage extends StatefulWidget {
   const CallPage({
@@ -37,16 +37,29 @@ class _CallPageState extends State<CallPage>
       final call = context.read<CallerCubit>().processState.voipCall;
 
       if (call == null || call.state == CallState.ended) {
-        Navigator.of(context).pop();
+        _dismissCallPage(context);
       }
     }
   }
 
-  void _popAfter(Duration duration) {
-    Timer(duration, () {
-      if (mounted) {
-        Navigator.pop(context);
-      }
+  /// Dismisses the call screen, including any windows or dialogs
+  /// display over, taking the user all the way back to the
+  /// previous screen.
+  ///
+  /// Optionally provide a [after] duration for this to be
+  /// performed after a delay.
+  void _dismissCallPage(BuildContext context, {Duration? after}) {
+    dismiss() {
+      Navigator.popUntil(context, (route) => route.isFirst);
+    }
+
+    if (after == null) {
+      dismiss();
+      return;
+    }
+
+    Timer(after, () {
+      if (mounted) dismiss();
     });
   }
 
@@ -55,88 +68,27 @@ class _CallPageState extends State<CallPage>
   Future<void> _onStateChanged(BuildContext context, CallerState state) async {
     if (state is FinishedCalling) {
       if (state.voipCall != null && state.voipCall!.duration >= 1) {
-        _requestCallRating(context, state).then((_) => Navigator.pop(context));
+        Timer(const Duration(seconds: 1), () {
+          if (mounted) {
+            _requestCallRating(context, state)
+                .then((_) => _dismissCallPage(context));
+          }
+        });
       } else {
-        _popAfter(const Duration(seconds: 3));
+        _dismissCallPage(context, after: const Duration(seconds: 3));
       }
     }
   }
 
   Future<void> _requestCallRating(BuildContext context, FinishedCalling state) {
-    Timer(const Duration(seconds: 10), () {
-      if (mounted) {
-        Navigator.of(context, rootNavigator: true).pop();
-      }
-    });
+    _dismissCallPage(context, after: const Duration(seconds: 10));
 
     return showDialog<double>(
-        context: context,
-        builder: (context) {
-          return BackdropFilter(
-            filter: ImageFilter.blur(
-              sigmaX: 10,
-              sigmaY: 10,
-            ),
-            child: AlertDialog(
-              title: Text(
-                context.msg.main.call.rate.title,
-                textScaleFactor: 0.8,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              content: SingleChildScrollView(
-                child: ListBody(
-                  children: [
-                    RatingBar(
-                      initialRating: 0,
-                      direction: Axis.horizontal,
-                      allowHalfRating: false,
-                      itemCount: 5,
-                      tapOnlyMode: true,
-                      ratingWidget: RatingWidget(
-                        full: Icon(
-                          VialerSans.star,
-                          color: context.brand.theme.primary,
-                        ),
-                        half: const SizedBox(),
-                        empty: Icon(
-                          VialerSans.starOutline,
-                          color: context.brand.theme.grey4,
-                        ),
-                      ),
-                      itemPadding: const EdgeInsets.symmetric(
-                        horizontal: 6.0,
-                      ),
-                      onRatingUpdate: (rating) =>
-                          _submitCallRating(rating, state),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        left: 10,
-                        right: 10,
-                        top: 10,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            context.msg.main.call.rate.lowerLabel,
-                            textScaleFactor: 0.9,
-                          ),
-                          Text(
-                            context.msg.main.call.rate.upperLabel,
-                            textScaleFactor: 0.9,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          );
-        });
+      context: context,
+      builder: (context) => CallRating(
+        onCallRated: (rating) => _submitCallRating(rating, state),
+      ),
+    );
   }
 
   void _submitCallRating(double rating, FinishedCalling state) {
@@ -145,11 +97,7 @@ class _CallPageState extends State<CallPage>
           call: state.voipCall!,
         );
 
-    Timer(const Duration(seconds: 1), () {
-      if (mounted) {
-        Navigator.of(context, rootNavigator: true).pop(rating);
-      }
-    });
+    _dismissCallPage(context, after: const Duration(seconds: 1));
   }
 
   @override
@@ -170,6 +118,11 @@ class _CallPageState extends State<CallPage>
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                if (state is AttendedTransferStarted ||
+                    state is AttendedTransferComplete)
+                  CallTransferInProgressBar(
+                    inactiveCall: state.voip!.inactiveCall!,
+                  ),
                 Container(
                   decoration: BoxDecoration(
                     gradient: context.brand.theme.primaryGradient,
@@ -221,12 +174,10 @@ class _CallPageState extends State<CallPage>
                     ),
                   ),
                 ),
-                Expanded(
+                const Expanded(
                   child: Align(
                     alignment: Alignment.bottomCenter,
-                    child: CallActions(
-                      popAfter: _popAfter,
-                    ),
+                    child: CallActions(),
                   ),
                 ),
               ],

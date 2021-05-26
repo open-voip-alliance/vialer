@@ -60,12 +60,17 @@ main:
       keypad: "toetsen"
       speaker: "luidspreker"
       transfer: "doorverbinden"
+      merge: "voeg samen"
       bluetooth: "bluetooth"
       phone: "telefoon"
       hold: "wacht"
     state:
       calling: "Bellen"
       callEnded: "Gesprek beëindigd"
+      callOnHold: "Gesprek in de wacht"
+      transferComplete: "Transfer voltooid"
+      transferToStart: "Verbind"
+      transferToEnd: "door naar"
     incoming:
       answer: "Opnemen"
       decline: "Weigeren"

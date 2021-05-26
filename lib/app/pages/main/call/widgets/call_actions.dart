@@ -12,17 +12,16 @@ import 'package:provider/provider.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
 import '../../../../util/brand.dart';
+import '../../dialer/cubit.dart';
 import '../../widgets/caller.dart';
 import '../../widgets/dial_pad/keypad.dart';
 import '../../widgets/dial_pad/widget.dart';
 import '../widgets/call_button.dart';
+import 'call_transfer.dart';
 
 class CallActions extends StatefulWidget {
-  final void Function(Duration) popAfter;
-
   const CallActions({
     Key? key,
-    required this.popAfter,
   }) : super(key: key);
 
   @override
@@ -126,7 +125,31 @@ class _CallActionButtons extends StatelessWidget {
     Navigator.pushNamed(context, 'dial-pad');
   }
 
-  void _transfer() {}
+  void _transfer(BuildContext context) {
+    showGeneralDialog(
+      context: context,
+      pageBuilder: (_, __, ___) => BlocProvider<DialerCubit>(
+        create: (context) => DialerCubit(context.read<CallerCubit>()),
+        child: BlocBuilder<CallerCubit, CallerState>(
+          builder: (context, state) => Scaffold(
+            body: Container(
+              alignment: Alignment.center,
+              child: CallTransfer(
+                activeCall: (state as CallProcessState).voipCall!,
+                onTransferTargetSelected: (number) {
+                  context.read<CallerCubit>().beginTransfer(number);
+                  Navigator.of(context).pop();
+                },
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _merge(BuildContext context) =>
+      context.read<CallerCubit>().mergeTransfer();
 
   void _toggleHold(BuildContext context) =>
       context.read<CallerCubit>().toggleHoldVoipCall();
@@ -150,19 +173,24 @@ class _CallActionButtons extends StatelessWidget {
                     text: Text(context.msg.main.call.actions.mute),
                     active: processState.isVoipCallMuted,
                     // We can't mute when on hold.
-                    onPressed:
-                        !call.isOnHold ? () => _toggleMute(context) : null,
+                    onPressed: !call.isOnHold && !state.isFinished
+                        ? () => _toggleMute(context)
+                        : null,
                   ),
                 ),
                 Expanded(
                   child: _ActionButton(
                     icon: const Icon(VialerSans.dialpad),
                     text: Text(context.msg.main.call.actions.keypad),
-                    onPressed: () => _toggleDialPad(context),
+                    onPressed: !state.isFinished
+                        ? () => _toggleDialPad(context)
+                        : null,
                   ),
                 ),
-                const Expanded(
-                  child: _AudioRouteButton(),
+                Expanded(
+                  child: _AudioRouteButton(
+                    enabled: !state.isFinished,
+                  ),
                 ),
               ],
             ),
@@ -174,9 +202,17 @@ class _CallActionButtons extends StatelessWidget {
                 Expanded(
                   flex: 2,
                   child: _ActionButton(
-                    icon: const Icon(VialerSans.transfer),
-                    text: Text(context.msg.main.call.actions.transfer),
-                    onPressed: _transfer,
+                    icon: processState.isInTransfer
+                        ? const Icon(VialerSans.merge)
+                        : const Icon(VialerSans.transfer),
+                    text: Text(processState.isInTransfer
+                        ? context.msg.main.call.actions.merge
+                        : context.msg.main.call.actions.transfer),
+                    onPressed: state.isActionable
+                        ? () => processState.isInTransfer
+                            ? _merge(context)
+                            : _transfer(context)
+                        : null,
                   ),
                 ),
                 Expanded(
@@ -185,7 +221,8 @@ class _CallActionButtons extends StatelessWidget {
                     icon: const Icon(VialerSans.onHold),
                     text: Text(context.msg.main.call.actions.hold),
                     active: call.isOnHold,
-                    onPressed: () => _toggleHold(context),
+                    onPressed:
+                        state.isActionable ? () => _toggleHold(context) : null,
                   ),
                 ),
                 const Spacer(),
@@ -209,10 +246,16 @@ class _CallActionButtons extends StatelessWidget {
 class _ActionButton extends StatelessWidget {
   final Widget icon;
   final Widget text;
+  final VoidCallback? onPressed;
 
+  /// An active button is one that is currently in-use, so for example the
+  /// hold button would be active if the call is current on-hold.
   final bool active;
 
-  final VoidCallback? onPressed;
+  /// An enabled button is available to be pressed by the user, for example
+  /// if the call is not yet connected, the user cannot transfer that call so
+  /// the button will not be enabled.
+  bool get _enabled => onPressed != null;
 
   const _ActionButton({
     Key? key,
@@ -224,10 +267,6 @@ class _ActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = onPressed != null
-        ? context.brand.theme.grey6
-        : context.brand.theme.grey4;
-
     const iconSize = 64.0;
 
     return Column(
@@ -242,14 +281,14 @@ class _ActionButton extends StatelessWidget {
                 ? context.brand.theme.primary
                 : context.brand.theme.primary.withOpacity(0),
             child: InkResponse(
-              onTap: onPressed,
+              onTap: _enabled ? onPressed : null,
               containedInkWell: active,
               radius: active ? iconSize : iconSize / 2,
               customBorder: const CircleBorder(),
               child: IconTheme.merge(
                 data: IconThemeData(
                   size: 32,
-                  color: active ? context.brand.theme.onPrimaryColor : color,
+                  color: _pickIconColor(context),
                 ),
                 child: icon,
               ),
@@ -260,17 +299,32 @@ class _ActionButton extends StatelessWidget {
         DefaultTextStyle.merge(
           style: TextStyle(
             fontSize: 16,
-            color: color,
+            color: _pickTextColor(context),
           ),
           child: text,
         ),
       ],
     );
   }
+
+  Color _pickTextColor(BuildContext context) =>
+      _enabled ? context.brand.theme.grey6 : context.brand.theme.grey2;
+
+  Color _pickIconColor(BuildContext context) {
+    if (active) return context.brand.theme.onPrimaryColor;
+
+    if (!_enabled) return context.brand.theme.grey2;
+
+    return context.brand.theme.grey6;
+  }
 }
 
 class _AudioRouteButton extends StatelessWidget {
-  const _AudioRouteButton();
+  final bool enabled;
+
+  const _AudioRouteButton({
+    this.enabled = true,
+  });
 
   Future<void> _showAudioPopupMenu(
     BuildContext context,
@@ -435,17 +489,19 @@ class _AudioRouteButton extends StatelessWidget {
           ),
         ),
         active: !hasBluetooth && (currentRoute == AudioRoute.speaker),
-        onPressed: () {
-          if (processState.audioState != null && hasBluetooth) {
-            _showAudioPopupMenu(context, processState.audioState);
-          } else {
-            context.read<CallerCubit>().routeAudio(
-                  currentRoute == AudioRoute.phone
-                      ? AudioRoute.speaker
-                      : AudioRoute.phone,
-                );
-          }
-        },
+        onPressed: enabled
+            ? () {
+                if (processState.audioState != null && hasBluetooth) {
+                  _showAudioPopupMenu(context, processState.audioState);
+                } else {
+                  context.read<CallerCubit>().routeAudio(
+                        currentRoute == AudioRoute.phone
+                            ? AudioRoute.speaker
+                            : AudioRoute.phone,
+                      );
+                }
+              }
+            : null,
       );
     });
   }
