@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../../util/brand.dart';
 
@@ -12,7 +13,14 @@ class StylizedTextField extends StatelessWidget {
   final bool hasError;
   final bool autoCorrect;
   final TextCapitalization textCapitalization;
-  final List<String> autofillHints;
+  final List<String>? autofillHints;
+  final List<TextInputFormatter> inputFormatters;
+  final TextAlign textAlign;
+  final TextStyle textStyle;
+  final VoidCallback? onEditingComplete;
+  final ValueChanged<String>? onChanged;
+  final GestureTapCallback? onTap;
+  final bool enabled;
 
   StylizedTextField({
     Key? key,
@@ -25,7 +33,16 @@ class StylizedTextField extends StatelessWidget {
     this.hasError = false,
     this.autoCorrect = true,
     this.textCapitalization = TextCapitalization.none,
-    this.autofillHints = const [],
+    this.autofillHints,
+    this.inputFormatters = const [],
+    this.textAlign = TextAlign.start,
+    this.textStyle = const TextStyle(
+      color: Colors.black,
+    ),
+    this.onEditingComplete,
+    this.onChanged,
+    this.onTap,
+    this.enabled = true,
   }) : super(key: key);
 
   static const color = Colors.grey;
@@ -36,15 +53,21 @@ class StylizedTextField extends StatelessWidget {
       color: Colors.transparent,
       elevation: 4,
       child: TextField(
+        textAlign: textAlign,
+        inputFormatters: inputFormatters,
         controller: controller,
         autocorrect: autoCorrect,
         textCapitalization: textCapitalization,
+        enabled: enabled,
         decoration: InputDecoration(
-          prefixIcon: Icon(
-            prefixIcon,
-            color: hasError ? context.brand.theme.errorContentColor : color,
-            size: 16,
-          ),
+          prefixIcon: prefixIcon != null
+              ? Icon(
+                  prefixIcon,
+                  color:
+                      hasError ? context.brand.theme.errorContentColor : color,
+                  size: 16,
+                )
+              : null,
           suffixIcon: suffix,
           labelText: labelText,
           border: inputBorder,
@@ -57,15 +80,16 @@ class StylizedTextField extends StatelessWidget {
           focusColor: color,
           filled: true,
           fillColor: Colors.white,
-          contentPadding: EdgeInsets.zero,
           floatingLabelBehavior: FloatingLabelBehavior.never,
         ),
-        style: const TextStyle(
-          color: Colors.black,
-        ),
+        style: textStyle,
         obscureText: obscureText,
         keyboardType: keyboardType,
+        textInputAction: TextInputAction.next,
         autofillHints: autofillHints,
+        onEditingComplete: onEditingComplete,
+        onChanged: onChanged,
+        onTap: onTap,
       ),
     );
   }

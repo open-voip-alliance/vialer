@@ -59,7 +59,7 @@ class _LoginPageState extends State<LoginPage>
   Future<void> _onStateChanged(BuildContext context, LoginState state) async {
     final onboarding = context.read<OnboardingCubit>();
 
-    if (state is LoggedIn) {
+    if (state is LoggedIn || state is LoginRequiresTwoFactorCode) {
       FocusScope.of(context).unfocus();
       onboarding.forward(
         email: _emailController.text,

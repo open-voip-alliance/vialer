@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../domain/entities/onboarding/step.dart';
+import '../../../domain/usecases/get_is_voip_allowed.dart';
 import '../../../domain/usecases/onboarding/get_steps.dart';
 import '../../util/loggable.dart';
 import '../main/widgets/caller.dart';
@@ -10,6 +11,7 @@ export 'state.dart';
 
 class OnboardingCubit extends Cubit<OnboardingState> with Loggable {
   final _getSteps = GetOnboardingStepsUseCase();
+  final _getIsVoipAllowed = GetIsVoipAllowed();
 
   final CallerCubit _caller;
 
@@ -31,7 +33,7 @@ class OnboardingCubit extends Cubit<OnboardingState> with Loggable {
   void addStep(OnboardingStep step) {
     final allSteps = List<OnboardingStep>.from(state.allSteps);
 
-    final indexOfCurrent = allSteps.indexOf(state.currentStep);
+    final indexOfCurrent = allSteps.lastIndexOf(state.currentStep);
 
     allSteps.insert(indexOfCurrent + 1, step);
 
@@ -47,7 +49,7 @@ class OnboardingCubit extends Cubit<OnboardingState> with Loggable {
   void forward({String? email, String? password}) {
     final allSteps = state.allSteps.toList();
 
-    final indexOfCurrent = allSteps.indexOf(state.currentStep);
+    final indexOfCurrent = allSteps.lastIndexOf(state.currentStep);
 
     if (indexOfCurrent + 1 >= allSteps.length) {
       logger.info('Onboarding complete');
@@ -62,7 +64,7 @@ class OnboardingCubit extends Cubit<OnboardingState> with Loggable {
   void backward() {
     final allSteps = state.allSteps.toList();
 
-    final indexOfCurrent = allSteps.indexOf(state.currentStep);
+    final indexOfCurrent = allSteps.lastIndexOf(state.currentStep);
 
     if (indexOfCurrent - 1 >= 0) {
       _goTo(allSteps[indexOfCurrent - 1]);
@@ -79,5 +81,14 @@ class OnboardingCubit extends Cubit<OnboardingState> with Loggable {
         password: password,
       ),
     );
+  }
+
+  /// Adds the appropriate steps to the onboarding process if the user
+  /// is a voip user, otherwise nothing is added.
+  void addStepsBasedOnUserType() async {
+    if (!await _getIsVoipAllowed()) return;
+
+    addStep(OnboardingStep.microphonePermission);
+    addStep(OnboardingStep.mobileNumber);
   }
 }

@@ -1,4 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../domain/entities/exceptions/two_factor_authentication_required.dart';
+import '../../../../domain/entities/onboarding/step.dart';
 
 import '../../../../domain/usecases/change_password.dart';
 import '../../../../domain/usecases/onboarding/login.dart';
@@ -40,6 +42,10 @@ class PasswordCubit extends Cubit<PasswordState> with Loggable {
       );
 
       emit(PasswordChanged());
+    } on TwoFactorAuthenticationRequiredException {
+      _onboarding.addStep(OnboardingStep.twoFactorAuthentication);
+
+      emit(PasswordChangedButTwoFactorRequired());
     } on Exception {
       // TODO: Other state
       emit(PasswordNotAllowed());
