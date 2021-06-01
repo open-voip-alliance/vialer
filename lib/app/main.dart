@@ -46,7 +46,7 @@ class App extends StatelessWidget {
         builder: (context) {
           return Caller.create(
             navigatorKey: _navigatorKey,
-            child: ConnectivityChecker(
+            child: ConnectivityChecker.create(
               child: MaterialApp(
                 navigatorKey: _navigatorKey,
                 title: context.brand.appName,
