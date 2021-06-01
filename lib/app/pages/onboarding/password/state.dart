@@ -10,3 +10,5 @@ class PasswordNotChanged extends PasswordState {}
 class PasswordNotAllowed extends PasswordState {}
 
 class PasswordChanged extends PasswordState {}
+
+class PasswordChangedButTwoFactorRequired extends PasswordChanged {}

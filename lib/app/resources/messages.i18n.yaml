@@ -274,6 +274,14 @@ onboarding:
     requirements: >-
       Password must be at least 6 characters long and include 1 non-alphabetical character.
 
+  twoFactor:
+    title: "Two-factor authentication"
+    message: >-
+      Please open your authentication app and enter the generated code below:
+    success: "Authentication completed"
+    wrongCode: >-
+      The (backup) code you entered is not correct or is no longer valid. Please check and try again.
+
   permission:
     button:
       iUnderstand: "I understand"

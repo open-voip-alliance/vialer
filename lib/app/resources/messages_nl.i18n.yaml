@@ -277,6 +277,14 @@ onboarding:
     requirements: >-
       Je wachtwoord moet bestaan uit minimaal 6 tekens, waarvan 1 niet-alfabetisch.
 
+  twoFactor:
+    title: "Twee-factor-​authenticatie"
+    message: >-
+      Open je authenticatie-app en voer de gegenereerde code hieronder in:
+    success: "Authenticatie voltooid"
+    wrongCode: >-
+      De ingevoerde (back-up)code is niet correct of niet meer geldig. Controleer op eventuele fouten en probeer het nog een keer.
+
   permission:
     button:
       iUnderstand: "Ik begrijp het"

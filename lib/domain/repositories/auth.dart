@@ -1,5 +1,6 @@
 import '../entities/exceptions/auto_login.dart';
 import '../entities/exceptions/need_to_change_password.dart';
+import '../entities/exceptions/two_factor_authentication_required.dart';
 import '../entities/system_user.dart';
 import 'services/voipgrid.dart';
 
@@ -11,6 +12,7 @@ class AuthRepository {
   static const _emailKey = 'email';
   static const _passwordKey = 'password';
   static const _apiTokenKey = 'api_token';
+  static const _twoFactorKey = 'two_factor_token';
 
   /// Returns the latest user from the portal.
   Future<SystemUser> getUser() => _getUser();
@@ -40,13 +42,25 @@ class AuthRepository {
     String email,
     String password, {
     bool cachePassword = true,
+    String? twoFactorCode,
   }) async {
-    final tokenResponse = await _service.getToken({
+    final requestData = {
       _emailKey: email,
       _passwordKey: password,
-    });
+    };
+
+    if (twoFactorCode != null) {
+      requestData[_twoFactorKey] = twoFactorCode;
+    }
+
+    final tokenResponse = await _service.getToken(requestData);
 
     final body = tokenResponse.body as Map<String, dynamic>?;
+
+    if (twoFactorCode == null &&
+        tokenResponse.error.toString().contains('two_factor_token')) {
+      throw TwoFactorAuthenticationRequiredException();
+    }
 
     if (body != null && body.containsKey(_apiTokenKey)) {
       final token = body[_apiTokenKey] as String;
