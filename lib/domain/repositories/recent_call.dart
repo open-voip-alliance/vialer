@@ -75,12 +75,21 @@ class RecentCallRepository with Loggable {
                 // automatically, but DateTime.toLocal _will_ convert it to the
                 // correct current time zone.
                 date: DateTime.fromMillisecondsSinceEpoch(
-                  TZDateTime.from(
-                    c.date,
-                    getLocation('Europe/Amsterdam'),
-                  ).millisecondsSinceEpoch,
-                  isUtc: true,
-                ),
+                    // Using this constructor so we can make sure the private
+                    // [_utcFromLocalDateTime] method is called and the object
+                    // is initialized with the correct location and no
+                    // conversions are performed on it.
+                    TZDateTime(
+                      getLocation('Europe/Amsterdam'),
+                      c.date.year,
+                      c.date.month,
+                      c.date.day,
+                      c.date.hour,
+                      c.date.minute,
+                      c.date.second,
+                      c.date.microsecond,
+                    ).toUtc().millisecondsSinceEpoch,
+                    isUtc: true,),
               ),
             )
             .toList();
