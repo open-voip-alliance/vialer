@@ -12,7 +12,7 @@ import '../../../../domain/usecases/logout.dart';
 import '../../../../domain/usecases/send_saved_logs_to_remote.dart';
 import '../../../util/loggable.dart';
 import '../widgets/user_data_refresher/cubit.dart';
-import 'state.dart';\
+import 'state.dart';
 
 export 'state.dart';
 
