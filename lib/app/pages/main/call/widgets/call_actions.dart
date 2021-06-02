@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_phone_lib/audio/audio_route.dart';
 import 'package:flutter_phone_lib/audio/audio_state.dart';
-import 'package:intl/intl.dart';
+import 'package:flutter_phone_lib/audio/bluetooth_audio_route.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../resources/localizations.dart';
@@ -17,6 +17,7 @@ import '../../widgets/caller.dart';
 import '../../widgets/dial_pad/keypad.dart';
 import '../../widgets/dial_pad/widget.dart';
 import '../widgets/call_button.dart';
+import 'audio_route_picker.dart';
 import 'call_transfer.dart';
 
 class CallActions extends StatefulWidget {
@@ -330,99 +331,20 @@ class _AudioRouteButton extends StatelessWidget {
     BuildContext context,
     AudioState? audioState,
   ) async {
-    final bluetoothDeviceName = audioState?.bluetoothDeviceName ?? '';
-    final currentRoute = audioState?.currentRoute ?? AudioRoute.phone;
+    final selectedRoute = await showDialog<dynamic>(
+      context: context,
+      builder: (context) {
+        return AudioRoutePicker(
+          audioState: audioState!,
+        );
+      },
+    );
 
-    final selectedRoute = await showDialog<AudioRoute>(
-        context: context,
-        builder: (context) {
-          return SimpleDialog(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 5),
-                child: SimpleDialogOption(
-                  onPressed: () => Navigator.pop(context, AudioRoute.phone),
-                  child: Row(
-                    children: <Widget>[
-                      const Padding(
-                        padding: EdgeInsets.only(right: 10),
-                        child: Icon(VialerSans.phone),
-                      ),
-                      Text(
-                        toBeginningOfSentenceCase(
-                          context.msg.main.call.actions.phone,
-                        )!,
-                      ),
-                      const Spacer(),
-                      if (currentRoute == AudioRoute.phone)
-                        const Icon(VialerSans.check)
-                    ],
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 5),
-                child: SimpleDialogOption(
-                  onPressed: () => Navigator.pop(context, AudioRoute.speaker),
-                  child: Row(
-                    children: <Widget>[
-                      const Padding(
-                        padding: EdgeInsets.only(right: 10),
-                        child: Icon(VialerSans.speaker),
-                      ),
-                      Text(
-                        toBeginningOfSentenceCase(
-                          context.msg.main.call.actions.speaker,
-                        )!,
-                      ),
-                      const Spacer(),
-                      if (currentRoute == AudioRoute.speaker)
-                        const Icon(VialerSans.check)
-                    ],
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 5),
-                child: SimpleDialogOption(
-                  onPressed: () => Navigator.pop(context, AudioRoute.bluetooth),
-                  child: Row(
-                    children: <Widget>[
-                      const Padding(
-                        padding: EdgeInsets.only(right: 10),
-                        child: Icon(VialerSans.bluetooth),
-                      ),
-                      Text(
-                        _bluetoothLabelFor(
-                          context: context,
-                          bluetoothDeviceName: bluetoothDeviceName,
-                        ),
-                      ),
-                      const Spacer(),
-                      if (currentRoute == AudioRoute.bluetooth)
-                        const Icon(VialerSans.check)
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          );
-        });
-
-    if (selectedRoute != null) {
+    if (selectedRoute is AudioRoute) {
       context.read<CallerCubit>().routeAudio(selectedRoute);
+    } else if (selectedRoute is BluetoothAudioRoute) {
+      context.read<CallerCubit>().routeAudioToBluetoothDevice(selectedRoute);
     }
-  }
-
-  String _bluetoothLabelFor({
-    required BuildContext context,
-    required String bluetoothDeviceName,
-  }) {
-    final label = context.msg.main.call.actions.bluetooth;
-
-    return toBeginningOfSentenceCase(
-      bluetoothDeviceName.isNotEmpty ? '$label ($bluetoothDeviceName)' : label,
-    )!;
   }
 
   IconData _iconFor({

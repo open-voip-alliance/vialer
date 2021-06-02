@@ -4,6 +4,7 @@ import 'dart:ui';
 
 import 'package:flutter_phone_lib/audio/audio_route.dart';
 import 'package:flutter_phone_lib/audio/audio_state.dart';
+import 'package:flutter_phone_lib/audio/bluetooth_audio_route.dart';
 import 'package:flutter_phone_lib/call_session_state.dart';
 import 'package:flutter_phone_lib/flutter_phone_lib.dart' hide Logger;
 import 'package:logging/logging.dart';
@@ -98,6 +99,9 @@ class VoipRepository with Loggable {
       _phoneLib.audio.routeAudio(route);
 
   Future<AudioState> get audioState => _phoneLib.audio.state;
+
+  Future<void> routeAudioToBluetoothDevice(BluetoothAudioRoute route) =>
+      _phoneLib.audio.routeAudioToBluetoothDevice(route);
 
   Future<void> beginTransfer(String number) =>
       _phoneLib.actions.beginAttendedTransfer(number);
