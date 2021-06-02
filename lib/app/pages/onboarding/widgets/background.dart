@@ -48,7 +48,7 @@ class _BackgroundState extends State<Background> with TickerProviderStateMixin {
 
     __controller = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 2),
+      duration: const Duration(milliseconds: 1500),
     );
 
     _cloudAnimations = List.generate(_cloudAlignments.length, (i) {
@@ -118,7 +118,7 @@ class _BackgroundState extends State<Background> with TickerProviderStateMixin {
           ..._clouds,
           AnimatedOpacity(
             opacity: _showForm ? 1 : 0,
-            duration: const Duration(seconds: 2),
+            duration: const Duration(milliseconds: 1000),
             child: widget.child,
           )
         ],

@@ -324,12 +324,13 @@ onboarding:
 
   mobileNumber:
     title: "Mobiele nummer"
+    hint: "+31xxx"
     button: "Doorgaan"
     error: "Geen geldig mobiele nummer"
     description(String appName): >-
-      $appName stelt je account in. Vul je mobiele nummer hieronder in:
-    info: >-
-      Je uitgaande nummer zal automatisch ingesteld worden. Deze kun je inzien in de instellingen.
+      $appName is je account aan het instellen. Vul je mobiele nummer hieronder in:
+    info: "Je uitgaande zakelijke nummer wordt automatisch ingesteld."
+    country: "Selecteer je land"
 
   welcome:
     title: "Welkom"

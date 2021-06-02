@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../domain/entities/brand.dart';
 import '../../../resources/localizations.dart';
-import '../../../resources/theme.dart';
+import '../../../util/conditional_capitalization.dart';
 import '../../../widgets/stylized_button.dart';
 import '../cubit.dart';
 import '../widgets/error.dart';
 import '../widgets/stylized_text_field.dart';
 import 'cubit.dart';
+import 'widgets/country_field/widget.dart';
 
 class MobileNumberPage extends StatelessWidget {
   final _mobileNumberController = TextEditingController();
+  final _mobileNumberFocusNode = FocusNode();
 
   void _onContinueButtonPressed(BuildContext context) {
     context
@@ -23,7 +26,8 @@ class MobileNumberPage extends StatelessWidget {
   void _onStateChanged(BuildContext context, MobileNumberState state) {
     _mobileNumberController.text =
         state.mobileNumber == null ? '' : state.mobileNumber as String;
-    if (state is MobileNumberChanged) {
+
+    if (state is MobileNumberAccepted) {
       context.read<OnboardingCubit>().forward();
     }
   }
@@ -65,16 +69,21 @@ class MobileNumberPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 24),
                   ErrorAlert(
-                    visible: state is MobileNumberNotChanged,
+                    visible: state is MobileNumberNotAccepted,
                     message: context.msg.onboarding.mobileNumber.error,
                     inline: false,
                   ),
                   StylizedTextField(
-                    prefixIcon: VialerSans.mobilePhone,
+                    prefixWidget: CountryFlagField.create(
+                      controller: _mobileNumberController,
+                      focusNode: _mobileNumberFocusNode,
+                    ),
                     controller: _mobileNumberController,
+                    focusNode: _mobileNumberFocusNode,
                     labelText: context.msg.onboarding.mobileNumber.title,
-                    keyboardType: TextInputType.phone,
-                    hasError: state is MobileNumberNotChanged,
+                    hintText: context.msg.onboarding.mobileNumber.hint,
+                    keyboardType: TextInputType.text,
+                    hasError: state is MobileNumberNotAccepted,
                     autoCorrect: false,
                   ),
                   const SizedBox(height: 16),
@@ -93,7 +102,8 @@ class MobileNumberPage extends StatelessWidget {
                         StylizedButton.raised(
                           onPressed: () => _onContinueButtonPressed(context),
                           child: Text(
-                            context.msg.onboarding.mobileNumber.button,
+                            context.msg.onboarding.mobileNumber.button
+                                .toUpperCaseIfAndroid(context),
                           ),
                         ),
                       ],

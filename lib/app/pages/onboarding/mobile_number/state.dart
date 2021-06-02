@@ -15,12 +15,12 @@ class MobileNumberState extends Equatable {
   List<Object?> get props => [mobileNumber];
 }
 
-class MobileNumberChanged extends MobileNumberState {
-  MobileNumberChanged({String? mobileNumber})
+class MobileNumberAccepted extends MobileNumberState {
+  MobileNumberAccepted({String? mobileNumber})
       : super(mobileNumber: mobileNumber);
 }
 
-class MobileNumberNotChanged extends MobileNumberState {
-  MobileNumberNotChanged({String? mobileNumber})
+class MobileNumberNotAccepted extends MobileNumberState {
+  MobileNumberNotAccepted({String? mobileNumber})
       : super(mobileNumber: mobileNumber);
 }
