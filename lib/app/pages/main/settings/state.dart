@@ -8,6 +8,7 @@ class SettingsState extends Equatable {
   final BuildInfo? buildInfo;
   final bool isVoipAllowed;
   final bool showTroubleshooting;
+  final bool showAbout;
 
   bool get isLoading => settings.isEmpty;
 
@@ -15,6 +16,7 @@ class SettingsState extends Equatable {
     this.settings = const [],
     this.buildInfo,
     this.isVoipAllowed = true,
+    this.showAbout = false,
   }) : showTroubleshooting =
             settings.getOrNull<ShowTroubleshootingSettingsSetting>()?.value ??
                 false;
@@ -28,6 +30,7 @@ class SettingsState extends Equatable {
         ..add(setting),
       buildInfo: buildInfo,
       isVoipAllowed: isVoipAllowed,
+      showAbout: showAbout,
     );
   }
 
@@ -37,6 +40,7 @@ class SettingsState extends Equatable {
         buildInfo,
         isVoipAllowed,
         showTroubleshooting,
+        showAbout,
       ];
 }
 

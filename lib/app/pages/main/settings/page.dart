@@ -70,6 +70,7 @@ class SettingsPage extends StatelessWidget {
                 final settings = state.settings;
                 final isVoipAllowed = state.isVoipAllowed;
                 final showTroubleshooting = state.showTroubleshooting;
+                final showAbout = state.showAbout;
 
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -161,6 +162,7 @@ class SettingsPage extends StatelessWidget {
                                     ),
                                   ),
                                   const SizedBox(height: 16),
+                                  if (showAbout) SettingLinkTile.about(),
                                 ],
                               ),
                             ),

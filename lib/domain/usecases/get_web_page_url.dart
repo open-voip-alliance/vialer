@@ -1,31 +1,39 @@
 import '../../dependency_locator.dart';
-import '../entities/portal_page.dart';
+import '../entities/web_page.dart';
 import '../repositories/auth.dart';
 import '../use_case.dart';
 import 'get_brand.dart';
 import 'get_user.dart';
 
-class GetPortalWebViewUrlUseCase extends UseCase {
+class GetWebPageUrlUseCase extends UseCase {
   final _authRepository = dependencyLocator<AuthRepository>();
-  final _getBrand = GetBrandUseCase();
 
+  final _getBrand = GetBrandUseCase();
   final _getUser = GetUserUseCase();
 
   final _pagePathMapping = {
-    PortalPage.dialPlan: '/dialplan/',
-    PortalPage.stats: '/stats/dashboard/',
-    PortalPage.passwordReset: '/user/password_reset/',
-    PortalPage.addDestination: '/fixeddestination/add/'
+    WebPage.dialPlan: '/dialplan/',
+    WebPage.stats: '/stats/dashboard/',
+    WebPage.passwordReset: '/user/password_reset/',
+    WebPage.addDestination: '/fixeddestination/add/'
   };
-  final _unauthenticatedPages = [PortalPage.passwordReset];
+  final _unauthenticatedPages = [WebPage.passwordReset];
+  final _aboutPages = [WebPage.about];
 
-  Future<String> call({required PortalPage page}) async {
+  Future<String> call({required WebPage page}) async {
     final brand = await _getBrand();
 
+    // Non-portal page.
+    if (_aboutPages.contains(page)) {
+      return brand.aboutUrl.toString();
+    }
+
+    // Unauthenticated portal page.
     if (_unauthenticatedPages.contains(page)) {
       return brand.url.replace(path: _pagePathMapping[page]).toString();
     }
 
+    // Authenticated portal page.
     final user = await _getUser(latest: false);
     final autoLoginToken = await _authRepository.getAutoLoginToken();
     final username = user!.email;

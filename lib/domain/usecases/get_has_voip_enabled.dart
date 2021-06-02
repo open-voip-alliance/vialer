@@ -6,7 +6,7 @@ import 'get_setting.dart';
 /// Whether the user can use VoIP _and_ has the VoIP setting enabled.
 class GetHasVoipEnabledUseCase extends UseCase {
   final _getUseVoipSetting = GetSettingUseCase<UseVoipSetting>();
-  final _getIsVoipAllowed = GetIsVoipAllowed();
+  final _getIsVoipAllowed = GetIsVoipAllowedUseCase();
 
   Future<bool> call() async =>
       await _getIsVoipAllowed() && (await _getUseVoipSetting()).value;

@@ -18,6 +18,7 @@ class BrandRepository {
         identifier: object['identifier'] as String,
         appName: object['appName'] as String,
         url: Uri.parse(object['url'] as String),
+        aboutUrl: Uri.parse(object['aboutUrl'] as String),
       );
     });
   }

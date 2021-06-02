@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../../domain/entities/portal_page.dart';
+import '../../../../../domain/entities/web_page.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
 import '../../../../util/brand.dart';
@@ -16,11 +16,14 @@ class SettingLinkTile extends StatelessWidget {
 
   final VoidCallback? onTap;
 
+  final bool center;
+
   const SettingLinkTile({
     Key? key,
     required this.title,
     this.description,
     this.onTap,
+    this.center = false,
   }) : super(key: key);
 
   static Widget troubleshooting() {
@@ -60,7 +63,7 @@ class SettingLinkTile extends StatelessWidget {
           onTap: () {
             Navigator.of(context, rootNavigator: true).push(
               MaterialPageRoute(
-                builder: (context) => PortalWebViewPage(PortalPage.dialPlan),
+                builder: (context) => WebViewPage(WebPage.dialPlan),
               ),
             );
           },
@@ -79,10 +82,30 @@ class SettingLinkTile extends StatelessWidget {
           onTap: () {
             Navigator.of(context, rootNavigator: true).push(
               MaterialPageRoute(
-                builder: (context) => PortalWebViewPage(PortalPage.stats),
+                builder: (context) => WebViewPage(WebPage.stats),
               ),
             );
           },
+        );
+      },
+    );
+  }
+
+  static Widget about() {
+    return Builder(
+      builder: (context) {
+        return SettingLinkTile(
+          title: Text(
+            context.msg.main.settings.list.about.title,
+          ),
+          onTap: () {
+            Navigator.of(context, rootNavigator: true).push(
+              MaterialPageRoute(
+                builder: (context) => WebViewPage(WebPage.about),
+              ),
+            );
+          },
+          center: true,
         );
       },
     );
@@ -100,6 +123,7 @@ class SettingLinkTile extends StatelessWidget {
           VialerSans.caretRight,
           color: context.brand.theme.grey4,
         ),
+        center: center,
       ),
     );
   }

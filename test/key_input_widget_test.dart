@@ -14,6 +14,7 @@ void main() {
           identifier: 'vialer',
           appName: 'Vialer',
           url: Uri.parse('https://partner.voipgrid.nl'),
+          aboutUrl: Uri.parse('https://www.voipgrid.nl/voip-app/'),
         ),
         child: KeyInput(
           controller: controller,

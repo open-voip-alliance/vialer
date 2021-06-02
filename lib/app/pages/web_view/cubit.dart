@@ -1,43 +1,46 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:webview_flutter/platform_interface.dart';
 
 import '../../../domain/entities/exceptions/auto_login.dart';
-import '../../../domain/entities/portal_page.dart';
-import '../../../domain/usecases/get_portal_webview_url.dart';
+import '../../../domain/entities/web_page.dart';
+import '../../../domain/usecases/get_web_page_url.dart';
 import '../../../domain/usecases/metrics/track_web_view.dart';
 import '../../util/loggable.dart';
 import 'state.dart';
 
-class PortalWebViewCubit extends Cubit<PortalWebViewState> with Loggable {
-  final _getPortalWebviewUrl = GetPortalWebViewUrlUseCase();
+class WebViewCubit extends Cubit<WebViewState> with Loggable {
+  final _getWebViewUrl = GetWebPageUrlUseCase();
   final _trackWebView = TrackWebViewUseCase();
 
-  final PortalPage _portalPage;
+  final WebPage _page;
 
-  PortalWebViewCubit(this._portalPage) : super(LoadingPortalUrl()) {
-    _loadPortalUrl();
+  WebViewCubit(this._page) : super(LoadingUrl()) {
+    _loadUrl();
   }
 
-  void reloadAll() {
-    emit(LoadingPortalUrl());
-    _loadPortalUrl();
+  void reload() {
+    emit(LoadingUrl());
+    _loadUrl();
   }
 
-  void notifyWebViewLoaded(String portalUrl) {
-    emit(LoadedWebview(portalUrl: portalUrl));
+  void notifyWebViewLoaded(String url) {
+    emit(LoadedWebView(url: url));
   }
 
-  void notifyWebViewHadError() {
-    emit(LoadWebviewError());
+  void notifyWebViewHadError(WebResourceError error) {
+    logger.info('Error loading url, ${error.errorCode}: ${error.description}');
+
+    emit(LoadWebViewError(description: error.description));
   }
 
-  void _loadPortalUrl() async {
+  void _loadUrl() async {
     try {
-      final url = await _getPortalWebviewUrl(page: _portalPage);
+      final url = await _getWebViewUrl(page: _page);
 
-      _trackWebView(page: describeEnum(_portalPage));
+      _trackWebView(page: describeEnum(_page));
 
-      emit(LoadedPortalUrl(portalUrl: url));
+      emit(LoadedUrl(url: url));
     } on AutoLoginException {
       emit(LoadPortalUrlError());
     }

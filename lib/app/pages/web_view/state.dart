@@ -1,25 +1,34 @@
 import 'package:equatable/equatable.dart';
 
-abstract class PortalWebViewState extends Equatable {
+abstract class WebViewState extends Equatable {
+  const WebViewState();
+
   @override
   List<Object?> get props => [];
 }
 
-class LoadingPortalUrl extends PortalWebViewState {}
+class LoadingUrl extends WebViewState {}
 
-class LoadedPortalUrl extends PortalWebViewState {
-  final String portalUrl;
+class LoadedUrl extends WebViewState {
+  final String url;
 
-  LoadedPortalUrl({required this.portalUrl});
+  const LoadedUrl({required this.url});
 
   @override
-  List<Object?> get props => [portalUrl];
+  List<Object?> get props => [url];
 }
 
-class LoadedWebview extends LoadedPortalUrl {
-  LoadedWebview({required String portalUrl}) : super(portalUrl: portalUrl);
+class LoadedWebView extends LoadedUrl {
+  const LoadedWebView({required String url}) : super(url: url);
 }
 
-class LoadPortalUrlError extends PortalWebViewState {}
+class LoadPortalUrlError extends WebViewState {}
 
-class LoadWebviewError extends PortalWebViewState {}
+class LoadWebViewError extends WebViewState {
+  final String description;
+
+  const LoadWebViewError({required this.description});
+
+  @override
+  List<Object?> get props => [description];
+}

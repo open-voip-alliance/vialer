@@ -7,15 +7,17 @@ class Brand extends Equatable {
   final String identifier;
   final String appName;
   final Uri url;
+  final Uri aboutUrl;
 
   const Brand({
     required this.identifier,
     required this.appName,
     required this.url,
+    required this.aboutUrl,
   });
 
   @override
-  List<Object?> get props => [identifier, appName, url];
+  List<Object?> get props => [identifier, appName, url, aboutUrl];
 
   bool get isVialer => identifier == 'vialer';
 
@@ -24,6 +26,9 @@ class Brand extends Equatable {
   bool get isVoysFreedom => identifier == 'voysFreedom';
 
   @override
-  String toString() =>
-      '$runtimeType(identifier: $identifier, appName: $appName, url: $url)';
+  String toString() => '$runtimeType('
+      'identifier: $identifier, '
+      'appName: $appName, '
+      'url: $url, '
+      'aboutUrl: $aboutUrl)';
 }
