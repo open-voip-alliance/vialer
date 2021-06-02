@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_phone_lib/audio/audio_route.dart';
+import 'package:flutter_phone_lib/audio/bluetooth_audio_route.dart';
 import 'package:flutter_phone_lib/flutter_phone_lib.dart';
 
 import '../../../../../domain/entities/exceptions/call_through.dart';
@@ -19,6 +20,7 @@ import '../../../../../domain/usecases/call/voip/get_call_session_state.dart';
 import '../../../../../domain/usecases/call/voip/merge_transfer.dart';
 import '../../../../../domain/usecases/call/voip/rate_voip_call.dart';
 import '../../../../../domain/usecases/call/voip/route_audio.dart';
+import '../../../../../domain/usecases/call/voip/route_audio_to_bluetooth_device.dart';
 import '../../../../../domain/usecases/call/voip/toggle_hold.dart';
 import '../../../../../domain/usecases/call/voip/toggle_mute.dart';
 import '../../../../../domain/usecases/change_setting.dart';
@@ -69,6 +71,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
   final _endVoipCall = EndVoipCallUseCase();
   final _rateVoipCall = RateVoipCallUseCase();
   final _routeAudio = RouteAudioUseCase();
+  final _routeAudioToBluetoothDevice = RouteAudioToBluetoothDeviceUseCase();
   final _beginTransfer = BeginTransferUseCase();
   final _mergeTransfer = MergeTransferUseCase();
 
@@ -345,6 +348,9 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
   Future<void> endVoipCall() => _endVoipCall();
 
   Future<void> routeAudio(AudioRoute route) => _routeAudio(route: route);
+
+  Future<void> routeAudioToBluetoothDevice(BluetoothAudioRoute route) =>
+      _routeAudioToBluetoothDevice(route: route);
 
   void notifyCanCall() {
     // Necessary for auto cast.
