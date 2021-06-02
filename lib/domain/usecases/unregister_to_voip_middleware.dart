@@ -6,7 +6,7 @@ import 'get_voip_config.dart';
 
 class UnregisterToVoipMiddlewareUseCase extends UseCase {
   final _voipRepository = dependencyLocator<VoipRepository>();
-  final _getIsVoipAllowed = GetIsVoipAllowed();
+  final _getIsVoipAllowed = GetIsVoipAllowedUseCase();
   final _getVoipConfig = GetVoipConfigUseCase();
 
   Future<void> call() async {

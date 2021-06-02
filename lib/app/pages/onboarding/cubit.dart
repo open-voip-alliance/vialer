@@ -11,7 +11,7 @@ export 'state.dart';
 
 class OnboardingCubit extends Cubit<OnboardingState> with Loggable {
   final _getSteps = GetOnboardingStepsUseCase();
-  final _getIsVoipAllowed = GetIsVoipAllowed();
+  final _getIsVoipAllowed = GetIsVoipAllowedUseCase();
 
   final CallerCubit _caller;
 

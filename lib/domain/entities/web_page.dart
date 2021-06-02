@@ -1,6 +1,7 @@
-enum PortalPage {
+enum WebPage {
   dialPlan,
   stats,
   passwordReset,
   addDestination,
+  about,
 }

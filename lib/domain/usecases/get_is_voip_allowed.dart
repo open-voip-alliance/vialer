@@ -1,7 +1,7 @@
 import '../use_case.dart';
 import 'get_user.dart';
 
-class GetIsVoipAllowed extends UseCase {
+class GetIsVoipAllowedUseCase extends UseCase {
   final _getUser = GetUserUseCase();
 
   Future<bool> call() async {

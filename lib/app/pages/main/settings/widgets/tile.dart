@@ -7,8 +7,8 @@ import '../../../../../domain/entities/brand.dart';
 import '../../../../../domain/entities/destination.dart';
 import '../../../../../domain/entities/fixed_destination.dart';
 import '../../../../../domain/entities/phone_account.dart';
-import '../../../../../domain/entities/portal_page.dart';
 import '../../../../../domain/entities/setting.dart';
+import '../../../../../domain/entities/web_page.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
 import '../../../../util/brand.dart';
@@ -27,12 +27,16 @@ class SettingTile extends StatelessWidget {
   /// next line. Defaults to false.
   final bool childFillWidth;
 
+  /// If this is true, the widget will be centered.
+  final bool center;
+
   const SettingTile({
     Key? key,
     required this.label,
     this.description,
     required this.child,
     this.childFillWidth = false,
+    this.center = false,
   }) : super(key: key);
 
   static Widget phoneNumber(PhoneNumberSetting setting) {
@@ -165,8 +169,8 @@ class SettingTile extends StatelessWidget {
             await Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => PortalWebViewPage(
-                  PortalPage.addDestination,
+                builder: (context) => WebViewPage(
+                  WebPage.addDestination,
                 ),
               ),
             );
@@ -248,16 +252,20 @@ class SettingTile extends StatelessWidget {
                   minHeight: 48,
                 ),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: center
+                      ? MainAxisAlignment.center
+                      : MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     DefaultTextStyle.merge(
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: !context.isIOS ? FontWeight.bold : null,
                       ),
-                      child: Expanded(
-                        child: label,
-                      ),
+                      child: center
+                          ? label
+                          : Expanded(
+                              child: label,
+                            ),
                     ),
                     if (!childFillWidth) child,
                   ],

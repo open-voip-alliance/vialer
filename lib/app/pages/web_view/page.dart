@@ -2,9 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:webview_flutter/platform_interface.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-import '../../../domain/entities/portal_page.dart';
+import '../../../domain/entities/web_page.dart';
 
 import '../../pages/main/widgets/conditional_placeholder.dart';
 import '../../resources/localizations.dart';
@@ -16,16 +17,16 @@ import './cubit.dart';
 import './state.dart';
 import './widgets/navigation_controls.dart';
 
-class PortalWebViewPage extends StatefulWidget {
-  final PortalPage portalPage;
+class WebViewPage extends StatefulWidget {
+  final WebPage page;
 
-  PortalWebViewPage(this.portalPage);
+  WebViewPage(this.page);
 
   @override
-  _PortalWebViewPageState createState() => _PortalWebViewPageState();
+  _WebViewPageState createState() => _WebViewPageState();
 }
 
-class _PortalWebViewPageState extends State<PortalWebViewPage> {
+class _WebViewPageState extends State<WebViewPage> {
   WebViewController? _controller;
 
   @override
@@ -39,21 +40,21 @@ class _PortalWebViewPageState extends State<PortalWebViewPage> {
       _controller = null;
     });
 
-    context.read<PortalWebViewCubit>().reloadAll();
+    context.read<WebViewCubit>().reload();
   }
 
-  void _onWebviewCreated(WebViewController controller) {
+  void _onWebViewCreated(WebViewController controller) {
     setState(() {
       _controller = controller;
     });
   }
 
-  void _onPageFinishedLoading(BuildContext context, String portalUrl) {
-    context.read<PortalWebViewCubit>().notifyWebViewLoaded(portalUrl);
+  void _onPageFinishedLoading(BuildContext context, String url) {
+    context.read<WebViewCubit>().notifyWebViewLoaded(url);
   }
 
-  void _onPageLoadError(BuildContext context) {
-    context.read<PortalWebViewCubit>().notifyWebViewHadError();
+  void _onPageLoadError(BuildContext context, WebResourceError error) {
+    context.read<WebViewCubit>().notifyWebViewHadError(error);
   }
 
   @override
@@ -64,11 +65,11 @@ class _PortalWebViewPageState extends State<PortalWebViewPage> {
           NavigationControls(_controller),
         ],
       ),
-      body: BlocProvider<PortalWebViewCubit>(
-        create: (_) => PortalWebViewCubit(widget.portalPage),
-        child: BlocBuilder<PortalWebViewCubit, PortalWebViewState>(
+      body: BlocProvider<WebViewCubit>(
+        create: (_) => WebViewCubit(widget.page),
+        child: BlocBuilder<WebViewCubit, WebViewState>(
           builder: (context, state) {
-            if (state is LoadPortalUrlError || state is LoadWebviewError) {
+            if (state is LoadPortalUrlError || state is LoadWebViewError) {
               return Warning(
                 description: Text(context.msg.webview.error.description),
                 icon: const Icon(VialerSans.exclamationMark),
@@ -86,21 +87,22 @@ class _PortalWebViewPageState extends State<PortalWebViewPage> {
                 ],
               );
             }
-            if (state is LoadedPortalUrl) {
+            if (state is LoadedUrl) {
               return Stack(
                 children: [
                   WebView(
-                    initialUrl: state.portalUrl,
+                    initialUrl: state.url,
                     javascriptMode: JavascriptMode.unrestricted,
-                    onWebViewCreated: _onWebviewCreated,
+                    onWebViewCreated: _onWebViewCreated,
                     onPageFinished: (_) => _onPageFinishedLoading(
                       context,
-                      state.portalUrl,
+                      state.url,
                     ),
-                    onWebResourceError: (_) => _onPageLoadError(context),
+                    onWebResourceError: (error) =>
+                        _onPageLoadError(context, error),
                     gestureNavigationEnabled: true,
                   ),
-                  if (state is! LoadedWebview)
+                  if (state is! LoadedWebView)
                     const Center(
                       child: CircularProgressIndicator(),
                     )
