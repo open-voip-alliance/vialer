@@ -69,6 +69,61 @@ class SettingTile extends StatelessWidget {
     );
   }
 
+  static Widget doNotDisturb(DoNotDisturbSetting setting) {
+    return Builder(
+      builder: (context) {
+        if (setting.value == true) {
+          // The value of the button is true
+          return SettingTile(
+            label: ClipRRect(
+              borderRadius: const BorderRadius.only(
+                bottomLeft: Radius.circular(20),
+                bottomRight: Radius.circular(20),
+                topLeft: Radius.circular(20),
+                topRight: Radius.circular(20),
+              ),
+              child: Container(
+                padding: const EdgeInsets.all(10),
+                color: context.brand.theme.red1,
+                child: Text(
+                  context.msg.main.settings.list.doNotDisturbIsOn.title,
+                ),
+              ),
+            ),
+            description: Text(
+              context.msg.main.settings.list.doNotDisturbIsOn.description,
+            ),
+            child: _BoolSettingValue(setting),
+          );
+        }
+        return SettingTile(
+          label: ClipRRect(
+            borderRadius: const BorderRadius.only(
+              bottomLeft: Radius.circular(20),
+              bottomRight: Radius.circular(20),
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
+            ),
+            child: Container(
+              padding: const EdgeInsets.all(10),
+              color: context.brand.theme.green1,
+              child: Text(
+                context.msg.main.settings.list.doNotDisturbIsOff.title,
+                style: TextStyle(
+                  color: context.brand.theme.green3,
+                )
+              ),
+            ),
+          ),
+          description: Text(
+            context.msg.main.settings.list.doNotDisturbIsOff.description,
+          ),
+          child: _BoolSettingValue(setting),
+        );
+      },
+    );
+  }
+
   static Widget useVoip(UseVoipSetting setting) {
     return Builder(
       builder: (context) {

@@ -12,7 +12,7 @@ import '../../../../domain/usecases/logout.dart';
 import '../../../../domain/usecases/send_saved_logs_to_remote.dart';
 import '../../../util/loggable.dart';
 import '../widgets/user_data_refresher/cubit.dart';
-import 'state.dart';
+import 'state.dart';\
 
 export 'state.dart';
 
@@ -41,8 +41,7 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
   }
 
   Future<void> _emitUpdatedState() async {
-    emit(
-      SettingsState(
+    emit(SettingsState(
         settings: await _getSettings(),
         buildInfo: await _getBuildInfo(),
         isVoipAllowed: await _getIsVoipAllowed(),

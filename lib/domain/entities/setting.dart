@@ -35,6 +35,7 @@ abstract class Setting<T> {
     AudioCodecSetting.preset(),
     UsePhoneRingtoneSetting.preset(),
     AvailabilitySetting.preset(),
+    DoNotDisturbSetting.preset(),
   ];
 
   Map<String, dynamic> toJson() {
@@ -73,6 +74,8 @@ abstract class Setting<T> {
       return AvailabilitySetting(
         Availability.fromJson(value as Map<String, dynamic>),
       );
+    } else if (type == (DoNotDisturbSetting).toString()) {
+      return DoNotDisturbSetting(value as bool);
     } else {
       throw UnsupportedError('Setting type does not exist: $type');
     }
@@ -186,6 +189,17 @@ class AvailabilitySetting extends Setting<Availability?> {
   @override
   AvailabilitySetting copyWith({Availability? value}) =>
       AvailabilitySetting(value ?? this.value);
+}
+
+class DoNotDisturbSetting extends Setting<bool> {
+  const DoNotDisturbSetting(bool value) : super(value);
+
+  const DoNotDisturbSetting.preset() : this(false);
+
+  @override
+  DoNotDisturbSetting copyWith({bool? value}) {
+    return DoNotDisturbSetting(value ?? this.value);
+  }
 }
 
 extension SettingsByType on Iterable<Setting> {

@@ -187,6 +187,12 @@ main:
           description: >-
             With VoIP you call via internet which uses your data bundle. If VoIP is disabled,
             calls go through the regular phone app and your call carrier service costs apply.
+      doNotDisturbIsOn:
+        title: "On (not available)"
+        description: "You will not receive any calls"
+      doNotDisturbIsOff:
+        title: "Off (available)"
+        description: "Turning this option on prevents you from receiving calls on this device"
       version: "Version"
       portalLinks:
         title: "VoIP platform"

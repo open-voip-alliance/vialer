@@ -73,6 +73,18 @@ class SettingTileCategory extends StatelessWidget {
     );
   }
 
+  static Widget doNotDisturb({List<Widget> children = const []}) {
+    return Builder(
+      builder: (context) {
+        return SettingTileCategory(
+          icon: VialerSans.doNotDisturb,
+          title: 'Do not disturb',
+          children: children,
+        );
+      }
+    );
+  }
+
   static Widget advancedSettings({List<Widget> children = const []}) {
     return Builder(
       builder: (context) {

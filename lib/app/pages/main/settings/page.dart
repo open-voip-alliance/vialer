@@ -83,6 +83,13 @@ class SettingsPage extends StatelessWidget {
                         child: ListView(
                           padding: const EdgeInsets.only(top: 8),
                           children: [
+                              SettingTileCategory.doNotDisturb(
+                                children: [
+                                  SettingTile.doNotDisturb(
+                                    settings.get<DoNotDisturbSetting>(),
+                                  )
+                                ],
+                              ),
                             SettingTileCategory.accountInfo(
                               children: [
                                 SettingTile.phoneNumber(

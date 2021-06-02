@@ -252,4 +252,5 @@ abstract class VialerSans {
   static const starOutline = IconData(0xE93F, fontFamily: _family);
   static const bluetooth = IconData(0xE917, fontFamily: _family);
   static const mobilePhone = IconData(0xE97B, fontFamily: _family);
+  static const doNotDisturb = IconData(0xE928, fontFamily: _family);
 }

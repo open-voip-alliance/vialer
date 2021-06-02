@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:vialer/domain/usecases/unregister_to_voip_middleware.dart';
+
 import '../../dependency_locator.dart';
 import '../entities/setting.dart';
 import '../repositories/destination.dart';
@@ -19,6 +21,7 @@ class ChangeSettingUseCase extends UseCase {
   final _enableRemoteLogging = EnableRemoteLoggingUseCase();
   final _disableRemoteLogging = DisableRemoteLoggingUseCase();
   final _registerToVoipMiddleware = RegisterToVoipMiddlewareUseCase();
+  final _unregisterToVoipMiddleware = UnregisterToVoipMiddlewareUseCase();
   final _startVoip = StartVoipUseCase();
 
   Future<void> call({required Setting setting, bool remote = true}) async {
@@ -41,6 +44,15 @@ class ChangeSettingUseCase extends UseCase {
       setting = AvailabilitySetting(availability);
     }
 
+    if (setting is DoNotDisturbSetting) {
+      if (setting.value != true) {
+        print('Setting DoNotDisturb to off');
+        _registerToVoipMiddleware.call();
+      } else {
+        print('Setting DoNotDisturb to on');
+        _unregisterToVoipMiddleware.call();
+      }
+    }
     if (!setting.mutable) {
       throw UnsupportedError(
         'Vialer error: Unsupported operation: '
