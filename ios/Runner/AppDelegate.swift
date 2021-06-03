@@ -1,5 +1,6 @@
 import UIKit
 import Flutter
+import flutter_phone_lib
 
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {
@@ -7,7 +8,11 @@ import Flutter
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
-    GeneratedPluginRegistrant.register(with: self)
+    let registerPlugins = GeneratedPluginRegistrant.register
+    registerPlugins(self)
+
+    startPhoneLib(registerPlugins)
+
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 }

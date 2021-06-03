@@ -8,6 +8,7 @@ import 'package:flutter_phone_lib/call_session_state.dart';
 import 'package:flutter_phone_lib/flutter_phone_lib.dart' hide Logger;
 import 'package:logging/logging.dart';
 
+import '../../app/util/debug.dart';
 import '../../app/util/loggable.dart';
 import '../../dependency_locator.dart';
 import '../entities/brand.dart';
@@ -155,8 +156,6 @@ class _Middleware with Loggable {
   VoipConfig? get _config => _storageRepository.voipConfig;
 
   Future<void> register(VoipConfig? voipConfig) async {
-    assert(Platform.isAndroid); // TODO: Remove when iOS is supported.
-
     logger.info('Registering..');
 
     final dnd = await _getDndSetting();
@@ -181,20 +180,42 @@ class _Middleware with Loggable {
 
     final buildInfo = await _getBuildInfo();
 
-    // TODO: Check for errors
-    final response = await _service.postAndroidDevice(
-      name: user!.email,
-      token: _token!,
-      sipUserId: voipConfig!.sipUserId,
-      osVersion: await _operatingSystemInfoRepository
-          .getOperatingSystemInfo()
-          .then((i) => i.version),
-      clientVersion: buildInfo.version,
-      app: buildInfo.packageName,
-    );
+    final name = user!.email;
+    final token = _token!;
+    final sipUserId = voipConfig!.sipUserId;
+    final osVersion = await _operatingSystemInfoRepository
+        .getOperatingSystemInfo()
+        .then((i) => i.version);
+    final clientVersion = buildInfo.version;
+    final app = buildInfo.packageName;
+
+    final response = Platform.isAndroid
+        ? await _service.postAndroidDevice(
+            name: name,
+            token: token,
+            sipUserId: sipUserId,
+            osVersion: osVersion,
+            clientVersion: clientVersion,
+            app: app,
+          )
+        : Platform.isIOS
+            ? await _service.postAppleDevice(
+                name: name,
+                token: token,
+                sipUserId: sipUserId,
+                osVersion: osVersion,
+                clientVersion: clientVersion,
+                app: app,
+                sandbox: inDebugMode,
+              )
+            : throw UnsupportedError(
+                'Unsupported platform: ${Platform.operatingSystem}',
+              );
 
     if (!response.isSuccessful) {
-      logger.warning('Registration failed');
+      logger.warning(
+        'Registration failed: ${response.statusCode} ${response.error}',
+      );
       return;
     }
 
@@ -205,7 +226,6 @@ class _Middleware with Loggable {
 
   Future<void> unregister(VoipConfig? voipConfig) async {
     assert(voipConfig?.sipUserId != null);
-    assert(Platform.isAndroid); // TODO: Remove when iOS is supported.
 
     logger.info('Unregistering..');
 
@@ -215,12 +235,32 @@ class _Middleware with Loggable {
       return;
     }
 
-    // TODO: Check for errors
-    await _service.deleteAndroidDevice(
-      token: _token!,
-      sipUserId: voipConfig!.sipUserId,
-      app: await _getBuildInfo().then((i) => i.packageName),
-    );
+    final token = _token!;
+    final sipUserId = voipConfig!.sipUserId;
+    final app = await _getBuildInfo().then((i) => i.packageName);
+
+    final response = Platform.isAndroid
+        ? await _service.deleteAndroidDevice(
+            token: token,
+            sipUserId: sipUserId,
+            app: app,
+          )
+        : Platform.isIOS
+            ? await _service.deleteAppleDevice(
+                token: token,
+                sipUserId: sipUserId,
+                app: app,
+              )
+            : throw UnsupportedError(
+                'Unsupported platform: ${Platform.operatingSystem}',
+              );
+
+    if (!response.isSuccessful) {
+      logger.warning(
+        'Unregistering failed: ${response.statusCode} ${response.error}',
+      );
+      return;
+    }
 
     _storageRepository.voipConfig = null;
 
@@ -254,7 +294,9 @@ class _Middleware with Loggable {
     );
 
     if (!response.isSuccessful) {
-      logger.warning('Responding failed: ${response.error.toString()}');
+      logger.warning(
+        'Responding failed: ${response.statusCode} ${response.error}',
+      );
       return;
     }
 

@@ -9,7 +9,7 @@
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
-	<string>$(BUNDLE_ID)</string>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -27,7 +27,18 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSContactsUsageDescription</key>
-	<string>This allows us to provide you with an easy way to setup a call to your contacts directly from the app.</string>
+	<string>Easily call the contacts on your phone directly from this app.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>This ensures that the person you are calling can hear you.</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>Call with a bluetooth device.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>We do not use the camera in any way.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+		<string>voip</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
