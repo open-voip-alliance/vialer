@@ -19,8 +19,7 @@ class CallUseCase extends UseCase {
     required bool useVoip,
   }) async {
     if (useVoip) {
-      // TODO: Unify number normalization
-      await _voipRepository.call(destination.replaceAll(RegExp(r'\s'), ''));
+      await _voipRepository.call(destination);
     } else {
       final user = await _getUser(latest: false);
       await _callThroughRepository.call(destination, user: user!);
