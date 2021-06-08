@@ -6,16 +6,16 @@ class CallRecordWithContact extends CallRecord {
   final Contact? contact;
 
   const CallRecordWithContact({
-    String id,
-    Direction direction,
-    bool answered,
-    bool answeredElsewhere,
-    Duration duration,
-    DateTime date,
-    String callerName,
-    String callerNumber,
-    String destinationName,
-    String destinationNumber,
+    required String id,
+    required Direction direction,
+    required bool answered,
+    required bool answeredElsewhere,
+    required Duration duration,
+    required DateTime date,
+    String? callerName,
+    required String callerNumber,
+    String? destinationName,
+    required String destinationNumber,
     this.contact,
   }) : super(
           id: id,
@@ -32,17 +32,17 @@ class CallRecordWithContact extends CallRecord {
 
   @override
   CallRecordWithContact copyWith({
-    String id,
-    Direction direction,
-    bool answered,
-    bool answeredElsewhere,
-    Duration duration,
-    DateTime date,
-    String callerName,
-    String callerNumber,
-    String destinationName,
-    String destinationNumber,
-    Contact contact,
+    String? id,
+    Direction? direction,
+    bool? answered,
+    bool? answeredElsewhere,
+    Duration? duration,
+    DateTime? date,
+    String? callerName,
+    String? callerNumber,
+    String? destinationName,
+    String? destinationNumber,
+    Contact? contact,
   }) {
     return CallRecordWithContact(
       id: id ?? this.id,
@@ -61,7 +61,7 @@ class CallRecordWithContact extends CallRecord {
 }
 
 extension WithContact on CallRecord {
-  CallRecordWithContact withContact(Contact contact) {
+  CallRecordWithContact withContact(Contact? contact) {
     return CallRecordWithContact(
       id: id,
       direction: direction,

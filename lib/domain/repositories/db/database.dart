@@ -72,8 +72,8 @@ class Database extends _$Database {
       );
 
   Future<List<CallRecord>> getCalls({
-    @required DateTime from,
-    @required DateTime to,
+    required DateTime from,
+    required DateTime to,
   }) async {
     return (select(calls)
           ..where((c) => c.date.isBetweenValues(from, to))

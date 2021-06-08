@@ -98,7 +98,7 @@ class RecentCallItem extends StatelessWidget {
 class _RecentItemSubtitle extends StatelessWidget {
   final CallRecord callRecord;
 
-  const _RecentItemSubtitle(this.call, {Key? key}) : super(key: key);
+  const _RecentItemSubtitle(this.callRecord, {Key? key}) : super(key: key);
 
   String get _time => DateFormat.Hm().format(callRecord.date.toLocal());
 

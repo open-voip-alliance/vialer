@@ -1,10 +1,8 @@
 import 'package:dartx/dartx.dart';
 import 'package:libphonenumber/libphonenumber.dart';
 
-import 'package:timezone/timezone.dart';
 import '../../app/util/loggable.dart';
 
-import '../../app/util/loggable.dart';
 import '../../data/mappers/call_record.dart';
 import '../../data/models/voipgrid_call_record.dart';
 import '../entities/call_record.dart';
@@ -27,8 +25,8 @@ class RecentCallRepository with Loggable {
   // int _cacheStartPage;
 
   Future<List<CallRecordWithContact>> getRecentCalls({
-    @required int page,
-    @required String outgoingNumber,
+    required int page,
+    required String outgoingNumber,
     Iterable<Contact> contacts = const [],
   }) async {
     final today = DateTime.now().add(const Duration(days: 1));

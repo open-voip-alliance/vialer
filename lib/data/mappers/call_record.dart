@@ -56,25 +56,25 @@ extension FromDbCallRecord on DbCallRecord {
 Direction _mapDirection(String direction) =>
     direction == 'outgoing' ? Direction.outbound : Direction.inbound;
 
-String _mapCallerName(CallRecordFromDetail fromDetail) {
-  if (fromDetail.callerName.isNotEmpty) {
+String? _mapCallerName(CallRecordFromDetail fromDetail) {
+  if (fromDetail.callerName != null && fromDetail.callerName!.isNotEmpty) {
     return fromDetail.callerName;
   }
 
   if (fromDetail.voipAccount != null) {
-    return fromDetail.voipAccount.description;
+    return fromDetail.voipAccount!.description;
   }
 
   return null;
 }
 
-String _mapDestinationName(CallRecordToDetail toDetail) {
+String? _mapDestinationName(CallRecordToDetail toDetail) {
   if (toDetail.fixedDestination != null) {
-    return toDetail.fixedDestination.description;
+    return toDetail.fixedDestination!.description;
   }
 
   if (toDetail.voipAccount != null) {
-    return toDetail.voipAccount.description;
+    return toDetail.voipAccount!.description;
   }
 
   return null;

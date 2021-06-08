@@ -16,15 +16,15 @@ class VoipgridCallRecord extends Equatable {
   final CallRecordToDetail to;
 
   const VoipgridCallRecord({
-    this.id,
-    this.type,
-    this.answered,
-    this.isAnsweredElsewhere,
-    this.startTime,
-    this.direction,
-    this.durationInSeconds,
-    this.from,
-    this.to,
+    required this.id,
+    required this.type,
+    required this.answered,
+    required this.isAnsweredElsewhere,
+    required this.startTime,
+    required this.direction,
+    required this.durationInSeconds,
+    required this.from,
+    required this.to,
   });
 
   @override
@@ -39,13 +39,13 @@ class CallRecordFromDetail {
   final String type;
   final String phoneNumber;
   final String dialedNumber;
-  final String callerName;
-  final CallRecordVoipAccount voipAccount;
+  final String? callerName;
+  final CallRecordVoipAccount? voipAccount;
 
   const CallRecordFromDetail({
-    this.type,
-    this.phoneNumber,
-    this.dialedNumber,
+    required this.type,
+    required this.phoneNumber,
+    required this.dialedNumber,
     this.callerName,
     this.voipAccount,
   });
@@ -58,12 +58,12 @@ class CallRecordFromDetail {
 class CallRecordToDetail {
   final String type;
   final String phoneNumber;
-  final CallRecordVoipAccount voipAccount;
-  final CallRecordFixedDestination fixedDestination;
+  final CallRecordVoipAccount? voipAccount;
+  final CallRecordFixedDestination? fixedDestination;
 
   const CallRecordToDetail({
-    this.type,
-    this.phoneNumber,
+    required this.type,
+    required this.phoneNumber,
     this.voipAccount,
     this.fixedDestination,
   });
@@ -75,17 +75,17 @@ class CallRecordToDetail {
 @JsonSerializable(fieldRename: FieldRename.snake)
 class CallRecordVoipAccount {
   final int id;
-  final String description;
+  final String? description;
   final String internalNumber;
-  final String outgoingName;
+  final String? outgoingName;
   final String outgoingNumber;
 
   const CallRecordVoipAccount({
-    this.id,
+    required this.id,
     this.description,
-    this.internalNumber,
+    required this.internalNumber,
     this.outgoingName,
-    this.outgoingNumber,
+    required this.outgoingNumber,
   });
 
   factory CallRecordVoipAccount.fromJson(Map<String, dynamic> json) =>
@@ -95,13 +95,13 @@ class CallRecordVoipAccount {
 @JsonSerializable(fieldRename: FieldRename.snake)
 class CallRecordFixedDestination {
   final int id;
-  final String description;
+  final String? description;
   final String phoneNumber;
 
   const CallRecordFixedDestination({
-    this.id,
+    required this.id,
     this.description,
-    this.phoneNumber,
+    required this.phoneNumber,
   });
 
   factory CallRecordFixedDestination.fromJson(Map<String, dynamic> json) =>

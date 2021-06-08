@@ -7,22 +7,22 @@ class CallRecord extends Equatable {
   final bool answeredElsewhere;
   final Duration duration;
   final DateTime date;
-  final String callerName;
+  final String? callerName;
   final String callerNumber;
-  final String destinationName;
+  final String? destinationName;
   final String destinationNumber;
 
   const CallRecord({
-    this.id,
-    this.direction,
-    this.answered,
-    this.answeredElsewhere,
-    this.duration,
-    this.date,
+    required this.id,
+    required this.direction,
+    required this.answered,
+    required this.answeredElsewhere,
+    required this.duration,
+    required this.date,
     this.callerName,
-    this.callerNumber,
+    required this.callerNumber,
     this.destinationName,
-    this.destinationNumber,
+    required this.destinationNumber,
   });
 
   bool get wasMissed => !answered;
@@ -38,16 +38,16 @@ class CallRecord extends Equatable {
   }
 
   CallRecord copyWith({
-    String id,
-    Direction direction,
-    bool answered,
-    bool answeredElsewhere,
-    Duration duration,
-    DateTime date,
-    String callerName,
-    String callerNumber,
-    String destinationName,
-    String destinationNumber,
+    String? id,
+    Direction? direction,
+    bool? answered,
+    bool? answeredElsewhere,
+    Duration? duration,
+    DateTime? date,
+    String? callerName,
+    String? callerNumber,
+    String? destinationName,
+    String? destinationNumber,
   }) {
     return CallRecord(
       id: id ?? this.id,
