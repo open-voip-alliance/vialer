@@ -91,8 +91,7 @@ class RecentCallRepository with Loggable {
             .toList();
 
         final mostRecentCall = await _database.getMostRecentCall();
-        if (mostRecentCall != null &&
-            calls.any((c) => c.id == mostRecentCall.id)) {
+        if (calls.any((c) => c.id == mostRecentCall.id)) {
           // If the response contains the most recent call we got, we can
           // continue from cache.
           // _cacheStartPage = page;
