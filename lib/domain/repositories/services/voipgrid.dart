@@ -33,10 +33,10 @@ abstract class VoipgridService extends ChopperService {
 
   @Get(path: 'v2/call/personalized/')
   Future<Response> getPersonalCalls({
-    @Query('answered') bool answered,
-    @Query('timezone') String timezone,
-    @Query('from.type') String fromType,
-    @Query('to.type') String toType,
+    @Query('answered') bool? answered,
+    @Query('timezone') String? timezone,
+    @Query('from.type') String? fromType,
+    @Query('to.type') String? toType,
     @Query('page') int pageNumber = 1,
     @Query('per_page') int perPage = 50,
   });
