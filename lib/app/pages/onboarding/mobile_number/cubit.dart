@@ -22,15 +22,12 @@ class MobileNumberCubit extends Cubit<MobileNumberState> {
   }
 
   void changeMobileNumber(String mobileNumber) async {
-    var success = true;
-    if (mobileNumber != state.mobileNumber) {
-      success = await _changeMobileNumber(mobileNumber: mobileNumber);
-    }
+    final success = await _changeMobileNumber(mobileNumber: mobileNumber);
 
-    if (success) {
-      emit(MobileNumberChanged(mobileNumber: mobileNumber));
-    } else {
-      emit(MobileNumberNotChanged(mobileNumber: mobileNumber));
-    }
+    emit(
+      success
+          ? MobileNumberChanged(mobileNumber: mobileNumber)
+          : MobileNumberNotChanged(mobileNumber: mobileNumber),
+    );
   }
 }
