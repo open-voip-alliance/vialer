@@ -1,5 +1,4 @@
 import '../../domain/entities/call_record.dart';
-import '../../domain/repositories/db/database.dart';
 import '../models/voipgrid_call_record.dart';
 
 extension FromVoipgridCallRecord on VoipgridCallRecord {
@@ -15,40 +14,6 @@ extension FromVoipgridCallRecord on VoipgridCallRecord {
       callerNumber: from.phoneNumber,
       destinationName: _mapDestinationName(to),
       destinationNumber: to.phoneNumber,
-    );
-  }
-}
-
-extension ToDbCallRecord on CallRecord {
-  DbCallRecord toDbCallRecord() {
-    return DbCallRecord(
-      id: id,
-      direction: direction,
-      answered: answered,
-      answeredElsewhere: answeredElsewhere,
-      duration: duration,
-      date: date,
-      callerName: callerName,
-      callerNumber: callerNumber,
-      destinationName: destinationName,
-      destinationNumber: destinationNumber,
-    );
-  }
-}
-
-extension FromDbCallRecord on DbCallRecord {
-  CallRecord toCallRecord() {
-    return CallRecord(
-      id: id,
-      direction: direction,
-      answered: answered,
-      answeredElsewhere: answeredElsewhere,
-      duration: duration,
-      date: date,
-      callerName: callerName,
-      callerNumber: callerNumber,
-      destinationName: destinationName,
-      destinationNumber: destinationNumber,
     );
   }
 }

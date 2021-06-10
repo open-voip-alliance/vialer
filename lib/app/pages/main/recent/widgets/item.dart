@@ -15,7 +15,7 @@ enum _Action {
 }
 
 class RecentCallItem extends StatelessWidget {
-  final CallRecordWithContact call;
+  final CallRecordWithContact callRecord;
 
   /// Also called when whole item is pressed.
   final VoidCallback onCallPressed;
@@ -23,7 +23,7 @@ class RecentCallItem extends StatelessWidget {
 
   const RecentCallItem({
     Key? key,
-    required this.call,
+    required this.callRecord,
     required this.onCopyPressed,
     required this.onCallPressed,
   }) : super(key: key);
@@ -45,20 +45,20 @@ class RecentCallItem extends StatelessWidget {
       contentPadding: const EdgeInsets.symmetric(horizontal: 16),
       onTap: onCallPressed,
       leading: Avatar(
-        name: call.displayName,
+        name: callRecord.displayName,
         backgroundColor: calculateColorForPhoneNumber(
           context,
-          call.destinationNumber,
+          callRecord.destinationNumber,
         ),
-        showFallback: call.contact?.name == null,
+        showFallback: callRecord.contact?.name == null,
         fallback: const Icon(VialerSans.phone, size: 20),
       ),
       title: Text(
-        call.direction == Direction.inbound
-            ? call.callerNumber
-            : call.displayName,
+        callRecord.direction == Direction.inbound
+            ? callRecord.callerNumber
+            : callRecord.displayName,
       ),
-      subtitle: _RecentItemSubtitle(call),
+      subtitle: _RecentItemSubtitle(callRecord),
       trailing: PopupMenuButton(
         onSelected: _onPopupMenuItemPress,
         itemBuilder: (context) => [

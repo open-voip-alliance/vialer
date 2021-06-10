@@ -70,7 +70,7 @@ class RecentCallsPage extends StatelessWidget {
                             snackBarRightPadding: snackBarRightPadding,
                             isLoadingInitial:
                                 recentCallState is LoadingInitialRecentCalls,
-                            calls: recentCalls,
+                            callRecords: recentCalls,
                             onRefresh: cubit.refreshRecentCalls,
                             onCallPressed: onCallPressed,
                             onCopyPressed: cubit.copyNumber,
@@ -95,7 +95,7 @@ class _RecentCallsList extends StatefulWidget {
 
   final bool isLoadingInitial;
 
-  final List<CallRecordWithContact> calls;
+  final List<CallRecordWithContact> callRecords;
   final Future<void> Function() onRefresh;
   final void Function(String) onCallPressed;
   final void Function(String) onCopyPressed;
@@ -105,7 +105,7 @@ class _RecentCallsList extends StatefulWidget {
     required this.listBottomPadding,
     required this.snackBarRightPadding,
     this.isLoadingInitial = false,
-    required this.calls,
+    required this.callRecords,
     required this.onRefresh,
     required this.onCallPressed,
     required this.onCopyPressed,
@@ -164,7 +164,7 @@ class _RecentCallsListState extends State<_RecentCallsList>
   @override
   Widget build(BuildContext context) {
     return ConditionalPlaceholder(
-      showPlaceholder: widget.calls.isEmpty || widget.isLoadingInitial,
+      showPlaceholder: widget.callRecords.isEmpty || widget.isLoadingInitial,
       placeholder: widget.isLoadingInitial
           ? LoadingIndicator(
               title: Text(
@@ -189,16 +189,16 @@ class _RecentCallsListState extends State<_RecentCallsList>
           padding: EdgeInsets.only(
             bottom: widget.listBottomPadding,
           ),
-          itemCount: widget.calls.length,
+          itemCount: widget.callRecords.length,
           itemBuilder: (context, index) {
-            final call = widget.calls[index];
+            final callRecord = widget.callRecords[index];
             return RecentCallItem(
-              call: call,
+              callRecord: callRecord,
               onCallPressed: () {
-                widget.onCallPressed(call.destinationNumber);
+                widget.onCallPressed(callRecord.destinationNumber);
               },
               onCopyPressed: () {
-                widget.onCopyPressed(call.destinationNumber);
+                widget.onCopyPressed(callRecord.destinationNumber);
                 _showSnackBar(context);
               },
             );
