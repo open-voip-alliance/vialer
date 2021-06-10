@@ -45,7 +45,7 @@ class RecentCallsPage extends StatelessWidget {
             child: BlocBuilder<RecentCallsCubit, RecentCallsState>(
               builder: (context, recentCallState) {
                 final cubit = context.watch<RecentCallsCubit>();
-                final recentCalls = recentCallState.calls;
+                final recentCalls = recentCallState.callRecords;
 
                 return BlocBuilder<CallerCubit, CallerState>(
                   builder: (context, callerState) {

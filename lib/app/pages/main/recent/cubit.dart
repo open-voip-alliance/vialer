@@ -37,14 +37,14 @@ class RecentCallsCubit extends Cubit<RecentCallsState> {
   }
 
   Future<void> refreshRecentCalls() async {
-    emit(RefreshingRecentCalls(state.calls, state.page));
+    emit(RefreshingRecentCalls(state.callRecords, state.page));
 
     _loadRecentCalls(page: 1);
   }
 
   Future<void> loadMoreRecentCalls() async {
     if (state is RecentCallsLoaded && !state.maxPagesLoaded) {
-      emit(LoadingMoreRecentCalls(state.calls, state.page));
+      emit(LoadingMoreRecentCalls(state.callRecords, state.page));
 
       _loadRecentCalls(page: state.page + 1);
     }
@@ -56,13 +56,13 @@ class RecentCallsCubit extends Cubit<RecentCallsState> {
 
     if (state is LoadingMoreRecentCalls) {
       currentCalls = [
-        ...state.calls,
+        ...state.callRecords,
         ...recentCalls,
       ];
     } else {
       currentCalls = [
         ...recentCalls,
-        ...state.calls,
+        ...state.callRecords,
       ];
     }
 

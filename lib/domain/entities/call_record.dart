@@ -33,8 +33,7 @@ class CallRecord extends Equatable {
 
   @override
   String toString() {
-    // TODO: Expand.
-    return '$id';
+    return '$id: $destinationNumber';
   }
 
   CallRecord copyWith({
