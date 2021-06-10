@@ -18,7 +18,7 @@ class RecentCallsCubit extends Cubit<RecentCallsState> {
 
   final CallerCubit _caller;
 
-  RecentCallsCubit(this._caller) : super(LoadingInitialRecentCalls()) {
+  RecentCallsCubit(this._caller) : super(const LoadingInitialRecentCalls()) {
     _loadRecentCalls(page: 1);
   }
 

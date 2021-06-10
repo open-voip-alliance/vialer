@@ -11,31 +11,31 @@ abstract class RecentCallsState extends Equatable {
 
   bool get maxPagesLoaded => page == maxPages;
 
-  RecentCallsState(this.callRecords, this.page);
+  const RecentCallsState(this.callRecords, this.page);
 
   @override
   List<Object?> get props => [callRecords, page];
 }
 
 class LoadingInitialRecentCalls extends RecentCallsState {
-  LoadingInitialRecentCalls() : super([], 1);
+  const LoadingInitialRecentCalls() : super(const [], 1);
 }
 
 class RefreshingRecentCalls extends RecentCallsState {
-  RefreshingRecentCalls(
+  const RefreshingRecentCalls(
     List<CallRecordWithContact> callRecords,
     int page,
   ) : super(callRecords, page);
 }
 
 class LoadingMoreRecentCalls extends RecentCallsState {
-  LoadingMoreRecentCalls(
+  const LoadingMoreRecentCalls(
     List<CallRecordWithContact> callRecords,
     int page,
   ) : super(callRecords, page);
 }
 
 class RecentCallsLoaded extends RecentCallsState {
-  RecentCallsLoaded(List<CallRecordWithContact> callRecords, int page)
+  const RecentCallsLoaded(List<CallRecordWithContact> callRecords, int page)
       : super(callRecords, page);
 }

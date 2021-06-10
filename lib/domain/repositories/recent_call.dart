@@ -18,33 +18,32 @@ class RecentCallRepository with Loggable {
     this._service,
   );
 
+  /// [page] starts at 1.
   Future<List<CallRecordWithContact>> getRecentCalls({
     required int page,
     required String outgoingNumber,
     Iterable<Contact> contacts = const [],
   }) async {
-    var calls = <CallRecord>[];
-
+    assert(page > 0);
     logger.info(
-      'Fetching recent calls page: $page',
+      'Fetching recent calls page from API: $page',
     );
 
-    if (calls.isEmpty) {
-      logger.info('None cached, request more via API');
-      final response = await _service.getPersonalCalls(
-        pageNumber: page,
-      );
+    final response = await _service.getPersonalCalls(
+      pageNumber: page,
+    );
 
-      final objects = response.body as List<dynamic>? ?? [];
+    final objects = response.body as List<dynamic>? ?? [];
 
-      if (objects.isNotEmpty) {
-        calls = objects
-            .map((jsonObject) =>
-                VoipgridCallRecord.fromJson(jsonObject as Map<String, dynamic>)
-                    .toCallRecord())
-            .toList();
-      }
-    }
+    final callRecords = objects.isNotEmpty
+        ? objects
+            .map(
+              (jsonObject) => VoipgridCallRecord.fromJson(
+                jsonObject as Map<String, dynamic>,
+              ).toCallRecord(),
+            )
+            .toList()
+        : <CallRecord>[];
 
     Future<String?> normalizeNumber(String number) async => number.length > 3
         ? await PhoneNumberUtil.normalizePhoneNumber(
@@ -74,8 +73,8 @@ class RecentCallRepository with Loggable {
       ),
     );
 
-    final normalizedCalls = await Future.wait(
-      calls.map(
+    final normalizedCallRecords = await Future.wait(
+      callRecords.map(
         (c) async => c.copyWith(
           destinationNumber:
               c.isOutbound ? await normalizeNumber(c.destinationNumber) : null,
@@ -86,11 +85,11 @@ class RecentCallRepository with Loggable {
     );
 
     logger.info('Mapping calls to contacts');
-    return calls
+    return callRecords
         .map(
           (call) => call.withContact(
             phoneNumbersByContact.entries.firstOrNullWhere((entry) {
-              final normalizedCall = normalizedCalls.firstOrNullWhere(
+              final normalizedCall = normalizedCallRecords.firstOrNullWhere(
                 (normalizedCall) => normalizedCall.id == call.id,
               );
 

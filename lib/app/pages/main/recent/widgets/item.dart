@@ -45,7 +45,7 @@ class RecentCallItem extends StatelessWidget {
       contentPadding: const EdgeInsets.symmetric(horizontal: 16),
       onTap: onCallPressed,
       leading: Avatar(
-        name: callRecord.displayName,
+        name: callRecord.displayLabel,
         backgroundColor: calculateColorForPhoneNumber(
           context,
           callRecord.destinationNumber,
@@ -56,7 +56,7 @@ class RecentCallItem extends StatelessWidget {
       title: Text(
         callRecord.direction == Direction.inbound
             ? callRecord.callerNumber
-            : callRecord.displayName,
+            : callRecord.displayLabel,
       ),
       subtitle: _RecentItemSubtitle(callRecord),
       trailing: PopupMenuButton(
@@ -148,7 +148,7 @@ class _RecentItemSubtitle extends StatelessWidget {
   }
 }
 
-extension CallDestinationName on CallRecordWithContact {
-  String get displayName =>
+extension CallDestinationLabel on CallRecordWithContact {
+  String get displayLabel =>
       contact?.name ?? destinationName ?? destinationNumber;
 }

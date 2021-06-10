@@ -15,7 +15,9 @@ class GetRecentCallsUseCase extends UseCase {
   final _getUser = GetUserUseCase();
   final _getContacts = GetContactsUseCase();
 
+  /// [page] starts at 1.
   Future<List<CallRecordWithContact>> call({required int page}) async {
+    assert(page > 0);
     final user = await _getUser(latest: false);
 
     Iterable<Contact> contacts;
