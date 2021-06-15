@@ -69,7 +69,7 @@ class VoipRepository with Loggable {
     _hasStartedCompleter.complete();
   }
 
-  Future<void> call(String number) => _phoneLib.call(number);
+  Future<void> call(String number) => _phoneLib.call(number.normalize());
 
   Future<void> answerCall() => _phoneLib.actions.answer();
 
@@ -104,7 +104,7 @@ class VoipRepository with Loggable {
       _phoneLib.audio.routeAudioToBluetoothDevice(route);
 
   Future<void> beginTransfer(String number) =>
-      _phoneLib.actions.beginAttendedTransfer(number);
+      _phoneLib.actions.beginAttendedTransfer(number.normalize());
 
   Future<void> mergeTransferCalls() =>
       _phoneLib.actions.completeAttendedTransfer();
@@ -249,5 +249,11 @@ extension on LogLevel {
     } else {
       throw UnsupportedError('Unknown LogLevel: $this');
     }
+  }
+}
+
+extension on String {
+  String normalize() {
+    return replaceAll(RegExp(r'\s'), '');
   }
 }
