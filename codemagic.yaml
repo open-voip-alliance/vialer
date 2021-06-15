@@ -206,15 +206,30 @@ workflows:
         channel: '#vialer_mobile_ci'
         notify_on_build_start: true
       scripts:
-        - name: Post a comment about the ready build in the Merge Request in GitLab
+        - name: Update the Merge Request in Gitlab with a link to this build
           script: |
-            #!/bin/sh
-            set -e # exit on first failed command set
-            if [[ -z ${GITLAB_MERGE_REQUEST_IID} ]]; then \
-            echo "This build was not triggered from a GitLab Merge Request. Do nothing."; \
-            else curl --request POST --header "Content-Type: application/json" \
-            --header "Private-Token: $GITLAB_API_TOKEN" \
-            --data '{"body": "'"New build ready in Codemagic for this merge request. You can download it with Testmagic on your test device.  \r\n\r\nBuild number: $BUILD_NUMBER  \nWorkflow: merge requests  \nBranch: $FCI_BRANCH  \nCommit: $FCI_COMMIT  \nBuild status: $FCI_BUILD_STEP_STATUS  \nTest status: $FCI_TEST_STEP_STATUS  \r\n\r\n[Click here for details](https://codemagic.io/app/$FCI_PROJECT_ID/build/$FCI_BUILD_ID) "'"}' "https://gitlab.wearespindle.com/api/v4/projects/105/merge_requests/$GITLAB_MERGE_REQUEST_IID/notes"; fi
+            #!/usr/bin/env python3
+            import os
+            import requests
+            import re
+
+            MERGE_REQUEST_ID = os.getenv('GITLAB_MERGE_REQUEST_IID')
+            GITLAB_API_TOKEN = os.getenv('GITLAB_API_TOKEN')
+            BUILD_NUMBER = os.getenv('BUILD_NUMBER')
+            PROJECT_ID = os.getenv('FCI_PROJECT_ID')
+            BUILD_ID = os.getenv('FCI_BUILD_ID')
+            URL = "https://gitlab.wearespindle.com/api/v4/projects/105/merge_requests/{mergeRequestId}".format(mergeRequestId=MERGE_REQUEST_ID)
+            TEMPLATE = "[Codemagic: Latest Build ({buildNumber})](https://codemagic.io/app/{projectId}/build/{buildId})"
+            HEADERS = { 'Content-Type': 'application/json', 'Private-Token': GITLAB_API_TOKEN }
+
+            message = TEMPLATE.format(buildNumber=BUILD_NUMBER, projectId=PROJECT_ID, buildId=BUILD_ID)
+            regex = re.escape(message).replace(BUILD_NUMBER, '\d+').replace(PROJECT_ID, '[^)]+').replace(BUILD_ID, '[^)]+')
+            currentDescription = requests.get(URL, headers=HEADERS).json()['description']
+            newDescription = re.sub(regex, message, currentDescription)
+
+            requests.put(URL, headers=HEADERS, json={
+               'description': newDescription if currentDescription != newDescription else currentDescription + "\r\n\r\n" + message
+            })
   test-ci:
     name: test CI
     max_build_duration: 60
