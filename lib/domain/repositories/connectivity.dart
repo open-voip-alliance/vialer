@@ -1,4 +1,5 @@
-import 'package:connectivity/connectivity.dart';
+
+import 'package:connectivity_plus/connectivity_plus.dart';
 
 import '../connectivity_type.dart';
 import 'mappers/connectivity_status.dart';
