@@ -47,7 +47,7 @@ dependencies:
   libphonenumber: ^2.0.0
   get_it: ^7.0.0
   dartx: ^0.7.1
-  connectivity: ^3.0.3
+  connectivity_plus: ^1.0.2
   webview_flutter: ^2.0.4
   json_annotation: ^4.0.1
   flutter_rating_bar: ^4.0.0
