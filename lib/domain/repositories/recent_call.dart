@@ -1,112 +1,49 @@
 import 'package:dartx/dartx.dart';
 import 'package:libphonenumber/libphonenumber.dart';
 
-import 'package:timezone/timezone.dart';
 import '../../app/util/loggable.dart';
 
-import '../entities/call.dart';
-import '../entities/call_with_contact.dart';
+import '../../data/mappers/call_record.dart';
+import '../../data/models/voipgrid_call_record.dart';
+import '../entities/call_record.dart';
+import '../entities/call_record_with_contact.dart';
 import '../entities/contact.dart';
-import 'db/database.dart';
+
 import 'services/voipgrid.dart';
 
 class RecentCallRepository with Loggable {
   final VoipgridService _service;
-  final Database _database;
 
   RecentCallRepository(
     this._service,
-    this._database,
   );
 
-  final _daysPerPage = 28;
-  int? _cacheStartPage;
-
-  Future<List<CallWithContact>> getRecentCalls({
+  /// [page] starts at 1.
+  Future<List<CallRecordWithContact>> getRecentCalls({
     required int page,
     required String outgoingNumber,
     Iterable<Contact> contacts = const [],
   }) async {
-    final today = DateTime.now().add(const Duration(days: 1));
-    final fromUtc = today
-        .subtract(
-          Duration(days: _daysPerPage * (page + 1)),
-        )
-        .toUtc();
-    final toUtc = today
-        .subtract(
-          Duration(days: _daysPerPage * page),
-        )
-        .toUtc();
-
-    var calls = <Call>[];
-
+    assert(page > 0);
     logger.info(
-      'Fetching recent calls between: '
-      '${toUtc.toIso8601String()} and ${fromUtc.toIso8601String()}',
+      'Fetching recent calls page from API: $page',
     );
 
-    // Never get from cache for the first page, and then only
-    // from when we're sure there's nothing remote.
-    if (page != 0 && page >= (_cacheStartPage ?? 0)) {
-      calls = await _database.getCalls(from: fromUtc, to: toUtc);
-      logger.info('Amount of calls from cache: ${calls.length}');
-    }
+    final response = await _service.getPersonalCalls(
+      pageNumber: page,
+    );
 
-    if (calls.isEmpty) {
-      logger.info('None cached, request more via API');
-      final response = await _service.getPersonalCalls(
-        from: fromUtc.toIso8601String(),
-        to: toUtc.toIso8601String(),
-      );
+    final objects = response.body as List<dynamic>? ?? [];
 
-      final objects = response.body['objects'] as List<dynamic>? ?? [];
-
-      if (objects.isNotEmpty) {
-        calls = objects
-            .map((obj) => Call.fromJson(obj as Map<String, dynamic>))
+    final callRecords = objects.isNotEmpty
+        ? objects
             .map(
-              (c) => c.copyWith(
-                // The wrapper is needed so that it's a normal
-                // DateTime and not a TZDateTime, because we want to call
-                // the DateTime.toLocal method, not TZDateTime.toLocal, because
-                // the latter uses the location set with `setLocation`, which
-                // we can't use because we can't get the current time zone
-                // automatically, but DateTime.toLocal _will_ convert it to the
-                // correct current time zone.
-                date: DateTime.fromMillisecondsSinceEpoch(
-                  // Using this constructor so we can make sure the private
-                  // [_utcFromLocalDateTime] method is called and the object
-                  // is initialized with the correct location and no
-                  // conversions are performed on it.
-                  TZDateTime(
-                    getLocation('Europe/Amsterdam'),
-                    c.date.year,
-                    c.date.month,
-                    c.date.day,
-                    c.date.hour,
-                    c.date.minute,
-                    c.date.second,
-                    c.date.microsecond,
-                  ).toUtc().millisecondsSinceEpoch,
-                  isUtc: true,
-                ),
-              ),
+              (jsonObject) => VoipgridCallRecord.fromJson(
+                jsonObject as Map<String, dynamic>,
+              ).toCallRecord(),
             )
-            .toList();
-
-        final mostRecentCall = await _database.getMostRecentCall();
-        if (mostRecentCall != null &&
-            calls.any((c) => c.id == mostRecentCall.id)) {
-          // If the response contains the most recent call we got, we can
-          // continue from cache.
-          _cacheStartPage = page;
-        }
-
-        logger.info('Amount of calls from request: ${calls.length}');
-        _database.insertCalls(calls);
-      }
-    }
+            .toList()
+        : <CallRecord>[];
 
     Future<String?> normalizeNumber(String number) async => number.length > 3
         ? await PhoneNumberUtil.normalizePhoneNumber(
@@ -136,8 +73,8 @@ class RecentCallRepository with Loggable {
       ),
     );
 
-    final normalizedCalls = await Future.wait(
-      calls.map(
+    final normalizedCallRecords = await Future.wait(
+      callRecords.map(
         (c) async => c.copyWith(
           destinationNumber:
               c.isOutbound ? await normalizeNumber(c.destinationNumber) : null,
@@ -148,11 +85,11 @@ class RecentCallRepository with Loggable {
     );
 
     logger.info('Mapping calls to contacts');
-    return calls
+    return callRecords
         .map(
           (call) => call.withContact(
             phoneNumbersByContact.entries.firstOrNullWhere((entry) {
-              final normalizedCall = normalizedCalls.firstOrNullWhere(
+              final normalizedCall = normalizedCallRecords.firstOrNullWhere(
                 (normalizedCall) => normalizedCall.id == call.id,
               );
 
