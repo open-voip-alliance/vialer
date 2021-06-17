@@ -4,8 +4,8 @@
 flutter_version: &flutter_version 2.0.4
 
 workflows:
-  master:
-    name: master
+  main:
+    name: main
     max_build_duration: 60
     environment:
       vars:
@@ -38,10 +38,10 @@ workflows:
       events:
         - push
       branch_patterns:
-        - pattern: master
+        - pattern: main
           include: true
           source: true
-        - pattern: master
+        - pattern: main
           include: true
           source: false
     scripts:
@@ -328,10 +328,10 @@ workflows:
       events:
         - tag
       branch_patterns:
-        - pattern: master
+        - pattern: main
           include: true
           source: true
-        - pattern: master
+        - pattern: main
           include: true
           source: false
       tag_patterns:
@@ -430,10 +430,10 @@ workflows:
       events:
         - tag
       branch_patterns:
-        - pattern: master
+        - pattern: main
           include: true
           source: true
-        - pattern: master
+        - pattern: main
           include: true
           source: false
       tag_patterns:
