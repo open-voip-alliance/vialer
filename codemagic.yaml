@@ -115,7 +115,7 @@ workflows:
       - &build_android_for_dev
         name: Building Android for dev and QA purposes
         script: |
-          cd . && flutter build apk --release --target=lib/app/main.dart --build-number=$BUILD_NUMBER -v --no-sound-null-safety --dart-define BRAND=voys --dart-define SEGMENT_ANDROID_KEY=$SEGMENT_ANDROID_WRITE_KEY
+          cd . && flutter build apk --release --target=lib/app/main.dart --build-number=$BUILD_NUMBER -v --dart-define BRAND=voys --dart-define SEGMENT_ANDROID_KEY=$SEGMENT_ANDROID_WRITE_KEY
       # TODO: Enable iOS builds again when we find a fix for the provisioning profile issue with branding
       # - &build_ios_for_dev
       #   name: Building iOS with ad-hoc provisioning profile for dev and QA purposes
@@ -125,7 +125,7 @@ workflows:
       #     keychain initialize
       #     app-store-connect fetch-signing-files "com.voys.app" --type IOS_APP_ADHOC --create
       #     keychain add-certificates
-      #     flutter build ios --release --target=lib/app/main.dart --build-number=$BUILD_NUMBER --no-sound-null-safety --no-codesign --dart-define BRAND=voys --dart-define SEGMENT_IOS_KEY=$SEGMENT_IOS_WRITE_KEY
+      #     flutter build ios --release --target=lib/app/main.dart --build-number=$BUILD_NUMBER --no-codesign --dart-define BRAND=voys --dart-define SEGMENT_IOS_KEY=$SEGMENT_IOS_WRITE_KEY
       #     xcode-project use-profiles
       #     xcode-project build-ipa --workspace "ios/Runner.xcworkspace" --scheme "Runner"
     artifacts:

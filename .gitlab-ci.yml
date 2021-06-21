@@ -45,7 +45,7 @@ test:
     - cd ..
     - flutter pub global activate junitreport
     - export PATH="$PATH":"$HOME/.pub-cache/bin"
-    - flutter test --machine --no-sound-null-safety | tojunit --output report.xml
+    - flutter test --machine | tojunit --output report.xml
   artifacts:
     reports:
       junit: report.xml
