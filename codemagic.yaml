@@ -297,8 +297,8 @@ workflows:
         recipients:
           - jukka.koivunen@wearespindle.com
         notify:
-          success: false     # To not receive a notification when a build succeeds
-          failure: false     # To not receive a notification when a build fails
+          success: true
+          failure: false
   publish:
     name: publish
     max_build_duration: 60
