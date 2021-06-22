@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import '../../dependency_locator.dart';
-import '../entities/call_record_with_contact.dart';
+import '../entities/call_with_contact.dart';
 import '../entities/contact.dart';
 import '../entities/exceptions/no_permission.dart';
 import '../repositories/recent_call.dart';
@@ -15,9 +15,7 @@ class GetRecentCallsUseCase extends UseCase {
   final _getUser = GetUserUseCase();
   final _getContacts = GetContactsUseCase();
 
-  /// [page] starts at 1.
-  Future<List<CallRecordWithContact>> call({required int page}) async {
-    assert(page > 0);
+  Future<List<CallWithContact>> call({required int page}) async {
     final user = await _getUser(latest: false);
 
     Iterable<Contact> contacts;
