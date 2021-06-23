@@ -68,7 +68,7 @@ class VoipRepository with Loggable {
 
     logger.info('PhoneLib started');
 
-    _hasStartedCompleter.complete();
+    _hasStartedCompleter.complete(true);
   }
 
   Future<void> call(String number) => _phoneLib.call(number.normalize());
