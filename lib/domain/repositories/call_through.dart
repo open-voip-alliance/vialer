@@ -74,6 +74,14 @@ class CallThroughRepository {
         }
       }
 
+      final noMobileNumberError = error['user'] as List<dynamic>?;
+      if (noMobileNumberError != null && noMobileNumberError.isNotEmpty) {
+        final first = noMobileNumberError.first as Map<String, dynamic>;
+        if (first['code'] == 'no_mobile_number') {
+          throw NoMobileNumberException();
+        }
+      }
+
       throw CallThroughException();
     }
   }
