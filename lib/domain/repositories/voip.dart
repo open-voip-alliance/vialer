@@ -196,9 +196,9 @@ class _Middleware with Loggable {
     }
 
     final response = await _service.callResponse(
-      uniqueKey: remoteMessage.data['unique_key']!,
+      uniqueKey: remoteMessage.data['unique_key'] as String,
       available: available.toString(),
-      messageStartTime: remoteMessage.data['message_start_time']!,
+      messageStartTime: remoteMessage.data['message_start_time'].toString(),
       sipUserId: _config!.sipUserId,
     );
 
