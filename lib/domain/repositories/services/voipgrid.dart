@@ -31,14 +31,12 @@ abstract class VoipgridService extends ChopperService {
     @Header('Authorization') String? authorization,
   });
 
-  @Get(path: 'v2/call/personalized/')
+  @Get(path: 'cdr/record/personalized/')
   Future<Response> getPersonalCalls({
-    @Query('answered') bool? answered,
-    @Query('timezone') String? timezone,
-    @Query('from.type') String? fromType,
-    @Query('to.type') String? toType,
-    @Query('page') int pageNumber = 1,
-    @Query('per_page') int perPage = 50,
+    @Query('limit') int? limit,
+    @Query('offset') int? offset,
+    @Query('call_date__gt') required String from,
+    @Query('call_date__lt') required String to,
   });
 
   @Get(path: 'v2/callthrough')

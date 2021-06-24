@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../../../../../domain/entities/call_record.dart';
-import '../../../../../domain/entities/call_record_with_contact.dart';
+import '../../../../../domain/entities/call.dart';
+import '../../../../../domain/entities/call_with_contact.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
 import '../../../../util/brand.dart';
@@ -15,7 +15,7 @@ enum _Action {
 }
 
 class RecentCallItem extends StatelessWidget {
-  final CallRecordWithContact callRecord;
+  final CallWithContact call;
 
   /// Also called when whole item is pressed.
   final VoidCallback onCallPressed;
@@ -23,7 +23,7 @@ class RecentCallItem extends StatelessWidget {
 
   const RecentCallItem({
     Key? key,
-    required this.callRecord,
+    required this.call,
     required this.onCopyPressed,
     required this.onCallPressed,
   }) : super(key: key);
@@ -45,20 +45,20 @@ class RecentCallItem extends StatelessWidget {
       contentPadding: const EdgeInsets.symmetric(horizontal: 16),
       onTap: onCallPressed,
       leading: Avatar(
-        name: callRecord.displayLabel,
+        name: call.destinationName,
         backgroundColor: calculateColorForPhoneNumber(
           context,
-          callRecord.destinationNumber,
+          call.destinationNumber,
         ),
-        showFallback: callRecord.contact?.name == null,
+        showFallback: call.contact?.name == null,
         fallback: const Icon(VialerSans.phone, size: 20),
       ),
       title: Text(
-        callRecord.direction == Direction.inbound
-            ? callRecord.callerNumber
-            : callRecord.displayLabel,
+        call.direction == Direction.inbound
+            ? call.callerNumber
+            : call.destinationName,
       ),
-      subtitle: _RecentItemSubtitle(callRecord),
+      subtitle: _RecentItemSubtitle(call),
       trailing: PopupMenuButton(
         onSelected: _onPopupMenuItemPress,
         itemBuilder: (context) => [
@@ -96,16 +96,16 @@ class RecentCallItem extends StatelessWidget {
 }
 
 class _RecentItemSubtitle extends StatelessWidget {
-  final CallRecord callRecord;
+  final Call call;
 
-  const _RecentItemSubtitle(this.callRecord, {Key? key}) : super(key: key);
+  const _RecentItemSubtitle(this.call, {Key? key}) : super(key: key);
 
-  String get _time => DateFormat.Hm().format(callRecord.date.toLocal());
+  String get _time => DateFormat.Hm().format(call.date.toLocal());
 
-  String get _date => DateFormat('dd-MM-yy').format(callRecord.date.toLocal());
+  String get _date => DateFormat('dd-MM-yy').format(call.date.toLocal());
 
   String _timeAgo(BuildContext context) {
-    final duration = DateTime.now().difference(callRecord.date.toLocal());
+    final duration = DateTime.now().difference(call.date.toLocal());
 
     if (duration.inHours < 1) {
       if (duration.inMinutes == 1) {
@@ -130,12 +130,12 @@ class _RecentItemSubtitle extends StatelessWidget {
     return Row(
       children: <Widget>[
         Icon(
-          callRecord.wasMissed
+          call.wasMissed
               ? VialerSans.missedCall
-              : callRecord.isOutbound
+              : call.direction == Direction.outbound
                   ? VialerSans.outgoingCall
                   : VialerSans.incomingCall,
-          color: callRecord.wasMissed ? Colors.red : context.brand.theme.green1,
+          color: call.wasMissed ? Colors.red : context.brand.theme.green1,
           size: 12,
         ),
         const SizedBox(width: 8),
@@ -148,7 +148,6 @@ class _RecentItemSubtitle extends StatelessWidget {
   }
 }
 
-extension CallDestinationLabel on CallRecordWithContact {
-  String get displayLabel =>
-      contact?.name ?? destinationName ?? destinationNumber;
+extension CallDestinationName on CallWithContact {
+  String get destinationName => contact?.name ?? destinationNumber;
 }

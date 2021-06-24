@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../domain/entities/call_record_with_contact.dart';
+import '../../../../domain/entities/call_with_contact.dart';
 import '../../../resources/localizations.dart';
 import '../../../resources/theme.dart';
 import '../../../util/widgets_binding_observer_registrar.dart';
@@ -45,7 +45,7 @@ class RecentCallsPage extends StatelessWidget {
             child: BlocBuilder<RecentCallsCubit, RecentCallsState>(
               builder: (context, recentCallState) {
                 final cubit = context.watch<RecentCallsCubit>();
-                final recentCalls = recentCallState.callRecords;
+                final recentCalls = recentCallState.calls;
 
                 return BlocBuilder<CallerCubit, CallerState>(
                   builder: (context, callerState) {
@@ -70,7 +70,7 @@ class RecentCallsPage extends StatelessWidget {
                             snackBarRightPadding: snackBarRightPadding,
                             isLoadingInitial:
                                 recentCallState is LoadingInitialRecentCalls,
-                            callRecords: recentCalls,
+                            calls: recentCalls,
                             onRefresh: cubit.refreshRecentCalls,
                             onCallPressed: onCallPressed,
                             onCopyPressed: cubit.copyNumber,
@@ -95,7 +95,7 @@ class _RecentCallsList extends StatefulWidget {
 
   final bool isLoadingInitial;
 
-  final List<CallRecordWithContact> callRecords;
+  final List<CallWithContact> calls;
   final Future<void> Function() onRefresh;
   final void Function(String) onCallPressed;
   final void Function(String) onCopyPressed;
@@ -105,7 +105,7 @@ class _RecentCallsList extends StatefulWidget {
     required this.listBottomPadding,
     required this.snackBarRightPadding,
     this.isLoadingInitial = false,
-    required this.callRecords,
+    required this.calls,
     required this.onRefresh,
     required this.onCallPressed,
     required this.onCopyPressed,
@@ -164,7 +164,7 @@ class _RecentCallsListState extends State<_RecentCallsList>
   @override
   Widget build(BuildContext context) {
     return ConditionalPlaceholder(
-      showPlaceholder: widget.callRecords.isEmpty || widget.isLoadingInitial,
+      showPlaceholder: widget.calls.isEmpty || widget.isLoadingInitial,
       placeholder: widget.isLoadingInitial
           ? LoadingIndicator(
               title: Text(
@@ -189,16 +189,16 @@ class _RecentCallsListState extends State<_RecentCallsList>
           padding: EdgeInsets.only(
             bottom: widget.listBottomPadding,
           ),
-          itemCount: widget.callRecords.length,
+          itemCount: widget.calls.length,
           itemBuilder: (context, index) {
-            final callRecord = widget.callRecords[index];
+            final call = widget.calls[index];
             return RecentCallItem(
-              callRecord: callRecord,
+              call: call,
               onCallPressed: () {
-                widget.onCallPressed(callRecord.destinationNumber);
+                widget.onCallPressed(call.destinationNumber);
               },
               onCopyPressed: () {
-                widget.onCopyPressed(callRecord.destinationNumber);
+                widget.onCopyPressed(call.destinationNumber);
                 _showSnackBar(context);
               },
             );

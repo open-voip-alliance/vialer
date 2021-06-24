@@ -6,6 +6,7 @@ import 'domain/repositories/build_info.dart';
 import 'domain/repositories/call_through.dart';
 import 'domain/repositories/connectivity.dart';
 import 'domain/repositories/contact.dart';
+import 'domain/repositories/db/database.dart';
 import 'domain/repositories/destination.dart';
 import 'domain/repositories/env.dart';
 import 'domain/repositories/error_tracking_repository.dart';
@@ -41,9 +42,11 @@ Future<void> initializeDependencies({bool ui = true}) async {
 
   if (ui) {
     dependencyLocator
+      ..registerSingleton<Database>(Database())
       ..registerSingleton<RecentCallRepository>(
         RecentCallRepository(
           dependencyLocator<VoipgridService>(),
+          dependencyLocator<Database>(),
         ),
       )
       ..registerSingleton<MetricsRepository>(MetricsRepository())
