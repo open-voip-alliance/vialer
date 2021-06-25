@@ -13,10 +13,12 @@ import '../../app/util/loggable.dart';
 import '../../dependency_locator.dart';
 import '../entities/brand.dart';
 import '../entities/build_info.dart';
+import '../entities/setting.dart';
 import '../entities/voip_config.dart';
 import '../usecases/enable_console_logging.dart';
 import '../usecases/enable_remote_logging_if_needed.dart';
 import '../usecases/get_build_info.dart';
+import '../usecases/get_setting.dart';
 import '../usecases/get_user.dart';
 import 'logging.dart';
 import 'operating_system_info.dart';
@@ -116,6 +118,7 @@ class _Middleware with Loggable {
 
   final _getUser = GetUserUseCase();
   final _getBuildInfo = GetBuildInfoUseCase();
+  final _getDndSetting = GetSettingUseCase<DndSetting>();
 
   final _storageRepository = dependencyLocator<StorageRepository>();
   final _operatingSystemInfoRepository =
@@ -129,6 +132,14 @@ class _Middleware with Loggable {
     assert(Platform.isAndroid); // TODO: Remove when iOS is supported.
 
     logger.info('Registering..');
+
+    final dnd = await _getDndSetting();
+
+    if (dnd.value == true) {
+      unregister(voipConfig);
+      logger.info('Not registering as user has enabled DND');
+      return;
+    }
 
     if (voipConfig?.sipUserId == null) {
       logger.info('Registration cancelled: No SIP user ID set');
@@ -193,6 +204,16 @@ class _Middleware with Loggable {
     if (_config?.sipUserId == null) {
       logger.info('Responding cancelled: SIP user id is null');
       return;
+    }
+
+    // While we should have unregistered from the middleware if the user
+    // enables DND, it is possible the unregister request failed. This will
+    // ensure that the user does not receive a call in this scenario.
+    final dnd = await _getDndSetting();
+
+    if (dnd.value == true) {
+      available = false;
+      logger.warning('Overriding available to false as user has enabled DND.');
     }
 
     final response = await _service.callResponse(

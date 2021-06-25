@@ -39,6 +39,24 @@ class SettingTile extends StatelessWidget {
     this.center = false,
   }) : super(key: key);
 
+  static Widget dnd(DndSetting setting) {
+    return Builder(
+      builder: (context) {
+        return SettingTile(
+          label: Text(
+            context.msg.main.settings.list.dnd.dnd.title,
+          ),
+          description: Text(
+            context.msg.main.settings.list.dnd.dnd.description(
+              Provider.of<Brand>(context, listen: false).appName,
+            ),
+          ),
+          child: _BoolSettingValue(setting),
+        );
+      },
+    );
+  }
+
   static Widget phoneNumber(PhoneNumberSetting setting) {
     return Builder(
       builder: (context) {

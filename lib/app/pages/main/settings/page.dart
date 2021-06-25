@@ -84,6 +84,14 @@ class SettingsPage extends StatelessWidget {
                         child: ListView(
                           padding: const EdgeInsets.only(top: 8),
                           children: [
+                            if (isVoipAllowed)
+                              SettingTileCategory.dnd(
+                                children: [
+                                  SettingTile.dnd(
+                                    settings.get<DndSetting>(),
+                                  ),
+                                ],
+                              ),
                             SettingTileCategory.accountInfo(
                               children: [
                                 SettingTile.phoneNumber(

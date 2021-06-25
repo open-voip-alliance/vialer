@@ -151,6 +151,12 @@ main:
               By allowing this, our team can see problems that happened today before you
               turned Remote Logging on. This helps us understand the problem better.
             confirm: Send to remote
+      dnd:
+        title: "Do Not Disturb"
+        dnd:
+          title: "Do not disturb"
+          description(String appName): >-
+            Enable to stop receiving calls in $appName.
       accountInfo:
         title: "Account information"
         phoneNumber:

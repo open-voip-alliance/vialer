@@ -24,6 +24,18 @@ class SettingTileCategory extends StatelessWidget {
     this.children = const [],
   }) : super(key: key);
 
+  static Widget dnd({List<Widget> children = const []}) {
+    return Builder(
+      builder: (context) {
+        return SettingTileCategory(
+          icon: VialerSans.dnd,
+          title: context.msg.main.settings.list.dnd.dnd.title,
+          children: children,
+        );
+      },
+    );
+  }
+
   static Widget accountInfo({List<Widget> children = const []}) {
     return Builder(
       builder: (context) {
