@@ -154,6 +154,12 @@ main:
               Door dit toe te staan, kan ons team tevens problemen zien die vandaag zijn opgetreden
               voordat u Remote Logging inschakelde. Dit helpt ons problemen beter te begrijpen.
             confirm: Verstuur
+      dnd:
+        title: "Do Not Disturb"
+        dnd:
+          title: "Do not disturb"
+          description(String appName): >-
+            Schakel in om geen oproepen te ontvangen in $appName.
       accountInfo:
         title: "Accountinformatie"
         phoneNumber:

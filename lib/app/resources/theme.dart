@@ -253,4 +253,6 @@ abstract class VialerSans {
   static const bluetooth = IconData(0xE917, fontFamily: _family);
   static const merge = IconData(0xE920, fontFamily: _family);
   static const mobilePhone = IconData(0xE97B, fontFamily: _family);
+  static const dnd = IconData(0xE928, fontFamily: _family);
+  static const available = IconData(0xE929, fontFamily: _family);
 }

@@ -35,6 +35,7 @@ abstract class Setting<T> {
     AudioCodecSetting.preset(),
     UsePhoneRingtoneSetting.preset(),
     AvailabilitySetting.preset(),
+    DndSetting.preset(),
   ];
 
   Map<String, dynamic> toJson() {
@@ -73,6 +74,8 @@ abstract class Setting<T> {
       return AvailabilitySetting(
         Availability.fromJson(value as Map<String, dynamic>),
       );
+    } else if (type == (DndSetting).toString()) {
+      return DndSetting(value as bool);
     } else {
       throw UnsupportedError('Setting type does not exist: $type');
     }
@@ -126,6 +129,15 @@ class PhoneNumberSetting extends Setting<String> {
   @override
   PhoneNumberSetting copyWith({String? value}) =>
       PhoneNumberSetting(value ?? this.value);
+}
+
+class DndSetting extends Setting<bool> {
+  const DndSetting(bool value) : super(value);
+
+  const DndSetting.preset() : this(false);
+
+  @override
+  DndSetting copyWith({bool? value}) => DndSetting(value ?? this.value);
 }
 
 class UseVoipSetting extends Setting<bool> {
