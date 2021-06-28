@@ -152,7 +152,6 @@ Future<void> _showCallThroughErrorDialog(
     context: context,
     barrierDismissible: true,
     builder: (context) {
-      final titleText = Text(title);
       final content = SingleChildScrollView(
         child: Text(message),
       );
@@ -160,13 +159,13 @@ Future<void> _showCallThroughErrorDialog(
       final buttonText = context.msg.generic.button.ok;
       void buttonOnPressed() {
         Navigator.pop(context);
-        // Also pop the confirm if it's there
+        // Also pop the confirm if it's there.
         Navigator.popUntil(context, (route) => route is! ConfirmPageRoute);
       }
 
       if (context.isIOS) {
         return CupertinoAlertDialog(
-          title: titleText,
+          title: Text(title),
           content: content,
           actions: <Widget>[
             CupertinoButton(
@@ -177,7 +176,7 @@ Future<void> _showCallThroughErrorDialog(
         );
       } else {
         return AlertDialog(
-          title: titleText,
+          title: Text(title),
           content: content,
           actions: <Widget>[
             TextButton(
