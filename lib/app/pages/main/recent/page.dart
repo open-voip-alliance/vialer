@@ -22,13 +22,15 @@ class RecentCallsPage extends StatelessWidget {
     this.snackBarRightPadding = 0,
   }) : super(key: key);
 
-  void _showSnackBar(BuildContext context) {
-    showSnackBar(
-      context,
-      icon: const Icon(VialerSans.exclamationMark),
-      label: Text(context.msg.main.contacts.snackBar.noPermission),
-      padding: const EdgeInsets.only(right: 72),
-    );
+  void _onStateChanged(BuildContext context, CallerState state) {
+    if (state is NoPermission) {
+      showSnackBar(
+        context,
+        icon: const Icon(VialerSans.exclamationMark),
+        label: Text(context.msg.main.contacts.snackBar.noPermission),
+        padding: const EdgeInsets.only(right: 72),
+      );
+    }
   }
 
   @override
@@ -40,47 +42,43 @@ class RecentCallsPage extends StatelessWidget {
           padding: const EdgeInsets.only(
             top: 16,
           ),
-          child: BlocProvider<RecentCallsCubit>(
-            create: (context) => RecentCallsCubit(context.read<CallerCubit>()),
-            child: BlocBuilder<RecentCallsCubit, RecentCallsState>(
-              builder: (context, recentCallState) {
-                final cubit = context.watch<RecentCallsCubit>();
-                final recentCalls = recentCallState.calls;
+          child: BlocListener<CallerCubit, CallerState>(
+            listener: _onStateChanged,
+            child: BlocProvider<RecentCallsCubit>(
+              create: (context) =>
+                  RecentCallsCubit(context.read<CallerCubit>()),
+              child: BlocBuilder<RecentCallsCubit, RecentCallsState>(
+                builder: (context, recentCallState) {
+                  final cubit = context.watch<RecentCallsCubit>();
+                  final recentCalls = recentCallState.calls;
 
-                return BlocBuilder<CallerCubit, CallerState>(
-                  builder: (context, callerState) {
-                    void onCallPressed(String n) {
-                      return (callerState is CanCall ||
-                              (callerState is NoPermission &&
-                                  !callerState.dontAskAgain))
-                          ? cubit.call(n)
-                          : _showSnackBar(context);
-                    }
-
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: Header(context.msg.main.recent.title),
-                        ),
-                        Expanded(
-                          child: _RecentCallsList(
-                            listBottomPadding: listBottomPadding,
-                            snackBarRightPadding: snackBarRightPadding,
-                            isLoadingInitial:
-                                recentCallState is LoadingInitialRecentCalls,
-                            calls: recentCalls,
-                            onRefresh: cubit.refreshRecentCalls,
-                            onCallPressed: onCallPressed,
-                            onCopyPressed: cubit.copyNumber,
+                  return BlocBuilder<CallerCubit, CallerState>(
+                    builder: (context, callerState) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: Header(context.msg.main.recent.title),
                           ),
-                        ),
-                      ],
-                    );
-                  },
-                );
-              },
+                          Expanded(
+                            child: _RecentCallsList(
+                              listBottomPadding: listBottomPadding,
+                              snackBarRightPadding: snackBarRightPadding,
+                              isLoadingInitial:
+                                  recentCallState is LoadingInitialRecentCalls,
+                              calls: recentCalls,
+                              onRefresh: cubit.refreshRecentCalls,
+                              onCallPressed: cubit.call,
+                              onCopyPressed: cubit.copyNumber,
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
+              ),
             ),
           ),
         ),

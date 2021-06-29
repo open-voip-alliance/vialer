@@ -6,6 +6,7 @@ import 'package:flutter_phone_lib/audio/audio_route.dart';
 import 'package:flutter_phone_lib/audio/bluetooth_audio_route.dart';
 import 'package:flutter_phone_lib/flutter_phone_lib.dart';
 
+import '../../../../../domain/connectivity_type.dart';
 import '../../../../../domain/entities/exceptions/call_through.dart';
 import '../../../../../domain/entities/exceptions/voip_not_enabled.dart';
 import '../../../../../domain/entities/permission.dart';
@@ -25,6 +26,7 @@ import '../../../../../domain/usecases/call/voip/toggle_hold.dart';
 import '../../../../../domain/usecases/call/voip/toggle_mute.dart';
 import '../../../../../domain/usecases/change_setting.dart';
 import '../../../../../domain/usecases/get_call_through_calls_count.dart';
+import '../../../../../domain/usecases/get_current_connectivity_status.dart';
 import '../../../../../domain/usecases/get_has_voip_enabled.dart';
 import '../../../../../domain/usecases/get_is_authenticated.dart';
 import '../../../../../domain/usecases/get_permission_status.dart';
@@ -43,6 +45,7 @@ export 'state.dart';
 
 class CallerCubit extends Cubit<CallerState> with Loggable {
   final _isAuthenticated = GetIsAuthenticatedUseCase();
+  final _getConnectivityType = GetCurrentConnectivityTypeUseCase();
 
   final _getShowDialerConfirmPopUpSetting =
       GetSettingUseCase<ShowDialerConfirmPopupSetting>();
@@ -248,6 +251,8 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
     required CallOrigin origin,
   }) async {
     if (!await _hasMicPermission()) return;
+
+    if (await _getConnectivityType() == ConnectivityType.none) return;
 
     logger.info('Starting VoIP call');
     try {
