@@ -133,8 +133,7 @@ Future<void> _showCallThroughErrorDialog(
   BuildContext context,
   CallThroughException exception,
 ) {
-  String message;
-  var title = context.msg.main.callThrough.error.title;
+  String message, title = context.msg.main.callThrough.error.title;
   if (exception is InvalidDestinationException ||
       exception is NormalizationException) {
     message = context.msg.main.callThrough.error.invalidDestination;
