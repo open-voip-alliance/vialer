@@ -1,9 +1,9 @@
 import 'package:equatable/equatable.dart';
 
-import '../../../../domain/entities/call_with_contact.dart';
+import '../../../../domain/entities/call_record_with_contact.dart';
 
 abstract class RecentCallsState extends Equatable {
-  final List<CallWithContact> calls;
+  final List<CallRecordWithContact> callRecords;
 
   final int page;
 
@@ -11,30 +11,31 @@ abstract class RecentCallsState extends Equatable {
 
   bool get maxPagesLoaded => page == maxPages;
 
-  RecentCallsState(this.calls, this.page);
+  const RecentCallsState(this.callRecords, this.page);
 
   @override
-  List<Object?> get props => [calls, page];
+  List<Object?> get props => [callRecords, page];
 }
 
 class LoadingInitialRecentCalls extends RecentCallsState {
-  LoadingInitialRecentCalls() : super([], 0);
+  const LoadingInitialRecentCalls() : super(const [], 1);
 }
 
 class RefreshingRecentCalls extends RecentCallsState {
-  RefreshingRecentCalls(
-    List<CallWithContact> calls,
+  const RefreshingRecentCalls(
+    List<CallRecordWithContact> callRecords,
     int page,
-  ) : super(calls, page);
+  ) : super(callRecords, page);
 }
 
 class LoadingMoreRecentCalls extends RecentCallsState {
-  LoadingMoreRecentCalls(
-    List<CallWithContact> calls,
+  const LoadingMoreRecentCalls(
+    List<CallRecordWithContact> callRecords,
     int page,
-  ) : super(calls, page);
+  ) : super(callRecords, page);
 }
 
 class RecentCallsLoaded extends RecentCallsState {
-  RecentCallsLoaded(List<CallWithContact> calls, int page) : super(calls, page);
+  const RecentCallsLoaded(List<CallRecordWithContact> callRecords, int page)
+      : super(callRecords, page);
 }
