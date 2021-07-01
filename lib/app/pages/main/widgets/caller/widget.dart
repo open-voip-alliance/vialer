@@ -133,12 +133,16 @@ Future<void> _showCallThroughErrorDialog(
   BuildContext context,
   CallThroughException exception,
 ) {
-  String message;
+  String message, title = context.msg.main.callThrough.error.title;
   if (exception is InvalidDestinationException ||
       exception is NormalizationException) {
     message = context.msg.main.callThrough.error.invalidDestination;
   } else if (exception is NoMobileNumberException) {
-    message = context.msg.main.callThrough.error.noMobileNumber;
+    message = context.msg.main.callThrough.error.mobile.noMobileNumber;
+    title = context.msg.main.callThrough.error.mobile.title;
+  } else if (exception is NumberTooLongException) {
+    message = context.msg.main.callThrough.error.numberTooLong.numberTooLong;
+    title = context.msg.main.callThrough.error.numberTooLong.title;
   } else {
     message = context.msg.main.callThrough.error.unknown;
   }
@@ -147,7 +151,6 @@ Future<void> _showCallThroughErrorDialog(
     context: context,
     barrierDismissible: true,
     builder: (context) {
-      final title = Text(context.msg.main.callThrough.error.title);
       final content = SingleChildScrollView(
         child: Text(message),
       );
@@ -155,13 +158,13 @@ Future<void> _showCallThroughErrorDialog(
       final buttonText = context.msg.generic.button.ok;
       void buttonOnPressed() {
         Navigator.pop(context);
-        // Also pop the confirm if it's there
+        // Also pop the confirm if it's there.
         Navigator.popUntil(context, (route) => route is! ConfirmPageRoute);
       }
 
       if (context.isIOS) {
         return CupertinoAlertDialog(
-          title: title,
+          title: Text(title),
           content: content,
           actions: <Widget>[
             CupertinoButton(
@@ -172,7 +175,7 @@ Future<void> _showCallThroughErrorDialog(
         );
       } else {
         return AlertDialog(
-          title: title,
+          title: Text(title),
           content: content,
           actions: <Widget>[
             TextButton(

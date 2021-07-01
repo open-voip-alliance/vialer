@@ -40,7 +40,11 @@ class CallThroughRepository {
       }
 
       destination = possibleDestination;
-    } on PlatformException {
+    } on PlatformException catch(e) {
+      const message = 'The string supplied is too long to be a phone number.';
+      if (e.message == message) {
+        throw NumberTooLongException();
+      }
       throw NormalizationException();
     }
 
@@ -67,6 +71,14 @@ class CallThroughRepository {
         final first = destinationError.first as Map<String, dynamic>;
         if (first['code'] == 'invalid_destination') {
           throw InvalidDestinationException();
+        }
+      }
+
+      final noMobileNumberError = error['user'] as List<dynamic>?;
+      if (noMobileNumberError != null && noMobileNumberError.isNotEmpty) {
+        final first = noMobileNumberError.first as Map<String, dynamic>;
+        if (first['code'] == 'no_mobile_number') {
+          throw NoMobileNumberException();
         }
       }
 
