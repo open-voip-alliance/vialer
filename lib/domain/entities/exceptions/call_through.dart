@@ -7,3 +7,5 @@ class InvalidDestinationException extends CallThroughException {}
 class NormalizationException extends CallThroughException {}
 
 class NoMobileNumberException extends CallThroughException {}
+
+class NumberTooLongException extends CallThroughException {}
