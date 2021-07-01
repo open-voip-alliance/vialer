@@ -5,11 +5,14 @@ import '../../../util/brand.dart';
 
 class StylizedTextField extends StatelessWidget {
   final TextEditingController? controller;
+  final FocusNode? focusNode;
   final bool obscureText;
   final TextInputType? keyboardType;
   final IconData? prefixIcon;
+  final Widget? prefixWidget;
   final Widget? suffix;
   final String? labelText;
+  final String? hintText;
   final bool hasError;
   final bool autoCorrect;
   final TextCapitalization textCapitalization;
@@ -25,9 +28,12 @@ class StylizedTextField extends StatelessWidget {
   StylizedTextField({
     Key? key,
     this.labelText,
+    this.hintText,
     this.prefixIcon,
+    this.prefixWidget,
     this.suffix,
     this.controller,
+    this.focusNode,
     this.obscureText = false,
     this.keyboardType,
     this.hasError = false,
@@ -56,6 +62,7 @@ class StylizedTextField extends StatelessWidget {
         textAlign: textAlign,
         inputFormatters: inputFormatters,
         controller: controller,
+        focusNode: focusNode,
         autocorrect: autoCorrect,
         textCapitalization: textCapitalization,
         enabled: enabled,
@@ -67,7 +74,9 @@ class StylizedTextField extends StatelessWidget {
                       hasError ? context.brand.theme.errorContentColor : color,
                   size: 16,
                 )
-              : null,
+              : prefixWidget != null
+                  ? prefixWidget
+                  : null,
           suffixIcon: suffix,
           labelText: labelText,
           border: inputBorder,
@@ -81,6 +90,7 @@ class StylizedTextField extends StatelessWidget {
           filled: true,
           fillColor: Colors.white,
           floatingLabelBehavior: FloatingLabelBehavior.never,
+          hintText: hintText,
         ),
         style: textStyle,
         obscureText: obscureText,

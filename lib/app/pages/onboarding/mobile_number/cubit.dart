@@ -22,12 +22,13 @@ class MobileNumberCubit extends Cubit<MobileNumberState> {
   }
 
   void changeMobileNumber(String mobileNumber) async {
-    final success = await _changeMobileNumber(mobileNumber: mobileNumber);
+    final accepted = mobileNumber == '' ||
+        await _changeMobileNumber(mobileNumber: mobileNumber);
 
     emit(
-      success
-          ? MobileNumberChanged(mobileNumber: mobileNumber)
-          : MobileNumberNotChanged(mobileNumber: mobileNumber),
+      accepted
+          ? MobileNumberAccepted(mobileNumber: mobileNumber)
+          : MobileNumberNotAccepted(mobileNumber: mobileNumber),
     );
   }
 }
