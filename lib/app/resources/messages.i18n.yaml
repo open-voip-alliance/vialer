@@ -92,6 +92,9 @@ main:
     title: "Recent calls"
     menu:
       title: "Recents"
+    tabs:
+      all: "All calls"
+      missed: "Missed calls"
     snackBar:
       copied: "Phone number copied"
     list:

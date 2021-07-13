@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dartx/dartx.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -13,7 +14,9 @@ import 'state.dart';
 export 'state.dart';
 
 class RecentCallsCubit extends Cubit<RecentCallsState> {
-  final _getRecentCalls = GetRecentCallsUseCase();
+  @protected
+  final getRecentCalls = GetRecentCallsUseCase();
+
   final _trackCopyNumber = TrackCopyNumberUseCase();
 
   final CallerCubit _caller;
@@ -51,7 +54,7 @@ class RecentCallsCubit extends Cubit<RecentCallsState> {
   }
 
   Future<void> _loadRecentCalls({required int page}) async {
-    final recentCalls = await _getRecentCalls(page: page);
+    final recentCalls = await _fetch(page: page);
     List<CallRecordWithContact> currentCalls;
 
     if (state is LoadingMoreRecentCalls) {
@@ -68,4 +71,15 @@ class RecentCallsCubit extends Cubit<RecentCallsState> {
 
     emit(RecentCallsLoaded(currentCalls.distinct().toList(), page));
   }
+
+  Future<List<CallRecordWithContact>> _fetch({required int page}) async =>
+      await getRecentCalls(page: page);
+}
+
+class MissedCallsCubit extends RecentCallsCubit {
+  MissedCallsCubit(CallerCubit caller) : super(caller);
+
+  @override
+  Future<List<CallRecordWithContact>> _fetch({required int page}) async =>
+      await getRecentCalls(page: page, onlyMissedCalls: true);
 }

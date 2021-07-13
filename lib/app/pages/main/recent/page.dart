@@ -33,51 +33,96 @@ class RecentCallsPage extends StatelessWidget {
     }
   }
 
+  Future<void> _refreshCalls(BuildContext context) async {
+    context.read<MissedCallsCubit>().refreshRecentCalls();
+    context.read<RecentCallsCubit>().refreshRecentCalls();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.only(
-            top: 16,
-          ),
+          padding: const EdgeInsets.only(top: 16),
           child: BlocListener<CallerCubit, CallerState>(
             listener: _onStateChanged,
-            child: BlocProvider<RecentCallsCubit>(
-              create: (context) =>
-                  RecentCallsCubit(context.read<CallerCubit>()),
-              child: BlocBuilder<RecentCallsCubit, RecentCallsState>(
-                builder: (context, recentCallState) {
-                  final cubit = context.watch<RecentCallsCubit>();
-                  final recentCalls = recentCallState.callRecords;
-
-                  return BlocBuilder<CallerCubit, CallerState>(
-                    builder: (context, callerState) {
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: Header(context.msg.main.recent.title),
-                          ),
-                          Expanded(
-                            child: _RecentCallsList(
-                              listBottomPadding: listBottomPadding,
-                              snackBarRightPadding: snackBarRightPadding,
-                              isLoadingInitial:
-                                  recentCallState is LoadingInitialRecentCalls,
-                              callRecords: recentCalls,
-                              onRefresh: cubit.refreshRecentCalls,
-                              onCallPressed: cubit.call,
-                              onCopyPressed: cubit.copyNumber,
-                            ),
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                },
+            child: MultiBlocProvider(
+              providers: [
+                BlocProvider<RecentCallsCubit>(
+                  create: (context) =>
+                      RecentCallsCubit(context.read<CallerCubit>()),
+                ),
+                BlocProvider<MissedCallsCubit>(
+                  create: (context) =>
+                      MissedCallsCubit(context.read<CallerCubit>()),
+                ),
+              ],
+              child: DefaultTabController(
+                length: 2,
+                child: Scaffold(
+                  appBar: AppBar(
+                    backgroundColor: Colors.transparent,
+                    elevation: 0,
+                    bottom: TabBar(
+                      labelPadding: const EdgeInsets.only(
+                        top: 18,
+                        bottom: 8,
+                      ),
+                      labelColor: Theme.of(context).primaryColor,
+                      unselectedLabelColor: Colors.grey,
+                      indicatorColor: Theme.of(context).primaryColor,
+                      indicatorSize: TabBarIndicatorSize.label,
+                      tabs: [
+                        Text(context.msg.main.recent.tabs.all.toUpperCase()),
+                        Text(context.msg.main.recent.tabs.missed.toUpperCase()),
+                      ],
+                    ),
+                    title: Header(
+                      context.msg.main.recent.title,
+                      padding: const EdgeInsets.all(0),
+                    ),
+                  ),
+                  body: TabBarView(
+                    children: [
+                      BlocBuilder<RecentCallsCubit, RecentCallsState>(
+                        builder: (context, recentCallState) {
+                          final cubit = context.watch<RecentCallsCubit>();
+                          final recentCalls = recentCallState.callRecords;
+                          return _RecentCallsList(
+                            listBottomPadding: listBottomPadding,
+                            snackBarRightPadding: snackBarRightPadding,
+                            isLoadingInitial:
+                                recentCallState is LoadingInitialRecentCalls,
+                            callRecords: recentCalls,
+                            onRefresh: () => _refreshCalls(context),
+                            onCallPressed: cubit.call,
+                            onCopyPressed: cubit.copyNumber,
+                            loadMoreCalls: cubit.loadMoreRecentCalls,
+                          );
+                        },
+                      ),
+                      BlocBuilder<MissedCallsCubit, RecentCallsState>(
+                        builder: (context, missedCallsState) {
+                          final missedCallsCubit =
+                              context.watch<MissedCallsCubit>();
+                          final missedCalls = missedCallsState.callRecords;
+                          return _RecentCallsList(
+                            listBottomPadding: listBottomPadding,
+                            snackBarRightPadding: snackBarRightPadding,
+                            isLoadingInitial:
+                                missedCallsState is LoadingInitialRecentCalls,
+                            callRecords: missedCalls,
+                            onRefresh: () => _refreshCalls(context),
+                            onCallPressed: missedCallsCubit.call,
+                            onCopyPressed: missedCallsCubit.copyNumber,
+                            loadMoreCalls: missedCallsCubit.loadMoreRecentCalls,
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ),
           ),
@@ -97,6 +142,7 @@ class _RecentCallsList extends StatefulWidget {
   final Future<void> Function() onRefresh;
   final void Function(String) onCallPressed;
   final void Function(String) onCopyPressed;
+  final void Function() loadMoreCalls;
 
   const _RecentCallsList({
     Key? key,
@@ -107,6 +153,7 @@ class _RecentCallsList extends StatefulWidget {
     required this.onRefresh,
     required this.onCallPressed,
     required this.onCopyPressed,
+    required this.loadMoreCalls,
   }) : super(key: key);
 
   @override
@@ -126,7 +173,7 @@ class _RecentCallsListState extends State<_RecentCallsList>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      context.read<RecentCallsCubit>().refreshRecentCalls();
+      widget.onRefresh();
     }
   }
 
@@ -141,10 +188,8 @@ class _RecentCallsListState extends State<_RecentCallsList>
     final maxScroll = _scrollController.position.maxScrollExtent;
     final currentScroll = _scrollController.position.pixels;
 
-    final cubit = context.read<RecentCallsCubit>();
-
     if (currentScroll >= maxScroll - 200) {
-      cubit.loadMoreRecentCalls();
+      widget.loadMoreCalls();
     }
   }
 

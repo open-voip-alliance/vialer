@@ -16,7 +16,10 @@ class GetRecentCallsUseCase extends UseCase {
   final _getContacts = GetContactsUseCase();
 
   /// [page] starts at 1.
-  Future<List<CallRecordWithContact>> call({required int page}) async {
+  Future<List<CallRecordWithContact>> call({
+    required int page,
+    bool onlyMissedCalls = false,
+  }) async {
     assert(page > 0);
     final user = await _getUser(latest: false);
 
@@ -31,6 +34,7 @@ class GetRecentCallsUseCase extends UseCase {
       page: page,
       outgoingNumber: user!.outgoingCli!,
       contacts: contacts,
+      onlyMissedCalls: onlyMissedCalls,
     );
   }
 }

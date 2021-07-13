@@ -22,6 +22,7 @@ class RecentCallRepository with Loggable {
   Future<List<CallRecordWithContact>> getRecentCalls({
     required int page,
     required String outgoingNumber,
+    bool onlyMissedCalls = false,
     Iterable<Contact> contacts = const [],
   }) async {
     assert(page > 0);
@@ -31,6 +32,7 @@ class RecentCallRepository with Loggable {
 
     final response = await _service.getPersonalCalls(
       pageNumber: page,
+      answered: onlyMissedCalls ? false : null,
     );
 
     final objects = response.body as List<dynamic>? ?? [];
