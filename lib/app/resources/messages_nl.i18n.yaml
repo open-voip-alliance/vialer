@@ -93,6 +93,9 @@ main:
     title: "Recente gesprekken"
     menu:
       title: "Recent"
+    tabs:
+      all: "Alle gesprekken"
+      missed: "Gemiste gesprekken"
     snackBar:
       copied: "Telefoonnummer gekopieerd"
     list:
