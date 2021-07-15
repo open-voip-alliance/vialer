@@ -7,6 +7,8 @@ import '../../widgets/transparent_status_bar.dart';
 import 'cubit.dart';
 
 class SplashPage extends StatelessWidget {
+  const SplashPage({Key? key}) : super(key: key);
+
   void _onStateChanged(BuildContext context, SplashState state) {
     if (state is IsAuthenticated) {
       Navigator.pushReplacementNamed(context, Routes.main);

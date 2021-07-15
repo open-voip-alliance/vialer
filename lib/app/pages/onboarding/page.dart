@@ -18,6 +18,8 @@ import 'welcome/page.dart';
 import 'widgets/background.dart';
 
 class OnboardingPage extends StatefulWidget {
+  const OnboardingPage({Key? key}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() => _OnboardingPageState();
 }

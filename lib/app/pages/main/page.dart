@@ -23,11 +23,13 @@ import 'widgets/user_data_refresher/widget.dart';
 typedef WidgetWithArgumentsBuilder = Widget Function(BuildContext, Object?);
 
 class MainPage extends StatefulWidget {
+  const MainPage({Key? key}) : super(key: key);
+
   @override
-  State<StatefulWidget> createState() => _MainPageState();
+  State<StatefulWidget> createState() => MainPageState();
 }
 
-class _MainPageState extends State<MainPage> {
+class MainPageState extends State<MainPage> {
   int? _currentIndex;
   int? _previousIndex;
 
@@ -38,6 +40,9 @@ class _MainPageState extends State<MainPage> {
   final _navigatorStates = [
     GlobalKey<NavigatorState>(),
   ];
+
+  void navigateTo(MainPageTab tab) =>
+      _navigateTo(_dialerIsPage ? tab.index : tab.index - 1);
 
   void _navigateTo(int? index) {
     if (index == null) return;
@@ -239,6 +244,13 @@ class _Navigator extends StatelessWidget {
       ),
     );
   }
+}
+
+enum MainPageTab {
+  dialer,
+  contacts,
+  recents,
+  settings,
 }
 
 class _AnimatedIndexedStack extends StatefulWidget {
