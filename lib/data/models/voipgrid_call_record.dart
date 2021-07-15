@@ -78,14 +78,14 @@ class CallRecordVoipAccount {
   final String? description;
   final String internalNumber;
   final String? outgoingName;
-  final String outgoingNumber;
+  final String? outgoingNumber;
 
   const CallRecordVoipAccount({
     required this.id,
     this.description,
     required this.internalNumber,
     this.outgoingName,
-    required this.outgoingNumber,
+    this.outgoingNumber,
   });
 
   factory CallRecordVoipAccount.fromJson(Map<String, dynamic> json) =>
