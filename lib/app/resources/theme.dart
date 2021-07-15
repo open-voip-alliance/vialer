@@ -56,6 +56,8 @@ abstract class BrandTheme {
 
   final red1 = const Color(0xFFDA534F);
 
+  final answeredElsewhere = const Color(0xFF1F86FF);
+
   Color get splashScreenColor;
 
   Color get onboardingGradientStart;
@@ -255,4 +257,5 @@ abstract class VialerSans {
   static const mobilePhone = IconData(0xE97B, fontFamily: _family);
   static const dnd = IconData(0xE928, fontFamily: _family);
   static const available = IconData(0xE929, fontFamily: _family);
+  static const answeredElsewhere = IconData(0xE922, fontFamily: _family);
 }

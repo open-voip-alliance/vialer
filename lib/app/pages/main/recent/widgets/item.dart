@@ -125,24 +125,65 @@ class _RecentItemSubtitle extends StatelessWidget {
     }
   }
 
+  IconData _icon(BuildContext context) {
+    if (callRecord.answeredElsewhere) return VialerSans.answeredElsewhere;
+
+    if (callRecord.wasMissed) return VialerSans.missedCall;
+
+    return callRecord.isOutbound
+        ? VialerSans.outgoingCall
+        : VialerSans.incomingCall;
+  }
+
+  Color _iconColor(BuildContext context) {
+    if (callRecord.wasMissed) return Colors.red;
+
+    if (callRecord.answeredElsewhere) {
+      return context.brand.theme.answeredElsewhere;
+    }
+
+    return context.brand.theme.green1;
+  }
+
+  String _text(BuildContext context) => '${_timeAgo(context)}';
+
+  String _createAnsweredElsewhereText() {
+    if (callRecord.destinationName == null ||
+        callRecord.destinationName!.isEmpty ||
+        callRecord.destinationName == callRecord.destinationNumber) {
+      return '${callRecord.destinationNumber}';
+    } else {
+      return '${callRecord.destinationName} (${callRecord.destinationNumber})';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: <Widget>[
-        Icon(
-          callRecord.wasMissed
-              ? VialerSans.missedCall
-              : callRecord.isOutbound
-                  ? VialerSans.outgoingCall
-                  : VialerSans.incomingCall,
-          color: callRecord.wasMissed ? Colors.red : context.brand.theme.green1,
-          size: 12,
+    return Column(
+      children: [
+        Row(
+          children: <Widget>[
+            Icon(
+              _icon(context),
+              color: _iconColor(context),
+              size: 12,
+            ),
+            const SizedBox(width: 8),
+            Text(
+              _text(context),
+              style: TextStyle(color: context.brand.theme.grey4),
+            ),
+
+          ],
         ),
-        const SizedBox(width: 8),
-        Text(
-          '${_timeAgo(context)}',
-          style: TextStyle(color: context.brand.theme.grey4),
-        ),
+        if (callRecord.answeredElsewhere)
+          FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                _createAnsweredElsewhereText(),
+                style: TextStyle(color: context.brand.theme.grey4),
+              ),
+          ),
       ],
     );
   }
