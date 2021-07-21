@@ -2,14 +2,14 @@ import '../../dependency_locator.dart';
 import '../entities/setting.dart';
 import '../repositories/storage.dart';
 import '../use_case.dart';
-import 'unregister_to_voip_middleware.dart';
+import 'stop_voip.dart';
 
 class LogoutUseCase extends UseCase {
   final _storageRepository = dependencyLocator<StorageRepository>();
-  final _unregisterToVoipMiddleware = UnregisterToVoipMiddlewareUseCase();
+  final _stopVoip = StopVoipUseCase();
 
   Future<void> call() async {
-    await _unregisterToVoipMiddleware();
+    await _stopVoip();
 
     await _clearStorage();
   }

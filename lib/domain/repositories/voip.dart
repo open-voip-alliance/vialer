@@ -31,26 +31,24 @@ class VoipRepository with Loggable {
 
   Future<bool> get hasStarted => _hasStartedCompleter.future;
 
-  Future<void> start({
+  Future<void> initializeAndStart({
     required VoipConfig config,
     required Brand brand,
     required BuildInfo buildInfo,
   }) async {
-    _phoneLib = await startPhoneLib((builder) {
+    if (_hasStartedCompleter.isCompleted) {
+      start(config);
+      return;
+    }
+
+    hasStarted.whenComplete(() => start(config));
+
+    final preferences = await _createPreferences(config);
+
+    _phoneLib = await initializePhoneLib((builder) {
       builder
-        ..auth = Auth(
-          username: config.sipUserId.toString(),
-          password: config.password,
-          domain: config.useEncryption
-              ? 'sip.encryptedsip.com'
-              : 'sipproxy.voipgrid.nl',
-          port: config.useEncryption ? 5061 : 5060,
-          secure: config.useEncryption,
-        )
-        ..preferences = Preferences(
-          codecs: [config.useOpus ? Codec.opus : Codec.ilbc],
-          useApplicationProvidedRingtone: false,
-        );
+        ..auth = _createAuth(config)
+        ..preferences = preferences;
 
       return ApplicationSetup(
         initialize: _initialize,
@@ -70,9 +68,38 @@ class VoipRepository with Loggable {
     _hasStartedCompleter.complete(true);
   }
 
+  Auth _createAuth(VoipConfig config) => Auth(
+        username: config.sipUserId.toString(),
+        password: config.password,
+        domain: config.useEncryption
+            ? 'sip.encryptedsip.com'
+            : 'sipproxy.voipgrid.nl',
+        port: config.useEncryption ? 5061 : 5060,
+        secure: config.useEncryption,
+      );
+
+  Future<Preferences> _createPreferences(VoipConfig config) async {
+    final getPhoneRingtone = GetSettingUseCase<UsePhoneRingtoneSetting>();
+
+    return Preferences(
+      codecs: [config.useOpus ? Codec.opus : Codec.ilbc],
+      useApplicationProvidedRingtone: !(await getPhoneRingtone()).value,
+    );
+  }
+
+  Future<void> start(VoipConfig config) async => _phoneLib.start(
+        await _createPreferences(config),
+        _createAuth(config),
+      );
+
+  Future<void> stop() => _phoneLib.stop();
+
   Future<void> call(String number) => _phoneLib.call(number.normalize());
 
   Future<void> answerCall() => _phoneLib.actions.answer();
+
+  Future<void> refreshPreferences(VoipConfig config) async =>
+      _phoneLib.updatePreferences(await _createPreferences(config));
 
   Future<Call?> get activeCall => _phoneLib.calls.active;
 
