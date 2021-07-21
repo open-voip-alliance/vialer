@@ -22,11 +22,12 @@ class StartVoipUseCase extends UseCase {
       throw VoipNotEnabledException();
     }
 
-    await _voipRepository.start(
+    await _voipRepository.initializeAndStart(
       config: await _getVoipConfig(latest: false),
       brand: _getBrand(),
       buildInfo: await _getBuildInfo(),
     );
+
     await _registerToMiddleware();
   }
 }

@@ -9,6 +9,7 @@ import '../use_case.dart';
 import 'disable_remote_logging.dart';
 import 'enable_remote_logging.dart';
 import 'get_settings.dart';
+import 'refresh_voip.dart';
 import 'register_to_voip_middleware.dart';
 import 'start_voip.dart';
 import 'unregister_to_voip_middleware.dart';
@@ -24,6 +25,7 @@ class ChangeSettingUseCase extends UseCase {
   final _registerToVoipMiddleware = RegisterToVoipMiddlewareUseCase();
   final _unregisterToVoipMiddleware = UnregisterToVoipMiddlewareUseCase();
   final _startVoip = StartVoipUseCase();
+  final _refreshVoip = RefreshVoipUseCase();
 
   Future<void> call({required Setting setting, bool remote = true}) async {
     if (setting is RemoteLoggingSetting) {
@@ -69,6 +71,8 @@ class ChangeSettingUseCase extends UseCase {
         await _startVoip();
         // ignore: avoid_catching_errors
       } on Error {}
+    } else if (setting is UsePhoneRingtoneSetting) {
+      await _refreshVoip();
     } else if (setting is DndSetting) {
       // This will happen in the background because we do not need to rely
       // on this to have happened when the user changes the setting.

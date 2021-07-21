@@ -40,7 +40,7 @@ class CallThroughRepository {
       }
 
       destination = possibleDestination;
-    } on PlatformException catch(e) {
+    } on PlatformException catch (e) {
       const message = 'The string supplied is too long to be a phone number.';
       if (e.message == message) {
         throw NumberTooLongException();
