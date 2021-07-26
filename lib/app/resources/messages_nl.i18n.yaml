@@ -231,9 +231,13 @@ main:
       logout: "Uitloggen"
     feedback:
       title: "Feedback"
+      header(String appName): >-
+        Jouw feedback is waardevol voor ons en helpt om eerder een afgeronde versie van de app uit te brengen. Schakel de remote logging optie in op de Instellingen-pagina voordat je feedback verstuurt, zodat we eventuele problemen beter kunnen onderzoeken.
+
+
+        Als je een probleem hebt ondervonden of ons wilt laten weten wat je ervaring is met de bètaversie van de $appName app, verstuur dan hieronder een bericht. Dankjewel!
       placeholders:
-        title: "Titel"
-        text: "Typ hier je bericht"
+        text: "Typ je feedback hier en druk op de verstuur feedback knop onderaan."
       snackBar: "Feedback verstuurd bedankt!"
       buttons:
         send: "Feedback"
@@ -345,7 +349,7 @@ onboarding:
     country: "Selecteer je land"
 
   welcome:
-    title: "Welkom"
+    title(String appName): "Welkom bij de $appName beta,"
 
 webview:
   error:

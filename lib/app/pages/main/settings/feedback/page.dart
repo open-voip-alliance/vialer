@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../resources/localizations.dart';
+import '../../../../resources/theme.dart';
 import '../../../../util/brand.dart';
 import '../../../../util/conditional_capitalization.dart';
 import '../../../../widgets/stylized_button.dart';
@@ -15,7 +16,6 @@ class FeedbackPage extends StatefulWidget {
 }
 
 class _FeedbackPageState extends State<FeedbackPage> {
-  final _titleController = TextEditingController();
   final _textController = TextEditingController();
 
   void _onStateChanged(BuildContext context, FeedbackState state) {
@@ -29,6 +29,8 @@ class _FeedbackPageState extends State<FeedbackPage> {
     final sendFeedbackButtonText = context
         .msg.main.settings.feedback.buttons.send
         .toUpperCaseIfAndroid(context);
+
+    final isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom != 0;
 
     return BlocProvider<FeedbackCubit>(
       create: (_) => FeedbackCubit(),
@@ -46,73 +48,120 @@ class _FeedbackPageState extends State<FeedbackPage> {
               ),
               body: TransparentStatusBar(
                 brightness: Brightness.light,
-                child: Column(
-                  children: <Widget>[
-                    TextField(
-                      controller: _titleController,
-                      decoration: InputDecoration(
-                        hintText: context
-                            .msg.main.settings.feedback.placeholders.title,
-                        border: InputBorder.none,
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 24,
-                          vertical: 16,
-                        ),
-                        hintStyle: TextStyle(
-                          color: context.brand.theme.grey4,
-                        ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 12,
+                    horizontal: 24,
+                  ).copyWith(
+                    top: 24,
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      _FeedbackFormHeader(
+                        visible: !isKeyboardOpen,
                       ),
-                      style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const Divider(height: 1),
-                    Expanded(
-                      child: TextField(
-                        controller: _textController,
-                        maxLines: null,
-                        decoration: InputDecoration(
-                          hintText: context
-                              .msg.main.settings.feedback.placeholders.text,
-                          border: InputBorder.none,
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 24,
-                            vertical: 16,
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 12,
+                            horizontal: 0,
                           ),
-                          hintStyle: TextStyle(
-                            color: context.brand.theme.grey4,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 40,
-                      ).copyWith(
-                        bottom: 16,
-                      ),
-                      child: SizedBox(
-                        width: double.infinity,
-                        child: StylizedButton.raised(
-                          colored: true,
-                          onPressed: () =>
-                              context.read<FeedbackCubit>().sendFeedback(
-                                    title: _titleController.text,
-                                    text: _textController.text,
-                                  ),
-                          child: Text(
-                            sendFeedbackButtonText
-                                .toUpperCaseIfAndroid(context),
+                          child: TextField(
+                            expands: true,
+                            controller: _textController,
+                            maxLines: null,
+                            decoration: InputDecoration(
+                              hintText: context
+                                  .msg.main.settings.feedback.placeholders.text,
+                              hintMaxLines: 4,
+                              border: InputBorder.none,
+                              filled: true,
+                              fillColor: context.brand.theme.primaryLight
+                                  .withOpacity(0.6),
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 24,
+                                vertical: 16,
+                              ),
+                              hintStyle: TextStyle(
+                                color: context.brand.theme.grey4,
+                              ),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                        ).copyWith(
+                          bottom: 16,
+                          top: 60,
+                        ),
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: StylizedButton.raised(
+                            colored: true,
+                            onPressed: () =>
+                                context.read<FeedbackCubit>().sendFeedback(
+                                      title: 'Beta Feedback',
+                                      text: _textController.text,
+                                    ),
+                            child: Text(
+                              sendFeedbackButtonText
+                                  .toUpperCaseIfAndroid(context),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             );
           },
+        ),
+      ),
+    );
+  }
+}
+
+class _FeedbackFormHeader extends StatelessWidget {
+  final bool visible;
+
+  const _FeedbackFormHeader({
+    Key? key,
+    required this.visible,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Visibility(
+      visible: visible,
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          vertical: 8,
+          horizontal: 8,
+        ),
+        color: context.brand.theme.primaryLight.withOpacity(0.6),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: Icon(
+                VialerSans.feedback,
+                size: 16,
+                color: context.brand.theme.primaryDark,
+              ),
+            ),
+            Flexible(
+              child: Text(
+                context.msg.main.settings.feedback.header(
+                  context.brand.appName,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
