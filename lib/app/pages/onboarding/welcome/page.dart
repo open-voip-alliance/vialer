@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../resources/localizations.dart';
-
+import '../../../util/brand.dart';
 import '../cubit.dart';
 import 'cubit.dart';
 
@@ -36,7 +36,9 @@ class _WelcomePageState extends State<WelcomePage> {
             child: RichText(
               textAlign: TextAlign.center,
               text: TextSpan(
-                text: '${context.msg.onboarding.welcome.title}\n',
+                text: '${context.msg.onboarding.welcome.title(
+                  context.brand.appName,
+                )}\n',
                 style: const TextStyle(
                   fontSize: 40,
                   fontWeight: FontWeight.w500,
