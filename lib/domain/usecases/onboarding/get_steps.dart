@@ -27,7 +27,6 @@ class GetOnboardingStepsUseCase extends UseCase {
       OnboardingStep.login,
       if (callPermissionDenied) OnboardingStep.callPermission,
       if (contactsPermissionDenied) OnboardingStep.contactsPermission,
-      OnboardingStep.voicemail,
       OnboardingStep.welcome,
     ];
   }
