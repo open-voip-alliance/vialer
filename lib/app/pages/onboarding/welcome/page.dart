@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../domain/entities/onboarding/step.dart';
 
 import '../../../resources/localizations.dart';
 import '../../../util/brand.dart';
@@ -20,10 +21,17 @@ class _WelcomePageState extends State<WelcomePage> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    Timer(
-      const Duration(milliseconds: 1500),
-      context.read<OnboardingCubit>().forward,
-    );
+    final onboarding = context.read<OnboardingCubit>();
+
+    // When returning to the login screen after logging out, the welcome page
+    // is still loaded so we do not want to trigger this forward unless
+    // the user is actually on this step of onboarding.
+    if (onboarding.state.currentStep == OnboardingStep.welcome) {
+      Timer(
+        const Duration(milliseconds: 1500),
+        onboarding.forward,
+      );
+    }
   }
 
   @override
