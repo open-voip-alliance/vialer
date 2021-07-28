@@ -238,10 +238,10 @@ class _RecentCallsListState extends State<_RecentCallsList>
             return RecentCallItem(
               callRecord: callRecord,
               onCallPressed: () {
-                widget.onCallPressed(callRecord.destinationNumber);
+                widget.onCallPressed(callRecord.thirdPartyNumber);
               },
               onCopyPressed: () {
-                widget.onCopyPressed(callRecord.destinationNumber);
+                widget.onCopyPressed(callRecord.thirdPartyNumber);
                 _showSnackBar(context);
               },
             );
