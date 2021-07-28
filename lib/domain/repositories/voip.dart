@@ -204,12 +204,16 @@ class _Middleware with Loggable {
   }
 
   Future<void> unregister(VoipConfig? voipConfig) async {
-    assert(_token != null);
-
     assert(voipConfig?.sipUserId != null);
     assert(Platform.isAndroid); // TODO: Remove when iOS is supported.
 
     logger.info('Unregistering..');
+
+    // This is possible if the user logs out before the token has been received.
+    if (_token == null) {
+      logger.warning('No token, not unregistering');
+      return;
+    }
 
     // TODO: Check for errors
     await _service.deleteAndroidDevice(
