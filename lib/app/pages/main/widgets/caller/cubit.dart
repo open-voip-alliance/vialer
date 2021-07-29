@@ -116,6 +116,13 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
         if (activeCall.state == CallState.initializing) {
           emit(Ringing(voip: voip));
         } else {
+          _trackCall(
+            via: CallOrigin.incoming.toTrackString(),
+            voip: true,
+            usedRoutes: usedAudioRoutes,
+            direction: CallDirection.inbound,
+          );
+
           emit(Calling(origin: CallOrigin.incoming, voip: voip));
         }
       }
@@ -205,6 +212,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
           via: origin.toTrackString(),
           voip: false,
           direction: CallDirection.outbound,
+          usedRoutes: usedAudioRoutes,
         );
 
         emit(InitiatingCall(origin: origin));
@@ -264,6 +272,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
         via: origin.toTrackString(),
         voip: true,
         direction: CallDirection.outbound,
+        usedRoutes: usedAudioRoutes,
       );
 
       await _call(destination: destination, useVoip: true);
@@ -294,6 +303,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
         via: CallOrigin.incoming.toTrackString(),
         voip: true,
         direction: CallDirection.inbound,
+        usedRoutes: usedAudioRoutes,
       );
 
       emit(Ringing(voip: callSessionState));
