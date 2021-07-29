@@ -38,7 +38,7 @@ class _CallActionsState extends State<CallActions> {
   NavigatorState get _navigatorState => _navigatorKey.currentState!;
 
   final _dialPadController = TextEditingController();
-  late String _latestDialPadValue;
+  var _latestDialPadValue = '';
 
   void _hangUp() {
     context.read<CallerCubit>().endVoipCall();
