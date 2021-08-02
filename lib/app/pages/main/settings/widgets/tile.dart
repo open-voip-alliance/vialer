@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -13,6 +15,7 @@ import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
 import '../../../../util/brand.dart';
 import '../../../../util/conditional_capitalization.dart';
+import '../../../onboarding/widgets/stylized_text_field.dart';
 import '../../../web_view/page.dart';
 import '../cubit.dart';
 
@@ -30,14 +33,24 @@ class SettingTile extends StatelessWidget {
   /// If this is true, the widget will be centered.
   final bool center;
 
-  const SettingTile({
+  final EdgeInsetsGeometry? padding;
+
+  SettingTile({
     Key? key,
     required this.label,
     this.description,
     required this.child,
     this.childFillWidth = false,
     this.center = false,
-  }) : super(key: key);
+    EdgeInsetsGeometry? padding,
+  })  : padding = padding ??
+            EdgeInsets.only(
+              top: Platform.isIOS ? 8 : 0,
+              left: Platform.isIOS ? 16 : 24,
+              right: 8,
+              bottom: Platform.isIOS ? 8 : 0,
+            ),
+        super(key: key);
 
   static Widget dnd(DndSetting setting) {
     return Builder(
@@ -57,17 +70,49 @@ class SettingTile extends StatelessWidget {
     );
   }
 
-  static Widget phoneNumber(PhoneNumberSetting setting) {
+  static Widget businessNumber(BusinessNumberSetting setting) {
     return Builder(
       builder: (context) {
         return SettingTile(
           label: Text(
-            context.msg.main.settings.list.accountInfo.phoneNumber.title,
+            context.msg.main.settings.list.accountInfo.businessNumber.title,
           ),
           description: Text(
-            context.msg.main.settings.list.accountInfo.phoneNumber.description,
+            context
+                .msg.main.settings.list.accountInfo.businessNumber.description,
           ),
           child: _StringSettingValue(setting),
+        );
+      },
+    );
+  }
+
+  static Widget mobileNumber({
+    required MobileNumberSetting setting,
+    required bool isVoipAllowed,
+  }) {
+    return Builder(
+      builder: (context) {
+        return SettingTile(
+          label: Text(
+            context.msg.main.settings.list.accountInfo.mobileNumber.title,
+          ),
+          description: isVoipAllowed
+              ? Text(
+                  context.msg.main.settings.list.accountInfo.mobileNumber
+                      .description.voip,
+                )
+              : Text(
+                  context.msg.main.settings.list.accountInfo.mobileNumber
+                      .description.noVoip,
+                ),
+          childFillWidth: isVoipAllowed,
+          child: isVoipAllowed
+              ? Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: _StringEditSettingValue(setting),
+                )
+              : _StringSettingValue(setting),
         );
       },
     );
@@ -254,12 +299,7 @@ class SettingTile extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                 )
               : null,
-          padding: EdgeInsets.only(
-            top: context.isIOS ? 8 : 0,
-            left: context.isIOS ? 16 : 24,
-            right: 8,
-            bottom: context.isIOS ? 8 : 0,
-          ),
+          padding: padding,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -385,6 +425,79 @@ class _StringSettingValue extends StatelessWidget {
         fontWeight: !context.isIOS ? FontWeight.bold : null,
       ),
     );
+  }
+}
+
+class _StringEditSettingValue extends StatefulWidget {
+  final Setting<String> setting;
+  final ValueChangedWithContext<Setting<String>> onChanged;
+
+  const _StringEditSettingValue(
+    this.setting, {
+    Key? key,
+    this.onChanged = defaultOnChanged,
+  }) : super(key: key);
+
+  @override
+  _StringEditSettingValueState createState() => _StringEditSettingValueState();
+}
+
+class _StringEditSettingValueState extends State<_StringEditSettingValue> {
+  final _textEditingController = TextEditingController();
+  bool _editing = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _textEditingController.value = TextEditingValue(
+      text: widget.setting.value,
+      selection: TextSelection.collapsed(offset: widget.setting.value.length),
+    );
+  }
+
+  void _onPressed(BuildContext context) {
+    widget.onChanged(
+      context,
+      widget.setting.copyWith(value: _textEditingController.text),
+    );
+    _toggleEditing();
+  }
+
+  void _toggleEditing() {
+    setState(() {
+      _editing = !_editing;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_editing) {
+      return StylizedTextField(
+        controller: _textEditingController,
+        keyboardType: TextInputType.phone,
+        autoCorrect: false,
+        suffix: IconButton(
+          onPressed: () => _onPressed(context),
+          icon: const Icon(VialerSans.check),
+        ),
+        elevation: 0,
+      );
+    } else {
+      return SettingTile(
+        label: Text(widget.setting.value),
+        child: IconButton(
+          onPressed: _toggleEditing,
+          icon: const Icon(VialerSans.edit),
+        ),
+        padding: EdgeInsets.only(
+          top: Platform.isIOS ? 8 : 0,
+          left: 0,
+          right: 0,
+          bottom: Platform.isIOS ? 8 : 0,
+        ),
+      );
+    }
   }
 }
 

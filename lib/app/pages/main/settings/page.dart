@@ -18,7 +18,7 @@ import 'widgets/tile.dart';
 import 'widgets/tile_category.dart';
 
 class SettingsPage extends StatelessWidget {
-  SettingsPage({Key? key}) : super(key: key);
+  const SettingsPage({Key? key}) : super(key: key);
 
   Future<void> _goToFeedbackPage(BuildContext context) async {
     final sent = await Navigator.pushNamed(
@@ -44,6 +44,8 @@ class SettingsPage extends StatelessWidget {
         (r) => false,
       );
     }
+
+    FocusScope.of(context).unfocus();
   }
 
   @override
@@ -55,6 +57,7 @@ class SettingsPage extends StatelessWidget {
         context.msg.main.settings.buttons.logout.toUpperCaseIfAndroid(context);
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.only(
@@ -94,8 +97,12 @@ class SettingsPage extends StatelessWidget {
                               ),
                             SettingTileCategory.accountInfo(
                               children: [
-                                SettingTile.phoneNumber(
-                                  settings.get<PhoneNumberSetting>(),
+                                SettingTile.businessNumber(
+                                  settings.get<BusinessNumberSetting>(),
+                                ),
+                                SettingTile.mobileNumber(
+                                  setting: settings.get<MobileNumberSetting>(),
+                                  isVoipAllowed: isVoipAllowed,
                                 ),
                               ],
                             ),

@@ -48,10 +48,6 @@ class LoggingRepository {
         .replaceAll(phoneNumberRegex, '[REDACTED PHONE NUMBER]')
         .replaceAll(emailRegex, '[REDACTED EMAIL]');
 
-    // If log message is the same as the sanitized message, no sanitation
-    // has taken place and we're good.
-    assert(record.message == sanitizedMessage);
-
     final uuid = user != null ? '${user.uuid} ' : '';
 
     return '[${record.time}] ${record.level.name} $uuid${record.loggerName}:'

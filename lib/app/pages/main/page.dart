@@ -81,7 +81,7 @@ class _MainPageState extends State<MainPage> {
           listBottomPadding: !_dialerIsPage ? 96 : 0,
           snackBarRightPadding: !_dialerIsPage ? 72 : 0,
         ),
-        SettingsPage(),
+        const SettingsPage(),
       ];
     }
 

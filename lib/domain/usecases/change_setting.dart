@@ -6,8 +6,10 @@ import '../repositories/destination.dart';
 import '../repositories/metrics.dart';
 import '../repositories/storage.dart';
 import '../use_case.dart';
+import 'change_mobile_number.dart';
 import 'disable_remote_logging.dart';
 import 'enable_remote_logging.dart';
+import 'get_mobile_number.dart';
 import 'get_settings.dart';
 import 'refresh_voip.dart';
 import 'register_to_voip_middleware.dart';
@@ -26,6 +28,8 @@ class ChangeSettingUseCase extends UseCase {
   final _unregisterToVoipMiddleware = UnregisterToVoipMiddlewareUseCase();
   final _startVoip = StartVoipUseCase();
   final _refreshVoip = RefreshVoipUseCase();
+  final _changeMobileNumber = ChangeMobileNumberUseCase();
+  final _getMobileNumber = GetMobileNumberUseCase();
 
   Future<void> call({required Setting setting, bool remote = true}) async {
     if (setting is RemoteLoggingSetting) {
@@ -52,6 +56,14 @@ class ChangeSettingUseCase extends UseCase {
         'Vialer error: Unsupported operation: '
         'Don\'t save an immutable setting.',
       );
+    }
+
+    if (remote && setting is MobileNumberSetting) {
+      var mobileNumber = setting.value;
+      await _changeMobileNumber(mobileNumber: mobileNumber);
+
+      mobileNumber = (await _getMobileNumber(latest: true))!;
+      setting = MobileNumberSetting(mobileNumber);
     }
 
     final settings = await _getSettings();

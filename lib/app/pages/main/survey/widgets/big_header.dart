@@ -120,21 +120,21 @@ class _HeaderBackgroundIcon extends StatelessWidget {
     Key? key,
     required this.alignment,
     required this.child,
-  })  : widthFactor = 0.075,
+  })   : widthFactor = 0.075,
         super(key: key);
 
   const _HeaderBackgroundIcon.medium({
     Key? key,
     required this.alignment,
     required this.child,
-  })  : widthFactor = 0.125,
+  })   : widthFactor = 0.125,
         super(key: key);
 
   const _HeaderBackgroundIcon.large({
     Key? key,
     required this.alignment,
     required this.child,
-  })  : widthFactor = 0.150,
+  })   : widthFactor = 0.150,
         super(key: key);
 
   @override
