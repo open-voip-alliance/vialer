@@ -12,6 +12,7 @@ import '../../../util/brand.dart';
 import '../../../util/widgets_binding_observer_registrar.dart';
 import '../widgets/caller.dart';
 import '../widgets/connectivity_alert.dart';
+import 'call_screen.dart';
 import 'widgets/call_actions.dart';
 import 'widgets/call_rating.dart';
 import 'widgets/call_transfer_bar.dart';
@@ -27,6 +28,10 @@ class CallPage extends StatefulWidget {
 
 class _CallPageState extends State<CallPage>
     with WidgetsBindingObserver, WidgetsBindingObserverRegistrar {
+  // We sometimes want to dismiss the screen after an amount of seconds
+  // we will store this timer so we can cancel it if another call is started.
+  Timer? _dismissScreenTimer;
+
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
@@ -50,7 +55,11 @@ class _CallPageState extends State<CallPage>
   /// performed after a delay.
   void _dismissCallPage(BuildContext context, {Duration? after}) {
     dismiss() {
-      Navigator.popUntil(context, (route) => route.isFirst);
+      CallScreenBehavior.disable();
+
+      if (mounted) {
+        Navigator.popUntil(context, (route) => route.isFirst);
+      }
     }
 
     if (after == null) {
@@ -58,9 +67,7 @@ class _CallPageState extends State<CallPage>
       return;
     }
 
-    Timer(after, () {
-      if (mounted) dismiss();
-    });
+    _dismissScreenTimer = Timer(after, dismiss);
   }
 
   // Only called when the state type has changed, not when a state with the same
@@ -77,6 +84,11 @@ class _CallPageState extends State<CallPage>
       } else {
         _dismissCallPage(context, after: const Duration(seconds: 3));
       }
+    } else {
+      // If we get a non-finished state we want to make sure to cancel our
+      // dismiss timer so we don't hide the screen with an active call. This
+      // might occur if a new call is started quickly after the last one.
+      _dismissScreenTimer?.cancel();
     }
   }
 
