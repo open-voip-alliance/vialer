@@ -73,6 +73,10 @@ class _CallerState extends State<Caller>
           builder: (_) => const IncomingCallPage(),
         ),
       );
+    } else {
+      _navigatorState.popUntil(
+        (route) => route.settings.name != _ringingRouteName,
+      );
     }
 
     if (state is InitiatingCall && state.isVoip ||

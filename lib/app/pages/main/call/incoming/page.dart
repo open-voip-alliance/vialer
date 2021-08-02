@@ -22,12 +22,6 @@ class IncomingCallPage extends StatefulWidget {
 
 class _IncomingCallPageState extends State<IncomingCallPage>
     with TickerProviderStateMixin {
-  void _onCallerStateChanged(BuildContext context, CallerState state) {
-    if (state is FinishedCalling) {
-      Navigator.pop(context);
-    }
-  }
-
   void _onDeclineButtonPressed() {
     context.read<CallerCubit>().endVoipCall();
   }
@@ -41,52 +35,54 @@ class _IncomingCallPageState extends State<IncomingCallPage>
     final outerCircleColor = context.brand.theme.primaryLight.withOpacity(0.4);
     final outerCirclePadding = const EdgeInsets.all(32);
 
-    return BlocListener<CallerCubit, CallerState>(
-      listener: _onCallerStateChanged,
-      child: WillPopScope(
-        // Incoming call page can never be popped by the user.
-        onWillPop: () => SynchronousFuture(false),
-        child: Scaffold(
-          body: Stack(
-            children: [
-              DecoratedBox(
-                decoration: BoxDecoration(
-                  gradient: RadialGradient(
-                    radius: 0.9,
-                    colors: [
-                      context.brand.theme.primary,
-                      context.brand.theme.primary.withOpacity(0.0),
-                    ],
-                  ),
-                ),
-                child: Center(
-                  child: Theme(
-                    data: Theme.of(context).copyWith(
-                      applyElevationOverlayColor: true,
+    return BlocBuilder<CallerCubit, CallerState>(
+      builder: (context, state) {
+        return WillPopScope(
+          // Incoming call page can never be popped by the user.
+          onWillPop: () => SynchronousFuture(false),
+          child: Scaffold(
+            body: Stack(
+              children: [
+                DecoratedBox(
+                  decoration: BoxDecoration(
+                    gradient: RadialGradient(
+                      radius: 0.9,
+                      colors: [
+                        context.brand.theme.primary,
+                        context.brand.theme.primary.withOpacity(0.0),
+                      ],
                     ),
-                    child: Material(
-                      shape: const CircleBorder(),
-                      color: outerCircleColor,
-                      elevation: 2,
-                      shadowColor: context.brand.theme.primary.withOpacity(0.4),
-                      child: Padding(
-                        padding: outerCirclePadding,
-                        child: Material(
-                          shape: const CircleBorder(),
-                          color: outerCircleColor,
-                          child: Padding(
-                            padding: outerCirclePadding,
-                            child: Material(
-                              shape: const CircleBorder(),
-                              color: outerCircleColor.withOpacity(1),
-                              child: Padding(
-                                padding: const EdgeInsets.all(24),
-                                child: Icon(
-                                  // This will be replaced with an animation,
-                                  // which resembles the Vialer brand icon.
-                                  VialerSans.brandVialer,
-                                  size: 56,
-                                  color: context.brand.theme.primary,
+                  ),
+                  child: Center(
+                    child: Theme(
+                      data: Theme.of(context).copyWith(
+                        applyElevationOverlayColor: true,
+                      ),
+                      child: Material(
+                        shape: const CircleBorder(),
+                        color: outerCircleColor,
+                        elevation: 2,
+                        shadowColor:
+                            context.brand.theme.primary.withOpacity(0.4),
+                        child: Padding(
+                          padding: outerCirclePadding,
+                          child: Material(
+                            shape: const CircleBorder(),
+                            color: outerCircleColor,
+                            child: Padding(
+                              padding: outerCirclePadding,
+                              child: Material(
+                                shape: const CircleBorder(),
+                                color: outerCircleColor.withOpacity(1),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(24),
+                                  child: Icon(
+                                    // This will be replaced with an animation,
+                                    // which resembles the Vialer brand icon.
+                                    VialerSans.brandVialer,
+                                    size: 56,
+                                    color: context.brand.theme.primary,
+                                  ),
                                 ),
                               ),
                             ),
@@ -96,58 +92,58 @@ class _IncomingCallPageState extends State<IncomingCallPage>
                     ),
                   ),
                 ),
-              ),
-              Positioned(
-                left: 48,
-                right: 48,
-                top: 48 + MediaQuery.of(context).viewInsets.top,
-                child: BlocBuilder<CallerCubit, CallerState>(
-                  builder: (context, state) {
-                    if (state is CallProcessState) {
-                      return _Info(
-                        call: state.voipCall!,
-                      );
-                    }
+                Positioned(
+                  left: 48,
+                  right: 48,
+                  top: 48 + MediaQuery.of(context).viewInsets.top,
+                  child: BlocBuilder<CallerCubit, CallerState>(
+                    builder: (context, state) {
+                      if (state is CallProcessState) {
+                        return _Info(
+                          call: state.voipCall!,
+                        );
+                      }
 
-                    return const SizedBox();
-                  },
+                      return const SizedBox();
+                    },
+                  ),
                 ),
-              ),
-              Positioned(
-                left: 0,
-                right: 0,
-                bottom: 48,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _ActionButton(
-                      label: Text(
-                        context.msg.main.call.incoming.decline
-                            .toUpperCaseIfAndroid(context),
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: 48,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _ActionButton(
+                        label: Text(
+                          context.msg.main.call.incoming.decline
+                              .toUpperCaseIfAndroid(context),
+                        ),
+                        child: CallButton.decline(
+                          heroTag: null,
+                          onPressed: _onDeclineButtonPressed,
+                        ),
                       ),
-                      child: CallButton.decline(
-                        heroTag: null,
-                        onPressed: _onDeclineButtonPressed,
+                      const SizedBox(width: 96),
+                      _ActionButton(
+                        label: Text(
+                          context.msg.main.call.incoming.answer
+                              .toUpperCaseIfAndroid(context),
+                        ),
+                        child: CallButton.answer(
+                          heroTag: null,
+                          onPressed: _onAnswerButtonPressed,
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 96),
-                    _ActionButton(
-                      label: Text(
-                        context.msg.main.call.incoming.answer
-                            .toUpperCaseIfAndroid(context),
-                      ),
-                      child: CallButton.answer(
-                        heroTag: null,
-                        onPressed: _onAnswerButtonPressed,
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
