@@ -174,11 +174,20 @@ main:
             Schakel in om geen oproepen te ontvangen in $appName.
       accountInfo:
         title: "Accountinformatie"
-        phoneNumber:
+        businessNumber:
           title: "Jouw zakelijke nummer"
           description: >-
             Dit is het telefoonnummer dat anderen op hun scherm zien als
             je ze belt via deze app.
+        mobileNumber:
+          title: "Jouw mobiele nummer"
+          description:
+            voip: >-
+              Deze app gebruikt je mobiele nummer om te bellen als VoIP is uitgeschakeld
+              of niet mogelijk is. Je mobiele nummer is niet zichtbaar voor anderen.
+            noVoip: >-
+              Deze app gebruikt je mobiele nummer om te bellen, maar het is niet zichtbaar
+              voor anderen.
       advancedSettings:
         title: "Geavanceerde instellingen"
         troubleshooting:

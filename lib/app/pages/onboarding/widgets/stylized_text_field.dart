@@ -24,6 +24,7 @@ class StylizedTextField extends StatelessWidget {
   final ValueChanged<String>? onChanged;
   final GestureTapCallback? onTap;
   final bool enabled;
+  final double elevation;
 
   StylizedTextField({
     Key? key,
@@ -49,6 +50,7 @@ class StylizedTextField extends StatelessWidget {
     this.onChanged,
     this.onTap,
     this.enabled = true,
+    this.elevation = 4,
   }) : super(key: key);
 
   static const color = Colors.grey;
@@ -57,7 +59,7 @@ class StylizedTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       color: Colors.transparent,
-      elevation: 4,
+      elevation: elevation,
       child: TextField(
         textAlign: textAlign,
         inputFormatters: inputFormatters,

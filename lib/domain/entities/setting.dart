@@ -58,8 +58,10 @@ abstract class Setting<T> {
       return ShowDialerConfirmPopupSetting(value as bool);
     } else if (type == (ShowSurveyDialogSetting).toString()) {
       return ShowSurveyDialogSetting(value as bool);
-    } else if (type == (PhoneNumberSetting).toString()) {
-      return PhoneNumberSetting(value as String);
+    } else if (type == (BusinessNumberSetting).toString()) {
+      return BusinessNumberSetting(value as String);
+    } else if (type == (MobileNumberSetting).toString()) {
+      return MobileNumberSetting(value as String);
     } else if (type == (ShowTroubleshootingSettingsSetting).toString()) {
       return ShowTroubleshootingSettingsSetting(value as bool);
     } else if (type == (UseEncryptionSetting).toString()) {
@@ -122,13 +124,22 @@ class ShowSurveyDialogSetting extends Setting<bool> {
       ShowSurveyDialogSetting(value ?? this.value);
 }
 
-class PhoneNumberSetting extends Setting<String> {
-  const PhoneNumberSetting(String value)
+class BusinessNumberSetting extends Setting<String> {
+  const BusinessNumberSetting(String value)
       : super(value, mutable: false, external: true);
 
   @override
-  PhoneNumberSetting copyWith({String? value}) =>
-      PhoneNumberSetting(value ?? this.value);
+  BusinessNumberSetting copyWith({String? value}) =>
+      BusinessNumberSetting(value ?? this.value);
+}
+
+class MobileNumberSetting extends Setting<String> {
+  const MobileNumberSetting(String value)
+      : super(value, mutable: true, external: true);
+
+  @override
+  MobileNumberSetting copyWith({String? value}) =>
+      MobileNumberSetting(value ?? this.value);
 }
 
 class DndSetting extends Setting<bool> {

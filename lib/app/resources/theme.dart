@@ -259,4 +259,5 @@ abstract class VialerSans {
   static const available = IconData(0xE929, fontFamily: _family);
   static const answeredElsewhere = IconData(0xE922, fontFamily: _family);
   static const feedback = IconData(0xE959, fontFamily: _family);
+  static const edit = IconData(0xE90E, fontFamily: _family);
 }

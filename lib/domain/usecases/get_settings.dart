@@ -23,7 +23,8 @@ class GetSettingsUseCase extends UseCase {
           (stored) => stored.runtimeType == s.runtimeType,
         ),
       ),
-      if (user?.outgoingCli != null) PhoneNumberSetting(user!.outgoingCli!),
+      if (user?.outgoingCli != null) BusinessNumberSetting(user!.outgoingCli!),
+      MobileNumberSetting(user!.mobileNumber!),
     ];
   }
 }

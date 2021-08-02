@@ -170,11 +170,19 @@ main:
             Enable to stop receiving calls in $appName.
       accountInfo:
         title: "Account information"
-        phoneNumber:
+        businessNumber:
           title: "Your business number"
           description: >-
             This is the phone number others see on their screen when you
             call them through this app.
+        mobileNumber:
+          title: "Your mobile number"
+          description:
+            voip: >-
+              This app uses your mobile number to make calls when using VoIP is turned
+              off or not possible. Your mobile number is not visible to others.
+            noVoip: >-
+              This app uses your mobile number to make calls but it is not visible to others.
       advancedSettings:
         title: "Advanced settings"
         troubleshooting:
