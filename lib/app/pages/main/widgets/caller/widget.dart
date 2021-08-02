@@ -8,6 +8,7 @@ import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
 import '../../../../routes.dart';
 import '../../../../util/widgets_binding_observer_registrar.dart';
+import '../../call/call_screen.dart';
 import '../../call/incoming/page.dart';
 import '../../call/page.dart';
 import '../../survey/dialog.dart';
@@ -64,6 +65,15 @@ class _CallerState extends State<Caller>
   // NOTE: Only called when the state type changes, not when the same state
   // with a different `call` is emitted.
   Future<void> _onStateChanged(BuildContext context, CallerState state) async {
+    if (state is! FinishedCalling) {
+      // The call screen behavior is only enabled here (not disabled) because
+      // we sometimes want the call screen to stay alive after the call has
+      // ended (e.g. for displaying the call pop-up). So this behavior is
+      // currently disabled in the call page itself. If this were to change
+      // in the future then it should be both enabled and disabled from here.
+      CallScreenBehavior.enable();
+    }
+
     if (state is Ringing) {
       await _navigatorState.push(
         MaterialPageRoute(
