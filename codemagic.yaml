@@ -1,12 +1,13 @@
 # Automatically generated on 2020-11-11 UTC from https://codemagic.io/app/5e78b819064d840016d04c7a/settings
 # Note that this configuration is not an exact match to UI settings. Review and adjust as necessary.
 
-flutter_version: &flutter_version 2.0.4
+flutter_version: &flutter_version 2.2.3
 
 workflows:
   main:
     name: main
     max_build_duration: 60
+    instance_type: mac_pro
     environment:
       vars:
         FCI_CLONE_UNSHALLOW: true
@@ -143,6 +144,7 @@ workflows:
   merge-requests:
     name: merge requests
     max_build_duration: 60
+    instance_type: mac_pro
     environment:
       vars:
         FCI_CLONE_UNSHALLOW: true
@@ -405,6 +407,7 @@ workflows:
   alpha:
     name: Alpha
     max_build_duration: 60
+    instance_type: mac_pro
     environment:
       vars:
         LOGENTRIES_ANDROID_TOKEN: Encrypted(Z0FBQUFBQmd0NEZvQmZKc2NCQzdub1VKNUkzUHVRQlFkWVI0RG5PX1NvSF84clMzN0JsRjBPU0g2ek9zZUJhZjFJa3NCR1AyX1h3UE1XRE5HNEFjb0RneDd0V2lhemxvemREMVFOTmh4a3RRX3hzbnBjU2djbGY4TTh0ZWotRWFPdk1KQWY3N3k1WUw=)
@@ -494,6 +497,7 @@ workflows:
   beta:
     name: Beta
     max_build_duration: 60
+    instance_type: mac_pro
     environment:
       vars:
         LOGENTRIES_ANDROID_TOKEN: Encrypted(Z0FBQUFBQmd0NEZvQmZKc2NCQzdub1VKNUkzUHVRQlFkWVI0RG5PX1NvSF84clMzN0JsRjBPU0g2ek9zZUJhZjFJa3NCR1AyX1h3UE1XRE5HNEFjb0RneDd0V2lhemxvemREMVFOTmh4a3RRX3hzbnBjU2djbGY4TTh0ZWotRWFPdk1KQWY3N3k1WUw=)

@@ -11,7 +11,7 @@ stages:
   - build
 
 analyze:
-  image: cirrusci/flutter:2.0.4
+  image: cirrusci/flutter:2.2.3
   stage: check
   script:
     - flutter pub get
@@ -25,14 +25,14 @@ analyze:
     - dart analyze . --fatal-infos --fatal-warnings
 
 format:
-  image: cirrusci/flutter:2.0.0
+  image: cirrusci/flutter:2.2.3
   stage: check
   script:
     # We don't generate any code, because we don't want to check that anyway.
     - dart format -o none --fix --set-exit-if-changed lib/
 
 test:
-  image: cirrusci/flutter:2.0.4
+  image: cirrusci/flutter:2.2.3
   stage: test
   script:
     - cp .env.example .env

@@ -23,13 +23,12 @@ if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
 
-def dartEnv = project.findProperty('dart-defines')
-        ?.split(',')
-        ?.collectEntries {
-            def split = it.split('%3D') // %3D is '=' encoded
-            return [(split[0]), split[1]]
+def dartEnv = project.property('dart-defines')
+        .split(',')
+        .collectEntries { entry ->
+            def pair = new String(entry.decodeBase64(), 'UTF-8').split('=')
+            [(pair.first()): pair.last()]
         }
-        ?: [:]
 
 def getBrand = {
     // Read brands from file.

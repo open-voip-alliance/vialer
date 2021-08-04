@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 final root = Directory(Platform.environment['SRCROOT']!);
@@ -12,9 +13,11 @@ Map<String, String> parseDartDefines(String? input) {
     return {};
   }
 
+  input = utf8.decode(base64.decode(input));
+
   return Map.fromEntries(
     input.split(',').map((keyValuePair) {
-      final split = keyValuePair.split('%3D'); // %3D is '=' encoded
+      final split = keyValuePair.split('=');
       return MapEntry(split[0], split[1]);
     }),
   );
