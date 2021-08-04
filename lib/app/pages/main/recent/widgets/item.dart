@@ -48,13 +48,13 @@ class RecentCallItem extends StatelessWidget {
         name: callRecord.displayLabel,
         backgroundColor: calculateColorForPhoneNumber(
           context,
-          callRecord.destinationNumber,
+          callRecord.thirdPartyNumber,
         ),
         showFallback: callRecord.contact?.name == null,
         fallback: const Icon(VialerSans.phone, size: 20),
       ),
       title: Text(
-        callRecord.direction == Direction.inbound
+        callRecord.isInbound
             ? callRecord.callerNumber
             : callRecord.displayLabel,
       ),
@@ -173,16 +173,15 @@ class _RecentItemSubtitle extends StatelessWidget {
               _text(context),
               style: TextStyle(color: context.brand.theme.grey4),
             ),
-
           ],
         ),
         if (callRecord.answeredElsewhere)
           FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Text(
-                _createAnsweredElsewhereText(),
-                style: TextStyle(color: context.brand.theme.grey4),
-              ),
+            fit: BoxFit.scaleDown,
+            child: Text(
+              _createAnsweredElsewhereText(),
+              style: TextStyle(color: context.brand.theme.grey4),
+            ),
           ),
       ],
     );
@@ -191,5 +190,5 @@ class _RecentItemSubtitle extends StatelessWidget {
 
 extension CallDestinationLabel on CallRecordWithContact {
   String get displayLabel =>
-      contact?.name ?? destinationName ?? destinationNumber;
+      contact?.name ?? thirdPartyName ?? thirdPartyNumber;
 }

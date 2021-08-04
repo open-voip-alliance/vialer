@@ -31,6 +31,10 @@ class CallRecord extends Equatable {
 
   bool get isOutbound => direction == Direction.outbound;
 
+  String get thirdPartyNumber => isInbound ? callerNumber : destinationNumber;
+
+  String? get thirdPartyName => isInbound ? callerName : destinationName;
+
   @override
   String toString() {
     return '$id: $destinationNumber';
