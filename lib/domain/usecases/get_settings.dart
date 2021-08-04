@@ -24,7 +24,7 @@ class GetSettingsUseCase extends UseCase {
         ),
       ),
       if (user?.outgoingCli != null) BusinessNumberSetting(user!.outgoingCli!),
-      MobileNumberSetting(user!.mobileNumber!),
+      if (user?.mobileNumber != null) MobileNumberSetting(user!.mobileNumber!),
     ];
   }
 }
