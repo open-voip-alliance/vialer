@@ -173,16 +173,15 @@ class _RecentItemSubtitle extends StatelessWidget {
               _text(context),
               style: TextStyle(color: context.brand.theme.grey4),
             ),
-
           ],
         ),
         if (callRecord.answeredElsewhere)
           FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Text(
-                _createAnsweredElsewhereText(),
-                style: TextStyle(color: context.brand.theme.grey4),
-              ),
+            fit: BoxFit.scaleDown,
+            child: Text(
+              _createAnsweredElsewhereText(),
+              style: TextStyle(color: context.brand.theme.grey4),
+            ),
           ),
       ],
     );
