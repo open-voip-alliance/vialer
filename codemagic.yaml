@@ -587,6 +587,7 @@ workflows:
   beta-vialer:
     name: Vialer Beta
     max_build_duration: 60
+    instance_type: mac_pro
     environment:
       vars:
         LOGENTRIES_ANDROID_TOKEN: Encrypted(Z0FBQUFBQmd0NEZvQmZKc2NCQzdub1VKNUkzUHVRQlFkWVI0RG5PX1NvSF84clMzN0JsRjBPU0g2ek9zZUJhZjFJa3NCR1AyX1h3UE1XRE5HNEFjb0RneDd0V2lhemxvemREMVFOTmh4a3RRX3hzbnBjU2djbGY4TTh0ZWotRWFPdk1KQWY3N3k1WUw=)
