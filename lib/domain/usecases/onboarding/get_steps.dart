@@ -23,10 +23,15 @@ class GetOnboardingStepsUseCase extends UseCase {
         await _permissionRepository.getPermissionStatus(Permission.contacts) !=
             PermissionStatus.granted;
 
+    final microphonePermissionDenied = await _permissionRepository
+            .getPermissionStatus(Permission.microphone) !=
+        PermissionStatus.granted;
+
     return [
       OnboardingStep.login,
       if (callPermissionDenied) OnboardingStep.callPermission,
       if (contactsPermissionDenied) OnboardingStep.contactsPermission,
+      if (microphonePermissionDenied) OnboardingStep.microphonePermission,
       OnboardingStep.welcome,
     ];
   }

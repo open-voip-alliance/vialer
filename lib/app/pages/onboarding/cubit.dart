@@ -89,7 +89,6 @@ class OnboardingCubit extends Cubit<OnboardingState> with Loggable {
     if (!await _getIsVoipAllowed()) {
       addStep(OnboardingStep.voicemail);
     } else {
-      addStep(OnboardingStep.microphonePermission);
       addStep(OnboardingStep.mobileNumber);
     }
   }
