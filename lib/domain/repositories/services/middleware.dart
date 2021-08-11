@@ -35,6 +35,25 @@ abstract class MiddlewareService extends ChopperService {
     @Field() required String app,
   });
 
+  @Post(path: 'apns-device/')
+  Future<Response> postAppleDevice({
+    @Field() required String name,
+    @Field() required String token,
+    @Field('sip_user_id') required String sipUserId,
+    @Field('os_version') required String osVersion,
+    @Field('client_version') required String clientVersion,
+    @Field() required String app,
+    @Field('push_profile') String pushProfile = 'once',
+    @Field() required bool sandbox,
+  });
+
+  @Delete(path: 'apns-device/')
+  Future<Response> deleteAppleDevice({
+    @Field() required String token,
+    @Field('sip_user_id') required String sipUserId,
+    @Field() required String app,
+  });
+
   @Post(path: 'call-response/')
   Future<Response> callResponse({
     @Field('unique_key') required String uniqueKey,

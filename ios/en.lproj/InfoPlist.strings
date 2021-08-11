@@ -1,0 +1,3 @@
+NSContactsUsageDescription = "Easily call the contacts on your phone directly from this app.";
+NSMicrophoneUsageDescription = "This ensures that the person you are calling can hear you.";
+NSBluetoothPeripheralUsageDescription = "So you can make calls with your Bluetooth headset, for example.";

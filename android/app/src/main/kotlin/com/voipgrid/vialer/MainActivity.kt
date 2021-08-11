@@ -15,12 +15,10 @@ class MainActivity : FlutterActivity() {
 
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CALL_SCREEN_CHANNEL)
             .setMethodCallHandler { call, result ->
-                if (call.method == "enableCallScreenBehavior") {
-                    enableCallScreenBehavior()
-                } else if (call.method == "disableCallScreenBehavior") {
-                    disableCallScreenBehavior()
-                } else {
-                    result.notImplemented()
+                when (call.method) {
+                    "enableCallScreenBehavior" -> enableCallScreenBehavior()
+                    "disableCallScreenBehavior" -> disableCallScreenBehavior()
+                    else -> result.notImplemented()
                 }
             }
     }

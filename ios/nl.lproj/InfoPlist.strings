@@ -1,0 +1,3 @@
+NSContactsUsageDescription = "Bel gemakkelijk de contacten op je telefoon rechtstreeks vanuit deze app.";
+NSMicrophoneUsageDescription = "Hiermee zorg je ervoor dat degene met wie je belt jou kan horen.";
+NSBluetoothPeripheralUsageDescription = "Zodat je bijvoorbeeld met je Bluetooth-headset kunt bellen.";

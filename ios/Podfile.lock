@@ -1,7 +1,7 @@
 PODS:
   - Amplitude-iOS (4.8.2)
   - Analytics (3.7.0)
-  - connectivity (0.0.1):
+  - connectivity_plus (0.0.1):
     - Flutter
     - Reachability
   - contacts_service (0.2.2):
@@ -9,92 +9,152 @@ PODS:
   - device_info (0.0.1):
     - Flutter
   - Flutter (1.0.0)
+  - flutter_libphonenumber (0.0.1):
+    - Flutter
+    - PhoneNumberKit/PhoneNumberKitCore (~> 3.3.3)
+  - flutter_phone_lib (0.0.1):
+    - Flutter
+    - PIL
   - flutter_segment (0.0.1):
     - Analytics (= 3.7.0)
     - Flutter
     - Segment-Amplitude (= 3.0.1)
+  - iOSVoIPLib (0.1.0):
+    - linphone-sdk (= 4.4.1)
   - libphonenumber (0.0.1):
     - Flutter
     - libPhoneNumber-iOS
   - libPhoneNumber-iOS (0.9.15)
+  - linphone-sdk (4.4.1):
+    - linphone-sdk/all-frameworks (= 4.4.1)
+    - linphone-sdk/app-extension (= 4.4.1)
+    - linphone-sdk/app-extension-swift (= 4.4.1)
+    - linphone-sdk/basic-frameworks (= 4.4.1)
+    - linphone-sdk/swift (= 4.4.1)
+  - linphone-sdk/all-frameworks (4.4.1)
+  - linphone-sdk/app-extension (4.4.1)
+  - linphone-sdk/app-extension-swift (4.4.1):
+    - linphone-sdk/app-extension
+  - linphone-sdk/basic-frameworks (4.4.1):
+    - linphone-sdk/app-extension
+  - linphone-sdk/swift (4.4.1):
+    - linphone-sdk/app-extension-swift
+    - linphone-sdk/basic-frameworks
   - package_info (0.0.1):
+    - Flutter
+  - package_info_plus (0.4.5):
     - Flutter
   - path_provider (0.0.1):
     - Flutter
   - "permission_handler (5.1.0+2)":
     - Flutter
+  - PhoneNumberKit/PhoneNumberKitCore (3.3.3)
+  - PIL (0.1.0):
+    - iOSVoIPLib (~> 0.1.0)
+    - Swinject (~> 2.7.1)
   - Reachability (3.2)
   - Segment-Amplitude (3.0.1):
     - Amplitude-iOS (~> 4.8.0)
     - Analytics (~> 3.7.0)
+  - Sentry (7.1.4):
+    - Sentry/Core (= 7.1.4)
+  - Sentry/Core (7.1.4)
+  - sentry_flutter (0.0.1):
+    - Flutter
+    - FlutterMacOS
+    - Sentry (~> 7.1.3)
   - shared_preferences (0.0.1):
     - Flutter
-  - sqlite3 (3.32.3):
-    - sqlite3/common (= 3.32.3)
-  - sqlite3/common (3.32.3)
-  - sqlite3/fts5 (3.32.3):
+  - sqlite3 (3.35.5):
+    - sqlite3/common (= 3.35.5)
+  - sqlite3/common (3.35.5)
+  - sqlite3/fts5 (3.35.5):
     - sqlite3/common
-  - sqlite3/json1 (3.32.3):
+  - sqlite3/json1 (3.35.5):
     - sqlite3/common
-  - sqlite3/perf-threadsafe (3.32.3):
+  - sqlite3/perf-threadsafe (3.35.5):
     - sqlite3/common
-  - sqlite3/rtree (3.32.3):
+  - sqlite3/rtree (3.35.5):
     - sqlite3/common
   - sqlite3_flutter_libs (0.0.1):
     - Flutter
-    - sqlite3 (~> 3.32.3)
+    - sqlite3 (~> 3.35.4)
     - sqlite3/fts5
     - sqlite3/json1
     - sqlite3/perf-threadsafe
     - sqlite3/rtree
+  - Swinject (2.7.1)
   - url_launcher (0.0.1):
     - Flutter
   - webview_flutter (0.0.1):
     - Flutter
 
 DEPENDENCIES:
-  - connectivity (from `.symlinks/plugins/connectivity/ios`)
+  - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
   - contacts_service (from `.symlinks/plugins/contacts_service/ios`)
   - device_info (from `.symlinks/plugins/device_info/ios`)
   - Flutter (from `Flutter`)
+  - flutter_libphonenumber (from `.symlinks/plugins/flutter_libphonenumber/ios`)
+  - flutter_phone_lib (from `.symlinks/plugins/flutter_phone_lib/ios`)
   - flutter_segment (from `.symlinks/plugins/flutter_segment/ios`)
+  - iOSVoIPLib (from `https://github.com/open-voip-alliance/iOS-VoIP-Lib.git`)
   - libphonenumber (from `.symlinks/plugins/libphonenumber/ios`)
   - package_info (from `.symlinks/plugins/package_info/ios`)
+  - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - permission_handler (from `.symlinks/plugins/permission_handler/ios`)
+  - PIL (from `https://github.com/open-voip-alliance/iOS-Phone-Integration-Lib.git`)
+  - sentry_flutter (from `.symlinks/plugins/sentry_flutter/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
   - sqlite3_flutter_libs (from `.symlinks/plugins/sqlite3_flutter_libs/ios`)
   - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
   - webview_flutter (from `.symlinks/plugins/webview_flutter/ios`)
 
 SPEC REPOS:
-  trunk:
+  https://github.com/CocoaPods/Specs.git:
     - Amplitude-iOS
     - Analytics
     - libPhoneNumber-iOS
+    - PhoneNumberKit
     - Reachability
     - Segment-Amplitude
+    - Sentry
     - sqlite3
+    - Swinject
+  https://gitlab.linphone.org/BC/public/podspec.git:
+    - linphone-sdk
 
 EXTERNAL SOURCES:
-  connectivity:
-    :path: ".symlinks/plugins/connectivity/ios"
+  connectivity_plus:
+    :path: ".symlinks/plugins/connectivity_plus/ios"
   contacts_service:
     :path: ".symlinks/plugins/contacts_service/ios"
   device_info:
     :path: ".symlinks/plugins/device_info/ios"
   Flutter:
     :path: Flutter
+  flutter_libphonenumber:
+    :path: ".symlinks/plugins/flutter_libphonenumber/ios"
+  flutter_phone_lib:
+    :path: ".symlinks/plugins/flutter_phone_lib/ios"
   flutter_segment:
     :path: ".symlinks/plugins/flutter_segment/ios"
+  iOSVoIPLib:
+    :git: https://github.com/open-voip-alliance/iOS-VoIP-Lib.git
   libphonenumber:
     :path: ".symlinks/plugins/libphonenumber/ios"
   package_info:
     :path: ".symlinks/plugins/package_info/ios"
+  package_info_plus:
+    :path: ".symlinks/plugins/package_info_plus/ios"
   path_provider:
     :path: ".symlinks/plugins/path_provider/ios"
   permission_handler:
     :path: ".symlinks/plugins/permission_handler/ios"
+  PIL:
+    :git: https://github.com/open-voip-alliance/iOS-Phone-Integration-Lib.git
+  sentry_flutter:
+    :path: ".symlinks/plugins/sentry_flutter/ios"
   shared_preferences:
     :path: ".symlinks/plugins/shared_preferences/ios"
   sqlite3_flutter_libs:
@@ -104,27 +164,45 @@ EXTERNAL SOURCES:
   webview_flutter:
     :path: ".symlinks/plugins/webview_flutter/ios"
 
+CHECKOUT OPTIONS:
+  iOSVoIPLib:
+    :commit: 73f806fedeaa1df54397325bd47b0f319285a7a7
+    :git: https://github.com/open-voip-alliance/iOS-VoIP-Lib.git
+  PIL:
+    :commit: eae2655994aa75f01259ce9858b0da448db4665d
+    :git: https://github.com/open-voip-alliance/iOS-Phone-Integration-Lib.git
+
 SPEC CHECKSUMS:
   Amplitude-iOS: 46c8e6e65c49bb1ad1909a9add1a68e1f8562b3f
   Analytics: 77fd5fb102a4a5eedafa2c2b0245ceb7b7c15e45
-  connectivity: c4130b2985d4ef6fd26f9702e886bd5260681467
+  connectivity_plus: 5f0eb61093bec56935f21a1699dd2758bc895587
   contacts_service: 849e1f84281804c8bfbec1b4c3eedcb23c5d3eca
   device_info: d7d233b645a32c40dfdc212de5cf646ca482f175
-  Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
+  flutter_libphonenumber: 6a23afdf063b34d1e53e6dbd6c6bc905d18e8e46
+  flutter_phone_lib: dc1f7a3cde430bcb8dd6674b7c0d54a42156eb23
   flutter_segment: f20a38d465030de0f1b2aa9325cef9c1442b0721
+  iOSVoIPLib: 5d0a20228ab3f9bdcbb7e35903be4009bfa267b3
   libphonenumber: bd14d5abfc5939ab0b0767234e2d8e2593af258e
   libPhoneNumber-iOS: 0a32a9525cf8744fe02c5206eb30d571e38f7d75
+  linphone-sdk: 91183cb3e3224d2d1a211357cd6a39d61636d17d
   package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
+  package_info_plus: 6c92f08e1f853dc01228d6f553146438dafcd14e
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
   permission_handler: ccb20a9fad0ee9b1314a52b70b76b473c5f8dab0
+  PhoneNumberKit: 4ce83273551c4d2ae10b7361162f4283dd02835f
+  PIL: 660930395909c8c4b572b049a61ab4b48c8dccb9
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   Segment-Amplitude: 1b3b02a2e92f4b08a413a72bf7aa44f78566ab3b
+  Sentry: 1d3eb1a25f8c5333c88dd5603904a6d461cd9fcf
+  sentry_flutter: f20d4f199442900fbdab2b8496f1d2091d8b94d9
   shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
-  sqlite3: 8f7d2078ae27778699a622a94b853285793422a2
-  sqlite3_flutter_libs: 5651f8ff48e3b44d910863c4ea5916085b1b245f
+  sqlite3: 75da32fd4e3574f6c38566a9f0114cfe792c8db5
+  sqlite3_flutter_libs: aedb7b6ba191f9a052dcef77691cf5d37437431c
+  Swinject: ddf78b8486dd9b71a667b852cad919ab4484478e
   url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
-  webview_flutter: d2b4d6c66968ad042ad94cbb791f5b72b4678a96
+  webview_flutter: 3603125dfd3bcbc9d8d418c3f80aeecf331c068b
 
-PODFILE CHECKSUM: d0e28fed24645af4eb7e9d36add400e4740890a2
+PODFILE CHECKSUM: 90dc9daf36b0b106194fc723dfa91eb2ae8b0cd3
 
 COCOAPODS: 1.10.1
