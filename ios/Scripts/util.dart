@@ -13,13 +13,12 @@ Map<String, String> parseDartDefines(String? input) {
     return {};
   }
 
-  input = utf8.decode(base64.decode(input));
-
   return Map.fromEntries(
-    input.split(',').map((keyValuePair) {
-      final split = keyValuePair.split('=');
-      return MapEntry(split[0], split[1]);
-    }),
+    input
+        .split(',')
+        .map((pair) => utf8.decode(base64.decode(pair)))
+        .map((pair) => pair.split('='))
+        .map((split) => MapEntry(split[0], split[1])),
   );
 }
 
