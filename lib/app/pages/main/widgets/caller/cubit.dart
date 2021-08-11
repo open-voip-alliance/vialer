@@ -8,7 +8,7 @@ import 'package:flutter_phone_lib/flutter_phone_lib.dart';
 
 import '../../../../../domain/connectivity_type.dart';
 import '../../../../../domain/entities/exceptions/call_through.dart';
-import '../../../../../domain/entities/exceptions/voip_not_enabled.dart';
+import '../../../../../domain/entities/exceptions/voip_not_allowed.dart';
 import '../../../../../domain/entities/permission.dart';
 import '../../../../../domain/entities/permission_status.dart';
 import '../../../../../domain/entities/setting.dart';
@@ -119,7 +119,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
           emit(Calling(origin: CallOrigin.incoming, voip: voip));
         }
       }
-    } on VoipNotEnabledException {}
+    } on VoipNotAllowedException {}
   }
 
   Future<void> call(
