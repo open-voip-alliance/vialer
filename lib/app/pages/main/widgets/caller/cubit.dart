@@ -201,7 +201,11 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
       );
     } else {
       try {
-        _trackCall(via: origin.toTrackString(), voip: false);
+        _trackCall(
+          via: origin.toTrackString(),
+          voip: false,
+          direction: CallDirection.outbound,
+        );
 
         emit(InitiatingCall(origin: origin));
         logger.info('Initiating call-through call');
@@ -256,7 +260,11 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
 
     logger.info('Starting VoIP call');
     try {
-      _trackCall(via: origin.toTrackString(), voip: true);
+      _trackCall(
+        via: origin.toTrackString(),
+        voip: true,
+        direction: CallDirection.outbound,
+      );
 
       await _call(destination: destination, useVoip: true);
       emit(CallOriginDetermined(origin));
@@ -282,7 +290,14 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
     // We will immediately handle any setup call events to make sure these are
     // always emitted.
     if (event is IncomingCallReceived) {
+      _trackCall(
+        via: CallOrigin.incoming.toTrackString(),
+        voip: true,
+        direction: CallDirection.inbound,
+      );
+
       emit(Ringing(voip: callSessionState));
+
       logger.info('Incoming VoIP call, ringing');
     } else if (event is OutgoingCallStarted) {
       final originState = state as CallOriginDetermined;
