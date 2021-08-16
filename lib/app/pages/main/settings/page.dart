@@ -19,6 +19,8 @@ import 'widgets/tile_category.dart';
 
 class SettingsPage extends StatelessWidget {
   SettingsPage({Key? key}) : super(key: key);
+  final availabilityTileKey = GlobalKey();
+  final scrollController = ScrollController();
 
   Future<void> _goToFeedbackPage(BuildContext context) async {
     final sent = await Navigator.pushNamed(
@@ -46,6 +48,14 @@ class SettingsPage extends StatelessWidget {
     }
   }
 
+  void _scrollToAvailability() {
+    scrollController.position.ensureVisible(
+      availabilityTileKey.currentContext!.findRenderObject()!,
+      alignment: 0,
+      duration: const Duration(seconds: 1),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final sendFeedbackButtonText = context
@@ -71,6 +81,7 @@ class SettingsPage extends StatelessWidget {
                 final isVoipAllowed = state.isVoipAllowed;
                 final showTroubleshooting = state.showTroubleshooting;
                 final showAbout = state.showAbout;
+                final showDnd = state.showDnd;
 
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -82,21 +93,29 @@ class SettingsPage extends StatelessWidget {
                     if (!state.isLoading)
                       Expanded(
                         child: ListView(
+                          controller: scrollController,
                           padding: const EdgeInsets.only(top: 8),
                           children: [
-                            if (isVoipAllowed)
-                              SettingTileCategory.dnd(
-                                children: [
-                                  SettingTile.dnd(
-                                    settings.get<DndSetting>(),
-                                  ),
-                                ],
+                            if (showDnd && state.userAvailabilityType != null)
+                              SettingTile.dnd(
+                                settings.get<DndSetting>(),
+                                userAvailabilityType:
+                                    state.userAvailabilityType!,
+                                showHelp: _scrollToAvailability,
                               ),
                             SettingTileCategory.accountInfo(
                               children: [
                                 SettingTile.phoneNumber(
                                   settings.get<PhoneNumberSetting>(),
                                 ),
+                                if (state.systemUser != null)
+                                  SettingTile.associatedNumber(
+                                    state.systemUser!,
+                                  ),
+                                if (state.systemUser != null)
+                                  SettingTile.username(
+                                    state.systemUser!,
+                                  ),
                               ],
                             ),
                             if (isVoipAllowed) ...[
@@ -109,12 +128,15 @@ class SettingsPage extends StatelessWidget {
                               ),
                               SettingTileCategory.calling(
                                 children: [
-                                  SettingTile.availability(
-                                    settings.get<AvailabilitySetting>(),
-                                  ),
                                   SettingTile.useVoip(
                                     settings.get<UseVoipSetting>(),
                                   ),
+                                  if (state.systemUser != null)
+                                    SettingTile.availability(
+                                      settings.get<AvailabilitySetting>(),
+                                      systemUser: state.systemUser!,
+                                      key: availabilityTileKey,
+                                    ),
                                 ],
                               ),
                               SettingTileCategory.portalLinks(

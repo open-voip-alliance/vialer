@@ -2,6 +2,8 @@ import 'package:equatable/equatable.dart';
 
 import '../../../../domain/entities/build_info.dart';
 import '../../../../domain/entities/setting.dart';
+import '../../../../domain/entities/system_user.dart';
+import 'widgets/tile.dart';
 
 class SettingsState extends Equatable {
   final List<Setting> settings;
@@ -9,17 +11,32 @@ class SettingsState extends Equatable {
   final bool isVoipAllowed;
   final bool showTroubleshooting;
   final bool showAbout;
+  final bool showDnd;
+  final SystemUser? systemUser;
 
   bool get isLoading => settings.isEmpty;
+
+  UserAvailabilityType? get userAvailabilityType {
+    final user = systemUser;
+
+    if (user == null) return null;
+
+    final availability = settings.get<AvailabilitySetting>().value;
+
+    return availability != null ? user.availabilityType(availability) : null;
+  }
 
   SettingsState({
     this.settings = const [],
     this.buildInfo,
     this.isVoipAllowed = true,
     this.showAbout = false,
-  }) : showTroubleshooting =
+    this.systemUser,
+  })  : showTroubleshooting =
             settings.getOrNull<ShowTroubleshootingSettingsSetting>()?.value ??
-                false;
+                false,
+        showDnd = isVoipAllowed &&
+            (settings.getOrNull<UseVoipSetting>()?.value ?? false);
 
   SettingsState withChanged(Setting setting) {
     return SettingsState(
@@ -31,6 +48,7 @@ class SettingsState extends Equatable {
       buildInfo: buildInfo,
       isVoipAllowed: isVoipAllowed,
       showAbout: showAbout,
+      systemUser: systemUser,
     );
   }
 
@@ -41,6 +59,7 @@ class SettingsState extends Equatable {
         isVoipAllowed,
         showTroubleshooting,
         showAbout,
+        showDnd,
       ];
 }
 

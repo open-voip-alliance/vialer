@@ -5,7 +5,7 @@ description: >-
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
-  flutter: 2.0.4
+  flutter: 2.2.3
 
 dependencies:
   flutter:
@@ -25,7 +25,7 @@ dependencies:
   shared_preferences: ^2.0.5
   flutter_svg: ^0.22.0
   android_intent: ^2.0.0
-  permission_handler: ^7.1.0
+  permission_handler: ^8.1.4+2
   url_launcher: ^6.0.3
   contacts_service: ^0.6.1
   characters: ^1.0.0
@@ -33,13 +33,13 @@ dependencies:
   scrollable_positioned_list: ^0.2.0-nullsafety.0
   i18n: ^3.1.0
   intl: ^0.17.0
-  flutter_dotenv: ^4.0.0-nullsafety.0
+  flutter_dotenv: ^5.0.0
   sentry_flutter: ^5.0.0
   flutter_segment: ^3.1.0
   device_info: ^2.0.0
   package_info: ^2.0.0
   moor: ^4.2.1
-  sqlite3_flutter_libs: ^0.4.1
+  sqlite3_flutter_libs: ^0.5.0
   path_provider: ^2.0.1
   path: ^1.6.4
   timezone: ^0.7.0
@@ -52,13 +52,15 @@ dependencies:
   json_annotation: ^4.0.1
   flutter_rating_bar: ^4.0.0
   flutter_libphonenumber: ^1.0.3
+  styled_text: ^3.0.2
+  flutter_switch: ^0.3.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
   effective_dart: ^1.2.0
-  build_runner: ^1.12.2
+  build_runner: ^2.0.6
   chopper_generator: ^4.0.0-nullsafety.1
   moor_generator: ^4.2.1
   json_serializable: ^4.1.0

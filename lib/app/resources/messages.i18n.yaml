@@ -162,19 +162,17 @@ main:
               By allowing this, our team can see problems that happened today before you
               turned Remote Logging on. This helps us understand the problem better.
             confirm: Send to remote
-      dnd:
-        title: "Do Not Disturb"
-        dnd:
-          title: "Do not disturb"
-          description(String appName): >-
-            Enable to stop receiving calls in $appName.
       accountInfo:
-        title: "Account information"
+        title: "User information"
         phoneNumber:
-          title: "Your business number"
           description: >-
-            This is the phone number others see on their screen when you
-            call them through this app.
+            The outgoing number is displayed on the screen of those you are calling.
+        username:
+          description: >-
+            Email address of your user account with which you logged in.
+        associatedNumber:
+          description: >-
+            Your mobile phone number. It is not visible to others.
       advancedSettings:
         title: "Advanced settings"
         troubleshooting:
@@ -199,10 +197,24 @@ main:
       calling:
         title: "Calling"
         availability:
-          title: "Availability"
+          title: "User's destination"
           description: >-
             Choose the VoIP account you want to receive the call on when someone calls you.
-        notAvailable: "No destination"
+          dnd:
+            title: "Do not disturb"
+          available:
+            title: "Available"
+          notAvailable:
+            title: "Limited availability"
+            description(String user, String voipAccount): >-
+              Incoming calls to $user will be declined, however calls for <b>$voipAccount</b> will still ring this phone.
+          elsewhere:
+            title: "Available on other device"
+            description(String user): >-
+              Incoming calls to <b>$user</b> are redirected to a different phone.
+          resume(String voipAccount): >-
+            Select <b>$voipAccount</b> as the destination to receive calls on this phone.
+        notAvailable: "Unavailable"
         addAvailability: "Add availability"
         useVoip:
           title: "Use VoIP"

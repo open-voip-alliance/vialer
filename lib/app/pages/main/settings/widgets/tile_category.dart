@@ -24,18 +24,6 @@ class SettingTileCategory extends StatelessWidget {
     this.children = const [],
   }) : super(key: key);
 
-  static Widget dnd({List<Widget> children = const []}) {
-    return Builder(
-      builder: (context) {
-        return SettingTileCategory(
-          icon: VialerSans.dnd,
-          title: context.msg.main.settings.list.dnd.dnd.title,
-          children: children,
-        );
-      },
-    );
-  }
-
   static Widget accountInfo({List<Widget> children = const []}) {
     return Builder(
       builder: (context) {
@@ -145,9 +133,19 @@ class SettingTileCategory extends StatelessWidget {
     return Column(
       children: <Widget>[
         Container(
-          color: highlight
-              ? context.brand.theme.settingsBackgroundHighlight
-              : null,
+          decoration: BoxDecoration(
+            color: highlight
+                ? context.brand.theme.settingsBackgroundHighlight
+                : null,
+            border: highlight
+                ? Border(
+                    top: BorderSide(
+                      width: 0,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  )
+                : null,
+          ),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16).copyWith(
               top: 8 + dividerPadding,
@@ -166,16 +164,17 @@ class SettingTileCategory extends StatelessWidget {
                     Text(
                       title.toUpperCaseIfAndroid(context),
                       style: TextStyle(
+                        letterSpacing: 1.2,
                         color: !context.isIOS
                             ? Theme.of(context).primaryColor
                             : null,
-                        fontSize: context.isIOS ? 18 : 12,
+                        fontSize: context.isIOS ? 18 : 14,
                         fontWeight: context.isIOS ? null : FontWeight.bold,
                       ),
                     ),
                   ],
                 ),
-                if (context.isIOS) const SizedBox(height: 16),
+                SizedBox(height: context.isIOS ? 16 : 8),
                 ...children,
               ],
             ),

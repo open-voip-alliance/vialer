@@ -58,6 +58,18 @@ abstract class BrandTheme {
 
   final answeredElsewhere = const Color(0xFF1F86FF);
 
+  final notAvailable = const Color(0xFF840D09);
+  final notAvailableAccent = const Color(0xFFFFBABF);
+
+  final availableElsewhere = const Color(0xFF0047CE);
+  final availableElsewhereAccent = const Color(0xFFECEEF7);
+
+  final dnd = const Color(0xFFD1530B);
+  final dndAccent = const Color(0xFFFFC999);
+
+  final available = const Color(0xFF075B15);
+  final availableAccent = const Color(0xFFA2F39C);
+
   Color get splashScreenColor;
 
   Color get onboardingGradientStart;
@@ -259,4 +271,5 @@ abstract class VialerSans {
   static const available = IconData(0xE929, fontFamily: _family);
   static const answeredElsewhere = IconData(0xE922, fontFamily: _family);
   static const feedback = IconData(0xE959, fontFamily: _family);
+  static const info = IconData(0xE918, fontFamily: _family);
 }
