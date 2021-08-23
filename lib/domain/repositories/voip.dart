@@ -20,6 +20,7 @@ import '../usecases/enable_remote_logging_if_needed.dart';
 import '../usecases/get_build_info.dart';
 import '../usecases/get_setting.dart';
 import '../usecases/get_user.dart';
+import '../usecases/metrics/track_push_followed_by_call.dart';
 import 'logging.dart';
 import 'operating_system_info.dart';
 import 'services/middleware.dart';
@@ -147,6 +148,7 @@ class _Middleware with Loggable {
   final _getUser = GetUserUseCase();
   final _getBuildInfo = GetBuildInfoUseCase();
   final _getDndSetting = GetSettingUseCase<DndSetting>();
+  final _trackPushFollowedByCall = TrackPushFollowedByCallUseCase();
 
   final _storageRepository = dependencyLocator<StorageRepository>();
   final _operatingSystemInfoRepository =
@@ -294,14 +296,14 @@ class _Middleware with Loggable {
       sipUserId: _config!.sipUserId,
     );
 
-    if (!response.isSuccessful) {
+    if (response.isSuccessful) {
+      _trackPushFollowedByCall();
+      logger.info('Responded to middleware');
+    } else {
       logger.warning(
         'Responding failed: ${response.statusCode} ${response.error}',
       );
-      return;
     }
-
-    logger.info('Responded to middleware');
   }
 
   void tokenReceived(String token) {
@@ -320,9 +322,8 @@ Future<void> _initialize() async {
   await EnableRemoteLoggingIfNeededUseCase()();
 }
 
-void _onLogReceived(LogLevel level, String message) {
-  Logger('FlutterPhoneLib').log(level.toLoggerLevel(), message, VoipLog());
-}
+void _onLogReceived(LogLevel level, String message) =>
+    Logger('FlutterPhoneLib').log(level.toLoggerLevel(), message, VoipLog());
 
 void _middlewareRespond(RemoteMessage message, bool available) =>
     _Middleware().respond(message, available);

@@ -47,7 +47,6 @@ Future<void> initializeDependencies({bool ui = true}) async {
           dependencyLocator<VoipgridService>(),
         ),
       )
-      ..registerSingleton<MetricsRepository>(MetricsRepository())
       ..registerSingleton<ConnectivityRepository>(ConnectivityRepository())
       ..registerSingletonWithDependencies<DestinationRepository>(
         () => DestinationRepository(
@@ -86,7 +85,8 @@ Future<void> initializeDependencies({bool ui = true}) async {
       dependsOn: [StorageRepository],
     )
     ..registerSingleton<BrandRepository>(BrandRepository())
-    ..registerSingleton<CountryRepository>(CountryRepository());
+    ..registerSingleton<CountryRepository>(CountryRepository())
+    ..registerSingleton<MetricsRepository>(MetricsRepository());
 
   await dependencyLocator.allReady();
 }

@@ -34,6 +34,7 @@ import '../../../../../domain/usecases/get_setting.dart';
 import '../../../../../domain/usecases/get_voip_call_event_stream.dart';
 import '../../../../../domain/usecases/increment_call_through_calls_count.dart';
 import '../../../../../domain/usecases/metrics/track_call.dart';
+import '../../../../../domain/usecases/metrics/track_push_followed_by_call.dart';
 import '../../../../../domain/usecases/onboarding/request_permission.dart';
 import '../../../../../domain/usecases/open_settings.dart';
 import '../../../../../domain/usecases/send_voip_dtmf.dart';
@@ -77,6 +78,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
   final _routeAudioToBluetoothDevice = RouteAudioToBluetoothDeviceUseCase();
   final _beginTransfer = BeginTransferUseCase();
   final _mergeTransfer = MergeTransferUseCase();
+  final _trackPushFollowedByCall = TrackPushFollowedByCallUseCase();
 
   Timer? _callThroughTimer;
 
@@ -305,6 +307,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
         direction: CallDirection.inbound,
         usedRoutes: usedAudioRoutes,
       );
+      _trackPushFollowedByCall();
 
       emit(Ringing(voip: callSessionState));
 
