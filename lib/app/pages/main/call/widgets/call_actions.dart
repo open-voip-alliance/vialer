@@ -128,6 +128,7 @@ class _CallActionButtons extends StatelessWidget {
   }
 
   void _transfer(BuildContext context) {
+    _hold(context);
     showGeneralDialog(
       context: context,
       pageBuilder: (_, __, ___) => BlocProvider<DialerCubit>(
@@ -155,6 +156,9 @@ class _CallActionButtons extends StatelessWidget {
 
   void _toggleHold(BuildContext context) =>
       context.read<CallerCubit>().toggleHoldVoipCall();
+
+  void _hold(BuildContext context) =>
+      context.read<CallerCubit>().holdVoipCall();
 
   @override
   Widget build(BuildContext context) {
