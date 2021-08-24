@@ -67,6 +67,9 @@ abstract class VoipgridService extends ChopperService {
   @Get(path: 'mobile/profile/')
   Future<Response> getMobileProfile();
 
+  @Put(path: 'mobile/profile/')
+  Future<Response> updateMobileProfile(@Body() Map<String, dynamic> body);
+
   @Put(path: 'permission/mobile_number/')
   Future<Response> changeMobileNumber(@Body() Map<String, dynamic> body);
 }

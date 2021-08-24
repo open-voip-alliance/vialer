@@ -84,7 +84,7 @@ class VoipRepository with Loggable {
     final getPhoneRingtone = GetSettingUseCase<UsePhoneRingtoneSetting>();
 
     return Preferences(
-      codecs: [config.useOpus ? Codec.opus : Codec.ilbc],
+      codecs: [Codec.opus],
       useApplicationProvidedRingtone: !(await getPhoneRingtone()).value,
     );
   }

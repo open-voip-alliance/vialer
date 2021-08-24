@@ -106,4 +106,11 @@ class AuthRepository {
         await _service.changeMobileNumber({'mobile_nr': mobileNumber});
     return response.isSuccessful;
   }
+
+  Future<bool> enableOpus() async {
+    final response = await _service.updateMobileProfile({
+      'appaccount_use_opus': true,
+    });
+    return response.isSuccessful;
+  }
 }
