@@ -66,113 +66,110 @@ class _ContactDetailsPageState extends State<ContactDetailsPage>
     }
   }
 
+  void _onCallerStateChanged(BuildContext context, CallerState state) {
+    if (state is NoPermission) {
+      _showSnackBar(context);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<ContactDetailsCubit>(
-      create: (_) => ContactDetailsCubit(context.read<CallerCubit>()),
-      child: BlocConsumer<ContactsCubit, ContactsState>(
-        listener: _onStateChanged,
-        builder: (context, state) {
-          final cubit = context.watch<ContactDetailsCubit>();
+    return BlocListener<CallerCubit, CallerState>(
+      listener: _onCallerStateChanged,
+      child: BlocProvider<ContactDetailsCubit>(
+        create: (_) => ContactDetailsCubit(context.read<CallerCubit>()),
+        child: BlocConsumer<ContactsCubit, ContactsState>(
+          listener: _onStateChanged,
+          builder: (context, state) {
+            final cubit = context.watch<ContactDetailsCubit>();
 
-          var contact = widget.contact;
+            var contact = widget.contact;
 
-          if (state is ContactsLoaded) {
-            contact = state.contacts.firstWhere(
-              (contact) => contact.identifier == widget.contact.identifier,
-              orElse: () => widget.contact,
-            );
-          }
+            if (state is ContactsLoaded) {
+              contact = state.contacts.firstWhere(
+                (contact) => contact.identifier == widget.contact.identifier,
+                orElse: () => widget.contact,
+              );
+            }
 
-          return Scaffold(
-            appBar: AppBar(
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-              title: Header(context.msg.main.contacts.title),
-              centerTitle: false,
-              iconTheme: IconThemeData(color: Theme.of(context).primaryColor),
-              actions: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(right: 20),
-                  child: GestureDetector(
-                    onTap: () => cubit.edit(contact),
-                    child: context.isIOS
-                        ? Padding(
-                            padding: const EdgeInsets.only(top: 24),
-                            child: Text(
-                              context.msg.main.contacts.edit,
-                              style: TextStyle(
-                                color: Theme.of(context).primaryColor,
-                              ),
-                            ),
-                          )
-                        : const Icon(Icons.edit),
-                  ),
-                ),
-              ],
-            ),
-            body: SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.only(
-                  top: 32,
-                ),
-                child: Column(
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: _horizontalPadding,
-                      ),
-                      child: Row(
-                        children: <Widget>[
-                          ContactAvatar(contact, size: _leadingSize),
-                          const SizedBox(width: 16),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text(
-                                contact.name,
-                                style: const TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
+            return Scaffold(
+              appBar: AppBar(
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                title: Header(context.msg.main.contacts.title),
+                centerTitle: false,
+                iconTheme: IconThemeData(color: Theme.of(context).primaryColor),
+                actions: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.only(right: 20),
+                    child: GestureDetector(
+                      onTap: () => cubit.edit(contact),
+                      child: context.isIOS
+                          ? Padding(
+                              padding: const EdgeInsets.only(top: 24),
+                              child: Text(
+                                context.msg.main.contacts.edit,
+                                style: TextStyle(
+                                  color: Theme.of(context).primaryColor,
                                 ),
                               ),
-                              const SizedBox(height: 4),
-                              ContactSubtitle(contact),
-                            ],
-                          )
-                        ],
-                      ),
+                            )
+                          : const Icon(Icons.edit),
                     ),
-                    const SizedBox(height: 24),
-                    Expanded(
-                      child: BlocBuilder<CallerCubit, CallerState>(
-                        builder: (context, callerState) {
-                          void onTapNumber(String n) {
-                            return (callerState is CanCall ||
-                                    (callerState is NoPermission &&
-                                        !callerState.dontAskAgain))
-                                ? cubit.call(n)
-                                : _showSnackBar(context);
-                          }
-
-                          return RefreshIndicator(
-                            onRefresh: () =>
-                                context.read<ContactsCubit>().reloadContacts(),
-                            child: _DestinationsList(
-                              contact: contact,
-                              onTapNumber: onTapNumber,
-                              onTapEmail: cubit.mail,
-                            ),
-                          );
-                        },
+                  ),
+                ],
+              ),
+              body: SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                    top: 32,
+                  ),
+                  child: Column(
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: _horizontalPadding,
+                        ),
+                        child: Row(
+                          children: <Widget>[
+                            ContactAvatar(contact, size: _leadingSize),
+                            const SizedBox(width: 16),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text(
+                                  contact.name,
+                                  style: const TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                ContactSubtitle(contact),
+                              ],
+                            )
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 24),
+                      Expanded(
+                        child: RefreshIndicator(
+                          onRefresh: () =>
+                              context.read<ContactsCubit>().reloadContacts(),
+                          child: _DestinationsList(
+                            contact: contact,
+                            onTapNumber: cubit.call,
+                            onTapEmail: cubit.mail,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }
