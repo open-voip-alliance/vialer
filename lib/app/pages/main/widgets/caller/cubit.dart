@@ -136,6 +136,8 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
     required CallOrigin origin,
     bool showingConfirmPage = false,
   }) async {
+    if (state is! CanCall) return;
+
     if (await _getHasVoipEnabled()) {
       await _callViaVoip(destination, origin: origin);
     } else {
