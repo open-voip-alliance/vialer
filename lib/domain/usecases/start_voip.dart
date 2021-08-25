@@ -25,7 +25,7 @@ class StartVoipUseCase extends UseCase {
       throw VoipNotAllowedException();
     }
 
-    final config = await _fetchConfigAndEnableOpus();
+    final config = await _fetchConfigAndConfigureAppAccount();
 
     await _voipRepository.initializeAndStart(
       config: config,
@@ -36,14 +36,18 @@ class StartVoipUseCase extends UseCase {
     await _registerToMiddleware();
   }
 
-  /// Fetches the current voip config, if OPUS is not enabled, it will be
-  /// enabled and the latest config fetched from the server.
-  Future<VoipConfig> _fetchConfigAndEnableOpus() async {
+  /// Fetches the current voip config, configuring it as is required via the
+  /// api and the latest config fetched from the server.
+  Future<VoipConfig> _fetchConfigAndConfigureAppAccount() async {
     final config = await _getVoipConfig(latest: false);
 
-    if (config.useOpus) return config;
+    if (config.useOpus && config.useEncryption) return config;
 
-    await _authRepository.enableOpus();
+    await _authRepository.updateAppAccount(
+      useEncryption: true,
+      useOpus: true,
+    );
+
     return _getVoipConfig(latest: true);
   }
 }
