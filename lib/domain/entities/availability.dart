@@ -24,6 +24,9 @@ class Availability extends Equatable {
   @JsonKey(name: 'selecteduserdestination')
   final SelectedDestinationInfo? selectedDestinationInfo;
 
+  @JsonKey(name: 'internal_number')
+  final int internalNumber;
+
   Destination? get activeDestination {
     if (selectedDestinationInfo?.phoneAccountId == null &&
         selectedDestinationInfo?.fixedDestinationId == null) {
@@ -56,6 +59,7 @@ class Availability extends Equatable {
     required this.fixedDestinations,
     required this.phoneAccounts,
     required this.selectedDestinationInfo,
+    required this.internalNumber,
   });
 
   Availability copyWith({
@@ -70,6 +74,7 @@ class Availability extends Equatable {
       phoneAccounts: phoneAccounts ?? this.phoneAccounts,
       selectedDestinationInfo:
           selectedDestinationInfo ?? this.selectedDestinationInfo,
+      internalNumber: internalNumber,
     );
   }
 
@@ -88,6 +93,7 @@ class Availability extends Equatable {
       'id: $id, '
       'fixedDestinations: $fixedDestinations, '
       'phoneAccounts: $phoneAccounts, '
+      'internalNumber: $internalNumber, '
       'selectedDestinationInfo: $selectedDestinationInfo)';
 
   factory Availability.fromJson(Map<String, dynamic> json) =>
@@ -101,5 +107,6 @@ class Availability extends Equatable {
         fixedDestinations,
         phoneAccounts,
         selectedDestinationInfo,
+        internalNumber,
       ];
 }

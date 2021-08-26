@@ -2,14 +2,17 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_switch/flutter_switch.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../domain/entities/audio_codec.dart';
+import '../../../../../domain/entities/availability.dart';
 import '../../../../../domain/entities/brand.dart';
 import '../../../../../domain/entities/destination.dart';
 import '../../../../../domain/entities/fixed_destination.dart';
 import '../../../../../domain/entities/phone_account.dart';
 import '../../../../../domain/entities/setting.dart';
+import '../../../../../domain/entities/system_user.dart';
 import '../../../../../domain/entities/web_page.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
@@ -18,9 +21,10 @@ import '../../../../util/conditional_capitalization.dart';
 import '../../../onboarding/widgets/stylized_text_field.dart';
 import '../../../web_view/page.dart';
 import '../cubit.dart';
+import 'availability_tile.dart';
 
 class SettingTile extends StatelessWidget {
-  final Widget label;
+  final Widget? label;
   final Widget? description;
 
   /// The widget that presents the [setting]s value.
@@ -37,7 +41,7 @@ class SettingTile extends StatelessWidget {
 
   SettingTile({
     Key? key,
-    required this.label,
+    this.label,
     this.description,
     required this.child,
     this.childFillWidth = false,
@@ -52,39 +56,58 @@ class SettingTile extends StatelessWidget {
             ),
         super(key: key);
 
-  static Widget dnd(DndSetting setting) {
+  static Widget dnd(
+    DndSetting setting, {
+    required UserAvailabilityType userAvailabilityType,
+    required Function() showHelp,
+  }) {
     return Builder(
       builder: (context) {
-        return SettingTile(
-          label: Text(
-            context.msg.main.settings.list.dnd.dnd.title,
+        return Padding(
+          padding: const EdgeInsets.symmetric(
+            vertical: 20,
+            horizontal: 20,
+          ).copyWith(
+            top: 0,
           ),
-          description: Text(
-            context.msg.main.settings.list.dnd.dnd.description(
-              Provider.of<Brand>(context, listen: false).appName,
-            ),
+          child: Row(
+            children: [
+              Expanded(
+                child: GestureDetector(
+                  onTap: userAvailabilityType.requiresHelps ? showHelp : null,
+                  child: _DndToggle(
+                    setting: setting,
+                    userAvailabilityType: userAvailabilityType,
+                  ),
+                ),
+              ),
+            ],
           ),
-          child: _BoolSettingValue(setting),
         );
       },
     );
   }
 
-  static Widget businessNumber(BusinessNumberSetting setting) {
-    return Builder(
-      builder: (context) {
-        return SettingTile(
-          label: Text(
-            context.msg.main.settings.list.accountInfo.businessNumber.title,
-          ),
-          description: Text(
-            context
-                .msg.main.settings.list.accountInfo.businessNumber.description,
-          ),
-          child: _StringSettingValue(setting),
-        );
-      },
-    );
+  static Widget username(SystemUser systemUser) {
+    return Builder(builder: (context) {
+      return _userInformation(
+        description: Text(
+          context.msg.main.settings.list.accountInfo.username.description,
+        ),
+        child: _StringValue(systemUser.email),
+      );
+    });
+  }
+
+  static Widget associatedNumber(BusinessNumberSetting businessNumberSetting) {
+    return Builder(builder: (context) {
+      return _userInformation(
+        description: Text(
+          context.msg.main.settings.list.accountInfo.businessNumber.description,
+        ),
+        child: _StringSettingValue(businessNumberSetting),
+      );
+    });
   }
 
   static Widget mobileNumber({
@@ -94,9 +117,6 @@ class SettingTile extends StatelessWidget {
     return Builder(
       builder: (context) {
         return SettingTile(
-          label: Text(
-            context.msg.main.settings.list.accountInfo.mobileNumber.title,
-          ),
           description: isVoipAllowed
               ? Text(
                   context.msg.main.settings.list.accountInfo.mobileNumber
@@ -115,6 +135,25 @@ class SettingTile extends StatelessWidget {
               : _StringSettingValue(setting),
         );
       },
+    );
+  }
+
+  /// Build a default "user information" style field including a value
+  /// with a description below it.
+  static Widget _userInformation({
+    required Widget description,
+    required Widget child,
+  }) {
+    return SettingTile(
+      childFillWidth: true,
+      description: description,
+      child: Padding(
+        padding: const EdgeInsets.only(
+          bottom: 4,
+          top: 10,
+        ),
+        child: child,
+      ),
     );
   }
 
@@ -222,10 +261,15 @@ class SettingTile extends StatelessWidget {
     );
   }
 
-  static Widget availability(AvailabilitySetting setting) {
-    final availability = setting.value;
+  static Widget availability(
+    AvailabilitySetting setting, {
+    Key? key,
+    required SystemUser systemUser,
+  }) {
+    final availability = setting.value!;
 
     return Builder(
+      key: key,
       builder: (context) {
         void openAddAvailabilityWebView() {
           WidgetsBinding.instance!.addPostFrameCallback((_) async {
@@ -242,24 +286,22 @@ class SettingTile extends StatelessWidget {
           });
         }
 
-        return SettingTile(
-          label: Text(
-            context.msg.main.settings.list.calling.availability.title,
-          ),
-          description: Text(
-            context.msg.main.settings.list.calling.availability.description,
-          ),
-          childFillWidth: true,
+        return AvailabilityTile(
+          availability: availability,
+          userAvailabilityType: systemUser.availabilityType(availability),
+          user: systemUser,
           child: _MultipleChoiceSettingValue<Destination?>(
-            value: availability?.activeDestination,
+            value: availability.activeDestination,
             items: [
-              ...availability?.destinations.map(
-                    (destination) => DropdownMenuItem<Destination>(
-                      child: Text(destination.dropdownValue(context)),
-                      value: destination,
-                    ),
-                  ) ??
-                  [],
+              ...availability.destinations.map(
+                (destination) => DropdownMenuItem<Destination>(
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(destination.dropdownValue(context)),
+                  ),
+                  value: destination,
+                ),
+              ),
               DropdownMenuItem<Destination>(
                 child: Text(
                   context.msg.main.settings.list.calling.addAvailability,
@@ -272,7 +314,7 @@ class SettingTile extends StatelessWidget {
                 ? defaultOnChanged(
                     context,
                     setting.copyWith(
-                      value: availability?.copyWithSelectedDestination(
+                      value: availability.copyWithSelectedDestination(
                         destination: destination,
                       ),
                     ),
@@ -304,31 +346,32 @@ class SettingTile extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              ConstrainedBox(
-                constraints: const BoxConstraints(
-                  minWidth: double.infinity,
-                  minHeight: 48,
-                ),
-                child: Row(
-                  mainAxisAlignment: center
-                      ? MainAxisAlignment.center
-                      : MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    DefaultTextStyle.merge(
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: !context.isIOS ? FontWeight.bold : null,
+              if (label != null)
+                ConstrainedBox(
+                  constraints: const BoxConstraints(
+                    minWidth: double.infinity,
+                    minHeight: 48,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: center
+                        ? MainAxisAlignment.center
+                        : MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      DefaultTextStyle.merge(
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: !context.isIOS ? FontWeight.bold : null,
+                        ),
+                        child: center
+                            ? label!
+                            : Expanded(
+                                child: label!,
+                              ),
                       ),
-                      child: center
-                          ? label
-                          : Expanded(
-                              child: label,
-                            ),
-                    ),
-                    if (!childFillWidth) child,
-                  ],
+                      if (!childFillWidth) child,
+                    ],
+                  ),
                 ),
-              ),
               if (childFillWidth) child,
             ],
           ),
@@ -408,6 +451,26 @@ class _Switch extends StatelessWidget {
   }
 }
 
+class _StringValue extends StatelessWidget {
+  final String value;
+
+  const _StringValue(
+    this.value, {
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      value,
+      style: TextStyle(
+        fontSize: 16,
+        fontWeight: !context.isIOS ? FontWeight.bold : null,
+      ),
+    );
+  }
+}
+
 class _StringSettingValue extends StatelessWidget {
   final Setting<String> setting;
 
@@ -418,12 +481,8 @@ class _StringSettingValue extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
+    return _StringValue(
       setting.value,
-      style: TextStyle(
-        fontSize: 16,
-        fontWeight: !context.isIOS ? FontWeight.bold : null,
-      ),
     );
   }
 }
@@ -518,12 +577,18 @@ class _MultipleChoiceSettingValue<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(right: 16),
-      child: DropdownButton<T>(
-        value: value,
-        items: items,
-        isExpanded: isExpanded,
-        onChanged: (value) => onChanged(value!),
+      padding: const EdgeInsets.only(right: 16, bottom: 8),
+      child: InputDecorator(
+        decoration: const InputDecoration(border: OutlineInputBorder()),
+        child: DropdownButtonHideUnderline(
+          child: DropdownButton<T>(
+            value: value,
+            items: items,
+            isExpanded: isExpanded,
+            onChanged: (value) => onChanged(value!),
+            isDense: true,
+          ),
+        ),
       ),
     );
   }
@@ -611,9 +676,178 @@ extension DestinationDescription on Destination {
 
         return '${destination.phoneNumber} / ${destination.description}';
       } else {
-        return '${(destination as PhoneAccount).internalNumber} / '
-            '${destination.description}';
+        return '${(destination as PhoneAccount).internalNumber} /'
+            ' ${destination.description}';
       }
     }
   }
+}
+
+extension AvailabilityType on SystemUser {
+  UserAvailabilityType availabilityType(Availability availability) {
+    final selectedDestination = availability.selectedDestinationInfo ?? null;
+
+    if (selectedDestination == null ||
+        (selectedDestination.phoneAccountId == null &&
+            selectedDestination.fixedDestinationId == null)) {
+      return UserAvailabilityType.notAvailable;
+    }
+
+    if (selectedDestination.phoneAccountId.toString() == appAccountId) {
+      return UserAvailabilityType.available;
+    }
+
+    return UserAvailabilityType.elsewhere;
+  }
+}
+
+/// Responsible for rendering the dnd toggle but also the current state of the
+/// user's availability by updating the text/color.
+class _DndToggle extends StatelessWidget {
+  final DndSetting setting;
+  final UserAvailabilityType userAvailabilityType;
+
+  const _DndToggle({
+    required this.setting,
+    required this.userAvailabilityType,
+  });
+
+  String _text(BuildContext context) {
+    if (setting.value == true) {
+      return context.msg.main.settings.list.calling.availability.dnd.title;
+    }
+
+    if (userAvailabilityType == UserAvailabilityType.notAvailable) {
+      return context
+          .msg.main.settings.list.calling.availability.notAvailable.title;
+    }
+
+    if (userAvailabilityType == UserAvailabilityType.elsewhere) {
+      return context
+          .msg.main.settings.list.calling.availability.elsewhere.title;
+    }
+
+    return context.msg.main.settings.list.calling.availability.available.title;
+  }
+
+  Color _color(BuildContext context) => setting.value == true
+      ? context.brand.theme.dnd
+      : userAvailabilityType.asColor(context);
+
+  Color _accentColor(BuildContext context) => setting.value == true
+      ? context.brand.theme.dndAccent
+      : userAvailabilityType.asAccentColor(context);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 10,
+              horizontal: 14,
+            ),
+            child: Row(
+              children: [
+                Text(
+                  _text(context),
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: _color(context),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                if (userAvailabilityType.requiresHelps)
+                  Container(
+                    margin: const EdgeInsets.only(
+                      left: 6,
+                    ),
+                    padding: const EdgeInsets.all(2),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(100),
+                      color: _color(context),
+                    ),
+                    child: Icon(
+                      VialerSans.info,
+                      color: _accentColor(context),
+                      size: 12,
+                    ),
+                  ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 10,
+              vertical: 6,
+            ),
+            child: FlutterSwitch(
+              value: setting.value,
+              inactiveIcon: Icon(
+                VialerSans.available,
+                color: _accentColor(context),
+              ),
+              activeIcon: Icon(
+                VialerSans.dnd,
+                color: _accentColor(context),
+              ),
+              switchBorder: Border.all(
+                color: _color(context),
+                width: 2.0,
+              ),
+              height: 32,
+              width: 70,
+              padding: 4,
+              activeColor: _accentColor(context),
+              inactiveColor: _accentColor(context),
+              activeToggleColor: _color(context),
+              inactiveToggleColor: _color(context),
+              onToggle: (dnd) => defaultOnChanged(
+                context,
+                setting.copyWith(value: dnd),
+              ),
+            ),
+          )
+        ],
+      ),
+      decoration: BoxDecoration(
+        color: _accentColor(context),
+        borderRadius: const BorderRadius.all(
+          Radius.circular(40),
+        ),
+      ),
+    );
+  }
+}
+
+enum UserAvailabilityType { available, elsewhere, notAvailable }
+
+extension Display on UserAvailabilityType {
+  Color asColor(BuildContext context) {
+    if (this == UserAvailabilityType.elsewhere) {
+      return context.brand.theme.availableElsewhere;
+    } else if (this == UserAvailabilityType.notAvailable) {
+      return context.brand.theme.notAvailable;
+    } else {
+      return context.brand.theme.available;
+    }
+  }
+
+  Color asAccentColor(BuildContext context) {
+    if (this == UserAvailabilityType.elsewhere) {
+      return context.brand.theme.availableElsewhereAccent;
+    } else if (this == UserAvailabilityType.notAvailable) {
+      return context.brand.theme.notAvailableAccent;
+    } else {
+      return context.brand.theme.availableAccent;
+    }
+  }
+
+  /// Whether or not this availability type requires additional help information
+  /// to be displayed to the user.
+  bool get requiresHelps =>
+      this == UserAvailabilityType.elsewhere ||
+      this == UserAvailabilityType.notAvailable;
 }

@@ -166,28 +166,23 @@ main:
               Door dit toe te staan, kan ons team tevens problemen zien die vandaag zijn opgetreden
               voordat u Remote Logging inschakelde. Dit helpt ons problemen beter te begrijpen.
             confirm: Verstuur
-      dnd:
-        title: "Do Not Disturb"
-        dnd:
-          title: "Do not disturb"
-          description(String appName): >-
-            Schakel in om geen oproepen te ontvangen in $appName.
       accountInfo:
         title: "Accountinformatie"
         businessNumber:
           title: "Jouw zakelijke nummer"
           description: >-
-            Dit is het telefoonnummer dat anderen op hun scherm zien als
-            je ze belt via deze app.
+            Het uitgaande nummer wordt weergegeven op het scherm van degenen die je belt.
         mobileNumber:
           title: "Jouw mobiele nummer"
           description:
             voip: >-
-              Deze app gebruikt je mobiele nummer om te bellen als VoIP is uitgeschakeld
-              of niet mogelijk is. Je mobiele nummer is niet zichtbaar voor anderen.
+              Je mobiele telefoonnummer. Deze is niet zichtbaar voor anderen.
             noVoip: >-
               Deze app gebruikt je mobiele nummer om te bellen, maar het is niet zichtbaar
               voor anderen.
+        username:
+          description: >-
+            E-mailadres van je gebruikersaccount waarmee je bent ingelogd.
       advancedSettings:
         title: "Geavanceerde instellingen"
         troubleshooting:
@@ -212,10 +207,24 @@ main:
       calling:
         title: "Bellen"
         availability:
-          title: "Beschikbaarheid"
+          title: "Bestemming van gebruiker"
           description: >-
             Kies het VoIP-account waarop je oproepen wilt ontvangen wanneer iemand je belt.
-        notAvailable: "Geen eindbestemming"
+          dnd:
+            title: "Do not disturb"
+          available:
+            title: "Beschikbaar"
+          notAvailable:
+            title: "Beschikbaar op ander toestel"
+            description(String user, String voipAccount): >-
+              Inkomende oproepen naar <b>$user</b> worden geweigerd, maar oproepen naar <b>$voipAccount</b> zullen nog steeds overgaan op deze telefoon.
+          elsewhere:
+            title: "Beperkt beschikbaar"
+            description(String user): >-
+              Inkomende oproepen naar <b>$user</b> worden doorgeschakeld naar een andere telefoon.
+          resume(String voipAccount): >-
+            Selecteer <b>$voipAccount</b> als bestemming om oproepen op deze telefoon te ontvangen.
+        notAvailable: "Niet beschikbaar"
         addAvailability: "Bereikbaarheid toevoegen"
         useVoip:
           title: "Gebruik VoIP"

@@ -52,6 +52,8 @@ dependencies:
   json_annotation: ^4.0.1
   flutter_rating_bar: ^4.0.0
   flutter_libphonenumber: ^1.0.3
+  styled_text: ^3.0.2
+  flutter_switch: ^0.3.2
 
 dev_dependencies:
   flutter_test:
