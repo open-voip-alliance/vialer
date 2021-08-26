@@ -169,7 +169,7 @@ CHECKOUT OPTIONS:
     :commit: 02fa2d7431b19c927b6b11d9f1adfc10663a435c
     :git: https://github.com/open-voip-alliance/iOS-VoIP-Lib.git
   PIL:
-    :commit: b3d05ca367a81d306859a222889cd90b2c0e1840
+    :commit: f1b2a32062a24fbd786d64e62a4c767baff17757
     :git: https://github.com/open-voip-alliance/iOS-Phone-Integration-Lib.git
 
 SPEC CHECKSUMS:
