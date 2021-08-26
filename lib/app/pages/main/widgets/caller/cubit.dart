@@ -18,6 +18,7 @@ import '../../../../../domain/usecases/call/call.dart';
 import '../../../../../domain/usecases/call/voip/begin_transfer.dart';
 import '../../../../../domain/usecases/call/voip/end.dart';
 import '../../../../../domain/usecases/call/voip/get_call_session_state.dart';
+import '../../../../../domain/usecases/call/voip/launch_ios_audio_route_picker.dart';
 import '../../../../../domain/usecases/call/voip/merge_transfer.dart';
 import '../../../../../domain/usecases/call/voip/rate_voip_call.dart';
 import '../../../../../domain/usecases/call/voip/route_audio.dart';
@@ -75,6 +76,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
   final _endVoipCall = EndVoipCallUseCase();
   final _rateVoipCall = RateVoipCallUseCase();
   final _routeAudio = RouteAudioUseCase();
+  final _launchIOSAudioRoutePicker = LaunchIOSAudioRoutePickerUseCase();
   final _routeAudioToBluetoothDevice = RouteAudioToBluetoothDeviceUseCase();
   final _beginTransfer = BeginTransferUseCase();
   final _mergeTransfer = MergeTransferUseCase();
@@ -393,6 +395,8 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
   Future<void> endVoipCall() => _endVoipCall();
 
   Future<void> routeAudio(AudioRoute route) => _routeAudio(route: route);
+
+  Future<void> launchIOSAudioRoutePicker() => _launchIOSAudioRoutePicker();
 
   Future<void> routeAudioToBluetoothDevice(BluetoothAudioRoute route) =>
       _routeAudioToBluetoothDevice(route: route);

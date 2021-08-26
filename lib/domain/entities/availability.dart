@@ -24,7 +24,10 @@ class Availability extends Equatable {
   @JsonKey(name: 'selecteduserdestination')
   final SelectedDestinationInfo? selectedDestinationInfo;
 
-  @JsonKey(name: 'internal_number')
+  /// Temporarily provide default values to allow for users upgrading from
+  /// an older version. defaultValue and includeIfNull can be removed
+  /// in the future.
+  @JsonKey(name: 'internal_number', defaultValue: 0, includeIfNull: false)
   final int internalNumber;
 
   Destination? get activeDestination {
