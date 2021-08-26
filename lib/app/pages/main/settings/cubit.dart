@@ -9,6 +9,7 @@ import '../../../../domain/usecases/get_is_voip_allowed.dart';
 import '../../../../domain/usecases/get_latest_availability.dart';
 import '../../../../domain/usecases/get_settings.dart';
 import '../../../../domain/usecases/get_show_about.dart';
+import '../../../../domain/usecases/get_user.dart';
 import '../../../../domain/usecases/logout.dart';
 import '../../../../domain/usecases/send_saved_logs_to_remote.dart';
 import '../../../util/loggable.dart';
@@ -26,6 +27,7 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
   final _getIsVoipAllowed = GetIsVoipAllowedUseCase();
   final _getShowAbout = GetShowAboutUseCase();
   final _logout = LogoutUseCase();
+  final _getUser = GetUserUseCase();
 
   late StreamSubscription _userRefresherSubscription;
 
@@ -49,6 +51,7 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
         buildInfo: await _getBuildInfo(),
         isVoipAllowed: await _getIsVoipAllowed(),
         showAbout: await _getShowAbout(),
+        systemUser: await _getUser(latest: false),
       ),
     );
   }

@@ -17,8 +17,16 @@ import 'widgets/link_tile.dart';
 import 'widgets/tile.dart';
 import 'widgets/tile_category.dart';
 
-class SettingsPage extends StatelessWidget {
+class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => _SettingsPageState();
+}
+
+class _SettingsPageState extends State<SettingsPage> {
+  final _availabilityTileKey = GlobalKey();
+  final _scrollController = ScrollController();
 
   Future<void> _goToFeedbackPage(BuildContext context) async {
     final sent = await Navigator.pushNamed(
@@ -34,6 +42,14 @@ class SettingsPage extends StatelessWidget {
         label: Text(context.msg.main.settings.feedback.snackBar),
       );
     }
+  }
+
+  void _scrollToAvailability() {
+    _scrollController.position.ensureVisible(
+      _availabilityTileKey.currentContext!.findRenderObject()!,
+      alignment: 0,
+      duration: const Duration(seconds: 1),
+    );
   }
 
   void _onStateChanged(BuildContext context, SettingsState state) {
@@ -74,6 +90,7 @@ class SettingsPage extends StatelessWidget {
                 final isVoipAllowed = state.isVoipAllowed;
                 final showTroubleshooting = state.showTroubleshooting;
                 final showAbout = state.showAbout;
+                final showDnd = state.showDnd;
 
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -85,25 +102,29 @@ class SettingsPage extends StatelessWidget {
                     if (!state.isLoading)
                       Expanded(
                         child: ListView(
+                          controller: _scrollController,
                           padding: const EdgeInsets.only(top: 8),
                           children: [
-                            if (isVoipAllowed)
-                              SettingTileCategory.dnd(
-                                children: [
-                                  SettingTile.dnd(
-                                    settings.get<DndSetting>(),
-                                  ),
-                                ],
+                            if (showDnd && state.userAvailabilityType != null)
+                              SettingTile.dnd(
+                                settings.get<DndSetting>(),
+                                userAvailabilityType:
+                                    state.userAvailabilityType!,
+                                showHelp: _scrollToAvailability,
                               ),
                             SettingTileCategory.accountInfo(
                               children: [
-                                SettingTile.businessNumber(
-                                  settings.get<BusinessNumberSetting>(),
-                                ),
                                 SettingTile.mobileNumber(
                                   setting: settings.get<MobileNumberSetting>(),
                                   isVoipAllowed: isVoipAllowed,
                                 ),
+                                SettingTile.associatedNumber(
+                                  settings.get<BusinessNumberSetting>(),
+                                ),
+                                if (state.systemUser != null)
+                                  SettingTile.username(
+                                    state.systemUser!,
+                                  ),
                               ],
                             ),
                             if (isVoipAllowed) ...[
@@ -116,12 +137,15 @@ class SettingsPage extends StatelessWidget {
                               ),
                               SettingTileCategory.calling(
                                 children: [
-                                  SettingTile.availability(
-                                    settings.get<AvailabilitySetting>(),
-                                  ),
                                   SettingTile.useVoip(
                                     settings.get<UseVoipSetting>(),
                                   ),
+                                  if (state.systemUser != null)
+                                    SettingTile.availability(
+                                      settings.get<AvailabilitySetting>(),
+                                      systemUser: state.systemUser!,
+                                      key: _availabilityTileKey,
+                                    ),
                                 ],
                               ),
                               SettingTileCategory.portalLinks(
