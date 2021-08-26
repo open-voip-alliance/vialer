@@ -9,7 +9,6 @@ import io.flutter.plugin.common.MethodChannel
 import android.view.WindowManager
 
 class MainActivity : FlutterActivity() {
-
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         GeneratedPluginRegistrant.registerWith(flutterEngine)
 

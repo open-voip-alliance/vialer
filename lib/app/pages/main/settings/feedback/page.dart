@@ -11,6 +11,8 @@ import '../../../../widgets/transparent_status_bar.dart';
 import 'cubit.dart';
 
 class FeedbackPage extends StatefulWidget {
+  const FeedbackPage({Key? key}) : super(key: key);
+
   @override
   _FeedbackPageState createState() => _FeedbackPageState();
 }

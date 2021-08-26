@@ -38,6 +38,7 @@ class Caller extends StatefulWidget {
 class _CallerState extends State<Caller>
     with WidgetsBindingObserver, WidgetsBindingObserverRegistrar {
   bool _resumedOnceDuringCalling = false;
+  bool _isRinging = false;
 
   NavigatorState get _navigatorState => widget.navigatorKey.currentState!;
 
@@ -63,7 +64,7 @@ class _CallerState extends State<Caller>
   static const _ringingRouteName = 'ringing';
 
   // NOTE: Only called when the state type changes, not when the same state
-  // with a different `call` is emitted.
+  // with a different `voipCall` is emitted.
   Future<void> _onStateChanged(BuildContext context, CallerState state) async {
     if (state is! FinishedCalling) {
       // The call screen behavior is only enabled here (not disabled) because
@@ -75,6 +76,8 @@ class _CallerState extends State<Caller>
     }
 
     if (state is Ringing) {
+      _isRinging = true;
+
       await _navigatorState.push(
         MaterialPageRoute(
           settings: const RouteSettings(
@@ -84,9 +87,14 @@ class _CallerState extends State<Caller>
         ),
       );
     } else {
-      _navigatorState.popUntil(
-        (route) => route.settings.name != _ringingRouteName,
-      );
+      // Last state was ringing, remove the incoming call page.
+      if (_isRinging) {
+        _navigatorState.popUntil(
+          (route) => route.settings.name != _ringingRouteName,
+        );
+      }
+
+      _isRinging = false;
     }
 
     if (state is InitiatingCall && state.isVoip ||

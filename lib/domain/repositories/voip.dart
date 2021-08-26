@@ -60,6 +60,8 @@ class VoipRepository with Loggable {
           tokenReceived: _middlewareTokenReceived,
           inspect: _middlewareInspect,
         ),
+        onMissedCallNotificationPressed: () =>
+            _missedCallNotificationPressedController.add(true),
         userAgent: '${brand.appName} '
             '${Platform.isAndroid ? 'Android' : 'iOS'} '
             'v${buildInfo.version}',
@@ -139,6 +141,12 @@ class VoipRepository with Loggable {
 
   Future<void> mergeTransferCalls() =>
       _phoneLib.actions.completeAttendedTransfer();
+
+  final _missedCallNotificationPressedController =
+      StreamController<bool>.broadcast();
+
+  Stream<bool> get missedCallNotificationPresses =>
+      _missedCallNotificationPressedController.stream;
 }
 
 // This class should not keep any state of it's own.
