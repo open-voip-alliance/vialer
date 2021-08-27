@@ -15,6 +15,7 @@ workflows:
         LOGENTRIES_IOS_TOKEN: Encrypted(Z0FBQUFBQmZxX25LelBKMG9FaFBUUUt1NFVVWEJ0a3VpRmFMa2kzcWxjVG0zSlU0SmRqeHJheURPUUNSRXdvV2ltUnR5Z3pmOXlWVTdBVjdfaG1XLV9PVWMtZjB5X0ZmRG5JU29qTHZ4bTZpS0lpNkxSVGprNGFRN0h2djNZVGlLd2E0MEU4VF9NVlE=)
         SEGMENT_ANDROID_WRITE_KEY: Encrypted(Z0FBQUFBQmdQbHBNRjFseGJqWDYzOWhMNDNVUXV3bjNwV0ZwdklnazVIRlM4dFhSQTR5TmMtSnNnWVNDWWFQSUFqN0VNd0tnQnZYNWd5WWkyR1lZX2g1eDBCNko2eEdoRG5UNVpmUlQwa3VkZE85VHB4cWh5N3E4Zzd4cGctMUlxQmJiQU9Pdmd2ZkY=)
         SEGMENT_IOS_WRITE_KEY: Encrypted(Z0FBQUFBQmdQbGxMX1BlUF83NWp4UW81UW1Wbk4yVEVkYS0wREhzT0hDVURKZmVud3RnZE4ycnBsU3o5Nlp5NFBzOF9XTks4QWlyNnlOUl9rdGxxNmJRSk5vTWxvSjBzVXozckdaNE15cm9tdnRtSFZsT2RMTVFqTUs0SWJEMXRJNzJ3Nnk4R0ZRWlQ=)
+        SENTRY_DSN: Encrypted(Z0FBQUFBQmctVjA2cmZndlZ4ektsaEVIQnlZX0FyS1ZQZFpYYjRRTEY0NUVybjhVLUdvbGtZdHRBUDlpNkN4Wi1sRWozUnpTVjdzRXBqbklXSjVXRHdxcmpBbmlYX2NvMWpPUEpza2RCT3l5bzlDTHJDTG1NYkg2Z0N0aExEUkViOUZxanVGeGp0eW9nSVhTa2xZMkpSR2xtamExeUdaZkRkNmlCazNqNGc1THpRZ3dTdVRiMmpRPQ==)
         FCI_KEYSTORE_PASSWORD: Encrypted(Z0FBQUFBQmZxX25Lc0RRV2pEcU5XYTRQdUFhRDF0dVhydXJVMEg5RmFMX1pWTGVQaUxIR2hEd3dtQUN0SGE5aF9Jbml6bFZRM3I4T3phLU9GUWtQODNvZ0h4cnhDNm9CUHROaDBlZVphejFjVmtlZnJDeUY3Rms9)
         FCI_KEY_PASSWORD: Encrypted(Z0FBQUFBQmZxX25Lb0dTYVVFMlJubVJrTXA4a0hiczhzeHpnUlhVWktFbllLNWF2OFlsTlQ5dzgzUWFiaU1idTRJN1ZDWkxtR1VCMjFjUGt4QUNkNzZsazE3UU16a2NMbGt3eVhibHB5SHlSZmlyZzVQbl9lWlU9)
         FCI_KEY_ALIAS: Encrypted(Z0FBQUFBQmZxX25LTW5Oc0JlUi14aVZ0Z1VOX0p0SE1WU2JXTEx2NEpYeHJMdUtKd0xTZnhTRkZUaUVqNkgwdGY4R0hmdGlZZkY4dGZWX1k0S2hKQmVlRjl1cm93WXpwRFE9PQ==)
@@ -125,22 +126,22 @@ workflows:
         script: |
           cd . && flutter build apk --release --target=lib/app/main.dart --build-number=$PROJECT_BUILD_NUMBER -v --dart-define BRAND=voys --dart-define SEGMENT_ANDROID_KEY=$SEGMENT_ANDROID_WRITE_KEY
       - &build_ios_for_dev
-         name: Building iOS with ad-hoc provisioning profile for dev and QA purposes
-         script: |
-           pod repo update
-           export PATH="$PATH:/Users/builder/programs/flutter/bin/cache/dart-sdk/bin"
-           sed -i '' "s/XXXXX/$IOS_TEAM_ID/g" ios/Runner.xcodeproj/project.pbxproj
-           cd ios/ && pod install && cd ..
-           keychain initialize
-           PROFILES_HOME="$HOME/Library/MobileDevice/Provisioning Profiles"
-           mkdir -p "$PROFILES_HOME"
-           PROFILE_PATH="$(mktemp "$PROFILES_HOME"/$(uuidgen).mobileprovision)"
-           echo ${FCI_PROVISIONING_PROFILE} | base64 --decode > "$PROFILE_PATH"
-           echo $FCI_CERTIFICATE | base64 --decode > /tmp/certificate.p12
-           echo $IOS_EXPORT_OPTIONS | base64 --decode > /tmp/export-options.plist
-           keychain add-certificates --certificate /tmp/certificate.p12
-           xcode-project use-profiles
-           flutter build ipa --release --target=lib/app/main.dart --export-options-plist=/tmp/export-options.plist --build-number=$PROJECT_BUILD_NUMBER --verbose --dart-define BRAND=voys --dart-define SEGMENT_IOS_KEY=$SEGMENT_IOS_WRITE_KEY
+        name: Building iOS with ad-hoc provisioning profile for dev and QA purposes
+        script: |
+          pod repo update
+          export PATH="$PATH:/Users/builder/programs/flutter/bin/cache/dart-sdk/bin"
+          sed -i '' "s/XXXXX/$IOS_TEAM_ID/g" ios/Runner.xcodeproj/project.pbxproj
+          cd ios/ && pod install && cd ..
+          keychain initialize
+          PROFILES_HOME="$HOME/Library/MobileDevice/Provisioning Profiles"
+          mkdir -p "$PROFILES_HOME"
+          PROFILE_PATH="$(mktemp "$PROFILES_HOME"/$(uuidgen).mobileprovision)"
+          echo ${FCI_PROVISIONING_PROFILE} | base64 --decode > "$PROFILE_PATH"
+          echo $FCI_CERTIFICATE | base64 --decode > /tmp/certificate.p12
+          echo $IOS_EXPORT_OPTIONS | base64 --decode > /tmp/export-options.plist
+          keychain add-certificates --certificate /tmp/certificate.p12
+          xcode-project use-profiles
+          flutter build ipa --release --target=lib/app/main.dart --export-options-plist=/tmp/export-options.plist --build-number=$PROJECT_BUILD_NUMBER --verbose --dart-define BRAND=voys --dart-define SEGMENT_IOS_KEY=$SEGMENT_IOS_WRITE_KEY
     artifacts:
       - build/**/outputs/**/*.apk
       - build/**/outputs/**/*.aab
@@ -163,6 +164,7 @@ workflows:
         LOGENTRIES_IOS_TOKEN: Encrypted(Z0FBQUFBQmhKanc1MldxWlpVVTZYUE56RHFwc3FLS09SUkdxclJCRDVmbW9ReW5rMzhoNEkzQUp1amsyNzBXNGZ3N2pIanRwQVA2dFJZY3ZGVnZyYXdmMUJVZUVZSjJpVTVnR3hZZWtxQnBqRktHaTNaZHJDQThFRUFnVDhTMUp1OXk0X2x5X0pwdko=)
         SEGMENT_ANDROID_WRITE_KEY: Encrypted(Z0FBQUFBQmdQbHBNRjFseGJqWDYzOWhMNDNVUXV3bjNwV0ZwdklnazVIRlM4dFhSQTR5TmMtSnNnWVNDWWFQSUFqN0VNd0tnQnZYNWd5WWkyR1lZX2g1eDBCNko2eEdoRG5UNVpmUlQwa3VkZE85VHB4cWh5N3E4Zzd4cGctMUlxQmJiQU9Pdmd2ZkY=)
         SEGMENT_IOS_WRITE_KEY: Encrypted(Z0FBQUFBQmdQbGxMX1BlUF83NWp4UW81UW1Wbk4yVEVkYS0wREhzT0hDVURKZmVud3RnZE4ycnBsU3o5Nlp5NFBzOF9XTks4QWlyNnlOUl9rdGxxNmJRSk5vTWxvSjBzVXozckdaNE15cm9tdnRtSFZsT2RMTVFqTUs0SWJEMXRJNzJ3Nnk4R0ZRWlQ=)
+        SENTRY_DSN: Encrypted(Z0FBQUFBQmctVjA2cmZndlZ4ektsaEVIQnlZX0FyS1ZQZFpYYjRRTEY0NUVybjhVLUdvbGtZdHRBUDlpNkN4Wi1sRWozUnpTVjdzRXBqbklXSjVXRHdxcmpBbmlYX2NvMWpPUEpza2RCT3l5bzlDTHJDTG1NYkg2Z0N0aExEUkViOUZxanVGeGp0eW9nSVhTa2xZMkpSR2xtamExeUdaZkRkNmlCazNqNGc1THpRZ3dTdVRiMmpRPQ==)
         FCI_KEYSTORE_PASSWORD: Encrypted(Z0FBQUFBQmZxX25Lc1J2N0NjMUtVeUo5RFd1QTlGdS1tRGJ2eUFzZ1lCTGg5eFBUendyVTNheGxYTHRCc1RQMG85X0dRZ3hLZE1Eckl1TlVZOVI4RmR6ZU5XZ3VLU3ZURUlxUHNmdlFCVm94NmhFTVJ6NHIyMzg9)
         FCI_KEY_ALIAS: Encrypted(Z0FBQUFBQmZxX25LYXdDUjh5b2VqV1Fpdm9rT3VXT0l1bXRoOTJOckczYVY3cTNRZWw4ZEQtYkhNQ05OamR3VW90V0lXREdZbFRCaTZQbElGdDdUbEJndVlZeVpNRUdUdFE9PQ==)
         FCI_KEY_PASSWORD: Encrypted(Z0FBQUFBQmZxX25LUXRMZEplOWt3RjFyQ2VrTDhjOTM0MXlvVmNSaGEybnVGTWxVNmNla1Jhc3lidF92VHAxemVYU2FHZjRVZkktMVB4aHlrak5nR05uY0x4WnRwOE56WHdrQWU2MzQyQzFmQUdNN0pDcWFFRDg9)
