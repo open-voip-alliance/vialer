@@ -131,6 +131,9 @@ class VoipRepository with Loggable {
   Future<void> routeAudio(AudioRoute route) =>
       _phoneLib.audio.routeAudio(route);
 
+  Future<void> launchAudioRoutePicker() =>
+      _phoneLib.audio.launchAudioRoutePicker();
+
   Future<AudioState> get audioState => _phoneLib.audio.state;
 
   Future<void> routeAudioToBluetoothDevice(BluetoothAudioRoute route) =>

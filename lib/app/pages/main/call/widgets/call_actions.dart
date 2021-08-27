@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
@@ -331,6 +332,11 @@ class _AudioRouteButton extends StatelessWidget {
     BuildContext context,
     AudioState? audioState,
   ) async {
+    if (Platform.isIOS) {
+      context.read<CallerCubit>().launchIOSAudioRoutePicker();
+      return;
+    }
+
     final selectedRoute = await showDialog<dynamic>(
       context: context,
       builder: (context) {
