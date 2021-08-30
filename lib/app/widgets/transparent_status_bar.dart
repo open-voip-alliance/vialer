@@ -19,6 +19,8 @@ class TransparentStatusBar extends StatelessWidget {
       value: SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: brightness,
+        statusBarBrightness:
+            brightness == Brightness.dark ? Brightness.light : Brightness.dark,
       ),
       child: child,
     );
