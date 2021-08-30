@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:dartx/dartx.dart';
 
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
@@ -117,7 +118,18 @@ class SettingTileCategory extends StatelessWidget {
         return SettingTileCategory(
           icon: VialerSans.voipCloud,
           title: context.msg.main.settings.list.portalLinks.title,
-          children: children,
+          children: context.isIOS
+              ? children
+                  .mapIndexed(
+                    (index, child) => index != children.lastIndex
+                        ? Padding(
+                            padding: const EdgeInsets.only(bottom: 8),
+                            child: child,
+                          )
+                        : child,
+                  )
+                  .toList()
+              : children,
         );
       },
     );
