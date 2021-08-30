@@ -50,10 +50,19 @@ test:
     reports:
       junit: report.xml
 
-trigger codemagic build:
+build:
   image: curlimages/curl:latest
   stage: build
   script:
-    - >-
-      curl -H "Content-Type: application/json" -H "x-auth-token: $CODEMAGIC_API_TOKEN" 
-      \--data '{"appId": "'"$CODEMAGIC_APP_ID"'","workflowId": "merge-requests","branch": "'"$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME"'","environment": {"variables": {"GITLAB_MERGE_REQUEST_IID": "'"$CI_MERGE_REQUEST_IID"'"}}}' https://api.codemagic.io/builds
+    - |
+      wget -O jq https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64
+      chmod +x ./jq
+    - |
+      CODEMAGIC_BUILD_ID=`curl -s -H "Content-Type: application/json" -H "x-auth-token: $CODEMAGIC_API_TOKEN" --data '{"appId": "'"$CODEMAGIC_APP_ID"'","workflowId": "merge-requests","branch": "'"$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME"'","environment": {"variables": {"GITLAB_MERGE_REQUEST_IID": "'"$CI_MERGE_REQUEST_IID"'"}}}' https://api.codemagic.io/builds | ./jq '.buildId' -r`
+      get_codemagic_build_status () { local build_status=`curl -s -H "Content-Type: application/json" -H "x-auth-token: $CODEMAGIC_API_TOKEN" --request GET https://api.codemagic.io/builds/$CODEMAGIC_BUILD_ID | ./jq '.build.status' -r`; echo "$build_status"; }
+      CODEMAGIC_BUILD_STATUS="$(get_codemagic_build_status)"
+      echo "Waiting for the Codemagic build to finish, to see the build in Codemagic go to https://codemagic.io/app/$CODEMAGIC_APP_ID/build/$CODEMAGIC_BUILD_ID"
+      while [[ "$CODEMAGIC_BUILD_STATUS" != "finished" ]] && [[ "$CODEMAGIC_BUILD_STATUS" != "failed" ]] && [[ "$CODEMAGIC_BUILD_STATUS" != "canceled" ]]; do CODEMAGIC_BUILD_STATUS="$(get_codemagic_build_status)"; echo "... current Codemagic build status: $CODEMAGIC_BUILD_STATUS"; sleep 15; done
+      echo "Codemagic build finished with status: $CODEMAGIC_BUILD_STATUS"
+      echo "For the detailed build log go to https://codemagic.io/app/$CODEMAGIC_APP_ID/build/$CODEMAGIC_BUILD_ID"
+      if [[ "$CODEMAGIC_BUILD_STATUS" == "finished" ]]; then exit 0; else exit 1; fi;
