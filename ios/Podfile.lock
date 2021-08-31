@@ -169,7 +169,7 @@ CHECKOUT OPTIONS:
     :commit: 02fa2d7431b19c927b6b11d9f1adfc10663a435c
     :git: https://github.com/open-voip-alliance/iOS-VoIP-Lib.git
   PIL:
-    :commit: f1b2a32062a24fbd786d64e62a4c767baff17757
+    :commit: 7f93d31ef754a816d102367608a985665eb7128a
     :git: https://github.com/open-voip-alliance/iOS-Phone-Integration-Lib.git
 
 SPEC CHECKSUMS:
@@ -203,6 +203,6 @@ SPEC CHECKSUMS:
   url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
   webview_flutter: 3603125dfd3bcbc9d8d418c3f80aeecf331c068b
 
-PODFILE CHECKSUM: 90dc9daf36b0b106194fc723dfa91eb2ae8b0cd3
+PODFILE CHECKSUM: d9509b0dafa58b3f2e09ad1c7851c9e33c38b5c1
 
 COCOAPODS: 1.10.1
