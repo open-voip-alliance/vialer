@@ -128,10 +128,7 @@ class SettingTile extends StatelessWidget {
                 ),
           childFillWidth: isVoipAllowed,
           child: isVoipAllowed
-              ? Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: _StringEditSettingValue(setting),
-                )
+              ? _StringEditSettingValue(setting)
               : _StringSettingValue(setting),
         );
       },
@@ -144,16 +141,20 @@ class SettingTile extends StatelessWidget {
     required Widget description,
     required Widget child,
   }) {
-    return SettingTile(
-      childFillWidth: true,
-      description: description,
-      child: Padding(
-        padding: const EdgeInsets.only(
-          bottom: 4,
-          top: 10,
-        ),
-        child: child,
-      ),
+    return Builder(
+      builder: (context) {
+        return SettingTile(
+          childFillWidth: true,
+          description: description,
+          child: Padding(
+            padding: EdgeInsets.only(
+              bottom: context.isIOS ? 8 : 4,
+              top: context.isIOS ? 8 : 10,
+            ),
+            child: child,
+          ),
+        );
+      },
     );
   }
 
@@ -543,18 +544,20 @@ class _StringEditSettingValueState extends State<_StringEditSettingValue> {
         elevation: 0,
       );
     } else {
-      return SettingTile(
-        label: Text(widget.setting.value),
-        child: IconButton(
-          onPressed: _toggleEditing,
-          icon: const Icon(VialerSans.edit),
-        ),
-        padding: EdgeInsets.only(
-          top: Platform.isIOS ? 8 : 0,
-          left: 0,
-          right: 0,
-          bottom: Platform.isIOS ? 8 : 0,
-        ),
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Text(
+            widget.setting.value,
+            style: const TextStyle(
+              fontSize: 16,
+            ),
+          ),
+          IconButton(
+            onPressed: _toggleEditing,
+            icon: const Icon(VialerSans.edit),
+          ),
+        ],
       );
     }
   }
@@ -579,7 +582,10 @@ class _MultipleChoiceSettingValue<T> extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(right: 16, bottom: 8),
       child: InputDecorator(
-        decoration: const InputDecoration(border: OutlineInputBorder()),
+        decoration: InputDecoration(
+          border:
+              context.isAndroid ? const OutlineInputBorder() : InputBorder.none,
+        ),
         child: DropdownButtonHideUnderline(
           child: DropdownButton<T>(
             value: value,
