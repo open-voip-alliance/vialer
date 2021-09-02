@@ -128,6 +128,8 @@ class VoipRepository with Loggable {
 
   Future<void> toggleHold() => _phoneLib.actions.toggleHold();
 
+  Future<void> hold() => _phoneLib.actions.hold();
+
   Future<void> routeAudio(AudioRoute route) =>
       _phoneLib.audio.routeAudio(route);
 

@@ -18,6 +18,7 @@ import '../../../../../domain/usecases/call/call.dart';
 import '../../../../../domain/usecases/call/voip/begin_transfer.dart';
 import '../../../../../domain/usecases/call/voip/end.dart';
 import '../../../../../domain/usecases/call/voip/get_call_session_state.dart';
+import '../../../../../domain/usecases/call/voip/hold.dart';
 import '../../../../../domain/usecases/call/voip/launch_ios_audio_route_picker.dart';
 import '../../../../../domain/usecases/call/voip/merge_transfer.dart';
 import '../../../../../domain/usecases/call/voip/rate_voip_call.dart';
@@ -72,6 +73,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
   final _getCallSessionState = GetCallSessionState();
   final _toggleMuteVoipCall = ToggleMuteVoipCallUseCase();
   final _toggleHoldVoipCall = ToggleHoldVoipCallUseCase();
+  final _holdVoipCall = HoldVoipCallUseCase();
   final _sendVoipDtmf = SendVoipDtmfUseCase();
   final _endVoipCall = EndVoipCallUseCase();
   final _rateVoipCall = RateVoipCallUseCase();
@@ -389,6 +391,8 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
   Future<void> mergeTransfer() => _mergeTransfer();
 
   Future<void> toggleHoldVoipCall() => _toggleHoldVoipCall();
+
+  Future<void> holdVoipCall() => _holdVoipCall();
 
   Future<void> sendVoipDtmf(String dtmf) => _sendVoipDtmf(dtmf: dtmf);
 
