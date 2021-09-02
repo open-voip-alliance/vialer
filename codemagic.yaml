@@ -153,6 +153,11 @@ workflows:
       slack:
         channel: '#vialer_mobile_ci'
         notify_on_build_start: true
+      app_store_connect:
+        api_key: $APP_STORE_CONNECT_PRIVATE_KEY
+        key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
+        issuer_id: $APP_STORE_CONNECT_ISSUER_ID
+        submit_to_testflight: true
   merge-requests:
     name: merge requests
     max_build_duration: 60
