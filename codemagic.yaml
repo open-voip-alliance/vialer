@@ -142,6 +142,9 @@ workflows:
           keychain add-certificates --certificate /tmp/certificate.p12
           xcode-project use-profiles
           flutter build ipa --release --target=lib/app/main.dart --export-options-plist=/tmp/export-options.plist --build-number=$PROJECT_BUILD_NUMBER --verbose --dart-define BRAND=voys --dart-define SEGMENT_IOS_KEY=$SEGMENT_IOS_WRITE_KEY
+      - name: Set "What to test" for TestFlight
+        script: |
+          echo '[{"language":"en-US","text":"Main"},{"language":"nl-NL","text":"Main"}]' > release_notes.json
     artifacts:
       - build/**/outputs/**/*.apk
       - build/**/outputs/**/*.aab
@@ -215,6 +218,11 @@ workflows:
       - *flutter_test
       - *build_android_for_dev
       - *build_ios_for_dev
+      - name: Set "What to test" for TestFlight
+        script: |
+          cat << EOF > release_notes.json
+          [{"language":"en-US","text":"!${GITLAB_MERGE_REQUEST_IID}"},{"language":"nl-NL","text":"!${GITLAB_MERGE_REQUEST_IID}"}]
+          EOF
     artifacts:
       - build/**/outputs/**/*.apk
       - build/**/outputs/**/*.aab
@@ -508,6 +516,9 @@ workflows:
       - *flutter_test
       - *build_android_for_dev
       - *build_ios_for_dev
+      - name: Set "What to test" for TestFlight
+        script: |
+          echo '[{"language":"en-US","text":"Alpha"},{"language":"nl-NL","text":"Alpha"}]' > release_notes.json
     artifacts:
       - build/**/outputs/**/*.apk
       - build/**/outputs/**/*.aab
@@ -600,8 +611,10 @@ workflows:
       - *upgrade_gradle_in_device_info
       - *flutter_test
       - *build_android_for_dev
-      # TODO: Enable iOS builds again when we find a fix for the provisioning profile issue with branding
-      # - *build_ios_for_dev
+      - *build_ios_for_dev
+      - name: Set "What to test" for TestFlight
+        script: |
+          echo '[{"language":"en-US","text":"Beta"},{"language":"nl-NL","text":"Beta"}]' > release_notes.json
     artifacts:
       - build/**/outputs/**/*.apk
       - build/**/outputs/**/*.aab
@@ -694,8 +707,10 @@ workflows:
       - *upgrade_gradle_in_device_info
       - *flutter_test
       - *build_android_for_dev
-      # TODO: Enable iOS builds again when we find a fix for the provisioning profile issue with branding
-      # - *build_ios_for_dev
+      - *build_ios_for_dev
+      - name: Set "What to test" for TestFlight
+        script: |
+          echo '[{"language":"en-US","text":"Beta"},{"language":"nl-NL","text":"Beta"}]' > release_notes.json
     artifacts:
       - build/**/outputs/**/*.apk
       - build/**/outputs/**/*.aab
