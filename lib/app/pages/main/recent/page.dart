@@ -78,6 +78,7 @@ class RecentCallsPage extends StatelessWidget {
                         Text(context.msg.main.recent.tabs.missed.toUpperCase()),
                       ],
                     ),
+                    centerTitle: false,
                     title: Header(
                       context.msg.main.recent.title,
                       padding: const EdgeInsets.all(0),
