@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>notification_missed_call_title</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>Missed %#@callsCount@</string>
+		<key>callsCount</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>call</string>
+			<key>other</key>
+			<string>calls</string>
+		</dict>
+	</dict>
+	<key>notification_missed_call_subtitle</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%@ %#@callsCount@</string>
+		<key>callsCount</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string></string>
+			<key>other</key>
+			<string>%d missed calls</string>
+		</dict>
+	</dict>
+</dict>
+</plist>
