@@ -12,14 +12,26 @@ class Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const maxWidth = 411;
+
+    final mediaQuery = MediaQuery.of(context);
+
     return Padding(
       padding: padding,
-      child: Text(
-        data,
-        style: TextStyle(
-          color: Theme.of(context).primaryColor,
-          fontSize: 38,
-          fontWeight: FontWeight.bold,
+      child: MediaQuery(
+        data: mediaQuery.copyWith(
+          // Never make title bigger based on font settings.
+          textScaleFactor: mediaQuery.textScaleFactor.clamp(0, 1.0),
+        ),
+        child: Text(
+          data,
+          style: TextStyle(
+            color: Theme.of(context).primaryColor,
+            fontSize: mediaQuery.size.width.clamp(0, maxWidth) /
+                (maxWidth * 1.04) *
+                38, // Original font size
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
     );
