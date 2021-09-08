@@ -138,7 +138,7 @@ class _T9ContactsListState extends State<_T9ContactsList> {
 
                 return ListTile(
                   leading: ContactAvatar(contact),
-                  title: Text(contact.name),
+                  title: Text(contact.displayName),
                   subtitle: Text(contact.relevantPhoneNumber.value),
                   onTap: () => widget.controller.text =
                       contact.relevantPhoneNumber.value,

@@ -19,7 +19,7 @@ class ContactAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Avatar(
-      name: contact.name,
+      name: contact.displayName,
       backgroundColor: contact.calculateColor(context),
       image: contact.avatar,
       size: size,

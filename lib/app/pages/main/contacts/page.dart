@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:characters/characters.dart';
 import 'package:dartx/dartx.dart';
+import 'package:diacritic/diacritic.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
@@ -12,6 +13,7 @@ import '../../../resources/localizations.dart';
 import '../../../resources/theme.dart';
 import '../../../util/brand.dart';
 import '../../../util/conditional_capitalization.dart';
+import '../../../util/pigeon.dart';
 import '../../../util/widgets_binding_observer_registrar.dart';
 import '../../../widgets/stylized_button.dart';
 import '../widgets/conditional_placeholder.dart';
@@ -94,6 +96,7 @@ class _ContactPageState extends State<ContactsPage>
                           bottomLettersPadding: widget.bottomLettersPadding,
                           children: _mapAndFilterToWidgets(
                             state is ContactsLoaded ? state.contacts : [],
+                            state is ContactsLoaded ? state.contactSort : null,
                           ),
                           onRefresh: cubit.reloadContacts,
                         ),
@@ -109,27 +112,23 @@ class _ContactPageState extends State<ContactsPage>
     );
   }
 
-  List<Widget> _mapAndFilterToWidgets(Iterable<Contact> contacts) {
+  List<Widget> _mapAndFilterToWidgets(
+    Iterable<Contact> contacts,
+    ContactSort? contactSort,
+  ) {
     final widgets = <String, List<ContactItem>>{};
 
-    const numberKey = '#';
-    const specialKey = '&';
+    const nonLetterKey = '#';
 
     /// Whether the [char] is part of the *letter group*, which consists of
     /// any letter in any language (including non-latin alphabets)
     bool isInLetterGroup(String? char) =>
         char != null ? RegExp(r'\p{L}', unicode: true).hasMatch(char) : false;
 
-    /// Whether the [char] is part of the *number group*, which consists of
-    /// any number (`0-9`, `(`, and `+`).
-    bool isInNumberGroup(String? char) =>
-        char != null ? RegExp(r'[0-9\(\+]').hasMatch(char) : false;
-
     final searchTerm = _searchTerm?.toLowerCase();
     for (var contact in contacts) {
       if (searchTerm != null &&
-          !contact.name.toLowerCase().contains(searchTerm) &&
-          !contact.initials.toLowerCase().contains(searchTerm) &&
+          !contact.displayName.toLowerCase().contains(searchTerm) &&
           !contact.emails.any(
             (email) => email.value.toLowerCase().contains(searchTerm),
           ) &&
@@ -142,38 +141,52 @@ class _ContactPageState extends State<ContactsPage>
         continue;
       }
 
-      var firstCharacter = contact.initials.characters.firstOrNull ??
-          contact.phoneNumbers.firstOrNull?.value;
-
       final contactItem = ContactItem(contact: contact);
 
-      // Check special groups
-      if (isInNumberGroup(firstCharacter)) {
-        widgets[numberKey] ??= [];
-        widgets[numberKey]!.add(contactItem);
-      } else if (isInLetterGroup(firstCharacter)) {
-        widgets[firstCharacter!] ??= [];
+      /// Grouping contacts is based on the first letter of the
+      /// given-, family-, or display name or if that fails phone number.
+      var firstCharacter = contactSort!.orderBy == OrderBy.familyName
+          ? contact.familyName?.characters.firstOrNull ??
+              contact.displayName.characters.firstOrNull
+          : contact.givenName?.characters.firstOrNull ??
+              contact.displayName.characters.firstOrNull;
+
+      if (firstCharacter.isNullOrEmpty && contact.phoneNumbers.isNotEmpty) {
+        firstCharacter =
+            contact.phoneNumbers.first.value.characters.firstOrDefault('');
+      }
+
+      /// Group letters case sensitive with or without diacritics together.
+      firstCharacter = removeDiacritics(firstCharacter!).toUpperCase();
+      if (isInLetterGroup(firstCharacter)) {
+        widgets[firstCharacter] ??= [];
         widgets[firstCharacter]!.add(contactItem);
       } else {
-        widgets[specialKey] ??= [];
-        widgets[specialKey]!.add(contactItem);
+        widgets[nonLetterKey] ??= [];
+        widgets[nonLetterKey]!.add(contactItem);
       }
     }
 
-    return widgets.entries
-        .sortedWith((a, b) {
-          if (a.key == numberKey) {
-            return 1;
-          } else if (a.key == specialKey) {
-            return -1;
-          } else {
-            return a.key.compareTo(b.key);
-          }
-        })
+    return [
+      // Sort all contact widgets with a letter alphabetically.
+      ...widgets.entries
+          .filter((e) => e.key != nonLetterKey)
+          .sortedBy((e) => e.key),
+      // Place all contacts that belong to the non-letter group at the bottom.
+      ...widgets.entries.filter((e) => e.key == nonLetterKey).toList(),
+    ]
         .map(
           (e) => [
             GroupHeader(group: e.key),
-            ...e.value.sortedBy((e) => e.contact.name),
+            // Sort the contacts within the group by family- or given name
+            // or as fallback by the display name.
+            ...e.value.sortedBy(
+              (e) => ((contactSort!.orderBy == OrderBy.familyName
+                          ? e.contact.familyName
+                          : e.contact.givenName) ??
+                      e.contact.displayName)
+                  .toLowerCase(),
+            )
           ],
         )
         .flatten()

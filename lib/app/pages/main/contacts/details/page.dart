@@ -138,7 +138,7 @@ class _ContactDetailsPageState extends State<ContactDetailsPage>
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Text(
-                                  contact.name,
+                                  contact.displayName,
                                   style: const TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,

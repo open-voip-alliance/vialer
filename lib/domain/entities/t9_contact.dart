@@ -8,12 +8,11 @@ class T9Contact extends Contact {
   final Item relevantPhoneNumber;
 
   T9Contact({
-    required String initials,
-    required String name,
+    required String displayName,
     Uint8List? avatar,
     required this.relevantPhoneNumber,
-  }) : super(initials: initials, name: name, avatar: avatar);
+  }) : super(chosenName: displayName, avatar: avatar);
 
   @override
-  String toString() => '$name - $relevantPhoneNumber';
+  String toString() => '$chosenName - $relevantPhoneNumber';
 }

@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
 
 /// Avatar used in Contacts and Recents.
@@ -32,9 +33,9 @@ class Avatar extends StatelessWidget {
   }) : super(key: key);
 
   String get _letters {
-    final letters = name!.split(' ').map(
-          (word) => word.characters.first.toUpperCase(),
-        );
+    final letters = name!
+        .split(' ')
+        .map((word) => word.characters.firstOrDefault('').toUpperCase());
 
     if (letters.length == 1) {
       return letters.first;

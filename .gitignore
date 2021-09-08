@@ -42,6 +42,9 @@ lib/generated_plugin_registrant.dart
 *.g.dart
 *.chopper.dart
 *.i18n.dart
+lib/app/util/pigeon.dart
+ios/Runner/pigeon.h
+ios/Runner/pigeon.m
 
 # Android
 local.properties

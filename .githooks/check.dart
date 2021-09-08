@@ -175,14 +175,13 @@ Future<void> _runGenerationIfNeeded(
       return;
     }
   } else {
-    final hasGenerationChanges = files.any(
-      (s) =>
-          s.endsWith('i18n.yaml') ||
-          s.endsWith('lib/domain/repositories/db/database.dart') ||
-          s.contains(
-            RegExp(r'lib\/domain\/repositories\/services\/[A-z]+.dart'),
-          ),
-    );
+    final hasGenerationChanges = files.any((s) =>
+        s.endsWith('i18n.yaml') ||
+        s.endsWith('lib/domain/repositories/db/database.dart') ||
+        s.endsWith('pigeon/scheme.dart') ||
+        s.contains(
+          RegExp(r'lib\/domain\/repositories\/services\/[A-z]+.dart'),
+        ));
 
     if (!hasGenerationChanges) {
       return;
@@ -192,6 +191,24 @@ Future<void> _runGenerationIfNeeded(
   final process = await Process.start(
     'flutter',
     ['pub', 'run', 'build_runner', 'build', '--delete-conflicting-outputs'],
+  );
+
+  final process = await Process.start(
+    'flutter',
+    [
+      'pub',
+      'run',
+      'pigeon',
+      '--input',
+      'pigeon/scheme.dart',
+      '--dart_out',
+      'lib/app/util/pigeon.dart',
+      '--objc_header_out',
+      'ios/Runner/pigeon.h',
+      '--objc_source_out',
+      'ios/Runner/pigeon.m',
+      '--one_language',
+    ],
   );
 
   await _writeAndExitIfNotZero(

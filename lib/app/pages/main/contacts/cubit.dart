@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../domain/entities/permission.dart';
 import '../../../../domain/entities/permission_status.dart';
-
+import '../../../../domain/usecases/get_contact_sort.dart';
 import '../../../../domain/usecases/get_contacts.dart';
 import '../../../../domain/usecases/get_permission_status.dart';
 import '../../../../domain/usecases/onboarding/request_permission.dart';
@@ -19,6 +19,7 @@ class ContactsCubit extends Cubit<ContactsState> {
   final _getPermissionStatus = GetPermissionStatusUseCase();
   final _requestPermission = RequestPermissionUseCase();
   final _openAppSettings = OpenSettingsAppUseCase();
+  final _getContactSort = GetContactSortUseCase();
 
   ContactsCubit() : super(LoadingContacts()) {
     _checkContactsPermission();
@@ -48,7 +49,12 @@ class ContactsCubit extends Cubit<ContactsState> {
       emit(LoadingContacts());
     }
 
-    emit(ContactsLoaded(await _getContacts()));
+    emit(
+      ContactsLoaded(
+        await _getContacts(),
+        await _getContactSort(),
+      ),
+    );
   }
 
   Future<void> reloadContacts() async {

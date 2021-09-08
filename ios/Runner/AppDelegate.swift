@@ -19,6 +19,9 @@ import flutter_phone_lib
 
         startPhoneLib(registerPlugins)
 
+        let controller: FlutterViewController = window?.rootViewController as! FlutterViewController
+        ContactSortHostApiSetup(controller.binaryMessenger, ContactSortApi())
+
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
     }
 }

@@ -7,8 +7,10 @@ import 'item.dart';
 extension ContactMapper on Contact {
   domain.Contact toDomainEntity() {
     return domain.Contact(
-      initials: initials(),
-      name: displayName ?? '$givenName $middleName $familyName',
+      givenName: givenName,
+      middleName: middleName,
+      familyName: familyName,
+      chosenName: displayName,
       avatar: avatar,
       phoneNumbers: phones?.toDomainEntities().toList(growable: false) ?? [],
       emails: emails?.toDomainEntities().toList(growable: false) ?? [],
