@@ -10,7 +10,7 @@ class GetSurveyUseCase extends UseCase {
     required String language,
     required SurveyTrigger trigger,
   }) async {
-    // This use case acts like an API could in the future.
+    // This use case acts like possible future API.
 
     const surveyId = 'call-through-1';
 

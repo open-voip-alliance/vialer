@@ -120,7 +120,8 @@ abstract class CallProcessState extends CallOriginDetermined {
       );
 }
 
-class ShowCallThroughConfirmPage extends CallOriginDetermined {
+class ShowCallThroughConfirmPage extends CallOriginDetermined
+    implements CanCall {
   final String destination;
 
   const ShowCallThroughConfirmPage({
