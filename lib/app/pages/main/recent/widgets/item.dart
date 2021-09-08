@@ -50,7 +50,7 @@ class RecentCallItem extends StatelessWidget {
           context,
           callRecord.thirdPartyNumber,
         ),
-        showFallback: callRecord.contact?.name == null,
+        showFallback: callRecord.contact?.displayName == null,
         fallback: const Icon(VialerSans.phone, size: 20),
       ),
       title: Text(
@@ -190,5 +190,5 @@ class _RecentItemSubtitle extends StatelessWidget {
 
 extension CallDestinationLabel on CallRecordWithContact {
   String get displayLabel =>
-      contact?.name ?? thirdPartyName ?? thirdPartyNumber;
+      contact?.displayName ?? thirdPartyName ?? thirdPartyNumber;
 }

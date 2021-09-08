@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 
+import '../../../../../app/util/pigeon.dart';
 import '../../../../domain/entities/contact.dart';
 
 abstract class ContactsState extends Equatable {
@@ -20,8 +21,9 @@ class NoPermission extends ContactsState {
 
 class ContactsLoaded extends ContactsState {
   final Iterable<Contact> contacts;
+  final ContactSort contactSort;
 
-  ContactsLoaded(this.contacts);
+  ContactsLoaded(this.contacts, this.contactSort);
 
   @override
   List<Object?> get props => [contacts];

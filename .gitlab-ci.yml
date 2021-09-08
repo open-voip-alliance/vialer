@@ -16,6 +16,7 @@ analyze:
   script:
     - flutter pub get
     - flutter pub run build_runner build
+    - flutter pub run pigeon --input pigeon/scheme.dart --dart_out lib/app/util/pigeon.dart --objc_header_out ios/Runner/pigeon.h --objc_source_out ios/Runner/pigeon.m --one_language
     # TODO: Remove when pub package
     - cd voip_flutter_integration
     - flutter pub get
@@ -38,6 +39,7 @@ test:
     - cp .env.example .env
     - flutter pub get
     - flutter pub run build_runner build
+    - flutter pub run pigeon --input pigeon/scheme.dart --dart_out lib/app/util/pigeon.dart --objc_header_out ios/Runner/pigeon.h --objc_source_out ios/Runner/pigeon.m --one_language
     # TODO: Remove when pub package
     - cd voip_flutter_integration
     - flutter pub get

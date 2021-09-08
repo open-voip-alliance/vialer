@@ -98,8 +98,7 @@ class T9ContactsBloc extends Bloc<T9ContactsEvent, T9ContactsState> {
           .map(
             (contact) => contact.phoneNumbers.map(
               (number) => T9Contact(
-                initials: contact.initials,
-                name: contact.name,
+                displayName: contact.displayName,
                 avatar: contact.avatar,
                 relevantPhoneNumber: number,
               ),
@@ -109,7 +108,7 @@ class T9ContactsBloc extends Bloc<T9ContactsEvent, T9ContactsState> {
           // Only keep those whose name or number matches the regex.
           .where(
             (contact) =>
-                removeDiacritics(contact.name).contains(regex) ||
+                removeDiacritics(contact.displayName).contains(regex) ||
                 contact.relevantPhoneNumber.value.contains(regex),
           )
           .toList();
