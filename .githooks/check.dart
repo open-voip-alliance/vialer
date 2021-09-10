@@ -188,12 +188,17 @@ Future<void> _runGenerationIfNeeded(
     }
   }
 
-  final process = await Process.start(
+  final buildProcess = await Process.start(
     'flutter',
     ['pub', 'run', 'build_runner', 'build', '--delete-conflicting-outputs'],
   );
 
-  final process = await Process.start(
+  await _writeAndExitIfNotZero(
+    buildProcess,
+    messageOnFail: 'File generation has failed.',
+  );
+
+  final pigeonProcess = await Process.start(
     'flutter',
     [
       'pub',
@@ -212,8 +217,8 @@ Future<void> _runGenerationIfNeeded(
   );
 
   await _writeAndExitIfNotZero(
-    process,
-    messageOnFail: 'File generation has failed.',
+    pigeonProcess,
+    messageOnFail: 'Pigeon has failed.',
   );
 }
 
