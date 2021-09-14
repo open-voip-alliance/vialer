@@ -40,7 +40,8 @@ class ConfirmCubit extends Cubit<ConfirmState> with Loggable {
         showingConfirmPage: true,
       );
 
-  void notifyCanCall() {
+  void cancelCallThroughCall() {
+    logger.info('Cancel call-through call');
     _caller.notifyCanCall();
   }
 }

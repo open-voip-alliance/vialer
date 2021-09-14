@@ -27,7 +27,7 @@ class RecentCallRepository with Loggable {
   }) async {
     assert(page > 0);
     logger.info(
-      'Fetching recent calls page from API: $page',
+      'Fetching recent ${onlyMissedCalls ? 'missed' : 'all'} calls page: $page',
     );
 
     final response = await _service.getPersonalCalls(
@@ -86,7 +86,9 @@ class RecentCallRepository with Loggable {
       ),
     );
 
-    logger.info('Mapping calls to contacts');
+    logger.info(
+      'Mapping ${onlyMissedCalls ? 'missed' : 'all'} calls to contacts',
+    );
     return callRecords
         .map(
           (call) => call.withContact(

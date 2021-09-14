@@ -193,7 +193,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
         !showingConfirmPage;
 
     // First request to allow to make phone calls,
-    // otherwise don't show the call through page at all.
+    // otherwise don't show the call-through page at all.
     if (Platform.isAndroid) {
       // Requesting already allowed permissions won't reshow the dialog.
       final status = await _requestPhonePermission();
@@ -206,7 +206,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
     }
 
     if (shouldShowConfirmPage) {
-      logger.info('Going to call through page');
+      logger.info('Going to call-through page');
 
       emit(
         ShowCallThroughConfirmPage(
