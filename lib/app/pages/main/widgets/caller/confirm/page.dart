@@ -125,7 +125,7 @@ class ConfirmPageState extends State<ConfirmPage>
 
   void _onCancelButtonPressed(ConfirmCubit cubit) {
     _pop();
-    cubit.notifyCanCall();
+    cubit.cancelCallThroughCall();
   }
 
   Future<bool> _onWillPop() async {

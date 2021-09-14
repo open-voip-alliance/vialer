@@ -34,8 +34,8 @@ class RecentCallsPage extends StatelessWidget {
   }
 
   Future<void> _refreshCalls(BuildContext context) async {
-    context.read<MissedCallsCubit>().refreshRecentCalls();
     context.read<RecentCallsCubit>().refreshRecentCalls();
+    context.read<MissedCallsCubit>().refreshRecentCalls();
   }
 
   @override
