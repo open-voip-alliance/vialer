@@ -492,6 +492,7 @@ workflows:
       groups:
         - configuration
         - diagnostics
+        - vialer_android_firebase
         - vialer_ios_appstore_credentials
         - vialer_ios_certificate_credentials
       <<: *shared_config_env
