@@ -93,6 +93,10 @@ shared: # Custom properties to make workflows cleaner
         sed -i -e "s/LOGENTRIES_ANDROID_TOKEN=/LOGENTRIES_ANDROID_TOKEN=${LOGENTRIES_ANDROID_TOKEN}/g" .env
         sed -i -e "s/LOGENTRIES_IOS_TOKEN=/LOGENTRIES_IOS_TOKEN=${LOGENTRIES_IOS_TOKEN}/g" .env
         sed -i -e "s/COMMIT_HASH=/COMMIT_HASH=${FCI_COMMIT}/g" .env
+    - &set_up_sentry
+      name: Setting up Sentry
+      script: |
+        sed -i -e "s|SENTRY_DSN=|SENTRY_DSN=${SENTRY_DSN}|g" .env
     - &flutter_pub_get
       name: Running flutter pub get and generated code
       script: |
@@ -121,7 +125,7 @@ shared: # Custom properties to make workflows cleaner
     - &build_android_for_dev
       name: Building Android for dev and QA purposes
       script: |
-        cd . && flutter build apk --release --target=lib/app/main.dart --build-number=$PROJECT_BUILD_NUMBER -v --dart-define BRAND=voys --dart-define SEGMENT_ANDROID_KEY=$SEGMENT_ANDROID_WRITE_KEY
+        cd . && flutter build apk --release --target=lib/app/main.dart --build-number=$PROJECT_BUILD_NUMBER -v --dart-define BRAND=$BRAND --dart-define SEGMENT_ANDROID_KEY=$SEGMENT_ANDROID_WRITE_KEY
     - &build_ios_for_dev
       name: Building iOS with ad-hoc provisioning profile for dev and QA purposes
       script: |
@@ -138,7 +142,7 @@ shared: # Custom properties to make workflows cleaner
         echo $IOS_EXPORT_OPTIONS | base64 --decode > /tmp/export-options.plist
         keychain add-certificates --certificate /tmp/certificate.p12
         xcode-project use-profiles
-        flutter build ipa --release --target=lib/app/main.dart --export-options-plist=/tmp/export-options.plist --build-number=$PROJECT_BUILD_NUMBER --verbose --dart-define BRAND=voys --dart-define SEGMENT_IOS_KEY=$SEGMENT_IOS_WRITE_KEY
+        flutter build ipa --release --target=lib/app/main.dart --export-options-plist=/tmp/export-options.plist --build-number=$PROJECT_BUILD_NUMBER --verbose --dart-define BRAND=$BRAND --dart-define SEGMENT_IOS_KEY=$SEGMENT_IOS_WRITE_KEY
 
   brand_config:
     voys_env_vars: &brand_config_voys_env_vars
@@ -301,90 +305,6 @@ workflows:
             requests.put(URL, headers=HEADERS, json={
                'description': newDescription if currentDescription != newDescription else currentDescription + "\r\n\r\n" + message
             })
-  publish:
-    name: publish
-    <<: *shared_config
-    environment:
-      groups:
-        - configuration
-        - diagnostics
-        - voys_android_firebase
-      <<: *shared_config_env
-      vars:
-        <<: *brand_config_voys_env_vars
-    cache: *defaults_cache
-    triggering:
-      events:
-        - tag
-      branch_patterns:
-        - pattern: main
-          include: true
-          source: true
-        - pattern: main
-          include: true
-          source: false
-      tag_patterns:
-        - pattern: '*alpha*'
-          include: false
-        - pattern: '*beta*'
-          include: false
-    scripts:
-      - *set_up_keystore_properties
-      - *set_up_local_properties
-      - *set_up_keystore_file
-      - *set_up_firebase
-      - *set_up_env_file
-      - &set_up_sentry
-        name: Setting up Sentry
-        script: |
-          sed -i -e "s|SENTRY_DSN=|SENTRY_DSN=${SENTRY_DSN}|g" .env
-      - name: Setting version string
-        script: |
-          # get version tag
-          version_tag=$(git describe --abbrev=0)
-          version_tag="$(echo $version_tag | sed 's/^v//g')"
-          # set version in pubspec.yaml for showing it in Codemagic
-          sed -i -e "s/^version:.*//g" pubspec.yaml
-          echo "version: $version_tag" >> pubspec.yaml
-          version_tag=$(echo $version_tag | cut -f1 -d "-")
-          # Fix CFBundleVersion for iOS
-          sed -i -e "s/<string>\$(FLUTTER_BUILD_NAME)<\/string>/<string>${version_tag}<\/string>/g" ios/Runner/Info.plist
-      - *flutter_pub_get
-      - *upgrade_gradle_in_device_info
-      - *flutter_test
-      - &build_android_for_publish
-        name: Building Android for publishing to Google Play Store
-        script: |
-          cd . && flutter build appbundle --release --target=lib/app/main.dart --build-number=$PROJECT_BUILD_NUMBER --dart-define BRAND=$BRAND --dart-define SEGMENT_ANDROID_KEY=$SEGMENT_ANDROID_WRITE_KEY
-          # generate signed universal apk with user specified keys
-          android-app-bundle build-universal-apk \
-            --bundle build/**/outputs/**/*.aab \
-            --ks /tmp/keystore.keystore \
-            --ks-pass $FCI_KEYSTORE_PASSWORD \
-            --ks-key-alias $FCI_KEY_ALIAS_USERNAME \
-            --key-pass $FCI_KEY_ALIAS_PASSWORD
-      - &build_ios_for_publish
-        name: Building iOS with App Store provisioning profile for publishing to App store
-        script: |
-          pod repo update
-          find . -name "Podfile" -execdir pod install \;
-          keychain initialize
-          app-store-connect fetch-signing-files "com.voys.freedom" --type IOS_APP_STORE --create
-          keychain add-certificates
-          cd . && flutter build ios --release --target=lib/app/main.dart --build-number=$PROJECT_BUILD_NUMBER --no-codesign --dart-define BRAND=$BRAND --dart-define SEGMENT_IOS_KEY=$SEGMENT_IOS_WRITE_KEY
-          xcode-project use-profiles
-          cd . && xcode-project build-ipa --workspace "ios/Runner.xcworkspace" --scheme "Runner"
-    artifacts: *defaults_artifacts
-    publishing:
-      slack:
-        channel: '#vialer_mobile_deploys'
-        notify_on_build_start: true
-      google_play:
-        credentials: Encrypted(Z0FBQUFBQmZxX25MQTgxVHZ4Z1FpeGl4M0ZGQl9xbC03cmtxS0pEbEFqNEZWRHlQT19tRjU3YVByLXcwYU5VT3Y4R29veWVGS0xROVhnRmFVQko4cU1VbEJ2NTA5b3pGbktpSjFab3BRblRZWTFod0wwc2VESklBa3JwLVpGZ0hDYjU2a3Zrb2lVTEw4ZTFzM3BBZHVaZnFmRkpoZUJMYnhPTzRjaExLdWY5NlJBZnR1eElGcXI2Y1djZlVLN3VfOFl1UzJ3VmVEa3FSUTRlbGFxTndjdElnWHk2U0paLUhEa1hrQ0d3OE9mYV9HUjd6SGM3ekdGejdfRFU3STlJOV9yYnNYVTY3cldTeEpTRi04cUNBQzl6aHR6UkR3S3Q4QmxIWFotVE1jM3BiaXdiLUpjYUtzUTVqWFJydU1ZS1h3di1FdngzdUdWLUJ3bjV0WVZxbjZkaEFST3BIQm1oWFpoX3AzTjRQRzZ0VV9HUHd2QzJ4VXEzNmV2bFllTTIzd0U4WVdHMzBiemx6a1JCR0pkQ3U4dG9KazhkYjhkZGVyVXFNdjF0TEFtb1dCd2xibTByRGxhQU9JUlNJUE53cVQwSjRoNE1JYWVJTUdXcloyQzFDVXVsWGphUW93Zk5TMU01T0VXWFRtUlF5Y3BWemNldFJUbkxsWk5KcXBwUTZiMXR1Tm84aVUyM0xEcDNwb2dudlBsYldLeWctWHFKNUxpWlhqcUQ4dnVMUXZGdGNySXlhUHhXakh5Rkh4QTVqeGVLMWhvdThHa3RWMWtVVUxaZm9tbVpJd01FTEtEeUhibnZGMUtRbHpLZkxuRS1TT2h3S0N3Sno1d1RFRmZZbFJpR3N2OGZPbEd5cFlCWE1sWEdMcHVDNEJickRrc29zTTd0RGFUMVNpNHQyZFNuVkRxM1F2V0t1UE5UWVlaRllPcHJMbU0zQXlXQ1VKNG5neXd1SjI0bW1PVHpQUy1wMS1MaTJsZkZZZGVKU1lycmRVQVM0TkRwMlRvc0hFbEgxNlZDbjhySG9DTVhVb0lsc0ZlenZLOHJ0Z0FtR3B0UGhCZi1oRXNVVjBDSjJzeUZoem5zTWVtVmNoTDlud2xWdVFqREc1TDRZc3VEYWdvSzZ3U2FjMm1CUVNaMi1zblJicG1CVmFMNzg3aGVhcUlFa0RPZmlQQlV0QnNSNlpGNW5fOGpRTndWUUdIeGZOdmhBUXJMS1hPWmhRbGhHbGlMVUFVXzBVOVluOXNhdFhlTkJKY0xJQ0l3cXA5MnA1eTNiT05KSkRqaDNYbGtQX0lZNzc3ZXFJNDl1M20tYm9iX1AzWnlqZG5LdVVJMW9CTDFkQURZR2ZJOEJGQkgyVDVaV0NUUFkwRXZ3MHRYbFRvUzVOckdLOEhQSGhfVlltV2szNEZOVDQ5RXQzUHJqVDN5U1JfX18yTWpWSy1sVlU0dmdPN2xqeXU4Tm9JdFZWclh3Z2stQ0JmdjJ0YlZpMnk0amFXZnpJWGM1di0zVEc3bzJFU00yZWd4d0ItM1BaMVJzTDFPcUhQWVVnd0lMUXRHNDNOdk1kVDlYMVdaemUwN0plQUkzenZkY0JvcTJvZEhiNHpXZV9SakxENnlDeVVCU1ZzX243VmN6bEdhclljSzR6M1pCTXg5UTVqWjZsVGtFdV9OUnBLb3lRekxZQXFmU3JWa01KdWZXMGpiTUpVRDdCZGptRFFHNGw3WUlrazVuTmREUE15Ni16MllfQ3lLREVsclh4ODZhb3hEVUJkVmw5ZUg3WHJINUtkaDNsdUZhUzhUSE5waXppekdGZElRSUlGNEplZEQwZG9ueEwyNjZNNlBUZktXbzBTbW42SVFHakpmMUFjcFFrWTZIbTJuREw0Q1otdkd2U0ZpUnhjQTF3X0poQ2NmT0o0cm9JT3pMbzR6Q1hEd1pQOHlENmxiTXBsc1pld0prRkJOMTBsSkhGcHlYeGllN1YzTk9vS21YZnFFQUE3QzlMdmwydzdNTDFmUDRmUG5ZVUEyMjlSN2xCb0tEOHUxN0RINTNXN3FxYm9yQmw0OUtXTG1DekRLSWc1di1tekxhUHJCVGZoZWROdWpEcEdZd1ZIR0FCb21iN1VSRmJGX0VxYXY3T0ZLSnRTbEhTWnlHNllzNjJpUXNSQ2ZLTkpZMjdDZktsbUhEbHRWQkdzSl9wWjNUZGtidGE0bG51Q0ZQaXpKV3NucUxMUlNKa1NJa1Q2bmJ4Z0xCOHRyeXFSeFNrdEhHbUlwZXU1VlZOT2t5NnR4MjBIbVI3THYyaDlteFczMmhkMDA1Z3JUS0xFUndjbHhBMU56WlhfdGQyNThqSHdBRWhyNHdsMW84Y2RrdHNnNEpEQ21fYWNVZmEzSFlkV2N1cXNjTGRZcy04S0h0QnR6Q2xROHRlRWd2MVc1Z3duWDFNODUyZWNUNmdkbTJTbXFZTnU5TUt1WC1BS3NRaXpyQXZxaWtyNzlXMGV3bmZRd2hEQ3VjQTI5YU1IVVVfcjhSNVBYd3kzOEFraWJMakk4VkpSMVo0Z2pUZ3RHSElNeldCenY2UERJbVV4QUtnRHhBNGRJa2QxLTg0VVRpYkVsSUZpMHVWVmI3VUVYSDR5T04zLUJ0NHU0bFA1WlA1TDFFUW5aZXZHY0p6SWR1UElpOVNiYUhrSURkb3A4UHN1MHF2SVRtSmRodXdyb0dlRDc3X0hucXZQSmI5YzY4UC1LWGZKZTFyRjN2Z3lQMGFvdEZHRmVxSXN5cUNpeU5TODF2eUhaOXdJUlp6Qm9TbHg5cWExQVpGTHhnR2VuV0RRTF9nWF81ZUlhZ0FMMnZ0WGV2QldJOVM4dVlBYmVucnRjU2xzQnUzcjBnbl9LVGlPTU5ETHFvQUhFSURLRHB6RWFNVFdUX0V1dHNiaDZ6dV9ocXpUdmZwOF9uRjlJZVJMMW9JdG9pYnNmbTdaTm5qcUFhdHg5R2lFeE9Fd1VKS1VJRFZsTldPRzdRWGRrdzB6ZHE3MzRLOUtyZzY4dTktVlpYa3BiVVd0bFFKNW44VmVQeDl1emhSNWtERnlWeWF6WElrcVBjQWMyWFJFbTBkSEZ5SEdXSHViSDJ5WUx6YjJsT3BpcHdrUVRtSmlWc0xCVDdJV01YSzJXNWk1S1NlRGVzamdPRDVYUmpWbEhjWlF4RmR2S1ZoMG5PazdHTmg3S3VmRjhVT1MxNDhVRzhQb0FTTV9OakVYbDU2UVNLNS1HYjJ1WlBSeFFpSTB2SzlfZUdUT3FNQUtmVjBYbDJ2SHlsUlpUSG5Gd2FtSzE0Q3I5Uk1ScW8zbU5ZOE1wYzBpeWZzWUhxcTdyYjJHcUw5dnMtc1VibkVRMU00ckRJQW5uWjNYdEs2Y1NhYmY1Qms4cjBaN2k3aFRlZ0E2ZExLbmtBckxRQ3AzaXNWeGNoUDFxX3B3X3p6WXQ3cElMYVhydzZUSnI0VGx4QURDS1ZmYzFYU2hqblJ3UFJaaHJ4NUlNeU1OU1B5SUM0S2tsaUZFTEdZbGZfOEFoNkx2NWlzZ3ZYeURuM25UQnVHb2g5Skc4S2FCdTBjUUNUbWdsbW01LXJzenBKUEZ4TVFqV3VUbUdtQWVTcnFwNGNuV1ZfM1NNQ1hlaGdVUmZPcHRxZlpuODNVVWp4eVBPekxFS1pQZkxXZTViWlZnQnBaTTk5cjFxUWgyclp6MW1iV1NYVzhpckxGTFR4WlhuWmx3MXdOUmgyR1BnQW1HNTdBT3Jkd2VYRVEzRUJaUGhMMFFQZW4xWFN4N043T25JZTdUMWVhWlRkYzM4anVBZTg2bWVKckFUbzdzS21MRXBFZzU0YjV6MEVwSWE2LUo5aUJ2dlVRUmlkc0xkcWd4WGcyYkcxeHlZYUthUUV0d0h2Tm5zM1NOVmdDT3V1YUxVWjk3RzlPZkJJTDMxXzZnMHNVYWlkTFlMeDdTVDdQZmZrZEdteGJNMHZFVjhLcjlBcXowcFRwZG1qT2JzWkMwWEpvX28wTktUNHd2ZDFNb0FFM05VUmlsNHN3ZHUtV29mWnB1TG1KTGg5Y283MHVldjB5YUgxd2pCZ1l5R1N4UjAxR0d2T1FrcVMwR3Iwb2lOdjRqQTlocm1EVl9UUXlnOHF6QVN0VURwa3hKMXJtdFhYb19GMTFPYnZhTlA3c0F4bnc3a3h3akdRbGFWUEMyOENLMWJJV09XVC1obDN1VVoxQ2pGZGx4MWVZS3d4MlpDZEdIWTlTdHVZQTd6OWRnWG5rWmZmd2RJLWRqTGV2Zy1XcENmS0FGV19kRk9fY3F0bXh2VTF2dklOQ3QxRG9RPT0=)
-        track: internal
-      app_store_connect:
-        apple_id: iosdev.ci@wearespindle.com
-        password: Encrypted(Z0FBQUFBQmZxX25MejdhcF80RldKNzA1VGNIQkprb2xfTmQwSDNBUktaX01acU9WbHZrWUlhQlVLV1ZRcGg4V1pnaDNyOElaSkg1bFdPVml0R2RTd2RFVGhnNmdjdHp4dXgwMVNRdUpsMWloWTFmeGpkR3ZJTjQ9)
   staging:
     name: Staging
     <<: *shared_config
