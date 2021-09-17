@@ -35,7 +35,7 @@ shared: # Custom properties to make workflows cleaner
     environment: &shared_config_env
       flutter: 2.2.3
       xcode: latest
-      cocoapods: default
+      cocoapods: 1.10.1
   shared_scripts:
     - &publish_to_firebase
       name: Publish the app to Firebase App Distribution
