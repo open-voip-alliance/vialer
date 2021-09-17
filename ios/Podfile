@@ -33,7 +33,7 @@ target 'Runner' do
 
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
 
-  source 'https://gitlab.linphone.org/BC/public/podspec.git'
+  source 'https://gitlab.linphone.org/BC/public/podspec'
   source 'https://github.com/CocoaPods/Specs.git'
 
   pod 'iOSVoIPLib', :git => 'https://github.com/open-voip-alliance/iOS-VoIP-Lib.git'
