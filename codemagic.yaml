@@ -142,7 +142,7 @@ shared: # Custom properties to make workflows cleaner
         echo $IOS_EXPORT_OPTIONS | base64 --decode > /tmp/export-options.plist
         keychain add-certificates --certificate /tmp/certificate.p12
         xcode-project use-profiles
-        flutter build ipa --release --target=lib/app/main.dart --export-options-plist=/Users/builder/export_options.plist --build-number=$PROJECT_BUILD_NUMBER --verbose --dart-define BRAND=$BRAND --dart-define SEGMENT_IOS_KEY=$SEGMENT_IOS_WRITE_KEY
+        flutter build ipa --release --target=lib/app/main.dart --export-options-plist=/tmp/export-options.plist --build-number=$PROJECT_BUILD_NUMBER --verbose --dart-define BRAND=$BRAND --dart-define SEGMENT_IOS_KEY=$SEGMENT_IOS_WRITE_KEY
 
   brand_config:
     voys_env_vars: &brand_config_voys_env_vars
