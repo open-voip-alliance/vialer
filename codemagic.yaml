@@ -399,12 +399,12 @@ workflows:
           echo '[{"language":"en-US","text":"Beta"},{"language":"nl-NL","text":"Beta"}]' > release_notes.json
     artifacts: *defaults_artifacts
     publishing:
-      app_store_connect:  *ios_app_store_connect
-      slack:
-        channel: '#vialer_mobile_ci'
-        notify_on_build_start: true
-      scripts:
-        - *publish_to_firebase
+      #app_store_connect:  *ios_app_store_connect
+      #slack:
+        #channel: '#vialer_mobile_ci'
+        #notify_on_build_start: true
+      #scripts:
+        #- *publish_to_firebase
   beta-vialer:
     name: Vialer Beta
     <<: *shared_config
