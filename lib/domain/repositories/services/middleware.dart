@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:chopper/chopper.dart' hide JsonConverter;
 
+import '../../usecases/get_middleware_base_url.dart';
 import 'util.dart';
 
 part 'middleware.chopper.dart';
@@ -9,9 +10,12 @@ part 'middleware.chopper.dart';
 @ChopperApi(baseUrl: '/api/')
 abstract class MiddlewareService extends ChopperService {
   static MiddlewareService create() {
+    final _getMiddlewareBaseUrl = GetMiddlewareBaseUrlUseCase();
+    final _baseUrl = _getMiddlewareBaseUrl();
+
     return _$MiddlewareService(
       ChopperClient(
-        baseUrl: 'https://vialerpush.voipgrid.nl',
+        baseUrl: _baseUrl,
         converter: JsonConverter(),
         interceptors: [const AuthorizationInterceptor()],
       ),

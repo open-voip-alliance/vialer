@@ -27,6 +27,7 @@ final dependencyLocator = GetIt.instance;
 /// Pass `ui: false` to skip dependencies that are only used for the UI.
 Future<void> initializeDependencies({bool ui = true}) async {
   dependencyLocator
+    ..registerSingleton<BrandRepository>(BrandRepository())
     ..registerSingleton<ErrorTrackingRepository>(ErrorTrackingRepository())
     ..registerSingleton<VoipgridService>(
       VoipgridService.create(),
@@ -84,7 +85,6 @@ Future<void> initializeDependencies({bool ui = true}) async {
       ),
       dependsOn: [StorageRepository],
     )
-    ..registerSingleton<BrandRepository>(BrandRepository())
     ..registerSingleton<CountryRepository>(CountryRepository())
     ..registerSingleton<MetricsRepository>(MetricsRepository());
 
