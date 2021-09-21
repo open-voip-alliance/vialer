@@ -10,7 +10,7 @@ extension BrandContext on BuildContext {
 
 extension ThemeOfBrand on Brand {
   BrandTheme get theme {
-    if (isVialer) {
+    if (isVialer || isVialerStaging) {
       return const VialerTheme();
     } else if (isVoys || isVoysFreedom) {
       return const VoysTheme();

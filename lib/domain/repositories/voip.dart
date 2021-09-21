@@ -18,7 +18,9 @@ import '../entities/voip_config.dart';
 import '../usecases/enable_console_logging.dart';
 import '../usecases/enable_remote_logging_if_needed.dart';
 import '../usecases/get_build_info.dart';
+import '../usecases/get_encrypted_sip_url.dart';
 import '../usecases/get_setting.dart';
+import '../usecases/get_unencrypted_sip_url.dart';
 import '../usecases/get_user.dart';
 import '../usecases/metrics/track_push_followed_by_call.dart';
 import 'logging.dart';
@@ -32,6 +34,9 @@ class VoipRepository with Loggable {
   final _hasStartedCompleter = Completer<bool>();
 
   Future<bool> get hasStarted => _hasStartedCompleter.future;
+
+  final _getEncryptedSipUrl = GetEncryptedSipUrlUseCase();
+  final _getUnencryptedSipUrl = GetUnencryptedSipUrlUseCase();
 
   Future<void> initializeAndStart({
     required VoipConfig config,
@@ -77,8 +82,8 @@ class VoipRepository with Loggable {
         username: config.sipUserId.toString(),
         password: config.password,
         domain: config.useEncryption
-            ? 'sip.encryptedsip.com'
-            : 'sipproxy.voipgrid.nl',
+            ? _getEncryptedSipUrl()
+            : _getUnencryptedSipUrl(),
         port: config.useEncryption ? 5061 : 5060,
         secure: config.useEncryption,
       );
