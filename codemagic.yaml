@@ -391,8 +391,8 @@ workflows:
       - *set_version_string
       - *flutter_pub_get
       - *upgrade_gradle_in_device_info
-      - *flutter_test
-      - *build_android_for_dev
+      #- *flutter_test
+      #- *build_android_for_dev
       - *build_ios_for_dev
       - name: Set "What to test" for TestFlight
         script: |
