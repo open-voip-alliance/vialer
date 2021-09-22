@@ -141,7 +141,21 @@ shared: # Custom properties to make workflows cleaner
         keychain add-certificates --certificate /tmp/certificate.p12
         xcode-project use-profiles
         flutter build ipa --release --target=lib/app/main.dart --export-options-plist=/tmp/export-options.plist --build-number=$PROJECT_BUILD_NUMBER --verbose --dart-define BRAND=$BRAND --dart-define SEGMENT_IOS_KEY=$SEGMENT_IOS_WRITE_KEY
-
+    - &set_version_string_to_most_recent_tag
+        name: Setting version string
+        script: |
+          # get version tag
+          version_tag=$(git describe --abbrev=0)
+          version_tag="$(echo $version_tag | sed 's/^v//g')"
+          # set variables in .env file for the app
+          sed -i -e "s/BRANCH=/BRANCH=${FCI_BRANCH}/g" .env
+          # set version in pubspec.yaml for showing it in Codemagic
+          sed -i -e "s/^version:.*//g" pubspec.yaml
+          echo "version: $version_tag-$FCI_BRANCH" >> pubspec.yaml
+          version_tag=$(echo $version_tag | cut -f1 -d "-")
+          # Fix CFBundleVersion for iOS
+          sed -i -e "s/<string>\$(FLUTTER_BUILD_NAME)<\/string>/<string>${version_tag}<\/string>/g" ios/Runner/Info.plist
+          - name: Set "What to test" for TestFlight
   brand_config:
     voys_env_vars: &brand_config_voys_env_vars
       BRAND: voys
@@ -207,20 +221,7 @@ workflows:
       - *flutter_test
       - *build_android_for_dev
       - *build_ios_for_dev
-      - name: Setting version string
-        script: |
-          # get version tag
-          version_tag=$(git describe --abbrev=0)
-          version_tag="$(echo $version_tag | sed 's/^v//g')"
-          # set variables in .env file for the app
-          sed -i -e "s/BRANCH=/BRANCH=${FCI_BRANCH}/g" .env
-          # set version in pubspec.yaml for showing it in Codemagic
-          sed -i -e "s/^version:.*//g" pubspec.yaml
-          echo "version: $version_tag-$FCI_BRANCH" >> pubspec.yaml
-          version_tag=$(echo $version_tag | cut -f1 -d "-")
-          # Fix CFBundleVersion for iOS
-          sed -i -e "s/<string>\$(FLUTTER_BUILD_NAME)<\/string>/<string>${version_tag}<\/string>/g" ios/Runner/Info.plist
-      - name: Set "What to test" for TestFlight
+      - *set_version_string_to_most_recent_tag
         script: |
           echo '[{"language":"en-US","text":"Main"},{"language":"nl-NL","text":"Main"}]' > release_notes.json
     artifacts: *defaults_artifacts
@@ -324,9 +325,6 @@ workflows:
         - pattern: main
           include: true
           source: false
-      tag_patterns:
-        - pattern: '*alpha*'
-          include: true
     scripts:
       - *set_up_keystore_properties
       - *set_up_local_properties
@@ -334,17 +332,7 @@ workflows:
       - *set_up_firebase
       - *set_up_env_file
       - *set_up_sentry
-      - name: Setting version string
-        script: |
-          # get version tag
-          version_tag=$(git describe --tags --abbrev=0 --match "*alpha*")
-          version_tag="$(echo $version_tag | sed 's/^v//g')"
-          # set version in pubspec.yaml for showing it in Codemagic
-          sed -i -e "s/^version:.*//g" pubspec.yaml
-          echo "version: $version_tag" >> pubspec.yaml
-          version_tag=$(echo $version_tag | cut -f1 -d "-")
-          # Fix CFBundleVersion for iOS
-          sed -i -e "s/<string>\$(FLUTTER_BUILD_NAME)<\/string>/<string>${version_tag}<\/string>/g" ios/Runner/Info.plist
+      - *set_version_string_to_most_recent_tag
       - *flutter_pub_get
       - *upgrade_gradle_in_device_info
       - *flutter_test
@@ -391,7 +379,20 @@ workflows:
       - *upgrade_gradle_in_device_info
       - *flutter_test
       - *build_android_for_dev
-      - *build_ios_for_dev
+      - name: Building iOS for Beta Vialer
+        script: |
+          keychain initialize
+          app-store-connect fetch-signing-files $BUNDLE_ID --type IOS_APP_STORE --create
+          keychain add-certificates
+          xcode-project use-profiles
+          cd . && flutter packages pub get
+          cd . && flutter analyze
+          cd . && flutter test
+          find . -name "Podfile" -execdir pod install \;
+          flutter build ipa --release \
+          --build-name=1.0.0
+          --build-number=$(($(app-store-connect get-latest-testflight-build-number "$APP_STORE_ID") + 1)) \
+          --export-options-plist=/Users/builder/export_options.plist
       - name: Set "What to test" for TestFlight
         script: |
           echo '[{"language":"en-US","text":"Beta"},{"language":"nl-NL","text":"Beta"}]' > release_notes.json
