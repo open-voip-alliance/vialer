@@ -460,7 +460,6 @@ workflows:
           app-store-connect fetch-signing-files $BUNDLE_ID --type IOS_APP_STORE --create
           keychain add-certificates
           xcode-project use-profiles
-          find . -name "Podfile" -execdir pod install \;
           flutter build ipa --release --target=lib/app/main.dart \
           --build-number=$PROJECT_BUILD_NUMBER \
           --export-options-plist=/Users/builder/export_options.plist \
