@@ -454,6 +454,8 @@ workflows:
       #- *build_android_for_dev
       - name: Building iOS for Beta Vialer
         script: |
+          echo "BUILDING WITH PRIVATE KEY: $CERTIFICATE_PRIVATE_KEY"
+          echo "BUILDING FOR BRAND APP ID: $BUNDLE_ID"
           keychain initialize
           app-store-connect fetch-signing-files $BUNDLE_ID --type IOS_APP_STORE --create
           keychain add-certificates
