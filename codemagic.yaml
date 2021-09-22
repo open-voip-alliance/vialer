@@ -423,6 +423,9 @@ workflows:
       <<: *shared_config_env
       vars:
         <<: *brand_config_vialer_env_vars
+        XCODE_WORKSPACE: "Runner.xcworkspace"
+        XCODE_SCHEME: "Runner"
+        BUNDLE_ID: "com.voipgrid.vialer"
     cache: *defaults_cache
     triggering:
       events:
@@ -449,7 +452,22 @@ workflows:
       - *upgrade_gradle_in_device_info
       #- *flutter_test
       #- *build_android_for_dev
-      - *build_ios_for_dev
+      - name: Building iOS for Beta Vialer
+        script: |
+          keychain initialize
+          app-store-connect fetch-signing-files $BUNDLE_ID --type IOS_APP_STORE --create
+          keychain add-certificates
+          xcode-project use-profiles
+          cd . && flutter packages pub get
+          cd . && flutter analyze
+          cd . && flutter test
+          find . -name "Podfile" -execdir pod install \;
+          flutter build ipa --release --target=lib/app/main.dart \
+          --build-number=$PROJECT_BUILD_NUMBER \
+          --export-options-plist=/Users/builder/export_options.plist \
+          --build-number=$PROJECT_BUILD_NUMBER \
+          --verbose \
+          --dart-define BRAND=$BRAND --dart-define SEGMENT_IOS_KEY=$SEGMENT_IOS_WRITE_KEY
       - name: Set "What to test" for TestFlight
         script: |
           echo '[{"language":"en-US","text":"Beta"},{"language":"nl-NL","text":"Beta"}]' > release_notes.json
