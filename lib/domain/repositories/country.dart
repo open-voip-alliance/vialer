@@ -1,6 +1,5 @@
-import 'package:flutter_libphonenumber/flutter_libphonenumber.dart';
-
 import 'package:dartx/dartx.dart';
+import 'package:flutter_libphonenumber/flutter_libphonenumber.dart';
 
 import '../entities/country.dart';
 import '../repositories/mappers/country.dart';

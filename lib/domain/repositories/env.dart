@@ -1,4 +1,4 @@
-import 'package:flutter_dotenv/flutter_dotenv.dart' as dotenv;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class EnvRepository {
   Map<String, String>? __env;

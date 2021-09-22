@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:dartx/dartx.dart';
+import 'package:flutter/material.dart';
 
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';

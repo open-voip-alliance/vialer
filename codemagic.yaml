@@ -1,4 +1,4 @@
-flutter_version: &flutter_version 2.2.3
+flutter_version: &flutter_version 2.5.1
 
 workflows:
   main:

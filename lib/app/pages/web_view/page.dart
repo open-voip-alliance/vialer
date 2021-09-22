@@ -5,17 +5,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:webview_flutter/platform_interface.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
+import './cubit.dart';
+import './state.dart';
+import './widgets/navigation_controls.dart';
 import '../../../domain/entities/web_page.dart';
-
 import '../../pages/main/widgets/conditional_placeholder.dart';
 import '../../resources/localizations.dart';
 import '../../resources/theme.dart';
 import '../../util/conditional_capitalization.dart';
 import '../../widgets/stylized_button.dart';
-
-import './cubit.dart';
-import './state.dart';
-import './widgets/navigation_controls.dart';
 
 class WebViewPage extends StatefulWidget {
   final WebPage page;

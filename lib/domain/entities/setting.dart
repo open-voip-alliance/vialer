@@ -1,7 +1,7 @@
 // ignore_for_file: avoid_positional_boolean_parameters
 
-import 'package:meta/meta.dart';
 import 'package:dartx/dartx.dart';
+import 'package:meta/meta.dart';
 
 import 'audio_codec.dart';
 import 'availability.dart';
