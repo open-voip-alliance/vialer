@@ -37,6 +37,7 @@ class T9ContactsBloc extends Bloc<T9ContactsEvent, T9ContactsState> {
   @override
   Stream<Transition<T9ContactsEvent, T9ContactsState>> transformEvents(
     Stream<T9ContactsEvent> events,
+    // ignore: deprecated_member_use
     TransitionFunction<T9ContactsEvent, T9ContactsState> transitionFn,
   ) {
     // Only add a debounce to the filter event.
@@ -47,6 +48,7 @@ class T9ContactsBloc extends Bloc<T9ContactsEvent, T9ContactsState> {
         .where((event) => event is FilterT9Contacts)
         .debounceTime(const Duration(milliseconds: 200));
 
+    // ignore: deprecated_member_use
     return super.transformEvents(
       MergeStream([nonDebounceStream, debounceStream]),
       transitionFn,

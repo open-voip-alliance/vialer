@@ -18,8 +18,7 @@ class AnimatedVisibility extends StatefulWidget {
   _AnimatedVisibilityState createState() => _AnimatedVisibilityState();
 }
 
-class _AnimatedVisibilityState extends State<AnimatedVisibility>
-    with TickerProviderStateMixin {
+class _AnimatedVisibilityState extends State<AnimatedVisibility> {
   // Not called 'visible' since that can be confused with `widget.visible`.
   bool _visibilityEnabled = false;
 
@@ -54,7 +53,6 @@ class _AnimatedVisibilityState extends State<AnimatedVisibility>
     return AnimatedSize(
       curve: widget.curve,
       duration: widget.duration,
-      vsync: this,
       child: AnimatedOpacity(
         curve: widget.curve,
         duration: widget.duration,

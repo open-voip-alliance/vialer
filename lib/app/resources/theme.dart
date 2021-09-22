@@ -114,12 +114,10 @@ abstract class BrandTheme {
       primaryColorLight: primaryLight,
       appBarTheme: AppBarTheme(
         color: primaryLight,
-        textTheme: TextTheme(
-          headline6: TextStyle(
-            color: primaryDark,
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-          ),
+        titleTextStyle: TextStyle(
+          color: primaryDark,
+          fontSize: 24,
+          fontWeight: FontWeight.bold,
         ),
         iconTheme: IconThemeData(
           color: primaryDark,
@@ -206,12 +204,10 @@ class VoysTheme extends BrandTheme {
   ThemeData get themeData => super.themeData.copyWith(
         appBarTheme: super.themeData.appBarTheme.copyWith(
               color: primary,
-              textTheme: TextTheme(
-                headline6:
-                    super.themeData.appBarTheme.textTheme!.headline6!.copyWith(
-                          color: Colors.white,
-                        ),
-              ),
+              titleTextStyle:
+                  super.themeData.appBarTheme.titleTextStyle!.copyWith(
+                        color: Colors.white,
+                      ),
               iconTheme: const IconThemeData(
                 color: Colors.white,
               ),
