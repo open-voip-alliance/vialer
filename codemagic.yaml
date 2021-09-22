@@ -477,5 +477,5 @@ workflows:
       #slack:
       #channel: '#vialer_mobile_ci'
       #notify_on_build_start: true
-      scripts:
+      #scripts:
       #- *publish_to_firebase
