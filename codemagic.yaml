@@ -354,6 +354,9 @@ workflows:
       <<: *shared_config_env
       vars:
         <<: *brand_config_voys_env_vars
+        XCODE_WORKSPACE: "Runner.xcworkspace"
+        XCODE_SCHEME: "Runner"
+        BUNDLE_ID: "com.voys.app"
     cache: *defaults_cache
     triggering:
       events:
@@ -378,8 +381,8 @@ workflows:
       - *set_version_string
       - *flutter_pub_get
       - *upgrade_gradle_in_device_info
-      - *flutter_test
-      - *build_android_for_dev
+      #- *flutter_test
+      #- *build_android_for_dev
       - name: Building iOS for Beta Vialer
         script: |
           keychain initialize
@@ -390,21 +393,23 @@ workflows:
           cd . && flutter analyze
           cd . && flutter test
           find . -name "Podfile" -execdir pod install \;
-          flutter build ipa --release \
-          --build-name=1.0.0
-          --build-number=$(($(app-store-connect get-latest-testflight-build-number "$APP_STORE_ID") + 1)) \
-          --export-options-plist=/Users/builder/export_options.plist
+          flutter build ipa --release --target=lib/app/main.dart \
+          --build-number=$PROJECT_BUILD_NUMBER \
+          --export-options-plist=/Users/builder/export_options.plist \
+          --build-number=$PROJECT_BUILD_NUMBER \
+          --verbose \
+          --dart-define BRAND=$BRAND --dart-define SEGMENT_IOS_KEY=$SEGMENT_IOS_WRITE_KEY
       - name: Set "What to test" for TestFlight
         script: |
           echo '[{"language":"en-US","text":"Beta"},{"language":"nl-NL","text":"Beta"}]' > release_notes.json
     artifacts: *defaults_artifacts
-    publishing:
-      app_store_connect:  *ios_app_store_connect
-      slack:
-        channel: '#vialer_mobile_ci'
-        notify_on_build_start: true
-      scripts:
-        - *publish_to_firebase
+#    publishing:
+#      app_store_connect:  *ios_app_store_connect
+#      slack:
+#        channel: '#vialer_mobile_ci'
+#        notify_on_build_start: true
+#      scripts:
+#        - *publish_to_firebase
   beta-vialer:
     name: Vialer Beta
     <<: *shared_config
