@@ -452,12 +452,45 @@ workflows:
       - *upgrade_gradle_in_device_info
       #- *flutter_test
       #- *build_android_for_dev
+      - name: Alter project file
+        script: |
+          #!/usr/bin/env python3
+          import os
+          import re
+          print(os.getenv('IOS_TEAM_ID'))
+          print(os.getenv('BUNDLE_ID'))
+          FILE_PATH = "project.pbxproj"
+          REPLACEMENTS = {
+              os.getenv('IOS_TEAM_ID'): [
+                  "(DevelopmentTeam = )([A-Z0-9]+)(;)",
+                  "(DEVELOPMENT_TEAM = )([A-Z0-9]+)(;)",
+              ],
+              os.getenv('BUNDLE_ID'): [
+                  "(PRODUCT_BUNDLE_IDENTIFIER = )(.+)(;)",
+              ]
+          }
+
+          pbxprojFile = open(FILE_PATH, "r")
+          lines = "".join(pbxprojFile.readlines())
+
+
+          for replacement, candidates in REPLACEMENTS.items():
+              for candidate in candidates:
+                  lines = re.sub(
+                      r'' + candidate,
+                      r'\1' + replacement + r'\3',
+                      lines
+                  )
+
+
+          print(lines)
+          pbxprojFile = open(FILE_PATH, "w")
+          pbxprojFile.write("".join(lines))
       - name: Building iOS for Beta Vialer
         script: |
           echo "BUILDING WITH PRIVATE KEY: $CERTIFICATE_PRIVATE_KEY"
           echo "BUILDING FOR BRAND APP ID: $BUNDLE_ID"
           echo $EXPORT_OPTIONS | base64 --decode > /Users/builder/export_options.plist
-          tail /Users/builder/export_options.plist -n 500
           keychain initialize
           app-store-connect fetch-signing-files $BUNDLE_ID --type IOS_APP_STORE --create
           keychain add-certificates
