@@ -493,19 +493,23 @@ workflows:
           pbxprojFile.close
       - name: Building iOS for Beta Vialer
         script: |
-          echo "BUILDING WITH PRIVATE KEY: $CERTIFICATE_PRIVATE_KEY"
-          echo "BUILDING FOR BRAND APP ID: $BUNDLE_ID"
-          echo $EXPORT_OPTIONS | base64 --decode > /Users/builder/export_options.plist
+          pod repo update
+          export PATH="$PATH:/Users/builder/programs/flutter/bin/cache/dart-sdk/bin"
+          sed -i '' "s/XXXXX/$IOS_TEAM_ID/g" ios/Runner.xcodeproj/project.pbxproj
+          cd ios/ && pod install && cd ..
           keychain initialize
           app-store-connect fetch-signing-files $BUNDLE_ID --type IOS_APP_STORE --create
           keychain add-certificates
           xcode-project use-profiles
-          flutter build ipa --release --target=lib/app/main.dart \
+          flutter build ipa
+          --release \
+          --target=lib/app/main.dart \
           --build-number=$PROJECT_BUILD_NUMBER \
           --export-options-plist=/Users/builder/export_options.plist \
           --build-number=$PROJECT_BUILD_NUMBER \
           --verbose \
-          --dart-define BRAND=$BRAND --dart-define SEGMENT_IOS_KEY=$SEGMENT_IOS_WRITE_KEY
+          --dart-define BRAND=$BRAND \
+          --dart-define SEGMENT_IOS_KEY=$SEGMENT_IOS_WRITE_KEY \
       - name: Set "What to test" for TestFlight
         script: |
           echo '[{"language":"en-US","text":"Beta"},{"language":"nl-NL","text":"Beta"}]' > release_notes.json
