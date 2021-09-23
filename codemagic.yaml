@@ -457,7 +457,6 @@ workflows:
       vars:
         <<: *brand_config_vialer_env_vars
     cache: *defaults_cache
-    artifacts: *defaults_artifacts
     triggering:
       events:
         - tag
@@ -488,7 +487,7 @@ workflows:
       - name: Set "What to test" for TestFlight
         script: |
           echo '[{"language":"en-US","text":"Beta"},{"language":"nl-NL","text":"Beta"}]' > release_notes.json
-
+    artifacts: *defaults_artifacts
     publishing:
       app_store_connect:  *ios_app_store_connect
       #slack:
