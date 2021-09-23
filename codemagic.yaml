@@ -457,35 +457,40 @@ workflows:
           #!/usr/bin/env python3
           import os
           import re
-          print(os.getenv('IOS_TEAM_ID'))
-          print(os.getenv('BUNDLE_ID'))
-          FILE_PATH = "ios/Runner.xcodeproj/project.pbxproj"
+
+          iosTeamId = os.getenv('IOS_TEAM_ID')
+          iosBundleId = os.getenv('BUNDLE_ID')
+
+          if not isinstance(iosTeamId, str) or not isinstance(iosBundleId, str):
+            raise Exception("IOS_TEAM_ID and BUNDLE_ID environment variables must be set")
+
+          FILE_PATH = "project.pbxproj"
           REPLACEMENTS = {
-              os.getenv('IOS_TEAM_ID'): [
+              iosTeamId: [
                   "(DevelopmentTeam = )([A-Z0-9]+)(;)",
                   "(DEVELOPMENT_TEAM = )([A-Z0-9]+)(;)",
               ],
-              os.getenv('BUNDLE_ID'): [
+              iosBundleId: [
                   "(PRODUCT_BUNDLE_IDENTIFIER = )(.+)(;)",
               ]
           }
 
           pbxprojFile = open(FILE_PATH, "r")
-          lines = "".join(pbxprojFile.readlines())
-
+          contents = "".join(pbxprojFile.readlines())
+          pbxprojFile.close
 
           for replacement, candidates in REPLACEMENTS.items():
               for candidate in candidates:
-                  lines = re.sub(
+                  contents = re.sub(
                       r'' + candidate,
                       r'\1' + replacement + r'\3',
-                      lines
+                      contents
                   )
 
 
-          print(lines)
           pbxprojFile = open(FILE_PATH, "w")
-          pbxprojFile.write("".join(lines))
+          pbxprojFile.write("".join(contents))
+          pbxprojFile.close
       - name: Building iOS for Beta Vialer
         script: |
           echo "BUILDING WITH PRIVATE KEY: $CERTIFICATE_PRIVATE_KEY"
