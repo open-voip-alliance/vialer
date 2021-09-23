@@ -489,8 +489,8 @@ workflows:
         script: |
           echo '[{"language":"en-US","text":"Beta"},{"language":"nl-NL","text":"Beta"}]' > release_notes.json
 
-    #publishing:
-      #app_store_connect:  *ios_app_store_connect
+    publishing:
+      app_store_connect:  *ios_app_store_connect
       #slack:
       #channel: '#vialer_mobile_ci'
       #notify_on_build_start: true
