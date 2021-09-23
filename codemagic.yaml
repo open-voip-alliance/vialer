@@ -464,7 +464,7 @@ workflows:
           if not isinstance(iosTeamId, str) or not isinstance(iosBundleId, str):
             raise Exception("IOS_TEAM_ID and BUNDLE_ID environment variables must be set")
 
-          FILE_PATH = "project.pbxproj"
+          FILE_PATH = "ios/Runner.xcodeproj/project.pbxproj"
           REPLACEMENTS = {
               iosTeamId: [
                   "(DevelopmentTeam = )([A-Z0-9]+)(;)",
