@@ -423,8 +423,8 @@ workflows:
       <<: *shared_config_env
       vars:
         <<: *brand_config_vialer_env_vars
-        XCODE_WORKSPACE: "Runner.xcworkspace"
-        XCODE_SCHEME: "Runner"
+        #XCODE_WORKSPACE: "Runner.xcworkspace"
+        #XCODE_SCHEME: "Runner"
         BUNDLE_ID: "com.voipgrid.vialer"
     cache: *defaults_cache
     triggering:
