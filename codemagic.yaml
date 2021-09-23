@@ -155,7 +155,65 @@ shared: # Custom properties to make workflows cleaner
           version_tag=$(echo $version_tag | cut -f1 -d "-")
           # Fix CFBundleVersion for iOS
           sed -i -e "s/<string>\$(FLUTTER_BUILD_NAME)<\/string>/<string>${version_tag}<\/string>/g" ios/Runner/Info.plist
-          - name: Set "What to test" for TestFlight
+    - &brand_ios
+        name: Brand iOS
+        script: |
+          #!/usr/bin/env python3
+          import os
+          import re
+
+          iosTeamId = os.getenv('IOS_TEAM_ID')
+          iosBundleId = os.getenv('BUNDLE_ID')
+
+          if not isinstance(iosTeamId, str) or not isinstance(iosBundleId, str):
+            raise Exception("IOS_TEAM_ID and BUNDLE_ID environment variables must be set")
+
+          FILE_PATH = "ios/Runner.xcodeproj/project.pbxproj"
+          REPLACEMENTS = {
+              iosTeamId: [
+                  "(DevelopmentTeam = )([A-Z0-9]+)(;)",
+                  "(DEVELOPMENT_TEAM = )([A-Z0-9]+)(;)",
+              ],
+              iosBundleId: [
+                  "(PRODUCT_BUNDLE_IDENTIFIER = )(.+)(;)",
+              ]
+          }
+
+          pbxprojFile = open(FILE_PATH, "r")
+          contents = "".join(pbxprojFile.readlines())
+          pbxprojFile.close
+
+          for replacement, candidates in REPLACEMENTS.items():
+              for candidate in candidates:
+                  contents = re.sub(
+                      r'' + candidate,
+                      r'\1' + replacement + r'\3',
+                      contents
+                  )
+
+
+          pbxprojFile = open(FILE_PATH, "w")
+          pbxprojFile.write("".join(contents))
+          pbxprojFile.close
+    - &build_ios
+        name: Building iOS for Beta Vialer
+        script: |
+          flutter pub get
+          pod repo update
+          export PATH="$PATH:/Users/builder/programs/flutter/bin/cache/dart-sdk/bin"
+          cd ios/ && pod install && cd ..
+          keychain initialize
+          app-store-connect fetch-signing-files $BUNDLE_ID --type IOS_APP_STORE --create
+          keychain add-certificates
+          xcode-project use-profiles
+          flutter build ipa --release \
+          --target=lib/app/main.dart \
+          --build-number=$PROJECT_BUILD_NUMBER \
+          --export-options-plist=/Users/builder/export_options.plist \
+          --build-number=$PROJECT_BUILD_NUMBER \
+          --verbose \
+          --dart-define BRAND=$BRAND \
+          --dart-define SEGMENT_IOS_KEY=$SEGMENT_IOS_WRITE_KEY \
   brand_config:
     voys_env_vars: &brand_config_voys_env_vars
       BRAND: voys
@@ -354,8 +412,6 @@ workflows:
       <<: *shared_config_env
       vars:
         <<: *brand_config_voys_env_vars
-        XCODE_WORKSPACE: "Runner.xcworkspace"
-        XCODE_SCHEME: "Runner"
         BUNDLE_ID: "com.voys.app"
     cache: *defaults_cache
     triggering:
@@ -383,22 +439,8 @@ workflows:
       - *upgrade_gradle_in_device_info
       #- *flutter_test
       #- *build_android_for_dev
-      - name: Building iOS for Beta Vialer
-        script: |
-          keychain initialize
-          app-store-connect fetch-signing-files $BUNDLE_ID --type IOS_APP_STORE --create
-          keychain add-certificates
-          xcode-project use-profiles
-          cd . && flutter packages pub get
-          cd . && flutter analyze
-          cd . && flutter test
-          find . -name "Podfile" -execdir pod install \;
-          flutter build ipa --release --target=lib/app/main.dart \
-          --build-number=$PROJECT_BUILD_NUMBER \
-          --export-options-plist=/Users/builder/export_options.plist \
-          --build-number=$PROJECT_BUILD_NUMBER \
-          --verbose \
-          --dart-define BRAND=$BRAND --dart-define SEGMENT_IOS_KEY=$SEGMENT_IOS_WRITE_KEY
+      - *brand_ios
+      - *build_ios
       - name: Set "What to test" for TestFlight
         script: |
           echo '[{"language":"en-US","text":"Beta"},{"language":"nl-NL","text":"Beta"}]' > release_notes.json
@@ -452,64 +494,8 @@ workflows:
       - *upgrade_gradle_in_device_info
       #- *flutter_test
       #- *build_android_for_dev
-      - name: Alter project file
-        script: |
-          #!/usr/bin/env python3
-          import os
-          import re
-
-          iosTeamId = os.getenv('IOS_TEAM_ID')
-          iosBundleId = os.getenv('BUNDLE_ID')
-
-          if not isinstance(iosTeamId, str) or not isinstance(iosBundleId, str):
-            raise Exception("IOS_TEAM_ID and BUNDLE_ID environment variables must be set")
-
-          FILE_PATH = "ios/Runner.xcodeproj/project.pbxproj"
-          REPLACEMENTS = {
-              iosTeamId: [
-                  "(DevelopmentTeam = )([A-Z0-9]+)(;)",
-                  "(DEVELOPMENT_TEAM = )([A-Z0-9]+)(;)",
-              ],
-              iosBundleId: [
-                  "(PRODUCT_BUNDLE_IDENTIFIER = )(.+)(;)",
-              ]
-          }
-
-          pbxprojFile = open(FILE_PATH, "r")
-          contents = "".join(pbxprojFile.readlines())
-          pbxprojFile.close
-
-          for replacement, candidates in REPLACEMENTS.items():
-              for candidate in candidates:
-                  contents = re.sub(
-                      r'' + candidate,
-                      r'\1' + replacement + r'\3',
-                      contents
-                  )
-
-
-          pbxprojFile = open(FILE_PATH, "w")
-          pbxprojFile.write("".join(contents))
-          pbxprojFile.close
-      - name: Building iOS for Beta Vialer
-        script: |
-          flutter pub get
-          pod repo update
-          export PATH="$PATH:/Users/builder/programs/flutter/bin/cache/dart-sdk/bin"
-          sed -i '' "s/XXXXX/$IOS_TEAM_ID/g" ios/Runner.xcodeproj/project.pbxproj
-          cd ios/ && pod install && cd ..
-          keychain initialize
-          app-store-connect fetch-signing-files $BUNDLE_ID --type IOS_APP_STORE --create
-          keychain add-certificates
-          xcode-project use-profiles
-          flutter build ipa --release \
-          --target=lib/app/main.dart \
-          --build-number=$PROJECT_BUILD_NUMBER \
-          --export-options-plist=/Users/builder/export_options.plist \
-          --build-number=$PROJECT_BUILD_NUMBER \
-          --verbose \
-          --dart-define BRAND=$BRAND \
-          --dart-define SEGMENT_IOS_KEY=$SEGMENT_IOS_WRITE_KEY \
+      - *brand_ios
+      - *build_ios
       - name: Set "What to test" for TestFlight
         script: |
           echo '[{"language":"en-US","text":"Beta"},{"language":"nl-NL","text":"Beta"}]' > release_notes.json
