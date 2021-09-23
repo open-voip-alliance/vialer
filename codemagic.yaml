@@ -271,7 +271,7 @@ workflows:
       <<: *shared_config_env
       vars:
         <<: *brand_config_voys_env_vars
-    cache: *defaults_cache
+
     triggering:
       events:
         - push
@@ -401,11 +401,11 @@ workflows:
         - diagnostics
         - voys_android_firebase
         - voys_ios_appstore_credentials
-        - voys_ios_certificate_credentials
       <<: *shared_config_env
       vars:
         <<: *brand_config_voys_env_vars
     cache: *defaults_cache
+    artifacts: *defaults_artifacts
     triggering:
       events:
         - tag
@@ -432,17 +432,11 @@ workflows:
       #- *flutter_test
       #- *build_android_for_dev
       - *update_ios_signing_for_current_brand
-      - name: print other
-        script: |
-          echo $CERTIFICATE_PRIVATE_KEY
-      - name: print other2
-        script: |
-          echo $APP_STORE_CONNECT_PRIVATE_KEY
       - *build_ipa
       - name: Set "What to test" for TestFlight
-        script: |
+        script:
           echo '[{"language":"en-US","text":"Beta"},{"language":"nl-NL","text":"Beta"}]' > release_notes.json
-    artifacts: *defaults_artifacts
+
 #    publishing:
 #      app_store_connect:  *ios_app_store_connect
 #      slack:
@@ -459,11 +453,11 @@ workflows:
         - diagnostics
         - vialer_android_firebase
         - vialer_ios_appstore_credentials
-        - vialer_ios_certificate_credentials
       <<: *shared_config_env
       vars:
         <<: *brand_config_vialer_env_vars
     cache: *defaults_cache
+    artifacts: *defaults_artifacts
     triggering:
       events:
         - tag
@@ -494,7 +488,7 @@ workflows:
       - name: Set "What to test" for TestFlight
         script: |
           echo '[{"language":"en-US","text":"Beta"},{"language":"nl-NL","text":"Beta"}]' > release_notes.json
-    artifacts: *defaults_artifacts
+
     #publishing:
       #app_store_connect:  *ios_app_store_connect
       #slack:
