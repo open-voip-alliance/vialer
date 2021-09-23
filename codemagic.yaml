@@ -407,7 +407,6 @@ workflows:
       <<: *shared_config_env
       vars:
         <<: *brand_config_voys_env_vars
-
     cache: *defaults_cache
     triggering:
       events:
@@ -435,6 +434,12 @@ workflows:
       #- *flutter_test
       #- *build_android_for_dev
       - *update_ios_signing_for_current_brand
+      - name: print epxort optioins
+        script: |
+          tail -n 500 /Users/builder/export_options.plist
+      - name: print other
+        script: |
+          tail -n 500 ios/Runner.xcodeproj/project.pbxproj
       - *build_ipa
       - name: Set "What to test" for TestFlight
         script: |
