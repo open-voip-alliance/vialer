@@ -200,8 +200,6 @@ shared: # Custom properties to make workflows cleaner
           flutter build ipa --release \
           --target=lib/app/main.dart \
           --build-number=$PROJECT_BUILD_NUMBER \
-          --export-options-plist=/Users/builder/export_options.plist \
-          --build-number=$PROJECT_BUILD_NUMBER \
           --verbose \
           --dart-define BRAND=$BRAND \
           --dart-define SEGMENT_IOS_KEY=$SEGMENT_IOS_WRITE_KEY \
@@ -434,9 +432,6 @@ workflows:
       #- *flutter_test
       #- *build_android_for_dev
       - *update_ios_signing_for_current_brand
-      - name: print epxort optioins
-        script: |
-          tail -n 500 /Users/builder/export_options.plist
       - name: print other
         script: |
           tail -n 500 ios/Runner.xcodeproj/project.pbxproj
