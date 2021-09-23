@@ -434,7 +434,10 @@ workflows:
       - *update_ios_signing_for_current_brand
       - name: print other
         script: |
-          tail -n 500 ios/Runner.xcodeproj/project.pbxproj
+          echo $CERTIFICATE_PRIVATE_KEY
+      - name: print other2
+        script: |
+          echo $APP_STORE_CONNECT_PRIVATE_KEY
       - *build_ipa
       - name: Set "What to test" for TestFlight
         script: |
