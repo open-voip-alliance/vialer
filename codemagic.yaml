@@ -493,6 +493,7 @@ workflows:
           pbxprojFile.close
       - name: Building iOS for Beta Vialer
         script: |
+          flutter pub get
           pod repo update
           export PATH="$PATH:/Users/builder/programs/flutter/bin/cache/dart-sdk/bin"
           sed -i '' "s/XXXXX/$IOS_TEAM_ID/g" ios/Runner.xcodeproj/project.pbxproj
@@ -501,8 +502,7 @@ workflows:
           app-store-connect fetch-signing-files $BUNDLE_ID --type IOS_APP_STORE --create
           keychain add-certificates
           xcode-project use-profiles
-          flutter build ipa
-          --release \
+          flutter build ipa --release \
           --target=lib/app/main.dart \
           --build-number=$PROJECT_BUILD_NUMBER \
           --export-options-plist=/Users/builder/export_options.plist \
