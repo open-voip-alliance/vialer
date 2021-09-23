@@ -146,8 +146,8 @@ shared: # Custom properties to make workflows cleaner
           version_tag=$(echo $version_tag | cut -f1 -d "-")
           # Fix CFBundleVersion for iOS
           sed -i -e "s/<string>\$(FLUTTER_BUILD_NAME)<\/string>/<string>${version_tag}<\/string>/g" ios/Runner/Info.plist
-    - &brand_ios
-        name: Brand iOS
+    - &update_ios_signing_for_current_brand
+        name: Update iOS project files to sign current brand
         script: |
           #!/usr/bin/env python3
           import os
@@ -186,8 +186,8 @@ shared: # Custom properties to make workflows cleaner
           pbxprojFile = open(FILE_PATH, "w")
           pbxprojFile.write("".join(contents))
           pbxprojFile.close
-    - &build_ios
-        name: Building iOS for Beta Vialer
+    - &build_ipa
+        name: Build application (.ipa) for iOS
         script: |
           flutter pub get
           pod repo update
@@ -233,9 +233,11 @@ shared: # Custom properties to make workflows cleaner
   brand_config:
     voys_env_vars: &brand_config_voys_env_vars
       BRAND: voys
+      BUNDLE_ID: "com.voys.app"
       <<: *private_keys_voys_android_signing
     vialer_env_vars: &brand_config_vialer_env_vars
       BRAND: vialer
+      BUNDLE_ID: "com.voipgrid.vialer"
       <<: *private_keys_voys_android_signing
     staging_env_vars: &brand_config_staging_env_vars
       BRAND: vialerStaging
@@ -405,7 +407,7 @@ workflows:
       <<: *shared_config_env
       vars:
         <<: *brand_config_voys_env_vars
-        BUNDLE_ID: "com.voys.app"
+
     cache: *defaults_cache
     triggering:
       events:
@@ -432,8 +434,8 @@ workflows:
       - *upgrade_gradle_in_device_info
       #- *flutter_test
       #- *build_android_for_dev
-      - *brand_ios
-      - *build_ios
+      - *update_ios_signing_for_current_brand
+      - *build_ipa
       - name: Set "What to test" for TestFlight
         script: |
           echo '[{"language":"en-US","text":"Beta"},{"language":"nl-NL","text":"Beta"}]' > release_notes.json
@@ -458,9 +460,6 @@ workflows:
       <<: *shared_config_env
       vars:
         <<: *brand_config_vialer_env_vars
-        #XCODE_WORKSPACE: "Runner.xcworkspace"
-        #XCODE_SCHEME: "Runner"
-        BUNDLE_ID: "com.voipgrid.vialer"
     cache: *defaults_cache
     triggering:
       events:
@@ -487,8 +486,8 @@ workflows:
       - *upgrade_gradle_in_device_info
       #- *flutter_test
       #- *build_android_for_dev
-      - *brand_ios
-      - *build_ios
+      - *update_ios_signing_for_current_brand
+      - *build_ipa
       - name: Set "What to test" for TestFlight
         script: |
           echo '[{"language":"en-US","text":"Beta"},{"language":"nl-NL","text":"Beta"}]' > release_notes.json
