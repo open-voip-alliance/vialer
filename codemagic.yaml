@@ -432,6 +432,21 @@ workflows:
       - *upgrade_gradle_in_device_info
       #- *flutter_test
       #- *build_android_for_dev
+      - name: Output IOS_TEAM_ID
+        script:
+          echo $IOS_TEAM_ID
+      - name: Output APP_STORE_CONNECT_PRIVATE_KEY
+        script:
+          echo $APP_STORE_CONNECT_PRIVATE_KEY
+      - name: Output APP_STORE_CONNECT_ISSUER_ID
+        script:
+          echo $APP_STORE_CONNECT_ISSUER_ID
+      - name: Output APP_STORE_CONNECT_KEY_IDENTIFIER
+        script:
+          echo $APP_STORE_CONNECT_KEY_IDENTIFIER
+      - name: Output CERTIFICATE_PRIVATE_KEY
+        script:
+          echo $CERTIFICATE_PRIVATE_KEY
       - *update_ios_signing_for_current_brand
       - *build_ipa
       - name: Set "What to test" for TestFlight
@@ -483,6 +498,21 @@ workflows:
       - *upgrade_gradle_in_device_info
       #- *flutter_test
       #- *build_android_for_dev
+      - name: Output IOS_TEAM_ID
+        script:
+          echo $IOS_TEAM_ID
+      - name: Output APP_STORE_CONNECT_PRIVATE_KEY
+        script:
+          echo $APP_STORE_CONNECT_PRIVATE_KEY
+      - name: Output APP_STORE_CONNECT_ISSUER_ID
+        script:
+          echo $APP_STORE_CONNECT_ISSUER_ID
+      - name: Output APP_STORE_CONNECT_KEY_IDENTIFIER
+        script:
+          echo $APP_STORE_CONNECT_KEY_IDENTIFIER
+      - name: Output CERTIFICATE_PRIVATE_KEY
+        script:
+          echo $CERTIFICATE_PRIVATE_KEY
       - *update_ios_signing_for_current_brand
       - *build_ipa
       - name: Set "What to test" for TestFlight
