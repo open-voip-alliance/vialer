@@ -106,6 +106,8 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
   }
 
   Future<void> _startVoipIfNecessary() async {
+    if (!(await _getHasVoipEnabled())) return;
+
     try {
       await _startVoip();
       _voipCallEventSubscription =

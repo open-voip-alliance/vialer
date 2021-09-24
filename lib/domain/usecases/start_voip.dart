@@ -4,10 +4,10 @@ import '../entities/voip_config.dart';
 import '../repositories/auth.dart';
 import '../repositories/voip.dart';
 import '../use_case.dart';
+import 'get_allowed_voip_config.dart';
 import 'get_brand.dart';
 import 'get_build_info.dart';
 import 'get_is_voip_allowed.dart';
-import 'get_voip_config.dart';
 import 'register_to_voip_middleware.dart';
 
 class StartVoipUseCase extends UseCase {
@@ -16,7 +16,7 @@ class StartVoipUseCase extends UseCase {
 
   final _getIsVoipAllowed = GetIsVoipAllowedUseCase();
   final _registerToMiddleware = RegisterToVoipMiddlewareUseCase();
-  final _getVoipConfig = GetVoipConfigUseCase();
+  final _getNonEmptyVoipConfig = GetNonEmptyVoipConfigUseCase();
   final _getBrand = GetBrandUseCase();
   final _getBuildInfo = GetBuildInfoUseCase();
 
@@ -38,8 +38,8 @@ class StartVoipUseCase extends UseCase {
 
   /// Fetches the current voip config, configuring it as is required via the
   /// api and the latest config fetched from the server.
-  Future<VoipConfig> _fetchConfigAndConfigureAppAccount() async {
-    final config = await _getVoipConfig(latest: false);
+  Future<NonEmptyVoipConfig> _fetchConfigAndConfigureAppAccount() async {
+    final config = await _getNonEmptyVoipConfig(latest: false);
 
     if (config.useOpus && config.useEncryption) return config;
 
@@ -48,6 +48,6 @@ class StartVoipUseCase extends UseCase {
       useOpus: true,
     );
 
-    return _getVoipConfig(latest: true);
+    return _getNonEmptyVoipConfig(latest: true);
   }
 }

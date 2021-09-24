@@ -39,7 +39,7 @@ class VoipRepository with Loggable {
   final _getUnencryptedSipUrl = GetUnencryptedSipUrlUseCase();
 
   Future<void> initializeAndStart({
-    required VoipConfig config,
+    required NonEmptyVoipConfig config,
     required Brand brand,
     required BuildInfo buildInfo,
   }) async {
@@ -78,7 +78,7 @@ class VoipRepository with Loggable {
     _hasStartedCompleter.complete(true);
   }
 
-  Auth _createAuth(VoipConfig config) => Auth(
+  Auth _createAuth(NonEmptyVoipConfig config) => Auth(
         username: config.sipUserId.toString(),
         password: config.password,
         domain: config.useEncryption
@@ -97,7 +97,7 @@ class VoipRepository with Loggable {
     );
   }
 
-  Future<void> start(VoipConfig config) async => _phoneLib.start(
+  Future<void> start(NonEmptyVoipConfig config) async => _phoneLib.start(
         await _createPreferences(config),
         _createAuth(config),
       );
@@ -121,10 +121,10 @@ class VoipRepository with Loggable {
 
   Stream<Event> get events => _phoneLib.events;
 
-  Future<void> register(VoipConfig voipConfig) =>
+  Future<void> register(NonEmptyVoipConfig voipConfig) =>
       _Middleware().register(voipConfig);
 
-  Future<void> unregister(VoipConfig voipConfig) =>
+  Future<void> unregister(NonEmptyVoipConfig voipConfig) =>
       _Middleware().unregister(voipConfig);
 
   Future<bool> get isMuted => _phoneLib.audio.isMicrophoneMuted;
@@ -174,9 +174,10 @@ class _Middleware with Loggable {
 
   String? get _token => _storageRepository.pushToken;
 
-  VoipConfig? get _config => _storageRepository.voipConfig;
+  NonEmptyVoipConfig? get _config =>
+      _storageRepository.voipConfig as NonEmptyVoipConfig?;
 
-  Future<void> register(VoipConfig? voipConfig) async {
+  Future<void> register(NonEmptyVoipConfig? voipConfig) async {
     logger.info('Registering..');
 
     final dnd = await _getDndSetting();
@@ -245,7 +246,7 @@ class _Middleware with Loggable {
     logger.info('Registered!');
   }
 
-  Future<void> unregister(VoipConfig? voipConfig) async {
+  Future<void> unregister(NonEmptyVoipConfig? voipConfig) async {
     assert(voipConfig?.sipUserId != null);
 
     logger.info('Unregistering..');
@@ -304,7 +305,7 @@ class _Middleware with Loggable {
 
     if (dnd.value == true) {
       available = false;
-      logger.warning('Overriding available to false as user has enabled DND.');
+      logger.warning('Overriding available to false as user has enabled DND');
     }
 
     final response = await _service.callResponse(

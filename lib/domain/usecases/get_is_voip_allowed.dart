@@ -1,11 +1,9 @@
 import '../use_case.dart';
-import 'get_user.dart';
+import 'get_voip_config.dart';
 
 class GetIsVoipAllowedUseCase extends UseCase {
-  final _getUser = GetUserUseCase();
+  final _getVoipConfig = GetVoipConfigUseCase();
 
-  Future<bool> call() async {
-    final user = await _getUser(latest: false);
-    return user?.appAccountId != null;
-  }
+  Future<bool> call() =>
+      _getVoipConfig(latest: false).then((c) => c.isAllowedCalling);
 }
