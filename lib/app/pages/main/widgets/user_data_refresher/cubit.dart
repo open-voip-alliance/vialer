@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../domain/usecases/get_is_voip_allowed.dart';
 import '../../../../../domain/usecases/get_latest_availability.dart';
 import '../../../../../domain/usecases/get_user.dart';
 import '../../../../../domain/usecases/get_voip_config.dart';
@@ -17,6 +18,7 @@ class UserDataRefresherCubit extends Cubit<UserDataRefresherState>
   final _getLatestAvailability = GetLatestAvailabilityUseCase();
   final _getVoipConfig = GetVoipConfigUseCase();
   final _registerToVoipMiddleware = RegisterToVoipMiddlewareUseCase();
+  final _isVoipAllowed = GetIsVoipAllowedUseCase();
 
   UserDataRefresherCubit() : super(const NotRefreshing()) {
     refresh();
@@ -27,7 +29,11 @@ class UserDataRefresherCubit extends Cubit<UserDataRefresherState>
     emit(const Refreshing());
     await _getUser(latest: true);
     await _getLatestAvailability();
-    await _getVoipConfig(latest: true);
+
+    if (await _isVoipAllowed()) {
+      await _getVoipConfig(latest: true);
+    }
+
     await _registerToVoipMiddleware();
     emit(const NotRefreshing());
     logger.info('Finished refreshing latest user data');

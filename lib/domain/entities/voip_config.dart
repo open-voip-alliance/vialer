@@ -5,19 +5,31 @@ part 'voip_config.g.dart';
 
 @JsonSerializable()
 class VoipConfig extends Equatable {
+  @JsonKey(name: 'allow_appaccount_voip_calling')
+  final bool isAllowedCalling;
+
   @JsonKey(name: 'appaccount_account_id', fromJson: _sipUserIdFromJson)
-  final String sipUserId;
+  final String? sipUserId;
 
   @JsonKey(name: 'appaccount_password')
-  final String password;
+  final String? password;
 
   @JsonKey(name: 'appaccount_use_encryption')
-  final bool useEncryption;
+  final bool? useEncryption;
 
   @JsonKey(name: 'appaccount_use_opus')
-  final bool useOpus;
+  final bool? useOpus;
+
+  bool get isEmpty =>
+      sipUserId == null &&
+      password == null &&
+      useEncryption == null &&
+      useOpus == null;
+
+  bool get isNotEmpty => !isEmpty;
 
   const VoipConfig({
+    required this.isAllowedCalling,
     required this.sipUserId,
     required this.password,
     required this.useEncryption,
@@ -26,6 +38,7 @@ class VoipConfig extends Equatable {
 
   @override
   List<Object?> get props => [
+        isAllowedCalling,
         sipUserId,
         password,
         useEncryption,
@@ -34,6 +47,7 @@ class VoipConfig extends Equatable {
 
   @override
   String toString() => '$runtimeType('
+      'isAllowedCalling: $isAllowedCalling, '
       'sipUserId: $sipUserId, '
       'useEncryption: $useEncryption, '
       'useOpus: $useOpus)';
@@ -42,7 +56,34 @@ class VoipConfig extends Equatable {
       _$VoipConfigFromJson(json);
 
   Map<String, dynamic> toJson() => _$VoipConfigToJson(this);
+
+  NonEmptyVoipConfig toNonEmptyConfig() => NonEmptyVoipConfig.from(this);
 }
 
-String _sipUserIdFromJson(dynamic json) =>
-    json is String ? json : json.toString();
+String? _sipUserIdFromJson(dynamic json) =>
+    json is String ? json : json?.toString();
+
+class NonEmptyVoipConfig extends VoipConfig {
+  @override
+  final String sipUserId;
+  @override
+  final String password;
+  @override
+  final bool useEncryption;
+  @override
+  final bool useOpus;
+
+  NonEmptyVoipConfig.from(VoipConfig config)
+      : assert(config.isNotEmpty),
+        sipUserId = config.sipUserId!,
+        password = config.password!,
+        useEncryption = config.useEncryption!,
+        useOpus = config.useOpus!,
+        super(
+          isAllowedCalling: config.isAllowedCalling,
+          sipUserId: config.sipUserId,
+          password: config.password,
+          useEncryption: config.useEncryption,
+          useOpus: config.useOpus,
+        );
+}

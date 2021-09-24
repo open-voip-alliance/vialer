@@ -22,6 +22,6 @@ class GetVoipConfigUseCase extends UseCase {
       _storageRepository.voipConfig = voipConfig;
     }
 
-    return voipConfig;
+    return !voipConfig.isEmpty ? voipConfig.toNonEmptyConfig() : voipConfig;
   }
 }

@@ -20,8 +20,9 @@ class AvailabilityTile extends StatelessWidget {
   });
 
   bool get _shouldDisplayAvailabilityInfo =>
-      userAvailabilityType == UserAvailabilityType.elsewhere ||
-      userAvailabilityType == UserAvailabilityType.notAvailable;
+      (userAvailabilityType == UserAvailabilityType.elsewhere ||
+          userAvailabilityType == UserAvailabilityType.notAvailable) &&
+      availability.phoneAccounts.isNotEmpty;
 
   String _text(BuildContext context) {
     var info = _createInfo(
@@ -79,12 +80,12 @@ class AvailabilityTile extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           child,
-          Visibility(
-            visible: _shouldDisplayAvailabilityInfo,
-            child: Column(
+          if (_shouldDisplayAvailabilityInfo)
+            Column(
               children: [
                 Padding(
                   padding: const EdgeInsets.only(
+                    top: 8,
                     bottom: 10,
                   ),
                   child: StyledText(
@@ -110,7 +111,6 @@ class AvailabilityTile extends StatelessWidget {
                 ),
               ],
             ),
-          ),
         ],
       ),
     );
