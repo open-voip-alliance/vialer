@@ -162,6 +162,7 @@ shared: # Custom properties to make workflows cleaner
           xcode-project use-profiles
           flutter build ipa --release \
           --target=lib/app/main.dart \
+          --export-options-plist=ios/ExportOptions.plist \
           --build-number=$PROJECT_BUILD_NUMBER \
           --verbose \
           --dart-define BRAND=$BRAND \
