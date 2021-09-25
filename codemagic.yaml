@@ -186,8 +186,6 @@ shared: # Custom properties to make workflows cleaner
           pbxprojFile = open(FILE_PATH, "w")
           pbxprojFile.write("".join(contents))
           pbxprojFile.close
-    - name: Output probject file
-      script: echo ios/Runner.xcodeproj/project.pbxproj
     - &build_ipa
         name: Build application (.ipa) for iOS
         script: |
@@ -434,6 +432,8 @@ workflows:
       - *upgrade_gradle_in_device_info
       #- *flutter_test
       #- *build_android_for_dev
+      - name: Output probject file
+        script: echo ios/Runner.xcodeproj/project.pbxproj
       - *update_ios_signing_for_current_brand
       - *build_ipa
       - name: Set "What to test" for TestFlight
