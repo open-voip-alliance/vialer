@@ -237,7 +237,7 @@ shared: # Custom properties to make workflows cleaner
     vialer_env_vars: &brand_config_vialer_env_vars
       BRAND: vialer
       BUNDLE_ID: "com.voipgrid.vialer"
-      <<: *private_keys_voys_android_signing
+      <<: *private_keys_vialer_android_signing
     staging_env_vars: &brand_config_staging_env_vars
       BRAND: vialerStaging
   ios:
