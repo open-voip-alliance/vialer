@@ -186,6 +186,8 @@ shared: # Custom properties to make workflows cleaner
           pbxprojFile = open(FILE_PATH, "w")
           pbxprojFile.write("".join(contents))
           pbxprojFile.close
+    - name: Output probject file
+      script: echo ios/Runner.xcodeproj/project.pbxproj
     - &build_ipa
         name: Build application (.ipa) for iOS
         script: |
