@@ -435,7 +435,7 @@ workflows:
 
       - *update_ios_signing_for_current_brand
       - name: Output probject file
-        script: echo ios/Runner.xcodeproj/project.pbxproj
+        script: tail -n 2000 ios/Runner.xcodeproj/project.pbxproj
       - *build_ipa
       - name: Set "What to test" for TestFlight
         script:
