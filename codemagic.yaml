@@ -194,7 +194,12 @@ shared: # Custom properties to make workflows cleaner
           export PATH="$PATH:/Users/builder/programs/flutter/bin/cache/dart-sdk/bin"
           cd ios/ && pod install && cd ..
           keychain initialize
-          app-store-connect fetch-signing-files $BUNDLE_ID --type IOS_APP_STORE --create
+          app-store-connect list-profiles
+          app-store-connect list-devices
+          app-store-connect list-bundle-ids
+          app-store-connect fetch-signing-files $BUNDLE_ID \
+          --type IOS_APP_STORE \
+          --create
           keychain add-certificates
           xcode-project use-profiles
           flutter build ipa --release \
