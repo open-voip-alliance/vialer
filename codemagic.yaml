@@ -359,7 +359,7 @@ workflows:
         issuer_id: $APP_STORE_CONNECT_ISSUER_ID
         submit_to_testflight: true
         beta_groups:
-          - Internal Testers
+          - Beta Testers
       slack:
         channel: '#vialer_mobile_ci'
         notify_on_build_start: true
@@ -368,7 +368,7 @@ workflows:
         android:
           app_id: $FIREBASE_APP_ID
           groups:
-            - internal-alpha
+            - beta
 
   beta-vialer:
     name: Vialer Beta
@@ -423,4 +423,4 @@ workflows:
         android:
           app_id: $FIREBASE_APP_ID
           groups:
-            - alpha
+            - beta
