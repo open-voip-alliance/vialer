@@ -246,6 +246,7 @@ workflows:
         submit_to_testflight: true
         beta_groups:
           - Internal Testers
+
   merge-requests:
     name: merge requests
     <<: *config
@@ -283,6 +284,7 @@ workflows:
           - Internal Testers
       scripts:
         - *update_gitlab_merge_request_with_build_url
+
   staging:
     name: Staging
     <<: *config
@@ -312,6 +314,7 @@ workflows:
       - *build_apk
       - *build_ipa
     artifacts: *defaults_artifacts
+
   beta-voys:
     name: Voys Beta
     <<: *config
@@ -366,6 +369,7 @@ workflows:
           app_id: $FIREBASE_APP_ID
           groups:
             - internal-alpha
+
   beta-vialer:
     name: Vialer Beta
     <<: *config
@@ -374,6 +378,7 @@ workflows:
         - configuration
         - diagnostics
         - vialer_android_firebase
+        - vialer_keystone_credentials
         - vialer_ios_appstore_credentials
       <<: *config_environment
       vars:
