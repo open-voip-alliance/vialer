@@ -12,6 +12,21 @@ custom: # Custom properties to make workflows cleaner
         version_tag=$(echo $version_tag | cut -f1 -d "-")
         # Fix CFBundleVersion for iOS
         sed -i -e "s/<string>\$(FLUTTER_BUILD_NAME)<\/string>/<string>${version_tag}<\/string>/g" ios/Runner/Info.plist
+    - &set_version_string_for_merge_request
+      name: Setting version string
+      script: |
+        # get version tag
+        version_tag=$(git describe --abbrev=0)
+        version_tag="$(echo $version_tag | sed 's/^v//g')"
+        # set variables in .env file for the app
+        sed -i -e "s/MERGE_REQUEST=/MERGE_REQUEST=${GITLAB_MERGE_REQUEST_IID}/g" .env
+        sed -i -e "s/BRANCH=/BRANCH=${FCI_BRANCH}/g" .env
+        # set version in pubspec.yaml for showing it in Codemagic
+        sed -i -e "s/^version:.*//g" pubspec.yaml
+        echo "version: $version_tag-MR.$GITLAB_MERGE_REQUEST_IID-$FCI_BRANCH" >> pubspec.yaml
+        version_tag=$(echo $version_tag | cut -f1 -d "-")
+        # Fix CFBundleVersion for iOS
+        sed -i -e "s/<string>\$(FLUTTER_BUILD_NAME)<\/string>/<string>${version_tag}<\/string>/g" ios/Runner/Info.plist
     - &set_up_env_file
       name: Setting up .env file
       script: |
@@ -36,16 +51,6 @@ custom: # Custom properties to make workflows cleaner
         flutter pub get
         flutter pub run build_runner build
         cd ..
-    - &upgrade_gradle_in_device_info
-      # TODO: Remove this when the issue has been fixed. Can be tracked here:
-      # https://github.com/flutter/flutter/issues/60014
-      # https://github.com/flutter/flutter/issues/56683
-      name: Upgrade Gradle in device_info plugin
-      script: |
-        file=$FLUTTER_ROOT/.pub-cache/hosted/pub.dartlang.org/device_info-1.0.0/android/gradle/wrapper/gradle-wrapper.properties
-        mkdir -p "$(dirname ${file})"
-        echo 'distributionUrl=https\://services.gradle.org/distributions/gradle-5.6.4-all.zip'\
-         > $file
     - &flutter_test
       name: Running tests
       script: |
@@ -56,8 +61,8 @@ custom: # Custom properties to make workflows cleaner
         echo "flutter.sdk=$HOME/programs/flutter" > "$FCI_BUILD_DIR/android/local.properties"
         echo $ANDROID_FIREBASE_SECRET > $FCI_BUILD_DIR/android/app/google-services.json
         echo $FCI_KEYSTORE | base64 --decode > $FCI_KEYSTORE_PATH
+        echo "Google-services.json"
         tail -n 2000 $FCI_BUILD_DIR/android/app/google-services.json
-        tail -n 2000 $FCI_KEYSTORE_PATH
         cd . && flutter build apk --release --target=lib/app/main.dart --build-number=$PROJECT_BUILD_NUMBER -v --dart-define BRAND=$BRAND --dart-define SEGMENT_ANDROID_KEY=$SEGMENT_ANDROID_WRITE_KEY
     - &set_version_string_to_most_recent_tag
       name: Setting version string
@@ -158,6 +163,16 @@ custom: # Custom properties to make workflows cleaner
         requests.put(URL, headers=HEADERS, json={
            'description': newDescription if currentDescription != newDescription else currentDescription + "\r\n\r\n" + message
         })
+    - &set_testflight_release_notes_for_beta
+      name: Set "What to test" for TestFlight
+      script: |
+        echo '[{"language":"en-US","text":"Beta"},{"language":"nl-NL","text":"Beta"}]' > release_notes.json
+    - &set_testflight_release_notes_for_merge_request
+      name: Set "What to test" for TestFlight
+      script: |
+        cat << EOF > release_notes.json
+        [{"language":"en-US","text":"!${GITLAB_MERGE_REQUEST_IID}"},{"language":"nl-NL","text":"!${GITLAB_MERGE_REQUEST_IID}"}]
+        EOF
   config: &config # Default configuration that can be applied to all normal workflows
     max_build_duration: 60
     instance_type: mac_pro
@@ -174,7 +189,7 @@ custom: # Custom properties to make workflows cleaner
       BUNDLE_ID: "com.voipgrid.vialer"
     staging_env_vars: &brand_config_staging_env_vars
       BRAND: vialerStaging
-  defaults: # Default sections that can be reused between workflows to cover common usecases
+  defaults: # Default sections that can be reused between workflows to cover common use-cases
     app_store_connect: &ios_app_store_connect
       api_key: $APP_STORE_CONNECT_PRIVATE_KEY
       key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
@@ -218,7 +233,6 @@ workflows:
     scripts:
       - *set_up_env_file
       - *flutter_pub_get
-      - *upgrade_gradle_in_device_info
       - *flutter_test
       - *build_apk
       - *build_ipa
@@ -247,30 +261,12 @@ workflows:
     cache: *defaults_cache
     scripts:
       - *set_up_env_file
-      - name: Setting version string
-        script: |
-          # get version tag
-          version_tag=$(git describe --abbrev=0)
-          version_tag="$(echo $version_tag | sed 's/^v//g')"
-          # set variables in .env file for the app
-          sed -i -e "s/MERGE_REQUEST=/MERGE_REQUEST=${GITLAB_MERGE_REQUEST_IID}/g" .env
-          sed -i -e "s/BRANCH=/BRANCH=${FCI_BRANCH}/g" .env
-          # set version in pubspec.yaml for showing it in Codemagic
-          sed -i -e "s/^version:.*//g" pubspec.yaml
-          echo "version: $version_tag-MR.$GITLAB_MERGE_REQUEST_IID-$FCI_BRANCH" >> pubspec.yaml
-          version_tag=$(echo $version_tag | cut -f1 -d "-")
-          # Fix CFBundleVersion for iOS
-          sed -i -e "s/<string>\$(FLUTTER_BUILD_NAME)<\/string>/<string>${version_tag}<\/string>/g" ios/Runner/Info.plist
+      - *set_version_string_for_merge_request
       - *flutter_pub_get
-      - *upgrade_gradle_in_device_info
       - *flutter_test
       - *build_apk
       - *build_ipa
-      - name: Set "What to test" for TestFlight
-        script: |
-          cat << EOF > release_notes.json
-          [{"language":"en-US","text":"!${GITLAB_MERGE_REQUEST_IID}"},{"language":"nl-NL","text":"!${GITLAB_MERGE_REQUEST_IID}"}]
-          EOF
+      - *set_testflight_release_notes_for_merge_request
     artifacts: *defaults_artifacts
     publishing:
       slack:
@@ -305,13 +301,9 @@ workflows:
       - *set_up_sentry
       - *set_version_string_to_most_recent_tag
       - *flutter_pub_get
-      - *upgrade_gradle_in_device_info
       - *flutter_test
       - *build_apk
       - *build_ipa
-      - name: Set "What to test" for TestFlight
-        script: |
-          echo '[{"language":"en-US","text":"Alpha"},{"language":"nl-NL","text":"Alpha"}]' > release_notes.json
     artifacts: *defaults_artifacts
   beta-voys:
     name: Voys Beta
@@ -346,14 +338,11 @@ workflows:
       - *set_up_sentry
       - *set_version_string
       - *flutter_pub_get
-      - *upgrade_gradle_in_device_info
       #- *flutter_test
       - *build_apk
       #- *update_ios_signing_for_current_brand
       #- *build_ipa
-      - name: Set "What to test" for TestFlight
-        script:
-          echo '[{"language":"en-US","text":"Beta"},{"language":"nl-NL","text":"Beta"}]' > release_notes.json
+      - *set_testflight_release_notes_for_beta
     publishing:
       #app_store_connect:  *ios_app_store_connect
       slack:
@@ -396,14 +385,11 @@ workflows:
       - *set_up_sentry
       - *set_version_string
       - *flutter_pub_get
-      - *upgrade_gradle_in_device_info
       - *flutter_test
       - *build_apk
       - *update_ios_signing_for_current_brand
       - *build_ipa
-      - name: Set "What to test" for TestFlight
-        script: |
-          echo '[{"language":"en-US","text":"Beta"},{"language":"nl-NL","text":"Beta"}]' > release_notes.json
+      - *set_testflight_release_notes_for_beta
     artifacts: *defaults_artifacts
     publishing:
       app_store_connect:  *ios_app_store_connect
