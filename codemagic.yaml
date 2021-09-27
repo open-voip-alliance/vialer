@@ -167,7 +167,10 @@ shared: # Custom properties to make workflows cleaner
               ],
               iosBundleId: [
                   "(PRODUCT_BUNDLE_IDENTIFIER = )(.+)(;)",
-              ]
+              ],
+             '"iPhone Distribution"': [
+                "(CODE_SIGN_IDENTITY = )(.+)(;)",
+             ]
           }
 
           pbxprojFile = open(FILE_PATH, "r")
@@ -194,9 +197,6 @@ shared: # Custom properties to make workflows cleaner
           export PATH="$PATH:/Users/builder/programs/flutter/bin/cache/dart-sdk/bin"
           cd ios/ && pod install && cd ..
           keychain initialize
-          app-store-connect list-profiles
-          app-store-connect list-devices
-          app-store-connect list-bundle-ids
           app-store-connect fetch-signing-files $BUNDLE_ID \
           --type IOS_APP_STORE \
           --create
