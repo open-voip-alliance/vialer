@@ -168,6 +168,10 @@ custom: # Custom properties to make workflows cleaner
         cat << EOF > release_notes.json
         [{"language":"en-US","text":"!${GITLAB_MERGE_REQUEST_IID}"},{"language":"nl-NL","text":"!${GITLAB_MERGE_REQUEST_IID}"}]
         EOF
+    - &set_testflight_release_notes_for_main
+      name: Set "What to test" for TestFlight
+      script: |
+        echo '[{"language":"en-US","text":"Main"},{"language":"nl-NL","text":"Main"}]' > release_notes.json
   config: &config # Default configuration that can be applied to all normal workflows
     max_build_duration: 60
     instance_type: mac_pro
@@ -234,9 +238,7 @@ workflows:
       - *build_apk
       - *build_ipa
       - *set_version_string_to_most_recent_tag
-      - name: Set "What to test" for TestFlight
-        script: |
-          echo '[{"language":"en-US","text":"Main"},{"language":"nl-NL","text":"Main"}]' > release_notes.json
+      - *set_testflight_release_notes_for_main
     artifacts: *defaults_artifacts
     publishing:
       slack:
