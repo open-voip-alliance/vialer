@@ -167,10 +167,7 @@ shared: # Custom properties to make workflows cleaner
               ],
               iosBundleId: [
                   "(PRODUCT_BUNDLE_IDENTIFIER = )(.+)(;)",
-              ],
-             '"iPhone Distribution"': [
-                "(CODE_SIGN_IDENTITY = )(.+)(;)",
-             ]
+              ]
           }
 
           pbxprojFile = open(FILE_PATH, "r")
