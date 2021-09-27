@@ -86,6 +86,11 @@ android {
                 storePassword System.getenv()["FCI_KEYSTORE_PASSWORD"]
                 keyAlias System.getenv()["FCI_KEY_ALIAS"]
                 keyPassword System.getenv()["FCI_KEY_PASSWORD"]
+            } else {
+                storeFile file("/path/to/local/myreleasekey.keystore")
+                storePassword "password"
+                keyAlias "MyReleaseKey"
+                keyPassword "password"
             }
         }
     }
@@ -94,12 +99,7 @@ android {
         release {
             shrinkResources false
             minifyEnabled false
-            if (System.getenv()["CI"]) { // CI=true is exported by Codemagic
-                signingConfig signingConfigs.release
-            } else {
-                // Signing with the debug keys outside of CI.
-                signingConfig signingConfigs.debug
-            }
+            signingConfig signingConfigs.release
         }
     }
 }

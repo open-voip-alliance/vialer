@@ -1,7 +1,7 @@
 custom: # Custom properties to make workflows cleaner
   scripts:
     - &set_version_string
-      name: Setting version string
+      name: Updating versioning information for this build
       script: |
         # get version tag
         version_tag=$(git describe --tags --abbrev=0 --match "*beta*")
@@ -13,7 +13,7 @@ custom: # Custom properties to make workflows cleaner
         # Fix CFBundleVersion for iOS
         sed -i -e "s/<string>\$(FLUTTER_BUILD_NAME)<\/string>/<string>${version_tag}<\/string>/g" ios/Runner/Info.plist
     - &set_version_string_for_merge_request
-      name: Setting version string
+      name: Updating versioning information based on the merge request
       script: |
         # get version tag
         version_tag=$(git describe --abbrev=0)
@@ -27,8 +27,22 @@ custom: # Custom properties to make workflows cleaner
         version_tag=$(echo $version_tag | cut -f1 -d "-")
         # Fix CFBundleVersion for iOS
         sed -i -e "s/<string>\$(FLUTTER_BUILD_NAME)<\/string>/<string>${version_tag}<\/string>/g" ios/Runner/Info.plist
+    - &set_version_string_to_most_recent_tag
+      name: Updating versioning information using the most recent tag
+      script: |
+        # get version tag
+        version_tag=$(git describe --abbrev=0)
+        version_tag="$(echo $version_tag | sed 's/^v//g')"
+        # set variables in .env file for the app
+        sed -i -e "s/BRANCH=/BRANCH=${FCI_BRANCH}/g" .env
+        # set version in pubspec.yaml for showing it in Codemagic
+        sed -i -e "s/^version:.*//g" pubspec.yaml
+        echo "version: $version_tag-$FCI_BRANCH" >> pubspec.yaml
+        version_tag=$(echo $version_tag | cut -f1 -d "-")
+        # Fix CFBundleVersion for iOS
+        sed -i -e "s/<string>\$(FLUTTER_BUILD_NAME)<\/string>/<string>${version_tag}<\/string>/g" ios/Runner/Info.plist
     - &set_up_env_file
-      name: Setting up .env file
+      name: Configuring .env file with diagnostics keys
       script: |
         #!/bin/sh
         set -e # exit on first failed command set
@@ -36,12 +50,9 @@ custom: # Custom properties to make workflows cleaner
         sed -i -e "s/LOGENTRIES_ANDROID_TOKEN=/LOGENTRIES_ANDROID_TOKEN=${LOGENTRIES_ANDROID_TOKEN}/g" .env
         sed -i -e "s/LOGENTRIES_IOS_TOKEN=/LOGENTRIES_IOS_TOKEN=${LOGENTRIES_IOS_TOKEN}/g" .env
         sed -i -e "s/COMMIT_HASH=/COMMIT_HASH=${FCI_COMMIT}/g" .env
-    - &set_up_sentry
-      name: Setting up Sentry
-      script: |
         sed -i -e "s|SENTRY_DSN=|SENTRY_DSN=${SENTRY_DSN}|g" .env
     - &flutter_pub_get
-      name: Running flutter pub get and generated code
+      name: Installing flutter dependencies and generate code
       script: |
         cd . && flutter packages pub get
         flutter pub run build_runner build
@@ -56,30 +67,14 @@ custom: # Custom properties to make workflows cleaner
       script: |
         cd . && flutter test
     - &build_apk
-      name: Build application (.apk) for Android
+      name: Building application (.apk) for Android
       script: |
         echo "flutter.sdk=$HOME/programs/flutter" > "$FCI_BUILD_DIR/android/local.properties"
         echo $ANDROID_FIREBASE_SECRET | base64 --decode > $FCI_BUILD_DIR/android/app/google-services.json
         echo $FCI_KEYSTORE | base64 --decode > $FCI_KEYSTORE_PATH
-        echo "Google-services.json"
-        tail -n 2000 $FCI_BUILD_DIR/android/app/google-services.json
         cd . && flutter build apk --release --target=lib/app/main.dart --build-number=$PROJECT_BUILD_NUMBER -v --dart-define BRAND=$BRAND --dart-define SEGMENT_ANDROID_KEY=$SEGMENT_ANDROID_WRITE_KEY
-    - &set_version_string_to_most_recent_tag
-      name: Setting version string
-      script: |
-        # get version tag
-        version_tag=$(git describe --abbrev=0)
-        version_tag="$(echo $version_tag | sed 's/^v//g')"
-        # set variables in .env file for the app
-        sed -i -e "s/BRANCH=/BRANCH=${FCI_BRANCH}/g" .env
-        # set version in pubspec.yaml for showing it in Codemagic
-        sed -i -e "s/^version:.*//g" pubspec.yaml
-        echo "version: $version_tag-$FCI_BRANCH" >> pubspec.yaml
-        version_tag=$(echo $version_tag | cut -f1 -d "-")
-        # Fix CFBundleVersion for iOS
-        sed -i -e "s/<string>\$(FLUTTER_BUILD_NAME)<\/string>/<string>${version_tag}<\/string>/g" ios/Runner/Info.plist
     - &update_ios_signing_for_current_brand
-      name: Update iOS project files to sign current brand
+      name: Updating iOS project files to use the appropriate signing information for the current brand
       script: |
         #!/usr/bin/env python3
         import os
@@ -119,7 +114,7 @@ custom: # Custom properties to make workflows cleaner
         pbxprojFile.write("".join(contents))
         pbxprojFile.close
     - &build_ipa
-      name: Build application (.ipa) for iOS
+      name: Building application (.ipa) for iOS
       script: |
         flutter pub get
         pod repo update
@@ -139,7 +134,7 @@ custom: # Custom properties to make workflows cleaner
         --dart-define BRAND=$BRAND \
         --dart-define SEGMENT_IOS_KEY=$SEGMENT_IOS_WRITE_KEY \
     - &update_gitlab_merge_request_with_build_url
-      name: Update the Merge Request in Gitlab with a link to this build
+      name: Updating the Merge Request in Gitlab with a link to this build
       script: |
         #!/usr/bin/env python3
         import os
@@ -164,11 +159,11 @@ custom: # Custom properties to make workflows cleaner
            'description': newDescription if currentDescription != newDescription else currentDescription + "\r\n\r\n" + message
         })
     - &set_testflight_release_notes_for_beta
-      name: Set "What to test" for TestFlight
+      name: Preparing "What to test" for TestFlight
       script: |
         echo '[{"language":"en-US","text":"Beta"},{"language":"nl-NL","text":"Beta"}]' > release_notes.json
     - &set_testflight_release_notes_for_merge_request
-      name: Set "What to test" for TestFlight
+      name: Preparing "What to test" for TestFlight
       script: |
         cat << EOF > release_notes.json
         [{"language":"en-US","text":"!${GITLAB_MERGE_REQUEST_IID}"},{"language":"nl-NL","text":"!${GITLAB_MERGE_REQUEST_IID}"}]
@@ -298,7 +293,6 @@ workflows:
           source: false
     scripts:
       - *set_up_env_file
-      - *set_up_sentry
       - *set_version_string_to_most_recent_tag
       - *flutter_pub_get
       - *flutter_test
@@ -335,7 +329,6 @@ workflows:
           include: true
     scripts:
       - *set_up_env_file
-      - *set_up_sentry
       - *set_version_string
       - *flutter_pub_get
       #- *flutter_test
@@ -382,7 +375,6 @@ workflows:
           include: true
     scripts:
       - *set_up_env_file
-      - *set_up_sentry
       - *set_version_string
       - *flutter_pub_get
       - *flutter_test
