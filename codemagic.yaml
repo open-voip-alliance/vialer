@@ -250,10 +250,6 @@ workflows:
         <<: *brand_config_voys_env_vars
     cache: *defaults_cache
     scripts:
-      - *set_up_keystore_properties
-      - *set_up_local_properties
-      - *set_up_keystore_file
-      - *set_up_firebase
       - *set_up_env_file
       - name: Setting version string
         script: |
@@ -309,10 +305,6 @@ workflows:
           include: true
           source: false
     scripts:
-      - *set_up_keystore_properties
-      - *set_up_local_properties
-      - *set_up_keystore_file
-      - *set_up_firebase
       - *set_up_env_file
       - *set_up_sentry
       - *set_version_string_to_most_recent_tag
@@ -353,16 +345,12 @@ workflows:
         - pattern: '*beta*'
           include: true
     scripts:
-      - *set_up_keystore_properties
-      - *set_up_local_properties
-      - *set_up_keystore_file
-      - *set_up_firebase
       - *set_up_env_file
       - *set_up_sentry
       - *set_version_string
       - *flutter_pub_get
       - *upgrade_gradle_in_device_info
-      - *flutter_test
+      #- *flutter_test
       - *build_apk
       #- *update_ios_signing_for_current_brand
       #- *build_ipa
@@ -407,10 +395,6 @@ workflows:
         - pattern: '*beta*'
           include: true
     scripts:
-      - *set_up_keystore_properties
-      - *set_up_local_properties
-      - *set_up_keystore_file
-      - *set_up_firebase
       - *set_up_env_file
       - *set_up_sentry
       - *set_version_string
