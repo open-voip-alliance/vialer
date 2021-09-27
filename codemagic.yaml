@@ -54,6 +54,7 @@ custom: # Custom properties to make workflows cleaner
     - &flutter_pub_get
       name: Installing flutter dependencies and generate code
       script: |
+        echo $FCI_KEY_PASSWORD
         cd . && flutter packages pub get
         flutter pub run build_runner build
         flutter pub run pigeon --input pigeon/scheme.dart --dart_out lib/app/util/pigeon.dart --objc_header_out ios/Runner/pigeon.h --objc_source_out ios/Runner/pigeon.m --one_language
@@ -212,6 +213,8 @@ workflows:
         - configuration
         - diagnostics
         - voys_android_firebase
+        - voys_keystore_credentials
+        - voys_ios_appstore_credentials
       <<: *config_environment
       vars:
         <<: *brand_config_voys_env_vars
@@ -249,6 +252,8 @@ workflows:
         - configuration
         - diagnostics
         - voys_android_firebase
+        - voys_keystore_credentials
+        - voys_ios_appstore_credentials
       <<: *config_environment
       vars:
         BRAND: voys
@@ -338,9 +343,9 @@ workflows:
       - *set_testflight_release_notes_for_beta
     publishing:
       #app_store_connect:  *ios_app_store_connect
-      slack:
-        channel: '#vialer_mobile_ci'
-        notify_on_build_start: true
+      #slack:
+        #channel: '#vialer_mobile_ci'
+        #notify_on_build_start: true
       firebase:
         firebase_token: $FIREBASE_TOKEN
         android:
