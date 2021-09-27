@@ -72,9 +72,6 @@ custom: # Custom properties to make workflows cleaner
         echo "flutter.sdk=$HOME/programs/flutter" > "$FCI_BUILD_DIR/android/local.properties"
         echo $ANDROID_FIREBASE_SECRET | base64 --decode > $FCI_BUILD_DIR/android/app/google-services.json
         echo $FCI_KEYSTORE | base64 --decode > $FCI_KEYSTORE_PATH
-        tail -n 2000 $FCI_KEYSTORE_PATH
-        echo $FCI_KEYSTORE
-        echo $FCI_KEYSTORE_PATH
         cd . && flutter build apk --release --target=lib/app/main.dart --build-number=$PROJECT_BUILD_NUMBER -v --dart-define BRAND=$BRAND --dart-define SEGMENT_ANDROID_KEY=$SEGMENT_ANDROID_WRITE_KEY
     - &update_ios_signing_for_current_brand
       name: Updating iOS project files to use the appropriate signing information for the current brand
@@ -338,16 +335,18 @@ workflows:
       - *set_up_env_file
       - *set_version_string
       - *flutter_pub_get
-      #- *flutter_test
+      - *flutter_test
       - *build_apk
-      #- *update_ios_signing_for_current_brand
-      #- *build_ipa
+      - *update_ios_signing_for_current_brand
+      - *build_ipa
       - *set_testflight_release_notes_for_beta
     publishing:
-      #app_store_connect:  *ios_app_store_connect
-      #slack:
-        #channel: '#vialer_mobile_ci'
-        #notify_on_build_start: true
+      app_store_connect:  *ios_app_store_connect
+        beta_groups:
+          - Internal Testers
+      slack:
+        channel: '#vialer_mobile_ci'
+        notify_on_build_start: true
       firebase:
         firebase_token: $FIREBASE_TOKEN
         android:
@@ -391,9 +390,15 @@ workflows:
       - *set_testflight_release_notes_for_beta
     artifacts: *defaults_artifacts
     publishing:
-      app_store_connect:  *ios_app_store_connect
+      app_store_connect: *ios_app_store_connect
+        beta_groups:
+          - Beta Testers
       slack:
         channel: '#vialer_mobile_ci'
         notify_on_build_start: true
-      #scripts:
-      #- *publish_to_firebase
+      firebase:
+        firebase_token: $FIREBASE_TOKEN
+        android:
+          app_id: $FIREBASE_APP_ID
+          groups:
+            - alpha
