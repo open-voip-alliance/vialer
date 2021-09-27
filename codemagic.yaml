@@ -321,6 +321,7 @@ workflows:
         - configuration
         - diagnostics
         - voys_android_firebase
+        - voys_keystore_credentials
         - voys_ios_appstore_credentials
       <<: *config_environment
       vars:
