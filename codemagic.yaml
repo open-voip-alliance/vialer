@@ -1,12 +1,5 @@
-shared: # Custom properties to make workflows cleaner
-  shared_config: &shared_config
-    max_build_duration: 60
-    instance_type: mac_pro
-    environment: &shared_config_env
-      flutter: 2.5.1
-      xcode: latest
-      cocoapods: 1.10.2
-  shared_scripts:
+custom: # Custom properties to make workflows cleaner
+  scripts:
     - &set_version_string
       name: Setting version string
       script: |
@@ -19,30 +12,6 @@ shared: # Custom properties to make workflows cleaner
         version_tag=$(echo $version_tag | cut -f1 -d "-")
         # Fix CFBundleVersion for iOS
         sed -i -e "s/<string>\$(FLUTTER_BUILD_NAME)<\/string>/<string>${version_tag}<\/string>/g" ios/Runner/Info.plist
-    - &set_up_keystore_properties
-      name: Setting up android keystore properties
-      script: |
-        # set up key.properties
-        echo $FCI_KEYSTORE | base64 --decode > /tmp/keystore.keystore
-        cat >> "$FCI_BUILD_DIR/android/key.properties" <<EOF
-        storePassword=$FCI_KEYSTORE_PASSWORD
-        keyPassword=$FCI_KEY_ALIAS_PASSWORD
-        keyAlias=$FCI_KEY_ALIAS_USERNAME
-        storeFile=/tmp/keystore.keystore
-        EOF
-    - &set_up_local_properties
-      name: Setting up android local properties
-      script: |
-        # set up local properties
-        echo "flutter.sdk=$HOME/programs/flutter" > "$FCI_BUILD_DIR/android/local.properties"
-    - &set_up_keystore_file
-      name: Setting up keystore file
-      script: |
-        echo $FCI_KEYSTORE_FILE | base64 --decode > $FCI_BUILD_DIR/keystore.jks
-    - &set_up_firebase
-      name: Setting up Firebase
-      script: |
-        echo $ANDROID_FIREBASE_SECRET | base64 --decode > $FCI_BUILD_DIR/android/app/google-services.json
     - &set_up_env_file
       name: Setting up .env file
       script: |
@@ -84,107 +53,119 @@ shared: # Custom properties to make workflows cleaner
     - &build_apk
       name: Build application (.apk) for Android
       script: |
+        echo "flutter.sdk=$HOME/programs/flutter" > "$FCI_BUILD_DIR/android/local.properties"
+        echo $ANDROID_FIREBASE_SECRET > $FCI_BUILD_DIR/android/app/google-services.json
+        echo $FCI_KEYSTORE | base64 --decode > $FCI_KEYSTORE_PATH
+        tail -n 2000 $FCI_BUILD_DIR/android/app/google-services.json
+        tail -n 2000 $FCI_KEYSTORE_PATH
         cd . && flutter build apk --release --target=lib/app/main.dart --build-number=$PROJECT_BUILD_NUMBER -v --dart-define BRAND=$BRAND --dart-define SEGMENT_ANDROID_KEY=$SEGMENT_ANDROID_WRITE_KEY
     - &set_version_string_to_most_recent_tag
-        name: Setting version string
-        script: |
-          # get version tag
-          version_tag=$(git describe --abbrev=0)
-          version_tag="$(echo $version_tag | sed 's/^v//g')"
-          # set variables in .env file for the app
-          sed -i -e "s/BRANCH=/BRANCH=${FCI_BRANCH}/g" .env
-          # set version in pubspec.yaml for showing it in Codemagic
-          sed -i -e "s/^version:.*//g" pubspec.yaml
-          echo "version: $version_tag-$FCI_BRANCH" >> pubspec.yaml
-          version_tag=$(echo $version_tag | cut -f1 -d "-")
-          # Fix CFBundleVersion for iOS
-          sed -i -e "s/<string>\$(FLUTTER_BUILD_NAME)<\/string>/<string>${version_tag}<\/string>/g" ios/Runner/Info.plist
+      name: Setting version string
+      script: |
+        # get version tag
+        version_tag=$(git describe --abbrev=0)
+        version_tag="$(echo $version_tag | sed 's/^v//g')"
+        # set variables in .env file for the app
+        sed -i -e "s/BRANCH=/BRANCH=${FCI_BRANCH}/g" .env
+        # set version in pubspec.yaml for showing it in Codemagic
+        sed -i -e "s/^version:.*//g" pubspec.yaml
+        echo "version: $version_tag-$FCI_BRANCH" >> pubspec.yaml
+        version_tag=$(echo $version_tag | cut -f1 -d "-")
+        # Fix CFBundleVersion for iOS
+        sed -i -e "s/<string>\$(FLUTTER_BUILD_NAME)<\/string>/<string>${version_tag}<\/string>/g" ios/Runner/Info.plist
     - &update_ios_signing_for_current_brand
-        name: Update iOS project files to sign current brand
-        script: |
-          #!/usr/bin/env python3
-          import os
-          import re
+      name: Update iOS project files to sign current brand
+      script: |
+        #!/usr/bin/env python3
+        import os
+        import re
 
-          iosTeamId = os.getenv('IOS_TEAM_ID')
-          iosBundleId = os.getenv('BUNDLE_ID')
+        iosTeamId = os.getenv('IOS_TEAM_ID')
+        iosBundleId = os.getenv('BUNDLE_ID')
 
-          if not isinstance(iosTeamId, str) or not isinstance(iosBundleId, str):
-            raise Exception("IOS_TEAM_ID and BUNDLE_ID environment variables must be set")
+        if not isinstance(iosTeamId, str) or not isinstance(iosBundleId, str):
+          raise Exception("IOS_TEAM_ID and BUNDLE_ID environment variables must be set")
 
-          FILE_PATH = "ios/Runner.xcodeproj/project.pbxproj"
-          REPLACEMENTS = {
-              iosTeamId: [
-                  "(DevelopmentTeam = )([A-Z0-9]+)(;)",
-                  "(DEVELOPMENT_TEAM = )([A-Z0-9]+)(;)",
-              ],
-              iosBundleId: [
-                  "(PRODUCT_BUNDLE_IDENTIFIER = )(.+)(;)",
-              ]
-          }
+        FILE_PATH = "ios/Runner.xcodeproj/project.pbxproj"
+        REPLACEMENTS = {
+            iosTeamId: [
+                "(DevelopmentTeam = )([A-Z0-9]+)(;)",
+                "(DEVELOPMENT_TEAM = )([A-Z0-9]+)(;)",
+            ],
+            iosBundleId: [
+                "(PRODUCT_BUNDLE_IDENTIFIER = )(.+)(;)",
+            ]
+        }
 
-          pbxprojFile = open(FILE_PATH, "r")
-          contents = "".join(pbxprojFile.readlines())
-          pbxprojFile.close
+        pbxprojFile = open(FILE_PATH, "r")
+        contents = "".join(pbxprojFile.readlines())
+        pbxprojFile.close
 
-          for replacement, candidates in REPLACEMENTS.items():
-              for candidate in candidates:
-                  contents = re.sub(
-                      r'' + candidate,
-                      r'\1' + replacement + r'\3',
-                      contents
-                  )
+        for replacement, candidates in REPLACEMENTS.items():
+            for candidate in candidates:
+                contents = re.sub(
+                    r'' + candidate,
+                    r'\1' + replacement + r'\3',
+                    contents
+                )
 
 
-          pbxprojFile = open(FILE_PATH, "w")
-          pbxprojFile.write("".join(contents))
-          pbxprojFile.close
+        pbxprojFile = open(FILE_PATH, "w")
+        pbxprojFile.write("".join(contents))
+        pbxprojFile.close
     - &build_ipa
-        name: Build application (.ipa) for iOS
-        script: |
-          flutter pub get
-          pod repo update
-          export PATH="$PATH:/Users/builder/programs/flutter/bin/cache/dart-sdk/bin"
-          cd ios/ && pod install && cd ..
-          keychain initialize
-          app-store-connect fetch-signing-files $BUNDLE_ID \
-          --type IOS_APP_STORE \
-          --create
-          keychain add-certificates
-          xcode-project use-profiles
-          flutter build ipa --release \
-          --target=lib/app/main.dart \
-          --export-options-plist=/Users/builder/export_options.plist \
-          --build-number=$PROJECT_BUILD_NUMBER \
-          --verbose \
-          --dart-define BRAND=$BRAND \
-          --dart-define SEGMENT_IOS_KEY=$SEGMENT_IOS_WRITE_KEY \
+      name: Build application (.ipa) for iOS
+      script: |
+        flutter pub get
+        pod repo update
+        export PATH="$PATH:/Users/builder/programs/flutter/bin/cache/dart-sdk/bin"
+        cd ios/ && pod install && cd ..
+        keychain initialize
+        app-store-connect fetch-signing-files $BUNDLE_ID \
+        --type IOS_APP_STORE \
+        --create
+        keychain add-certificates
+        xcode-project use-profiles
+        flutter build ipa --release \
+        --target=lib/app/main.dart \
+        --export-options-plist=/Users/builder/export_options.plist \
+        --build-number=$PROJECT_BUILD_NUMBER \
+        --verbose \
+        --dart-define BRAND=$BRAND \
+        --dart-define SEGMENT_IOS_KEY=$SEGMENT_IOS_WRITE_KEY \
     - &update_gitlab_merge_request_with_build_url
-        name: Update the Merge Request in Gitlab with a link to this build
-        script: |
-          #!/usr/bin/env python3
-          import os
-          import requests
-          import re
+      name: Update the Merge Request in Gitlab with a link to this build
+      script: |
+        #!/usr/bin/env python3
+        import os
+        import requests
+        import re
 
-          MERGE_REQUEST_ID = os.getenv('GITLAB_MERGE_REQUEST_IID')
-          GITLAB_API_TOKEN = os.getenv('GITLAB_API_TOKEN')
-          BUILD_NUMBER = os.getenv('PROJECT_BUILD_NUMBER')
-          PROJECT_ID = os.getenv('FCI_PROJECT_ID')
-          BUILD_ID = os.getenv('FCI_BUILD_ID')
-          URL = "https://gitlab.wearespindle.com/api/v4/projects/105/merge_requests/{mergeRequestId}".format(mergeRequestId=MERGE_REQUEST_ID)
-          TEMPLATE = "[Codemagic: Latest Build ({buildNumber})](https://codemagic.io/app/{projectId}/build/{buildId})"
-          HEADERS = { 'Content-Type': 'application/json', 'Private-Token': GITLAB_API_TOKEN }
+        MERGE_REQUEST_ID = os.getenv('GITLAB_MERGE_REQUEST_IID')
+        GITLAB_API_TOKEN = os.getenv('GITLAB_API_TOKEN')
+        BUILD_NUMBER = os.getenv('PROJECT_BUILD_NUMBER')
+        PROJECT_ID = os.getenv('FCI_PROJECT_ID')
+        BUILD_ID = os.getenv('FCI_BUILD_ID')
+        URL = "https://gitlab.wearespindle.com/api/v4/projects/105/merge_requests/{mergeRequestId}".format(mergeRequestId=MERGE_REQUEST_ID)
+        TEMPLATE = "[Codemagic: Latest Build ({buildNumber})](https://codemagic.io/app/{projectId}/build/{buildId})"
+        HEADERS = { 'Content-Type': 'application/json', 'Private-Token': GITLAB_API_TOKEN }
 
-          message = TEMPLATE.format(buildNumber=BUILD_NUMBER, projectId=PROJECT_ID, buildId=BUILD_ID)
-          regex = re.escape(message).replace(BUILD_NUMBER, '\d+').replace(PROJECT_ID, '[^)]+').replace(BUILD_ID, '[^)]+')
-          currentDescription = requests.get(URL, headers=HEADERS).json()['description']
-          newDescription = re.sub(regex, message, currentDescription)
+        message = TEMPLATE.format(buildNumber=BUILD_NUMBER, projectId=PROJECT_ID, buildId=BUILD_ID)
+        regex = re.escape(message).replace(BUILD_NUMBER, '\d+').replace(PROJECT_ID, '[^)]+').replace(BUILD_ID, '[^)]+')
+        currentDescription = requests.get(URL, headers=HEADERS).json()['description']
+        newDescription = re.sub(regex, message, currentDescription)
 
-          requests.put(URL, headers=HEADERS, json={
-             'description': newDescription if currentDescription != newDescription else currentDescription + "\r\n\r\n" + message
-          })
-  brand_config:
+        requests.put(URL, headers=HEADERS, json={
+           'description': newDescription if currentDescription != newDescription else currentDescription + "\r\n\r\n" + message
+        })
+  config: &config # Default configuration that can be applied to all normal workflows
+    max_build_duration: 60
+    instance_type: mac_pro
+    environment: &config_environment
+      flutter: 2.5.1
+      xcode: latest
+      cocoapods: 1.10.2
+  brand_config: # Specific configuration that should be applied to a workflow when building for this brand
     voys_env_vars: &brand_config_voys_env_vars
       BRAND: voys
       BUNDLE_ID: "com.voys.app"
@@ -193,13 +174,12 @@ shared: # Custom properties to make workflows cleaner
       BUNDLE_ID: "com.voipgrid.vialer"
     staging_env_vars: &brand_config_staging_env_vars
       BRAND: vialerStaging
-  ios:
+  defaults: # Default sections that can be reused between workflows to cover common usecases
     app_store_connect: &ios_app_store_connect
       api_key: $APP_STORE_CONNECT_PRIVATE_KEY
       key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
       issuer_id: $APP_STORE_CONNECT_ISSUER_ID
       submit_to_testflight: true
-  defaults:
     cache: &defaults_cache
       cache_paths:
         - $HOME/.pub-cache
@@ -216,13 +196,13 @@ shared: # Custom properties to make workflows cleaner
 workflows:
   main:
     name: main
-    <<: *shared_config
+    <<: *config
     environment:
       groups:
         - configuration
         - diagnostics
         - voys_android_firebase
-      <<: *shared_config_env
+      <<: *config_environment
       vars:
         <<: *brand_config_voys_env_vars
     triggering:
@@ -258,13 +238,13 @@ workflows:
       app_store_connect:  *ios_app_store_connect
   merge-requests:
     name: merge requests
-    <<: *shared_config
+    <<: *config
     environment:
       groups:
         - configuration
         - diagnostics
         - voys_android_firebase
-      <<: *shared_config_env
+      <<: *config_environment
       vars:
         BRAND: voys
         <<: *brand_config_voys_env_vars
@@ -309,12 +289,12 @@ workflows:
         - *update_gitlab_merge_request_with_build_url
   staging:
     name: Staging
-    <<: *shared_config
+    <<: *config
     environment:
       groups:
         - configuration
         - diagnostics
-      <<: *shared_config_env
+      <<: *config_environment
       vars:
         <<: *brand_config_staging_env_vars
     cache: *defaults_cache
@@ -347,14 +327,14 @@ workflows:
     artifacts: *defaults_artifacts
   beta-voys:
     name: Voys Beta
-    <<: *shared_config
+    <<: *config
     environment:
       groups:
         - configuration
         - diagnostics
         - voys_android_firebase
         - voys_ios_appstore_credentials
-      <<: *shared_config_env
+      <<: *config_environment
       vars:
         <<: *brand_config_voys_env_vars
     cache: *defaults_cache
@@ -402,14 +382,14 @@ workflows:
             - internal-alpha
   beta-vialer:
     name: Vialer Beta
-    <<: *shared_config
+    <<: *config
     environment:
       groups:
         - configuration
         - diagnostics
         - vialer_android_firebase
         - vialer_ios_appstore_credentials
-      <<: *shared_config_env
+      <<: *config_environment
       vars:
         <<: *brand_config_vialer_env_vars
     cache: *defaults_cache
