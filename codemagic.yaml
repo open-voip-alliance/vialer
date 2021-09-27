@@ -59,7 +59,7 @@ custom: # Custom properties to make workflows cleaner
       name: Build application (.apk) for Android
       script: |
         echo "flutter.sdk=$HOME/programs/flutter" > "$FCI_BUILD_DIR/android/local.properties"
-        echo $ANDROID_FIREBASE_SECRET > $FCI_BUILD_DIR/android/app/google-services.json
+        echo $ANDROID_FIREBASE_SECRET | base64 --decode > $FCI_BUILD_DIR/android/app/google-services.json
         echo $FCI_KEYSTORE | base64 --decode > $FCI_KEYSTORE_PATH
         echo "Google-services.json"
         tail -n 2000 $FCI_BUILD_DIR/android/app/google-services.json
