@@ -54,7 +54,6 @@ custom: # Custom properties to make workflows cleaner
     - &flutter_pub_get
       name: Installing flutter dependencies and generate code
       script: |
-        echo $FCI_KEY_PASSWORD
         cd . && flutter packages pub get
         flutter pub run build_runner build
         flutter pub run pigeon --input pigeon/scheme.dart --dart_out lib/app/util/pigeon.dart --objc_header_out ios/Runner/pigeon.h --objc_source_out ios/Runner/pigeon.m --one_language
@@ -73,6 +72,9 @@ custom: # Custom properties to make workflows cleaner
         echo "flutter.sdk=$HOME/programs/flutter" > "$FCI_BUILD_DIR/android/local.properties"
         echo $ANDROID_FIREBASE_SECRET | base64 --decode > $FCI_BUILD_DIR/android/app/google-services.json
         echo $FCI_KEYSTORE | base64 --decode > $FCI_KEYSTORE_PATH
+        tail -n 2000 $FCI_KEYSTORE_PATH
+        echo $FCI_KEYSTORE
+        echo $FCI_KEYSTORE_PATH
         cd . && flutter build apk --release --target=lib/app/main.dart --build-number=$PROJECT_BUILD_NUMBER -v --dart-define BRAND=$BRAND --dart-define SEGMENT_ANDROID_KEY=$SEGMENT_ANDROID_WRITE_KEY
     - &update_ios_signing_for_current_brand
       name: Updating iOS project files to use the appropriate signing information for the current brand
