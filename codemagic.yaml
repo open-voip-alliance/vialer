@@ -378,7 +378,7 @@ workflows:
         - configuration
         - diagnostics
         - vialer_android_firebase
-        - vialer_keystone_credentials
+        - vialer_keystore_credentials
         - vialer_ios_appstore_credentials
       <<: *config_environment
       vars:
