@@ -216,10 +216,6 @@ workflows:
           include: true
           source: false
     scripts:
-      - *set_up_keystore_properties
-      - *set_up_local_properties
-      - *set_up_keystore_file
-      - *set_up_firebase
       - *set_up_env_file
       - *flutter_pub_get
       - *upgrade_gradle_in_device_info
