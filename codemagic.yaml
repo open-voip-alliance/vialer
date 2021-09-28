@@ -243,11 +243,11 @@ workflows:
           source: false
     scripts:
       - *set_up_env_file
+      - *set_version_string_to_most_recent_tag
       - *flutter_pub_get
       - *flutter_test
       - *build_apk
       - *build_ipa
-      - *set_version_string_to_most_recent_tag
       - *set_testflight_release_notes_for_main
     artifacts: *defaults_artifacts
     publishing:
