@@ -94,9 +94,11 @@ class StorageRepository {
       return null;
     }
 
-    return VoipConfig.fromJson(
+    final config = VoipConfig.fromJson(
       json.decode(preference) as Map<String, dynamic>,
     );
+
+    return config.isNotEmpty ? config.toNonEmptyConfig() : config;
   }
 
   set voipConfig(VoipConfig? user) => _preferences.setOrRemoveString(
