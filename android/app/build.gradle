@@ -79,14 +79,18 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    def KEYSTORE_FILE_NAME = "keystore.jks"
     signingConfigs {
         release {
-            if (System.getenv()["CI"]) { // CI=true is exported by CodeMagic.
-                storeFile file(System.getenv()["FCI_BUILD_DIR"] + "/" + KEYSTORE_FILE_NAME)
+            if (System.getenv()["CI"]) { // CI=true is exported by Codemagic
+                storeFile file(System.getenv()["FCI_KEYSTORE_PATH"])
                 storePassword System.getenv()["FCI_KEYSTORE_PASSWORD"]
                 keyAlias System.getenv()["FCI_KEY_ALIAS"]
                 keyPassword System.getenv()["FCI_KEY_PASSWORD"]
+            } else {
+                storeFile file("")
+                storePassword ""
+                keyAlias ""
+                keyPassword ""
             }
         }
     }
@@ -95,12 +99,7 @@ android {
         release {
             shrinkResources false
             minifyEnabled false
-            if (System.getenv()["CI"]) { // CI=true is exported by Codemagic
-                signingConfig signingConfigs.release
-            } else {
-                // Signing with the debug keys outside of CI.
-                signingConfig signingConfigs.debug
-            }
+            signingConfig signingConfigs.release
         }
     }
 }
