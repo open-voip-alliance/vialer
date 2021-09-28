@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_phone_lib/audio/audio_route.dart';
 import 'package:flutter_phone_lib/audio/bluetooth_audio_route.dart';
+import 'package:flutter_phone_lib/call_session_state.dart';
 import 'package:flutter_phone_lib/flutter_phone_lib.dart';
 
 import '../../../../../domain/connectivity_type.dart';
@@ -86,8 +87,8 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
 
   Timer? _callThroughTimer;
 
-  // Track the routes that are used during a call.
-  final usedAudioRoutes = <AudioRoute>{};
+  _PreservedCallSessionState _preservedCallSessionState =
+      _PreservedCallSessionState();
 
   // For VoIP.
   StreamSubscription? _voipCallEventSubscription;
@@ -127,7 +128,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
           _trackCall(
             via: CallOrigin.incoming.toTrackString(),
             voip: true,
-            usedRoutes: usedAudioRoutes,
+            usedRoutes: _preservedCallSessionState.usedAudioRoutes,
             direction: CallDirection.inbound,
           );
 
@@ -182,7 +183,8 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
       await _rateVoipCall(
         rating: rating,
         call: call,
-        usedRoutes: usedAudioRoutes,
+        usedRoutes: _preservedCallSessionState.usedAudioRoutes,
+        mos: _preservedCallSessionState.mos,
       );
 
   Future<void> _callViaCallThrough(
@@ -222,7 +224,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
           via: origin.toTrackString(),
           voip: false,
           direction: CallDirection.outbound,
-          usedRoutes: usedAudioRoutes,
+          usedRoutes: _preservedCallSessionState.usedAudioRoutes,
         );
 
         emit(InitiatingCall(origin: origin));
@@ -282,7 +284,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
         via: origin.toTrackString(),
         voip: true,
         direction: CallDirection.outbound,
-        usedRoutes: usedAudioRoutes,
+        usedRoutes: _preservedCallSessionState.usedAudioRoutes,
       );
 
       await _call(destination: destination, useVoip: true);
@@ -313,7 +315,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
         via: CallOrigin.incoming.toTrackString(),
         voip: true,
         direction: CallDirection.inbound,
-        usedRoutes: usedAudioRoutes,
+        usedRoutes: _preservedCallSessionState.usedAudioRoutes,
       );
       _trackPushFollowedByCall();
 
@@ -335,7 +337,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
     }
 
     if (event is CallConnected) {
-      usedAudioRoutes.clear();
+      _preservedCallSessionState = _PreservedCallSessionState();
       emit(processState.calling(voip: callSessionState));
       logger.info('VoIP call connected');
     } else if (event is AttendedTransferStarted) {
@@ -362,8 +364,6 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
     // the UI with the latest information from the PIL, we do not want to
     // change the state.
     else if (event is CallSessionEvent) {
-      usedAudioRoutes.add(callSessionState.audioState.currentRoute);
-
       // It's possible we're not in a CallProcessState yet, because we missed an
       // event, if that's the case we'll emit the state necessary to get there.
       if (state is! CallProcessState) {
@@ -382,6 +382,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
         }
       }
 
+      _preservedCallSessionState.preserve(callSessionState);
       emit(processState.copyWith(voip: callSessionState));
     }
   }
@@ -490,6 +491,28 @@ extension on CallOrigin {
         return 'recent';
       case CallOrigin.contacts:
         return 'contact';
+    }
+  }
+}
+
+/// There are certain values that will be provided throughout the duration of
+/// a call session that need to be tracked so they can be reported at the
+/// end of a call. This object will hold those values.
+class _PreservedCallSessionState {
+  var _mos = 0.0;
+  double get mos => _mos;
+
+  final usedAudioRoutes = <AudioRoute>{};
+
+  void preserve(CallSessionState state) {
+    usedAudioRoutes.add(state.audioState.currentRoute);
+
+    if (state.activeCall != null) {
+      final mos = state.activeCall?.mos ?? 0.0;
+
+      if (mos > 0.0) {
+        _mos = mos;
+      }
     }
   }
 }

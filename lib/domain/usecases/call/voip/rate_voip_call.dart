@@ -15,12 +15,13 @@ class RateVoipCallUseCase extends UseCase {
     required int rating,
     required Call call,
     required Set<AudioRoute> usedRoutes,
+    required double mos,
   }) async {
     final connectivityType = await _connectivityRepository.currentType;
 
     _metricsRepository.track('call-rating', {
       'rating': rating,
-      'mos': call.mos,
+      'mos': mos,
       'duration': call.duration,
       'direction':
           call.direction == CallDirection.inbound ? 'inbound' : 'outbound',
