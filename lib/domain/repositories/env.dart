@@ -23,4 +23,6 @@ class EnvRepository {
   Future<String> get mergeRequest => _get('MERGE_REQUEST');
 
   Future<String> get branch => _get('BRANCH');
+
+  Future<String> get tag => _get('TAG');
 }

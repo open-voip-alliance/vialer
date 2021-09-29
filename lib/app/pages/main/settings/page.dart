@@ -273,7 +273,8 @@ class _BuildInfoState extends State<_BuildInfo> {
         const emphasisStyle = TextStyle(fontWeight: FontWeight.bold);
 
         final showDetails = buildInfo.mergeRequestNumber != null ||
-            buildInfo.branchName != null;
+            buildInfo.branchName != null ||
+            buildInfo.tag != null;
 
         return GestureDetector(
           onTap: !hasAccessToTroubleshooting ? _onTap : null,
@@ -323,6 +324,19 @@ class _BuildInfoState extends State<_BuildInfo> {
                                 const TextSpan(text: ' — Branch: '),
                                 TextSpan(
                                   text: buildInfo.branchName,
+                                  style: emphasisStyle.copyWith(
+                                    fontFamily: 'monospace',
+                                    fontSize: 13,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          if (buildInfo.tag != null)
+                            TextSpan(
+                              children: [
+                                const TextSpan(text: ' — Tag: '),
+                                TextSpan(
+                                  text: buildInfo.tag,
                                   style: emphasisStyle.copyWith(
                                     fontFamily: 'monospace',
                                     fontSize: 13,

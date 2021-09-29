@@ -13,5 +13,6 @@ class GetBuildInfoUseCase extends UseCase {
   Future<BuildInfo> call() async => _buildInfoRepository.getBuildInfo(
         mergeRequestNumber: await _envRepository.mergeRequest,
         branch: await _envRepository.branch,
+        tag: await _envRepository.tag,
       );
 }

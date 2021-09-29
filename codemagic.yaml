@@ -6,6 +6,8 @@ custom: # Custom properties to make workflows cleaner
         # get version tag
         version_tag=$(git describe --tags --abbrev=0 --match "*beta*")
         version_tag="$(echo $version_tag | sed 's/^v//g')"
+        # set variables in .env file for the app
+        sed -i -e "s/TAG=/TAG=$version_tag/g" .env
         # set version in pubspec.yaml for showing it in Codemagic
         sed -i -e "s/^version:.*//g" pubspec.yaml
         echo "version: $version_tag" >> pubspec.yaml

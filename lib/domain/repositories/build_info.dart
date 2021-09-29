@@ -6,6 +6,7 @@ class BuildInfoRepository {
   Future<BuildInfo> getBuildInfo({
     String? mergeRequestNumber,
     String? branch,
+    String? tag,
   }) async {
     final info = await PackageInfo.fromPlatform();
 
@@ -20,6 +21,7 @@ class BuildInfoRepository {
       mergeRequestNumber:
           mergeRequestNumber?.isNotEmpty == true ? mergeRequestNumber : null,
       branchName: branch?.isNotEmpty == true ? branch : null,
+      tag: tag?.isNotEmpty == true ? tag : null,
       packageName: info.packageName,
     );
   }
