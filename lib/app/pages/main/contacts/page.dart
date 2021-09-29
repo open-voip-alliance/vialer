@@ -157,10 +157,12 @@ class _ContactPageState extends State<ContactsPage>
       }
 
       /// Group letters case sensitive with or without diacritics together.
-      firstCharacter = removeDiacritics(firstCharacter!).toUpperCase();
-      if (isInLetterGroup(firstCharacter)) {
-        widgets[firstCharacter] ??= [];
-        widgets[firstCharacter]!.add(contactItem);
+      final groupCharacter =
+          removeDiacritics(firstCharacter ?? '').toUpperCase();
+
+      if (isInLetterGroup(groupCharacter)) {
+        widgets[groupCharacter] ??= [];
+        widgets[groupCharacter]!.add(contactItem);
       } else {
         widgets[nonLetterKey] ??= [];
         widgets[nonLetterKey]!.add(contactItem);
