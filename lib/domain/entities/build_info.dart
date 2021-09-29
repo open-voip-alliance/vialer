@@ -3,6 +3,7 @@ class BuildInfo {
   final String? buildNumber;
   final String? mergeRequestNumber;
   final String? branchName;
+  final String? tag;
   final String packageName;
 
   const BuildInfo({
@@ -10,6 +11,7 @@ class BuildInfo {
     this.buildNumber,
     this.mergeRequestNumber,
     this.branchName,
+    this.tag,
     required this.packageName,
   });
 }
