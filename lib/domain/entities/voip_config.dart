@@ -5,7 +5,9 @@ part 'voip_config.g.dart';
 
 @JsonSerializable()
 class VoipConfig extends Equatable {
-  @JsonKey(name: 'allow_appaccount_voip_calling')
+  /// Must include a default while there are existing users with cached
+  /// VoipConfig, can be removed at a later date.
+  @JsonKey(name: 'allow_appaccount_voip_calling', defaultValue: true)
   final bool isAllowedCalling;
 
   @JsonKey(name: 'appaccount_account_id', fromJson: _sipUserIdFromJson)
