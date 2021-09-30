@@ -53,6 +53,23 @@ custom: # Custom properties to make workflows cleaner
         sed -i -e "s/LOGENTRIES_IOS_TOKEN=/LOGENTRIES_IOS_TOKEN=${LOGENTRIES_IOS_TOKEN}/g" .env
         sed -i -e "s/COMMIT_HASH=/COMMIT_HASH=${FCI_COMMIT}/g" .env
         sed -i -e "s|SENTRY_DSN=|SENTRY_DSN=${SENTRY_DSN}|g" .env
+    - &prepare_release_notes_from_gitlab
+      name: Preparing release notes from Gitlab tag
+      script: |
+        #!/usr/bin/env python3
+        import os
+        import requests
+        import subprocess
+
+        TAG = subprocess.check_output(['git', 'describe', '--tags', '--abbrev=0']).decode('ascii').strip()
+        GITLAB_API_TOKEN = os.getenv('GITLAB_API_TOKEN')
+        URL = "https://gitlab.wearespindle.com/api/v4/projects/105/releases/{tag}".format(tag=TAG)
+        HEADERS = {'Content-Type': 'application/json', 'Private-Token': GITLAB_API_TOKEN}
+
+        notes = requests.get(URL, headers=HEADERS).json()['description']
+        f = open("release_notes.txt", "w")
+        f.write(notes)
+        f.close()
     - &flutter_pub_get
       name: Installing flutter dependencies and generate code
       script: |
@@ -160,10 +177,6 @@ custom: # Custom properties to make workflows cleaner
         requests.put(URL, headers=HEADERS, json={
            'description': newDescription if currentDescription != newDescription else currentDescription + "\r\n\r\n" + message
         })
-    - &set_testflight_release_notes_for_beta
-      name: Preparing "What to test" for TestFlight
-      script: |
-        echo '[{"language":"en-US","text":"Beta"},{"language":"nl-NL","text":"Beta"}]' > release_notes.json
     - &set_testflight_release_notes_for_merge_request
       name: Preparing "What to test" for TestFlight
       script: |
@@ -353,12 +366,12 @@ workflows:
     scripts:
       - *set_up_env_file
       - *set_version_string
+      - *prepare_release_notes_from_gitlab
       - *flutter_pub_get
       - *flutter_test
       - *build_apk
       - *update_ios_signing_for_current_brand
       - *build_ipa
-      - *set_testflight_release_notes_for_beta
     publishing:
       app_store_connect:
         api_key: $APP_STORE_CONNECT_PRIVATE_KEY
@@ -395,12 +408,12 @@ workflows:
     scripts:
       - *set_up_env_file
       - *set_version_string
+      - *prepare_release_notes_from_gitlab
       - *flutter_pub_get
       - *flutter_test
       - *build_apk
       - *update_ios_signing_for_current_brand
       - *build_ipa
-      - *set_testflight_release_notes_for_beta
     artifacts: *defaults_artifacts
     publishing:
       app_store_connect:
