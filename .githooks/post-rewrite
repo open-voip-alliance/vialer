@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
 if [[ "$1" == "rebase" ]]; then
-    dart .githooks/check.dart g --generate-on-error # Re(g)enerate files if analysis errors arise.
+    dart utils/githooks/check.dart g --generate-on-error # Re(g)enerate files if analysis errors arise.
 fi
 

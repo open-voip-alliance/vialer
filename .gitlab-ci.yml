@@ -10,23 +10,30 @@ stages:
   - test
   - build
 
+clear:
+  image: dart:latest
+  stage: check
+  script:
+    - dart ./utils/ci/remove_build_url.dart
+
 analyze:
   image: cirrusci/flutter:2.5.1
   stage: check
-  script:
+  before_script:
     - flutter pub get
     - flutter pub run build_runner build
-    - flutter pub run pigeon --input pigeon/scheme.dart --dart_out lib/app/util/pigeon.dart --objc_header_out ios/Runner/pigeon.h --objc_source_out ios/Runner/pigeon.m --one_language
+    - flutter pub run pigeon --input utils/pigeon/scheme.dart --dart_out lib/app/util/pigeon.dart --objc_header_out ios/Runner/pigeon.h --objc_source_out ios/Runner/pigeon.m --one_language
     # TODO: Remove when pub package
     - cd voip_flutter_integration
     - flutter pub get
     - flutter pub run build_runner build
     - cd ..
     - touch .env # We add an empty .env so the analyzer is happy.
+  script:
     - dart analyze . --fatal-infos --fatal-warnings
 
 format:
-  image: cirrusci/flutter:2.5.1
+  image: dart:latest
   stage: check
   script:
     # We don't generate any code, because we don't want to check that anyway.
@@ -35,18 +42,19 @@ format:
 test:
   image: cirrusci/flutter:2.5.1
   stage: test
-  script:
+  before_script:
+    - export PATH="$PATH":"$HOME/.pub-cache/bin"
     - cp .env.example .env
     - flutter pub get
     - flutter pub run build_runner build
-    - flutter pub run pigeon --input pigeon/scheme.dart --dart_out lib/app/util/pigeon.dart --objc_header_out ios/Runner/pigeon.h --objc_source_out ios/Runner/pigeon.m --one_language
+    - flutter pub run pigeon --input utils/pigeon/scheme.dart --dart_out lib/app/util/pigeon.dart --objc_header_out ios/Runner/pigeon.h --objc_source_out ios/Runner/pigeon.m --one_language
+    - flutter pub global activate junitreport
     # TODO: Remove when pub package
     - cd voip_flutter_integration
     - flutter pub get
     - flutter pub run build_runner build
     - cd ..
-    - flutter pub global activate junitreport
-    - export PATH="$PATH":"$HOME/.pub-cache/bin"
+  script:
     - flutter test --machine | tojunit --output report.xml
   artifacts:
     reports:

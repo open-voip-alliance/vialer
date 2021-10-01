@@ -75,7 +75,7 @@ custom: # Custom properties to make workflows cleaner
       script: |
         flutter packages pub get
         flutter pub run build_runner build
-        flutter pub run pigeon --input pigeon/scheme.dart --dart_out lib/app/util/pigeon.dart --objc_header_out ios/Runner/pigeon.h --objc_source_out ios/Runner/pigeon.m --one_language
+        flutter pub run pigeon --input utils/pigeon/scheme.dart --dart_out lib/app/util/pigeon.dart --objc_header_out ios/Runner/pigeon.h --objc_source_out ios/Runner/pigeon.m --one_language
         # TODO: Remove this when FIL is published as a pub.dev package
         cd voip_flutter_integration
         flutter pub get
