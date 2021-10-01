@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:path/path.dart' as path;
 
 import 'package:dartx/dartx.dart';
+import 'package:path/path.dart' as path;
 
 Future<void> main(List<String> args) async {
   final operations = args[0];

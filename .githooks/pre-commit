@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
 # Check (g)eneration, (f)ormatting, (b)ranch and (a)nalysis.
-if ! dart .githooks/check.dart gfba; then
+if ! dart utils/githooks/check.dart gfba; then
   exit 1
 fi
