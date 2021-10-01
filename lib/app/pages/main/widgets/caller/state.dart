@@ -49,7 +49,7 @@ abstract class CallProcessState extends CallOriginDetermined {
   /// Irrelevant (and always false) if [isVoip] is false.
   bool get isVoipCallMuted => audioState?.isMicrophoneMuted ?? false;
 
-  // `voipCall` is only available when it's a VoIP call.
+  // `voip` is only available when it's a VoIP call.
   bool get isVoip => voip != null;
 
   bool get isInTransfer =>

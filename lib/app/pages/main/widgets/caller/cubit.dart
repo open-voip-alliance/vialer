@@ -300,6 +300,14 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
   }
 
   Future<void> _onVoipCallEvent(Event event) async {
+    // Necessary for auto-cast.
+    final state = this.state;
+
+    if (state is CallProcessState && !state.isVoip) {
+      logger.info('Ignoring VoIP event because we\'re in a call-through call');
+      return;
+    }
+
     // The call UI isn't interested in any non-call-session-events.
     if (event is! CallSessionEvent) {
       logger.info('Ignoring event as it is not a CallSessionEvent');
@@ -500,6 +508,7 @@ extension on CallOrigin {
 /// end of a call. This object will hold those values.
 class _PreservedCallSessionState {
   var _mos = 0.0;
+
   double get mos => _mos;
 
   final usedAudioRoutes = <AudioRoute>{};
