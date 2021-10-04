@@ -20,24 +20,24 @@ PODS:
     - Flutter
     - Segment-Amplitude (= 3.0.1)
   - iOSVoIPLib (0.1.0):
-    - linphone-sdk (= 4.4.1)
+    - linphone-sdk (= 5.0.36)
   - libphonenumber (0.0.1):
     - Flutter
     - libPhoneNumber-iOS
   - libPhoneNumber-iOS (0.9.15)
-  - linphone-sdk (4.4.1):
-    - linphone-sdk/all-frameworks (= 4.4.1)
-    - linphone-sdk/app-extension (= 4.4.1)
-    - linphone-sdk/app-extension-swift (= 4.4.1)
-    - linphone-sdk/basic-frameworks (= 4.4.1)
-    - linphone-sdk/swift (= 4.4.1)
-  - linphone-sdk/all-frameworks (4.4.1)
-  - linphone-sdk/app-extension (4.4.1)
-  - linphone-sdk/app-extension-swift (4.4.1):
+  - linphone-sdk (5.0.36):
+    - linphone-sdk/all-frameworks (= 5.0.36)
+    - linphone-sdk/app-extension (= 5.0.36)
+    - linphone-sdk/app-extension-swift (= 5.0.36)
+    - linphone-sdk/basic-frameworks (= 5.0.36)
+    - linphone-sdk/swift (= 5.0.36)
+  - linphone-sdk/all-frameworks (5.0.36)
+  - linphone-sdk/app-extension (5.0.36)
+  - linphone-sdk/app-extension-swift (5.0.36):
     - linphone-sdk/app-extension
-  - linphone-sdk/basic-frameworks (4.4.1):
+  - linphone-sdk/basic-frameworks (5.0.36):
     - linphone-sdk/app-extension
-  - linphone-sdk/swift (4.4.1):
+  - linphone-sdk/swift (5.0.36):
     - linphone-sdk/app-extension-swift
     - linphone-sdk/basic-frameworks
   - native_shared_preferences (1.0.0):
@@ -171,10 +171,10 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   iOSVoIPLib:
-    :commit: 590cce4fd52d566980782b0148ef2b36017b4eb7
+    :commit: a38d91b9c79fb35461f0bbb1df51d4b3004f7da1
     :git: https://github.com/open-voip-alliance/iOS-VoIP-Lib.git
   PIL:
-    :commit: 123540bbfa1f74d10f5587fc1c0f31981a0d778e
+    :commit: 32ef2ee3a1ef52c8873720ae93d65b6f6bc3c4b0
     :git: https://github.com/open-voip-alliance/iOS-Phone-Integration-Lib.git
 
 SPEC CHECKSUMS:
@@ -185,12 +185,12 @@ SPEC CHECKSUMS:
   device_info: d7d233b645a32c40dfdc212de5cf646ca482f175
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
   flutter_libphonenumber: 6a23afdf063b34d1e53e6dbd6c6bc905d18e8e46
-  flutter_phone_lib: dc1f7a3cde430bcb8dd6674b7c0d54a42156eb23
+  flutter_phone_lib: 721c856fbb850eedcf1e6d00669580c10b737c2b
   flutter_segment: f20a38d465030de0f1b2aa9325cef9c1442b0721
-  iOSVoIPLib: 5d0a20228ab3f9bdcbb7e35903be4009bfa267b3
+  iOSVoIPLib: e247a57aba5d19d017cb548b9861393d55e27676
   libphonenumber: bd14d5abfc5939ab0b0767234e2d8e2593af258e
   libPhoneNumber-iOS: 0a32a9525cf8744fe02c5206eb30d571e38f7d75
-  linphone-sdk: 91183cb3e3224d2d1a211357cd6a39d61636d17d
+  linphone-sdk: 567e567b229922b619f21ca20c12d7cee23b7ad9
   native_shared_preferences: 21a805f6149643c25a20a4f534692131faebadfe
   package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
   package_info_plus: 6c92f08e1f853dc01228d6f553146438dafcd14e
