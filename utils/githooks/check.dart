@@ -205,7 +205,7 @@ Future<void> _runGenerationIfNeeded(
       'run',
       'pigeon',
       '--input',
-      'pigeon/scheme.dart',
+      'utils/pigeon/scheme.dart',
       '--dart_out',
       'lib/app/util/pigeon.dart',
       '--objc_header_out',
