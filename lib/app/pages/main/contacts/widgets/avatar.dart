@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../domain/entities/contact.dart';
+import '../../../../util/contact.dart';
 import '../../widgets/avatar.dart';
 import '../util/color.dart';
 

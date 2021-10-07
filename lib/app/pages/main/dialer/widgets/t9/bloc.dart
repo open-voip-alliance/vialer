@@ -11,6 +11,7 @@ import '../../../../../../domain/entities/permission_status.dart';
 import '../../../../../../domain/entities/t9_contact.dart';
 import '../../../../../../domain/usecases/get_contacts.dart';
 import '../../../../../../domain/usecases/get_permission_status.dart';
+import '../../../../../util/contact.dart';
 import '../../../../../util/extensions.dart';
 import 'event.dart';
 import 'state.dart';

@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:dartx/dartx.dart';
+import '../../app/util/contact.dart';
 
 import 'item.dart';
 
@@ -24,11 +24,6 @@ class Contact {
     this.emails = const [],
     this.identifier,
   });
-
-  String get fullName =>
-      [givenName, middleName, familyName].whereNotNull().join(' ');
-
-  String get displayName => (chosenName ?? fullName).trim();
 
   @override
   String toString() => phoneNumbers.isEmpty
