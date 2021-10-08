@@ -153,12 +153,14 @@ class _CallPageState extends State<CallPage>
                             fontWeight: FontWeight.w300,
                           ),
                         ),
+                        const SizedBox(height: 4),
                         Text(
                           call.remotePartySubheading,
                           style: const TextStyle(
                             fontSize: 16,
                           ),
                         ),
+                        const SizedBox(height: 8),
                         Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(13.5),
