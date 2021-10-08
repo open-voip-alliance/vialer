@@ -24,7 +24,7 @@ class TwoFactorAuthenticationCubit extends Cubit<TwoFactorState> with Loggable {
     logger.info('Attempting to login using two-factor code');
 
     try {
-      _handleLoginResult(
+      await _handleLoginResult(
         await _login(
           credentials: UserProvidedCredentials(
             email: _onboarding.state.email!,
@@ -50,7 +50,7 @@ class TwoFactorAuthenticationCubit extends Cubit<TwoFactorState> with Loggable {
     }
   }
 
-  void _handleLoginResult(bool result) {
+  Future<void> _handleLoginResult(bool result) async {
     if (!result) {
       logger.info('Two-factor code was rejected.');
 
@@ -61,7 +61,7 @@ class TwoFactorAuthenticationCubit extends Cubit<TwoFactorState> with Loggable {
 
     logger.info('Two-factor code accepted, logging user in.');
 
-    _onboarding.addStepsBasedOnUserType();
+    await _onboarding.addStepsBasedOnUserType();
 
     emit(const CodeAccepted());
   }

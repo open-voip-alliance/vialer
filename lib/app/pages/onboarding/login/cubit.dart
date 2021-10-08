@@ -66,7 +66,7 @@ class LoginCubit extends Cubit<LoginState> with Loggable {
     }
 
     if (loginSuccessful) {
-      _onboarding.addStepsBasedOnUserType();
+      await _onboarding.addStepsBasedOnUserType();
 
       emit(const LoggedIn());
 
