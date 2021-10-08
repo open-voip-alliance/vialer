@@ -60,6 +60,7 @@ custom: # Custom properties to make workflows cleaner
         import os
         import requests
         import subprocess
+        from shlex import quote
 
         TAG = subprocess.check_output(['git', 'describe', '--tags', '--abbrev=0']).decode('ascii').strip()
         GITLAB_API_TOKEN = os.getenv('GITLAB_API_TOKEN')
@@ -68,7 +69,7 @@ custom: # Custom properties to make workflows cleaner
 
         notes = requests.get(URL, headers=HEADERS).json()['description']
         f = open("release_notes.txt", "w")
-        f.write(notes)
+        f.write(quote(notes))
         f.close()
     - &flutter_pub_get
       name: Installing flutter dependencies and generate code
@@ -85,13 +86,22 @@ custom: # Custom properties to make workflows cleaner
       name: Running tests
       script: |
         flutter test
-    - &build_apk
-      name: Building application (.apk) for Android
+    - &build_aab
+      name: Building app bundle (.aab) for Android #TODO: $TEST_SERVICE_ACCOUNT decoding is only temporary and should be removed when Codemagic has resolved their issue.
       script: |
+        echo $TEST_SERVICE_ACCOUNT | base64 --decode > $TEST_SERVICE_ACCOUNT
         echo "flutter.sdk=$HOME/programs/flutter" > "$FCI_BUILD_DIR/android/local.properties"
         echo $ANDROID_FIREBASE_SECRET | base64 --decode > $FCI_BUILD_DIR/android/app/google-services.json
         echo $FCI_KEYSTORE | base64 --decode > $FCI_KEYSTORE_PATH
-        flutter build apk --release --target=lib/app/main.dart --build-number=$PROJECT_BUILD_NUMBER -v --dart-define BRAND=$BRAND --dart-define SEGMENT_ANDROID_KEY=$SEGMENT_ANDROID_WRITE_KEY
+        flutter build appbundle --release --target=lib/app/main.dart --build-number=$PROJECT_BUILD_NUMBER -v --dart-define BRAND=$BRAND --dart-define SEGMENT_ANDROID_KEY=$SEGMENT_ANDROID_WRITE_KEY
+    - &build_universal_apk_from_aab
+      name: Building "Universal APK" (.apk) for Android
+      script: |
+        android-app-bundle build-universal-apk \
+        --ks $FCI_KEYSTORE_PATH \
+        --ks-pass $FCI_KEYSTORE_PASSWORD \
+        --ks-key-alias $FCI_KEY_ALIAS \
+        --key-pass $FCI_KEY_PASSWORD
     - &update_ios_signing_for_current_brand
       name: Updating iOS project files to use the appropriate signing information for the current brand
       script: |
@@ -184,7 +194,7 @@ custom: # Custom properties to make workflows cleaner
         [{"language":"en-US","text":"!${GITLAB_MERGE_REQUEST_IID}"},{"language":"nl-NL","text":"!${GITLAB_MERGE_REQUEST_IID}"}]
         EOF
     - &set_testflight_release_notes_for_main
-      name: Set "What to test" for TestFlight
+      name: Preparing "What to test" for TestFlight
       script: |
         echo '[{"language":"en-US","text":"Main"},{"language":"nl-NL","text":"Main"}]' > release_notes.json
   config: &config # Default configuration that can be applied to all normal workflows
@@ -231,6 +241,49 @@ custom: # Custom properties to make workflows cleaner
         - pattern: '*beta*'
           include: true
 
+    publish_for_qa: &publish_for_qa
+      slack:
+        channel: '#vialer_mobile_ci'
+        notify_on_build_start: true
+      app_store_connect:
+        api_key: $APP_STORE_CONNECT_PRIVATE_KEY
+        key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
+        issuer_id: $APP_STORE_CONNECT_ISSUER_ID
+        submit_to_testflight: true
+        beta_groups:
+          - QA
+      firebase:
+        firebase_token: $FIREBASE_TOKEN
+        android:
+          app_id: $FIREBASE_APP_ID
+          groups:
+            - qa
+      google_play:
+        credentials: $TEST_SERVICE_ACCOUNT
+        track: QA
+        in_app_update_priority: 0
+
+    publish_for_beta: &publish_for_beta
+      slack:
+        channel: '#vialer_mobile_releases'
+        notify_on_build_start: false
+      app_store_connect:
+        api_key: $APP_STORE_CONNECT_PRIVATE_KEY
+        key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
+        issuer_id: $APP_STORE_CONNECT_ISSUER_ID
+        submit_to_testflight: true
+        beta_groups:
+          - Beta Testers
+      firebase:
+        firebase_token: $FIREBASE_TOKEN
+        android:
+          app_id: $FIREBASE_APP_ID
+          groups:
+            - beta
+      google_play:
+        credentials: $TEST_SERVICE_ACCOUNT
+        track: QA # To be changed to beta when we are ready to publish to the beta track
+        in_app_update_priority: 0
 
 workflows:
   main:
@@ -240,12 +293,13 @@ workflows:
       groups:
         - configuration
         - diagnostics
-        - voys_android_firebase
-        - voys_keystore_credentials
-        - voys_ios_appstore_credentials
+        - vialer_android_firebase
+        - vialer_upload_keystore_credentials
+        - vialer_playstore_credentials
+        - vialer_ios_appstore_credentials
       <<: *config_environment
       vars:
-        <<: *brand_config_voys_env_vars
+        <<: *brand_config_vialer_env_vars
     triggering:
       events:
         - push
@@ -256,26 +310,19 @@ workflows:
         - pattern: main
           include: true
           source: false
+    cache: *defaults_cache
     scripts:
       - *set_up_env_file
       - *set_version_string_to_most_recent_tag
       - *flutter_pub_get
       - *flutter_test
-      - *build_apk
+      - *build_aab
+      - *build_universal_apk_from_aab
+      - *update_ios_signing_for_current_brand
       - *build_ipa
       - *set_testflight_release_notes_for_main
     artifacts: *defaults_artifacts
-    publishing:
-      slack:
-        channel: '#vialer_mobile_ci'
-        notify_on_build_start: true
-      app_store_connect:
-        api_key: $APP_STORE_CONNECT_PRIVATE_KEY
-        key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
-        issuer_id: $APP_STORE_CONNECT_ISSUER_ID
-        submit_to_testflight: true
-        beta_groups:
-          - Internal Testers
+    publishing: *publish_for_qa
 
   merge-requests:
     name: merge requests
@@ -284,34 +331,27 @@ workflows:
       groups:
         - configuration
         - diagnostics
-        - voys_android_firebase
-        - voys_keystore_credentials
-        - voys_ios_appstore_credentials
+        - vialer_playstore_credentials
+        - vialer_android_firebase
+        - vialer_upload_keystore_credentials
+        - vialer_ios_appstore_credentials
       <<: *config_environment
       vars:
-        BRAND: voys
-        <<: *brand_config_voys_env_vars
+        <<: *brand_config_vialer_env_vars
     cache: *defaults_cache
     scripts:
       - *set_up_env_file
       - *set_version_string_for_merge_request
       - *flutter_pub_get
       - *flutter_test
-      - *build_apk
+      - *build_aab
+      - *build_universal_apk_from_aab
+      - *update_ios_signing_for_current_brand
       - *build_ipa
       - *set_testflight_release_notes_for_merge_request
     artifacts: *defaults_artifacts
     publishing:
-      slack:
-        channel: '#vialer_mobile_ci'
-        notify_on_build_start: true
-      app_store_connect:
-        api_key: $APP_STORE_CONNECT_PRIVATE_KEY
-        key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
-        issuer_id: $APP_STORE_CONNECT_ISSUER_ID
-        submit_to_testflight: true
-        beta_groups:
-          - Internal Testers
+      <<: *publish_for_qa
       scripts:
         - *update_gitlab_merge_request_with_build_url
 
@@ -322,7 +362,8 @@ workflows:
       groups:
         - configuration
         - diagnostics
-        - vialer_keystore_credentials
+        - vialer_android_firebase
+        - vialer_upload_keystore_credentials
         - vialer_ios_appstore_credentials
       <<: *config_environment
       vars:
@@ -343,7 +384,9 @@ workflows:
       - *set_version_string_to_most_recent_tag
       - *flutter_pub_get
       - *flutter_test
-      - *build_apk
+      - *build_aab
+      - *build_universal_apk_from_aab
+      - *update_ios_signing_for_current_brand
       - *build_ipa
     artifacts: *defaults_artifacts
 
@@ -355,7 +398,8 @@ workflows:
         - configuration
         - diagnostics
         - voys_android_firebase
-        - voys_keystore_credentials
+        - voys_playstore_credentials
+        - voys_upload_keystore_credentials
         - voys_ios_appstore_credentials
       <<: *config_environment
       vars:
@@ -369,26 +413,10 @@ workflows:
       - *prepare_release_notes_from_gitlab
       - *flutter_pub_get
       - *flutter_test
-      - *build_apk
+      - *build_aab
       - *update_ios_signing_for_current_brand
       - *build_ipa
-    publishing:
-      app_store_connect:
-        api_key: $APP_STORE_CONNECT_PRIVATE_KEY
-        key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
-        issuer_id: $APP_STORE_CONNECT_ISSUER_ID
-        submit_to_testflight: true
-        beta_groups:
-          - Beta Testers
-      slack:
-        channel: '#vialer_mobile_ci'
-        notify_on_build_start: true
-      firebase:
-        firebase_token: $FIREBASE_TOKEN
-        android:
-          app_id: $FIREBASE_APP_ID
-          groups:
-            - beta
+    publishing: *publish_for_beta
 
   beta-vialer:
     name: Vialer Beta
@@ -398,12 +426,14 @@ workflows:
         - configuration
         - diagnostics
         - vialer_android_firebase
-        - vialer_keystore_credentials
+        - vialer_upload_keystore_credentials
+        - vialer_playstore_credentials
         - vialer_ios_appstore_credentials
       <<: *config_environment
       vars:
         <<: *brand_config_vialer_env_vars
     cache: *defaults_cache
+    artifacts: *defaults_artifacts
     triggering: *beta_was_tagged
     scripts:
       - *set_up_env_file
@@ -411,24 +441,7 @@ workflows:
       - *prepare_release_notes_from_gitlab
       - *flutter_pub_get
       - *flutter_test
-      - *build_apk
+      - *build_aab
       - *update_ios_signing_for_current_brand
       - *build_ipa
-    artifacts: *defaults_artifacts
-    publishing:
-      app_store_connect:
-        api_key: $APP_STORE_CONNECT_PRIVATE_KEY
-        key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
-        issuer_id: $APP_STORE_CONNECT_ISSUER_ID
-        submit_to_testflight: true
-        beta_groups:
-          - Beta Testers
-      slack:
-        channel: '#vialer_mobile_ci'
-        notify_on_build_start: true
-      firebase:
-        firebase_token: $FIREBASE_TOKEN
-        android:
-          app_id: $FIREBASE_APP_ID
-          groups:
-            - beta
+    publishing: *publish_for_beta
