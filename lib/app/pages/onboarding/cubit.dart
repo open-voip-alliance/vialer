@@ -85,7 +85,7 @@ class OnboardingCubit extends Cubit<OnboardingState> with Loggable {
 
   /// Adds the appropriate steps to the onboarding process based on whether
   /// the user is allowed to use VoIP.
-  void addStepsBasedOnUserType() async {
+  Future<void> addStepsBasedOnUserType() async {
     if (!await _getIsVoipAllowed()) {
       addStep(OnboardingStep.voicemail);
     } else {
