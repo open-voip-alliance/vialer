@@ -1,12 +1,13 @@
 import 'package:dartx/dartx.dart';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
-import '../../app/util/json_converter.dart';
 
+import '../../app/util/json_converter.dart';
 import 'destination.dart';
 import 'fixed_destination.dart';
 import 'phone_account.dart';
 import 'selected_destination_info.dart';
+import 'system_user.dart';
 
 part 'availability.g.dart';
 
@@ -90,6 +91,13 @@ class Availability extends Equatable {
       ),
     );
   }
+
+  /// Find the an app account for the given user. This should never be null
+  /// with a user properly configured for the app.
+  PhoneAccount? findAppAccountFor({required SystemUser user}) =>
+      phoneAccounts.firstOrNullWhere(
+        (phoneAccount) => user.appAccountId == phoneAccount.id.toString(),
+      );
 
   @override
   String toString() => '$runtimeType('
