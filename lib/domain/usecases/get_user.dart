@@ -13,7 +13,7 @@ class GetUserUseCase extends UseCase {
       return _storageRepository.systemUser;
     }
 
-    var user = await _authRepository.getUser();
+    var user = await _authRepository.getUserUsingStoredCredentials();
     user = user.copyWith(token: _storageRepository.systemUser?.token);
 
     _storageRepository.systemUser = user;

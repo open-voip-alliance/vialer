@@ -55,6 +55,10 @@ dependencies:
   styled_text: ^3.0.2
   flutter_switch: ^0.3.2
 
+  # This exists temporarily to import credentials from the legacy app and can be totally removed
+  # when all users have been moved over.
+  native_shared_preferences: ^2.0.4
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

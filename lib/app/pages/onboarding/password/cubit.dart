@@ -1,7 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../domain/entities/exceptions/two_factor_authentication_required.dart';
-import '../../../../domain/entities/onboarding/step.dart';
 
+import '../../../../domain/entities/exceptions/two_factor_authentication_required.dart';
+import '../../../../domain/entities/login_credentials.dart';
+import '../../../../domain/entities/onboarding/step.dart';
 import '../../../../domain/usecases/change_password.dart';
 import '../../../../domain/usecases/onboarding/login.dart';
 import '../../../util/loggable.dart';
@@ -36,9 +37,12 @@ class PasswordCubit extends Cubit<PasswordState> with Loggable {
         currentPassword: currentPassword,
         newPassword: password,
       );
+
       await _login(
-        email: email,
-        password: password,
+        credentials: UserProvidedCredentials(
+          email: email,
+          password: password,
+        ),
       );
 
       emit(PasswordChanged());

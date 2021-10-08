@@ -11,6 +11,7 @@ import 'domain/repositories/destination.dart';
 import 'domain/repositories/env.dart';
 import 'domain/repositories/error_tracking_repository.dart';
 import 'domain/repositories/feedback.dart';
+import 'domain/repositories/legacy_storage_repository.dart';
 import 'domain/repositories/logging.dart';
 import 'domain/repositories/metrics.dart';
 import 'domain/repositories/operating_system_info.dart';
@@ -39,6 +40,11 @@ Future<void> initializeDependencies({bool ui = true}) async {
       final storageRepository = StorageRepository();
       await storageRepository.load();
       return storageRepository;
+    })
+    ..registerSingletonAsync<LegacyStorageRepository>(() async {
+      final legacyStorageRepository = LegacyStorageRepository();
+      await legacyStorageRepository.load();
+      return legacyStorageRepository;
     });
 
   if (ui) {

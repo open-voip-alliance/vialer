@@ -40,6 +40,8 @@ PODS:
   - linphone-sdk/swift (4.4.1):
     - linphone-sdk/app-extension-swift
     - linphone-sdk/basic-frameworks
+  - native_shared_preferences (1.0.0):
+    - Flutter
   - package_info (0.0.1):
     - Flutter
   - package_info_plus (0.4.5):
@@ -99,6 +101,7 @@ DEPENDENCIES:
   - flutter_segment (from `.symlinks/plugins/flutter_segment/ios`)
   - iOSVoIPLib (from `https://github.com/open-voip-alliance/iOS-VoIP-Lib.git`)
   - libphonenumber (from `.symlinks/plugins/libphonenumber/ios`)
+  - native_shared_preferences (from `.symlinks/plugins/native_shared_preferences/ios`)
   - package_info (from `.symlinks/plugins/package_info/ios`)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
@@ -143,6 +146,8 @@ EXTERNAL SOURCES:
     :git: https://github.com/open-voip-alliance/iOS-VoIP-Lib.git
   libphonenumber:
     :path: ".symlinks/plugins/libphonenumber/ios"
+  native_shared_preferences:
+    :path: ".symlinks/plugins/native_shared_preferences/ios"
   package_info:
     :path: ".symlinks/plugins/package_info/ios"
   package_info_plus:
@@ -186,6 +191,7 @@ SPEC CHECKSUMS:
   libphonenumber: bd14d5abfc5939ab0b0767234e2d8e2593af258e
   libPhoneNumber-iOS: 0a32a9525cf8744fe02c5206eb30d571e38f7d75
   linphone-sdk: 91183cb3e3224d2d1a211357cd6a39d61636d17d
+  native_shared_preferences: 21a805f6149643c25a20a4f534692131faebadfe
   package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
   package_info_plus: 6c92f08e1f853dc01228d6f553146438dafcd14e
   path_provider: d1e9807085df1f9cc9318206cd649dc0b76be3de
@@ -205,4 +211,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 0176e507489ce0eb83b6fa695f827a9aa4b28b97
 
-COCOAPODS: 1.10.2
+COCOAPODS: 1.11.2

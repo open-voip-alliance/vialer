@@ -15,7 +15,16 @@ class AuthRepository {
   static const _twoFactorKey = 'two_factor_token';
 
   /// Returns the latest user from the portal.
-  Future<SystemUser> getUser() => _getUser();
+  Future<SystemUser> getUserUsingStoredCredentials() => _getUser();
+
+  Future<SystemUser> getUserUsingProvidedCredentials({
+    required String email,
+    required String token,
+  }) =>
+      _getUser(
+        email: email,
+        token: token,
+      );
 
   Future<SystemUser> _getUser({String? email, String? token}) async {
     assert(
