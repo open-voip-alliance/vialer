@@ -62,6 +62,18 @@ class SettingTileCategory extends StatelessWidget {
     );
   }
 
+  static Widget userDestination({List<Widget> children = const []}) {
+    return Builder(
+      builder: (context) {
+        return SettingTileCategory(
+          icon: VialerSans.incomingCall,
+          title: context.msg.main.settings.list.calling.availability.title,
+          children: children,
+        );
+      },
+    );
+  }
+
   static Widget debug({List<Widget> children = const []}) {
     return Builder(
       builder: (context) {

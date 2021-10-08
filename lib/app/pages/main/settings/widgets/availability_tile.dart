@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../../domain/entities/availability.dart';
 import '../../../../../domain/entities/system_user.dart';
 import '../../../../resources/localizations.dart';
+import '../../../../resources/theme.dart';
 import '../../../../util/stylized_txt.dart';
 import 'tile.dart';
 
@@ -70,48 +71,55 @@ class AvailabilityTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SettingTile(
-      label: Text(
-        context.msg.main.settings.list.calling.availability.title,
-      ),
-      description: Text(
-        context.msg.main.settings.list.calling.availability.description,
+      label: !context.isIOS
+          ? Text(
+              context.msg.main.settings.list.calling.availability.title,
+            )
+          : null,
+      description: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (_shouldDisplayAvailabilityInfo) ...[
+            Padding(
+              padding: const EdgeInsets.only(
+                top: 8,
+                bottom: 8,
+              ),
+              child: StyledText(
+                _text(context),
+                style: TextStyle(
+                  color: userAvailabilityType.asColor(context),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                bottom: 4,
+              ),
+              child: StyledText(
+                _sharedText(
+                  context,
+                  availability,
+                ),
+                style: TextStyle(
+                  color: userAvailabilityType.asColor(context),
+                ),
+              ),
+            ),
+          ],
+          Padding(
+            padding: const EdgeInsets.only(top: 8),
+            child: Text(
+              context.msg.main.settings.list.calling.availability.description,
+            ),
+          ),
+        ],
       ),
       childFillWidth: true,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           child,
-          if (_shouldDisplayAvailabilityInfo)
-            Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(
-                    top: 8,
-                    bottom: 10,
-                  ),
-                  child: StyledText(
-                    _text(context),
-                    style: TextStyle(
-                      color: userAvailabilityType.asColor(context),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                    bottom: 10,
-                  ),
-                  child: StyledText(
-                    _sharedText(
-                      context,
-                      availability,
-                    ),
-                    style: TextStyle(
-                      color: userAvailabilityType.asColor(context),
-                    ),
-                  ),
-                ),
-              ],
-            ),
         ],
       ),
     );

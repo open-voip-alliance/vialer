@@ -91,6 +91,15 @@ class _SettingsPageState extends State<SettingsPage> {
                 final showTroubleshooting = state.showTroubleshooting;
                 final showAbout = state.showAbout;
                 final showDnd = state.showDnd;
+                final showDestinationInSeparateCategory = context.isIOS;
+
+                final availabilityTile = state.systemUser != null
+                    ? SettingTile.availability(
+                        settings.get<AvailabilitySetting>(),
+                        systemUser: state.systemUser!,
+                        key: _availabilityTileKey,
+                      )
+                    : null;
 
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -140,14 +149,18 @@ class _SettingsPageState extends State<SettingsPage> {
                                   SettingTile.useVoip(
                                     settings.get<UseVoipSetting>(),
                                   ),
-                                  if (state.systemUser != null)
-                                    SettingTile.availability(
-                                      settings.get<AvailabilitySetting>(),
-                                      systemUser: state.systemUser!,
-                                      key: _availabilityTileKey,
-                                    ),
+                                  if (!showDestinationInSeparateCategory &&
+                                      availabilityTile != null)
+                                    availabilityTile,
                                 ],
                               ),
+                              if (showDestinationInSeparateCategory &&
+                                  availabilityTile != null)
+                                SettingTileCategory.userDestination(
+                                  children: [
+                                    availabilityTile,
+                                  ],
+                                ),
                               SettingTileCategory.portalLinks(
                                 children: [
                                   SettingLinkTile.dialPlan(),
