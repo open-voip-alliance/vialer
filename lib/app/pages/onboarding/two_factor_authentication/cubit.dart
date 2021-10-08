@@ -1,7 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../domain/entities/exceptions/need_to_change_password.dart';
-import '../../../../domain/entities/onboarding/step.dart';
 
+import '../../../../domain/entities/exceptions/need_to_change_password.dart';
+import '../../../../domain/entities/login_credentials.dart';
+import '../../../../domain/entities/onboarding/step.dart';
 import '../../../../domain/usecases/onboarding/login.dart';
 import '../../../util/loggable.dart';
 import '../cubit.dart';
@@ -25,9 +26,11 @@ class TwoFactorAuthenticationCubit extends Cubit<TwoFactorState> with Loggable {
     try {
       _handleLoginResult(
         await _login(
-          email: _onboarding.state.email!,
-          password: _onboarding.state.password!,
-          twoFactorCode: code,
+          credentials: UserProvidedCredentials(
+            email: _onboarding.state.email!,
+            password: _onboarding.state.password!,
+            twoFactorCode: code,
+          ),
         ),
       );
     } on NeedToChangePasswordException {

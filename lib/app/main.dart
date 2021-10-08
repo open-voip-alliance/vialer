@@ -5,6 +5,7 @@ import 'package:timezone/data/latest.dart';
 import '../dependency_locator.dart';
 import '../domain/repositories/env.dart';
 import '../domain/repositories/error_tracking_repository.dart';
+import '../domain/usecases/automatically_login_legacy_user.dart';
 import '../domain/usecases/enable_console_logging.dart';
 import '../domain/usecases/enable_remote_logging_if_needed.dart';
 import 'pages/main/page.dart';
@@ -25,6 +26,12 @@ Future<void> main() async {
 
   EnableConsoleLoggingUseCase()();
   EnableRemoteLoggingIfNeededUseCase()();
+
+  // Check to see if there are user credentials stored from the legacy app,
+  // and if there are, automatically import them. This is temporary
+  // functionality to allow legacy users to seamlessly switch to this
+  // app.
+  await AutomaticallyLoginLegacyUser()();
 
   final errorTrackingRepository = dependencyLocator<ErrorTrackingRepository>();
   final dsn = await dependencyLocator<EnvRepository>().errorTrackingDsn;
