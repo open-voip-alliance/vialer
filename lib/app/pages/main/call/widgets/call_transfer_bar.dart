@@ -14,36 +14,18 @@ class CallTransferBar extends StatelessWidget {
     return Row(
       children: [
         Expanded(
-          child: Container(
-            decoration: BoxDecoration(
-              border: const Border(
-                bottom: BorderSide(
-                  width: 2.0,
-                  color: Colors.white,
-                ),
+          child: Padding(
+            padding: const EdgeInsets.only(top: 12, bottom: 12),
+            child: DefaultTextStyle.merge(
+              style: TextStyle(
+                color: context.brand.theme.primaryGradientStartColor,
               ),
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  context.brand.theme.primaryGradientStartColor,
-                  context.brand.theme.primaryGradientEndColor,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  text,
                 ],
-              ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.only(top: 30, bottom: 15),
-              child: DefaultTextStyle.merge(
-                style: TextStyle(
-                  color: context.brand.theme.primaryGradientStartColor,
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    text,
-                  ],
-                ),
               ),
             ),
           ),

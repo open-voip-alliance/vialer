@@ -17,29 +17,39 @@ class CallTransfer extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          CallTransferBar(
-            text: RichText(
-              text: TextSpan(children: [
-                TextSpan(
-                    text: '${context.msg.main.call.state.transferToStart} '),
-                TextSpan(
-                  text: '${activeCall.remotePartyHeading}',
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-                TextSpan(text: ' ${context.msg.main.call.state.transferToEnd}'),
-              ]),
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            gradient: context.brand.theme.primaryGradient,
+          ),
+          child: SafeArea(
+            child: CallTransferBar(
+              text: RichText(
+                text: TextSpan(children: [
+                  TextSpan(
+                      text: '${context.msg.main.call.state.transferToStart} '),
+                  TextSpan(
+                    text: '${activeCall.remotePartyHeading}',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  TextSpan(
+                      text: ' ${context.msg.main.call.state.transferToEnd}'),
+                ]),
+              ),
             ),
           ),
-          Expanded(
-            child: T9DialPad(
-              callButtonIcon: VialerSans.transfer,
-              callButtonColor: context.brand.theme.green1,
-              onCallButtonPressed: onTransferTargetSelected,
-            ),
+        ),
+        Expanded(
+          child: T9DialPad(
+            callButtonIcon: VialerSans.transfer,
+            callButtonColor: context.brand.theme.green1,
+            onCallButtonPressed: onTransferTargetSelected,
           ),
-        ],
-      );
+        ),
+      ],
+    );
+  }
 }
