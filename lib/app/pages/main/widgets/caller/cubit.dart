@@ -300,12 +300,15 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
   }
 
   Future<void> _onVoipCallEvent(Event event) async {
-    // Necessary for auto-cast.
-    final state = this.state;
+    if (state is CallProcessState) {
+      final isVoip = (state as CallProcessState).isVoip;
 
-    if (state is CallProcessState && !state.isVoip) {
-      logger.info('Ignoring VoIP event because we\'re in a call-through call');
-      return;
+      if (!isVoip) {
+        logger.info(
+          'Ignoring VoIP event because we\'re in a call-through call',
+        );
+        return;
+      }
     }
 
     // The call UI isn't interested in any non-call-session-events.
@@ -330,10 +333,12 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
       emit(Ringing(voip: callSessionState));
 
       logger.info('Incoming VoIP call, ringing');
+      return;
     } else if (event is OutgoingCallStarted) {
       final originState = state as CallOriginDetermined;
       emit(InitiatingCall(origin: originState.origin, voip: callSessionState));
       logger.info('Initiating VoIP call');
+      return;
     }
 
     // When we have reached a state where the call session is finished, we do
