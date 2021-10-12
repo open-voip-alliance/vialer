@@ -47,7 +47,8 @@ class AvailabilityTile extends StatelessWidget {
   }
 
   String _accountInfoText(Availability availability) {
-    final account = availability.phoneAccounts.first;
+    final account = availability.findAppAccountFor(user: user) ??
+        availability.phoneAccounts.first;
 
     return _createInfo([
       account.internalNumber.toString(),
