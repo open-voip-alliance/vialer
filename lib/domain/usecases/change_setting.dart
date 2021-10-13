@@ -49,6 +49,7 @@ class ChangeSettingUseCase extends UseCase {
 
       availability = await _destinationRepository.getLatestAvailability();
       setting = AvailabilitySetting(availability);
+      _metricsRepository.track('availability-changed');
     }
 
     if (!setting.mutable) {
