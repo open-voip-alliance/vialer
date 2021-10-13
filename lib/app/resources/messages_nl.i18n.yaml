@@ -11,6 +11,9 @@ generic:
     done: "Klaar"
     tryAgain: "Probeer nogmaals"
 
+buildError:
+  anErrorOccurred: "Er is een renderfout opgetreden!"
+
 connectivity:
   noConnection:
     title: "Geen internetverbinding"

@@ -10,6 +10,9 @@ generic:
     done: "Done"
     tryAgain: "Try again"
 
+buildError:
+  anErrorOccurred: "A rendering error occurred!"
+
 connectivity:
   noConnection:
     title: "No internet connection"
