@@ -8,6 +8,7 @@ import 'package:flutter_phone_lib/call/call_state.dart';
 import 'package:provider/provider.dart';
 
 import '../../../resources/localizations.dart';
+import '../../../resources/theme.dart';
 import '../../../util/brand.dart';
 import '../../../util/widgets_binding_observer_registrar.dart';
 import '../widgets/caller.dart';
@@ -130,60 +131,67 @@ class _CallPageState extends State<CallPage>
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                if (state is AttendedTransferStarted ||
-                    state is AttendedTransferComplete)
-                  CallTransferInProgressBar(
-                    inactiveCall: state.voip!.inactiveCall!,
-                  ),
                 Container(
                   decoration: BoxDecoration(
                     gradient: context.brand.theme.primaryGradient,
                   ),
-                  child: DefaultTextStyle.merge(
-                    style: TextStyle(
-                      color: context.brand.theme.onPrimaryGradientColor,
-                    ),
+                  child: SafeArea(
                     child: Column(
                       children: [
-                        const SizedBox(height: 48),
-                        Text(
-                          call.remotePartyHeading,
-                          style: const TextStyle(
-                            fontSize: 32,
-                            fontWeight: FontWeight.w300,
+                        if (state is AttendedTransferStarted ||
+                            state is AttendedTransferComplete)
+                          CallTransferInProgressBar(
+                            inactiveCall: state.voip!.inactiveCall!,
+                          ),
+                        DefaultTextStyle.merge(
+                          style: TextStyle(
+                            color: context.brand.theme.onPrimaryGradientColor,
+                          ),
+                          child: Column(
+                            children: [
+                              const SizedBox(height: 12),
+                              Text(
+                                call.remotePartyHeading,
+                                style: const TextStyle(
+                                  fontSize: 32,
+                                  fontWeight: FontWeight.w300,
+                                ),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                call.remotePartySubheading,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(13.5),
+                                  color: context
+                                      .brand.theme.primaryGradientStartColor,
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 4,
+                                ),
+                                child: Text(
+                                  processState is InitiatingCall
+                                      ? context.msg.main.call.state.calling
+                                      : processState is FinishedCalling
+                                          ? context
+                                              .msg.main.call.state.callEnded
+                                          : call.prettyDuration,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                              if (context.isAndroid) const SizedBox(height: 12),
+                            ],
                           ),
                         ),
-                        const SizedBox(height: 4),
-                        Text(
-                          call.remotePartySubheading,
-                          style: const TextStyle(
-                            fontSize: 16,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(13.5),
-                            color:
-                                context.brand.theme.primaryGradientStartColor,
-                          ),
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 4,
-                          ),
-                          child: Text(
-                            processState is InitiatingCall
-                                ? context.msg.main.call.state.calling
-                                : processState is FinishedCalling
-                                    ? context.msg.main.call.state.callEnded
-                                    : call.prettyDuration,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 24),
                       ],
                     ),
                   ),
