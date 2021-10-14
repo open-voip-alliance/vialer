@@ -340,33 +340,8 @@ workflows:
       vars:
         <<: *brand_config_vialer_env_vars
     cache: *defaults_cache
-    scripts:
-      - *set_up_env_file
-      - *set_version_string_for_merge_request
-      - *flutter_pub_get
-      - *flutter_test
-      - *build_aab
-      - *build_universal_apk_from_aab
-      - *update_ios_signing_for_current_brand
-      - *build_ipa
-      - *set_testflight_release_notes_for_merge_request
-    artifacts: *defaults_artifacts
-
-  qa:
-    name: QA
-    <<: *config
-    environment:
-      groups:
-        - configuration
-        - diagnostics
-        - vialer_playstore_credentials
-        - vialer_android_firebase
-        - vialer_upload_keystore_credentials
-        - vialer_ios_appstore_credentials
-      <<: *config_environment
-      vars:
-        <<: *brand_config_vialer_env_vars
-    cache: *defaults_cache
+    triggering:
+      cancel_previous_builds: true
     scripts:
       - *set_up_env_file
       - *set_version_string_for_merge_request
