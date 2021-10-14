@@ -7,7 +7,7 @@ abstract class RecentCallsState extends Equatable {
 
   final int page;
 
-  final maxPages = 2; // 3 months in total.
+  final maxPages = 10;
 
   bool get maxPagesLoaded => page == maxPages;
 

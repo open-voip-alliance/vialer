@@ -5,18 +5,23 @@ import '../../../../util/brand.dart';
 
 class GroupHeader extends StatelessWidget {
   final String group;
+  final EdgeInsets padding;
 
-  const GroupHeader({Key? key, required this.group}) : super(key: key);
+  const GroupHeader({
+    Key? key,
+    required this.group,
+    this.padding = const EdgeInsets.only(
+      top: 16,
+      bottom: 4,
+      left: 16,
+      right: 16,
+    ),
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(
-        top: 16,
-        bottom: 4,
-        left: 16,
-        right: 16,
-      ),
+      padding: padding,
       child: Text(
         group,
         style: TextStyle(

@@ -42,7 +42,7 @@ abstract class VoipgridService extends ChopperService {
     @Query('from.type') String? fromType,
     @Query('to.type') String? toType,
     @Query('page') int pageNumber = 1,
-    @Query('per_page') int perPage = 50,
+    @Query('per_page') int perPage = 20,
   });
 
   @Get(path: 'v2/callthrough')

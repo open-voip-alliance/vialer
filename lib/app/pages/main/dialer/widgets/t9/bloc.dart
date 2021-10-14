@@ -113,6 +113,7 @@ class T9ContactsBloc extends Bloc<T9ContactsEvent, T9ContactsState> {
                 removeDiacritics(contact.displayName).contains(regex) ||
                 contact.relevantPhoneNumber.value.contains(regex),
           )
+          .distinct()
           .toList();
 
       yield ContactsLoaded(state.contacts, t9Contacts);
@@ -140,8 +141,11 @@ class T9ContactsBloc extends Bloc<T9ContactsEvent, T9ContactsState> {
       '0': '',
     };
 
-    // Ignore all characters except those allowed in a phone number.
+    // Ignore all characters except those allowed in a phone number. Also remove
+    // the first 0 so we can properly match it against numbers with country
+    // codes.
     final inputPhoneNumber = input
+        .removePrefixFromLonger('0')
         .replaceAll(RegExp(r'[^0-9]'), '')
         .replaceAllMapped(RegExp(r'.'), (m) => '${m[0]}[^0-9]*');
 
@@ -156,4 +160,11 @@ class T9ContactsBloc extends Bloc<T9ContactsEvent, T9ContactsState> {
 
     return RegExp('(\\b$inputName|$inputPhoneNumber)', caseSensitive: false);
   }
+}
+
+extension on String {
+  /// Remove the prefix from a string if it is part of a longer string. e.g.
+  /// '0123' should become '123' but '0' should not become ''.
+  String removePrefixFromLonger(String characters) =>
+      length > characters.length ? removePrefix(characters) : this;
 }
