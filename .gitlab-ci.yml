@@ -63,12 +63,22 @@ test:
 build:
   image: curlimages/curl:latest
   stage: build
+  rules:
+    - if: '$CI_MERGE_REQUEST_EVENT_TYPE == "detached"'
+      variables:
+        CODEMAGIC_WORKFLOW: "merge-requests"
+    - if: '$CI_MERGE_REQUEST_EVENT_TYPE == "merged_result"'
+      variables:
+        CODEMAGIC_WORKFLOW: "merge-requests"
+    - if: '$CI_MERGE_REQUEST_EVENT_TYPE == "merge_train"'
+      variables:
+        CODEMAGIC_WORKFLOW: "main"
   script:
     - |
       wget -O jq https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64
       chmod +x ./jq
     - |
-      CODEMAGIC_BUILD_ID=`curl -s -H "Content-Type: application/json" -H "x-auth-token: $CODEMAGIC_API_TOKEN" --data '{"appId": "'"$CODEMAGIC_APP_ID"'","workflowId": "merge-requests","branch": "'"$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME"'","environment": {"variables": {"GITLAB_MERGE_REQUEST_IID": "'"$CI_MERGE_REQUEST_IID"'"}}}' https://api.codemagic.io/builds | ./jq '.buildId' -r`
+      CODEMAGIC_BUILD_ID=`curl -s -H "Content-Type: application/json" -H "x-auth-token: $CODEMAGIC_API_TOKEN" --data '{"appId": "'"$CODEMAGIC_APP_ID"'","workflowId": "'"$CODEMAGIC_WORKFLOW"'","branch": "'"$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME"'","environment": {"variables": {"GITLAB_MERGE_REQUEST_IID": "'"$CI_MERGE_REQUEST_IID"'"}}}' https://api.codemagic.io/builds | ./jq '.buildId' -r`
       get_codemagic_build_status () { local build_status=`curl -s -H "Content-Type: application/json" -H "x-auth-token: $CODEMAGIC_API_TOKEN" --request GET https://api.codemagic.io/builds/$CODEMAGIC_BUILD_ID | ./jq '.build.status' -r`; echo "$build_status"; }
       CODEMAGIC_BUILD_STATUS="$(get_codemagic_build_status)"
       echo "Waiting for the Codemagic build to finish, to see the build in Codemagic go to https://codemagic.io/app/$CODEMAGIC_APP_ID/build/$CODEMAGIC_BUILD_ID"
