@@ -60,7 +60,6 @@ custom: # Custom properties to make workflows cleaner
         import os
         import requests
         import subprocess
-        from shlex import quote
 
         TAG = subprocess.check_output(['git', 'describe', '--tags', '--abbrev=0']).decode('ascii').strip()
         GITLAB_API_TOKEN = os.getenv('GITLAB_API_TOKEN')
@@ -69,7 +68,7 @@ custom: # Custom properties to make workflows cleaner
 
         notes = requests.get(URL, headers=HEADERS).json()['description']
         f = open("release_notes.txt", "w")
-        f.write(quote(notes))
+        f.write(notes)
         f.close()
     - &flutter_pub_get
       name: Installing flutter dependencies and generate code
