@@ -1,3 +1,5 @@
+import 'package:dartx/dartx.dart';
+import 'package:duration/duration.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -6,6 +8,7 @@ import '../../../../../domain/entities/call_record_with_contact.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
 import '../../../../util/brand.dart';
+import '../../contacts/widgets/group_header.dart';
 import '../../util/color.dart';
 import '../../widgets/avatar.dart';
 
@@ -53,11 +56,7 @@ class RecentCallItem extends StatelessWidget {
         showFallback: callRecord.contact?.displayName == null,
         fallback: const Icon(VialerSans.phone, size: 20),
       ),
-      title: Text(
-        callRecord.isInbound
-            ? callRecord.callerNumber
-            : callRecord.displayLabel,
-      ),
+      title: Text(callRecord.displayLabel),
       subtitle: _RecentItemSubtitle(callRecord),
       trailing: PopupMenuButton(
         onSelected: _onPopupMenuItemPress,
@@ -102,29 +101,6 @@ class _RecentItemSubtitle extends StatelessWidget {
 
   String get _time => DateFormat.Hm().format(callRecord.date.toLocal());
 
-  String get _date => DateFormat('dd-MM-yy').format(callRecord.date.toLocal());
-
-  String _timeAgo(BuildContext context) {
-    final duration = DateTime.now().difference(callRecord.date.toLocal());
-
-    if (duration.inHours < 1) {
-      if (duration.inMinutes == 1) {
-        return context.msg.main.recent.list.minuteAgo;
-      } else {
-        return context.msg.main.recent.list.minutesAgo(duration.inMinutes);
-      }
-    } else if (duration.inHours < Duration.hoursPerDay) {
-      if (duration.inHours == 1) {
-        return '${context.msg.main.recent.list.hourAgo}, $_time';
-      } else {
-        return '${context.msg.main.recent.list.hoursAgo(duration.inHours)}, '
-            '$_time';
-      }
-    } else {
-      return '$_date, $_time';
-    }
-  }
-
   IconData _icon(BuildContext context) {
     if (callRecord.answeredElsewhere) return VialerSans.answeredElsewhere;
 
@@ -145,7 +121,18 @@ class _RecentItemSubtitle extends StatelessWidget {
     return context.brand.theme.green1;
   }
 
-  String _text(BuildContext context) => '${_timeAgo(context)}';
+  String _text(BuildContext context) {
+    if (callRecord.wasMissed) return _time;
+
+    final duration = prettyDuration(
+      callRecord.duration,
+      abbreviated: true,
+      delimiter: ' ',
+      spacer: '',
+    );
+
+    return '$_time, $duration';
+  }
 
   String _createAnsweredElsewhereText() {
     if (callRecord.destinationName == null ||
@@ -191,4 +178,59 @@ class _RecentItemSubtitle extends StatelessWidget {
 extension CallDestinationLabel on CallRecordWithContact {
   String get displayLabel =>
       contact?.displayName ?? thirdPartyName ?? thirdPartyNumber;
+}
+
+class RecentCallHeader extends StatelessWidget {
+  final DateTime date;
+  final bool isFirst;
+  final Widget child;
+
+  const RecentCallHeader({
+    required this.date,
+    required this.child,
+    this.isFirst = false,
+  });
+
+  String _text(
+    BuildContext context, {
+    required DateTime headerDate,
+  }) {
+    final today = DateTime.now().toLocal();
+    final yesterday = today.subtract(
+      const Duration(
+        days: 1,
+      ),
+    );
+
+    if (headerDate.isAtSameDayAs(today)) {
+      return context.msg.main.recent.list.headers.today.toUpperCase();
+    } else if (headerDate.isAtSameDayAs(yesterday)) {
+      return context.msg.main.recent.list.headers.yesterday.toUpperCase();
+    }
+
+    return DateFormat('d MMMM y').format(headerDate);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (!isFirst) const Divider(height: 1),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16).copyWith(
+            top: isFirst ? 15 : 10,
+          ),
+          child: GroupHeader(
+            group: _text(
+              context,
+              headerDate: date.toLocal(),
+            ),
+            padding: const EdgeInsets.all(0),
+          ),
+        ),
+        child,
+      ],
+    );
+  }
 }

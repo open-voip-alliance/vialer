@@ -57,9 +57,7 @@ class ContactsCubit extends Cubit<ContactsState> {
     );
   }
 
-  Future<void> reloadContacts() async {
-    await _checkContactsPermission();
-  }
+  Future<void> reloadContacts() async => await _checkContactsPermission();
 
   Future<void> requestPermission() async {
     final status = await _requestPermission(permission: Permission.contacts);

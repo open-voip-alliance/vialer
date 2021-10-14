@@ -99,6 +99,9 @@ main:
     snackBar:
       copied: "Telefoonnummer gekopieerd"
     list:
+      headers:
+        today: "vandaag"
+        yesterday: "gisteren"
       minuteAgo: "1 minuut geleden"
       minutesAgo(int minutes): "$minutes minuten geleden"
       hourAgo: "1 uur geleden"

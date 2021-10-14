@@ -98,6 +98,9 @@ main:
     snackBar:
       copied: "Phone number copied"
     list:
+      headers:
+        today: "today"
+        yesterday: "yesterday"
       minuteAgo: "1 minute ago"
       minutesAgo(int minutes): "$minutes minutes ago"
       hourAgo: "1 hour ago"

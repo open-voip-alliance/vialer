@@ -23,12 +23,12 @@ if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
 
-def dartEnv = project.property('dart-defines')
+def dartEnv = project.hasProperty('dart-defines') ? project.property('dart-defines')
         .split(',')
         .collectEntries { entry ->
             def pair = new String(entry.decodeBase64(), 'UTF-8').split('=')
             [(pair.first()): pair.last()]
-        }
+        } : [:]
 
 def getBrand = {
     // Read brands from file.
@@ -87,6 +87,7 @@ android {
                 keyAlias System.getenv()["FCI_KEY_ALIAS"]
                 keyPassword System.getenv()["FCI_KEY_PASSWORD"]
             }
+
         }
     }
 

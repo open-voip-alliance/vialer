@@ -1,3 +1,4 @@
+import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -236,7 +237,8 @@ class _RecentCallsListState extends State<_RecentCallsList>
           itemCount: widget.callRecords.length,
           itemBuilder: (context, index) {
             final callRecord = widget.callRecords[index];
-            return RecentCallItem(
+
+            final item = RecentCallItem(
               callRecord: callRecord,
               onCallPressed: () {
                 widget.onCallPressed(callRecord.thirdPartyNumber);
@@ -246,9 +248,30 @@ class _RecentCallsListState extends State<_RecentCallsList>
                 _showSnackBar(context);
               },
             );
+
+            if (widget.callRecords.isHeaderRequiredAt(index)) {
+              return RecentCallHeader(
+                date: callRecord.date,
+                isFirst: index == 0,
+                child: item,
+              );
+            }
+
+            return item;
           },
         ),
       ),
     );
+  }
+}
+
+extension on List<CallRecordWithContact> {
+  bool isHeaderRequiredAt(int index) {
+    final previous = index >= 1 ? this[index - 1] : null;
+
+    return previous == null ||
+        !previous.date.isAtSameDayAs(
+          this[index].date,
+        );
   }
 }
