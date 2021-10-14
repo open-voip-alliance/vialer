@@ -176,16 +176,17 @@ custom: # Custom properties to make workflows cleaner
         BUILD_ID = os.getenv('FCI_BUILD_ID')
         URL = "https://gitlab.wearespindle.com/api/v4/projects/105/merge_requests/{mergeRequestId}".format(mergeRequestId=MERGE_REQUEST_ID)
         TEMPLATE = "[Codemagic: Latest Build ({buildNumber})](https://codemagic.io/app/{projectId}/build/{buildId})"
-        HEADERS = { 'Content-Type': 'application/json', 'Private-Token': GITLAB_API_TOKEN }
+        HEADERS = {'Content-Type': 'application/json','Private-Token': GITLAB_API_TOKEN}
 
-        message = TEMPLATE.format(buildNumber=BUILD_NUMBER, projectId=PROJECT_ID, buildId=BUILD_ID)
-        regex = re.escape(message).replace(BUILD_NUMBER, '\d+').replace(PROJECT_ID, '[^)]+').replace(BUILD_ID, '[^)]+')
-        currentDescription = requests.get(URL, headers=HEADERS).json()['description']
-        newDescription = re.sub(regex, message, currentDescription)
+        if MERGE_REQUEST_ID is not None:
+          message = TEMPLATE.format(buildNumber=BUILD_NUMBER, projectId=PROJECT_ID, buildId=BUILD_ID)
+          regex = re.escape(message).replace(BUILD_NUMBER, '\d+').replace(PROJECT_ID, '[^)]+').replace(BUILD_ID, '[^)]+')
+          currentDescription = requests.get(URL, headers=HEADERS).json()['description']
+          newDescription = re.sub(regex, message, currentDescription)
 
-        requests.put(URL, headers=HEADERS, json={
-           'description': newDescription if currentDescription != newDescription else currentDescription + "\r\n\r\n" + message
-        })
+          requests.put(URL, headers=HEADERS, json={
+              'description': newDescription if currentDescription != newDescription else currentDescription + "\r\n\r\n" + message
+          })
     - &set_testflight_release_notes_for_merge_request
       name: Preparing "What to test" for TestFlight
       script: |
@@ -254,6 +255,7 @@ custom: # Custom properties to make workflows cleaner
       firebase:
         firebase_token: $FIREBASE_TOKEN
         android:
+          artifact_type: 'aab'
           app_id: $FIREBASE_APP_ID
           groups:
             - qa
@@ -276,6 +278,7 @@ custom: # Custom properties to make workflows cleaner
       firebase:
         firebase_token: $FIREBASE_TOKEN
         android:
+          artifact_type: 'aab'
           app_id: $FIREBASE_APP_ID
           groups:
             - beta
@@ -321,10 +324,36 @@ workflows:
       - *build_ipa
       - *set_testflight_release_notes_for_main
     artifacts: *defaults_artifacts
-    publishing: *publish_for_qa
 
   merge-requests:
     name: merge requests
+    <<: *config
+    environment:
+      groups:
+        - configuration
+        - diagnostics
+        - vialer_playstore_credentials
+        - vialer_android_firebase
+        - vialer_upload_keystore_credentials
+        - vialer_ios_appstore_credentials
+      <<: *config_environment
+      vars:
+        <<: *brand_config_vialer_env_vars
+    cache: *defaults_cache
+    scripts:
+      - *set_up_env_file
+      - *set_version_string_for_merge_request
+      - *flutter_pub_get
+      - *flutter_test
+      - *build_aab
+      - *build_universal_apk_from_aab
+      - *update_ios_signing_for_current_brand
+      - *build_ipa
+      - *set_testflight_release_notes_for_merge_request
+    artifacts: *defaults_artifacts
+
+  qa:
+    name: QA
     <<: *config
     environment:
       groups:
