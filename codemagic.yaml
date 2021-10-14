@@ -254,6 +254,7 @@ custom: # Custom properties to make workflows cleaner
       firebase:
         firebase_token: $FIREBASE_TOKEN
         android:
+          artifact_type: 'aab'
           app_id: $FIREBASE_APP_ID
           groups:
             - qa
@@ -276,6 +277,7 @@ custom: # Custom properties to make workflows cleaner
       firebase:
         firebase_token: $FIREBASE_TOKEN
         android:
+          artifact_type: 'aab'
           app_id: $FIREBASE_APP_ID
           groups:
             - beta
