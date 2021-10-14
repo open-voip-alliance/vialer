@@ -39,6 +39,10 @@ class SettingTile extends StatelessWidget {
 
   final EdgeInsetsGeometry? padding;
 
+  /// Specify if a border should be shown, if null, platform defaults
+  /// will be used.
+  final bool? bordered;
+
   SettingTile({
     Key? key,
     this.label,
@@ -47,6 +51,7 @@ class SettingTile extends StatelessWidget {
     this.childFillWidth = false,
     this.center = false,
     EdgeInsetsGeometry? padding,
+    this.bordered,
   })  : padding = padding ??
             EdgeInsets.only(
               top: Platform.isIOS ? 8 : 0,
@@ -328,13 +333,16 @@ class SettingTile extends StatelessWidget {
     );
   }
 
+  bool _shouldRenderBorder(BuildContext context) =>
+      bordered != null ? bordered! : context.isIOS;
+
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Container(
-          decoration: context.isIOS
+          decoration: _shouldRenderBorder(context)
               ? BoxDecoration(
                   border: Border.all(
                     color: context.brand.theme.grey2,

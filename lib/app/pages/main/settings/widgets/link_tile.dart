@@ -18,12 +18,16 @@ class SettingLinkTile extends StatelessWidget {
 
   final bool center;
 
+  /// See [SettingTile.bordered] for more information.
+  final bool? bordered;
+
   const SettingLinkTile({
     Key? key,
     required this.title,
     this.description,
     this.onTap,
     this.center = false,
+    this.bordered,
   }) : super(key: key);
 
   static Widget troubleshooting() {
@@ -94,18 +98,24 @@ class SettingLinkTile extends StatelessWidget {
   static Widget about() {
     return Builder(
       builder: (context) {
-        return SettingLinkTile(
-          title: Text(
-            context.msg.main.settings.list.about.title,
+        return Padding(
+          padding: const EdgeInsets.only(
+            bottom: 8,
           ),
-          onTap: () {
-            Navigator.of(context, rootNavigator: true).push(
-              MaterialPageRoute(
-                builder: (context) => WebViewPage(WebPage.about),
-              ),
-            );
-          },
-          center: true,
+          child: SettingLinkTile(
+            title: Text(
+              context.msg.main.settings.list.about.title,
+            ),
+            onTap: () {
+              Navigator.of(context, rootNavigator: true).push(
+                MaterialPageRoute(
+                  builder: (context) => WebViewPage(WebPage.about),
+                ),
+              );
+            },
+            bordered: false,
+            center: true,
+          ),
         );
       },
     );
@@ -119,11 +129,12 @@ class SettingLinkTile extends StatelessWidget {
       child: SettingTile(
         label: title,
         description: description,
+        center: center,
+        bordered: bordered,
         child: Icon(
           VialerSans.caretRight,
           color: context.brand.theme.grey4,
         ),
-        center: center,
       ),
     );
   }
