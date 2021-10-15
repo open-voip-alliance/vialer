@@ -354,6 +354,8 @@ workflows:
   main-with-qa-publishing:
     <<: *main_workflow
     name: main with QA publishing
+    triggering:
+      cancel_previous_builds: true
     publishing:
       <<: *publish_for_qa
 
