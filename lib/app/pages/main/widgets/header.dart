@@ -16,22 +16,20 @@ class Header extends StatelessWidget {
 
     final mediaQuery = MediaQuery.of(context);
 
+    final textScaleFactor =
+        mediaQuery.size.width.clamp(0, maxWidth) / (maxWidth * 1.04) -
+            0.05; // Take some off in case that bold text is enabled on iOS.
+
     return Padding(
       padding: padding,
-      child: MediaQuery(
-        data: mediaQuery.copyWith(
-          // Never make title bigger based on font settings.
-          textScaleFactor: mediaQuery.textScaleFactor.clamp(0, 1.0),
-        ),
-        child: Text(
-          data,
-          style: TextStyle(
-            color: Theme.of(context).primaryColor,
-            fontSize: mediaQuery.size.width.clamp(0, maxWidth) /
-                (maxWidth * 1.04) *
-                38, // Original font size
-            fontWeight: FontWeight.bold,
-          ),
+      child: Text(
+        data,
+        // Never make title bigger based on font settings.
+        textScaleFactor: textScaleFactor.clamp(0.0, 1.0),
+        style: TextStyle(
+          color: Theme.of(context).primaryColor,
+          fontSize: 38,
+          fontWeight: FontWeight.bold,
         ),
       ),
     );
