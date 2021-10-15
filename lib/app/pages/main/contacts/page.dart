@@ -13,6 +13,7 @@ import '../../../resources/localizations.dart';
 import '../../../resources/theme.dart';
 import '../../../util/brand.dart';
 import '../../../util/conditional_capitalization.dart';
+import '../../../util/extensions.dart';
 import '../../../util/pigeon.dart';
 import '../../../util/widgets_binding_observer_registrar.dart';
 import '../../../widgets/stylized_button.dart';
@@ -133,10 +134,9 @@ class _ContactPageState extends State<ContactsPage>
             (email) => email.value.toLowerCase().contains(searchTerm),
           ) &&
           !contact.phoneNumbers.any(
-            (number) => number.value
-                .toLowerCase()
-                .replaceAll(' ', '')
-                .contains(searchTerm),
+            (number) => number.value.toLowerCase().replaceAll(' ', '').contains(
+                  searchTerm.formatForPhoneNumberQuery(),
+                ),
           )) {
         continue;
       }
