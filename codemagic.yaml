@@ -53,6 +53,35 @@ custom: # Custom properties to make workflows cleaner
         sed -i -e "s/LOGENTRIES_IOS_TOKEN=/LOGENTRIES_IOS_TOKEN=${LOGENTRIES_IOS_TOKEN}/g" .env
         sed -i -e "s/COMMIT_HASH=/COMMIT_HASH=${FCI_COMMIT}/g" .env
         sed -i -e "s|SENTRY_DSN=|SENTRY_DSN=${SENTRY_DSN}|g" .env
+    - &cancel_existing_builds_from_this_branch
+      name: Cancelling all in-progress builds from this same branch
+      script: |
+        #!/usr/bin/env python3
+        import os
+        import requests
+        import re
+
+        PROJECT_ID = os.getenv('FCI_PROJECT_ID')
+        BRANCH = os.getenv('FCI_BRANCH')
+        BASE_URL = 'https://api.codemagic.io/'
+        BUILD_ID = os.getenv('FCI_BUILD_ID')
+
+        session = requests.Session()
+        session.headers.update({'x-auth-token': os.getenv('CODEMAGIC_API_KEY')})
+
+        response = session.get(
+            f'{BASE_URL}builds?appId={PROJECT_ID}&branch={BRANCH}').json()
+
+        for build in response['builds']:
+          buildId = build['_id']
+          status = build['status']
+          if buildId != BUILD_ID:
+            if status == 'building' or status == 'fetching' or status == 'publishing':
+              response = session.post(f'{BASE_URL}builds/{buildId}/cancel')
+              if response:
+                print(f'Cancelled build: {buildId}')
+              else:
+                print(f'Failed to cancel build: {buildId}')
     - &prepare_release_notes_from_gitlab
       name: Preparing release notes from Gitlab tag
       script: |
@@ -245,13 +274,13 @@ custom: # Custom properties to make workflows cleaner
       slack:
         channel: '#vialer_mobile_ci'
         notify_on_build_start: true
-#      app_store_connect:
-#        api_key: $APP_STORE_CONNECT_PRIVATE_KEY
-#        key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
-#        issuer_id: $APP_STORE_CONNECT_ISSUER_ID
-#        submit_to_testflight: true
-#        beta_groups:
-#          - QA
+      app_store_connect:
+        api_key: $APP_STORE_CONNECT_PRIVATE_KEY
+        key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
+        issuer_id: $APP_STORE_CONNECT_ISSUER_ID
+        submit_to_testflight: true
+        beta_groups:
+          - QA
       firebase:
         firebase_token: $FIREBASE_TOKEN
         android:
@@ -348,6 +377,7 @@ workflows:
         <<: *brand_config_vialer_env_vars
     cache: *defaults_cache
     scripts:
+      - *cancel_existing_builds_from_this_branch
       - *set_up_env_file
       - *set_version_string_for_merge_request
       - *flutter_pub_get
