@@ -338,10 +338,6 @@ workflows:
       branch_patterns:
         - pattern: main
           include: true
-          source: true
-        - pattern: main
-          include: true
-          source: false
     cache: *defaults_cache
     scripts:
       - *set_up_env_file
@@ -402,10 +398,6 @@ workflows:
       branch_patterns:
         - pattern: main
           include: true
-          source: true
-        - pattern: main
-          include: true
-          source: false
     environment:
       groups:
         - configuration
