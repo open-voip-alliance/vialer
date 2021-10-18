@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
@@ -756,40 +757,44 @@ class _DndToggle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: 10,
-              horizontal: 14,
-            ),
-            child: Row(
-              children: [
-                Text(
-                  _text(context),
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: _color(context),
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                if (userAvailabilityType.requiresHelps)
-                  Container(
-                    margin: const EdgeInsets.only(
-                      left: 6,
-                    ),
-                    padding: const EdgeInsets.all(2),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(100),
-                      color: _color(context),
-                    ),
-                    child: Icon(
-                      VialerSans.info,
-                      color: _accentColor(context),
-                      size: 12,
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                vertical: 10,
+                horizontal: 14,
+              ),
+              child: Row(
+                children: [
+                  Flexible(
+                    child: AutoSizeText(
+                      _text(context),
+                      maxLines: 1,
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: _color(context),
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-              ],
+                  if (userAvailabilityType.requiresHelps)
+                    Container(
+                      margin: const EdgeInsets.only(
+                        left: 6,
+                      ),
+                      padding: const EdgeInsets.all(2),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(100),
+                        color: _color(context),
+                      ),
+                      child: Icon(
+                        VialerSans.info,
+                        color: _accentColor(context),
+                        size: 12,
+                      ),
+                    ),
+                ],
+              ),
             ),
           ),
           Padding(
