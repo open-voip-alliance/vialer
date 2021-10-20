@@ -13,7 +13,9 @@ import 'pages/main/widgets/caller/widget.dart';
 import 'resources/localizations.dart';
 import 'routes.dart';
 import 'util/brand.dart';
+import 'util/debug.dart';
 import 'widgets/brand_provider/widget.dart';
+import 'widgets/build_error.dart';
 import 'widgets/connectivity_checker/widget.dart';
 import 'widgets/missed_call_notification_listener/widget.dart';
 
@@ -80,6 +82,13 @@ class App extends StatelessWidget {
                     const Locale('en'),
                     const Locale('nl'),
                   ],
+                  builder: (context, child) {
+                    if (!inDebugMode) {
+                      ErrorWidget.builder = (_) => const BuildError();
+                    }
+
+                    return child!;
+                  },
                 ),
               ),
             ),
