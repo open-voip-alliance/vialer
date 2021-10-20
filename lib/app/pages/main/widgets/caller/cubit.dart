@@ -362,6 +362,8 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
     } else if (event is AttendedTransferEnded) {
       emit(processState.transferComplete(voip: callSessionState));
       logger.info('VoIP attended transfer completed');
+    } else if (event is AudioStateUpdated) {
+      emit(processState.copyWith(voip: callSessionState));
     } else if (event is CallEnded) {
       // It's possible the call ended so fast that we were not in
       // a CallProcessState yet.
