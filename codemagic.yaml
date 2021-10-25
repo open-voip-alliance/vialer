@@ -304,6 +304,7 @@ custom: # Custom properties to make workflows cleaner
         submit_to_testflight: true
         beta_groups:
           - Beta Testers
+          - External Testers
       firebase:
         firebase_token: $FIREBASE_TOKEN
         android:
@@ -313,7 +314,7 @@ custom: # Custom properties to make workflows cleaner
             - beta
       google_play:
         credentials: $TEST_SERVICE_ACCOUNT
-        track: QA # To be changed to beta when we are ready to publish to the beta track
+        track: Beta
         in_app_update_priority: 0
 
 workflows:
