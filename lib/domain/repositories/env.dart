@@ -25,4 +25,12 @@ class EnvRepository {
   Future<String> get branch => _get('BRANCH');
 
   Future<String> get tag => _get('TAG');
+
+  Future<bool> get sandbox async => (await _get('SANDBOX')).toBool();
+}
+
+extension on String {
+  bool toBool() {
+    return this == '1' || toLowerCase() == 'true';
+  }
 }

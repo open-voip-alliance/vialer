@@ -8,7 +8,6 @@ import 'package:flutter_phone_lib/call_session_state.dart';
 import 'package:flutter_phone_lib/flutter_phone_lib.dart' hide Logger;
 import 'package:logging/logging.dart';
 
-import '../../app/util/debug.dart';
 import '../../app/util/loggable.dart';
 import '../../dependency_locator.dart';
 import '../entities/brand.dart';
@@ -23,6 +22,7 @@ import '../usecases/get_setting.dart';
 import '../usecases/get_unencrypted_sip_url.dart';
 import '../usecases/get_user.dart';
 import '../usecases/metrics/track_push_followed_by_call.dart';
+import 'env.dart';
 import 'logging.dart';
 import 'operating_system_info.dart';
 import 'services/middleware.dart';
@@ -171,6 +171,7 @@ class _Middleware with Loggable {
   final _storageRepository = dependencyLocator<StorageRepository>();
   final _operatingSystemInfoRepository =
       dependencyLocator<OperatingSystemInfoRepository>();
+  final _envRepository = dependencyLocator<EnvRepository>();
 
   String? get _token => _storageRepository.pushToken;
 
@@ -210,6 +211,7 @@ class _Middleware with Loggable {
         .then((i) => i.version);
     final clientVersion = buildInfo.version;
     final app = buildInfo.packageName;
+    final useSandbox = await _envRepository.sandbox;
 
     final response = Platform.isAndroid
         ? await _service.postAndroidDevice(
@@ -228,7 +230,7 @@ class _Middleware with Loggable {
                 osVersion: osVersion,
                 clientVersion: clientVersion,
                 app: app,
-                sandbox: inDebugMode,
+                sandbox: useSandbox,
               )
             : throw UnsupportedError(
                 'Unsupported platform: ${Platform.operatingSystem}',
