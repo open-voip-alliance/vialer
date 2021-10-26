@@ -179,7 +179,7 @@ custom: # Custom properties to make workflows cleaner
         cd ios/ && pod install && cd ..
         keychain initialize
         app-store-connect fetch-signing-files $BUNDLE_ID \
-        --type IOS_APP_STORE \
+        --type IOS_APP_ADHOC \
         --create
         keychain add-certificates
         xcode-project use-profiles
