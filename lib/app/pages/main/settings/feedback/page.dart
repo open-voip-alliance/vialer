@@ -38,11 +38,8 @@ class _FeedbackPageState extends State<FeedbackPage> {
       create: (_) => FeedbackCubit(),
       child: BlocListener<FeedbackCubit, FeedbackState>(
         listener: _onStateChanged,
-        // Using a regular Builder, because we don't need to rebuild
-        // on cubit's state change, but still need right context to get the
-        // cubit
-        child: Builder(
-          builder: (context) {
+        child: BlocBuilder<FeedbackCubit, FeedbackState>(
+          builder: (context, state) {
             return Scaffold(
               appBar: AppBar(
                 title: Text(context.msg.main.settings.feedback.title),
@@ -103,11 +100,13 @@ class _FeedbackPageState extends State<FeedbackPage> {
                           width: double.infinity,
                           child: StylizedButton.raised(
                             colored: true,
-                            onPressed: () =>
-                                context.read<FeedbackCubit>().sendFeedback(
-                                      title: 'Beta Feedback',
-                                      text: _textController.text,
-                                    ),
+                            onPressed: state is FeedbackNotSent
+                                ? () =>
+                                    context.read<FeedbackCubit>().sendFeedback(
+                                          title: 'Beta Feedback',
+                                          text: _textController.text,
+                                        )
+                                : null,
                             child: Text(
                               sendFeedbackButtonText
                                   .toUpperCaseIfAndroid(context),

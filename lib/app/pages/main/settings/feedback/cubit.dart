@@ -1,5 +1,4 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../../../../domain/usecases/send_feedback.dart';
 
 import 'state.dart';
@@ -14,6 +13,7 @@ class FeedbackCubit extends Cubit<FeedbackState> {
     required String title,
     required String text,
   }) async {
+    emit(FeedbackSending());
     await _sendFeedback(title: title, text: text);
     emit(FeedbackSent());
   }

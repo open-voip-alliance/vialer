@@ -5,6 +5,8 @@ abstract class FeedbackState extends Equatable {
   List<Object?> get props => [];
 }
 
+class FeedbackSending extends FeedbackState {}
+
 class FeedbackNotSent extends FeedbackState {}
 
 class FeedbackSent extends FeedbackState {}

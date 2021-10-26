@@ -1,8 +1,11 @@
+import 'dart:core';
+
 import 'package:flutter_phone_lib/audio/audio_route.dart';
 import 'package:flutter_phone_lib/call/call.dart';
 import 'package:flutter_phone_lib/call/call_direction.dart';
 
 import '../../../../dependency_locator.dart';
+import '../../../entities/call_problem.dart';
 import '../../../repositories/connectivity.dart';
 import '../../../repositories/metrics.dart';
 import '../../../use_case.dart';
@@ -12,15 +15,16 @@ class RateVoipCallUseCase extends UseCase {
   final _connectivityRepository = dependencyLocator<ConnectivityRepository>();
 
   Future<void> call({
-    required int rating,
+    required CallFeedbackResult feedback,
     required Call call,
     required Set<AudioRoute> usedRoutes,
     required double mos,
   }) async {
     final connectivityType = await _connectivityRepository.currentType;
+    final audioProblems = feedback.audioProblems ?? [];
 
     _metricsRepository.track('call-rating', {
-      'rating': rating,
+      'rating': feedback.rating,
       'mos': mos,
       'duration': call.duration,
       'direction':
@@ -30,6 +34,8 @@ class RateVoipCallUseCase extends UseCase {
       'speaker-used': usedRoutes.contains(AudioRoute.speaker),
       'audio-routes': _createAudioRouteString(usedRoutes),
       'connection': connectivityType.toString(),
+      'problem': feedback.problem?.toShortString() ?? false,
+      ...audioProblems.toShortStringMap(),
     });
   }
 
@@ -41,4 +47,31 @@ class RateVoipCallUseCase extends UseCase {
         if (routes.contains(AudioRoute.speaker)) 'speaker',
         if (routes.contains(AudioRoute.bluetooth)) 'bluetooth',
       ].join('|');
+}
+
+extension Mapping on List<CallAudioProblem> {
+  /// Creates a map from a list of [CallAudioProblem] with the
+  /// [CallAudioProblem] as the key and a bool as the value.
+  Map<CallAudioProblem, bool> toBoolMap({
+    bool defaultValue = false,
+  }) =>
+      Map<CallAudioProblem, bool>.fromIterable(
+        CallAudioProblem.values,
+        key: (e) => e as CallAudioProblem,
+        value: (e) => defaultValue,
+      );
+
+  /// Convert to a map with the key as the short string of
+  /// [CallAudioProblem] and the given boolean value.
+  Map<String, bool> toShortStringMap({
+    bool defaultValue = false,
+  }) =>
+      toBoolMap(
+        defaultValue: defaultValue,
+      ).map(
+        (key, value) => MapEntry(
+          key.toShortString(),
+          contains(key),
+        ),
+      );
 }

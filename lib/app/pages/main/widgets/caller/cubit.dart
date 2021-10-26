@@ -8,6 +8,7 @@ import 'package:flutter_phone_lib/call_session_state.dart';
 import 'package:flutter_phone_lib/flutter_phone_lib.dart';
 
 import '../../../../../domain/connectivity_type.dart';
+import '../../../../../domain/entities/call_problem.dart';
 import '../../../../../domain/entities/exceptions/call_through.dart';
 import '../../../../../domain/entities/exceptions/voip_not_allowed.dart';
 import '../../../../../domain/entities/permission.dart';
@@ -177,14 +178,14 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
   }
 
   Future<void> rateVoipCall({
-    required int rating,
+    required CallFeedbackResult result,
     required Call call,
   }) async =>
       await _rateVoipCall(
-        rating: rating,
-        call: call,
+        feedback: result,
         usedRoutes: _preservedCallSessionState.usedAudioRoutes,
         mos: _preservedCallSessionState.mos,
+        call: call,
       );
 
   Future<void> _callViaCallThrough(

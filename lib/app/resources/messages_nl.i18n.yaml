@@ -87,10 +87,32 @@ main:
       answer: "Opnemen"
       decline: "Weigeren"
       subtitle(String remoteNumber): "Inkomend gesprek - $remoteNumber"
-    rate:
-      title: "Hoe was de gesprekskwaliteit?"
-      lowerLabel: "Zeer slecht"
-      upperLabel: "Zeer goed"
+    feedback:
+      rating:
+        title: "Hoe was de gesprekskwaliteit?"
+        lowerLabel: "Zeer slecht"
+        upperLabel: "Zeer goed"
+      problem:
+        title: "Wat was er aan de hand?"
+        oneWayAudio: "Beller hoorde me niet"
+        noAudio: "Ik hoorde niets"
+        audioProblem: "Er was een probleem met het geluid"
+        endedUnexpectedly: "Het gesprek eindigde onverwachts"
+        somethingElse: "Iets anders"
+      audioProblems:
+        title: "Wat hoorde je?"
+        done: "Volgende"
+        jitter: "Het geluid viel weg"
+        echo: "Een echo"
+        crackling: "Een krakend geluid"
+        robotic: "Andere persoon klonk robotachtig"
+        tooLoud: "Andere persoon was te hard"
+        tooQuiet: "Andere persoon was te zacht"
+      written:
+        title: "Dankjewel!"
+        message: "Als je ons meer wilt vertellen, vul dan het feedbackformulier in om de app te verbeteren."
+        button: "Naar formulier"
+        dismiss: "Niet nu"
 
   recent:
     title: "Recente gesprekken"

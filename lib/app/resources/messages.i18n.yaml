@@ -86,10 +86,32 @@ main:
       answer: "Answer"
       decline: "Decline"
       subtitle(String remoteNumber): "Incoming call - $remoteNumber"
-    rate:
-      title: "How was the call quality?"
-      lowerLabel: "Very poor"
-      upperLabel: "Very good"
+    feedback:
+      rating:
+        title: "How was the call quality?"
+        lowerLabel: "Very poor"
+        upperLabel: "Very good"
+      problem:
+        title: "What was wrong?"
+        oneWayAudio: "Caller didn't hear me"
+        noAudio: "I couldn't hear anything"
+        audioProblem: "There was a problem with the audio"
+        endedUnexpectedly: "The call ended unexpectedly"
+        somethingElse: "Something else"
+      audioProblems:
+        title: "What did you hear?"
+        done: "Next"
+        jitter: "The audio was cutting out"
+        echo: "An echo"
+        crackling: "A crackling sound"
+        robotic: "Other person sounded robotic"
+        tooLoud: "Other person was too loud"
+        tooQuiet: "Other person was too quiet"
+      written:
+        title: "Thank you!"
+        message: "If you want to tell us more, please fill in the feedback form to improve the app."
+        button: "Go to form"
+        dismiss: "Not now"
 
   recent:
     title: "Recent calls"
