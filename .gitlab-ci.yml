@@ -22,7 +22,7 @@ analyze:
   before_script:
     - flutter pub get
     - flutter pub run build_runner build
-    - flutter pub run pigeon --input utils/pigeon/scheme.dart --dart_out lib/app/util/pigeon.dart --objc_header_out ios/Runner/pigeon.h --objc_source_out ios/Runner/pigeon.m --one_language
+    - flutter pub run pigeon --input utils/pigeon/scheme.dart --dart_out lib/app/util/pigeon.dart --objc_header_out ios/Runner/pigeon.h --objc_source_out ios/Runner/pigeon.m --java_out android/app/src/main/java/com/voipgrid/vialer/Pigeon.java --java_package com.voipgrid.vialer
     # TODO: Remove when pub package
     - cd voip_flutter_integration
     - flutter pub get
@@ -47,7 +47,7 @@ test:
     - cp .env.example .env
     - flutter pub get
     - flutter pub run build_runner build
-    - flutter pub run pigeon --input utils/pigeon/scheme.dart --dart_out lib/app/util/pigeon.dart --objc_header_out ios/Runner/pigeon.h --objc_source_out ios/Runner/pigeon.m --one_language
+    - flutter pub run pigeon --input utils/pigeon/scheme.dart --dart_out lib/app/util/pigeon.dart --objc_header_out ios/Runner/pigeon.h --objc_source_out ios/Runner/pigeon.m --java_out android/app/src/main/java/com/voipgrid/vialer/Pigeon.java --java_package com.voipgrid.vialer
     - flutter pub global activate junitreport
     # TODO: Remove when pub package
     - cd voip_flutter_integration

@@ -5,8 +5,7 @@ import 'package:flutter_phone_lib/audio/audio_route.dart';
 import 'package:flutter_phone_lib/audio/audio_state.dart';
 import 'package:flutter_phone_lib/audio/bluetooth_audio_route.dart';
 import 'package:flutter_phone_lib/call_session_state.dart';
-import 'package:flutter_phone_lib/flutter_phone_lib.dart' hide Logger;
-import 'package:logging/logging.dart';
+import 'package:flutter_phone_lib/flutter_phone_lib.dart';
 
 import '../../app/util/loggable.dart';
 import '../../dependency_locator.dart';
@@ -23,7 +22,6 @@ import '../usecases/get_unencrypted_sip_url.dart';
 import '../usecases/get_user.dart';
 import '../usecases/metrics/track_push_followed_by_call.dart';
 import 'env.dart';
-import 'logging.dart';
 import 'operating_system_info.dart';
 import 'services/middleware.dart';
 import 'storage.dart';
@@ -59,7 +57,6 @@ class VoipRepository with Loggable {
 
       return ApplicationSetup(
         initialize: _initialize,
-        logger: _onLogReceived,
         middleware: const Middleware(
           respond: _middlewareRespond,
           tokenReceived: _middlewareTokenReceived,
@@ -343,9 +340,6 @@ Future<void> _initialize() async {
   await EnableRemoteLoggingIfNeededUseCase()();
 }
 
-void _onLogReceived(LogLevel level, String message) =>
-    Logger('FlutterPhoneLib').log(level.toLoggerLevel(), message, VoipLog());
-
 void _middlewareRespond(RemoteMessage message, bool available) =>
     _Middleware().respond(message, available);
 
@@ -354,22 +348,6 @@ void _middlewareTokenReceived(String token) =>
 
 // TODO
 bool _middlewareInspect(RemoteMessage message) => true;
-
-extension on LogLevel {
-  Level toLoggerLevel() {
-    if (this == LogLevel.debug) {
-      return Level.FINE;
-    } else if (this == LogLevel.info) {
-      return Level.INFO;
-    } else if (this == LogLevel.warning) {
-      return Level.WARNING;
-    } else if (this == LogLevel.error) {
-      return Level.SEVERE;
-    } else {
-      throw UnsupportedError('Unknown LogLevel: $this');
-    }
-  }
-}
 
 extension on String {
   String normalize() {

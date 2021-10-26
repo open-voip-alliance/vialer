@@ -14,9 +14,12 @@ class EnableConsoleLoggingUseCase extends UseCase {
 
   Future<void> call() async {
     _clearSavedLogs();
+    final user = await _getUser(latest: false);
+
+    _loggingRepository.enableNativeConsoleLogging();
 
     await _loggingRepository.enableConsoleLogging(
-      user: await _getUser(latest: false),
+      userIdentifier: user?.loggingIdentifier ?? '',
       onLog: _storageRepository.appendLogs,
     );
   }
