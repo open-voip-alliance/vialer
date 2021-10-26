@@ -7,15 +7,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_phone_lib/call/call_state.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../domain/entities/call_problem.dart';
 import '../../../resources/localizations.dart';
 import '../../../resources/theme.dart';
 import '../../../util/brand.dart';
 import '../../../util/widgets_binding_observer_registrar.dart';
 import '../widgets/caller.dart';
 import '../widgets/connectivity_alert.dart';
+import 'call_feedback/call_feedback.dart';
 import 'call_screen.dart';
 import 'widgets/call_actions.dart';
-import 'widgets/call_rating.dart';
 import 'widgets/call_transfer_bar.dart';
 
 class CallPage extends StatefulWidget {
@@ -94,24 +95,29 @@ class _CallPageState extends State<CallPage>
   }
 
   Future<void> _requestCallRating(BuildContext context, FinishedCalling state) {
-    _dismissCallPage(context, after: const Duration(seconds: 10));
-
     return showDialog<double>(
       context: context,
-      builder: (context) => CallRating(
-        onCallRated: (rating) => _submitCallRating(rating, state),
+      builder: (context) => CallFeedback(
+        onFeedbackReady: (result) => _submitCallRating(
+          result,
+          state,
+        ),
+        onUserFinishedFeedbackProcess: () => _dismissCallPage(
+          context,
+          after: const Duration(milliseconds: 500),
+        ),
       ),
     );
   }
 
-  void _submitCallRating(double rating, FinishedCalling state) {
-    context.read<CallerCubit>().rateVoipCall(
-          rating: rating.toInt(),
-          call: state.voipCall!,
-        );
-
-    _dismissCallPage(context, after: const Duration(seconds: 1));
-  }
+  void _submitCallRating(
+    CallFeedbackResult result,
+    FinishedCalling state,
+  ) =>
+      context.read<CallerCubit>().rateVoipCall(
+            result: result,
+            call: state.voipCall!,
+          );
 
   @override
   Widget build(BuildContext context) {
