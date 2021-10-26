@@ -213,7 +213,10 @@ Future<void> _runGenerationIfNeeded(
       'ios/Runner/pigeon.h',
       '--objc_source_out',
       'ios/Runner/pigeon.m',
-      '--one_language',
+      '--java_out',
+      'android/app/src/main/java/com/voipgrid/vialer/Pigeon.java',
+      '--java_package',
+      'com.voipgrid.vialer',
     ],
   );
 

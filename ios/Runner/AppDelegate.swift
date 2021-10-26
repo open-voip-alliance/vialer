@@ -4,6 +4,8 @@ import flutter_phone_lib
 
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {
+    private let logger = Logger()
+    
     override func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         addOnMissedCallNotificationPressedDelegate()
 
@@ -17,11 +19,14 @@ import flutter_phone_lib
         let registerPlugins = GeneratedPluginRegistrant.register
         registerPlugins(self)
 
-        startPhoneLib(registerPlugins)
+        startPhoneLib(registerPlugins) { message, level in
+            self.logger.writeLog(message)
+        }
 
         let controller: FlutterViewController = window?.rootViewController as! FlutterViewController
         ContactSortHostApiSetup(controller.binaryMessenger, ContactSortApi())
-
+        NativeLoggingSetup(controller.binaryMessenger, logger)
+        
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
     }
 }

@@ -23,7 +23,7 @@ class SendSavedLogsToRemoteUseCase extends UseCase {
       /// (to account for the time difference in uploading) and adding the
       /// user id so they are searchable even if there was no user id at the
       /// time they were logged (i.e. during onboarding).
-      final saved = '(saved log from ${user.uuid})';
+      final saved = '(saved log from ${user.loggingIdentifier})';
 
       final formattedLogs = logs
           .split('\n')
