@@ -1,3 +1,5 @@
+import 'package:dartx/dartx.dart';
+
 import '../../app/util/loggable.dart';
 import '../../data/mappers/call_record.dart';
 import '../../data/models/voipgrid_call_record.dart';
@@ -31,14 +33,21 @@ class RecentCallRepository with Loggable {
 
     final objects = response.body as List<dynamic>? ?? [];
 
-    return objects.isNotEmpty
-        ? objects
-            .map(
-              (jsonObject) => VoipgridCallRecord.fromJson(
-                jsonObject as Map<String, dynamic>,
-              ).toCallRecord(),
-            )
-            .toList()
-        : <CallRecord>[];
+    if (objects.isEmpty) {
+      return <CallRecord>[];
+    } else {
+      var callRecords = objects.map(
+        (jsonObject) => VoipgridCallRecord.fromJson(
+          jsonObject as Map<String, dynamic>,
+        ).toCallRecord(),
+      );
+
+      // Restrict the missed calls only to incoming ones.
+      if (onlyMissedCalls) {
+        callRecords = callRecords.filter((contact) => contact.isInbound);
+      }
+
+      return callRecords.toList();
+    }
   }
 }
