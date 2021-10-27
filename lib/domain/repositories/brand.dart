@@ -18,7 +18,9 @@ class BrandRepository {
         identifier: object['identifier'] as String,
         appName: object['appName'] as String,
         url: Uri.parse(object['url'] as String),
-        aboutUrl: Uri.parse(object['aboutUrl'] as String),
+        aboutUrl: object.keys.contains('aboutUrl')
+            ? Uri.parse(object['aboutUrl'] as String)
+            : Uri.parse(''),
         middlewareUrl: Uri.parse(object['middlewareUrl'] as String),
         voipgridUrl: Uri.parse(object['voipgridUrl'] as String),
         encryptedSipUrl: Uri.parse(object['encryptedSipUrl'] as String),
