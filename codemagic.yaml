@@ -216,12 +216,6 @@ custom: # Custom properties to make workflows cleaner
           requests.put(URL, headers=HEADERS, json={
               'description': newDescription if currentDescription != newDescription else currentDescription + "\r\n\r\n" + message
           })
-    - &set_testflight_release_notes_for_merge_request
-      name: Preparing "What to test" for TestFlight
-      script: |
-        cat << EOF > release_notes.json
-        [{"language":"en-US","text":"!${GITLAB_MERGE_REQUEST_IID}"},{"language":"nl-NL","text":"!${GITLAB_MERGE_REQUEST_IID}"}]
-        EOF
     - &set_testflight_release_notes_for_main
       name: Preparing "What to test" for TestFlight
       script: |
@@ -399,7 +393,6 @@ workflows:
       - *build_universal_apk_from_aab
       - *update_ios_signing_for_current_brand
       - *build_ipa
-      - *set_testflight_release_notes_for_merge_request
       - *update_gitlab_merge_request_with_build_url
     artifacts: *defaults_artifacts
 
