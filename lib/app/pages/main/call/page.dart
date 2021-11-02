@@ -144,8 +144,9 @@ class _CallPageState extends State<CallPage>
                   child: SafeArea(
                     child: Column(
                       children: [
-                        if (state is AttendedTransferStarted ||
-                            state is AttendedTransferComplete)
+                        if ((state is AttendedTransferStarted ||
+                                state is AttendedTransferComplete) &&
+                            state.voip!.inactiveCall != null)
                           CallTransferInProgressBar(
                             inactiveCall: state.voip!.inactiveCall!,
                           ),
