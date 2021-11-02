@@ -181,7 +181,7 @@ CHECKOUT OPTIONS:
     :commit: ce8800f6d3290e182d48082680679d64a05ca778
     :git: https://github.com/LogentriesCommunity/le_ios.git
   PIL:
-    :commit: e7219ce3cba97dda211a951069cdde0b0e0722bf
+    :commit: 44ccfbed98340e6b3c25b60844dd4b3b50f3047f
     :git: https://github.com/open-voip-alliance/iOS-Phone-Integration-Lib.git
 
 SPEC CHECKSUMS:
