@@ -309,7 +309,7 @@ custom: # Custom properties to make workflows cleaner
             - beta
       google_play:
         credentials: $TEST_SERVICE_ACCOUNT
-        track: Beta
+        track: beta
         in_app_update_priority: 0
 
 workflows:
