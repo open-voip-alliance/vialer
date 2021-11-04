@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-
 import 'package:meta/meta.dart';
 
 @immutable
@@ -7,7 +6,6 @@ class Brand extends Equatable {
   final String identifier;
   final String appName;
   final Uri url;
-  final Uri aboutUrl;
   final Uri middlewareUrl;
   final Uri voipgridUrl;
   final Uri encryptedSipUrl;
@@ -17,7 +15,6 @@ class Brand extends Equatable {
     required this.identifier,
     required this.appName,
     required this.url,
-    required this.aboutUrl,
     required this.middlewareUrl,
     required this.voipgridUrl,
     required this.encryptedSipUrl,
@@ -29,7 +26,6 @@ class Brand extends Equatable {
         identifier,
         appName,
         url,
-        aboutUrl,
         middlewareUrl,
         voipgridUrl,
         encryptedSipUrl,
@@ -49,7 +45,6 @@ class Brand extends Equatable {
       'identifier: $identifier, '
       'appName: $appName, '
       'url: $url, '
-      'aboutUrl: $aboutUrl, '
       'middlewareUrl: $middlewareUrl, '
       'voipgridUrl: $voipgridUrl, '
       'encryptedSipUrl: $encryptedSipUrl, '
