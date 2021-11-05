@@ -13,7 +13,6 @@ void main() {
           identifier: 'vialer',
           appName: 'Vialer',
           url: Uri.parse('https://partner.voipgrid.nl'),
-          aboutUrl: Uri.parse('https://www.voipgrid.nl/voip-app/'),
           middlewareUrl: Uri.parse('https://vialerpush.voipgrid.nl'),
           voipgridUrl: Uri.parse('https://partner.voipgrid.nl'),
           encryptedSipUrl: Uri.parse('sip.encryptedsip.com'),

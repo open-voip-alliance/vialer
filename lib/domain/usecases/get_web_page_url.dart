@@ -18,15 +18,9 @@ class GetWebPageUrlUseCase extends UseCase {
     WebPage.addDestination: '/fixeddestination/add/'
   };
   final _unauthenticatedPages = [WebPage.passwordReset];
-  final _aboutPages = [WebPage.about];
 
   Future<String> call({required WebPage page}) async {
     final brand = await _getBrand();
-
-    // Non-portal page.
-    if (_aboutPages.contains(page)) {
-      return brand.aboutUrl.toString();
-    }
 
     // Unauthenticated portal page.
     if (_unauthenticatedPages.contains(page)) {

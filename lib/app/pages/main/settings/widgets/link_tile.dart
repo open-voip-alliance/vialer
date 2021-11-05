@@ -95,32 +95,6 @@ class SettingLinkTile extends StatelessWidget {
     );
   }
 
-  static Widget about() {
-    return Builder(
-      builder: (context) {
-        return Padding(
-          padding: const EdgeInsets.only(
-            bottom: 8,
-          ),
-          child: SettingLinkTile(
-            title: Text(
-              context.msg.main.settings.list.about.title,
-            ),
-            onTap: () {
-              Navigator.of(context, rootNavigator: true).push(
-                MaterialPageRoute(
-                  builder: (context) => WebViewPage(WebPage.about),
-                ),
-              );
-            },
-            bordered: false,
-            center: true,
-          ),
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return InkWell(

@@ -89,7 +89,6 @@ class _SettingsPageState extends State<SettingsPage> {
                 final settings = state.settings;
                 final isVoipAllowed = state.isVoipAllowed;
                 final showTroubleshooting = state.showTroubleshooting;
-                final showAbout = state.showAbout;
                 final showDnd = state.showDnd;
 
                 return Column(
@@ -201,7 +200,6 @@ class _SettingsPageState extends State<SettingsPage> {
                                     ),
                                   ),
                                   const SizedBox(height: 16),
-                                  if (showAbout) SettingLinkTile.about(),
                                 ],
                               ),
                             ),
