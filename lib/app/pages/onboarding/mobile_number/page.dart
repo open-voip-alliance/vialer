@@ -49,22 +49,21 @@ class MobileNumberPage extends StatelessWidget {
               child: Column(
                 children: [
                   const SizedBox(height: 64),
-                  DefaultTextStyle(
+                  Text(
+                    context.msg.onboarding.mobileNumber.title,
+                    textAlign: TextAlign.center,
                     style: const TextStyle(
                       fontSize: 40,
                       fontWeight: FontWeight.bold,
                     ),
-                    child: Text(context.msg.onboarding.mobileNumber.title),
                   ),
                   const SizedBox(height: 32),
-                  DefaultTextStyle(
+                  Text(
+                    context.msg.onboarding.mobileNumber.description(
+                      Provider.of<Brand>(context).appName,
+                    ),
                     style: const TextStyle(
                       fontSize: 18,
-                    ),
-                    child: Text(
-                      context.msg.onboarding.mobileNumber.description(
-                        Provider.of<Brand>(context).appName,
-                      ),
                     ),
                   ),
                   const SizedBox(height: 24),
