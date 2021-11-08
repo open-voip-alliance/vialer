@@ -13,6 +13,7 @@ import '../../../resources/localizations.dart';
 import '../../../resources/theme.dart';
 import '../../../util/brand.dart';
 import '../../../util/conditional_capitalization.dart';
+import '../../../util/contact.dart';
 import '../../../util/extensions.dart';
 import '../../../util/pigeon.dart';
 import '../../../util/widgets_binding_observer_registrar.dart';

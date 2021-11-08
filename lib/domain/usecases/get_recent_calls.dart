@@ -63,5 +63,5 @@ class GetRecentCallsUseCase extends UseCase {
 
 extension on CallRecord {
   String get numberForContactLookup =>
-      isOutbound ? destinationNumber : callerNumber;
+      isOutbound ? destination.number : caller.number;
 }

@@ -8,6 +8,7 @@ import '../../../../../domain/entities/call_record_with_contact.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
 import '../../../../util/brand.dart';
+import '../../../../util/contact.dart';
 import '../../contacts/widgets/group_header.dart';
 import '../../util/color.dart';
 import '../../widgets/avatar.dart';
@@ -135,12 +136,13 @@ class _RecentItemSubtitle extends StatelessWidget {
   }
 
   String _createAnsweredElsewhereText() {
-    if (callRecord.destinationName == null ||
-        callRecord.destinationName!.isEmpty ||
-        callRecord.destinationName == callRecord.destinationNumber) {
-      return '${callRecord.destinationNumber}';
+    if (callRecord.destination.name == null ||
+        callRecord.destination.name!.isEmpty ||
+        callRecord.destination.name == callRecord.destination.number) {
+      return '${callRecord.destination.number}';
     } else {
-      return '${callRecord.destinationName} (${callRecord.destinationNumber})';
+      return '${callRecord.destination.name} '
+          '(${callRecord.destination.number})';
     }
   }
 

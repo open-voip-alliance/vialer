@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import '../../../../../domain/entities/contact.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
+import '../../../../util/contact.dart';
 import '../../../../util/widgets_binding_observer_registrar.dart';
 import '../../util/stylized_snack_bar.dart';
 import '../../widgets/caller.dart';

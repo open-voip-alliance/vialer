@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../domain/entities/contact.dart';
+import '../../../../util/contact.dart';
 import '../page.dart';
 import 'avatar.dart';
 import 'subtitle.dart';

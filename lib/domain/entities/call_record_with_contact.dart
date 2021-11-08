@@ -5,34 +5,33 @@ class CallRecordWithContact extends CallRecord {
   /// Contact that relates to the [destinationNumber].
   final Contact? contact;
 
-  const CallRecordWithContact({
+  CallRecordWithContact({
     required String id,
+    required CallType callType,
     required Direction direction,
     required bool answered,
     required bool answeredElsewhere,
     required Duration duration,
     required DateTime date,
-    String? callerName,
-    required String callerNumber,
-    String? destinationName,
-    required String destinationNumber,
+    required CallParty caller,
+    required CallParty destination,
     this.contact,
   }) : super(
           id: id,
+          callType: callType,
           direction: direction,
           answered: answered,
           answeredElsewhere: answeredElsewhere,
           duration: duration,
           date: date,
-          callerName: callerName,
-          callerNumber: callerNumber,
-          destinationName: destinationName,
-          destinationNumber: destinationNumber,
+          caller: caller,
+          destination: destination,
         );
 
   @override
   CallRecordWithContact copyWith({
     String? id,
+    CallType? callType,
     Direction? direction,
     bool? answered,
     bool? answeredElsewhere,
@@ -40,21 +39,20 @@ class CallRecordWithContact extends CallRecord {
     DateTime? date,
     String? callerName,
     String? callerNumber,
-    String? destinationName,
-    String? destinationNumber,
+    CallParty? caller,
+    CallParty? destination,
     Contact? contact,
   }) {
     return CallRecordWithContact(
       id: id ?? this.id,
+      callType: callType ?? this.callType,
       direction: direction ?? this.direction,
       answered: answered ?? this.answered,
       answeredElsewhere: answeredElsewhere ?? this.answeredElsewhere,
       duration: duration ?? this.duration,
       date: date ?? this.date,
-      callerName: callerName ?? this.callerName,
-      callerNumber: callerNumber ?? this.callerNumber,
-      destinationName: destinationName ?? this.destinationName,
-      destinationNumber: destinationNumber ?? this.destinationNumber,
+      caller: caller ?? this.caller,
+      destination: destination ?? this.destination,
       contact: contact ?? this.contact,
     );
   }
@@ -64,15 +62,14 @@ extension WithContact on CallRecord {
   CallRecordWithContact withContact(Contact? contact) {
     return CallRecordWithContact(
       id: id,
+      callType: callType,
       direction: direction,
       answered: answered,
       answeredElsewhere: answeredElsewhere,
       duration: duration,
       date: date,
-      callerName: callerName,
-      callerNumber: callerNumber,
-      destinationName: destinationName,
-      destinationNumber: destinationNumber,
+      caller: caller,
+      destination: destination,
       contact: contact,
     );
   }
