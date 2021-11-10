@@ -1,13 +1,18 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:timezone/data/latest.dart';
 
 import '../dependency_locator.dart';
+import '../domain/events/event_bus.dart';
+import '../domain/events/user_was_logged_out.dart';
 import '../domain/repositories/env.dart';
 import '../domain/repositories/error_tracking_repository.dart';
 import '../domain/usecases/automatically_login_legacy_user.dart';
 import '../domain/usecases/enable_console_logging.dart';
 import '../domain/usecases/enable_remote_logging_if_needed.dart';
+import '../domain/usecases/register_event_listeners.dart';
 import 'pages/main/page.dart';
 import 'pages/main/widgets/caller/widget.dart';
 import 'resources/localizations.dart';
@@ -26,6 +31,7 @@ Future<void> main() async {
 
   await initializeDependencies();
 
+  RegisterDomainEventListenersUseCase()();
   EnableConsoleLoggingUseCase()();
   EnableRemoteLoggingIfNeededUseCase()();
 
@@ -39,9 +45,9 @@ Future<void> main() async {
   final dsn = await dependencyLocator<EnvRepository>().errorTrackingDsn;
 
   if (dsn.isEmpty) {
-    runApp(const App());
+    runApp(App());
   } else {
-    await errorTrackingRepository.run(() => runApp(const App()), dsn);
+    await errorTrackingRepository.run(() => runApp(App()), dsn);
   }
 }
 
@@ -50,7 +56,12 @@ class App extends StatelessWidget {
 
   static final mainPageKey = GlobalKey<MainPageState>();
 
-  const App({Key? key}) : super(key: key);
+  static final EventBusObserver _eventBus =
+      dependencyLocator<EventBusObserver>();
+
+  App({Key? key}) : super(key: key) {
+    _listenForEvents();
+  }
 
   static void navigateTo(MainPageTab tab) =>
       mainPageKey.currentState!.navigateTo(tab);
@@ -97,4 +108,19 @@ class App extends StatelessWidget {
       ),
     );
   }
+
+  /// Listen for any app-level events, these events should require a "global"
+  /// response. For example, the user should be forced back to the onboarding
+  /// screen whenever they are logged out.
+  void _listenForEvents() => _eventBus.on<UserWasLoggedOutEvent>((event) {
+        final context = _navigatorKey.currentContext;
+
+        if (context == null) return;
+
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          Routes.onboarding,
+          (r) => false,
+        );
+      });
 }

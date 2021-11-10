@@ -53,14 +53,6 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   void _onStateChanged(BuildContext context, SettingsState state) {
-    if (state is LoggedOut) {
-      Navigator.pushNamedAndRemoveUntil(
-        context,
-        Routes.onboarding,
-        (r) => false,
-      );
-    }
-
     FocusScope.of(context).unfocus();
   }
 
