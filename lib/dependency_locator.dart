@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:get_it/get_it.dart';
 
+import 'domain/events/event_bus.dart';
 import 'domain/repositories/auth.dart';
 import 'domain/repositories/brand.dart';
 import 'domain/repositories/build_info.dart';
@@ -30,6 +33,8 @@ Future<void> initializeDependencies({bool ui = true}) async {
   dependencyLocator
     ..registerSingleton<BrandRepository>(BrandRepository())
     ..registerSingleton<ErrorTrackingRepository>(ErrorTrackingRepository())
+    ..registerSingleton<EventBus>(StreamController.broadcast())
+    ..registerSingleton<EventBusObserver>(dependencyLocator<EventBus>().stream)
     ..registerSingleton<VoipgridService>(
       VoipgridService.create(),
     )

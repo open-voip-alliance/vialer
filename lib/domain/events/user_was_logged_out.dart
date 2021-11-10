@@ -1,0 +1,3 @@
+class UserWasLoggedOutEvent {
+  const UserWasLoggedOutEvent();
+}

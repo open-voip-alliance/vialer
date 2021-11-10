@@ -22,6 +22,7 @@ abstract class VoipgridService extends ChopperService {
               'v2/password',
             ],
           ),
+          UnauthorizedResponseInterceptor(),
         ],
       ),
     );

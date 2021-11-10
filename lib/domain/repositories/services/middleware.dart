@@ -17,7 +17,10 @@ abstract class MiddlewareService extends ChopperService {
       ChopperClient(
         baseUrl: _baseUrl,
         converter: JsonConverter(),
-        interceptors: [const AuthorizationInterceptor()],
+        interceptors: [
+          const AuthorizationInterceptor(),
+          UnauthorizedResponseInterceptor(),
+        ],
       ),
     );
   }
