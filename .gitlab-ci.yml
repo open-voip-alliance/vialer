@@ -17,7 +17,7 @@ clear:
     - dart ./utils/ci/remove_build_url.dart
 
 analyze:
-  image: cirrusci/flutter:2.5.1
+  image: cirrusci/flutter:2.5.3
   stage: check
   before_script:
     - flutter pub get
@@ -40,7 +40,7 @@ format:
     - dart format -o none --fix --set-exit-if-changed lib/
 
 test:
-  image: cirrusci/flutter:2.5.1
+  image: cirrusci/flutter:2.5.3
   stage: test
   before_script:
     - export PATH="$PATH":"$HOME/.pub-cache/bin"
