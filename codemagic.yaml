@@ -11,8 +11,11 @@ custom: # Custom properties to make workflows cleaner
         # set version in pubspec.yaml for showing it in Codemagic
         sed -i -e "s/^version:.*//g" pubspec.yaml
         echo "version: $version_tag" >> pubspec.yaml
-        version_tag=$(echo $version_tag | cut -f1 -d "-")
+        # Prepare the version name for a Sentry release
+        sentry_version="$BUNDLE_ID@$version_tag+$PROJECT_BUILD_NUMBER"
+        echo $sentry_version > SENTRY_VERSION
         # Fix CFBundleVersion for iOS
+        version_tag=$(echo $version_tag | cut -f1 -d "-")
         sed -i -e "s/<string>\$(FLUTTER_BUILD_NAME)<\/string>/<string>${version_tag}<\/string>/g" ios/Runner/Info.plist
     - &set_version_string_for_merge_request
       name: Updating versioning information based on the merge request
@@ -26,8 +29,11 @@ custom: # Custom properties to make workflows cleaner
         # set version in pubspec.yaml for showing it in Codemagic
         sed -i -e "s/^version:.*//g" pubspec.yaml
         echo "version: $version_tag-MR.$GITLAB_MERGE_REQUEST_IID-$FCI_BRANCH" >> pubspec.yaml
-        version_tag=$(echo $version_tag | cut -f1 -d "-")
+        # Prepare the version name for a Sentry release
+        sentry_version="$BUNDLE_ID@$version_tag-$FCI_BRANCH+$PROJECT_BUILD_NUMBER"
+        echo $sentry_version > SENTRY_VERSION
         # Fix CFBundleVersion for iOS
+        version_tag=$(echo $version_tag | cut -f1 -d "-")
         sed -i -e "s/<string>\$(FLUTTER_BUILD_NAME)<\/string>/<string>${version_tag}<\/string>/g" ios/Runner/Info.plist
     - &set_version_string_to_most_recent_tag
       name: Updating versioning information using the most recent tag
@@ -40,8 +46,11 @@ custom: # Custom properties to make workflows cleaner
         # set version in pubspec.yaml for showing it in Codemagic
         sed -i -e "s/^version:.*//g" pubspec.yaml
         echo "version: $version_tag-$FCI_BRANCH" >> pubspec.yaml
-        version_tag=$(echo $version_tag | cut -f1 -d "-")
+        # Prepare the version name for a Sentry release
+        sentry_version="$BUNDLE_ID@$version_tag-$FCI_BRANCH+$PROJECT_BUILD_NUMBER"
+        echo $sentry_version > SENTRY_VERSION
         # Fix CFBundleVersion for iOS
+        version_tag=$(echo $version_tag | cut -f1 -d "-")
         sed -i -e "s/<string>\$(FLUTTER_BUILD_NAME)<\/string>/<string>${version_tag}<\/string>/g" ios/Runner/Info.plist
     - &set_up_env_file
       name: Configuring .env file with diagnostics keys
@@ -111,6 +120,25 @@ custom: # Custom properties to make workflows cleaner
         flutter pub get
         flutter pub run build_runner build
         cd ..
+    - &release_to_sentry
+      name: Create a new release in Sentry
+      script: |
+        # Extract the Sentry version from file
+        sentry_version=$(cat SENTRY_VERSION)
+        if [ -z "$sentry_version" ]; then
+          # Use Sentrys proposed version name as a fallback
+          proposed_version=$(sentry-cli releases propose-version)
+          sentry_version=$proposed_version
+        fi
+
+        # Report the new version to Sentry, include git commits and possibly finalize the release.
+        # By finalizing the release Sentry issues marked as 'Resolved in next release' mean this
+        # release.
+        sentry-cli releases new "$sentry_version"
+        sentry-cli releases set-commits "$sentry_version" --auto --ignore-missing
+        if [ $FINALIZE_SENTRY_RELEASE = true ] ; then
+          sentry-cli releases finalize "$sentry_version"
+        fi
     - &flutter_test
       name: Running tests
       script: |
@@ -329,6 +357,7 @@ workflows:
         <<: *brand_config_vialer_env_vars
         IOS_SIGNING_TYPE: "IOS_APP_DEVELOPMENT"
         ENABLE_IOS_SANDBOX_PUSH_NOTIFICATIONS: "true"
+        FINALIZE_SENTRY_RELEASE: "false"
     triggering:
       cancel_previous_builds: true
       events:
@@ -347,6 +376,7 @@ workflows:
       - *update_ios_signing_for_current_brand
       - *build_ipa
       - *set_testflight_release_notes_for_main
+      - *release_to_sentry
     artifacts: *defaults_artifacts
 
   main-with-qa-publishing:
@@ -367,6 +397,7 @@ workflows:
         <<: *brand_config_vialer_env_vars
         IOS_SIGNING_TYPE: "IOS_APP_STORE"
         ENABLE_IOS_SANDBOX_PUSH_NOTIFICATIONS: "false"
+        FINALIZE_SENTRY_RELEASE: "false"
     publishing:
       <<: *publish_for_qa
 
@@ -386,6 +417,7 @@ workflows:
         <<: *brand_config_vialer_env_vars
         IOS_SIGNING_TYPE: "IOS_APP_DEVELOPMENT"
         ENABLE_IOS_SANDBOX_PUSH_NOTIFICATIONS: "true"
+        FINALIZE_SENTRY_RELEASE: "false"
     cache: *defaults_cache
     scripts:
       - *cancel_existing_builds_from_this_branch
@@ -398,6 +430,7 @@ workflows:
       - *update_ios_signing_for_current_brand
       - *build_ipa
       - *update_gitlab_merge_request_with_build_url
+      - *release_to_sentry
     artifacts: *defaults_artifacts
 
   staging:
@@ -421,6 +454,7 @@ workflows:
         <<: *brand_config_staging_env_vars
         IOS_SIGNING_TYPE: "IOS_APP_DEVELOPMENT"
         ENABLE_IOS_SANDBOX_PUSH_NOTIFICATIONS: "true"
+        FINALIZE_SENTRY_RELEASE: "false"
 
   beta-vialer: &beta_workflow
     name: Vialer Beta
@@ -438,6 +472,7 @@ workflows:
         <<: *brand_config_vialer_env_vars
         IOS_SIGNING_TYPE: "IOS_APP_STORE"
         ENABLE_IOS_SANDBOX_PUSH_NOTIFICATIONS: "false"
+        FINALIZE_SENTRY_RELEASE: "true"
     cache: *defaults_cache
     artifacts: *defaults_artifacts
     triggering: *beta_was_tagged
@@ -450,6 +485,7 @@ workflows:
       - *build_aab
       - *update_ios_signing_for_current_brand
       - *build_ipa
+      - *release_to_sentry
     publishing: *publish_for_beta
 
   beta-voys:
@@ -468,3 +504,4 @@ workflows:
         <<: *brand_config_voys_env_vars
         IOS_SIGNING_TYPE: "IOS_APP_STORE"
         ENABLE_IOS_SANDBOX_PUSH_NOTIFICATIONS: "false"
+        FINALIZE_SENTRY_RELEASE: "true"
