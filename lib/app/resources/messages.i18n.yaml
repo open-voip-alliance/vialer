@@ -269,11 +269,11 @@ main:
       logout: "Log out"
     feedback:
       title: "Send feedback"
-      header(String appName): >-
+      callout(String appName): >-
         Your feedback is valuable to us and helps to release a finished version of the app sooner. Please switch on the remote logging option in Settings before sending any feedback, as it is necessary to investigate any issues.
 
 
-        If you encountered a problem or want to let us know about your experience with the beta version of the $appName app, please write a message below. Thank you!
+        If you encountered a problem or want to let us know about your experience with $appName, please write a message below. Thank you!
       placeholders:
         text: "Type your feedback here and tap the send feedback button below."
       snackBar: "Feedback sent, thank you!"
@@ -388,7 +388,7 @@ onboarding:
     country: "Select your country"
 
   welcome:
-    title(String appName): "Welcome to $appName beta,"
+    title(String appName): "Welcome to $appName,"
 
 
 webview:
