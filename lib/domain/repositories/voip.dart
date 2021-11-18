@@ -15,6 +15,7 @@ import '../entities/setting.dart';
 import '../entities/voip_config.dart';
 import '../usecases/enable_console_logging.dart';
 import '../usecases/enable_remote_logging_if_needed.dart';
+import '../usecases/get_allowed_voip_config.dart';
 import '../usecases/get_build_info.dart';
 import '../usecases/get_encrypted_sip_url.dart';
 import '../usecases/get_setting.dart';
@@ -164,6 +165,7 @@ class _Middleware with Loggable {
   final _getBuildInfo = GetBuildInfoUseCase();
   final _getDndSetting = GetSettingUseCase<DndSetting>();
   final _trackPushFollowedByCall = TrackPushFollowedByCallUseCase();
+  final _getVoipConfig = GetNonEmptyVoipConfigUseCase();
 
   final _storageRepository = dependencyLocator<StorageRepository>();
   final _operatingSystemInfoRepository =
@@ -172,8 +174,7 @@ class _Middleware with Loggable {
 
   String? get _token => _storageRepository.pushToken;
 
-  NonEmptyVoipConfig? get _config =>
-      _storageRepository.voipConfig as NonEmptyVoipConfig?;
+  Future<NonEmptyVoipConfig> get _config => _getVoipConfig(latest: false);
 
   Future<void> register(NonEmptyVoipConfig? voipConfig) async {
     logger.info('Registering..');
@@ -292,11 +293,6 @@ class _Middleware with Loggable {
   void respond(RemoteMessage remoteMessage, bool available) async {
     logger.info('Responding to middleware..');
 
-    if (_config?.sipUserId == null) {
-      logger.info('Responding cancelled: SIP user id is null');
-      return;
-    }
-
     // While we should have unregistered from the middleware if the user
     // enables DND, it is possible the unregister request failed. This will
     // ensure that the user does not receive a call in this scenario.
@@ -311,7 +307,7 @@ class _Middleware with Loggable {
       uniqueKey: remoteMessage.data['unique_key'] as String,
       available: available.toString(),
       messageStartTime: remoteMessage.data['message_start_time'].toString(),
-      sipUserId: _config!.sipUserId,
+      sipUserId: (await _config).sipUserId,
     );
 
     if (response.isSuccessful) {
@@ -324,12 +320,12 @@ class _Middleware with Loggable {
     }
   }
 
-  void tokenReceived(String token) {
+  Future<void> tokenReceived(String token) async {
     logger.info('Token received');
 
     _storageRepository.pushToken = token;
 
-    register(_config);
+    register(await _config);
   }
 }
 
