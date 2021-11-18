@@ -103,8 +103,6 @@ abstract class BrandTheme {
 
   Color get buttonShadeColor => primary;
 
-  Color get buttonRaisedTextColor => primaryDark;
-
   Color get buttonColoredRaisedTextColor => primaryDark;
 
   ThemeData get themeData {
@@ -195,7 +193,122 @@ class VoysTheme extends BrandTheme {
   Color get buttonShadeColor => primaryDark;
 
   @override
-  Color get buttonRaisedTextColor => primary;
+  Color get buttonColoredRaisedTextColor => Colors.white;
+
+  @override
+  ThemeData get themeData => super.themeData.copyWith(
+        appBarTheme: super.themeData.appBarTheme.copyWith(
+              color: primary,
+              titleTextStyle:
+                  super.themeData.appBarTheme.titleTextStyle!.copyWith(
+                        color: Colors.white,
+                      ),
+              iconTheme: const IconThemeData(
+                color: Colors.white,
+              ),
+            ),
+        textButtonTheme: TextButtonThemeData(
+          style: ButtonStyle(
+            foregroundColor: MaterialStateProperty.all(primary),
+          ),
+        ),
+      );
+}
+
+class VerbondenTheme extends BrandTheme {
+  const VerbondenTheme();
+
+  @override
+  IconData get logo => VialerSans.brandVerbonden;
+
+  @override
+  final primary = const Color(0xFF003a63);
+
+  @override
+  final primaryDark = const Color(0xFF01243C);
+
+  @override
+  final primaryLight = const Color(0xFF70D8FF);
+
+  @override
+  get splashScreenColor => Colors.white;
+
+  @override
+  get onboardingGradientStart => const Color(0xFF70D8FF);
+
+  @override
+  get onboardingGradientEnd => primary;
+
+  @override
+  get primaryGradientStartColor => primary;
+
+  @override
+  get primaryGradientEndColor => primaryDark;
+
+  @override
+  Color get buttonColor => primary;
+
+  @override
+  Color get buttonShadeColor => primaryDark;
+
+  @override
+  Color get buttonColoredRaisedTextColor => Colors.white;
+
+  @override
+  ThemeData get themeData => super.themeData.copyWith(
+        appBarTheme: super.themeData.appBarTheme.copyWith(
+              color: primary,
+              titleTextStyle:
+                  super.themeData.appBarTheme.titleTextStyle!.copyWith(
+                        color: Colors.white,
+                      ),
+              iconTheme: const IconThemeData(
+                color: Colors.white,
+              ),
+            ),
+        textButtonTheme: TextButtonThemeData(
+          style: ButtonStyle(
+            foregroundColor: MaterialStateProperty.all(primary),
+          ),
+        ),
+      );
+}
+
+class AnnabelTheme extends BrandTheme {
+  const AnnabelTheme();
+
+  @override
+  IconData get logo => VialerSans.brandAnnabel;
+
+  @override
+  final primary = const Color(0xFF5F4B8B);
+
+  @override
+  final primaryDark = const Color(0xFF3C247F);
+
+  @override
+  final primaryLight = const Color(0xFFD9D2EF);
+
+  @override
+  get splashScreenColor => primaryLight;
+
+  @override
+  get onboardingGradientStart => primaryLight;
+
+  @override
+  get onboardingGradientEnd => primaryDark;
+
+  @override
+  get primaryGradientStartColor => primary;
+
+  @override
+  get primaryGradientEndColor => primaryDark;
+
+  @override
+  Color get buttonColor => primary;
+
+  @override
+  Color get buttonShadeColor => primaryDark;
 
   @override
   Color get buttonColoredRaisedTextColor => Colors.white;
@@ -225,6 +338,8 @@ abstract class VialerSans {
 
   static const brandVialer = IconData(0xE98A, fontFamily: _family);
   static const brandVoys = IconData(0xE975, fontFamily: _family);
+  static const brandVerbonden = IconData(0xE9AB, fontFamily: _family);
+  static const brandAnnabel = IconData(0xE9AA, fontFamily: _family);
   static const user = IconData(0xE964, fontFamily: _family);
   static const lockOn = IconData(0xE90C, fontFamily: _family);
   static const lockOff = IconData(0xE90A, fontFamily: _family);

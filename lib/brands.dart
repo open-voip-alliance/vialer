@@ -44,6 +44,26 @@ const brands = '''
     "voipgridUrl": "https://staging.voipgrid.nl",
     "encryptedSipUrl": "staging.encryptedsip.com",
     "unencryptedSipUrl": "sipproxy-staging.voipgrid.nl"
+  },
+  {
+    "identifier": "verbonden",
+    "appId": "nl.verbonden.app",
+    "appName": "Verbonden",
+    "url": "https://partner.voipgrid.nl",
+    "middlewareUrl": "https://vialerpush.voipgrid.nl",
+    "voipgridUrl": "https://partner.voipgrid.nl",
+    "encryptedSipUrl": "sip.encryptedsip.com",
+    "unencryptedSipUrl": "sipproxy.voipgrid.nl"
+  },
+  {
+    "identifier": "annabel",
+    "appId": "com.bellenmetannabel.app",
+    "appName": "ANNAbel",
+    "url": "https://partner.voipgrid.nl",
+    "middlewareUrl": "https://vialerpush.voipgrid.nl",
+    "voipgridUrl": "https://partner.voipgrid.nl",
+    "encryptedSipUrl": "sip.encryptedsip.com",
+    "unencryptedSipUrl": "sipproxy.voipgrid.nl"
   }
 ]
 ''';
