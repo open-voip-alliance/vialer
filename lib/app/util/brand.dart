@@ -14,6 +14,10 @@ extension ThemeOfBrand on Brand {
       return const VialerTheme();
     } else if (isVoys || isVoysFreedom) {
       return const VoysTheme();
+    } else if (isVerbonden) {
+      return const VerbondenTheme();
+    } else if (isAnnabel) {
+      return const AnnabelTheme();
     }
 
     throw UnsupportedError('Unknown brand: $this');
