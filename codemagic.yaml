@@ -109,9 +109,13 @@ custom: # Custom properties to make workflows cleaner
         f = open("release_notes.txt", "w")
         f.write(notes)
         f.close()
+    - &prepare_release_notes_from_files
+      name: Preparing the release notes from the release notes on the file system
+      script: dart utils/ci/codemagic/prepare_release_notes.dart
     - &flutter_pub_get
       name: Installing flutter dependencies and generate code
       script: |
+        ln -s "${FLUTTER_ROOT}/bin/dart" /usr/local/bin/dart
         flutter packages pub get
         flutter pub run build_runner build
         flutter pub run pigeon --input utils/pigeon/scheme.dart --dart_out lib/app/util/pigeon.dart --objc_header_out ios/Runner/pigeon.h --objc_source_out ios/Runner/pigeon.m --java_out android/app/src/main/java/com/voipgrid/vialer/Pigeon.java --java_package com.voipgrid.vialer
@@ -279,6 +283,15 @@ custom: # Custom properties to make workflows cleaner
       - build/ios/ipa/*.ipa
       - /tmp/xcodebuild_logs/*.log
       - flutter_drive.log
+
+    production_trigger: &production_was_tagged
+      cancel_previous_builds: true
+      events:
+        - tag
+      tag_patterns:
+        - pattern: '^v[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$'
+          include: true
+
     beta_trigger: &beta_was_tagged
       events:
         - tag
@@ -339,6 +352,20 @@ custom: # Custom properties to make workflows cleaner
         credentials: $TEST_SERVICE_ACCOUNT
         track: beta
         in_app_update_priority: 0
+
+#    publish_for_production: &publish_for_production
+#      slack:
+#        channel: '#vialer_mobile_releases'
+#        notify_on_build_start: false
+#      app_store_connect:
+#        api_key: $APP_STORE_CONNECT_PRIVATE_KEY
+#        key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
+#        issuer_id: $APP_STORE_CONNECT_ISSUER_ID
+#      google_play:
+#        credentials: $TEST_SERVICE_ACCOUNT
+#        track: production
+#        in_app_update_priority: 0
+#        rollout_fraction: 0.05
 
 workflows:
   main: &main_workflow
@@ -401,6 +428,7 @@ workflows:
     publishing:
       <<: *publish_for_qa
 
+
   merge-requests:
     name: merge requests
     <<: *config
@@ -455,6 +483,56 @@ workflows:
         IOS_SIGNING_TYPE: "IOS_APP_DEVELOPMENT"
         ENABLE_IOS_SANDBOX_PUSH_NOTIFICATIONS: "true"
         FINALIZE_SENTRY_RELEASE: "false"
+
+  production-vialer: &production_workflow
+    name: Release Vialer to Production
+    <<: *config
+    environment:
+      groups:
+        - configuration
+        - production_diagnostics
+        - vialer_android_firebase
+        - vialer_upload_keystore_credentials
+        - vialer_playstore_credentials
+        - vialer_ios_appstore_credentials
+      <<: *config_environment
+      vars:
+        <<: *brand_config_vialer_env_vars
+        IOS_SIGNING_TYPE: "IOS_APP_STORE"
+        ENABLE_IOS_SANDBOX_PUSH_NOTIFICATIONS: "false"
+        FINALIZE_SENTRY_RELEASE: "true"
+    triggering: *production_was_tagged
+    cache: *defaults_cache
+    artifacts: *defaults_artifacts
+    scripts:
+      - *set_up_env_file
+      - *set_version_string
+      - *flutter_pub_get
+      - *prepare_release_notes_from_files
+      - *flutter_test
+      - *build_aab
+      - *update_ios_signing_for_current_brand
+      - *build_ipa
+      #- *release_to_sentry
+    #publishing: *publish_for_production
+
+  production-voys:
+    name: Release Voys to Production
+    <<: *production_workflow
+    environment:
+      groups:
+        - configuration
+        - production_diagnostics
+        - voys_android_firebase
+        - voys_playstore_credentials
+        - voys_upload_keystore_credentials
+        - voys_ios_appstore_credentials
+      <<: *config_environment
+      vars:
+        <<: *brand_config_voys_env_vars
+        IOS_SIGNING_TYPE: "IOS_APP_STORE"
+        ENABLE_IOS_SANDBOX_PUSH_NOTIFICATIONS: "false"
+        FINALIZE_SENTRY_RELEASE: "true"
 
   beta-vialer: &beta_workflow
     name: Vialer Beta

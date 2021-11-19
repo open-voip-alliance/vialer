@@ -14,7 +14,7 @@ clear:
   image: dart:latest
   stage: check
   script:
-    - dart ./utils/ci/remove_build_url.dart
+    - dart ./utils/ci/gitlab/remove_build_url.dart
 
 analyze:
   image: cirrusci/flutter:2.5.3
