@@ -19,7 +19,7 @@ class Logger(private val context: Context) : Pigeon.NativeLogging {
     private val isRemoteLoggingEnabled
         get() = logEntries != null
 
-    internal fun writeLog(message: String, level: PhoneLibLogLevel) {
+    internal fun writeLog(message: String, level: PhoneLibLogLevel = INFO) {
         if (isConsoleLoggingEnabled) {
             logToConsole(message, level)
         }
