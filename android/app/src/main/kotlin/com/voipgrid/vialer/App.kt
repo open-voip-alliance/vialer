@@ -11,7 +11,7 @@ class App : FlutterApplication() {
         super.onCreate()
         logger = Logger(this)
         middleware = Middleware(this, logger)
-        startPhoneLib(MainActivity::class.java, middleware) { message, level ->
+        startPhoneLib(MainActivity::class.java, IncomingCallActivity::class.java, middleware) { message, level ->
             logger.writeLog(message, level)
         }
     }

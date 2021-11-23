@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<!--  If VoIP is running without a call these will be displayed  -->
+    <!--  If VoIP is running without a call these will be displayed  -->
     <string name="notification_default_title">VoIP</string>
     <string name="notification_default_subtitle">is running</string>
 
-<!--  The name of the notification channel, this cannot be changed once the app has been installed. -->
+    <!--  The name of the notification channel, this cannot be changed once the app has been installed. -->
     <string name="notification_channel_name">VoIP Service</string>
     <string name="notification_incoming_calls_channel_name">Incoming Calls Notification</string>
 
@@ -13,4 +13,13 @@
     <string name="notification_decline_action">Decline</string>
 
     <string name="notification_incoming_context_text">Ringing…</string>
+    <string name="title_activity_incoming_call">IncomingCallActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
 </resources>
