@@ -102,7 +102,7 @@ class Middleware(private val context: Context, private val logger: Logger) : Nat
         )
     }
 
-    override suspend fun inspect(remoteMessage: RemoteMessage) = true
+    override suspend fun inspect(remoteMessage: RemoteMessage) = remoteMessage.data["type"] == "call"
 
     private fun createMiddlewareRequest(email: String, token: String, url: String = REGISTER_URL) =
         Request.Builder().url(url).addHeader("Authorization", "Token $email:$token")
