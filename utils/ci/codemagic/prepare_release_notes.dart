@@ -53,15 +53,15 @@ Future<void> main(List<String> args) async {
     brand: brand,
   );
 
-  final files = directory.list();
+  final files = await directory.list().toList();
 
-  if (await files.length <= 0) {
+  if (files.length <= 0) {
     throw Exception('There are no files in the release notes directory');
   }
 
-  await for (var file in files) {
+  for (var file in files) {
     if (file is File) {
-      generateReleaseNotesForCodemagic(file);
+      await generateReleaseNotesForCodemagic(file);
     } else {
       throw Exception('${file.path} is not a file and should not be here.');
     }
@@ -125,7 +125,7 @@ Future<Directory> findReleaseNotesDirectory({
 
     return findReleaseNotesDirectory(
       tag: tag,
-      brand: brand,
+      brand: fallbackBrand,
       fallbackBrand: null,
     );
   }
