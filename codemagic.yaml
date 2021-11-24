@@ -557,8 +557,8 @@ workflows:
     scripts:
       - *set_up_env_file
       - *set_version_string
-      - *prepare_release_notes_from_files
       - *flutter_pub_get
+      - *prepare_release_notes_from_files
       - *flutter_test
       - *build_aab
       - *update_ios_signing_for_current_brand
