@@ -1,0 +1,5 @@
+- Android: Resolved a number of issues relating to incoming calls (similar changes will be coming to iOS soon)
+- Fixed an issue that would prevent enabling the speaker after initiating a call transfer
+- iOS: Fixed a UI bug where the category title would appear in the availability switcher
+- Fixed various issues with displaying onboarding titles on smaller screens
+- Internal calls should now show the correct number in the recents list
