@@ -32,6 +32,7 @@ CallParty _mapCaller(CallRecordFromDetail fromDetail) {
     number = fromDetail.voipAccount!.internalNumber;
   } else if (fromDetail.callerName?.isNotEmpty == true) {
     name = fromDetail.callerName!;
+    number = fromDetail.phoneNumber;
   } else {
     number = fromDetail.phoneNumber;
   }
