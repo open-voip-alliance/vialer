@@ -23,14 +23,15 @@ custom: # Custom properties to make workflows cleaner
         # get version tag
         version_tag=$(git describe --tags --abbrev=0)
         version_tag="$(echo $version_tag | sed 's/^v//g')"
+        escaped_branch=$(echo "$FCI_BRANCH" | tr / -)
         # set variables in .env file for the app
         sed -i -e "s/MERGE_REQUEST=/MERGE_REQUEST=${GITLAB_MERGE_REQUEST_IID}/g" .env
-        sed -i -e "s/BRANCH=/BRANCH=${FCI_BRANCH}/g" .env
+        sed -i -e "s/BRANCH=/BRANCH=${escaped_branch}/g" .env
         # set version in pubspec.yaml for showing it in Codemagic
         sed -i -e "s/^version:.*//g" pubspec.yaml
-        echo "version: $version_tag-MR.$GITLAB_MERGE_REQUEST_IID-$FCI_BRANCH" >> pubspec.yaml
+        echo "version: $version_tag-MR.$GITLAB_MERGE_REQUEST_IID-$escaped_branch" >> pubspec.yaml
         # Prepare the version name for a Sentry release
-        sentry_version="$BUNDLE_ID@$version_tag-$FCI_BRANCH+$PROJECT_BUILD_NUMBER"
+        sentry_version="$BUNDLE_ID@$version_tag-$escaped_branch+$PROJECT_BUILD_NUMBER"
         echo $sentry_version > SENTRY_VERSION
         # Fix CFBundleVersion for iOS
         version_tag=$(echo $version_tag | cut -f1 -d "-")
@@ -41,13 +42,14 @@ custom: # Custom properties to make workflows cleaner
         # get version tag
         version_tag=$(git describe --tags --abbrev=0)
         version_tag="$(echo $version_tag | sed 's/^v//g')"
+        escaped_branch=$(echo "$FCI_BRANCH" | tr / -)
         # set variables in .env file for the app
-        sed -i -e "s/BRANCH=/BRANCH=${FCI_BRANCH}/g" .env
+        sed -i -e "s/BRANCH=/BRANCH=${escaped_branch}/g" .env
         # set version in pubspec.yaml for showing it in Codemagic
         sed -i -e "s/^version:.*//g" pubspec.yaml
-        echo "version: $version_tag-$FCI_BRANCH" >> pubspec.yaml
+        echo "version: $version_tag-$escaped_branch" >> pubspec.yaml
         # Prepare the version name for a Sentry release
-        sentry_version="$BUNDLE_ID@$version_tag-$FCI_BRANCH+$PROJECT_BUILD_NUMBER"
+        sentry_version="$BUNDLE_ID@$version_tag-$escaped_branch+$PROJECT_BUILD_NUMBER"
         echo $sentry_version > SENTRY_VERSION
         # Fix CFBundleVersion for iOS
         version_tag=$(echo $version_tag | cut -f1 -d "-")
@@ -559,8 +561,8 @@ workflows:
     scripts:
       - *set_up_env_file
       - *set_version_string
-      - *prepare_release_notes_from_gitlab
       - *flutter_pub_get
+      - *prepare_release_notes_from_files
       - *flutter_test
       - *build_aab
       - *update_ios_signing_for_current_brand
