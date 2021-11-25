@@ -12,6 +12,7 @@ import '../domain/repositories/error_tracking_repository.dart';
 import '../domain/usecases/automatically_login_legacy_user.dart';
 import '../domain/usecases/enable_console_logging.dart';
 import '../domain/usecases/enable_remote_logging_if_needed.dart';
+import '../domain/usecases/initialize_metric_collection.dart';
 import '../domain/usecases/register_event_listeners.dart';
 import 'pages/main/page.dart';
 import 'pages/main/widgets/caller/widget.dart';
@@ -31,6 +32,7 @@ Future<void> main() async {
 
   await initializeDependencies();
 
+  InitializeMetricCollection()();
   RegisterDomainEventListenersUseCase()();
   EnableConsoleLoggingUseCase()();
   EnableRemoteLoggingIfNeededUseCase()();

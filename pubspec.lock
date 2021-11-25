@@ -395,7 +395,7 @@ packages:
       name: flutter_segment
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.1.2"
+    version: "3.5.0"
   flutter_svg:
     dependency: "direct main"
     description:

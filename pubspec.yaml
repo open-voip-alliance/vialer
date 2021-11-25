@@ -35,7 +35,7 @@ dependencies:
   intl: ^0.17.0
   flutter_dotenv: ^5.0.2
   sentry_flutter: ^6.0.1
-  flutter_segment: ^3.1.0
+  flutter_segment: ^3.5.0
   device_info: ^2.0.0
   package_info: ^2.0.0
   moor: ^4.2.1

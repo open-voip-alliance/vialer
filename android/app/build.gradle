@@ -71,7 +71,6 @@ android {
     defaultConfig {
         applicationId brand.appId
         resValue "string", "app_name", brand.appName
-        resValue "string", "segment_key", segmentKey
         minSdkVersion 26
         targetSdkVersion 30
         versionCode flutterVersionCode.toInteger()

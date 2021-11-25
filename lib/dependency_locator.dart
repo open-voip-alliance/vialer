@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:get_it/get_it.dart';
+import 'app/util/debug.dart';
 
 import 'domain/events/event_bus.dart';
 import 'domain/repositories/auth.dart';
@@ -97,7 +98,11 @@ Future<void> initializeDependencies({bool ui = true}) async {
       dependsOn: [StorageRepository],
     )
     ..registerSingleton<CountryRepository>(CountryRepository())
-    ..registerSingleton<MetricsRepository>(MetricsRepository());
+    ..registerSingleton<MetricsRepository>(
+      inDebugMode
+          ? ConsoleLoggingMetricsRepository()
+          : SegmentMetricsRepository(),
+    );
 
   await dependencyLocator.allReady();
 }
