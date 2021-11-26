@@ -37,7 +37,7 @@ const brands = '''
   },
   {
     "identifier": "vialerStaging",
-    "appId": "com.voys.app",
+    "appId": "com.voipgrid.vialer",
     "appName": "Vialer Staging",
     "url": "https://partner.voipgrid.nl",
     "middlewareUrl": "https://vialerpush-staging.voipgrid.nl",
