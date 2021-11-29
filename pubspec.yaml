@@ -1,4 +1,5 @@
 name: vialer
+publish_to: none
 description: >-
   Mobile app that serves as both a VoIP client
   and a management tool for accounts on the VoIPGRID platform.
