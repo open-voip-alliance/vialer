@@ -1,5 +1,7 @@
 import 'dart:convert';
-import 'dart:io' show HttpClient, HttpClientResponse, Platform, exit;
+import 'dart:io' show HttpClient, Platform, exit;
+
+import '../ci_utils.dart';
 
 Future<void> main(List<String> args) async {
   final env = Platform.environment;
@@ -59,8 +61,4 @@ Future<void> main(List<String> args) async {
   }
 
   exit(0);
-}
-
-Future<String> readResponse(HttpClientResponse response) async {
-  return response.transform(utf8.decoder).join();
 }

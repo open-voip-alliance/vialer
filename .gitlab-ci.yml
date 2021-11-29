@@ -1,68 +1,13 @@
-variables:
-  GIT_SUBMODULE_STRATEGY: recursive
-
 workflow:
   rules:
     - if: $CI_MERGE_REQUEST_IID
 
 stages:
-  - check
-  - test
-  - build
-
-clear:
-  image: dart:latest
-  stage: check
-  script:
-    - dart ./utils/ci/gitlab/remove_build_url.dart
-
-analyze:
-  image: cirrusci/flutter:2.5.3
-  stage: check
-  before_script:
-    - flutter pub get
-    - flutter pub run build_runner build
-    - flutter pub run pigeon --input utils/pigeon/scheme.dart --dart_out lib/app/util/pigeon.dart --objc_header_out ios/Runner/pigeon.h --objc_source_out ios/Runner/pigeon.m --java_out android/app/src/main/java/com/voipgrid/vialer/Pigeon.java --java_package com.voipgrid.vialer
-    # TODO: Remove when pub package
-    - cd voip_flutter_integration
-    - flutter pub get
-    - flutter pub run build_runner build
-    - cd ..
-    - touch .env # We add an empty .env so the analyzer is happy.
-  script:
-    - dart analyze . --fatal-infos --fatal-warnings
-
-format:
-  image: dart:latest
-  stage: check
-  script:
-    # We don't generate any code, because we don't want to check that anyway.
-    - dart format -o none --fix --set-exit-if-changed lib/
-
-test:
-  image: cirrusci/flutter:2.5.3
-  stage: test
-  before_script:
-    - export PATH="$PATH":"$HOME/.pub-cache/bin"
-    - cp .env.example .env
-    - flutter pub get
-    - flutter pub run build_runner build
-    - flutter pub run pigeon --input utils/pigeon/scheme.dart --dart_out lib/app/util/pigeon.dart --objc_header_out ios/Runner/pigeon.h --objc_source_out ios/Runner/pigeon.m --java_out android/app/src/main/java/com/voipgrid/vialer/Pigeon.java --java_package com.voipgrid.vialer
-    - flutter pub global activate junitreport
-    # TODO: Remove when pub package
-    - cd voip_flutter_integration
-    - flutter pub get
-    - flutter pub run build_runner build
-    - cd ..
-  script:
-    - flutter test --machine | tojunit --output report.xml
-  artifacts:
-    reports:
-      junit: report.xml
+  - build on codemagic
 
 build:
-  image: curlimages/curl:latest
-  stage: build
+  image: dart:latest
+  stage: build on codemagic
   rules:
     - if: '$CI_MERGE_REQUEST_EVENT_TYPE == "detached"'
       variables:
@@ -73,16 +18,7 @@ build:
     - if: '$CI_MERGE_REQUEST_EVENT_TYPE == "merge_train"'
       variables:
         CODEMAGIC_WORKFLOW: "main"
+  before_script:
+    - dart ./utils/ci/gitlab/remove_build_url.dart
   script:
-    - |
-      wget -O jq https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64
-      chmod +x ./jq
-    - |
-      CODEMAGIC_BUILD_ID=`curl -s -H "Content-Type: application/json" -H "x-auth-token: $CODEMAGIC_API_TOKEN" --data '{"appId": "'"$CODEMAGIC_APP_ID"'","workflowId": "'"$CODEMAGIC_WORKFLOW"'","branch": "'"$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME"'","environment": {"variables": {"GITLAB_MERGE_REQUEST_IID": "'"$CI_MERGE_REQUEST_IID"'"}}}' https://api.codemagic.io/builds | ./jq '.buildId' -r`
-      get_codemagic_build_status () { local build_status=`curl -s -H "Content-Type: application/json" -H "x-auth-token: $CODEMAGIC_API_TOKEN" --request GET https://api.codemagic.io/builds/$CODEMAGIC_BUILD_ID | ./jq '.build.status' -r`; echo "$build_status"; }
-      CODEMAGIC_BUILD_STATUS="$(get_codemagic_build_status)"
-      echo "Waiting for the Codemagic build to finish, to see the build in Codemagic go to https://codemagic.io/app/$CODEMAGIC_APP_ID/build/$CODEMAGIC_BUILD_ID"
-      while [[ "$CODEMAGIC_BUILD_STATUS" != "finished" ]] && [[ "$CODEMAGIC_BUILD_STATUS" != "failed" ]] && [[ "$CODEMAGIC_BUILD_STATUS" != "canceled" ]]; do CODEMAGIC_BUILD_STATUS="$(get_codemagic_build_status)"; echo "... current Codemagic build status: $CODEMAGIC_BUILD_STATUS"; sleep 15; done
-      echo "Codemagic build finished with status: $CODEMAGIC_BUILD_STATUS"
-      echo "For the detailed build log go to https://codemagic.io/app/$CODEMAGIC_APP_ID/build/$CODEMAGIC_BUILD_ID"
-      if [[ "$CODEMAGIC_BUILD_STATUS" == "finished" ]]; then exit 0; else exit 1; fi;
+    - dart ./utils/ci/gitlab/build_via_codemagic.dart
