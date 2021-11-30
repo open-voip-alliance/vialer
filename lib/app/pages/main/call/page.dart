@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
@@ -33,6 +34,9 @@ class _CallPageState extends State<CallPage>
   // We sometimes want to dismiss the screen after an amount of seconds
   // we will store this timer so we can cancel it if another call is started.
   Timer? _dismissScreenTimer;
+
+  /// We will only ask for a call rating on this percentage of calls.
+  static const _percentageChanceOfAskingForCallRating = 15;
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
@@ -76,7 +80,12 @@ class _CallPageState extends State<CallPage>
   // type but different call information has been emitted.
   Future<void> _onStateChanged(BuildContext context, CallerState state) async {
     if (state is FinishedCalling) {
-      if (state.voipCall != null && state.voipCall!.duration >= 1) {
+      final shouldAskForCallRating =
+          Random().nextInt(100) < _percentageChanceOfAskingForCallRating;
+
+      if (state.voipCall != null &&
+          state.voipCall!.duration >= 1 &&
+          shouldAskForCallRating) {
         Timer(const Duration(seconds: 1), () {
           if (mounted) {
             _requestCallRating(context, state)
@@ -84,7 +93,7 @@ class _CallPageState extends State<CallPage>
           }
         });
       } else {
-        _dismissCallPage(context, after: const Duration(seconds: 3));
+        _dismissCallPage(context, after: const Duration(seconds: 2));
       }
     } else {
       // If we get a non-finished state we want to make sure to cancel our
