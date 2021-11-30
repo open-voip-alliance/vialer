@@ -115,7 +115,7 @@ class Middleware(private val context: Context, private val logger: Logger) : Nat
         )
 
     companion object {
-        private const val BASE_URL = "https://vialerpush.voipgrid.nl/api/"
+        private const val BASE_URL = "https://vialerpush-staging.voipgrid.nl/api/"
         private const val RESPONSE_URL = "${BASE_URL}call-response/"
         private const val REGISTER_URL = "${BASE_URL}android-device/"
     }
