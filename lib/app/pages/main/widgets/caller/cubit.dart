@@ -380,8 +380,8 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
     else if (event is CallSessionEvent) {
       // It's possible we're not in a CallProcessState yet, because we missed an
       // event, if that's the case we'll emit the state necessary to get there.
-      if (state is! CallProcessState) {
-        if (callSessionState.activeCall?.direction.isInbound == true) {
+      if (state is! CallProcessState && callSessionState.activeCall != null) {
+        if (callSessionState.activeCall!.direction.isInbound == true) {
           emit(
             Calling(
               origin: CallOrigin.incoming,
