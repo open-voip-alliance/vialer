@@ -32,6 +32,7 @@ import '../../../../../domain/usecases/change_setting.dart';
 import '../../../../../domain/usecases/get_call_through_calls_count.dart';
 import '../../../../../domain/usecases/get_current_connectivity_status.dart';
 import '../../../../../domain/usecases/get_has_voip_enabled.dart';
+import '../../../../../domain/usecases/get_has_voip_started.dart';
 import '../../../../../domain/usecases/get_is_authenticated.dart';
 import '../../../../../domain/usecases/get_permission_status.dart';
 import '../../../../../domain/usecases/get_setting.dart';
@@ -69,6 +70,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
   final _openAppSettings = OpenSettingsAppUseCase();
 
   final _getHasVoipEnabled = GetHasVoipEnabledUseCase();
+  final _hasVoipStarted = GetHasVoipStartedUseCase();
   final _startVoip = StartVoipUseCase();
   final _getVoipCallEventStream = GetVoipCallEventStreamUseCase();
   final _answerVoipCall = AnswerVoipCallUseCase();
@@ -100,6 +102,14 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
         initialize();
       }
     });
+
+    _hasVoipStarted().then(
+      (_) {
+        checkCallPermissionIfNotVoip();
+        _voipCallEventSubscription ??=
+            _getVoipCallEventStream().listen(_onVoipCallEvent);
+      },
+    );
   }
 
   void initialize() {
@@ -112,8 +122,6 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
 
     try {
       await _startVoip();
-      _voipCallEventSubscription =
-          _getVoipCallEventStream().listen(_onVoipCallEvent);
 
       // We need to go to the incoming/ongoing call screen if we were opened by the
       // notification.
