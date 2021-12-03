@@ -471,6 +471,13 @@ workflows:
       - *update_gitlab_merge_request_with_build_url
       - *release_to_sentry
     artifacts: *defaults_artifacts
+    publishing:
+      slack:
+        channel: '#vialer_mobile_ci'
+        notify_on_build_start: false
+        notify:
+          success: true
+          failure: false
 
   staging:
     name: Staging
