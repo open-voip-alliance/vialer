@@ -192,7 +192,7 @@ main:
             title: Verstuur ook de logs van vandaag
             description: >-
               Door dit toe te staan, kan ons team tevens problemen zien die vandaag zijn opgetreden
-              voordat u Remote Logging inschakelde. Dit helpt ons problemen beter te begrijpen.
+              voordat je Remote Logging inschakelde. Dit helpt ons problemen beter te begrijpen.
             confirm: Verstuur
       accountInfo:
         title: "Accountinformatie"
