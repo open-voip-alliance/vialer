@@ -79,9 +79,22 @@ class LoggingRepository {
     String userIdentifier = '',
     required String token,
   }) async {
-    _remoteLoggingSocket = await SecureSocket.connect(
-      'data.logentries.com',
-      443,
+    Future<void> startConnection() async {
+      _remoteLoggingSocket = await SecureSocket.connect(
+        'data.logentries.com',
+        443,
+      );
+    }
+
+    await startConnection();
+
+    _remoteLoggingSocket!.done.onError(
+      (error, stackTrace) {
+        // Restart the remote logging connection if we got disconnected.
+        if (error is SocketException) {
+          startConnection();
+        }
+      },
     );
 
     if (token.isNotEmpty) {
@@ -91,6 +104,7 @@ class LoggingRepository {
           userIdentifier: userIdentifier,
           remote: true,
         );
+
         _remoteLoggingSocket!.writeln('$token $message');
       });
     }
