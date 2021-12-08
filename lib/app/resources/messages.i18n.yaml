@@ -146,7 +146,7 @@ main:
     menu:
       title: *contactsTitle
     snackBar:
-      noPermission: "Unable to call without the Phone permission"
+      noPermission: "Unable to call without the call permission"
     edit: "Edit"
     list:
       loading:

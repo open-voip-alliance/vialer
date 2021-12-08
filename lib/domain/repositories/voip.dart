@@ -28,7 +28,23 @@ import 'services/middleware.dart';
 import 'storage.dart';
 
 class VoipRepository with Loggable {
-  late PhoneLib _phoneLib;
+  PhoneLib? __phoneLib;
+
+  Future<PhoneLib> get _phoneLib {
+    if (__phoneLib == null) {
+      logger.warning(
+        'PhoneLib was accessed and not initialized, initializing now',
+      );
+
+      return initializeAndStart(
+        config: _startUpConfig!,
+        brand: _startUpBrand!,
+        buildInfo: _startUpBuildInfo!,
+      ).then((_) => __phoneLib!);
+    }
+
+    return Future.sync(() => __phoneLib!);
+  }
 
   final _hasStartedCompleter = Completer<bool>();
 
@@ -37,43 +53,115 @@ class VoipRepository with Loggable {
   final _getEncryptedSipUrl = GetEncryptedSipUrlUseCase();
   final _getUnencryptedSipUrl = GetUnencryptedSipUrlUseCase();
 
+  // Start-up values.
+  NonEmptyVoipConfig? _startUpConfig;
+  Brand? _startUpBrand;
+  BuildInfo? _startUpBuildInfo;
+
+  bool _initializingAndStarting = false;
+
   Future<void> initializeAndStart({
     required NonEmptyVoipConfig config,
     required Brand brand,
     required BuildInfo buildInfo,
   }) async {
-    if (_hasStartedCompleter.isCompleted) {
-      start(config);
+    if (_initializingAndStarting) {
+      await hasStarted;
       return;
     }
 
-    hasStarted.whenComplete(() => start(config));
+    if (_hasStartedCompleter.isCompleted) {
+      logger.info(
+        'PhoneLib is already initialized and has started, not doing anything',
+      );
+      return;
+    }
+
+    _initializingAndStarting = true;
+
+    _startUpConfig = config;
+    _startUpBrand = brand;
+    _startUpBuildInfo = buildInfo;
 
     final preferences = await _createPreferences(config);
 
-    _phoneLib = await initializePhoneLib((builder) {
-      builder
-        ..auth = _createAuth(config)
-        ..preferences = preferences;
+    /// Returns true if successfully initialized, false otherwise.
+    Future<bool> initialize({bool firstTry = true}) async {
+      try {
+        __phoneLib = await initializePhoneLib((builder) {
+          builder
+            ..auth = _createAuth(config)
+            ..preferences = preferences;
 
-      return ApplicationSetup(
-        initialize: _initialize,
-        middleware: const Middleware(
-          respond: _middlewareRespond,
-          tokenReceived: _middlewareTokenReceived,
-          inspect: _middlewareInspect,
-        ),
-        onMissedCallNotificationPressed: () =>
-            _missedCallNotificationPressedController.add(true),
-        userAgent: '${brand.appName} '
-            '${Platform.isAndroid ? 'Android' : 'iOS'} '
-            'v${buildInfo.version}',
-      );
-    });
+          return ApplicationSetup(
+            initialize: _initialize,
+            middleware: const Middleware(
+              respond: _middlewareRespond,
+              tokenReceived: _middlewareTokenReceived,
+              inspect: _middlewareInspect,
+            ),
+            onMissedCallNotificationPressed: () =>
+                _missedCallNotificationPressedController.add(true),
+            userAgent: '${brand.appName} '
+                '${Platform.isAndroid ? 'Android' : 'iOS'} '
+                'v${buildInfo.version}',
+          );
+        });
+      } on Exception catch (e) {
+        if (!firstTry) {
+          logger.severe(
+            'PhoneLib did not initialize, '
+            'not trying again since we did already. Reason: $e',
+          );
 
-    logger.info('PhoneLib started');
+          return false;
+        } else {
+          logger.severe(
+            'PhoneLib did not initialize, trying again. Reason: $e',
+          );
+
+          return await initialize(firstTry: false);
+        }
+      }
+
+      return true;
+    }
+
+    if (!await initialize()) return;
+
+    /// Returns true if successfully started, false otherwise.
+    Future<bool> start({bool firstTry = true}) async {
+      try {
+        await __phoneLib!.start(
+          await _createPreferences(config),
+          _createAuth(config),
+        );
+      } on Exception catch (e) {
+        if (!firstTry) {
+          logger.severe(
+            'PhoneLib did not start, '
+            'not trying again since we did already. Reason: $e',
+          );
+
+          return false;
+        } else {
+          logger.severe(
+            'PhoneLib did not start, trying again. Reason: $e',
+          );
+
+          return await start(firstTry: false);
+        }
+      }
+
+      return true;
+    }
+
+    if (!await start()) return;
 
     _hasStartedCompleter.complete(true);
+    logger.info('PhoneLib started');
+
+    _initializingAndStarting = false;
   }
 
   Auth _createAuth(NonEmptyVoipConfig config) => Auth(
@@ -95,29 +183,36 @@ class VoipRepository with Loggable {
     );
   }
 
-  Future<void> start(NonEmptyVoipConfig config) async => _phoneLib.start(
-        await _createPreferences(config),
-        _createAuth(config),
-      );
+  // We refer to the backing field `__phoneLib` instead of
+  // the getter `_phoneLib`, because if for some reason the phone lib was not
+  // initialized, we don't want to do that now (which will happen if _phoneLib
+  // is accessed and it wasn't initialized). So we refer to the backing field
+  // and stop it if it's initialized, otherwise we do nothing.
+  Future<void> stop() async => __phoneLib?.stop();
 
-  Future<void> stop() => _phoneLib.stop();
+  Future<void> call(String number) async =>
+      (await _phoneLib).call(number.normalize());
 
-  Future<void> call(String number) => _phoneLib.call(number.normalize());
-
-  Future<void> answerCall() => _phoneLib.actions.answer();
+  Future<void> answerCall() async => (await _phoneLib).actions.answer();
 
   Future<void> refreshPreferences(VoipConfig config) async =>
-      _phoneLib.updatePreferences(await _createPreferences(config));
+      (await _phoneLib).updatePreferences(await _createPreferences(config));
 
-  Future<Call?> get activeCall => _phoneLib.calls.active;
+  Future<Call?> get activeCall async => (await _phoneLib).calls.active;
 
-  Future<CallSessionState> get sessionState => _phoneLib.sessionState;
+  Future<CallSessionState> get sessionState async =>
+      (await _phoneLib).sessionState;
 
-  Future<void> endCall() => _phoneLib.actions.end();
+  Future<void> endCall() async => (await _phoneLib).actions.end();
 
-  Future<void> sendDtmf(String dtmf) => _phoneLib.actions.sendDtmf(dtmf);
+  Future<void> sendDtmf(String dtmf) async =>
+      (await _phoneLib).actions.sendDtmf(dtmf);
 
-  Stream<Event> get events => _phoneLib.events;
+  Stream<Event> get events async* {
+    final phoneLib = await _phoneLib;
+
+    yield* phoneLib.events;
+  }
 
   Future<void> register(NonEmptyVoipConfig voipConfig) =>
       _Middleware().register(voipConfig);
@@ -125,30 +220,30 @@ class VoipRepository with Loggable {
   Future<void> unregister(NonEmptyVoipConfig voipConfig) =>
       _Middleware().unregister(voipConfig);
 
-  Future<bool> get isMuted => _phoneLib.audio.isMicrophoneMuted;
+  Future<bool> get isMuted async => (await _phoneLib).audio.isMicrophoneMuted;
 
-  Future<void> toggleMute() => _phoneLib.audio.toggleMute();
+  Future<void> toggleMute() async => (await _phoneLib).audio.toggleMute();
 
-  Future<void> toggleHold() => _phoneLib.actions.toggleHold();
+  Future<void> toggleHold() async => (await _phoneLib).actions.toggleHold();
 
-  Future<void> hold() => _phoneLib.actions.hold();
+  Future<void> hold() async => (await _phoneLib).actions.hold();
 
-  Future<void> routeAudio(AudioRoute route) =>
-      _phoneLib.audio.routeAudio(route);
+  Future<void> routeAudio(AudioRoute route) async =>
+      (await _phoneLib).audio.routeAudio(route);
 
-  Future<void> launchAudioRoutePicker() =>
-      _phoneLib.audio.launchAudioRoutePicker();
+  Future<void> launchAudioRoutePicker() async =>
+      (await _phoneLib).audio.launchAudioRoutePicker();
 
-  Future<AudioState> get audioState => _phoneLib.audio.state;
+  Future<AudioState> get audioState async => (await _phoneLib).audio.state;
 
-  Future<void> routeAudioToBluetoothDevice(BluetoothAudioRoute route) =>
-      _phoneLib.audio.routeAudioToBluetoothDevice(route);
+  Future<void> routeAudioToBluetoothDevice(BluetoothAudioRoute route) async =>
+      (await _phoneLib).audio.routeAudioToBluetoothDevice(route);
 
-  Future<void> beginTransfer(String number) =>
-      _phoneLib.actions.beginAttendedTransfer(number.normalize());
+  Future<void> beginTransfer(String number) async =>
+      (await _phoneLib).actions.beginAttendedTransfer(number.normalize());
 
-  Future<void> mergeTransferCalls() =>
-      _phoneLib.actions.completeAttendedTransfer();
+  Future<void> mergeTransferCalls() async =>
+      (await _phoneLib).actions.completeAttendedTransfer();
 
   final _missedCallNotificationPressedController =
       StreamController<bool>.broadcast();
