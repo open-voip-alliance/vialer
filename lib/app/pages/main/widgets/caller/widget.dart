@@ -7,6 +7,7 @@ import '../../../../../domain/entities/survey/survey_trigger.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
 import '../../../../routes.dart';
+import '../../../../util/pigeon.dart';
 import '../../../../util/widgets_binding_observer_registrar.dart';
 import '../../call/call_screen.dart';
 import '../../call/incoming/page.dart';
@@ -63,6 +64,32 @@ class _CallerState extends State<Caller>
 
   static const _ringingRouteName = 'ringing';
 
+  /// Launch the appropriate call screen depending on the platform,
+  /// for iOS we will use the Flutter call screen and for Android we will
+  /// use a native implementation.
+  Future<void> launchIncomingCallScreen(Ringing state) async {
+    final call = state.voipCall;
+
+    if (call == null) return;
+
+    if (context.isAndroid) {
+      NativeIncomingCallScreen().launch(
+        call.remotePartyHeading,
+        call.remotePartySubheading,
+      );
+      return;
+    }
+
+    await _navigatorState.push(
+        MaterialPageRoute(
+          settings: const RouteSettings(
+            name: _ringingRouteName,
+          ),
+          builder: (_) => const IncomingCallPage(),
+        ),
+      );
+  }
+
   // NOTE: Only called when the state type changes, not when the same state
   // with a different `voipCall` is emitted.
   Future<void> _onStateChanged(BuildContext context, CallerState state) async {
@@ -77,15 +104,7 @@ class _CallerState extends State<Caller>
 
     if (state is Ringing) {
       _isRinging = true;
-
-      await _navigatorState.push(
-        MaterialPageRoute(
-          settings: const RouteSettings(
-            name: _ringingRouteName,
-          ),
-          builder: (_) => const IncomingCallPage(),
-        ),
-      );
+      launchIncomingCallScreen(state);
     } else {
       // Last state was ringing, remove the incoming call page.
       if (_isRinging) {

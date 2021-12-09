@@ -33,3 +33,12 @@ abstract class NativeLogging {
 
   void stopNativeConsoleLogging();
 }
+
+@HostApi()
+// ignore:one_member_abstracts
+abstract class NativeIncomingCallScreen {
+  void launch(
+    String remotePartyHeading,
+    String remotePartySubheading,
+  );
+}
