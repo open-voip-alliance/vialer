@@ -175,13 +175,13 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   iOSVoIPLib:
-    :commit: 0591ba793ca4b431a85fdbcf40185d340481d0fd
+    :commit: c4b3a690c86d8b6aaabff6e7990c0ac183bebcb7
     :git: https://github.com/open-voip-alliance/iOS-VoIP-Lib.git
   le:
     :commit: ce8800f6d3290e182d48082680679d64a05ca778
     :git: https://github.com/LogentriesCommunity/le_ios.git
   PIL:
-    :commit: 44ccfbed98340e6b3c25b60844dd4b3b50f3047f
+    :commit: 56fdd1ff195d6e7e30601f10a61baccbcab02bca
     :git: https://github.com/open-voip-alliance/iOS-Phone-Integration-Lib.git
 
 SPEC CHECKSUMS:
