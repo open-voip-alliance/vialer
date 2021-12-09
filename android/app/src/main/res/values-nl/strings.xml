@@ -13,4 +13,6 @@
     <string name="notification_decline_action">Weigeren</string>
 
     <string name="notification_incoming_context_text">Gaat over…</string>
+
+    <string name="call_incoming_subtitle">Inkomend gesprek</string>
 </resources>

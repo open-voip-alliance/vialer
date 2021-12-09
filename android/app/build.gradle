@@ -56,7 +56,7 @@ apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
@@ -72,11 +72,20 @@ android {
         applicationId brand.appId
         resValue "string", "app_name", brand.appName
         minSdkVersion 26
-        targetSdkVersion 30
+        targetSdkVersion 31
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+
+    buildFeatures {
+        compose true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion '1.0.5'
+    }
+
 
     signingConfigs {
         release {
@@ -99,7 +108,15 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
+    }
+
+    buildFeatures {
+        viewBinding true
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
@@ -115,7 +132,14 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging:21.0.0'
     implementation "androidx.preference:preference-ktx:1.1.1"
     implementation 'com.github.LogentriesCommunity:le_android:4.1.0'
-    implementation("com.squareup.okhttp3:okhttp:4.9.1")
+    implementation 'com.squareup.okhttp3:okhttp:4.9.1'
+    implementation 'com.google.android.material:material:1.4.0'
+    implementation 'androidx.appcompat:appcompat:1.4.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
+    implementation 'androidx.activity:activity-compose:1.3.1'
+    implementation 'androidx.compose.material:material:1.0.5'
+    implementation 'androidx.compose.animation:animation:1.0.5'
+    implementation 'androidx.compose.ui:ui-tooling:1.0.5'
 }
 
 apply plugin: 'com.google.gms.google-services'

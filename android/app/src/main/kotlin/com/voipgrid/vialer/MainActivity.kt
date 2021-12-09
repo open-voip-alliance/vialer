@@ -1,9 +1,11 @@
 package com.voipgrid.vialer
 
+import android.content.Intent
 import android.os.Build
 import android.view.WindowManager
 import androidx.annotation.NonNull
 import com.voipgrid.vialer.Pigeon.ContactSort
+import com.voipgrid.vialer.logging.Logger
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
@@ -25,6 +27,11 @@ class MainActivity : FlutterActivity() {
         Pigeon.NativeLogging.setup(flutterEngine.dartExecutor.binaryMessenger, App.logger)
         Pigeon.ContactSortHostApi.setup(flutterEngine.dartExecutor.binaryMessenger
         ) { ContactSort().apply { orderBy = Pigeon.OrderBy.familyName } }
+
+        Pigeon.NativeIncomingCallScreen.setup(flutterEngine.dartExecutor.binaryMessenger) {
+                remotePartyHeading, remotePartySubheading ->
+            this.launchIncomingCallScreen(remotePartyHeading, remotePartySubheading)
+        }
     }
 
     private fun enableCallScreenBehavior() {
