@@ -9,9 +9,14 @@ class App : FlutterApplication() {
 
     override fun onCreate() {
         super.onCreate()
-        logger = Logger(this)
-        middleware = Middleware(this, logger)
-        startPhoneLib(MainActivity::class.java, IncomingCallActivity::class.java, middleware) { message, level ->
+        val sharedPrefs = FlutterSharedPreferences(this)
+        logger = Logger(this, sharedPrefs)
+        middleware = Middleware(this, logger, sharedPrefs)
+        startPhoneLib(
+            activityClass = MainActivity::class.java,
+            incomingCallActivityClass = IncomingCallActivity::class.java,
+            nativeMiddleware = middleware
+        ) { message, level ->
             logger.writeLog(message, level)
         }
     }

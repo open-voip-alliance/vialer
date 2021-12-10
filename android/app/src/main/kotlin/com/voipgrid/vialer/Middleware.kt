@@ -8,10 +8,13 @@ import okhttp3.*
 import org.openvoipalliance.flutterphonelib.NativeMiddleware
 import java.io.IOException
 
-class Middleware(private val context: Context, private val logger: Logger) : NativeMiddleware {
+class Middleware(
+    private val context: Context,
+    private val logger: Logger,
+    private val prefs: FlutterSharedPreferences,
+) : NativeMiddleware {
 
     private val client = OkHttpClient()
-    private val flutterSharedPreferences = FlutterSharedPreferences(context)
     private var lastRegisteredToken: String? = null
 
     override fun tokenReceived(token: String) {
@@ -21,7 +24,7 @@ class Middleware(private val context: Context, private val logger: Logger) : Nat
 
         lastRegisteredToken = token
 
-        if (flutterSharedPreferences.getBoolSetting("DndSetting")) {
+        if (prefs.getBoolSetting("DndSetting")) {
             logger.writeLog("Registration cancelled: do not disturb is enabled")
             return
         }
@@ -60,7 +63,7 @@ class Middleware(private val context: Context, private val logger: Logger) : Nat
             }
         )
 
-        flutterSharedPreferences.pushToken = token
+        prefs.pushToken = token
     }
 
     override fun respond(remoteMessage: RemoteMessage, available: Boolean) {
@@ -102,16 +105,17 @@ class Middleware(private val context: Context, private val logger: Logger) : Nat
         )
     }
 
-    override suspend fun inspect(remoteMessage: RemoteMessage) = remoteMessage.data["type"] == "call"
+    override suspend fun inspect(remoteMessage: RemoteMessage) =
+        remoteMessage.data["type"] == "call"
 
     private fun createMiddlewareRequest(email: String, token: String, url: String = REGISTER_URL) =
         Request.Builder().url(url).addHeader("Authorization", "Token $email:$token")
 
     private val middlewareCredentials
         get() = MiddlewareCredentials(
-                sipUserId = flutterSharedPreferences.voipConfig.getString("appaccount_account_id"),
-                email = flutterSharedPreferences.systemUser.getString("email"),
-                loginToken = flutterSharedPreferences.systemUser.getString("token")
+            sipUserId = prefs.voipConfig.getString("appaccount_account_id"),
+            email = prefs.systemUser!!.getString("email"),
+            loginToken = prefs.systemUser!!.getString("token")
         )
 
     companion object {
