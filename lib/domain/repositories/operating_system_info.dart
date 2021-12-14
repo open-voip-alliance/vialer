@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:device_info/device_info.dart';
+
 import '../entities/operating_system_info.dart';
 
 class OperatingSystemInfoRepository {

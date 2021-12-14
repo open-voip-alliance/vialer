@@ -1,7 +1,7 @@
 import 'package:contacts_service/contacts_service.dart' hide Contact;
 import 'package:dartx/dartx.dart';
-import '../entities/contact.dart';
 
+import '../entities/contact.dart';
 import 'mappers/contact.dart';
 
 class ContactRepository {

@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_phone_lib/audio/audio_route.dart';
 import 'package:flutter_phone_lib/audio/bluetooth_audio_route.dart';
 import 'package:flutter_phone_lib/call_session_state.dart';
 import 'package:flutter_phone_lib/flutter_phone_lib.dart';
@@ -385,7 +384,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
     // In the event of any other type of CallSessionEvent we just want to update
     // the UI with the latest information from the PIL, we do not want to
     // change the state.
-    else if (event is CallSessionEvent) {
+    else {
       // It's possible we're not in a CallProcessState yet, because we missed an
       // event, if that's the case we'll emit the state necessary to get there.
       if (state is! CallProcessState && callSessionState.activeCall != null) {

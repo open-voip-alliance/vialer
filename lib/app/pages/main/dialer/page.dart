@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:provider/provider.dart';
 
 import '../../../resources/localizations.dart';
 import '../../../resources/theme.dart';
@@ -12,7 +11,6 @@ import '../../../util/conditional_capitalization.dart';
 import '../../../util/widgets_binding_observer_registrar.dart';
 import '../../../widgets/stylized_button.dart';
 import '../widgets/caller.dart';
-import '../widgets/caller/state.dart';
 import '../widgets/conditional_placeholder.dart';
 import '../widgets/connectivity_alert.dart';
 import '../widgets/t9_dial_pad.dart';

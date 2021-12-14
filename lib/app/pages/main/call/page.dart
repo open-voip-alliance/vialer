@@ -1,12 +1,9 @@
 import 'dart:async';
 import 'dart:math';
-import 'dart:ui';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_phone_lib/call/call_state.dart';
-import 'package:provider/provider.dart';
 
 import '../../../../domain/entities/call_problem.dart';
 import '../../../resources/localizations.dart';

@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+
 import '../resources/theme.dart';
 
 extension ConditionalCapitalization on String {
