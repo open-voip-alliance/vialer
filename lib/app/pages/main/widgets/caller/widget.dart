@@ -81,13 +81,13 @@ class _CallerState extends State<Caller>
     }
 
     await _navigatorState.push(
-        MaterialPageRoute(
-          settings: const RouteSettings(
-            name: _ringingRouteName,
-          ),
-          builder: (_) => const IncomingCallPage(),
+      MaterialPageRoute(
+        settings: const RouteSettings(
+          name: _ringingRouteName,
         ),
-      );
+        builder: (_) => const IncomingCallPage(),
+      ),
+    );
   }
 
   // NOTE: Only called when the state type changes, not when the same state
