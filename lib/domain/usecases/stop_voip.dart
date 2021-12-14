@@ -14,7 +14,7 @@ class StopVoipUseCase extends UseCase {
   Future<void> call() async {
     if (await _isVoipAllowed() &&
         (await _getVoipConfig(latest: false)).isNotEmpty) {
-      await _voipRepository.stop();
+      await _voipRepository.close();
       await _unregisterToMiddleware();
     }
   }
