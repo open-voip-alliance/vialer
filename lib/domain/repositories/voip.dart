@@ -46,12 +46,17 @@ class VoipRepository with Loggable {
     return Future.sync(() => __phoneLib!);
   }
 
-  final _hasStartedCompleter = Completer<bool>();
+  var _hasStartedCompleter = Completer<bool>();
 
   Future<bool> get hasStarted => _hasStartedCompleter.future;
 
   final _getEncryptedSipUrl = GetEncryptedSipUrlUseCase();
   final _getUnencryptedSipUrl = GetUnencryptedSipUrlUseCase();
+
+  // We pass through events so app level subscribers don't have to resubscribe
+  // if we stop and start the PhoneLib.
+  final _eventsController = StreamController<Event>.broadcast();
+  StreamSubscription? _eventsSubscription;
 
   // Start-up values.
   NonEmptyVoipConfig? _startUpConfig;
@@ -158,6 +163,10 @@ class VoipRepository with Loggable {
 
     if (!await start()) return;
 
+    _eventsSubscription = __phoneLib!.events.listen(
+        _eventsController.add
+    );
+
     _hasStartedCompleter.complete(true);
     logger.info('PhoneLib started');
 
@@ -187,8 +196,13 @@ class VoipRepository with Loggable {
   // the getter `_phoneLib`, because if for some reason the phone lib was not
   // initialized, we don't want to do that now (which will happen if _phoneLib
   // is accessed and it wasn't initialized). So we refer to the backing field
-  // and stop it if it's initialized, otherwise we do nothing.
-  Future<void> stop() async => __phoneLib?.stop();
+  // and close it if it's initialized, otherwise we do nothing.
+  Future<void> close() async {
+    await _eventsSubscription?.cancel();
+    await __phoneLib?.close();
+    __phoneLib = null;
+    _hasStartedCompleter = Completer<bool>();
+  }
 
   Future<void> call(String number) async =>
       (await _phoneLib).call(number.normalize());
@@ -208,11 +222,7 @@ class VoipRepository with Loggable {
   Future<void> sendDtmf(String dtmf) async =>
       (await _phoneLib).actions.sendDtmf(dtmf);
 
-  Stream<Event> get events async* {
-    final phoneLib = await _phoneLib;
-
-    yield* phoneLib.events;
-  }
+  Stream<Event> get events => _eventsController.stream;
 
   Future<void> register(NonEmptyVoipConfig voipConfig) =>
       _Middleware().register(voipConfig);

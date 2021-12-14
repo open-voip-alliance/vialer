@@ -20,7 +20,11 @@ class EnableConsoleLoggingUseCase extends UseCase {
 
     await _loggingRepository.enableConsoleLogging(
       userIdentifier: user?.loggingIdentifier ?? '',
-      onLog: _storageRepository.appendLogs,
+      onLog: (log) async {
+        if (await _getUser(latest: false) != null) {
+          _storageRepository.appendLogs(log);
+        }
+      },
     );
   }
 }
