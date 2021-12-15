@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:android_intent/android_intent.dart';
 import 'package:flutter/services.dart';
 import 'package:libphonenumber/libphonenumber.dart';
-
 import 'package:url_launcher/url_launcher.dart';
 
 import '../entities/exceptions/call_through.dart';

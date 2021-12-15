@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+
 import '../../../../../../domain/entities/country.dart';
 
 abstract class CountryFieldState extends Equatable {

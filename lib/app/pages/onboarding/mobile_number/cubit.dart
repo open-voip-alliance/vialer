@@ -1,8 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../../../domain/usecases/change_mobile_number.dart';
 import '../../../../domain/usecases/get_mobile_number.dart';
-
 import 'state.dart';
+
 export 'state.dart';
 
 class MobileNumberCubit extends Cubit<MobileNumberState> {

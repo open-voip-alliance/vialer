@@ -266,9 +266,9 @@ custom: # Custom properties to make workflows cleaner
     max_build_duration: 60
     instance_type: mac_pro
     environment: &config_environment
-      flutter: 2.5.3
+      flutter: 2.8.0
       xcode: latest
-      cocoapods: 1.10.2
+      cocoapods: 1.11.2
   brand_config: # Specific configuration that should be applied to a workflow when building for this brand
     voys_env_vars: &brand_config_voys_env_vars
       BRAND: voys

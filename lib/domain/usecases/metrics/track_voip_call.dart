@@ -7,26 +7,29 @@ import '../../repositories/connectivity.dart';
 import '../../repositories/metrics.dart';
 import '../../use_case.dart';
 
-class TrackCallUseCase extends UseCase {
+class TrackVoipCallUseCase extends UseCase {
   final _metricsRepository = dependencyLocator<MetricsRepository>();
   final _connectivityRepository = dependencyLocator<ConnectivityRepository>();
 
   Future<void> call({
-    required String via,
-    required bool voip,
     required CallDirection direction,
     required Set<AudioRoute> usedRoutes,
+    String? reason,
   }) async {
     final connectivityType = await _connectivityRepository.currentType;
 
-    _metricsRepository.track('call', {
-      'via': via,
-      'voip': voip,
-      'direction': direction == CallDirection.inbound ? 'inbound' : 'outbound',
+    _metricsRepository.track('voip-call', {
+      'direction': direction.toTrackString(),
       'bluetooth-used': usedRoutes.contains(AudioRoute.bluetooth),
       'phone-used': usedRoutes.contains(AudioRoute.phone),
       'speaker-used': usedRoutes.contains(AudioRoute.speaker),
       'connection': connectivityType.toString(),
+      'reason': reason,
     });
   }
+}
+
+extension CallDirectionForMetrics on CallDirection {
+  String toTrackString() =>
+      this == CallDirection.inbound ? 'inbound' : 'outbound';
 }

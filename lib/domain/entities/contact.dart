@@ -1,7 +1,6 @@
 import 'dart:typed_data';
 
 import '../../app/util/contact.dart';
-
 import 'item.dart';
 
 class Contact {

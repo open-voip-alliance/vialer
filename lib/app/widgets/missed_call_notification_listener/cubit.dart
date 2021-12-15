@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../domain/usecases/get_missed_call_notification_pressed_stream.dart';
-
 import 'state.dart';
 
 export 'state.dart';

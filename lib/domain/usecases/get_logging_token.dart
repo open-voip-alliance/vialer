@@ -3,7 +3,6 @@ import 'dart:io';
 
 import '../../dependency_locator.dart';
 import '../repositories/env.dart';
-
 import '../use_case.dart';
 
 // TODO: Implementation detail, shouldn't be here
