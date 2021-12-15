@@ -12,10 +12,29 @@ class Middleware(
     private val context: Context,
     private val logger: Logger,
     private val prefs: FlutterSharedPreferences,
+    private val segment: Segment,
 ) : NativeMiddleware {
 
     private val client = OkHttpClient()
+
+    /**
+     * Used to reduce the number of requests made to the middleware, we'll only re-register if the
+     * token actually changes.
+     */
     private var lastRegisteredToken: String? = null
+
+    /**
+     * Store the information from the push message that was received so we can submit this at the
+     * end of the call to provide better metrics regarding our reliability.
+     */
+    var currentCallInfo: CurrentCallInfo? = null
+
+    /**
+     * We want to make sure to not process multiple push notifications for the same call (as the
+     * middleware will send up to 8). So we'll track the call we are currently handling and make
+     * sure to ignore any with the same id in the future.
+     */
+    private var callIdBeingHandled: String? = null
 
     override fun tokenReceived(token: String) {
         if (lastRegisteredToken == token) {
@@ -68,8 +87,8 @@ class Middleware(
 
     override fun respond(remoteMessage: RemoteMessage, available: Boolean) {
         val middlewareCredentials = middlewareCredentials
-        val callId = remoteMessage.data["unique_key"]!!
-        val callStartTime = remoteMessage.data["message_start_time"]!!
+        val callId = remoteMessage.callId!!
+        val callStartTime = remoteMessage.messageStartTime!!
 
         logger.writeLog("Middleware Respond: Attempting for call=$callId, available=$available")
 
@@ -103,10 +122,45 @@ class Middleware(
                 }
             }
         )
+
+        // If we are responding as available, we are going to store this data to submit at the
+        // end of the call. We don't want to update this when available=false because this would
+        // overwrite the data if we have an ongoing call.
+        if (available) {
+            currentCallInfo = remoteMessage.toCurrentCallInfo()
+        }
     }
 
-    override suspend fun inspect(remoteMessage: RemoteMessage) =
-        remoteMessage.data["type"] == "call"
+    override fun inspect(remoteMessage: RemoteMessage): Boolean {
+        if (!remoteMessage.isCall) return false
+
+        if (isCallAlreadyBeingHandled(remoteMessage)) {
+            logger.writeLog("Ignoring push message as we are already handling it: ${remoteMessage.callId}")
+            return false
+        }
+
+        return true.also {
+            segment.track("notification_received", mapOf(
+                "call_id" to remoteMessage.callId,
+                "correlation_id" to remoteMessage.correlationId,
+            ))
+        }
+    }
+
+    /**
+     * Check to see if a call is being handled currently, if we are handling the call already
+     * we do not want to process future push notifications.
+     *
+     * The id being tracked will also be updated here.
+     */
+    private fun isCallAlreadyBeingHandled(remoteMessage: RemoteMessage) = when {
+        callIdBeingHandled != null && remoteMessage.callId == callIdBeingHandled -> true
+        else -> {
+            logger.writeLog("Handling inbound call: ${remoteMessage.callId}")
+            callIdBeingHandled = remoteMessage.callId
+            false
+        }
+    }
 
     private fun createMiddlewareRequest(email: String, token: String, url: String = REGISTER_URL) =
         Request.Builder().url(url).addHeader("Authorization", "Token $email:$token")
@@ -129,4 +183,28 @@ class Middleware(
         val loginToken: String,
         val sipUserId: String
     )
+
+    data class CurrentCallInfo(
+        val callId: String,
+        val correlationId: String,
+        val pushReceivedTime: String,
+    )
 }
+
+private val RemoteMessage.callId
+    get() = data["unique_key"]
+
+private val RemoteMessage.correlationId
+    get() = data["vg_cid"]
+
+private val RemoteMessage.messageStartTime
+    get() = data["message_start_time"]
+
+private val RemoteMessage.isCall
+    get() = data["type"] == "call"
+
+private fun RemoteMessage.toCurrentCallInfo() = Middleware.CurrentCallInfo(
+    callId ?: "",
+    correlationId ?: "",
+    System.currentTimeMillis().toString()
+)

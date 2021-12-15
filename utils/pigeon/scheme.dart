@@ -42,3 +42,9 @@ abstract class NativeIncomingCallScreen {
     String remotePartySubheading,
   );
 }
+
+@HostApi()
+// ignore:one_member_abstracts
+abstract class NativeMetrics {
+  void initialize(String key);
+}
