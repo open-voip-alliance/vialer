@@ -1,0 +1,4 @@
+- The prompt to rate a call will no-longer appear after every call.
+- Fixed an issue that would sometimes cause the ongoing call screen not to appear while a call is in progress.
+- Fixed an issue that would sometimes prevent calls from being started.
+- Android: The incoming call screen has been updated and should now appear more consistently while the phone is locked.
