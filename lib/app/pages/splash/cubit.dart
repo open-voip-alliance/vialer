@@ -1,8 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../domain/usecases/get_is_authenticated.dart';
-
 import 'state.dart';
+
 export 'state.dart';
 
 class SplashCubit extends Cubit<SplashState> {

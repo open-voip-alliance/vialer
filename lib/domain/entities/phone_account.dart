@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
-import '../../app/util/json_converter.dart';
 
+import '../../app/util/json_converter.dart';
 import 'destination.dart';
 
 part 'phone_account.g.dart';

@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_phone_lib/audio/audio_route.dart';
 import 'package:flutter_phone_lib/audio/bluetooth_audio_route.dart';
 import 'package:flutter_phone_lib/call_session_state.dart';
 import 'package:flutter_phone_lib/flutter_phone_lib.dart';
@@ -38,8 +37,9 @@ import '../../../../../domain/usecases/get_permission_status.dart';
 import '../../../../../domain/usecases/get_setting.dart';
 import '../../../../../domain/usecases/get_voip_call_event_stream.dart';
 import '../../../../../domain/usecases/increment_call_through_calls_count.dart';
-import '../../../../../domain/usecases/metrics/track_call.dart';
-import '../../../../../domain/usecases/metrics/track_push_followed_by_call.dart';
+import '../../../../../domain/usecases/metrics/track_call_initiated.dart';
+import '../../../../../domain/usecases/metrics/track_call_through_call.dart';
+import '../../../../../domain/usecases/metrics/track_voip_call.dart';
 import '../../../../../domain/usecases/onboarding/request_permission.dart';
 import '../../../../../domain/usecases/open_settings.dart';
 import '../../../../../domain/usecases/send_voip_dtmf.dart';
@@ -61,7 +61,9 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
 
   final _call = CallUseCase();
   final _getCallThroughCallsCount = GetCallThroughCallsCountUseCase();
-  final _trackCall = TrackCallUseCase();
+  final _trackVoipCall = TrackVoipCallUseCase();
+  final _trackCallThroughCall = TrackCallThroughCallUseCase();
+  final _trackVoipCallStarted = TrackVoipCallStartedUseCase();
 
   final _incrementCallThroughCallsCount =
       IncrementCallThroughCallsCountUseCase();
@@ -86,7 +88,6 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
   final _routeAudioToBluetoothDevice = RouteAudioToBluetoothDeviceUseCase();
   final _beginTransfer = BeginTransferUseCase();
   final _mergeTransfer = MergeTransferUseCase();
-  final _trackPushFollowedByCall = TrackPushFollowedByCallUseCase();
 
   Timer? _callThroughTimer;
 
@@ -134,10 +135,8 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
         if (activeCall.state == CallState.initializing) {
           emit(Ringing(voip: voip));
         } else {
-          _trackCall(
+          _trackVoipCallStarted(
             via: CallOrigin.incoming.toTrackString(),
-            voip: true,
-            usedRoutes: _preservedCallSessionState.usedAudioRoutes,
             direction: CallDirection.inbound,
           );
 
@@ -229,11 +228,9 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
       );
     } else {
       try {
-        _trackCall(
+        _trackCallThroughCall(
           via: origin.toTrackString(),
-          voip: false,
           direction: CallDirection.outbound,
-          usedRoutes: _preservedCallSessionState.usedAudioRoutes,
         );
 
         emit(InitiatingCall(origin: origin));
@@ -289,11 +286,9 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
 
     logger.info('Starting VoIP call');
     try {
-      _trackCall(
+      _trackVoipCallStarted(
         via: origin.toTrackString(),
-        voip: true,
         direction: CallDirection.outbound,
-        usedRoutes: _preservedCallSessionState.usedAudioRoutes,
       );
 
       await _call(destination: destination, useVoip: true);
@@ -331,13 +326,10 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
     // We will immediately handle any setup call events to make sure these are
     // always emitted.
     if (event is IncomingCallReceived) {
-      _trackCall(
+      _trackVoipCallStarted(
         via: CallOrigin.incoming.toTrackString(),
-        voip: true,
         direction: CallDirection.inbound,
-        usedRoutes: _preservedCallSessionState.usedAudioRoutes,
       );
-      _trackPushFollowedByCall();
 
       emit(Ringing(voip: callSessionState));
 
@@ -380,12 +372,21 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
         emit(const CanCall());
       }
 
+      _trackVoipCall(
+        direction:
+            callSessionState.activeCall?.direction == CallDirection.inbound
+                ? CallDirection.inbound
+                : CallDirection.outbound,
+        usedRoutes: _preservedCallSessionState.usedAudioRoutes,
+        reason: callSessionState.activeCall?.reason,
+      );
+
       logger.info('VoIP call ended');
     }
     // In the event of any other type of CallSessionEvent we just want to update
     // the UI with the latest information from the PIL, we do not want to
     // change the state.
-    else if (event is CallSessionEvent) {
+    else {
       // It's possible we're not in a CallProcessState yet, because we missed an
       // event, if that's the case we'll emit the state necessary to get there.
       if (state is! CallProcessState && callSessionState.activeCall != null) {

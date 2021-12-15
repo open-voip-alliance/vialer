@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 import '../../../../../domain/entities/call_problem.dart';
 import '../../../../resources/localizations.dart';

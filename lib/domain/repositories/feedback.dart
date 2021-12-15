@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:device_info/device_info.dart';
 import 'package:package_info/package_info.dart';
-import '../entities/system_user.dart';
 
+import '../entities/system_user.dart';
 import 'services/feedback.dart';
 
 class FeedbackRepository {

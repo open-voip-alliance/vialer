@@ -10,8 +10,8 @@ import '../../../../domain/usecases/get_contacts.dart';
 import '../../../../domain/usecases/get_permission_status.dart';
 import '../../../../domain/usecases/onboarding/request_permission.dart';
 import '../../../../domain/usecases/open_settings.dart';
-
 import 'state.dart';
+
 export 'state.dart';
 
 class ContactsCubit extends Cubit<ContactsState> {

@@ -4,6 +4,7 @@ import '../../../../domain/entities/exceptions/need_to_change_password.dart';
 import '../../../../domain/entities/exceptions/two_factor_authentication_required.dart';
 import '../../../../domain/entities/login_credentials.dart';
 import '../../../../domain/entities/onboarding/step.dart';
+import '../../../../domain/usecases/enable_remote_logging_if_needed.dart';
 import '../../../../domain/usecases/onboarding/login.dart';
 import '../../../util/loggable.dart';
 import '../../../util/password.dart' as util;
@@ -15,9 +16,12 @@ export 'state.dart';
 class LoginCubit extends Cubit<LoginState> with Loggable {
   final OnboardingCubit _onboarding;
 
+  final _enableRemoteLoggingIfNeeded = EnableRemoteLoggingIfNeededUseCase();
   final _login = LoginUseCase();
 
-  LoginCubit(this._onboarding) : super(const NotLoggedIn());
+  LoginCubit(this._onboarding) : super(const NotLoggedIn()) {
+    _enableRemoteLoggingIfNeeded();
+  }
 
   Future<void> login(String email, String password) async {
     logger.info('Logging in');
@@ -67,6 +71,11 @@ class LoginCubit extends Cubit<LoginState> with Loggable {
 
     if (loginSuccessful) {
       await _onboarding.addStepsBasedOnUserType();
+
+      // We call this again so we're now logging with the user ID, if
+      // remote logging was still enabled from a previous session.
+      // We await so all future logs are consistently associated with the ID.
+      await _enableRemoteLoggingIfNeeded();
 
       emit(const LoggedIn());
 

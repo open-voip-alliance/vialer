@@ -32,6 +32,10 @@ class MainActivity : FlutterActivity() {
                 remotePartyHeading, remotePartySubheading ->
             this.launchIncomingCallScreen(remotePartyHeading, remotePartySubheading)
         }
+
+        Pigeon.NativeMetrics.setup(flutterEngine.dartExecutor.binaryMessenger) {
+            metricsKey -> App.segment.initialize(metricsKey)
+        }
     }
 
     private fun enableCallScreenBehavior() {

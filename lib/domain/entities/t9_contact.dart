@@ -3,7 +3,6 @@ import 'dart:typed_data';
 import 'package:equatable/equatable.dart';
 
 import 'contact.dart';
-
 import 'item.dart';
 
 class T9Contact extends Contact with EquatableMixin {

@@ -3,10 +3,11 @@ publish_to: none
 description: >-
   Mobile app that serves as both a VoIP client
   and a management tool for accounts on the VoIPGRID platform.
+version: 7.0.0
 
 environment:
-  sdk: ">=2.14.0 <3.0.0"
-  flutter: 2.5.3
+  sdk: ">=2.15.0 <3.0.0"
+  flutter: 2.8.0
 
 dependencies:
   flutter:
@@ -24,7 +25,7 @@ dependencies:
   equatable: ^2.0.0
   chopper: ^4.0.0-nullsafety.0
   shared_preferences: ^2.0.5
-  flutter_svg: ^0.22.0
+  flutter_svg: ^1.0.0
   android_intent: ^2.0.0
   permission_handler: ^8.1.6
   url_launcher: ^6.0.3
@@ -39,21 +40,20 @@ dependencies:
   flutter_segment: ^3.5.0
   device_info: ^2.0.0
   package_info: ^2.0.0
-  moor: ^4.2.1
-  sqlite3_flutter_libs: ^0.4.1
+  sqlite3_flutter_libs: ^0.5.2
   path_provider: ^2.0.1
   path: ^1.6.4
   timezone: ^0.8.0
   logging: ^1.0.0
   libphonenumber: ^2.0.0
   get_it: ^7.0.0
-  dartx: ^0.7.1
-  connectivity_plus: ^1.0.2
-  webview_flutter: ^2.0.4
-  json_annotation: ^4.0.1
+  dartx: ^1.0.0
+  connectivity_plus: ^2.1.0
+  webview_flutter: ^3.0.0
+  json_annotation: ^4.4.0
   flutter_rating_bar: ^4.0.0
   flutter_libphonenumber: ^1.0.3
-  styled_text: ^3.0.2
+  styled_text: ^4.0.0+1
   flutter_switch: ^0.3.2
 
   # This exists temporarily to import credentials from the legacy app and can be totally removed
@@ -68,8 +68,7 @@ dev_dependencies:
   effective_dart: ^1.2.0
   build_runner: ^2.1.2
   chopper_generator: ^4.0.0-nullsafety.1
-  moor_generator: ^4.2.1
-  json_serializable: ^4.1.0
+  json_serializable: ^6.1.1
   flutter_launcher_icons: ^0.9.0
   pigeon: ^1.0.7
 

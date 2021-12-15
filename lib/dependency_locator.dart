@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:get_it/get_it.dart';
-import 'app/util/debug.dart';
 
+import 'app/util/debug.dart';
 import 'domain/events/event_bus.dart';
 import 'domain/repositories/auth.dart';
 import 'domain/repositories/brand.dart';

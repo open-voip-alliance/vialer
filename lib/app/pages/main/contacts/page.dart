@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:characters/characters.dart';
 import 'package:dartx/dartx.dart';
 import 'package:diacritic/diacritic.dart';
 import 'package:flutter/material.dart';
@@ -216,8 +215,7 @@ class _Placeholder extends StatelessWidget {
     final appName = context.brand.appName;
 
     return ConditionalPlaceholder(
-      showPlaceholder: state is! ContactsLoaded ||
-          (state is ContactsLoaded && state.contacts.isEmpty),
+      showPlaceholder: state is! ContactsLoaded || state.contacts.isEmpty,
       placeholder: SingleChildScrollView(
         child: state is NoPermission
             ? Warning(

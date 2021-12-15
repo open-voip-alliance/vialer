@@ -46,6 +46,12 @@ class LoggingRepository {
 
   StreamSubscription? _remoteLogSubscription;
 
+  bool get isLoggingToRemote => _remoteLogSubscription != null;
+
+  bool _isNativelyLoggingToRemote = false;
+
+  bool get isNativelyLoggingToRemote => _isNativelyLoggingToRemote;
+
   final _nativeRemoteLogging = NativeLogging();
 
   String _logStringOf(
@@ -131,20 +137,24 @@ class LoggingRepository {
   Future<void> enableNativeRemoteLogging({
     required String userIdentifier,
     required String token,
-  }) async =>
-      _nativeRemoteLogging.startNativeRemoteLogging(
-        token,
-        userIdentifier,
-        _anonymizationRules,
-      );
+  }) async {
+    await _nativeRemoteLogging.startNativeRemoteLogging(
+      token,
+      userIdentifier,
+      _anonymizationRules,
+    );
+    _isNativelyLoggingToRemote = true;
+  }
 
-  Future<void> disableNativeRemoteLogging() async =>
-      _nativeRemoteLogging.stopNativeRemoteLogging();
+  Future<void> disableNativeRemoteLogging() async {
+    await _nativeRemoteLogging.stopNativeRemoteLogging();
+    _isNativelyLoggingToRemote = false;
+  }
 
-  Future<void> enableNativeConsoleLogging() async =>
+  Future<void> enableNativeConsoleLogging() =>
       _nativeRemoteLogging.startNativeConsoleLogging();
 
-  Future<void> disableNativeConsoleLogging() async =>
+  Future<void> disableNativeConsoleLogging() =>
       _nativeRemoteLogging.stopNativeConsoleLogging();
 }
 

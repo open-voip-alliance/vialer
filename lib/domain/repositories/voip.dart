@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:flutter_phone_lib/audio/audio_route.dart';
-import 'package:flutter_phone_lib/audio/audio_state.dart';
 import 'package:flutter_phone_lib/audio/bluetooth_audio_route.dart';
 import 'package:flutter_phone_lib/call_session_state.dart';
 import 'package:flutter_phone_lib/flutter_phone_lib.dart';
@@ -21,7 +19,6 @@ import '../usecases/get_encrypted_sip_url.dart';
 import '../usecases/get_setting.dart';
 import '../usecases/get_unencrypted_sip_url.dart';
 import '../usecases/get_user.dart';
-import '../usecases/metrics/track_push_followed_by_call.dart';
 import 'env.dart';
 import 'operating_system_info.dart';
 import 'services/middleware.dart';
@@ -46,12 +43,17 @@ class VoipRepository with Loggable {
     return Future.sync(() => __phoneLib!);
   }
 
-  final _hasStartedCompleter = Completer<bool>();
+  var _hasStartedCompleter = Completer<bool>();
 
   Future<bool> get hasStarted => _hasStartedCompleter.future;
 
   final _getEncryptedSipUrl = GetEncryptedSipUrlUseCase();
   final _getUnencryptedSipUrl = GetUnencryptedSipUrlUseCase();
+
+  // We pass through events so app level subscribers don't have to resubscribe
+  // if we stop and start the PhoneLib.
+  final _eventsController = StreamController<Event>.broadcast();
+  StreamSubscription? _eventsSubscription;
 
   // Start-up values.
   NonEmptyVoipConfig? _startUpConfig;
@@ -158,6 +160,10 @@ class VoipRepository with Loggable {
 
     if (!await start()) return;
 
+    _eventsSubscription = __phoneLib!.events.listen(
+        _eventsController.add
+    );
+
     _hasStartedCompleter.complete(true);
     logger.info('PhoneLib started');
 
@@ -187,8 +193,13 @@ class VoipRepository with Loggable {
   // the getter `_phoneLib`, because if for some reason the phone lib was not
   // initialized, we don't want to do that now (which will happen if _phoneLib
   // is accessed and it wasn't initialized). So we refer to the backing field
-  // and stop it if it's initialized, otherwise we do nothing.
-  Future<void> stop() async => __phoneLib?.stop();
+  // and close it if it's initialized, otherwise we do nothing.
+  Future<void> close() async {
+    await _eventsSubscription?.cancel();
+    await __phoneLib?.close();
+    __phoneLib = null;
+    _hasStartedCompleter = Completer<bool>();
+  }
 
   Future<void> call(String number) async =>
       (await _phoneLib).call(number.normalize());
@@ -208,11 +219,7 @@ class VoipRepository with Loggable {
   Future<void> sendDtmf(String dtmf) async =>
       (await _phoneLib).actions.sendDtmf(dtmf);
 
-  Stream<Event> get events async* {
-    final phoneLib = await _phoneLib;
-
-    yield* phoneLib.events;
-  }
+  Stream<Event> get events => _eventsController.stream;
 
   Future<void> register(NonEmptyVoipConfig voipConfig) =>
       _Middleware().register(voipConfig);
@@ -259,7 +266,6 @@ class _Middleware with Loggable {
   final _getUser = GetUserUseCase();
   final _getBuildInfo = GetBuildInfoUseCase();
   final _getDndSetting = GetSettingUseCase<DndSetting>();
-  final _trackPushFollowedByCall = TrackPushFollowedByCallUseCase();
   final _getVoipConfig = GetNonEmptyVoipConfigUseCase();
 
   final _storageRepository = dependencyLocator<StorageRepository>();
@@ -406,7 +412,6 @@ class _Middleware with Loggable {
     );
 
     if (response.isSuccessful) {
-      _trackPushFollowedByCall();
       logger.info('Responded to middleware');
     } else {
       logger.warning(
