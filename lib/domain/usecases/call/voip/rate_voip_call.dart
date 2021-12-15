@@ -2,13 +2,13 @@ import 'dart:core';
 
 import 'package:flutter_phone_lib/audio/audio_route.dart';
 import 'package:flutter_phone_lib/call/call.dart';
-import 'package:flutter_phone_lib/call/call_direction.dart';
 
 import '../../../../dependency_locator.dart';
 import '../../../entities/call_problem.dart';
 import '../../../repositories/connectivity.dart';
 import '../../../repositories/metrics.dart';
 import '../../../use_case.dart';
+import '../../metrics/track_voip_call.dart';
 
 class RateVoipCallUseCase extends UseCase {
   final _metricsRepository = dependencyLocator<MetricsRepository>();
@@ -27,8 +27,7 @@ class RateVoipCallUseCase extends UseCase {
       'rating': feedback.rating,
       'mos': mos,
       'duration': call.duration,
-      'direction':
-          call.direction == CallDirection.inbound ? 'inbound' : 'outbound',
+      'direction': call.direction.toTrackString(),
       'bluetooth-used': usedRoutes.contains(AudioRoute.bluetooth),
       'phone-used': usedRoutes.contains(AudioRoute.phone),
       'speaker-used': usedRoutes.contains(AudioRoute.speaker),

@@ -19,7 +19,6 @@ import '../usecases/get_encrypted_sip_url.dart';
 import '../usecases/get_setting.dart';
 import '../usecases/get_unencrypted_sip_url.dart';
 import '../usecases/get_user.dart';
-import '../usecases/metrics/track_push_followed_by_call.dart';
 import 'env.dart';
 import 'operating_system_info.dart';
 import 'services/middleware.dart';
@@ -267,7 +266,6 @@ class _Middleware with Loggable {
   final _getUser = GetUserUseCase();
   final _getBuildInfo = GetBuildInfoUseCase();
   final _getDndSetting = GetSettingUseCase<DndSetting>();
-  final _trackPushFollowedByCall = TrackPushFollowedByCallUseCase();
   final _getVoipConfig = GetNonEmptyVoipConfigUseCase();
 
   final _storageRepository = dependencyLocator<StorageRepository>();
@@ -414,7 +412,6 @@ class _Middleware with Loggable {
     );
 
     if (response.isSuccessful) {
-      _trackPushFollowedByCall();
       logger.info('Responded to middleware');
     } else {
       logger.warning(
