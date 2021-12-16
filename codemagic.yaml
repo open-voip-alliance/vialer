@@ -22,7 +22,7 @@ custom: # Custom properties to make workflows cleaner
         echo $sentry_version > SENTRY_VERSION
         # Fix CFBundleVersion for iOS
         version_tag=$(echo $version_tag | cut -f1 -d "-")
-        sed -i -e "s/<string>\$(FLUTTER_BUILD_NAME)<\/string>/<string>${version_tag}<\/string>/g" ios/Runner/Info.plist
+        sed -i -e "s/<string>\$(FLUTTER_BUILD_NAME)<\/string>/<string>${version_tag}<\/string>/g" ios/Runner/Info-Release.plist
     - &set_version_string_for_merge_request
       name: Updating versioning information based on the merge request
       script: |
@@ -41,7 +41,7 @@ custom: # Custom properties to make workflows cleaner
         echo $sentry_version > SENTRY_VERSION
         # Fix CFBundleVersion for iOS
         version_tag=$(echo $version_tag | cut -f1 -d "-")
-        sed -i -e "s/<string>\$(FLUTTER_BUILD_NAME)<\/string>/<string>${version_tag}<\/string>/g" ios/Runner/Info.plist
+        sed -i -e "s/<string>\$(FLUTTER_BUILD_NAME)<\/string>/<string>${version_tag}<\/string>/g" ios/Runner/Info-Release.plist
     - &set_version_string_to_most_recent_tag
       name: Updating versioning information using the most recent tag
       script: |
@@ -59,7 +59,7 @@ custom: # Custom properties to make workflows cleaner
         echo $sentry_version > SENTRY_VERSION
         # Fix CFBundleVersion for iOS
         version_tag=$(echo $version_tag | cut -f1 -d "-")
-        sed -i -e "s/<string>\$(FLUTTER_BUILD_NAME)<\/string>/<string>${version_tag}<\/string>/g" ios/Runner/Info.plist
+        sed -i -e "s/<string>\$(FLUTTER_BUILD_NAME)<\/string>/<string>${version_tag}<\/string>/g" ios/Runner/Info-Release.plist
     - &set_up_env_file
       name: Configuring .env file with diagnostics keys
       script: |
