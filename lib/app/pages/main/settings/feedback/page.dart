@@ -102,7 +102,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                             onPressed: state is FeedbackNotSent
                                 ? () =>
                                     context.read<FeedbackCubit>().sendFeedback(
-                                          title: 'Beta Feedback',
+                                          title: 'Feedback',
                                           text: _textController.text,
                                         )
                                 : null,
@@ -156,7 +156,7 @@ class _FeedbackFormHeader extends StatelessWidget {
             ),
             Flexible(
               child: Text(
-                context.msg.main.settings.feedback.header(
+                context.msg.main.settings.feedback.callout(
                   context.brand.appName,
                 ),
               ),
