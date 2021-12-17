@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../../../util/brand.dart';
+import '../../../../resources/theme.dart';
 
 class KeyInput extends StatelessWidget {
   final TextEditingController controller;
@@ -20,7 +20,7 @@ class KeyInput extends StatelessWidget {
       decoration: InputDecoration(
         border: InputBorder.none,
         filled: true,
-        fillColor: context.brand.theme.grey3.withOpacity(0.5),
+        fillColor: context.brand.theme.colors.grey3.withOpacity(0.5),
       ),
       textAlign: TextAlign.center,
       style: const TextStyle(

@@ -5,7 +5,6 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../resources/localizations.dart';
 import '../../../resources/theme.dart';
-import '../../../util/brand.dart';
 import '../../../util/conditional_capitalization.dart';
 import '../../../util/widgets_binding_observer_registrar.dart';
 import '../../../widgets/connectivity_checker.dart';

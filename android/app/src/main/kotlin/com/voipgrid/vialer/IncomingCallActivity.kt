@@ -288,7 +288,7 @@ fun CallHeader(callHeaderInformation: CallHeaderInformation, fontSize: TextUnit 
                     Spacer(modifier = Modifier.padding(horizontal = 4.dp))
 
                     Text(
-                        stringResource(R.string.call_incoming_subtitle),
+                        stringResource(R.string.main_call_incoming_subtitle),
                         fontSize = fontSize * 0.6,
                         style = textStyle,
                     )
@@ -355,7 +355,7 @@ fun AnswerButton(onClick: () -> Unit) {
     ActionButton(
         onClick = onClick,
         backgroundColor = Color(0xFF28CA42),
-        text = stringResource(R.string.notification_answer_action)
+        text = stringResource(R.string.main_call_incoming_answer)
     ) {
         Icon(icon = VialerSans.PHONE)
     }
@@ -366,7 +366,7 @@ fun DeclineButton(onClick: () -> Unit) {
     ActionButton(
         onClick = onClick,
         backgroundColor = Color(0xFFDA534F),
-        text = stringResource(R.string.notification_decline_action)
+        text = stringResource(R.string.main_call_incoming_decline)
     ) {
         Icon(icon = VialerSans.HANG_UP)
     }

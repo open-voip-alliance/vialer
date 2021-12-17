@@ -1,3 +1,7 @@
+# General note: When messages are generated for native Android, between nesting and camelCase
+# words an underscore is added.
+# E.g. `connectivity.noConnection` becomes `connectivity_no_connection`.
+
 generic:
   button:
     ok: "Ok"
@@ -390,10 +394,26 @@ onboarding:
   welcome:
     title(String appName): "Welcome to $appName,"
 
-
 webview:
   error:
     title: "Unable to load the page"
     description: >-
       There was a problem loading the page. Please check your
       internet connection and try again.
+
+# These are used on Android native only. Note that these can't be restructured or renamed,
+# the PIL expects specific names.
+notification:
+  # If VoIP is running without a call these will be displayed.
+  #
+  # It's not possible to make it a nested `default.title`, because then the i18n package generates
+  # a getter named 'default', which is not allowed in Dart since it's a keyword.
+  defaultTitle: VoIP
+  defaultSubtitle: is running
+  # The name of the notification channel, this cannot be changed once the app has been installed.
+  channelName: Active call
+  incomingCallsChannelName: Incoming calls
+  answerAction: Answer
+  hangUpAction: Hang up
+  declineAction: Decline
+  incomingContextText: Ringing…

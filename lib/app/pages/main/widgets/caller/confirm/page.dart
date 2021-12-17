@@ -7,7 +7,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../resources/localizations.dart';
 import '../../../../../resources/theme.dart';
 import '../../../../../routes.dart';
-import '../../../../../util/brand.dart';
 import '../../../../../util/widgets_binding_observer_registrar.dart';
 import '../../../../../widgets/transparent_status_bar.dart';
 import '../../../widgets/caller.dart';
@@ -281,7 +280,7 @@ class _AndroidInputs extends StatelessWidget {
               style: ButtonStyle(
                 elevation: MaterialStateProperty.all(4),
                 backgroundColor: MaterialStateProperty.all(
-                  context.brand.theme.green2,
+                  context.brand.theme.colors.green2,
                 ),
               ),
               child: Row(
@@ -291,14 +290,14 @@ class _AndroidInputs extends StatelessWidget {
                   Icon(
                     VialerSans.phone,
                     size: 16,
-                    color: context.brand.theme.green3,
+                    color: context.brand.theme.colors.green3,
                   ),
                   const SizedBox(width: 12),
                   Flexible(
                     child: Text(
                       destination,
                       style: TextStyle(
-                        color: context.brand.theme.green3,
+                        color: context.brand.theme.colors.green3,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -313,10 +312,10 @@ class _AndroidInputs extends StatelessWidget {
               child: TextButton(
                 style: ButtonStyle(
                   foregroundColor: MaterialStateProperty.all(
-                    context.brand.theme.grey6,
+                    context.brand.theme.colors.grey6,
                   ),
                   overlayColor: MaterialStateProperty.all(
-                    context.brand.theme.grey4.withOpacity(0.25),
+                    context.brand.theme.colors.grey4.withOpacity(0.25),
                   ),
                 ),
                 onPressed: onCancelButtonPressed,

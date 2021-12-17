@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../domain/entities/survey/question.dart';
 import '../../../../../domain/entities/survey/survey.dart';
 import '../../../../resources/localizations.dart';
-import '../../../../util/brand.dart';
+import '../../../../resources/theme.dart';
 import '../../../../util/conditional_capitalization.dart';
 import '../cubit.dart';
 
@@ -122,7 +122,7 @@ class _QuestionHeader extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: context.brand.theme.primary,
+        color: context.brand.theme.colors.primary,
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(4),
           topRight: Radius.circular(4),
@@ -181,8 +181,8 @@ class _Choice extends StatelessWidget {
               color: highlighted ? Theme.of(context).primaryColor : null,
               border: Border.all(
                 color: highlighted
-                    ? context.brand.theme.grey4.withOpacity(0)
-                    : context.brand.theme.grey4,
+                    ? context.brand.theme.colors.grey4.withOpacity(0)
+                    : context.brand.theme.colors.grey4,
               ),
             ),
             padding: const EdgeInsets.all(12),

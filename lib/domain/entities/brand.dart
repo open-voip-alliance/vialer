@@ -1,9 +1,14 @@
 import 'package:equatable/equatable.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 
+part 'brand.g.dart';
+
 @immutable
+@JsonSerializable()
 class Brand extends Equatable {
   final String identifier;
+  final String appId;
   final String appName;
   final Uri url;
   final Uri middlewareUrl;
@@ -13,6 +18,7 @@ class Brand extends Equatable {
 
   const Brand({
     required this.identifier,
+    required this.appId,
     required this.appName,
     required this.url,
     required this.middlewareUrl,
@@ -24,6 +30,7 @@ class Brand extends Equatable {
   @override
   List<Object?> get props => [
         identifier,
+        appId,
         appName,
         url,
         middlewareUrl,
@@ -44,9 +51,14 @@ class Brand extends Equatable {
 
   bool get isAnnabel => identifier == 'annabel';
 
+  static Brand fromJson(Map<String, dynamic> json) => _$BrandFromJson(json);
+
+  Map<String, dynamic> toJson() => _$BrandToJson(this);
+
   @override
   String toString() => '$runtimeType('
       'identifier: $identifier, '
+      'appId: $appId, '
       'appName: $appName, '
       'url: $url, '
       'middlewareUrl: $middlewareUrl, '

@@ -10,7 +10,6 @@ import 'package:flutter_phone_lib/audio/bluetooth_audio_route.dart';
 
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
-import '../../../../util/brand.dart';
 import '../../dialer/cubit.dart';
 import '../../widgets/caller.dart';
 import '../../widgets/dial_pad/keypad.dart';
@@ -282,8 +281,8 @@ class _ActionButton extends StatelessWidget {
           child: Material(
             shape: const CircleBorder(),
             color: active
-                ? context.brand.theme.primary
-                : context.brand.theme.primary.withOpacity(0),
+                ? context.brand.theme.colors.primary
+                : context.brand.theme.colors.primary.withOpacity(0),
             child: InkResponse(
               onTap: _enabled ? onPressed : null,
               containedInkWell: active,
@@ -311,15 +310,16 @@ class _ActionButton extends StatelessWidget {
     );
   }
 
-  Color _pickTextColor(BuildContext context) =>
-      _enabled ? context.brand.theme.grey6 : context.brand.theme.grey2;
+  Color _pickTextColor(BuildContext context) => _enabled
+      ? context.brand.theme.colors.grey6
+      : context.brand.theme.colors.grey2;
 
   Color _pickIconColor(BuildContext context) {
-    if (active) return context.brand.theme.onPrimaryColor;
+    if (active) return context.brand.theme.colors.onPrimary;
 
-    if (!_enabled) return context.brand.theme.grey2;
+    if (!_enabled) return context.brand.theme.colors.grey2;
 
-    return context.brand.theme.grey6;
+    return context.brand.theme.colors.grey6;
   }
 }
 
@@ -470,7 +470,7 @@ class _DialPad extends StatelessWidget {
                 onTap: onCancelButtonPressed,
                 child: Icon(
                   VialerSans.close,
-                  color: context.brand.theme.grey5,
+                  color: context.brand.theme.colors.grey5,
                 ),
               ),
             ),

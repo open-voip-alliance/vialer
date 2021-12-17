@@ -5,7 +5,6 @@ import 'package:flutter_phone_lib/flutter_phone_lib.dart';
 
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
-import '../../../../util/brand.dart';
 import '../../../../util/conditional_capitalization.dart';
 import '../../widgets/avatar.dart';
 import '../../widgets/caller.dart';
@@ -30,7 +29,8 @@ class _IncomingCallPageState extends State<IncomingCallPage>
 
   @override
   Widget build(BuildContext context) {
-    final outerCircleColor = context.brand.theme.primaryLight.withOpacity(0.4);
+    final outerCircleColor =
+        context.brand.theme.colors.primaryLight.withOpacity(0.4);
     final outerCirclePadding = const EdgeInsets.all(32);
 
     return WillPopScope(
@@ -44,8 +44,8 @@ class _IncomingCallPageState extends State<IncomingCallPage>
                 gradient: RadialGradient(
                   radius: 0.9,
                   colors: [
-                    context.brand.theme.primary,
-                    context.brand.theme.primary.withOpacity(0.0),
+                    context.brand.theme.colors.primary,
+                    context.brand.theme.colors.primary.withOpacity(0.0),
                   ],
                 ),
               ),
@@ -58,7 +58,8 @@ class _IncomingCallPageState extends State<IncomingCallPage>
                     shape: const CircleBorder(),
                     color: outerCircleColor,
                     elevation: 2,
-                    shadowColor: context.brand.theme.primary.withOpacity(0.4),
+                    shadowColor:
+                        context.brand.theme.colors.primary.withOpacity(0.4),
                     child: Padding(
                       padding: outerCirclePadding,
                       child: Material(
@@ -76,7 +77,7 @@ class _IncomingCallPageState extends State<IncomingCallPage>
                                 // which resembles the Vialer brand icon.
                                 VialerSans.brandVialer,
                                 size: 56,
-                                color: context.brand.theme.primary,
+                                color: context.brand.theme.colors.primary,
                               ),
                             ),
                           ),
@@ -174,7 +175,7 @@ class _Info extends StatelessWidget {
               elevation: 4,
               child: Avatar(
                 name: call.remotePartyHeading,
-                foregroundColor: context.brand.theme.primary,
+                foregroundColor: context.brand.theme.colors.primary,
                 backgroundColor: Colors.white,
                 showFallback: call.contact?.name == null,
                 fallback: const Icon(VialerSans.phone, size: 20),
@@ -233,9 +234,10 @@ class _ActionButton extends StatelessWidget {
       children: [
         DefaultTextStyle.merge(
           style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
-              color: context.brand.theme.onPrimaryColor),
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+            color: context.brand.theme.colors.onPrimary,
+          ),
           child: label,
         ),
         const SizedBox(height: 16),

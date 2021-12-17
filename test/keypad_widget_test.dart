@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:vialer/app/pages/main/widgets/dial_pad/keypad.dart';
 import 'package:vialer/app/resources/theme.dart';
-import 'package:vialer/app/util/brand.dart';
 import 'package:vialer/app/widgets/brand_provider/widget.dart';
 import 'package:vialer/domain/entities/brand.dart';
 
@@ -467,6 +466,7 @@ class TestApp extends StatelessWidget {
     return BrandProvider(
       brand: Brand(
         identifier: 'vialer',
+        appId: 'com.voipgrid.vialer',
         appName: 'Vialer',
         url: Uri.parse('https://partner.voipgrid.nl'),
         middlewareUrl: Uri.parse('https://vialerpush.voipgrid.nl'),

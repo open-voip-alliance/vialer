@@ -7,7 +7,6 @@ import '../../../../../domain/entities/call_record.dart';
 import '../../../../../domain/entities/call_record_with_contact.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
-import '../../../../util/brand.dart';
 import '../../../../util/contact.dart';
 import '../../contacts/widgets/group_header.dart';
 import '../../util/color.dart';
@@ -87,7 +86,7 @@ class RecentCallItem extends StatelessWidget {
         ],
         icon: Icon(
           VialerSans.ellipsis,
-          color: context.brand.theme.grey1,
+          color: context.brand.theme.colors.grey1,
           size: 16,
         ),
       ),
@@ -116,10 +115,10 @@ class _RecentItemSubtitle extends StatelessWidget {
     if (callRecord.wasMissed) return Colors.red;
 
     if (callRecord.answeredElsewhere) {
-      return context.brand.theme.answeredElsewhere;
+      return context.brand.theme.colors.answeredElsewhere;
     }
 
-    return context.brand.theme.green1;
+    return context.brand.theme.colors.green1;
   }
 
   String _text(BuildContext context) {
@@ -160,7 +159,7 @@ class _RecentItemSubtitle extends StatelessWidget {
             const SizedBox(width: 8),
             Text(
               _text(context),
-              style: TextStyle(color: context.brand.theme.grey4),
+              style: TextStyle(color: context.brand.theme.colors.grey4),
             ),
           ],
         ),
@@ -169,7 +168,7 @@ class _RecentItemSubtitle extends StatelessWidget {
             fit: BoxFit.scaleDown,
             child: Text(
               _createAnsweredElsewhereText(),
-              style: TextStyle(color: context.brand.theme.grey4),
+              style: TextStyle(color: context.brand.theme.colors.grey4),
             ),
           ),
       ],

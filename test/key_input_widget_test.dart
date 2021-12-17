@@ -11,6 +11,7 @@ void main() {
       body: BrandProvider(
         brand: Brand(
           identifier: 'vialer',
+          appId: 'com.voipgrid.vialer',
           appName: 'Vialer',
           url: Uri.parse('https://partner.voipgrid.nl'),
           middlewareUrl: Uri.parse('https://vialerpush.voipgrid.nl'),

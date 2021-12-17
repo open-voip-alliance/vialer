@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../util/brand.dart';
+import '../../../../../resources/theme.dart';
 
 class NoticeBanner extends StatelessWidget {
   final Widget icon;
@@ -40,7 +40,7 @@ class NoticeBanner extends StatelessWidget {
                   children: [
                     IconTheme(
                       data: IconThemeData(
-                        color: context.brand.theme.onPrimaryGradientColor,
+                        color: context.brand.theme.colors.onPrimaryGradient,
                         size: 20,
                       ),
                       child: icon,
@@ -49,7 +49,7 @@ class NoticeBanner extends StatelessWidget {
                     Expanded(
                       child: DefaultTextStyle.merge(
                         style: TextStyle(
-                          color: context.brand.theme.onPrimaryGradientColor,
+                          color: context.brand.theme.colors.onPrimaryGradient,
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                         ),
@@ -61,7 +61,7 @@ class NoticeBanner extends StatelessWidget {
                 const SizedBox(height: 12),
                 DefaultTextStyle.merge(
                     style: TextStyle(
-                      color: context.brand.theme.onPrimaryGradientColor,
+                      color: context.brand.theme.colors.onPrimaryGradient,
                       fontSize: 16,
                     ),
                     child: content),
@@ -70,14 +70,14 @@ class NoticeBanner extends StatelessWidget {
                   data: theme.copyWith(
                     textButtonTheme: TextButtonThemeData(
                       style: TextButton.styleFrom(
-                        primary: context.brand.theme.onPrimaryGradientColor,
+                        primary: context.brand.theme.colors.onPrimaryGradient,
                         textStyle: TextStyle(
                           fontWeight: FontWeight.w600,
                           shadows: [
                             BoxShadow(
                               offset: const Offset(0, 1),
                               blurRadius: 1,
-                              color: context.brand.theme.primaryDark,
+                              color: context.brand.theme.colors.primaryDark,
                             ),
                           ],
                         ),

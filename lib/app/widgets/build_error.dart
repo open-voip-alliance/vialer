@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../resources/localizations.dart';
-import '../util/brand.dart';
+import '../resources/theme.dart';
 
 class BuildError extends StatelessWidget {
   const BuildError({Key? key}) : super(key: key);
@@ -14,7 +14,7 @@ class BuildError extends StatelessWidget {
       textAlign: TextAlign.center,
       style: TextStyle(
         fontSize: 14,
-        color: context.brand.theme.red1,
+        color: context.brand.theme.colors.red1,
         fontWeight: FontWeight.bold,
       ),
     );

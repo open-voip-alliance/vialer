@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
-import '../../../../util/brand.dart';
 import '../../../../util/conditional_capitalization.dart';
 import '../../../../widgets/stylized_button.dart';
 import '../../../../widgets/transparent_status_bar.dart';
@@ -75,14 +74,14 @@ class _FeedbackPageState extends State<FeedbackPage> {
                               hintMaxLines: 4,
                               border: InputBorder.none,
                               filled: true,
-                              fillColor: context.brand.theme.primaryLight
+                              fillColor: context.brand.theme.colors.primaryLight
                                   .withOpacity(0.6),
                               contentPadding: const EdgeInsets.symmetric(
                                 horizontal: 24,
                                 vertical: 16,
                               ),
                               hintStyle: TextStyle(
-                                color: context.brand.theme.grey4,
+                                color: context.brand.theme.colors.grey4,
                               ),
                             ),
                           ),
@@ -142,7 +141,7 @@ class _FeedbackFormHeader extends StatelessWidget {
           vertical: 8,
           horizontal: 8,
         ),
-        color: context.brand.theme.primaryLight.withOpacity(0.6),
+        color: context.brand.theme.colors.primaryLight.withOpacity(0.6),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -151,7 +150,7 @@ class _FeedbackFormHeader extends StatelessWidget {
               child: Icon(
                 VialerSans.feedback,
                 size: 16,
-                color: context.brand.theme.primaryDark,
+                color: context.brand.theme.colors.primaryDark,
               ),
             ),
             Flexible(

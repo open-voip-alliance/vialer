@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../../resources/theme.dart';
-import '../../../../util/brand.dart';
 
 class CallButton extends StatelessWidget {
   final VoidCallback? onPressed;
@@ -35,7 +34,7 @@ class CallButton extends StatelessWidget {
       builder: (context) {
         return CallButton(
           onPressed: onPressed,
-          backgroundColor: context.brand.theme.green1,
+          backgroundColor: context.brand.theme.colors.green1,
           icon: VialerSans.phone,
           heroTag: heroTag,
           constraints: constraints,
@@ -54,7 +53,7 @@ class CallButton extends StatelessWidget {
       builder: (context) {
         return CallButton(
           onPressed: onPressed,
-          backgroundColor: context.brand.theme.red1,
+          backgroundColor: context.brand.theme.colors.red1,
           icon: VialerSans.hangUp,
           heroTag: heroTag,
           constraints: constraints,
@@ -98,8 +97,9 @@ class CallButton extends StatelessWidget {
       child: FloatingActionButton(
         heroTag: heroTag,
         onPressed: onPressed,
-        backgroundColor:
-            onPressed != null ? backgroundColor : context.brand.theme.grey3,
+        backgroundColor: onPressed != null
+            ? backgroundColor
+            : context.brand.theme.colors.grey3,
         child: Icon(
           icon,
           size: 32,

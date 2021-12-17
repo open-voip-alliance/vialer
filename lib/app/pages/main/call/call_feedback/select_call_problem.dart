@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../../domain/entities/call_problem.dart';
 import '../../../../resources/localizations.dart';
-import '../../../../util/brand.dart';
+import '../../../../resources/theme.dart';
 import 'call_feedback.dart';
 
 class SelectCallProblem extends StatelessWidget {
@@ -69,7 +69,7 @@ class _CallProblemButton extends StatelessWidget {
           _text(context),
           textAlign: TextAlign.start,
           style: TextStyle(
-            color: context.brand.theme.grey6,
+            color: context.brand.theme.colors.grey6,
           ),
         ),
       ),

@@ -5,7 +5,6 @@ import '../../../domain/entities/contact.dart';
 import '../../resources/localizations.dart';
 import '../../resources/theme.dart';
 import '../../routes.dart';
-import '../../util/brand.dart';
 import '../../widgets/transparent_status_bar.dart';
 import 'call/widgets/call_button.dart';
 import 'contacts/cubit.dart';
@@ -116,7 +115,7 @@ class MainPageState extends State<MainPage> {
                   // We use the CallButton's hero tag for a nice transition
                   // between the dialer and call button.
                   heroTag: CallButton.defaultHeroTag,
-                  backgroundColor: context.brand.theme.green1,
+                  backgroundColor: context.brand.theme.colors.green1,
                   onPressed: () => Navigator.pushNamed(context, Routes.dialer),
                   child: const Icon(VialerSans.dialpad, size: 31),
                 ),
@@ -165,7 +164,7 @@ class _BottomNavigationBar extends StatelessWidget {
       decoration: BoxDecoration(
         border: Border(
           top: BorderSide(
-            color: context.brand.theme.grey2,
+            color: context.brand.theme.colors.grey2,
           ),
         ),
       ),
@@ -173,9 +172,9 @@ class _BottomNavigationBar extends StatelessWidget {
         type: BottomNavigationBarType.fixed,
         iconSize: 24,
         selectedFontSize: 9,
-        selectedItemColor: context.brand.theme.primary,
+        selectedItemColor: context.brand.theme.colors.primary,
         unselectedFontSize: 9,
-        unselectedItemColor: context.brand.theme.grey1,
+        unselectedItemColor: context.brand.theme.colors.grey1,
         currentIndex: currentIndex,
         onTap: onTap,
         items: [

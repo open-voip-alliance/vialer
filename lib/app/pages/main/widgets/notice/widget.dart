@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
-import '../../../../util/brand.dart';
 import '../../../../util/conditional_capitalization.dart';
 import '../../../../util/widgets_binding_observer_registrar.dart';
 import '../../../../widgets/animated_visibility.dart';

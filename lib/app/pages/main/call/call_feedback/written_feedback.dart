@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../../../../resources/localizations.dart';
+import '../../../../resources/theme.dart';
 import '../../../../routes.dart';
-import '../../../../util/brand.dart';
 import 'call_feedback.dart';
 
 class WrittenFeedback extends StatefulWidget {
@@ -47,7 +47,7 @@ class _WrittenFeedbackState extends State<WrittenFeedback> {
               context.msg.main.call.feedback.written.dismiss.toUpperCase(),
             ),
             style: TextButton.styleFrom(
-              primary: context.brand.theme.buttonColoredRaisedTextColor,
+              primary: context.brand.theme.colors.raisedColoredButtonText,
             ),
           ),
           TextButton(
@@ -56,7 +56,7 @@ class _WrittenFeedbackState extends State<WrittenFeedback> {
               context.msg.main.call.feedback.written.button.toUpperCase(),
             ),
             style: TextButton.styleFrom(
-              primary: context.brand.theme.buttonColoredRaisedTextColor,
+              primary: context.brand.theme.colors.raisedColoredButtonText,
             ),
           ),
         ],

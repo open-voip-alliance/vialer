@@ -11,18 +11,6 @@ class BrandRepository {
   Iterable<Brand> getBrands() {
     final data = json.decode(brands) as List<dynamic>;
 
-    return data.map((object) {
-      object = object as Map<String, dynamic>;
-
-      return Brand(
-        identifier: object['identifier'] as String,
-        appName: object['appName'] as String,
-        url: Uri.parse(object['url'] as String),
-        middlewareUrl: Uri.parse(object['middlewareUrl'] as String),
-        voipgridUrl: Uri.parse(object['voipgridUrl'] as String),
-        encryptedSipUrl: Uri.parse(object['encryptedSipUrl'] as String),
-        unencryptedSipUrl: Uri.parse(object['unencryptedSipUrl'] as String),
-      );
-    });
+    return data.map((obj) => Brand.fromJson(obj as Map<String, dynamic>));
   }
 }

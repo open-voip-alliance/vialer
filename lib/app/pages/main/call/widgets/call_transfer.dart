@@ -3,7 +3,6 @@ import 'package:flutter_phone_lib/call/call.dart';
 
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
-import '../../../../util/brand.dart';
 import '../../widgets/t9_dial_pad.dart';
 import 'call_transfer_bar.dart';
 
@@ -45,7 +44,7 @@ class CallTransfer extends StatelessWidget {
         Expanded(
           child: T9DialPad(
             callButtonIcon: VialerSans.transfer,
-            callButtonColor: context.brand.theme.green1,
+            callButtonColor: context.brand.theme.colors.green1,
             onCallButtonPressed: onTransferTargetSelected,
           ),
         ),

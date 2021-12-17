@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 import '../../../../resources/theme.dart';
-import '../../../../util/brand.dart';
 
 class Keypad extends StatefulWidget {
   final TextEditingController controller;
@@ -220,7 +219,7 @@ class KeypadButton extends StatelessWidget {
       color: Colors.transparent,
       shape: CircleBorder(
         side: borderOnIos && context.isIOS
-            ? BorderSide(color: context.brand.theme.grey3)
+            ? BorderSide(color: context.brand.theme.colors.grey3)
             : BorderSide.none,
       ),
       child: AspectRatio(
@@ -346,7 +345,7 @@ class _KeypadValueButtonState extends State<KeypadValueButton> {
                       style: TextStyle(
                         fontSize: 32,
                         color: !_primaryIsNumber
-                            ? context.brand.theme.grey5
+                            ? context.brand.theme.colors.grey5
                             : null, // Null means default color
                       ),
                       // The font size is based on the available space, and we
@@ -361,7 +360,7 @@ class _KeypadValueButtonState extends State<KeypadValueButton> {
                       // to keep the alignments proper.
                       widget.secondaryValue ?? '',
                       style: TextStyle(
-                        color: context.brand.theme.grey5,
+                        color: context.brand.theme.colors.grey5,
                         fontSize: 12,
                       ),
                     ),
@@ -485,8 +484,8 @@ class _DeleteButtonState extends State<_DeleteButton> {
           data: Theme.of(context).copyWith(
             iconTheme: Theme.of(context).iconTheme.copyWith(
                   color: _canDelete
-                      ? context.brand.theme.grey5
-                      : context.brand.theme.grey2,
+                      ? context.brand.theme.colors.grey5
+                      : context.brand.theme.colors.grey2,
                 ),
           ),
           child: const Icon(

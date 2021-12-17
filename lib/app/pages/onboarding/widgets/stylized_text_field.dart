@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../../util/brand.dart';
+import '../../../resources/theme.dart';
 
 class StylizedTextField extends StatelessWidget {
   final TextEditingController? controller;
@@ -72,8 +72,9 @@ class StylizedTextField extends StatelessWidget {
           prefixIcon: prefixIcon != null
               ? Icon(
                   prefixIcon,
-                  color:
-                      hasError ? context.brand.theme.errorContentColor : color,
+                  color: hasError
+                      ? context.brand.theme.colors.errorContent
+                      : color,
                   size: 16,
                 )
               : prefixWidget != null

@@ -400,3 +400,20 @@ webview:
     description: >-
       Er is een probleem opgetreden bij het laden van de pagina. Controleer je
       internetverbinding en probeer nogmaals.
+
+# These are used on Android native only. Note that these can't be restructured or renamed,
+# the PIL expects specific names.
+notification:
+  # If VoIP is running without a call these will be displayed.
+  #
+  # It's not possible to make it a nested `default.title`, because then the i18n package generates
+  # a getter named 'default', which is not allowed in Dart since it's a keyword.
+  defaultTitle: VoIP
+  defaultSubtitle: staat aan
+  # The name of the notification channel, this cannot be changed once the app has been installed.
+  channelName: Actief gesprek
+  incomingCallsChannelName: Inkomende oproepen
+  answerAction: Opnemen
+  hangUpAction: Ophangen
+  declineAction: Weigeren
+  incomingContextText: Gaat over…

@@ -6,7 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../resources/localizations.dart';
 import '../../../resources/theme.dart';
 import '../../../routes.dart';
-import '../../../util/brand.dart';
 import '../../../util/conditional_capitalization.dart';
 import '../../../util/widgets_binding_observer_registrar.dart';
 import '../../../widgets/stylized_button.dart';
@@ -108,7 +107,7 @@ class _DialerPageState extends State<DialerPage>
                   ],
                 ),
                 child: T9DialPad(
-                  callButtonColor: context.brand.theme.green1,
+                  callButtonColor: context.brand.theme.colors.green1,
                   callButtonIcon: VialerSans.phone,
                   onCallButtonPressed: (number) {
                     context.read<DialerCubit>().call(number);
