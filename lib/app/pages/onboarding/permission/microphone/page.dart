@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../../domain/entities/permission.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
-import '../../../../util/brand.dart';
+
 import '../abstract/page.dart';
 
 class MicrophonePermissionPage extends StatelessWidget {

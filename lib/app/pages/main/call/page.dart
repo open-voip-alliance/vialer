@@ -8,7 +8,6 @@ import 'package:flutter_phone_lib/call/call_state.dart';
 import '../../../../domain/entities/call_problem.dart';
 import '../../../resources/localizations.dart';
 import '../../../resources/theme.dart';
-import '../../../util/brand.dart';
 import '../../../util/widgets_binding_observer_registrar.dart';
 import '../widgets/caller.dart';
 import '../widgets/connectivity_alert.dart';
@@ -158,7 +157,7 @@ class _CallPageState extends State<CallPage>
                           ),
                         DefaultTextStyle.merge(
                           style: TextStyle(
-                            color: context.brand.theme.onPrimaryGradientColor,
+                            color: context.brand.theme.colors.onPrimaryGradient,
                           ),
                           child: Column(
                             children: [
@@ -182,7 +181,7 @@ class _CallPageState extends State<CallPage>
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(13.5),
                                   color: context
-                                      .brand.theme.primaryGradientStartColor,
+                                      .brand.theme.colors.primaryGradientStart,
                                 ),
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 16,

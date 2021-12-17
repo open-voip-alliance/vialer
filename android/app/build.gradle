@@ -49,7 +49,6 @@ def getBrand = {
 }
 
 def brand = getBrand()
-def segmentKey = dartEnv['SEGMENT_ANDROID_KEY'] ?: ""
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
@@ -70,7 +69,6 @@ android {
 
     defaultConfig {
         applicationId brand.appId
-        resValue "string", "app_name", brand.appName
         minSdkVersion 26
         targetSdkVersion 31
         versionCode flutterVersionCode.toInteger()
@@ -119,6 +117,16 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 }
+
+task generateNativeValues(type:Exec) {
+    workingDir '../..'
+
+    println 'Generating native values..'
+    commandLine 'sh', '-c', 'dart utils/generate_native_values.dart'
+    println 'Done.'
+}
+
+preBuild.dependsOn generateNativeValues
 
 flutter {
     source '../..'

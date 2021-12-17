@@ -16,7 +16,6 @@ import '../../../../../domain/entities/system_user.dart';
 import '../../../../../domain/entities/web_page.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
-import '../../../../util/brand.dart';
 import '../../../../util/conditional_capitalization.dart';
 import '../../../onboarding/widgets/stylized_text_field.dart';
 import '../../../web_view/page.dart';
@@ -345,7 +344,7 @@ class SettingTile extends StatelessWidget {
           decoration: _shouldRenderBorder(context)
               ? BoxDecoration(
                   border: Border.all(
-                    color: context.brand.theme.grey2,
+                    color: context.brand.theme.colors.grey2,
                   ),
                   borderRadius: BorderRadius.circular(8),
                 )
@@ -395,7 +394,7 @@ class SettingTile extends StatelessWidget {
             ),
             child: DefaultTextStyle.merge(
               style: TextStyle(
-                color: context.brand.theme.grey4,
+                color: context.brand.theme.colors.grey4,
               ),
               child: description!,
             ),
@@ -745,11 +744,11 @@ class _DndToggle extends StatelessWidget {
   }
 
   Color _color(BuildContext context) => setting.value == true
-      ? context.brand.theme.dnd
+      ? context.brand.theme.colors.dnd
       : userAvailabilityType.asColor(context);
 
   Color _accentColor(BuildContext context) => setting.value == true
-      ? context.brand.theme.dndAccent
+      ? context.brand.theme.colors.dndAccent
       : userAvailabilityType.asAccentColor(context);
 
   @override
@@ -845,21 +844,21 @@ enum UserAvailabilityType { available, elsewhere, notAvailable }
 extension Display on UserAvailabilityType {
   Color asColor(BuildContext context) {
     if (this == UserAvailabilityType.elsewhere) {
-      return context.brand.theme.availableElsewhere;
+      return context.brand.theme.colors.availableElsewhere;
     } else if (this == UserAvailabilityType.notAvailable) {
-      return context.brand.theme.notAvailable;
+      return context.brand.theme.colors.notAvailable;
     } else {
-      return context.brand.theme.available;
+      return context.brand.theme.colors.available;
     }
   }
 
   Color asAccentColor(BuildContext context) {
     if (this == UserAvailabilityType.elsewhere) {
-      return context.brand.theme.availableElsewhereAccent;
+      return context.brand.theme.colors.availableElsewhereAccent;
     } else if (this == UserAvailabilityType.notAvailable) {
-      return context.brand.theme.notAvailableAccent;
+      return context.brand.theme.colors.notAvailableAccent;
     } else {
-      return context.brand.theme.availableAccent;
+      return context.brand.theme.colors.availableAccent;
     }
   }
 

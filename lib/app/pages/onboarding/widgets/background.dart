@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../../../util/brand.dart';
+import '../../../resources/theme.dart';
 import '../../../widgets/splash_screen.dart';
 import '../../../widgets/transparent_status_bar.dart';
 

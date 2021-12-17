@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../domain/entities/web_page.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
-import '../../../../util/brand.dart';
 import '../../../web_view/page.dart';
 import '../cubit.dart';
 import '../sub_page.dart';
@@ -107,7 +106,7 @@ class SettingLinkTile extends StatelessWidget {
         bordered: bordered,
         child: Icon(
           VialerSans.caretRight,
-          color: context.brand.theme.grey4,
+          color: context.brand.theme.colors.grey4,
         ),
       ),
     );

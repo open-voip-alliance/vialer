@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../util/brand.dart';
+import '../resources/theme.dart';
 
 class SplashScreen extends StatelessWidget {
   final Color iconColor;

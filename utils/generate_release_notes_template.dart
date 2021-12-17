@@ -4,7 +4,6 @@ import 'package:dartx/dartx.dart';
 
 import 'ci/codemagic/prepare_release_notes.dart';
 
-
 final brandsToGenerateFor = [
   'vialer',
   'voys',

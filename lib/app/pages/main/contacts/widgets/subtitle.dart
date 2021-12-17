@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../../domain/entities/contact.dart';
 import '../../../../resources/localizations.dart';
-import '../../../../util/brand.dart';
+import '../../../../resources/theme.dart';
 
 class ContactSubtitle extends StatelessWidget {
   final Contact contact;
@@ -48,7 +48,7 @@ class ContactSubtitle extends StatelessWidget {
     return Text(
       _text(context),
       overflow: TextOverflow.ellipsis,
-      style: TextStyle(color: context.brand.theme.grey4),
+      style: TextStyle(color: context.brand.theme.colors.grey4),
     );
   }
 }

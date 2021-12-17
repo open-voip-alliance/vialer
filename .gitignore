@@ -61,3 +61,7 @@ ios/Flutter/Brand.xconfig
 ios/Flutter/Segment.xconfig
 
 release_notes_*.txt
+
+# Android resources
+android/app/src/**/res/values*/
+android/app/src/**/res/font/

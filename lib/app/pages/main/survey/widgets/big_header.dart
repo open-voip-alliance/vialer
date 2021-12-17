@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../util/brand.dart';
+import '../../../../resources/theme.dart';
 
 class BigHeader extends StatelessWidget {
   final Widget icon;
@@ -22,7 +22,7 @@ class BigHeader extends StatelessWidget {
       child: Container(
         width: double.infinity,
         decoration: BoxDecoration(
-          color: context.brand.theme.primary,
+          color: context.brand.theme.colors.primary,
         ),
         child: Stack(
           children: [
@@ -77,8 +77,8 @@ class BigHeader extends StatelessWidget {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    context.brand.theme.primary.withOpacity(0),
-                    context.brand.theme.primary,
+                    context.brand.theme.colors.primary.withOpacity(0),
+                    context.brand.theme.colors.primary,
                   ],
                 ),
               ),

@@ -4,7 +4,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 import '../../../../../domain/entities/call_problem.dart';
-import '../../../../util/brand.dart';
+import '../../../../resources/theme.dart';
 import 'call_rating.dart';
 import 'select_audio_problems.dart';
 import 'select_call_problem.dart';
@@ -170,7 +170,7 @@ class CallFeedbackAlertDialog extends StatelessWidget {
               textAlign: titleAlign != null ? titleAlign : TextAlign.left,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                color: context.brand.theme.grey6,
+                color: context.brand.theme.colors.grey6,
                 fontSize: 16,
               ),
             )

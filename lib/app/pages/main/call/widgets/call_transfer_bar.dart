@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_phone_lib/call/call.dart';
 
 import '../../../../resources/localizations.dart';
-import '../../../../util/brand.dart';
+import '../../../../resources/theme.dart';
 
 class CallTransferBar extends StatelessWidget {
   final Widget text;
@@ -19,7 +19,7 @@ class CallTransferBar extends StatelessWidget {
             padding: const EdgeInsets.only(top: 12, bottom: 12),
             child: DefaultTextStyle.merge(
               style: TextStyle(
-                color: context.brand.theme.primaryGradientStartColor,
+                color: context.brand.theme.colors.primaryGradientStart,
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,

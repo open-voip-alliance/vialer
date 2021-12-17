@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../resources/theme.dart';
-import '../../../util/brand.dart';
 import '../../../widgets/animated_visibility.dart';
 
 class ErrorAlert extends StatelessWidget {
@@ -46,10 +45,10 @@ class ErrorAlert extends StatelessWidget {
               child: Container(
                 padding: padding,
                 decoration: BoxDecoration(
-                  color: context.brand.theme.errorBackgroundColor,
+                  color: context.brand.theme.colors.errorBackground,
                   border: Border(
                     top: BorderSide(
-                      color: context.brand.theme.errorContentColor,
+                      color: context.brand.theme.colors.errorContent,
                       width: 3.0,
                     ),
                   ),
@@ -66,7 +65,7 @@ class ErrorAlert extends StatelessWidget {
                       child: Icon(
                         VialerSans.exclamationMark,
                         size: 12,
-                        color: context.brand.theme.errorContentColor,
+                        color: context.brand.theme.colors.errorContent,
                       ),
                     ),
                     const SizedBox(width: 13),

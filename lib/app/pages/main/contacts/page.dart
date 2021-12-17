@@ -10,7 +10,6 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import '../../../../domain/entities/contact.dart';
 import '../../../resources/localizations.dart';
 import '../../../resources/theme.dart';
-import '../../../util/brand.dart';
 import '../../../util/conditional_capitalization.dart';
 import '../../../util/contact.dart';
 import '../../../util/extensions.dart';
@@ -467,7 +466,7 @@ class _SideLetter extends StatelessWidget {
           style: TextStyle(
             fontSize: fontSize,
             fontWeight: FontWeight.w500,
-            color: context.brand.theme.grey5,
+            color: context.brand.theme.colors.grey5,
           ),
         ),
       ),
@@ -523,11 +522,11 @@ class _SearchTextFieldState extends State<_SearchTextField> {
   @override
   Widget build(BuildContext context) {
     return TextField(
-      cursorColor: context.brand.theme.primary,
+      cursorColor: context.brand.theme.colors.primary,
       controller: _searchController,
       decoration: InputDecoration(
         filled: true,
-        fillColor: context.brand.theme.grey3,
+        fillColor: context.brand.theme.colors.grey3,
         border: const OutlineInputBorder(
           borderSide: BorderSide.none,
           gapPadding: 0,
@@ -535,7 +534,7 @@ class _SearchTextFieldState extends State<_SearchTextField> {
         prefixIcon: Icon(
           VialerSans.search,
           size: 20,
-          color: context.brand.theme.grey4,
+          color: context.brand.theme.colors.grey4,
         ),
         suffixIcon: _canClear
             ? IconButton(
@@ -543,7 +542,7 @@ class _SearchTextFieldState extends State<_SearchTextField> {
                 icon: Icon(
                   VialerSans.close,
                   size: 20,
-                  color: context.brand.theme.grey4,
+                  color: context.brand.theme.colors.grey4,
                 ),
               )
             : null,

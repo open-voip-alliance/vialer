@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../../util/brand.dart';
+import '../../../resources/theme.dart';
 
 Color calculateColorForPhoneNumber(BuildContext context, String phoneNumber) {
-  var hsl = HSLColor.fromColor(context.brand.theme.primary);
+  var hsl = HSLColor.fromColor(context.brand.theme.colors.primary);
 
   const shadesCount = 6;
 

@@ -3,7 +3,6 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
-import '../../../../util/brand.dart';
 import 'call_feedback.dart';
 
 class CallRating extends StatelessWidget {
@@ -31,12 +30,12 @@ class CallRating extends StatelessWidget {
             ratingWidget: RatingWidget(
               full: Icon(
                 VialerSans.star,
-                color: context.brand.theme.primary,
+                color: context.brand.theme.colors.primary,
               ),
               half: const SizedBox(),
               empty: Icon(
                 VialerSans.starOutline,
-                color: context.brand.theme.grey4,
+                color: context.brand.theme.colors.grey4,
               ),
             ),
             itemPadding: const EdgeInsets.symmetric(
