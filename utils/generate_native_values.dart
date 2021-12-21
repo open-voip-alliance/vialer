@@ -15,6 +15,7 @@ Future<void> main() async {
   final brands = BrandRepository().getBrands();
 
   await Future.wait([
+    writeEnvValues(),
     for (final brand in brands) ...[
       writeBrandValues(brand),
       writeColorValues(brand),
@@ -22,6 +23,35 @@ Future<void> main() async {
     ],
     copyVialerSans(),
   ]);
+}
+
+Future<void> writeEnvValues() async {
+  final builder = createXmlBuilder();
+
+  final dotEnvEntries = Map.fromEntries(
+    await File('.env').readAsLines().then(
+          (lines) => lines.map(
+            (line) {
+              final split = line.split('=');
+              return MapEntry(split[0], split[1]);
+            },
+          ),
+        ),
+  );
+
+  builder.element('resources', nest: () {
+    for (final entry in dotEnvEntries.entries) {
+      builder.element(
+        'string',
+        attributes: {
+          'name': entry.key.toLowerCase(),
+        },
+        nest: entry.value,
+      );
+    }
+  });
+
+  await builder.buildDocument().writeToAndroidResource('env.xml');
 }
 
 Future<void> writeBrandValues(Brand brand) async {
@@ -60,7 +90,10 @@ Future<void> writeBrandValues(Brand brand) async {
     );
   });
 
-  await builder.buildDocument().writeToAndroidResource(brand, 'brand.xml');
+  await builder.buildDocument().writeToAndroidResource(
+        'brand.xml',
+        brand: brand,
+      );
 }
 
 Future<void> writeColorValues(Brand brand) async {
@@ -83,7 +116,10 @@ Future<void> writeColorValues(Brand brand) async {
     }
   });
 
-  await builder.buildDocument().writeToAndroidResource(brand, 'colors.xml');
+  await builder.buildDocument().writeToAndroidResource(
+        'colors.xml',
+        brand: brand,
+      );
 }
 
 Future<void> writeLanguageValues(Brand brand) async {
@@ -205,8 +241,8 @@ Future<void> writeLanguageValues(Brand brand) async {
     });
 
     await builder.buildDocument().writeToAndroidResource(
-          brand,
           'strings.xml',
+          brand: brand,
           dutch: dutch,
         );
   }
@@ -226,12 +262,13 @@ XmlBuilder createXmlBuilder() =>
 
 extension on XmlDocument {
   Future<void> writeToAndroidResource(
-    Brand brand,
     String path, {
+    Brand? brand,
     bool dutch = false,
   }) async {
+    final rootPath = brand?.identifier ?? 'main';
     final nlOrEmpty = dutch ? '-nl' : '';
-    await File('android/app/src/${brand.identifier}/res/values$nlOrEmpty/$path')
+    await File('android/app/src/$rootPath/res/values$nlOrEmpty/$path')
         .create(recursive: true)
         .then((f) => f.writeAsString(toXmlString(pretty: true)));
   }

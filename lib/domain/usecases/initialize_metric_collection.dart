@@ -18,7 +18,7 @@ class InitializeMetricCollection extends UseCase {
         ? _envRepository.segmentAndroidKey
         : _envRepository.segmentIosKey);
 
-    _nativeMetrics.initialize(key);
+    _nativeMetrics.initialize();
 
     await _metricsRepository.initialize(key);
   }

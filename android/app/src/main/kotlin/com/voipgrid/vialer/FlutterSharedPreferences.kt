@@ -7,8 +7,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 class FlutterSharedPreferences(context: Context) {
-
-    val prefs: SharedPreferences =
+    private val prefs: SharedPreferences =
         context.getSharedPreferences("FlutterSharedPreferences", Context.MODE_PRIVATE)
 
     val systemUser: JSONObject?
@@ -19,9 +18,6 @@ class FlutterSharedPreferences(context: Context) {
 
     val voipConfig
         get() = JSONObject(prefs.getString(FLUTTER_SHARED_PREF_VOIP_CONFIG, "{}")!!)
-
-    val metricsKey
-        get() = prefs.getString(FLUTTER_SHARED_METRICS_KEY, null)
 
     var pushToken
         get() = prefs.getString(FLUTTER_SHARED_PREF_PUSH_TOKEN, "")
@@ -81,6 +77,5 @@ class FlutterSharedPreferences(context: Context) {
         private const val FLUTTER_SHARED_PREF_PUSH_TOKEN = "${SHARED_PREF_PREFIX}push_token"
         private const val FLUTTER_SHARED_PREF_SETTINGS = "${SHARED_PREF_PREFIX}settings"
         private const val FLUTTER_SHARED_PREF_LOGS = "${SHARED_PREF_PREFIX}logs"
-        const val FLUTTER_SHARED_METRICS_KEY = "${SHARED_PREF_PREFIX}metrics_key"
     }
 }
