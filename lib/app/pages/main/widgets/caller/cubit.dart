@@ -400,6 +400,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
     }
 
     _preservedCallSessionState.preserve(callSessionState);
+    emit(processState.copyWith(voip: callSessionState));
   }
 
   Future<void> toggleMute() async => await _toggleMuteVoipCall();
