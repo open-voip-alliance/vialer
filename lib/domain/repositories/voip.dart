@@ -11,8 +11,6 @@ import '../entities/brand.dart';
 import '../entities/build_info.dart';
 import '../entities/setting.dart';
 import '../entities/voip_config.dart';
-import '../usecases/enable_console_logging.dart';
-import '../usecases/enable_remote_logging_if_needed.dart';
 import '../usecases/get_allowed_voip_config.dart';
 import '../usecases/get_build_info.dart';
 import '../usecases/get_encrypted_sip_url.dart';
@@ -429,12 +427,7 @@ class _Middleware with Loggable {
   }
 }
 
-Future<void> _initialize() async {
-  await initializeDependencies(ui: false);
-
-  await EnableConsoleLoggingUseCase()();
-  await EnableRemoteLoggingIfNeededUseCase()();
-}
+Future<void> _initialize() => initializeDependencies(ui: false);
 
 void _middlewareRespond(RemoteMessage message, bool available) =>
     _Middleware().respond(message, available);
