@@ -34,7 +34,7 @@ class MainActivity : FlutterActivity() {
         }
 
         Pigeon.NativeMetrics.setup(flutterEngine.dartExecutor.binaryMessenger) {
-            metricsKey -> App.segment.initialize(metricsKey)
+             App.segment.initialize()
         }
     }
 

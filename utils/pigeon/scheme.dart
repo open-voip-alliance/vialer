@@ -46,5 +46,5 @@ abstract class NativeIncomingCallScreen {
 @HostApi()
 // ignore:one_member_abstracts
 abstract class NativeMetrics {
-  void initialize(String key);
+  void initialize();
 }

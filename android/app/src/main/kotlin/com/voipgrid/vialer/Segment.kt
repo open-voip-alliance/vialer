@@ -14,11 +14,13 @@ class Segment(
     private var instance: Analytics? = null
     private var isIdentified = false
 
-    fun initialize(key: String? = null) {
-        val metricsKey = key ?: (prefs.metricsKey ?: run {
+    fun initialize() {
+        val metricsKey = context.getString(R.string.segment_android_key)
+
+        if (metricsKey.isBlank()) {
             logger.writeLog("Unable to initialize metrics, there is no key.")
             return
-        })
+        }
 
         instance = Analytics.Builder(context, metricsKey)
             .tag("${INSTANCE_TAG}_$metricsKey")
