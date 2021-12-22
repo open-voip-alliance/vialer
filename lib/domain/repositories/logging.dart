@@ -54,6 +54,9 @@ class LoggingRepository {
 
   final _nativeRemoteLogging = NativeLogging();
 
+  int _restartRemoteConnectionCount = 0;
+  bool _connectedToRemote = false;
+
   String _logStringOf(
     LogRecord record, {
     required String userIdentifier,
@@ -86,22 +89,33 @@ class LoggingRepository {
     required String token,
   }) async {
     Future<void> startConnection() async {
-      _remoteLoggingSocket = await SecureSocket.connect(
-        'data.logentries.com',
-        443,
-      );
+      try {
+        _remoteLoggingSocket = await SecureSocket.connect(
+          'data.logentries.com',
+          443,
+        );
+
+        _remoteLoggingSocket!.done.onError(
+          (error, stackTrace) {
+            // Keep track if we need to restart remote logging if we got
+            // disconnected.
+            if (error is SocketException) {
+              _connectedToRemote = false;
+            }
+          },
+        );
+
+        _restartRemoteConnectionCount = 0;
+        _connectedToRemote = true;
+      } on SocketException catch (e) {
+        print('Can not connect to Logentries. Reason: $e');
+
+        _restartRemoteConnectionCount++;
+        _connectedToRemote = false;
+      }
     }
 
     await startConnection();
-
-    _remoteLoggingSocket!.done.onError(
-      (error, stackTrace) {
-        // Restart the remote logging connection if we got disconnected.
-        if (error is SocketException) {
-          startConnection();
-        }
-      },
-    );
 
     if (token.isNotEmpty) {
       _remoteLogSubscription ??= Logger.root.onRecord.listen((record) async {
@@ -111,7 +125,17 @@ class LoggingRepository {
           remote: true,
         );
 
-        _remoteLoggingSocket!.writeln('$token $message');
+        if (!_connectedToRemote && _restartRemoteConnectionCount < 10) {
+          await startConnection();
+
+          if (_restartRemoteConnectionCount == 10) {
+            print('Can not connect to Logentries, not trying again');
+          }
+        }
+
+        if (_connectedToRemote) {
+          _remoteLoggingSocket!.writeln('$token $message');
+        }
       });
     }
   }
