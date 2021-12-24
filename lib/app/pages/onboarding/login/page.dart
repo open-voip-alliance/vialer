@@ -181,6 +181,7 @@ class _LoginPageState extends State<LoginPage>
                         switchOutCurve: Curves.decelerate.flipped,
                         child: Icon(
                           _hidePassword ? VialerSans.eyeOff : VialerSans.eye,
+                          color: context.brand.theme.colors.primary,
                           key: ValueKey(_hidePassword),
                         ),
                       ),
