@@ -524,7 +524,7 @@ workflows:
 
   staging:
     name: Staging
-    <<: *main_workflow
+    <<: *build_workflow
     triggering:
       events:
         - tag
