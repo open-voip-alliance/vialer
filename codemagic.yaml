@@ -159,6 +159,10 @@ custom: # Custom properties to make workflows cleaner
     - &build_aab
       name: Building app bundle (.aab) for Android #TODO: $TEST_SERVICE_ACCOUNT decoding is only temporary and should be removed when Codemagic has resolved their issue.
       script: |
+        echo $FCI_KEYSTORE_PATH
+        echo $FCI_KEYSTORE_PASSWORD
+        echo $FCI_KEY_ALIAS
+        echo $FCI_KEY_PASSWORD
         echo $TEST_SERVICE_ACCOUNT | base64 --decode > $TEST_SERVICE_ACCOUNT
         echo "flutter.sdk=$HOME/programs/flutter" > "$FCI_BUILD_DIR/android/local.properties"
         echo $ANDROID_FIREBASE_SECRET | base64 --decode > $FCI_BUILD_DIR/android/app/google-services.json
@@ -167,10 +171,6 @@ custom: # Custom properties to make workflows cleaner
     - &build_universal_apk_from_aab
       name: Building "Universal APK" (.apk) for Android
       script: |
-        echo $FCI_KEYSTORE_PATH
-        echo $FCI_KEYSTORE_PASSWORD
-        echo $FCI_KEY_ALIAS
-        echo $FCI_KEY_PASSWORD
         android-app-bundle build-universal-apk \
         --ks $FCI_KEYSTORE_PATH \
         --ks-pass $FCI_KEYSTORE_PASSWORD \
