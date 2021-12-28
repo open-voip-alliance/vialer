@@ -279,6 +279,12 @@ custom: # Custom properties to make workflows cleaner
     staging_env_vars: &brand_config_staging_env_vars
       BRAND: vialerStaging
       BUNDLE_ID: "com.voipgrid.vialer"
+    verbonden_env_vars: &brand_config_verbonden_env_vars
+      BRAND: verbonden
+      BUNDLE_ID: "nl.verbonden.app"
+    annabel_env_vars: &brand_config_annabel_env_vars
+      BRAND: annabel
+      BUNDLE_ID: "com.bellenmetannabel.app"
   defaults: # Default sections that can be reused between workflows to cover common use-cases
     cache: &defaults_cache
       cache_paths:
@@ -377,8 +383,8 @@ custom: # Custom properties to make workflows cleaner
 #        rollout_fraction: 0.05
 
 workflows:
-  main: &main_workflow
-    name: main
+  build: &build_workflow
+    name: Build for Vialer
     <<: *config
     environment:
       groups:
@@ -416,28 +422,65 @@ workflows:
       - *release_to_sentry
     artifacts: *defaults_artifacts
 
-  main-with-qa-publishing:
-    <<: *main_workflow
-    name: main with QA publishing
+  build-voys:
+    <<: *build_workflow
+    name: Build for Voys
     triggering:
       cancel_previous_builds: true
     environment:
       groups:
         - configuration
         - diagnostics
-        - vialer_android_firebase
-        - vialer_upload_keystore_credentials
-        - vialer_playstore_credentials
-        - vialer_ios_appstore_credentials
+        - voys_android_firebase
+        - voys_upload_keystore_credentials
+        - voys_playstore_credentials
+        - voys_ios_appstore_credentials
       <<: *config_environment
       vars:
-        <<: *brand_config_vialer_env_vars
+        <<: *brand_config_voys_env_vars
         IOS_SIGNING_TYPE: "IOS_APP_STORE"
         ENABLE_IOS_SANDBOX_PUSH_NOTIFICATIONS: "false"
         FINALIZE_SENTRY_RELEASE: "false"
-    publishing:
-      <<: *publish_for_qa
 
+  build-verbonden:
+    <<: *build_workflow
+    name: Build for Verbonden
+    triggering:
+      cancel_previous_builds: true
+    environment:
+      groups:
+        - configuration
+        - diagnostics
+        - verbonden_android_firebase
+        - verbonden_upload_keystore_credentials
+        - verbonden_playstore_credentials
+        - verbonden_ios_appstore_credentials
+      <<: *config_environment
+      vars:
+        <<: *brand_config_verbonden_env_vars
+        IOS_SIGNING_TYPE: "IOS_APP_STORE"
+        ENABLE_IOS_SANDBOX_PUSH_NOTIFICATIONS: "false"
+        FINALIZE_SENTRY_RELEASE: "false"
+
+  build-annabel:
+    <<: *build_workflow
+    name: Build for Annabel
+    triggering:
+      cancel_previous_builds: true
+    environment:
+      groups:
+        - configuration
+        - diagnostics
+        - annabel_android_firebase
+        - annabel_upload_keystore_credentials
+        - annabel_playstore_credentials
+        - annabel_ios_appstore_credentials
+      <<: *config_environment
+      vars:
+        <<: *brand_config_annabel_env_vars
+        IOS_SIGNING_TYPE: "IOS_APP_STORE"
+        ENABLE_IOS_SANDBOX_PUSH_NOTIFICATIONS: "false"
+        FINALIZE_SENTRY_RELEASE: "false"
 
   merge-requests:
     name: merge requests
