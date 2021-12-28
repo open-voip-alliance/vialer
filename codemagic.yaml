@@ -376,6 +376,10 @@ custom: # Custom properties to make workflows cleaner
 #        api_key: $APP_STORE_CONNECT_PRIVATE_KEY
 #        key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
 #        issuer_id: $APP_STORE_CONNECT_ISSUER_ID
+#        submit_to_testflight: true
+#          beta_groups:
+#            - Beta Testers
+#            - External Testers
 #      google_play:
 #        credentials: $TEST_SERVICE_ACCOUNT
 #        track: production
@@ -473,8 +477,8 @@ workflows:
         - diagnostics
         - annabel_android_firebase
         - annabel_upload_keystore_credentials
-        - annabel_playstore_credentials
-        - annabel_ios_appstore_credentials
+        #- annabel_playstore_credentials
+        #- annabel_ios_appstore_credentials
       <<: *config_environment
       vars:
         <<: *brand_config_annabel_env_vars
