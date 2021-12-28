@@ -452,9 +452,9 @@ workflows:
         - configuration
         - diagnostics
         - verbonden_android_firebase
-        - verbonden_upload_keystore_credentials
-        - verbonden_playstore_credentials
-        - verbonden_ios_appstore_credentials
+        - verbonden_keystore_credentials
+        #- verbonden_playstore_credentials
+       # - verbonden_ios_appstore_credentials
       <<: *config_environment
       vars:
         <<: *brand_config_verbonden_env_vars
