@@ -476,7 +476,7 @@ workflows:
         - configuration
         - diagnostics
         - annabel_android_firebase
-        - annabel_upload_keystore_credentials
+        - annabel_keystore_credentials
         #- annabel_playstore_credentials
         #- annabel_ios_appstore_credentials
       <<: *config_environment
