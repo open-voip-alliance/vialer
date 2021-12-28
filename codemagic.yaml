@@ -167,6 +167,10 @@ custom: # Custom properties to make workflows cleaner
     - &build_universal_apk_from_aab
       name: Building "Universal APK" (.apk) for Android
       script: |
+        echo $FCI_KEYSTORE_PATH
+        echo $FCI_KEYSTORE_PASSWORD
+        echo $FCI_KEY_ALIAS
+        echo $FCI_KEY_PASSWORD
         android-app-bundle build-universal-apk \
         --ks $FCI_KEYSTORE_PATH \
         --ks-pass $FCI_KEYSTORE_PASSWORD \
