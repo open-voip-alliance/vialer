@@ -17,7 +17,7 @@ build:
         CODEMAGIC_WORKFLOW: "merge-requests"
     - if: '$CI_MERGE_REQUEST_EVENT_TYPE == "merge_train"'
       variables:
-        CODEMAGIC_WORKFLOW: "main"
+        CODEMAGIC_WORKFLOW: "build"
   before_script:
     - dart ./utils/ci/gitlab/remove_build_url.dart
   script:

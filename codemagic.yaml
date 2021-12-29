@@ -102,23 +102,6 @@ custom: # Custom properties to make workflows cleaner
                 print(f'Cancelled build: {buildId}')
               else:
                 print(f'Failed to cancel build: {buildId}')
-    - &prepare_release_notes_from_gitlab
-      name: Preparing release notes from Gitlab tag
-      script: |
-        #!/usr/bin/env python3
-        import os
-        import requests
-        import subprocess
-
-        TAG = subprocess.check_output(['git', 'describe', '--tags', '--abbrev=0']).decode('ascii').strip()
-        GITLAB_API_TOKEN = os.getenv('GITLAB_API_TOKEN')
-        URL = "https://gitlab.wearespindle.com/api/v4/projects/105/releases/{tag}".format(tag=TAG)
-        HEADERS = {'Content-Type': 'application/json', 'Private-Token': GITLAB_API_TOKEN}
-
-        notes = requests.get(URL, headers=HEADERS).json()['description']
-        f = open("release_notes.txt", "w")
-        f.write(notes)
-        f.close()
     - &prepare_release_notes_from_files
       name: Preparing the release notes from the release notes on the file system
       script: dart utils/ci/codemagic/prepare_release_notes.dart
@@ -159,10 +142,6 @@ custom: # Custom properties to make workflows cleaner
     - &build_aab
       name: Building app bundle (.aab) for Android #TODO: $TEST_SERVICE_ACCOUNT decoding is only temporary and should be removed when Codemagic has resolved their issue.
       script: |
-        echo $FCI_KEYSTORE_PATH
-        echo $FCI_KEYSTORE_PASSWORD
-        echo $FCI_KEY_ALIAS
-        echo $FCI_KEY_PASSWORD
         echo $TEST_SERVICE_ACCOUNT | base64 --decode > $TEST_SERVICE_ACCOUNT
         echo "flutter.sdk=$HOME/programs/flutter" > "$FCI_BUILD_DIR/android/local.properties"
         echo $ANDROID_FIREBASE_SECRET | base64 --decode > $FCI_BUILD_DIR/android/app/google-services.json
