@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_phone_lib/audio/audio_state.dart';
 import 'package:flutter_phone_lib/call/call.dart';
+import 'package:flutter_phone_lib/call/call_state.dart';
 import 'package:flutter_phone_lib/call_session_state.dart';
 
 import '../../../../../domain/entities/exceptions/call_through.dart';
@@ -59,13 +60,19 @@ abstract class CallProcessState extends CallOriginDetermined {
   /// such as placing it on hold.
   bool get isActionable =>
       this is! InitiatingCallFailed &&
-      this is! Ringing &&
-      this is! InitiatingCall &&
-      !isFinished;
+          this is! Ringing &&
+          this is! InitiatingCall &&
+          !isFinished &&
+          !isInTransfer ||
+      isMergeable;
 
   /// We are in a finished state, this means there is no active call
   /// or audio.
   bool get isFinished => this is FinishedCalling;
+
+  bool get isMergeable =>
+      isInTransfer && voipCall!.isOnHold ||
+      voipCall?.state == CallState.connected;
 
   const CallProcessState({
     required CallOrigin origin,
