@@ -371,6 +371,13 @@ onboarding:
 
 
         $appName only displays your contacts and won't share them with third parties.
+    bluetooth:
+      title: "Bluetooth permission"
+      description(String appName): >-
+        You'll call with your default Bluetooth headset or speaker when it's connected.
+
+
+        If you allow $appName permission, you can also select other Bluetooth devices.
 
   voicemail:
     title: "Voicemail"

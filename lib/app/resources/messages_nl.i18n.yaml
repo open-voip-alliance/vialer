@@ -371,6 +371,13 @@ onboarding:
 
 
         $appName geeft alleen je contacten weer en ze worden nooit gedeeld met derden.
+    bluetooth:
+      title: "Toestemming voor Bluetooth"
+      description(String appName): >-
+        Je belt met jouw standaard Bluetooth-headset of -luidspreker wanneer deze is verbonden.
+
+
+        Als je Bluetooth-rechten toestaat aan $appName, kun je ook andere Bluetooth-apparaten selecteren.
 
   voicemail:
     title: "Voicemail"

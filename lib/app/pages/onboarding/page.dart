@@ -9,6 +9,7 @@ import 'cubit.dart';
 import 'login/page.dart';
 import 'mobile_number/page.dart';
 import 'password/page.dart';
+import 'permission/bluetooth/page.dart';
 import 'permission/call/page.dart';
 import 'permission/contacts/page.dart';
 import 'permission/microphone/page.dart';
@@ -47,6 +48,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
       OnboardingStep.microphonePermission: (_) =>
           const MicrophonePermissionPage(),
       OnboardingStep.contactsPermission: (_) => const ContactsPermissionPage(),
+      OnboardingStep.bluetoothPermission: (_) =>
+          const BluetoothPermissionPage(),
       OnboardingStep.voicemail: (_) => const VoicemailPage(),
       OnboardingStep.welcome: (_) => WelcomePage(),
     };
