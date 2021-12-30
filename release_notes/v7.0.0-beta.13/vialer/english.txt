@@ -1,0 +1,6 @@
+- Android: A tone will now always play when an outbound call is ringing
+- Users on Android 12 will now have to accept a new Bluetooth permission during onboarding
+- A number of UI elements have been updated to better match the colors of the rest of the app
+- Android: The app icon will now be used for notification icons instead of a generic one
+- Fixed a bug that would allow a transfer to be merged too early
+- Fixed a bug where the call duration would not update
