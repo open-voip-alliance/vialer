@@ -525,7 +525,7 @@ workflows:
       - *flutter_test
       - *build_aab
       - *build_universal_apk_from_aab
-      - *release_to_sentry
+      #- *release_to_sentry
     #publishing: *publish_for_production
 
   production-voys:
