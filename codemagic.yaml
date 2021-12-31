@@ -524,6 +524,7 @@ workflows:
       - *prepare_release_notes_from_files
       - *flutter_test
       - *build_aab
+      - *build_universal_apk_from_aab
       - *release_to_sentry
     #publishing: *publish_for_production
 
