@@ -294,7 +294,6 @@ custom: # Custom properties to make workflows cleaner
       - flutter_drive.log
 
     production_trigger: &production_was_tagged
-      cancel_previous_builds: true
       events:
         - tag
       tag_patterns:
@@ -362,19 +361,15 @@ custom: # Custom properties to make workflows cleaner
         track: beta
         in_app_update_priority: 0
 
-#    publish_for_production: &publish_for_production
-#      slack:
-#        channel: '#vialer_mobile_releases'
-#        notify_on_build_start: false
-#      app_store_connect:
-#        api_key: $APP_STORE_CONNECT_PRIVATE_KEY
-#        key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
-#        issuer_id: $APP_STORE_CONNECT_ISSUER_ID
-#      google_play:
-#        credentials: $TEST_SERVICE_ACCOUNT
-#        track: production
-#        in_app_update_priority: 0
-#        rollout_fraction: 0.05
+    publish_for_production: &publish_for_production
+      slack:
+        channel: '#vialer_mobile_releases'
+        notify_on_build_start: false
+      google_play:
+        credentials: $TEST_SERVICE_ACCOUNT
+        track: production
+        in_app_update_priority: 0
+        rollout_fraction: 0.05
 
 workflows:
   main: &main_workflow
@@ -530,10 +525,8 @@ workflows:
       - *prepare_release_notes_from_files
       - *flutter_test
       - *build_aab
-      - *update_ios_signing_for_current_brand
-      - *build_ipa
-      #- *release_to_sentry
-    #publishing: *publish_for_production
+      - *release_to_sentry
+    publishing: *publish_for_production
 
   production-voys:
     name: Release Voys to Production
