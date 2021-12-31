@@ -433,7 +433,6 @@ workflows:
     publishing:
       <<: *publish_for_qa
 
-
   merge-requests:
     name: merge requests
     <<: *config
@@ -526,7 +525,7 @@ workflows:
       - *flutter_test
       - *build_aab
       - *release_to_sentry
-    publishing: *publish_for_production
+    #publishing: *publish_for_production
 
   production-voys:
     name: Release Voys to Production
