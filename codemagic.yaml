@@ -521,7 +521,7 @@ workflows:
       - *set_version_string
       - *flutter_pub_get
       - *analyze
-      - *prepare_release_notes_from_files
+      #- *prepare_release_notes_from_files
       - *flutter_test
       - *build_aab
       - *build_universal_apk_from_aab
