@@ -369,7 +369,7 @@ custom: # Custom properties to make workflows cleaner
         credentials: $TEST_SERVICE_ACCOUNT
         track: production
         in_app_update_priority: 0
-        rollout_fraction: 0.05
+        submit_as_draft: true
 
 workflows:
   main: &main_workflow
@@ -521,12 +521,12 @@ workflows:
       - *set_version_string
       - *flutter_pub_get
       - *analyze
-      #- *prepare_release_notes_from_files
+      - *prepare_release_notes_from_files
       - *flutter_test
       - *build_aab
       - *build_universal_apk_from_aab
-      #- *release_to_sentry
-    #publishing: *publish_for_production
+      - *release_to_sentry
+    publishing: *publish_for_production
 
   production-voys:
     name: Release Voys to Production
