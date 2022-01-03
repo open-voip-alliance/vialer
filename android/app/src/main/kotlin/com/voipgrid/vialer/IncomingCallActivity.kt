@@ -21,6 +21,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.integerResource
@@ -140,7 +141,7 @@ fun IncomingCallPage(
                 Icon(
                     icon = VialerSans(integerResource(R.integer.logo)),
                     size = 60.sp,
-                    color = colorResource(R.color.primary),
+                    color = LocalContext.current.primary,
                 )
             }
 
@@ -168,7 +169,7 @@ fun RadialGradientBackground(content: @Composable() () -> Unit) {
     val configuration = LocalConfiguration.current
     val screenHeight = with(LocalDensity.current) { configuration.screenHeightDp.dp.toPx() }
     val screenWidth = with(LocalDensity.current) { configuration.screenWidthDp.dp.toPx() }
-    val primaryColor = colorResource(R.color.primary)
+    val primaryColor = LocalContext.current.primary
 
     Box(
         modifier = Modifier
@@ -313,7 +314,7 @@ fun Avatar(callHeaderInformation: CallHeaderInformation) {
     ) {
         Text(
             generateAvatarContent(callHeaderInformation = callHeaderInformation),
-            style = TextStyle(color = colorResource(R.color.primary), fontWeight = FontWeight.Bold),
+            style = TextStyle(color = LocalContext.current.primary, fontWeight = FontWeight.Bold),
         )
     }
 }
@@ -384,3 +385,15 @@ value class VialerSans(val character: Int) {
 }
 
 data class CallHeaderInformation(val title: String = "", val subtitle: String = "")
+
+/**
+ * The color palette doesn't match perfectly between brands and for this screen, we want to use
+ * the darker color for Vialer and the lighter color for other brands.
+ */
+val Context.primary: Color
+    get() = Color(
+        when(getString(R.string.identifier).contains("vialer")) {
+            true -> getColor(R.color.primary_dark)
+            false -> getColor(R.color.primary)
+        }
+    )
