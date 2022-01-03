@@ -2,10 +2,10 @@ import 'dart:async';
 
 import '../../dependency_locator.dart';
 import '../entities/setting.dart';
-import '../repositories/destination.dart';
 import '../repositories/metrics.dart';
 import '../repositories/storage.dart';
 import '../use_case.dart';
+import 'change_availability.dart';
 import 'change_mobile_number.dart';
 import 'disable_remote_logging.dart';
 import 'enable_remote_logging.dart';
@@ -18,7 +18,6 @@ import 'unregister_to_voip_middleware.dart';
 
 class ChangeSettingUseCase extends UseCase {
   final _storageRepository = dependencyLocator<StorageRepository>();
-  final _destinationRepository = dependencyLocator<DestinationRepository>();
   final _metricsRepository = dependencyLocator<MetricsRepository>();
 
   final _getSettings = GetSettingsUseCase();
@@ -30,6 +29,7 @@ class ChangeSettingUseCase extends UseCase {
   final _refreshVoip = RefreshVoipUseCase();
   final _changeMobileNumber = ChangeMobileNumberUseCase();
   final _getMobileNumber = GetMobileNumberUseCase();
+  final _changeAvailability = ChangeAvailabilityUseCase();
 
   Future<void> call({required Setting setting, bool remote = true}) async {
     if (setting is RemoteLoggingSetting) {
@@ -39,17 +39,9 @@ class ChangeSettingUseCase extends UseCase {
         await _disableRemoteLogging();
       }
     } else if (remote && setting is AvailabilitySetting) {
-      var availability = setting.value;
-      await _destinationRepository.setAvailability(
-        selectedDestinationId: availability!.selectedDestinationInfo!.id,
-        phoneAccountId: availability.selectedDestinationInfo!.phoneAccountId,
-        fixedDestinationId:
-            availability.selectedDestinationInfo!.fixedDestinationId,
+      await _changeAvailability(
+        destination: setting.value!.selectedDestinationInfo!,
       );
-
-      availability = await _destinationRepository.getLatestAvailability();
-      setting = AvailabilitySetting(availability);
-      _metricsRepository.track('availability-changed');
     }
 
     if (!setting.mutable) {
