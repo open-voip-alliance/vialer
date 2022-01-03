@@ -29,14 +29,23 @@ class LoginUseCase extends UseCase {
     _storageRepository.systemUser = user;
 
     await _getLatestAvailability();
-    _track(usedTwoFactor: _isUsingTwoFactor(credentials));
+    _track(
+      usedTwoFactor: _isUsingTwoFactor(credentials),
+      isLoginFromLegacyApp: credentials is ImportedLegacyAppCredentials,
+    );
 
     return true;
   }
 
-  Future<void> _track({required bool usedTwoFactor}) async {
+  Future<void> _track({
+    required bool usedTwoFactor,
+    required bool isLoginFromLegacyApp,
+  }) async {
     await _identifyForTracking();
-    await _trackLogin(usedTwoFactor: usedTwoFactor);
+    await _trackLogin(
+      usedTwoFactor: usedTwoFactor,
+      isLoginFromLegacyApp: isLoginFromLegacyApp,
+    );
   }
 
   Future<SystemUser?> _getUserFromCredentials(
