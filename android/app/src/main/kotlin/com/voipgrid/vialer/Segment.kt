@@ -15,10 +15,11 @@ class Segment(
     private val logger: Logger,
     private val prefs: FlutterSharedPreferences,
 ) {
-    private var instance: Analytics? = null
     private var isIdentified = false
 
     fun initialize() {
+        if (instance != null) return
+
         val metricsKey = context.getString(R.string.segment_android_key)
         isIdentified = false
 
@@ -82,6 +83,8 @@ class Segment(
 
     companion object {
         const val INSTANCE_TAG = "SEGMENT_NATIVE_ANDROID"
+
+        private var instance: Analytics? = null
 
         /**
          * The amount of time to wait after identification before sending a track event.
