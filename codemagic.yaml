@@ -280,11 +280,6 @@ custom: # Custom properties to make workflows cleaner
       BRAND: vialerStaging
       BUNDLE_ID: "com.voipgrid.vialer"
   defaults: # Default sections that can be reused between workflows to cover common use-cases
-    cache: &defaults_cache
-      cache_paths:
-        - $HOME/.pub-cache
-        - $HOME/Library/Caches/CocoaPods
-        - $HOME/.gradle/caches
     artifacts: &defaults_artifacts
       - build/**/outputs/**/*.apk
       - build/**/outputs/**/*.aab
@@ -400,7 +395,6 @@ workflows:
       branch_patterns:
         - pattern: main
           include: true
-    cache: *defaults_cache
     scripts:
       - *set_up_env_file
       - *set_version_string_to_most_recent_tag
@@ -409,8 +403,8 @@ workflows:
       - *flutter_test
       - *build_aab
       - *build_universal_apk_from_aab
-      - *update_ios_signing_for_current_brand
-      - *build_ipa
+      #- *update_ios_signing_for_current_brand
+      #- *build_ipa
       - *set_testflight_release_notes_for_main
       - *release_to_sentry
     artifacts: *defaults_artifacts
@@ -454,7 +448,6 @@ workflows:
         IOS_SIGNING_TYPE: "IOS_APP_DEVELOPMENT"
         ENABLE_IOS_SANDBOX_PUSH_NOTIFICATIONS: "true"
         FINALIZE_SENTRY_RELEASE: "false"
-    cache: *defaults_cache
     scripts:
       - *cancel_existing_builds_from_this_branch
       - *set_up_env_file
@@ -464,8 +457,8 @@ workflows:
       - *flutter_test
       - *build_aab
       - *build_universal_apk_from_aab
-      - *update_ios_signing_for_current_brand
-      - *build_ipa
+      #- *update_ios_signing_for_current_brand
+      #- *build_ipa
       - *update_gitlab_merge_request_with_build_url
       - *release_to_sentry
     artifacts: *defaults_artifacts
@@ -512,7 +505,6 @@ workflows:
         ENABLE_IOS_SANDBOX_PUSH_NOTIFICATIONS: "false"
         FINALIZE_SENTRY_RELEASE: "true"
     triggering: *production_was_tagged
-    cache: *defaults_cache
     artifacts: *defaults_artifacts
     scripts:
       - *set_up_env_file
@@ -561,7 +553,6 @@ workflows:
         IOS_SIGNING_TYPE: "IOS_APP_STORE"
         ENABLE_IOS_SANDBOX_PUSH_NOTIFICATIONS: "false"
         FINALIZE_SENTRY_RELEASE: "true"
-    cache: *defaults_cache
     artifacts: *defaults_artifacts
     triggering: *beta_was_tagged
     scripts:
