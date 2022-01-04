@@ -140,7 +140,7 @@ class Middleware(
         }
 
         return true.also {
-            segment.track("notification_received", mapOf(
+            segment.track("notification-received", mapOf(
                 "call_id" to remoteMessage.callId,
                 "correlation_id" to remoteMessage.correlationId,
             ))
