@@ -14,6 +14,7 @@ class TrackVoipCallUseCase extends UseCase {
   Future<void> call({
     required CallDirection direction,
     required Set<AudioRoute> usedRoutes,
+    required double mos,
     String? reason,
   }) async {
     final connectivityType = await _connectivityRepository.currentType;
@@ -25,6 +26,7 @@ class TrackVoipCallUseCase extends UseCase {
       'speaker-used': usedRoutes.contains(AudioRoute.speaker),
       'connection': connectivityType.toString(),
       'reason': reason,
+      'mos': mos,
     });
   }
 }

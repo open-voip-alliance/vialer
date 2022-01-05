@@ -373,6 +373,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
                   ? CallDirection.inbound
                   : CallDirection.outbound,
           usedRoutes: _preservedCallSessionState.usedAudioRoutes,
+          mos: _preservedCallSessionState.mos,
           reason: callSessionState.activeCall?.reason,
         );
 
