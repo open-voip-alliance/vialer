@@ -9,25 +9,36 @@ class ClearSavedLogsOnNewDayUseCase extends UseCase {
 
   Future<void> call() async {
     final lastLog = _storageRepository.logs?.split('\n').last;
+
+    if (_shouldLogsBeCleared(lastLog)) {
+      _storageRepository.logs = null;
+    }
+  }
+
+  bool _shouldLogsBeCleared(String? lastLog) {
     if (lastLog == null) {
-      return;
+      return false;
     }
 
     final match = RegExp(r'\[(.+)\]').firstMatch(lastLog);
+
     if (match == null) {
-      return;
+      return false;
     }
 
     final dateTimeString = match.groupCount >= 1 ? match.group(1) : null;
+
     if (dateTimeString == null) {
-      return;
+      return false;
     }
 
-    final date = DateTime.parse(dateTimeString);
-    final now = DateTime.now();
+    try {
+      final date = DateTime.parse(dateTimeString);
+      final now = DateTime.now();
 
-    if (date.day != now.day) {
-      _storageRepository.logs = null;
+      return date.day != now.day;
+    } on FormatException {
+      return false;
     }
   }
 }
