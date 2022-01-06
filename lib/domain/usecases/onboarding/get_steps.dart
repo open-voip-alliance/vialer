@@ -25,7 +25,7 @@ class GetOnboardingStepsUseCase extends UseCase {
           PermissionStatus.granted;
 
       ignoreBatteryOptimizationsDenied = await _permissionRepository
-          .getPermissionStatus(Permission.ignoreBatteryOptimizations) !=
+              .getPermissionStatus(Permission.ignoreBatteryOptimizations) !=
           PermissionStatus.granted;
     }
 
@@ -43,7 +43,8 @@ class GetOnboardingStepsUseCase extends UseCase {
       if (contactsPermissionDenied) OnboardingStep.contactsPermission,
       if (microphonePermissionDenied) OnboardingStep.microphonePermission,
       if (bluetoothPermissionDenied) OnboardingStep.bluetoothPermission,
-      if (ignoreBatteryOptimizationsDenied) OnboardingStep.ignoreBatteryOptimizationsPermission,
+      if (ignoreBatteryOptimizationsDenied)
+        OnboardingStep.ignoreBatteryOptimizationsPermission,
       OnboardingStep.welcome,
     ];
   }

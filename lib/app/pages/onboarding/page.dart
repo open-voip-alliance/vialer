@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
-import 'package:vialer/app/pages/onboarding/permission/ignore_battery_optimization/page.dart';
 
 import '../../../domain/entities/onboarding/step.dart';
 import '../../routes.dart';
@@ -13,6 +12,7 @@ import 'password/page.dart';
 import 'permission/bluetooth/page.dart';
 import 'permission/call/page.dart';
 import 'permission/contacts/page.dart';
+import 'permission/ignore_battery_optimization/page.dart';
 import 'permission/microphone/page.dart';
 import 'two_factor_authentication/page.dart';
 import 'voicemail/page.dart';
@@ -52,7 +52,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
       OnboardingStep.bluetoothPermission: (_) =>
           const BluetoothPermissionPage(),
       OnboardingStep.ignoreBatteryOptimizationsPermission: (_) =>
-      const IgnoreBatteryOptimizationsPermissionPage(),
+          const IgnoreBatteryOptimizationsPermissionPage(),
       OnboardingStep.voicemail: (_) => const VoicemailPage(),
       OnboardingStep.welcome: (_) => WelcomePage(),
     };
