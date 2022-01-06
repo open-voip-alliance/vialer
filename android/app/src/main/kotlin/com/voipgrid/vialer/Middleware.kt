@@ -144,6 +144,7 @@ class Middleware(
             if (it.state == NetworkInfo.State.DISCONNECTED && it.detailedState == NetworkInfo.DetailedState.BLOCKED) {
                 logger.writeLog("Network is in a bad state...", PhoneLibLogLevel.ERROR)
             }
+            logger.writeLog("Network state: ${it.state.name}, detailed state: ${it.detailedState.name}")
         }
 
         if (isCallAlreadyBeingHandled(remoteMessage)) {
