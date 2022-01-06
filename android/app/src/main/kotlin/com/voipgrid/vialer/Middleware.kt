@@ -1,11 +1,14 @@
 package com.voipgrid.vialer
 
 import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import android.os.Build
 import com.google.firebase.messaging.RemoteMessage
 import com.voipgrid.vialer.logging.Logger
 import okhttp3.*
 import org.openvoipalliance.flutterphonelib.NativeMiddleware
+import org.openvoipalliance.flutterphonelib.PhoneLibLogLevel
 import java.io.IOException
 
 class Middleware(
@@ -35,6 +38,9 @@ class Middleware(
      * sure to ignore any with the same id in the future.
      */
     private var callIdBeingHandled: String? = null
+
+    private val activeNetworkInfo: NetworkInfo?
+        get() = context.getSystemService(ConnectivityManager::class.java).activeNetworkInfo
 
     override fun tokenReceived(token: String) {
         if (lastRegisteredToken == token) {
@@ -133,6 +139,12 @@ class Middleware(
 
     override fun inspect(remoteMessage: RemoteMessage): Boolean {
         if (!remoteMessage.isCall) return false
+
+        activeNetworkInfo?.let {
+            if (it.state == NetworkInfo.State.DISCONNECTED && it.detailedState == NetworkInfo.DetailedState.BLOCKED) {
+                logger.writeLog("Network is in a bad state...", PhoneLibLogLevel.ERROR)
+            }
+        }
 
         if (isCallAlreadyBeingHandled(remoteMessage)) {
             logger.writeLog("Ignoring push message as we are already handling it: ${remoteMessage.callId}")

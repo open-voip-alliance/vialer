@@ -14,6 +14,7 @@ class GetOnboardingStepsUseCase extends UseCase {
   Future<List<OnboardingStep>> call() async {
     var callPermissionDenied = false;
     var bluetoothPermissionDenied = false;
+    var ignoreBatteryOptimizationsDenied = false;
     if (Platform.isAndroid) {
       callPermissionDenied =
           await _permissionRepository.getPermissionStatus(Permission.phone) !=
@@ -21,6 +22,10 @@ class GetOnboardingStepsUseCase extends UseCase {
 
       bluetoothPermissionDenied = await _permissionRepository
               .getPermissionStatus(Permission.bluetooth) !=
+          PermissionStatus.granted;
+
+      ignoreBatteryOptimizationsDenied = await _permissionRepository
+          .getPermissionStatus(Permission.ignoreBatteryOptimizations) !=
           PermissionStatus.granted;
     }
 
@@ -38,6 +43,7 @@ class GetOnboardingStepsUseCase extends UseCase {
       if (contactsPermissionDenied) OnboardingStep.contactsPermission,
       if (microphonePermissionDenied) OnboardingStep.microphonePermission,
       if (bluetoothPermissionDenied) OnboardingStep.bluetoothPermission,
+      if (ignoreBatteryOptimizationsDenied) OnboardingStep.ignoreBatteryOptimizationsPermission,
       OnboardingStep.welcome,
     ];
   }

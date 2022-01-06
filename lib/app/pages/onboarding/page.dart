@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
+import 'package:vialer/app/pages/onboarding/permission/ignore_battery_optimization/page.dart';
 
 import '../../../domain/entities/onboarding/step.dart';
 import '../../routes.dart';
@@ -50,6 +51,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
       OnboardingStep.contactsPermission: (_) => const ContactsPermissionPage(),
       OnboardingStep.bluetoothPermission: (_) =>
           const BluetoothPermissionPage(),
+      OnboardingStep.ignoreBatteryOptimizationsPermission: (_) =>
+      const IgnoreBatteryOptimizationsPermissionPage(),
       OnboardingStep.voicemail: (_) => const VoicemailPage(),
       OnboardingStep.welcome: (_) => WelcomePage(),
     };

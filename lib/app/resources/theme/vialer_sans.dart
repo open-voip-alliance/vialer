@@ -55,4 +55,5 @@ abstract class VialerSans {
   static const feedback = IconData(0xE959, fontFamily: _family);
   static const edit = IconData(0xE90E, fontFamily: _family);
   static const info = IconData(0xE918, fontFamily: _family);
+  static const battery = IconData(0xE932, fontFamily: _family); //TODO ACTUAL
 }

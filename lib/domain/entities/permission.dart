@@ -10,6 +10,7 @@ enum Permission {
   /// 
   /// Android only.
   bluetooth,
+  ignoreBatteryOptimizations,
 }
 
 extension PermissionString on Permission {
