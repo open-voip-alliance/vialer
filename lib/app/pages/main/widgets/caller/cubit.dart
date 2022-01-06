@@ -39,6 +39,8 @@ import '../../../../../domain/usecases/get_voip_call_event_stream.dart';
 import '../../../../../domain/usecases/increment_call_through_calls_count.dart';
 import '../../../../../domain/usecases/metrics/track_call_initiated.dart';
 import '../../../../../domain/usecases/metrics/track_call_through_call.dart';
+import '../../../../../domain/usecases/metrics/track_outbound_call_failed.dart';
+import '../../../../../domain/usecases/metrics/track_user_initiated_outbound_call.dart';
 import '../../../../../domain/usecases/metrics/track_voip_call.dart';
 import '../../../../../domain/usecases/onboarding/request_permission.dart';
 import '../../../../../domain/usecases/open_settings.dart';
@@ -64,6 +66,8 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
   final _trackVoipCall = TrackVoipCallUseCase();
   final _trackCallThroughCall = TrackCallThroughCallUseCase();
   final _trackVoipCallStarted = TrackVoipCallStartedUseCase();
+  final _trackOutboundCallFailed = TrackOutboundCallFailedUseCase();
+  final _trackUserInitiatedOutboundCall = TrackUserInitiatedOutboundCall();
 
   final _incrementCallThroughCallsCount =
       IncrementCallThroughCallsCountUseCase();
@@ -151,7 +155,15 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
     required CallOrigin origin,
     bool showingConfirmPage = false,
   }) async {
-    if (state is! CanCall) return;
+    _trackUserInitiatedOutboundCall(via: origin.toTrackString());
+
+    if (state is! CanCall) {
+      logger.severe(
+        'Unable to place outgoing call, call state: ${state.runtimeType}',
+      );
+      _trackOutboundCallFailed(reason: Reason.invalidCallState);
+      return;
+    }
 
     if (await _getHasVoipEnabled()) {
       await _callViaVoip(destination, origin: origin);
@@ -280,9 +292,15 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
     String destination, {
     required CallOrigin origin,
   }) async {
-    if (!await _hasMicPermission()) return;
+    if (!await _hasMicPermission()) {
+      _trackOutboundCallFailed(reason: Reason.noMicrophonePermission);
+      return;
+    }
 
-    if (await _getConnectivityType() == ConnectivityType.none) return;
+    if (await _getConnectivityType() == ConnectivityType.none) {
+      _trackOutboundCallFailed(reason: Reason.noConnectivity);
+      return;
+    }
 
     logger.info('Starting VoIP call');
     try {
@@ -299,6 +317,10 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
 
       // TODO: on VoipException
     } on CallThroughException catch (e) {
+      _trackOutboundCallFailed(
+        reason: Reason.unknown,
+        message: e.runtimeType.toString(),
+      );
       emit(processState.failed(e));
     }
   }
