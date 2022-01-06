@@ -28,7 +28,7 @@ packages:
       name: archive
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.1.6"
+    version: "3.1.8"
   args:
     dependency: transitive
     description:
@@ -189,14 +189,14 @@ packages:
       name: connectivity_plus
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.0"
+    version: "2.2.0"
   connectivity_plus_linux:
     dependency: transitive
     description:
       name: connectivity_plus_linux
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.1"
+    version: "1.2.0"
   connectivity_plus_macos:
     dependency: transitive
     description:
@@ -210,14 +210,14 @@ packages:
       name: connectivity_plus_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.1"
+    version: "1.2.0"
   connectivity_plus_web:
     dependency: transitive
     description:
       name: connectivity_plus_web
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.0+1"
+    version: "1.2.0"
   connectivity_plus_windows:
     dependency: transitive
     description:
@@ -734,7 +734,7 @@ packages:
       name: pigeon
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.12"
+    version: "1.0.13"
   platform:
     dependency: transitive
     description:
@@ -748,14 +748,14 @@ packages:
       name: plugin_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.2"
+    version: "2.1.0"
   pointycastle:
     dependency: transitive
     description:
       name: pointycastle
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.4.0"
+    version: "3.5.0"
   pool:
     dependency: transitive
     description:
@@ -776,7 +776,7 @@ packages:
       name: provider
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.0.1"
+    version: "6.0.2"
   pub_semver:
     dependency: transitive
     description:

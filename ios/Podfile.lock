@@ -1,10 +1,10 @@
 PODS:
-  - Alamofire (5.4.4)
-  - Amplitude (8.5.0)
+  - Alamofire (5.5.0)
+  - Amplitude (8.7.1)
   - Analytics (4.1.6)
   - connectivity_plus (0.0.1):
     - Flutter
-    - Reachability
+    - ReachabilitySwift
   - contacts_service (0.2.2):
     - Flutter
   - device_info (0.0.1):
@@ -48,7 +48,7 @@ PODS:
     - Flutter
   - package_info_plus (0.4.5):
     - Flutter
-  - path_provider (0.0.1):
+  - path_provider_ios (0.0.1):
     - Flutter
   - "permission_handler (5.1.0+2)":
     - Flutter
@@ -56,41 +56,41 @@ PODS:
   - PIL (0.1.0):
     - iOSVoIPLib (~> 0.1.0)
     - Swinject (~> 2.7.1)
-  - Reachability (3.2)
+  - ReachabilitySwift (5.0.0)
   - Segment-Amplitude (3.3.2):
     - Amplitude (~> 8.3)
     - Analytics
-  - Sentry (7.3.0):
-    - Sentry/Core (= 7.3.0)
-  - Sentry/Core (7.3.0)
+  - Sentry (7.5.4):
+    - Sentry/Core (= 7.5.4)
+  - Sentry/Core (7.5.4)
   - sentry_flutter (0.0.1):
     - Flutter
     - FlutterMacOS
-    - Sentry (~> 7.3.0)
-  - shared_preferences (0.0.1):
+    - Sentry (~> 7.5.1)
+  - shared_preferences_ios (0.0.1):
     - Flutter
-  - sqlite3 (3.35.5):
-    - sqlite3/common (= 3.35.5)
-  - sqlite3/common (3.35.5)
-  - sqlite3/fts5 (3.35.5):
+  - sqlite3 (3.37.1):
+    - sqlite3/common (= 3.37.1)
+  - sqlite3/common (3.37.1)
+  - sqlite3/fts5 (3.37.1):
     - sqlite3/common
-  - sqlite3/json1 (3.35.5):
+  - sqlite3/json1 (3.37.1):
     - sqlite3/common
-  - sqlite3/perf-threadsafe (3.35.5):
+  - sqlite3/perf-threadsafe (3.37.1):
     - sqlite3/common
-  - sqlite3/rtree (3.35.5):
+  - sqlite3/rtree (3.37.1):
     - sqlite3/common
   - sqlite3_flutter_libs (0.0.1):
     - Flutter
-    - sqlite3 (~> 3.35.4)
+    - sqlite3 (~> 3.37.0)
     - sqlite3/fts5
     - sqlite3/json1
     - sqlite3/perf-threadsafe
     - sqlite3/rtree
   - Swinject (2.7.1)
-  - url_launcher (0.0.1):
+  - url_launcher_ios (0.0.1):
     - Flutter
-  - webview_flutter (0.0.1):
+  - webview_flutter_wkwebview (0.0.1):
     - Flutter
 
 DEPENDENCIES:
@@ -108,14 +108,14 @@ DEPENDENCIES:
   - native_shared_preferences (from `.symlinks/plugins/native_shared_preferences/ios`)
   - package_info (from `.symlinks/plugins/package_info/ios`)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
-  - path_provider (from `.symlinks/plugins/path_provider/ios`)
+  - path_provider_ios (from `.symlinks/plugins/path_provider_ios/ios`)
   - permission_handler (from `.symlinks/plugins/permission_handler/ios`)
   - PIL (from `https://github.com/open-voip-alliance/iOS-Phone-Integration-Lib.git`)
   - sentry_flutter (from `.symlinks/plugins/sentry_flutter/ios`)
-  - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
+  - shared_preferences_ios (from `.symlinks/plugins/shared_preferences_ios/ios`)
   - sqlite3_flutter_libs (from `.symlinks/plugins/sqlite3_flutter_libs/ios`)
-  - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
-  - webview_flutter (from `.symlinks/plugins/webview_flutter/ios`)
+  - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
+  - webview_flutter_wkwebview (from `.symlinks/plugins/webview_flutter_wkwebview/ios`)
 
 SPEC REPOS:
   https://github.com/CocoaPods/Specs.git:
@@ -124,7 +124,7 @@ SPEC REPOS:
     - Analytics
     - libPhoneNumber-iOS
     - PhoneNumberKit
-    - Reachability
+    - ReachabilitySwift
     - Segment-Amplitude
     - Sentry
     - sqlite3
@@ -159,39 +159,39 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/package_info/ios"
   package_info_plus:
     :path: ".symlinks/plugins/package_info_plus/ios"
-  path_provider:
-    :path: ".symlinks/plugins/path_provider/ios"
+  path_provider_ios:
+    :path: ".symlinks/plugins/path_provider_ios/ios"
   permission_handler:
     :path: ".symlinks/plugins/permission_handler/ios"
   PIL:
     :git: https://github.com/open-voip-alliance/iOS-Phone-Integration-Lib.git
   sentry_flutter:
     :path: ".symlinks/plugins/sentry_flutter/ios"
-  shared_preferences:
-    :path: ".symlinks/plugins/shared_preferences/ios"
+  shared_preferences_ios:
+    :path: ".symlinks/plugins/shared_preferences_ios/ios"
   sqlite3_flutter_libs:
     :path: ".symlinks/plugins/sqlite3_flutter_libs/ios"
-  url_launcher:
-    :path: ".symlinks/plugins/url_launcher/ios"
-  webview_flutter:
-    :path: ".symlinks/plugins/webview_flutter/ios"
+  url_launcher_ios:
+    :path: ".symlinks/plugins/url_launcher_ios/ios"
+  webview_flutter_wkwebview:
+    :path: ".symlinks/plugins/webview_flutter_wkwebview/ios"
 
 CHECKOUT OPTIONS:
   iOSVoIPLib:
-    :commit: 0591ba793ca4b431a85fdbcf40185d340481d0fd
+    :commit: c4b3a690c86d8b6aaabff6e7990c0ac183bebcb7
     :git: https://github.com/open-voip-alliance/iOS-VoIP-Lib.git
   le:
     :commit: ce8800f6d3290e182d48082680679d64a05ca778
     :git: https://github.com/LogentriesCommunity/le_ios.git
   PIL:
-    :commit: 44ccfbed98340e6b3c25b60844dd4b3b50f3047f
+    :commit: 56fdd1ff195d6e7e30601f10a61baccbcab02bca
     :git: https://github.com/open-voip-alliance/iOS-Phone-Integration-Lib.git
 
 SPEC CHECKSUMS:
-  Alamofire: f3b09a368f1582ab751b3fff5460276e0d2cf5c9
-  Amplitude: ef9ed339ddd33c9183edf63fa4bbaa86cf873321
+  Alamofire: 1c4fb5369c3fe93d2857c780d8bbe09f06f97e7c
+  Amplitude: 834c7332dfb9640a751e21c13efb22a07c0c12d4
   Analytics: eefe524436f904b8bb3f8c8c3425280e43b34efc
-  connectivity_plus: 5f0eb61093bec56935f21a1699dd2758bc895587
+  connectivity_plus: 413a8857dd5d9f1c399a39130850d02fe0feaf7e
   contacts_service: 849e1f84281804c8bfbec1b4c3eedcb23c5d3eca
   device_info: d7d233b645a32c40dfdc212de5cf646ca482f175
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
@@ -206,20 +206,20 @@ SPEC CHECKSUMS:
   native_shared_preferences: 21a805f6149643c25a20a4f534692131faebadfe
   package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
   package_info_plus: 6c92f08e1f853dc01228d6f553146438dafcd14e
-  path_provider: d1e9807085df1f9cc9318206cd649dc0b76be3de
+  path_provider_ios: 7d7ce634493af4477d156294792024ec3485acd5
   permission_handler: ccb20a9fad0ee9b1314a52b70b76b473c5f8dab0
   PhoneNumberKit: 4ce83273551c4d2ae10b7361162f4283dd02835f
   PIL: 660930395909c8c4b572b049a61ab4b48c8dccb9
-  Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
+  ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
   Segment-Amplitude: 6c1e59c8c278a21029ba7a6a788fcb31b9233a2c
-  Sentry: 9a4e621430e2dae4477d791f2f7e905720b6efbf
-  sentry_flutter: 08fadaed464f44e1233d3fbb0c72b10cebd79487
-  shared_preferences: 5033afbb22d372e15aff8ff766df9021b845f273
-  sqlite3: 75da32fd4e3574f6c38566a9f0114cfe792c8db5
-  sqlite3_flutter_libs: aedb7b6ba191f9a052dcef77691cf5d37437431c
+  Sentry: 5c5dd4005f3b7b9765d5a8871232cddbd0d888b7
+  sentry_flutter: 4cd99764f9fe01c9415790d1f3fb1c7fd3a5cbe9
+  shared_preferences_ios: aef470a42dc4675a1cdd50e3158b42e3d1232b32
+  sqlite3: f596ccdf63786af17b93d1723ef41d1151892841
+  sqlite3_flutter_libs: 83a1fbbabdcee09e4e34511bb246136a8a97c9d6
   Swinject: ddf78b8486dd9b71a667b852cad919ab4484478e
-  url_launcher: b6e016d912f04be9f5bf6e8e82dc599b7ba59649
-  webview_flutter: 5fb4def2bbd4339889ee14d045b605cefc5bc232
+  url_launcher_ios: 02f1989d4e14e998335b02b67a7590fa34f971af
+  webview_flutter_wkwebview: 005fbd90c888a42c5690919a1527ecc6649e1162
 
 PODFILE CHECKSUM: 95d5b2f23c210fde309c1d8cb0f7a9f5fd711c1e
 
