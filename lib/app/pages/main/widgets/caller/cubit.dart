@@ -155,17 +155,27 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
     required CallOrigin origin,
     bool showingConfirmPage = false,
   }) async {
-    _trackUserInitiatedOutboundCall(via: origin.toTrackString());
+    final callViaVoip = await _getHasVoipEnabled();
+
+    if (callViaVoip) {
+      _trackUserInitiatedOutboundCall(
+        via: origin.toTrackString(),
+        isVoip: callViaVoip,
+      );
+    }
 
     if (state is! CanCall) {
       logger.severe(
         'Unable to place outgoing call, call state: ${state.runtimeType}',
       );
-      _trackOutboundCallFailed(reason: Reason.invalidCallState);
+      _trackOutboundCallFailed(
+        reason: Reason.invalidCallState,
+        isVoip: callViaVoip,
+      );
       return;
     }
 
-    if (await _getHasVoipEnabled()) {
+    if (callViaVoip) {
       await _callViaVoip(destination, origin: origin);
     } else {
       await _callViaCallThrough(

@@ -9,7 +9,7 @@ import 'dial_pad/widget.dart';
 
 class T9DialPad extends StatefulWidget {
   /// The [number] that the user is attempting to make a call to.
-  final void Function(String number) onCallButtonPressed;
+  final void Function(String number)? onCallButtonPressed;
   final IconData callButtonIcon;
   final Color callButtonColor;
   final TextEditingController? controller;
@@ -39,7 +39,9 @@ class _T9DialPadState extends State<T9DialPad> {
   void _call(BuildContext context) {
     final number = controller.text;
 
-    widget.onCallButtonPressed(number);
+    assert(widget.onCallButtonPressed != null);
+
+    widget.onCallButtonPressed?.call(number);
 
     controller.clear();
   }
@@ -67,7 +69,9 @@ class _T9DialPadState extends State<T9DialPad> {
               child: DialPad(
                 controller: controller,
                 primaryButton: _DialerPrimaryButton(
-                  onPressed: () => _call(context),
+                  onPressed: widget.onCallButtonPressed != null
+                      ? () => _call(context)
+                      : null,
                   icon: widget.callButtonIcon,
                   color: widget.callButtonColor,
                 ),
@@ -105,7 +109,8 @@ class _DialerPrimaryButton extends StatelessWidget {
     return Center(
       child: CallButton(
         onPressed: onPressed,
-        backgroundColor: color,
+        backgroundColor:
+            onPressed != null ? color : context.brand.theme.colors.grey3,
         icon: icon,
         constraints: BoxConstraints(
           minWidth: minSize,
