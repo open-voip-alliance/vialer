@@ -24,6 +24,66 @@ class _FeedbackPageState extends State<FeedbackPage> {
     }
   }
 
+  void _sendFeedback(
+    BuildContext context, {
+    required String text,
+    required bool withLogs,
+  }) {
+    final feedback = context.read<FeedbackCubit>();
+
+    if (withLogs) {
+      feedback.enableThenSendLogsToRemote();
+    }
+
+    Navigator.pop(context);
+
+    feedback.sendFeedback(
+      title: 'Feedback',
+      text: text,
+    );
+  }
+
+  void _onSendFeedbackPressed(BuildContext buildContext, String text) async {
+    return showDialog<void>(
+      context: context,
+      builder: (context) => AlertDialog(
+        content: Text(
+          context.msg.main.settings.feedback.logs(
+            context.brand.appName,
+          ),
+        ),
+        actions: [
+          TextButton(
+            style: TextButton.styleFrom(
+              primary: context.brand.theme.colors.primary,
+            ),
+            onPressed: () => _sendFeedback(
+              buildContext,
+              text: text,
+              withLogs: false,
+            ),
+            child: Text(
+              context.msg.generic.button.noThanks.toUpperCaseIfAndroid(context),
+            ),
+          ),
+          TextButton(
+            style: TextButton.styleFrom(
+              primary: context.brand.theme.colors.primary,
+            ),
+            onPressed: () => _sendFeedback(
+              buildContext,
+              text: text,
+              withLogs: true,
+            ),
+            child: Text(
+              context.msg.generic.button.yes.toUpperCaseIfAndroid(context),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final sendFeedbackButtonText = context
@@ -99,11 +159,10 @@ class _FeedbackPageState extends State<FeedbackPage> {
                           child: StylizedButton.raised(
                             colored: true,
                             onPressed: state is FeedbackNotSent
-                                ? () =>
-                                    context.read<FeedbackCubit>().sendFeedback(
-                                          title: 'Feedback',
-                                          text: _textController.text,
-                                        )
+                                ? () => _onSendFeedbackPressed(
+                                      context,
+                                      _textController.text,
+                                    )
                                 : null,
                             child: Text(
                               sendFeedbackButtonText
