@@ -170,6 +170,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
       );
       _trackOutboundCallFailed(
         reason: Reason.invalidCallState,
+        message: state.runtimeType.toString(),
         isVoip: callViaVoip,
       );
       return;
