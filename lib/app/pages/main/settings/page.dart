@@ -41,6 +41,8 @@ class _SettingsPageState extends State<SettingsPage> {
         label: Text(context.msg.main.settings.feedback.snackBar),
       );
     }
+
+    context.read<SettingsCubit>().refresh();
   }
 
   void _scrollToAvailability() {
