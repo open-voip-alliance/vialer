@@ -1,4 +1,6 @@
-class Item {
+import 'package:equatable/equatable.dart';
+
+class Item extends Equatable {
   final String label;
   final String value;
 
@@ -6,4 +8,9 @@ class Item {
 
   @override
   String toString() => '$label: $value';
+
+  @override
+  List<Object?> get props => [
+        value,
+      ];
 }
