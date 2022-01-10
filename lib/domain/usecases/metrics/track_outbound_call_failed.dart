@@ -9,10 +9,12 @@ class TrackOutboundCallFailedUseCase extends UseCase {
 
   Future<void> call({
     required Reason reason,
+    bool isVoip = true,
     String? message,
   }) =>
       _metricsRepository.track('outbound-call-failed', {
         'reason': reason.name,
+        'voip': isVoip,
         'message': message,
       });
 }

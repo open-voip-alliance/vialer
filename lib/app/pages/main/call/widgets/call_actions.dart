@@ -64,10 +64,9 @@ class _CallActionsState extends State<CallActions> {
   Future<bool> _onWillPop(BuildContext context) {
     if (_navigatorState.canPop()) {
       _navigatorState.pop();
-      return SynchronousFuture(false);
     }
 
-    return SynchronousFuture(true);
+    return SynchronousFuture(false);
   }
 
   @override

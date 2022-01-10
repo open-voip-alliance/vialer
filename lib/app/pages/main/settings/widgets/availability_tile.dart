@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../../../../../domain/entities/availability.dart';
 import '../../../../../domain/entities/system_user.dart';
 import '../../../../resources/localizations.dart';
-import '../../../../resources/theme.dart';
 import '../../../../util/stylized_txt.dart';
 import 'tile.dart';
 
@@ -71,11 +70,6 @@ class AvailabilityTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SettingTile(
-      label: !context.isIOS
-          ? Text(
-              context.msg.main.settings.list.calling.availability.title,
-            )
-          : null,
       description: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

@@ -77,6 +77,8 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
 
   Future<void> sendSavedLogsToRemote() => _sendSavedLogsToRemote();
 
+  Future<void> refresh() => _emitUpdatedState();
+
   Future<void> logout() async {
     logger.info('Logging out');
     await _logout();

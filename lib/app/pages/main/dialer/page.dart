@@ -56,6 +56,9 @@ class _DialerPageState extends State<DialerPage>
     }
   }
 
+  void _onCallButtonPressed(BuildContext context, String number) =>
+      context.read<DialerCubit>().call(number);
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider<DialerCubit>(
@@ -109,9 +112,9 @@ class _DialerPageState extends State<DialerPage>
                 child: T9DialPad(
                   callButtonColor: context.brand.theme.colors.green1,
                   callButtonIcon: VialerSans.phone,
-                  onCallButtonPressed: (number) {
-                    context.read<DialerCubit>().call(number);
-                  },
+                  onCallButtonPressed: state is CanCall
+                      ? (number) => _onCallButtonPressed(context, number)
+                      : null,
                   controller: _dialPadController,
                   onDeleteAll: dialerCubit.clearLastCalledDestination,
                 ),
