@@ -275,10 +275,12 @@ main:
     feedback:
       title: "Feedback"
       callout(String appName): >-
-        Jouw feedback is waardevol voor ons en helpt om eerder een afgeronde versie van de app uit te brengen. Schakel de remote logging optie in op de Instellingen-pagina voordat je feedback verstuurt, zodat we eventuele problemen beter kunnen onderzoeken.
+        Jouw feedback is waardevol voor ons en helpt om eerder een afgeronde versie van de app uit te brengen.
 
 
         Als je een probleem hebt ondervonden of ons wilt laten weten wat je ervaring is met $appName, verstuur dan hieronder een bericht. Dankjewel!
+      logs(String appName): >-
+        Wil je ook je $appName app-activiteit versturen? Daarmee help je onze ontwikkelaars echt om eventuele problemen die je ervaart sneller op te lossen.
       placeholders:
         text: "Typ je feedback hier en druk op de verstuur feedback knop onderaan."
       snackBar: "Feedback verstuurd bedankt!"

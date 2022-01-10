@@ -41,6 +41,8 @@ class _SettingsPageState extends State<SettingsPage> {
         label: Text(context.msg.main.settings.feedback.snackBar),
       );
     }
+
+    context.read<SettingsCubit>().refresh();
   }
 
   void _scrollToAvailability() {
@@ -111,6 +113,9 @@ class _SettingsPageState extends State<SettingsPage> {
                                     state.userAvailabilityType!,
                                 showHelp: _scrollToAvailability,
                               ),
+                            if (!showDestinationInSeparateCategory &&
+                                availabilityTile != null)
+                              availabilityTile,
                             SettingTileCategory.accountInfo(
                               children: [
                                 SettingTile.mobileNumber(
@@ -139,9 +144,6 @@ class _SettingsPageState extends State<SettingsPage> {
                                   SettingTile.useVoip(
                                     settings.get<UseVoipSetting>(),
                                   ),
-                                  if (!showDestinationInSeparateCategory &&
-                                      availabilityTile != null)
-                                    availabilityTile,
                                 ],
                               ),
                               if (showDestinationInSeparateCategory &&

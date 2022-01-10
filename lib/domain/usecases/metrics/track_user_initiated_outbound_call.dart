@@ -9,8 +9,10 @@ class TrackUserInitiatedOutboundCall extends UseCase {
 
   Future<void> call({
     required String via,
+    required bool isVoip,
   }) =>
-      _metricsRepository.track('user-intiated-outbound-call', {
+      _metricsRepository.track('call-initiated-by-user', {
         'via': via,
+        'voip' : isVoip,
       });
 }
