@@ -1,0 +1,4 @@
+- The app has been completely redesigned from a user experience and technical perspective.
+- All calls are encrypted by default. The encryption setting has been removed.
+- The audio quality setting has been removed. All calls use an optimised quality setting.
+- Two-step calling has been replaced with call-through. This offers a more clear and simple user-experience but using it will incur charges from the mobile provider rather than being billed directly to the client.
