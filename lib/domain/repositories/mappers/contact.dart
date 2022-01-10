@@ -1,4 +1,5 @@
 import 'package:contacts_service/contacts_service.dart';
+import 'package:dartx/dartx.dart';
 
 import '../../entities/contact.dart' as domain;
 import '../mappers/item.dart';
@@ -12,7 +13,8 @@ extension ContactMapper on Contact {
       familyName: familyName,
       chosenName: displayName,
       avatar: avatar,
-      phoneNumbers: phones?.toDomainEntities().toList(growable: false) ?? [],
+      phoneNumbers:
+          phones?.toDomainEntities().distinct().toList(growable: false) ?? [],
       emails: emails?.toDomainEntities().toList(growable: false) ?? [],
       identifier: identifier,
     );
