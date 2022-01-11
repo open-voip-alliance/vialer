@@ -12,10 +12,10 @@ class GetOnboardingStepsUseCase extends UseCase {
   final _permissionRepository = dependencyLocator<PermissionRepository>();
 
   Future<List<OnboardingStep>> call() async {
-    var callPermissionDenied = false;
+    var phonePermissionDenied = false;
     var bluetoothPermissionDenied = false;
     if (Platform.isAndroid) {
-      callPermissionDenied =
+      phonePermissionDenied =
           await _permissionRepository.getPermissionStatus(Permission.phone) !=
               PermissionStatus.granted;
 
@@ -34,7 +34,7 @@ class GetOnboardingStepsUseCase extends UseCase {
 
     return [
       OnboardingStep.login,
-      if (callPermissionDenied) OnboardingStep.callPermission,
+      if (phonePermissionDenied) OnboardingStep.phonePermission,
       if (contactsPermissionDenied) OnboardingStep.contactsPermission,
       if (microphonePermissionDenied) OnboardingStep.microphonePermission,
       if (bluetoothPermissionDenied) OnboardingStep.bluetoothPermission,

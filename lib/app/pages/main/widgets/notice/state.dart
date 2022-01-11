@@ -18,3 +18,11 @@ class NoticeDismissed extends NoNotice {
 class MicrophonePermissionDeniedNotice extends NoticeState {
   const MicrophonePermissionDeniedNotice();
 }
+
+class PhonePermissionDeniedNotice extends NoticeState {
+  const PhonePermissionDeniedNotice();
+}
+
+class PhoneAndMicrophonePermissionDeniedNotice extends NoticeState {
+  const PhoneAndMicrophonePermissionDeniedNotice();
+}

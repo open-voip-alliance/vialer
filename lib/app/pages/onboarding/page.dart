@@ -10,9 +10,9 @@ import 'login/page.dart';
 import 'mobile_number/page.dart';
 import 'password/page.dart';
 import 'permission/bluetooth/page.dart';
-import 'permission/call/page.dart';
 import 'permission/contacts/page.dart';
 import 'permission/microphone/page.dart';
+import 'permission/phone/page.dart';
 import 'two_factor_authentication/page.dart';
 import 'voicemail/page.dart';
 import 'welcome/page.dart';
@@ -44,7 +44,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
       OnboardingStep.twoFactorAuthentication: (_) =>
           const TwoFactorAuthenticationPage(),
       OnboardingStep.mobileNumber: (_) => MobileNumberPage(),
-      OnboardingStep.callPermission: (_) => const CallPermissionPage(),
+      OnboardingStep.phonePermission: (_) => const PhonePermissionPage(),
       OnboardingStep.microphonePermission: (_) =>
           const MicrophonePermissionPage(),
       OnboardingStep.contactsPermission: (_) => const ContactsPermissionPage(),
