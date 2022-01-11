@@ -10,9 +10,9 @@ class PermissionRepository {
   Future<domain.PermissionStatus> getPermissionStatus(
     domain.Permission permission,
   ) async {
-    final callPermissionStatus = await permission.toThirdPartyEntity().status;
+    final phonePermissionStatus = await permission.toThirdPartyEntity().status;
 
-    return callPermissionStatus.toDomainEntity();
+    return phonePermissionStatus.toDomainEntity();
   }
 
   Future<domain.PermissionStatus> requestPermission(

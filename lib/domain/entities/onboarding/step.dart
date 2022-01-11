@@ -2,7 +2,7 @@ enum OnboardingStep {
   login,
   password,
   twoFactorAuthentication,
-  callPermission,
+  phonePermission,
   contactsPermission,
   microphonePermission,
   bluetoothPermission,

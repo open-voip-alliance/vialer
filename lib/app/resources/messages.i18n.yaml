@@ -43,7 +43,7 @@ main:
   dialer:
     title: &keypadTitle "Keypad"
     permissionDenied: >-
-      The call permission is denied, which is required to make direct calls.
+      The Phone permission is denied, which is required to make direct calls.
     menu:
       title: *keypadTitle
     confirm:
@@ -150,7 +150,7 @@ main:
     menu:
       title: *contactsTitle
     snackBar:
-      noPermission: "Unable to call without the call permission"
+      noPermission: "Unable to call without the Phone permission"
     edit: "Edit"
     list:
       loading:
@@ -288,12 +288,22 @@ main:
 
   notice:
     microphone:
-      title: "No microphone permission"
+      title: "No Microphone permission"
       content(String appName): >-
         Without access to the microphone, you don't hear audio when calling.
         Please allow "Microphone" permission for $appName.
-      actions:
-        givePermissioon: "Give permission"
+    phone:
+      title: "No Phone permission"
+      content(String appName): >-
+        Without the Phone permission, you cannot make calls.
+        Please allow "Phone" permission for $appName.
+    phoneAndMicrophone:
+      title: "Missing permissions"
+      content(String appName): >-
+        Without the call and microphone permission, you cannot make calls.
+        Please allow "Phone" and "Microphone" permission for $appName.
+    actions:
+      givePermission: "Give permission"
 
   survey:
     helpUs:
@@ -356,8 +366,8 @@ onboarding:
   permission:
     button:
       iUnderstand: "I understand"
-    call:
-      title: "Call permission"
+    phone:
+      title: "Phone permission"
       description: >-
         This permission is required to be able to make calls with the
         app by using the default call app.

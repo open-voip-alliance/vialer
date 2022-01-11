@@ -110,7 +110,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
 
     _hasVoipStarted().then(
       (_) {
-        checkCallPermissionIfNotVoip();
+        checkPhonePermission();
         _voipCallEventSubscription ??=
             _getVoipCallEventStream().listen(_onVoipCallEvent);
       },
@@ -118,7 +118,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
   }
 
   void initialize() {
-    checkCallPermissionIfNotVoip();
+    checkPhonePermission();
     _startVoipIfNecessary();
   }
 
@@ -529,7 +529,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
       } else if (state is! NoPermission) {
         emit(const CanCall());
       } else {
-        checkCallPermissionIfNotVoip();
+        checkPhonePermission();
       }
     }
   }
@@ -560,8 +560,9 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
     _updateWhetherCanCall(status);
   }
 
-  Future<void> checkCallPermissionIfNotVoip() async {
-    if (Platform.isAndroid && !(await _getHasVoipEnabled())) {
+  Future<void> checkPhonePermission() async {
+    final hasVoipEnabled = await _getHasVoipEnabled();
+    if ((!hasVoipEnabled && Platform.isAndroid) || hasVoipEnabled) {
       final status = await _getPermissionStatus(permission: Permission.phone);
       _updateWhetherCanCall(status);
     }

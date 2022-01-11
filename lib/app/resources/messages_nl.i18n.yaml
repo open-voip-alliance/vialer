@@ -147,7 +147,7 @@ main:
     menu:
       title: *contactsTitle
     snackBar:
-      noPermission: "Je hebt de app hiervoor geen toestemming gegeven"
+      noPermission: "Je kan niet bellen zonder de Telefonie-toestemming"
     edit: "Wijzig"
     list:
       loading:
@@ -293,8 +293,18 @@ main:
       content(String appName): >-
         Zonder toegang tot de microfoon hoor je geen geluid tijdens gesprekken.
         Graag $appName toegang geven tot de "Microfoon"-rechten.
-      actions:
-        givePermissioon: "Geef toestemming"
+    phone:
+      title: "Geen telefonie toestemming"
+      content(String appName): >-
+        Zonder toegang tot telefonie kan je niet bellen.
+        Graag $appName toegang geven tot de "Telefonie"-rechten.
+    phoneAndMicrophone:
+      title: "Toestemming mist"
+      content(String appName): >-
+        Zonder toegang tot telefonie en de microfoon kan je niet bellen.
+        Graag $appName toegang geven tot de "Telefoon" en "Microfoon"-rechten.
+    actions:
+      givePermission: "Geef toestemming"
 
   survey:
     helpUs:
@@ -357,7 +367,7 @@ onboarding:
   permission:
     button:
       iUnderstand: "Ik begrijp het"
-    call:
+    phone:
       title: "Toestemming voor telefonie"
       description: >-
         Je toestemming is nodig zodat je met de app kunt bellen door gebruik te maken van de standaard telefoon app.
