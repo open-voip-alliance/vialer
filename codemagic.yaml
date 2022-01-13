@@ -322,6 +322,7 @@ custom: # Custom properties to make workflows cleaner
         credentials: $TEST_SERVICE_ACCOUNT
         track: production
         in_app_update_priority: 0
+        submit_as_draft: true
 
 workflows:
   main: &main_workflow

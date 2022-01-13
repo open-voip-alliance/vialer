@@ -75,11 +75,12 @@ class _CallPageState extends State<CallPage>
   // Only called when the state type has changed, not when a state with the same
   // type but different call information has been emitted.
   Future<void> _onStateChanged(BuildContext context, CallerState state) async {
-    if (state is FinishedCalling) {
+    if (state is CanCall) {
       final shouldAskForCallRating =
           Random().nextInt(100) < _percentageChanceOfAskingForCallRating;
 
-      if (state.voipCall != null &&
+      if (state is FinishedCalling &&
+          state.voipCall != null &&
           state.voipCall!.duration >= 1 &&
           shouldAskForCallRating) {
         Timer(const Duration(seconds: 1), () {
@@ -131,11 +132,11 @@ class _CallPageState extends State<CallPage>
         child: BlocConsumer<CallerCubit, CallerState>(
           listenWhen: (previous, current) =>
               previous.runtimeType != current.runtimeType,
+          buildWhen: (_, current) => current is CallProcessState,
           listener: _onStateChanged,
           builder: (context, state) {
-            // We can make this assertion, because if we're not in
-            // the process of a call (state is CallProcessState),
-            // this page wouldn't show anyway.
+            // We can make this assertion, because we only build on
+            // CallProcessState changes.
             final processState = state as CallProcessState;
             final call = processState.voipCall!;
 
