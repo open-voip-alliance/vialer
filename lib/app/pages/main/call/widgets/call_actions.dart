@@ -16,6 +16,7 @@ import '../../widgets/dial_pad/keypad.dart';
 import '../../widgets/dial_pad/widget.dart';
 import '../widgets/call_button.dart';
 import 'audio_route_picker.dart';
+import 'call_process_state_builder.dart';
 import 'call_transfer.dart';
 
 class CallActions extends StatefulWidget {
@@ -129,12 +130,12 @@ class _CallActionButtons extends StatelessWidget {
       context: context,
       pageBuilder: (_, __, ___) => BlocProvider<DialerCubit>(
         create: (context) => DialerCubit(context.read<CallerCubit>()),
-        child: BlocBuilder<CallerCubit, CallerState>(
+        child: CallProcessStateBuilder(
           builder: (context, state) => Scaffold(
             body: Container(
               alignment: Alignment.center,
               child: CallTransfer(
-                activeCall: (state as CallProcessState).voipCall!,
+                activeCall: state.voipCall!,
                 onTransferTargetSelected: (number) {
                   context.read<CallerCubit>().beginTransfer(number);
                   Navigator.of(context).pop();
@@ -158,10 +159,9 @@ class _CallActionButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CallerCubit, CallerState>(
+    return CallProcessStateBuilder(
       builder: (context, state) {
-        final processState = state as CallProcessState;
-        final call = processState.voipCall!;
+        final call = state.voipCall!;
 
         return Column(
           mainAxisAlignment: MainAxisAlignment.end,
@@ -173,7 +173,7 @@ class _CallActionButtons extends StatelessWidget {
                   child: _ActionButton(
                     icon: const Icon(VialerSans.mute),
                     text: Text(context.msg.main.call.actions.mute),
-                    active: processState.isVoipCallMuted,
+                    active: state.isVoipCallMuted,
                     // We can't mute when on hold.
                     onPressed: !call.isOnHold && !state.isFinished
                         ? () => _toggleMute(context)
@@ -204,14 +204,14 @@ class _CallActionButtons extends StatelessWidget {
                 Expanded(
                   flex: 2,
                   child: _ActionButton(
-                    icon: processState.isInTransfer
+                    icon: state.isInTransfer
                         ? const Icon(VialerSans.merge)
                         : const Icon(VialerSans.transfer),
-                    text: Text(processState.isInTransfer
+                    text: Text(state.isInTransfer
                         ? context.msg.main.call.actions.merge
                         : context.msg.main.call.actions.transfer),
                     onPressed: state.isActionable
-                        ? () => processState.isInTransfer
+                        ? () => state.isInTransfer
                             ? _merge(context)
                             : _transfer(context)
                         : null,
@@ -391,48 +391,45 @@ class _AudioRouteButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CallerCubit, CallerState>(builder: (context, state) {
-      final processState = state as CallProcessState;
+    return CallProcessStateBuilder(
+      builder: (context, state) {
+        final currentRoute = state.audioState?.currentRoute ?? AudioRoute.phone;
+        final hasBluetooth = state.audioState != null &&
+            state.audioState!.availableRoutes.contains(AudioRoute.bluetooth);
 
-      final currentRoute =
-          processState.audioState?.currentRoute ?? AudioRoute.phone;
-      final hasBluetooth = processState.audioState != null &&
-          processState.audioState!.availableRoutes
-              .contains(AudioRoute.bluetooth);
-
-      return _ActionButton(
-        icon: Icon(
-          _iconFor(
-            context: context,
-            hasBluetooth: hasBluetooth,
-            currentRoute: currentRoute,
+        return _ActionButton(
+          icon: Icon(
+            _iconFor(
+              context: context,
+              hasBluetooth: hasBluetooth,
+              currentRoute: currentRoute,
+            ),
           ),
-        ),
-        text: Text(
-          _labelFor(
-            context: context,
-            hasBluetooth: hasBluetooth,
-            currentRoute: currentRoute,
-            bluetoothDeviceName:
-                processState.audioState?.bluetoothDeviceName ?? '',
+          text: Text(
+            _labelFor(
+              context: context,
+              hasBluetooth: hasBluetooth,
+              currentRoute: currentRoute,
+              bluetoothDeviceName: state.audioState?.bluetoothDeviceName ?? '',
+            ),
           ),
-        ),
-        active: !hasBluetooth && (currentRoute == AudioRoute.speaker),
-        onPressed: enabled
-            ? () {
-                if (processState.audioState != null && hasBluetooth) {
-                  _showAudioPopupMenu(context, processState.audioState);
-                } else {
-                  context.read<CallerCubit>().routeAudio(
-                        currentRoute == AudioRoute.phone
-                            ? AudioRoute.speaker
-                            : AudioRoute.phone,
-                      );
+          active: !hasBluetooth && (currentRoute == AudioRoute.speaker),
+          onPressed: enabled
+              ? () {
+                  if (state.audioState != null && hasBluetooth) {
+                    _showAudioPopupMenu(context, state.audioState);
+                  } else {
+                    context.read<CallerCubit>().routeAudio(
+                          currentRoute == AudioRoute.phone
+                              ? AudioRoute.speaker
+                              : AudioRoute.phone,
+                        );
+                  }
                 }
-              }
-            : null,
-      );
-    });
+              : null,
+        );
+      },
+    );
   }
 }
 
@@ -450,16 +447,14 @@ class _DialPad extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CallerCubit, CallerState>(
+    return CallProcessStateBuilder(
       builder: (context, state) {
-        final processState = state as CallProcessState;
-
         return Material(
           child: DialPad(
             controller: dialPadController,
             canDelete: false,
             primaryButton: CallButton.hangUp(
-              onPressed: processState is! FinishedCalling
+              onPressed: state is! FinishedCalling
                   ? onHangUpButtonPressed
                   : null,
             ),
