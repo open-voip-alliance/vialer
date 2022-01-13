@@ -569,6 +569,9 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
   }
 
   void _updateWhetherCanCall(PermissionStatus status) {
+    // We don't want to interrupt an ongoing call.
+    if (state is CallProcessState) return;
+
     if (status == PermissionStatus.granted) {
       emit(const CanCall());
     } else {
