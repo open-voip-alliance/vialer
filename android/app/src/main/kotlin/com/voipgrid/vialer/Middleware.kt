@@ -6,7 +6,9 @@ import com.google.firebase.messaging.RemoteMessage
 import com.voipgrid.vialer.logging.Logger
 import okhttp3.*
 import org.openvoipalliance.flutterphonelib.NativeMiddleware
+import org.openvoipalliance.flutterphonelib.NativeMiddlewareUnavailableReason
 import java.io.IOException
+import java.math.BigDecimal
 
 class Middleware(
     private val context: Context,
@@ -31,10 +33,10 @@ class Middleware(
 
     /**
      * We want to make sure to not process multiple push notifications for the same call (as the
-     * middleware will send up to 8). So we'll track the call we are currently handling and make
+     * middleware will send up to 8). So we'll track the calls we are currently handling and make
      * sure to ignore any with the same id in the future.
      */
-    private var callIdBeingHandled: String? = null
+    private var callIdsBeingHandled = mutableListOf<String>()
 
     override fun tokenReceived(token: String) {
         if (lastRegisteredToken == token) {
@@ -44,7 +46,7 @@ class Middleware(
         lastRegisteredToken = token
 
         if (prefs.getBoolSetting("DndSetting")) {
-            logger.writeLog("Registration cancelled: do not disturb is enabled")
+            log("Registration cancelled: do not disturb is enabled")
             return
         }
 
@@ -67,16 +69,17 @@ class Middleware(
         client.newCall(request).enqueue(
             object : Callback {
                 override fun onFailure(call: Call, e: IOException) {
-                    logger.writeLog("Registration failed: ${e.localizedMessage}")
+                    log("Registration failed: ${e.localizedMessage}")
                     lastRegisteredToken = null
                 }
 
                 override fun onResponse(call: Call, response: Response) {
-                    if (response.isSuccessful) {
-                        logger.writeLog("Registration successful")
-                    } else {
-                        logger.writeLog("Registration failed: response code was ${response.code}")
-                        lastRegisteredToken = null
+                    when (response.isSuccessful) {
+                        true -> log("Registration successful")
+                        false -> {
+                            log("Registration failed: response code was ${response.code}")
+                            lastRegisteredToken = null
+                        }
                     }
                 }
             }
@@ -85,12 +88,22 @@ class Middleware(
         prefs.pushToken = token
     }
 
-    override fun respond(remoteMessage: RemoteMessage, available: Boolean) {
+    override fun respond(
+        remoteMessage: RemoteMessage,
+        available: Boolean,
+        reason: NativeMiddlewareUnavailableReason?,
+    ) {
         val middlewareCredentials = middlewareCredentials
         val callId = remoteMessage.callId!!
         val callStartTime = remoteMessage.messageStartTime!!
+        val pushSentTime = remoteMessage.pushSentTime
+        val pushResponseTime = remoteMessage.secondsSincePushWasSent
 
-        logger.writeLog("Middleware Respond: Attempting for call=$callId, available=$available")
+        log("Middleware Respond: Attempting for call=$callId, available=$available, sent at=$pushSentTime, response time=$pushResponseTime")
+
+        if (pushResponseTime > MIDDLEWARE_SECONDS_BEFORE_REJECTED) {
+            log("The response time is $pushResponseTime, it is likely we are too late for this call.")
+        }
 
         val data = FormBody.Builder().apply {
             add("unique_key", callId)
@@ -107,17 +120,30 @@ class Middleware(
             .post(data)
             .build()
 
+        // Capturing as a callback just to cut down on some code duplication.
+        val track: (middlewareResponse: String) -> Unit = {
+            trackNotificationResult(
+                remoteMessage,
+                it,
+                available,
+                reason,
+                pushResponseTime,
+            )
+        }
+
         client.newCall(request).enqueue(
             object : Callback {
                 override fun onFailure(call: Call, e: IOException) {
-                    logger.writeLog("Middleware respond Failed: with ${e.localizedMessage}")
+                    track("error")
+                    log("Middleware respond Failed: with ${e.localizedMessage}")
                 }
 
                 override fun onResponse(call: Call, response: Response) {
-                    if (response.isSuccessful) {
-                        logger.writeLog("Middleware respond success: $callId")
-                    } else {
-                        logger.writeLog("Middleware respond failed: response code was ${response.code}")
+                    track(response.code.toString())
+
+                    when (response.isSuccessful) {
+                        true -> log("Middleware respond success: $callId")
+                        false -> log("Middleware respond failed: response code was ${response.code}")
                     }
                 }
             }
@@ -135,17 +161,30 @@ class Middleware(
         if (!remoteMessage.isCall) return false
 
         if (isCallAlreadyBeingHandled(remoteMessage)) {
-            logger.writeLog("Ignoring push message as we are already handling it: ${remoteMessage.callId}")
+            log("Ignoring push message as we are already handling it: ${remoteMessage.callId}")
             return false
         }
 
         return true.also {
-            segment.track("notification-received", mapOf(
-                "call_id" to remoteMessage.callId,
-                "correlation_id" to remoteMessage.correlationId,
+            segment.track("notification-received", remoteMessage.trackingProperties + mapOf(
+                "seconds_from_call_to_received" to remoteMessage.secondsSincePushWasSent.toString()
             ))
         }
     }
+
+    private fun trackNotificationResult(
+        remoteMessage: RemoteMessage,
+        middlewareResponse: String,
+        available: Boolean,
+        reason: NativeMiddlewareUnavailableReason? = null,
+        responseTime: Long,
+    ) =
+        segment.track("notification-result", remoteMessage.trackingProperties + mapOf(
+            "middleware_response" to middlewareResponse,
+            "available" to available.toString(),
+            "unavailable_reason" to (reason?.name ?: ""),
+            "seconds_from_call_to_responded" to responseTime.toString(),
+        ))
 
     /**
      * Check to see if a call is being handled currently, if we are handling the call already
@@ -153,17 +192,16 @@ class Middleware(
      *
      * The id being tracked will also be updated here.
      */
-    private fun isCallAlreadyBeingHandled(remoteMessage: RemoteMessage) = when {
-        callIdBeingHandled != null && remoteMessage.callId == callIdBeingHandled -> true
-        else -> {
-            logger.writeLog("Handling inbound call: ${remoteMessage.callId}")
-            callIdBeingHandled = remoteMessage.callId
-            false
+    private fun isCallAlreadyBeingHandled(remoteMessage: RemoteMessage) =
+        callIdsBeingHandled.contains(remoteMessage.callId).also {
+            log("Handling inbound call: ${remoteMessage.callId}")
+            remoteMessage.callId?.let { callIdsBeingHandled.add(it) }
         }
-    }
 
     private fun createMiddlewareRequest(email: String, token: String, url: String = REGISTER_URL) =
         Request.Builder().url(url).addHeader("Authorization", "Token $email:$token")
+
+    private fun log(message: String) = logger.writeLog("NATIVE-MIDDLEWARE: $message")
 
     private val middlewareCredentials
         get() = MiddlewareCredentials(
@@ -176,6 +214,12 @@ class Middleware(
         private const val BASE_URL = "https://vialerpush.voipgrid.nl/api/"
         private const val RESPONSE_URL = "${BASE_URL}call-response/"
         private const val REGISTER_URL = "${BASE_URL}android-device/"
+
+        /**
+         * The number of seconds that the Middleware will wait for us to respond before the call
+         * will be rejected.
+         */
+        private const val MIDDLEWARE_SECONDS_BEFORE_REJECTED = 8
     }
 
     private data class MiddlewareCredentials(
@@ -202,6 +246,32 @@ private val RemoteMessage.messageStartTime
 
 private val RemoteMessage.isCall
     get() = data["type"] == "call"
+
+private val RemoteMessage.pushSentTime
+    get() = try {
+        val startTime = messageStartTime
+
+        // We get the [messageStartTime] in scientific notation so we need to convert it, we also
+        // want to support if this ever changes in the future.
+        when {
+            startTime == null -> 0
+            startTime.uppercase().contains("E") -> BigDecimal(messageStartTime).toLong()
+            else -> startTime.toLong()
+        }
+    } catch(e: Throwable) {
+        0
+    }
+
+private val RemoteMessage.secondsSincePushWasSent
+    get() = (System.currentTimeMillis() / 1000) - pushSentTime
+
+private val RemoteMessage.trackingProperties
+    get() = mapOf(
+        "call_id" to callId,
+        "correlation_id" to correlationId,
+        "message_start_time" to messageStartTime,
+        "push_sent_time" to pushSentTime.toString(),
+    )
 
 private fun RemoteMessage.toCurrentCallInfo() = Middleware.CurrentCallInfo(
     callId ?: "",

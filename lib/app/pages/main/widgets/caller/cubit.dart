@@ -110,7 +110,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
 
     _hasVoipStarted().then(
       (_) {
-        checkCallPermissionIfNotVoip();
+        checkPhonePermission();
         _voipCallEventSubscription ??=
             _getVoipCallEventStream().listen(_onVoipCallEvent);
       },
@@ -118,7 +118,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
   }
 
   void initialize() {
-    checkCallPermissionIfNotVoip();
+    checkPhonePermission();
     _startVoipIfNecessary();
   }
 
@@ -337,41 +337,24 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
   }
 
   Future<void> _onVoipCallEvent(Event event) async {
-    if (state is CallProcessState) {
-      final isVoip = (state as CallProcessState).isVoip;
+    // Immediately grab the state so we don't run into the situation
+    // where it could change during execution.
+    final state = this.state;
 
-      if (!isVoip) {
-        logger.info(
-          'Ignoring VoIP event because we\'re in a call-through call',
-        );
-        return;
-      }
-    }
-
-    // The call UI isn't interested in any non-call-session-events.
-    if (event is! CallSessionEvent) {
-      logger.info('Ignoring event as it is not a CallSessionEvent');
+    if (!_shouldHandleVoipCallEvent(state, event)) {
       return;
     }
 
-    final callSessionState = event.state!;
+    final callSessionState = (event as CallSessionEvent).state!;
 
     // We will immediately handle any setup call events to make sure these are
     // always emitted.
-    if (event is IncomingCallReceived) {
-      _trackVoipCallStarted(
-        via: CallOrigin.incoming.toTrackString(),
-        direction: CallDirection.inbound,
+    if (event is IncomingCallReceived || event is OutgoingCallStarted) {
+      _handleCallSetupEvent(
+        state: state,
+        event: event,
+        callSessionState: callSessionState,
       );
-
-      emit(Ringing(voip: callSessionState));
-
-      logger.info('Incoming VoIP call, ringing');
-      return;
-    } else if (event is OutgoingCallStarted) {
-      final originState = state as CallOriginDetermined;
-      emit(InitiatingCall(origin: originState.origin, voip: callSessionState));
-      logger.info('Initiating VoIP call');
       return;
     }
 
@@ -383,59 +366,130 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
       return;
     }
 
-    if (state is CallProcessState) {
-      if (event is CallConnected) {
-        _preservedCallSessionState = _PreservedCallSessionState();
-        emit(processState.calling(voip: callSessionState));
-        logger.info('VoIP call connected');
-      } else if (event is AttendedTransferStarted) {
-        emit(processState.transferStarted(voip: callSessionState));
-        logger.info('VoIP attended transfer started');
-      } else if (event is AttendedTransferAborted) {
-        emit(processState.calling(voip: callSessionState));
-        logger.info('VoIP attended transfer aborted');
-      } else if (event is AttendedTransferEnded) {
-        emit(processState.transferComplete(voip: callSessionState));
-        logger.info('VoIP attended transfer completed');
-      } else if (event is CallEnded) {
-        emit(processState.finished(voip: callSessionState));
+    _preserve(callSessionState);
 
-        _trackVoipCall(
-          direction:
-              callSessionState.activeCall?.direction == CallDirection.inbound
-                  ? CallDirection.inbound
-                  : CallDirection.outbound,
-          usedRoutes: _preservedCallSessionState.usedAudioRoutes,
-          mos: _preservedCallSessionState.mos,
-          reason: callSessionState.activeCall?.reason,
-        );
+    // Call events happened too fast, it's possible we are not in a
+    // CallProcessState yet, so try to recover.
+    if (state is! CallProcessState) {
+      return _attemptToRecoverFromMissedEvent(
+        state: state,
+        event: event,
+        callSessionState: callSessionState,
+      );
+    }
 
-        logger.info('VoIP call ended');
-      }
+    if (event is CallConnected) {
+      _preservedCallSessionState = _PreservedCallSessionState();
+      emit(state.calling(voip: callSessionState));
+      logger.info('VoIP call connected');
+    } else if (event is AttendedTransferStarted) {
+      emit(state.transferStarted(voip: callSessionState));
+      logger.info('VoIP attended transfer started');
+    } else if (event is AttendedTransferAborted) {
+      emit(state.calling(voip: callSessionState));
+      logger.info('VoIP attended transfer aborted');
+    } else if (event is AttendedTransferEnded) {
+      emit(state.transferComplete(voip: callSessionState));
+      logger.info('VoIP attended transfer completed');
+    } else if (event is CallEnded) {
+      emit(state.finished(voip: callSessionState));
+      _trackVoipCallEvent(callSessionState);
+      logger.info('VoIP call ended');
     } else {
-      // Call events happened too fast, it's possible we are not in
-      // a CallProcessState yet, so try to recover.
+      emit(state.copyWith(voip: callSessionState));
+    }
+  }
 
-      if (event is CallConnected || callSessionState.activeCall != null) {
-        final originState = state as CallOriginDetermined;
-        emit(
-          Calling(
-            origin: originState.origin,
-            voip: callSessionState,
-          ),
+  bool _shouldHandleVoipCallEvent(CallerState state, Event event) {
+    if (state is CallProcessState) {
+      final isVoip = state.isVoip;
+
+      if (!isVoip) {
+        logger.info(
+          'Ignoring VoIP event because we\'re in a call-through call',
         );
-        logger.info('VoIP call connected (recovered)');
-
-        emit(processState.copyWith(voip: callSessionState));
-      } else if (event is CallEnded) {
-        emit(const CanCall());
-        logger.info('VoIP call ended (recovered)');
+        return false;
       }
     }
 
-    _preservedCallSessionState.preserve(callSessionState);
-    emit(processState.copyWith(voip: callSessionState));
+    if (event is! CallSessionEvent) {
+      logger.info('Ignoring event as it is not a CallSessionEvent');
+      return false;
+    }
+
+    return true;
   }
+
+  /// If we miss a VoIP event our cubit state might not be in-line with the
+  /// VoIP state. So we'll try to recover by getting it caught up.
+  void _attemptToRecoverFromMissedEvent({
+    required CallerState state,
+    required Event event,
+    required CallSessionState callSessionState,
+  }) {
+    // If the event is [CallEnded] then we don't want to do anything further,
+    // we just want to get the state back to [CanCall] so future calls
+    // will be possible.
+    if (event is CallEnded || callSessionState.activeCall == null) {
+      logger.info('VoIP call ended (recovered)');
+
+      if (state is CanCall) return;
+
+      // The state here shouldn't ever be [CallProcessState] if we are trying
+      // to recover, but we'll add it to make it more robust if the method
+      // is called from somewhere it probably shouldn't be.
+      if (state is CallProcessState) {
+        emit(state.finished(voip: callSessionState));
+      } else {
+        emit(const CanCall());
+      }
+
+      return;
+    }
+
+    // We should always be in a [CallOriginDetermined] state, but so we can
+    // track if this does happen we'll add a special origin.
+    final origin =
+        state is CallOriginDetermined ? state.origin : CallOrigin.unknown;
+
+    emit(Calling(origin: origin, voip: callSessionState));
+
+    logger.info('VoIP call connected (recovered)');
+  }
+
+  void _trackVoipCallEvent(CallSessionState callSessionState) => _trackVoipCall(
+        direction:
+            callSessionState.activeCall?.direction == CallDirection.inbound
+                ? CallDirection.inbound
+                : CallDirection.outbound,
+        usedRoutes: _preservedCallSessionState.usedAudioRoutes,
+        mos: _preservedCallSessionState.mos,
+        reason: callSessionState.activeCall?.reason,
+      );
+
+  void _handleCallSetupEvent({
+    required CallerState state,
+    required Event event,
+    required CallSessionState callSessionState,
+  }) {
+    if (event is IncomingCallReceived) {
+      _trackVoipCallStarted(
+        via: CallOrigin.incoming.toTrackString(),
+        direction: CallDirection.inbound,
+      );
+
+      emit(Ringing(voip: callSessionState));
+
+      logger.info('Incoming VoIP call, ringing');
+    } else if (event is OutgoingCallStarted) {
+      final originState = state as CallOriginDetermined;
+      emit(InitiatingCall(origin: originState.origin, voip: callSessionState));
+      logger.info('Initiating VoIP call');
+    }
+  }
+
+  void _preserve(CallSessionState callSessionState) =>
+      _preservedCallSessionState.preserve(callSessionState);
 
   Future<void> toggleMute() async => await _toggleMuteVoipCall();
 
@@ -475,7 +529,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
       } else if (state is! NoPermission) {
         emit(const CanCall());
       } else {
-        checkCallPermissionIfNotVoip();
+        checkPhonePermission();
       }
     }
   }
@@ -506,14 +560,18 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
     _updateWhetherCanCall(status);
   }
 
-  Future<void> checkCallPermissionIfNotVoip() async {
-    if (Platform.isAndroid && !(await _getHasVoipEnabled())) {
+  Future<void> checkPhonePermission() async {
+    final hasVoipEnabled = await _getHasVoipEnabled();
+    if ((!hasVoipEnabled && Platform.isAndroid) || hasVoipEnabled) {
       final status = await _getPermissionStatus(permission: Permission.phone);
       _updateWhetherCanCall(status);
     }
   }
 
   void _updateWhetherCanCall(PermissionStatus status) {
+    // We don't want to interrupt an ongoing call.
+    if (state is CallProcessState) return;
+
     if (status == PermissionStatus.granted) {
       emit(const CanCall());
     } else {
@@ -541,6 +599,8 @@ extension on CallOrigin {
         return 'recent';
       case CallOrigin.contacts:
         return 'contact';
+      case CallOrigin.unknown:
+        return 'unknown';
     }
   }
 }

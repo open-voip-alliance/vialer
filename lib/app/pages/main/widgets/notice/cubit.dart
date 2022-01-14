@@ -8,6 +8,7 @@ import '../../../../../domain/usecases/get_permission_status.dart';
 import '../../../../../domain/usecases/onboarding/request_permission.dart';
 import '../../../../../domain/usecases/open_settings.dart';
 import '../../../../util/loggable.dart';
+import '../caller.dart';
 import 'state.dart';
 
 export 'state.dart';
@@ -17,18 +18,32 @@ class NoticeCubit extends Cubit<NoticeState> with Loggable {
   final _requestPermission = RequestPermissionUseCase();
   final _openAppSettings = OpenSettingsAppUseCase();
 
-  NoticeCubit() : super(const NoNotice()) {
+  final CallerCubit _caller;
+
+  NoticeCubit(this._caller) : super(const NoNotice()) {
     check();
   }
 
-  Future<void> check([PermissionStatus? microphonePermissionStatus]) async {
+  Future<void> check({
+    PermissionStatus? microphoneStatus,
+    PermissionStatus? phoneStatus,
+  }) async {
     if (state is NoticeDismissed) return;
 
-    microphonePermissionStatus ??= await _getPermissionStatus(
+    microphoneStatus ??= await _getPermissionStatus(
       permission: Permission.microphone,
     );
 
-    if (microphonePermissionStatus != PermissionStatus.granted) {
+    phoneStatus ??= await _getPermissionStatus(
+      permission: Permission.phone,
+    );
+
+    if (phoneStatus != PermissionStatus.granted &&
+        microphoneStatus != PermissionStatus.granted) {
+      emit(const PhoneAndMicrophonePermissionDeniedNotice());
+    } else if (phoneStatus != PermissionStatus.granted) {
+      emit(const PhonePermissionDeniedNotice());
+    } else if (microphoneStatus != PermissionStatus.granted) {
       emit(const MicrophonePermissionDeniedNotice());
     } else {
       emit(const NoNotice());
@@ -37,15 +52,33 @@ class NoticeCubit extends Cubit<NoticeState> with Loggable {
 
   Future<void> openAppSettings() => _openAppSettings();
 
-  Future<void> requestMicrophonePermission() async {
-    final micPermissionStatus =
-        await _requestPermission(permission: Permission.microphone);
+  Future<void> requestPermission(List<Permission> permissions) async {
+    for (final permission in permissions) {
+      assert(
+        permission == Permission.phone || permission == Permission.microphone,
+      );
 
-    if (micPermissionStatus != PermissionStatus.granted) {
-      await _openAppSettings();
+      final status = await _requestPermission(permission: permission);
+
+      if (status != PermissionStatus.granted) {
+        await _openAppSettings();
+      }
+
+      if (permission == Permission.phone &&
+          status == PermissionStatus.granted) {
+        _caller.initialize();
+      }
+
+      await check(
+        microphoneStatus: permission == Permission.microphone ? status : null,
+        phoneStatus: permission == Permission.phone ? status : null,
+      );
+
+      // No need to request more if there's no notice.
+      if (state is NoNotice) {
+        break;
+      }
     }
-
-    await check(micPermissionStatus);
   }
 
   void dismiss() => emit(const NoticeDismissed());

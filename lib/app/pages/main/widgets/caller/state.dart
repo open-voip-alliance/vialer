@@ -184,7 +184,7 @@ class InitiatingCall extends CallProcessState {
       );
 }
 
-class InitiatingCallFailed extends CallProcessState {
+class InitiatingCallFailed extends CallProcessState implements CanCall {
   final Exception exception;
 
   const InitiatingCallFailed(
@@ -331,4 +331,5 @@ enum CallOrigin {
   dialer,
   recents,
   contacts,
+  unknown,
 }
