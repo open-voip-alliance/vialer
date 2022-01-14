@@ -14,6 +14,7 @@ import '../widgets/connectivity_alert.dart';
 import 'call_feedback/call_feedback.dart';
 import 'call_screen.dart';
 import 'widgets/call_actions.dart';
+import 'widgets/call_process_state_builder.dart';
 import 'widgets/call_transfer_bar.dart';
 
 class CallPage extends StatefulWidget {
@@ -75,11 +76,12 @@ class _CallPageState extends State<CallPage>
   // Only called when the state type has changed, not when a state with the same
   // type but different call information has been emitted.
   Future<void> _onStateChanged(BuildContext context, CallerState state) async {
-    if (state is FinishedCalling) {
+    if (state is CanCall) {
       final shouldAskForCallRating =
           Random().nextInt(100) < _percentageChanceOfAskingForCallRating;
 
-      if (state.voipCall != null &&
+      if (state is FinishedCalling &&
+          state.voipCall != null &&
           state.voipCall!.duration >= 1 &&
           shouldAskForCallRating) {
         Timer(const Duration(seconds: 1), () {
@@ -128,95 +130,95 @@ class _CallPageState extends State<CallPage>
   Widget build(BuildContext context) {
     return Scaffold(
       body: ConnectivityAlert(
-        child: BlocConsumer<CallerCubit, CallerState>(
+        child: BlocListener<CallerCubit, CallerState>(
           listenWhen: (previous, current) =>
               previous.runtimeType != current.runtimeType,
           listener: _onStateChanged,
-          builder: (context, state) {
-            // We can make this assertion, because if we're not in
-            // the process of a call (state is CallProcessState),
-            // this page wouldn't show anyway.
-            final processState = state as CallProcessState;
-            final call = processState.voipCall!;
+          child: CallProcessStateBuilder(
+            builder: (context, state) {
+              final call = state.voipCall!;
 
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    gradient: context.brand.theme.primaryGradient,
-                  ),
-                  child: SafeArea(
-                    child: Column(
-                      children: [
-                        if ((state is AttendedTransferStarted ||
-                                state is AttendedTransferComplete) &&
-                            state.voip!.inactiveCall != null)
-                          CallTransferInProgressBar(
-                            inactiveCall: state.voip!.inactiveCall!,
-                          ),
-                        DefaultTextStyle.merge(
-                          style: TextStyle(
-                            color: context.brand.theme.colors.onPrimaryGradient,
-                          ),
-                          child: Column(
-                            children: [
-                              const SizedBox(height: 12),
-                              Text(
-                                call.remotePartyHeading,
-                                style: const TextStyle(
-                                  fontSize: 32,
-                                  fontWeight: FontWeight.w300,
-                                ),
-                              ),
-                              const SizedBox(height: 2),
-                              Text(
-                                call.remotePartySubheading,
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(13.5),
-                                  color: context
-                                      .brand.theme.colors.primaryGradientStart,
-                                ),
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 16,
-                                  vertical: 4,
-                                ),
-                                child: Text(
-                                  processState is InitiatingCall
-                                      ? context.msg.main.call.state.calling
-                                      : processState is FinishedCalling
-                                          ? context
-                                              .msg.main.call.state.callEnded
-                                          : call.prettyDuration,
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      gradient: context.brand.theme.primaryGradient,
+                    ),
+                    child: SafeArea(
+                      child: Column(
+                        children: [
+                          if ((state is AttendedTransferStarted ||
+                                  state is AttendedTransferComplete) &&
+                              state.voip!.inactiveCall != null)
+                            CallTransferInProgressBar(
+                              inactiveCall: state.voip!.inactiveCall!,
+                            ),
+                          DefaultTextStyle.merge(
+                            style: TextStyle(
+                              color:
+                                  context.brand.theme.colors.onPrimaryGradient,
+                            ),
+                            child: Column(
+                              children: [
+                                const SizedBox(height: 12),
+                                Text(
+                                  call.remotePartyHeading,
                                   style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
+                                    fontSize: 32,
+                                    fontWeight: FontWeight.w300,
                                   ),
                                 ),
-                              ),
-                              if (context.isAndroid) const SizedBox(height: 12),
-                            ],
+                                const SizedBox(height: 2),
+                                Text(
+                                  call.remotePartySubheading,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(13.5),
+                                    color: context.brand.theme.colors
+                                        .primaryGradientStart,
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 4,
+                                  ),
+                                  child: Text(
+                                    state is InitiatingCall
+                                        ? context.msg.main.call.state.calling
+                                        : state is FinishedCalling
+                                            ? context
+                                                .msg.main.call.state.callEnded
+                                            : call.prettyDuration,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ),
+                                if (context.isAndroid)
+                                  const SizedBox(height: 12),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                const Expanded(
-                  child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: CallActions(),
+                  const Expanded(
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: CallActions(),
+                    ),
                   ),
-                ),
-              ],
-            );
-          },
+                ],
+              );
+            },
+          ),
         ),
       ),
     );

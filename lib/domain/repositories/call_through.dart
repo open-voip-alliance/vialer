@@ -6,11 +6,12 @@ import 'package:flutter/services.dart';
 import 'package:libphonenumber/libphonenumber.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../app/util/loggable.dart';
 import '../entities/exceptions/call_through.dart';
 import '../entities/system_user.dart';
 import 'services/voipgrid.dart';
 
-class CallThroughRepository {
+class CallThroughRepository with Loggable {
   final VoipgridService _service;
 
   CallThroughRepository(this._service);
@@ -26,19 +27,10 @@ class CallThroughRepository {
     }
 
     try {
-      // The call-through API expects a normalized number.
-      // TODO: Don't normalize locally when the API has improved
-      // normalization. Remove normalization here when that has happened.
-      final possibleDestination = await PhoneNumberUtil.normalizePhoneNumber(
-        phoneNumber: destination,
-        isoCode: user.outgoingCli!.startsWith('+31') ? 'NL' : 'DE',
+      destination = await _normalizePhoneNumber(
+        number: destination,
+        user: user,
       );
-
-      if (possibleDestination == null) {
-        throw NormalizationException();
-      }
-
-      destination = possibleDestination;
     } on PlatformException catch (e) {
       const message = 'The string supplied is too long to be a phone number.';
       if (e.message == message) {
@@ -83,5 +75,51 @@ class CallThroughRepository {
 
       throw CallThroughException();
     }
+  }
+
+  Future<String> _normalizePhoneNumber({
+    required String number,
+    required SystemUser user,
+  }) async {
+    // [PhoneNumberUtil] doesn't like using 00 instead of + for international
+    // numbers so we will just swap it out.
+    if (number.startsWith('00')) {
+      number = number.replaceFirst('00', '+');
+    }
+    
+    // If there is already a country code, we don't want to change it.
+    final isoCode = number.startsWith('+')
+        ? ''
+        : _findIsoCode(user: user);
+
+    logger.info('Attempting call-through using ISO code: $isoCode');
+
+    final normalizedNumber = await PhoneNumberUtil.normalizePhoneNumber(
+      phoneNumber: number,
+      isoCode: isoCode,
+    );
+
+    if (normalizedNumber == null) {
+      throw NormalizationException();
+    }
+
+    return normalizedNumber;
+  }
+
+  String _findIsoCode({required SystemUser user}) {
+    final outgoingCli = user.outgoingCli!;
+
+    final supportedIsoCodes = {
+      'NL': '31',
+      'DE': '49',
+      'BE': '32',
+      'ZA': '27',
+    };
+
+    for (final entry in supportedIsoCodes.entries) {
+      if (outgoingCli.startsWith('+${entry.value}')) return entry.key;
+    }
+
+    throw NormalizationException();
   }
 }

@@ -45,7 +45,7 @@ class _DialerPageState extends State<DialerPage>
         );
       }
     } else if (state == AppLifecycleState.resumed) {
-      context.read<CallerCubit>().checkCallPermissionIfNotVoip();
+      context.read<CallerCubit>().checkPhonePermission();
     }
   }
 
