@@ -482,8 +482,13 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
 
       logger.info('Incoming VoIP call, ringing');
     } else if (event is OutgoingCallStarted) {
-      final originState = state as CallOriginDetermined;
-      emit(InitiatingCall(origin: originState.origin, voip: callSessionState));
+      emit(
+        InitiatingCall(
+          origin:
+              state is CallOriginDetermined ? state.origin : CallOrigin.unknown,
+          voip: callSessionState,
+        ),
+      );
       logger.info('Initiating VoIP call');
     }
   }
