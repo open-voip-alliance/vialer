@@ -26,6 +26,15 @@ class SystemUser {
         (p) => p.isNotEmpty,
       );
 
+  /// This is only nullable for backwards compatibility, it can be made
+  /// non-nullable in a future update.
+  @JsonKey(name: 'client')
+  final Uri? clientUrl;
+
+  String? get clientId => clientUrl?.pathSegments.lastOrNullWhere(
+        (p) => p.isNotEmpty,
+  );
+
   const SystemUser({
     required this.uuid,
     required this.email,
@@ -35,6 +44,7 @@ class SystemUser {
     required this.token,
     this.appAccountUrl,
     this.outgoingCli,
+    this.clientUrl,
   });
 
   SystemUser copyWith({
@@ -46,6 +56,7 @@ class SystemUser {
     String? token,
     Uri? appAccount,
     String? outgoingCli,
+    Uri? clientUrl,
   }) {
     return SystemUser(
       uuid: uuid ?? this.uuid,
@@ -56,6 +67,7 @@ class SystemUser {
       token: token ?? this.token,
       appAccountUrl: appAccountUrl ?? appAccountUrl,
       outgoingCli: outgoingCli ?? this.outgoingCli,
+      clientUrl: clientUrl ?? this.clientUrl,
     );
   }
 
