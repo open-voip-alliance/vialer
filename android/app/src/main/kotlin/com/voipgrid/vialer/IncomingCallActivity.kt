@@ -69,19 +69,19 @@ class IncomingCallActivity : ComponentActivity() {
     }
 
     private fun ensureScreenShowsWhilePhoneIsLocked() {
+        // Although these are a deprecated flags, some SDK >= 27 devices still require to set
+        // these flags for the screen to turn on.
+        window.addFlags(
+            WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+                    or WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
+                    or WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+                    or WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
+                    or WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON
+        )
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
             setShowWhenLocked(true)
             setTurnScreenOn(true)
-        } else {
-            // If the phone isn't on SDK >= 27, we have to use the old flags api to show
-            // while locked.
-            window.addFlags(
-                WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
-                        or WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
-                        or WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-                        or WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
-                        or WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON
-            )
         }
     }
 
@@ -392,7 +392,7 @@ data class CallHeaderInformation(val title: String = "", val subtitle: String = 
  */
 val Context.primary: Color
     get() = Color(
-        when(getString(R.string.identifier).contains("vialer")) {
+        when (getString(R.string.identifier).contains("vialer")) {
             true -> getColor(R.color.primary_dark)
             false -> getColor(R.color.primary)
         }
