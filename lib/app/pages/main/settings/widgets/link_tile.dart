@@ -94,6 +94,25 @@ class SettingLinkTile extends StatelessWidget {
     );
   }
 
+  static Widget calls() {
+    return Builder(
+      builder: (context) {
+        return SettingLinkTile(
+          title: Text(
+            context.msg.main.settings.list.portalLinks.calls.title,
+          ),
+          onTap: () {
+            Navigator.of(context, rootNavigator: true).push(
+              MaterialPageRoute(
+                builder: (context) => WebViewPage(WebPage.calls),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return InkWell(

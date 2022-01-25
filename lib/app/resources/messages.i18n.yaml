@@ -264,6 +264,8 @@ main:
           title: "Dial plan"
         stats:
           title: "Statistics"
+        calls:
+          title: "Calls"
     troubleshootingProgressPopUp(int remainingTaps): >-
       You can access troubleshooting settings after $remainingTaps more taps on your screen.
     troubleshootingUnlockedPopUp: "You now have access to troubleshooting settings."

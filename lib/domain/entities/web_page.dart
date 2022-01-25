@@ -3,4 +3,5 @@ enum WebPage {
   stats,
   passwordReset,
   addDestination,
+  calls,
 }

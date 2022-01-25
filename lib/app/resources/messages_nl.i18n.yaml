@@ -265,6 +265,8 @@ main:
           title: "Belplan"
         stats:
           title: "Statistieken"
+        calls:
+          title: "Gesprekken"
     troubleshootingProgressPopUp(int remainingTaps): >-
       Nog $remainingTaps keer tikken en de geavanceerde instellingen worden beschikbaar.
     troubleshootingUnlockedPopUp: "Je hebt nu toegang tot de geavanceerde instellingen."
