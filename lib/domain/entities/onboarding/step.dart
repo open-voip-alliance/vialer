@@ -6,6 +6,7 @@ enum OnboardingStep {
   contactsPermission,
   microphonePermission,
   bluetoothPermission,
+  ignoreBatteryOptimizationsPermission,
   voicemail,
   mobileNumber,
   welcome,
