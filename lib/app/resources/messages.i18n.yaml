@@ -265,6 +265,10 @@ main:
           description: >-
             With VoIP you call via internet which uses your data bundle. If VoIP is disabled,
             calls go through the regular phone app and your call carrier service costs apply.
+        ignoreBatteryOptimizations:
+          title: "Always run in background"
+          description: >-
+            This application will no longer be restricted by Android battery optimization, increasing the reliability of incoming calls. It is highly recommended that this is enabled.
       version: "Version"
       portalLinks:
         title: "VoIP platform"
@@ -400,6 +404,16 @@ onboarding:
 
 
         If you allow $appName permission, you can also select other Bluetooth devices.
+    ignoreBatteryOptimizations:
+      title: "Battery Optimization"
+      description: >-
+        Battery optimization may silently shut down the app, block incoming calls and notifications, etc.
+
+
+        This permission will whitelist Vialer to prevent such issues.
+
+
+        We are aware how important battery is and use it very conservatively.
 
   voicemail:
     title: "Voicemail"

@@ -266,6 +266,10 @@ main:
           title: "Gebruik VoIP"
           description: >-
             Met VoIP bel je via internet waarvoor je databundel wordt gebruikt. Als VoIP uitstaat, wordt een gesprek opgezet via de gewone telefoon-app. De reguliere abonnementskosten van je mobiele nummer zijn dan van toepassing.
+        ignoreBatteryOptimizations:
+          title: "Altijd op de achtergrond laten draaien"
+          description: >-
+            Deze app wordt niet langer beperkt door Android batterij optimalisatie, waardoor de betrouwbaarheid van inkomende gesprekken wordt verhoogd. Het wordt sterk geadviseerd dit in te schakelen.
       version: "Versie"
       portalLinks:
         title: "VoIP-platform"
@@ -400,6 +404,16 @@ onboarding:
 
 
         Als je Bluetooth-rechten toestaat aan $appName, kun je ook andere Bluetooth-apparaten selecteren.
+    ignoreBatteryOptimizations:
+      title: "Batterij-optimalisatie"
+      description: >-
+        Batterij-optimalisatie kan ervoor zorgen dat de app langzaam wordt gestopt, gesprekken en notificaties worden geblokkeerd etc.
+
+
+        Deze toestemming zorgt ervoor dat Vialer als veilig wordt gemarkeerd, waardoor dit gedrag zich niet voor zal doen.
+
+
+        We zijn ons ervan bewust hoe belangrijk je batterij is en gaan hier dan ook zuinig mee om.
 
   voicemail:
     title: "Voicemail"
