@@ -155,6 +155,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                 ),
                               SettingTileCategory.portalLinks(
                                 children: [
+                                  SettingLinkTile.calls(),
                                   SettingLinkTile.dialPlan(),
                                   SettingLinkTile.stats(),
                                 ],
