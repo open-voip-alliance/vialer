@@ -1,0 +1,4 @@
+- Een probleem waarbij het scherm niet altijd aanging tijdens een inkomende oproep is opgelost;
+- De knop "Oproepen" is toegevoegd onder instellingen om alle oproepen voor de hele organisatie te bekijken (mits de vereiste permissie is toegekend);
+- De audioconnectiviteit met betrekking tot bluetooth en bedrade headsets is verbeterd;
+- Een probleem is opgelost waardoor inkomende oproepen konden worden afgebroken.
