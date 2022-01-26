@@ -1,5 +1,5 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter_phone_lib/call/call.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_phone_lib/flutter_phone_lib.dart';
 
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
@@ -17,6 +17,11 @@ class CallTransfer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final transferToStart =
+        '${context.msg.main.call.ongoing.state.transferToStart} ';
+    final transferToEnd =
+        ' ${context.msg.main.call.ongoing.state.transferToEnd}';
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -28,14 +33,14 @@ class CallTransfer extends StatelessWidget {
             child: CallTransferBar(
               text: RichText(
                 text: TextSpan(children: [
-                  TextSpan(
-                      text: '${context.msg.main.call.state.transferToStart} '),
+                  TextSpan(text: transferToStart),
                   TextSpan(
                     text: '${activeCall.remotePartyHeading}',
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   TextSpan(
-                      text: ' ${context.msg.main.call.state.transferToEnd}'),
+                    text: transferToEnd,
+                  ),
                 ]),
               ),
             ),

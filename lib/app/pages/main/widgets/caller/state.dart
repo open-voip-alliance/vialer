@@ -1,9 +1,7 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter_phone_lib/audio/audio_state.dart';
-import 'package:flutter_phone_lib/call/call.dart';
-import 'package:flutter_phone_lib/call/call_state.dart';
-import 'package:flutter_phone_lib/call_session_state.dart';
+import 'package:flutter_phone_lib/flutter_phone_lib.dart';
 
+import '../../../../../domain/entities/call_failure_reason.dart';
 import '../../../../../domain/entities/exceptions/call_through.dart';
 
 abstract class CallerState extends Equatable {
@@ -95,7 +93,11 @@ abstract class CallProcessState extends CallOriginDetermined {
   InitiatingCallFailed failed(CallThroughException exception) {
     assert(this is InitiatingCall);
 
-    return InitiatingCallFailed(exception, origin: origin, voip: voip);
+    return InitiatingCallFailed.withException(
+      exception,
+      origin: origin,
+      voip: voip,
+    );
   }
 
   Calling calling({CallSessionState? voip}) => Calling(
@@ -184,29 +186,87 @@ class InitiatingCall extends CallProcessState {
       );
 }
 
-class InitiatingCallFailed extends CallProcessState implements CanCall {
+abstract class InitiatingCallFailed extends CallProcessState
+    implements CanCall {
+  const InitiatingCallFailed._({
+    required CallOrigin origin,
+    required CallSessionState? voip,
+  }) : super(origin: origin, voip: voip);
+
+  factory InitiatingCallFailed.withException(
+    Exception exception, {
+    required CallOrigin origin,
+    required CallSessionState? voip,
+  }) =>
+      InitiatingCallFailedWithException(
+        exception,
+        origin: origin,
+        voip: voip,
+      );
+
+  /// [reason] must not be `unknown`. Use the other constructor if that's the
+  /// case.
+  factory InitiatingCallFailed.because(
+    CallFailureReason reason, {
+    required CallOrigin origin,
+    required bool isVoip,
+  }) =>
+      InitiatingCallFailedWithReason(reason, origin: origin, isVoip: isVoip);
+}
+
+class InitiatingCallFailedWithException extends InitiatingCallFailed {
   final Exception exception;
 
-  const InitiatingCallFailed(
+  const InitiatingCallFailedWithException(
     this.exception, {
     required CallOrigin origin,
     required CallSessionState? voip,
-  }) : super(
-          origin: origin,
-          voip: voip,
-        );
+  }) : super._(origin: origin, voip: voip);
 
   @override
   List<Object?> get props => [...super.props, exception];
 
   @override
-  InitiatingCallFailed copyWith({
+  InitiatingCallFailedWithException copyWith({
     Exception? exception,
     CallOrigin? origin,
     CallSessionState? voip,
   }) =>
-      InitiatingCallFailed(
+      InitiatingCallFailedWithException(
         exception ?? this.exception,
+        origin: origin ?? this.origin,
+        voip: voip ?? this.voip,
+      );
+}
+
+class InitiatingCallFailedWithReason extends InitiatingCallFailed {
+  final CallFailureReason reason;
+
+  final bool _isVoip;
+
+  @override
+  bool get isVoip => _isVoip;
+
+  const InitiatingCallFailedWithReason(
+    this.reason, {
+    required CallOrigin origin,
+    CallSessionState? voip,
+    bool isVoip = false,
+  })  : assert(reason != CallFailureReason.unknown),
+        _isVoip = voip != null || isVoip,
+        super._(origin: origin, voip: voip);
+
+  @override
+  List<Object?> get props => [...super.props, reason, _isVoip];
+
+  @override
+  InitiatingCallFailedWithReason copyWith({
+    CallFailureReason? reason,
+    CallOrigin? origin,
+    CallSessionState? voip,
+  }) =>
+      InitiatingCallFailedWithReason(
+        reason ?? this.reason,
         origin: origin ?? this.origin,
         voip: voip ?? this.voip,
       );

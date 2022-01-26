@@ -24,22 +24,6 @@ connectivity:
       You don't seem to be connected to the internet. Please check your WiFi or mobile data connection and try again.
 
 main:
-  callThrough:
-    error:
-      title: "An error occurred"
-      unknown: "Unknown error."
-      invalidDestination: "Dialed number is invalid."
-      mobile:
-        title: "Mobile number is missing"
-        noMobileNumber: >-
-          The app uses your mobile number to call, but it has not been added to your account yet.
-          Please contact your provider, as only they can add your mobile number to your account.
-      numberTooLong:
-        title: "Dialed number is too long"
-        numberTooLong: >-
-          Only phone numbers with a maximum of 17 digits can be called.
-          Please check the dialed number and try again.
-
   dialer:
     title: &keypadTitle "Keypad"
     permissionDenied: >-
@@ -70,22 +54,23 @@ main:
       buttonOpenSettings: "Open settings"
 
   call:
-    actions:
-      mute: "mute"
-      keypad: "keypad"
-      speaker: "speaker"
-      transfer: "transfer"
-      merge: "merge calls"
-      bluetooth: "bluetooth"
-      phone: "phone"
-      hold: "hold"
-    state:
-      calling: "Calling"
-      callEnded: "Call ended"
-      callOnHold: "Call on hold"
-      transferComplete: "Transfer completed"
-      transferToStart: "Transferring"
-      transferToEnd: "to"
+    ongoing:
+      actions:
+        mute: "mute"
+        keypad: "keypad"
+        speaker: "speaker"
+        transfer: "transfer"
+        merge: "merge calls"
+        bluetooth: "bluetooth"
+        phone: "phone"
+        hold: "hold"
+      state:
+        calling: "Calling"
+        callEnded: "Call ended"
+        callOnHold: "Call on hold"
+        transferComplete: "Transfer completed"
+        transferToStart: "Transferring"
+        transferToEnd: "to"
     incoming:
       answer: "Answer"
       decline: "Decline"
@@ -116,6 +101,29 @@ main:
         message: "If you want to tell us more, please fill in the feedback form to improve the app."
         button: "Go to form"
         dismiss: "Not now"
+    error:
+      title: "An error occurred"
+      unknown: "Unknown error."
+      voip:
+        invalidCallState: "Invalid call state."
+        noMicrophonePermission(String appName): >-
+          No microphone permission. Please give $appName permission to use the microphone.
+        noConnectivity: "No internet connection. Are you connected to the internet?"
+        inCall: "You are already in a call."
+        rejectedByAndroidTelecomFramework: "Rejected by Android."
+        unableToRegister: "Unable to do a SIP registration."
+      callThrough:
+        invalidDestination: "Dialed number is invalid."
+        mobile:
+          title: "Mobile number is missing"
+          noMobileNumber: >-
+            The app uses your mobile number to call, but it has not been added to your account yet.
+            Please contact your provider, as only they can add your mobile number to your account.
+        numberTooLong:
+          title: "Dialed number is too long"
+          numberTooLong: >-
+            Only phone numbers with a maximum of 17 digits can be called.
+            Please check the dialed number and try again.
 
   recent:
     title: "Recent calls"

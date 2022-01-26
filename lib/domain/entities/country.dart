@@ -1,4 +1,4 @@
-import 'package:flutter_phone_lib/util/equatable.dart';
+import 'package:equatable/equatable.dart';
 
 class Country extends Equatable {
   final String name;

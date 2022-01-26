@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_phone_lib/audio/audio_route.dart';
-import 'package:flutter_phone_lib/audio/audio_state.dart';
-import 'package:flutter_phone_lib/audio/bluetooth_audio_route.dart';
+import 'package:flutter_phone_lib/flutter_phone_lib.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../resources/localizations.dart';
@@ -22,13 +20,13 @@ class AudioRoutePicker extends StatelessWidget {
           route: AudioRoute.phone,
           currentRoute: audioState.currentRoute,
           icon: const Icon(VialerSans.phone),
-          label: context.msg.main.call.actions.phone,
+          label: context.msg.main.call.ongoing.actions.phone,
         ),
         _AudioRouteDialogOption(
           route: AudioRoute.speaker,
           currentRoute: audioState.currentRoute,
           icon: const Icon(VialerSans.speaker),
-          label: context.msg.main.call.actions.speaker,
+          label: context.msg.main.call.ongoing.actions.speaker,
         ),
         ..._buildBluetoothOptions(
           context: context,
@@ -75,7 +73,7 @@ class AudioRoutePicker extends StatelessWidget {
     required BuildContext context,
     required String bluetoothDeviceName,
   }) {
-    final label = context.msg.main.call.actions.bluetooth;
+    final label = context.msg.main.call.ongoing.actions.bluetooth;
 
     return toBeginningOfSentenceCase(
       bluetoothDeviceName.isNotEmpty ? '$label ($bluetoothDeviceName)' : label,

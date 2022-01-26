@@ -2,11 +2,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../domain/entities/call_failure_reason.dart';
 import '../../../../../domain/entities/exceptions/call_through.dart';
 import '../../../../../domain/entities/survey/survey_trigger.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
 import '../../../../routes.dart';
+import '../../../../util/conditional_capitalization.dart';
 import '../../../../util/pigeon.dart';
 import '../../../../util/widgets_binding_observer_registrar.dart';
 import '../../call/call_screen.dart';
@@ -151,11 +153,22 @@ class _CallerState extends State<Caller>
       context.read<CallerCubit>().notifySurveyShown();
     }
 
-    if (state is InitiatingCallFailed && !state.isVoip) {
-      await _showCallThroughErrorDialog(
-        _navigatorContext,
-        state.exception as CallThroughException,
-      );
+    if (state is InitiatingCallFailed) {
+      if (state is InitiatingCallFailedWithException) {
+        if (state.isVoip) {
+          await _showCallThroughErrorDialog(
+            _navigatorContext,
+            state.exception as CallThroughException,
+          );
+        } else {
+          await _showInitiatingCallFailedDialogWithException(
+            context,
+            state.exception,
+          );
+        }
+      } else if (state is InitiatingCallFailedWithReason) {
+        await _showInitiatingCallFailedDialog(_navigatorContext, state.reason);
+      }
     }
   }
 
@@ -174,68 +187,150 @@ Future<void> _showCallThroughErrorDialog(
   BuildContext context,
   CallThroughException exception,
 ) {
-  String message, title = context.msg.main.callThrough.error.title;
+  String message, title = context.msg.main.call.error.title;
   if (exception is InvalidDestinationException ||
       exception is NormalizationException) {
-    message = context.msg.main.callThrough.error.invalidDestination;
+    message = context.msg.main.call.error.callThrough.invalidDestination;
   } else if (exception is NoMobileNumberException) {
-    message = context.msg.main.callThrough.error.mobile.noMobileNumber;
-    title = context.msg.main.callThrough.error.mobile.title;
+    message = context.msg.main.call.error.callThrough.mobile.noMobileNumber;
+    title = context.msg.main.call.error.callThrough.mobile.title;
   } else if (exception is NumberTooLongException) {
-    message = context.msg.main.callThrough.error.numberTooLong.numberTooLong;
-    title = context.msg.main.callThrough.error.numberTooLong.title;
+    message =
+        context.msg.main.call.error.callThrough.numberTooLong.numberTooLong;
+    title = context.msg.main.call.error.callThrough.numberTooLong.title;
   } else {
-    message = context.msg.main.callThrough.error.unknown;
+    message = context.msg.main.call.error.unknown;
   }
 
-  return showDialog<void>(
-    context: context,
-    barrierDismissible: true,
-    builder: (context) {
-      final content = SingleChildScrollView(
-        child: Text(message),
-      );
+  return _AlertDialog.show(
+    context,
+    title: Text(title),
+    content: Text(message),
+  );
+}
 
-      final buttonText = context.msg.generic.button.ok;
-      void buttonOnPressed() {
-        Navigator.pop(context);
-        // Also pop the confirm if it's there.
-        Navigator.popUntil(context, (route) => route is! ConfirmPageRoute);
-      }
+Future<void> _showInitiatingCallFailedDialog(
+  BuildContext context,
+  CallFailureReason reason,
+) {
+  String message, title = context.msg.main.call.error.title;
+  switch (reason) {
+    case CallFailureReason.invalidCallState:
+      message = context.msg.main.call.error.voip.invalidCallState;
+      break;
+    case CallFailureReason.noMicrophonePermission:
+      message = context.msg.main.call.error.voip
+          .noMicrophonePermission(context.brand.appName);
+      break;
+    case CallFailureReason.noConnectivity:
+      message = context.msg.main.call.error.voip.noConnectivity;
+      break;
+    case CallFailureReason.inCall:
+      message = context.msg.main.call.error.voip.inCall;
+      break;
+    case CallFailureReason.rejectedByAndroidTelecomFramework:
+      message =
+          context.msg.main.call.error.voip.rejectedByAndroidTelecomFramework;
+      break;
+    case CallFailureReason.unableToRegister:
+      message = context.msg.main.call.error.voip.unableToRegister;
+      break;
+    case CallFailureReason.unknown:
+      message = context.msg.main.call.error.unknown;
+      break;
+  }
 
-      if (context.isIOS) {
-        return CupertinoAlertDialog(
-          title: Text(title),
+  return _AlertDialog.show(
+    context,
+    title: Text(title),
+    content: Text(message),
+  );
+}
+
+Future<void> _showInitiatingCallFailedDialogWithException(
+  BuildContext context,
+  Exception exception,
+) {
+  return _AlertDialog.show(
+    context,
+    title: Text(context.msg.main.call.error.title),
+    content: Text(context.msg.main.call.error.unknown),
+  );
+}
+
+class _AlertDialog extends StatelessWidget {
+  final Widget title;
+  final Widget content;
+
+  const _AlertDialog({
+    Key? key,
+    required this.title,
+    required this.content,
+  }) : super(key: key);
+
+  static Future<void> show(
+    BuildContext context, {
+    required Widget title,
+    required Widget content,
+  }) {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) {
+        return _AlertDialog(
+          title: title,
           content: content,
-          actions: <Widget>[
-            CupertinoButton(
-              onPressed: buttonOnPressed,
-              child: Text(buttonText),
-            )
-          ],
         );
-      } else {
-        return AlertDialog(
-          title: Text(title),
-          content: content,
-          actions: <Widget>[
-            TextButton(
-              onPressed: buttonOnPressed,
-              style: ButtonStyle(
-                overlayColor: MaterialStateProperty.all(
-                  Theme.of(context).primaryColorLight,
-                ),
-              ),
-              child: Text(
-                buttonText.toUpperCase(),
-                style: TextStyle(
-                  color: Theme.of(context).primaryColor,
-                ),
+      },
+    );
+  }
+
+  void _onOkButtonPressed(BuildContext context) {
+    Navigator.pop(context);
+    // Also pop the confirm page if it's there.
+    Navigator.popUntil(context, (route) => route is! ConfirmPageRoute);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final okText = Text(
+      context.msg.generic.button.ok.toUpperCaseIfAndroid(context),
+    );
+
+    if (context.isIOS) {
+      return CupertinoAlertDialog(
+        title: title,
+        content: SingleChildScrollView(
+          child: content,
+        ),
+        actions: <Widget>[
+          CupertinoButton(
+            onPressed: () => _onOkButtonPressed(context),
+            child: okText,
+          )
+        ],
+      );
+    } else {
+      return AlertDialog(
+        title: title,
+        content: content,
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => _onOkButtonPressed(context),
+            style: ButtonStyle(
+              overlayColor: MaterialStateProperty.all(
+                Theme.of(context).primaryColorLight,
               ),
             ),
-          ],
-        );
-      }
-    },
-  );
+            child: DefaultTextStyle.merge(
+              style: TextStyle(
+                color: Theme.of(context).primaryColor,
+              ),
+              child: okText,
+            ),
+          ),
+        ],
+      );
+    }
+  }
 }
