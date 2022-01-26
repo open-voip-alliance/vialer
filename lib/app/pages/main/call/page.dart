@@ -3,7 +3,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_phone_lib/call/call_state.dart';
+import 'package:flutter_phone_lib/flutter_phone_lib.dart'
+    hide AttendedTransferStarted;
 
 import '../../../../domain/entities/call_problem.dart';
 import '../../../resources/localizations.dart';
@@ -189,10 +190,11 @@ class _CallPageState extends State<CallPage>
                                   ),
                                   child: Text(
                                     state is InitiatingCall
-                                        ? context.msg.main.call.state.calling
+                                        ? context
+                                            .msg.main.call.ongoing.state.calling
                                         : state is FinishedCalling
-                                            ? context
-                                                .msg.main.call.state.callEnded
+                                            ? context.msg.main.call.ongoing
+                                                .state.callEnded
                                             : call.prettyDuration,
                                     style: const TextStyle(
                                       fontSize: 16,

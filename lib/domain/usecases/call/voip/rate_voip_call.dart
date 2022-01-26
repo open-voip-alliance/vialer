@@ -1,7 +1,6 @@
 import 'dart:core';
 
-import 'package:flutter_phone_lib/audio/audio_route.dart';
-import 'package:flutter_phone_lib/call/call.dart';
+import 'package:flutter_phone_lib/flutter_phone_lib.dart';
 
 import '../../../../dependency_locator.dart';
 import '../../../entities/call_problem.dart';
