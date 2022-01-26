@@ -81,16 +81,16 @@ class CallThroughRepository with Loggable {
     required String number,
     required SystemUser user,
   }) async {
+    if (number.isInternalNumber) return number;
+
     // [PhoneNumberUtil] doesn't like using 00 instead of + for international
     // numbers so we will just swap it out.
     if (number.startsWith('00')) {
       number = number.replaceFirst('00', '+');
     }
-    
+
     // If there is already a country code, we don't want to change it.
-    final isoCode = number.startsWith('+')
-        ? ''
-        : _findIsoCode(user: user);
+    final isoCode = number.startsWith('+') ? '' : _findIsoCode(user: user);
 
     logger.info('Attempting call-through using ISO code: $isoCode');
 
@@ -122,4 +122,9 @@ class CallThroughRepository with Loggable {
 
     throw NormalizationException();
   }
+}
+
+extension CallThrough on String {
+  bool get isInternalNumber =>
+      length <= 9 || (length == 10 && !startsWith('0'));
 }

@@ -1,0 +1,4 @@
+- Fixed an issue where the screen would not always turn on during an incoming call;
+- The button "Calls" is added in the settings menu to view calls for the whole organisation (if the required permission is granted);
+- Improved audio connectivity relating to bluetooth and wired headsets;
+- Resolved a situation that could cause incoming calls to be dropped.
