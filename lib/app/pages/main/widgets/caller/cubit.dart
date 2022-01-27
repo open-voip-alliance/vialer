@@ -566,8 +566,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
   }
 
   Future<void> checkPhonePermission() async {
-    final hasVoipEnabled = await _getHasVoipEnabled();
-    if ((!hasVoipEnabled && Platform.isAndroid) || hasVoipEnabled) {
+    if (Platform.isAndroid) {
       final status = await _getPermissionStatus(permission: Permission.phone);
       _updateWhetherCanCall(status);
     }
