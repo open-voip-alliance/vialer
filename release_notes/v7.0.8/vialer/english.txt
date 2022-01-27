@@ -1,0 +1,5 @@
+- When registering the App there is a step to ignore battery optimizations.
+- The status of ignoring battery optimizations is visible in the settings menu and should be enabled when audio issues occur.
+- Better feedback will be given if an outgoing call fails.
+- The incoming call notification will always show the number (in addition if the contact exists).
+- In the recent call list the variable callername is not shown, but the number of the caller.
