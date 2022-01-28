@@ -2,14 +2,18 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../domain/entities/permission.dart';
+import '../../../../domain/entities/permission_status.dart';
 import '../../../../domain/entities/setting.dart';
 import '../../../../domain/usecases/change_setting.dart';
 import '../../../../domain/usecases/get_build_info.dart';
 import '../../../../domain/usecases/get_is_voip_allowed.dart';
 import '../../../../domain/usecases/get_latest_availability.dart';
+import '../../../../domain/usecases/get_permission_status.dart';
 import '../../../../domain/usecases/get_settings.dart';
 import '../../../../domain/usecases/get_user.dart';
 import '../../../../domain/usecases/logout.dart';
+import '../../../../domain/usecases/onboarding/request_permission.dart';
 import '../../../../domain/usecases/send_saved_logs_to_remote.dart';
 import '../../../util/loggable.dart';
 import '../widgets/user_data_refresher/cubit.dart';
@@ -24,6 +28,8 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
   final _getLatestAvailability = GetLatestAvailabilityUseCase();
   final _sendSavedLogsToRemote = SendSavedLogsToRemoteUseCase();
   final _getIsVoipAllowed = GetIsVoipAllowedUseCase();
+  final _getPermissionStatus = GetPermissionStatusUseCase();
+  final _requestPermission = RequestPermissionUseCase();
   final _logout = LogoutUseCase();
   final _getUser = GetUserUseCase();
 
@@ -49,6 +55,11 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
         buildInfo: await _getBuildInfo(),
         isVoipAllowed: await _getIsVoipAllowed(),
         systemUser: await _getUser(latest: false),
+        hasIgnoreBatteryOptimizationsPermission: await _getPermissionStatus(
+          permission: Permission.ignoreBatteryOptimizations,
+        ).then(
+          (status) => status == PermissionStatus.granted,
+        ),
       ),
     );
   }
@@ -74,6 +85,11 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
     await _getLatestAvailability();
     await _emitUpdatedState();
   }
+
+  Future<void> requestBatteryPermission() =>
+      _requestPermission(
+        permission: Permission.ignoreBatteryOptimizations,
+      );
 
   Future<void> sendSavedLogsToRemote() => _sendSavedLogsToRemote();
 

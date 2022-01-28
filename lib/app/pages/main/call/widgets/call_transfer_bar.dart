@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_phone_lib/call/call.dart';
+import 'package:flutter_phone_lib/flutter_phone_lib.dart';
 
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
@@ -54,8 +54,8 @@ class CallTransferInProgressBar extends StatelessWidget {
             TextSpan(text: '- ${inactiveCall.prettyDuration} - '),
             TextSpan(
               text: inactiveCall.isOnHold
-                  ? context.msg.main.call.state.callOnHold
-                  : context.msg.main.call.state.callEnded,
+                  ? context.msg.main.call.ongoing.state.callOnHold
+                  : context.msg.main.call.ongoing.state.callEnded,
             ),
           ],
         ),

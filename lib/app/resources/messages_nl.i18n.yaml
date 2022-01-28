@@ -21,23 +21,6 @@ connectivity:
       Het lijkt erop dat je geen verbinding hebt met internet. Controleer je wifi- of mobiele dataverbinding en probeer het opnieuw.
 
 main:
-  callThrough:
-    error:
-      title: "Er is een fout opgetreden"
-      unknown: "Onbekende fout."
-      invalidDestination: "Gekozen nummer is ongeldig."
-      mobile:
-        title: "Mobiel nummer ontbreekt"
-        noMobileNumber: >-
-          De app gebruikt je mobiele nummer om te bellen, maar deze is nog niet toegevoegd aan je
-          account. Graag contact opnemen met je provider, aangezien alleen zij je mobiele nummer
-          aan je account toe kunnen voegen.
-      numberTooLong:
-        title: "Gekozen nummer is te lang"
-        numberTooLong: >-
-          Alleen telefoonummers van maximaal 17 cijfers kunnen gebeld worden. Controleer het
-          gekozen nummer en probeer het opnieuw.
-
   dialer:
     title: &keypadTitle "Toetsen"
     permissionDenied: >-
@@ -67,22 +50,23 @@ main:
       buttonOpenSettings: "Open instellingen"
 
   call:
-    actions:
-      mute: "dempen"
-      keypad: "toetsen"
-      speaker: "luidspreker"
-      transfer: "doorverbinden"
-      merge: "voeg samen"
-      bluetooth: "bluetooth"
-      phone: "telefoon"
-      hold: "wacht"
-    state:
-      calling: "Bellen"
-      callEnded: "Gesprek beëindigd"
-      callOnHold: "Gesprek in de wacht"
-      transferComplete: "Transfer voltooid"
-      transferToStart: "Verbind"
-      transferToEnd: "door naar"
+    ongoing:
+      actions:
+        mute: "dempen"
+        keypad: "toetsen"
+        speaker: "luidspreker"
+        transfer: "doorverbinden"
+        merge: "voeg samen"
+        bluetooth: "bluetooth"
+        phone: "telefoon"
+        hold: "wacht"
+      state:
+        calling: "Bellen"
+        callEnded: "Gesprek beëindigd"
+        callOnHold: "Gesprek in de wacht"
+        transferComplete: "Transfer voltooid"
+        transferToStart: "Verbind"
+        transferToEnd: "door naar"
     incoming:
       answer: "Opnemen"
       decline: "Weigeren"
@@ -113,6 +97,30 @@ main:
         message: "Als je ons meer wilt vertellen, vul dan het feedbackformulier in om de app te verbeteren."
         button: "Naar formulier"
         dismiss: "Niet nu"
+    error:
+      title: "Er is een fout opgetreden"
+      unknown: "Onbekende fout."
+      voip:
+        invalidCallState: "Ongeldige call state."
+        noMicrophonePermission(String appName): >-
+          Geen microfoon toestemming. Graag $appName toestemming geven om de microfoon te gebruiken.
+        noConnectivity: "Geen internet verbinding. Ben je verbonden met het internet?"
+        inCall: "Je bent al aan het bellen."
+        rejectedByAndroidTelecomFramework: "Geweigerd door Android."
+        unableToRegister: "Kon geen SIP registratie doen."
+      callThrough:
+        invalidDestination: "Gekozen nummer is ongeldig."
+        mobile:
+          title: "Mobiel nummer ontbreekt"
+          noMobileNumber: >-
+            De app gebruikt je mobiele nummer om te bellen, maar deze is nog niet toegevoegd aan je
+            account. Graag contact opnemen met je provider, aangezien alleen zij je mobiele nummer
+            aan je account toe kunnen voegen.
+        numberTooLong:
+          title: "Gekozen nummer is te lang"
+          numberTooLong: >-
+            Alleen telefoonummers van maximaal 17 cijfers kunnen gebeld worden. Controleer het
+            gekozen nummer en probeer het opnieuw.
 
   recent:
     title: "Recente gesprekken"
@@ -258,6 +266,10 @@ main:
           title: "Gebruik VoIP"
           description: >-
             Met VoIP bel je via internet waarvoor je databundel wordt gebruikt. Als VoIP uitstaat, wordt een gesprek opgezet via de gewone telefoon-app. De reguliere abonnementskosten van je mobiele nummer zijn dan van toepassing.
+        ignoreBatteryOptimizations:
+          title: "Altijd op de achtergrond laten draaien"
+          description: >-
+            Deze app wordt niet langer beperkt door Android batterij optimalisatie, waardoor de betrouwbaarheid van inkomende gesprekken wordt verhoogd. Het wordt sterk geadviseerd dit in te schakelen.
       version: "Versie"
       portalLinks:
         title: "VoIP-platform"
@@ -392,6 +404,16 @@ onboarding:
 
 
         Als je Bluetooth-rechten toestaat aan $appName, kun je ook andere Bluetooth-apparaten selecteren.
+    ignoreBatteryOptimizations:
+      title: "Batterij-optimalisatie"
+      description: >-
+        Batterij-optimalisatie kan ervoor zorgen dat de app langzaam wordt gestopt, gesprekken en notificaties worden geblokkeerd etc.
+
+
+        Deze toestemming zorgt ervoor dat Vialer als veilig wordt gemarkeerd, waardoor dit gedrag zich niet voor zal doen.
+
+
+        We zijn ons ervan bewust hoe belangrijk je batterij is en gaan hier dan ook zuinig mee om.
 
   voicemail:
     title: "Voicemail"
