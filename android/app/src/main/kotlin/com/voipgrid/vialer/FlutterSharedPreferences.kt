@@ -2,6 +2,8 @@ package com.voipgrid.vialer
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.os.Build
+import android.os.PowerManager
 import kotlinx.coroutines.channels.Channel
 import org.json.JSONArray
 import org.json.JSONObject
@@ -79,3 +81,12 @@ class FlutterSharedPreferences(context: Context) {
         private const val FLUTTER_SHARED_PREF_LOGS = "${SHARED_PREF_PREFIX}logs"
     }
 }
+
+val Context.isIgnoringBatteryOptimizations: Boolean
+    get() {
+        val pm: PowerManager = this.getSystemService(Context.POWER_SERVICE) as PowerManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return pm.isIgnoringBatteryOptimizations(this.getPackageName())
+        }
+        return true;
+    }

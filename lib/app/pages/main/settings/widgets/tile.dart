@@ -194,6 +194,33 @@ class SettingTile extends StatelessWidget {
     );
   }
 
+  static Widget ignoreBatteryOptimizations({
+    required bool hasIgnoreBatteryOptimizationsPermission,
+    required Function(bool) onChanged,
+  }) {
+    return Builder(
+      builder: (context) {
+        return SettingTile(
+          label: Text(
+            context.msg.main.settings.list.calling.ignoreBatteryOptimizations
+                .title,
+          ),
+          description: Text(
+            context.msg.main.settings.list.calling.ignoreBatteryOptimizations
+                .description,
+          ),
+          child: _Switch(
+            value: hasIgnoreBatteryOptimizationsPermission,
+            // It is not possible to disable battery optimization via the app
+            // so if we have the permission, this should just be disabled.
+            onChanged:
+                !hasIgnoreBatteryOptimizationsPermission ? onChanged : null,
+          ),
+        );
+      },
+    );
+  }
+
   static Widget remoteLogging(RemoteLoggingSetting setting) {
     return Builder(
       builder: (context) {
@@ -434,7 +461,7 @@ class _BoolSettingValue extends StatelessWidget {
 
 class _Switch extends StatelessWidget {
   final bool value;
-  final ValueChanged<bool> onChanged;
+  final ValueChanged<bool>? onChanged;
 
   const _Switch({
     Key? key,

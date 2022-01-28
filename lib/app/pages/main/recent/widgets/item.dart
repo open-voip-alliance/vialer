@@ -177,8 +177,22 @@ class _RecentItemSubtitle extends StatelessWidget {
 }
 
 extension CallDestinationLabel on CallRecordWithContact {
-  String get displayLabel =>
-      contact?.displayName ?? thirdPartyName ?? thirdPartyNumber;
+  String get displayLabel {
+    final contact = this.contact;
+
+    // We always want to prioritize a local contact in the user's phone.
+    if (contact != null) return contact.displayName;
+
+    // When a colleague is calling, they may have a display name setup so
+    // we will use that. We don't want to use the display name for other calls
+    // as dial-plans may set a variable callername, which would mean the
+    // recents list doesn't show any relevant information about the caller.
+    if (callType == CallType.colleague && thirdPartyName.isNotNullOrEmpty) {
+      return thirdPartyName!;
+    }
+
+    return thirdPartyNumber;
+  }
 }
 
 class RecentCallHeader extends StatelessWidget {

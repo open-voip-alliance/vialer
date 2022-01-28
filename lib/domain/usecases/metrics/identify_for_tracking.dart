@@ -21,9 +21,11 @@ class IdentifyForTrackingUseCase extends UseCase {
 
     assert(user != null);
 
-    return await _metricsRepository.identify(
-      user!.uuid,
-      _getBrand().identifier,
-    ).then((_) => Future.delayed(artificialDelay));
+    return await _metricsRepository
+        .identify(
+          user!.uuid,
+          _getBrand().identifier,
+        )
+        .then((_) => Future.delayed(artificialDelay));
   }
 }
