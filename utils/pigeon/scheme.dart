@@ -40,6 +40,7 @@ abstract class NativeIncomingCallScreen {
   void launch(
     String remotePartyHeading,
     String remotePartySubheading,
+    String imageUri,
   );
 }
 

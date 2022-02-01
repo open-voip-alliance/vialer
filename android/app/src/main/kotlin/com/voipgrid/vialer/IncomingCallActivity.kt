@@ -2,13 +2,16 @@ package com.voipgrid.vialer
 
 import android.app.Activity
 import android.content.*
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.Window
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.FloatingActionButton
@@ -34,6 +37,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.rememberImagePainter
+import com.voipgrid.vialer.IncomingCallActivity.Companion.EXTRA_HEADING
+import com.voipgrid.vialer.IncomingCallActivity.Companion.EXTRA_IMAGE_URI
+import com.voipgrid.vialer.IncomingCallActivity.Companion.EXTRA_SUBHEADING
 import java.util.*
 import kotlin.concurrent.schedule
 
@@ -56,6 +63,10 @@ class IncomingCallActivity : ComponentActivity() {
                 callHeaderInformation = CallHeaderInformation(
                     intent.getStringExtra(EXTRA_HEADING) ?: "",
                     intent.getStringExtra(EXTRA_SUBHEADING) ?: "",
+                    when (intent.hasExtra(EXTRA_IMAGE_URI)) {
+                        true -> Uri.parse(intent.getStringExtra(EXTRA_IMAGE_URI))
+                        false -> null
+                    }
                 ),
                 onAnswer = { performAction(Action.ANSWER) },
                 onDecline = { performAction(Action.DECLINE) },
@@ -104,9 +115,11 @@ class IncomingCallActivity : ComponentActivity() {
     companion object {
         private const val ACTION_RECEIVER =
             "org.openvoipalliance.androidphoneintegration.service.NotificationButtonReceiver"
-        private const val EXTRA_HEADING = "remote_party_heading"
-        private const val EXTRA_SUBHEADING = "remote_party_subheading"
-        private const val INCOMING_CALL_CANCEL_INTENT =
+
+        const val EXTRA_HEADING = "remote_party_heading"
+        const val EXTRA_SUBHEADING = "remote_party_subheading"
+        const val EXTRA_IMAGE_URI = "remote_party_image_uri"
+        const val INCOMING_CALL_CANCEL_INTENT =
             "org.openvoipalliance.androidphoneintegration.INCOMING_CALL_CANCEL"
     }
 
@@ -115,10 +128,17 @@ class IncomingCallActivity : ComponentActivity() {
     }
 }
 
-fun Activity.launchIncomingCallScreen(remotePartyHeading: String, remotePartySubheading: String) =
+fun Activity.launchIncomingCallScreen(
+    remotePartyHeading: String,
+    remotePartySubheading: String,
+    imageUri: String?,
+) =
     startActivity(Intent(this, IncomingCallActivity::class.java).apply {
-        putExtra("remote_party_heading", remotePartyHeading)
-        putExtra("remote_party_subheading", remotePartySubheading)
+        putExtra(EXTRA_HEADING, remotePartyHeading)
+        putExtra(EXTRA_SUBHEADING, remotePartySubheading)
+        imageUri?.let {
+            putExtra(EXTRA_IMAGE_URI, it)
+        }
     })
 
 private val textStyle = TextStyle(color = Color.White)
@@ -305,17 +325,32 @@ fun generateAvatarContent(
 
 @Composable
 fun Avatar(callHeaderInformation: CallHeaderInformation) {
+    val displayContactImage = callHeaderInformation.imageUri != null
+
     Box(
         modifier = Modifier
-            .size(36.dp)
+            .size(
+                when (displayContactImage) {
+                    true -> 64.dp
+                    false -> 36.dp
+                }
+            )
             .clip(CircleShape)
-            .background(Color.White),
+            .background(Color.White)
+            .border(2.dp, Color.White, CircleShape),
         contentAlignment = Alignment.Center,
     ) {
-        Text(
-            generateAvatarContent(callHeaderInformation = callHeaderInformation),
-            style = TextStyle(color = LocalContext.current.primary, fontWeight = FontWeight.Bold),
-        )
+        when (displayContactImage) {
+            true -> Image(
+                painter = rememberImagePainter(data = callHeaderInformation.imageUri),
+                contentDescription = null,
+            )
+            false -> Text(
+                generateAvatarContent(callHeaderInformation = callHeaderInformation),
+                style = TextStyle(color = LocalContext.current.primary,
+                    fontWeight = FontWeight.Bold),
+            )
+        }
     }
 }
 
@@ -384,7 +419,11 @@ value class VialerSans(val character: Int) {
     }
 }
 
-data class CallHeaderInformation(val title: String = "", val subtitle: String = "")
+data class CallHeaderInformation(
+    val title: String = "",
+    val subtitle: String = "",
+    val imageUri: Uri? = null,
+)
 
 /**
  * The color palette doesn't match perfectly between brands and for this screen, we want to use
