@@ -78,6 +78,7 @@ class _CallerState extends State<Caller>
       NativeIncomingCallScreen().launch(
         call.remotePartyHeading,
         call.remotePartySubheading,
+        call.contact?.imageUri?.toString() ?? '',
       );
       return;
     }

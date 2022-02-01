@@ -29,8 +29,11 @@ class MainActivity : FlutterActivity() {
         ) { ContactSort().apply { orderBy = Pigeon.OrderBy.familyName } }
 
         Pigeon.NativeIncomingCallScreen.setup(flutterEngine.dartExecutor.binaryMessenger) {
-                remotePartyHeading, remotePartySubheading ->
-            this.launchIncomingCallScreen(remotePartyHeading, remotePartySubheading)
+                remotePartyHeading, remotePartySubheading, imageUri ->
+            this.launchIncomingCallScreen(remotePartyHeading, remotePartySubheading, when {
+                imageUri.isNullOrBlank() -> null
+                else -> imageUri
+            })
         }
 
         Pigeon.NativeMetrics.setup(flutterEngine.dartExecutor.binaryMessenger) {
