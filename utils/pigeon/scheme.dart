@@ -49,3 +49,10 @@ abstract class NativeIncomingCallScreen {
 abstract class NativeMetrics {
   void initialize();
 }
+
+@HostApi()
+// ignore:one_member_abstracts
+abstract class CallScreenBehavior {
+  void enable();
+  void disable();
+}
