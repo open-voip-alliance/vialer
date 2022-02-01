@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Build
 import android.view.WindowManager
 import androidx.annotation.NonNull
+import com.voipgrid.vialer.IncomingCallActivity.Companion.INCOMING_CALL_CANCEL_INTENT
 import com.voipgrid.vialer.Pigeon.ContactSort
 import com.voipgrid.vialer.logging.Logger
 import io.flutter.embedding.android.FlutterActivity
@@ -11,18 +12,9 @@ import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugins.GeneratedPluginRegistrant
 
-class MainActivity : FlutterActivity() {
+class MainActivity : FlutterActivity(), Pigeon.CallScreenBehavior {
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         GeneratedPluginRegistrant.registerWith(flutterEngine)
-
-        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CALL_SCREEN_CHANNEL)
-            .setMethodCallHandler { call, result ->
-                when (call.method) {
-                    "enableCallScreenBehavior" -> enableCallScreenBehavior()
-                    "disableCallScreenBehavior" -> disableCallScreenBehavior()
-                    else -> result.notImplemented()
-                }
-            }
 
         Pigeon.NativeLogging.setup(flutterEngine.dartExecutor.binaryMessenger, App.logger)
         Pigeon.ContactSortHostApi.setup(flutterEngine.dartExecutor.binaryMessenger
@@ -39,9 +31,11 @@ class MainActivity : FlutterActivity() {
         Pigeon.NativeMetrics.setup(flutterEngine.dartExecutor.binaryMessenger) {
              App.segment.initialize()
         }
+
+        Pigeon.CallScreenBehavior.setup(flutterEngine.dartExecutor.binaryMessenger, this)
     }
 
-    private fun enableCallScreenBehavior() {
+    override fun enable() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
             setShowWhenLocked(true)
             setTurnScreenOn(true)
@@ -50,19 +44,19 @@ class MainActivity : FlutterActivity() {
         }
     }
 
-    private fun disableCallScreenBehavior() {
+    override fun disable() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
             setShowWhenLocked(false)
             setTurnScreenOn(false)
         } else {
             window.clearFlags(legacyFlags)
         }
+
+        // We will make sure the incoming call screen has also finished
+        sendBroadcast(Intent(INCOMING_CALL_CANCEL_INTENT))
     }
 
     companion object {
-
-        private const val CALL_SCREEN_CHANNEL = "com.voipgrid.vialer/callScreen"
-
         /**
          * These are the flags required for call screen behaviour in <= Android 8.0
          */

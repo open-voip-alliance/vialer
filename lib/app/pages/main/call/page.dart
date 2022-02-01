@@ -13,7 +13,6 @@ import '../../../util/widgets_binding_observer_registrar.dart';
 import '../widgets/caller.dart';
 import '../widgets/connectivity_alert.dart';
 import 'call_feedback/call_feedback.dart';
-import 'call_screen.dart';
 import 'widgets/call_actions.dart';
 import 'widgets/call_process_state_builder.dart';
 import 'widgets/call_transfer_bar.dart';
@@ -59,8 +58,6 @@ class _CallPageState extends State<CallPage>
   /// performed after a delay.
   void _dismissCallPage(BuildContext context, {Duration? after}) {
     dismiss() {
-      CallScreenBehavior.disable();
-
       if (mounted) {
         Navigator.popUntil(context, (route) => route.isFirst);
       }
