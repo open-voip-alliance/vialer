@@ -46,7 +46,6 @@ class RecentCallItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-      onTap: onCallPressed,
       leading: Avatar(
         name: callRecord.displayLabel,
         backgroundColor: calculateColorForPhoneNumber(
@@ -56,8 +55,21 @@ class RecentCallItem extends StatelessWidget {
         showFallback: callRecord.contact?.displayName == null,
         fallback: const Icon(VialerSans.phone, size: 20),
       ),
-      title: Text(callRecord.displayLabel),
-      subtitle: _RecentItemSubtitle(callRecord),
+      title: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: onCallPressed,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(callRecord.displayLabel),
+            const SizedBox(height: 2),
+            _RecentItemSubtitle(callRecord),
+          ],
+        ),
+      ),
+      // Empty onTap so we still keep the splash behavior
+      onTap: () => {},
       trailing: PopupMenuButton(
         onSelected: _onPopupMenuItemPress,
         itemBuilder: (context) => [
@@ -159,7 +171,10 @@ class _RecentItemSubtitle extends StatelessWidget {
             const SizedBox(width: 8),
             Text(
               _text(context),
-              style: TextStyle(color: context.brand.theme.colors.grey4),
+              style: TextStyle(
+                color: context.brand.theme.colors.grey4,
+                fontSize: 12,
+              ),
             ),
           ],
         ),
