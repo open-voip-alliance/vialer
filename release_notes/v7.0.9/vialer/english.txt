@@ -1,0 +1,5 @@
+- Tapping on the edge of a recent call record will no longer start a call. This is to resolve an unintentional call setup.
+- Contacts without a phone number will no longer be displayed.
+- Resolved an issue where the app would remain showing over the lock screen after a call has ended.
+- Resolved an issue where a contact wouldn't always be matched to a caller's number.
+- Incoming calls will now show the contact image for the caller if one exists.
