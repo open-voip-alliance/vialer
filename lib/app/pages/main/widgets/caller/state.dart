@@ -7,6 +7,8 @@ import '../../../../../domain/entities/exceptions/call_through.dart';
 abstract class CallerState extends Equatable {
   const CallerState();
 
+  bool get isInCall => this is! CanCall;
+
   @override
   List<Object?> get props => [];
 }

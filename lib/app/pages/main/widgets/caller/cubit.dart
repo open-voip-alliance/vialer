@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:dartx/dartx.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_phone_lib/flutter_phone_lib.dart' hide Reason;
 import 'package:flutter_phone_lib/flutter_phone_lib.dart' as fpl;
@@ -465,6 +466,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
                 ? CallDirection.inbound
                 : CallDirection.outbound,
         usedRoutes: _preservedCallSessionState.usedAudioRoutes,
+        usedBluetoothDevices: _preservedCallSessionState.usedBluetoothDevices,
         mos: _preservedCallSessionState.mos,
         reason: callSessionState.activeCall?.reason,
       );
@@ -648,10 +650,17 @@ class _PreservedCallSessionState {
 
   double get mos => _mos;
 
+  final usedBluetoothDevices = <String>{};
   final usedAudioRoutes = <AudioRoute>{};
 
   void preserve(CallSessionState state) {
     usedAudioRoutes.add(state.audioState.currentRoute);
+
+    final bluetoothDeviceName = state.audioState.bluetoothDeviceName;
+
+    if (bluetoothDeviceName != null && !bluetoothDeviceName.isBlank) {
+      usedBluetoothDevices.add(bluetoothDeviceName);
+    }
 
     if (state.activeCall != null) {
       final mos = state.activeCall?.mos ?? 0.0;

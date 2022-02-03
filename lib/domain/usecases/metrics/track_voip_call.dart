@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:dartx/dartx.dart';
 import 'package:flutter_phone_lib/flutter_phone_lib.dart';
 
 import '../../../dependency_locator.dart';
@@ -14,6 +15,7 @@ class TrackVoipCallUseCase extends UseCase {
   Future<void> call({
     required CallDirection direction,
     required Set<AudioRoute> usedRoutes,
+    required Set<String> usedBluetoothDevices,
     required double mos,
     String? reason,
   }) async {
@@ -25,6 +27,9 @@ class TrackVoipCallUseCase extends UseCase {
       'phone-used': usedRoutes.contains(AudioRoute.phone),
       'speaker-used': usedRoutes.contains(AudioRoute.speaker),
       'connection': connectivityType.toString(),
+      'bluetooth-device-last': usedBluetoothDevices.lastOrNull,
+      'bluetooth-device-count': usedBluetoothDevices.length,
+      'bluetooth-device-list': usedBluetoothDevices.join(','),
       'reason': reason,
       'mos': mos,
     });
