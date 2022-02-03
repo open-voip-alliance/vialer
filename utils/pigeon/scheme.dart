@@ -40,6 +40,7 @@ abstract class NativeIncomingCallScreen {
   void launch(
     String remotePartyHeading,
     String remotePartySubheading,
+    String imageUri,
   );
 }
 
@@ -47,4 +48,11 @@ abstract class NativeIncomingCallScreen {
 // ignore:one_member_abstracts
 abstract class NativeMetrics {
   void initialize();
+}
+
+@HostApi()
+// ignore:one_member_abstracts
+abstract class CallScreenBehavior {
+  void enable();
+  void disable();
 }

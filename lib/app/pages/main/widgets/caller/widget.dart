@@ -11,7 +11,6 @@ import '../../../../routes.dart';
 import '../../../../util/conditional_capitalization.dart';
 import '../../../../util/pigeon.dart';
 import '../../../../util/widgets_binding_observer_registrar.dart';
-import '../../call/call_screen.dart';
 import '../../call/incoming/page.dart';
 import '../../call/page.dart';
 import '../../survey/dialog.dart';
@@ -47,6 +46,8 @@ class _CallerState extends State<Caller>
 
   BuildContext get _navigatorContext => widget.navigatorKey.currentContext!;
 
+  final CallScreenBehavior _callScreenBehavior = CallScreenBehavior();
+
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     final cubit = context.read<CallerCubit>();
@@ -78,6 +79,7 @@ class _CallerState extends State<Caller>
       NativeIncomingCallScreen().launch(
         call.remotePartyHeading,
         call.remotePartySubheading,
+        call.contact?.imageUri?.toString() ?? '',
       );
       return;
     }
@@ -95,15 +97,6 @@ class _CallerState extends State<Caller>
   // NOTE: Only called when the state type changes, not when the same state
   // with a different `voipCall` is emitted.
   Future<void> _onStateChanged(BuildContext context, CallerState state) async {
-    if (state is! FinishedCalling) {
-      // The call screen behavior is only enabled here (not disabled) because
-      // we sometimes want the call screen to stay alive after the call has
-      // ended (e.g. for displaying the call pop-up). So this behavior is
-      // currently disabled in the call page itself. If this were to change
-      // in the future then it should be both enabled and disabled from here.
-      CallScreenBehavior.enable();
-    }
-
     if (state is Ringing) {
       _isRinging = true;
       launchIncomingCallScreen(state);
@@ -174,10 +167,21 @@ class _CallerState extends State<Caller>
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<CallerCubit, CallerState>(
-      listenWhen: (previous, current) =>
-          previous.runtimeType != current.runtimeType,
-      listener: _onStateChanged,
+    return MultiBlocListener(
+      listeners: [
+        // We'll always update the call screen based on the state, even
+        // if it hasn't changed to ensure the changes are applied.
+        BlocListener<CallerCubit, CallerState>(
+          listener: (context, state) => _callScreenBehavior.configure(
+            showWhenLocked: state.isInCall,
+          ),
+        ),
+        BlocListener<CallerCubit, CallerState>(
+          listenWhen: (previous, current) =>
+              previous.runtimeType != current.runtimeType,
+          listener: _onStateChanged,
+        ),
+      ],
       child: widget.child,
     );
   }
@@ -333,4 +337,11 @@ class _AlertDialog extends StatelessWidget {
       );
     }
   }
+}
+
+extension on CallScreenBehavior {
+  // Pigeon doesn't support named parameters so using an extension method to
+  // make this a little cleaner.
+  void configure({required bool showWhenLocked}) =>
+      showWhenLocked ? enable() : disable();
 }

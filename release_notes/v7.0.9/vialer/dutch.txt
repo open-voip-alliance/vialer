@@ -1,0 +1,5 @@
+- Als op de rand van een recent gesprek wordt geklikt, wordt geen gesprek meer gestart. Hierdoor werden onbedoeld gesprekken opgezet.
+- Contacten zonder telefoonnummer worden niet meer weergegeven.
+- Een probleem opgelost waarbij de app op het vergrendelingsscherm bleef staan ​​nadat de oproep was beëindigd.
+- Een probleem opgelost waarbij een contact niet altijd werd gekoppeld aan het nummer van een beller.
+- Inkomende oproepen tonen nu, indien aanwezig, de afbeelding van de contactpersoon.
