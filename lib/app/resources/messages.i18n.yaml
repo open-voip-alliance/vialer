@@ -284,16 +284,16 @@ main:
       You can access troubleshooting settings after $remainingTaps more taps on your screen.
     troubleshootingUnlockedPopUp: "You now have access to troubleshooting settings."
     buttons:
-      sendFeedback: "Contact us"
+      sendFeedback: "Feedback"
       sendFeedbackButton: "Send feedback"
       logout: "Log out"
     feedback:
       title: "Send feedback"
       callout(String appName): >-
-        Your feedback is valuable to us and helps to release a finished version of the app sooner.
+        Your feedback is valuable to us.
 
 
-        If you encountered a problem or want to let us know about your experience with $appName, please write a message below. Thank you!
+        If you encounter a problem or want to let our development team know about your experience with $appName, use the form below. If your problem requires immediate assistance please contact your VoIP provider directly.
       logs(String appName): >-
         Do you also want to send your $appName app activity? By doing so, you really help our developers to solve any problems you experience faster.
       placeholders:
