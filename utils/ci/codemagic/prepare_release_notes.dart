@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:dartx/dartx.dart';
 import 'package:path/path.dart';
+import 'package:yaml_edit/yaml_edit.dart';
 
 /// A mapping between the supported language and the language codes used by the
 /// app/play store. e.g. dutch.txt will produce nl_NL.txt and nl.txt
@@ -13,6 +14,15 @@ const localizationMap = {
     'nl',
   ],
 };
+
+/// The messages files that should be updated with the release notes.
+const messagesLocalizationMap = {
+  'english.txt': 'messages.i18n',
+  'dutch.txt': 'messages_nl.i18n',
+};
+
+/// The path to where the messages.yaml files are stored.
+const messagesFileDirectory = 'lib/app/resources/';
 
 const rawReleaseNotesPath = 'release_notes';
 
@@ -62,12 +72,45 @@ Future<void> main(List<String> args) async {
   for (var file in files) {
     if (file is File) {
       await generateReleaseNotesForCodemagic(file);
+      await updateMessagesFilesWithLatestReleaseNotes(file);
     } else {
       throw Exception('${file.path} is not a file and should not be here.');
     }
   }
 
+  await buildMessageFiles();
   verifyAllReleaseNotesFilesWereGenerated();
+}
+
+/// The message files now need to be rebuilt as we have updated the .yaml
+/// files.
+Future<void> buildMessageFiles() async => Process.run('flutter', [
+      'packages',
+      'pub',
+      'run',
+      'build_runner',
+      'build',
+      '--delete-conflicting-outputs',
+    ]);
+
+/// We will now update the [messages.i18n.yaml] files with the translated
+/// release notes so they can be viewed in the app.
+///
+/// You must run the command to generate the .dart language files
+/// after this has been run.
+Future<void> updateMessagesFilesWithLatestReleaseNotes(File file) async {
+  final fileName = basename(file.path);
+  final mapping = messagesLocalizationMap[fileName];
+
+  final messagesFile = File('$messagesFileDirectory$mapping.yaml');
+
+  if (!await messagesFile.exists()) {
+    throw Exception('${messagesFile.path} does not exist.');
+  }
+
+  final yamlEditor = YamlEditor(await messagesFile.readAsString());
+  yamlEditor.update(['releaseNotes'], await file.readAsString());
+  messagesFile.writeAsString(yamlEditor.toString());
 }
 
 /// Finds the mappings and generates the relevant files for each language.
