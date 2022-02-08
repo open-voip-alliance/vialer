@@ -20,6 +20,8 @@ connectivity:
     message: >-
       Het lijkt erop dat je geen verbinding hebt met internet. Controleer je wifi- of mobiele dataverbinding en probeer het opnieuw.
 
+releaseNotes: "- De App is geheel opnieuw opgebouwd, zowel vanuit technisch als gebruikers perspectief.\n- Alle gesprekken zijn standaard encrypted. De instelling om dit te wijzigen is verwijderd.\n- De audio instelling verwijderd. Alle gesprekken hebben de meest geoptimaliseerde kwaliteit.\n- De twee-staps gesprekken zijn vervangen door call-through. Dit biedt een betere gebruikerservaring, maar heeft als gevolg dat kosten worden gerekend door de mobiele provider en niet direct op de klant zelf."
+
 main:
   dialer:
     title: &keypadTitle "Toetsen"
