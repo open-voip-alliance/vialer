@@ -17,6 +17,9 @@ extension PermissionMapper on domain.Permission {
       case domain.Permission.bluetooth:
         return Permission.bluetoothConnect;
 
+      case domain.Permission.ignoreBatteryOptimizations:
+        return Permission.ignoreBatteryOptimizations;
+
       default:
         throw UnsupportedError(
           'Domain Permission has no equivalent package Permission: $this',

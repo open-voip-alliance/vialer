@@ -4,9 +4,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_phone_lib/audio/audio_route.dart';
-import 'package:flutter_phone_lib/audio/audio_state.dart';
-import 'package:flutter_phone_lib/audio/bluetooth_audio_route.dart';
+import 'package:flutter_phone_lib/flutter_phone_lib.dart';
 
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
@@ -172,7 +170,7 @@ class _CallActionButtons extends StatelessWidget {
                 Expanded(
                   child: _ActionButton(
                     icon: const Icon(VialerSans.mute),
-                    text: Text(context.msg.main.call.actions.mute),
+                    text: Text(context.msg.main.call.ongoing.actions.mute),
                     active: state.isVoipCallMuted,
                     // We can't mute when on hold.
                     onPressed: !call.isOnHold && !state.isFinished
@@ -183,7 +181,7 @@ class _CallActionButtons extends StatelessWidget {
                 Expanded(
                   child: _ActionButton(
                     icon: const Icon(VialerSans.dialpad),
-                    text: Text(context.msg.main.call.actions.keypad),
+                    text: Text(context.msg.main.call.ongoing.actions.keypad),
                     onPressed: !state.isFinished
                         ? () => _toggleDialPad(context)
                         : null,
@@ -207,9 +205,11 @@ class _CallActionButtons extends StatelessWidget {
                     icon: state.isInTransfer
                         ? const Icon(VialerSans.merge)
                         : const Icon(VialerSans.transfer),
-                    text: Text(state.isInTransfer
-                        ? context.msg.main.call.actions.merge
-                        : context.msg.main.call.actions.transfer),
+                    text: Text(
+                      state.isInTransfer
+                          ? context.msg.main.call.ongoing.actions.merge
+                          : context.msg.main.call.ongoing.actions.transfer,
+                    ),
                     onPressed: state.isActionable
                         ? () => state.isInTransfer
                             ? _merge(context)
@@ -221,7 +221,7 @@ class _CallActionButtons extends StatelessWidget {
                   flex: 2,
                   child: _ActionButton(
                     icon: const Icon(VialerSans.onHold),
-                    text: Text(context.msg.main.call.actions.hold),
+                    text: Text(context.msg.main.call.ongoing.actions.hold),
                     active: call.isOnHold,
                     onPressed:
                         state.isActionable ? () => _toggleHold(context) : null,
@@ -377,16 +377,16 @@ class _AudioRouteButton extends StatelessWidget {
     required String bluetoothDeviceName,
   }) {
     if (!hasBluetooth || currentRoute == AudioRoute.speaker) {
-      return context.msg.main.call.actions.speaker;
+      return context.msg.main.call.ongoing.actions.speaker;
     }
 
     if (currentRoute == AudioRoute.bluetooth) {
       return bluetoothDeviceName.isNotEmpty
           ? bluetoothDeviceName
-          : context.msg.main.call.actions.bluetooth;
+          : context.msg.main.call.ongoing.actions.bluetooth;
     }
 
-    return context.msg.main.call.actions.phone;
+    return context.msg.main.call.ongoing.actions.phone;
   }
 
   @override
@@ -454,9 +454,8 @@ class _DialPad extends StatelessWidget {
             controller: dialPadController,
             canDelete: false,
             primaryButton: CallButton.hangUp(
-              onPressed: state is! FinishedCalling
-                  ? onHangUpButtonPressed
-                  : null,
+              onPressed:
+                  state is! FinishedCalling ? onHangUpButtonPressed : null,
             ),
             secondaryButton: KeypadButton(
               borderOnIos: false,

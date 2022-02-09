@@ -1,4 +1,4 @@
-import 'package:flutter_phone_lib/audio/audio_state.dart';
+import 'package:flutter_phone_lib/flutter_phone_lib.dart';
 
 import '../../../../dependency_locator.dart';
 import '../../../repositories/voip.dart';

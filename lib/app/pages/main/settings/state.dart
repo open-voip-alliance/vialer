@@ -12,6 +12,7 @@ class SettingsState extends Equatable {
   final bool showTroubleshooting;
   final bool showDnd;
   final SystemUser? systemUser;
+  final bool hasIgnoreBatteryOptimizationsPermission;
 
   bool get isLoading => settings.isEmpty;
 
@@ -30,6 +31,7 @@ class SettingsState extends Equatable {
     this.buildInfo,
     this.isVoipAllowed = true,
     this.systemUser,
+    this.hasIgnoreBatteryOptimizationsPermission = false,
   })  : showTroubleshooting =
             settings.getOrNull<ShowTroubleshootingSettingsSetting>()?.value ??
                 false,
@@ -56,6 +58,7 @@ class SettingsState extends Equatable {
         isVoipAllowed,
         showTroubleshooting,
         showDnd,
+        hasIgnoreBatteryOptimizationsPermission,
       ];
 }
 

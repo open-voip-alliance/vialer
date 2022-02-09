@@ -1,4 +1,5 @@
 PODS:
+  - Alamofire (5.5.0)
   - Amplitude (8.6.0)
   - Analytics (4.1.6)
   - connectivity_plus (0.0.1):
@@ -93,6 +94,7 @@ PODS:
     - Flutter
 
 DEPENDENCIES:
+  - Alamofire (~> 5.4)
   - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
   - contacts_service (from `.symlinks/plugins/contacts_service/ios`)
   - device_info (from `.symlinks/plugins/device_info/ios`)
@@ -117,6 +119,7 @@ DEPENDENCIES:
 
 SPEC REPOS:
   https://github.com/CocoaPods/Specs.git:
+    - Alamofire
     - Amplitude
     - Analytics
     - libPhoneNumber-iOS
@@ -185,6 +188,7 @@ CHECKOUT OPTIONS:
     :git: https://github.com/open-voip-alliance/iOS-Phone-Integration-Lib.git
 
 SPEC CHECKSUMS:
+  Alamofire: 1c4fb5369c3fe93d2857c780d8bbe09f06f97e7c
   Amplitude: 9258ad588738ca98f26c9263e60497b3bd44cb98
   Analytics: eefe524436f904b8bb3f8c8c3425280e43b34efc
   connectivity_plus: 413a8857dd5d9f1c399a39130850d02fe0feaf7e
@@ -217,6 +221,6 @@ SPEC CHECKSUMS:
   url_launcher_ios: 02f1989d4e14e998335b02b67a7590fa34f971af
   webview_flutter_wkwebview: 005fbd90c888a42c5690919a1527ecc6649e1162
 
-PODFILE CHECKSUM: 57be0ee41f0224117b46075b8cd7e8f6b05a6f7e
+PODFILE CHECKSUM: 95d5b2f23c210fde309c1d8cb0f7a9f5fd711c1e
 
 COCOAPODS: 1.11.2
