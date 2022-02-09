@@ -2,4 +2,3 @@
 - Implemented a fix for a situation where the app would make a call without user input.
 - Changed the text before a call-through call to better explain the feature.
 - Updated the feedback text to point users to their VoIP provider for urgent support.
-- Improved the accessibility of dialing a number and using the dial buttons.
