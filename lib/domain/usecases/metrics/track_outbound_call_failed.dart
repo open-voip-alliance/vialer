@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import '../../../dependency_locator.dart';
+import '../../entities/call_failure_reason.dart';
 import '../../repositories/metrics.dart';
 import '../../use_case.dart';
 
@@ -8,7 +9,7 @@ class TrackOutboundCallFailedUseCase extends UseCase {
   final _metricsRepository = dependencyLocator<MetricsRepository>();
 
   Future<void> call({
-    required Reason reason,
+    required CallFailureReason reason,
     bool isVoip = true,
     String? message,
   }) =>
@@ -17,11 +18,4 @@ class TrackOutboundCallFailedUseCase extends UseCase {
         'voip': isVoip,
         'message': message,
       });
-}
-
-enum Reason {
-  invalidCallState,
-  noMicrophonePermission,
-  noConnectivity,
-  unknown,
 }

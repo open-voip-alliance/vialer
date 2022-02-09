@@ -1,0 +1,4 @@
+- Tijdens het aanmelden is het mogelijk om de batterij-optimalisaties te negeren.
+- De status van de batterij-optimalisaties is zichtbaar onder instellingen en kan ingeschakeld worden bij inkomende audio problemen.
+- Er wordt duidelijker aangegeven waarom een uitgaande oproep mislukt.
+- In de recente gesprekken lijst wordt niet meer de variabele callername getoond, maar het nummer van de beller

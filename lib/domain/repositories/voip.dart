@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:flutter_phone_lib/audio/bluetooth_audio_route.dart';
-import 'package:flutter_phone_lib/call_session_state.dart';
 import 'package:flutter_phone_lib/flutter_phone_lib.dart';
 
 import '../../app/util/loggable.dart';
@@ -158,9 +156,7 @@ class VoipRepository with Loggable {
 
     if (!await start()) return;
 
-    _eventsSubscription = __phoneLib!.events.listen(
-        _eventsController.add
-    );
+    _eventsSubscription = __phoneLib!.events.listen(_eventsController.add);
 
     _hasStartedCompleter.complete(true);
     logger.info('PhoneLib started');

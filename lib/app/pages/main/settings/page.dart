@@ -83,7 +83,10 @@ class _SettingsPageState extends State<SettingsPage> {
                 final isVoipAllowed = state.isVoipAllowed;
                 final showTroubleshooting = state.showTroubleshooting;
                 final showDnd = state.showDnd;
+                final hasIgnoreBatteryOptimizationsPermission =
+                    state.hasIgnoreBatteryOptimizationsPermission;
                 final showDestinationInSeparateCategory = context.isIOS;
+                final cubit = context.watch<SettingsCubit>();
 
                 final availabilityTile = state.systemUser != null
                     ? SettingTile.availability(
@@ -143,6 +146,12 @@ class _SettingsPageState extends State<SettingsPage> {
                                 children: [
                                   SettingTile.useVoip(
                                     settings.get<UseVoipSetting>(),
+                                  ),
+                                  SettingTile.ignoreBatteryOptimizations(
+                                    hasIgnoreBatteryOptimizationsPermission:
+                                        hasIgnoreBatteryOptimizationsPermission,
+                                    onChanged: (enabled) => cubit
+                                        .requestBatteryPermission(),
                                   ),
                                 ],
                               ),

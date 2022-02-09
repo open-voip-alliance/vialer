@@ -1,5 +1,4 @@
-import 'package:flutter_phone_lib/audio/audio_route.dart';
-import 'package:flutter_phone_lib/audio/bluetooth_audio_route.dart';
+import 'package:flutter_phone_lib/flutter_phone_lib.dart';
 
 import '../../../../dependency_locator.dart';
 import '../../../repositories/voip.dart';

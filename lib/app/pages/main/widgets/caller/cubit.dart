@@ -2,11 +2,11 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_phone_lib/audio/bluetooth_audio_route.dart';
-import 'package:flutter_phone_lib/call_session_state.dart';
-import 'package:flutter_phone_lib/flutter_phone_lib.dart';
+import 'package:flutter_phone_lib/flutter_phone_lib.dart' hide Reason;
+import 'package:flutter_phone_lib/flutter_phone_lib.dart' as fpl;
 
 import '../../../../../domain/connectivity_type.dart';
+import '../../../../../domain/entities/call_failure_reason.dart';
 import '../../../../../domain/entities/call_problem.dart';
 import '../../../../../domain/entities/exceptions/call_through.dart';
 import '../../../../../domain/entities/exceptions/voip_not_allowed.dart';
@@ -169,7 +169,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
         'Unable to place outgoing call, call state: ${state.runtimeType}',
       );
       _trackOutboundCallFailed(
-        reason: Reason.invalidCallState,
+        reason: CallFailureReason.invalidCallState,
         message: state.runtimeType.toString(),
         isVoip: callViaVoip,
       );
@@ -304,12 +304,14 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
     required CallOrigin origin,
   }) async {
     if (!await _hasMicPermission()) {
-      _trackOutboundCallFailed(reason: Reason.noMicrophonePermission);
+      _trackOutboundCallFailed(
+        reason: CallFailureReason.noMicrophonePermission,
+      );
       return;
     }
 
     if (await _getConnectivityType() == ConnectivityType.none) {
-      _trackOutboundCallFailed(reason: Reason.noConnectivity);
+      _trackOutboundCallFailed(reason: CallFailureReason.noConnectivity);
       return;
     }
 
@@ -329,7 +331,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
       // TODO: on VoipException
     } on CallThroughException catch (e) {
       _trackOutboundCallFailed(
-        reason: Reason.unknown,
+        reason: CallFailureReason.unknown,
         message: e.runtimeType.toString(),
       );
       emit(processState.failed(e));
@@ -345,16 +347,17 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
       return;
     }
 
+    if (event is CallSetupFailedEvent) {
+      _handleCallSetupFailedEvent(state, event);
+      return;
+    }
+
     final callSessionState = (event as CallSessionEvent).state!;
 
     // We will immediately handle any setup call events to make sure these are
     // always emitted.
     if (event is IncomingCallReceived || event is OutgoingCallStarted) {
-      _handleCallSetupEvent(
-        state: state,
-        event: event,
-        callSessionState: callSessionState,
-      );
+      _handleCallSetupEvent(state, event, callSessionState);
       return;
     }
 
@@ -371,11 +374,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
     // Call events happened too fast, it's possible we are not in a
     // CallProcessState yet, so try to recover.
     if (state is! CallProcessState) {
-      return _attemptToRecoverFromMissedEvent(
-        state: state,
-        event: event,
-        callSessionState: callSessionState,
-      );
+      return _attemptToRecoverFromMissedEvent(state, event, callSessionState);
     }
 
     if (event is CallConnected) {
@@ -412,8 +411,11 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
       }
     }
 
-    if (event is! CallSessionEvent) {
-      logger.info('Ignoring event as it is not a CallSessionEvent');
+    if (event is! CallSetupFailedEvent && event is! CallSessionEvent) {
+      logger.info(
+        'Ignoring event as it is not a'
+        ' CallSessionEvent or CallSetupFailedEvent',
+      );
       return false;
     }
 
@@ -422,11 +424,11 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
 
   /// If we miss a VoIP event our cubit state might not be in-line with the
   /// VoIP state. So we'll try to recover by getting it caught up.
-  void _attemptToRecoverFromMissedEvent({
-    required CallerState state,
-    required Event event,
-    required CallSessionState callSessionState,
-  }) {
+  void _attemptToRecoverFromMissedEvent(
+    CallerState state,
+    Event event,
+    CallSessionState callSessionState,
+  ) {
     // If the event is [CallEnded] then we don't want to do anything further,
     // we just want to get the state back to [CanCall] so future calls
     // will be possible.
@@ -467,11 +469,11 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
         reason: callSessionState.activeCall?.reason,
       );
 
-  void _handleCallSetupEvent({
-    required CallerState state,
-    required Event event,
-    required CallSessionState callSessionState,
-  }) {
+  void _handleCallSetupEvent(
+    CallerState state,
+    Event event,
+    CallSessionState callSessionState,
+  ) {
     if (event is IncomingCallReceived) {
       _trackVoipCallStarted(
         via: CallOrigin.incoming.toTrackString(),
@@ -491,6 +493,34 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
       );
       logger.info('Initiating VoIP call');
     }
+  }
+
+  void _handleCallSetupFailedEvent(
+    CallerState state,
+    CallSetupFailedEvent event,
+  ) {
+    final reason = event.reason.toDomainEntity();
+    String direction;
+    if (event is OutgoingCallSetupFailed) {
+      direction = 'Outgoing';
+      _trackOutboundCallFailed(reason: reason);
+    } else if (event is IncomingCallSetupFailed) {
+      direction = 'Incoming';
+    } else {
+      direction = 'Unknown';
+    }
+
+    logger.warning(
+      '$direction call setup failed, reason: ${reason.name}',
+    );
+
+    emit(
+      InitiatingCallFailed.because(
+        reason,
+        origin: (state as CallOriginDetermined).origin,
+        isVoip: true,
+      ),
+    );
   }
 
   void _preserve(CallSessionState callSessionState) =>
@@ -628,6 +658,20 @@ class _PreservedCallSessionState {
       if (mos > 0.0) {
         _mos = mos;
       }
+    }
+  }
+}
+
+extension on fpl.Reason {
+  CallFailureReason toDomainEntity() {
+    if (this == fpl.Reason.inCall) {
+      return CallFailureReason.inCall;
+    } else if (this == fpl.Reason.rejectedByAndroidTelecomFramework) {
+      return CallFailureReason.rejectedByAndroidTelecomFramework;
+    } else if (this == fpl.Reason.unableToRegister) {
+      return CallFailureReason.unableToRegister;
+    } else {
+      throw UnsupportedError('Unsupported fpl.Reason: $this');
     }
   }
 }
