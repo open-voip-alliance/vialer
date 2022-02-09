@@ -1,0 +1,5 @@
+- Diverse verbeteringen geïmplementeerd aan bluetooth/headset-connectiviteit.
+- Een oplossing geïmplementeerd voor de situatie waarin de app uitbelt zonder actie van de gebruiker.
+- De tekst aangepast waarin een call through gesprek beter wordt uitgelegd.
+- De feedback tekst bijgewerkt waarbij gebruikers voor dringende ondersteuning worden verwezen naar de VoIP-provider.
+- Verbeterde toegankelijkheid om een telefoonnummers in te toetsen.
