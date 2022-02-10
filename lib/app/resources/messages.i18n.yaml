@@ -23,6 +23,8 @@ connectivity:
     message: >-
       You don't seem to be connected to the internet. Please check your WiFi or mobile data connection and try again.
 
+releaseNotes: "- The app has been completely redesigned from a user experience and technical perspective.\n- All calls are encrypted by default. The encryption setting has been removed.\n- The audio quality setting has been removed. All calls use an optimised quality setting.\n- Two-step calling has been replaced with call-through. This offers a more clear and simple user-experience but using it will incur charges from the mobile provider rather than being billed directly to the client."
+
 main:
   dialer:
     title: &keypadTitle "Keypad"
@@ -282,16 +284,16 @@ main:
       You can access troubleshooting settings after $remainingTaps more taps on your screen.
     troubleshootingUnlockedPopUp: "You now have access to troubleshooting settings."
     buttons:
-      sendFeedback: "Contact us"
+      sendFeedback: "Feedback"
       sendFeedbackButton: "Send feedback"
       logout: "Log out"
     feedback:
       title: "Send feedback"
       callout(String appName): >-
-        Your feedback is valuable to us and helps to release a finished version of the app sooner.
+        Your feedback is valuable to us.
 
 
-        If you encountered a problem or want to let us know about your experience with $appName, please write a message below. Thank you!
+        If you encounter a problem or want to let our development team know about your experience with $appName, use the form below. If your problem requires immediate assistance please contact your VoIP provider directly.
       logs(String appName): >-
         Do you also want to send your $appName app activity? By doing so, you really help our developers to solve any problems you experience faster.
       placeholders:

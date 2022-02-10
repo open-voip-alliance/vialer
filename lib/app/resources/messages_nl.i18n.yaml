@@ -20,6 +20,8 @@ connectivity:
     message: >-
       Het lijkt erop dat je geen verbinding hebt met internet. Controleer je wifi- of mobiele dataverbinding en probeer het opnieuw.
 
+releaseNotes: "- De App is geheel opnieuw opgebouwd, zowel vanuit technisch als gebruikers perspectief.\n- Alle gesprekken zijn standaard encrypted. De instelling om dit te wijzigen is verwijderd.\n- De audio instelling verwijderd. Alle gesprekken hebben de meest geoptimaliseerde kwaliteit.\n- De twee-staps gesprekken zijn vervangen door call-through. Dit biedt een betere gebruikerservaring, maar heeft als gevolg dat kosten worden gerekend door de mobiele provider en niet direct op de klant zelf."
+
 main:
   dialer:
     title: &keypadTitle "Toetsen"
@@ -283,23 +285,23 @@ main:
       Nog $remainingTaps keer tikken en de geavanceerde instellingen worden beschikbaar.
     troubleshootingUnlockedPopUp: "Je hebt nu toegang tot de geavanceerde instellingen."
     buttons:
-      sendFeedback: "Neem contact op"
+      sendFeedback: "Feedback"
       sendFeedbackButton: "Feedback versturen"
       logout: "Uitloggen"
     feedback:
-      title: "Feedback"
+      title: "Feedback sturen"
       callout(String appName): >-
-        Jouw feedback is waardevol voor ons en helpt om eerder een afgeronde versie van de app uit te brengen.
+        Jouw feedback is waardevol voor ons.
 
 
-        Als je een probleem hebt ondervonden of ons wilt laten weten wat je ervaring is met $appName, verstuur dan hieronder een bericht. Dankjewel!
+        Als je een probleem hebt ondervonden of ons ontwikkelingsteam wilt laten weten wat je ervaring is met $appName, gebruik dan het formulier hieronder. Als je probleem dringende hulp vereist, graag rechtstreeks contact opnemen met je VoIP provider.
       logs(String appName): >-
         Wil je ook je $appName app-activiteit versturen? Daarmee help je onze ontwikkelaars echt om eventuele problemen die je ervaart sneller op te lossen.
       placeholders:
         text: "Typ je feedback hier en druk op de verstuur feedback knop onderaan."
       snackBar: "Feedback verstuurd bedankt!"
       buttons:
-        send: "Feedback"
+        send: "Feedback sturen"
 
   notice:
     microphone:

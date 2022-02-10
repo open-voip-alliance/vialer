@@ -1,0 +1,3 @@
+- Implemented several improvements to bluetooth/headset connectivity.
+- Implemented a fix for a situation where the app would make a call without user input.
+- Updated the feedback text to point users to their VoIP provider for urgent support.
