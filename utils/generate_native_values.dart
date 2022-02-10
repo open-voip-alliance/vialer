@@ -8,6 +8,8 @@ import 'package:vialer/domain/repositories/brand.dart';
 import 'package:xml/xml.dart';
 import 'package:yaml/yaml.dart';
 
+import 'env_utils.dart';
+
 /// Generates useful brand and other app values to natively used files.
 ///
 /// Currently Android only.
@@ -28,19 +30,10 @@ Future<void> main() async {
 Future<void> writeEnvValues() async {
   final builder = createXmlBuilder();
 
-  final dotEnvEntries = Map.fromEntries(
-    await File('.env').readAsLines().then(
-          (lines) => lines.map(
-            (line) {
-              final split = line.split('=');
-              return MapEntry(split[0], split[1]);
-            },
-          ),
-        ),
-  );
+  final env = await readEnv('.env');
 
   builder.element('resources', nest: () {
-    for (final entry in dotEnvEntries.entries) {
+    for (final entry in env.entries) {
       builder.element(
         'string',
         attributes: {
