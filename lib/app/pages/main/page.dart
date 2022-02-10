@@ -5,6 +5,7 @@ import '../../../domain/entities/contact.dart';
 import '../../resources/localizations.dart';
 import '../../resources/theme.dart';
 import '../../routes.dart';
+import '../../widgets/app_updated_checker/widget.dart';
 import '../../widgets/transparent_status_bar.dart';
 import 'call/widgets/call_button.dart';
 import 'contacts/cubit.dart';
@@ -103,38 +104,41 @@ class MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<CallerCubit, CallerState>(
-      listener: _onCallerStateChanged,
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        floatingActionButton: _currentIndex != 2 && !_dialerIsPage
-            ? SizedBox(
-                height: 62,
-                width: 62,
-                child: FloatingActionButton(
-                  // We use the CallButton's hero tag for a nice transition
-                  // between the dialer and call button.
-                  heroTag: CallButton.defaultHeroTag,
-                  backgroundColor: context.brand.theme.colors.green1,
-                  onPressed: () => Navigator.pushNamed(context, Routes.dialer),
-                  child: const Icon(VialerSans.dialpad, size: 31),
-                ),
-              )
-            : null,
-        bottomNavigationBar: _BottomNavigationBar(
-          currentIndex: _currentIndex!,
-          dialerIsPage: _dialerIsPage,
-          onTap: _navigateTo,
-        ),
-        body: TransparentStatusBar(
-          brightness: Brightness.dark,
-          child: UserDataRefresher(
-            child: ConnectivityAlert(
-              child: SafeArea(
-                child: Notice(
-                  child: _AnimatedIndexedStack(
-                    index: _currentIndex!,
-                    children: _pages!,
+    return AppUpdatedChecker(
+      child: BlocListener<CallerCubit, CallerState>(
+        listener: _onCallerStateChanged,
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          floatingActionButton: _currentIndex != 2 && !_dialerIsPage
+              ? SizedBox(
+                  height: 62,
+                  width: 62,
+                  child: FloatingActionButton(
+                    // We use the CallButton's hero tag for a nice transition
+                    // between the dialer and call button.
+                    heroTag: CallButton.defaultHeroTag,
+                    backgroundColor: context.brand.theme.colors.green1,
+                    onPressed: () =>
+                        Navigator.pushNamed(context, Routes.dialer),
+                    child: const Icon(VialerSans.dialpad, size: 31),
+                  ),
+                )
+              : null,
+          bottomNavigationBar: _BottomNavigationBar(
+            currentIndex: _currentIndex!,
+            dialerIsPage: _dialerIsPage,
+            onTap: _navigateTo,
+          ),
+          body: TransparentStatusBar(
+            brightness: Brightness.dark,
+            child: UserDataRefresher(
+              child: ConnectivityAlert(
+                child: SafeArea(
+                  child: Notice(
+                    child: _AnimatedIndexedStack(
+                      index: _currentIndex!,
+                      children: _pages!,
+                    ),
                   ),
                 ),
               ),

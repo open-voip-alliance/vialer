@@ -106,6 +106,16 @@ class StorageRepository {
         user != null ? json.encode(user.toJson()) : null,
       );
 
+  /// We store the last installed version so we can check if the user has
+  /// updated the app, and if they have display the release notes to them.
+  static const _lastInstalledVersionKey = 'last_installed_version';
+
+  String? get lastInstalledVersion =>
+      _preferences.getString(_lastInstalledVersionKey);
+
+  set lastInstalledVersion(String? version) =>
+      _preferences.setOrRemoveString(_lastInstalledVersionKey, version);
+
   Future<void> clear() => _preferences.clear();
 
   Future<void> reload() => _preferences.reload();
