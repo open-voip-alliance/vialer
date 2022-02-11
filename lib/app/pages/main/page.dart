@@ -104,7 +104,7 @@ class MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    return AppUpdatedChecker(
+    return AppUpdatedChecker.create(
       child: BlocListener<CallerCubit, CallerState>(
         listener: _onCallerStateChanged,
         child: Scaffold(
