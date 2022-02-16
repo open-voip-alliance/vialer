@@ -9,7 +9,16 @@ import 'dialog.dart';
 class AppUpdatedChecker extends StatefulWidget {
   final Widget child;
 
-  AppUpdatedChecker({required this.child});
+  AppUpdatedChecker._(this.child);
+
+  static Widget create({
+    required Widget child,
+  }) {
+    return BlocProvider<AppUpdatedCheckerCubit>(
+      create: (_) => AppUpdatedCheckerCubit(),
+      child: AppUpdatedChecker._(child),
+    );
+  }
 
   @override
   State<StatefulWidget> createState() => _AppUpdatedCheckerState();
@@ -42,12 +51,9 @@ class _AppUpdatedCheckerState extends State<AppUpdatedChecker>
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<AppUpdatedCheckerCubit>(
-      create: (_) => AppUpdatedCheckerCubit(),
-      child: BlocListener<AppUpdatedCheckerCubit, AppUpdatedState>(
-        listener: _onStateChanged,
-        child: widget.child,
-      ),
+    return BlocListener<AppUpdatedCheckerCubit, AppUpdatedState>(
+      listener: _onStateChanged,
+      child: widget.child,
     );
   }
 }
