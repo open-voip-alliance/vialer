@@ -112,6 +112,7 @@ class _DialerPageState extends State<DialerPage>
                 child: T9DialPad(
                   callButtonColor: context.brand.theme.colors.green1,
                   callButtonIcon: VialerSans.phone,
+                  callButtonSemanticsHint: context.msg.generic.button.call,
                   onCallButtonPressed: state is CanCall
                       ? (number) => _onCallButtonPressed(context, number)
                       : null,

@@ -12,6 +12,7 @@ class T9DialPad extends StatefulWidget {
   final void Function(String number)? onCallButtonPressed;
   final IconData callButtonIcon;
   final Color callButtonColor;
+  final String callButtonSemanticsHint;
   final TextEditingController? controller;
   final VoidCallback? onDeleteAll;
 
@@ -19,6 +20,7 @@ class T9DialPad extends StatefulWidget {
     required this.onCallButtonPressed,
     required this.callButtonIcon,
     required this.callButtonColor,
+    required this.callButtonSemanticsHint,
     this.controller,
     this.onDeleteAll,
   });
@@ -74,6 +76,7 @@ class _T9DialPadState extends State<T9DialPad> {
                       : null,
                   icon: widget.callButtonIcon,
                   color: widget.callButtonColor,
+                  semanticsHint: widget.callButtonSemanticsHint,
                 ),
                 onDeleteAll: widget.onDeleteAll,
               ),
@@ -89,12 +92,14 @@ class _DialerPrimaryButton extends StatelessWidget {
   final VoidCallback? onPressed;
   final IconData icon;
   final Color color;
+  final String semanticsHint;
 
   const _DialerPrimaryButton({
     Key? key,
     this.onPressed,
     required this.icon,
     required this.color,
+    required this.semanticsHint,
   }) : super(key: key);
 
   @override
@@ -116,6 +121,7 @@ class _DialerPrimaryButton extends StatelessWidget {
           minWidth: minSize,
           minHeight: minSize,
         ),
+        semanticsHint: semanticsHint,
       ),
     );
   }

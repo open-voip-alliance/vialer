@@ -1,8 +1,10 @@
 import 'dart:math';
 
+import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
+import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
 
 class Keypad extends StatefulWidget {
@@ -72,6 +74,14 @@ class _KeypadState extends State<Keypad> {
               cursorShownNotifier: _cursorShownNotifier,
               primaryValue: entry.key,
               secondaryValue: entry.value,
+              // In English, the screen reader will pronounce 'A B C' as
+              // 'A bc' ('A beesee'). 'ABC' however, is correctly pronounced.
+              // For other letters it would pronounce it as a word, so there
+              // the spaces are necessary. This is only true for English, in
+              // Dutch the screen reader will pronounce 'A B C' correctly, and
+              // will pronounce 'ABC' like a word ('abk').
+              separateSecondaryValueLettersForSemantics:
+                  entry.value != 'ABC' || !context.isEnglish,
               replaceWithSecondaryValueOnLongPress:
                   entry.key == '0' && entry.value == '+',
             ),
@@ -224,7 +234,14 @@ class KeypadButton extends StatelessWidget {
       ),
       child: AspectRatio(
         aspectRatio: 1 / 1,
-        child: child,
+        child: MergeSemantics(
+          child: Semantics(
+            // This has no effect until this issue in Flutter is fixed:
+            // https://github.com/flutter/flutter/issues/90498
+            keyboardKey: true,
+            child: child,
+          ),
+        ),
       ),
     );
   }
@@ -238,6 +255,14 @@ class KeypadValueButton extends StatefulWidget {
 
   final bool replaceWithSecondaryValueOnLongPress;
 
+  /// Whether spaces should be added between the letters
+  /// (e.g. 'MNO' -> 'M N O'). This is necessary because otherwise the
+  /// screen reader will try to pronounce the letters as words.
+  ///
+  /// Note that this is not the case for every value in every language e.g.
+  /// in English, it should be 'ABC' and not 'A B C' for correct pronunciation.
+  final bool separateSecondaryValueLettersForSemantics;
+
   /// Controller to push text to on press.
   final TextEditingController controller;
 
@@ -247,6 +272,7 @@ class KeypadValueButton extends StatefulWidget {
     Key? key,
     required this.primaryValue,
     this.secondaryValue,
+    this.separateSecondaryValueLettersForSemantics = true,
     this.replaceWithSecondaryValueOnLongPress = false,
     required this.controller,
     required this.cursorShownNotifier,
@@ -298,6 +324,14 @@ class _KeypadValueButtonState extends State<KeypadValueButton> {
     if (hasOffset) {
       widget.cursorShownNotifier.value = true;
     }
+
+    if (context.isAndroid ||
+        (context.isIOS && widget.replaceWithSecondaryValueOnLongPress)) {
+      SemanticsService.announce(
+        widget.primaryValue,
+        Directionality.of(context),
+      );
+    }
   }
 
   void _replaceWithSecondaryValue() {
@@ -313,12 +347,27 @@ class _KeypadValueButtonState extends State<KeypadValueButton> {
     _controller.value = _controller.value.copyWith(
       text: start + widget.secondaryValue! + end,
     );
+
+    SemanticsService.announce(
+      context.msg.main.dialer.button.value
+          .replacedWithHint(widget.secondaryValue!),
+      Directionality.of(context),
+    );
   }
 
   bool get _primaryIsNumber => int.tryParse(widget.primaryValue) != null;
 
   @override
   Widget build(BuildContext context) {
+    final secondaryValueSemanticsLabel =
+        widget.separateSecondaryValueLettersForSemantics
+            ? widget.secondaryValue?.characters
+                .mapIndexed(
+                  (index, char) => index != 0 ? ' $char' : char,
+                )
+                .join()
+            : widget.secondaryValue;
+
     return Center(
       child: ConstrainedBox(
         constraints: const BoxConstraints(
@@ -328,43 +377,47 @@ class _KeypadValueButtonState extends State<KeypadValueButton> {
         child: LayoutBuilder(
           builder: (context, constraints) {
             return KeypadButton(
-              child: _InkWellOrResponse(
-                isResponse: !context.isIOS,
-                customBorder: const CircleBorder(),
-                enableFeedback: true,
-                onTapDown: _enterValue,
-                onLongPress: widget.replaceWithSecondaryValueOnLongPress
-                    ? _replaceWithSecondaryValue
-                    : null,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text(
-                      widget.primaryValue,
-                      style: TextStyle(
-                        fontSize: 32,
-                        color: !_primaryIsNumber
-                            ? context.brand.theme.colors.grey5
-                            : null, // Null means default color
+              child: Semantics(
+                label: widget.primaryValue,
+                hint: secondaryValueSemanticsLabel,
+                child: _InkWellOrResponse(
+                  response: !context.isIOS,
+                  customBorder: const CircleBorder(),
+                  enableFeedback: true,
+                  onTapDown: _enterValue,
+                  onLongPress: widget.replaceWithSecondaryValueOnLongPress
+                      ? _replaceWithSecondaryValue
+                      : null,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        widget.primaryValue,
+                        style: TextStyle(
+                          fontSize: 32,
+                          color: !_primaryIsNumber
+                              ? context.brand.theme.colors.grey5
+                              : null, // Null means default color
+                        ),
+                        // The font size is based on the available space, and we
+                        // never make the font size bigger
+                        textScaleFactor: min(
+                          constraints.maxWidth / KeypadValueButton.maxSize,
+                          MediaQuery.textScaleFactorOf(context),
+                        ),
                       ),
-                      // The font size is based on the available space, and we
-                      // never make the font size bigger
-                      textScaleFactor: min(
-                        constraints.maxWidth / KeypadValueButton.maxSize,
-                        MediaQuery.textScaleFactorOf(context),
+                      Text(
+                        // Render an empty string if there's no secondary value
+                        // to keep the alignments proper.
+                        widget.secondaryValue ?? '',
+                        style: TextStyle(
+                          color: context.brand.theme.colors.grey5,
+                          fontSize: 12,
+                        ),
                       ),
-                    ),
-                    Text(
-                      // Render an empty string if there's no secondary value
-                      // to keep the alignments proper.
-                      widget.secondaryValue ?? '',
-                      style: TextStyle(
-                        color: context.brand.theme.colors.grey5,
-                        fontSize: 12,
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             );
@@ -441,16 +494,20 @@ class _DeleteButtonState extends State<_DeleteButton> {
 
       final cursorShown = widget.cursorShownNotifier.value;
 
-      String start, end;
+      String start, end, deleted;
       if (hasOffset) {
+        final startOffset =
+            baseOffset == extentOffset ? baseOffset - 1 : baseOffset;
         start = text.substring(
           0,
-          baseOffset == extentOffset ? baseOffset - 1 : baseOffset,
+          startOffset,
         );
         end = text.substring(extentOffset);
+        deleted = text.substring(startOffset, extentOffset);
       } else {
         start = text.substring(0, text.length - 1);
         end = '';
+        deleted = text.characters.last;
       }
 
       widget.controller.value = _controller.value.copyWith(
@@ -463,34 +520,70 @@ class _DeleteButtonState extends State<_DeleteButton> {
               : -1,
         ),
       );
+
+      SemanticsService.announce(
+        context.msg.main.dialer.button.delete.deletedHint(
+          deleted,
+          deleted.characters.length,
+        ),
+        Directionality.of(context),
+      );
     }
   }
 
   void _deleteAll() {
+    final digits = _controller.text;
+    final digitCount = digits.characters.length;
+    final deletedSingleDigit = digitCount == 1;
+
     _controller.clear();
     widget.onDeleteAll?.call();
+
+    // We don't want to announce anything on iOS, because on iOS the label is
+    // (unfortunately) always read out after a tap, meaning our manual
+    // announcements are not read at best, or interfering with the label
+    // announcement at worst.
+    if (context.isIOS) return;
+
+    // We say the digit out loud when deleting a single digit, to mimic
+    // the native dialer.
+    if (deletedSingleDigit) {
+      SemanticsService.announce(
+        context.msg.main.dialer.button.delete.deletedHint(digits, digitCount),
+        Directionality.of(context),
+      );
+    } else {
+      SemanticsService.announce(
+        context.msg.main.dialer.button.delete.deletedAllHint,
+        Directionality.of(context),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return KeypadButton(
       borderOnIos: false,
-      child: InkResponse(
-        onTap: _canDelete ? _delete : null,
-        onLongPress: _canDelete ? _deleteAll : null,
-        child: AnimatedTheme(
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.decelerate,
-          data: Theme.of(context).copyWith(
-            iconTheme: Theme.of(context).iconTheme.copyWith(
-                  color: _canDelete
-                      ? context.brand.theme.colors.grey5
-                      : context.brand.theme.colors.grey2,
-                ),
-          ),
-          child: const Icon(
-            VialerSans.correct,
-            size: 32,
+      child: Semantics(
+        button: true,
+        hint: context.msg.main.dialer.button.delete.hint,
+        child: InkResponse(
+          onTap: _canDelete ? _delete : null,
+          onLongPress: _canDelete ? _deleteAll : null,
+          child: AnimatedTheme(
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.decelerate,
+            data: Theme.of(context).copyWith(
+              iconTheme: Theme.of(context).iconTheme.copyWith(
+                    color: _canDelete
+                        ? context.brand.theme.colors.grey5
+                        : context.brand.theme.colors.grey2,
+                  ),
+            ),
+            child: const Icon(
+              VialerSans.correct,
+              size: 32,
+            ),
           ),
         ),
       ),
@@ -504,14 +597,16 @@ class _InkWellOrResponse extends StatelessWidget {
   final VoidCallback? onLongPress;
   final bool enableFeedback;
   final ShapeBorder? customBorder;
+  final bool response;
 
-  final bool isResponse;
-
+  /// Note that the [InkResponse] or [InkWell] and all its children are
+  /// excluded from semantics. Only [onTapDown] and [onLongPress] are set for
+  /// semantics.
   const _InkWellOrResponse({
     Key? key,
     required this.onTapDown,
     this.onLongPress,
-    this.isResponse = false,
+    this.response = false,
     this.customBorder,
     this.enableFeedback = true,
     this.child,
@@ -519,26 +614,35 @@ class _InkWellOrResponse extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // onTap needs to be defined for onTapDown to work
+    // onTap needs to be defined for onTapDown to work.
     void onTap() {}
-    void onTapDown(_) => this.onTapDown();
+    void onTapDownWithDetails(_) => onTapDown();
+    const excludeFromSemantics = true;
 
-    return isResponse
-        ? InkResponse(
-            enableFeedback: enableFeedback,
-            onTap: onTap,
-            onTapDown: onTapDown,
-            onLongPress: onLongPress,
-            customBorder: customBorder,
-            child: child,
-          )
-        : InkWell(
-            enableFeedback: enableFeedback,
-            onTap: onTap,
-            onTapDown: onTapDown,
-            onLongPress: onLongPress,
-            customBorder: customBorder,
-            child: child,
-          );
+    return Semantics(
+      onTap: onTapDown,
+      onLongPress: onLongPress,
+      child: ExcludeSemantics(
+        child: response
+            ? InkResponse(
+                excludeFromSemantics: excludeFromSemantics,
+                enableFeedback: enableFeedback,
+                onTap: onTap,
+                onTapDown: onTapDownWithDetails,
+                onLongPress: onLongPress,
+                customBorder: customBorder,
+                child: child,
+              )
+            : InkWell(
+                excludeFromSemantics: excludeFromSemantics,
+                enableFeedback: enableFeedback,
+                onTap: onTap,
+                onTapDown: onTapDownWithDetails,
+                onLongPress: onLongPress,
+                customBorder: customBorder,
+                child: child,
+              ),
+      ),
+    );
   }
 }

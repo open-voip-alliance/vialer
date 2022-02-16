@@ -10,7 +10,7 @@ class CallTransfer extends StatelessWidget {
   final Call activeCall;
   final Function(String) onTransferTargetSelected;
 
-  CallTransfer({
+  const CallTransfer({
     required this.activeCall,
     required this.onTransferTargetSelected,
   });
@@ -50,6 +50,8 @@ class CallTransfer extends StatelessWidget {
           child: T9DialPad(
             callButtonIcon: VialerSans.transfer,
             callButtonColor: context.brand.theme.colors.green1,
+            callButtonSemanticsHint:
+                context.msg.main.call.ongoing.actions.transfer,
             onCallButtonPressed: onTransferTargetSelected,
           ),
         ),
