@@ -1,0 +1,5 @@
+- De bug waarbij de naam van een contact niet altijd weergegeven werd bij een inkomend gesprek is opgelost
+- Het wisselen tussen netwerken (4g naar WiFi, of wisselen van WiFi netwerk) tijdens een gesprek is veel betrouwbaarder
+- Inkomende gesprekken ontvangen wanneer de telefoon op standby staat werkt nu beter
+- De toegankelijkheid van het bellen via toetsen is verbeterd
+- Veranderingen sinds de laatste update worden nu weergegeven in de app na een update
