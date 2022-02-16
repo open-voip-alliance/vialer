@@ -1,0 +1,5 @@
+- Resolved a bug where an incoming call wouldn't always show the contact name
+- Greatly improved reliability when switching between networks (4G to WiFi, or switching WiFi networks) during a call
+- Improved reliability of receiving incoming calls when the phone is on stand-by
+- Improved the accessibility of dialing a number and using the dial buttons
+- Release notes will now be shown in-app when upgrading from an earlier version

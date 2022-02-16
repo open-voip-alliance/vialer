@@ -1,18 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:vialer/app/pages/main/widgets/dial_pad/keypad.dart';
+import 'package:vialer/app/resources/localizations.dart';
 import 'package:vialer/app/resources/theme.dart';
 import 'package:vialer/app/widgets/brand_provider/widget.dart';
 import 'package:vialer/domain/entities/brand.dart';
 
 void main() {
   final textController = TextEditingController();
-  final keypad = Keypad(
-    controller: textController,
-    primaryButton: GestureDetector(
-      onTap: () => initiateFakeCall(controller: textController),
+  final keypad = Localizations(
+    locale: const Locale('en'),
+    delegates: [
+      VialerLocalizations.delegate,
+      GlobalMaterialLocalizations.delegate,
+      GlobalWidgetsLocalizations.delegate,
+      GlobalCupertinoLocalizations.delegate,
+    ],
+    child: Keypad(
+      controller: textController,
+      primaryButton: GestureDetector(
+        onTap: () => initiateFakeCall(controller: textController),
+      ),
+      onDeleteAll: () => {},
     ),
-    onDeleteAll: () => {},
   );
 
   final testWidget = TestApp(

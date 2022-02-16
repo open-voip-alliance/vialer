@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
 
 class CallButton extends StatelessWidget {
@@ -8,6 +9,7 @@ class CallButton extends StatelessWidget {
   final IconData icon;
   final Object? heroTag;
   final BoxConstraints constraints;
+  final String semanticsHint;
 
   static const defaultHeroTag = _DefaultCallButtonHeroTag();
   static const defaultConstraints = BoxConstraints.tightFor(
@@ -22,6 +24,7 @@ class CallButton extends StatelessWidget {
     required this.icon,
     this.heroTag = defaultHeroTag,
     this.constraints = defaultConstraints,
+    required this.semanticsHint,
   }) : super(key: key);
 
   static Widget answer({
@@ -29,6 +32,7 @@ class CallButton extends StatelessWidget {
     VoidCallback? onPressed,
     Object? heroTag = defaultHeroTag,
     BoxConstraints constraints = defaultConstraints,
+    String? semanticsHint,
   }) {
     return Builder(
       builder: (context) {
@@ -38,6 +42,7 @@ class CallButton extends StatelessWidget {
           icon: VialerSans.phone,
           heroTag: heroTag,
           constraints: constraints,
+          semanticsHint: semanticsHint ?? context.msg.main.call.incoming.answer,
         );
       },
     );
@@ -48,6 +53,7 @@ class CallButton extends StatelessWidget {
     VoidCallback? onPressed,
     Object? heroTag = defaultHeroTag,
     BoxConstraints constraints = defaultConstraints,
+    String? semanticsHint,
   }) {
     return Builder(
       builder: (context) {
@@ -57,52 +63,71 @@ class CallButton extends StatelessWidget {
           icon: VialerSans.hangUp,
           heroTag: heroTag,
           constraints: constraints,
+          semanticsHint:
+              semanticsHint ?? context.msg.main.call.incoming.decline,
         );
       },
     );
   }
-
-  // Different names for different contexts.
 
   static Widget call({
     Key? key,
     VoidCallback? onPressed,
     Object? heroTag = defaultHeroTag,
     BoxConstraints constraints = defaultConstraints,
-  }) =>
-      answer(
+    String? semanticsHint,
+  }) {
+    return Builder(builder: (context) {
+      return answer(
         key: key,
         onPressed: onPressed,
         heroTag: heroTag,
         constraints: constraints,
+        semanticsHint: semanticsHint ?? context.msg.generic.button.call,
       );
+    });
+  }
 
   static Widget hangUp({
     Key? key,
     VoidCallback? onPressed,
     Object? heroTag = defaultHeroTag,
     BoxConstraints constraints = defaultConstraints,
-  }) =>
-      decline(
-        key: key,
-        onPressed: onPressed,
-        heroTag: heroTag,
-        constraints: constraints,
-      );
+    String? semanticsHint,
+  }) {
+    return Builder(
+      builder: (context) {
+        return decline(
+          key: key,
+          onPressed: onPressed,
+          heroTag: heroTag,
+          constraints: constraints,
+          semanticsHint: semanticsHint ?? context.msg.main.call.ongoing.hangUp,
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return ConstrainedBox(
       constraints: constraints,
-      child: FloatingActionButton(
-        heroTag: heroTag,
-        onPressed: onPressed,
-        backgroundColor: onPressed != null
-            ? backgroundColor
-            : context.brand.theme.colors.grey3,
-        child: Icon(
-          icon,
-          size: 32,
+      child: MergeSemantics(
+        child: Semantics(
+          // TODO? Use onTapHint when the screen reader doesn't announce it
+          // as if it's a custom action. Maybe a Flutter issue, maybe not.
+          hint: semanticsHint,
+          child: FloatingActionButton(
+            heroTag: heroTag,
+            onPressed: onPressed,
+            backgroundColor: onPressed != null
+                ? backgroundColor
+                : context.brand.theme.colors.grey3,
+            child: Icon(
+              icon,
+              size: 32,
+            ),
+          ),
         ),
       ),
     );

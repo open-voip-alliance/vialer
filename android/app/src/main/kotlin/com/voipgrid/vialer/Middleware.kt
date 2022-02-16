@@ -38,6 +38,8 @@ class Middleware(
      */
     private var callIdsBeingHandled = mutableListOf<String>()
 
+    private val baseUrl = "${context.getString(R.string.middleware_url)}/api"
+
     override fun tokenReceived(token: String) {
         if (lastRegisteredToken == token) {
             return
@@ -61,8 +63,11 @@ class Middleware(
             add("app", context.packageName)
         }.build()
 
-        val request =
-            createMiddlewareRequest(middlewareCredentials.email, middlewareCredentials.loginToken)
+        val request = createMiddlewareRequest(
+                middlewareCredentials.email,
+                middlewareCredentials.loginToken,
+                url = "${baseUrl}/android-device/",
+            )
                 .post(data)
                 .build()
 
@@ -115,7 +120,7 @@ class Middleware(
         val request = createMiddlewareRequest(
             middlewareCredentials.email,
             middlewareCredentials.loginToken,
-            url = RESPONSE_URL
+            url = "${baseUrl}/call-response/",
         )
             .post(data)
             .build()
@@ -200,7 +205,7 @@ class Middleware(
             remoteMessage.callId?.let { callIdsBeingHandled.add(it) }
         }
 
-    private fun createMiddlewareRequest(email: String, token: String, url: String = REGISTER_URL) =
+    private fun createMiddlewareRequest(email: String, token: String, url: String) =
         Request.Builder().url(url).addHeader("Authorization", "Token $email:$token")
 
     private fun log(message: String) = logger.writeLog("NATIVE-MIDDLEWARE: $message")
@@ -213,10 +218,6 @@ class Middleware(
         )
 
     companion object {
-        private const val BASE_URL = "https://vialerpush.voipgrid.nl/api/"
-        private const val RESPONSE_URL = "${BASE_URL}call-response/"
-        private const val REGISTER_URL = "${BASE_URL}android-device/"
-
         /**
          * The number of seconds that the Middleware will wait for us to respond before the call
          * will be rejected.
