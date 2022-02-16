@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -34,9 +35,11 @@ class NoticeCubit extends Cubit<NoticeState> with Loggable {
       permission: Permission.microphone,
     );
 
-    phoneStatus ??= await _getPermissionStatus(
-      permission: Permission.phone,
-    );
+    phoneStatus = Platform.isIOS
+        ? PermissionStatus.granted
+        : phoneStatus ??= await _getPermissionStatus(
+            permission: Permission.phone,
+          );
 
     if (phoneStatus != PermissionStatus.granted &&
         microphoneStatus != PermissionStatus.granted) {

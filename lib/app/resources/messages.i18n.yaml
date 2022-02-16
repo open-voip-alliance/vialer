@@ -13,6 +13,7 @@ generic:
     close: "Close"
     done: "Done"
     tryAgain: "Try again"
+    call: &call "Call"
 
 buildError:
   anErrorOccurred: "A rendering error occurred!"
@@ -32,6 +33,13 @@ main:
       The Phone permission is denied, which is required to make direct calls.
     menu:
       title: *keypadTitle
+    button:
+      delete:
+        hint: "Delete last digit"
+        deletedHint(String digits, int digitCount): "$digits deleted"
+        deletedAllHint: "All digits deleted"
+      value:
+        replacedWithHint(String value): "Replaced with $value"
     confirm:
       title(String appName): "$appName Call"
       description:
@@ -57,6 +65,7 @@ main:
 
   call:
     ongoing:
+      hangUp: &hangUpCall "Hang up"
       actions:
         mute: "mute"
         keypad: "keypad"
@@ -74,8 +83,8 @@ main:
         transferToStart: "Transferring"
         transferToEnd: "to"
     incoming:
-      answer: "Answer"
-      decline: "Decline"
+      answer: &answerCall "Answer"
+      decline: &declineCall "Decline"
       subtitle(String remoteNumber): "Incoming call - $remoteNumber"
     feedback:
       rating:
@@ -146,7 +155,7 @@ main:
       hoursAgo(int hours): "$hours hours ago"
       popupMenu:
         copy: "Copy"
-        call: "Call"
+        call: *call
       loading:
         title: "Loading your call history"
         description: "Your recent calls will show here soon. Please wait a moment."
@@ -458,7 +467,7 @@ notification:
   # The name of the notification channel, this cannot be changed once the app has been installed.
   channelName: Active call
   incomingCallsChannelName: Incoming calls
-  answerAction: Answer
-  hangUpAction: Hang up
-  declineAction: Decline
+  answerAction: *answerCall
+  hangUpAction: *hangUpCall
+  declineAction: *declineCall
   incomingContextText: Ringing…

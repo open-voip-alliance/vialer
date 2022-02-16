@@ -20,6 +20,11 @@ class VialerLocalizations {
 
 extension LocalizationsContext on BuildContext {
   Messages get msg => VialerLocalizations.of(this).msg;
+
+  bool get isEnglish =>
+      VialerLocalizations.of(this).locale.languageCode == 'en';
+
+  bool get isDutch => VialerLocalizations.of(this).locale.languageCode == 'nl';
 }
 
 class _VialerLocalizationsDelegate

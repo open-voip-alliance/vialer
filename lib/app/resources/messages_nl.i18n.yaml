@@ -10,6 +10,7 @@ generic:
     close: "Sluiten"
     done: "Klaar"
     tryAgain: "Probeer nogmaals"
+    call: &call "Bellen"
 
 buildError:
   anErrorOccurred: "Er is een renderfout opgetreden!"
@@ -29,6 +30,13 @@ main:
       Er is geen toestemming om te bellen, wat nodig is om via de app te bellen.
     menu:
       title: *keypadTitle
+    button:
+      delete:
+        hint: "Laatste cijfer verwijderen"
+        deletedHint(String digits, int digitCount): "$digits verwijderd"
+        deletedAllHint: "Alle cijfers verwijderd"
+      value:
+        replacedWithHint(String value): "Vervangen door $value"
     confirm:
       title(String appName): "$appName Gesprek"
       description:
@@ -53,6 +61,7 @@ main:
 
   call:
     ongoing:
+      hangUp: &hangUpCall "Ophangen"
       actions:
         mute: "dempen"
         keypad: "toetsen"
@@ -70,8 +79,8 @@ main:
         transferToStart: "Verbind"
         transferToEnd: "door naar"
     incoming:
-      answer: "Opnemen"
-      decline: "Weigeren"
+      answer: &answerCall "Opnemen"
+      decline: &declineCall "Weigeren"
       subtitle(String remoteNumber): "Inkomend gesprek - $remoteNumber"
     feedback:
       rating:
@@ -143,7 +152,7 @@ main:
       hoursAgo(int hours): "$hours uren geleden"
       popupMenu:
         copy: "Kopiëren"
-        call: "Bellen"
+        call: *call
       loading:
         title: "Gesprekken worden opgehaald"
         description: "Je recente gesprekken komen hier zo te staan. Graag nog even geduld."
@@ -458,7 +467,7 @@ notification:
   # The name of the notification channel, this cannot be changed once the app has been installed.
   channelName: Actief gesprek
   incomingCallsChannelName: Inkomende oproepen
-  answerAction: Opnemen
-  hangUpAction: Ophangen
-  declineAction: Weigeren
+  answerAction: *answerCall
+  hangUpAction: *hangUpCall
+  declineAction: *declineCall
   incomingContextText: Gaat over…
