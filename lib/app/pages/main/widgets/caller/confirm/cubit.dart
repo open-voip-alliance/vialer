@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../../domain/entities/setting.dart';
 import '../../../../../../domain/usecases/change_setting.dart';
+import '../../../../../../domain/usecases/get_call_through_region_number.dart';
 import '../../../../../../domain/usecases/get_outgoing_cli.dart';
 import '../../../../../util/loggable.dart';
 import '../../../widgets/caller.dart';
@@ -12,17 +13,25 @@ export 'state.dart';
 class ConfirmCubit extends Cubit<ConfirmState> with Loggable {
   final _changeSetting = ChangeSettingUseCase();
   final _getOutgoingCli = GetOutgoingCliUseCase();
+  final _getCallThroughRegionNumber = GetCallThroughRegionNumberUseCase();
 
   final CallerCubit _caller;
   final String _destination;
 
   ConfirmCubit(this._caller, this._destination)
-      : super(ConfirmState(showConfirmPage: true)) {
+      : super(const ConfirmState(showConfirmPage: true)) {
     _emitInitialState();
   }
 
   Future<void> _emitInitialState() async {
-    emit(state.copyWith(outgoingCli: await _getOutgoingCli()));
+    emit(
+      state.copyWith(
+        outgoingCli: await _getOutgoingCli(),
+        regionNumber: await _getCallThroughRegionNumber(
+          destination: _destination,
+        ),
+      ),
+    );
   }
 
   // ignore: avoid_positional_boolean_parameters
