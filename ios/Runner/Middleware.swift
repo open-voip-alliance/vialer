@@ -23,16 +23,6 @@ public class Middleware: NativeMiddleware {
             )
         }
     }
-    
-    private var sandbox: String {
-        get {
-            #if DEBUG
-                "true"
-            #else
-                "false"
-            #endif
-        }
-    }
 
     init(logger: Logger) {
         self.logger = logger
@@ -58,7 +48,7 @@ public class Middleware: NativeMiddleware {
             "client_version": Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String,
             "app": Bundle.main.bundleIdentifier,
             "push_profile": "once",
-            "sandbox": sandbox
+            "sandbox": Bundle.main.infoDictionary?["Sandbox"] as? String
         ]
                 
         var request = createMiddlewareRequest(email: middlewareCredentials.email, token: middlewareCredentials.loginToken, url: REGISTER_URL)
