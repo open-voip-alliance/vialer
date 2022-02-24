@@ -17,10 +17,32 @@ class CallThroughRepository with Loggable {
   CallThroughRepository(this._service);
 
   Future<void> call(
+    String destination,
+    String? regionNumber, {
+    required SystemUser user,
+  }) async {
+    if (regionNumber == null) {
+      throw CallThroughException();
+    }
+
+    if (Platform.isAndroid) {
+      final intent = AndroidIntent(
+        action: 'android.intent.action.CALL',
+        data: 'tel:$regionNumber',
+      );
+
+      await intent.launch();
+    } else {
+      await launch('tel:$regionNumber');
+    }
+  }
+
+  Future<String> retrieveRegionNumber(
     String destination, {
     required SystemUser user,
   }) async {
     final mobileNumber = user.mobileNumber;
+
     // If there's no mobile number set, throw an exception.
     if (mobileNumber == null || mobileNumber.isEmpty) {
       throw NoMobileNumberException();
@@ -42,18 +64,7 @@ class CallThroughRepository with Loggable {
     // Get real number to call.
     final response = await _service.callthrough(destination: destination);
     if (response.isSuccessful) {
-      destination = response.body['phonenumber'] as String;
-
-      if (Platform.isAndroid) {
-        final intent = AndroidIntent(
-          action: 'android.intent.action.CALL',
-          data: 'tel:$destination',
-        );
-
-        await intent.launch();
-      } else {
-        await launch('tel:$destination');
-      }
+      return destination = response.body['phonenumber'] as String;
     } else {
       final error =
           json.decode(response.error as String) as Map<String, dynamic>;

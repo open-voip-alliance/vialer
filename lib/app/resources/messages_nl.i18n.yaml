@@ -38,12 +38,10 @@ main:
       value:
         replacedWithHint(String value): "Vervangen door $value"
     confirm:
-      title(String appName): "$appName Gesprek"
+      title(String number): "Doorverbindgesprek naar $number"
       description:
-        origin: "Er wordt gebeld met je zakelijke nummer"
-        main(String appName):
-          "$appName verbindt je gesprek door, waardoor je mobiele nummer privé blijft."
-        action: "Tik op de “Bel” knop om het volgende nummer te bellen:"
+        routing: "Je telefoon-app belt via ons doorverbindnummer:"
+        recipient: "Degene met wie je belt ziet echter jouw nummer op hun scherm:"
         showPopUpSetting: "Toon dit niet meer"
       button:
         call(String number): "Bel $number"
