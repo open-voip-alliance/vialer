@@ -7,6 +7,8 @@ import 'ci/codemagic/prepare_release_notes.dart';
 final brandsToGenerateFor = [
   'vialer',
   'voys',
+  'verbonden',
+  'annabel',
 ];
 
 final validReleasePattern = RegExp(r'^v[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$');
@@ -21,7 +23,7 @@ final validReleasePattern = RegExp(r'^v[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$');
 ///
 /// If you are not on a release branch you must specific a version:
 ///
-/// `dart utils/local/generate_release_notes_template.dart v7.1.1`
+/// `dart utils/generate_release_notes_template.dart v7.1.1`
 Future<void> main(List<String> args) async {
   final release = await findReleaseName(args);
 
