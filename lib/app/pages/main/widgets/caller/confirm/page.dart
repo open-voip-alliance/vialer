@@ -142,8 +142,6 @@ class ConfirmPageState extends State<ConfirmPage>
 
   @override
   Widget build(BuildContext context) {
-    final appName = context.brand.appName;
-
     return BlocListener<CallerCubit, CallerState>(
       listener: _onCallerStateChanged,
       child: WillPopScope(
@@ -180,33 +178,33 @@ class ConfirmPageState extends State<ConfirmPage>
                                 SizedBox(height: paragraphDistance),
                                 Text(
                                   context.msg.main.dialer.confirm
-                                      .title(appName),
+                                      .title(widget.destination),
                                   style: _largeStyle,
+                                  textAlign: TextAlign.center,
                                 ),
                                 SizedBox(height: paragraphDistance),
                                 Text(
                                   context.msg.main.dialer.confirm.description
-                                      .origin,
+                                      .routing,
                                   style: _style,
+                                  textAlign: TextAlign.center,
+                                ),
+                                const SizedBox(height: 8),
+                                // Is null for the first (few) frame(s).
+                                if (state.regionNumber != null)
+                                  Text(state.regionNumber!, style: _largeStyle),
+                                SizedBox(height: paragraphDistance),
+                                Text(
+                                  context.msg.main.dialer.confirm.description
+                                      .recipient,
+                                  style: _style,
+                                  textAlign: TextAlign.center,
                                 ),
                                 const SizedBox(height: 8),
                                 // Is null for the first (few) frame(s).
                                 if (state.outgoingCli != null)
                                   Text(state.outgoingCli!, style: _largeStyle),
                                 SizedBox(height: paragraphDistance),
-                                Text(
-                                  context.msg.main.dialer.confirm.description
-                                      .main(appName),
-                                  style: _style,
-                                ),
-                                SizedBox(height: paragraphDistance),
-                                Text(
-                                  context.msg.main.dialer.confirm.description
-                                      .action,
-                                  style: _style,
-                                ),
-                                const SizedBox(height: 8),
-                                Text(widget.destination, style: _largeStyle),
                               ],
                             ),
                           ),
@@ -298,6 +296,7 @@ class _AndroidInputs extends StatelessWidget {
                       destination,
                       style: TextStyle(
                         color: context.brand.theme.colors.green3,
+                        fontSize: 18,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,

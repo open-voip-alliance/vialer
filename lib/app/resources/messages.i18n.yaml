@@ -41,12 +41,10 @@ main:
       value:
         replacedWithHint(String value): "Replaced with $value"
     confirm:
-      title(String appName): "$appName Call"
+      title(String number): "Call-through call to $number"
       description:
-        origin: "Dialing from your business number"
-        main(String appName):
-          "$appName will route your call through, keeping your mobile number private."
-        action: "Tap the “Call” button to dial:"
+        routing: "Your phone app calls through our routing number:"
+        recipient: "However, the person you are calling will see your number on their screen:"
         showPopUpSetting: "Don't show this again"
       button:
         call(String number): "Call $number"

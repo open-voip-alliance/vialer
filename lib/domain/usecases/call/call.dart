@@ -5,6 +5,8 @@ import '../../repositories/call_through.dart';
 import '../../repositories/storage.dart';
 import '../../repositories/voip.dart';
 import '../../use_case.dart';
+import '../clear_call_through_region_number.dart';
+import '../get_call_through_region_number.dart';
 import '../get_user.dart';
 
 class CallUseCase extends UseCase {
@@ -13,6 +15,8 @@ class CallUseCase extends UseCase {
   final _storageRepository = dependencyLocator<StorageRepository>();
 
   final _getUser = GetUserUseCase();
+  final _getCallThroughRegionNumber = GetCallThroughRegionNumberUseCase();
+  final _clearCallThroughRegionNumber = ClearCallThroughRegionNumberUseCase();
 
   Future<void> call({
     required String destination,
@@ -22,7 +26,13 @@ class CallUseCase extends UseCase {
       await _voipRepository.call(destination);
     } else {
       final user = await _getUser(latest: false);
-      await _callThroughRepository.call(destination, user: user!);
+      final regionNumber = await _getCallThroughRegionNumber(
+        destination: destination,
+      );
+
+      await _callThroughRepository(destination, regionNumber, user: user!);
+
+      _clearCallThroughRegionNumber();
     }
 
     _storageRepository.lastDialedNumber = destination;
