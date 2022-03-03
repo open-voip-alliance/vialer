@@ -111,9 +111,8 @@ custom: # Custom properties to make workflows cleaner
       script: |
         flutter test
     - &build_aab
-      name: Building app bundle (.aab) for Android #TODO: $TEST_SERVICE_ACCOUNT decoding is only temporary and should be removed when Codemagic has resolved their issue.
+      name: Building app bundle (.aab) for Android
       script: |
-        echo $TEST_SERVICE_ACCOUNT | base64 --decode > $TEST_SERVICE_ACCOUNT
         echo "flutter.sdk=$HOME/programs/flutter" > "$FCI_BUILD_DIR/android/local.properties"
         echo $ANDROID_FIREBASE_SECRET | base64 --decode > $FCI_BUILD_DIR/android/app/google-services.json
         echo $FCI_KEYSTORE | base64 --decode > $FCI_KEYSTORE_PATH
@@ -224,15 +223,26 @@ custom: # Custom properties to make workflows cleaner
       xcode: latest
       cocoapods: 1.11.2
   brand_config: # Specific configuration that should be applied to a workflow when building for this brand
-    voys_env_vars: &brand_config_voys_env_vars
-      BRAND: voys
-      BUNDLE_ID: "com.voys.app"
     vialer_env_vars: &brand_config_vialer_env_vars
       BRAND: vialer
       BUNDLE_ID: "com.voipgrid.vialer"
     staging_env_vars: &brand_config_staging_env_vars
       BRAND: vialerStaging
       BUNDLE_ID: "com.voipgrid.vialer"
+    voys_env_vars: &brand_config_voys_env_vars
+      BRAND: voys
+      BUNDLE_ID: "com.voys.app"
+    verbonden_env_vars: &brand_config_verbonden_env_vars
+      BRAND: verbonden
+      BUNDLE_ID: "nl.verbonden.app"
+    annabel_env_vars: &brand_config_annabel_env_vars
+      BRAND: annabel
+      BUNDLE_ID: "com.bellenmetannabel.app"
+  # Production and beta environment variables.
+  release_env_vars: &release_env_vars
+    IOS_SIGNING_TYPE: "IOS_APP_STORE"
+    ENABLE_IOS_SANDBOX_PUSH_NOTIFICATIONS: "false"
+    FINALIZE_SENTRY_RELEASE: "true"
   defaults: # Default sections that can be reused between workflows to cover common use-cases
     artifacts: &defaults_artifacts
       - build/**/outputs/**/*.apk
@@ -286,7 +296,7 @@ custom: # Custom properties to make workflows cleaner
           groups:
             - qa
       google_play:
-        credentials: $TEST_SERVICE_ACCOUNT
+        credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
         track: QA
         in_app_update_priority: 0
 
@@ -302,15 +312,8 @@ custom: # Custom properties to make workflows cleaner
         beta_groups:
           - Beta Testers
           - External Testers
-      firebase:
-        firebase_token: $FIREBASE_TOKEN
-        android:
-          artifact_type: 'aab'
-          app_id: $FIREBASE_APP_ID
-          groups:
-            - beta
       google_play:
-        credentials: $TEST_SERVICE_ACCOUNT
+        credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
         track: beta
         in_app_update_priority: 0
 
@@ -319,7 +322,7 @@ custom: # Custom properties to make workflows cleaner
         channel: '#vialer_mobile_releases'
         notify_on_build_start: false
       google_play:
-        credentials: $TEST_SERVICE_ACCOUNT
+        credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
         track: production
         in_app_update_priority: 0
 
@@ -452,10 +455,8 @@ workflows:
         - vialer_ios_appstore_credentials
       <<: *config_environment
       vars:
+        <<: *release_env_vars
         <<: *brand_config_vialer_env_vars
-        IOS_SIGNING_TYPE: "IOS_APP_STORE"
-        ENABLE_IOS_SANDBOX_PUSH_NOTIFICATIONS: "false"
-        FINALIZE_SENTRY_RELEASE: "true"
     triggering: *production_was_tagged
     artifacts: *defaults_artifacts
     scripts:
@@ -483,10 +484,40 @@ workflows:
         - voys_ios_appstore_credentials
       <<: *config_environment
       vars:
+        <<: *release_env_vars
         <<: *brand_config_voys_env_vars
-        IOS_SIGNING_TYPE: "IOS_APP_STORE"
-        ENABLE_IOS_SANDBOX_PUSH_NOTIFICATIONS: "false"
-        FINALIZE_SENTRY_RELEASE: "true"
+
+  production-verbonden:
+    name: Release Verbonden to Production
+    <<: *production_workflow
+    environment:
+      groups:
+        - configuration
+        - production_diagnostics
+        - verbonden_android_firebase
+        - verbonden_playstore_credentials
+        - verbonden_upload_keystore_credentials
+        #- verbonden_ios_appstore_credentials
+      <<: *config_environment
+      vars:
+        <<: *release_env_vars
+        <<: *brand_config_verbonden_env_vars
+
+  production-annabel:
+    name: Release ANNAbel to Production
+    <<: *production_workflow
+    environment:
+      groups:
+        - configuration
+        - production_diagnostics
+        - annabel_android_firebase
+        - annabel_playstore_credentials
+        - annabel_upload_keystore_credentials
+        #- annabel_ios_appstore_credentials
+      <<: *config_environment
+      vars:
+        <<: *release_env_vars
+        <<: *brand_config_annabel_env_vars
 
   beta-vialer: &beta_workflow
     name: Vialer Beta
@@ -515,8 +546,8 @@ workflows:
       - *prepare_release_notes_from_files
       - *flutter_test
       - *build_aab
-      - *update_ios_signing_for_current_brand
-      - *build_ipa
+      #- *update_ios_signing_for_current_brand
+      #- *build_ipa
       - *release_to_sentry
     publishing: *publish_for_beta
 
@@ -537,3 +568,35 @@ workflows:
         IOS_SIGNING_TYPE: "IOS_APP_STORE"
         ENABLE_IOS_SANDBOX_PUSH_NOTIFICATIONS: "false"
         FINALIZE_SENTRY_RELEASE: "true"
+
+  beta-verbonden:
+    name: Verbonden Beta
+    <<: *beta_workflow
+    environment:
+      groups:
+        - configuration
+        - diagnostics
+        - verbonden_android_firebase
+        - verbonden_playstore_credentials
+        - verbonden_upload_keystore_credentials
+        #- verbonden_ios_appstore_credentials
+      <<: *config_environment
+      vars:
+        <<: *release_env_vars
+        <<: *brand_config_verbonden_env_vars
+
+  beta-annabel:
+    name: ANNAbel Beta
+    <<: *beta_workflow
+    environment:
+      groups:
+        - configuration
+        - diagnostics
+        - annabel_android_firebase
+        - annabel_playstore_credentials
+        - annabel_upload_keystore_credentials
+        #- annabel_ios_appstore_credentials
+      <<: *config_environment
+      vars:
+        <<: *release_env_vars
+        <<: *brand_config_annabel_env_vars
