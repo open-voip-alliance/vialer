@@ -194,6 +194,28 @@ class SettingTile extends StatelessWidget {
     );
   }
 
+  static Widget showCallsInNativeRecents(
+    ShowCallsInNativeRecentsSetting setting,
+  ) {
+    return Builder(
+      builder: (context) {
+        return SettingTile(
+          label: Text(
+            context
+                .msg.main.settings.list.calling.showCallsInNativeRecents.title,
+          ),
+          description: Text(
+            context.msg.main.settings.list.calling.showCallsInNativeRecents
+                .description(
+              Provider.of<Brand>(context, listen: false).appName,
+            ),
+          ),
+          child: _BoolSettingValue(setting),
+        );
+      },
+    );
+  }
+
   static Widget ignoreBatteryOptimizations({
     required bool hasIgnoreBatteryOptimizationsPermission,
     required Function(bool) onChanged,

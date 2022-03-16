@@ -202,7 +202,7 @@ SPEC CHECKSUMS:
   flutter_libphonenumber: 6a23afdf063b34d1e53e6dbd6c6bc905d18e8e46
   flutter_phone_lib: 721c856fbb850eedcf1e6d00669580c10b737c2b
   flutter_segment: 9cdace39639298eb31ad1555e5916edf8f9fc6b8
-  iOSVoIPLib: 3e87e30bb2a7bd37aebf5df1f2eda9fcb8115d08
+  iOSVoIPLib: 3fc8b081e7bee4a561bdd1fbb098ec9ff6a6310d
   le: 6854003e293bf5b3cb822ef06971f1cc23a77eb9
   libphonenumber: bd14d5abfc5939ab0b0767234e2d8e2593af258e
   libPhoneNumber-iOS: 0a32a9525cf8744fe02c5206eb30d571e38f7d75
@@ -213,7 +213,7 @@ SPEC CHECKSUMS:
   path_provider_ios: 7d7ce634493af4477d156294792024ec3485acd5
   permission_handler: ccb20a9fad0ee9b1314a52b70b76b473c5f8dab0
   PhoneNumberKit: 441e8b26ec88d598e3591de9061eff18f5dd12e8
-  PIL: eb7beee40023f67ec5e894cc47982759ec52897f
+  PIL: a5e8bc3c52e98c374c2b68afd71b1b7703220425
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
   Segment-Amplitude: 6c1e59c8c278a21029ba7a6a788fcb31b9233a2c
   Sentry: 5c5dd4005f3b7b9765d5a8871232cddbd0d888b7

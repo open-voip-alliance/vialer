@@ -176,10 +176,13 @@ class VoipRepository with Loggable {
 
   Future<Preferences> _createPreferences(VoipConfig config) async {
     final getPhoneRingtone = GetSettingUseCase<UsePhoneRingtoneSetting>();
+    final getShowCallsInNativeRecents =
+        GetSettingUseCase<ShowCallsInNativeRecentsSetting>();
 
     return Preferences(
       codecs: [Codec.opus],
       useApplicationProvidedRingtone: !(await getPhoneRingtone()).value,
+      showCallsInNativeRecents: (await getShowCallsInNativeRecents()).value,
     );
   }
 
