@@ -266,7 +266,7 @@ main:
             With VoIP you call via internet which uses your data bundle. If VoIP is disabled,
             calls go through the regular phone app and your call carrier service costs apply.
         showCallsInNativeRecents:
-          title: "Show Calls In Native Recents"
+          title: "Show calls in native recents"
           description(String app): >-
             When enabled, calls made though $app will be shown in the recents list in the native
             iOS dialer.
