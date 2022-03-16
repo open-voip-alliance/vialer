@@ -171,7 +171,7 @@ class SettingTile extends StatelessWidget {
           ),
           description: Text(
             context.msg.main.settings.list.audio.usePhoneRingtone.description(
-              Provider.of<Brand>(context, listen: false).appName,
+              context.brand.appName,
             ),
           ),
           child: _BoolSettingValue(setting),
@@ -207,7 +207,7 @@ class SettingTile extends StatelessWidget {
           description: Text(
             context.msg.main.settings.list.calling.showCallsInNativeRecents
                 .description(
-              Provider.of<Brand>(context, listen: false).appName,
+              context.brand.appName,
             ),
           ),
           child: _BoolSettingValue(setting),
