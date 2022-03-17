@@ -268,7 +268,7 @@ main:
         showCallsInNativeRecents:
           title: "Show in phone recents"
           description(String app): >-
-            When enabled, calls made through $app will be shown in the recents list of the native iOS phone app.
+            When enabled, calls made through $app will be shown in the recents list of the phone app.
         ignoreBatteryOptimizations:
           title: "Always run in background"
           description: >-
