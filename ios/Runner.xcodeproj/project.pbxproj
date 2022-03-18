@@ -16,6 +16,8 @@
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
 		D4032FDB26D79C9700EB82B1 /* ContactSortApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4032FDA26D79C9700EB82B1 /* ContactSortApi.swift */; };
+		D4066D5E27DF49BE0006BF36 /* Metrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4066D5D27DF49BE0006BF36 /* Metrics.swift */; };
+		D4066D6227DF50A60006BF36 /* CallScreenBehaviorApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4066D6127DF50A60006BF36 /* CallScreenBehaviorApi.swift */; };
 		D4482E9D26D6822F00BA3B8D /* pigeon.m in Sources */ = {isa = PBXBuildFile; fileRef = D4482E9C26D6822F00BA3B8D /* pigeon.m */; };
 		DEB601BD26DF675500385081 /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = DEB601BF26DF675500385081 /* Localizable.stringsdict */; };
 		DECE8B762679EAB6000B37FB /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = DECE8B782679EAB6000B37FB /* InfoPlist.strings */; };
@@ -53,6 +55,8 @@
 		97C147001CF9000F007C117D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		97C147021CF9000F007C117D /* Info-Debug.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-Debug.plist"; sourceTree = "<group>"; };
 		D4032FDA26D79C9700EB82B1 /* ContactSortApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactSortApi.swift; sourceTree = "<group>"; };
+		D4066D5D27DF49BE0006BF36 /* Metrics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Metrics.swift; sourceTree = "<group>"; };
+		D4066D6127DF50A60006BF36 /* CallScreenBehaviorApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallScreenBehaviorApi.swift; sourceTree = "<group>"; };
 		D4482E9B26D5266C00BA3B8D /* pigeon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pigeon.h; sourceTree = "<group>"; };
 		D4482E9C26D6822F00BA3B8D /* pigeon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = pigeon.m; sourceTree = "<group>"; };
 		DA6E8CCA4B5B1992669A5080 /* Pods_Runner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Runner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -127,6 +131,9 @@
 		97C146F01CF9000F007C117D /* Runner */ = {
 			isa = PBXGroup;
 			children = (
+				D4066D6527DF58A60006BF36 /* CallScreen */,
+				D4066D6427DF58800006BF36 /* Contacts */,
+				D4066D6327DF56930006BF36 /* Metrics */,
 				5C1A6763272441B20079B4D1 /* Logging */,
 				D4482E9C26D6822F00BA3B8D /* pigeon.m */,
 				D4482E9B26D5266C00BA3B8D /* pigeon.h */,
@@ -141,7 +148,6 @@
 				1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */,
 				74858FAE1ED2DC5600515810 /* AppDelegate.swift */,
 				74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */,
-				D4032FDA26D79C9700EB82B1 /* ContactSortApi.swift */,
 			);
 			path = Runner;
 			sourceTree = "<group>";
@@ -161,6 +167,30 @@
 				EE69CAC837921FE1465A0F70 /* Pods-Runner.profile.xcconfig */,
 			);
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		D4066D6327DF56930006BF36 /* Metrics */ = {
+			isa = PBXGroup;
+			children = (
+				D4066D5D27DF49BE0006BF36 /* Metrics.swift */,
+			);
+			path = Metrics;
+			sourceTree = "<group>";
+		};
+		D4066D6427DF58800006BF36 /* Contacts */ = {
+			isa = PBXGroup;
+			children = (
+				D4032FDA26D79C9700EB82B1 /* ContactSortApi.swift */,
+			);
+			path = Contacts;
+			sourceTree = "<group>";
+		};
+		D4066D6527DF58A60006BF36 /* CallScreen */ = {
+			isa = PBXGroup;
+			children = (
+				D4066D6127DF50A60006BF36 /* CallScreenBehaviorApi.swift */,
+			);
+			path = CallScreen;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -250,6 +280,7 @@
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Amplitude/Amplitude.framework",
 				"${BUILT_PRODUCTS_DIR}/Analytics/Segment.framework",
+				"${BUILT_PRODUCTS_DIR}/AnalyticsConnector/AnalyticsConnector.framework",
 				"${BUILT_PRODUCTS_DIR}/PIL/PIL.framework",
 				"${BUILT_PRODUCTS_DIR}/PhoneNumberKit/PhoneNumberKit.framework",
 				"${BUILT_PRODUCTS_DIR}/ReachabilitySwift/Reachability.framework",
@@ -273,7 +304,6 @@
 				"${PODS_ROOT}/linphone-sdk/linphone-sdk/apple-darwin/Frameworks/lime.framework",
 				"${PODS_ROOT}/linphone-sdk/linphone-sdk/apple-darwin/Frameworks/limetester.framework",
 				"${PODS_ROOT}/linphone-sdk/linphone-sdk/apple-darwin/Frameworks/linphone.framework",
-				"${PODS_ROOT}/linphone-sdk/linphone-sdk/apple-darwin/Frameworks/linphonesw.framework",
 				"${PODS_ROOT}/linphone-sdk/linphone-sdk/apple-darwin/Frameworks/linphonetester.framework",
 				"${PODS_ROOT}/linphone-sdk/linphone-sdk/apple-darwin/Frameworks/mediastreamer2.framework",
 				"${PODS_ROOT}/linphone-sdk/linphone-sdk/apple-darwin/Frameworks/msamr.framework",
@@ -299,6 +329,7 @@
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Amplitude.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Segment.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AnalyticsConnector.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PIL.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PhoneNumberKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Reachability.framework",
@@ -322,7 +353,6 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/lime.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/limetester.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/linphone.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/linphonesw.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/linphonetester.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/mediastreamer2.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/msamr.framework",
@@ -332,6 +362,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/mswebrtc.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/msx264.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ortp.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/linphonesw.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/native_shared_preferences.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/package_info.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/package_info_plus.framework",
@@ -408,6 +439,8 @@
 				5C1A6765272441C70079B4D1 /* Logger.swift in Sources */,
 				D4032FDB26D79C9700EB82B1 /* ContactSortApi.swift in Sources */,
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
+				D4066D5E27DF49BE0006BF36 /* Metrics.swift in Sources */,
+				D4066D6227DF50A60006BF36 /* CallScreenBehaviorApi.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
 				D4482E9D26D6822F00BA3B8D /* pigeon.m in Sources */,
 			);
@@ -521,7 +554,10 @@
 					"$(PROJECT_DIR)/Flutter",
 				);
 				INFOPLIST_FILE = "Runner/Info-Debug.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
@@ -661,7 +697,10 @@
 					"$(PROJECT_DIR)/Flutter",
 				);
 				INFOPLIST_FILE = "Runner/Info-Debug.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
@@ -694,7 +733,10 @@
 					"$(PROJECT_DIR)/Flutter",
 				);
 				INFOPLIST_FILE = "Runner/Info-Release.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
