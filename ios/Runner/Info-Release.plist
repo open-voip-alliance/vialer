@@ -6,6 +6,8 @@
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>Sandbox</key>
 	<string>$(SANDBOX)</string>
+	<key>Segment Key</key>
+	<string>$(SEGMENT_IOS_KEY)</string>
 	<key>CFBundleDisplayName</key>
 	<string>$(BUNDLE_NAME)</string>
 	<key>CFBundleExecutable</key>
