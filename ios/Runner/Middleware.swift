@@ -80,9 +80,6 @@ public class Middleware: NativeMiddleware {
     }
     
     public func respond(payload: PKPushPayload, available: Bool) {
-        payload.dictionaryPayload.forEach { (key, value) in
-            print("TEST123 - \(key) - \(value)")
-        }
         let payloadDictionary = payload.dictionaryPayload as NSDictionary
         let callId = payloadDictionary.value(forKey: "unique_key")
         let callStartTime = payloadDictionary.value(forKey: "message_start_time")
@@ -182,7 +179,7 @@ private struct MiddlewareCredentials {
 extension PKPushPayload {
     
     var callId: String {
-        return dictionaryPayload["unique_key"] as? String ?? "abc"
+        return dictionaryPayload["unique_key"] as? String ?? ""
     }
     
     var correlationId: String {
