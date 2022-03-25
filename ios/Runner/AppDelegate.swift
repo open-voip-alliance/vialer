@@ -18,8 +18,10 @@ import flutter_phone_lib
     ) -> Bool {
         let registerPlugins = GeneratedPluginRegistrant.register
         registerPlugins(self)
+        
+        let middleware = Middleware(logger: self.logger) 
 
-        startPhoneLib(registerPlugins) { message, level in
+        startPhoneLib(registerPlugins, nativeMiddleware: middleware) { message, level in
             self.logger.writeLog(message)
         }
 

@@ -7,7 +7,6 @@ import 'package:provider/provider.dart';
 
 import '../../../../../domain/entities/audio_codec.dart';
 import '../../../../../domain/entities/availability.dart';
-import '../../../../../domain/entities/brand.dart';
 import '../../../../../domain/entities/destination.dart';
 import '../../../../../domain/entities/fixed_destination.dart';
 import '../../../../../domain/entities/phone_account.dart';
@@ -171,7 +170,7 @@ class SettingTile extends StatelessWidget {
           ),
           description: Text(
             context.msg.main.settings.list.audio.usePhoneRingtone.description(
-              Provider.of<Brand>(context, listen: false).appName,
+              context.brand.appName,
             ),
           ),
           child: _BoolSettingValue(setting),
@@ -187,6 +186,28 @@ class SettingTile extends StatelessWidget {
           label: Text(context.msg.main.settings.list.calling.useVoip.title),
           description: Text(
             context.msg.main.settings.list.calling.useVoip.description,
+          ),
+          child: _BoolSettingValue(setting),
+        );
+      },
+    );
+  }
+
+  static Widget showCallsInNativeRecents(
+    ShowCallsInNativeRecentsSetting setting,
+  ) {
+    return Builder(
+      builder: (context) {
+        return SettingTile(
+          label: Text(
+            context
+                .msg.main.settings.list.calling.showCallsInNativeRecents.title,
+          ),
+          description: Text(
+            context.msg.main.settings.list.calling.showCallsInNativeRecents
+                .description(
+              context.brand.appName,
+            ),
           ),
           child: _BoolSettingValue(setting),
         );

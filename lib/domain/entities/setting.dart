@@ -34,6 +34,7 @@ abstract class Setting<T> {
     UseEncryptionSetting.preset(),
     AudioCodecSetting.preset(),
     UsePhoneRingtoneSetting.preset(),
+    ShowCallsInNativeRecentsSetting.preset(),
     AvailabilitySetting.preset(),
     DndSetting.preset(),
   ];
@@ -72,6 +73,8 @@ abstract class Setting<T> {
       return UsePhoneRingtoneSetting(value as bool);
     } else if (type == (UseVoipSetting).toString()) {
       return UseVoipSetting(value as bool);
+    } else if (type == (ShowCallsInNativeRecentsSetting).toString()) {
+      return ShowCallsInNativeRecentsSetting(value as bool);
     } else if (type == (AvailabilitySetting).toString()) {
       return AvailabilitySetting(
         Availability.fromJson(value as Map<String, dynamic>),
@@ -198,6 +201,16 @@ class UsePhoneRingtoneSetting extends Setting<bool> {
   @override
   UsePhoneRingtoneSetting copyWith({bool? value}) =>
       UsePhoneRingtoneSetting(value ?? this.value);
+}
+
+class ShowCallsInNativeRecentsSetting extends Setting<bool> {
+  const ShowCallsInNativeRecentsSetting(bool value) : super(value);
+
+  const ShowCallsInNativeRecentsSetting.preset() : this(true);
+
+  @override
+  ShowCallsInNativeRecentsSetting copyWith({bool? value}) =>
+      ShowCallsInNativeRecentsSetting(value ?? this.value);
 }
 
 class AvailabilitySetting extends Setting<Availability?> {

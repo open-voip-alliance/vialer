@@ -274,6 +274,10 @@ main:
           description: >-
             With VoIP you call via internet which uses your data bundle. If VoIP is disabled,
             calls go through the regular phone app and your call carrier service costs apply.
+        showCallsInNativeRecents:
+          title: "Show in phone recents"
+          description(String app): >-
+            When enabled, calls made through $app will be shown in the recents list of the phone app.
         ignoreBatteryOptimizations:
           title: "Always run in background"
           description: >-
