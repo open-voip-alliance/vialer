@@ -147,11 +147,16 @@ class _SettingsPageState extends State<SettingsPage> {
                                   SettingTile.useVoip(
                                     settings.get<UseVoipSetting>(),
                                   ),
+                                  if (context.isIOS)
+                                    SettingTile.showCallsInNativeRecents(
+                                      settings.get<
+                                          ShowCallsInNativeRecentsSetting>(),
+                                    ),
                                   SettingTile.ignoreBatteryOptimizations(
                                     hasIgnoreBatteryOptimizationsPermission:
                                         hasIgnoreBatteryOptimizationsPermission,
-                                    onChanged: (enabled) => cubit
-                                        .requestBatteryPermission(),
+                                    onChanged: (enabled) =>
+                                        cubit.requestBatteryPermission(),
                                   ),
                                 ],
                               ),

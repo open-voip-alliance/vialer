@@ -275,6 +275,10 @@ main:
           title: "Gebruik VoIP"
           description: >-
             Met VoIP bel je via internet waarvoor je databundel wordt gebruikt. Als VoIP uitstaat, wordt een gesprek opgezet via de gewone telefoon-app. De reguliere abonnementskosten van je mobiele nummer zijn dan van toepassing.
+        showCallsInNativeRecents:
+          title: "Toon in telefoon's bellijst"
+          description(String app): >-
+            Door dit in te schakelen, worden je telefoongesprekken via $app ook in het beloverzicht van je telefoon getoond.
         ignoreBatteryOptimizations:
           title: "Altijd op de achtergrond laten draaien"
           description: >-
