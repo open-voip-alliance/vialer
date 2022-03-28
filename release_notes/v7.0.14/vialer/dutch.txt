@@ -1,0 +1,3 @@
+- Een probleem waarbij je niet kon uitloggen is opgelost
+- De toegankelijkheid van het invoeren van cijfers om een nummer te bellen is verbeterd
+- De uitleg voor een doorverbindgesprek is verbeterd
