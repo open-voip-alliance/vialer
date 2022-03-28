@@ -40,6 +40,7 @@ target 'Runner' do
   pod 'PIL', :git =>'https://github.com/open-voip-alliance/iOS-Phone-Lib.git'
   pod 'le', :git => 'https://github.com/LogentriesCommunity/le_ios.git'
   pod 'Alamofire', '~> 5.4'
+  pod 'Analytics', '~> 4.1'
 end
 
 
