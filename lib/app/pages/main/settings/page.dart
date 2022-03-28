@@ -83,7 +83,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 final isVoipAllowed = state.isVoipAllowed;
                 final showTroubleshooting = state.showTroubleshooting;
                 final showDnd = state.showDnd;
-                final hasIgnoreBatteryOptimizationsPermission =
+                final hasIgnoreOptimizationsPermission =
                     state.hasIgnoreBatteryOptimizationsPermission;
                 final showDestinationInSeparateCategory = context.isIOS;
                 final cubit = context.watch<SettingsCubit>();
@@ -152,12 +152,13 @@ class _SettingsPageState extends State<SettingsPage> {
                                       settings.get<
                                           ShowCallsInNativeRecentsSetting>(),
                                     ),
-                                  SettingTile.ignoreBatteryOptimizations(
-                                    hasIgnoreBatteryOptimizationsPermission:
-                                        hasIgnoreBatteryOptimizationsPermission,
-                                    onChanged: (enabled) =>
-                                        cubit.requestBatteryPermission(),
-                                  ),
+                                  if (context.isAndroid)
+                                    SettingTile.ignoreBatteryOptimizations(
+                                      hasIgnoreBatteryOptimizationsPermission:
+                                          hasIgnoreOptimizationsPermission,
+                                      onChanged: (enabled) =>
+                                          cubit.requestBatteryPermission(),
+                                    ),
                                 ],
                               ),
                               if (showDestinationInSeparateCategory &&
