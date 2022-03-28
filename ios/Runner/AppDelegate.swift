@@ -51,7 +51,9 @@ import flutter_phone_lib
         let controller: FlutterViewController = window?.rootViewController as! FlutterViewController
         ContactSortHostApiSetup(controller.binaryMessenger, ContactSortApi())
         NativeLoggingSetup(controller.binaryMessenger, logger)
-        
+        NativeMetricsSetup(controller.binaryMessenger, Metrics())
+        CallScreenBehaviorSetup(controller.binaryMessenger, CallScreenBehaviorApi())
+
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
     }
 }
