@@ -27,7 +27,11 @@ class FeedbackRepository {
 
       os = 'ios';
       osVersion = deviceInfo.systemVersion;
-      model = deviceInfo.model;
+      // iOS does not provide the direct human-readable iPhone model name, so
+      // this will be in the format of e.g. [iPhone14,2] for [iPhone 13]. Some
+      // manual translation will be required, implementing this in-app would
+      // require maintaining a database of mappings.
+      model = deviceInfo.utsname.machine;
     } else {
       throw UnsupportedError(
         'Unsupported platform: ${Platform.operatingSystem}',
