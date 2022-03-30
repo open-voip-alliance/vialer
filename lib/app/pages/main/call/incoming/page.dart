@@ -115,6 +115,9 @@ class _IncomingCallPageState extends State<IncomingCallPage>
                     label: Text(
                       context.msg.main.call.incoming.decline
                           .toUpperCaseIfAndroid(context),
+                      style: TextStyle(
+                        color: context.brand.theme.colors.primaryDark,
+                      ),
                     ),
                     child: CallButton.decline(
                       heroTag: null,
@@ -126,6 +129,9 @@ class _IncomingCallPageState extends State<IncomingCallPage>
                     label: Text(
                       context.msg.main.call.incoming.answer
                           .toUpperCaseIfAndroid(context),
+                      style: TextStyle(
+                        color: context.brand.theme.colors.primaryDark,
+                      ),
                     ),
                     child: CallButton.answer(
                       heroTag: null,
