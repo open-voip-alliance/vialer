@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../../domain/entities/t9_contact.dart';
 import '../../../../../util/contact.dart';
-import '../../../contacts/widgets/avatar.dart';
+import '../../../widgets/contact_list/widgets/avatar.dart';
 import 'bloc.dart';
 
 class T9ContactsListView extends StatelessWidget {

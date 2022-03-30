@@ -16,6 +16,9 @@ class T9DialPad extends StatefulWidget {
   final TextEditingController? controller;
   final VoidCallback? onDeleteAll;
 
+  final Widget? bottomLeftButton;
+  final Widget? bottomRightButton;
+
   const T9DialPad({
     required this.onCallButtonPressed,
     required this.callButtonIcon,
@@ -23,6 +26,8 @@ class T9DialPad extends StatefulWidget {
     required this.callButtonSemanticsHint,
     this.controller,
     this.onDeleteAll,
+    this.bottomLeftButton,
+    this.bottomRightButton,
   });
 
   @override
@@ -70,7 +75,7 @@ class _T9DialPadState extends State<T9DialPad> {
             Expanded(
               child: DialPad(
                 controller: controller,
-                primaryButton: _DialerPrimaryButton(
+                bottomCenterButton: _DialerPrimaryButton(
                   onPressed: widget.onCallButtonPressed != null
                       ? () => _call(context)
                       : null,
@@ -79,6 +84,8 @@ class _T9DialPadState extends State<T9DialPad> {
                   semanticsHint: widget.callButtonSemanticsHint,
                 ),
                 onDeleteAll: widget.onDeleteAll,
+                bottomLeftButton: widget.bottomLeftButton,
+                bottomRightButton: widget.bottomRightButton,
               ),
             ),
           ],

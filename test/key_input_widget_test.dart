@@ -1,12 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:vialer/app/pages/main/widgets/dial_pad/key_input.dart';
+import 'package:vialer/app/resources/localizations.dart';
 import 'package:vialer/app/widgets/brand_provider/widget.dart';
 import 'package:vialer/domain/entities/brand.dart';
 
 void main() {
   final controller = TextEditingController();
   final testWidget = MaterialApp(
+    locale: const Locale('en'),
+    localizationsDelegates: [
+      VialerLocalizations.delegate,
+      GlobalMaterialLocalizations.delegate,
+      GlobalWidgetsLocalizations.delegate,
+      GlobalCupertinoLocalizations.delegate,
+    ],
     home: Scaffold(
       body: BrandProvider(
         brand: Brand(
@@ -21,6 +30,7 @@ void main() {
         ),
         child: KeyInput(
           controller: controller,
+          cursorShownNotifier: ValueNotifier(false),
         ),
       ),
     ),

@@ -86,8 +86,7 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
     await _emitUpdatedState();
   }
 
-  Future<void> requestBatteryPermission() =>
-      _requestPermission(
+  Future<void> requestBatteryPermission() => _requestPermission(
         permission: Permission.ignoreBatteryOptimizations,
       );
 
