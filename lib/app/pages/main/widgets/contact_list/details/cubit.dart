@@ -5,11 +5,11 @@ import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../../../../domain/entities/contact.dart' as domain;
-import '../../../../../domain/entities/permission.dart';
-import '../../../../../domain/entities/permission_status.dart';
-import '../../../../../domain/usecases/onboarding/request_permission.dart';
-import '../../widgets/caller.dart';
+import '../../../../../../domain/entities/contact.dart' as domain;
+import '../../../../../../domain/entities/permission.dart';
+import '../../../../../../domain/entities/permission_status.dart';
+import '../../../../../../domain/usecases/onboarding/request_permission.dart';
+import '../../../widgets/caller.dart';
 import 'state.dart';
 
 class ContactDetailsCubit extends Cubit<ContactDetailsState> {
@@ -17,7 +17,7 @@ class ContactDetailsCubit extends Cubit<ContactDetailsState> {
 
   final CallerCubit _caller;
 
-  ContactDetailsCubit(this._caller) : super(ContactDetailsState());
+  ContactDetailsCubit(this._caller) : super(const ContactDetailsState());
 
   Future<void> call(String destination) =>
       _caller.call(destination, origin: CallOrigin.contacts);

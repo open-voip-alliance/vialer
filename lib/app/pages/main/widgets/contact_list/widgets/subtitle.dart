@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../domain/entities/contact.dart';
-import '../../../../resources/localizations.dart';
-import '../../../../resources/theme.dart';
+import '../../../../../../domain/entities/contact.dart';
+import '../../../../../resources/localizations.dart';
+import '../../../../../resources/theme.dart';
 
 class ContactSubtitle extends StatelessWidget {
   final Contact contact;

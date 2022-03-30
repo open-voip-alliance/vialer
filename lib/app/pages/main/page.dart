@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../domain/entities/contact.dart';
 import '../../resources/localizations.dart';
 import '../../resources/theme.dart';
 import '../../routes.dart';
 import '../../widgets/app_updated_checker/widget.dart';
 import '../../widgets/transparent_status_bar.dart';
 import 'call/widgets/call_button.dart';
-import 'contacts/cubit.dart';
-import 'contacts/details/page.dart';
 import 'contacts/page.dart';
 import 'dialer/page.dart';
 import 'recent/page.dart';
@@ -18,8 +15,6 @@ import 'widgets/caller.dart';
 import 'widgets/connectivity_alert.dart';
 import 'widgets/notice/widget.dart';
 import 'widgets/user_data_refresher/widget.dart';
-
-typedef WidgetWithArgumentsBuilder = Widget Function(BuildContext, Object?);
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -36,7 +31,7 @@ class MainPageState extends State<MainPage> {
 
   bool _dialerIsPage = false;
 
-  final _navigatorStates = [
+  final _navigatorKeys = [
     GlobalKey<NavigatorState>(),
   ];
 
@@ -52,8 +47,8 @@ class MainPageState extends State<MainPage> {
       _currentIndex = index;
 
       if (context.isAndroid) {
-        for (final state in _navigatorStates) {
-          state.currentState!.popUntil(ModalRoute.withName('/'));
+        for (final key in _navigatorKeys) {
+          key.currentState!.popUntil(ModalRoute.withName('/'));
         }
       }
     });
@@ -69,17 +64,9 @@ class MainPageState extends State<MainPage> {
     if (_pages == null) {
       _pages = [
         if (_dialerIsPage) const DialerPage(isInBottomNavBar: true),
-        BlocProvider<ContactsCubit>(
-          create: (_) => ContactsCubit(),
-          child: _Navigator(
-            navigatorKey: _navigatorStates[0],
-            routes: {
-              ContactsPageRoutes.root: (_, __) =>
-                  ContactsPage(bottomLettersPadding: !_dialerIsPage ? 96 : 0),
-              ContactsPageRoutes.details: (_, contact) =>
-                  ContactDetailsPage(contact: contact as Contact),
-            },
-          ),
+        ContactsPage(
+          navigatorKey: _navigatorKeys[0],
+          bottomLettersPadding: !_dialerIsPage ? 96 : 0,
         ),
         RecentCallsPage(
           listBottomPadding: !_dialerIsPage ? 96 : 0,
@@ -215,35 +202,6 @@ class _BottomNavigationBarIcon extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 4),
       child: Icon(icon),
-    );
-  }
-}
-
-class _Navigator extends StatelessWidget {
-  final GlobalKey<NavigatorState> navigatorKey;
-  final Map<String, WidgetWithArgumentsBuilder> routes;
-
-  _Navigator({
-    Key? key,
-    required this.routes,
-    required this.navigatorKey,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async => !await navigatorKey.currentState!.maybePop(),
-      child: Navigator(
-        key: navigatorKey,
-        initialRoute: routes.keys.first,
-        onGenerateRoute: (settings) => MaterialPageRoute(
-          settings: settings,
-          builder: (context) => routes[settings.name]!(
-            context,
-            settings.arguments,
-          ),
-        ),
-      ),
     );
   }
 }

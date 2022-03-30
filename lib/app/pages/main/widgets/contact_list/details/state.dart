@@ -1,0 +1,3 @@
+class ContactDetailsState {
+  const ContactDetailsState();
+}

@@ -19,10 +19,10 @@ void main() {
     ],
     child: Keypad(
       controller: textController,
-      primaryButton: GestureDetector(
+      cursorShownNotifier: ValueNotifier(false),
+      bottomCenterButton: GestureDetector(
         onTap: () => initiateFakeCall(controller: textController),
       ),
-      onDeleteAll: () => {},
     ),
   );
 
@@ -51,15 +51,6 @@ void main() {
           matching: find.byType(KeypadValueButton),
         ),
         findsNWidgets(12),
-      );
-    });
-
-    testWidgets('Delete button', (tester) async {
-      await tester.pumpWidget(testWidget);
-
-      expect(
-        find.byIcon(VialerSans.correct),
-        findsOneWidget,
       );
     });
   });
@@ -425,38 +416,6 @@ void main() {
       await tester.pump();
       expect(
         find.widgetWithText(TextField, '+0123456789*#'),
-        findsOneWidget,
-      );
-    });
-
-    testWidgets('Press delete', (tester) async {
-      await tester.pumpWidget(testWidget);
-      textController.text = '+0123456789';
-      await tester.pump();
-      await tester.tap(
-        find.ancestor(
-          of: find.byIcon(VialerSans.correct),
-          matching: find.byType(InkResponse),
-        ),
-      );
-      expect(
-        find.widgetWithText(TextField, '+012345678'),
-        findsOneWidget,
-      );
-    });
-
-    testWidgets('Longpress delete', (tester) async {
-      await tester.pumpWidget(testWidget);
-      textController.text = '+0123456789';
-      await tester.pump();
-      await tester.longPress(
-        find.ancestor(
-          of: find.byIcon(VialerSans.correct),
-          matching: find.byType(InkResponse),
-        ),
-      );
-      expect(
-        find.widgetWithText(TextField, ''),
         findsOneWidget,
       );
     });

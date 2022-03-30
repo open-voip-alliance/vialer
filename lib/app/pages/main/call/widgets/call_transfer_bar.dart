@@ -51,7 +51,7 @@ class CallTransferInProgressBar extends StatelessWidget {
               text: '${inactiveCall.remotePartyHeading}',
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
-            TextSpan(text: '- ${inactiveCall.prettyDuration} - '),
+            TextSpan(text: ' - ${inactiveCall.prettyDuration} - '),
             TextSpan(
               text: inactiveCall.isOnHold
                   ? context.msg.main.call.ongoing.state.callOnHold

@@ -6,7 +6,7 @@ import '../../../../widgets/connectivity_checker.dart';
 import 'key_input.dart';
 import 'keypad.dart';
 
-class DialPad extends StatelessWidget {
+class DialPad extends StatefulWidget {
   final TextEditingController controller;
 
   /// Whether input can be deleted with the delete button. If false, the
@@ -17,17 +17,30 @@ class DialPad extends StatelessWidget {
   /// deleted.
   final VoidCallback? onDeleteAll;
 
-  final Widget primaryButton;
-  final Widget? secondaryButton;
+  final Widget? bottomLeftButton;
+  final Widget bottomCenterButton;
+  final Widget? bottomRightButton;
 
   const DialPad({
     Key? key,
     required this.controller,
     this.onDeleteAll,
     this.canDelete = true,
-    required this.primaryButton,
-    this.secondaryButton,
+    this.bottomLeftButton,
+    required this.bottomCenterButton,
+    this.bottomRightButton,
   }) : super(key: key);
+
+  @override
+  State<DialPad> createState() => _DialPadState();
+}
+
+class _DialPadState extends State<DialPad> {
+  /// This is necessary to keep track of because if the cursor has been shown
+  /// once in a readOnly text field, the cursor will be shown forever, even if
+  /// the offset is reported as -1. We need to update the position of the
+  /// cursor in that case.
+  final _cursorShownNotifier = ValueNotifier<bool>(false);
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +49,10 @@ class DialPad extends StatelessWidget {
       children: [
         Material(
           child: KeyInput(
-            controller: controller,
+            controller: widget.controller,
+            cursorShownNotifier: _cursorShownNotifier,
+            canDelete: widget.canDelete,
+            onDeleteAll: widget.onDeleteAll,
           ),
         ),
         if (context.isIOS) const SizedBox(height: 24),
@@ -51,11 +67,12 @@ class DialPad extends StatelessWidget {
                       BlocBuilder<ConnectivityCheckerCubit, ConnectivityState>(
                     builder: (context, state) {
                       return Keypad(
-                        controller: controller,
+                        controller: widget.controller,
+                        cursorShownNotifier: _cursorShownNotifier,
                         constraints: constraints,
-                        canDelete: canDelete,
-                        primaryButton: primaryButton,
-                        secondaryButton: secondaryButton,
+                        bottomCenterButton: widget.bottomCenterButton,
+                        bottomLeftButton: widget.bottomLeftButton,
+                        bottomRightButton: widget.bottomRightButton,
                       );
                     },
                   ),

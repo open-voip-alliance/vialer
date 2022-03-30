@@ -345,4 +345,3 @@ extension on CallScreenBehavior {
   void configure({required bool showWhenLocked}) =>
       showWhenLocked ? enable() : disable();
 }
-
