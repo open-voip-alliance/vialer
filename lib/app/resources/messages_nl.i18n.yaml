@@ -61,14 +61,14 @@ main:
     ongoing:
       hangUp: &hangUpCall "Ophangen"
       actions:
-        mute: "dempen"
-        keypad: "toetsen"
-        speaker: "luidspreker"
-        transfer: "doorverbinden"
-        merge: "voeg samen"
-        bluetooth: "bluetooth"
-        phone: "telefoon"
-        hold: "wacht"
+        mute: "Dempen"
+        keypad: "Toetsen"
+        speaker: "Luidspreker"
+        transfer: "Doorverbinden"
+        merge: "Voeg samen"
+        bluetooth: "Bluetooth"
+        phone: "Telefoon"
+        hold: "Wacht"
       state:
         calling: "Bellen"
         callEnded: "Gesprek beëindigd"
