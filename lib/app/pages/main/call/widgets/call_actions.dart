@@ -170,7 +170,10 @@ class _CallActionButtons extends StatelessWidget {
                 Expanded(
                   child: _ActionButton(
                     icon: const Icon(VialerSans.mute),
-                    text: Text(context.msg.main.call.ongoing.actions.mute),
+                    text: Text(
+                      context.msg.main.call.ongoing.actions.mute,
+                      textAlign: TextAlign.center,
+                    ),
                     active: state.isVoipCallMuted,
                     // We can't mute when on hold.
                     onPressed: !call.isOnHold && !state.isFinished
@@ -181,7 +184,10 @@ class _CallActionButtons extends StatelessWidget {
                 Expanded(
                   child: _ActionButton(
                     icon: const Icon(VialerSans.dialpad),
-                    text: Text(context.msg.main.call.ongoing.actions.keypad),
+                    text: Text(
+                      context.msg.main.call.ongoing.actions.keypad,
+                      textAlign: TextAlign.center,
+                    ),
                     onPressed: !state.isFinished
                         ? () => _toggleDialPad(context)
                         : null,
@@ -209,6 +215,7 @@ class _CallActionButtons extends StatelessWidget {
                       state.isInTransfer
                           ? context.msg.main.call.ongoing.actions.merge
                           : context.msg.main.call.ongoing.actions.transfer,
+                      textAlign: TextAlign.center,
                     ),
                     onPressed: state.isActionable
                         ? () => state.isInTransfer
@@ -221,7 +228,10 @@ class _CallActionButtons extends StatelessWidget {
                   flex: 2,
                   child: _ActionButton(
                     icon: const Icon(VialerSans.onHold),
-                    text: Text(context.msg.main.call.ongoing.actions.hold),
+                    text: Text(
+                      context.msg.main.call.ongoing.actions.hold,
+                      textAlign: TextAlign.center,
+                    ),
                     active: call.isOnHold,
                     onPressed:
                         state.isActionable ? () => _toggleHold(context) : null,
@@ -412,6 +422,7 @@ class _AudioRouteButton extends StatelessWidget {
               currentRoute: currentRoute,
               bluetoothDeviceName: state.audioState?.bluetoothDeviceName ?? '',
             ),
+            textAlign: TextAlign.center,
           ),
           active: !hasBluetooth && (currentRoute == AudioRoute.speaker),
           onPressed: enabled
