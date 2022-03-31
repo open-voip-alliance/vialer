@@ -65,14 +65,14 @@ main:
     ongoing:
       hangUp: &hangUpCall "Hang up"
       actions:
-        mute: "mute"
-        keypad: "keypad"
-        speaker: "speaker"
-        transfer: "transfer"
-        merge: "merge calls"
-        bluetooth: "bluetooth"
-        phone: "phone"
-        hold: "hold"
+        mute: "Mute"
+        keypad: "Keypad"
+        speaker: "Speaker"
+        transfer: "Transfer"
+        merge: "Merge calls"
+        bluetooth: "Bluetooth"
+        phone: "Phone"
+        hold: "Hold"
       state:
         calling: "Calling"
         callEnded: "Call ended"

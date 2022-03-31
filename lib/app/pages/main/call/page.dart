@@ -214,57 +214,9 @@ class _CallPageState extends State<_CallPage>
                             CallTransferInProgressBar(
                               inactiveCall: state.voip!.inactiveCall!,
                             ),
-                          DefaultTextStyle.merge(
-                            style: TextStyle(
-                              color:
-                                  context.brand.theme.colors.onPrimaryGradient,
-                            ),
-                            child: Column(
-                              children: [
-                                const SizedBox(height: 12),
-                                Text(
-                                  call.remotePartyHeading,
-                                  style: const TextStyle(
-                                    fontSize: 32,
-                                    fontWeight: FontWeight.w300,
-                                  ),
-                                ),
-                                const SizedBox(height: 2),
-                                Text(
-                                  call.remotePartySubheading,
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(13.5),
-                                    color: context.brand.theme.colors
-                                        .primaryGradientStart,
-                                  ),
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 16,
-                                    vertical: 4,
-                                  ),
-                                  child: Text(
-                                    state is InitiatingCall
-                                        ? context
-                                            .msg.main.call.ongoing.state.calling
-                                        : state is FinishedCalling
-                                            ? context.msg.main.call.ongoing
-                                                .state.callEnded
-                                            : call.prettyDuration,
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ),
-                                if (context.isAndroid)
-                                  const SizedBox(height: 12),
-                              ],
-                            ),
+                          _CallHeader(
+                            call: call,
+                            state: state,
                           ),
                         ],
                       ),
@@ -282,6 +234,73 @@ class _CallPageState extends State<_CallPage>
               );
             },
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _CallHeader extends StatelessWidget {
+  final Call call;
+  final CallerState state;
+
+  const _CallHeader({
+    required this.call,
+    required this.state,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return DefaultTextStyle.merge(
+      style: TextStyle(
+        color: context.brand.theme.colors.onPrimaryGradient,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 4,
+        ),
+        child: Column(
+          children: [
+            const SizedBox(height: 12),
+            Text(
+              call.remotePartyHeading,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 32,
+                fontWeight: FontWeight.w300,
+              ),
+            ),
+            const SizedBox(height: 2),
+            Text(
+              call.remotePartySubheading,
+              style: const TextStyle(
+                fontSize: 16,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(13.5),
+                color: context.brand.theme.colors.primaryGradientStart,
+              ),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 4,
+              ),
+              child: Text(
+                state is InitiatingCall
+                    ? context.msg.main.call.ongoing.state.calling
+                    : state is FinishedCalling
+                        ? context.msg.main.call.ongoing.state.callEnded
+                        : call.prettyDuration,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+          ],
         ),
       ),
     );
