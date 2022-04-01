@@ -312,10 +312,10 @@ custom: # Custom properties to make workflows cleaner
         beta_groups:
           - Beta Testers
           - External Testers
-      google_play:
-        credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
-        track: beta
-        in_app_update_priority: 0
+#      google_play:
+#        credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
+#        track: beta
+#        in_app_update_priority: 0
 
     publish_for_production: &publish_for_production
       slack:
@@ -546,8 +546,8 @@ workflows:
       - *prepare_release_notes_from_files
       - *flutter_test
       - *build_aab
-      #- *update_ios_signing_for_current_brand
-      #- *build_ipa
+      - *update_ios_signing_for_current_brand
+      - *build_ipa
       - *release_to_sentry
     publishing: *publish_for_beta
 
@@ -569,34 +569,34 @@ workflows:
         ENABLE_IOS_SANDBOX_PUSH_NOTIFICATIONS: "false"
         FINALIZE_SENTRY_RELEASE: "true"
 
-  beta-verbonden:
-    name: Verbonden Beta
-    <<: *beta_workflow
-    environment:
-      groups:
-        - configuration
-        - diagnostics
-        - verbonden_android_firebase
-        - verbonden_playstore_credentials
-        - verbonden_upload_keystore_credentials
-        #- verbonden_ios_appstore_credentials
-      <<: *config_environment
-      vars:
-        <<: *release_env_vars
-        <<: *brand_config_verbonden_env_vars
-
-  beta-annabel:
-    name: ANNAbel Beta
-    <<: *beta_workflow
-    environment:
-      groups:
-        - configuration
-        - diagnostics
-        - annabel_android_firebase
-        - annabel_playstore_credentials
-        - annabel_upload_keystore_credentials
-        #- annabel_ios_appstore_credentials
-      <<: *config_environment
-      vars:
-        <<: *release_env_vars
-        <<: *brand_config_annabel_env_vars
+#  beta-verbonden:
+#    name: Verbonden Beta
+#    <<: *beta_workflow
+#    environment:
+#      groups:
+#        - configuration
+#        - diagnostics
+#        - verbonden_android_firebase
+#        - verbonden_playstore_credentials
+#        - verbonden_upload_keystore_credentials
+#        #- verbonden_ios_appstore_credentials
+#      <<: *config_environment
+#      vars:
+#        <<: *release_env_vars
+#        <<: *brand_config_verbonden_env_vars
+#
+#  beta-annabel:
+#    name: ANNAbel Beta
+#    <<: *beta_workflow
+#    environment:
+#      groups:
+#        - configuration
+#        - diagnostics
+#        - annabel_android_firebase
+#        - annabel_playstore_credentials
+#        - annabel_upload_keystore_credentials
+#        #- annabel_ios_appstore_credentials
+#      <<: *config_environment
+#      vars:
+#        <<: *release_env_vars
+#        <<: *brand_config_annabel_env_vars
