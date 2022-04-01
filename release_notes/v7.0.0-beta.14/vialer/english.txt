@@ -1,0 +1,3 @@
+- It is now possible to transfer a call to a contact
+- Fixed several issues with incoming calls
+- Improved stability across the entire app
