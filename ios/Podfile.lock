@@ -97,6 +97,7 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire (~> 5.4)
+  - Analytics (~> 4.1)
   - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
   - contacts_service (from `.symlinks/plugins/contacts_service/ios`)
   - device_info (from `.symlinks/plugins/device_info/ios`)
@@ -181,13 +182,13 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   iOSVoIPLib:
-    :commit: 248e973ba54b3458e0f004cd837b352c4f9a0e91
+    :commit: 353fe2c53a574a58bc392c0f8564d521afb69038
     :git: https://github.com/open-voip-alliance/iOS-Phone-Lib.git
   le:
     :commit: ce8800f6d3290e182d48082680679d64a05ca778
     :git: https://github.com/LogentriesCommunity/le_ios.git
   PIL:
-    :commit: 248e973ba54b3458e0f004cd837b352c4f9a0e91
+    :commit: 353fe2c53a574a58bc392c0f8564d521afb69038
     :git: https://github.com/open-voip-alliance/iOS-Phone-Lib.git
 
 SPEC CHECKSUMS:
@@ -225,6 +226,6 @@ SPEC CHECKSUMS:
   url_launcher_ios: 02f1989d4e14e998335b02b67a7590fa34f971af
   webview_flutter_wkwebview: 005fbd90c888a42c5690919a1527ecc6649e1162
 
-PODFILE CHECKSUM: 2c4499325c824e82e2cb5d4975e405f846f6c507
+PODFILE CHECKSUM: ffbff086cfc62758a47f79c8d6169d70e5edf9d4
 
-COCOAPODS: 1.10.1
+COCOAPODS: 1.11.2
