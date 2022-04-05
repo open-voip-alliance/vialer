@@ -83,7 +83,8 @@ main:
     incoming:
       answer: &answerCall "Answer"
       decline: &declineCall "Decline"
-      subtitle(String remoteNumber): "Incoming call - $remoteNumber"
+      subtitleWith(String heading): "Incoming call - $heading"
+      subtitle: "Incoming call"
     feedback:
       rating:
         title: "How was the call quality?"
