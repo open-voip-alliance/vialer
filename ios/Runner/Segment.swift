@@ -30,7 +30,7 @@ class Segment {
     }
 
     func track(event: String, properties: [String : Any]) {
-        if (Segment.key == nil) {
+        if (Segment.instance == nil) {
             logger.writeLog("Segment not initialized, logging event: \(event) with properties: \(properties)")
             return
         }
