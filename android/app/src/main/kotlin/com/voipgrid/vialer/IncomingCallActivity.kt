@@ -275,7 +275,7 @@ fun CallHeader(callHeaderInformation: CallHeaderInformation, fontSize: TextUnit 
 
                     Text(
                         stringResource(
-                            R.string.main_call_incoming_subtitle,
+                            R.string.main_call_incoming_subtitle_with,
                             stringResource(R.string.app_name)
                         ),
                         fontSize = fontSize * 0.6,

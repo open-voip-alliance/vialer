@@ -79,7 +79,8 @@ main:
     incoming:
       answer: &answerCall "Opnemen"
       decline: &declineCall "Weigeren"
-      subtitle(String remoteNumber): "Inkomend gesprek - $remoteNumber"
+      subtitleWith(String heading): "Inkomend gesprek - $heading"
+      subtitle: "Inkomend gesprek"
     feedback:
       rating:
         title: "Hoe was de gesprekskwaliteit?"
