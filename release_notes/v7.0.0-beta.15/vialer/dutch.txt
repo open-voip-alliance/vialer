@@ -1,0 +1,2 @@
+- Resolved a significant issue with receiving incoming calls
+- Improved the UX of the in-app incoming call screen
