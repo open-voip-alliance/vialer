@@ -60,7 +60,8 @@ class StorageRepository {
 
   set logs(String? value) => _preferences.setOrRemoveString(_logsKey, value);
 
-  void appendLogs(String value) {
+  Future<void> appendLogs(String value) async {
+    await reload();
     _preferences.setString(_logsKey, '$logs\n$value');
   }
 

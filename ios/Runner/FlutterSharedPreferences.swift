@@ -6,6 +6,9 @@ class FlutterSharedPreferences {
     private let FLUTTER_SHARED_PREF_VOIP_CONFIG = "flutter.voip_config"
     private let FLUTTER_SHARED_PREF_PUSH_TOKEN = "flutter.push_token"
     private let FLUTTER_SHARED_PREF_SETTINGS = "flutter.settings"
+    private let FLUTTER_SHARED_PREF_LOGS = "flutter.logs"
+    
+    private let appendLogsQueue = DispatchQueue(label: "appendLogsQueue")
 
     let defaults = UserDefaults.standard
     
@@ -79,5 +82,21 @@ class FlutterSharedPreferences {
     
     func getBoolSetting(name: String, defaultValue: Bool = false) -> Bool {
         Bool(getSetting(name: name, defaultValue: String(defaultValue))) ?? defaultValue
+    }
+    
+    private var logs: String {
+        get {
+           defaults.string(forKey: FLUTTER_SHARED_PREF_LOGS) ?? ""
+        }
+        set (value) {
+            defaults.set(value, forKey: FLUTTER_SHARED_PREF_LOGS)
+            defaults.synchronize()
+        }
+    }
+    
+    func appendLogs(value: String) {
+        appendLogsQueue.async {
+            self.logs = "\(self.logs)\n\(value)"
+        }
     }
 }
