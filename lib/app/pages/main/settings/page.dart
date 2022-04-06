@@ -85,7 +85,6 @@ class _SettingsPageState extends State<SettingsPage> {
                 final showDnd = state.showDnd;
                 final hasIgnoreOptimizationsPermission =
                     state.hasIgnoreBatteryOptimizationsPermission;
-                final showDestinationInSeparateCategory = context.isIOS;
                 final cubit = context.watch<SettingsCubit>();
 
                 final availabilityTile = state.systemUser != null
@@ -116,9 +115,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                     state.userAvailabilityType!,
                                 showHelp: _scrollToAvailability,
                               ),
-                            if (!showDestinationInSeparateCategory &&
-                                availabilityTile != null)
-                              availabilityTile,
+                            if (availabilityTile != null) availabilityTile,
                             SettingTileCategory.accountInfo(
                               children: [
                                 SettingTile.mobileNumber(
@@ -161,13 +158,6 @@ class _SettingsPageState extends State<SettingsPage> {
                                     ),
                                 ],
                               ),
-                              if (showDestinationInSeparateCategory &&
-                                  availabilityTile != null)
-                                SettingTileCategory.userDestination(
-                                  children: [
-                                    availabilityTile,
-                                  ],
-                                ),
                               SettingTileCategory.portalLinks(
                                 children: [
                                   SettingLinkTile.calls(),
