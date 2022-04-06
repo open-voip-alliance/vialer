@@ -2,7 +2,7 @@ import Foundation
 import le
 
 class Logger: NSObject, NativeLogging {
-    
+
     private static let CONSOLE_LOG_KEY = "VIALER-PIL"
     private var anonymizationRules = [NSRegularExpression : String]()
     private var logEntries: LELog? = nil
@@ -11,19 +11,32 @@ class Logger: NSObject, NativeLogging {
     private var isRemoteLoggingEnabled: Bool {
         logEntries != nil
     }
-    
+
+    private let flutterSharedPreferences = FlutterSharedPreferences()
+
     internal func writeLog(_ message: String) {
         if isConsoleLoggingEnabled {
             logToConsole(message: message)
         }
-        
+
         if isRemoteLoggingEnabled {
             logToRemote(message: message)
         }
     }
-    
+
     private func logToConsole(message: String) {
-        print("\(Logger.CONSOLE_LOG_KEY) \(message)")
+        // Format message to be consistent with Dart logs.
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "uuuu-MM-dd HH-mm-ss.SSSSSS"
+        let time = dateFormatter.string(from: Date())
+
+        let formattedMessage = "[\(time)] IPL: \(message)"
+
+        print("\(Logger.CONSOLE_LOG_KEY) \(formattedMessage)")
+
+        if (flutterSharedPreferences.systemUser != nil) {
+            flutterSharedPreferences.appendLogs(value: anonymize(message: formattedMessage))
+        }
     }
     
     private func logToRemote(message: String) {

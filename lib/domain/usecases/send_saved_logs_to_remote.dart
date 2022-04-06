@@ -15,6 +15,7 @@ class SendSavedLogsToRemoteUseCase extends UseCase {
   final _getUser = GetUserUseCase();
 
   Future<void> call() async {
+    await _storageRepository.reload();
     final logs = _storageRepository.logs;
     final user = await _getUser(latest: false);
 
