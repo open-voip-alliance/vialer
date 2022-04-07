@@ -1,6 +1,7 @@
 import UIKit
 import Flutter
 import flutter_phone_lib
+import Intents
 
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {
@@ -55,5 +56,30 @@ import flutter_phone_lib
         CallScreenBehaviorSetup(controller.binaryMessenger, CallScreenBehaviorApi())
 
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+    }
+    
+    /// Handles receiving call starts from outside the application (e.g. contacts)
+    override func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
+        if let handle = userActivity.startCallHandle {
+            let number = handle.replacingOccurrences(of: "[^0-9\\+]", with: "", options: .regularExpression)
+            startCall(number: number)
+        }
+        
+        return true
+    }
+}
+
+protocol SupportedStartCallIntent {
+    var contacts: [INPerson]? { get }
+}
+
+extension INStartAudioCallIntent: SupportedStartCallIntent {}
+
+extension NSUserActivity {
+    var startCallHandle: String? {
+        guard let startCallIntent = interaction?.intent as? SupportedStartCallIntent else {
+            return nil
+        }
+        return startCallIntent.contacts?.first?.personHandle?.value
     }
 }
