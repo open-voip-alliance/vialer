@@ -61,7 +61,7 @@ import Intents
     /// Handles receiving call starts from outside the application (e.g. contacts)
     override func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
         if let handle = userActivity.startCallHandle {
-            segment?.track(event: "call-initiated-from-os", properties: [])
+            segment?.track(event: "call-initiated-from-os", properties: [:])
             let number = handle.replacingOccurrences(of: "[^0-9\\+]", with: "", options: .regularExpression)
             startCall(number: number)
         }
