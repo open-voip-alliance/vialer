@@ -428,6 +428,12 @@ onboarding:
 
 
         We are aware how important battery is and use it very conservatively.
+    notifications:
+      title: "Notifications"
+      description(String appName): >-
+        $appName uses notifications to alert you to missed calls.
+
+        You will always be notified of incoming calls even without this permission.
 
   voicemail:
     title: "Voicemail"

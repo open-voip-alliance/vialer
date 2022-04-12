@@ -13,6 +13,7 @@ import 'permission/bluetooth/page.dart';
 import 'permission/contacts/page.dart';
 import 'permission/ignore_battery_optimizations/page.dart';
 import 'permission/microphone/page.dart';
+import 'permission/notifications/page.dart';
 import 'permission/phone/page.dart';
 import 'two_factor_authentication/page.dart';
 import 'voicemail/page.dart';
@@ -53,6 +54,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
           const BluetoothPermissionPage(),
       OnboardingStep.ignoreBatteryOptimizationsPermission: (_) =>
           const IgnoreBatteryOptimizationsPermissionPage(),
+      OnboardingStep.notificationPermission: (_) =>
+          const NotificationsPermissionPage(),
       OnboardingStep.voicemail: (_) => const VoicemailPage(),
       OnboardingStep.welcome: (_) => WelcomePage(),
     };

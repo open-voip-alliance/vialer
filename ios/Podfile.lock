@@ -23,27 +23,27 @@ PODS:
     - Flutter
     - Segment-Amplitude (= 3.3.2)
   - iOSVoIPLib (0.1.1):
-    - linphone-sdk (= 5.1.10)
+    - linphone-sdk-novideo (= 5.1.15)
   - le (1.2)
   - libphonenumber (0.0.1):
     - Flutter
     - libPhoneNumber-iOS
   - libPhoneNumber-iOS (0.9.15)
-  - linphone-sdk (5.1.10):
-    - linphone-sdk/all-frameworks (= 5.1.10)
-    - linphone-sdk/app-extension (= 5.1.10)
-    - linphone-sdk/app-extension-swift (= 5.1.10)
-    - linphone-sdk/basic-frameworks (= 5.1.10)
-    - linphone-sdk/swift (= 5.1.10)
-  - linphone-sdk/all-frameworks (5.1.10)
-  - linphone-sdk/app-extension (5.1.10)
-  - linphone-sdk/app-extension-swift (5.1.10):
-    - linphone-sdk/app-extension
-  - linphone-sdk/basic-frameworks (5.1.10):
-    - linphone-sdk/app-extension
-  - linphone-sdk/swift (5.1.10):
-    - linphone-sdk/app-extension-swift
-    - linphone-sdk/basic-frameworks
+  - linphone-sdk-novideo (5.1.15):
+    - linphone-sdk-novideo/all-frameworks (= 5.1.15)
+    - linphone-sdk-novideo/app-extension (= 5.1.15)
+    - linphone-sdk-novideo/app-extension-swift (= 5.1.15)
+    - linphone-sdk-novideo/basic-frameworks (= 5.1.15)
+    - linphone-sdk-novideo/swift (= 5.1.15)
+  - linphone-sdk-novideo/all-frameworks (5.1.15)
+  - linphone-sdk-novideo/app-extension (5.1.15)
+  - linphone-sdk-novideo/app-extension-swift (5.1.15):
+    - linphone-sdk-novideo/app-extension
+  - linphone-sdk-novideo/basic-frameworks (5.1.15):
+    - linphone-sdk-novideo/app-extension
+  - linphone-sdk-novideo/swift (5.1.15):
+    - linphone-sdk-novideo/app-extension-swift
+    - linphone-sdk-novideo/basic-frameworks
   - native_shared_preferences (1.0.0):
     - Flutter
   - package_info (0.0.1):
@@ -134,7 +134,7 @@ SPEC REPOS:
     - sqlite3
     - Swinject
   https://gitlab.linphone.org/BC/public/podspec.git:
-    - linphone-sdk
+    - linphone-sdk-novideo
 
 EXTERNAL SOURCES:
   connectivity_plus:
@@ -182,13 +182,13 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   iOSVoIPLib:
-    :commit: 909ee6a06c97baa719eead669a687a5c77e836ee
+    :commit: d181af81af097d2165ea5e5e12b67808d2a62696
     :git: https://github.com/open-voip-alliance/iOS-Phone-Lib.git
   le:
     :commit: ce8800f6d3290e182d48082680679d64a05ca778
     :git: https://github.com/LogentriesCommunity/le_ios.git
   PIL:
-    :commit: 909ee6a06c97baa719eead669a687a5c77e836ee
+    :commit: d181af81af097d2165ea5e5e12b67808d2a62696
     :git: https://github.com/open-voip-alliance/iOS-Phone-Lib.git
 
 SPEC CHECKSUMS:
@@ -203,11 +203,11 @@ SPEC CHECKSUMS:
   flutter_libphonenumber: 6a23afdf063b34d1e53e6dbd6c6bc905d18e8e46
   flutter_phone_lib: 721c856fbb850eedcf1e6d00669580c10b737c2b
   flutter_segment: 9cdace39639298eb31ad1555e5916edf8f9fc6b8
-  iOSVoIPLib: 0198f018f2329a9c99e9c5ce497aee4dc7cad602
+  iOSVoIPLib: 3aab8527c628e541d8de7cb71871bd336ef8200d
   le: 6854003e293bf5b3cb822ef06971f1cc23a77eb9
   libphonenumber: bd14d5abfc5939ab0b0767234e2d8e2593af258e
   libPhoneNumber-iOS: 0a32a9525cf8744fe02c5206eb30d571e38f7d75
-  linphone-sdk: c296697bc33e187d32ee7a7ad350ec7cbfd4ea30
+  linphone-sdk-novideo: 5d9c8992c0402fdf6fb5d26cee617066a89b2c09
   native_shared_preferences: 21a805f6149643c25a20a4f534692131faebadfe
   package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
   package_info_plus: 6c92f08e1f853dc01228d6f553146438dafcd14e

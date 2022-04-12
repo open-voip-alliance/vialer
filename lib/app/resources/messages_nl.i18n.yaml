@@ -428,6 +428,12 @@ onboarding:
 
 
         We zijn ons ervan bewust hoe belangrijk je batterij is en gaan hier dan ook zuinig mee om.
+    notifications:
+      title: "Notificaties"
+      description(String appName): >-
+        $appName maakt voor gemiste oproepen gebruik van notificaties.
+
+        Zonder deze toestemming word je nog wel op de hoogte gebracht van inkomende oproepen.
 
   voicemail:
     title: "Voicemail"

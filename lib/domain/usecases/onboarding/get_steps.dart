@@ -11,41 +11,35 @@ import '../../use_case.dart';
 class GetOnboardingStepsUseCase extends UseCase {
   final _permissionRepository = dependencyLocator<PermissionRepository>();
 
-  Future<List<OnboardingStep>> call() async {
-    var phonePermissionDenied = false;
-    var bluetoothPermissionDenied = false;
-    var ignoreBatteryOptimizationsPermissionDenied = false;
-    if (Platform.isAndroid) {
-      phonePermissionDenied =
-          await _permissionRepository.getPermissionStatus(Permission.phone) !=
-              PermissionStatus.granted;
+  final _permissionSteps = {
+    if (Platform.isAndroid) OnboardingStep.phonePermission: Permission.phone,
+    OnboardingStep.contactsPermission: Permission.contacts,
+    OnboardingStep.microphonePermission: Permission.microphone,
+    if (Platform.isAndroid)
+      OnboardingStep.bluetoothPermission: Permission.bluetooth,
+    if (Platform.isAndroid)
+      OnboardingStep.ignoreBatteryOptimizationsPermission:
+          Permission.ignoreBatteryOptimizations,
+    if (Platform.isIOS)
+      OnboardingStep.notificationPermission: Permission.notifications,
+  };
 
-      bluetoothPermissionDenied = await _permissionRepository
-              .getPermissionStatus(Permission.bluetooth) !=
-          PermissionStatus.granted;
+  Future<List<OnboardingStep>> call() async => [
+        OnboardingStep.login,
+        ...(await _generatePermissionSteps()),
+        OnboardingStep.welcome,
+      ];
 
-      ignoreBatteryOptimizationsPermissionDenied = await _permissionRepository
-              .getPermissionStatus(Permission.ignoreBatteryOptimizations) !=
-          PermissionStatus.granted;
-    }
+  Future<List<OnboardingStep>> _generatePermissionSteps() async {
+    final steps = <OnboardingStep>[];
 
-    final contactsPermissionDenied =
-        await _permissionRepository.getPermissionStatus(Permission.contacts) !=
-            PermissionStatus.granted;
+    _permissionSteps.forEach((key, value) {
+      if (_permissionRepository.getPermissionStatus(value) !=
+          PermissionStatus.granted) {
+        steps.add(key);
+      }
+    });
 
-    final microphonePermissionDenied = await _permissionRepository
-            .getPermissionStatus(Permission.microphone) !=
-        PermissionStatus.granted;
-
-    return [
-      OnboardingStep.login,
-      if (phonePermissionDenied) OnboardingStep.phonePermission,
-      if (contactsPermissionDenied) OnboardingStep.contactsPermission,
-      if (microphonePermissionDenied) OnboardingStep.microphonePermission,
-      if (bluetoothPermissionDenied) OnboardingStep.bluetoothPermission,
-      if (ignoreBatteryOptimizationsPermissionDenied)
-        OnboardingStep.ignoreBatteryOptimizationsPermission,
-      OnboardingStep.welcome,
-    ];
+    return steps;
   }
 }
