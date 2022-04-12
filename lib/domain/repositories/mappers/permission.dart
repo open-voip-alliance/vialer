@@ -20,6 +20,9 @@ extension PermissionMapper on domain.Permission {
       case domain.Permission.ignoreBatteryOptimizations:
         return Permission.ignoreBatteryOptimizations;
 
+      case domain.Permission.notifications:
+        return Permission.notification;
+
       default:
         throw UnsupportedError(
           'Domain Permission has no equivalent package Permission: $this',
