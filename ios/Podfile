@@ -36,8 +36,7 @@ target 'Runner' do
   source 'https://gitlab.linphone.org/BC/public/podspec.git'
   source 'https://github.com/CocoaPods/Specs.git'
 
-  pod 'iOSVoIPLib', :git =>'https://github.com/open-voip-alliance/iOS-Phone-Lib.git'
-  pod 'PIL', :git =>'https://github.com/open-voip-alliance/iOS-Phone-Lib.git'
+  pod 'iOSPhoneLib', :git =>'https://github.com/open-voip-alliance/iOS-Phone-Lib.git'
   pod 'le', :git => 'https://github.com/LogentriesCommunity/le_ios.git'
   pod 'Alamofire', '~> 5.4'
   pod 'Analytics', '~> 4.1'
