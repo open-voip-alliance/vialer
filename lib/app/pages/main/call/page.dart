@@ -95,18 +95,31 @@ class _CallPageState extends State<_CallPage>
   static const _percentageChanceOfAskingForCallRating = 15;
 
   @override
+  void initState() {
+    super.initState();
+
+    // The call screen would show and persist if the phone was locked and
+    // the app opened afterwards when the call already ended.
+    if (!_isInCall(context)) {
+      _dismissCallPage(context, after: const Duration(milliseconds: 500));
+    }
+  }
+
+  @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
 
     // When the user dismisses the call screen, it will hide if
     // there is no call ongoing.
-    if (state == AppLifecycleState.paused) {
-      final call = context.read<CallerCubit>().processState.voipCall;
-
-      if (call == null || call.state == CallState.ended) {
-        _dismissCallPage(context);
-      }
+    if (state == AppLifecycleState.paused && !_isInCall(context)) {
+      _dismissCallPage(context);
     }
+  }
+
+  bool _isInCall(BuildContext context) {
+    final call = context.read<CallerCubit>().processState.voipCall;
+
+    return !(call == null || call.state == CallState.ended);
   }
 
   /// Dismisses the call screen, including any windows or dialogs
