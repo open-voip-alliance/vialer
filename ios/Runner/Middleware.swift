@@ -191,7 +191,7 @@ extension PKPushPayload {
     }
 
     var correlationId: String {
-        return dictionaryPayload["correlation_id"] as? String ?? ""
+        return dictionaryPayload["vg_cid"] as? String ?? ""
     }
 
     var messageStartTime: Int {
