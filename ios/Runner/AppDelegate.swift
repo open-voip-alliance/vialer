@@ -9,6 +9,16 @@ import Intents
     private let flutterSharedPreferences = FlutterSharedPreferences()
     private var segment: Segment?
 
+    private var ringtonePath: String {
+        let filename = "ringtone-\(Bundle.brandName)"
+
+        if Bundle.main.path(forResource: filename, ofType: "wav") != nil {
+            return "\(filename).wav"
+        }
+        
+        return "ringtone.wav"
+    }
+    
     override func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         addOnMissedCallNotificationPressedDelegate()
 
@@ -44,17 +54,19 @@ import Intents
                 ])
 
                 middleware.currentCallInfo = nil
-            }
-        ) { message, level in
-            self.logger.writeLog(message)
-        }
+            },
+            onLogReceived: { message, level in
+                self.logger.writeLog(message)
+            },
+            ringtonePath: self.ringtonePath
+        )
 
         let controller: FlutterViewController = window?.rootViewController as! FlutterViewController
         ContactSortHostApiSetup(controller.binaryMessenger, ContactSortApi())
         NativeLoggingSetup(controller.binaryMessenger, logger)
         NativeMetricsSetup(controller.binaryMessenger, Metrics())
         CallScreenBehaviorSetup(controller.binaryMessenger, CallScreenBehaviorApi())
-
+        
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
     }
     
@@ -82,5 +94,11 @@ extension NSUserActivity {
             return nil
         }
         return startCallIntent.contacts?.first?.personHandle?.value
+    }
+}
+
+extension Bundle {
+    internal static var brandName: String {
+        return (Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String ?? "").lowercased()
     }
 }
