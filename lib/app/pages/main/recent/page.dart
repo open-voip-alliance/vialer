@@ -174,6 +174,8 @@ class _RecentCallsListState extends State<_RecentCallsList>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+
     if (state == AppLifecycleState.resumed) {
       widget.onRefresh();
     }

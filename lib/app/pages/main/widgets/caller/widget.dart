@@ -50,6 +50,8 @@ class _CallerState extends State<Caller>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+
     final cubit = context.read<CallerCubit>();
 
     if (state == AppLifecycleState.resumed) {

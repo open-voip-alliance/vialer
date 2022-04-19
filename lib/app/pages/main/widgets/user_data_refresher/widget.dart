@@ -33,6 +33,8 @@ class _UserDataRefresherState extends State<_UserDataRefresher>
     with WidgetsBindingObserver, WidgetsBindingObserverRegistrar {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+
     final cubit = context.read<UserDataRefresherCubit>();
 
     if (state == AppLifecycleState.resumed) {
