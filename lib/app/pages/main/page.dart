@@ -8,6 +8,7 @@ import '../../widgets/app_updated_checker/widget.dart';
 import '../../widgets/transparent_status_bar.dart';
 import 'call/widgets/call_button.dart';
 import 'contacts/page.dart';
+import 'cubit.dart';
 import 'dialer/page.dart';
 import 'recent/page.dart';
 import 'settings/page.dart';
@@ -17,10 +18,17 @@ import 'widgets/notice/widget.dart';
 import 'widgets/user_data_refresher/widget.dart';
 
 class MainPage extends StatefulWidget {
-  const MainPage({Key? key}) : super(key: key);
+  const MainPage._(Key? key) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => MainPageState();
+
+  static Widget create({Key? key}) {
+    return BlocProvider(
+      create: (_) => MainCubit(),
+      child: MainPage._(key),
+    );
+  }
 }
 
 class MainPageState extends State<MainPage> {
@@ -52,6 +60,36 @@ class MainPageState extends State<MainPage> {
         }
       }
     });
+
+    // Show a dialog when navigating to the Recents page for the first time.
+    if ((_dialerIsPage && _currentIndex == 2) ||
+        (!_dialerIsPage && _currentIndex == 1)) {
+      final cubit = context.read<MainCubit>();
+
+      if (cubit.shouldShowClientWideCallsDialog()) {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text(context.msg.main.recent.clientWideCallsDialog.title),
+              content: Text(
+                context.msg.main.recent.clientWideCallsDialog.description,
+              ),
+              actions: [
+                TextButton(
+                  onPressed: Navigator.of(context, rootNavigator: true).pop,
+                  child: Text(
+                    context.msg.generic.button.ok,
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+
+        cubit.markRecentCallsShown();
+      }
+    }
   }
 
   @override

@@ -20,7 +20,7 @@ abstract class Routes {
   static final mapped = <String, WidgetBuilder>{
     Routes.root: (_) => const SplashPage(),
     Routes.onboarding: (_) => const OnboardingPage(),
-    Routes.main: (_) => MainPage(key: App.mainPageKey),
+    Routes.main: (_) => MainPage.create(key: App.mainPageKey),
     Routes.dialer: (_) => const DialerPage(isInBottomNavBar: false),
     Routes.feedback: (_) => const FeedbackPage(),
   };

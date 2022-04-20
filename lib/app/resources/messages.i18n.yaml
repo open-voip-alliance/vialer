@@ -162,6 +162,10 @@ main:
         title: "No call history"
         description: >-
           After you made or received your first call, it shows up here.
+    clientWideCallsDialog:
+      title: "Company-wide call history"
+      description: >-
+        You can find recent calls made by colleagues via the "Calls" link on the Settings page.
 
   contacts:
     title: &contactsTitle "Contacts"
