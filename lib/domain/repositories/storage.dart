@@ -117,6 +117,15 @@ class StorageRepository {
   set lastInstalledVersion(String? version) =>
       _preferences.setOrRemoveString(_lastInstalledVersionKey, version);
 
+  /// We store whether the Recent page was shown, to display a dialog on the
+  /// first show explaining where to find company calls.
+  static const _shownRecentsKey = 'shown_recents';
+
+  bool? get shownRecents => _preferences.getBool(_shownRecentsKey);
+
+  set shownRecents(bool? shownRecents) =>
+      _preferences.setOrRemoveBool(_shownRecentsKey, shownRecents);
+
   Future<void> clear() => _preferences.clear();
 
   Future<void> reload() => _preferences.reload();
@@ -137,5 +146,14 @@ extension on SharedPreferences {
     }
 
     return setInt(key, value);
+  }
+
+  // ignore: avoid_positional_boolean_parameters
+  Future<bool> setOrRemoveBool(String key, bool? value) {
+    if (value == null) {
+      return remove(key);
+    }
+
+    return setBool(key, value);
   }
 }

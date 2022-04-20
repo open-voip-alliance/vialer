@@ -159,6 +159,10 @@ main:
         title: "Geen recente gesprekken"
         description: >-
           Nadat je eerste gesprek is afgelopen, wordt deze hier weergegeven.
+    clientWideCallsDialog:
+      title: "Bedrijfsbrede gesprekkenlijst"
+      description: >-
+        Recente oproepen van collega’s vind je via de link “Gesprekken” op de Instellingen-pagina.
 
   contacts:
     title: &contactsTitle "Contacten"
