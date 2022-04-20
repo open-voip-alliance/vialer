@@ -1,0 +1,4 @@
+- A pop-up is now displayed when launching the app for the first time, providing instructions as to where to find client-wide recent calls
+- Fixed a bug where the call duration would not update during a call
+- Fixed a bug where the speaker button would be enabled when putting a call on hold/transferring a call
+- Fixed a bug where the mute button would not be enabled when transferring a call
