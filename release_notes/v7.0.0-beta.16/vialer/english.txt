@@ -2,5 +2,4 @@
 - Missed call notifications will show on the lock-screen if the appropriate permission is granted
 - Fixed a bug where outgoing audio would stop when using DTMF during a call
 - Fixed a bug where the ongoing call screen would not be dismissed when a call was accepted while the phone was locked
-- Fixed a bug that would cause the app ringtone to not be played
 - Destination switching is now at the top of settings
