@@ -1,0 +1,5 @@
+- Calls can be started from outside the app (for example from the default iOS contacts app)
+- Missed call notifications will show on the lock-screen if the appropriate permission is granted
+- Fixed a bug where outgoing audio would stop when using DTMF during a call
+- Fixed a bug where the ongoing call screen would not be dismissed when a call was accepted while the phone was locked
+- Destination switching is now at the top of settings
