@@ -177,7 +177,7 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   iOSPhoneLib:
-    :commit: 063d41319e1254a41fdf6379a3b082dafe1b57c9
+    :commit: 29dec19eb0c4cbeb47df866160ec38cf4b417bd5
     :git: https://github.com/open-voip-alliance/iOS-Phone-Lib.git
   le:
     :commit: ce8800f6d3290e182d48082680679d64a05ca778
