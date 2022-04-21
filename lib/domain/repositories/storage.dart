@@ -31,14 +31,20 @@ class StorageRepository {
 
   static const _settingsKey = 'settings';
 
+  List<Setting>? _settingsCache;
+
   List<Setting> get settings {
-    final preference = _preferences.getString(_settingsKey);
-    if (preference != null) {
-      return (json.decode(preference) as List)
+    if (_settingsCache == null) {
+      final preference = _preferences.getString(_settingsKey);
+      final settings = preference != null
+          ? (json.decode(preference) as List)
           .map((s) => Setting.fromJson(s as Map<String, dynamic>))
-          .toList();
+          .toList()
+          : <Setting>[];
+
+      return _settingsCache = settings;
     } else {
-      return [];
+      return _settingsCache!;
     }
   }
 
@@ -46,13 +52,16 @@ class StorageRepository {
   set settings(List<Setting>? settings) => setSettings(settings);
 
   /// Set (replace) the settings. Future completes when writing is done.
-  Future<void> setSettings(List<Setting>? settings) async =>
-      await _preferences.setOrRemoveString(
-        _settingsKey,
-        settings != null
-            ? json.encode(settings.map((s) => s.toJson()).toList())
-            : null,
-      );
+  Future<void> setSettings(List<Setting>? settings) {
+    _settingsCache = settings;
+
+    return _preferences.setOrRemoveString(
+      _settingsKey,
+      settings != null
+          ? json.encode(settings.map((s) => s.toJson()).toList())
+          : null,
+    );
+  }
 
   static const _logsKey = 'logs';
 
