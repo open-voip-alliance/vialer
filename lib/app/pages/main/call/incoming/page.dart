@@ -1,3 +1,4 @@
+import 'package:dartx/dartx.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -115,6 +116,9 @@ class _IncomingCallPageState extends State<IncomingCallPage>
                     label: Text(
                       context.msg.main.call.incoming.decline
                           .toUpperCaseIfAndroid(context),
+                      style: TextStyle(
+                        color: context.brand.theme.colors.primaryDark,
+                      ),
                     ),
                     child: CallButton.decline(
                       heroTag: null,
@@ -126,6 +130,9 @@ class _IncomingCallPageState extends State<IncomingCallPage>
                     label: Text(
                       context.msg.main.call.incoming.answer
                           .toUpperCaseIfAndroid(context),
+                      style: TextStyle(
+                        color: context.brand.theme.colors.primaryDark,
+                      ),
                     ),
                     child: CallButton.answer(
                       heroTag: null,
@@ -182,34 +189,44 @@ class _Info extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 16),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  call.remotePartyHeading,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    call.remotePartyHeading,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                ),
-                const SizedBox(height: 4),
-                Row(
-                  children: [
-                    const Icon(
-                      VialerSans.incomingCall,
-                      size: 12,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      context.msg.main.call.incoming
-                          .subtitle(call.remoteNumber),
-                      style: const TextStyle(
-                        fontSize: 12,
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      const Icon(
+                        VialerSans.incomingCall,
+                        size: 12,
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          call.remotePartySubheading.isNotBlank
+                              ? context.msg.main.call.incoming
+                                  .subtitleWith(call.remotePartySubheading)
+                              : context.msg.main.call.incoming.subtitle,
+                          style: const TextStyle(
+                            fontSize: 12,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ],
         )

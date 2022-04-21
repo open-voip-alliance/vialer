@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_phone_lib/flutter_phone_lib.dart'
@@ -12,9 +13,12 @@ import '../../../resources/theme.dart';
 import '../../../util/widgets_binding_observer_registrar.dart';
 import '../widgets/caller.dart';
 import '../widgets/connectivity_alert.dart';
+import '../widgets/nested_navigator.dart';
 import 'call_feedback/call_feedback.dart';
 import 'widgets/call_actions.dart';
+import 'widgets/call_header_container.dart';
 import 'widgets/call_process_state_builder.dart';
+import 'widgets/call_transfer.dart';
 import 'widgets/call_transfer_bar.dart';
 
 class CallPage extends StatefulWidget {
@@ -23,10 +27,65 @@ class CallPage extends StatefulWidget {
   }) : super(key: key);
 
   @override
+  _CallOrTransferPageState createState() => _CallOrTransferPageState();
+}
+
+const _callRoute = 'call';
+const _transferRoute = 'transfer';
+const _contactsRoute = 'contacts';
+
+class _CallOrTransferPageState extends State<CallPage> {
+  @override
+  Widget build(BuildContext context) {
+    return NestedNavigator(
+      // Users can never leave the ongoing call page.
+      onWillPop: () => SynchronousFuture(false),
+      fullscreenDialog: true,
+      routes: {
+        _callRoute: (context, _) => const _CallPage(),
+        _transferRoute: (context, _) {
+          return Scaffold(
+            body: Container(
+              alignment: Alignment.center,
+              child: CallProcessStateBuilder(
+                builder: (context, state) {
+                  return CallTransfer(
+                    activeCall: state.voipCall!,
+                    onTransferTargetSelected: (number) {
+                      context.read<CallerCubit>().beginTransfer(number);
+                      Navigator.of(context).pop();
+                    },
+                    onCloseButtonPressed: () =>
+                        Navigator.of(context, rootNavigator: true).pop(),
+                    onContactsButtonPressed: () {
+                      Navigator.pushNamed(context, _contactsRoute).then(
+                        (number) => context
+                            .read<CallerCubit>()
+                            .beginTransfer(number as String),
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
+          );
+        },
+      },
+    );
+  }
+}
+
+/// The actual call page.
+class _CallPage extends StatefulWidget {
+  const _CallPage({
+    Key? key,
+  }) : super(key: key);
+
+  @override
   _CallPageState createState() => _CallPageState();
 }
 
-class _CallPageState extends State<CallPage>
+class _CallPageState extends State<_CallPage>
     with WidgetsBindingObserver, WidgetsBindingObserverRegistrar {
   // We sometimes want to dismiss the screen after an amount of seconds
   // we will store this timer so we can cancel it if another call is started.
@@ -36,30 +95,44 @@ class _CallPageState extends State<CallPage>
   static const _percentageChanceOfAskingForCallRating = 15;
 
   @override
+  void initState() {
+    super.initState();
+
+    // The call screen would show and persist if the phone was locked and
+    // the app opened afterwards when the call already ended.
+    if (!_isInCall(context)) {
+      _dismissCallPage(context, after: const Duration(milliseconds: 500));
+    }
+  }
+
+  @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
 
     // When the user dismisses the call screen, it will hide if
     // there is no call ongoing.
-    if (state == AppLifecycleState.paused) {
-      final call = context.read<CallerCubit>().processState.voipCall;
-
-      if (call == null || call.state == CallState.ended) {
-        _dismissCallPage(context);
-      }
+    if (state == AppLifecycleState.paused && !_isInCall(context)) {
+      _dismissCallPage(context);
     }
+  }
+
+  bool _isInCall(BuildContext context) {
+    final call = context.read<CallerCubit>().processState.voipCall;
+
+    return !(call == null || call.state == CallState.ended);
   }
 
   /// Dismisses the call screen, including any windows or dialogs
   /// display over, taking the user all the way back to the
   /// previous screen.
   ///
-  /// Optionally provide a [after] duration for this to be
+  /// Optionally provide an [after] duration for this to be
   /// performed after a delay.
   void _dismissCallPage(BuildContext context, {Duration? after}) {
     dismiss() {
       if (mounted) {
-        Navigator.popUntil(context, (route) => route.isFirst);
+        Navigator.of(context, rootNavigator: true)
+            .popUntil((route) => route.isFirst);
       }
     }
 
@@ -124,6 +197,11 @@ class _CallPageState extends State<CallPage>
             call: state.voipCall!,
           );
 
+  void _transfer() {
+    // We want to use the closest navigator here, not the root navigator.
+    Navigator.pushNamed(context, _transferRoute);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -139,10 +217,7 @@ class _CallPageState extends State<CallPage>
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      gradient: context.brand.theme.primaryGradient,
-                    ),
+                  CallHeaderContainer(
                     child: SafeArea(
                       child: Column(
                         children: [
@@ -160,10 +235,12 @@ class _CallPageState extends State<CallPage>
                       ),
                     ),
                   ),
-                  const Expanded(
+                  Expanded(
                     child: Align(
                       alignment: Alignment.bottomCenter,
-                      child: CallActions(),
+                      child: CallActions(
+                        onTransferButtonPressed: _transfer,
+                      ),
                     ),
                   ),
                 ],

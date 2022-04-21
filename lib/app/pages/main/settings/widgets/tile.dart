@@ -7,7 +7,6 @@ import 'package:provider/provider.dart';
 
 import '../../../../../domain/entities/audio_codec.dart';
 import '../../../../../domain/entities/availability.dart';
-import '../../../../../domain/entities/brand.dart';
 import '../../../../../domain/entities/destination.dart';
 import '../../../../../domain/entities/fixed_destination.dart';
 import '../../../../../domain/entities/phone_account.dart';
@@ -77,12 +76,9 @@ class SettingTile extends StatelessWidget {
           child: Row(
             children: [
               Expanded(
-                child: GestureDetector(
-                  onTap: userAvailabilityType.requiresHelps ? showHelp : null,
-                  child: _DndToggle(
-                    setting: setting,
-                    userAvailabilityType: userAvailabilityType,
-                  ),
+                child: _DndToggle(
+                  setting: setting,
+                  userAvailabilityType: userAvailabilityType,
                 ),
               ),
             ],
@@ -171,7 +167,7 @@ class SettingTile extends StatelessWidget {
           ),
           description: Text(
             context.msg.main.settings.list.audio.usePhoneRingtone.description(
-              Provider.of<Brand>(context, listen: false).appName,
+              context.brand.appName,
             ),
           ),
           child: _BoolSettingValue(setting),
@@ -187,6 +183,28 @@ class SettingTile extends StatelessWidget {
           label: Text(context.msg.main.settings.list.calling.useVoip.title),
           description: Text(
             context.msg.main.settings.list.calling.useVoip.description,
+          ),
+          child: _BoolSettingValue(setting),
+        );
+      },
+    );
+  }
+
+  static Widget showCallsInNativeRecents(
+    ShowCallsInNativeRecentsSetting setting,
+  ) {
+    return Builder(
+      builder: (context) {
+        return SettingTile(
+          label: Text(
+            context
+                .msg.main.settings.list.calling.showCallsInNativeRecents.title,
+          ),
+          description: Text(
+            context.msg.main.settings.list.calling.showCallsInNativeRecents
+                .description(
+              context.brand.appName,
+            ),
           ),
           child: _BoolSettingValue(setting),
         );
@@ -318,41 +336,44 @@ class SettingTile extends StatelessWidget {
           });
         }
 
-        return AvailabilityTile(
-          availability: availability,
-          userAvailabilityType: systemUser.availabilityType(availability),
-          user: systemUser,
-          child: _MultipleChoiceSettingValue<Destination?>(
-            value: availability.activeDestination,
-            items: [
-              ...availability.destinations.map(
-                (destination) => DropdownMenuItem<Destination>(
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Text(destination.dropdownValue(context)),
-                  ),
-                  value: destination,
-                ),
-              ),
-              DropdownMenuItem<Destination>(
-                child: Text(
-                  context.msg.main.settings.list.calling.addAvailability,
-                ),
-                value: null,
-                onTap: openAddAvailabilityWebView,
-              ),
-            ],
-            onChanged: (destination) => destination != null
-                ? defaultOnChanged(
-                    context,
-                    setting.copyWith(
-                      value: availability.copyWithSelectedDestination(
-                        destination: destination,
-                      ),
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          child: AvailabilityTile(
+            availability: availability,
+            userAvailabilityType: systemUser.availabilityType(availability),
+            user: systemUser,
+            child: _MultipleChoiceSettingValue<Destination?>(
+              value: availability.activeDestination,
+              items: [
+                ...availability.destinations.map(
+                  (destination) => DropdownMenuItem<Destination>(
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(destination.dropdownValue(context)),
                     ),
-                  )
-                : () {},
-            isExpanded: true,
+                    value: destination,
+                  ),
+                ),
+                DropdownMenuItem<Destination>(
+                  child: Text(
+                    context.msg.main.settings.list.calling.addAvailability,
+                  ),
+                  value: null,
+                  onTap: openAddAvailabilityWebView,
+                ),
+              ],
+              onChanged: (destination) => destination != null
+                  ? defaultOnChanged(
+                      context,
+                      setting.copyWith(
+                        value: availability.copyWithSelectedDestination(
+                          destination: destination,
+                        ),
+                      ),
+                    )
+                  : () {},
+              isExpanded: true,
+            ),
           ),
         );
       },
@@ -808,22 +829,6 @@ class _DndToggle extends StatelessWidget {
                       ),
                     ),
                   ),
-                  if (userAvailabilityType.requiresHelps)
-                    Container(
-                      margin: const EdgeInsets.only(
-                        left: 6,
-                      ),
-                      padding: const EdgeInsets.all(2),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(100),
-                        color: _color(context),
-                      ),
-                      child: Icon(
-                        VialerSans.info,
-                        color: _accentColor(context),
-                        size: 12,
-                      ),
-                    ),
                 ],
               ),
             ),
@@ -894,10 +899,4 @@ extension Display on UserAvailabilityType {
       return context.brand.theme.colors.availableAccent;
     }
   }
-
-  /// Whether or not this availability type requires additional help information
-  /// to be displayed to the user.
-  bool get requiresHelps =>
-      this == UserAvailabilityType.elsewhere ||
-      this == UserAvailabilityType.notAvailable;
 }

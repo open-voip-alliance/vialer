@@ -31,14 +31,20 @@ class StorageRepository {
 
   static const _settingsKey = 'settings';
 
+  List<Setting>? _settingsCache;
+
   List<Setting> get settings {
-    final preference = _preferences.getString(_settingsKey);
-    if (preference != null) {
-      return (json.decode(preference) as List)
+    if (_settingsCache == null) {
+      final preference = _preferences.getString(_settingsKey);
+      final settings = preference != null
+          ? (json.decode(preference) as List)
           .map((s) => Setting.fromJson(s as Map<String, dynamic>))
-          .toList();
+          .toList()
+          : <Setting>[];
+
+      return _settingsCache = settings;
     } else {
-      return [];
+      return _settingsCache!;
     }
   }
 
@@ -46,13 +52,16 @@ class StorageRepository {
   set settings(List<Setting>? settings) => setSettings(settings);
 
   /// Set (replace) the settings. Future completes when writing is done.
-  Future<void> setSettings(List<Setting>? settings) async =>
-      await _preferences.setOrRemoveString(
-        _settingsKey,
-        settings != null
-            ? json.encode(settings.map((s) => s.toJson()).toList())
-            : null,
-      );
+  Future<void> setSettings(List<Setting>? settings) {
+    _settingsCache = settings;
+
+    return _preferences.setOrRemoveString(
+      _settingsKey,
+      settings != null
+          ? json.encode(settings.map((s) => s.toJson()).toList())
+          : null,
+    );
+  }
 
   static const _logsKey = 'logs';
 
@@ -60,7 +69,8 @@ class StorageRepository {
 
   set logs(String? value) => _preferences.setOrRemoveString(_logsKey, value);
 
-  void appendLogs(String value) {
+  Future<void> appendLogs(String value) async {
+    await reload();
     _preferences.setString(_logsKey, '$logs\n$value');
   }
 
@@ -116,6 +126,15 @@ class StorageRepository {
   set lastInstalledVersion(String? version) =>
       _preferences.setOrRemoveString(_lastInstalledVersionKey, version);
 
+  /// We store whether the Recent page was shown, to display a dialog on the
+  /// first show explaining where to find company calls.
+  static const _shownRecentsKey = 'shown_recents';
+
+  bool? get shownRecents => _preferences.getBool(_shownRecentsKey);
+
+  set shownRecents(bool? shownRecents) =>
+      _preferences.setOrRemoveBool(_shownRecentsKey, shownRecents);
+
   Future<void> clear() => _preferences.clear();
 
   Future<void> reload() => _preferences.reload();
@@ -136,5 +155,14 @@ extension on SharedPreferences {
     }
 
     return setInt(key, value);
+  }
+
+  // ignore: avoid_positional_boolean_parameters
+  Future<bool> setOrRemoveBool(String key, bool? value) {
+    if (value == null) {
+      return remove(key);
+    }
+
+    return setBool(key, value);
   }
 }

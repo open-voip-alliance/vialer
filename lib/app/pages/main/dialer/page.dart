@@ -33,6 +33,8 @@ class _DialerPageState extends State<DialerPage>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+
     if (state == AppLifecycleState.inactive) {
       final callerState = context.read<CallerCubit>().state;
 

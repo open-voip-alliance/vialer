@@ -8,9 +8,9 @@ import '../../../../../domain/entities/call_record_with_contact.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
 import '../../../../util/contact.dart';
-import '../../contacts/widgets/group_header.dart';
 import '../../util/color.dart';
 import '../../widgets/avatar.dart';
+import '../../widgets/contact_list/widgets/group_header.dart';
 
 enum _Action {
   copy,

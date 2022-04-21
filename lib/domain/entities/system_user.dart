@@ -33,7 +33,7 @@ class SystemUser {
 
   String? get clientId => clientUrl?.pathSegments.lastOrNullWhere(
         (p) => p.isNotEmpty,
-  );
+      );
 
   const SystemUser({
     required this.uuid,

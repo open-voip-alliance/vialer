@@ -83,9 +83,8 @@ class _SettingsPageState extends State<SettingsPage> {
                 final isVoipAllowed = state.isVoipAllowed;
                 final showTroubleshooting = state.showTroubleshooting;
                 final showDnd = state.showDnd;
-                final hasIgnoreBatteryOptimizationsPermission =
+                final hasIgnoreOptimizationsPermission =
                     state.hasIgnoreBatteryOptimizationsPermission;
-                final showDestinationInSeparateCategory = context.isIOS;
                 final cubit = context.watch<SettingsCubit>();
 
                 final availabilityTile = state.systemUser != null
@@ -116,9 +115,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                     state.userAvailabilityType!,
                                 showHelp: _scrollToAvailability,
                               ),
-                            if (!showDestinationInSeparateCategory &&
-                                availabilityTile != null)
-                              availabilityTile,
+                            if (availabilityTile != null) availabilityTile,
                             SettingTileCategory.accountInfo(
                               children: [
                                 SettingTile.mobileNumber(
@@ -147,21 +144,20 @@ class _SettingsPageState extends State<SettingsPage> {
                                   SettingTile.useVoip(
                                     settings.get<UseVoipSetting>(),
                                   ),
-                                  SettingTile.ignoreBatteryOptimizations(
-                                    hasIgnoreBatteryOptimizationsPermission:
-                                        hasIgnoreBatteryOptimizationsPermission,
-                                    onChanged: (enabled) => cubit
-                                        .requestBatteryPermission(),
-                                  ),
+                                  if (context.isIOS)
+                                    SettingTile.showCallsInNativeRecents(
+                                      settings.get<
+                                          ShowCallsInNativeRecentsSetting>(),
+                                    ),
+                                  if (context.isAndroid)
+                                    SettingTile.ignoreBatteryOptimizations(
+                                      hasIgnoreBatteryOptimizationsPermission:
+                                          hasIgnoreOptimizationsPermission,
+                                      onChanged: (enabled) =>
+                                          cubit.requestBatteryPermission(),
+                                    ),
                                 ],
                               ),
-                              if (showDestinationInSeparateCategory &&
-                                  availabilityTile != null)
-                                SettingTileCategory.userDestination(
-                                  children: [
-                                    availabilityTile,
-                                  ],
-                                ),
                               SettingTileCategory.portalLinks(
                                 children: [
                                   SettingLinkTile.calls(),

@@ -7,36 +7,31 @@ import 'package:flutter/rendering.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
 
-class Keypad extends StatefulWidget {
+class Keypad extends StatelessWidget {
   final TextEditingController controller;
+  final ValueNotifier<bool> cursorShownNotifier;
   final BoxConstraints? constraints;
-  final bool canDelete;
-  final Widget primaryButton;
-  final Widget? secondaryButton;
-  final VoidCallback? onDeleteAll;
+
+  /// The button on the bottom left.
+  final Widget? bottomLeftButton;
+
+  /// The button on the bottom center.
+  final Widget bottomCenterButton;
+
+  /// The button on the button right.
+  final Widget? bottomRightButton;
 
   const Keypad({
     Key? key,
     required this.controller,
+    required this.cursorShownNotifier,
     this.constraints,
-    this.canDelete = true,
-    required this.primaryButton,
-    this.secondaryButton,
-    this.onDeleteAll,
+    this.bottomLeftButton,
+    required this.bottomCenterButton,
+    this.bottomRightButton,
   }) : super(key: key);
 
-  @override
-  State<StatefulWidget> createState() => _KeypadState();
-}
-
-class _KeypadState extends State<Keypad> {
-  /// This is necessary to keep track of because if the cursor has been shown
-  /// once in a readOnly text field, the cursor will be shown forever, even if
-  /// the offset is reported as -1. We need to update the position of the
-  /// cursor in that case.
-  final _cursorShownNotifier = ValueNotifier<bool>(false);
-
-  final _buttonValues = {
+  static const _buttonValues = {
     '1': null,
     '2': 'ABC',
     '3': 'DEF',
@@ -60,7 +55,7 @@ class _KeypadState extends State<Keypad> {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       gridDelegate: _KeypadGridDelegate(
-        constraints: widget.constraints,
+        constraints: constraints,
         bottomPadding: bottomPadding,
         // Because of the iOS design, we want a slimmer keypad. On Android
         // we have a wider keypad, as to follow native dialers there.
@@ -70,8 +65,8 @@ class _KeypadState extends State<Keypad> {
         [
           ..._buttonValues.entries.map(
             (entry) => KeypadValueButton._(
-              controller: widget.controller,
-              cursorShownNotifier: _cursorShownNotifier,
+              controller: controller,
+              cursorShownNotifier: cursorShownNotifier,
               primaryValue: entry.key,
               secondaryValue: entry.value,
               // In English, the screen reader will pronounce 'A B C' as
@@ -86,16 +81,11 @@ class _KeypadState extends State<Keypad> {
                   entry.key == '0' && entry.value == '+',
             ),
           ),
-          widget.secondaryButton ?? const SizedBox(),
+          bottomLeftButton ?? const SizedBox(),
           Center(
-            child: widget.primaryButton,
+            child: bottomCenterButton,
           ),
-          _DeleteButton(
-            controller: widget.controller,
-            cursorShownNotifier: _cursorShownNotifier,
-            canDelete: widget.canDelete,
-            onDeleteAll: widget.onDeleteAll,
-          ),
+          bottomRightButton ?? const SizedBox(),
         ],
       ),
     );
@@ -422,169 +412,6 @@ class _KeypadValueButtonState extends State<KeypadValueButton> {
               ),
             );
           },
-        ),
-      ),
-    );
-  }
-}
-
-class _DeleteButton extends StatefulWidget {
-  final TextEditingController controller;
-  final ValueNotifier<bool> cursorShownNotifier;
-  final bool canDelete;
-  final VoidCallback? onDeleteAll;
-
-  const _DeleteButton({
-    Key? key,
-    required this.controller,
-    required this.cursorShownNotifier,
-    this.canDelete = true,
-    this.onDeleteAll,
-  }) : super(key: key);
-
-  @override
-  State<StatefulWidget> createState() => _DeleteButtonState();
-}
-
-class _DeleteButtonState extends State<_DeleteButton> {
-  TextEditingController get _controller => widget.controller;
-
-  bool __canDelete = false;
-
-  bool get _canDelete => widget.canDelete && __canDelete;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _controller.addListener(_handleStatusChange);
-  }
-
-  @override
-  void dispose() {
-    _controller.removeListener(_handleStatusChange);
-
-    super.dispose();
-  }
-
-  void _handleStatusChange() {
-    if (_controller.text.isNotEmpty) {
-      setState(() {
-        __canDelete = true;
-      });
-    } else {
-      setState(() {
-        __canDelete = false;
-      });
-    }
-  }
-
-  void _delete() {
-    if (_controller.text.isNotEmpty) {
-      final baseOffset = _controller.selection.baseOffset;
-      final extentOffset = _controller.selection.extentOffset;
-
-      if (baseOffset == 0 && extentOffset == 0) {
-        return;
-      }
-
-      final hasOffset = baseOffset >= 0 && extentOffset >= 0;
-
-      final text = _controller.text;
-
-      final cursorShown = widget.cursorShownNotifier.value;
-
-      String start, end, deleted;
-      if (hasOffset) {
-        final startOffset =
-            baseOffset == extentOffset ? baseOffset - 1 : baseOffset;
-        start = text.substring(
-          0,
-          startOffset,
-        );
-        end = text.substring(extentOffset);
-        deleted = text.substring(startOffset, extentOffset);
-      } else {
-        start = text.substring(0, text.length - 1);
-        end = '';
-        deleted = text.characters.last;
-      }
-
-      widget.controller.value = _controller.value.copyWith(
-        text: start + end,
-        selection: TextSelection.collapsed(
-          offset: hasOffset || cursorShown
-              ? baseOffset == extentOffset
-                  ? baseOffset - 1
-                  : baseOffset
-              : -1,
-        ),
-      );
-
-      SemanticsService.announce(
-        context.msg.main.dialer.button.delete.deletedHint(
-          deleted,
-          deleted.characters.length,
-        ),
-        Directionality.of(context),
-      );
-    }
-  }
-
-  void _deleteAll() {
-    final digits = _controller.text;
-    final digitCount = digits.characters.length;
-    final deletedSingleDigit = digitCount == 1;
-
-    _controller.clear();
-    widget.onDeleteAll?.call();
-
-    // We don't want to announce anything on iOS, because on iOS the label is
-    // (unfortunately) always read out after a tap, meaning our manual
-    // announcements are not read at best, or interfering with the label
-    // announcement at worst.
-    if (context.isIOS) return;
-
-    // We say the digit out loud when deleting a single digit, to mimic
-    // the native dialer.
-    if (deletedSingleDigit) {
-      SemanticsService.announce(
-        context.msg.main.dialer.button.delete.deletedHint(digits, digitCount),
-        Directionality.of(context),
-      );
-    } else {
-      SemanticsService.announce(
-        context.msg.main.dialer.button.delete.deletedAllHint,
-        Directionality.of(context),
-      );
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return KeypadButton(
-      borderOnIos: false,
-      child: Semantics(
-        button: true,
-        hint: context.msg.main.dialer.button.delete.hint,
-        child: InkResponse(
-          onTap: _canDelete ? _delete : null,
-          onLongPress: _canDelete ? _deleteAll : null,
-          child: AnimatedTheme(
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.decelerate,
-            data: Theme.of(context).copyWith(
-              iconTheme: Theme.of(context).iconTheme.copyWith(
-                    color: _canDelete
-                        ? context.brand.theme.colors.grey5
-                        : context.brand.theme.colors.grey2,
-                  ),
-            ),
-            child: const Icon(
-              VialerSans.correct,
-              size: 32,
-            ),
-          ),
         ),
       ),
     );

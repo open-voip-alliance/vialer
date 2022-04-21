@@ -83,7 +83,8 @@ main:
     incoming:
       answer: &answerCall "Answer"
       decline: &declineCall "Decline"
-      subtitle(String remoteNumber): "Incoming call - $remoteNumber"
+      subtitleWith(String heading): "Incoming call - $heading"
+      subtitle: "Incoming call"
     feedback:
       rating:
         title: "How was the call quality?"
@@ -161,6 +162,10 @@ main:
         title: "No call history"
         description: >-
           After you made or received your first call, it shows up here.
+    clientWideCallsDialog:
+      title: "Company-wide call history"
+      description: >-
+        You can find recent calls made by colleagues via the "Calls" link on the Settings page.
 
   contacts:
     title: &contactsTitle "Contacts"
@@ -274,6 +279,10 @@ main:
           description: >-
             With VoIP you call via internet which uses your data bundle. If VoIP is disabled,
             calls go through the regular phone app and your call carrier service costs apply.
+        showCallsInNativeRecents:
+          title: "Show in phone recents"
+          description(String app): >-
+            When enabled, calls made through $app will be shown in the recents list of the phone app.
         ignoreBatteryOptimizations:
           title: "Always run in background"
           description: >-
@@ -423,6 +432,12 @@ onboarding:
 
 
         We are aware how important battery is and use it very conservatively.
+    notifications:
+      title: "Notifications"
+      description(String appName): >-
+        $appName uses notifications to alert you to missed calls.
+
+        You will always be notified of incoming calls even without this permission.
 
   voicemail:
     title: "Voicemail"

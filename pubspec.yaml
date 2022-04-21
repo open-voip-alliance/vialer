@@ -7,7 +7,7 @@ version: 7.0.0
 
 environment:
   sdk: ">=2.15.0 <3.0.0"
-  flutter: 2.8.0
+  flutter: 2.10.3
 
 dependencies:
   flutter:
@@ -37,7 +37,7 @@ dependencies:
   intl: ^0.17.0
   flutter_dotenv: ^5.0.2
   sentry_flutter: ^6.0.1
-  flutter_segment: ^3.5.0
+  flutter_segment: ^3.7.0
   device_info: ^2.0.0
   package_info: ^2.0.0
   sqlite3_flutter_libs: ^0.5.2

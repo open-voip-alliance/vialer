@@ -275,7 +275,7 @@ fun CallHeader(callHeaderInformation: CallHeaderInformation, fontSize: TextUnit 
 
                     Text(
                         stringResource(
-                            R.string.main_call_incoming_subtitle,
+                            R.string.main_call_incoming_subtitle_with,
                             stringResource(R.string.app_name)
                         ),
                         fontSize = fontSize * 0.6,
@@ -359,7 +359,8 @@ fun AnswerButton(onClick: () -> Unit) {
     ActionButton(
         onClick = onClick,
         backgroundColor = colorResource(R.color.green_1),
-        text = stringResource(R.string.main_call_incoming_answer)
+        text = stringResource(R.string.main_call_incoming_answer),
+        textColor = colorResource(R.color.primary_dark),
     ) {
         Icon(icon = VialerSans.PHONE)
     }
@@ -370,7 +371,8 @@ fun DeclineButton(onClick: () -> Unit) {
     ActionButton(
         onClick = onClick,
         backgroundColor = colorResource(R.color.red_1),
-        text = stringResource(R.string.main_call_incoming_decline)
+        text = stringResource(R.string.main_call_incoming_decline),
+        textColor = colorResource(R.color.primary_dark),
     ) {
         Icon(icon = VialerSans.HANG_UP)
     }
@@ -390,6 +392,7 @@ fun Icon(icon: VialerSans, size: TextUnit = 32.sp, color: Color = Color.Unspecif
 fun ActionButton(
     onClick: () -> Unit,
     backgroundColor: Color,
+    textColor: Color,
     text: String,
     content: @Composable() () -> Unit,
 ) {
@@ -397,7 +400,11 @@ fun ActionButton(
         Text(
             text.uppercase(),
             modifier = Modifier.padding(bottom = 12.dp),
-            style = textStyle.copy(fontWeight = FontWeight.Bold, letterSpacing = 1.sp),
+            style = textStyle.copy(
+                        fontWeight = FontWeight.Bold,
+                        letterSpacing = 1.sp,
+                        color = textColor,
+                    ),
         )
         FloatingActionButton(
             onClick = onClick,

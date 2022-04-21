@@ -76,7 +76,8 @@ class ChangeSettingUseCase extends UseCase {
         await _startVoip();
         // ignore: avoid_catching_errors
       } on Error {}
-    } else if (setting is UsePhoneRingtoneSetting) {
+    } else if (setting is UsePhoneRingtoneSetting ||
+        setting is ShowCallsInNativeRecentsSetting) {
       await _refreshVoip();
     } else if (setting is DndSetting) {
       // This will happen in the background because we do not need to rely

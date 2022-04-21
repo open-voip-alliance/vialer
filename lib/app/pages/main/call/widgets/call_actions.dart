@@ -1,25 +1,31 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_phone_lib/flutter_phone_lib.dart';
 
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
-import '../../dialer/cubit.dart';
 import '../../widgets/caller.dart';
 import '../../widgets/dial_pad/keypad.dart';
 import '../../widgets/dial_pad/widget.dart';
+import '../../widgets/nested_navigator.dart';
 import '../widgets/call_button.dart';
 import 'audio_route_picker.dart';
 import 'call_process_state_builder.dart';
-import 'call_transfer.dart';
 
 class CallActions extends StatefulWidget {
+  /// Invoked when the transfer button is pressed. The call will always be
+  /// put on hold.
+  final VoidCallback onTransferButtonPressed;
+
+  final GlobalKey<NavigatorState>? navigatorKey;
+
   const CallActions({
     Key? key,
+    this.navigatorKey,
+    required this.onTransferButtonPressed,
   }) : super(key: key);
 
   @override
@@ -28,11 +34,7 @@ class CallActions extends StatefulWidget {
 
 class _CallActionsState extends State<CallActions> {
   static const _actionsRoute = 'actions';
-  static const _dialPadRouteName = 'dial-pad';
-
-  final _navigatorKey = GlobalKey<NavigatorState>();
-
-  NavigatorState get _navigatorState => _navigatorKey.currentState!;
+  static const _dialPadRoute = 'dial-pad';
 
   final _dialPadController = TextEditingController();
   var _latestDialPadValue = '';
@@ -57,62 +59,41 @@ class _CallActionsState extends State<CallActions> {
     });
   }
 
-  // Since the nested navigator cannot capture the back button press (Android),
-  // we use WillPopScope to capture that event, and pop the nested navigator
-  // route if possible.
-  Future<bool> _onWillPop(BuildContext context) {
-    if (_navigatorState.canPop()) {
-      _navigatorState.pop();
-    }
-
-    return SynchronousFuture(false);
-  }
-
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () => _onWillPop(context),
-      child: HeroControllerScope(
-        controller: MaterialApp.createMaterialHeroController(),
-        // We use a Navigator to have a smooth movement transition between the
-        // hang up buttons using Hero animations, instead of having it look
-        // like there are 2 hang up buttons during the transition.
-        child: Navigator(
-          key: _navigatorKey,
-          initialRoute: _actionsRoute,
-          onGenerateRoute: (settings) {
-            final routeName = settings.name;
-
-            if (routeName == _actionsRoute) {
-              return MaterialPageRoute(builder: (context) {
-                return _CallActionButtons(
-                  onHangUpButtonPressed: _hangUp,
-                );
-              });
-            } else if (routeName == _dialPadRouteName) {
-              return MaterialPageRoute(builder: (context) {
-                return _DialPad(
-                  dialPadController: _dialPadController,
-                  onHangUpButtonPressed: _hangUp,
-                  onCancelButtonPressed: _navigatorState.pop,
-                );
-              });
-            }
-
-            throw StateError('Unknown route: $routeName');
-          },
-        ),
-      ),
+    // We use a Navigator to have a smooth movement transition between the
+    // hang up buttons using Hero animations, instead of having it look
+    // like there are 2 hang up buttons during the transition.
+    return NestedNavigator(
+      navigatorKey: widget.navigatorKey,
+      fullscreenDialog: true,
+      routes: {
+        _actionsRoute: (context, _) {
+          return _CallActionButtons(
+            onHangUpButtonPressed: _hangUp,
+            onTransferButtonPressed: widget.onTransferButtonPressed,
+          );
+        },
+        _dialPadRoute: (context, _) {
+          return _DialPad(
+            dialPadController: _dialPadController,
+            onHangUpButtonPressed: _hangUp,
+            onCancelButtonPressed: () => Navigator.pop(context),
+          );
+        }
+      },
     );
   }
 }
 
 class _CallActionButtons extends StatelessWidget {
-  final void Function() onHangUpButtonPressed;
+  final VoidCallback onHangUpButtonPressed;
+  final VoidCallback onTransferButtonPressed;
 
   const _CallActionButtons({
     Key? key,
     required this.onHangUpButtonPressed,
+    required this.onTransferButtonPressed,
   }) : super(key: key);
 
   void _toggleMute(BuildContext context) =>
@@ -123,27 +104,15 @@ class _CallActionButtons extends StatelessWidget {
   }
 
   void _transfer(BuildContext context) {
-    _hold(context);
-    showGeneralDialog(
-      context: context,
-      pageBuilder: (_, __, ___) => BlocProvider<DialerCubit>(
-        create: (context) => DialerCubit(context.read<CallerCubit>()),
-        child: CallProcessStateBuilder(
-          builder: (context, state) => Scaffold(
-            body: Container(
-              alignment: Alignment.center,
-              child: CallTransfer(
-                activeCall: state.voipCall!,
-                onTransferTargetSelected: (number) {
-                  context.read<CallerCubit>().beginTransfer(number);
-                  Navigator.of(context).pop();
-                },
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
+    // We delay the hold by 500ms, because currently holding a call causes
+    // a significant frame drop which would be very noticeable during the
+    // transition animation.
+    //
+    // See #955 (https://gitlab.wearespindle.com/vialer/mobile/app/-/issues/955)
+    Future.delayed(const Duration(milliseconds: 500), () {
+      _hold(context);
+    });
+    onTransferButtonPressed();
   }
 
   void _merge(BuildContext context) =>
@@ -464,11 +433,7 @@ class _DialPad extends StatelessWidget {
           child: DialPad(
             controller: dialPadController,
             canDelete: false,
-            primaryButton: CallButton.hangUp(
-              onPressed:
-                  state is! FinishedCalling ? onHangUpButtonPressed : null,
-            ),
-            secondaryButton: KeypadButton(
+            bottomLeftButton: KeypadButton(
               borderOnIos: false,
               child: InkResponse(
                 onTap: onCancelButtonPressed,
@@ -477,6 +442,10 @@ class _DialPad extends StatelessWidget {
                   color: context.brand.theme.colors.grey5,
                 ),
               ),
+            ),
+            bottomCenterButton: CallButton.hangUp(
+              onPressed:
+                  state is! FinishedCalling ? onHangUpButtonPressed : null,
             ),
           ),
         );
