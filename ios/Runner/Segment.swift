@@ -4,7 +4,10 @@ import Segment
 class Segment {
 
     private var isIdentified = false
-
+    private var isInitialized: Bool {
+        SEGState.sharedInstance().configuration != nil
+    }
+    
     private let logger: Logger
     private let prefs: FlutterSharedPreferences
 
@@ -14,34 +17,35 @@ class Segment {
     }
 
     func initialize() {
-        if (Segment.instance != nil) { return }
-
-        isIdentified = false
-
-        if (Segment.key?.isEmpty != false) {
+        if isInitialized {
+            return
+        }
+        
+        if Segment.key?.isEmpty != false {
             logger.writeLog("Unable to initialize metrics, there is no key.")
+            isIdentified = false
             return
         }
 
         let configuration = AnalyticsConfiguration(writeKey: Segment.key!)
         configuration.trackApplicationLifecycleEvents = false
         configuration.recordScreenViews = false
+        configuration.flushAt = 1
         Analytics.setup(with: configuration)
     }
 
     func track(event: String, properties: [String : Any]) {
-        if (Segment.instance == nil) {
-            logger.writeLog("Segment not initialized, logging event: \(event) with properties: \(properties)")
-            return
-        }
-
-        identifyIfNecessary {
+        initialize()
+        
+        logger.writeLog("Native Segment Event: \(event) with properties: \(properties)")
+        
+        self.identifyIfNecessary {
             Analytics.shared().track(event, properties: properties)
         }
     }
 
     func identifyIfNecessary(_ callback: @escaping () -> Void) {
-        if (isIdentified) {
+        if isIdentified {
             callback()
             return
         }
@@ -64,6 +68,5 @@ class Segment {
         }
     }
 
-    private static var instance: Analytics? = nil
     private static let key = Bundle.main.infoDictionary?["Segment Key"] as? String
 }
