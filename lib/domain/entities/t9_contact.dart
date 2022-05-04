@@ -10,7 +10,7 @@ class T9Contact extends Contact with EquatableMixin {
 
   T9Contact({
     required String displayName,
-    Uint8List? avatar,
+    Future<Uint8List?>? avatar,
     required this.relevantPhoneNumber,
   }) : super(chosenName: displayName, avatar: avatar);
 
