@@ -77,7 +77,7 @@ class T9ContactsBloc extends Bloc<T9ContactsEvent, T9ContactsState> {
       yield LoadingContacts();
     }
 
-    yield ContactsLoaded(await _getContacts(), []);
+    yield ContactsLoaded((await _getContacts()).distinct().toList(), []);
   }
 
   Stream<T9ContactsState> _filterContacts(FilterT9Contacts event) async* {

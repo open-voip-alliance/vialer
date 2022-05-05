@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:dartx/dartx.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../domain/entities/permission.dart';
@@ -51,7 +52,7 @@ class ContactsCubit extends Cubit<ContactsState> {
 
     emit(
       ContactsLoaded(
-        await _getContacts(),
+        (await _getContacts()).distinct(),
         await _getContactSort(),
       ),
     );
