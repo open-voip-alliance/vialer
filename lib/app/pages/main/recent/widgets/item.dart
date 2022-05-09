@@ -53,6 +53,7 @@ class RecentCallItem extends StatelessWidget {
           callRecord.thirdPartyNumber,
         ),
         showFallback: callRecord.contact?.displayName == null,
+        image: callRecord.contact?.avatar,
         fallback: const Icon(VialerSans.phone, size: 20),
       ),
       title: GestureDetector(

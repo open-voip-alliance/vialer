@@ -326,10 +326,10 @@ custom: # Custom properties to make workflows cleaner
         beta_groups:
           - Beta Testers
           - External Testers
-      google_play:
-        credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
-        track: beta
-        in_app_update_priority: 0
+#      google_play:
+#        credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
+#        track: beta
+#        in_app_update_priority: 0
 
 workflows:
   main: &main_workflow
