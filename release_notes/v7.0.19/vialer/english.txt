@@ -1,0 +1,2 @@
+- Contact photos will now be shown on the contacts and recents screens
+- iOS: Resolved an issue where it was not possible to see the variable callername when receiving calls via a dial plan
