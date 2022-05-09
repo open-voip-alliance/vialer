@@ -8,7 +8,7 @@ class Avatar extends StatelessWidget {
   static const defaultSize = 36.0;
 
   final String? name;
-  final Uint8List? image;
+  final Future<Uint8List?>? image;
 
   final Color? foregroundColor;
   final Color? backgroundColor;
@@ -46,31 +46,36 @@ class Avatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hasImage = image != null && image!.isNotEmpty;
-    final showFallback = this.showFallback ?? name == null && !hasImage;
+    return FutureBuilder<Uint8List?>(
+      future: image,
+      builder: (context, snapshot) {
+        final hasImage = image != null && snapshot.hasData;
+        final showFallback = this.showFallback ?? name == null && !hasImage;
 
-    return Container(
-      width: size,
-      alignment: Alignment.center,
-      child: AspectRatio(
-        aspectRatio: 1 / 1,
-        child: CircleAvatar(
-          foregroundColor: foregroundColor,
-          backgroundColor: backgroundColor,
-          backgroundImage: hasImage ? MemoryImage(image!) : null,
-          child: showFallback
-              ? fallback
-              : name != null && !hasImage
-                  ? Text(
-                      _letters,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16 * (size / defaultSize),
-                      ),
-                    )
-                  : null, //  We show the avatar.
-        ),
-      ),
+        return Container(
+          width: size,
+          alignment: Alignment.center,
+          child: AspectRatio(
+            aspectRatio: 1 / 1,
+            child: CircleAvatar(
+              foregroundColor: foregroundColor,
+              backgroundColor: backgroundColor,
+              backgroundImage: hasImage ? MemoryImage(snapshot.data!) : null,
+              child: showFallback
+                  ? fallback
+                  : name != null && !hasImage
+                      ? Text(
+                          _letters,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16 * (size / defaultSize),
+                          ),
+                        )
+                      : null, //  We show the avatar.
+            ),
+          ),
+        );
+      },
     );
   }
 }

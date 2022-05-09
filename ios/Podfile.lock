@@ -69,16 +69,16 @@ PODS:
     - Sentry (~> 7.10.1)
   - shared_preferences_ios (0.0.1):
     - Flutter
-  - sqlite3 (3.38.2):
-    - sqlite3/common (= 3.38.2)
-  - sqlite3/common (3.38.2)
-  - sqlite3/fts5 (3.38.2):
+  - sqlite3 (3.38.3):
+    - sqlite3/common (= 3.38.3)
+  - sqlite3/common (3.38.3)
+  - sqlite3/fts5 (3.38.3):
     - sqlite3/common
-  - sqlite3/json1 (3.38.2):
+  - sqlite3/json1 (3.38.3):
     - sqlite3/common
-  - sqlite3/perf-threadsafe (3.38.2):
+  - sqlite3/perf-threadsafe (3.38.3):
     - sqlite3/common
-  - sqlite3/rtree (3.38.2):
+  - sqlite3/rtree (3.38.3):
     - sqlite3/common
   - sqlite3_flutter_libs (0.0.1):
     - Flutter
@@ -177,7 +177,7 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   iOSPhoneLib:
-    :commit: 29dec19eb0c4cbeb47df866160ec38cf4b417bd5
+    :commit: a7e7523b8f705bf3c6c574228b8730601c33577b
     :git: https://github.com/open-voip-alliance/iOS-Phone-Lib.git
   le:
     :commit: ce8800f6d3290e182d48082680679d64a05ca778
@@ -211,7 +211,7 @@ SPEC CHECKSUMS:
   Sentry: 7bf9bfe713692cf87812e55f0999260494ba7982
   sentry_flutter: 77ccdac346608b8ce7e428e7284e7a3e4e7f4a02
   shared_preferences_ios: 548a61f8053b9b8a49ac19c1ffbc8b92c50d68ad
-  sqlite3: e26e8422c1f5780d0a3db283eb095a03a10e121c
+  sqlite3: 3315c18c19fd107a68bf466f9f0adce934b03eaa
   sqlite3_flutter_libs: e21c8c90448ce608a0d685e717727c46f37c6695
   Swinject: ddf78b8486dd9b71a667b852cad919ab4484478e
   url_launcher_ios: 839c58cdb4279282219f5e248c3321761ff3c4de

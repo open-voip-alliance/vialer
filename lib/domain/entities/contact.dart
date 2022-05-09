@@ -8,7 +8,7 @@ class Contact {
   final String? middleName;
   final String? familyName;
   final String? chosenName;
-  final Uint8List? avatar;
+  final Future<Uint8List?>? avatar;
   final List<Item> phoneNumbers;
   final List<Item> emails;
   final String? identifier;

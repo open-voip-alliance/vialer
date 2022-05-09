@@ -1,5 +1,6 @@
 import 'package:contacts_service/contacts_service.dart';
 import 'package:dartx/dartx.dart';
+import 'package:fast_contacts/fast_contacts.dart' hide Contact;
 
 import '../../entities/contact.dart' as domain;
 import '../mappers/item.dart';
@@ -12,7 +13,7 @@ extension ContactMapper on Contact {
       middleName: middleName,
       familyName: familyName,
       chosenName: displayName,
-      avatar: avatar,
+      avatar: FastContacts.getContactImage(identifier!),
       phoneNumbers:
           phones?.toDomainEntities().distinct().toList(growable: false) ?? [],
       emails: emails?.toDomainEntities().toList(growable: false) ?? [],

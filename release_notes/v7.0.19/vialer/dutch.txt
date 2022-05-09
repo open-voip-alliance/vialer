@@ -1,0 +1,2 @@
+- De overzichten met je contacten en recente gesprekken toont nu ook de foto van de contactpersoon.
+- iOS: Een probleem waarbij de variabele callernaam in een belplan niet bij een inkomend gesprek werd getoond is opgelost.
