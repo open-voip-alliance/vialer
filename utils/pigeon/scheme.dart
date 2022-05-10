@@ -56,3 +56,9 @@ abstract class CallScreenBehavior {
   void enable();
   void disable();
 }
+
+@HostApi()
+// ignore:one_member_abstracts
+abstract class Tones {
+  void playForDigit(String digit);
+}
