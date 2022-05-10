@@ -12,7 +12,6 @@ import '../../../resources/localizations.dart';
 import '../../../resources/theme.dart';
 import '../../../util/widgets_binding_observer_registrar.dart';
 import '../widgets/caller.dart';
-import '../widgets/connectivity_alert.dart';
 import '../widgets/nested_navigator.dart';
 import 'call_feedback/call_feedback.dart';
 import 'widgets/call_actions.dart';
@@ -205,48 +204,46 @@ class _CallPageState extends State<_CallPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ConnectivityAlert(
-        child: BlocListener<CallerCubit, CallerState>(
-          listenWhen: (previous, current) =>
-              previous.runtimeType != current.runtimeType,
-          listener: _onStateChanged,
-          child: CallProcessStateBuilder(
-            builder: (context, state) {
-              final call = state.voipCall!;
+      body: BlocListener<CallerCubit, CallerState>(
+        listenWhen: (previous, current) =>
+            previous.runtimeType != current.runtimeType,
+        listener: _onStateChanged,
+        child: CallProcessStateBuilder(
+          builder: (context, state) {
+            final call = state.voipCall!;
 
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  CallHeaderContainer(
-                    child: SafeArea(
-                      child: Column(
-                        children: [
-                          if ((state is AttendedTransferStarted ||
-                                  state is AttendedTransferComplete) &&
-                              state.voip!.inactiveCall != null)
-                            CallTransferInProgressBar(
-                              inactiveCall: state.voip!.inactiveCall!,
-                            ),
-                          _CallHeader(
-                            call: call,
-                            state: state,
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                CallHeaderContainer(
+                  child: SafeArea(
+                    child: Column(
+                      children: [
+                        if ((state is AttendedTransferStarted ||
+                                state is AttendedTransferComplete) &&
+                            state.voip!.inactiveCall != null)
+                          CallTransferInProgressBar(
+                            inactiveCall: state.voip!.inactiveCall!,
                           ),
-                        ],
-                      ),
+                        _CallHeader(
+                          call: call,
+                          state: state,
+                        ),
+                      ],
                     ),
                   ),
-                  Expanded(
-                    child: Align(
-                      alignment: Alignment.bottomCenter,
-                      child: CallActions(
-                        onTransferButtonPressed: _transfer,
-                      ),
+                ),
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: CallActions(
+                      onTransferButtonPressed: _transfer,
                     ),
                   ),
-                ],
-              );
-            },
-          ),
+                ),
+              ],
+            );
+          },
         ),
       ),
     );
