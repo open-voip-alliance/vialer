@@ -41,7 +41,7 @@ class _AppUpdatedCheckerState extends State<AppUpdatedChecker>
         context: context,
         builder: (context) {
           return ReleaseNotesDialog(
-            releaseNotes: context.msg.releaseNotes,
+            releaseNotes: context.msg.releaseNotes.notes,
             version: state.version,
           );
         },
