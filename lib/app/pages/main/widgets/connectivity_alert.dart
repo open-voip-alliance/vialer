@@ -41,13 +41,18 @@ class _ConnectivityAlertState extends State<ConnectivityAlert> {
     }
 
     if (state is Connected) {
-      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+      ScaffoldMessenger.of(context).clearSnackBars();
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocListener<ConnectivityCheckerCubit, ConnectivityState>(
+      // Make sure we only display a snackbar on the first disconnected state
+      // that we receive.
+      listenWhen: (previous, current) =>
+          (previous is! Disconnected && current is Disconnected) ||
+          current is Connected,
       listener: _showOrHideSnackBar,
       child: widget.child,
     );
