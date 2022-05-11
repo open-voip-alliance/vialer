@@ -66,6 +66,7 @@ import Intents
         NativeLoggingSetup(controller.binaryMessenger, logger)
         NativeMetricsSetup(controller.binaryMessenger, Metrics())
         CallScreenBehaviorSetup(controller.binaryMessenger, CallScreenBehaviorApi())
+        TonesSetup(controller.binaryMessenger, SystemTones())
         
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
     }

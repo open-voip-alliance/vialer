@@ -1,0 +1,3 @@
+- Tones will now be played when using the dial pad
+- Fixed a bug where the "no connectivity" message wouldn't always be properly dismissed
+- iOS: Fixed a bug where receiving an incoming call could disrupt an ongoing call

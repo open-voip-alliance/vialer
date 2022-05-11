@@ -6,6 +6,7 @@ import 'package:flutter/rendering.dart';
 
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
+import '../../../../util/pigeon.dart';
 
 class Keypad extends StatelessWidget {
   final TextEditingController controller;
@@ -258,6 +259,10 @@ class KeypadValueButton extends StatefulWidget {
 
   final ValueNotifier<bool> cursorShownNotifier;
 
+  /// When enabled will play the relevant audio tone when the keypad button
+  /// is pressed.
+  final bool playTone;
+
   const KeypadValueButton._({
     Key? key,
     required this.primaryValue,
@@ -266,6 +271,7 @@ class KeypadValueButton extends StatefulWidget {
     this.replaceWithSecondaryValueOnLongPress = false,
     required this.controller,
     required this.cursorShownNotifier,
+    this.playTone = true,
   })  : assert(
           !replaceWithSecondaryValueOnLongPress || secondaryValue != null,
         ),
@@ -277,6 +283,7 @@ class KeypadValueButton extends StatefulWidget {
 
 class _KeypadValueButtonState extends State<KeypadValueButton> {
   TextEditingController get _controller => widget.controller;
+  final tones = Tones();
 
   @override
   void initState() {
@@ -321,6 +328,10 @@ class _KeypadValueButtonState extends State<KeypadValueButton> {
         widget.primaryValue,
         Directionality.of(context),
       );
+    }
+
+    if (widget.playTone) {
+      tones.playForDigit(widget.primaryValue);
     }
   }
 
