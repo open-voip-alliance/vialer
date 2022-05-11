@@ -1,0 +1,3 @@
+- Geluid wordt nu afgespeeld wanneer je op een toets drukt tijdens het invoeren van een nummer
+- Het probleem waarbij het "geen verbinding" bericht onnodig bleef staan, is opgelost
+- iOS: Een probleem waarbij als je gebeld wordt tijdens een gesprek, het huidige gesprek werd beëindigd, is opgelost
