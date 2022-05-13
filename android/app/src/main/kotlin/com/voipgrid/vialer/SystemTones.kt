@@ -1,19 +1,34 @@
 import android.content.Context
 import android.media.AudioManager
 import android.media.ToneGenerator
-import android.util.Log
-import kotlin.concurrent.schedule
-import java.util.*
+import android.provider.Settings
 import com.voipgrid.vialer.Pigeon.Tones
+import com.voipgrid.vialer.logging.Logger
+import java.util.*
+import kotlin.concurrent.schedule
 
-class SystemTones(context: Context): Tones {
+class SystemTones(private val context: Context, private val log: Logger): Tones {
 
-    private val audioManager = context.getSystemService(AudioManager::class.java)
+    /**
+     * This is the native system setting that can be found under `Dialling keypad (sound)` (Samsung)
+     * or `Dial pad tones` (Stock Android)
+     */
+    private val isDiallingKeypadSoundEnabled: Boolean
+        get() = Settings.System.getInt(
+            context.contentResolver,
+            Settings.System.DTMF_TONE_WHEN_DIALING,
+            1
+        ) != 0
 
     override fun playForDigit(digit: String) {
         val tone = toTone(digit.first()) ?: return
 
-        ToneGenerator(STREAM, audioManager.getStreamVolumeAsPercentage(STREAM)).apply {
+        if (!isDiallingKeypadSoundEnabled) {
+            log.writeLog("Not playing tone as it is disabled by the operating system")
+            return
+        }
+
+        ToneGenerator(STREAM, VOLUME_PERCENTAGE).apply {
             startToneAndReleaseAfterPlayed(tone, DURATION)
         }
     }
@@ -35,8 +50,9 @@ class SystemTones(context: Context): Tones {
     }
 
     companion object {
-        const val STREAM = AudioManager.STREAM_DTMF
+        const val STREAM = AudioManager.STREAM_SYSTEM
         const val DURATION = 150
+        const val VOLUME_PERCENTAGE = 50
     }
 }
 
@@ -47,6 +63,3 @@ fun ToneGenerator.startToneAndReleaseAfterPlayed(tone: Int, duration: Int) {
         release()
     }
 }
-
-fun AudioManager.getStreamVolumeAsPercentage(streamType: Int) =
-    ((getStreamVolume(streamType).toDouble() / 15) * 100).toInt()
