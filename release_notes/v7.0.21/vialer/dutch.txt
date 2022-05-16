@@ -1,0 +1,3 @@
+- Android: het volume van het toetsenbord is verlaagd
+- Android: de toetsenbord tonen kunnen nu worden uitgeschakeld via de systeeminstellingen van Android
+- iOS: een probleem is opgelost dat sommige inkomende en uitgaande oproepen verhinderde

@@ -1,0 +1,3 @@
+- Android: Dial pad volume has been reduced
+- Android: Dial pad tones can now be disabled via Android system settings
+- iOS: Resolved an issue that was preventing some incoming and outgoing calls
