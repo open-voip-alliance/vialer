@@ -33,7 +33,10 @@ class MainActivity : FlutterActivity(), Pigeon.CallScreenBehavior {
 
         Pigeon.CallScreenBehavior.setup(flutterEngine.dartExecutor.binaryMessenger, this)
 
-        Pigeon.Tones.setup(flutterEngine.dartExecutor.binaryMessenger, SystemTones(this));
+        Pigeon.Tones.setup(
+            flutterEngine.dartExecutor.binaryMessenger,
+            SystemTones(this, App.logger)
+        );
     }
 
     override fun enable() {
