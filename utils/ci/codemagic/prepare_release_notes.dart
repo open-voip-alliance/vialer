@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:dartx/dartx.dart';
 import 'package:path/path.dart';
 import 'package:yaml_edit/yaml_edit.dart';
@@ -30,6 +31,12 @@ const rawReleaseNotesPath = 'release_notes';
 /// will be performed here as soon as possible so we don't risk partially
 /// publishing.
 const maxAllowedCharactersInReleaseNotes = 500;
+
+/// Any release notes containing a term in this list will not be published to
+/// the app stores. They will still be available in-app.
+const releaseNotesPublishingBlocklist = [
+  'android',
+];
 
 /// Finds the appropriate release notes for the current tag and moves the files
 /// into the root project directory for Codemagic to publish.
@@ -142,7 +149,9 @@ Future<void> generateReleaseNotesForCodemagic(File file) async {
   }
 
   for (var generatedFilePath in mapping) {
-    await file.copy(createCodemagicReleaseNotesFileName(generatedFilePath));
+    await file
+        .copy(createCodemagicReleaseNotesFileName(generatedFilePath))
+        .then(removeReleaseNotesContainingBlocklistedTerm);
   }
 }
 
@@ -204,3 +213,21 @@ String createCodemagicReleaseNotesFileName(String name) {
 
   return '$generatedFilePrefix$name$generatedFileExtension';
 }
+
+Future<void> removeReleaseNotesContainingBlocklistedTerm(File file) => file
+    .readAsLines()
+    .then(
+      (notes) => notes.where(
+        (note) {
+          for (var term in releaseNotesPublishingBlocklist) {
+            if (note.toLowerCase().contains(term.toLowerCase())) {
+              return false;
+            }
+          }
+
+          return true;
+        },
+      ),
+    )
+    .then((notes) => notes.join('\n'))
+    .then((notes) => file.writeAsString(notes));
