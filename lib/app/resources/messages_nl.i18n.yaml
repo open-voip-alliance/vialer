@@ -264,6 +264,10 @@ main:
             Kies het VoIP-account waarop je oproepen wilt ontvangen wanneer iemand je belt.
           dnd:
             title: "Do not disturb"
+          noAppAccount:
+            title: "Geen app account"
+            description: >-
+              Je hebt geen app account. Dit betekent dat je geen inkomende gesprekken op dit apparaat kan ontvangen.
           available:
             title: "Beschikbaar"
           notAvailable:
