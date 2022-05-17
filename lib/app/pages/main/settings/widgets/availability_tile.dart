@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../../domain/entities/availability.dart';
 import '../../../../../domain/entities/system_user.dart';
 import '../../../../resources/localizations.dart';
+import '../../../../resources/theme.dart';
 import '../../../../util/stylized_txt.dart';
 import 'tile.dart';
 
@@ -18,6 +19,9 @@ class AvailabilityTile extends StatelessWidget {
     required this.user,
     required this.child,
   });
+
+  bool get _shouldDisplayNoAppAccountWarning =>
+      availability.findAppAccountFor(user: user) == null;
 
   bool get _shouldDisplayAvailabilityInfo =>
       (userAvailabilityType == UserAvailabilityType.elsewhere ||
@@ -73,7 +77,20 @@ class AvailabilityTile extends StatelessWidget {
       description: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (_shouldDisplayAvailabilityInfo) ...[
+          if (_shouldDisplayNoAppAccountWarning) ...{
+            Padding(
+              padding: const EdgeInsets.only(
+                top: 8,
+              ),
+              child: StyledText(
+                context.msg.main.settings.list.calling.availability.noAppAccount
+                    .description,
+                style: TextStyle(
+                  color: context.brand.theme.colors.red1,
+                ),
+              ),
+            ),
+          } else if (_shouldDisplayAvailabilityInfo) ...[
             Padding(
               padding: const EdgeInsets.only(
                 top: 8,
