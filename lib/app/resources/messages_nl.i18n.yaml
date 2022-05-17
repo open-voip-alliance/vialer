@@ -267,11 +267,11 @@ main:
           available:
             title: "Beschikbaar"
           notAvailable:
-            title: "Beschikbaar op ander toestel"
+            title: "Beperkt beschikbaar"
             description(String user, String voipAccount): >-
               Inkomende oproepen naar <b>$user</b> worden geweigerd, maar oproepen naar <b>$voipAccount</b> zullen nog steeds overgaan op deze telefoon.
           elsewhere:
-            title: "Beperkt beschikbaar"
+            title: "Beschikbaar op ander toestel"
             description(String user): >-
               Inkomende oproepen naar <b>$user</b> worden doorgeschakeld naar een andere telefoon.
           resume(String voipAccount): >-
