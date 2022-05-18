@@ -24,7 +24,7 @@ class ReleaseNotesDialog extends StatelessWidget {
         .toList(growable: true);
 
     if (notes.isEmpty) {
-      notes.add('• ${context.msg.releaseNotes.noneForPlatform}');
+      notes.add('• ${context.msg.main.update.releaseNotes.noneForPlatform}');
     }
 
     return AlertDialog(

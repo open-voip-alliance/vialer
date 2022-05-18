@@ -116,7 +116,10 @@ Future<void> updateMessagesFilesWithLatestReleaseNotes(File file) async {
   }
 
   final yamlEditor = YamlEditor(await messagesFile.readAsString());
-  yamlEditor.update(['releaseNotes', 'notes'], await file.readAsString());
+  yamlEditor.update(
+    ['main', 'update', 'releaseNotes', 'notes'],
+    await file.readAsString(),
+  );
   messagesFile.writeAsString(yamlEditor.toString());
 }
 
