@@ -51,7 +51,6 @@ abstract class NativeMetrics {
 }
 
 @HostApi()
-// ignore:one_member_abstracts
 abstract class CallScreenBehavior {
   void enable();
   void disable();
@@ -61,4 +60,17 @@ abstract class CallScreenBehavior {
 // ignore:one_member_abstracts
 abstract class Tones {
   void playForDigit(String digit);
+}
+
+@HostApi()
+abstract class AppUpdates {
+  void check();
+  void completeAndroidFlexibleUpdate();
+}
+
+@FlutterApi()
+abstract class AndroidFlexibleUpdateHandler {
+  // ignore: avoid_positional_boolean_parameters
+  void onUpdateTypeKnown(bool isFlexible);
+  void onDownloaded();
 }

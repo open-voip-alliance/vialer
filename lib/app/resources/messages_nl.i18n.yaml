@@ -21,10 +21,6 @@ connectivity:
     message: >-
       Het lijkt erop dat je geen verbinding hebt met internet. Controleer je wifi- of mobiele dataverbinding en probeer het opnieuw.
 
-releaseNotes:
-  notes: ""
-  noneForPlatform: "Er zijn geen verandereringen voor dit platform."
-
 main:
   dialer:
     title: &keypadTitle "Toetsen"
@@ -134,6 +130,7 @@ main:
             Alleen telefoonummers van maximaal 17 cijfers kunnen gebeld worden. Controleer het
             gekozen nummer en probeer het opnieuw.
 
+
   recent:
     title: "Recente gesprekken"
     menu:
@@ -165,6 +162,7 @@ main:
       title: "Bedrijfsbrede gesprekkenlijst"
       description: >-
         Recente oproepen van collega’s vind je via de link “Gesprekken” op de Instellingen-pagina.
+
 
   contacts:
     title: &contactsTitle "Contacten"
@@ -358,6 +356,17 @@ main:
     thankYou:
       title: "Bedankt voor je feedback!"
       content: "We zullen het gebruiken om de app nog beter te maken."
+
+  update:
+    readyToInstall:
+      title: "Update is gedownload"
+      content: "Als je de update installeert, wordt de app herstart."
+      actions:
+        notNow: "Niet nu"
+        install: "Installeren"
+    releaseNotes:
+      notes: ""
+      noneForPlatform: "Er zijn geen verandereringen voor dit platform."
 
 onboarding:
   button:
