@@ -10,6 +10,7 @@ class Segment {
     
     private let logger: Logger
     private let prefs: FlutterSharedPreferences
+    private let options = ["context": ["ip": "0.0.0.0", "device": ["id":"", "advertisingId":"", "token":""]]]
 
     init(logger: Logger, prefs: FlutterSharedPreferences) {
         self.logger = logger
@@ -40,7 +41,7 @@ class Segment {
         logger.writeLog("Native Segment Event: \(event) with properties: \(properties)")
         
         self.identifyIfNecessary {
-            Analytics.shared().track(event, properties: properties)
+            Analytics.shared().track(event, properties: properties, options: self.options)
         }
     }
 
@@ -60,7 +61,7 @@ class Segment {
             return
         }
 
-        Analytics.shared().identify(userUuid)
+        Analytics.shared().identify(userUuid, traits: nil, options: options)
         isIdentified = true
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 5) {

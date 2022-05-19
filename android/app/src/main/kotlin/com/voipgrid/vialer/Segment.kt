@@ -31,6 +31,16 @@ class Segment(
         instance = Analytics.Builder(context, metricsKey)
             .tag("${INSTANCE_TAG}_$metricsKey")
             .build()
+
+        Analytics.setSingletonInstance(instance)
+        Analytics.with(context).analyticsContext.apply {
+            putValue("ip", "0.0.0.0")
+            device().apply {
+                putValue("advertisingId", "")
+                putValue("id", "")
+                putValue("token", "")
+            }
+        }
     }
 
     fun track(event: String, properties: Map<String, String?>) = identifyIfNecessary {
