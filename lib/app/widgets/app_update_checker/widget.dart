@@ -17,7 +17,7 @@ class AppUpdateChecker extends StatefulWidget {
     required Widget child,
   }) {
     return BlocProvider<AppUpdateCheckerCubit>(
-      create: (context) => AppUpdateCheckerCubit(context.watch<CallerCubit>()),
+      create: (context) => AppUpdateCheckerCubit(context.read<CallerCubit>()),
       child: AppUpdateChecker._(child),
     );
   }
