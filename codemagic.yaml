@@ -419,8 +419,8 @@ workflows:
       - *flutter_pub_get
       - *analyze
       - *flutter_test
-     # - *build_aab
-     # - *build_universal_apk_from_aab
+      - *build_aab
+      - *build_universal_apk_from_aab
       - *update_ios_signing_for_current_brand
       - *build_ipa
       - *update_gitlab_merge_request_with_build_url
