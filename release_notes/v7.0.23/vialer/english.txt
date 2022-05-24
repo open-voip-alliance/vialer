@@ -1,0 +1,3 @@
+- Previously accepted permissions are not shown during onboarding anymore
+- iOS: Fixed a bug where certain numbers could not be dialed when they were prefixed with a country code
+- iOS: Fixed a bug where the speaker would be disabled if it was enabled before the call was connected
