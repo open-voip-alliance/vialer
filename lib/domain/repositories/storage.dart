@@ -38,8 +38,8 @@ class StorageRepository {
       final preference = _preferences.getString(_settingsKey);
       final settings = preference != null
           ? (json.decode(preference) as List)
-          .map((s) => Setting.fromJson(s as Map<String, dynamic>))
-          .toList()
+              .map((s) => Setting.fromJson(s as Map<String, dynamic>))
+              .toList()
           : <Setting>[];
 
       return _settingsCache = settings;

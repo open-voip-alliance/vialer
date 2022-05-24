@@ -4,7 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../resources/localizations.dart';
 import '../../resources/theme.dart';
 import '../../routes.dart';
-import '../../widgets/app_updated_checker/widget.dart';
+import '../../util/conditional_capitalization.dart';
+import '../../widgets/app_update_checker/widget.dart';
 import '../../widgets/transparent_status_bar.dart';
 import 'call/widgets/call_button.dart';
 import 'contacts/page.dart';
@@ -79,7 +80,7 @@ class MainPageState extends State<MainPage> {
                 TextButton(
                   onPressed: Navigator.of(context, rootNavigator: true).pop,
                   child: Text(
-                    context.msg.generic.button.ok,
+                    context.msg.generic.button.ok.toUpperCaseIfAndroid(context),
                   ),
                 ),
               ],
@@ -129,7 +130,7 @@ class MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    return AppUpdatedChecker.create(
+    return AppUpdateChecker.create(
       child: BlocListener<CallerCubit, CallerState>(
         listener: _onCallerStateChanged,
         child: Scaffold(

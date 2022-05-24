@@ -323,8 +323,8 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
         direction: CallDirection.outbound,
       );
 
-      await _call(destination: destination, useVoip: true);
       emit(CallOriginDetermined(origin));
+      await _call(destination: destination, useVoip: true);
 
       // When using VoIP, we emit states in _onCallEvent. That's why we don't
       // emit them here like in _callViaCallThrough.
