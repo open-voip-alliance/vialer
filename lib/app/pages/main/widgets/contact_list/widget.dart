@@ -578,13 +578,17 @@ extension on Contact {
 
     if (emails.any(
       (email) => email.value.toLowerCase().contains(term),
-    )) return true;
+    )) {
+      return true;
+    }
 
     if (phoneNumbers.any(
       (number) => number.value.toLowerCase().replaceAll(' ', '').contains(
             term.formatForPhoneNumberQuery(),
           ),
-    )) return true;
+    )) {
+      return true;
+    }
 
     return false;
   }
