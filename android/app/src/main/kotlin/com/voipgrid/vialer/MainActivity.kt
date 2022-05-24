@@ -15,28 +15,52 @@ class MainActivity : FlutterActivity(), Pigeon.CallScreenBehavior {
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         GeneratedPluginRegistrant.registerWith(flutterEngine)
 
-        Pigeon.NativeLogging.setup(flutterEngine.dartExecutor.binaryMessenger, App.logger)
-        Pigeon.ContactSortHostApi.setup(flutterEngine.dartExecutor.binaryMessenger
-        ) { ContactSort().apply { orderBy = Pigeon.OrderBy.familyName } }
+        val binaryMessenger = flutterEngine.dartExecutor.binaryMessenger
 
-        Pigeon.NativeIncomingCallScreen.setup(flutterEngine.dartExecutor.binaryMessenger) {
-                remotePartyHeading, remotePartySubheading, imageUri ->
-            this.launchIncomingCallScreen(remotePartyHeading, remotePartySubheading, when {
-                imageUri.isNullOrBlank() -> null
-                else -> imageUri
-            })
+        Pigeon.NativeLogging.setup(binaryMessenger, App.logger)
+        Pigeon.ContactSortHostApi.setup(binaryMessenger) {
+            ContactSort().apply { orderBy = Pigeon.OrderBy.familyName }
         }
 
-        Pigeon.NativeMetrics.setup(flutterEngine.dartExecutor.binaryMessenger) {
-             App.segment.initialize()
+        Pigeon.NativeIncomingCallScreen.setup(binaryMessenger) { remotePartyHeading, remotePartySubheading, imageUri ->
+            this.launchIncomingCallScreen(
+                remotePartyHeading, remotePartySubheading, when {
+                    imageUri.isNullOrBlank() -> null
+                    else -> imageUri
+                }
+            )
         }
-
-        Pigeon.CallScreenBehavior.setup(flutterEngine.dartExecutor.binaryMessenger, this)
 
         Pigeon.Tones.setup(
-            flutterEngine.dartExecutor.binaryMessenger,
+            binaryMessenger,
             SystemTones(this, App.logger)
-        );
+        )
+
+        Pigeon.NativeMetrics.setup(binaryMessenger) {
+            App.segment.initialize()
+        }
+
+        Pigeon.CallScreenBehavior.setup(binaryMessenger, this)
+
+        val androidAppUpdates = Pigeon.AndroidFlexibleUpdateHandler(binaryMessenger)
+
+        val updater = AppUpdater(
+            this@MainActivity,
+            onUpdateTypeKnown = { isFlexible ->
+                androidAppUpdates.onUpdateTypeKnown(isFlexible) { }
+            },
+            onFlexibleUpdateDownloaded = {
+                androidAppUpdates.onDownloaded { }
+            }
+        )
+
+        Pigeon.AppUpdates.setup(
+            binaryMessenger,
+            object : Pigeon.AppUpdates {
+                override fun check() = updater.check()
+                override fun completeAndroidFlexibleUpdate() = updater.completeFlexibleUpdate()
+            }
+        )
     }
 
     override fun enable() {

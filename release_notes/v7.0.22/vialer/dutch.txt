@@ -1,0 +1,5 @@
+- Er verschijnt nu een waarschuwing wanneer je geen app account hebt
+- Er verschijnt nu een foutbericht wanneer een een uitgaand gesprek misgaat
+- Android: Je krijgt nu een pop-up in de app wanneer een nieuwe update beschikbaar is
+- iOS: Sommige problemen i.v.m Bluetooth zijn opgelost
+- iOS: Algemene verbeteringen i.v.m binnenkomende en uitgaande gesprekken betrouwbaarheid

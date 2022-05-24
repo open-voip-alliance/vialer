@@ -24,10 +24,6 @@ connectivity:
     message: >-
       You don't seem to be connected to the internet. Please check your WiFi or mobile data connection and try again.
 
-releaseNotes:
-  notes: ""
-  noneForPlatform: "There are no changes for this platform."
-
 main:
   dialer:
     title: &keypadTitle "Keypad"
@@ -137,6 +133,7 @@ main:
             Only phone numbers with a maximum of 17 digits can be called.
             Please check the dialed number and try again.
 
+
   recent:
     title: "Recent calls"
     menu:
@@ -168,6 +165,7 @@ main:
       title: "Company-wide call history"
       description: >-
         You can find recent calls made by colleagues via the "Calls" link on the Settings page.
+
 
   contacts:
     title: &contactsTitle "Contacts"
@@ -262,6 +260,9 @@ main:
             Choose the VoIP account you want to receive the call on when someone calls you.
           dnd:
             title: "Do not disturb"
+          noAppAccount:
+            description: >-
+              You have no app account. This means you will not receive calls on this device.
           available:
             title: "Available"
           notAvailable:
@@ -353,6 +354,17 @@ main:
     thankYou:
       title: "Thank you for your feedback!"
       content: "We'll use it to make the app even better."
+
+  update:
+    readyToInstall:
+      title: "Update downloaded"
+      content: "Installing the update will restart the app."
+      actions:
+        notNow: "Not now"
+        install: "Install"
+    releaseNotes:
+      notes: ""
+      noneForPlatform: "There are no changes for this platform."
 
 onboarding:
   button:

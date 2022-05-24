@@ -1,0 +1,5 @@
+- Added a warning when you have no app account
+- An error message will now be displayed when an outgoing call fails
+- Android: You will now see a popup in the app when a new update is available
+- iOS: Fixed some problems with Bluetooth connectivity
+- iOS: General improvements to both incoming and outgoing call setup reliability
