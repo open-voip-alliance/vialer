@@ -271,6 +271,7 @@ class KeypadValueButton extends StatefulWidget {
     this.replaceWithSecondaryValueOnLongPress = false,
     required this.controller,
     required this.cursorShownNotifier,
+    // ignore: unused_element
     this.playTone = true,
   })  : assert(
           !replaceWithSecondaryValueOnLongPress || secondaryValue != null,

@@ -35,7 +35,7 @@ class _KeyInputState extends State<KeyInput> {
 
   void _onInputChanged() {
     // Scroll to the end when a character is inserted.
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       _scrollController.animateTo(
         _scrollController.position.maxScrollExtent,
         duration: const Duration(milliseconds: 200),
