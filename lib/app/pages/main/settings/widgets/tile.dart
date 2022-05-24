@@ -322,7 +322,7 @@ class SettingTile extends StatelessWidget {
       key: key,
       builder: (context) {
         void openAddAvailabilityWebView() {
-          WidgetsBinding.instance!.addPostFrameCallback((_) async {
+          WidgetsBinding.instance.addPostFrameCallback((_) async {
             await Navigator.push(
               context,
               MaterialPageRoute(
@@ -550,6 +550,7 @@ class _StringEditSettingValue extends StatefulWidget {
   const _StringEditSettingValue(
     this.setting, {
     Key? key,
+    // ignore: unused_element
     this.onChanged = defaultOnChanged,
   }) : super(key: key);
 
