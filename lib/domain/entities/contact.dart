@@ -12,6 +12,7 @@ class Contact {
   final List<Item> phoneNumbers;
   final List<Item> emails;
   final String? identifier;
+  final String? company;
 
   const Contact({
     this.givenName,
@@ -22,6 +23,7 @@ class Contact {
     this.phoneNumbers = const [],
     this.emails = const [],
     this.identifier,
+    this.company,
   });
 
   @override

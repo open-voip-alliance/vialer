@@ -154,16 +154,7 @@ class _ContactPageState extends State<_ContactList>
 
     final searchTerm = _searchTerm?.toLowerCase();
     for (var contact in contacts) {
-      if (searchTerm != null &&
-          !contact.displayName.toLowerCase().contains(searchTerm) &&
-          !contact.emails.any(
-            (email) => email.value.toLowerCase().contains(searchTerm),
-          ) &&
-          !contact.phoneNumbers.any(
-            (number) => number.value.toLowerCase().replaceAll(' ', '').contains(
-                  searchTerm.formatForPhoneNumberQuery(),
-                ),
-          )) {
+      if (searchTerm != null && !contact.matchesSearchTerm(searchTerm)) {
         continue;
       }
 
@@ -576,5 +567,25 @@ class _SearchTextFieldState extends State<_SearchTextField> {
         contentPadding: EdgeInsets.zero,
       ),
     );
+  }
+}
+
+extension on Contact {
+  bool matchesSearchTerm(String term) {
+    if (displayName.toLowerCase().contains(term)) return true;
+
+    if (company?.toLowerCase().contains(term) == true) return true;
+
+    if (emails.any(
+      (email) => email.value.toLowerCase().contains(term),
+    )) return true;
+
+    if (phoneNumbers.any(
+      (number) => number.value.toLowerCase().replaceAll(' ', '').contains(
+            term.formatForPhoneNumberQuery(),
+          ),
+    )) return true;
+
+    return false;
   }
 }
