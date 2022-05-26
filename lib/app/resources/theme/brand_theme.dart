@@ -88,7 +88,7 @@ extension on Brand {
   IconData get logo {
     if (isVialer || isVialerStaging) {
       return VialerSans.brandVialer;
-    } else if (isVoys || isVoysFreedom) {
+    } else if (isVoys) {
       return VialerSans.brandVoys;
     } else if (isVerbonden) {
       return VialerSans.brandVerbonden;
