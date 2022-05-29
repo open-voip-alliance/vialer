@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../../resources/localizations.dart';
 import '../../../resources/theme.dart';
@@ -43,7 +43,7 @@ class _LoginPageState extends State<LoginPage>
   bool _hidePassword = true;
 
   void _goToPasswordReset() {
-    launch(
+    launchUrlString(
       context.brand.url.resolve('/user/password_reset/').toString(),
     );
   }
@@ -88,7 +88,7 @@ class _LoginPageState extends State<LoginPage>
     setState(() {
       // If there's a bottom view inset, there's most likely a keyboard
       // displaying.
-      if (WidgetsBinding.instance!.window.viewInsets.bottom > 0) {
+      if (WidgetsBinding.instance.window.viewInsets.bottom > 0) {
         _padding = _defaultPadding!.copyWith(
           top: 24,
         );

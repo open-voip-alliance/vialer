@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:android_intent/android_intent.dart';
 import 'package:flutter/services.dart';
 import 'package:libphonenumber/libphonenumber.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../app/util/loggable.dart';
 import '../entities/exceptions/call_through.dart';
@@ -33,7 +33,7 @@ class CallThroughRepository with Loggable {
 
       await intent.launch();
     } else {
-      await launch('tel:$regionNumber');
+      await launchUrlString('tel:$regionNumber');
     }
   }
 

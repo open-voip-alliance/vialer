@@ -50,7 +50,7 @@ class _T9ContactsListState extends State<_T9ContactsList> {
 
     widget.controller.addListener(_onInputChanged);
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       final renderBox =
           _listKey.currentContext!.findRenderObject() as RenderBox;
 
@@ -72,7 +72,7 @@ class _T9ContactsListState extends State<_T9ContactsList> {
     if (!_notifiedScrollbar &&
         state is ContactsLoaded &&
         state.filteredContacts.length >= 2) {
-      WidgetsBinding.instance!.addPostFrameCallback((_) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
         // The empty scroll notification.
         _scrollController.position.didUpdateScrollPositionBy(0);
         _notifiedScrollbar = true;
@@ -101,7 +101,7 @@ class _T9ContactsListState extends State<_T9ContactsList> {
           height: _height ?? (76.0 * 2),
           child: Scrollbar(
             controller: _scrollController,
-            isAlwaysShown: true,
+            thumbVisibility: true,
             child: ListView.builder(
               controller: _scrollController,
               padding: EdgeInsets.zero,

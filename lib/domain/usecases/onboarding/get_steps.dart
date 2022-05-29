@@ -33,12 +33,12 @@ class GetOnboardingStepsUseCase extends UseCase {
   Future<List<OnboardingStep>> _generatePermissionSteps() async {
     final steps = <OnboardingStep>[];
 
-    _permissionSteps.forEach((key, value) {
-      if (_permissionRepository.getPermissionStatus(value) !=
+    for (var entry in _permissionSteps.entries) {
+      if (await _permissionRepository.getPermissionStatus(entry.value) !=
           PermissionStatus.granted) {
-        steps.add(key);
+        steps.add(entry.key);
       }
-    });
+    }
 
     return steps;
   }
