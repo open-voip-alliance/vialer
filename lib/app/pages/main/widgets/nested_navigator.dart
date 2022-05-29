@@ -87,7 +87,7 @@ class _NestedNavigatorState extends State<NestedNavigator> {
 
     if (!_initialized) {
       _initialized = true;
-      WidgetsBinding.instance!.addPostFrameCallback((_) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
         _rootNestedNavigatorStateOrThis._navigatorsToPop.add(_navigatorKey);
       });
     }

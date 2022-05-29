@@ -63,6 +63,7 @@ class _ContactList extends StatefulWidget {
 
   const _ContactList({
     Key? key,
+    // ignore: unused_element
     this.bottomLettersPadding = 0,
   }) : super(key: key);
 

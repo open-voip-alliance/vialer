@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:android_intent/android_intent.dart';
 import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../../../../../domain/entities/contact.dart' as domain;
 import '../../../../../../domain/entities/permission.dart';
@@ -23,7 +23,7 @@ class ContactDetailsCubit extends Cubit<ContactDetailsState> {
       _caller.call(destination, origin: CallOrigin.contacts);
 
   void mail(String destination) {
-    launch('mailto:$destination');
+    launchUrlString('mailto:$destination');
   }
 
   Future<void> edit(domain.Contact contact) async {

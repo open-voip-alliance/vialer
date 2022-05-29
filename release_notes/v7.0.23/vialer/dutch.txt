@@ -1,0 +1,3 @@
+- Reeds gegeven toestemmingen worden niet weer gevraagd bij het inloggen
+- iOS: Een probleem waarbij sommige telefoonnummers voorafgaand met een landcode niet gebeld konden worden, is opgelost
+- iOS: Een probleem waarbij de luidspreker onterecht werd uitgezet voordat het gesprek was begonnen is opgelost
