@@ -363,6 +363,9 @@ main:
         notNow: "Not now"
         install: "Install"
     releaseNotes:
+      header:
+        title(String appName): "What's new in $appName?"
+        subtitle(String version): "Version $version"
       notes: ""
       noneForPlatform: "There are no changes for this platform."
 

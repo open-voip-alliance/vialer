@@ -2,7 +2,11 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+
 import '../../resources/localizations.dart';
+import '../../resources/theme.dart';
+import '../../util/conditional_capitalization.dart';
+import '../stylized_dialog.dart';
 
 class ReleaseNotesDialog extends StatelessWidget {
   final String releaseNotes;
@@ -27,8 +31,12 @@ class ReleaseNotesDialog extends StatelessWidget {
       notes.add('• ${context.msg.main.update.releaseNotes.noneForPlatform}');
     }
 
-    return AlertDialog(
-      title: Text(version),
+    return StylizedDialog(
+      headerIcon: VialerSans.star,
+      title: context.msg.main.update.releaseNotes.header.title(
+        context.brand.appName,
+      ),
+      subtitle: context.msg.main.update.releaseNotes.header.subtitle(version),
       content: SingleChildScrollView(
         child: ListBody(
           children: <Widget>[
@@ -41,12 +49,9 @@ class ReleaseNotesDialog extends StatelessWidget {
           ],
         ),
       ),
-      actions: <Widget>[
-        TextButton(
-          child: Text(context.msg.generic.button.done),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-      ],
+      closeButtonText: Text(
+        context.msg.generic.button.close.toUpperCaseIfAndroid(context),
+      ),
     );
   }
 }
