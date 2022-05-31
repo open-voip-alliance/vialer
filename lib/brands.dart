@@ -10,7 +10,7 @@ const brands = '''
     "url": "https://partner.voipgrid.nl",
     "middlewareUrl": "https://vialerpush.voipgrid.nl",
     "voipgridUrl": "https://partner.voipgrid.nl",
-    "encryptedSipUrl": "sip-ams.encryptedsip.com",
+    "encryptedSipUrl": "sip.encryptedsip.com",
     "unencryptedSipUrl": "sipproxy.voipgrid.nl"
   },
   {
@@ -21,7 +21,7 @@ const brands = '''
     "aboutUrl": "https://www.voys.nl/hulp/toestellen/voys-4g-app/",
     "middlewareUrl": "https://vialerpush.voipgrid.nl",
     "voipgridUrl": "https://partner.voipgrid.nl",
-    "encryptedSipUrl": "sip-ams.encryptedsip.com",
+    "encryptedSipUrl": "sip.encryptedsip.com",
     "unencryptedSipUrl": "sipproxy.voipgrid.nl"
   },
   {
@@ -41,7 +41,7 @@ const brands = '''
     "url": "https://partner.voipgrid.nl",
     "middlewareUrl": "https://vialerpush.voipgrid.nl",
     "voipgridUrl": "https://partner.voipgrid.nl",
-    "encryptedSipUrl": "sip-ams.encryptedsip.com",
+    "encryptedSipUrl": "sip.encryptedsip.com",
     "unencryptedSipUrl": "sipproxy.voipgrid.nl"
   },
   {
