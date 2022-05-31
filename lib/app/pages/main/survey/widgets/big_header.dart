@@ -22,7 +22,9 @@ class BigHeader extends StatelessWidget {
       child: Container(
         width: double.infinity,
         decoration: BoxDecoration(
-          color: context.brand.theme.colors.primary,
+          color: context.brand.isVialer
+              ? context.brand.theme.colors.primaryDark
+              : context.brand.theme.colors.primary,
         ),
         child: Stack(
           children: [

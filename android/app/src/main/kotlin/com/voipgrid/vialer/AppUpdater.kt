@@ -19,6 +19,10 @@ class AppUpdater(
     var versionCodeBeingUpdatedTo: Int = -1
 
     fun check(): Unit = manager.run {
+        appUpdateInfo.addOnFailureListener {
+            onUpdateTypeKnown(false)
+        }
+
         appUpdateInfo.addOnSuccessListener {
             when (it.updateAvailability()) {
                 UPDATE_AVAILABLE, DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS ->
