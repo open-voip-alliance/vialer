@@ -47,7 +47,7 @@
             android:showWhenLocked="true"
             android:excludeFromRecents="true"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:launchMode="singleInstance"
+            android:launchMode="singleTask"
             android:theme="@style/Theme.AppCompat.NoActionBar"/>
 
         <!-- Don't delete the meta-data below.
