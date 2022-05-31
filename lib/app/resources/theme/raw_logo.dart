@@ -16,7 +16,7 @@ extension BrandLogo on Brand {
   int get rawLogo {
     if (isVialer || isVialerStaging) {
       return RawLogos.vialer;
-    } else if (isVoys || isVoysFreedom) {
+    } else if (isVoys) {
       return RawLogos.voys;
     } else if (isVerbonden) {
       return RawLogos.verbonden;

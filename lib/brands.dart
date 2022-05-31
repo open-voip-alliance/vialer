@@ -25,17 +25,6 @@ const brands = '''
     "unencryptedSipUrl": "sipproxy.voipgrid.nl"
   },
   {
-    "identifier": "voysFreedom",
-    "appId": "com.voys.app",
-    "appName": "Voys Freedom",
-    "url": "https://freedom.voys.nl",
-    "aboutUrl": "https://www.voys.nl/hulp/toestellen/voys-4g-app/",
-    "middlewareUrl": "https://vialerpush.voipgrid.nl",
-    "voipgridUrl": "https://partner.voipgrid.nl",
-    "encryptedSipUrl": "sip-ams.encryptedsip.com",
-    "unencryptedSipUrl": "sipproxy.voipgrid.nl"
-  },
-  {
     "identifier": "vialerStaging",
     "appId": "com.voipgrid.vialer",
     "appName": "Vialer Staging",
