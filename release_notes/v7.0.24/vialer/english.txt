@@ -1,0 +1,4 @@
+- Improved the design of the changelog pop-up
+- It is now possible to search contacts by company name
+- Android: Pressing the home button will no longer end an incoming call
+- iOS: Fixed a bug where calling numbers with special characters from your contact list would fail

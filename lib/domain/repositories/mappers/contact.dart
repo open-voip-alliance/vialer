@@ -18,6 +18,7 @@ extension ContactMapper on Contact {
           phones?.toDomainEntities().distinct().toList(growable: false) ?? [],
       emails: emails?.toDomainEntities().toList(growable: false) ?? [],
       identifier: identifier,
+      company: company,
     );
   }
 }

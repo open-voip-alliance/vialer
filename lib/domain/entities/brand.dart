@@ -45,8 +45,6 @@ class Brand extends Equatable {
 
   bool get isVoys => identifier == 'voys';
 
-  bool get isVoysFreedom => identifier == 'voysFreedom';
-
   bool get isVerbonden => identifier == 'verbonden';
 
   bool get isAnnabel => identifier == 'annabel';
