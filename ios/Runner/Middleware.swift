@@ -116,7 +116,7 @@ public class Middleware: NativeMiddleware {
                 middlewareResponse: response,
                 available: available,
                 reason: unavailableReason,
-                responseTime: pushResponseTime
+                responseTime: payload.secondsSincePushWasSent
             )
         }
 

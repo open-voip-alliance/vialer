@@ -218,7 +218,7 @@ extension BrandColors on Brand {
   RawColors get rawColors {
     if (isVialer || isVialerStaging) {
       return const RawColors.vialer();
-    } else if (isVoys || isVoysFreedom) {
+    } else if (isVoys) {
       return const RawColors.voys();
     } else if (isVerbonden) {
       return const RawColors.verbonden();

@@ -365,6 +365,9 @@ main:
         notNow: "Niet nu"
         install: "Installeren"
     releaseNotes:
+      header:
+        title(String appName): "Nieuw in $appName"
+        subtitle(String version): "Versie $version"
       notes: ""
       noneForPlatform: "Er zijn geen verandereringen voor dit platform."
 

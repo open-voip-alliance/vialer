@@ -277,33 +277,7 @@ custom: # Custom properties to make workflows cleaner
         - pattern: '*beta*'
           include: true
 
-    publish_for_qa: &publish_for_qa
-      slack:
-        channel: '#vialer_mobile_ci'
-        notify_on_build_start: true
-      app_store_connect:
-        api_key: $APP_STORE_CONNECT_PRIVATE_KEY
-        key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
-        issuer_id: $APP_STORE_CONNECT_ISSUER_ID
-        submit_to_testflight: true
-        beta_groups:
-          - QA
-      firebase:
-        firebase_token: $FIREBASE_TOKEN
-        android:
-          artifact_type: 'aab'
-          app_id: $FIREBASE_APP_ID
-          groups:
-            - qa
-      google_play:
-        credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
-        track: QA
-        in_app_update_priority: 3
-
     publish_for_production: &publish_for_production
-      slack:
-        channel: '#vialer_mobile_releases'
-        notify_on_build_start: false
       app_store_connect:
         api_key: $APP_STORE_CONNECT_PRIVATE_KEY
         key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
@@ -319,9 +293,6 @@ custom: # Custom properties to make workflows cleaner
         in_app_update_priority: 3
 
     publish_for_beta: &publish_for_beta
-      slack:
-        channel: '#vialer_mobile_releases'
-        notify_on_build_start: false
       app_store_connect:
         api_key: $APP_STORE_CONNECT_PRIVATE_KEY
         key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
@@ -330,10 +301,10 @@ custom: # Custom properties to make workflows cleaner
         beta_groups:
           - Beta Testers
           - External Testers
-#      google_play:
-#        credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
-#        track: beta
-#        in_app_update_priority: 3
+      google_play:
+        credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
+        track: beta
+        in_app_update_priority: 3
 
 workflows:
   main: &main_workflow
@@ -368,33 +339,11 @@ workflows:
       - *flutter_test
       - *build_aab
       - *build_universal_apk_from_aab
-      #- *update_ios_signing_for_current_brand
-      #- *build_ipa
+      - *update_ios_signing_for_current_brand
+      - *build_ipa
       - *set_testflight_release_notes_for_main
       - *release_to_sentry
     artifacts: *defaults_artifacts
-
-  main-with-qa-publishing:
-    <<: *main_workflow
-    name: main with QA publishing
-    triggering:
-      cancel_previous_builds: true
-    environment:
-      groups:
-        - configuration
-        - diagnostics
-        - vialer_android_firebase
-        - vialer_upload_keystore_credentials
-        - vialer_playstore_credentials
-        - vialer_ios_appstore_credentials
-      <<: *config_environment
-      vars:
-        <<: *brand_config_vialer_env_vars
-        IOS_SIGNING_TYPE: "IOS_APP_STORE"
-        ENABLE_IOS_SANDBOX_PUSH_NOTIFICATIONS: "false"
-        FINALIZE_SENTRY_RELEASE: "false"
-    publishing:
-      <<: *publish_for_qa
 
   merge-requests:
     name: merge requests

@@ -45,6 +45,7 @@ class FeedbackRepository {
         'email_address': user.email,
         'given_name': user.firstName,
         'family_name': user.lastName,
+        'client_id': user.clientId,
       },
       'application': {
         'id': packageInfo.packageName,
