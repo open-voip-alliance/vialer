@@ -1,4 +1,4 @@
 - Het design van de changelog pop-up is verbeterd
-- Het is nu mogelijk om contacten op te zoeken via een bedrijfnaam
+- Het is nu mogelijk om contacten op te zoeken via een bedrijfsnaam
 - Android: Klikken op de home button beëindigt niet meer een gesprek
 - iOS: Een probleem waarbij het bellen van nummers met speciale tekens vanuit je contacten mislukte, is opgelost
