@@ -14,3 +14,7 @@ class NotRefreshing extends UserDataRefresherState {
 class Refreshing extends UserDataRefresherState {
   const Refreshing();
 }
+
+class LoggedOut extends UserDataRefresherState {
+  const LoggedOut();
+}

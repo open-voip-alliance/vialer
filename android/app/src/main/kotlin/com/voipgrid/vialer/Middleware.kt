@@ -163,6 +163,12 @@ class Middleware(
     }
 
     override fun inspect(remoteMessage: RemoteMessage): Boolean {
+        if (remoteMessage.isLoggedInSomewhereElse) {
+            log("User has logged in somewhere else, marking as such..")
+            prefs.isLoggedInSomewhereElse = true
+            return false
+        }
+
         if (!remoteMessage.isCall) return false
 
         if (isCallAlreadyBeingHandled(remoteMessage)) {
@@ -237,6 +243,12 @@ class Middleware(
         val pushReceivedTime: String,
     )
 }
+
+private val RemoteMessage.message
+    get() = data["message"]
+
+private val RemoteMessage.isLoggedInSomewhereElse
+    get() = message?.startsWith("An other device has registered for the same account") == true
 
 private val RemoteMessage.callId
     get() = data["unique_key"]

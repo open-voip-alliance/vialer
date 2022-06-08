@@ -10,7 +10,7 @@ import '../../../util/conditional_capitalization.dart';
 import '../../../widgets/stylized_button.dart';
 import '../util/stylized_snack_bar.dart';
 import '../widgets/header.dart';
-import '../widgets/user_data_refresher/cubit.dart';
+import '../widgets/user_data_refresher/cubit.dart' hide LoggedOut;
 import 'cubit.dart';
 import 'widgets/link_tile.dart';
 import 'widgets/tile.dart';
@@ -54,6 +54,14 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   void _onStateChanged(BuildContext context, SettingsState state) {
+    if (state is LoggedOut) {
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        Routes.onboarding,
+        (_) => false,
+      );
+    }
+
     FocusScope.of(context).unfocus();
   }
 
