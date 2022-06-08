@@ -264,8 +264,8 @@ main:
             title: "Do not disturb"
           noAppAccount:
             title: "Geen app account"
-            description: >-
-              Je hebt geen app account. Dit betekent dat je geen inkomende gesprekken op dit apparaat kan ontvangen.
+            description(String appName): >-
+              Je hebt geen app account. Dit betekent dat je geen inkomende gesprekken in $appName kan ontvangen.
           available:
             title: "Beschikbaar"
           notAvailable:
