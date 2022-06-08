@@ -308,11 +308,17 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
       _trackOutboundCallFailed(
         reason: CallFailureReason.noMicrophonePermission,
       );
+      logger.warning(
+        'Outbound VoIP call failed: No mic permission',
+      );
       return;
     }
 
     if (await _getConnectivityType() == ConnectivityType.none) {
       _trackOutboundCallFailed(reason: CallFailureReason.noConnectivity);
+      logger.warning(
+        'Outbound VoIP call failed: No internet connection',
+      );
       return;
     }
 

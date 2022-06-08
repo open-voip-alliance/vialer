@@ -33,6 +33,7 @@ abstract class MiddlewareService extends ChopperService {
     @Field('os_version') required String osVersion,
     @Field('client_version') required String clientVersion,
     @Field() required String app,
+    @Field('app_startup_timestamp') required String appStartupTime,
   });
 
   @Delete(path: 'android-device/')
@@ -50,6 +51,7 @@ abstract class MiddlewareService extends ChopperService {
     @Field('os_version') required String osVersion,
     @Field('client_version') required String clientVersion,
     @Field() required String app,
+    @Field('app_startup_timestamp') required String appStartupTime,
     @Field('push_profile') String pushProfile = 'once',
     @Field() required bool sandbox,
   });

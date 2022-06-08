@@ -12,6 +12,8 @@ import '../entities/voip_config.dart';
 import '../usecases/get_allowed_voip_config.dart';
 import '../usecases/get_build_info.dart';
 import '../usecases/get_encrypted_sip_url.dart';
+import '../usecases/get_is_logged_in_somewhere_else.dart';
+import '../usecases/get_login_time.dart';
 import '../usecases/get_setting.dart';
 import '../usecases/get_unencrypted_sip_url.dart';
 import '../usecases/get_user.dart';
@@ -201,6 +203,12 @@ class VoipRepository with Loggable {
   Future<void> call(String number) async =>
       (await _phoneLib).call(number.normalize());
 
+  Future<void> stop() async {
+    if (_hasStartedCompleter.isCompleted) {
+      (await _phoneLib).stop();
+    }
+  }
+
   Future<void> answerCall() async => (await _phoneLib).actions.answer();
 
   Future<void> refreshPreferences(VoipConfig config) async =>
@@ -264,6 +272,8 @@ class _Middleware with Loggable {
   final _getBuildInfo = GetBuildInfoUseCase();
   final _getDndSetting = GetSettingUseCase<DndSetting>();
   final _getVoipConfig = GetNonEmptyVoipConfigUseCase();
+  final _isLoggedInSomewhereElse = GetIsLoggedInSomewhereElseUseCase();
+  final _getLoginTime = GetLoginTimeUseCase();
 
   final _storageRepository = dependencyLocator<StorageRepository>();
   final _operatingSystemInfoRepository =
@@ -277,11 +287,17 @@ class _Middleware with Loggable {
   Future<void> register(NonEmptyVoipConfig? voipConfig) async {
     logger.info('Registering..');
 
+    if (await _isLoggedInSomewhereElse()) {
+      unregister(voipConfig);
+      logger.info('Registration cancelled: User has logged in elsewhere');
+      return;
+    }
+
     final dnd = await _getDndSetting();
 
     if (dnd.value == true) {
       unregister(voipConfig);
-      logger.info('Not registering as user has enabled DND');
+      logger.info('Registration cancelled: User has enabled DND');
       return;
     }
 
@@ -308,6 +324,7 @@ class _Middleware with Loggable {
     final clientVersion = buildInfo.version;
     final app = buildInfo.packageName;
     final useSandbox = await _envRepository.sandbox;
+    final loginTime = _getLoginTime();
 
     final response = Platform.isAndroid
         ? await _service.postAndroidDevice(
@@ -317,6 +334,7 @@ class _Middleware with Loggable {
             osVersion: osVersion,
             clientVersion: clientVersion,
             app: app,
+            appStartupTime: loginTime.toUtc().toIso8601String(),
           )
         : Platform.isIOS
             ? await _service.postAppleDevice(
@@ -326,7 +344,8 @@ class _Middleware with Loggable {
                 osVersion: osVersion,
                 clientVersion: clientVersion,
                 app: app,
-                sandbox: useSandbox,
+                appStartupTime: loginTime.toUtc().toIso8601String(),
+    sandbox: useSandbox,
               )
             : throw UnsupportedError(
                 'Unsupported platform: ${Platform.operatingSystem}',
@@ -420,7 +439,15 @@ class _Middleware with Loggable {
   Future<void> tokenReceived(String token) async {
     logger.info('Token received');
 
-    _storageRepository.pushToken = token;
+    // Only save the token and register if the new token is actually different.
+    if (_storageRepository.pushToken != token) {
+      _storageRepository.pushToken = token;
+      register(await _config);
+    } else {
+      logger.info(
+        'Not storing token and not registering: Token has not changed',
+      );
+    }
 
     register(await _config);
   }
@@ -434,7 +461,6 @@ void _middlewareRespond(RemoteMessage message, bool available) =>
 void _middlewareTokenReceived(String token) =>
     _Middleware().tokenReceived(token);
 
-// TODO
 bool _middlewareInspect(RemoteMessage message) => true;
 
 extension on String {

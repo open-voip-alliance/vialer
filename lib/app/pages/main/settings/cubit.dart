@@ -16,7 +16,7 @@ import '../../../../domain/usecases/logout.dart';
 import '../../../../domain/usecases/onboarding/request_permission.dart';
 import '../../../../domain/usecases/send_saved_logs_to_remote.dart';
 import '../../../util/loggable.dart';
-import '../widgets/user_data_refresher/cubit.dart';
+import '../widgets/user_data_refresher/cubit.dart' hide LoggedOut;
 import 'state.dart';
 
 export 'state.dart';
