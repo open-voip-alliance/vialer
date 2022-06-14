@@ -76,6 +76,9 @@ custom: # Custom properties to make workflows cleaner
     - &prepare_release_notes_from_files
       name: Preparing the release notes from the release notes on the file system
       script: dart utils/ci/codemagic/prepare_release_notes.dart
+    - &track_new_version
+      name: Track the release of a new version
+      script: dart utils/ci/codemagic/track_new_version.dart
     - &flutter_pub_get
       name: Installing flutter dependencies and generate code
       script: |
@@ -429,6 +432,7 @@ workflows:
       - *update_ios_signing_for_current_brand
       - *build_ipa
       - *release_to_sentry
+      - *track_new_version
     publishing: *publish_for_production
 
   production-voys:
