@@ -54,6 +54,10 @@ class _NoticeState extends State<_Notice>
       return VialerSans.missedCall;
     } else if (state is MicrophonePermissionDeniedNotice) {
       return VialerSans.mute;
+    } else if (state is BluetoothConnectPermissionDeniedNotice) {
+      return VialerSans.bluetooth;
+    } else if (state is NotificationsPermissionDeniedNotice) {
+      return VialerSans.eyeOff;
     } else {
       return VialerSans.exclamationMark;
     }
@@ -64,6 +68,10 @@ class _NoticeState extends State<_Notice>
       return context.msg.main.notice.phone.title;
     } else if (state is MicrophonePermissionDeniedNotice) {
       return context.msg.main.notice.microphone.title;
+    } else if (state is BluetoothConnectPermissionDeniedNotice) {
+      return context.msg.main.notice.bluetoothConnect.title;
+    } else if (state is NotificationsPermissionDeniedNotice) {
+      return context.msg.main.notice.notifications.title;
     } else {
       return context.msg.main.notice.phoneAndMicrophone.title;
     }
@@ -74,6 +82,11 @@ class _NoticeState extends State<_Notice>
       return context.msg.main.notice.phone.content(context.brand.appName);
     } else if (state is MicrophonePermissionDeniedNotice) {
       return context.msg.main.notice.microphone.content(context.brand.appName);
+    } else if (state is BluetoothConnectPermissionDeniedNotice) {
+      return context.msg.main.notice.bluetoothConnect
+          .content(context.brand.appName);
+    } else if (state is NotificationsPermissionDeniedNotice) {
+      return context.msg.main.notice.notifications.content;
     } else {
       return context.msg.main.notice.phoneAndMicrophone.content(
         context.brand.appName,
@@ -109,6 +122,10 @@ class _NoticeState extends State<_Notice>
                         Permission.phone
                       else if (state is MicrophonePermissionDeniedNotice)
                         Permission.microphone
+                      else if (state is BluetoothConnectPermissionDeniedNotice)
+                        Permission.bluetooth
+                      else if (state is NotificationsPermissionDeniedNotice)
+                        Permission.notifications
                       else ...[Permission.phone, Permission.microphone],
                     ]),
                     child: Text(

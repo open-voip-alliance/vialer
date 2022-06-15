@@ -28,6 +28,8 @@ class NoticeCubit extends Cubit<NoticeState> with Loggable {
   Future<void> check({
     PermissionStatus? microphoneStatus,
     PermissionStatus? phoneStatus,
+    PermissionStatus? bluetoothStatus,
+    PermissionStatus? notificationsStatus,
   }) async {
     if (state is NoticeDismissed) return;
 
@@ -41,6 +43,18 @@ class NoticeCubit extends Cubit<NoticeState> with Loggable {
             permission: Permission.phone,
           );
 
+    bluetoothStatus = Platform.isIOS
+        ? PermissionStatus.granted
+        : bluetoothStatus ??= await _getPermissionStatus(
+            permission: Permission.bluetooth,
+          );
+
+    notificationsStatus = Platform.isIOS
+        ? notificationsStatus ??= await _getPermissionStatus(
+            permission: Permission.notifications,
+          )
+        : PermissionStatus.granted;
+
     if (phoneStatus != PermissionStatus.granted &&
         microphoneStatus != PermissionStatus.granted) {
       emit(const PhoneAndMicrophonePermissionDeniedNotice());
@@ -48,6 +62,10 @@ class NoticeCubit extends Cubit<NoticeState> with Loggable {
       emit(const PhonePermissionDeniedNotice());
     } else if (microphoneStatus != PermissionStatus.granted) {
       emit(const MicrophonePermissionDeniedNotice());
+    } else if (bluetoothStatus != PermissionStatus.granted) {
+      emit(const BluetoothConnectPermissionDeniedNotice());
+    } else if (notificationsStatus != PermissionStatus.granted) {
+      emit(const NotificationsPermissionDeniedNotice());
     } else {
       emit(const NoNotice());
     }
@@ -58,7 +76,10 @@ class NoticeCubit extends Cubit<NoticeState> with Loggable {
   Future<void> requestPermission(List<Permission> permissions) async {
     for (final permission in permissions) {
       assert(
-        permission == Permission.phone || permission == Permission.microphone,
+        permission == Permission.phone ||
+            permission == Permission.microphone ||
+            permission == Permission.bluetooth ||
+            permission == Permission.notifications,
       );
 
       final status = await _requestPermission(permission: permission);
@@ -75,6 +96,9 @@ class NoticeCubit extends Cubit<NoticeState> with Loggable {
       await check(
         microphoneStatus: permission == Permission.microphone ? status : null,
         phoneStatus: permission == Permission.phone ? status : null,
+        bluetoothStatus: permission == Permission.bluetooth ? status : null,
+        notificationsStatus:
+            permission == Permission.notifications ? status : null,
       );
 
       // No need to request more if there's no notice.
