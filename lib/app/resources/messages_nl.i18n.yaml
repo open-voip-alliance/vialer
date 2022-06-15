@@ -22,6 +22,36 @@ connectivity:
       Het lijkt erop dat je geen verbinding hebt met internet. Controleer je wifi- of mobiele dataverbinding en probeer het opnieuw.
 
 main:
+  navigation:
+    drawer:
+      title: "Menu"
+      tooMany: "You are already have too many selected."
+      tooFew: "You must select at least 1."
+      unlock: >-
+        Select between 1 and 4 items to appear on your tabs bar. Tap once to select an item, tap again to deselect it.
+
+        Items will appear in the order they are selected.
+
+  logout:
+    title: "Log out"
+    confirm:
+      title: "Are you sure you want to logout?"
+
+  calls:
+    title: "Call log"
+
+  dialPlan:
+    title: "Dial plan"
+
+  stats:
+    title: "Stats"
+
+  feedback:
+    title: "Feedback"
+
+  telephony:
+    title: "Telephony"
+
   dialer:
     title: &keypadTitle "Toetsen"
     permissionDenied: >-

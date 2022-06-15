@@ -62,7 +62,6 @@ class SettingTile extends StatelessWidget {
   static Widget dnd(
     DndSetting setting, {
     required UserAvailabilityType userAvailabilityType,
-    required Function() showHelp,
   }) {
     return Builder(
       builder: (context) {
@@ -313,13 +312,11 @@ class SettingTile extends StatelessWidget {
 
   static Widget availability(
     AvailabilitySetting setting, {
-    Key? key,
     required SystemUser systemUser,
   }) {
     final availability = setting.value!;
 
     return Builder(
-      key: key,
       builder: (context) {
         void openAddAvailabilityWebView() {
           WidgetsBinding.instance.addPostFrameCallback((_) async {

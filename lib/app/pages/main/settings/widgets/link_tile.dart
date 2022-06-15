@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../../domain/entities/web_page.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
-import '../../../web_view/page.dart';
 import '../cubit.dart';
 import '../sub_page.dart';
 import 'tile.dart';
@@ -49,63 +47,6 @@ class SettingLinkTile extends StatelessWidget {
                   cubit: context.read<SettingsCubit>(),
                 );
               }),
-            );
-          },
-        );
-      },
-    );
-  }
-
-  static Widget dialPlan() {
-    return Builder(
-      builder: (context) {
-        return SettingLinkTile(
-          title: Text(
-            context.msg.main.settings.list.portalLinks.dialplan.title,
-          ),
-          onTap: () {
-            Navigator.of(context, rootNavigator: true).push(
-              MaterialPageRoute(
-                builder: (context) => WebViewPage(WebPage.dialPlan),
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
-
-  static Widget stats() {
-    return Builder(
-      builder: (context) {
-        return SettingLinkTile(
-          title: Text(
-            context.msg.main.settings.list.portalLinks.stats.title,
-          ),
-          onTap: () {
-            Navigator.of(context, rootNavigator: true).push(
-              MaterialPageRoute(
-                builder: (context) => WebViewPage(WebPage.stats),
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
-
-  static Widget calls() {
-    return Builder(
-      builder: (context) {
-        return SettingLinkTile(
-          title: Text(
-            context.msg.main.settings.list.portalLinks.calls.title,
-          ),
-          onTap: () {
-            Navigator.of(context, rootNavigator: true).push(
-              MaterialPageRoute(
-                builder: (context) => WebViewPage(WebPage.calls),
-              ),
             );
           },
         );

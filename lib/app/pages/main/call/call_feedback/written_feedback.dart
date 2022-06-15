@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
-import '../../../../routes.dart';
 import 'call_feedback.dart';
 
 class WrittenFeedback extends StatefulWidget {
@@ -22,14 +21,9 @@ class _WrittenFeedbackState extends State<WrittenFeedback> {
   bool _submitted = false;
 
   Future<void> _feedback(BuildContext context) async {
-    final sent = await Navigator.pushNamed(
-          context,
-          Routes.feedback,
-        ) as bool? ??
-        false;
 
     setState(() {
-      _submitted = sent;
+      _submitted = true;
 
       Timer(const Duration(seconds: 2), widget.onComplete);
     });

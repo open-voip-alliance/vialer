@@ -6,11 +6,7 @@ import '../../../../domain/entities/setting.dart';
 import '../../../resources/localizations.dart';
 import '../../../resources/theme.dart';
 import '../../../routes.dart';
-import '../../../util/conditional_capitalization.dart';
-import '../../../widgets/stylized_button.dart';
-import '../util/stylized_snack_bar.dart';
 import '../widgets/header.dart';
-import '../widgets/user_data_refresher/cubit.dart' hide LoggedOut;
 import 'cubit.dart';
 import 'widgets/link_tile.dart';
 import 'widgets/tile.dart';
@@ -24,34 +20,7 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  final _availabilityTileKey = GlobalKey();
   final _scrollController = ScrollController();
-
-  Future<void> _goToFeedbackPage(BuildContext context) async {
-    final sent = await Navigator.pushNamed(
-          context,
-          Routes.feedback,
-        ) as bool? ??
-        false;
-
-    if (sent) {
-      showSnackBar(
-        context,
-        icon: const Icon(VialerSans.check),
-        label: Text(context.msg.main.settings.feedback.snackBar),
-      );
-    }
-
-    context.read<SettingsCubit>().refresh();
-  }
-
-  void _scrollToAvailability() {
-    _scrollController.position.ensureVisible(
-      _availabilityTileKey.currentContext!.findRenderObject()!,
-      alignment: 0,
-      duration: const Duration(seconds: 1),
-    );
-  }
 
   void _onStateChanged(BuildContext context, SettingsState state) {
     if (state is LoggedOut) {
@@ -67,12 +36,6 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final sendFeedbackButtonText = context
-        .msg.main.settings.buttons.sendFeedback
-        .toUpperCaseIfAndroid(context);
-    final logoutButtonText =
-        context.msg.main.settings.buttons.logout.toUpperCaseIfAndroid(context);
-
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: SafeArea(
@@ -80,156 +43,81 @@ class _SettingsPageState extends State<SettingsPage> {
           padding: const EdgeInsets.only(
             top: 16,
           ),
-          child: BlocProvider<SettingsCubit>(
-            create: (_) => SettingsCubit(
-              context.read<UserDataRefresherCubit>(),
-            ),
-            child: BlocConsumer<SettingsCubit, SettingsState>(
-              listener: _onStateChanged,
-              builder: (context, state) {
-                final settings = state.settings;
-                final isVoipAllowed = state.isVoipAllowed;
-                final showTroubleshooting = state.showTroubleshooting;
-                final showDnd = state.showDnd;
-                final hasIgnoreOptimizationsPermission =
-                    state.hasIgnoreBatteryOptimizationsPermission;
-                final cubit = context.watch<SettingsCubit>();
+          child: BlocConsumer<SettingsCubit, SettingsState>(
+            listener: _onStateChanged,
+            builder: (context, state) {
+              final settings = state.settings;
+              final isVoipAllowed = state.isVoipAllowed;
+              final showTroubleshooting = state.showTroubleshooting;
 
-                final availabilityTile = state.systemUser != null
-                    ? SettingTile.availability(
-                        settings.get<AvailabilitySetting>(),
-                        systemUser: state.systemUser!,
-                        key: _availabilityTileKey,
-                      )
-                    : null;
+              final hasIgnoreOptimizationsPermission =
+                  state.hasIgnoreBatteryOptimizationsPermission;
+              final cubit = context.watch<SettingsCubit>();
 
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Header(context.msg.main.settings.title),
-                    ),
-                    if (!state.isLoading)
-                      Expanded(
-                        child: ListView(
-                          controller: _scrollController,
-                          padding: const EdgeInsets.only(top: 8),
-                          children: [
-                            if (showDnd && state.userAvailabilityType != null)
-                              SettingTile.dnd(
-                                settings.get<DndSetting>(),
-                                userAvailabilityType:
-                                    state.userAvailabilityType!,
-                                showHelp: _scrollToAvailability,
-                              ),
-                            if (availabilityTile != null) availabilityTile,
-                            SettingTileCategory.accountInfo(
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Header(context.msg.main.settings.title),
+                  ),
+                  if (!state.isLoading)
+                    Expanded(
+                      child: ListView(
+                        controller: _scrollController,
+                        padding: const EdgeInsets.only(top: 8),
+                        children: [
+                          if (isVoipAllowed) ...[
+                            SettingTileCategory.audio(
                               children: [
-                                SettingTile.mobileNumber(
-                                  setting: settings.get<MobileNumberSetting>(),
-                                  isVoipAllowed: isVoipAllowed,
-                                ),
-                                SettingTile.associatedNumber(
-                                  settings.get<BusinessNumberSetting>(),
-                                ),
-                                if (state.systemUser != null)
-                                  SettingTile.username(
-                                    state.systemUser!,
-                                  ),
-                              ],
-                            ),
-                            if (isVoipAllowed) ...[
-                              SettingTileCategory.audio(
-                                children: [
-                                  SettingTile.usePhoneRingtone(
-                                    settings.get<UsePhoneRingtoneSetting>(),
-                                  ),
-                                ],
-                              ),
-                              SettingTileCategory.calling(
-                                children: [
-                                  SettingTile.useVoip(
-                                    settings.get<UseVoipSetting>(),
-                                  ),
-                                  if (context.isIOS)
-                                    SettingTile.showCallsInNativeRecents(
-                                      settings.get<
-                                          ShowCallsInNativeRecentsSetting>(),
-                                    ),
-                                  if (context.isAndroid)
-                                    SettingTile.ignoreBatteryOptimizations(
-                                      hasIgnoreBatteryOptimizationsPermission:
-                                          hasIgnoreOptimizationsPermission,
-                                      onChanged: (enabled) =>
-                                          cubit.requestBatteryPermission(),
-                                    ),
-                                ],
-                              ),
-                              SettingTileCategory.portalLinks(
-                                children: [
-                                  SettingLinkTile.calls(),
-                                  SettingLinkTile.dialPlan(),
-                                  SettingLinkTile.stats(),
-                                ],
-                              ),
-                            ],
-                            SettingTileCategory.debug(
-                              children: [
-                                SettingTile.remoteLogging(
-                                  settings.get<RemoteLoggingSetting>(),
+                                SettingTile.usePhoneRingtone(
+                                  settings.get<UsePhoneRingtoneSetting>(),
                                 ),
                               ],
                             ),
-                            // Show advanced settings only if allowed.
-                            if (isVoipAllowed && showTroubleshooting)
-                              SettingTileCategory.advancedSettings(
-                                children: [
-                                  SettingLinkTile.troubleshooting(),
-                                ],
-                              ),
-                            if (state.buildInfo != null)
-                              _BuildInfo(state.buildInfo!),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 48,
-                              ),
-                              child: Column(
-                                children: <Widget>[
-                                  SizedBox(
-                                    width: double.infinity,
-                                    child: StylizedButton.raised(
-                                      colored: true,
-                                      onPressed: () =>
-                                          _goToFeedbackPage(context),
-                                      child: Text(
-                                        sendFeedbackButtonText,
-                                      ),
-                                    ),
+                            SettingTileCategory.calling(
+                              children: [
+                                SettingTile.useVoip(
+                                  settings.get<UseVoipSetting>(),
+                                ),
+                                if (context.isIOS)
+                                  SettingTile.showCallsInNativeRecents(
+                                    settings.get<
+                                        ShowCallsInNativeRecentsSetting>(),
                                   ),
-                                  const SizedBox(height: 16),
-                                  SizedBox(
-                                    width: double.infinity,
-                                    child: StylizedButton.outline(
-                                      colored: true,
-                                      onPressed:
-                                          context.watch<SettingsCubit>().logout,
-                                      child: Text(
-                                        logoutButtonText,
-                                      ),
-                                    ),
+                                if (context.isAndroid)
+                                  SettingTile.ignoreBatteryOptimizations(
+                                    hasIgnoreBatteryOptimizationsPermission:
+                                        hasIgnoreOptimizationsPermission,
+                                    onChanged: (enabled) =>
+                                        cubit.requestBatteryPermission(),
                                   ),
-                                  const SizedBox(height: 16),
-                                ],
-                              ),
+                              ],
                             ),
                           ],
-                        ),
+                          SettingTileCategory.debug(
+                            children: [
+                              SettingTile.remoteLogging(
+                                settings.get<RemoteLoggingSetting>(),
+                              ),
+                            ],
+                          ),
+                          // Show advanced settings only if allowed.
+                          if (isVoipAllowed && showTroubleshooting)
+                            SettingTileCategory.advancedSettings(
+                              children: [
+                                SettingLinkTile.troubleshooting(),
+                              ],
+                            ),
+                          if (state.buildInfo != null)
+                            _BuildInfo(state.buildInfo!),
+                          const SizedBox(height: 16),
+                        ],
                       ),
-                  ],
-                );
-              },
-            ),
+                    ),
+                ],
+              );
+            },
           ),
         ),
       ),

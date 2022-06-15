@@ -1,10 +1,11 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide NavigationDestination;
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:timezone/data/latest.dart';
 
 import '../dependency_locator.dart';
+import '../domain/entities/navigation_destination.dart';
 import '../domain/events/event_bus.dart';
 import '../domain/events/user_was_logged_out.dart';
 import '../domain/repositories/env.dart';
@@ -67,8 +68,11 @@ class App extends StatelessWidget {
     _listenForEvents();
   }
 
-  static void navigateTo(MainPageTab tab) =>
-      mainPageKey.currentState!.navigateTo(tab);
+  static void navigateTo(
+    BuildContext context,
+    NavigationDestination destination,
+  ) =>
+      mainPageKey.currentState!.navigateTo(context, destination);
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +84,7 @@ class App extends StatelessWidget {
             child: ConnectivityChecker.create(
               child: MissedCallNotificationPressedListener(
                 onMissedCallNotificationPressed: () =>
-                    navigateTo(MainPageTab.recents),
+                    navigateTo(context, NavigationDestination.recents),
                 child: MaterialApp(
                   navigatorKey: _navigatorKey,
                   title: context.brand.appName,

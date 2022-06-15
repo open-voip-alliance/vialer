@@ -1,22 +1,33 @@
-import 'package:flutter/material.dart';
+import 'package:dartx/dartx.dart';
+import 'package:flutter/material.dart' hide NavigationDestination;
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../domain/entities/navigation_destination.dart';
+import '../../../domain/entities/web_page.dart';
 import '../../resources/localizations.dart';
 import '../../resources/theme.dart';
 import '../../routes.dart';
-import '../../util/conditional_capitalization.dart';
 import '../../widgets/app_update_checker/widget.dart';
 import '../../widgets/transparent_status_bar.dart';
+import '../web_view/page.dart';
 import 'call/widgets/call_button.dart';
 import 'contacts/page.dart';
 import 'cubit.dart';
 import 'dialer/page.dart';
+import 'navigation/drawer/cubit.dart';
+import 'navigation/drawer/widget.dart';
 import 'recent/page.dart';
+import 'settings/cubit.dart';
+import 'settings/feedback/page.dart';
 import 'settings/page.dart';
+import 'telephony/page.dart';
 import 'widgets/caller.dart';
 import 'widgets/connectivity_alert.dart';
 import 'widgets/notice/widget.dart';
+import 'widgets/user_data_refresher/cubit.dart';
 import 'widgets/user_data_refresher/widget.dart';
+
+typedef DestinationPageMap = Map<NavigationDestination, Widget>;
 
 class MainPage extends StatefulWidget {
   const MainPage._(Key? key) : super(key: key);
@@ -33,142 +44,185 @@ class MainPage extends StatefulWidget {
 }
 
 class MainPageState extends State<MainPage> {
-  int? _currentIndex;
-  int? _previousIndex;
+  NavigationDestination? _currentDestination;
+  NavigationDestination? _previousDestination;
 
-  List<Widget>? _pages;
+  /// All the destinations available to the user to select in the drawer menu.
+  var _destinations = <DestinationPage>[];
 
-  bool _dialerIsPage = false;
+  /// The destinations that show in the bottom navigation bar.
+  var _selectedDestinations = <NavigationDestination>[];
+
+  bool get isDialerInNavBar =>
+      _selectedDestinations.contains(NavigationDestination.dialer);
 
   final _navigatorKeys = [
     GlobalKey<NavigatorState>(),
   ];
 
-  void navigateTo(MainPageTab tab) =>
-      _navigateTo(_dialerIsPage ? tab.index : tab.index - 1);
+  final _drawerKey = GlobalKey<ScaffoldState>();
 
-  void _navigateTo(int? index) {
-    if (index == null) return;
+  void navigateTo(BuildContext context, NavigationDestination destination) {
+    // If the dialer isn't in the bottom bar, then we want to open it as a
+    // new route.
+    if (!isDialerInNavBar && destination == NavigationDestination.dialer) {
+      Navigator.pushNamed(context, Routes.dialer);
+      return;
+    }
 
-    _previousIndex = _currentIndex;
+    _previousDestination = _currentDestination;
 
     setState(() {
-      _currentIndex = index;
+      _currentDestination = destination;
+    });
+  }
 
-      if (context.isAndroid) {
-        for (final key in _navigatorKeys) {
-          key.currentState!.popUntil(ModalRoute.withName('/'));
-        }
+  void _onSelectedNavigationChanged(
+    BuildContext context,
+    NavigationState state,
+  ) {
+    setState(() {
+      _selectedDestinations = state.selected;
+
+      // Use the first selected destination as the default page to load.
+      if (_currentDestination == null) {
+        _currentDestination = _selectedDestinations[0];
       }
     });
-
-    // Show a dialog when navigating to the Recents page for the first time.
-    if ((_dialerIsPage && _currentIndex == 2) ||
-        (!_dialerIsPage && _currentIndex == 1)) {
-      final cubit = context.read<MainCubit>();
-
-      if (cubit.shouldShowClientWideCallsDialog()) {
-        showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: Text(context.msg.main.recent.clientWideCallsDialog.title),
-              content: Text(
-                context.msg.main.recent.clientWideCallsDialog.description,
-              ),
-              actions: [
-                TextButton(
-                  onPressed: Navigator.of(context, rootNavigator: true).pop,
-                  child: Text(
-                    context.msg.generic.button.ok.toUpperCaseIfAndroid(context),
-                  ),
-                ),
-              ],
-            );
-          },
-        );
-
-        cubit.markRecentCallsShown();
-      }
-    }
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    // Only on iOS is the dialer a separate bottom nav page.
-    _dialerIsPage = context.isIOS;
-
-    if (_pages == null) {
-      _pages = [
-        if (_dialerIsPage) const DialerPage(isInBottomNavBar: true),
-        ContactsPage(
-          navigatorKey: _navigatorKeys[0],
-          bottomLettersPadding: !_dialerIsPage ? 96 : 0,
-        ),
-        RecentCallsPage(
-          listBottomPadding: !_dialerIsPage ? 96 : 0,
-          snackBarRightPadding: !_dialerIsPage ? 72 : 0,
-        ),
-        const SettingsPage(),
-      ];
-    }
-
-    if (_currentIndex == null) {
-      _currentIndex = _dialerIsPage ? 1 : 0;
+    // If loading for the first time, we want to build all destination pages.
+    if (_destinations.isEmpty) {
+      _destinations = _buildAllDestinations();
     }
   }
+
+  List<DestinationPage> _buildAllDestinations() => [
+        DestinationPage(
+          NavigationDestination.contacts,
+          ContactsPage(navigatorKey: _navigatorKeys[0]),
+        ),
+        DestinationPage(
+          NavigationDestination.recents,
+          RecentCallsPage(),
+        ),
+        const DestinationPage(
+          NavigationDestination.settings,
+          SettingsPage(),
+        ),
+        DestinationPage(
+          NavigationDestination.dialer,
+          DialerPage(isInBottomNavBar: isDialerInNavBar),
+        ),
+        const DestinationPage(
+          NavigationDestination.feedback,
+          FeedbackPage(),
+        ),
+        const DestinationPage(
+          NavigationDestination.telephony,
+          TelephonyPage(),
+        ),
+        DestinationPage(
+          NavigationDestination.dialPlan,
+          WebViewPage(WebPage.dialPlan),
+        ),
+        DestinationPage(
+          NavigationDestination.stats,
+          WebViewPage(WebPage.stats),
+        ),
+        DestinationPage(
+          NavigationDestination.calls,
+          WebViewPage(WebPage.calls),
+        ),
+      ];
 
   void _onCallerStateChanged(BuildContext context, CallerState state) {
     if (context.isIOS &&
         state is FinishedCalling &&
         state.origin == CallOrigin.dialer) {
-      _navigateTo(_previousIndex);
+      navigateTo(context, _previousDestination!);
     }
   }
 
+  bool _shouldDisplayFloatingActionButton() =>
+      !isDialerInNavBar &&
+      const [
+        NavigationDestination.recents,
+        NavigationDestination.contacts,
+      ].contains(_currentDestination);
+
   @override
   Widget build(BuildContext context) {
-    return AppUpdateChecker.create(
-      child: BlocListener<CallerCubit, CallerState>(
-        listener: _onCallerStateChanged,
-        child: Scaffold(
-          resizeToAvoidBottomInset: false,
-          floatingActionButton: _currentIndex != 2 && !_dialerIsPage
-              ? SizedBox(
-                  height: 62,
-                  width: 62,
-                  child: FloatingActionButton(
-                    // We use the CallButton's hero tag for a nice transition
-                    // between the dialer and call button.
-                    heroTag: CallButton.defaultHeroTag,
-                    backgroundColor: context.brand.theme.colors.green1,
-                    onPressed: () =>
-                        Navigator.pushNamed(context, Routes.dialer),
-                    child: const Icon(VialerSans.dialpad, size: 31),
-                  ),
-                )
-              : null,
-          bottomNavigationBar: _BottomNavigationBar(
-            currentIndex: _currentIndex!,
-            dialerIsPage: _dialerIsPage,
-            onTap: _navigateTo,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<NavigationCubit>(
+          create: (context) => NavigationCubit(),
+        ),
+        BlocProvider<UserDataRefresherCubit>(
+          create: (context) => UserDataRefresherCubit(),
+        ),
+        BlocProvider<SettingsCubit>(
+          create: (context) => SettingsCubit(
+            context.read<UserDataRefresherCubit>(),
           ),
-          body: TransparentStatusBar(
-            brightness: Brightness.dark,
-            child: UserDataRefresher(
-              child: ConnectivityAlert(
-                child: SafeArea(
-                  child: Notice(
-                    child: _AnimatedIndexedStack(
-                      index: _currentIndex!,
-                      children: _pages!,
-                    ),
-                  ),
-                ),
+        ),
+      ],
+      child: MultiBlocListener(
+        listeners: [
+          BlocListener<CallerCubit, CallerState>(
+            listener: _onCallerStateChanged,
+          ),
+          BlocListener<NavigationCubit, NavigationState>(
+            listener: _onSelectedNavigationChanged,
+          ),
+        ],
+        child: AppUpdateChecker.create(
+          child: Scaffold(
+            key: _drawerKey,
+            drawer: NavigationDrawer(
+              onNavigate: (destination) => navigateTo(
+                context,
+                destination,
               ),
             ),
+            resizeToAvoidBottomInset: false,
+            floatingActionButton: _shouldDisplayFloatingActionButton()
+                ? _DialerFloatingActionButton(
+                    onPressed: () =>
+                        navigateTo(context, NavigationDestination.dialer),
+                  )
+                : null,
+            bottomNavigationBar: _selectedDestinations.length >= 1
+                ? _BottomNavigationBar(
+                    currentDestination: _currentDestination,
+                    destinations: _selectedDestinations,
+                    onTap: (destination) => navigateTo(context, destination),
+                    onMenuOpen: () => _drawerKey.currentState!.openDrawer(),
+                  )
+                : null,
+            body: _currentDestination != null
+                ? TransparentStatusBar(
+                    brightness: Brightness.dark,
+                    child: UserDataRefresher(
+                      child: ConnectivityAlert(
+                        child: SafeArea(
+                          child: Notice(
+                            child: _AnimatedIndexedStack(
+                              index: _destinations.indexOfDestination(
+                                _currentDestination!,
+                              )!,
+                              children: _destinations.pagesOnly,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
+                : null,
           ),
         ),
       ),
@@ -177,15 +231,17 @@ class MainPageState extends State<MainPage> {
 }
 
 class _BottomNavigationBar extends StatelessWidget {
-  final int currentIndex;
-  final ValueChanged<int> onTap;
-  final bool dialerIsPage;
+  final NavigationDestination? currentDestination;
+  final ValueChanged<NavigationDestination> onTap;
+  final VoidCallback onMenuOpen;
+  final List<NavigationDestination> destinations;
 
   const _BottomNavigationBar({
     Key? key,
-    required this.currentIndex,
+    required this.destinations,
+    required this.currentDestination,
     required this.onTap,
-    this.dialerIsPage = false,
+    required this.onMenuOpen,
   }) : super(key: key);
 
   @override
@@ -205,25 +261,21 @@ class _BottomNavigationBar extends StatelessWidget {
         selectedItemColor: context.brand.theme.colors.primary,
         unselectedFontSize: 9,
         unselectedItemColor: context.brand.theme.colors.grey1,
-        currentIndex: currentIndex,
-        onTap: onTap,
+        currentIndex: destinations.adjustedIndexOf(currentDestination),
+        onTap: (index) =>
+            index == 0 ? onMenuOpen() : onTap(destinations[index - 1]),
         items: [
-          if (dialerIsPage)
-            BottomNavigationBarItem(
-              icon: const _BottomNavigationBarIcon(VialerSans.dialpad),
-              label: context.msg.main.dialer.menu.title,
+          BottomNavigationBarItem(
+            icon: const _BottomNavigationBarIcon(VialerSans.burger),
+            label: context.msg.main.navigation.drawer.title,
+          ),
+          ...destinations.map(
+            (navigationDestination) => BottomNavigationBarItem(
+              icon: _BottomNavigationBarIcon(
+                navigationDestination.asIconData(),
+              ),
+              label: navigationDestination.asLabel(context),
             ),
-          BottomNavigationBarItem(
-            icon: const _BottomNavigationBarIcon(VialerSans.contacts),
-            label: context.msg.main.contacts.menu.title,
-          ),
-          BottomNavigationBarItem(
-            icon: const _BottomNavigationBarIcon(VialerSans.clock),
-            label: context.msg.main.recent.menu.title,
-          ),
-          BottomNavigationBarItem(
-            icon: const _BottomNavigationBarIcon(VialerSans.settings),
-            label: context.msg.main.settings.menu.title,
           ),
         ],
       ),
@@ -243,13 +295,6 @@ class _BottomNavigationBarIcon extends StatelessWidget {
       child: Icon(icon),
     );
   }
-}
-
-enum MainPageTab {
-  dialer,
-  contacts,
-  recents,
-  settings,
 }
 
 class _AnimatedIndexedStack extends StatefulWidget {
@@ -346,4 +391,63 @@ class _AnimatedIndexedStackState extends State<_AnimatedIndexedStack>
       children: children,
     );
   }
+}
+
+class _DialerFloatingActionButton extends StatelessWidget {
+  final VoidCallback onPressed;
+
+  const _DialerFloatingActionButton({required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 62,
+      width: 62,
+      child: FloatingActionButton(
+        // We use the CallButton's hero tag for a nice
+        // transition between the dialer and call button.
+        heroTag: CallButton.defaultHeroTag,
+        backgroundColor: context.brand.theme.colors.green1,
+        onPressed: onPressed,
+        child: const Icon(VialerSans.dialpad, size: 31),
+      ),
+    );
+  }
+}
+
+extension on List<DestinationPage> {
+  DestinationPage? whereNavigationDestinationIs(
+    NavigationDestination navigationDestination,
+  ) =>
+      where(
+        (element) => element.destination == navigationDestination,
+      ).firstOrNull;
+
+  int? indexOfDestination(NavigationDestination destination) {
+    final navigationDestination = whereNavigationDestinationIs(destination);
+
+    if (navigationDestination == null) return null;
+
+    return contains(navigationDestination)
+        ? indexOf(navigationDestination)
+        : null;
+  }
+
+  List<Widget> get pagesOnly => map((e) => e.page).toList();
+}
+
+extension on List<NavigationDestination>? {
+  int adjustedIndexOf(NavigationDestination? destination) {
+    if (this == null || destination == null) return 0;
+
+    return this!.contains(destination) ? this!.indexOf(destination) + 1 : 0;
+  }
+}
+
+/// This is a struct to associate a page with a given destination.
+class DestinationPage {
+  final NavigationDestination destination;
+  final Widget page;
+
+  const DestinationPage(this.destination, this.page);
 }

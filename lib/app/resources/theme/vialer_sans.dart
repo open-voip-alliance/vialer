@@ -16,6 +16,7 @@ abstract class VialerSans {
   static const lockOff = IconData(0xE90A, fontFamily: _family);
   static const phone = IconData(0xE980, fontFamily: _family);
   static const dialpad = IconData(0xE961, fontFamily: _family);
+  static const burger = IconData(0xE983, fontFamily: _family);
   static const clock = IconData(0xE95E, fontFamily: _family);
   static const contacts = IconData(0xE967, fontFamily: _family);
   static const settings = IconData(0xE949, fontFamily: _family);
@@ -54,6 +55,8 @@ abstract class VialerSans {
   static const answeredElsewhere = IconData(0xE922, fontFamily: _family);
   static const feedback = IconData(0xE959, fontFamily: _family);
   static const edit = IconData(0xE90E, fontFamily: _family);
+  static const logout = IconData(0xE94B, fontFamily: _family);
   static const info = IconData(0xE918, fontFamily: _family);
   static const battery = IconData(0xE9AC, fontFamily: _family);
+  static const colleagues = IconData(0xE963, fontFamily: _family);
 }

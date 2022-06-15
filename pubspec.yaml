@@ -6,7 +6,7 @@ description: >-
 version: 7.0.0
 
 environment:
-  sdk: ">=2.15.0 <3.0.0"
+  sdk: ">=2.16.0 <3.0.0"
   flutter: 3.0.1
 
 dependencies:
@@ -33,7 +33,7 @@ dependencies:
   fast_contacts: ^1.1.1
   characters: ^1.0.0
   diacritic: ^0.1.1
-  scrollable_positioned_list: ^0.2.0-nullsafety.0
+  scrollable_positioned_list: ^0.3.2
   i18n: ^3.1.0
   intl: ^0.17.0
   flutter_dotenv: ^5.0.2
@@ -61,6 +61,7 @@ dependencies:
   # when all users have been moved over.
   native_shared_preferences: ^2.0.4
   duration: ^3.0.6
+  font_awesome_flutter: ^10.1.0
 
 dev_dependencies:
   flutter_test:

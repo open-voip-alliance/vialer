@@ -12,7 +12,6 @@ import '../../../../domain/usecases/get_latest_availability.dart';
 import '../../../../domain/usecases/get_permission_status.dart';
 import '../../../../domain/usecases/get_settings.dart';
 import '../../../../domain/usecases/get_user.dart';
-import '../../../../domain/usecases/logout.dart';
 import '../../../../domain/usecases/onboarding/request_permission.dart';
 import '../../../../domain/usecases/send_saved_logs_to_remote.dart';
 import '../../../util/loggable.dart';
@@ -30,7 +29,6 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
   final _getIsVoipAllowed = GetIsVoipAllowedUseCase();
   final _getPermissionStatus = GetPermissionStatusUseCase();
   final _requestPermission = RequestPermissionUseCase();
-  final _logout = LogoutUseCase();
   final _getUser = GetUserUseCase();
 
   late StreamSubscription _userRefresherSubscription;
@@ -93,15 +91,6 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
   Future<void> sendSavedLogsToRemote() => _sendSavedLogsToRemote();
 
   Future<void> refresh() => _emitUpdatedState();
-
-  Future<void> logout() async {
-    logger.info('Logging out');
-    await _logout();
-
-    emit(LoggedOut());
-
-    logger.info('Logged out');
-  }
 
   @override
   Future<void> close() async {
