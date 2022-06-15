@@ -1,0 +1,2 @@
+- The message that appears when using the app without an app account is now more clear
+- Android: You will now automatically log out if you log in on another device
