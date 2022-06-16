@@ -70,6 +70,11 @@ class MainPageState extends State<MainPage> {
       return;
     }
 
+    if (destination == NavigationDestination.feedback) {
+      Navigator.pushNamed(context, Routes.feedback);
+      return;
+    }
+
     _previousDestination = _currentDestination;
 
     setState(() {
@@ -86,7 +91,7 @@ class MainPageState extends State<MainPage> {
 
       // Use the first selected destination as the default page to load.
       if (_currentDestination == null) {
-        _currentDestination = _selectedDestinations[0];
+        _currentDestination = _selectedDestinations.first;
       }
     });
   }

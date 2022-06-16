@@ -6,7 +6,6 @@ import '../../../../resources/theme.dart';
 import '../../../../util/conditional_capitalization.dart';
 import '../../../../widgets/stylized_button.dart';
 import '../../../../widgets/transparent_status_bar.dart';
-import '../../widgets/header.dart';
 import 'cubit.dart';
 
 class FeedbackPage extends StatefulWidget {
@@ -100,6 +99,10 @@ class _FeedbackPageState extends State<FeedbackPage> {
         child: BlocBuilder<FeedbackCubit, FeedbackState>(
           builder: (context, state) {
             return Scaffold(
+              appBar: AppBar(
+                title: Text(context.msg.main.settings.feedback.title),
+                centerTitle: true,
+              ),
               body: TransparentStatusBar(
                 brightness: Brightness.light,
                 child: Padding(
@@ -112,17 +115,6 @@ class _FeedbackPageState extends State<FeedbackPage> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 24),
-                            child: Header(
-                              context.msg.main.settings.feedback.title,
-                            ),
-                          ),
-                        ],
-                      ),
                       _FeedbackFormHeader(
                         visible: !isKeyboardOpen,
                       ),

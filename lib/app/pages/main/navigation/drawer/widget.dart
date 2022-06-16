@@ -94,9 +94,6 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
                   const Divider(),
                   Expanded(
                     child: _NavigationDrawerGrid(
-                      navigation: NavigationDestination.values
-                          .where((e) => e != NavigationDestination.logout)
-                          .toList(),
                       selected: state.selected,
                       isEditable: state is NavigationUnlocked,
                       onNavigationPressed: (navigation) => onNavigationPressed(
@@ -104,10 +101,28 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
                         state,
                         navigation,
                       ),
-                      lowerNavigationItem: state is! NavigationUnlocked
-                          ? NavigationDestination.logout
-                          : null,
-                      onLowerNavigationItemPressed: _logout,
+                      navigation: NavigationDestination.values
+                          .where(
+                            (e) => !const [
+                              NavigationDestination.logout,
+                              NavigationDestination.feedback,
+                            ].contains(e),
+                          )
+                          .toList(),
+                      lowerNavigationItems: [
+                        _NavigationDrawerGridItem(
+                          NavigationDestination.feedback,
+                          onPressed: () => onNavigationPressed(
+                            context,
+                            state,
+                            NavigationDestination.feedback,
+                          ),
+                        ),
+                        _NavigationDrawerGridItem(
+                          NavigationDestination.logout,
+                          onPressed: _logout,
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -203,17 +218,15 @@ class _NavigationDrawerHeader extends StatelessWidget {
 class _NavigationDrawerGrid extends StatelessWidget {
   final List<NavigationDestination> navigation;
   final List<NavigationDestination> selected;
-  final NavigationDestination? lowerNavigationItem;
+  final List<Widget> lowerNavigationItems;
   final bool isEditable;
   final Function(NavigationDestination) onNavigationPressed;
-  final VoidCallback? onLowerNavigationItemPressed;
 
   const _NavigationDrawerGrid({
     required this.navigation,
     required this.selected,
     required this.onNavigationPressed,
-    this.lowerNavigationItem,
-    this.onLowerNavigationItemPressed,
+    required this.lowerNavigationItems,
     this.isEditable = false,
   });
 
@@ -232,9 +245,13 @@ class _NavigationDrawerGrid extends StatelessWidget {
                     vertical: 12,
                     horizontal: 8,
                   ),
-                  child: Text(
-                    context.msg.main.navigation.drawer.unlock,
-                    textAlign: TextAlign.center,
+                  child: Column(
+                    children: [
+                      Text(
+                        context.msg.main.navigation.drawer.unlock,
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -248,19 +265,27 @@ class _NavigationDrawerGrid extends StatelessWidget {
             physics: const NeverScrollableScrollPhysics(),
             children: [
               ...navigation.map(
-                (navigation) => _NavigationDrawerGridItem(
-                  navigation,
+                (destination) => _NavigationDrawerGridItem(
+                  destination,
                   isEditable: isEditable,
-                  isSelected: selected.contains(navigation),
-                  onPressed: () => onNavigationPressed(navigation),
+                  isSelected: selected.contains(destination),
+                  isHome: destination == selected.first,
+                  onPressed: () => onNavigationPressed(destination),
                 ),
               ),
             ],
           ),
-          if (lowerNavigationItem != null)
-            _NavigationDrawerGridItem(
-              lowerNavigationItem!,
-              onPressed: onLowerNavigationItemPressed,
+          if (!isEditable)
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20,
+              ).copyWith(
+                top: 16,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: lowerNavigationItems,
+              ),
             ),
         ],
       ),
@@ -271,13 +296,25 @@ class _NavigationDrawerGrid extends StatelessWidget {
 class _NavigationDrawerGridItem extends StatelessWidget {
   final NavigationDestination navigationDestination;
   final VoidCallback? onPressed;
+
+  /// The item that will be rendered with an icon indicating that this is the
+  /// home destination.
+  final bool isHome;
+
+  /// If the item should appear as editable, this will include a bookmark
+  /// icon that is greyed out.
   final bool isEditable;
+
+  /// If the item is currently one of the selected items, render an icon to
+  /// display this.
   final bool isSelected;
+
   final double editIconSize = 16;
 
   const _NavigationDrawerGridItem(
     this.navigationDestination, {
     this.onPressed,
+    this.isHome = false,
     this.isSelected = false,
     this.isEditable = false,
   });
@@ -302,11 +339,11 @@ class _NavigationDrawerGridItem extends StatelessWidget {
               ],
             ),
             _SelectedNavigationDestinationIcon(
-              FontAwesomeIcons.solidBookmark,
+              isHome ? FontAwesomeIcons.house : FontAwesomeIcons.solidBookmark,
               isEditable: isEditable,
               isSelected: isSelected,
               size: editIconSize,
-            )
+            ),
           ],
         ),
       ),
@@ -344,7 +381,7 @@ class _SelectedNavigationDestinationIcon extends StatelessWidget {
 class _NavigationDestinationIcon extends StatelessWidget {
   final NavigationDestination destination;
 
-  _NavigationDestinationIcon(this.destination);
+  const _NavigationDestinationIcon(this.destination);
 
   @override
   Widget build(BuildContext context) {
@@ -371,9 +408,9 @@ extension NavigationDestinationWidgetData on NavigationDestination {
       case NavigationDestination.logout:
         return VialerSans.logout;
       case NavigationDestination.calls:
-        return FontAwesomeIcons.phone;
+        return FontAwesomeIcons.boxArchive;
       case NavigationDestination.dialPlan:
-        return VialerSans.answeredElsewhere;
+        return FontAwesomeIcons.retweet;
       case NavigationDestination.stats:
         return FontAwesomeIcons.chartColumn;
       case NavigationDestination.feedback:

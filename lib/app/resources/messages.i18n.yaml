@@ -35,6 +35,8 @@ main:
 
         Items will appear in the order they are selected.
 
+        The first item selected will act as your home tab.
+
   logout:
     title: "Log out"
     confirm:
