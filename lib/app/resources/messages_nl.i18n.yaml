@@ -211,11 +211,11 @@ main:
             Door ervoor te kiezen om je app-activiteit te delen,
             kunnen onze ontwikkelaars en het ondersteuningsteam je beter helpen.
           sendToRemoteDialog:
-            title: Verstuur ook de logs van vandaag
+            title: Activiteit van vandaag versturen?
             description: >-
-              Door dit toe te staan, kan ons team tevens problemen zien die vandaag zijn opgetreden
-              voordat u Remote Logging inschakelde. Dit helpt ons problemen beter te begrijpen.
-            confirm: Verstuur
+              Als je problemen ervaart, is het handig om ook je app-activiteit van vandaag te delen.
+              Dit helpt het team om je problemen nader te onderzoeken.
+            confirm: Versturen
       accountInfo:
         title: "Accountinformatie"
         businessNumber:
@@ -401,9 +401,10 @@ onboarding:
         message: >-
           Het gebruikte e-mailadres of wachtwoord is onjuist.
           Controleer op eventuele fouten en probeer het nog een keer.
-      wrongEmailFormat: Het e-mailadres heeft niet het juiste formaat.
+      wrongEmailFormat: >-
+        Controleer het e-mailadres: verwijder spaties en kijk of @ en punten op de juiste plek staan.
       wrongPasswordFormat: >-
-        Het wachtwoord heeft niet het juiste formaat. Je wachtwoord moet bestaan uit minimaal 6 tekens, waarvan 1 niet-alfabetisch.
+        Het wachtwoord is minstens 6 tekens lang en bevat minstens één cijfer of symbool.
 
   password:
     title: "Wijzig je huidige wachtwoord"
@@ -412,7 +413,7 @@ onboarding:
       title: "Onjuist wachtwoord"
       message: "Je wachtwoord voldoet niet aan de hieronder gestelde eisen."
     requirements: >-
-      Je wachtwoord moet bestaan uit minimaal 6 tekens, waarvan 1 niet-alfabetisch.
+      Het wachtwoord is minstens 6 tekens lang en bevat minstens één cijfer of symbool.
 
   twoFactor:
     title: "Twee-factor-​authenticatie"
