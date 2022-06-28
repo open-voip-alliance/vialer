@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:path/path.dart';
 
 // ignore: avoid_relative_lib_imports
 import '../../lib/brands.dart';
@@ -28,7 +29,10 @@ Future<void> main(List<String> arguments) async {
   final defaultIconSet = Directory('${assets.path}/AppIcon.appiconset');
   final brandIconSet = Directory('${assets.path}/AppIcon-$brandId.appiconset');
 
-  await defaultIconSet.list().forEach((e) => e.delete());
+  await defaultIconSet
+      .list()
+      .where((f) => basename(f.path) != '.gitkeep')
+      .forEach((f) => f.delete());
 
   await for (final entity in brandIconSet.list()) {
     final file = entity as File;

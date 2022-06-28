@@ -5,7 +5,7 @@
 	<key>Sandbox</key>
 	<string>$(SANDBOX)</string>
 	<key>Segment Key</key>
-    <string>$(SEGMENT_IOS_KEY)</string>
+	<string>$(SEGMENT_IOS_KEY)</string>
 	<key>NSBonjourServices</key>
 	<array>
 		<string>_dartobservatory._tcp</string>
@@ -42,8 +42,6 @@
 	<string>So you can make calls with your Bluetooth headset, for example.</string>
 	<key>NSBluetoothAlwaysUsageDescription</key>
 	<string>So you can make calls with your Bluetooth headset, for example.</string>
-	<key>NSCameraUsageDescription</key>
-	<string>We do not use the camera in any way.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>

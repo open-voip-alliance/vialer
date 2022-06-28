@@ -146,6 +146,12 @@ public class Middleware: NativeMiddleware {
     }
 
     public func inspect(payload: PKPushPayload, type: PKPushType) {
+        if (payload.isLoggedInSomewhereElse) {
+            logger.writeLog("User has logged in somewhere else, marking as such..")
+            flutterSharedPreferences.isLoggedInSomewhereElse = true
+            return
+        }
+
         segment.track(event: "notification-received", properties: payload.withTrackingProperties(properties: [
             "seconds_from_call_to_received" : String(payload.secondsSincePushWasSent),
         ]))
@@ -185,6 +191,14 @@ private struct MiddlewareCredentials {
 }
 
 extension PKPushPayload {
+
+    var message: String {
+        return dictionaryPayload["message"] as? String ?? ""
+    }
+
+    var isLoggedInSomewhereElse: Bool {
+        return message.hasPrefix("An other device has registered for the same account")
+    }
 
     var callId: String {
         return dictionaryPayload["unique_key"] as? String ?? ""

@@ -25,6 +25,11 @@ class FlutterSharedPreferences(context: Context) {
         get() = prefs.getString(FLUTTER_SHARED_PREF_PUSH_TOKEN, "")
         set(value) = prefs.edit().putString(FLUTTER_SHARED_PREF_PUSH_TOKEN, value).apply()
 
+    var isLoggedInSomewhereElse
+        get() = prefs.getBoolean(FLUTTER_SHARED_PREF_IS_LOGGED_IN_SOMEWHERE_ELSE, false)
+        set(value) = prefs.edit().putBoolean(FLUTTER_SHARED_PREF_IS_LOGGED_IN_SOMEWHERE_ELSE, value)
+            .apply()
+
     private val settings
         get() = JSONArray(prefs.getString(FLUTTER_SHARED_PREF_SETTINGS, "[]"))
 
@@ -79,6 +84,8 @@ class FlutterSharedPreferences(context: Context) {
         private const val FLUTTER_SHARED_PREF_PUSH_TOKEN = "${SHARED_PREF_PREFIX}push_token"
         private const val FLUTTER_SHARED_PREF_SETTINGS = "${SHARED_PREF_PREFIX}settings"
         private const val FLUTTER_SHARED_PREF_LOGS = "${SHARED_PREF_PREFIX}logs"
+        private const val FLUTTER_SHARED_PREF_IS_LOGGED_IN_SOMEWHERE_ELSE =
+            "${SHARED_PREF_PREFIX}is_logged_in_somewhere_else"
     }
 }
 

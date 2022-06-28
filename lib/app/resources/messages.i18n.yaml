@@ -261,8 +261,8 @@ main:
           dnd:
             title: "Do not disturb"
           noAppAccount:
-            description: >-
-              You have no app account. This means you will not receive calls on this device.
+            description(String appName): >-
+              You have no app account. This means you will not receive calls in $appName.
           available:
             title: "Available"
           notAvailable:
@@ -337,6 +337,14 @@ main:
       content(String appName): >-
         Without the call and microphone permission, you cannot make calls.
         Please allow "Phone" and "Microphone" permission for $appName.
+    bluetoothConnect:
+      title: "No Bluetooth permission"
+      content(String appName): >-
+        Without bluetooth permission, $appName will not be able to detect and use your connected bluetooth devices during calls.
+    notifications:
+      title: "No Notifications permission"
+      content: >-
+        Without notifications permission, you might miss important information such as missed or incoming calls.
     actions:
       givePermission: "Give permission"
 

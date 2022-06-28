@@ -90,12 +90,12 @@ class _BackgroundState extends State<Background> with TickerProviderStateMixin {
     );
 
     _controller.addListener(() {
-      if (_controller.isCompleted) {
+      if (__controller?.isCompleted == true) {
         setState(() => _showForm = true);
       }
     });
 
-    Future.delayed(_splashScreenTime, () => _controller.forward());
+    Future.delayed(_splashScreenTime, () => __controller?.forward());
   }
 
   @override
@@ -123,6 +123,12 @@ class _BackgroundState extends State<Background> with TickerProviderStateMixin {
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    __controller?.dispose();
+    super.dispose();
   }
 }
 

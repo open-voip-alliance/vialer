@@ -1,0 +1,2 @@
+- Het bericht wanneer je de app gebruikt zonder app account is nu duidelijker
+- Android: Je wordt nu automatisch uitgelogd wanneer je op een ander apparaat inlogt

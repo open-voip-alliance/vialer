@@ -26,3 +26,11 @@ class PhonePermissionDeniedNotice extends NoticeState {
 class PhoneAndMicrophonePermissionDeniedNotice extends NoticeState {
   const PhoneAndMicrophonePermissionDeniedNotice();
 }
+
+class BluetoothConnectPermissionDeniedNotice extends NoticeState {
+  const BluetoothConnectPermissionDeniedNotice();
+}
+
+class NotificationsPermissionDeniedNotice extends NoticeState {
+  const NotificationsPermissionDeniedNotice();
+}

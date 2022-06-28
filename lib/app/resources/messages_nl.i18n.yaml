@@ -264,8 +264,8 @@ main:
             title: "Do not disturb"
           noAppAccount:
             title: "Geen app account"
-            description: >-
-              Je hebt geen app account. Dit betekent dat je geen inkomende gesprekken op dit apparaat kan ontvangen.
+            description(String appName): >-
+              Je hebt geen app account. Dit betekent dat je geen inkomende gesprekken in $appName kan ontvangen.
           available:
             title: "Beschikbaar"
           notAvailable:
@@ -339,6 +339,14 @@ main:
       content(String appName): >-
         Zonder toegang tot telefonie en de microfoon kan je niet bellen.
         Graag $appName toegang geven tot de "Telefoon" en "Microfoon"-rechten.
+    bluetoothConnect:
+      title: "Geen bluetooth toestemming"
+      content(String appName): >-
+        Zonder toestemming tot bluetooth kan $appName niet je bluetooth apparaten detecteren en gebruiken tijdens een gesprek.
+    notifications:
+      title: "Geen notificaties toestemming"
+      content: >-
+        Zonder toestemming tot notificaties is het mogelijk dat je belangrijke informatie mist, zoals gemiste of inkomende gesprekken.
     actions:
       givePermission: "Geef toestemming"
 

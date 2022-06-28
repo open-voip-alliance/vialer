@@ -135,6 +135,29 @@ class StorageRepository {
   set shownRecents(bool? shownRecents) =>
       _preferences.setOrRemoveBool(_shownRecentsKey, shownRecents);
 
+  static const _isLoggedInSomewhereElseKey = 'is_logged_in_somewhere_else';
+
+  bool? get isLoggedInSomewhereElse =>
+      _preferences.getBool(_isLoggedInSomewhereElseKey);
+
+  set isLoggedInSomewhereElse(bool? value) =>
+      _preferences.setOrRemoveBool(_isLoggedInSomewhereElseKey, value);
+
+  static const _loginTimeKey = 'login_time';
+
+  DateTime? get loginTime {
+    final isoDate = _preferences.getString(_loginTimeKey);
+
+    if (isoDate == null) return null;
+
+    return DateTime.parse(isoDate);
+  }
+
+  set loginTime(DateTime? value) => _preferences.setOrRemoveString(
+        _loginTimeKey,
+        value?.toUtc().toIso8601String(),
+      );
+
   Future<void> clear() => _preferences.clear();
 
   Future<void> reload() => _preferences.reload();
