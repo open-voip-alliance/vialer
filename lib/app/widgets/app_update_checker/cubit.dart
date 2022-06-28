@@ -1,11 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../../domain/usecases/check_app_updates.dart';
 import '../../../domain/usecases/complete_flexible_update.dart';
 import '../../../domain/usecases/get_build_info.dart';
 import '../../../domain/usecases/get_did_app_update_to_new_version.dart';
-
 import '../../pages/main/widgets/caller.dart';
 import 'state.dart';
 
@@ -28,7 +28,10 @@ class AppUpdateCheckerCubit extends Cubit<AppUpdateState> {
   Future<void> check() async {
     // We won't check if we're already checking, if an update is ready to
     // install or we're in a call.
-    if (_checking || state is UpdateReadyToInstall || caller.state.isInCall) {
+    if (_checking ||
+        state is UpdateReadyToInstall ||
+        caller.state.isInCall ||
+        caller.processState.voipCall != null) {
       return;
     }
 
