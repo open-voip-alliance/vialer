@@ -232,63 +232,71 @@ class _NavigationDrawerGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          if (isEditable)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 16),
-              child: Container(
-                color: context.brand.theme.colors.grey3,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 12,
-                    horizontal: 8,
-                  ),
-                  child: Column(
-                    children: [
-                      Text(
-                        context.msg.main.navigation.drawer.unlock,
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          GridView.count(
-            childAspectRatio: 1.2,
-            padding: const EdgeInsets.only(top: 14),
-            crossAxisCount: 3,
-            mainAxisSpacing: 0,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        SingleChildScrollView(
+          child: Column(
             children: [
-              ...navigation.map(
-                (destination) => _NavigationDrawerGridItem(
-                  destination,
-                  isEditable: isEditable,
-                  isSelected: selected.contains(destination),
-                  isHome: destination == selected.first,
-                  onPressed: () => onNavigationPressed(destination),
+              if (isEditable)
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 30,
+                    vertical: 16,
+                  ),
+                  child: Container(
+                    color: context.brand.theme.colors.grey3,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 12,
+                        horizontal: 8,
+                      ),
+                      child: Column(
+                        children: [
+                          Text(
+                            context.msg.main.navigation.drawer.unlock,
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
+              GridView.count(
+                childAspectRatio: 1.2,
+                padding: const EdgeInsets.only(top: 14),
+                crossAxisCount: 3,
+                mainAxisSpacing: 0,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                children: [
+                  ...navigation.map(
+                    (destination) => _NavigationDrawerGridItem(
+                      destination,
+                      isEditable: isEditable,
+                      isSelected: selected.contains(destination),
+                      isHome: destination == selected.first,
+                      onPressed: () => onNavigationPressed(destination),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
-          if (!isEditable)
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 20,
-              ).copyWith(
-                top: 16,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: lowerNavigationItems,
-              ),
+        ),
+        if (!isEditable)
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 20,
+            ).copyWith(
+              bottom: 16,
             ),
-        ],
-      ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: lowerNavigationItems,
+            ),
+          ),
+      ],
     );
   }
 }
