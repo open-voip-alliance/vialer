@@ -15,12 +15,14 @@ import '../widgets/stylized_text_field.dart';
 import 'cubit.dart';
 
 class LoginPage extends StatefulWidget {
-  LoginPage({
+  const LoginPage({
     Key? key,
   }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _LoginPageState();
+
+  static const keys = _Keys();
 }
 
 class _LoginPageState extends State<LoginPage>
@@ -152,6 +154,7 @@ class _LoginPageState extends State<LoginPage>
                     },
                   ),
                   StylizedTextField(
+                    key: LoginPage.keys.emailField,
                     controller: _emailController,
                     autoCorrect: false,
                     textCapitalization: TextCapitalization.none,
@@ -164,6 +167,7 @@ class _LoginPageState extends State<LoginPage>
                     autofillHints: [AutofillHints.email],
                   ),
                   ErrorAlert(
+                    key: LoginPage.keys.wrongEmailFormatError,
                     visible: (loginState is LoginNotSubmitted &&
                         !loginState.hasValidEmailFormat),
                     inline: true,
@@ -172,9 +176,11 @@ class _LoginPageState extends State<LoginPage>
                   ),
                   const SizedBox(height: 20),
                   StylizedTextField(
+                    key: LoginPage.keys.passwordField,
                     controller: _passwordController,
                     prefixIcon: VialerSans.lockOn,
                     suffix: IconButton(
+                      key: LoginPage.keys.showPasswordButton,
                       icon: AnimatedSwitcher(
                         duration: const Duration(milliseconds: 200),
                         switchInCurve: Curves.decelerate,
@@ -196,6 +202,7 @@ class _LoginPageState extends State<LoginPage>
                     autofillHints: [AutofillHints.password],
                   ),
                   ErrorAlert(
+                    key: LoginPage.keys.wrongPasswordFormatError,
                     visible: (loginState is LoginNotSubmitted &&
                         !loginState.hasValidPasswordFormat),
                     inline: true,
@@ -211,6 +218,7 @@ class _LoginPageState extends State<LoginPage>
                             ConnectivityState>(
                           builder: (context, connectivityState) {
                             return StylizedButton.raised(
+                              key: LoginPage.keys.loginButton,
                               onPressed: loginState is! LoggingIn &&
                                       connectivityState is! Disconnected
                                   ? () => context.read<LoginCubit>().login(
@@ -279,4 +287,15 @@ class _LoginPageState extends State<LoginPage>
       ),
     );
   }
+}
+
+class _Keys {
+  const _Keys();
+
+  final loginButton = const Key('loginButton');
+  final emailField = const Key('emailField');
+  final passwordField = const Key('passwordField');
+  final showPasswordButton = const Key('showPasswordButton');
+  final wrongEmailFormatError = const Key('wrongEmailFormatError');
+  final wrongPasswordFormatError = const Key('wrongPasswordFormatError');
 }

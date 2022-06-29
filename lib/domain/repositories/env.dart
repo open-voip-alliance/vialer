@@ -31,6 +31,8 @@ class EnvRepository {
   Future<String> get tag => _get('TAG');
 
   Future<bool> get sandbox async => (await _get('SANDBOX')).toBool();
+
+  Future<bool> get inTest async => (await _get('IN_TEST')).toBool();
 }
 
 extension on String {

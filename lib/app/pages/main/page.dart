@@ -19,17 +19,20 @@ import 'widgets/notice/widget.dart';
 import 'widgets/user_data_refresher/widget.dart';
 
 class MainPage extends StatefulWidget {
-  const MainPage._(Key? key) : super(key: key);
+  /// There can only be one.
+  MainPage._() : super(key: keys.page);
 
   @override
   State<StatefulWidget> createState() => MainPageState();
 
-  static Widget create({Key? key}) {
+  static Widget create() {
     return BlocProvider(
       create: (_) => MainCubit(),
-      child: MainPage._(key),
+      child: MainPage._(),
     );
   }
+
+  static final keys = _Keys();
 }
 
 class MainPageState extends State<MainPage> {
@@ -199,6 +202,7 @@ class _BottomNavigationBar extends StatelessWidget {
         ),
       ),
       child: BottomNavigationBar(
+        key: MainPage.keys.navigationBar,
         type: BottomNavigationBarType.fixed,
         iconSize: 24,
         selectedFontSize: 9,
@@ -346,4 +350,9 @@ class _AnimatedIndexedStackState extends State<_AnimatedIndexedStack>
       children: children,
     );
   }
+}
+
+class _Keys {
+  final page = GlobalKey<MainPageState>();
+  final navigationBar = GlobalKey<State<BottomNavigationBar>>();
 }

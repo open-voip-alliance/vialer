@@ -13,6 +13,8 @@ import 'cubit.dart';
 import 'widgets/country_field/widget.dart';
 
 class MobileNumberPage extends StatelessWidget {
+  static const keys = _Keys();
+
   final _mobileNumberController = TextEditingController();
   final _mobileNumberFocusNode = FocusNode();
 
@@ -72,6 +74,7 @@ class MobileNumberPage extends StatelessWidget {
                     inline: false,
                   ),
                   StylizedTextField(
+                    key: keys.field,
                     prefixWidget: CountryFlagField.create(
                       controller: _mobileNumberController,
                       focusNode: _mobileNumberFocusNode,
@@ -98,6 +101,7 @@ class MobileNumberPage extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: <Widget>[
                         StylizedButton.raised(
+                          key: keys.continueButton,
                           onPressed: () => _onContinueButtonPressed(context),
                           child: Text(
                             context.msg.onboarding.mobileNumber.button
@@ -115,4 +119,11 @@ class MobileNumberPage extends StatelessWidget {
       ),
     );
   }
+}
+
+class _Keys {
+  const _Keys();
+
+  final field = const Key('mobileNumberField');
+  final continueButton = const Key('continueButton');
 }
