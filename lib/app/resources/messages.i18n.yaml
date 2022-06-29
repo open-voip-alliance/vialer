@@ -211,11 +211,11 @@ main:
             By choosing to automatically log your app activity, our developers and support team
             will be able to help you more efficiently if needed.
           sendToRemoteDialog:
-            title: Send the logs from today as well
+            title: Send today's app activity?
             description: >-
-              By allowing this, our team can see problems that happened today before you
-              turned Remote Logging on. This helps us understand the problem better.
-            confirm: Send to remote
+              If you're experiencing issues, it's helpful to share today's app activity as well.
+              This helps the team to investigate your issues more closely.
+            confirm: Send activity
       accountInfo:
         title: "User information"
         businessNumber:
@@ -398,10 +398,10 @@ onboarding:
         title: "Incorrect credentials"
         message: >-
           The email address or password you entered is invalid. Please check and try again.
-      wrongEmailFormat: Email address is incorrectly formatted.
-      wrongPasswordFormat:  >-
-        Password is incorrectly formatted. Your password must be at least 6 characters long and
-        include 1 non-alphabetical character.
+      wrongEmailFormat: >-
+        Check the email address: remove spaces and make sure @ and dots are in the right place.
+      wrongPasswordFormat: >-
+        The password is at least 6 characters long and contains at least one number or symbol.
 
   password:
     title: "Change your current password"
@@ -410,7 +410,7 @@ onboarding:
       title: "Incorrect password"
       message: "Your password does not comply with the requirements mentioned below."
     requirements: >-
-      Password must be at least 6 characters long and include 1 non-alphabetical character.
+      The password is at least 6 characters long and contains at least one number or symbol.
 
   twoFactor:
     title: "Two-factor authentication"
