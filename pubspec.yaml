@@ -63,7 +63,11 @@ dependencies:
   duration: ^3.0.6
 
 dev_dependencies:
+  integration_test:
+    sdk: flutter
   flutter_test:
+    sdk: flutter
+  flutter_driver:
     sdk: flutter
 
   effective_dart: ^1.2.0
@@ -76,6 +80,7 @@ dev_dependencies:
   basic_utils: ^3.9.1
   yaml: ^3.1.0
   yaml_edit: ^2.0.1
+  glob: ^2.0.2
 
 
 # For information on the generic Dart part of this file, see the

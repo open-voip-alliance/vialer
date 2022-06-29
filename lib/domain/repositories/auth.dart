@@ -1,10 +1,12 @@
+import '../../app/util/loggable.dart';
+
 import '../entities/exceptions/auto_login.dart';
 import '../entities/exceptions/need_to_change_password.dart';
 import '../entities/exceptions/two_factor_authentication_required.dart';
 import '../entities/system_user.dart';
 import 'services/voipgrid.dart';
 
-class AuthRepository {
+class AuthRepository with Loggable {
   final VoipgridService _service;
 
   AuthRepository(this._service);
@@ -76,6 +78,11 @@ class AuthRepository {
       final user = await _getUser(email: email, token: token);
 
       return user.copyWith(token: token);
+    } else {
+      logger.severe(
+        'Authentication failed: '
+        '${tokenResponse.statusCode} ${tokenResponse.error}',
+      );
     }
 
     return null;
