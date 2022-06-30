@@ -80,6 +80,11 @@ class MainPageState extends State<MainPage> {
     setState(() {
       _currentDestination = destination;
     });
+
+    context.read<MainCubit>().broadcastNavigation(
+          _previousDestination,
+          destination,
+        );
   }
 
   void _onSelectedNavigationChanged(
