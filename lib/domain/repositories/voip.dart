@@ -334,7 +334,7 @@ class _Middleware with Loggable {
             osVersion: osVersion,
             clientVersion: clientVersion,
             app: app,
-            appStartupTime: loginTime.toUtc().toIso8601String(),
+            appStartupTime: loginTime?.toUtc().toIso8601String(),
           )
         : Platform.isIOS
             ? await _service.postAppleDevice(
@@ -344,7 +344,7 @@ class _Middleware with Loggable {
                 osVersion: osVersion,
                 clientVersion: clientVersion,
                 app: app,
-                appStartupTime: loginTime.toUtc().toIso8601String(),
+                appStartupTime: loginTime?.toUtc().toIso8601String(),
     sandbox: useSandbox,
               )
             : throw UnsupportedError(
