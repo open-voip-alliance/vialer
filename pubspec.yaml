@@ -6,7 +6,7 @@ description: >-
 version: 7.0.0
 
 environment:
-  sdk: ">=2.15.0 <3.0.0"
+  sdk: ">=2.17.0 <3.0.0"
   flutter: 3.0.1
 
 dependencies:
@@ -23,7 +23,7 @@ dependencies:
   pedantic: ^1.9.0
   provider: ^6.0.0
   equatable: ^2.0.0
-  chopper: ^4.0.0-nullsafety.0
+  chopper: ^4.0.6
   shared_preferences: ^2.0.5
   flutter_svg: ^1.0.0
   android_intent: ^2.0.0
@@ -72,10 +72,10 @@ dev_dependencies:
 
   effective_dart: ^1.2.0
   build_runner: ^2.1.2
-  chopper_generator: ^4.0.0-nullsafety.1
+  chopper_generator: ^4.0.6
   json_serializable: ^6.1.1
   flutter_launcher_icons: ^0.9.0
-  pigeon: ^1.0.7
+  pigeon: ^3.2.0
   xml: ^5.3.1
   basic_utils: ^3.9.1
   yaml: ^3.1.0
