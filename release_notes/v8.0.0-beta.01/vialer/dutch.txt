@@ -1,0 +1,3 @@
+- A new navigation screen has been added, this can be accessed from the bottom navigation bar or from swiping from the left of the screen.
+- The bottom navigation bar is now customizable via the "lock" icon on the navigation screen.
+- Added a new "Telephony" screen which allows quick-access to existing telephony-related features.
