@@ -82,10 +82,11 @@ public class Middleware: NativeMiddleware {
     public func respond(payload: PKPushPayload, available: Bool, reason: NativeMiddlewareUnavailableReason?) {
         let payloadDictionary = payload.dictionaryPayload as NSDictionary
         let callId = payloadDictionary.value(forKey: "unique_key")
+        let correlationId = payloadDictionary.value(forKey: "vg_cid")
         let callStartTime = payloadDictionary.value(forKey: "message_start_time")
         let pushResponseTime = payload.secondsSincePushWasSent
 
-        logger.writeLog("Middleware Respond: Attempting for call=\(String(describing: callId)), available=\(available)")
+        logger.writeLog("Middleware Respond: Attempting for call=\(String(describing: callId)), correlationId=\(String(describing: correlationId)), available=\(available)")
 
         if pushResponseTime > Middleware.secondsBeforeRejected {
             logger.writeLog("The response time is $pushResponseTime, it is likely we are too late for this call.")

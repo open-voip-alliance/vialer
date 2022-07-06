@@ -100,11 +100,12 @@ class Middleware(
     ) {
         val middlewareCredentials = middlewareCredentials
         val callId = remoteMessage.callId!!
+        val correlationId = remoteMessage.correlationId!!
         val callStartTime = remoteMessage.messageStartTime!!
         val pushSentTime = remoteMessage.pushSentTime
         val pushResponseTime = remoteMessage.secondsSincePushWasSent
 
-        log("Middleware Respond: Attempting for call=$callId, available=$available, sent at=$pushSentTime, response time=$pushResponseTime")
+        log("Middleware Respond: Attempting for call=$callId, correlationId=$correlationId, available=$available, sent at=$pushSentTime, response time=$pushResponseTime")
 
         if (pushResponseTime > MIDDLEWARE_SECONDS_BEFORE_REJECTED) {
             log("The response time is $pushResponseTime, it is likely we are too late for this call.")
