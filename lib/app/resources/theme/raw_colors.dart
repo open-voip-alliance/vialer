@@ -132,7 +132,7 @@ class RawColors {
 
   /// Defaults should be left as-is.
   const RawColors.vialer({
-    int primary = 0xFFFFA257,
+    int primary = 0xFFFF7B24,
     int primaryDark = 0xFFD45400,
     int primaryLight = 0xFFFFD0A3,
     int onboardingGradientStart = 0xFFFF8213,
