@@ -28,7 +28,7 @@ abstract class Setting<T> {
   static const List<Setting> presets = [
     RemoteLoggingSetting.preset(),
     ShowDialerConfirmPopupSetting.preset(),
-    ShowSurveyDialogSetting.preset(),
+    ShowSurveysSetting.preset(),
     UseVoipSetting.preset(),
     ShowTroubleshootingSettingsSetting.preset(),
     UseEncryptionSetting.preset(),
@@ -57,8 +57,8 @@ abstract class Setting<T> {
       return RemoteLoggingSetting(value as bool);
     } else if (type == (ShowDialerConfirmPopupSetting).toString()) {
       return ShowDialerConfirmPopupSetting(value as bool);
-    } else if (type == (ShowSurveyDialogSetting).toString()) {
-      return ShowSurveyDialogSetting(value as bool);
+    } else if (type == (ShowSurveysSetting).toString()) {
+      return ShowSurveysSetting(value as bool);
     } else if (type == (BusinessNumberSetting).toString()) {
       return BusinessNumberSetting(value as String);
     } else if (type == (MobileNumberSetting).toString()) {
@@ -117,14 +117,14 @@ class ShowDialerConfirmPopupSetting extends Setting<bool> {
       ShowDialerConfirmPopupSetting(value ?? this.value);
 }
 
-class ShowSurveyDialogSetting extends Setting<bool> {
-  const ShowSurveyDialogSetting(bool value) : super(value);
+class ShowSurveysSetting extends Setting<bool> {
+  const ShowSurveysSetting(bool value) : super(value);
 
-  const ShowSurveyDialogSetting.preset() : this(true);
+  const ShowSurveysSetting.preset() : this(true);
 
   @override
-  ShowSurveyDialogSetting copyWith({bool? value}) =>
-      ShowSurveyDialogSetting(value ?? this.value);
+  ShowSurveysSetting copyWith({bool? value}) =>
+      ShowSurveysSetting(value ?? this.value);
 }
 
 class BusinessNumberSetting extends Setting<String> {

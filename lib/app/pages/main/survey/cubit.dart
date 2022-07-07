@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../domain/entities/setting.dart';
+import '../../../../domain/entities/survey/survey.dart';
 import '../../../../domain/entities/survey/survey_trigger.dart';
 import '../../../../domain/usecases/change_setting.dart';
 import '../../../../domain/usecases/get_settings.dart';
@@ -20,21 +21,30 @@ class SurveyCubit extends Cubit<SurveyState> with Loggable {
 
   SurveyCubit({
     required String language,
+    required SurveyId id,
     required SurveyTrigger trigger,
-  }) : super(const ShowHelpUsPrompt(dontShowThisAgain: false)) {
-    _getSurvey(language: language, trigger: trigger).then((survey) {
-      emit(state.copyWith(survey: survey));
-
+  }) : super(const LoadingSurvey()) {
+    _getSurvey(id, language: language, trigger: trigger).then((survey) {
       _getSettings().then((settings) {
         // Necessary for auto cast.
         final state = this.state;
 
-        if (state is ShowHelpUsPrompt) {
-          emit(
-            state.copyWith(
-              dontShowThisAgain: !settings.get<ShowSurveyDialogSetting>().value,
-            ),
-          );
+        if (state is LoadingSurvey) {
+          if (survey.skipIntro) {
+            emit(
+              ShowQuestion(
+                survey.questions.first,
+                survey: survey,
+              ),
+            );
+          } else {
+            emit(
+              ShowHelpUsPrompt(
+                survey: survey,
+                dontShowThisAgain: !settings.get<ShowSurveysSetting>().value,
+              ),
+            );
+          }
         }
       });
     });
@@ -49,7 +59,7 @@ class SurveyCubit extends Cubit<SurveyState> with Loggable {
       emit(state.copyWith(dontShowThisAgain: value));
     }
 
-    await _changeSetting(setting: ShowSurveyDialogSetting(!value));
+    await _changeSetting(setting: ShowSurveysSetting(!value));
   }
 
   void previous() {
@@ -86,12 +96,9 @@ class SurveyCubit extends Cubit<SurveyState> with Loggable {
     if (indexOfCurrent == survey.questions.length - 1) {
       emit(ShowThankYou(state.survey));
 
-      // The survey is finished, so don't show it again
-      _changeSetting(setting: const ShowSurveyDialogSetting(false));
-
       _sendSurveyResults(
+        survey.id,
         data: {
-          'id': survey.id,
           'language': survey.language,
           'trigger': survey.trigger.toJson(),
           'questions': [

@@ -145,18 +145,27 @@ class StorageRepository {
 
   static const _loginTimeKey = 'login_time';
 
-  DateTime? get loginTime {
-    final isoDate = _preferences.getString(_loginTimeKey);
+  DateTime? get loginTime => _preferences.getDateTime(_loginTimeKey);
 
-    if (isoDate == null) return null;
+  set loginTime(DateTime? value) =>
+      _preferences.setOrRemoveDateTime(_loginTimeKey, value);
 
-    return DateTime.parse(isoDate);
-  }
+  static const _appRatingSurveyActionCountKey =
+      'app_rating_survey_action_count';
 
-  set loginTime(DateTime? value) => _preferences.setOrRemoveString(
-        _loginTimeKey,
-        value?.toUtc().toIso8601String(),
-      );
+  int? get appRatingSurveyActionCount =>
+      _preferences.getInt(_appRatingSurveyActionCountKey);
+
+  set appRatingSurveyActionCount(int? value) =>
+      _preferences.setOrRemoveInt(_appRatingSurveyActionCountKey, value);
+
+  static const _appRatingSurveyShownTimeKey = 'app_rating_survey_shown_time';
+
+  DateTime? get appRatingSurveyShownTime =>
+      _preferences.getDateTime(_appRatingSurveyShownTimeKey);
+
+  set appRatingSurveyShownTime(DateTime? value) =>
+      _preferences.setOrRemoveDateTime(_appRatingSurveyShownTimeKey, value);
 
   Future<void> clear() => _preferences.clear();
 
@@ -164,6 +173,21 @@ class StorageRepository {
 }
 
 extension on SharedPreferences {
+  DateTime? getDateTime(String key) {
+    final isoDate = getString(key);
+
+    if (isoDate == null) return null;
+
+    return DateTime.parse(isoDate);
+  }
+
+  Future<bool> setOrRemoveDateTime(String key, DateTime? value) {
+    return setOrRemoveString(
+      key,
+      value?.toUtc().toIso8601String(),
+    );
+  }
+
   Future<bool> setOrRemoveString(String key, String? value) {
     if (value == null) {
       return remove(key);

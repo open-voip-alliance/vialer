@@ -353,7 +353,8 @@ main:
       title: "Help us improve the app"
       content(int questionCount): >-
         Would you like to help improve the app? You can do so by
-        answering $questionCount short questions.
+        answering $questionCount
+        short ${_plural(questionCount, one: 'question', many: 'questions')}.
       dontAskAgain: "Don't ask me again"
 
     question:

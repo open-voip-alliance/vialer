@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../domain/entities/call_failure_reason.dart';
 import '../../../../../domain/entities/exceptions/call_through.dart';
+import '../../../../../domain/entities/survey/survey.dart';
 import '../../../../../domain/entities/survey/survey_trigger.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
@@ -142,6 +143,7 @@ class _CallerState extends State<Caller>
         // associated with the MaterialApp which has Localizations, which
         // the SurveyDialog needs.
         _navigatorContext,
+        SurveyId.callThrough1,
         trigger: SurveyTrigger.afterThreeCallThroughCalls,
       );
 

@@ -355,7 +355,8 @@ main:
       title: "Help ons de app te verbeteren"
       content(int questionCount): >-
         Wil je helpen om de app beter te maken? Je kunt dit doen
-        door $questionCount korte vragen te beantwoorden.
+        door $questionCount korte ${_plural(questionCount, one: 'vraag', many: 'vragen')}
+        te beantwoorden.
       dontAskAgain: "Niet weer vragen"
 
     question:
