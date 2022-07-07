@@ -80,15 +80,16 @@ class QuestionScreen extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            TextButton(
-              onPressed: survey.questions.indexOf(question) != 0
-                  ? () => _previous(context)
-                  : null,
-              child: Text(
-                context.msg.generic.button.previous
-                    .toUpperCaseIfAndroid(context),
+            if (survey.questions.length > 1)
+              TextButton(
+                onPressed: survey.questions.indexOf(question) != 0
+                    ? () => _previous(context)
+                    : null,
+                child: Text(
+                  context.msg.generic.button.previous
+                      .toUpperCaseIfAndroid(context),
+                ),
               ),
-            ),
             TextButton(
               onPressed: () => _next(context),
               child: Text(

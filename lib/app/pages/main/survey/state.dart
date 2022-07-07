@@ -14,6 +14,13 @@ abstract class SurveyState extends Equatable {
   SurveyState copyWith({Survey survey});
 }
 
+class LoadingSurvey extends SurveyState {
+  const LoadingSurvey([Survey? survey]) : super(survey);
+
+  @override
+  SurveyState copyWith({Survey? survey}) => LoadingSurvey(survey);
+}
+
 class ShowHelpUsPrompt extends SurveyState {
   final bool dontShowThisAgain;
 

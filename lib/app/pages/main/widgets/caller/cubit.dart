@@ -37,6 +37,7 @@ import '../../../../../domain/usecases/get_is_authenticated.dart';
 import '../../../../../domain/usecases/get_permission_status.dart';
 import '../../../../../domain/usecases/get_setting.dart';
 import '../../../../../domain/usecases/get_voip_call_event_stream.dart';
+import '../../../../../domain/usecases/increment_app_rating_survey_action_count.dart';
 import '../../../../../domain/usecases/increment_call_through_calls_count.dart';
 import '../../../../../domain/usecases/metrics/track_call_initiated.dart';
 import '../../../../../domain/usecases/metrics/track_call_through_call.dart';
@@ -58,8 +59,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
 
   final _getShowDialerConfirmPopUpSetting =
       GetSettingUseCase<ShowDialerConfirmPopupSetting>();
-  final _getShowSurveyDialogSetting =
-      GetSettingUseCase<ShowSurveyDialogSetting>();
+  final _getShowSurveysSetting = GetSettingUseCase<ShowSurveysSetting>();
   final _changeSetting = ChangeSettingUseCase();
 
   final _call = CallUseCase();
@@ -93,6 +93,9 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
   final _routeAudioToBluetoothDevice = RouteAudioToBluetoothDeviceUseCase();
   final _beginTransfer = BeginTransferUseCase();
   final _mergeTransfer = MergeTransferUseCase();
+
+  final _incrementAppRatingActionCount =
+      IncrementAppRatingSurveyActionCountUseCase();
 
   Timer? _callThroughTimer;
 
@@ -268,16 +271,16 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
             if (state is Calling) {
               _incrementCallThroughCallsCount();
 
-              final showSurvey = await _getShowSurveyDialogSetting()
-                  .then((setting) => setting.value);
-
-              const callTriggerCount =
-                  AfterThreeCallThroughCallsTrigger.callCount;
               const callTriggerIgnoreCount =
                   AfterThreeCallThroughCallsTrigger.ignoreCallCount;
 
               final count = _getCallThroughCallsCount();
-              if (showSurvey && count >= callTriggerCount) {
+
+              final showSurvey = AfterThreeCallThroughCallsTrigger.isTriggered(
+                await _getShowSurveysSetting(),
+                callCount: count,
+              );
+              if (showSurvey) {
                 // At 6 calls, we set "Don't show this again"
                 // to true by default. This means that after dismissing the
                 // survey for 3 times, the survey will be shown one last time
@@ -285,7 +288,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
                 // dismiss again, it won't be shown anymore.
                 if (count == callTriggerIgnoreCount) {
                   await _changeSetting(
-                    setting: const ShowSurveyDialogSetting(false),
+                    setting: const ShowSurveysSetting(false),
                   );
                 }
 
@@ -400,6 +403,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
     } else if (event is CallEnded) {
       emit(state.finished(voip: callSessionState));
       _trackVoipCallEvent(callSessionState);
+      _incrementAppRatingActionCount();
       logger.info('VoIP call ended');
     } else {
       emit(state.copyWith(voip: callSessionState));

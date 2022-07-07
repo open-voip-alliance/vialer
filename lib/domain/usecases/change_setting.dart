@@ -11,6 +11,7 @@ import 'disable_remote_logging.dart';
 import 'enable_remote_logging.dart';
 import 'get_mobile_number.dart';
 import 'get_settings.dart';
+import 'increment_app_rating_survey_action_count.dart';
 import 'refresh_voip.dart';
 import 'register_to_voip_middleware.dart';
 import 'start_voip.dart';
@@ -30,6 +31,8 @@ class ChangeSettingUseCase extends UseCase {
   final _changeMobileNumber = ChangeMobileNumberUseCase();
   final _getMobileNumber = GetMobileNumberUseCase();
   final _changeAvailability = ChangeAvailabilityUseCase();
+  final _incrementAppRatingActionCount =
+      IncrementAppRatingSurveyActionCountUseCase();
 
   Future<void> call({required Setting setting, bool remote = true}) async {
     if (setting is RemoteLoggingSetting) {
@@ -91,5 +94,7 @@ class ChangeSettingUseCase extends UseCase {
       _metricsRepository
           .track('dnd-status-changed', {'enabled': setting.value});
     }
+
+    _incrementAppRatingActionCount();
   }
 }
