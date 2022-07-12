@@ -144,14 +144,19 @@ class MainPageState extends State<MainPage> {
                 ? SizedBox(
                     height: 62,
                     width: 62,
-                    child: FloatingActionButton(
-                      // We use the CallButton's hero tag for a nice transition
-                      // between the dialer and call button.
-                      heroTag: CallButton.defaultHeroTag,
-                      backgroundColor: context.brand.theme.colors.green1,
-                      onPressed: () =>
-                          Navigator.pushNamed(context, Routes.dialer),
-                      child: const Icon(VialerSans.dialpad, size: 31),
+                    child: MergeSemantics(
+                      child: Semantics(
+                        label: context.msg.main.dialer.title,
+                        child: FloatingActionButton(
+                          // We use the CallButton's hero tag for a nice
+                          // transition between the dialer and call button.
+                          heroTag: CallButton.defaultHeroTag,
+                          backgroundColor: context.brand.theme.colors.green1,
+                          onPressed: () =>
+                              Navigator.pushNamed(context, Routes.dialer),
+                          child: const Icon(VialerSans.dialpad, size: 31),
+                        ),
+                      ),
                     ),
                   )
                 : null,
