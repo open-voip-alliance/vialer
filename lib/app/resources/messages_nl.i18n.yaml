@@ -42,19 +42,19 @@ main:
       title: "Weet je zeker dat je uit wilt loggen?"
 
   calls:
-    title: "Call log"
+    title: "Gesprekkenlijst"
 
   dialPlan:
-    title: "Dial plan"
+    title: "Belplan"
 
   stats:
-    title: "Stats"
+    title: "Statistieken"
 
   feedback:
     title: "Feedback"
 
   telephony:
-    title: "Telephony"
+    title: "Telefonie"
 
   dialer:
     title: &keypadTitle "Toetsen"
