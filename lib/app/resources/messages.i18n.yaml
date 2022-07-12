@@ -3,6 +3,8 @@
 # E.g. `connectivity.noConnection` becomes `connectivity_no_connection`.
 
 generic:
+  on: "On"
+  off: "Off"
   button:
     ok: "Ok"
     cancel: "Cancel"
@@ -64,13 +66,20 @@ main:
       hangUp: &hangUpCall "Hang up"
       actions:
         mute: "Mute"
-        keypad: "Keypad"
-        speaker: "Speaker"
-        transfer: "Transfer"
+        keypad:
+          label: "Keypad"
+          semanticPostPress: "Keypad open"
+        transfer:
+          label: "Transfer"
+          semanticPostPress(String callerName): "Transferring $callerName"
         merge: "Merge calls"
-        bluetooth: "Bluetooth"
-        phone: "Phone"
         hold: "Hold"
+        audioRoute:
+          speaker: "Speaker"
+          bluetooth: "Bluetooth"
+          phone: "Phone"
+          semanticLabel(String label): "Audio output: $label"
+          semanticPostPress: "Choose audio output"
       state:
         calling: "Calling"
         callEnded: "Call ended"

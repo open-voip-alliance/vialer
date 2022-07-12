@@ -1,5 +1,6 @@
 generic:
-  dontShowThisAgain: "Toon dit niet meer"
+  on: "Aan"
+  off: "Uit"
   button:
     ok: "Ok"
     cancel: "Annuleren"
@@ -60,13 +61,20 @@ main:
       hangUp: &hangUpCall "Ophangen"
       actions:
         mute: "Dempen"
-        keypad: "Toetsen"
-        speaker: "Luidspreker"
-        transfer: "Doorverbinden"
+        keypad:
+          label: "Toetsen"
+          semanticPostPress: "Toetsen geopend"
+        transfer:
+          label: "Doorverbinden"
+          semanticPostPress(String callerName): "Verbind $callerName door"
         merge: "Voeg samen"
-        bluetooth: "Bluetooth"
-        phone: "Telefoon"
         hold: "Wacht"
+        audioRoute:
+          speaker: "Luidspreker"
+          bluetooth: "Bluetooth"
+          phone: "Telefoon"
+          semanticLabel(String label): "Audio output: $label"
+          semanticPostPress: "Kies audio output"
       state:
         calling: "Bellen"
         callEnded: "Gesprek beëindigd"
