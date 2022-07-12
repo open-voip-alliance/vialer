@@ -89,7 +89,20 @@ class MainActivity : FlutterActivity(), Pigeon.CallScreenBehavior {
 
     protected override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
+        when (intent.action) {
+            Intent.ACTION_DIAL, Intent.ACTION_CALL, Intent.ACTION_VIEW ->
+                call(intent.data?.schemeSpecificPart ?: "")
+        }
         setIntent(intent);
+    }
+
+    private fun call(number: String) {
+        App.segment.track("call-initiated-from-os", mapOf())
+
+        val normalizedNumber = number.replace(Regex("[^0-9\\+]"), "")
+        if (normalizedNumber.isNotEmpty()) {
+            startCall(normalizedNumber)
+        }
     }
 
     protected override fun onResume() {
