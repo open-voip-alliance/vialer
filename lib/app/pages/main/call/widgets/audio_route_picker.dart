@@ -14,25 +14,30 @@ class AudioRoutePicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SimpleDialog(
-      children: <Widget>[
-        _AudioRouteDialogOption(
-          route: AudioRoute.phone,
-          currentRoute: audioState.currentRoute,
-          icon: const Icon(VialerSans.phone),
-          label: context.msg.main.call.ongoing.actions.phone,
-        ),
-        _AudioRouteDialogOption(
-          route: AudioRoute.speaker,
-          currentRoute: audioState.currentRoute,
-          icon: const Icon(VialerSans.speaker),
-          label: context.msg.main.call.ongoing.actions.speaker,
-        ),
-        ..._buildBluetoothOptions(
-          context: context,
-          audioState: audioState,
-        ),
-      ],
+    return IconTheme.merge(
+      data: IconThemeData(
+        color: context.brand.theme.colors.grey6,
+      ),
+      child: SimpleDialog(
+        children: <Widget>[
+          _AudioRouteDialogOption(
+            route: AudioRoute.phone,
+            currentRoute: audioState.currentRoute,
+            icon: const Icon(VialerSans.phone),
+            label: context.msg.main.call.ongoing.actions.audioRoute.phone,
+          ),
+          _AudioRouteDialogOption(
+            route: AudioRoute.speaker,
+            currentRoute: audioState.currentRoute,
+            icon: const Icon(VialerSans.speaker),
+            label: context.msg.main.call.ongoing.actions.audioRoute.speaker,
+          ),
+          ..._buildBluetoothOptions(
+            context: context,
+            audioState: audioState,
+          ),
+        ],
+      ),
     );
   }
 
@@ -73,7 +78,7 @@ class AudioRoutePicker extends StatelessWidget {
     required BuildContext context,
     required String bluetoothDeviceName,
   }) {
-    final label = context.msg.main.call.ongoing.actions.bluetooth;
+    final label = context.msg.main.call.ongoing.actions.audioRoute.bluetooth;
 
     return toBeginningOfSentenceCase(
       bluetoothDeviceName.isNotEmpty ? '$label ($bluetoothDeviceName)' : label,
@@ -109,12 +114,14 @@ class _AudioRouteDialogOption extends StatelessWidget {
               padding: const EdgeInsets.only(right: 10),
               child: icon,
             ),
-            Text(
-              toBeginningOfSentenceCase(
-                label,
-              )!,
+            Expanded(
+              child: Text(
+                toBeginningOfSentenceCase(
+                  label,
+                )!,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
-            const Spacer(),
             if (_isCurrentRoute()) const Icon(VialerSans.check),
           ],
         ),
