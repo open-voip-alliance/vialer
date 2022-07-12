@@ -107,12 +107,6 @@ abstract class CallProcessState extends CallOriginDetermined {
         voip: voip ?? this.voip,
       );
 
-  ShowCallThroughSurvey showCallThroughSurvey() {
-    assert(this is Calling);
-
-    return ShowCallThroughSurvey(origin: origin);
-  }
-
   FinishedCalling finished({CallSessionState? voip}) => FinishedCalling(
         origin: origin,
         voip: voip ?? this.voip,
@@ -351,40 +345,6 @@ class AttendedTransferComplete extends FinishedCalling {
       AttendedTransferComplete(
         origin: origin ?? this.origin,
         voip: voip ?? this.voip,
-      );
-}
-
-class ShowCallThroughSurvey extends FinishedCalling {
-  ShowCallThroughSurvey({required CallOrigin origin})
-      // Call does not need to be passed here since it's for call-through.
-      : super(origin: origin, voip: null);
-
-  ShowedCallThroughSurvey showed() => ShowedCallThroughSurvey(origin: origin);
-
-  /// [voipCall] and [isVoipCallMuted] never get copied.
-  @override
-  ShowCallThroughSurvey copyWith({
-    CallOrigin? origin,
-    CallSessionState? voip,
-  }) =>
-      ShowCallThroughSurvey(
-        origin: origin ?? this.origin,
-      );
-}
-
-class ShowedCallThroughSurvey extends FinishedCalling {
-  // Call does not need to be passed here since it's for call-through.
-  const ShowedCallThroughSurvey({
-    required CallOrigin origin,
-  }) : super(origin: origin, voip: null);
-
-  @override
-  ShowedCallThroughSurvey copyWith({
-    CallOrigin? origin,
-    CallSessionState? voip,
-  }) =>
-      ShowedCallThroughSurvey(
-        origin: origin ?? this.origin,
       );
 }
 

@@ -94,19 +94,10 @@ class ConfirmPageState extends State<ConfirmPage>
       Timer(const Duration(milliseconds: 200), () {
         // We need to make sure the state is mounted, because the timer can be
         // executed after the state has been disposed of.
-        if (mounted &&
-            _canPop &&
-            context.read<CallerCubit>().state is! ShowCallThroughSurvey) {
+        if (mounted && _canPop) {
           _pop();
         }
       });
-    }
-  }
-
-  void _onCallerStateChanged(BuildContext context, CallerState state) {
-    // Pop if we showed the call-through survey.
-    if (state is ShowedCallThroughSurvey) {
-      _pop();
     }
   }
 
@@ -142,91 +133,88 @@ class ConfirmPageState extends State<ConfirmPage>
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<CallerCubit, CallerState>(
-      listener: _onCallerStateChanged,
-      child: WillPopScope(
-        onWillPop: _onWillPop,
-        child: TransparentStatusBar(
-          brightness: Brightness.dark,
-          child: Padding(
-            padding: const EdgeInsets.only(
-              top: 64,
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: TransparentStatusBar(
+        brightness: Brightness.dark,
+        child: Padding(
+          padding: const EdgeInsets.only(
+            top: 64,
+          ),
+          child: Material(
+            elevation: 8,
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(24),
+              topRight: Radius.circular(24),
             ),
-            child: Material(
-              elevation: 8,
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(24),
-                topRight: Radius.circular(24),
-              ),
-              child: BlocBuilder<ConfirmCubit, ConfirmState>(
-                builder: (context, state) {
-                  final cubit = context.watch<ConfirmCubit>();
+            child: BlocBuilder<ConfirmCubit, ConfirmState>(
+              builder: (context, state) {
+                final cubit = context.watch<ConfirmCubit>();
 
-                  final paragraphDistance = 48 *
-                      (1.0 - (MediaQuery.textScaleFactorOf(context) - 1.0));
+                final paragraphDistance =
+                    48 * (1.0 - (MediaQuery.textScaleFactorOf(context) - 1.0));
 
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 48),
-                    child: Column(
-                      children: <Widget>[
-                        Flexible(
-                          // ScrollView is here in case even with the altered
-                          // paragraph distance the text doesn't fit.
-                          child: SingleChildScrollView(
-                            child: Column(
-                              children: [
-                                SizedBox(height: paragraphDistance),
-                                Text(
-                                  context.msg.main.dialer.confirm
-                                      .title(widget.destination),
-                                  style: _largeStyle,
-                                  textAlign: TextAlign.center,
-                                ),
-                                SizedBox(height: paragraphDistance),
-                                Text(
-                                  context.msg.main.dialer.confirm.description
-                                      .routing,
-                                  style: _style,
-                                  textAlign: TextAlign.center,
-                                ),
-                                const SizedBox(height: 8),
-                                // Is null for the first (few) frame(s).
-                                if (state.regionNumber != null)
-                                  Text(state.regionNumber!, style: _largeStyle),
-                                SizedBox(height: paragraphDistance),
-                                Text(
-                                  context.msg.main.dialer.confirm.description
-                                      .recipient,
-                                  style: _style,
-                                  textAlign: TextAlign.center,
-                                ),
-                                const SizedBox(height: 8),
-                                // Is null for the first (few) frame(s).
-                                if (state.outgoingCli != null)
-                                  Text(state.outgoingCli!, style: _largeStyle),
-                                SizedBox(height: paragraphDistance),
-                              ],
-                            ),
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 48),
+                  child: Column(
+                    children: <Widget>[
+                      Flexible(
+                        // ScrollView is here in case even with the altered
+                        // paragraph distance the text doesn't fit.
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              SizedBox(height: paragraphDistance),
+                              Text(
+                                context.msg.main.dialer.confirm
+                                    .title(widget.destination),
+                                style: _largeStyle,
+                                textAlign: TextAlign.center,
+                              ),
+                              SizedBox(height: paragraphDistance),
+                              Text(
+                                context.msg.main.dialer.confirm.description
+                                    .routing,
+                                style: _style,
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(height: 8),
+                              // Is null for the first (few) frame(s).
+                              if (state.regionNumber != null)
+                                Text(state.regionNumber!, style: _largeStyle),
+                              SizedBox(height: paragraphDistance),
+                              Text(
+                                context.msg.main.dialer.confirm.description
+                                    .recipient,
+                                style: _style,
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(height: 8),
+                              // Is null for the first (few) frame(s).
+                              if (state.outgoingCli != null)
+                                Text(state.outgoingCli!, style: _largeStyle),
+                              SizedBox(height: paragraphDistance),
+                            ],
                           ),
                         ),
-                        if (context.isAndroid)
-                          _AndroidInputs(
-                            checkboxValue: !state.showConfirmPage,
-                            onCheckboxValueChanged: (v) =>
-                                cubit.updateShowPopupSetting(!v),
-                            onCallButtonPressed: () =>
-                                cubit.call(origin: widget.origin),
-                            onCancelButtonPressed: () =>
-                                _onCancelButtonPressed(cubit),
-                            destination: context.msg.main.dialer.confirm.button
-                                .call(widget.destination)
-                                .toUpperCase(),
-                          ),
-                      ],
-                    ),
-                  );
-                },
-              ),
+                      ),
+                      if (context.isAndroid)
+                        _AndroidInputs(
+                          checkboxValue: !state.showConfirmPage,
+                          onCheckboxValueChanged: (v) =>
+                              cubit.updateShowPopupSetting(!v),
+                          onCallButtonPressed: () =>
+                              cubit.call(origin: widget.origin),
+                          onCancelButtonPressed: () =>
+                              _onCancelButtonPressed(cubit),
+                          destination: context.msg.main.dialer.confirm.button
+                              .call(widget.destination)
+                              .toUpperCase(),
+                        ),
+                    ],
+                  ),
+                );
+              },
             ),
           ),
         ),

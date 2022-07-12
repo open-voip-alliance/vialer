@@ -6,12 +6,10 @@ import '../setting.dart';
 
 /// When and where the survey is displayed.
 class SurveyTrigger {
-  static const afterThreeCallThroughCalls = AfterThreeCallThroughCallsTrigger();
-
   const SurveyTrigger();
 
-  /// Converts for example `AfterThreeCallThroughCallsTrigger` to
-  /// `'after-three-call-through-calls'`.
+  /// Converts for example `AfterAnAmountOfActionsOnAppLaunchTrigger` to
+  /// `'after-an-amount-of-actions-on-app-launch'`.
   String toJson() {
     final camelCaseSplit = runtimeType
         .toString()
@@ -29,25 +27,6 @@ class SurveyTrigger {
 
 // WARNING: Do not change the name of this or any other subclasses of
 // SurveyTrigger, because the name of the class is used for JSON serialization.
-class AfterThreeCallThroughCallsTrigger extends SurveyTrigger {
-  static const callCount = 3;
-
-  /// Amount of calls when the survey should not be shown anymore, at least
-  /// by default.
-  static const ignoreCallCount = callCount * 2;
-  static const minimumCallDuration = Duration(seconds: 30);
-
-  const AfterThreeCallThroughCallsTrigger();
-
-  static bool isTriggered(
-    ShowSurveysSetting setting, {
-    required int callCount,
-  }) {
-    return setting.value == true &&
-        callCount >= AfterThreeCallThroughCallsTrigger.callCount;
-  }
-}
-
 class AfterAnAmountOfActionsOnAppLaunchTrigger extends SurveyTrigger {
   /// Actions are calls or setting changes.
   static const actionsCount = 20;

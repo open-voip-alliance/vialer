@@ -31,6 +31,5 @@ class Survey extends Equatable {
 }
 
 enum SurveyId {
-  callThrough1,
   appRating,
 }
