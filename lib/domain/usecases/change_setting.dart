@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import '../../app/util/loggable.dart';
 import '../../dependency_locator.dart';
 import '../entities/setting.dart';
 import '../repositories/metrics.dart';
@@ -17,7 +18,7 @@ import 'register_to_voip_middleware.dart';
 import 'start_voip.dart';
 import 'unregister_to_voip_middleware.dart';
 
-class ChangeSettingUseCase extends UseCase {
+class ChangeSettingUseCase extends UseCase with Loggable {
   final _storageRepository = dependencyLocator<StorageRepository>();
   final _metricsRepository = dependencyLocator<MetricsRepository>();
 
@@ -35,6 +36,15 @@ class ChangeSettingUseCase extends UseCase {
       IncrementAppRatingSurveyActionCountUseCase();
 
   Future<void> call({required Setting setting, bool remote = true}) async {
+    if (setting is AvailabilitySetting) {
+      // Only log the destination, since the whole availability object
+      // contains too much privacy sensitive information.
+      logger.info('Set ${setting.runtimeType} '
+          'to ${setting.value!.selectedDestinationInfo}');
+    } else {
+      logger.info('Set ${setting.runtimeType} to ${setting.value}');
+    }
+
     if (setting is RemoteLoggingSetting) {
       if (setting.value) {
         await _enableRemoteLogging();
