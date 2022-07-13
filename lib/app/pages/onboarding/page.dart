@@ -107,7 +107,6 @@ class OnboardingPageState extends State<OnboardingPage> {
     return Background(
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        resizeToAvoidBottomInset: false,
         body: BlocProvider<OnboardingCubit>(
           create: (_) => OnboardingCubit(
             context.watch<CallerCubit>(),

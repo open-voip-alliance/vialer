@@ -23,6 +23,7 @@ class StylizedTextField extends StatelessWidget {
   final VoidCallback? onEditingComplete;
   final ValueChanged<String>? onChanged;
   final GestureTapCallback? onTap;
+  final Function(String)? onSubmitted;
   final bool enabled;
   final double elevation;
 
@@ -49,6 +50,7 @@ class StylizedTextField extends StatelessWidget {
     this.onEditingComplete,
     this.onChanged,
     this.onTap,
+    this.onSubmitted,
     this.enabled = true,
     this.elevation = 4,
   }) : super(key: key);
@@ -103,6 +105,7 @@ class StylizedTextField extends StatelessWidget {
         onEditingComplete: onEditingComplete,
         onChanged: onChanged,
         onTap: onTap,
+        onSubmitted: onSubmitted,
       ),
     );
   }
