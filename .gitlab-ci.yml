@@ -25,7 +25,6 @@ build & test:
   before_script:
     - dart ./utils/ci/gitlab/remove_build_url.dart
     - apt-get update && apt-get -y -qq install python3
-    - git submodule update --recursive --init
     - dart pub get
   script:
     - dart ./utils/ci/gitlab/build_via_codemagic.dart

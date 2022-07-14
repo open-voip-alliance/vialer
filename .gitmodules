@@ -1,3 +1,0 @@
-[submodule "voip_flutter_integration"]
-	path = voip_flutter_integration
-	url = ../voip/flutter-phone-lib.git
