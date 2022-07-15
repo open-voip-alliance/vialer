@@ -46,7 +46,7 @@ abstract class Setting<T> {
     };
   }
 
-  static Setting fromJson(Map<String, dynamic> json) {
+  static Setting? fromJson(Map<String, dynamic> json) {
     final type = json[_typeKey];
     final value = json[_valueKey];
 
@@ -82,7 +82,8 @@ abstract class Setting<T> {
     } else if (type == (DndSetting).toString()) {
       return DndSetting(value as bool);
     } else {
-      throw UnsupportedError('Setting type does not exist: $type');
+      assert(false, 'Setting type does not exist: $type');
+      return null;
     }
   }
 
