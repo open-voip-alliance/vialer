@@ -1,0 +1,6 @@
+- iOS: Variabele callernames zijn nu zichtbaar bij inkomende oproepen
+- iOS: Een probleem waarbij sommige korte nummers niet konden worden gebeld is opgelost
+- Android: Het is nu mogelijk een gesprek te starten via nummers die je ziet in andere apps (bijv. web browser)
+- We zullen soms vragen voor feedback over de app
+- De schermlezer leest nu de knoppen tijdens het bellen correct voor
+- Je krijgt nu een nummer toetsenbord te zien wanneer je je telefoonnummer invult tijdens onboarden
