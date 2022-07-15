@@ -1,0 +1,6 @@
+- iOS: Variable callernames are now shown for incoming calls
+- iOS: Fixed an issue where certain short numbers couldn't be called
+- Android: It is now possible to start calls via numbers in external apps (e.g. web browser)
+- We will now occasionally prompt for feedback regarding the app
+- The screen reader now reads action buttons during a call correctly
+- A number pad will now be seen when entering a mobile number during onboarding
