@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:dartx/dartx.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../entities/setting.dart';
@@ -39,6 +40,7 @@ class StorageRepository {
       final settings = preference != null
           ? (json.decode(preference) as List)
               .map((s) => Setting.fromJson(s as Map<String, dynamic>))
+              .filterNotNull()
               .toList()
           : <Setting>[];
 
