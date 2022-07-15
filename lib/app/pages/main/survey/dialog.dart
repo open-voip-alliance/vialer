@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../domain/entities/survey/survey.dart';
 import '../../../../domain/entities/survey/survey_trigger.dart';
 import 'cubit.dart';
 import 'screen/help_us.dart';
@@ -8,27 +9,34 @@ import 'screen/question.dart';
 import 'screen/thank_you.dart';
 
 class SurveyDialog extends StatelessWidget {
+  final SurveyId surveyId;
   final SurveyTrigger trigger;
 
   static Future<void> show(
-    BuildContext context, {
+    BuildContext context,
+    SurveyId surveyId, {
     required SurveyTrigger trigger,
   }) async {
     await showDialog(
       context: context,
       builder: (context) {
-        return SurveyDialog._(trigger: trigger);
+        return SurveyDialog._(surveyId: surveyId, trigger: trigger);
       },
     );
   }
 
-  SurveyDialog._({Key? key, required this.trigger}) : super(key: key);
+  SurveyDialog._({
+    Key? key,
+    required this.surveyId,
+    required this.trigger,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Dialog(
       child: BlocProvider<SurveyCubit>(
         create: (_) => SurveyCubit(
+          id: surveyId,
           language: Localizations.localeOf(context).languageCode,
           trigger: trigger,
         ),
@@ -47,6 +55,8 @@ class SurveyDialog extends StatelessWidget {
               );
             } else if (state is ShowThankYou) {
               return const ThankYouScreen();
+            } else if (state is LoadingSurvey) {
+              return const SizedBox();
             } else {
               throw UnsupportedError('Unsupported state: $state');
             }

@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_phone_lib/flutter_phone_lib.dart'
     hide AttendedTransferStarted;
@@ -197,6 +198,23 @@ class _CallPageState extends State<_CallPage>
           );
 
   void _transfer() {
+    final callerName = context
+            .read<CallerCubit>()
+            .processState
+            .voip
+            ?.activeCall
+            ?.remotePartyHeading ??
+        '';
+
+    // TODO: Use correct phone number pronunciation.
+    Future.delayed(const Duration(seconds: 1), () {
+      SemanticsService.announce(
+        context.msg.main.call.ongoing.actions.transfer
+            .semanticPostPress(callerName),
+        Directionality.of(context),
+      );
+    });
+
     // We want to use the closest navigator here, not the root navigator.
     Navigator.pushNamed(context, _transferRoute);
   }

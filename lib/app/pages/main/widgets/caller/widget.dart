@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../domain/entities/call_failure_reason.dart';
 import '../../../../../domain/entities/exceptions/call_through.dart';
-import '../../../../../domain/entities/survey/survey_trigger.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
 import '../../../../routes.dart';
@@ -13,7 +12,6 @@ import '../../../../util/pigeon.dart';
 import '../../../../util/widgets_binding_observer_registrar.dart';
 import '../../call/incoming/page.dart';
 import '../../call/page.dart';
-import '../../survey/dialog.dart';
 import 'confirm/page.dart';
 import 'cubit.dart';
 
@@ -134,18 +132,6 @@ class _CallerState extends State<Caller>
           origin: state.origin,
         ),
       );
-    }
-
-    if (state is ShowCallThroughSurvey) {
-      await SurveyDialog.show(
-        // We use the context of the navigator key, because that key is
-        // associated with the MaterialApp which has Localizations, which
-        // the SurveyDialog needs.
-        _navigatorContext,
-        trigger: SurveyTrigger.afterThreeCallThroughCalls,
-      );
-
-      context.read<CallerCubit>().notifySurveyShown();
     }
 
     if (state is InitiatingCallFailed) {

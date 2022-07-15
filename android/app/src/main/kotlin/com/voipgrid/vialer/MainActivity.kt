@@ -2,7 +2,9 @@ package com.voipgrid.vialer
 
 import SystemTones
 import android.content.Intent
+import android.content.Intent.getIntent
 import android.os.Build
+import android.os.Bundle
 import android.view.WindowManager
 import androidx.annotation.NonNull
 import com.voipgrid.vialer.IncomingCallActivity.Companion.INCOMING_CALL_CANCEL_INTENT
@@ -10,6 +12,7 @@ import com.voipgrid.vialer.Pigeon.ContactSort
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugins.GeneratedPluginRegistrant
+import org.openvoipalliance.flutterphonelib.*
 
 class MainActivity : FlutterActivity(), Pigeon.CallScreenBehavior {
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
@@ -82,6 +85,33 @@ class MainActivity : FlutterActivity(), Pigeon.CallScreenBehavior {
 
         // We will make sure the incoming call screen has also finished
         sendBroadcast(Intent(INCOMING_CALL_CANCEL_INTENT))
+    }
+
+    protected override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        when (intent.action) {
+            Intent.ACTION_DIAL, Intent.ACTION_CALL, Intent.ACTION_VIEW ->
+                call(intent.data?.schemeSpecificPart ?: "")
+        }
+        setIntent(intent);
+    }
+
+    private fun call(number: String) {
+        App.segment.track("call-initiated-from-os", mapOf())
+
+        val normalizedNumber = number.replace(Regex("[^0-9\\+]"), "")
+        if (normalizedNumber.isNotEmpty()) {
+            startCall(normalizedNumber)
+        }
+    }
+
+    protected override fun onResume() {
+        super.onResume()
+
+        val pressedNotification = getIntent()?.getBooleanExtra(PhoneLib.PRESSED_MISSED_CALL_NOTIFICATION_EXTRA, false)
+        if (pressedNotification == true) {
+            PhoneLib.notifyMissedCallNotificationPressed()
+        }
     }
 
     companion object {

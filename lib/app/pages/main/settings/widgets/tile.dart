@@ -111,12 +111,14 @@ class SettingTile extends StatelessWidget {
   }
 
   static Widget mobileNumber({
+    Key? key,
     required MobileNumberSetting setting,
     required bool isVoipAllowed,
   }) {
     return Builder(
       builder: (context) {
         return SettingTile(
+          key: key,
           description: isVoipAllowed
               ? Text(
                   context.msg.main.settings.list.accountInfo.mobileNumber

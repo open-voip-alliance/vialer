@@ -14,7 +14,6 @@ import '../../../../../domain/entities/exceptions/voip_not_allowed.dart';
 import '../../../../../domain/entities/permission.dart';
 import '../../../../../domain/entities/permission_status.dart';
 import '../../../../../domain/entities/setting.dart';
-import '../../../../../domain/entities/survey/survey_trigger.dart';
 import '../../../../../domain/usecases/answer_voip_call.dart';
 import '../../../../../domain/usecases/call/call.dart';
 import '../../../../../domain/usecases/call/voip/begin_transfer.dart';
@@ -28,8 +27,6 @@ import '../../../../../domain/usecases/call/voip/route_audio.dart';
 import '../../../../../domain/usecases/call/voip/route_audio_to_bluetooth_device.dart';
 import '../../../../../domain/usecases/call/voip/toggle_hold.dart';
 import '../../../../../domain/usecases/call/voip/toggle_mute.dart';
-import '../../../../../domain/usecases/change_setting.dart';
-import '../../../../../domain/usecases/get_call_through_calls_count.dart';
 import '../../../../../domain/usecases/get_current_connectivity_status.dart';
 import '../../../../../domain/usecases/get_has_voip_enabled.dart';
 import '../../../../../domain/usecases/get_has_voip_started.dart';
@@ -37,7 +34,7 @@ import '../../../../../domain/usecases/get_is_authenticated.dart';
 import '../../../../../domain/usecases/get_permission_status.dart';
 import '../../../../../domain/usecases/get_setting.dart';
 import '../../../../../domain/usecases/get_voip_call_event_stream.dart';
-import '../../../../../domain/usecases/increment_call_through_calls_count.dart';
+import '../../../../../domain/usecases/increment_app_rating_survey_action_count.dart';
 import '../../../../../domain/usecases/metrics/track_call_initiated.dart';
 import '../../../../../domain/usecases/metrics/track_call_through_call.dart';
 import '../../../../../domain/usecases/metrics/track_outbound_call_failed.dart';
@@ -58,20 +55,14 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
 
   final _getShowDialerConfirmPopUpSetting =
       GetSettingUseCase<ShowDialerConfirmPopupSetting>();
-  final _getShowSurveyDialogSetting =
-      GetSettingUseCase<ShowSurveyDialogSetting>();
-  final _changeSetting = ChangeSettingUseCase();
 
   final _call = CallUseCase();
-  final _getCallThroughCallsCount = GetCallThroughCallsCountUseCase();
   final _trackVoipCall = TrackVoipCallUseCase();
   final _trackCallThroughCall = TrackCallThroughCallUseCase();
   final _trackVoipCallStarted = TrackVoipCallStartedUseCase();
   final _trackOutboundCallFailed = TrackOutboundCallFailedUseCase();
   final _trackUserInitiatedOutboundCall = TrackUserInitiatedOutboundCall();
 
-  final _incrementCallThroughCallsCount =
-      IncrementCallThroughCallsCountUseCase();
   final _getPermissionStatus = GetPermissionStatusUseCase();
   final _requestPermission = RequestPermissionUseCase();
   final _openAppSettings = OpenSettingsAppUseCase();
@@ -94,7 +85,8 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
   final _beginTransfer = BeginTransferUseCase();
   final _mergeTransfer = MergeTransferUseCase();
 
-  Timer? _callThroughTimer;
+  final _incrementAppRatingActionCount =
+      IncrementAppRatingSurveyActionCountUseCase();
 
   _PreservedCallSessionState _preservedCallSessionState =
       _PreservedCallSessionState();
@@ -261,39 +253,6 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
         logger.info('Initiating call-through call');
         await _call(destination: destination, useVoip: false);
         emit(processState.calling());
-
-        _callThroughTimer = Timer(
-          AfterThreeCallThroughCallsTrigger.minimumCallDuration,
-          () async {
-            if (state is Calling) {
-              _incrementCallThroughCallsCount();
-
-              final showSurvey = await _getShowSurveyDialogSetting()
-                  .then((setting) => setting.value);
-
-              const callTriggerCount =
-                  AfterThreeCallThroughCallsTrigger.callCount;
-              const callTriggerIgnoreCount =
-                  AfterThreeCallThroughCallsTrigger.ignoreCallCount;
-
-              final count = _getCallThroughCallsCount();
-              if (showSurvey && count >= callTriggerCount) {
-                // At 6 calls, we set "Don't show this again"
-                // to true by default. This means that after dismissing the
-                // survey for 3 times, the survey will be shown one last time
-                // with "Don't show this again" enabled by default. So if they
-                // dismiss again, it won't be shown anymore.
-                if (count == callTriggerIgnoreCount) {
-                  await _changeSetting(
-                    setting: const ShowSurveyDialogSetting(false),
-                  );
-                }
-
-                emit(processState.showCallThroughSurvey());
-              }
-            }
-          },
-        );
       } on CallThroughException catch (e) {
         emit(processState.failed(e));
       }
@@ -400,6 +359,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
     } else if (event is CallEnded) {
       emit(state.finished(voip: callSessionState));
       _trackVoipCallEvent(callSessionState);
+      _incrementAppRatingActionCount();
       logger.info('VoIP call ended');
     } else {
       emit(state.copyWith(voip: callSessionState));
@@ -564,31 +524,21 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
       return;
     }
 
-    _callThroughTimer?.cancel();
-    if (state is! ShowCallThroughSurvey) {
-      if (state is Calling) {
-        emit(state.finished());
-        logger.info('Call-through call ended');
-      } else if (state is! NoPermission) {
-        emit(const CanCall());
-      } else {
-        checkPhonePermission();
-      }
+    if (state is Calling) {
+      emit(state.finished());
+      logger.info('Call-through call ended');
+    } else if (state is! NoPermission) {
+      emit(const CanCall());
+    } else {
+      checkPhonePermission();
     }
   }
 
   /// For when you're sure the current state is a [CallProcessState].
   CallProcessState get processState => state as CallProcessState;
 
-  void notifySurveyShown() {
-    final state = this.state as ShowCallThroughSurvey;
-
-    emit(state.showed());
-  }
-
   @override
   Future<void> close() async {
-    _callThroughTimer?.cancel();
     await _voipCallEventSubscription?.cancel();
     await super.close();
   }

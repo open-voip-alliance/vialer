@@ -98,7 +98,7 @@ class _CallTransferState extends State<CallTransfer> {
                   callButtonIcon: VialerSans.transfer,
                   callButtonColor: context.brand.theme.colors.green1,
                   callButtonSemanticsHint:
-                      context.msg.main.call.ongoing.actions.transfer,
+                      context.msg.main.call.ongoing.actions.transfer.label,
                   onCallButtonPressed: widget.onTransferTargetSelected,
                   bottomLeftButton: closeButton,
                   bottomRightButton: IconButton(

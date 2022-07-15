@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_phone_lib/flutter_phone_lib.dart';
 
@@ -100,6 +101,13 @@ class _CallActionButtons extends StatelessWidget {
       context.read<CallerCubit>().toggleMute();
 
   void _toggleDialPad(BuildContext context) {
+    Future.delayed(const Duration(seconds: 1), () {
+      SemanticsService.announce(
+        context.msg.main.call.ongoing.actions.keypad.semanticPostPress,
+        Directionality.of(context),
+      );
+    });
+
     Navigator.pushNamed(context, 'dial-pad');
   }
 
@@ -139,10 +147,9 @@ class _CallActionButtons extends StatelessWidget {
                 Expanded(
                   child: _ActionButton(
                     icon: const Icon(VialerSans.mute),
-                    text: Text(
-                      context.msg.main.call.ongoing.actions.mute,
-                      textAlign: TextAlign.center,
-                    ),
+                    label: context.msg.main.call.ongoing.actions.mute,
+                    includeActiveStatusInSemanticLabel: true,
+                    onPressedTogglesActiveStatus: true,
                     active: state.isVoipCallMuted,
                     // We can't mute when on hold.
                     onPressed: !call.isOnHold && !state.isFinished
@@ -153,10 +160,7 @@ class _CallActionButtons extends StatelessWidget {
                 Expanded(
                   child: _ActionButton(
                     icon: const Icon(VialerSans.dialpad),
-                    text: Text(
-                      context.msg.main.call.ongoing.actions.keypad,
-                      textAlign: TextAlign.center,
-                    ),
+                    label: context.msg.main.call.ongoing.actions.keypad.label,
                     onPressed: !state.isFinished
                         ? () => _toggleDialPad(context)
                         : null,
@@ -180,12 +184,9 @@ class _CallActionButtons extends StatelessWidget {
                     icon: state.isInTransfer
                         ? const Icon(VialerSans.merge)
                         : const Icon(VialerSans.transfer),
-                    text: Text(
-                      state.isInTransfer
-                          ? context.msg.main.call.ongoing.actions.merge
-                          : context.msg.main.call.ongoing.actions.transfer,
-                      textAlign: TextAlign.center,
-                    ),
+                    label: state.isInTransfer
+                        ? context.msg.main.call.ongoing.actions.merge
+                        : context.msg.main.call.ongoing.actions.transfer.label,
                     onPressed: state.isActionable
                         ? () => state.isInTransfer
                             ? _merge(context)
@@ -197,10 +198,9 @@ class _CallActionButtons extends StatelessWidget {
                   flex: 2,
                   child: _ActionButton(
                     icon: const Icon(VialerSans.onHold),
-                    text: Text(
-                      context.msg.main.call.ongoing.actions.hold,
-                      textAlign: TextAlign.center,
-                    ),
+                    label: context.msg.main.call.ongoing.actions.hold,
+                    includeActiveStatusInSemanticLabel: true,
+                    onPressedTogglesActiveStatus: true,
                     active: call.isOnHold,
                     onPressed:
                         state.isActionable ? () => _toggleHold(context) : null,
@@ -224,67 +224,137 @@ class _CallActionButtons extends StatelessWidget {
   }
 }
 
-class _ActionButton extends StatelessWidget {
+class _ActionButton extends StatefulWidget {
   final Widget icon;
-  final Widget text;
+  final String label;
+  final String semanticLabel;
   final VoidCallback? onPressed;
+
+  /// Whether to narrate the [active] status in the label when read by the
+  /// screen reader.
+  final bool includeActiveStatusInSemanticLabel;
+
+  /// This indicates that the widget can assume that after [onPressed] is
+  /// called, [active] is inversed. This property is necessary because [active]
+  /// might be updated too late, and the screen reader will read out the out
+  /// of date status on press.
+  final bool onPressedTogglesActiveStatus;
 
   /// An active button is one that is currently in-use, so for example the
   /// hold button would be active if the call is current on-hold.
   final bool active;
 
-  /// An enabled button is available to be pressed by the user, for example
-  /// if the call is not yet connected, the user cannot transfer that call so
-  /// the button will not be enabled.
-  bool get _enabled => onPressed != null;
-
   const _ActionButton({
     Key? key,
     required this.icon,
-    required this.text,
+    required this.label,
+    String? semanticLabel,
     this.active = false,
+    this.includeActiveStatusInSemanticLabel = false,
+    this.onPressedTogglesActiveStatus = false,
     this.onPressed,
-  }) : super(key: key);
+  })  : semanticLabel = semanticLabel ?? label,
+        super(key: key);
+
+  @override
+  State<_ActionButton> createState() => _ActionButtonState();
+}
+
+class _ActionButtonState extends State<_ActionButton> {
+  /// An enabled button is available to be pressed by the user, for example
+  /// if the call is not yet connected, the user cannot transfer that call so
+  /// the button will not be enabled.
+  bool get _enabled => widget.onPressed != null;
+
+  bool _active = false;
+
+  String get _semanticLabel {
+    final activeLabel =
+        _active ? context.msg.generic.on : context.msg.generic.off;
+    return '${widget.semanticLabel}. '
+        '${widget.includeActiveStatusInSemanticLabel ? ' $activeLabel' : ''}';
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    _active = widget.active;
+  }
+
+  @override
+  void didUpdateWidget(covariant _ActionButton oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.active != widget.active) {
+      setState(() {
+        _active = widget.active;
+      });
+    }
+  }
+
+  void _onPressed() {
+    if (widget.onPressedTogglesActiveStatus) {
+      setState(() {
+        _active = !_active;
+      });
+
+      // On iOS, the state is already correctly announced after press.
+      // On Android we have to do it manually.
+      if (context.isAndroid) {
+        SemanticsService.announce(_semanticLabel, Directionality.of(context));
+      }
+    }
+
+    widget.onPressed?.call();
+  }
 
   @override
   Widget build(BuildContext context) {
     const iconSize = 64.0;
 
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        SizedBox(
-          height: iconSize,
-          width: iconSize,
-          child: Material(
-            shape: const CircleBorder(),
-            color: active
-                ? context.brand.theme.colors.primary
-                : context.brand.theme.colors.primary.withOpacity(0),
-            child: InkResponse(
-              onTap: _enabled ? onPressed : null,
-              containedInkWell: active,
-              radius: active ? iconSize : iconSize / 2,
-              customBorder: const CircleBorder(),
-              child: IconTheme.merge(
-                data: IconThemeData(
-                  size: 32,
-                  color: _pickIconColor(context),
+    return Semantics(
+      hint: _semanticLabel,
+      button: true,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(
+            height: iconSize,
+            width: iconSize,
+            child: Material(
+              shape: const CircleBorder(),
+              color: _active
+                  ? context.brand.theme.colors.primary
+                  : context.brand.theme.colors.primary.withOpacity(0),
+              child: InkResponse(
+                onTap: _enabled ? _onPressed : null,
+                containedInkWell: _active,
+                radius: _active ? iconSize : iconSize / 2,
+                customBorder: const CircleBorder(),
+                child: IconTheme.merge(
+                  data: IconThemeData(
+                    size: 32,
+                    color: _pickIconColor(context),
+                  ),
+                  child: widget.icon,
                 ),
-                child: icon,
               ),
             ),
           ),
-        ),
-        const SizedBox(height: 8),
-        DefaultTextStyle.merge(
-          style: TextStyle(
-            fontSize: 16,
-            color: _pickTextColor(context),
+          const SizedBox(height: 8),
+          ExcludeSemantics(
+            child: Text(
+              widget.label,
+              style: TextStyle(
+                fontSize: 16,
+                color: _pickTextColor(context),
+              ),
+              textAlign: TextAlign.center,
+            ),
           ),
-          child: text,
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -293,7 +363,7 @@ class _ActionButton extends StatelessWidget {
       : context.brand.theme.colors.grey2;
 
   Color _pickIconColor(BuildContext context) {
-    if (active) return context.brand.theme.colors.onPrimary;
+    if (_active) return context.brand.theme.colors.onPrimary;
 
     if (!_enabled) return context.brand.theme.colors.grey2;
 
@@ -316,6 +386,11 @@ class _AudioRouteButton extends StatelessWidget {
       context.read<CallerCubit>().launchIOSAudioRoutePicker();
       return;
     }
+
+    SemanticsService.announce(
+      context.msg.main.call.ongoing.actions.audioRoute.semanticPostPress,
+      Directionality.of(context),
+    );
 
     final selectedRoute = await showDialog<dynamic>(
       context: context,
@@ -356,16 +431,27 @@ class _AudioRouteButton extends StatelessWidget {
     required String bluetoothDeviceName,
   }) {
     if (!hasBluetooth || currentRoute == AudioRoute.speaker) {
-      return context.msg.main.call.ongoing.actions.speaker;
+      return context.msg.main.call.ongoing.actions.audioRoute.speaker;
     }
 
     if (currentRoute == AudioRoute.bluetooth) {
       return bluetoothDeviceName.isNotEmpty
           ? bluetoothDeviceName
-          : context.msg.main.call.ongoing.actions.bluetooth;
+          : context.msg.main.call.ongoing.actions.audioRoute.bluetooth;
     }
 
-    return context.msg.main.call.ongoing.actions.phone;
+    return context.msg.main.call.ongoing.actions.audioRoute.phone;
+  }
+
+  String _semanticLabelFor({
+    required BuildContext context,
+    required String label,
+    required bool hasBluetooth,
+  }) {
+    if (!hasBluetooth) return label;
+
+    return context.msg.main.call.ongoing.actions.audioRoute
+        .semanticLabel(label);
   }
 
   @override
@@ -376,6 +462,13 @@ class _AudioRouteButton extends StatelessWidget {
         final hasBluetooth = state.audioState != null &&
             state.audioState!.availableRoutes.contains(AudioRoute.bluetooth);
 
+        final label = _labelFor(
+          context: context,
+          hasBluetooth: hasBluetooth,
+          currentRoute: currentRoute,
+          bluetoothDeviceName: state.audioState?.bluetoothDeviceName ?? '',
+        );
+
         return _ActionButton(
           icon: Icon(
             _iconFor(
@@ -384,15 +477,14 @@ class _AudioRouteButton extends StatelessWidget {
               currentRoute: currentRoute,
             ),
           ),
-          text: Text(
-            _labelFor(
-              context: context,
-              hasBluetooth: hasBluetooth,
-              currentRoute: currentRoute,
-              bluetoothDeviceName: state.audioState?.bluetoothDeviceName ?? '',
-            ),
-            textAlign: TextAlign.center,
+          label: label,
+          semanticLabel: _semanticLabelFor(
+            context: context,
+            label: label,
+            hasBluetooth: hasBluetooth,
           ),
+          includeActiveStatusInSemanticLabel: !hasBluetooth,
+          onPressedTogglesActiveStatus: !hasBluetooth,
           active: !hasBluetooth && (currentRoute == AudioRoute.speaker),
           onPressed: enabled
               ? () {

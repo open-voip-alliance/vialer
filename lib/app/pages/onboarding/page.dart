@@ -21,27 +21,33 @@ import 'welcome/page.dart';
 import 'widgets/background.dart';
 
 class OnboardingPage extends StatefulWidget {
-  const OnboardingPage({Key? key}) : super(key: key);
+  /// Only one can exist in the widget tree.
+  OnboardingPage() : super(key: keys.page);
 
   @override
-  State<StatefulWidget> createState() => _OnboardingPageState();
+  State<StatefulWidget> createState() => OnboardingPageState();
+
+  static final keys = _Keys();
 }
 
-class _OnboardingPageState extends State<OnboardingPage> {
+@visibleForTesting
+class OnboardingPageState extends State<OnboardingPage> {
   static const _duration = Duration(milliseconds: 400);
   static const _curve = Curves.decelerate;
 
-  final _pageController = PageController();
+  @visibleForTesting
+  final pageController = PageController();
 
   late Map<OnboardingStep, WidgetBuilder> _allPages;
-  late Map<OnboardingStep, WidgetBuilder> _currentPages;
+  @visibleForTesting
+  late Map<OnboardingStep, WidgetBuilder> currentPages;
 
   @override
   void initState() {
     super.initState();
 
     _allPages = {
-      OnboardingStep.login: (_) => LoginPage(),
+      OnboardingStep.login: (_) => const LoginPage(),
       OnboardingStep.password: (_) => PasswordPage(),
       OnboardingStep.twoFactorAuthentication: (_) =>
           const TwoFactorAuthenticationPage(),
@@ -60,13 +66,13 @@ class _OnboardingPageState extends State<OnboardingPage> {
       OnboardingStep.welcome: (_) => WelcomePage(),
     };
 
-    _currentPages = Map.fromEntries([_allPages.entries.first]);
+    currentPages = Map.fromEntries([_allPages.entries.first]);
   }
 
   void _onStateChange(BuildContext context, OnboardingState state) {
     // Update current pages only if there's a size change.
-    if (_currentPages.length != state.allSteps.length) {
-      _currentPages = Map.fromEntries(
+    if (currentPages.length != state.allSteps.length) {
+      currentPages = Map.fromEntries(
         state.allSteps.map((s) => MapEntry(s, _allPages[s]!)),
       );
     }
@@ -76,9 +82,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
       return;
     }
 
-    final newIndex = _currentPages.keys.toList().indexOf(state.currentStep);
+    final newIndex = currentPages.keys.toList().indexOf(state.currentStep);
 
-    _pageController.animateToPage(
+    pageController.animateToPage(
       newIndex,
       duration: _duration,
       curve: _curve,
@@ -101,7 +107,6 @@ class _OnboardingPageState extends State<OnboardingPage> {
     return Background(
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        resizeToAvoidBottomInset: false,
         body: BlocProvider<OnboardingCubit>(
           create: (_) => OnboardingCubit(
             context.watch<CallerCubit>(),
@@ -116,8 +121,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   child: IconTheme(
                     data: const IconThemeData(color: Colors.white),
                     child: PageView(
-                      controller: _pageController,
-                      children: _currentPages.entries.map((entry) {
+                      controller: pageController,
+                      children: currentPages.entries.map((entry) {
                         final page = entry.value;
                         return SafeArea(
                           child: Provider<EdgeInsets>(
@@ -140,4 +145,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
       ),
     );
   }
+}
+
+class _Keys {
+  final page = GlobalKey<OnboardingPageState>();
 }

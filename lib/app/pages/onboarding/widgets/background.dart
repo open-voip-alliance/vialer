@@ -24,7 +24,9 @@ class _BackgroundState extends State<Background> with TickerProviderStateMixin {
   Animation<Color?>? __iconColorAnimation;
 
   AnimationController get _controller => __controller!;
+
   Animation<LinearGradient> get _gradientAnimation => __gradientAnimation!;
+
   Animation<Color?> get _iconColorAnimation => __iconColorAnimation!;
 
   List<Animation<double>> _cloudAnimations = [];
@@ -95,7 +97,11 @@ class _BackgroundState extends State<Background> with TickerProviderStateMixin {
       }
     });
 
-    Future.delayed(_splashScreenTime, () => __controller?.forward());
+    Future.delayed(_splashScreenTime, () {
+      if (mounted) {
+        __controller?.forward();
+      }
+    });
   }
 
   @override

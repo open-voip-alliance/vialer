@@ -345,7 +345,7 @@ class _Middleware with Loggable {
                 clientVersion: clientVersion,
                 app: app,
                 appStartupTime: loginTime?.toUtc().toIso8601String(),
-    sandbox: useSandbox,
+                sandbox: useSandbox,
               )
             : throw UnsupportedError(
                 'Unsupported platform: ${Platform.operatingSystem}',

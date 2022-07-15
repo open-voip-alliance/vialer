@@ -16,20 +16,24 @@ import 'settings/page.dart';
 import 'widgets/caller.dart';
 import 'widgets/connectivity_alert.dart';
 import 'widgets/notice/widget.dart';
+import 'widgets/survey_triggerer/widget.dart';
 import 'widgets/user_data_refresher/widget.dart';
 
 class MainPage extends StatefulWidget {
-  const MainPage._(Key? key) : super(key: key);
+  /// There can only be one.
+  MainPage._() : super(key: keys.page);
 
   @override
   State<StatefulWidget> createState() => MainPageState();
 
-  static Widget create({Key? key}) {
+  static Widget create() {
     return BlocProvider(
       create: (_) => MainCubit(),
-      child: MainPage._(key),
+      child: MainPage._(),
     );
   }
+
+  static final keys = _Keys();
 }
 
 class MainPageState extends State<MainPage> {
@@ -130,40 +134,47 @@ class MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    return AppUpdateChecker.create(
-      child: BlocListener<CallerCubit, CallerState>(
-        listener: _onCallerStateChanged,
-        child: Scaffold(
-          resizeToAvoidBottomInset: false,
-          floatingActionButton: _currentIndex != 2 && !_dialerIsPage
-              ? SizedBox(
-                  height: 62,
-                  width: 62,
-                  child: FloatingActionButton(
-                    // We use the CallButton's hero tag for a nice transition
-                    // between the dialer and call button.
-                    heroTag: CallButton.defaultHeroTag,
-                    backgroundColor: context.brand.theme.colors.green1,
-                    onPressed: () =>
-                        Navigator.pushNamed(context, Routes.dialer),
-                    child: const Icon(VialerSans.dialpad, size: 31),
-                  ),
-                )
-              : null,
-          bottomNavigationBar: _BottomNavigationBar(
-            currentIndex: _currentIndex!,
-            dialerIsPage: _dialerIsPage,
-            onTap: _navigateTo,
-          ),
-          body: TransparentStatusBar(
-            brightness: Brightness.dark,
-            child: UserDataRefresher(
-              child: ConnectivityAlert(
-                child: SafeArea(
-                  child: Notice(
-                    child: _AnimatedIndexedStack(
-                      index: _currentIndex!,
-                      children: _pages!,
+    return SurveyTriggerer(
+      child: AppUpdateChecker.create(
+        child: BlocListener<CallerCubit, CallerState>(
+          listener: _onCallerStateChanged,
+          child: Scaffold(
+            resizeToAvoidBottomInset: false,
+            floatingActionButton: _currentIndex != 2 && !_dialerIsPage
+                ? SizedBox(
+                    height: 62,
+                    width: 62,
+                    child: MergeSemantics(
+                      child: Semantics(
+                        label: context.msg.main.dialer.title,
+                        child: FloatingActionButton(
+                          // We use the CallButton's hero tag for a nice
+                          // transition between the dialer and call button.
+                          heroTag: CallButton.defaultHeroTag,
+                          backgroundColor: context.brand.theme.colors.green1,
+                          onPressed: () =>
+                              Navigator.pushNamed(context, Routes.dialer),
+                          child: const Icon(VialerSans.dialpad, size: 31),
+                        ),
+                      ),
+                    ),
+                  )
+                : null,
+            bottomNavigationBar: _BottomNavigationBar(
+              currentIndex: _currentIndex!,
+              dialerIsPage: _dialerIsPage,
+              onTap: _navigateTo,
+            ),
+            body: TransparentStatusBar(
+              brightness: Brightness.dark,
+              child: UserDataRefresher(
+                child: ConnectivityAlert(
+                  child: SafeArea(
+                    child: Notice(
+                      child: _AnimatedIndexedStack(
+                        index: _currentIndex!,
+                        children: _pages!,
+                      ),
                     ),
                   ),
                 ),
@@ -199,6 +210,7 @@ class _BottomNavigationBar extends StatelessWidget {
         ),
       ),
       child: BottomNavigationBar(
+        key: MainPage.keys.navigationBar,
         type: BottomNavigationBarType.fixed,
         iconSize: 24,
         selectedFontSize: 9,
@@ -346,4 +358,9 @@ class _AnimatedIndexedStackState extends State<_AnimatedIndexedStack>
       children: children,
     );
   }
+}
+
+class _Keys {
+  final page = GlobalKey<MainPageState>();
+  final navigationBar = GlobalKey<State<BottomNavigationBar>>();
 }

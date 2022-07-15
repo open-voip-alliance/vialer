@@ -65,8 +65,6 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
   }
 
   Future<void> changeSetting(Setting setting) async {
-    logger.info('Set ${setting.runtimeType} to ${setting.value}');
-
     // Immediately emit a copy of the state with the changed setting for extra
     // smoothness.
     emit(state.withChanged(setting));

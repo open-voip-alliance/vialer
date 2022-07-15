@@ -21,6 +21,8 @@ class SettingsPage extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() => _SettingsPageState();
+
+  static const keys = _Keys();
 }
 
 class _SettingsPageState extends State<SettingsPage> {
@@ -127,6 +129,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             SettingTileCategory.accountInfo(
                               children: [
                                 SettingTile.mobileNumber(
+                                  key: SettingsPage.keys.mobileNumber,
                                   setting: settings.get<MobileNumberSetting>(),
                                   isVoipAllowed: isVoipAllowed,
                                 ),
@@ -374,4 +377,10 @@ class _BuildInfoState extends State<_BuildInfo> {
       },
     );
   }
+}
+
+class _Keys {
+  const _Keys();
+
+  final mobileNumber = const Key('mobileNumberSetting');
 }

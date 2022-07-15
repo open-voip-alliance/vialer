@@ -4,7 +4,7 @@ import 'question.dart';
 import 'survey_trigger.dart';
 
 class Survey extends Equatable {
-  final String id;
+  final SurveyId id;
 
   /// Where and when the survey is shown in the app.
   final SurveyTrigger trigger;
@@ -14,13 +14,22 @@ class Survey extends Equatable {
 
   final List<Question> questions;
 
+  /// Whether to skip the intro asking if people want
+  /// to participate in the survey, useful for single question surveys.
+  final bool skipIntro;
+
   Survey({
     required this.id,
     required this.trigger,
     required this.language,
+    this.skipIntro = false,
     required this.questions,
   }) : assert(questions.isNotEmpty);
 
   @override
-  List<Object?> get props => [id, trigger, language, questions];
+  List<Object?> get props => [id, trigger, language, skipIntro, questions];
+}
+
+enum SurveyId {
+  appRating,
 }

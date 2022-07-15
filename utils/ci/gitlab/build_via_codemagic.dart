@@ -1,6 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:glob/glob.dart';
+import 'package:glob/list_local_fs.dart';
+import 'package:xml/xml.dart';
+
 import '../ci_utils.dart';
 
 const _codemagicBaseUrl = 'https://api.codemagic.io/builds';
@@ -42,7 +46,8 @@ Future<void> main(List<String> args) async {
   // Check the status of the build and exit with the correct exit code so
   // Gitlab CI will know whether it was successful or not.
   if (build.status == _CodemagicBuildStatus.complete) {
-    exit(0);
+    final testsSuccessful = await _getIntegrationTestResults(buildId: buildId);
+    exit(testsSuccessful ? 0 : 1);
   } else if (build.status == _CodemagicBuildStatus.failed) {
     print('Build failed on: ${build.currentStage}');
     _printCodemagicBuildUrl(appId, buildId);
@@ -151,6 +156,110 @@ Future<_CodemagicBuild> _fetchCodemagicBuild({
   return _CodemagicBuild(status);
 }
 
+/// Returns true if tests succeeded, false otherwise.
+Future<bool> _getIntegrationTestResults({required String buildId}) async {
+  final gcloudTar = File('gcloud.tar.gz');
+
+  // Downloading gcloud binaries.
+  await HttpClient()
+      .getUrl(
+        Uri.parse(
+          'https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/'
+          'google-cloud-sdk-357.0.0-linux-x86_64.tar.gz',
+        ),
+      )
+      .then((rq) => rq.close())
+      .then((r) => r.pipe(gcloudTar.openWrite()));
+
+  await Process.run('tar', ['xf', gcloudTar.path]).printResult();
+
+  final gcloudKey = File('gcloud-key.json');
+  gcloudKey.writeAsString(
+    utf8.decode(
+      base64.decode(Platform.environment['GCLOUD_KEY']!),
+    ),
+  );
+
+  final bin = 'google-cloud-sdk/bin';
+
+  // Login to Google.
+  await Process.run(
+    '$bin/gcloud',
+    [
+      'auth',
+      'activate-service-account',
+      '--key-file=${gcloudKey.path}',
+    ],
+    runInShell: true,
+  ).printResult();
+
+  final projectId = 'vialer-fcm-423a9';
+
+  // Set Google Cloud project we're working with.
+  await Process.run(
+    '$bin/gcloud',
+    [
+      '--quiet',
+      'config',
+      'set',
+      'project',
+      projectId,
+    ],
+    runInShell: true,
+  ).printResult();
+
+  final testResultsDir = Directory('test_results');
+  await testResultsDir.create();
+
+  // Download test result XML files.
+  await Process.run(
+    '$bin/gsutil',
+    [
+      'rsync',
+      '-r',
+      '-x',
+      r'^(?!.*test_result_[0-9]+.xml$).*',
+      'gs://$projectId.appspot.com/$buildId',
+      testResultsDir.path,
+    ],
+    runInShell: true,
+  ).printResult();
+
+  // Delete all test files from Google Cloud.
+  await Process.run(
+    '$bin/gsutil',
+    [
+      'rm',
+      '-r',
+      'gs://$projectId.appspot.com/$buildId',
+    ],
+    runInShell: true,
+  ).printResult();
+
+  final testResults = Glob('**test_result_*.xml', recursive: true).list(
+    root: testResultsDir.path,
+  );
+
+  await for (final testResult in testResults) {
+    final doc = XmlDocument.parse(await File(testResult.path).readAsString());
+
+    // If zero tests were done, something went wrong and we should fail.
+    if (doc.rootElement.attributes
+        .any((a) => a.name.local == 'tests' && a.value == '0')) {
+      print('Something went wrong while running test: ${testResult.dirname}');
+      return false;
+    }
+
+    for (final testCase in doc.findAllElements('testcase')) {
+      if (testCase.childElements.any((e) => e.name.local == 'failure')) {
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+
 class _CodemagicBuild {
   final _CodemagicBuildStatus status;
   final String currentStage;
@@ -188,5 +297,13 @@ extension on List<String> {
     } else {
       return Platform.environment[envVar]!;
     }
+  }
+}
+
+extension on Future<ProcessResult> {
+  Future<void> printResult() async {
+    final result = await this;
+    print(result.stdout);
+    print(result.stderr);
   }
 }

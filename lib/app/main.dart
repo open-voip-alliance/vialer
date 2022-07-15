@@ -58,8 +58,6 @@ Future<void> main() async {
 class App extends StatelessWidget {
   static final _navigatorKey = GlobalKey<NavigatorState>();
 
-  static final mainPageKey = GlobalKey<MainPageState>();
-
   static final EventBusObserver _eventBus =
       dependencyLocator<EventBusObserver>();
 
@@ -68,7 +66,7 @@ class App extends StatelessWidget {
   }
 
   static void navigateTo(MainPageTab tab) =>
-      mainPageKey.currentState!.navigateTo(tab);
+      MainPage.keys.page.currentState!.navigateTo(tab);
 
   @override
   Widget build(BuildContext context) {

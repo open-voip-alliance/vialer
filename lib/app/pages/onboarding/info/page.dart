@@ -5,6 +5,8 @@ import '../../../util/conditional_capitalization.dart';
 import '../../../widgets/stylized_button.dart';
 
 class InfoPage extends StatelessWidget {
+  static const keys = _Keys();
+
   final Widget icon;
   final Widget title;
   final Widget description;
@@ -54,6 +56,7 @@ class InfoPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
                 StylizedButton.raised(
+                  key: keys.continueButton,
                   onPressed: onPressed,
                   child: Text(
                     context.msg.onboarding.permission.button.iUnderstand
@@ -67,4 +70,10 @@ class InfoPage extends StatelessWidget {
       ),
     );
   }
+}
+
+class _Keys {
+  const _Keys();
+
+  final continueButton = const Key('continueButton');
 }

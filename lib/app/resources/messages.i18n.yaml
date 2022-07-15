@@ -3,6 +3,8 @@
 # E.g. `connectivity.noConnection` becomes `connectivity_no_connection`.
 
 generic:
+  on: "On"
+  off: "Off"
   button:
     ok: "Ok"
     cancel: "Cancel"
@@ -64,13 +66,20 @@ main:
       hangUp: &hangUpCall "Hang up"
       actions:
         mute: "Mute"
-        keypad: "Keypad"
-        speaker: "Speaker"
-        transfer: "Transfer"
+        keypad:
+          label: "Keypad"
+          semanticPostPress: "Keypad open"
+        transfer:
+          label: "Transfer"
+          semanticPostPress(String callerName): "Transferring $callerName"
         merge: "Merge calls"
-        bluetooth: "Bluetooth"
-        phone: "Phone"
         hold: "Hold"
+        audioRoute:
+          speaker: "Speaker"
+          bluetooth: "Bluetooth"
+          phone: "Phone"
+          semanticLabel(String label): "Audio output: $label"
+          semanticPostPress: "Choose audio output"
       state:
         calling: "Calling"
         callEnded: "Call ended"
@@ -211,11 +220,11 @@ main:
             By choosing to automatically log your app activity, our developers and support team
             will be able to help you more efficiently if needed.
           sendToRemoteDialog:
-            title: Send the logs from today as well
+            title: Send today's app activity?
             description: >-
-              By allowing this, our team can see problems that happened today before you
-              turned Remote Logging on. This helps us understand the problem better.
-            confirm: Send to remote
+              If you're experiencing issues, it's helpful to share today's app activity as well.
+              This helps the team to investigate your issues more closely.
+            confirm: Send activity
       accountInfo:
         title: "User information"
         businessNumber:
@@ -353,7 +362,8 @@ main:
       title: "Help us improve the app"
       content(int questionCount): >-
         Would you like to help improve the app? You can do so by
-        answering $questionCount short questions.
+        answering $questionCount
+        short ${_plural(questionCount, one: 'question', many: 'questions')}.
       dontAskAgain: "Don't ask me again"
 
     question:
@@ -398,10 +408,10 @@ onboarding:
         title: "Incorrect credentials"
         message: >-
           The email address or password you entered is invalid. Please check and try again.
-      wrongEmailFormat: Email address is incorrectly formatted.
-      wrongPasswordFormat:  >-
-        Password is incorrectly formatted. Your password must be at least 6 characters long and
-        include 1 non-alphabetical character.
+      wrongEmailFormat: >-
+        Check the email address: remove spaces and make sure @ and dots are in the right place.
+      wrongPasswordFormat: >-
+        The password is at least 6 characters long and contains at least one number or symbol.
 
   password:
     title: "Change your current password"
@@ -410,7 +420,7 @@ onboarding:
       title: "Incorrect password"
       message: "Your password does not comply with the requirements mentioned below."
     requirements: >-
-      Password must be at least 6 characters long and include 1 non-alphabetical character.
+      The password is at least 6 characters long and contains at least one number or symbol.
 
   twoFactor:
     title: "Two-factor authentication"

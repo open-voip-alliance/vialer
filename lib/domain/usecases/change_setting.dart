@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import '../../app/util/loggable.dart';
 import '../../dependency_locator.dart';
 import '../entities/setting.dart';
 import '../repositories/metrics.dart';
@@ -11,12 +12,13 @@ import 'disable_remote_logging.dart';
 import 'enable_remote_logging.dart';
 import 'get_mobile_number.dart';
 import 'get_settings.dart';
+import 'increment_app_rating_survey_action_count.dart';
 import 'refresh_voip.dart';
 import 'register_to_voip_middleware.dart';
 import 'start_voip.dart';
 import 'unregister_to_voip_middleware.dart';
 
-class ChangeSettingUseCase extends UseCase {
+class ChangeSettingUseCase extends UseCase with Loggable {
   final _storageRepository = dependencyLocator<StorageRepository>();
   final _metricsRepository = dependencyLocator<MetricsRepository>();
 
@@ -30,8 +32,19 @@ class ChangeSettingUseCase extends UseCase {
   final _changeMobileNumber = ChangeMobileNumberUseCase();
   final _getMobileNumber = GetMobileNumberUseCase();
   final _changeAvailability = ChangeAvailabilityUseCase();
+  final _incrementAppRatingActionCount =
+      IncrementAppRatingSurveyActionCountUseCase();
 
   Future<void> call({required Setting setting, bool remote = true}) async {
+    if (setting is AvailabilitySetting) {
+      // Only log the destination, since the whole availability object
+      // contains too much privacy sensitive information.
+      logger.info('Set ${setting.runtimeType} '
+          'to ${setting.value!.selectedDestinationInfo}');
+    } else {
+      logger.info('Set ${setting.runtimeType} to ${setting.value}');
+    }
+
     if (setting is RemoteLoggingSetting) {
       if (setting.value) {
         await _enableRemoteLogging();
@@ -91,5 +104,7 @@ class ChangeSettingUseCase extends UseCase {
       _metricsRepository
           .track('dnd-status-changed', {'enabled': setting.value});
     }
+
+    _incrementAppRatingActionCount();
   }
 }
