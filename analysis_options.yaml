@@ -23,5 +23,3 @@ analyzer:
     - lib/**.chopper.dart
     - lib/**.g.dart
     - lib/app/util/pigeon.dart
-    # TODO: Remove when pub package
-    - voip_flutter_integration

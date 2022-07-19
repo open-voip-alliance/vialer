@@ -404,9 +404,11 @@ packages:
   flutter_phone_lib:
     dependency: "direct main"
     description:
-      path: voip_flutter_integration
-      relative: true
-    source: path
+      path: "."
+      ref: "9e1e26ddff812be41ed0eb172e743d0b30e1c003"
+      resolved-ref: "9e1e26ddff812be41ed0eb172e743d0b30e1c003"
+      url: "https://github.com/open-voip-alliance/flutter-phone-lib"
+    source: git
     version: "0.0.1"
   flutter_rating_bar:
     dependency: "direct main"

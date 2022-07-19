@@ -17,7 +17,9 @@ dependencies:
 
   # TODO: Use pub dependency.
   flutter_phone_lib:
-    path: voip_flutter_integration
+    git:
+      url: https://github.com/open-voip-alliance/flutter-phone-lib
+      ref: 9e1e26ddff812be41ed0eb172e743d0b30e1c003
 
   flutter_bloc: ^7.0.0
   pedantic: ^1.9.0

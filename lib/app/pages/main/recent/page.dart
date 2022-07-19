@@ -85,44 +85,47 @@ class RecentCallsPage extends StatelessWidget {
                       padding: const EdgeInsets.all(0),
                     ),
                   ),
-                  body: TabBarView(
-                    children: [
-                      BlocBuilder<RecentCallsCubit, RecentCallsState>(
-                        builder: (context, recentCallState) {
-                          final cubit = context.watch<RecentCallsCubit>();
-                          final recentCalls = recentCallState.callRecords;
-                          return _RecentCallsList(
-                            listBottomPadding: listBottomPadding,
-                            snackBarRightPadding: snackBarRightPadding,
-                            isLoadingInitial:
-                                recentCallState is LoadingInitialRecentCalls,
-                            callRecords: recentCalls,
-                            onRefresh: () => _refreshCalls(context),
-                            onCallPressed: cubit.call,
-                            onCopyPressed: cubit.copyNumber,
-                            loadMoreCalls: cubit.loadMoreRecentCalls,
-                          );
-                        },
-                      ),
-                      BlocBuilder<MissedCallsCubit, RecentCallsState>(
+                  body: BlocBuilder<RecentCallsCubit, RecentCallsState>(
+                    builder: (context, recentCallState) {
+                      final cubit = context.watch<RecentCallsCubit>();
+                      final recentCalls = recentCallState.callRecords;
+
+                      return BlocBuilder<MissedCallsCubit, RecentCallsState>(
                         builder: (context, missedCallsState) {
                           final missedCallsCubit =
                               context.watch<MissedCallsCubit>();
                           final missedCalls = missedCallsState.callRecords;
-                          return _RecentCallsList(
-                            listBottomPadding: listBottomPadding,
-                            snackBarRightPadding: snackBarRightPadding,
-                            isLoadingInitial:
-                                missedCallsState is LoadingInitialRecentCalls,
-                            callRecords: missedCalls,
-                            onRefresh: () => _refreshCalls(context),
-                            onCallPressed: missedCallsCubit.call,
-                            onCopyPressed: missedCallsCubit.copyNumber,
-                            loadMoreCalls: missedCallsCubit.loadMoreRecentCalls,
+
+                          return TabBarView(
+                            children: [
+                              _RecentCallsList(
+                                listBottomPadding: listBottomPadding,
+                                snackBarRightPadding: snackBarRightPadding,
+                                isLoadingInitial: recentCallState
+                                    is LoadingInitialRecentCalls,
+                                callRecords: recentCalls,
+                                onRefresh: () => _refreshCalls(context),
+                                onCallPressed: cubit.call,
+                                onCopyPressed: cubit.copyNumber,
+                                loadMoreCalls: cubit.loadMoreRecentCalls,
+                              ),
+                              _RecentCallsList(
+                                listBottomPadding: listBottomPadding,
+                                snackBarRightPadding: snackBarRightPadding,
+                                isLoadingInitial: missedCallsState
+                                    is LoadingInitialRecentCalls,
+                                callRecords: missedCalls,
+                                onRefresh: () => _refreshCalls(context),
+                                onCallPressed: missedCallsCubit.call,
+                                onCopyPressed: missedCallsCubit.copyNumber,
+                                loadMoreCalls:
+                                    missedCallsCubit.loadMoreRecentCalls,
+                              ),
+                            ],
                           );
                         },
-                      ),
-                    ],
+                      );
+                    },
                   ),
                 ),
               ),

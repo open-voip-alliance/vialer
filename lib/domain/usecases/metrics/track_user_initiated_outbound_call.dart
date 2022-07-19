@@ -10,9 +10,16 @@ class TrackUserInitiatedOutboundCall extends UseCase {
   Future<void> call({
     required String via,
     required bool isVoip,
+    required CallType type,
   }) =>
       _metricsRepository.track('call-initiated-by-user', {
         'via': via,
         'voip': isVoip,
+        'type': type.toString(),
       });
+}
+
+enum CallType {
+  standard,
+  pickupGroup,
 }

@@ -113,7 +113,6 @@ Future<void> _checkFormattingIfNeeded(Iterable<String> files) async {
             !path.endsWith('.chopper.dart') &&
             !path.endsWith('/pigeon.dart') &&
             !path.startsWith('ios') &&
-            !path.startsWith('voip_flutter_integration') &&
             !path.startsWith('.dart_tool'),
       )
       .toList();
