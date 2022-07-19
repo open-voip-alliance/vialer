@@ -1,0 +1,2 @@
+- Recent and missed calls will now be loaded simultaneously so switching between them doesn't require additional loading.
+- Android: Fixed a bug that would prevent dialling certain short numbers such as *8.

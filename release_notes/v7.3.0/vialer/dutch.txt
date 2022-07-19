@@ -1,0 +1,2 @@
+- Recente en gemiste oproepen worden nu tegelijk ingeladen zodat bij het wisselen ertussen niet nogmaals gegevens hoeven worden ingelezen.
+- Android: Een probleem dat bellen naar bepaalde verkorte nummers zoals *8 niet mogelijk maakte, is opgelost.
