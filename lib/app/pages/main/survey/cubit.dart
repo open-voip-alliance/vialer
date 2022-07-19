@@ -98,21 +98,7 @@ class SurveyCubit extends Cubit<SurveyState> with Loggable {
 
       _sendSurveyResults(
         survey.id,
-        data: {
-          'language': survey.language,
-          'trigger': survey.trigger.toJson(),
-          'questions': [
-            for (ShowQuestion? s = state; s != null; s = s.previous)
-              {
-                'id': s.question.id,
-                'phrase': s.question.phrase,
-                'answer': {
-                  'id': s.answer,
-                  'phrase': s.question.answers[s.answer!],
-                }
-              },
-          ].reversed.toList(),
-        },
+        data: _prepareSurveyResults(state),
       );
 
       return;
@@ -125,6 +111,37 @@ class SurveyCubit extends Cubit<SurveyState> with Loggable {
         previous: state,
       ),
     );
+  }
+
+  /// Prepares the results for surveys, customizing them based on the type of
+  /// survey if necessary.
+  Map<String, dynamic> _prepareSurveyResults(ShowQuestion state) {
+    final survey = state.survey!;
+
+    if (survey.id == SurveyId.appRating) {
+      // Required for type promotion.
+      final answer = state.answer;
+
+      return {
+        'rating': answer != null ? answer + 1 : null,
+      };
+    }
+
+    return {
+      'language': survey.language,
+      'trigger': survey.trigger.toJson(),
+      'questions': [
+        for (ShowQuestion? s = state; s != null; s = s.previous)
+          {
+            'id': s.question.id,
+            'phrase': s.question.phrase,
+            'answer': {
+              'id': s.answer,
+              'phrase': s.question.answers[s.answer!],
+            }
+          },
+      ].reversed.toList(),
+    };
   }
 
   void _progressToPreviousQuestion() {
