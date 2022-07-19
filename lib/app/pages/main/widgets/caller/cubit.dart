@@ -154,6 +154,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
       _trackUserInitiatedOutboundCall(
         via: origin.toTrackString(),
         isVoip: callViaVoip,
+        type: destination == '*8' ? CallType.pickupGroup : CallType.standard,
       );
     }
 
