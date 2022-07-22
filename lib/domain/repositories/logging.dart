@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:logging/logging.dart';
@@ -80,7 +81,7 @@ class LoggingRepository {
         remote: false,
       );
       onLog?.call(logString);
-      print(logString);
+      log(logString);
     });
   }
 
@@ -108,7 +109,7 @@ class LoggingRepository {
         _restartRemoteConnectionCount = 0;
         _connectedToRemote = true;
       } on SocketException catch (e) {
-        print('Can not connect to Logentries. Reason: $e');
+        log('Can not connect to Logentries. Reason: $e');
 
         _restartRemoteConnectionCount++;
         _connectedToRemote = false;
@@ -129,7 +130,7 @@ class LoggingRepository {
           await startConnection();
 
           if (_restartRemoteConnectionCount == 10) {
-            print('Can not connect to Logentries, not trying again');
+            log('Can not connect to Logentries, not trying again');
           }
         }
 
