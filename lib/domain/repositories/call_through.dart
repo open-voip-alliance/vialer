@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:android_intent/android_intent.dart';
 import 'package:flutter/services.dart';
 import 'package:libphonenumber/libphonenumber.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../app/util/loggable.dart';
+import '../../app/util/pigeon.dart' as native;
 import '../entities/exceptions/call_through.dart';
 import '../entities/system_user.dart';
 import 'services/voipgrid.dart';
@@ -26,12 +26,7 @@ class CallThroughRepository with Loggable {
     }
 
     if (Platform.isAndroid) {
-      final intent = AndroidIntent(
-        action: 'android.intent.action.CALL',
-        data: 'tel:$regionNumber',
-      );
-
-      await intent.launch();
+      native.CallThrough().startCall(regionNumber);
     } else {
       await launchUrlString('tel:$regionNumber');
     }
