@@ -74,3 +74,9 @@ abstract class AndroidFlexibleUpdateHandler {
   void onUpdateTypeKnown(bool isFlexible);
   void onDownloaded();
 }
+
+@HostApi()
+// ignore:one_member_abstracts
+abstract class CallThrough {
+  void startCall(String number);
+}

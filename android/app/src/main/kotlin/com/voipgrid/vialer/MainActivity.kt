@@ -2,9 +2,7 @@ package com.voipgrid.vialer
 
 import SystemTones
 import android.content.Intent
-import android.content.Intent.getIntent
 import android.os.Build
-import android.os.Bundle
 import android.view.WindowManager
 import androidx.annotation.NonNull
 import com.voipgrid.vialer.IncomingCallActivity.Companion.INCOMING_CALL_CANCEL_INTENT
@@ -42,6 +40,8 @@ class MainActivity : FlutterActivity(), Pigeon.CallScreenBehavior {
         Pigeon.NativeMetrics.setup(binaryMessenger) {
             App.segment.initialize()
         }
+
+        Pigeon.CallThrough.setup(binaryMessenger, CallThrough(this, App.logger, App.segment))
 
         Pigeon.CallScreenBehavior.setup(binaryMessenger, this)
 
