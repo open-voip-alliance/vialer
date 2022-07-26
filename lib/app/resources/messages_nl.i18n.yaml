@@ -1,6 +1,7 @@
 generic:
   on: "Aan"
   off: "Uit"
+  toggle: "Knop"
   button:
     ok: "Ok"
     cancel: "Annuleren"
@@ -270,6 +271,7 @@ main:
             Kies het VoIP-account waarop je oproepen wilt ontvangen wanneer iemand je belt.
           dnd:
             title: "Do not disturb"
+            currentStatus(String status): "Je bent $status"
           noAppAccount:
             title: "Geen app account"
             description(String appName): >-
