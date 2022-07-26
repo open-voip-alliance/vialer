@@ -8,6 +8,7 @@ class FlutterSharedPreferences {
     private let FLUTTER_SHARED_PREF_SETTINGS = "flutter.settings"
     private let FLUTTER_SHARED_PREF_LOGS = "flutter.logs"
     private let FLUTTER_SHARED_PREF_IS_LOGGED_IN_SOMEWHERE_ELSE = "flutter.is_logged_in_somewhere_else"
+    private let FLUTTER_SHARED_PREF_REMOTE_NOTIFICATION_TOKEN = "flutter.remote_notification_token"
     
     private let appendLogsQueue = DispatchQueue(label: "appendLogsQueue")
 
@@ -35,9 +36,19 @@ class FlutterSharedPreferences {
         }
     }
     
+    var remoteNotificationToken: String {
+        get {
+            defaults.string(forKey: FLUTTER_SHARED_PREF_REMOTE_NOTIFICATION_TOKEN) ?? ""
+        }
+        set (value) {
+            defaults.set(value, forKey: FLUTTER_SHARED_PREF_REMOTE_NOTIFICATION_TOKEN)
+            defaults.synchronize()
+        }
+    }
+    
     var isLoggedInSomewhereElse: Bool {
         get {
-           defaults.bool(forKey: FLUTTER_SHARED_PREF_IS_LOGGED_IN_SOMEWHERE_ELSE) ?? false
+            defaults.bool(forKey: FLUTTER_SHARED_PREF_IS_LOGGED_IN_SOMEWHERE_ELSE)
         }
         set (value) {
             defaults.set(value, forKey: FLUTTER_SHARED_PREF_IS_LOGGED_IN_SOMEWHERE_ELSE)

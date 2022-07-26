@@ -98,6 +98,11 @@ class StorageRepository {
   set pushToken(String? value) =>
       _preferences.setOrRemoveString(_pushTokenKey, value);
 
+  static const _remoteNotificationTokenKey = 'remote_notification_token';
+
+  String? get remoteNotificationToken =>
+      _preferences.getString(_remoteNotificationTokenKey);
+
   static const _voipConfigKey = 'voip_config';
 
   VoipConfig? get voipConfig {

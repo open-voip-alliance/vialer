@@ -29,6 +29,8 @@ import Intents
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
+        UIApplication.shared.registerForRemoteNotifications()
+        
         let registerPlugins = GeneratedPluginRegistrant.register
         registerPlugins(self)
 
@@ -81,6 +83,18 @@ import Intents
         
         return true
     }
+    
+    override func application(_ application: UIApplication,
+                didRegisterForRemoteNotificationsWithDeviceToken
+                    deviceToken: Data) {
+        flutterSharedPreferences.remoteNotificationToken = String(deviceToken: deviceToken)
+    }
+
+    override func application(_ application: UIApplication,
+                didFailToRegisterForRemoteNotificationsWithError
+                    error: Error) {
+        logger.writeLog("Failed to register for remote notifications: \(error).")
+    }
 }
 
 protocol SupportedStartCallIntent {
@@ -101,5 +115,11 @@ extension NSUserActivity {
 extension Bundle {
     internal static var brandName: String {
         return (Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String ?? "").lowercased()
+    }
+}
+
+extension String {
+    fileprivate init(deviceToken: Data) {
+        self = deviceToken.map { String(format: "%.2hhx", $0) }.joined()
     }
 }

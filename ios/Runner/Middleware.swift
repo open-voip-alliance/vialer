@@ -53,7 +53,8 @@ public class Middleware: NativeMiddleware {
             "client_version": Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String,
             "app": Bundle.main.bundleIdentifier,
             "push_profile": "once",
-            "sandbox": Bundle.main.infoDictionary?["Sandbox"] as? String
+            "sandbox": Bundle.main.infoDictionary?["Sandbox"] as? String,
+            "remote_notification_token": flutterSharedPreferences.remoteNotificationToken
         ]
 
         var request = createMiddlewareRequest(email: middlewareCredentials.email, token: middlewareCredentials.loginToken, url: REGISTER_URL)
