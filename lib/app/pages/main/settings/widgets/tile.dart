@@ -105,7 +105,12 @@ class SettingTile extends StatelessWidget {
         description: Text(
           context.msg.main.settings.list.accountInfo.businessNumber.description,
         ),
-        child: _StringSettingValue(businessNumberSetting),
+        child: businessNumberSetting.isSuppressed
+            ? _StringValue(
+                context.msg.main.settings.list.accountInfo.businessNumber
+                    .suppressed,
+              )
+            : _StringSettingValue(businessNumberSetting),
       );
     });
   }
