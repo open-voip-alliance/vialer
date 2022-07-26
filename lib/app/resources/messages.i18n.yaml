@@ -228,6 +228,7 @@ main:
       accountInfo:
         title: "User information"
         businessNumber:
+          suppressed: "Suppressed"
           description: >-
             The outgoing number is displayed on the screen of those you are calling.
         mobileNumber:

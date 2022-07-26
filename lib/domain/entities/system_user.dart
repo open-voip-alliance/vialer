@@ -26,6 +26,8 @@ class SystemUser {
         (p) => p.isNotEmpty,
       );
 
+  bool get isOutgoingCliSuppressed => outgoingCli?.isSuppressed ?? false;
+
   /// This is only nullable for backwards compatibility, it can be made
   /// non-nullable in a future update.
   @JsonKey(name: 'client')
@@ -75,4 +77,8 @@ class SystemUser {
       _$SystemUserFromJson(json);
 
   Map<String, dynamic> toJson() => _$SystemUserToJson(this);
+}
+
+extension Suppressed on String {
+  bool get isSuppressed => this == 'suppressed';
 }
