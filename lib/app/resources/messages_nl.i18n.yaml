@@ -145,21 +145,24 @@ main:
     menu:
       title: "Recent"
     tabs:
-      all: "Alle gesprekken"
-      missed: "Gemiste gesprekken"
+      all: "Alles"
+      missed: "Persoonlijk"
     snackBar:
       copied: "Telefoonnummer gekopieerd"
+    filters: "Filters"
     list:
       headers:
-        today: "vandaag"
-        yesterday: "gisteren"
-      minuteAgo: "1 minuut geleden"
-      minutesAgo(int minutes): "$minutes minuten geleden"
-      hourAgo: "1 uur geleden"
-      hoursAgo(int hours): "$hours uren geleden"
-      popupMenu:
-        copy: "Kopiëren"
-        call: *call
+        today: "Vandaag"
+        yesterday: "Gisteren"
+      item:
+        wasMissed(String time): "Je hebt een oproep gemist om $time"
+        inbound(String time, String duration): "Je hebt opgenomen om $time - $duration"
+        outbound(String time, String duration): "Je hebt gebeld om $time - $duration"
+        answeredElsewhere(String account, String time, String duration): >-
+          $account heeft opgenomen om $time - $duration
+        popupMenu:
+          copy: "Kopiëren"
+          call: *call
       loading:
         title: "Gesprekken worden opgehaald"
         description: "Je recente gesprekken komen hier zo te staan. Graag nog even geduld."

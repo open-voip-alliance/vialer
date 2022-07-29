@@ -10,7 +10,6 @@ import '../../../../resources/theme.dart';
 import '../../../../util/contact.dart';
 import '../../util/color.dart';
 import '../../widgets/avatar.dart';
-import '../../widgets/contact_list/widgets/group_header.dart';
 
 enum _Action {
   copy,
@@ -54,7 +53,7 @@ class RecentCallItem extends StatelessWidget {
         ),
         showFallback: callRecord.contact?.displayName == null,
         image: callRecord.contact?.avatar,
-        fallback: const Icon(VialerSans.phone, size: 20),
+        fallback: const Text('#'),
       ),
       title: GestureDetector(
         behavior: HitTestBehavior.translucent,
@@ -82,7 +81,7 @@ class RecentCallItem extends StatelessWidget {
                 alignment: Alignment.center,
                 child: const Icon(VialerSans.copy, size: 20),
               ),
-              title: Text(context.msg.main.recent.list.popupMenu.copy),
+              title: Text(context.msg.main.recent.list.item.popupMenu.copy),
             ),
           ),
           PopupMenuItem<_Action>(
@@ -93,7 +92,7 @@ class RecentCallItem extends StatelessWidget {
                 alignment: Alignment.center,
                 child: const Icon(VialerSans.phone, size: 20),
               ),
-              title: Text(context.msg.main.recent.list.popupMenu.call),
+              title: Text(context.msg.main.recent.list.item.popupMenu.call),
             ),
           ),
         ],
@@ -135,7 +134,9 @@ class _RecentItemSubtitle extends StatelessWidget {
   }
 
   String _text(BuildContext context) {
-    if (callRecord.wasMissed) return _time;
+    if (callRecord.wasMissed) {
+      return context.msg.main.recent.list.item.wasMissed(_time);
+    }
 
     final duration = prettyDuration(
       callRecord.duration,
@@ -144,10 +145,26 @@ class _RecentItemSubtitle extends StatelessWidget {
       spacer: '',
     );
 
-    return '$_time, $duration';
+    if (callRecord.isInbound) {
+      return context.msg.main.recent.list.item.inbound(_time, duration);
+    }
+
+    if (callRecord.isOutbound) {
+      return context.msg.main.recent.list.item.outbound(_time, duration);
+    }
+
+    if (callRecord.answeredElsewhere) {
+      return context.msg.main.recent.list.item.answeredElsewhere(
+        _answeredElsewhereText(),
+        _time,
+        duration,
+      );
+    }
+
+    return '$_time - $duration';
   }
 
-  String _createAnsweredElsewhereText() {
+  String _answeredElsewhereText() {
     if (callRecord.destination.name == null ||
         callRecord.destination.name!.isEmpty ||
         callRecord.destination.name == callRecord.destination.number) {
@@ -167,7 +184,7 @@ class _RecentItemSubtitle extends StatelessWidget {
             Icon(
               _icon(context),
               color: _iconColor(context),
-              size: 12,
+              size: 16,
             ),
             const SizedBox(width: 8),
             Text(
@@ -179,14 +196,6 @@ class _RecentItemSubtitle extends StatelessWidget {
             ),
           ],
         ),
-        if (callRecord.answeredElsewhere)
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Text(
-              _createAnsweredElsewhereText(),
-              style: TextStyle(color: context.brand.theme.colors.grey4),
-            ),
-          ),
       ],
     );
   }
@@ -226,42 +235,52 @@ class RecentCallHeader extends StatelessWidget {
     BuildContext context, {
     required DateTime headerDate,
   }) {
-    final today = DateTime.now().toLocal();
-    final yesterday = today.subtract(
-      const Duration(
-        days: 1,
-      ),
-    );
+    final date = DateFormat.yMd().format(headerDate);
+    final prefix = headerDate.isToday
+        ? '${context.msg.main.recent.list.headers.today} - '
+        : headerDate.wasYesterday
+            ? '${context.msg.main.recent.list.headers.yesterday} - '
+            : '';
 
-    if (headerDate.isAtSameDayAs(today)) {
-      return context.msg.main.recent.list.headers.today.toUpperCase();
-    } else if (headerDate.isAtSameDayAs(yesterday)) {
-      return context.msg.main.recent.list.headers.yesterday.toUpperCase();
-    }
-
-    return DateFormat('d MMMM y').format(headerDate);
+    return '$prefix$date';
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (!isFirst) const Divider(height: 1),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16).copyWith(
-            top: isFirst ? 15 : 10,
-          ),
-          child: GroupHeader(
-            group: _text(
-              context,
-              headerDate: date.toLocal(),
+    final color = context.brand.theme.colors.grey4;
+
+    final divider = Expanded(
+      child: Divider(height: 1, color: color),
+    );
+
+    return Padding(
+      padding: const EdgeInsets.only(top: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                divider,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Text(
+                    _text(context, headerDate: date.toLocal()),
+                    style: TextStyle(
+                      color: color,
+                    ),
+                  ),
+                ),
+                divider,
+              ],
             ),
-            padding: const EdgeInsets.all(0),
           ),
-        ),
-        child,
-      ],
+          const SizedBox(height: 16),
+          child,
+        ],
+      ),
     );
   }
 }

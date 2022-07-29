@@ -62,20 +62,26 @@ class Avatar extends StatelessWidget {
               backgroundColor: backgroundColor,
               backgroundImage: hasImage ? MemoryImage(snapshot.data!) : null,
               child: showFallback
-                  ? fallback
+                  ? _withStyle(fallback)
                   : name != null && !hasImage
-                      ? Text(
-                          _letters,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16 * (size / defaultSize),
-                          ),
-                        )
+                      ? _withStyle(Text(_letters))
                       : null, //  We show the avatar.
             ),
           ),
         );
       },
+    );
+  }
+
+  Widget? _withStyle(Widget? child) {
+    if (child == null) return null;
+
+    return DefaultTextStyle.merge(
+      style: TextStyle(
+        fontWeight: FontWeight.bold,
+        fontSize: 20 * (size / defaultSize),
+      ),
+      child: child,
     );
   }
 }

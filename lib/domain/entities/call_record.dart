@@ -11,7 +11,7 @@ class CallRecord extends Equatable {
   final CallParty caller;
   final CallParty destination;
 
-  CallRecord({
+  const CallRecord({
     required this.id,
     required this.callType,
     required Direction direction,

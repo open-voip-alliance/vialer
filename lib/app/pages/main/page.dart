@@ -112,8 +112,12 @@ class MainPageState extends State<MainPage> {
           bottomLettersPadding: !_dialerIsPage ? 96 : 0,
         ),
         RecentCallsPage(
-          listBottomPadding: !_dialerIsPage ? 96 : 0,
-          snackBarRightPadding: !_dialerIsPage ? 72 : 0,
+          listPadding: !_dialerIsPage
+              ? const EdgeInsets.only(bottom: 96)
+              : EdgeInsets.zero,
+          snackBarPadding: !_dialerIsPage
+              ? const EdgeInsets.only(right: 72)
+              : EdgeInsets.zero,
         ),
         const SettingsPage(),
       ];
@@ -141,20 +145,29 @@ class MainPageState extends State<MainPage> {
           child: Scaffold(
             resizeToAvoidBottomInset: false,
             floatingActionButton: _currentIndex != 2 && !_dialerIsPage
-                ? SizedBox(
-                    height: 62,
-                    width: 62,
-                    child: MergeSemantics(
-                      child: Semantics(
-                        label: context.msg.main.dialer.title,
-                        child: FloatingActionButton(
-                          // We use the CallButton's hero tag for a nice
-                          // transition between the dialer and call button.
-                          heroTag: CallButton.defaultHeroTag,
-                          backgroundColor: context.brand.theme.colors.green1,
-                          onPressed: () =>
-                              Navigator.pushNamed(context, Routes.dialer),
-                          child: const Icon(VialerSans.dialpad, size: 31),
+                ? AnimatedContainer(
+                    duration: const Duration(milliseconds: 100),
+                    curve: Curves.decelerate,
+                    padding: _currentIndex == 1
+                        // TODO: Ideally this value should not be hardcoded. Now
+                        // it's not responsive to e.g. font size changes.
+                        ? const EdgeInsets.only(bottom: 64)
+                        : EdgeInsets.zero,
+                    child: SizedBox(
+                      height: 62,
+                      width: 62,
+                      child: MergeSemantics(
+                        child: Semantics(
+                          label: context.msg.main.dialer.title,
+                          child: FloatingActionButton(
+                            // We use the CallButton's hero tag for a nice
+                            // transition between the dialer and call button.
+                            heroTag: CallButton.defaultHeroTag,
+                            backgroundColor: context.brand.theme.colors.green1,
+                            onPressed: () =>
+                                Navigator.pushNamed(context, Routes.dialer),
+                            child: const Icon(VialerSans.dialpad, size: 31),
+                          ),
                         ),
                       ),
                     ),
