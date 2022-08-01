@@ -405,8 +405,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "9e1e26ddff812be41ed0eb172e743d0b30e1c003"
-      resolved-ref: "9e1e26ddff812be41ed0eb172e743d0b30e1c003"
+      ref: "5168de1eea026627f2bae1d8d4177af3d74f0ccc"
+      resolved-ref: "5168de1eea026627f2bae1d8d4177af3d74f0ccc"
       url: "https://github.com/open-voip-alliance/flutter-phone-lib"
     source: git
     version: "0.0.1"
@@ -863,7 +863,7 @@ packages:
       name: scrollable_positioned_list
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.3"
+    version: "0.3.2"
   sentry:
     dependency: transitive
     description:

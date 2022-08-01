@@ -5,6 +5,7 @@ import 'package:meta/meta.dart';
 
 import 'audio_codec.dart';
 import 'availability.dart';
+import 'system_user.dart';
 
 @immutable
 abstract class Setting<T> {
@@ -135,6 +136,8 @@ class BusinessNumberSetting extends Setting<String> {
   @override
   BusinessNumberSetting copyWith({String? value}) =>
       BusinessNumberSetting(value ?? this.value);
+
+  bool get isSuppressed => value.isSuppressed;
 }
 
 class MobileNumberSetting extends Setting<String> {

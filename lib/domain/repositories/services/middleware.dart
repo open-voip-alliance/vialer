@@ -54,6 +54,7 @@ abstract class MiddlewareService extends ChopperService {
     @Field('app_startup_timestamp') String? appStartupTime,
     @Field('push_profile') String pushProfile = 'once',
     @Field() required bool sandbox,
+    @Field('remote_notification_token') required String remoteNotificationToken,
   });
 
   @Delete(path: 'apns-device/')

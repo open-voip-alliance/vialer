@@ -5,6 +5,7 @@
 generic:
   on: "On"
   off: "Off"
+  toggle: "Switch"
   button:
     ok: "Ok"
     cancel: "Cancel"
@@ -228,6 +229,7 @@ main:
       accountInfo:
         title: "User information"
         businessNumber:
+          suppressed: "Suppressed"
           description: >-
             The outgoing number is displayed on the screen of those you are calling.
         mobileNumber:
@@ -269,6 +271,7 @@ main:
             Choose the VoIP account you want to receive the call on when someone calls you.
           dnd:
             title: "Do not disturb"
+            currentStatus(String status): "You are $status"
           noAppAccount:
             description(String appName): >-
               You have no app account. This means you will not receive calls in $appName.

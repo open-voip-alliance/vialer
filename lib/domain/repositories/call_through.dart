@@ -1,12 +1,11 @@
-import 'dart:convert';
 import 'dart:io';
 
-import 'package:android_intent/android_intent.dart';
 import 'package:flutter/services.dart';
 import 'package:libphonenumber/libphonenumber.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../app/util/loggable.dart';
+import '../../app/util/pigeon.dart' as native;
 import '../entities/exceptions/call_through.dart';
 import '../entities/system_user.dart';
 import 'services/voipgrid.dart';
@@ -26,12 +25,7 @@ class CallThroughRepository with Loggable {
     }
 
     if (Platform.isAndroid) {
-      final intent = AndroidIntent(
-        action: 'android.intent.action.CALL',
-        data: 'tel:$regionNumber',
-      );
-
-      await intent.launch();
+      native.CallThrough().startCall(regionNumber);
     } else {
       await launchUrlString('tel:$regionNumber');
     }
@@ -63,29 +57,28 @@ class CallThroughRepository with Loggable {
 
     // Get real number to call.
     final response = await _service.callthrough(destination: destination);
+
     if (response.isSuccessful) {
       return destination = response.body['phonenumber'] as String;
-    } else {
-      final error =
-          json.decode(response.error as String) as Map<String, dynamic>;
-      final destinationError = error['destination'] as List<dynamic>?;
-      if (destinationError != null && destinationError.isNotEmpty) {
-        final first = destinationError.first as Map<String, dynamic>;
-        if (first['code'] == 'invalid_destination') {
-          throw InvalidDestinationException();
-        }
-      }
-
-      final noMobileNumberError = error['user'] as List<dynamic>?;
-      if (noMobileNumberError != null && noMobileNumberError.isNotEmpty) {
-        final first = noMobileNumberError.first as Map<String, dynamic>;
-        if (first['code'] == 'no_mobile_number') {
-          throw NoMobileNumberException();
-        }
-      }
-
-      throw CallThroughException();
     }
+
+    final error = response.error as String;
+
+    // A mapping of all the possible error codes we might expect in the response
+    // and the exceptions that should be thrown if they are found.
+    final possibleErrors = {
+      'invalid_destination' : InvalidDestinationException(),
+      'no_mobile_number' : NoMobileNumberException(),
+      'unsupported_region': UnsupportedRegionException(),
+    };
+
+    for (final possibleError in possibleErrors.entries) {
+      if (error.contains(possibleError.key)) {
+        throw possibleError.value;
+      }
+    }
+
+    throw CallThroughException();
   }
 
   Future<String> _normalizePhoneNumber({
@@ -117,9 +110,30 @@ class CallThroughRepository with Loggable {
     return normalizedNumber;
   }
 
+  /// We are attempting to guess what country code the user intends to dial
+  /// with so we will attempt with various data until we find a usable ISO code.
   String _findIsoCode({required SystemUser user}) {
-    final outgoingCli = user.outgoingCli!;
+    final numbers = [
+      user.outgoingCli,
+      user.mobileNumber,
+    ];
 
+    for (final number in numbers) {
+      final isoCode = _findIsoCodeForPhoneNumber(number!);
+
+      if (isoCode != null) return isoCode;
+    }
+
+    logger.warning(
+      'Unable to find relevant ISO code. This means their outgoing CLI '
+      'or mobile number is from an unsupported region. User should use '
+      'a full number including a country code to make call-through calls.',
+    );
+
+    throw IsoCodeNotFoundException();
+  }
+
+  String? _findIsoCodeForPhoneNumber(String number) {
     final supportedIsoCodes = {
       'NL': '31',
       'DE': '49',
@@ -128,10 +142,10 @@ class CallThroughRepository with Loggable {
     };
 
     for (final entry in supportedIsoCodes.entries) {
-      if (outgoingCli.startsWith('+${entry.value}')) return entry.key;
+      if (number.startsWith('+${entry.value}')) return entry.key;
     }
 
-    throw NormalizationException();
+    return null;
   }
 }
 

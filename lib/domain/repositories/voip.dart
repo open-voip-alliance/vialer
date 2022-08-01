@@ -281,6 +281,8 @@ class _Middleware with Loggable {
   final _envRepository = dependencyLocator<EnvRepository>();
 
   String? get _token => _storageRepository.pushToken;
+  String? get _remoteNotificationToken =>
+      _storageRepository.remoteNotificationToken;
 
   Future<NonEmptyVoipConfig> get _config => _getVoipConfig(latest: false);
 
@@ -317,6 +319,7 @@ class _Middleware with Loggable {
 
     final name = user!.email;
     final token = _token!;
+    final remoteNotificationToken = _remoteNotificationToken ?? '';
     final sipUserId = voipConfig!.sipUserId;
     final osVersion = await _operatingSystemInfoRepository
         .getOperatingSystemInfo()
@@ -346,6 +349,7 @@ class _Middleware with Loggable {
                 app: app,
                 appStartupTime: loginTime?.toUtc().toIso8601String(),
                 sandbox: useSandbox,
+                remoteNotificationToken: remoteNotificationToken,
               )
             : throw UnsupportedError(
                 'Unsupported platform: ${Platform.operatingSystem}',

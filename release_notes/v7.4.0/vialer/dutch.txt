@@ -1,0 +1,3 @@
+- Meerdere problemen die call-through betreffen zijn opgelost
+- Wanneer je DND aan of uit zet, hoor je dit juist toegesproken door de VoiceOver feature, als je die aan hebt
+- Wat vertalingsproblemen die er waren als je je uitgaande nummer had onderdrukt zijn opgelost

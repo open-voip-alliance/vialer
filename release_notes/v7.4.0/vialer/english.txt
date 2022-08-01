@@ -1,0 +1,3 @@
+- Several bugs have been fixed regarding the call-through feature
+- Toggling DND will now correctly read the new status if you have the VoiceOver accessibility feature enabled
+- Fixed some translation issues if you had your outgoing number suppressed

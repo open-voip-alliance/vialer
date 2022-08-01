@@ -192,7 +192,19 @@ class ConfirmPageState extends State<ConfirmPage>
                               const SizedBox(height: 8),
                               // Is null for the first (few) frame(s).
                               if (state.outgoingCli != null)
-                                Text(state.outgoingCli!, style: _largeStyle),
+                                Text(
+                                  !state.isOutgoingCliSuppressed
+                                      ? state.outgoingCli!
+                                      : context
+                                          .msg
+                                          .main
+                                          .settings
+                                          .list
+                                          .accountInfo
+                                          .businessNumber
+                                          .suppressed,
+                                  style: _largeStyle,
+                                ),
                               SizedBox(height: paragraphDistance),
                             ],
                           ),

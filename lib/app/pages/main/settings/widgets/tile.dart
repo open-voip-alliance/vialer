@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:provider/provider.dart';
 
@@ -105,7 +106,12 @@ class SettingTile extends StatelessWidget {
         description: Text(
           context.msg.main.settings.list.accountInfo.businessNumber.description,
         ),
-        child: _StringSettingValue(businessNumberSetting),
+        child: businessNumberSetting.isSuppressed
+            ? _StringValue(
+                context.msg.main.settings.list.accountInfo.businessNumber
+                    .suppressed,
+              )
+            : _StringSettingValue(businessNumberSetting),
       );
     });
   }
@@ -456,9 +462,8 @@ class SettingTile extends StatelessWidget {
 
 typedef ValueChangedWithContext<T> = void Function(BuildContext, T);
 
-void defaultOnChanged<T>(BuildContext context, Setting<T> setting) {
-  context.read<SettingsCubit>().changeSetting(setting);
-}
+Future<void> defaultOnChanged<T>(BuildContext context, Setting<T> setting) =>
+    context.read<SettingsCubit>().changeSetting(setting);
 
 class _BoolSettingValue extends StatelessWidget {
   final Setting<bool> setting;
@@ -782,8 +787,12 @@ class _DndToggle extends StatelessWidget {
     required this.userAvailabilityType,
   });
 
-  String _text(BuildContext context) {
-    if (setting.value == true) {
+  String _text(BuildContext context, {bool? settingValue}) {
+    if (settingValue == null) {
+      settingValue = setting.value;
+    }
+
+    if (settingValue == true) {
       return context.msg.main.settings.list.calling.availability.dnd.title;
     }
 
@@ -808,72 +817,115 @@ class _DndToggle extends StatelessWidget {
       ? context.brand.theme.colors.dndAccent
       : userAvailabilityType.asAccentColor(context);
 
+  String _prepareVoiceOverForAccessibility(
+    BuildContext context,
+    bool dnd,
+  ) {
+    var availabilityDescription = '';
+
+    if (userAvailabilityType == UserAvailabilityType.available) {
+      availabilityDescription =
+          context.msg.main.settings.list.calling.availability.dnd.currentStatus(
+        dnd
+            ? context.msg.main.settings.list.calling.notAvailable
+            : context
+                .msg.main.settings.list.calling.availability.available.title,
+      );
+    } else {
+      availabilityDescription = _text(context, settingValue: false);
+    }
+
+    return '${context.msg.main.settings.list.calling.availability.dnd.title}. '
+        '${context.msg.generic.toggle}. '
+        '${dnd ? context.msg.generic.on : context.msg.generic.off}. '
+        '$availabilityDescription. ';
+  }
+
+  Future<bool> _toggleDndSetting(BuildContext context) async {
+    final newValue = !setting.value;
+
+    return defaultOnChanged(
+      context,
+      setting.copyWith(value: newValue),
+    ).then((_) => newValue);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Row(
-        children: [
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: 10,
-                horizontal: 14,
-              ),
-              child: Row(
-                children: [
-                  Flexible(
-                    child: Text(
-                      _text(context),
-                      maxLines: 1,
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: _color(context),
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+    return Semantics(
+      label: _prepareVoiceOverForAccessibility(context, setting.value),
+      enabled: true,
+      container: true,
+      onTap: () => _toggleDndSetting(context).then(
+        (dnd) => SemanticsService.announce(
+          _prepareVoiceOverForAccessibility(context, dnd),
+          Directionality.of(context),
+        ),
+      ),
+      child: ExcludeSemantics(
+        child: Container(
+          child: Row(
+            children: [
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 10,
+                    horizontal: 14,
                   ),
-                ],
+                  child: Row(
+                    children: [
+                      Flexible(
+                        child: Text(
+                          _text(context),
+                          maxLines: 1,
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: _color(context),
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 6,
+                ),
+                child: FlutterSwitch(
+                  value: setting.value,
+                  inactiveIcon: Icon(
+                    VialerSans.available,
+                    color: _accentColor(context),
+                  ),
+                  activeIcon: Icon(
+                    VialerSans.dnd,
+                    color: _accentColor(context),
+                  ),
+                  switchBorder: Border.all(
+                    color: _color(context),
+                    width: 2.0,
+                  ),
+                  height: 32,
+                  width: 70,
+                  padding: 4,
+                  activeColor: _accentColor(context),
+                  inactiveColor: _accentColor(context),
+                  activeToggleColor: _color(context),
+                  inactiveToggleColor: _color(context),
+                  onToggle: (dnd) => _toggleDndSetting(context),
+                ),
+              )
+            ],
+          ),
+          decoration: BoxDecoration(
+            color: _accentColor(context),
+            borderRadius: const BorderRadius.all(
+              Radius.circular(40),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 10,
-              vertical: 6,
-            ),
-            child: FlutterSwitch(
-              value: setting.value,
-              inactiveIcon: Icon(
-                VialerSans.available,
-                color: _accentColor(context),
-              ),
-              activeIcon: Icon(
-                VialerSans.dnd,
-                color: _accentColor(context),
-              ),
-              switchBorder: Border.all(
-                color: _color(context),
-                width: 2.0,
-              ),
-              height: 32,
-              width: 70,
-              padding: 4,
-              activeColor: _accentColor(context),
-              inactiveColor: _accentColor(context),
-              activeToggleColor: _color(context),
-              inactiveToggleColor: _color(context),
-              onToggle: (dnd) => defaultOnChanged(
-                context,
-                setting.copyWith(value: dnd),
-              ),
-            ),
-          )
-        ],
-      ),
-      decoration: BoxDecoration(
-        color: _accentColor(context),
-        borderRadius: const BorderRadius.all(
-          Radius.circular(40),
         ),
       ),
     );

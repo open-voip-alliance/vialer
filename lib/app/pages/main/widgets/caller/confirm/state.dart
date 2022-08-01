@@ -1,5 +1,7 @@
 import 'package:equatable/equatable.dart';
 
+import '../../../../../../domain/entities/system_user.dart';
+
 class ConfirmState extends Equatable {
   final String? outgoingCli;
   final String? regionNumber;
@@ -10,6 +12,8 @@ class ConfirmState extends Equatable {
     this.regionNumber,
     required this.showConfirmPage,
   });
+
+  bool get isOutgoingCliSuppressed => outgoingCli?.isSuppressed ?? false;
 
   ConfirmState copyWith({
     String? outgoingCli,
