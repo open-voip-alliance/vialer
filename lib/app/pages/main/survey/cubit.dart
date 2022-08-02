@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:in_app_review/in_app_review.dart';
 
 import '../../../../domain/entities/setting.dart';
 import '../../../../domain/entities/survey/survey.dart';
@@ -72,6 +73,7 @@ class SurveyCubit extends Cubit<SurveyState> with Loggable {
     if (state is ShowHelpUsPrompt) {
       emit(ShowQuestion(state.survey!.questions.first, survey: state.survey));
     } else if (state is ShowQuestion) {
+      _appStoreRatingCheck();
       _progressToNextQuestion();
     }
   }
@@ -85,6 +87,25 @@ class SurveyCubit extends Cubit<SurveyState> with Loggable {
           ? state.withoutAnswer()
           : state.copyWith(answer: answer),
     );
+  }
+
+  Future<void> _appStoreRatingCheck() async {
+    final state = this.state as ShowQuestion;
+    final survey = state.survey!;
+
+    if (survey.id != SurveyId.appRating) return;
+
+    final answer = state.answer;
+    final rating = _getRatingFromAnswer(answer) ?? 0;
+    final shouldRequestAppStoreRating = rating > 3;
+
+    if (shouldRequestAppStoreRating) {
+      final inAppReview = InAppReview.instance;
+
+      if (await inAppReview.isAvailable()) {
+        inAppReview.requestReview();
+      }
+    }
   }
 
   void _progressToNextQuestion() {
@@ -123,7 +144,7 @@ class SurveyCubit extends Cubit<SurveyState> with Loggable {
       final answer = state.answer;
 
       return {
-        'rating': answer != null ? answer + 1 : null,
+        'rating': _getRatingFromAnswer(answer),
       };
     }
 
@@ -151,4 +172,6 @@ class SurveyCubit extends Cubit<SurveyState> with Loggable {
       emit(state.previous!);
     }
   }
+
+  int? _getRatingFromAnswer(int? answer) => answer != null ? answer + 1 : null;
 }

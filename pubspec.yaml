@@ -58,6 +58,7 @@ dependencies:
   flutter_libphonenumber: ^1.0.3
   styled_text: ^4.0.0+1
   flutter_switch: ^0.3.2
+  in_app_review: ^2.0.4
 
   # This exists temporarily to import credentials from the legacy app and can be totally removed
   # when all users have been moved over.
