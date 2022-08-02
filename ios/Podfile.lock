@@ -30,6 +30,8 @@ PODS:
     - Flutter
     - Segment-Amplitude (= 3.3.2)
     - segment-appsflyer-ios (= 6.5.2)
+  - in_app_review (0.2.0):
+    - Flutter
   - integration_test (0.0.1):
     - Flutter
   - iOSPhoneLib (0.1.1):
@@ -121,6 +123,7 @@ DEPENDENCIES:
   - flutter_libphonenumber (from `.symlinks/plugins/flutter_libphonenumber/ios`)
   - flutter_phone_lib (from `.symlinks/plugins/flutter_phone_lib/ios`)
   - flutter_segment (from `.symlinks/plugins/flutter_segment/ios`)
+  - in_app_review (from `.symlinks/plugins/in_app_review/ios`)
   - integration_test (from `.symlinks/plugins/integration_test/ios`)
   - iOSPhoneLib (from `https://github.com/open-voip-alliance/iOS-Phone-Lib.git`)
   - le (from `https://github.com/LogentriesCommunity/le_ios.git`)
@@ -173,6 +176,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_phone_lib/ios"
   flutter_segment:
     :path: ".symlinks/plugins/flutter_segment/ios"
+  in_app_review:
+    :path: ".symlinks/plugins/in_app_review/ios"
   integration_test:
     :path: ".symlinks/plugins/integration_test/ios"
   iOSPhoneLib:
@@ -225,6 +230,7 @@ SPEC CHECKSUMS:
   flutter_libphonenumber: 6a23afdf063b34d1e53e6dbd6c6bc905d18e8e46
   flutter_phone_lib: 060b342f95c63f9e07e1577f76db7e06f349ef8a
   flutter_segment: 0bdb477aacb471eed01a2c3cc9b6c3ad54afe8c7
+  in_app_review: 4a97249f7a2f539a0f294c2d9196b7fe35e49541
   integration_test: a1e7d09bd98eca2fc37aefd79d4f41ad37bdbbe5
   iOSPhoneLib: 8adc5d457bb16a5922b5db0fa847ec69e6c9e543
   le: 6854003e293bf5b3cb822ef06971f1cc23a77eb9
@@ -251,4 +257,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 5cbde205bc638a60e6eaf1140e9808670c3b3178
 
-COCOAPODS: 1.11.3
+COCOAPODS: 1.11.2

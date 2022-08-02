@@ -119,40 +119,11 @@ class _FeedbackPageState extends State<FeedbackPage> {
                         visible: !isKeyboardOpen,
                       ),
                       Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 12,
-                            horizontal: 0,
-                          ),
-                          child: TextField(
-                            expands: true,
-                            controller: _textController,
-                            maxLines: null,
-                            decoration: InputDecoration(
-                              hintText: context
-                                  .msg.main.settings.feedback.placeholders.text,
-                              hintMaxLines: 4,
-                              border: InputBorder.none,
-                              filled: true,
-                              fillColor: context.brand.theme.colors.primaryLight
-                                  .withOpacity(0.6),
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 24,
-                                vertical: 16,
-                              ),
-                              hintStyle: TextStyle(
-                                color: context.brand.theme.colors.grey4,
-                              ),
-                            ),
-                          ),
-                        ),
+                        child: _FeedbackInput(controller: _textController),
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                        ).copyWith(
-                          bottom: 16,
-                          top: 60,
+                          horizontal: 24,
                         ),
                         child: SizedBox(
                           width: double.infinity,
@@ -183,6 +154,53 @@ class _FeedbackPageState extends State<FeedbackPage> {
   }
 }
 
+class _FeedbackInput extends StatelessWidget {
+  final TextEditingController controller;
+
+  const _FeedbackInput({required this.controller});
+
+  @override
+  Widget build(BuildContext context) {
+    final borderRadius = BorderRadius.circular(8);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 12),
+      child: TextField(
+        expands: true,
+        controller: controller,
+        maxLines: null,
+        textAlignVertical: TextAlignVertical.top,
+        decoration: InputDecoration(
+          hintText: context.msg.main.settings.feedback.placeholders.text,
+          hintMaxLines: 4,
+          border: OutlineInputBorder(
+            borderRadius: borderRadius,
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: borderRadius,
+            borderSide: BorderSide(
+              color: context.brand.theme.colors.grey3,
+              width: 1.5,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: borderRadius,
+            borderSide: BorderSide(
+              color: context.brand.theme.colors.primaryLight,
+              width: 2,
+            ),
+          ),
+          focusColor: context.brand.theme.colors.primaryLight,
+          contentPadding: const EdgeInsets.all(16),
+          hintStyle: TextStyle(
+            color: context.brand.theme.colors.grey4,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _FeedbackFormHeader extends StatelessWidget {
   final bool visible;
 
@@ -193,31 +211,44 @@ class _FeedbackFormHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // TODO: Make it smoothly animated.
     return Visibility(
       visible: visible,
       child: Container(
-        padding: const EdgeInsets.symmetric(
-          vertical: 8,
-          horizontal: 8,
-        ),
-        color: context.brand.theme.colors.primaryLight.withOpacity(0.6),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            color: context.brand.theme.colors.grey5.withOpacity(0.15)),
+        child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.only(right: 8),
-              child: Icon(
-                VialerSans.feedback,
-                size: 16,
-                color: context.brand.theme.colors.primaryDark,
-              ),
-            ),
-            Flexible(
-              child: Text(
-                context.msg.main.settings.feedback.callout(
-                  context.brand.appName,
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(
+                  VialerSans.feedback,
+                  size: 24,
+                  color: context.brand.theme.colors.grey5,
                 ),
-              ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    context.msg.main.settings.feedback.placeholders.text,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Text(
+              context.msg.main.settings.feedback
+                  .description(context.brand.appName),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              context.msg.main.settings.feedback.urgent,
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ],
         ),

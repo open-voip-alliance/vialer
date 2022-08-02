@@ -167,6 +167,7 @@ main:
         popupMenu:
           copy: "Copy"
           call: *call
+          from: "Call from"
       loading:
         title: "Loading your call history"
         description: "Your recent calls will show here soon. Please wait a moment."
@@ -323,13 +324,14 @@ main:
       logout: "Log out"
     feedback:
       title: "Send feedback"
-      callout(String appName): >-
-        Your feedback is valuable to us.
-
-
-        If you encounter a problem or want to let our development team know about your experience with $appName, use the form below. If your problem requires immediate assistance please contact your VoIP provider directly.
+      description(String appName): >-
+        If you encounter a problem or want to let our development team know about your
+        experience with $appName, use the form below.
+      urgent: >-
+        If your problem requires immediate assistance please contact your VoIP provider directly.
       logs(String appName): >-
-        Do you also want to send your $appName app activity? By doing so, you really help our developers to solve any problems you experience faster.
+        Do you also want to send your $appName app activity? By doing so, you really help our
+        developers to solve any problems you experience faster.
       placeholders:
         text: "Type your feedback here and tap the send feedback button below."
       snackBar: "Feedback sent, thank you!"
