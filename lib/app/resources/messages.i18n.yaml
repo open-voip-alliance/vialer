@@ -164,6 +164,7 @@ main:
       popupMenu:
         copy: "Copy"
         call: *call
+        from: "Call from"
       loading:
         title: "Loading your call history"
         description: "Your recent calls will show here soon. Please wait a moment."
