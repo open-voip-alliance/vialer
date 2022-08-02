@@ -160,6 +160,7 @@ main:
       popupMenu:
         copy: "Kopiëren"
         call: *call
+        from: "Belgesprek van"
       loading:
         title: "Gesprekken worden opgehaald"
         description: "Je recente gesprekken komen hier zo te staan. Graag nog even geduld."
