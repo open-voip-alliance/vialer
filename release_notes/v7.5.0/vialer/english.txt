@@ -1,0 +1,5 @@
+- You can now see extra information of a recent incoming call by pressing the three dots ⋮ of a call. This can be useful when using a dial plan with a Variable Callername
+- Android: We will now occasionally ask for a review in the Play Store
+- iOS: We will now occasionally ask for a review in the App Store
+- iOS: A bug where it wasn't possible to disable "Show in phone recents", has been fixed
+- The feedback page looks nicer now
