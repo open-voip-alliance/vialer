@@ -70,7 +70,7 @@ class VoipRepository with Loggable {
       return;
     }
 
-    if (_hasStartedCompleter.isCompleted) {
+    if (_hasStartedCompleter.isCompleted && await hasStarted) {
       logger.info(
         'PhoneLib is already initialized and has started, not doing anything',
       );
@@ -156,7 +156,10 @@ class VoipRepository with Loggable {
       return true;
     }
 
-    if (!await start()) return;
+    if (!await start()) {
+      _hasStartedCompleter.complete(false);
+      return;
+    }
 
     _eventsSubscription = __phoneLib!.events.listen(_eventsController.add);
 
@@ -204,7 +207,7 @@ class VoipRepository with Loggable {
       (await _phoneLib).call(number.normalize());
 
   Future<void> stop() async {
-    if (_hasStartedCompleter.isCompleted) {
+    if (_hasStartedCompleter.isCompleted && await hasStarted) {
       (await _phoneLib).stop();
     }
   }

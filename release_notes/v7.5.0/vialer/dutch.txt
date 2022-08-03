@@ -1,0 +1,5 @@
+- Je kan nu extra informatie zien van een recente inkomende oproep door te klikken op de drie puntjes ⋮ van een oproep. Dit kan handig zijn wanneer je een belplan gebruikt met een Variabele Callernaam
+- Android: We zullen nu soms vragen voor een review in de Play Store
+- iOS:  We zullen nu soms vragen voor een review in de App Store
+- iOS: Een probleem waarbij het niet mogelijk was om "Toon in telefoon's bellijst" uit te schakelen, is opgelost
+- De feedback pagina ziet er nu beter uit

@@ -104,6 +104,8 @@ class CallParty extends Equatable {
     required this.type,
   });
 
+  bool get hasName => name?.isNotEmpty == true;
+
   @override
   List<Object?> get props => [name, number, type];
 }

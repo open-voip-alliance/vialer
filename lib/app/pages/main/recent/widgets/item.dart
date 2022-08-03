@@ -11,11 +11,8 @@ import '../../../../util/contact.dart';
 import '../../util/color.dart';
 import '../../widgets/avatar.dart';
 import '../../widgets/contact_list/widgets/group_header.dart';
+import 'popup_menu.dart';
 
-enum _Action {
-  copy,
-  call,
-}
 
 class RecentCallItem extends StatelessWidget {
   final CallRecordWithContact callRecord;
@@ -31,14 +28,16 @@ class RecentCallItem extends StatelessWidget {
     required this.onCallPressed,
   }) : super(key: key);
 
-  void _onPopupMenuItemPress(_Action _action) {
+  void _onPopupMenuItemPress(RecentCallMenuAction _action) {
     switch (_action) {
-      case _Action.copy:
+      case RecentCallMenuAction.copy:
         onCopyPressed();
         break;
-      case _Action.call:
+      case RecentCallMenuAction.call:
         onCallPressed();
         break;
+      case RecentCallMenuAction.none:
+        return;
     }
   }
 
@@ -71,37 +70,9 @@ class RecentCallItem extends StatelessWidget {
       ),
       // Empty onTap so we still keep the splash behavior
       onTap: () => {},
-      trailing: PopupMenuButton(
-        onSelected: _onPopupMenuItemPress,
-        itemBuilder: (context) => [
-          PopupMenuItem<_Action>(
-            value: _Action.copy,
-            child: ListTile(
-              leading: Container(
-                width: 24,
-                alignment: Alignment.center,
-                child: const Icon(VialerSans.copy, size: 20),
-              ),
-              title: Text(context.msg.main.recent.list.popupMenu.copy),
-            ),
-          ),
-          PopupMenuItem<_Action>(
-            value: _Action.call,
-            child: ListTile(
-              leading: Container(
-                width: 24,
-                alignment: Alignment.center,
-                child: const Icon(VialerSans.phone, size: 20),
-              ),
-              title: Text(context.msg.main.recent.list.popupMenu.call),
-            ),
-          ),
-        ],
-        icon: Icon(
-          VialerSans.ellipsis,
-          color: context.brand.theme.colors.grey1,
-          size: 16,
-        ),
+      trailing: RecentItemPopupMenu(
+        callRecord: callRecord,
+        onPopupMenuItemPress: _onPopupMenuItemPress,
       ),
     );
   }

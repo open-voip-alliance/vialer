@@ -160,6 +160,7 @@ main:
       popupMenu:
         copy: "Kopiëren"
         call: *call
+        from: "Belgesprek van"
       loading:
         title: "Gesprekken worden opgehaald"
         description: "Je recente gesprekken komen hier zo te staan. Graag nog even geduld."
@@ -320,11 +321,13 @@ main:
       logout: "Uitloggen"
     feedback:
       title: "Feedback sturen"
-      callout(String appName): >-
-        Jouw feedback is waardevol voor ons.
-
-
-        Als je een probleem hebt ondervonden of ons ontwikkelingsteam wilt laten weten wat je ervaring is met $appName, gebruik dan het formulier hieronder. Als je probleem dringende hulp vereist, graag rechtstreeks contact opnemen met je VoIP provider.
+      header: "Jouw feedback is waardevol voor ons."
+      description(String appName): >-
+        Als je een probleem hebt ondervonden of ons ontwikkelingsteam wilt laten weten wat je
+        ervaring is met $appName, gebruik dan het formulier hieronder.
+      urgent: >-
+        Als je probleem dringende hulp vereist, graag rechtstreeks contact opnemen met
+        je VoIP provider.
       logs(String appName): >-
         Wil je ook je $appName app-activiteit versturen? Daarmee help je onze ontwikkelaars echt om eventuele problemen die je ervaart sneller op te lossen.
       placeholders:

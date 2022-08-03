@@ -19,7 +19,7 @@ dependencies:
   flutter_phone_lib:
     git:
       url: https://github.com/open-voip-alliance/flutter-phone-lib
-      ref: 5168de1eea026627f2bae1d8d4177af3d74f0ccc
+      ref: d50c85463ffa11d9d8ae965326c60e30bdd30109
 
   flutter_bloc: ^7.0.0
   pedantic: ^1.9.0
@@ -58,6 +58,7 @@ dependencies:
   flutter_libphonenumber: ^1.0.3
   styled_text: ^4.0.0+1
   flutter_switch: ^0.3.2
+  in_app_review: ^2.0.4
 
   # This exists temporarily to import credentials from the legacy app and can be totally removed
   # when all users have been moved over.

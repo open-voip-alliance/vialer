@@ -103,6 +103,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
 
     _hasVoipStarted().then(
       (_) {
+        // We can still do these things, even if VoIP failed to start.
         checkPhonePermission();
         _voipCallEventSubscription ??=
             _getVoipCallEventStream().listen(_onVoipCallEvent);
