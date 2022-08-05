@@ -53,6 +53,7 @@ import Intents
                     "direction" : call.direction,
                     "duration" : call.duration,
                     "mos" : call.mos,
+                    "middleware_url" : middleware.baseUrl,
                 ])
 
                 middleware.currentCallInfo = nil
