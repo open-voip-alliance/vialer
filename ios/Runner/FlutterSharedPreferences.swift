@@ -4,6 +4,7 @@ class FlutterSharedPreferences {
     
     private let FLUTTER_SHARED_PREF_SYSTEM_USER = "flutter.system_user"
     private let FLUTTER_SHARED_PREF_VOIP_CONFIG = "flutter.voip_config"
+    private let FLUTTER_SHARED_PREF_SERVER_CONFIG = "flutter.server_config"
     private let FLUTTER_SHARED_PREF_PUSH_TOKEN = "flutter.push_token"
     private let FLUTTER_SHARED_PREF_SETTINGS = "flutter.settings"
     private let FLUTTER_SHARED_PREF_LOGS = "flutter.logs"
@@ -23,6 +24,15 @@ class FlutterSharedPreferences {
     var voipConfig: [String: Any]? {
         get {
             convertToDictionary(text: defaults.string(forKey: FLUTTER_SHARED_PREF_VOIP_CONFIG) ?? "")
+        }
+    }
+    
+    var middlewareUrl: String {
+        get {
+            let pref = convertToDictionary(text: defaults.string(forKey: FLUTTER_SHARED_PREF_SERVER_CONFIG) ?? "")
+            let fallbackUrl = (Bundle.main.infoDictionary?["MiddlewareUrl"] as? String)!.removingPercentEncoding!
+            
+            return pref?["MIDDLEWARE"] as? String ?? fallbackUrl
         }
     }
     

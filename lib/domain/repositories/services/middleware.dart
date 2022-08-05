@@ -2,16 +2,18 @@ import 'dart:async';
 
 import 'package:chopper/chopper.dart' hide JsonConverter;
 
-import '../../usecases/get_middleware_base_url.dart';
+import '../../usecases/get_server_config.dart';
 import 'util.dart';
 
 part 'middleware.chopper.dart';
 
 @ChopperApi(baseUrl: '/api/')
 abstract class MiddlewareService extends ChopperService {
-  static MiddlewareService create() {
-    final _getMiddlewareBaseUrl = GetMiddlewareBaseUrlUseCase();
-    final _baseUrl = _getMiddlewareBaseUrl();
+  static Future<MiddlewareService> create() async {
+    final _getServerConfig = GetServerConfigUseCase();
+    final _baseUrl = await _getServerConfig().then(
+      (config) => config.middlewareUrl.toString(),
+    );
 
     return _$MiddlewareService(
       ChopperClient(

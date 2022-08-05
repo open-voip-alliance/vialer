@@ -8,7 +8,7 @@ import kotlinx.coroutines.channels.Channel
 import org.json.JSONArray
 import org.json.JSONObject
 
-class FlutterSharedPreferences(context: Context) {
+class FlutterSharedPreferences(private val context: Context) {
     private val prefs: SharedPreferences =
         context.getSharedPreferences("FlutterSharedPreferences", Context.MODE_PRIVATE)
 
@@ -20,6 +20,12 @@ class FlutterSharedPreferences(context: Context) {
 
     val voipConfig
         get() = JSONObject(prefs.getString(FLUTTER_SHARED_PREF_VOIP_CONFIG, "{}")!!)
+
+    val middlewareUrl: String
+        get() {
+            val pref = prefs.getString(FLUTTER_SHARED_PREF_SERVER_CONFIG, null) ?: return context.getString(R.string.middleware_url)
+            return JSONObject(pref).getString("MIDDLEWARE")
+        }
 
     var pushToken
         get() = prefs.getString(FLUTTER_SHARED_PREF_PUSH_TOKEN, "")
@@ -81,6 +87,7 @@ class FlutterSharedPreferences(context: Context) {
         private const val SHARED_PREF_PREFIX = "flutter."
         private const val FLUTTER_SHARED_PREF_SYSTEM_USER = "${SHARED_PREF_PREFIX}system_user"
         private const val FLUTTER_SHARED_PREF_VOIP_CONFIG = "${SHARED_PREF_PREFIX}voip_config"
+        private const val FLUTTER_SHARED_PREF_SERVER_CONFIG = "${SHARED_PREF_PREFIX}server_config"
         private const val FLUTTER_SHARED_PREF_PUSH_TOKEN = "${SHARED_PREF_PREFIX}push_token"
         private const val FLUTTER_SHARED_PREF_SETTINGS = "${SHARED_PREF_PREFIX}settings"
         private const val FLUTTER_SHARED_PREF_LOGS = "${SHARED_PREF_PREFIX}logs"

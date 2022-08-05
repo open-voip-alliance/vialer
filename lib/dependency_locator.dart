@@ -22,6 +22,7 @@ import 'domain/repositories/metrics.dart';
 import 'domain/repositories/operating_system_info.dart';
 import 'domain/repositories/permission.dart';
 import 'domain/repositories/recent_call.dart';
+import 'domain/repositories/server_config.dart';
 import 'domain/repositories/services/middleware.dart';
 import 'domain/repositories/services/voipgrid.dart';
 import 'domain/repositories/storage.dart';
@@ -40,9 +41,6 @@ Future<void> initializeDependencies({bool ui = true}) async {
     ..registerSingleton<VoipgridService>(
       VoipgridService.create(),
     )
-    ..registerSingleton<MiddlewareService>(
-      MiddlewareService.create(),
-    )
     ..registerSingletonAsync<StorageRepository>(() async {
       final storageRepository = StorageRepository();
       await storageRepository.load();
@@ -52,7 +50,17 @@ Future<void> initializeDependencies({bool ui = true}) async {
       final legacyStorageRepository = LegacyStorageRepository();
       await legacyStorageRepository.load();
       return legacyStorageRepository;
-    });
+    })
+    ..registerSingletonWithDependencies<ServerConfigRepository>(
+      () => ServerConfigRepository(
+        dependencyLocator<VoipgridService>(),
+      ),
+      dependsOn: [StorageRepository],
+    )
+    ..registerSingletonAsync<MiddlewareService>(
+      () async => await MiddlewareService.create(),
+      dependsOn: [StorageRepository, ServerConfigRepository],
+    );
 
   if (ui) {
     dependencyLocator
@@ -92,7 +100,10 @@ Future<void> initializeDependencies({bool ui = true}) async {
     ..registerSingleton<OperatingSystemInfoRepository>(
       OperatingSystemInfoRepository(),
     )
-    ..registerSingleton<VoipRepository>(VoipRepository())
+    ..registerSingletonWithDependencies<VoipRepository>(
+      VoipRepository.new,
+      dependsOn: [MiddlewareService],
+    )
     ..registerSingletonWithDependencies<VoipConfigRepository>(
       () => VoipConfigRepository(
         dependencyLocator<VoipgridService>(),

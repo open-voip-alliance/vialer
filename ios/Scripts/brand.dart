@@ -21,6 +21,7 @@ Future<void> main(List<String> arguments) async {
     values: {
       'BUNDLE_NAME': brand['appName'] as String,
       'BUNDLE_ID': brand['appId'] as String,
+      'MIDDLEWARE_URL': Uri.encodeComponent(brand['middlewareUrl'] as String),
     },
   );
 

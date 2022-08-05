@@ -4,6 +4,8 @@
 <dict>
 	<key>Sandbox</key>
 	<string>$(SANDBOX)</string>
+	<key>MiddlewareUrl</key>
+	<string>$(MIDDLEWARE_URL)</string>
 	<key>Segment Key</key>
 	<string>$(SEGMENT_IOS_KEY)</string>
 	<key>NSBonjourServices</key>

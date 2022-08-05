@@ -7,11 +7,16 @@ public class Middleware: NativeMiddleware {
     private let logger: Logger
     private let segment: Segment
 
-    private let BASE_URL = "https://vialerpush.voipgrid.nl/api/"
+    private let flutterSharedPreferences = FlutterSharedPreferences()
+
+    public var baseUrl: String {
+        get {
+            flutterSharedPreferences.middlewareUrl + "/api/"
+        }
+    }
+
     private let RESPONSE_URL = "call-response/"
     private let REGISTER_URL = "apns-device/"
-
-    private let flutterSharedPreferences = FlutterSharedPreferences()
 
     private var lastRegisteredToken: String?
     public var currentCallInfo: CurrentCallInfo?
@@ -37,7 +42,7 @@ public class Middleware: NativeMiddleware {
         if (lastRegisteredToken == token) {
             return
         }
-
+        
         lastRegisteredToken = token
 
         if (flutterSharedPreferences.getBoolSetting(name: "DndSetting")) {
@@ -156,6 +161,7 @@ public class Middleware: NativeMiddleware {
 
         segment.track(event: "notification-received", properties: payload.withTrackingProperties(properties: [
             "seconds_from_call_to_received" : String(payload.secondsSincePushWasSent),
+            "middleware_url" : baseUrl,
         ]))
     }
 
@@ -172,11 +178,12 @@ public class Middleware: NativeMiddleware {
             "available" : String(available),
             "unavailable_reason" : reason,
             "seconds_from_call_to_responded" : String(responseTime),
+            "middleware_url" : baseUrl,
         ]))
     }
 
     private func createMiddlewareRequest(email: String, token: String, url: String) -> URLRequest {
-        var request = URLRequest(url:  NSURL(string: BASE_URL+url)! as URL)
+        var request = URLRequest(url:  NSURL(string: baseUrl + url)! as URL)
 
         request.httpMethod = "POST"
         request.setValue("Token \(email):\(token)", forHTTPHeaderField: "Authorization")
