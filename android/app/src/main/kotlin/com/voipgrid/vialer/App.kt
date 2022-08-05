@@ -29,6 +29,7 @@ class App : FlutterApplication() {
                     "duration" to call.duration,
                     "mos" to call.mos,
                     "is_ignoring_battery_optimizations" to isIgnoringBatteryOptimizations.toString(),
+                    "middleware_url" to middleware.baseUrl,
                 ))
 
                 middleware.currentCallInfo = null
