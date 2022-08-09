@@ -247,6 +247,31 @@ class SettingTile extends StatelessWidget {
     );
   }
 
+  static Widget showClientCalls({
+    required ShowClientCallsSetting setting,
+    required VoipgridPermissionsSetting permissions,
+  }) {
+    return Builder(
+      builder: (context) {
+        return SettingTile(
+          label: Text(
+            context.msg.main.settings.list.calling.showClientCalls.title,
+          ),
+          description: Text(
+            permissions.value.hasClientCallsPermission
+                ? context
+                    .msg.main.settings.list.calling.showClientCalls.description
+                : context.msg.main.settings.list.calling.showClientCalls
+                    .noPermission,
+          ),
+          child: permissions.value.hasClientCallsPermission
+              ? _BoolSettingValue(setting)
+              : const _Switch(value: false, onChanged: null),
+        );
+      },
+    );
+  }
+
   static Widget remoteLogging(RemoteLoggingSetting setting) {
     return Builder(
       builder: (context) {

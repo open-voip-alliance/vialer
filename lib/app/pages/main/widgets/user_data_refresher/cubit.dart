@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../domain/usecases/get_is_logged_in_somewhere_else.dart';
 import '../../../../../domain/usecases/get_is_voip_allowed.dart';
 import '../../../../../domain/usecases/get_latest_availability.dart';
+import '../../../../../domain/usecases/get_latest_voipgrid_permissions.dart';
 import '../../../../../domain/usecases/get_user.dart';
 import '../../../../../domain/usecases/get_voip_config.dart';
 import '../../../../../domain/usecases/logout.dart';
@@ -23,6 +24,7 @@ class UserDataRefresherCubit extends Cubit<UserDataRefresherState>
   final _isVoipAllowed = GetIsVoipAllowedUseCase();
   final _isLoggedInSomewhereElse = GetIsLoggedInSomewhereElseUseCase();
   final _logout = LogoutUseCase();
+  final _getLatestVoipgridPermissions = GetLatestVoipgridPermissions();
 
   UserDataRefresherCubit() : super(const NotRefreshing());
 
@@ -42,6 +44,7 @@ class UserDataRefresherCubit extends Cubit<UserDataRefresherState>
 
     await _getUser(latest: true);
     await _getLatestAvailability();
+    await _getLatestVoipgridPermissions();
 
     if (await _isVoipAllowed()) {
       await _getVoipConfig(latest: true);

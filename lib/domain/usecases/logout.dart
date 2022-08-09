@@ -6,11 +6,13 @@ import '../events/event_bus.dart';
 import '../events/user_was_logged_out.dart';
 import '../repositories/storage.dart';
 import '../use_case.dart';
+import 'client_calls/purge_local_call_records.dart';
 import 'stop_voip.dart';
 
 class LogoutUseCase extends UseCase {
   final _storageRepository = dependencyLocator<StorageRepository>();
   final _stopVoip = StopVoipUseCase();
+  final _purgeClientCalls = PurgeLocalCallRecords();
   final _eventBus = dependencyLocator<EventBus>();
 
   Future<void> call() async {
@@ -36,6 +38,8 @@ class LogoutUseCase extends UseCase {
         remoteLoggingSetting,
       ];
     }
+
+    await _purgeClientCalls(reason: PurgeReason.logout);
 
     _eventBus.broadcast(const UserWasLoggedOutEvent());
   }

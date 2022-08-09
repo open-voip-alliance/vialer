@@ -159,15 +159,20 @@ main:
         today: "Today"
         yesterday: "Yesterday"
       item:
+        client:
+          wasMissed(String time): "Missed call at $time"
+          inbound(String time, String duration): "Answered at $time - $duration"
+          outbound(String person, String time, String duration): "$person called at $time - $duration"
         wasMissed(String time): "You missed a call at $time"
         inbound(String time, String duration): "You answered at $time - $duration"
         outbound(String time, String duration): "You called at $time - $duration"
-        answeredElsewhere(String account, String time, String duration): >-
-          $account answered at $time - $duration
+        answeredElsewhere(String time, String duration): >-
+          answered at $time - $duration
         popupMenu:
           copy: "Copy"
           call: *call
           from: "Call from"
+          answered: "Answered by"
       loading:
         title: "Loading your call history"
         description: "Your recent calls will show here soon. Please wait a moment."
@@ -306,6 +311,12 @@ main:
           title: "Always run in background"
           description: >-
             This application will no longer be restricted by Android battery optimization, increasing the reliability of incoming calls. It is highly recommended that this is enabled.
+        showClientCalls:
+          title: "Show client calls"
+          description: >-
+            When enabled, calls made by your colleagues will be shown as the default tab on your recents screen.
+          noPermission: >-
+            You do not have permission to use this feature. Please contact your administrator.
       version: "Version"
       portalLinks:
         title: "VoIP platform"
