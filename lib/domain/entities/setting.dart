@@ -6,6 +6,7 @@ import 'package:meta/meta.dart';
 import 'audio_codec.dart';
 import 'availability.dart';
 import 'system_user.dart';
+import 'voipgrid_permissions.dart';
 
 @immutable
 abstract class Setting<T> {
@@ -38,6 +39,8 @@ abstract class Setting<T> {
     ShowCallsInNativeRecentsSetting.preset(),
     AvailabilitySetting.preset(),
     DndSetting.preset(),
+    ShowClientCallsSetting.preset(),
+    VoipgridPermissionsSetting.preset(),
   ];
 
   Map<String, dynamic> toJson() {
@@ -82,7 +85,14 @@ abstract class Setting<T> {
       );
     } else if (type == (DndSetting).toString()) {
       return DndSetting(value as bool);
-    } else {
+    } else if (type == (ShowClientCallsSetting).toString()) {
+      return ShowClientCallsSetting(value as bool);
+    } else if (type == (VoipgridPermissionsSetting).toString()) {
+      return VoipgridPermissionsSetting(
+        VoipgridPermissions.fromJson(value as Map<String, dynamic>),
+      );
+    }
+    else {
       assert(false, 'Setting type does not exist: $type');
       return null;
     }
@@ -226,6 +236,28 @@ class AvailabilitySetting extends Setting<Availability?> {
   @override
   AvailabilitySetting copyWith({Availability? value}) =>
       AvailabilitySetting(value ?? this.value);
+}
+
+class ShowClientCallsSetting extends Setting<bool> {
+  const ShowClientCallsSetting(bool value) : super(value);
+
+  const ShowClientCallsSetting.preset() : this(false);
+
+  @override
+  ShowClientCallsSetting copyWith({bool? value}) =>
+      ShowClientCallsSetting(value ?? this.value);
+}
+
+class VoipgridPermissionsSetting extends Setting<VoipgridPermissions> {
+  const VoipgridPermissionsSetting(VoipgridPermissions value)
+      : super(value, mutable: true, external: true);
+
+  const VoipgridPermissionsSetting.preset()
+      : this(const VoipgridPermissions(hasClientCallsPermission: false));
+
+  @override
+  VoipgridPermissionsSetting copyWith({VoipgridPermissions? value}) =>
+      VoipgridPermissionsSetting(value ?? this.value);
 }
 
 extension SettingsByType on Iterable<Setting> {

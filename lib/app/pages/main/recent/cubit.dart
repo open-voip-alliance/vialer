@@ -6,7 +6,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../domain/entities/call_record_with_contact.dart';
+import '../../../../domain/usecases/client_calls/import_new_client_calls.dart';
 import '../../../../domain/usecases/get_recent_calls.dart';
+import '../../../../domain/usecases/get_recent_client_calls.dart';
 import '../../../../domain/usecases/metrics/track_copy_number.dart';
 import '../widgets/caller/cubit.dart';
 import 'state.dart';
@@ -76,10 +78,17 @@ class RecentCallsCubit extends Cubit<RecentCallsState> {
       await getRecentCalls(page: page);
 }
 
-class MissedCallsCubit extends RecentCallsCubit {
-  MissedCallsCubit(CallerCubit caller) : super(caller);
+class ClientCallsCubit extends RecentCallsCubit {
+  final _getRecentClientCalls = GetRecentClientCallsUseCase();
+  final _importNewClientCalls = ImportNewClientCallRecordsUseCase();
+
+  ClientCallsCubit(CallerCubit caller) : super(caller);
 
   @override
-  Future<List<CallRecordWithContact>> _fetch({required int page}) async =>
-      await getRecentCalls(page: page, onlyMissedCalls: true);
+  Future<List<CallRecordWithContact>> _fetch({required int page}) async {
+    await _importNewClientCalls();
+
+    return await _getRecentClientCalls(page: page);
+  }
+
 }

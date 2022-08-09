@@ -80,4 +80,12 @@ abstract class VoipgridService extends ChopperService {
 
   @Get(path: 'v2/vialer/middlewares/')
   Future<Response> getMiddleware();
+
+  @Get(path: 'cdr/record/')
+  Future<Response> getClientCalls({
+    @Query('limit') int limit = 20,
+    @Query('offset') int offset = 0,
+    @Query('call_date__gt') String? from,
+    @Query('call_date__lt') String? to,
+  });
 }

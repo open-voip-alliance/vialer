@@ -155,15 +155,20 @@ main:
         today: "Vandaag"
         yesterday: "Gisteren"
       item:
+        client:
+          wasMissed(String time): "Gemist om $time"
+          inbound(String time, String duration): "Opgenomen om $time - $duration"
+          outbound(String person, String time, String duration): "$person gebeld om $time - $duration"
         wasMissed(String time): "Je hebt een oproep gemist om $time"
         inbound(String time, String duration): "Je hebt opgenomen om $time - $duration"
         outbound(String time, String duration): "Je hebt gebeld om $time - $duration"
-        answeredElsewhere(String account, String time, String duration): >-
-          $account heeft opgenomen om $time - $duration
+        answeredElsewhere(String time, String duration): >-
+          heeft opgenomen om $time - $duration
         popupMenu:
           copy: "Kopiëren"
           call: *call
           from: "Belgesprek van"
+          answered: "Answered by"
       loading:
         title: "Gesprekken worden opgehaald"
         description: "Je recente gesprekken komen hier zo te staan. Graag nog even geduld."
@@ -306,6 +311,12 @@ main:
           title: "Altijd op de achtergrond laten draaien"
           description: >-
             Deze app wordt niet langer beperkt door Android batterij optimalisatie, waardoor de betrouwbaarheid van inkomende gesprekken wordt verhoogd. Het wordt sterk geadviseerd dit in te schakelen.
+        showClientCalls:
+          title: "nl"
+          description: >-
+            nl
+          noPermission: >-
+            nl nl
       version: "Versie"
       portalLinks:
         title: "VoIP-platform"

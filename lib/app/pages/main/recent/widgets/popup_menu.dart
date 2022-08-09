@@ -22,8 +22,22 @@ class RecentItemPopupMenu extends StatelessWidget {
           PopupMenuItem<RecentCallMenuAction>(
             value: RecentCallMenuAction.none,
             enabled: false,
-            child: _CallFrom(
-              callRecord: callRecord,
+            child: _CallParty(
+              title: context.msg.main.recent.list.item.popupMenu.from
+                  .toUpperCase(),
+              callParty: callRecord.caller,
+            ),
+          ),
+          const PopupMenuDivider(),
+        ],
+        if (callRecord.answeredElsewhere && callRecord.isInbound) ...[
+          PopupMenuItem<RecentCallMenuAction>(
+            value: RecentCallMenuAction.none,
+            enabled: false,
+            child: _CallParty(
+              title: context.msg.main.recent.list.item.popupMenu.answered
+                  .toUpperCase(),
+              callParty: callRecord.destination,
             ),
           ),
           const PopupMenuDivider(),
@@ -60,21 +74,23 @@ class RecentItemPopupMenu extends StatelessWidget {
   }
 }
 
-class _CallFrom extends StatelessWidget {
-  final CallRecord callRecord;
+class _CallParty extends StatelessWidget {
+  final String title;
+  final CallParty callParty;
 
   static const _callFromFontSize = 14.0;
 
-  const _CallFrom({
-    required this.callRecord,
+  const _CallParty({
+    required this.title,
+    required this.callParty,
   });
 
   String _text(BuildContext context) {
-    if (!callRecord.caller.hasName) {
-      return callRecord.caller.number;
+    if (!callParty.hasName) {
+      return callParty.number;
     }
 
-    return '${callRecord.caller.name!} (${callRecord.caller.number})';
+    return '${callParty.name!} (${callParty.number})';
   }
 
   @override
@@ -83,7 +99,7 @@ class _CallFrom extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          context.msg.main.recent.list.item.popupMenu.from.toUpperCase(),
+          title,
           style: const TextStyle(
             fontSize: _callFromFontSize,
             fontWeight: FontWeight.bold,

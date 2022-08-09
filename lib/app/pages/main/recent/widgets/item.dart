@@ -10,9 +10,7 @@ import '../../../../resources/theme.dart';
 import '../../../../util/contact.dart';
 import '../../util/color.dart';
 import '../../widgets/avatar.dart';
-import '../../widgets/contact_list/widgets/group_header.dart';
 import 'popup_menu.dart';
-
 
 class RecentCallItem extends StatelessWidget {
   final CallRecordWithContact callRecord;
@@ -83,10 +81,10 @@ class _RecentItemSubtitle extends StatelessWidget {
 
   const _RecentItemSubtitle(this.callRecord, {Key? key}) : super(key: key);
 
-  String get _time => DateFormat.Hm().format(callRecord.date.toLocal());
-
   IconData _icon(BuildContext context) {
-    if (callRecord.answeredElsewhere) return VialerSans.answeredElsewhere;
+    if (callRecord.isIncomingAndAnsweredElsewhere) {
+      return VialerSans.answeredElsewhere;
+    }
 
     if (callRecord.wasMissed) return VialerSans.missedCall;
 
@@ -98,53 +96,11 @@ class _RecentItemSubtitle extends StatelessWidget {
   Color _iconColor(BuildContext context) {
     if (callRecord.wasMissed) return Colors.red;
 
-    if (callRecord.answeredElsewhere) {
+    if (callRecord.isIncomingAndAnsweredElsewhere) {
       return context.brand.theme.colors.answeredElsewhere;
     }
 
     return context.brand.theme.colors.green1;
-  }
-
-  String _text(BuildContext context) {
-    if (callRecord.wasMissed) {
-      return context.msg.main.recent.list.item.wasMissed(_time);
-    }
-
-    final duration = prettyDuration(
-      callRecord.duration,
-      abbreviated: true,
-      delimiter: ' ',
-      spacer: '',
-    );
-
-    if (callRecord.isInbound) {
-      return context.msg.main.recent.list.item.inbound(_time, duration);
-    }
-
-    if (callRecord.isOutbound) {
-      return context.msg.main.recent.list.item.outbound(_time, duration);
-    }
-
-    if (callRecord.answeredElsewhere) {
-      return context.msg.main.recent.list.item.answeredElsewhere(
-        _answeredElsewhereText(),
-        _time,
-        duration,
-      );
-    }
-
-    return '$_time - $duration';
-  }
-
-  String _answeredElsewhereText() {
-    if (callRecord.destination.name == null ||
-        callRecord.destination.name!.isEmpty ||
-        callRecord.destination.name == callRecord.destination.number) {
-      return '${callRecord.destination.number}';
-    } else {
-      return '${callRecord.destination.name} '
-          '(${callRecord.destination.number})';
-    }
   }
 
   @override
@@ -159,16 +115,96 @@ class _RecentItemSubtitle extends StatelessWidget {
               size: 16,
             ),
             const SizedBox(width: 8),
-            Text(
-              _text(context),
-              style: TextStyle(
-                color: context.brand.theme.colors.grey4,
-                fontSize: 12,
-              ),
-            ),
+            Expanded(child: _RecentItemSubtitleText(callRecord)),
           ],
         ),
       ],
+    );
+  }
+}
+
+class _RecentItemSubtitleText extends StatelessWidget {
+  final CallRecord callRecord;
+
+  const _RecentItemSubtitleText(this.callRecord, {Key? key}) : super(key: key);
+
+  String get _time => DateFormat.Hm().format(callRecord.date.toLocal());
+
+  String get _duration => prettyDuration(
+        callRecord.duration,
+        abbreviated: true,
+        delimiter: ' ',
+        spacer: '',
+      );
+
+  String _callPartyText(CallParty party) {
+    if (party.name == null ||
+        party.name!.isEmpty ||
+        party.name == party.number) {
+      return '${party.number}';
+    } else {
+      return '${party.name}';
+    }
+  }
+
+  String _text(BuildContext context) {
+    if (callRecord.wasMissed) {
+      return callRecord.isClientCall
+          ? context.msg.main.recent.list.item.client.wasMissed(_time)
+          : context.msg.main.recent.list.item.wasMissed(_time);
+    }
+
+    if (callRecord.isInbound) {
+      return callRecord.isClientCall
+          ? context.msg.main.recent.list.item.client.inbound(_time, _duration)
+          : context.msg.main.recent.list.item.inbound(_time, _duration);
+    }
+
+    if (callRecord.isOutbound) {
+      return callRecord.isClientCall
+          ? context.msg.main.recent.list.item.client.outbound(
+              _callPartyText(callRecord.caller),
+              _time,
+              _duration,
+            )
+          : context.msg.main.recent.list.item.outbound(_time, _duration);
+    }
+
+    return '$_time - $_duration';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final textStyle = TextStyle(
+      color: context.brand.theme.colors.grey4,
+      fontSize: 12,
+    );
+
+    if (callRecord.isIncomingAndAnsweredElsewhere) {
+      return Row(
+        children: [
+          Flexible(
+            child: Text(
+              '${_callPartyText(callRecord.destination)} ',
+              overflow: TextOverflow.ellipsis,
+              style: textStyle,
+            ),
+          ),
+          Text(
+            context.msg.main.recent.list.item.answeredElsewhere(
+              _time,
+              _duration,
+            ),
+            overflow: TextOverflow.ellipsis,
+            style: textStyle,
+          )
+        ],
+      );
+    }
+
+    return Text(
+      _text(context),
+      style: textStyle,
     );
   }
 }

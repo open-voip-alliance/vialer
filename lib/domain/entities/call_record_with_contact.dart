@@ -16,6 +16,7 @@ class CallRecordWithContact extends CallRecord {
     required CallParty caller,
     required CallParty destination,
     this.contact,
+    bool? isClientCall,
   }) : super(
           id: id,
           callType: callType,
@@ -26,6 +27,7 @@ class CallRecordWithContact extends CallRecord {
           date: date,
           caller: caller,
           destination: destination,
+          isClientCall: isClientCall ?? false,
         );
 
   @override
@@ -42,6 +44,7 @@ class CallRecordWithContact extends CallRecord {
     CallParty? caller,
     CallParty? destination,
     Contact? contact,
+    bool? isClientCall,
   }) {
     return CallRecordWithContact(
       id: id ?? this.id,
@@ -54,6 +57,7 @@ class CallRecordWithContact extends CallRecord {
       caller: caller ?? this.caller,
       destination: destination ?? this.destination,
       contact: contact ?? this.contact,
+      isClientCall: isClientCall ?? false,
     );
   }
 }
@@ -71,6 +75,7 @@ extension WithContact on CallRecord {
       caller: caller,
       destination: destination,
       contact: contact,
+      isClientCall: isClientCall,
     );
   }
 }

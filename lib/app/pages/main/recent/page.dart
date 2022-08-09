@@ -41,8 +41,8 @@ class RecentCallsPage extends StatelessWidget {
           BlocProvider<RecentCallsCubit>(
             create: (context) => RecentCallsCubit(context.read<CallerCubit>()),
           ),
-          BlocProvider<MissedCallsCubit>(
-            create: (context) => MissedCallsCubit(context.read<CallerCubit>()),
+          BlocProvider<ClientCallsCubit>(
+            create: (context) => ClientCallsCubit(context.read<CallerCubit>()),
           ),
         ],
         child: DefaultTabController(
@@ -101,7 +101,7 @@ class _Content extends StatelessWidget {
 
   Future<void> _refreshCalls(BuildContext context) async {
     context.read<RecentCallsCubit>().refreshRecentCalls();
-    context.read<MissedCallsCubit>().refreshRecentCalls();
+    context.read<ClientCallsCubit>().refreshRecentCalls();
   }
 
   @override
@@ -111,10 +111,10 @@ class _Content extends StatelessWidget {
         final cubit = context.watch<RecentCallsCubit>();
         final recentCalls = recentCallState.callRecords;
 
-        return BlocBuilder<MissedCallsCubit, RecentCallsState>(
-          builder: (context, missedCallsState) {
-            final missedCallsCubit = context.watch<MissedCallsCubit>();
-            final missedCalls = missedCallsState.callRecords;
+        return BlocBuilder<ClientCallsCubit, RecentCallsState>(
+          builder: (context, clientCallsState) {
+            final clientCallsCubit = context.watch<ClientCallsCubit>();
+            final clientCalls = clientCallsState.callRecords;
 
             return Column(
               children: [
@@ -125,23 +125,23 @@ class _Content extends StatelessWidget {
                         listPadding: listPadding,
                         snackBarPadding: snackBarPadding,
                         isLoadingInitial:
+                            clientCallsState is LoadingInitialRecentCalls,
+                        callRecords: clientCalls,
+                        onRefresh: () => _refreshCalls(context),
+                        onCallPressed: clientCallsCubit.call,
+                        onCopyPressed: clientCallsCubit.copyNumber,
+                        loadMoreCalls: clientCallsCubit.loadMoreRecentCalls,
+                      ),
+                      RecentCallsList(
+                        listPadding: listPadding,
+                        snackBarPadding: snackBarPadding,
+                        isLoadingInitial:
                             recentCallState is LoadingInitialRecentCalls,
                         callRecords: recentCalls,
                         onRefresh: () => _refreshCalls(context),
                         onCallPressed: cubit.call,
                         onCopyPressed: cubit.copyNumber,
                         loadMoreCalls: cubit.loadMoreRecentCalls,
-                      ),
-                      RecentCallsList(
-                        listPadding: listPadding,
-                        snackBarPadding: snackBarPadding,
-                        isLoadingInitial:
-                            missedCallsState is LoadingInitialRecentCalls,
-                        callRecords: missedCalls,
-                        onRefresh: () => _refreshCalls(context),
-                        onCallPressed: missedCallsCubit.call,
-                        onCopyPressed: missedCallsCubit.copyNumber,
-                        loadMoreCalls: missedCallsCubit.loadMoreRecentCalls,
                       ),
                     ],
                   ),

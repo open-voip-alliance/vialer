@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:get_it/get_it.dart';
 
 import 'app/util/debug.dart';
+import 'domain/contact_populator.dart';
 import 'domain/events/event_bus.dart';
 import 'domain/repositories/auth.dart';
 import 'domain/repositories/brand.dart';
@@ -11,23 +12,27 @@ import 'domain/repositories/call_through.dart';
 import 'domain/repositories/connectivity.dart';
 import 'domain/repositories/contact.dart';
 import 'domain/repositories/country.dart';
+import 'domain/repositories/database/client_calls.dart';
 import 'domain/repositories/destination.dart';
 import 'domain/repositories/env.dart';
 import 'domain/repositories/error_tracking_repository.dart';
 import 'domain/repositories/feedback.dart';
 import 'domain/repositories/legacy_storage_repository.dart';
+import 'domain/repositories/local_client_calls.dart';
 import 'domain/repositories/logging.dart';
 import 'domain/repositories/memory_storage_repository.dart';
 import 'domain/repositories/metrics.dart';
 import 'domain/repositories/operating_system_info.dart';
 import 'domain/repositories/permission.dart';
 import 'domain/repositories/recent_call.dart';
+import 'domain/repositories/remote_client_calls.dart';
 import 'domain/repositories/server_config.dart';
 import 'domain/repositories/services/middleware.dart';
 import 'domain/repositories/services/voipgrid.dart';
 import 'domain/repositories/storage.dart';
 import 'domain/repositories/voip.dart';
 import 'domain/repositories/voip_config.dart';
+import 'domain/repositories/voipgrid_permissions.dart';
 
 final dependencyLocator = GetIt.instance;
 
@@ -41,6 +46,7 @@ Future<void> initializeDependencies({bool ui = true}) async {
     ..registerSingleton<VoipgridService>(
       VoipgridService.create(),
     )
+    ..registerSingleton<VialerDatabase>(VialerDatabase())
     ..registerSingletonAsync<StorageRepository>(() async {
       final storageRepository = StorageRepository();
       await storageRepository.load();
@@ -52,13 +58,13 @@ Future<void> initializeDependencies({bool ui = true}) async {
       return legacyStorageRepository;
     })
     ..registerSingletonWithDependencies<ServerConfigRepository>(
-      () => ServerConfigRepository(
+          () => ServerConfigRepository(
         dependencyLocator<VoipgridService>(),
       ),
       dependsOn: [StorageRepository],
     )
     ..registerSingletonAsync<MiddlewareService>(
-      () async => await MiddlewareService.create(),
+          () async => await MiddlewareService.create(),
       dependsOn: [StorageRepository, ServerConfigRepository],
     );
 
@@ -84,6 +90,22 @@ Future<void> initializeDependencies({bool ui = true}) async {
     ..registerSingleton<EnvRepository>(EnvRepository())
     ..registerSingleton<AuthRepository>(
       AuthRepository(
+        dependencyLocator<VoipgridService>(),
+      ),
+    )
+    ..registerSingleton<LocalClientCallsRepository>(
+      LocalClientCallsRepository(),
+    )
+    ..registerSingleton<RemoteClientCallsRepository>(
+      RemoteClientCallsRepository(
+        dependencyLocator<VoipgridService>(),
+      ),
+    )
+    ..registerSingleton<CallRecordContactPopulator>(
+      CallRecordContactPopulator(),
+    )
+    ..registerSingleton<VoipgridPermissionsRepository>(
+      VoipgridPermissionsRepository(
         dependencyLocator<VoipgridService>(),
       ),
     )

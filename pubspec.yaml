@@ -60,11 +60,13 @@ dependencies:
   flutter_switch: ^0.3.2
   in_app_review: ^2.0.4
 
+
   # This exists temporarily to import credentials from the legacy app and can be totally removed
   # when all users have been moved over.
   native_shared_preferences: ^2.0.4
   duration: ^3.0.6
   flutter_keyboard_visibility: ^5.3.0
+  drift: ^1.7.1
 
 dev_dependencies:
   integration_test:
@@ -85,6 +87,7 @@ dev_dependencies:
   yaml: ^3.1.0
   yaml_edit: ^2.0.1
   glob: ^2.0.2
+  drift_dev: ^1.7.0
 
 
 # For information on the generic Dart part of this file, see the
