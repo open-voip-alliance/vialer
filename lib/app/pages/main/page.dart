@@ -51,7 +51,7 @@ class MainPageState extends State<MainPage> {
   void navigateTo(MainPageTab tab) =>
       _navigateTo(_dialerIsPage ? tab.index : tab.index - 1);
 
-  void _navigateTo(int? index) {
+  Future<void> _navigateTo(int? index) async {
     if (index == null) return;
 
     _previousIndex = _currentIndex;
@@ -71,7 +71,7 @@ class MainPageState extends State<MainPage> {
         (!_dialerIsPage && _currentIndex == 1)) {
       final cubit = context.read<MainCubit>();
 
-      if (cubit.shouldShowClientWideCallsDialog()) {
+      if (await cubit.shouldShowClientWideCallsDialog()) {
         showDialog(
           context: context,
           builder: (context) {
