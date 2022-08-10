@@ -30,11 +30,11 @@ class RemoteClientCallsRepository with Loggable {
 
   /// The amount of records that we will be querying from the VoIPGRID API in
   /// each request.
-  static const _chunkSize = 500;
+  static const _chunkSize = 1000;
 
   /// The delay that will be added between each API requests to avoid rate
   /// limiting.
-  static const _durationBetweenRequests = Duration(milliseconds: 100);
+  static const _durationBetweenRequests = Duration(milliseconds: 25);
 
   /// The duration that we will wait after a failed request before retrying it
   /// once. This is to wait for any potential rate limits to be removed.
@@ -60,7 +60,7 @@ class RemoteClientCallsRepository with Loggable {
 
     final response = await _service.getClientCalls(
       limit: _chunkSize,
-      offset: 0,
+      offset: offset,
       from: from.asVoipgridFormat,
       to: to.asVoipgridFormat,
     );
