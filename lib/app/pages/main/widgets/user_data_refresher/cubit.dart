@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../dependency_locator.dart';
+import '../../../../../domain/repositories/storage.dart';
 import '../../../../../domain/usecases/get_is_logged_in_somewhere_else.dart';
 import '../../../../../domain/usecases/get_is_voip_allowed.dart';
 import '../../../../../domain/usecases/get_latest_availability.dart';
@@ -23,11 +25,13 @@ class UserDataRefresherCubit extends Cubit<UserDataRefresherState>
   final _isVoipAllowed = GetIsVoipAllowedUseCase();
   final _isLoggedInSomewhereElse = GetIsLoggedInSomewhereElseUseCase();
   final _logout = LogoutUseCase();
+  final _storageRepository = dependencyLocator<StorageRepository>();
 
   UserDataRefresherCubit() : super(const NotRefreshing());
 
   Future<void> refresh() async {
-    logger.info('Refreshing latest user data');
+    final oldUser = _storageRepository.systemUser;
+
     emit(const Refreshing());
 
     if (await _isLoggedInSomewhereElse()) {
@@ -49,6 +53,11 @@ class UserDataRefresherCubit extends Cubit<UserDataRefresherState>
 
     await _registerToVoipMiddleware();
     emit(const NotRefreshing());
-    logger.info('Finished refreshing latest user data');
+
+    final newUser = _storageRepository.systemUser;
+
+    if (oldUser != newUser) {
+      logger.info('Refreshed user data with new changes applied');
+    }
   }
 }
