@@ -94,7 +94,7 @@ Future<void> initializeDependencies({bool ui = true}) async {
       ),
     )
     ..registerSingleton<LocalClientCallsRepository>(
-      LocalClientCallsRepository(),
+      LocalClientCallsRepository(dependencyLocator<VialerDatabase>()),
     )
     ..registerSingleton<RemoteClientCallsRepository>(
       RemoteClientCallsRepository(

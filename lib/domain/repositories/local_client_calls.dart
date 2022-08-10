@@ -2,21 +2,21 @@ import 'package:dartx/dartx.dart';
 import 'package:drift/drift.dart';
 
 import '../../app/util/loggable.dart';
-import '../../dependency_locator.dart';
 import '../entities/call_record.dart';
-import '../use_case.dart';
 import 'database/client_calls.dart';
 import 'mappers/client_call_record.dart';
 
-class LocalClientCallsRepository extends UseCase with Loggable {
-  final _db = dependencyLocator<VialerDatabase>();
+class LocalClientCallsRepository with Loggable {
+  final VialerDatabase db;
+
+  LocalClientCallsRepository(this.db);
 
   /// The amount of time before we consider a phone account stale and will
   /// refresh it.
   static const _phoneAccountLifetime = Duration(days: 1);
 
   Future<ClientCallDatabaseRecord?> get mostRecent async =>
-      (_db.select(_db.clientCalls)
+      (db.select(db.clientCalls)
             ..orderBy(
               [
                 (row) => OrderingTerm(
@@ -29,14 +29,14 @@ class LocalClientCallsRepository extends UseCase with Loggable {
           .getSingleOrNull();
 
   Future<int> deleteAll() async => Future.wait([
-        _db.delete(_db.colleaguePhoneAccounts).go(),
-        _db.delete(_db.clientCalls).go(),
+    db.delete(db.colleaguePhoneAccounts).go(),
+    db.delete(db.clientCalls).go(),
       ]).then((value) => value.sum());
 
   /// Checks to see if we have a phone account for the given id in the database
   /// and if we do, that it is within the [_phoneAccountLifetime].
   Future<bool> isPhoneAccountInDatabase(int phoneAccountId) =>
-      (_db.select(_db.colleaguePhoneAccounts)
+      (db.select(db.colleaguePhoneAccounts)
             ..where((tbl) => tbl.id.equals(phoneAccountId)))
           .getSingleOrNull()
           .then(
@@ -48,18 +48,18 @@ class LocalClientCallsRepository extends UseCase with Loggable {
           );
 
   Future<List<int?>> findUnfetchedPhoneAccountIds() async =>
-      _db.callRecordsWithUnfetchedPhoneAccounts().get();
+      db.callRecordsWithUnfetchedPhoneAccounts().get();
 
   Future<void> storeCallRecords(List<ClientCallsCompanion> records) =>
-      _db.batch(
-        (batch) => batch.insertAllOnConflictUpdate(_db.clientCalls, records),
+      db.batch(
+        (batch) => batch.insertAllOnConflictUpdate(db.clientCalls, records),
       );
 
   Future<void> storePhoneAccount(
     ColleaguePhoneAccountsCompanion? phoneAccount,
   ) async {
     if (phoneAccount != null) {
-      await _db.colleaguePhoneAccounts.insertOnConflictUpdate(phoneAccount);
+      await db.colleaguePhoneAccounts.insertOnConflictUpdate(phoneAccount);
     }
   }
 
@@ -68,33 +68,33 @@ class LocalClientCallsRepository extends UseCase with Loggable {
     required int perPage,
     required bool onlyMissedCalls,
   }) {
-    final sourceAccountTable = _db.alias(
-      _db.colleaguePhoneAccounts,
+    final sourceAccountTable = db.alias(
+      db.colleaguePhoneAccounts,
       's',
     );
-    final destinationAccountTable = _db.alias(
-      _db.colleaguePhoneAccounts,
+    final destinationAccountTable = db.alias(
+      db.colleaguePhoneAccounts,
       'd',
     );
 
-    final query = _db.select(_db.clientCalls).join(
+    final query = db.select(db.clientCalls).join(
       [
         leftOuterJoin(
           sourceAccountTable,
-          sourceAccountTable.id.equalsExp(_db.clientCalls.sourceAccountId),
+          sourceAccountTable.id.equalsExp(db.clientCalls.sourceAccountId),
         ),
         leftOuterJoin(
           destinationAccountTable,
           destinationAccountTable.id
-              .equalsExp(_db.clientCalls.destinationAccountId),
+              .equalsExp(db.clientCalls.destinationAccountId),
         ),
       ],
     )
-      ..orderBy([OrderingTerm.desc(_db.clientCalls.date)])
+      ..orderBy([OrderingTerm.desc(db.clientCalls.date)])
       ..limit(perPage, offset: (page - 1) * perPage);
 
     return query
-        .map((row) => row.readTable(_db.clientCalls).toCallRecord(
+        .map((row) => row.readTable(db.clientCalls).toCallRecord(
               row.readTableOrNull(destinationAccountTable),
               row.readTableOrNull(sourceAccountTable),
             ))
