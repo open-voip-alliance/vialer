@@ -183,7 +183,8 @@ main:
     clientWideCallsDialog:
       title: "Company-wide call history"
       description: >-
-        You can find recent calls made by colleagues via the "Calls" link on the Settings page.
+        You can see recent calls made by colleagues by enabling
+        client-wide calls in the Settings page.
 
 
   contacts:
