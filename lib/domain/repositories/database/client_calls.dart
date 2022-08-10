@@ -58,16 +58,28 @@ class ClientCallWithColleaguePhoneAccount {
 class VialerDatabase extends _$VialerDatabase {
   VialerDatabase() : super(_openConnection());
 
+  VialerDatabase.createInIsolate(String path)
+      : super(_openConnectionForIsolate(path));
+
   @override
   int get schemaVersion => 1;
 }
 
 LazyDatabase _openConnection() {
   return LazyDatabase(() async {
-    final dbFolder = await getApplicationDocumentsDirectory();
-    final file = File(p.join(dbFolder.path, 'db.sqlite'));
-    return NativeDatabase(file);
+    return NativeDatabase(await getDatabaseDirectory());
   });
+}
+
+LazyDatabase _openConnectionForIsolate(String path) {
+  return LazyDatabase(() async {
+    return NativeDatabase(File(path));
+  });
+}
+
+Future<File> getDatabaseDirectory() async {
+  final dbFolder = await getApplicationDocumentsDirectory();
+  return File(p.join(dbFolder.path, 'db.sqlite'));
 }
 
 class CallPartyConverter extends TypeConverter<CallParty, String>

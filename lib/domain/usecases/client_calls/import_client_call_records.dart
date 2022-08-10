@@ -1,12 +1,15 @@
 import 'package:dartx/dartx.dart';
+import 'package:flutter/foundation.dart';
+import 'package:timezone/data/latest.dart';
 
 import '../../../app/util/loggable.dart';
-import '../../../dependency_locator.dart';
 import '../../entities/setting.dart';
+import '../../repositories/database/client_calls.dart';
 import '../../repositories/local_client_calls.dart';
 import '../../repositories/remote_client_calls.dart';
-import '../get_latest_availability.dart';
+import '../../repositories/services/voipgrid.dart';
 import '../get_setting.dart';
+import 'create_client_calls_isolate_request.dart';
 import 'import_historic_client_call_records.dart';
 import 'import_new_client_calls.dart';
 import 'purge_local_call_records.dart';
@@ -17,24 +20,14 @@ import 'purge_local_call_records.dart';
 /// You should use [ImportHistoricClientCallRecordsUseCase]
 /// or [ImportNewClientCallRecordsUseCase] in almost all situations.
 class ImportClientCallsUseCase with Loggable {
-  final _localClientCalls = dependencyLocator<LocalClientCallsRepository>();
-  final _remoteClientCalls = dependencyLocator<RemoteClientCallsRepository>();
   final _purgeLocalCallRecords = PurgeLocalCallRecords();
   late final _getClientCallSetting =
       GetSettingUseCase<ShowClientCallsSetting>();
-  late final _getLatestUserAvailability = GetLatestAvailabilityUseCase();
+  final _createClientCallsIsolateRequest =
+      CreateClientCallsIsolateRequestUseCase();
 
   Future<bool> get _shouldImport async =>
       _getClientCallSetting().then((setting) => setting.value);
-
-  Future<List<int>> get _usersPhoneAccounts async =>
-      _getLatestUserAvailability().then(
-        (availability) =>
-            availability?.phoneAccounts
-                .map((phoneAccount) => phoneAccount.accountId)
-                .toList() ??
-            [],
-      );
 
   Future<void> call({
     required DateTime from,
@@ -47,10 +40,18 @@ class ImportClientCallsUseCase with Loggable {
       return;
     }
 
-    _createDateRangesToQuery(
+    final dateRangesToQuery = _createDateRangesToQuery(
       from: from.toUtc(),
       to: to.toUtc(),
-    ).forEach(await _import);
+    );
+
+    // This is a heavy task so we are starting it in a separate isolate.
+    await compute(
+      _performImport,
+      await _createClientCallsIsolateRequest(
+        dateRangesToQuery: dateRangesToQuery,
+      ),
+    ).catchError(_handleError);
   }
 
   /// Iterates through the date range given and creates a map of from and to
@@ -79,39 +80,8 @@ class ImportClientCallsUseCase with Loggable {
     return monthsToQuery;
   }
 
-  Future<void> _import(DateTime from, DateTime to) async {
-    final usersPhoneAccounts = await _usersPhoneAccounts;
-
-    _remoteClientCalls
-        .fetchRecordsForDatabaseBetween(
-          from: from,
-          to: to,
-          isUserPhoneAccount: usersPhoneAccounts.contains,
-        )
-        .listen(
-          _localClientCalls.storeCallRecords,
-          onDone: () => _localClientCalls
-              .findUnfetchedPhoneAccountIds()
-              .then(_importPhoneAccountsIfNecessary),
-          onError: _handleError,
-        );
-  }
-
   /// Iterates through a list of phone account ids and fetches and imports
   /// any that are missing from our local database.
-  Future<void> _importPhoneAccountsIfNecessary(List<int?> accountIds) async {
-    final ids = accountIds.filterNotNull().distinct();
-
-    for (final id in ids) {
-      if (await _localClientCalls.isPhoneAccountInDatabase(id)) {
-        return;
-      }
-
-      await _remoteClientCalls
-          .fetchPhoneAccount(id)
-          .then(_localClientCalls.storePhoneAccount);
-    }
-  }
 
   /// It's import that if the user ever loses permissions that we wipe the
   /// local call records so they are no longer stored on the phone.
@@ -154,4 +124,60 @@ extension on DateTime {
         59,
         999,
       );
+}
+
+/// This function is to be performed on an isolate, it must create all the
+/// necessary dependencies for the [RemoteClientCallsRepository] and
+/// [LocalClientCallsRepository] manually.
+Future<void> _performImport(ClientCallsIsolateRequest request) async {
+  initializeTimeZones();
+
+  final remoteClientCalls = RemoteClientCallsRepository(
+    VoipgridService.createInIsolate(
+      user: request.user,
+      baseUrl: request.voipgridApiBaseUrl,
+    ),
+  );
+
+  final localClientCalls = LocalClientCallsRepository(
+    VialerDatabase.createInIsolate(
+      request.databasePath,
+    ),
+  );
+
+  for (final range in request.dateRangesToQuery.entries) {
+    final batches = remoteClientCalls.fetchRecordsForDatabaseBetween(
+      from: range.key,
+      to: range.value,
+      isUserPhoneAccount: request.userPhoneAccountIds.contains,
+    );
+
+    await for (final batch in batches) {
+      await localClientCalls.storeCallRecords(batch);
+    }
+  }
+
+  await _importPhoneAccountsIfNecessary(
+    localClientCalls,
+    remoteClientCalls,
+    await localClientCalls.findUnfetchedPhoneAccountIds(),
+  );
+}
+
+Future<void> _importPhoneAccountsIfNecessary(
+  LocalClientCallsRepository localClientCalls,
+  RemoteClientCallsRepository remoteClientCalls,
+  List<int?> accountIds,
+) async {
+  final ids = accountIds.filterNotNull().distinct();
+
+  for (final id in ids) {
+    if (await localClientCalls.isPhoneAccountInDatabase(id)) {
+      return;
+    }
+
+    await remoteClientCalls
+        .fetchPhoneAccount(id)
+        .then(localClientCalls.storePhoneAccount);
+  }
 }
