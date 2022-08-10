@@ -3,6 +3,7 @@ import 'dart:async';
 import '../../app/util/loggable.dart';
 import '../../dependency_locator.dart';
 import '../entities/setting.dart';
+import '../repositories/destination.dart';
 import '../repositories/metrics.dart';
 import '../repositories/storage.dart';
 import '../use_case.dart';
@@ -21,6 +22,7 @@ import 'unregister_to_voip_middleware.dart';
 class ChangeSettingUseCase extends UseCase with Loggable {
   final _storageRepository = dependencyLocator<StorageRepository>();
   final _metricsRepository = dependencyLocator<MetricsRepository>();
+  final _destinationRepository = dependencyLocator<DestinationRepository>();
 
   final _getSettings = GetSettingsUseCase();
   final _enableRemoteLogging = EnableRemoteLoggingUseCase();
@@ -37,10 +39,16 @@ class ChangeSettingUseCase extends UseCase with Loggable {
 
   Future<void> call({required Setting setting, bool remote = true}) async {
     if (setting is AvailabilitySetting) {
-      // Only log the destination, since the whole availability object
-      // contains too much privacy sensitive information.
-      logger.info('Set ${setting.runtimeType} '
-          'to ${setting.value!.selectedDestinationInfo}');
+      final availability = await _destinationRepository.getLatestAvailability();
+      final oldDestinationInfo = availability?.selectedDestinationInfo ?? null;
+      final newDestinationInfo = setting.value!.selectedDestinationInfo ?? null;
+
+      if (oldDestinationInfo != newDestinationInfo) {
+        // Only log the destination, since the whole availability object
+        // contains too much privacy sensitive information.
+        logger.info('Changed ${setting.runtimeType} '
+            'to ${setting.value!.selectedDestinationInfo}');
+      }
     } else {
       logger.info('Set ${setting.runtimeType} to ${setting.value}');
     }
