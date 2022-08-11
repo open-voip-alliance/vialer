@@ -1,0 +1,2 @@
+- Android: Why we need the phone permission is now explained better during onboarding
+- Android: A possible fix related to using smartwatches has been added

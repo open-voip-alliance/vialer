@@ -326,15 +326,15 @@ custom: # Custom properties to make workflows cleaner
           include: true
 
     publish_for_production: &publish_for_production
-      app_store_connect:
-        api_key: $APP_STORE_CONNECT_PRIVATE_KEY
-        key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
-        issuer_id: $APP_STORE_CONNECT_ISSUER_ID
-        submit_to_app_store: true
-        submit_to_testflight: true
-        beta_groups:
-          - Beta Testers
-          - External Testers
+#      app_store_connect:
+#        api_key: $APP_STORE_CONNECT_PRIVATE_KEY
+#        key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
+#        issuer_id: $APP_STORE_CONNECT_ISSUER_ID
+#        submit_to_app_store: true
+#        submit_to_testflight: true
+#        beta_groups:
+#          - Beta Testers
+#          - External Testers
       google_play:
         credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
         track: production
