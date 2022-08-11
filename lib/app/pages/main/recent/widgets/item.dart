@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dartx/dartx.dart';
 import 'package:duration/duration.dart';
 import 'package:flutter/material.dart';
@@ -243,7 +245,7 @@ class RecentCallHeader extends StatelessWidget {
     BuildContext context, {
     required DateTime headerDate,
   }) {
-    final date = DateFormat.yMd().format(headerDate);
+    final date = DateFormat.yMd(Platform.localeName).format(headerDate);
     final prefix = headerDate.isToday
         ? '${context.msg.main.recent.list.headers.today} - '
         : headerDate.wasYesterday
