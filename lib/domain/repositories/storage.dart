@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:dartx/dartx.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../entities/server_config.dart';
 import '../entities/setting.dart';
 import '../entities/system_user.dart';
 import '../entities/voip_config.dart';
@@ -118,9 +119,9 @@ class StorageRepository {
     return config.isNotEmpty ? config.toNonEmptyConfig() : config;
   }
 
-  set voipConfig(VoipConfig? user) => _preferences.setOrRemoveString(
+  set voipConfig(VoipConfig? value) => _preferences.setOrRemoveString(
         _voipConfigKey,
-        user != null ? json.encode(user.toJson()) : null,
+        value != null ? json.encode(value.toJson()) : null,
       );
 
   /// We store the last installed version so we can check if the user has
@@ -173,6 +174,26 @@ class StorageRepository {
 
   set appRatingSurveyShownTime(DateTime? value) =>
       _preferences.setOrRemoveDateTime(_appRatingSurveyShownTimeKey, value);
+
+  static const _serverConfigKey = 'server_config';
+
+  ServerConfig? get serverConfig {
+    final preference = _preferences.getString(_serverConfigKey);
+    if (preference == null) {
+      return null;
+    }
+
+    final config = ServerConfig.fromJson(
+      json.decode(preference) as Map<String, dynamic>,
+    );
+
+    return config;
+  }
+
+  set serverConfig(ServerConfig? value) => _preferences.setOrRemoveString(
+        _serverConfigKey,
+        value != null ? json.encode(value.toJson()) : null,
+      );
 
   Future<void> clear() => _preferences.clear();
 

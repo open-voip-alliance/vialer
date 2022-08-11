@@ -11,11 +11,10 @@ import '../entities/setting.dart';
 import '../entities/voip_config.dart';
 import '../usecases/get_allowed_voip_config.dart';
 import '../usecases/get_build_info.dart';
-import '../usecases/get_encrypted_sip_url.dart';
 import '../usecases/get_is_logged_in_somewhere_else.dart';
 import '../usecases/get_login_time.dart';
+import '../usecases/get_server_config.dart';
 import '../usecases/get_setting.dart';
-import '../usecases/get_unencrypted_sip_url.dart';
 import '../usecases/get_user.dart';
 import 'env.dart';
 import 'operating_system_info.dart';
@@ -31,6 +30,15 @@ class VoipRepository with Loggable {
         'PhoneLib was accessed and not initialized, initializing now',
       );
 
+      if (_startUpConfig == null ||
+          _startUpBrand == null ||
+          _startUpBuildInfo == null) {
+        logger.severe(
+          'Not possible to initialize PhoneLib, '
+          'there are no cached startup values',
+        );
+      }
+
       return initializeAndStart(
         config: _startUpConfig!,
         brand: _startUpBrand!,
@@ -45,8 +53,7 @@ class VoipRepository with Loggable {
 
   Future<bool> get hasStarted => _hasStartedCompleter.future;
 
-  final _getEncryptedSipUrl = GetEncryptedSipUrlUseCase();
-  final _getUnencryptedSipUrl = GetUnencryptedSipUrlUseCase();
+  final _getServerConfig = GetServerConfigUseCase();
 
   // We pass through events so app level subscribers don't have to resubscribe
   // if we stop and start the PhoneLib.
@@ -87,10 +94,11 @@ class VoipRepository with Loggable {
 
     /// Returns true if successfully initialized, false otherwise.
     Future<bool> initialize({bool firstTry = true}) async {
+      final auth = await _createAuth(config);
       try {
         __phoneLib = await initializePhoneLib((builder) {
           builder
-            ..auth = _createAuth(config)
+            ..auth = auth
             ..preferences = preferences;
 
           return ApplicationSetup(
@@ -134,7 +142,7 @@ class VoipRepository with Loggable {
       try {
         await __phoneLib!.start(
           await _createPreferences(config),
-          _createAuth(config),
+          await _createAuth(config),
         );
       } on Exception catch (e) {
         if (!firstTry) {
@@ -169,15 +177,20 @@ class VoipRepository with Loggable {
     _initializingAndStarting = false;
   }
 
-  Auth _createAuth(NonEmptyVoipConfig config) => Auth(
-        username: config.sipUserId.toString(),
-        password: config.password,
-        domain: config.useEncryption
-            ? _getEncryptedSipUrl()
-            : _getUnencryptedSipUrl(),
-        port: config.useEncryption ? 5061 : 5060,
-        secure: config.useEncryption,
-      );
+  Future<Auth> _createAuth(NonEmptyVoipConfig config) async {
+    final encryptedSipUrl = await _getServerConfig()
+        .then((config) => config.encryptedSipUrl.toString());
+    final unencryptedSipUrl = await _getServerConfig()
+        .then((config) => config.unencryptedSipUrl.toString());
+
+    return Auth(
+      username: config.sipUserId.toString(),
+      password: config.password,
+      domain: config.useEncryption ? encryptedSipUrl : unencryptedSipUrl,
+      port: config.useEncryption ? 5061 : 5060,
+      secure: config.useEncryption,
+    );
+  }
 
   Future<Preferences> _createPreferences(VoipConfig config) async {
     final getPhoneRingtone = GetSettingUseCase<UsePhoneRingtoneSetting>();
@@ -284,6 +297,7 @@ class _Middleware with Loggable {
   final _envRepository = dependencyLocator<EnvRepository>();
 
   String? get _token => _storageRepository.pushToken;
+
   String? get _remoteNotificationToken =>
       _storageRepository.remoteNotificationToken;
 

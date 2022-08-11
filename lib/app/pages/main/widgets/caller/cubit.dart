@@ -32,6 +32,7 @@ import '../../../../../domain/usecases/get_has_voip_enabled.dart';
 import '../../../../../domain/usecases/get_has_voip_started.dart';
 import '../../../../../domain/usecases/get_is_authenticated.dart';
 import '../../../../../domain/usecases/get_permission_status.dart';
+import '../../../../../domain/usecases/get_server_config.dart';
 import '../../../../../domain/usecases/get_setting.dart';
 import '../../../../../domain/usecases/get_voip_call_event_stream.dart';
 import '../../../../../domain/usecases/increment_app_rating_survey_action_count.dart';
@@ -113,8 +114,11 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
 
   void initialize() {
     checkPhonePermission();
+    _getServerConfig();
     _startVoipIfNecessary();
   }
+
+  Future<void> _getServerConfig() async => await GetServerConfigUseCase()();
 
   Future<void> _startVoipIfNecessary() async {
     if (!(await _getHasVoipEnabled())) return;

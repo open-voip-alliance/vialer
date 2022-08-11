@@ -38,7 +38,7 @@ class Middleware(
      */
     private var callIdsBeingHandled = mutableListOf<String>()
 
-    private val baseUrl = "${context.getString(R.string.middleware_url)}/api"
+    public val baseUrl = "${prefs.middlewareUrl}/api"
 
     override fun tokenReceived(token: String) {
         if (lastRegisteredToken == token) {
@@ -181,6 +181,7 @@ class Middleware(
             segment.track("notification-received", remoteMessage.trackingProperties + mapOf(
                 "seconds_from_call_to_received" to remoteMessage.secondsSincePushWasSent.toString(),
                 "is_ignoring_battery_optimizations" to context.isIgnoringBatteryOptimizations.toString(),
+                "middleware_url" to baseUrl,
             ))
         }
     }
@@ -198,6 +199,7 @@ class Middleware(
             "unavailable_reason" to (reason?.name ?: ""),
             "seconds_from_call_to_responded" to responseTime.toString(),
             "is_ignoring_battery_optimizations" to context.isIgnoringBatteryOptimizations.toString(),
+            "middleware_url" to baseUrl,
         ))
 
     /**

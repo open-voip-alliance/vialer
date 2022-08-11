@@ -405,8 +405,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: d50c85463ffa11d9d8ae965326c60e30bdd30109
-      resolved-ref: d50c85463ffa11d9d8ae965326c60e30bdd30109
+      ref: "3685b3866827e189d6b52f6662139b2ec6abc4b8"
+      resolved-ref: "3685b3866827e189d6b52f6662139b2ec6abc4b8"
       url: "https://github.com/open-voip-alliance/flutter-phone-lib"
     source: git
     version: "0.0.1"
@@ -562,14 +562,14 @@ packages:
       name: json_annotation
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.5.0"
+    version: "4.6.0"
   json_serializable:
     dependency: "direct dev"
     description:
       name: json_serializable
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.2.0"
+    version: "6.3.1"
   libphonenumber:
     dependency: "direct main"
     description:

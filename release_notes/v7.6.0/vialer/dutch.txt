@@ -1,0 +1,2 @@
+- Android: De uitleg waarom we de telefonie-toestemming nodig hebben tijdens onboarden is nu duidelijker
+- Android: Een mogelijke oplossing i.v.m het gebruik van smartwatches is toegevoegd
