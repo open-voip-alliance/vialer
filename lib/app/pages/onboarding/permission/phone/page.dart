@@ -16,7 +16,10 @@ class PhonePermissionPage extends StatelessWidget {
       permission: Permission.phone,
       icon: const Icon(VialerSans.phone),
       title: Text(context.msg.onboarding.permission.phone.title),
-      description: Text(context.msg.onboarding.permission.phone.description),
+      description: Text(
+        context.msg.onboarding.permission.phone
+            .description(context.brand.appName),
+      ),
       onPermissionGranted: context.watch<CallerCubit>().notifyCanCall,
     );
   }
