@@ -65,6 +65,7 @@ dependencies:
   native_shared_preferences: ^2.0.4
   duration: ^3.0.6
   flutter_keyboard_visibility: ^5.3.0
+  recase: ^4.0.0
 
 dev_dependencies:
   integration_test:
