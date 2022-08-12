@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../domain/entities/call_record_with_contact.dart';
+import '../../../../domain/usecases/client_calls/import_historic_client_call_records.dart';
 import '../../../../domain/usecases/client_calls/import_new_client_calls.dart';
 import '../../../../domain/usecases/get_recent_calls.dart';
 import '../../../../domain/usecases/get_recent_client_calls.dart';
@@ -81,14 +82,24 @@ class RecentCallsCubit extends Cubit<RecentCallsState> {
 class ClientCallsCubit extends RecentCallsCubit {
   final _getRecentClientCalls = GetRecentClientCallsUseCase();
   final _importNewClientCalls = ImportNewClientCallRecordsUseCase();
+  final _importHistoricClientCalls = ImportHistoricClientCallRecordsUseCase();
 
-  ClientCallsCubit(CallerCubit caller) : super(caller);
+  final bool _firstRun;
+
+  ClientCallsCubit(
+    CallerCubit caller, {
+    required bool firstRun,
+  })  : _firstRun = firstRun,
+        super(caller);
 
   @override
   Future<List<CallRecordWithContact>> _fetch({required int page}) async {
-    await _importNewClientCalls();
+    if (_firstRun && page == 1) {
+      await _importHistoricClientCalls();
+    } else {
+      await _importNewClientCalls();
+    }
 
     return await _getRecentClientCalls(page: page);
   }
-
 }
