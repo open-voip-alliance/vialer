@@ -1,10 +1,11 @@
 import 'package:dartx/dartx.dart';
+import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'system_user.g.dart';
 
 @JsonSerializable(fieldRename: FieldRename.snake)
-class SystemUser {
+class SystemUser extends Equatable {
   final String uuid;
 
   final String email;
@@ -56,7 +57,7 @@ class SystemUser {
     String? firstName,
     String? lastName,
     String? token,
-    Uri? appAccount,
+    Uri? appAccountUrl,
     String? outgoingCli,
     Uri? clientUrl,
   }) {
@@ -67,7 +68,7 @@ class SystemUser {
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,
       token: token ?? this.token,
-      appAccountUrl: appAccountUrl ?? appAccountUrl,
+      appAccountUrl: appAccountUrl ?? this.appAccountUrl,
       outgoingCli: outgoingCli ?? this.outgoingCli,
       clientUrl: clientUrl ?? this.clientUrl,
     );
@@ -77,6 +78,19 @@ class SystemUser {
       _$SystemUserFromJson(json);
 
   Map<String, dynamic> toJson() => _$SystemUserToJson(this);
+
+  @override
+  List<Object?> get props => [
+        uuid,
+        email,
+        mobileNumber,
+        firstName,
+        lastName,
+        token,
+        appAccountUrl,
+        outgoingCli,
+        clientUrl,
+      ];
 }
 
 extension Suppressed on String {

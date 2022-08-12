@@ -2,6 +2,7 @@
 
 import 'package:dartx/dartx.dart';
 import 'package:meta/meta.dart';
+import 'package:recase/recase.dart';
 
 import 'audio_codec.dart';
 import 'availability.dart';
@@ -20,6 +21,23 @@ abstract class Setting<T> {
   /// Whether the setting is external, meaning: The setting has a source that's
   /// not our local storage (the portal, VoIP library, etc.)
   final bool external;
+
+  /// Whether or not the content of this setting is PII (Personally Identifiable
+  /// Information). This will determine whether or not this setting should
+  /// be stored off this device.
+  ///
+  /// Setting this to TRUE still results in an event to be tracked but not the
+  /// data stored within.
+  ///
+  /// This only affects [String] settings, [bool] settings will always be
+  /// tracked unless [shouldTrack] is FALSE.
+  final bool isPii = true;
+
+  /// Whether changing this setting should result in an event being sent
+  /// to metrics.
+  ///
+  /// This should usually only be set to FALSE if it is being tracked elsewhere.
+  final bool shouldTrack = true;
 
   const Setting(
     this.value, {
@@ -42,6 +60,24 @@ abstract class Setting<T> {
     ShowClientCallsSetting.preset(),
     VoipgridPermissionsSetting.preset(),
   ];
+
+  /// The setting formatted as properties to submit to metrics, these
+  /// should be overridden if the value of complex settings
+  /// (i.e. non-bool/string settings) need to be submitted to metrics.
+  Map<String, dynamic> get asMetricProperties {
+    if (value is String) {
+      return isPii ? {} : {'value': value};
+    }
+
+    if (value is bool) {
+      return {'enabled': value};
+    }
+
+    return {};
+  }
+
+  String get asMetricKeyName =>
+      '${ReCase(runtimeType.toString()).snakeCase}';
 
   Map<String, dynamic> toJson() {
     return {
@@ -236,6 +272,9 @@ class AvailabilitySetting extends Setting<Availability?> {
   @override
   AvailabilitySetting copyWith({Availability? value}) =>
       AvailabilitySetting(value ?? this.value);
+
+  @override
+  final bool shouldTrack = false;
 }
 
 class ShowClientCallsSetting extends Setting<bool> {

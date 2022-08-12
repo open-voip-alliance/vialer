@@ -5,6 +5,7 @@ import '../../dependency_locator.dart';
 import '../entities/setting.dart';
 import '../events/event_bus.dart';
 import '../events/show_client_calls_setting_enabled.dart';
+import '../repositories/destination.dart';
 import '../repositories/metrics.dart';
 import '../repositories/storage.dart';
 import '../use_case.dart';
@@ -24,6 +25,7 @@ import 'unregister_to_voip_middleware.dart';
 class ChangeSettingUseCase extends UseCase with Loggable {
   final _storageRepository = dependencyLocator<StorageRepository>();
   final _metricsRepository = dependencyLocator<MetricsRepository>();
+  final _destinationRepository = dependencyLocator<DestinationRepository>();
 
   final _eventBus = dependencyLocator<EventBus>();
 
@@ -43,10 +45,16 @@ class ChangeSettingUseCase extends UseCase with Loggable {
 
   Future<void> call({required Setting setting, bool remote = true}) async {
     if (setting is AvailabilitySetting) {
-      // Only log the destination, since the whole availability object
-      // contains too much privacy sensitive information.
-      logger.info('Set ${setting.runtimeType} '
-          'to ${setting.value!.selectedDestinationInfo}');
+      final availability = await _destinationRepository.getLatestAvailability();
+      final oldDestinationInfo = availability?.selectedDestinationInfo ?? null;
+      final newDestinationInfo = setting.value!.selectedDestinationInfo ?? null;
+
+      if (oldDestinationInfo != newDestinationInfo) {
+        // Only log the destination, since the whole availability object
+        // contains too much privacy sensitive information.
+        logger.info('Changed ${setting.runtimeType} '
+            'to ${setting.value!.selectedDestinationInfo}');
+      }
     } else {
       logger.info('Set ${setting.runtimeType} to ${setting.value}');
     }
@@ -79,6 +87,7 @@ class ChangeSettingUseCase extends UseCase with Loggable {
     }
 
     final settings = await _getSettings();
+    final hasSettingValueChanged = _didSettingChange(settings, setting);
 
     final newSettings = List<Setting>.from(settings)
       ..removeWhere((e) => e.runtimeType == setting.runtimeType)
@@ -106,9 +115,6 @@ class ChangeSettingUseCase extends UseCase with Loggable {
       } else {
         _registerToVoipMiddleware();
       }
-
-      _metricsRepository
-          .track('dnd-status-changed', {'enabled': setting.value});
     } else if (setting is ShowClientCallsSetting) {
       if (setting.value == false) {
         _purgeLocalCallRecords(reason: PurgeReason.disabled);
@@ -117,6 +123,25 @@ class ChangeSettingUseCase extends UseCase with Loggable {
       _eventBus.broadcast(ShowClientCallsSettingChanged(setting.value));
     }
 
+    if (hasSettingValueChanged && setting.shouldTrack) {
+      _metricsRepository.track(
+        '${setting.asMetricKeyName}_changed',
+        setting.asMetricProperties,
+      );
+    }
+
     _incrementAppRatingActionCount();
   }
+
+  bool _didSettingChange(
+    List<Setting> currentSettings,
+    Setting newSetting,
+  ) =>
+      currentSettings
+          .where(
+            (setting) => setting.runtimeType == newSetting.runtimeType,
+          )
+          .first
+          .value !=
+      newSetting.value;
 }
