@@ -81,6 +81,7 @@ class ChangeSettingUseCase extends UseCase with Loggable {
     }
 
     final settings = await _getSettings();
+    final hasSettingValueChanged = _didSettingChange(settings, setting);
 
     final newSettings = List<Setting>.from(settings)
       ..removeWhere((e) => e.runtimeType == setting.runtimeType)
@@ -108,11 +109,27 @@ class ChangeSettingUseCase extends UseCase with Loggable {
       } else {
         _registerToVoipMiddleware();
       }
+    }
 
-      _metricsRepository
-          .track('dnd-status-changed', {'enabled': setting.value});
+    if (hasSettingValueChanged && setting.shouldTrack) {
+      _metricsRepository.track(
+        '${setting.asMetricKeyName}_changed',
+        setting.asMetricProperties,
+      );
     }
 
     _incrementAppRatingActionCount();
   }
+
+  bool _didSettingChange(
+    List<Setting> currentSettings,
+    Setting newSetting,
+  ) =>
+      currentSettings
+          .where(
+            (setting) => setting.runtimeType == newSetting.runtimeType,
+          )
+          .first
+          .value !=
+      newSetting.value;
 }
