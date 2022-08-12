@@ -3,12 +3,13 @@ import 'dart:async';
 import '../../app/util/loggable.dart';
 import '../../dependency_locator.dart';
 import '../entities/setting.dart';
+import '../events/event_bus.dart';
+import '../events/show_client_calls_setting_enabled.dart';
 import '../repositories/metrics.dart';
 import '../repositories/storage.dart';
 import '../use_case.dart';
 import 'change_availability.dart';
 import 'change_mobile_number.dart';
-import 'client_calls/import_historic_client_call_records.dart';
 import 'client_calls/purge_local_call_records.dart';
 import 'disable_remote_logging.dart';
 import 'enable_remote_logging.dart';
@@ -24,6 +25,8 @@ class ChangeSettingUseCase extends UseCase with Loggable {
   final _storageRepository = dependencyLocator<StorageRepository>();
   final _metricsRepository = dependencyLocator<MetricsRepository>();
 
+  final _eventBus = dependencyLocator<EventBus>();
+
   final _getSettings = GetSettingsUseCase();
   final _enableRemoteLogging = EnableRemoteLoggingUseCase();
   final _disableRemoteLogging = DisableRemoteLoggingUseCase();
@@ -37,8 +40,6 @@ class ChangeSettingUseCase extends UseCase with Loggable {
   final _incrementAppRatingActionCount =
       IncrementAppRatingSurveyActionCountUseCase();
   final _purgeLocalCallRecords = PurgeLocalCallRecords();
-  final _importHistoricClientCallRecords =
-      ImportHistoricClientCallRecordsUseCase();
 
   Future<void> call({required Setting setting, bool remote = true}) async {
     if (setting is AvailabilitySetting) {
@@ -51,7 +52,7 @@ class ChangeSettingUseCase extends UseCase with Loggable {
     }
 
     if (setting is RemoteLoggingSetting) {
-      if (setting.value) {
+      if (setting.value == true) {
         await _enableRemoteLogging();
       } else {
         await _disableRemoteLogging();
@@ -109,11 +110,11 @@ class ChangeSettingUseCase extends UseCase with Loggable {
       _metricsRepository
           .track('dnd-status-changed', {'enabled': setting.value});
     } else if (setting is ShowClientCallsSetting) {
-      if (setting.value) {
-        _importHistoricClientCallRecords();
-      } else {
+      if (setting.value == false) {
         _purgeLocalCallRecords(reason: PurgeReason.disabled);
       }
+
+      _eventBus.broadcast(ShowClientCallsSettingChanged(setting.value));
     }
 
     _incrementAppRatingActionCount();
