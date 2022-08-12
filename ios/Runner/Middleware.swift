@@ -15,7 +15,6 @@ public class Middleware: NativeMiddleware {
         }
     }
 
-    private let RESPONSE_URL = "call-response/"
     private let REGISTER_URL = "apns-device/"
 
     private var lastRegisteredToken: String?
@@ -62,7 +61,7 @@ public class Middleware: NativeMiddleware {
             "remote_notification_token": flutterSharedPreferences.remoteNotificationToken
         ]
 
-        var request = createMiddlewareRequest(email: middlewareCredentials.email, token: middlewareCredentials.loginToken, url: REGISTER_URL)
+        var request = createMiddlewareRequest(email: middlewareCredentials.email, token: middlewareCredentials.loginToken, url: baseUrl + REGISTER_URL)
 
         request.httpBody = try! JSONSerialization.data(withJSONObject: data)
 
@@ -90,6 +89,7 @@ public class Middleware: NativeMiddleware {
         let callId = payloadDictionary.value(forKey: "unique_key")
         let correlationId = payloadDictionary.value(forKey: "vg_cid")
         let callStartTime = payloadDictionary.value(forKey: "message_start_time")
+        let responseUrl = payload.responseUrl
         let pushResponseTime = payload.secondsSincePushWasSent
 
         logger.writeLog("Middleware Respond: Attempting for call=\(String(describing: callId)), correlationId=\(String(describing: correlationId)), available=\(available)")
@@ -105,7 +105,7 @@ public class Middleware: NativeMiddleware {
             "sip_user_id": middlewareCredentials.sipUserId,
         ]
 
-        var request = createMiddlewareRequest(email: middlewareCredentials.email, token: middlewareCredentials.loginToken, url: RESPONSE_URL)
+        var request = createMiddlewareRequest(email: middlewareCredentials.email, token: middlewareCredentials.loginToken, url: responseUrl)
 
         request.httpBody = try! JSONSerialization.data(withJSONObject: data)
 
@@ -183,7 +183,7 @@ public class Middleware: NativeMiddleware {
     }
 
     private func createMiddlewareRequest(email: String, token: String, url: String) -> URLRequest {
-        var request = URLRequest(url:  NSURL(string: baseUrl + url)! as URL)
+        var request = URLRequest(url: NSURL(string: url)! as URL)
 
         request.httpMethod = "POST"
         request.setValue("Token \(email):\(token)", forHTTPHeaderField: "Authorization")
@@ -225,12 +225,17 @@ extension PKPushPayload {
         return (dictionaryPayload["type"] as? String ?? "") == "call"
     }
 
+    var responseUrl: String {
+        return dictionaryPayload["response_api"] as! String
+    }
+
     var trackingProperties: [String : String] {
         return [
             "call_id" : callId,
             "correlation_id" : correlationId,
             "message_start_time" : String(messageStartTime),
             "push_sent_time" : String(messageStartTime),
+            "response_url": responseUrl,
         ]
     }
 
