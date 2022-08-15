@@ -86,7 +86,9 @@ class ClientCallsCubit extends RecentCallsCubit {
   final _importNewClientCalls = ImportNewClientCallRecordsUseCase();
   final _importHistoricClientCalls = ImportHistoricClientCallRecordsUseCase();
 
-  final bool _firstRun;
+  bool _firstRun;
+
+  bool awaitImport = true;
 
   ClientCallsCubit(
     CallerCubit caller, {
@@ -96,11 +98,19 @@ class ClientCallsCubit extends RecentCallsCubit {
 
   @override
   Future<List<CallRecordWithContact>> _fetch({required int page}) async {
-    if (_firstRun && page == 1) {
-      await _importHistoricClientCalls();
-    } else {
-      await _importNewClientCalls();
+    final import = _firstRun && page == 1
+        ? _importHistoricClientCalls()
+        : _importNewClientCalls();
+
+    _firstRun = false;
+
+    if (awaitImport) {
+      await import;
     }
+
+    // awaitImport is reset so that the next run will await import
+    // (unless it's set to false again before fetching).
+    awaitImport = true;
 
     return await _getRecentClientCalls(
       page: page,
