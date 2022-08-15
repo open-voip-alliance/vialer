@@ -9,10 +9,10 @@ import '../../../../domain/usecases/get_latest_voipgrid_permissions.dart';
 import '../../../../domain/usecases/get_setting.dart';
 import '../../../resources/localizations.dart';
 import '../../../resources/theme.dart';
-import '../../../widgets/stylized_button.dart';
 import '../util/stylized_snack_bar.dart';
 import '../widgets/caller/cubit.dart';
 import '../widgets/header.dart';
+import '../widgets/stylized_switch.dart';
 import 'cubit.dart';
 import 'widgets/list.dart';
 
@@ -39,6 +39,8 @@ class _RecentCallsPageState extends State<RecentCallsPage> {
       GetSettingUseCase<ShowClientCallsSetting>();
 
   bool _showClientCalls = false;
+
+  final _manualRefresher = ManualRefresher();
 
   /// If true, means that the user enabled [ShowClientCallsSetting] in this
   /// session.
@@ -92,6 +94,7 @@ class _RecentCallsPageState extends State<RecentCallsPage> {
             _showClientCallsSettingEnabledThisSession,
         listPadding: widget.listPadding,
         snackBarPadding: widget.snackBarPadding,
+        manualRefresher: _manualRefresher,
       ),
     );
   }
@@ -102,12 +105,14 @@ class _Content extends StatelessWidget {
   final bool showClientCallsSettingEnabledThisSession;
   final EdgeInsets listPadding;
   final EdgeInsets snackBarPadding;
+  final ManualRefresher manualRefresher;
 
   const _Content({
     required this.showClientCalls,
     required this.showClientCallsSettingEnabledThisSession,
     required this.listPadding,
     required this.snackBarPadding,
+    required this.manualRefresher,
   });
 
   @override
@@ -115,6 +120,7 @@ class _Content extends StatelessWidget {
     final personalCalls = _Calls<RecentCallsCubit>(
       listPadding: listPadding,
       snackBarPadding: snackBarPadding,
+      manualRefresher: manualRefresher,
     );
 
     final content = BlocProvider<RecentCallsCubit>(
@@ -161,14 +167,16 @@ class _Content extends StatelessWidget {
                           _Calls<ClientCallsCubit>(
                             listPadding: listPadding,
                             snackBarPadding: snackBarPadding,
+                            manualRefresher: manualRefresher,
                           ),
                           personalCalls,
                         ],
                       )
                     : personalCalls,
               ),
-              _Filters(
-                onPressed: () {},
+              _MissedCallsToggle(
+                showClientCalls: showClientCalls,
+                manualRefresher: manualRefresher,
               ),
             ],
           ),
@@ -196,15 +204,17 @@ class _Content extends StatelessWidget {
 class _Calls<C extends RecentCallsCubit> extends StatelessWidget {
   final EdgeInsets listPadding;
   final EdgeInsets snackBarPadding;
+  final ManualRefresher manualRefresher;
 
   const _Calls({
     super.key,
     required this.listPadding,
     required this.snackBarPadding,
+    required this.manualRefresher,
   });
 
   Future<void> _refreshCalls(BuildContext context) async {
-    context.read<C>().refreshRecentCalls();
+    await context.read<C>().refreshRecentCalls();
   }
 
   @override
@@ -223,33 +233,62 @@ class _Calls<C extends RecentCallsCubit> extends StatelessWidget {
           onCallPressed: cubit.call,
           onCopyPressed: cubit.copyNumber,
           loadMoreCalls: cubit.loadMoreRecentCalls,
+          manualRefresher: manualRefresher,
         );
       },
     );
   }
 }
 
-class _Filters extends StatelessWidget {
-  final VoidCallback onPressed;
+class _MissedCallsToggle extends StatefulWidget {
+  final bool showClientCalls;
+  final ManualRefresher manualRefresher;
 
-  const _Filters({required this.onPressed});
+  const _MissedCallsToggle({
+    required this.showClientCalls,
+    required this.manualRefresher,
+  });
+
+  @override
+  State<_MissedCallsToggle> createState() => _MissedCallsToggleState();
+}
+
+class _MissedCallsToggleState extends State<_MissedCallsToggle> {
+  bool _toggleValue = false;
+
+  void _toggleOnlyMissedCalls(bool value) {
+    context.read<RecentCallsCubit>().onlyMissedCalls = value;
+
+    if (widget.showClientCalls) {
+      context.read<ClientCallsCubit>().onlyMissedCalls = value;
+    }
+
+    widget.manualRefresher.refresh();
+
+    setState(() {
+      _toggleValue = value;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Material(
       elevation: 8,
-      child: StylizedButton.outline(
-        colored: true,
-        margin: const EdgeInsets.all(8),
-        onPressed: onPressed,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.tune),
-            const SizedBox(width: 8),
-            Text(context.msg.main.recent.filters),
-          ],
-        ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            context.msg.main.recent.onlyShowMissedCalls,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(width: 16),
+          StylizedSwitch(
+            value: _toggleValue,
+            onChanged: _toggleOnlyMissedCalls,
+          )
+        ],
       ),
     );
   }

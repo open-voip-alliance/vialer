@@ -42,17 +42,19 @@ class RecentCallsCubit extends Cubit<RecentCallsState> {
     Clipboard.setData(ClipboardData(text: number));
   }
 
+  bool onlyMissedCalls = false;
+
   Future<void> refreshRecentCalls() async {
     emit(RefreshingRecentCalls(state.callRecords, state.page));
 
-    _loadRecentCalls(page: 1);
+    await _loadRecentCalls(page: 1);
   }
 
   Future<void> loadMoreRecentCalls() async {
     if (state is RecentCallsLoaded && !state.maxPagesLoaded) {
       emit(LoadingMoreRecentCalls(state.callRecords, state.page));
 
-      _loadRecentCalls(page: state.page + 1);
+      await _loadRecentCalls(page: state.page + 1);
     }
   }
 
@@ -76,7 +78,7 @@ class RecentCallsCubit extends Cubit<RecentCallsState> {
   }
 
   Future<List<CallRecordWithContact>> _fetch({required int page}) async =>
-      await getRecentCalls(page: page);
+      await getRecentCalls(page: page, onlyMissedCalls: onlyMissedCalls);
 }
 
 class ClientCallsCubit extends RecentCallsCubit {
@@ -100,6 +102,9 @@ class ClientCallsCubit extends RecentCallsCubit {
       await _importNewClientCalls();
     }
 
-    return await _getRecentClientCalls(page: page);
+    return await _getRecentClientCalls(
+      page: page,
+      onlyMissedCalls: onlyMissedCalls,
+    );
   }
 }

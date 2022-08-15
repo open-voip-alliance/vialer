@@ -19,6 +19,7 @@ import '../../../../resources/theme.dart';
 import '../../../../util/conditional_capitalization.dart';
 import '../../../onboarding/widgets/stylized_text_field.dart';
 import '../../../web_view/page.dart';
+import '../../widgets/stylized_switch.dart';
 import '../cubit.dart';
 import 'availability_tile.dart';
 
@@ -235,7 +236,7 @@ class SettingTile extends StatelessWidget {
             context.msg.main.settings.list.calling.ignoreBatteryOptimizations
                 .description,
           ),
-          child: _Switch(
+          child: StylizedSwitch(
             value: hasIgnoreBatteryOptimizationsPermission,
             // It is not possible to disable battery optimization via the app
             // so if we have the permission, this should just be disabled.
@@ -266,7 +267,7 @@ class SettingTile extends StatelessWidget {
           ),
           child: permissions.value.hasClientCallsPermission
               ? _BoolSettingValue(setting)
-              : const _Switch(value: false, onChanged: null),
+              : const StylizedSwitch(value: false, onChanged: null),
         );
       },
     );
@@ -502,40 +503,13 @@ class _BoolSettingValue extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _Switch(
+    return StylizedSwitch(
       value: setting.value,
       onChanged: (value) => onChanged(
         context,
         setting.copyWith(value: value),
       ),
     );
-  }
-}
-
-class _Switch extends StatelessWidget {
-  final bool value;
-  final ValueChanged<bool>? onChanged;
-
-  const _Switch({
-    Key? key,
-    required this.value,
-    required this.onChanged,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    if (context.isIOS) {
-      return CupertinoSwitch(
-        value: value,
-        onChanged: onChanged,
-      );
-    } else {
-      return Switch(
-        value: value,
-        onChanged: onChanged,
-        activeColor: Theme.of(context).primaryColor,
-      );
-    }
   }
 }
 

@@ -153,7 +153,7 @@ main:
       personal: "Personal"
     snackBar:
       copied: "Phone number copied"
-    filters: "Filters"
+    onlyShowMissedCalls: "Only show missed calls"
     list:
       headers:
         today: "Today"
