@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -33,6 +35,7 @@ class RecentCallsPage extends StatefulWidget {
 
 class _RecentCallsPageState extends State<RecentCallsPage> {
   final _eventBus = dependencyLocator<EventBusObserver>();
+  StreamSubscription? _eventBusSubscription;
 
   final _getVoipgridPermissions = GetLatestVoipgridPermissions();
   final _getShowClientCallsSetting =
@@ -58,7 +61,7 @@ class _RecentCallsPageState extends State<RecentCallsPage> {
       _updateShowClientCalls(settingValue: setting.value);
     });
 
-    _eventBus.on<ShowClientCallsSettingChanged>((e) {
+    _eventBusSubscription = _eventBus.on<ShowClientCallsSettingChanged>((e) {
       _showClientCallsSettingEnabledThisSession = e.value;
       _updateShowClientCalls(settingValue: e.value);
     });
@@ -97,6 +100,13 @@ class _RecentCallsPageState extends State<RecentCallsPage> {
         manualRefresher: _manualRefresher,
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _eventBusSubscription?.cancel();
+
+    super.dispose();
   }
 }
 
@@ -260,7 +270,9 @@ class _MissedCallsToggleState extends State<_MissedCallsToggle> {
     context.read<RecentCallsCubit>().onlyMissedCalls = value;
 
     if (widget.showClientCalls) {
-      context.read<ClientCallsCubit>().onlyMissedCalls = value;
+      final cubit = context.read<ClientCallsCubit>();
+      cubit.onlyMissedCalls = value;
+      cubit.awaitImport = false;
     }
 
     widget.manualRefresher.refresh();
