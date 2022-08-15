@@ -21,6 +21,8 @@ class RecentCallsList extends StatefulWidget {
   final void Function(String) onCopyPressed;
   final void Function() loadMoreCalls;
 
+  final ManualRefresher manualRefresher;
+
   const RecentCallsList({
     Key? key,
     required this.listPadding,
@@ -31,6 +33,7 @@ class RecentCallsList extends StatefulWidget {
     required this.onCallPressed,
     required this.onCopyPressed,
     required this.loadMoreCalls,
+    required this.manualRefresher,
   }) : super(key: key);
 
   @override
@@ -52,7 +55,7 @@ class _RecentCallsListState extends State<RecentCallsList>
     super.didChangeAppLifecycleState(state);
 
     if (state == AppLifecycleState.resumed) {
-      widget.onRefresh();
+      widget.manualRefresher.refresh();
     }
   }
 
@@ -102,7 +105,9 @@ class _RecentCallsListState extends State<RecentCallsList>
               ),
             ),
       child: RefreshIndicator(
+        key: widget.manualRefresher._key,
         onRefresh: widget.onRefresh,
+        color: context.brand.theme.colors.primary,
         child: ListView.builder(
           physics: const AlwaysScrollableScrollPhysics(),
           controller: _scrollController,
@@ -136,6 +141,14 @@ class _RecentCallsListState extends State<RecentCallsList>
       ),
     );
   }
+}
+
+class ManualRefresher {
+  final _key = GlobalKey<RefreshIndicatorState>();
+
+  /// This will refresh the items in the list
+  /// (calling [RecentCallList.onRefresh]), and also show the refresh indicator.
+  Future<void> refresh() => _key.currentState!.show();
 }
 
 extension on List<CallRecordWithContact> {

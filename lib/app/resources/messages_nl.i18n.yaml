@@ -149,7 +149,7 @@ main:
       missed: "Persoonlijk"
     snackBar:
       copied: "Telefoonnummer gekopieerd"
-    filters: "Filters"
+    onlyShowMissedCalls: "Toon alleen gemiste oproepen"
     list:
       headers:
         today: "Vandaag"

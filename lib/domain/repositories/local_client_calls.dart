@@ -93,6 +93,10 @@ class LocalClientCallsRepository with Loggable {
       ..orderBy([OrderingTerm.desc(db.clientCalls.date)])
       ..limit(perPage, offset: (page - 1) * perPage);
 
+    if (onlyMissedCalls) {
+      query.where(db.clientCalls.answered.equals(false));
+    }
+
     return query
         .map((row) => row.readTable(db.clientCalls).toCallRecord(
               row.readTableOrNull(destinationAccountTable),
