@@ -1,0 +1,1 @@
+- Een bug opgelost waarbij sommige inkomende oproepen niet werden ontvangen

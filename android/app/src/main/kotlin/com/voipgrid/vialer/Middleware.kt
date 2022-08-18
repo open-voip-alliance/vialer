@@ -38,7 +38,8 @@ class Middleware(
      */
     private var callIdsBeingHandled = mutableListOf<String>()
 
-    public val baseUrl = "${prefs.middlewareUrl}/api"
+    public val baseUrl: String
+        get() = "${prefs.middlewareUrl}/api"
 
     override fun tokenReceived(token: String) {
         if (lastRegisteredToken == token) {
