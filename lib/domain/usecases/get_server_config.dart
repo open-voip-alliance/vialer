@@ -47,8 +47,7 @@ class GetServerConfigUseCase extends UseCase with Loggable {
       });
 
       logger.info(
-        'Switching SERVER CONFIG from '
-        '[$current] to [$latest]',
+        'Switching SERVER CONFIG from [$current] to [$latest]',
       );
     }
   }

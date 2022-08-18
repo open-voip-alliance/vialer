@@ -1,1 +1,1 @@
-- Fixed a bug causing some incoming calls not to be received
+- Een bug opgelost waarbij sommige inkomende oproepen niet werden ontvangen
