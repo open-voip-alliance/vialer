@@ -263,6 +263,11 @@ custom: # Custom properties to make workflows cleaner
       name: Preparing "What to test" for TestFlight
       script: |
         echo '[{"language":"en-US","text":"Main"},{"language":"nl-NL","text":"Main"}]' > release_notes.json
+    - &call_zapier_production_build_webhook
+      name: Calling our Zapier webhook to inform of a new production build
+      ignore_failure: true
+      script: |
+        curl "https://hooks.zapier.com/hooks/catch/1394555/blav33z?build_id=${CM_BUILD_ID}"
   config: &config # Default configuration that can be applied to all normal workflows
     max_build_duration: 60
     instance_type: mac_pro
@@ -490,6 +495,7 @@ workflows:
       - *build_ipa
       - *release_to_sentry
       - *track_new_version
+      - *call_zapier_production_build_webhook
     publishing: *publish_for_production
 
   production-voys:
