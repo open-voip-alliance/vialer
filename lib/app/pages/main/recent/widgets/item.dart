@@ -176,15 +176,15 @@ class _RecentItemSubtitle extends StatelessWidget {
 
   IconData _icon(BuildContext context) {
     if (callRecord.renderType == CallRecordRenderType.internalCall) {
-      return VialerSans.caretLeft;
+      return VialerSans.internalCall;
     }
 
     if (callRecord.isIncomingAndAnsweredElsewhere) {
-      return VialerSans.answeredElsewhere;
+      return VialerSans.answeredElsewhereCall;
     }
 
     if (callRecord.wasMissed && callRecord.direction == Direction.inbound) {
-      return VialerSans.missedCall;
+      return VialerSans.missedCallRecord;
     }
 
     return callRecord.isOutbound
