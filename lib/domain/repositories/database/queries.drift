@@ -1,5 +1,9 @@
 import 'client_calls.dart';
 
-callRecordsWithUnfetchedPhoneAccounts: SELECT destination_account_id FROM client_calls
+callRecordsWithUnfetchedDestinationAccounts: SELECT destination_account_id FROM client_calls
 WHERE
 destination_account_id NOT IN (SELECT destination_account_id FROM colleague_phone_accounts);
+
+callRecordsWithUnfetchedSourceAccounts: SELECT source_account_id FROM client_calls
+WHERE
+source_account_id NOT IN (SELECT source_account_id FROM colleague_phone_accounts);

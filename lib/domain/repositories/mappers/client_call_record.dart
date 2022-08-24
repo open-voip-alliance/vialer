@@ -5,39 +5,43 @@ import 'package:intl/intl.dart';
 import 'package:timezone/timezone.dart';
 
 import '../../entities/call_record.dart';
+import '../../entities/client_call_record.dart';
 import '../database/client_calls.dart';
 import '../remote_client_calls.dart';
 
 extension FromDatabaseCallRecord on ClientCallDatabaseRecord {
-  CallRecord toCallRecord(
+  ClientCallRecord toCallRecord(
     ColleaguePhoneAccount? destinationAccount,
     ColleaguePhoneAccount? sourceAccount,
   ) =>
-      CallRecord(
+      ClientCallRecord(
         id: id.toString(),
         callType: callType,
         direction: direction,
         answered: answered,
-        answeredElsewhere: answeredElsewhere,
+        answeredElsewhere: direction == CallDirection.inbound &&
+            destinationAccountId != null &&
+            !isDestinationAccountLoggedInUser,
         duration: Duration(seconds: duration),
         date: date,
-        caller: caller.name != null
-            ? caller
-            : CallParty(
-                name: direction == CallDirection.outbound
-                    ? sourceAccount?.callerIdName
-                    : null,
-                number: caller.number,
-                type: sourceAccount?.type ?? CallerType.other,
-              ),
-        destination: answeredElsewhere && direction == Direction.inbound
-            ? CallParty(
-                name: destinationAccount?.callerIdName,
-                number: destination.number,
-                type: destinationAccount?.type ?? CallerType.other,
-              )
-            : destination,
-        isClientCall: true,
+        caller: CallParty(
+          name: sourceAccount?.callerIdName,
+          number: sourceNumber,
+          type: sourceAccount?.type ?? CallerType.other,
+        ),
+        destination: CallParty(
+          name: destinationAccount?.callerIdName,
+          number: dialedNumber,
+          type: destinationAccount?.type ?? CallerType.other,
+        ),
+        didTargetColleague:
+            destinationAccountId != null && !isDestinationAccountLoggedInUser,
+        didTargetLoggedInUser:
+            destinationAccountId != null && isDestinationAccountLoggedInUser,
+        wasInitiatedByColleague:
+            sourceAccountId != null && !isSourceAccountLoggedInUser,
+        wasInitiatedByLoggedInUser:
+            sourceAccountId != null && isSourceAccountLoggedInUser,
       );
 }
 
@@ -49,39 +53,34 @@ ClientCallsCompanion toClientCallDatabaseRecord(
   final sourceAccountId = (object['src_account'] as String?).extractedId;
 
   return ClientCallsCompanion.insert(
-    id: Value(object['id'] as int),
-    callType: _isInternalCall(object) ? CallType.colleague : CallType.outside,
-    direction: object['direction'] == 'outbound'
-        ? Direction.outbound
-        : Direction.inbound,
-    answered: (object['atime'] as int) > 0,
-    answeredElsewhere: destinationAccountId != null
-        ? !isUserPhoneAccount(destinationAccountId)
-        : false,
-    duration: object['atime'] as int,
-    date: (object['call_date'] as String).toDateTimeFromVoipgridFormat,
-    caller: CallParty(
-      name: object['src_number'] as String,
-      number: object['src_number'] as String,
-      type: CallerType.other,
-    ),
-    destination: CallParty(
-      name: null,
-      number: object['dst_number'] as String,
-      type: CallerType.other,
-    ),
-    destinationAccountId: Value(destinationAccountId),
-    sourceAccountId: Value(sourceAccountId),
-  );
+      id: Value(object['id'] as int),
+      callType: destinationAccountId != null && sourceAccountId != null
+          ? CallType.colleague
+          : CallType.outside,
+      direction: object['direction'] == 'outbound'
+          ? Direction.outbound
+          : Direction.inbound,
+      answered: (object['atime'] as int) > 0,
+      duration: object['atime'] as int,
+      date: (object['call_date'] as String).toDateTimeFromVoipgridFormat,
+      callerNumber: object['caller_num'] as String,
+      sourceNumber: object['src_number'] as String,
+      destinationNumber: object['dst_number'] as String,
+      dialedNumber: object['dialed_number'] as String,
+      callerId: object['callerid'] as String,
+      originalCallerId: object['orig_callerid'] as String,
+      destinationAccountId: Value(destinationAccountId),
+      sourceAccountId: Value(sourceAccountId),
+      isDestinationAccountLoggedInUser: destinationAccountId != null
+          ? isUserPhoneAccount(destinationAccountId)
+          : false,
+      isSourceAccountLoggedInUser: sourceAccountId != null
+          ? isUserPhoneAccount(sourceAccountId)
+          : false);
 }
 
 /// This is the timezone that the VoIPGRID API operates in.
 const _remoteClientCallTimezone = 'Europe/Amsterdam';
-
-bool _isInternalCall(dynamic object) => const [
-      'internal',
-      'sip',
-    ].contains(object['dst_code']);
 
 extension VoipgridFormat on DateTime {
   String get asVoipgridFormat => DateFormat('yyyy-MM-dd\'T\'HH:mm:ss').format(

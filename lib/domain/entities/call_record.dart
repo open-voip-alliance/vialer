@@ -13,7 +13,6 @@ class CallRecord extends Equatable {
   final DateTime date;
   final CallParty caller;
   final CallParty destination;
-  final bool isClientCall;
 
   const CallRecord({
     required this.id,
@@ -25,7 +24,6 @@ class CallRecord extends Equatable {
     required this.date,
     required this.caller,
     required this.destination,
-    this.isClientCall = false,
   }) : _direction = direction;
 
   bool get wasMissed => !answered;
@@ -111,6 +109,8 @@ class CallParty extends Equatable {
     required this.number,
     required this.type,
   });
+
+  String get label => name ?? number;
 
   bool get hasName => name?.isNotEmpty == true;
 
