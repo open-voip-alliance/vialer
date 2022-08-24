@@ -3,6 +3,7 @@ import 'package:drift/drift.dart';
 
 import '../../app/util/loggable.dart';
 import '../entities/call_record.dart';
+import '../entities/client_call_record.dart';
 import 'database/client_calls.dart';
 import 'mappers/client_call_record.dart';
 
@@ -29,8 +30,8 @@ class LocalClientCallsRepository with Loggable {
           .getSingleOrNull();
 
   Future<int> deleteAll() async => Future.wait([
-    db.delete(db.colleaguePhoneAccounts).go(),
-    db.delete(db.clientCalls).go(),
+        db.delete(db.colleaguePhoneAccounts).go(),
+        db.delete(db.clientCalls).go(),
       ]).then((value) => value.sum());
 
   /// Checks to see if we have a phone account for the given id in the database
@@ -47,11 +48,18 @@ class LocalClientCallsRepository with Loggable {
                 ),
           );
 
-  Future<List<int?>> findUnfetchedPhoneAccountIds() async =>
-      db.callRecordsWithUnfetchedPhoneAccounts().get();
+  Future<List<int?>> findUnfetchedPhoneAccountIds() async {
+    final unfetchedDestinationPhoneAccounts =
+        await db.callRecordsWithUnfetchedDestinationAccounts().get();
+    final unfetchedSourcePhoneAccounts =
+        await db.callRecordsWithUnfetchedSourceAccounts().get();
 
-  Future<void> storeCallRecords(List<ClientCallsCompanion> records) =>
-      db.batch(
+    return (unfetchedDestinationPhoneAccounts + unfetchedSourcePhoneAccounts)
+        .distinct()
+        .toList();
+  }
+
+  Future<void> storeCallRecords(List<ClientCallsCompanion> records) => db.batch(
         (batch) => batch.insertAllOnConflictUpdate(db.clientCalls, records),
       );
 
@@ -63,7 +71,7 @@ class LocalClientCallsRepository with Loggable {
     }
   }
 
-  Future<List<CallRecord>> getCalls({
+  Future<List<ClientCallRecord>> getCalls({
     int page = 1,
     required int perPage,
     required bool onlyMissedCalls,
@@ -94,7 +102,13 @@ class LocalClientCallsRepository with Loggable {
       ..limit(perPage, offset: (page - 1) * perPage);
 
     if (onlyMissedCalls) {
-      query.where(db.clientCalls.answered.equals(false));
+      query
+        ..where(db.clientCalls.answered.equals(false))
+        ..where(
+          db.clientCalls.direction.equals(
+            db.clientCalls.direction.converter.mapToSql(Direction.inbound),
+          ),
+        );
     }
 
     return query

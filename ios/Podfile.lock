@@ -1,6 +1,6 @@
 PODS:
   - Alamofire (5.6.2)
-  - Amplitude (8.11.1):
+  - Amplitude (8.12.0):
     - AnalyticsConnector (~> 1.0.0)
   - Analytics (4.1.6)
   - AnalyticsConnector (1.0.0)
@@ -78,13 +78,13 @@ PODS:
   - segment-appsflyer-ios/Main (6.5.2):
     - Analytics
     - AppsFlyerFramework (~> 6.5.2)
-  - Sentry (7.22.0):
-    - Sentry/Core (= 7.22.0)
-  - Sentry/Core (7.22.0)
+  - Sentry (7.23.0):
+    - Sentry/Core (= 7.23.0)
+  - Sentry/Core (7.23.0)
   - sentry_flutter (0.0.1):
     - Flutter
     - FlutterMacOS
-    - Sentry (~> 7.22.0)
+    - Sentry (~> 7.23.0)
   - shared_preferences_ios (0.0.1):
     - Flutter
   - sqlite3 (3.39.2):
@@ -217,7 +217,7 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   Alamofire: d368e1ff8a298e6dde360e35a3e68e6c610e7204
-  Amplitude: 63df137a65a9dad663670cd97a46b5b9877f6287
+  Amplitude: dd7170426ed983dd5aeafa694db40180cff62bd6
   Analytics: eefe524436f904b8bb3f8c8c3425280e43b34efc
   AnalyticsConnector: 4c386d5972ac9da86e22d668564dbbac97558754
   AppsFlyerFramework: e309a6cab366296bf891dc68b175de1e9a44f86c
@@ -246,8 +246,8 @@ SPEC CHECKSUMS:
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
   Segment-Amplitude: 6c1e59c8c278a21029ba7a6a788fcb31b9233a2c
   segment-appsflyer-ios: 78c65acfd78dd17ed347623f01919c44b0226174
-  Sentry: 30b51086ca9aac23337880152e95538f7e177f7f
-  sentry_flutter: eaca55af5c951f4be6c4b1daddce1744c37d8476
+  Sentry: a0d4563fa4ddacba31fdcc35daaa8573d87224d6
+  sentry_flutter: 8bde7d0e57a721727fe573f13bb292c497b5a249
   shared_preferences_ios: 548a61f8053b9b8a49ac19c1ffbc8b92c50d68ad
   sqlite3: d115522c740c457b805c018b0296b5ba003da280
   sqlite3_flutter_libs: 1641350489d5c2bcb9d0773ade9693624111b24c
@@ -257,4 +257,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 5cbde205bc638a60e6eaf1140e9808670c3b3178
 
-COCOAPODS: 1.11.3
+COCOAPODS: 1.11.2

@@ -156,9 +156,13 @@ main:
         yesterday: "Gisteren"
       item:
         client:
-          wasMissed(String time): "Gemist om $time"
-          inbound(String time, String duration): "Opgenomen om $time - $duration"
-          outbound(String person, String time, String duration): "$person gebeld om $time - $duration"
+          currentUser: "Je"
+          incomingMissedCall(String time): "missed this call at $time"
+          incomingAnsweredCall(String time, String duration): "picked up at $time - $duration"
+          outgoingCall(String time, String duration): "called at $time - $duration"
+          internal:
+            title: "Gesprek tussen "
+            subtitle(String time, String duration): "Intern gesprek om $time - $duration"
         wasMissed(String time): "Je hebt een oproep gemist om $time"
         inbound(String time, String duration): "Je hebt opgenomen om $time - $duration"
         outbound(String time, String duration): "Je hebt gebeld om $time - $duration"
@@ -169,6 +173,8 @@ main:
           call: *call
           from: "Belgesprek van"
           answered: "Answered by"
+          internal:
+            title: "Gesprek tussen"
       loading:
         title: "Gesprekken worden opgehaald"
         description: "Je recente gesprekken komen hier zo te staan. Graag nog even geduld."

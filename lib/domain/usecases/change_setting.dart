@@ -55,8 +55,6 @@ class ChangeSettingUseCase extends UseCase with Loggable {
         logger.info('Changed ${setting.runtimeType} '
             'to ${setting.value!.selectedDestinationInfo}');
       }
-    } else {
-      logger.info('Set ${setting.runtimeType} to ${setting.value}');
     }
 
     if (setting is RemoteLoggingSetting) {
@@ -124,6 +122,8 @@ class ChangeSettingUseCase extends UseCase with Loggable {
     }
 
     if (hasSettingValueChanged && setting.shouldTrack) {
+      logger.info('Set ${setting.runtimeType} to ${setting.value}');
+
       _metricsRepository.track(
         '${setting.asMetricKeyName}_changed',
         setting.asMetricProperties,

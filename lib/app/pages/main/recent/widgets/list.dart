@@ -1,7 +1,7 @@
 import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../../domain/entities/call_record_with_contact.dart';
+import '../../../../../domain/entities/call_record.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
 import '../../../../util/widgets_binding_observer_registrar.dart';
@@ -15,7 +15,7 @@ class RecentCallsList extends StatefulWidget {
 
   final bool isLoadingInitial;
 
-  final List<CallRecordWithContact> callRecords;
+  final List<CallRecord> callRecords;
   final Future<void> Function() onRefresh;
   final void Function(String) onCallPressed;
   final void Function(String) onCopyPressed;
@@ -151,7 +151,7 @@ class ManualRefresher {
   Future<void> refresh() => _key.currentState!.show();
 }
 
-extension on List<CallRecordWithContact> {
+extension on List<CallRecord> {
   bool isHeaderRequiredAt(int index) {
     final previous = index >= 1 ? this[index - 1] : null;
 

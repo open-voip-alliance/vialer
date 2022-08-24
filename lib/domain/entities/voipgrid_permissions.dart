@@ -1,9 +1,10 @@
+import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'voipgrid_permissions.g.dart';
 
 @JsonSerializable()
-class VoipgridPermissions {
+class VoipgridPermissions extends Equatable {
   final bool hasClientCallsPermission;
 
   const VoipgridPermissions({
@@ -14,4 +15,9 @@ class VoipgridPermissions {
       _$VoipgridPermissionsFromJson(json);
 
   Map<String, dynamic> toJson() => _$VoipgridPermissionsToJson(this);
+
+  @override
+  List<Object?> get props => [
+    hasClientCallsPermission,
+  ];
 }

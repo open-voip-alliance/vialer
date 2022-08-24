@@ -16,13 +16,18 @@ class ClientCalls extends Table {
   IntColumn get callType => intEnum<CallType>()();
   IntColumn get direction => intEnum<Direction>()();
   BoolColumn get answered => boolean()();
-  BoolColumn get answeredElsewhere => boolean()();
   IntColumn get duration => integer()();
   DateTimeColumn get date => dateTime()();
-  TextColumn get caller => text().map(const CallPartyConverter())();
-  TextColumn get destination => text().map(const CallPartyConverter())();
-  IntColumn get destinationAccountId => integer().nullable()();
+  TextColumn get sourceNumber => text()();
   IntColumn get sourceAccountId => integer().nullable()();
+  TextColumn get destinationNumber => text()();
+  TextColumn get dialedNumber => text()();
+  IntColumn get destinationAccountId => integer().nullable()();
+  TextColumn get callerNumber => text()();
+  TextColumn get callerId => text()();
+  TextColumn get originalCallerId => text()();
+  BoolColumn get isSourceAccountLoggedInUser => boolean()();
+  BoolColumn get isDestinationAccountLoggedInUser => boolean()();
 
   @override
   Set<Column> get primaryKey => {id};

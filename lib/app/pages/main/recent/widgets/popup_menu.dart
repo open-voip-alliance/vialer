@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../../domain/entities/call_record.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
+import 'item.dart';
 
 class RecentItemPopupMenu extends StatelessWidget {
   final CallRecord callRecord;
@@ -13,35 +14,62 @@ class RecentItemPopupMenu extends StatelessWidget {
     required this.onPopupMenuItemPress,
   });
 
+  List<PopupMenuEntry<RecentCallMenuAction>> _createInformationItem({
+    required String title,
+    required List<CallParty> callParties,
+  }) {
+    return [
+      PopupMenuItem<RecentCallMenuAction>(
+        value: RecentCallMenuAction.none,
+        enabled: false,
+        child: _CallParties(
+          title: title.toUpperCase(),
+          callParties: callParties,
+        ),
+      ),
+      const PopupMenuDivider(),
+    ];
+  }
+
+  /// Creates all the items that will change based on the type of call record
+  /// that we are currently rendering.
+  List<PopupMenuEntry<RecentCallMenuAction>> _createRecordSpecificItems(
+    BuildContext context,
+  ) {
+    if (callRecord.renderType == CallRecordRenderType.other) {
+      return [
+        if (callRecord.isInbound)
+          ..._createInformationItem(
+            title: context.msg.main.recent.list.item.popupMenu.from,
+            callParties: [callRecord.caller],
+          ),
+        if (callRecord.answeredElsewhere && callRecord.isInbound)
+          ..._createInformationItem(
+            title: context.msg.main.recent.list.item.popupMenu.answered,
+            callParties: [callRecord.destination],
+          ),
+      ];
+    }
+
+    if (callRecord.renderType == CallRecordRenderType.internalCall) {
+      return _createInformationItem(
+        title: context.msg.main.recent.list.item.popupMenu.internal.title
+            .toUpperCase(),
+        callParties: [callRecord.caller, callRecord.destination],
+      );
+    }
+
+    return [];
+  }
+
   @override
   Widget build(BuildContext context) {
+    final recordSpecificItems = _createRecordSpecificItems(context);
+
     return PopupMenuButton<RecentCallMenuAction>(
       onSelected: onPopupMenuItemPress,
       itemBuilder: (context) => [
-        if (callRecord.isInbound) ...[
-          PopupMenuItem<RecentCallMenuAction>(
-            value: RecentCallMenuAction.none,
-            enabled: false,
-            child: _CallParty(
-              title: context.msg.main.recent.list.item.popupMenu.from
-                  .toUpperCase(),
-              callParty: callRecord.caller,
-            ),
-          ),
-          const PopupMenuDivider(),
-        ],
-        if (callRecord.answeredElsewhere && callRecord.isInbound) ...[
-          PopupMenuItem<RecentCallMenuAction>(
-            value: RecentCallMenuAction.none,
-            enabled: false,
-            child: _CallParty(
-              title: context.msg.main.recent.list.item.popupMenu.answered
-                  .toUpperCase(),
-              callParty: callRecord.destination,
-            ),
-          ),
-          const PopupMenuDivider(),
-        ],
+        ...recordSpecificItems,
         PopupMenuItem<RecentCallMenuAction>(
           value: RecentCallMenuAction.copy,
           child: ListTile(
@@ -74,18 +102,18 @@ class RecentItemPopupMenu extends StatelessWidget {
   }
 }
 
-class _CallParty extends StatelessWidget {
+class _CallParties extends StatelessWidget {
   final String title;
-  final CallParty callParty;
+  final List<CallParty> callParties;
 
   static const _callFromFontSize = 14.0;
 
-  const _CallParty({
+  const _CallParties({
     required this.title,
-    required this.callParty,
+    required this.callParties,
   });
 
-  String _text(BuildContext context) {
+  String _text(CallParty callParty, BuildContext context) {
     if (!callParty.hasName) {
       return callParty.number;
     }
@@ -107,7 +135,7 @@ class _CallParty extends StatelessWidget {
         ),
         const SizedBox(height: 6),
         Text(
-          _text(context),
+          callParties.map((party) => _text(party, context)).join(' & '),
           style: const TextStyle(
             fontSize: _callFromFontSize,
           ),

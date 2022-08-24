@@ -5,7 +5,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../domain/entities/call_record_with_contact.dart';
+import '../../../../domain/entities/call_record.dart';
+import '../../../../domain/entities/client_call_record.dart';
 import '../../../../domain/usecases/client_calls/import_historic_client_call_records.dart';
 import '../../../../domain/usecases/client_calls/import_new_client_calls.dart';
 import '../../../../domain/usecases/get_recent_calls.dart';
@@ -60,7 +61,7 @@ class RecentCallsCubit extends Cubit<RecentCallsState> {
 
   Future<void> _loadRecentCalls({required int page}) async {
     final recentCalls = await _fetch(page: page);
-    List<CallRecordWithContact> currentCalls;
+    List<CallRecord> currentCalls;
 
     if (state is LoadingMoreRecentCalls) {
       currentCalls = [
@@ -77,7 +78,7 @@ class RecentCallsCubit extends Cubit<RecentCallsState> {
     emit(RecentCallsLoaded(currentCalls.distinct().toList(), page));
   }
 
-  Future<List<CallRecordWithContact>> _fetch({required int page}) async =>
+  Future<List<CallRecord>> _fetch({required int page}) async =>
       await getRecentCalls(page: page, onlyMissedCalls: onlyMissedCalls);
 }
 
@@ -97,7 +98,7 @@ class ClientCallsCubit extends RecentCallsCubit {
         super(caller);
 
   @override
-  Future<List<CallRecordWithContact>> _fetch({required int page}) async {
+  Future<List<ClientCallRecord>> _fetch({required int page}) async {
     final import = _firstRun && page == 1
         ? _importHistoricClientCalls()
         : _importNewClientCalls();
