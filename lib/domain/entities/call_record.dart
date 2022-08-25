@@ -110,7 +110,7 @@ class CallParty extends Equatable {
     required this.type,
   });
 
-  String get label => name ?? number;
+  String get label => hasName ? name! : number;
 
   bool get hasName => name?.isNotEmpty == true;
 

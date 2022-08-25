@@ -1,3 +1,4 @@
+import 'package:dartx/dartx.dart';
 
 import '../../entities/system_user.dart';
 import '../../repositories/database/client_calls.dart';
@@ -13,17 +14,17 @@ class CreateClientCallsIsolateRequestUseCase extends UseCase {
 
   Future<List<int>> get _usersPhoneAccounts async =>
       _getLatestUserAvailability().then(
-            (availability) =>
-        availability?.phoneAccounts
-            .map((phoneAccount) => phoneAccount.accountId)
-            .toList() ??
+        (availability) =>
+            availability?.phoneAccounts
+                .filter((phoneAccount) => phoneAccount.id != null)
+                .map((phoneAccount) => phoneAccount.id!)
+                .toList() ??
             [],
       );
 
   Future<ClientCallsIsolateRequest> call({
     required Map<DateTime, DateTime> dateRangesToQuery,
   }) async {
-
     return ClientCallsIsolateRequest(
       user: (await _getUser(latest: false))!,
       voipgridApiBaseUrl: await _getBaseUrl(),

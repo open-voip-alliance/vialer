@@ -317,12 +317,12 @@ class _RecentItemSubtitleText extends StatelessWidget {
   }
 
   String _text(BuildContext context) {
-    if (callRecord.wasMissed) {
-      return context.msg.main.recent.list.item.wasMissed(_time);
-    }
-
     if (callRecord.isInbound) {
-      return context.msg.main.recent.list.item.inbound(_time, _duration);
+      if (callRecord.wasMissed) {
+        return context.msg.main.recent.list.item.wasMissed(_time);
+      } else {
+        return context.msg.main.recent.list.item.inbound(_time, _duration);
+      }
     }
 
     if (callRecord.isOutbound) {
