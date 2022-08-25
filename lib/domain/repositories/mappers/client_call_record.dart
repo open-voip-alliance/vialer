@@ -31,7 +31,9 @@ extension FromDatabaseCallRecord on ClientCallDatabaseRecord {
         ),
         destination: CallParty(
           name: destinationAccount?.callerIdName,
-          number: dialedNumber,
+          number: destinationNumber.isNotNullOrEmpty
+              ? destinationNumber
+              : dialedNumber,
           type: destinationAccount?.type ?? CallerType.other,
         ),
         didTargetColleague:
