@@ -8,7 +8,7 @@ import '../use_case.dart';
 class GetRecentClientCallsUseCase extends UseCase {
   final _clientCalls = dependencyLocator<LocalClientCallsRepository>();
 
-  static const _perPage = 20;
+  static const _perPage = 50;
 
   /// [page] starts at 1 to maintain consistency with [GetRecentCalls].
   Future<List<ClientCallRecord>> call({

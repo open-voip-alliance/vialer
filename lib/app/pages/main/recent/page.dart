@@ -44,14 +44,7 @@ class _RecentCallsPageState extends State<RecentCallsPage> {
   bool _showClientCalls = false;
 
   final _manualRefresher = ManualRefresher();
-
-  /// If true, means that the user enabled [ShowClientCallsSetting] in this
-  /// session.
-  ///
-  /// **NOTE:** This only represents the setting and whether it was enabled
-  /// this session. This should not be used to check whether the user should
-  /// see client calls.
-  bool _showClientCallsSettingEnabledThisSession = false;
+  final _clientManualRefresher = ManualRefresher();
 
   @override
   void initState() {
@@ -62,8 +55,7 @@ class _RecentCallsPageState extends State<RecentCallsPage> {
     });
 
     _eventBusSubscription = _eventBus.on<ShowClientCallsSettingChanged>((e) {
-      _showClientCallsSettingEnabledThisSession = e.value;
-      _updateShowClientCalls(settingValue: e.value);
+      _updateShowClientCalls(settingValue: e.clientCallsEnabled);
     });
   }
 
@@ -93,11 +85,10 @@ class _RecentCallsPageState extends State<RecentCallsPage> {
       listener: _onStateChanged,
       child: _Content(
         showClientCalls: _showClientCalls,
-        showClientCallsSettingEnabledThisSession:
-            _showClientCallsSettingEnabledThisSession,
         listPadding: widget.listPadding,
         snackBarPadding: widget.snackBarPadding,
         manualRefresher: _manualRefresher,
+        clientManualRefresher: _clientManualRefresher,
       ),
     );
   }
@@ -112,17 +103,17 @@ class _RecentCallsPageState extends State<RecentCallsPage> {
 
 class _Content extends StatelessWidget {
   final bool showClientCalls;
-  final bool showClientCallsSettingEnabledThisSession;
   final EdgeInsets listPadding;
   final EdgeInsets snackBarPadding;
   final ManualRefresher manualRefresher;
+  final ManualRefresher clientManualRefresher;
 
   const _Content({
     required this.showClientCalls,
-    required this.showClientCallsSettingEnabledThisSession,
     required this.listPadding,
     required this.snackBarPadding,
     required this.manualRefresher,
+    required this.clientManualRefresher,
   });
 
   @override
@@ -177,7 +168,7 @@ class _Content extends StatelessWidget {
                           _Calls<ClientCallsCubit>(
                             listPadding: listPadding,
                             snackBarPadding: snackBarPadding,
-                            manualRefresher: manualRefresher,
+                            manualRefresher: clientManualRefresher,
                           ),
                           personalCalls,
                         ],
@@ -196,10 +187,7 @@ class _Content extends StatelessWidget {
 
     if (showClientCalls) {
       return BlocProvider<ClientCallsCubit>(
-        create: (context) => ClientCallsCubit(
-          context.read<CallerCubit>(),
-          firstRun: showClientCallsSettingEnabledThisSession,
-        ),
+        create: (context) => ClientCallsCubit(context.read<CallerCubit>()),
         child: DefaultTabController(
           length: 2,
           child: content,
@@ -224,6 +212,7 @@ class _Calls<C extends RecentCallsCubit> extends StatelessWidget {
   });
 
   Future<void> _refreshCalls(BuildContext context) async {
+    await context.read<C>().performBackgroundImport();
     await context.read<C>().refreshRecentCalls();
   }
 
@@ -243,6 +232,8 @@ class _Calls<C extends RecentCallsCubit> extends StatelessWidget {
           onCallPressed: cubit.call,
           onCopyPressed: cubit.copyNumber,
           loadMoreCalls: cubit.loadMoreRecentCalls,
+          automaticallyPopulateCalls: cubit.automaticallyPopulateCalls,
+          performBackgroundImport: cubit.performBackgroundImport,
           manualRefresher: manualRefresher,
         );
       },
@@ -272,7 +263,6 @@ class _MissedCallsToggleState extends State<_MissedCallsToggle> {
     if (widget.showClientCalls) {
       final cubit = context.read<ClientCallsCubit>();
       cubit.onlyMissedCalls = value;
-      cubit.awaitImport = false;
     }
 
     widget.manualRefresher.refresh();
