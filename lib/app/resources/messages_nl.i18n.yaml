@@ -243,6 +243,7 @@ main:
       accountInfo:
         title: "Accountinformatie"
         businessNumber:
+          title: "Uitgaande nummer"
           suppressed: "Onderdrukt"
           description: >-
             Het uitgaande nummer wordt weergegeven op het scherm van degenen die je belt.

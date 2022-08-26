@@ -23,9 +23,15 @@ class SystemUser extends Equatable {
 
   final String? outgoingCli;
 
+  final String? clientUuid;
+  final String? clientId;
+  final String? clientName;
+
   String? get appAccountId => appAccountUrl?.pathSegments.lastOrNullWhere(
         (p) => p.isNotEmpty,
       );
+
+  bool get canChangeOutgoingCli => clientUuid != null;
 
   bool get isOutgoingCliSuppressed => outgoingCli?.isSuppressed ?? false;
 
@@ -33,10 +39,6 @@ class SystemUser extends Equatable {
   /// non-nullable in a future update.
   @JsonKey(name: 'client')
   final Uri? clientUrl;
-
-  String? get clientId => clientUrl?.pathSegments.lastOrNullWhere(
-        (p) => p.isNotEmpty,
-      );
 
   const SystemUser({
     required this.uuid,
@@ -48,6 +50,9 @@ class SystemUser extends Equatable {
     this.appAccountUrl,
     this.outgoingCli,
     this.clientUrl,
+    this.clientUuid,
+    this.clientId,
+    this.clientName,
   });
 
   SystemUser copyWith({
@@ -60,6 +65,9 @@ class SystemUser extends Equatable {
     Uri? appAccountUrl,
     String? outgoingCli,
     Uri? clientUrl,
+    String? clientUuid,
+    String? clientId,
+    String? clientName,
   }) {
     return SystemUser(
       uuid: uuid ?? this.uuid,
@@ -71,6 +79,9 @@ class SystemUser extends Equatable {
       appAccountUrl: appAccountUrl ?? this.appAccountUrl,
       outgoingCli: outgoingCli ?? this.outgoingCli,
       clientUrl: clientUrl ?? this.clientUrl,
+      clientUuid: clientUuid ?? this.clientUuid,
+      clientId: clientId ?? this.clientId,
+      clientName: clientName ?? this.clientName,
     );
   }
 
@@ -90,6 +101,9 @@ class SystemUser extends Equatable {
         appAccountUrl,
         outgoingCli,
         clientUrl,
+        clientUuid,
+        clientId,
+        clientName,
       ];
 }
 

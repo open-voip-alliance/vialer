@@ -6,6 +6,7 @@ import 'package:recase/recase.dart';
 
 import 'audio_codec.dart';
 import 'availability.dart';
+import 'client_available_outgoing_numbers.dart';
 import 'system_user.dart';
 import 'voipgrid_permissions.dart';
 
@@ -56,6 +57,7 @@ abstract class Setting<T> {
     UsePhoneRingtoneSetting.preset(),
     ShowCallsInNativeRecentsSetting.preset(),
     AvailabilitySetting.preset(),
+    ClientOutgoingNumbersSetting.preset(),
     DndSetting.preset(),
     ShowClientCallsSetting.preset(),
     VoipgridPermissionsSetting.preset(),
@@ -76,8 +78,7 @@ abstract class Setting<T> {
     return {};
   }
 
-  String get asMetricKeyName =>
-      '${ReCase(runtimeType.toString()).snakeCase}';
+  String get asMetricKeyName => '${ReCase(runtimeType.toString()).snakeCase}';
 
   Map<String, dynamic> toJson() {
     return {
@@ -99,8 +100,10 @@ abstract class Setting<T> {
       return ShowDialerConfirmPopupSetting(value as bool);
     } else if (type == (ShowSurveysSetting).toString()) {
       return ShowSurveysSetting(value as bool);
-    } else if (type == (BusinessNumberSetting).toString()) {
-      return BusinessNumberSetting(value as String);
+    // ignore: deprecated_member_use_from_same_package
+    } else if (type == (BusinessNumberSetting).toString() ||
+        type == (OutgoingNumberSetting).toString()) {
+      return OutgoingNumberSetting(value as String);
     } else if (type == (MobileNumberSetting).toString()) {
       return MobileNumberSetting(value as String);
     } else if (type == (ShowTroubleshootingSettingsSetting).toString()) {
@@ -118,6 +121,10 @@ abstract class Setting<T> {
     } else if (type == (AvailabilitySetting).toString()) {
       return AvailabilitySetting(
         Availability.fromJson(value as Map<String, dynamic>),
+      );
+    } else if (type == (ClientOutgoingNumbersSetting).toString()) {
+      return ClientOutgoingNumbersSetting(
+        ClientAvailableOutgoingNumbers.fromJson(value as Map<String, dynamic>),
       );
     } else if (type == (DndSetting).toString()) {
       return DndSetting(value as bool);
@@ -175,13 +182,28 @@ class ShowSurveysSetting extends Setting<bool> {
       ShowSurveysSetting(value ?? this.value);
 }
 
+@Deprecated('Use `OutgoingNumberSetting` instead')
 class BusinessNumberSetting extends Setting<String> {
   const BusinessNumberSetting(String value)
-      : super(value, mutable: false, external: true);
+      : super(value, mutable: true, external: true);
 
   @override
   BusinessNumberSetting copyWith({String? value}) =>
       BusinessNumberSetting(value ?? this.value);
+
+  bool get isSuppressed => value.isSuppressed;
+}
+
+class OutgoingNumberSetting extends Setting<String> {
+  const OutgoingNumberSetting(String value)
+      : super(value, mutable: true, external: true);
+
+  @override
+  OutgoingNumberSetting copyWith({String? value}) =>
+      OutgoingNumberSetting(value ?? this.value);
+
+  OutgoingNumberSetting.suppressed()
+      : super('suppressed', mutable: true, external: true);
 
   bool get isSuppressed => value.isSuppressed;
 }
@@ -297,6 +319,28 @@ class VoipgridPermissionsSetting extends Setting<VoipgridPermissions> {
   @override
   VoipgridPermissionsSetting copyWith({VoipgridPermissions? value}) =>
       VoipgridPermissionsSetting(value ?? this.value);
+}
+
+class ClientOutgoingNumbersSetting
+    extends Setting<ClientAvailableOutgoingNumbers> {
+  const ClientOutgoingNumbersSetting(ClientAvailableOutgoingNumbers value)
+      : super(value, mutable: true, external: true);
+
+  const ClientOutgoingNumbersSetting.preset()
+      : this(
+          const ClientAvailableOutgoingNumbers(
+            numbers: [],
+          ),
+        );
+
+  @override
+  final bool isPii = true;
+
+  @override
+  ClientOutgoingNumbersSetting copyWith({
+    ClientAvailableOutgoingNumbers? value,
+  }) =>
+      ClientOutgoingNumbersSetting(value ?? this.value);
 }
 
 extension SettingsByType on Iterable<Setting> {

@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../dependency_locator.dart';
 import '../../../../../domain/repositories/storage.dart';
+import '../../../../../domain/usecases/get_client_outgoing_numbers.dart';
 import '../../../../../domain/usecases/get_is_logged_in_somewhere_else.dart';
 import '../../../../../domain/usecases/get_is_voip_allowed.dart';
 import '../../../../../domain/usecases/get_latest_availability.dart';
@@ -29,6 +30,7 @@ class UserDataRefresherCubit extends Cubit<UserDataRefresherState>
   final _logout = LogoutUseCase();
   final _storageRepository = dependencyLocator<StorageRepository>();
   final _getServerConfig = GetServerConfigUseCase();
+  final _getClientOutgoingNumbers = GetClientOutgoingNumbersUseCase();
   final _getLatestVoipgridPermissions = GetLatestVoipgridPermissions();
 
   UserDataRefresherCubit() : super(const NotRefreshing());
@@ -52,6 +54,7 @@ class UserDataRefresherCubit extends Cubit<UserDataRefresherState>
     await _getLatestAvailability();
     await _getLatestVoipgridPermissions();
     await _getServerConfig(latest: true);
+    await _getClientOutgoingNumbers();
 
     if (await _isVoipAllowed()) {
       await _getVoipConfig(latest: true);

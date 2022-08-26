@@ -64,7 +64,6 @@ class SettingTile extends StatelessWidget {
   static Widget dnd(
     DndSetting setting, {
     required UserAvailabilityType userAvailabilityType,
-    required Function() showHelp,
   }) {
     return Builder(
       builder: (context) {
@@ -97,22 +96,6 @@ class SettingTile extends StatelessWidget {
           context.msg.main.settings.list.accountInfo.username.description,
         ),
         child: _StringValue(systemUser.email),
-      );
-    });
-  }
-
-  static Widget associatedNumber(BusinessNumberSetting businessNumberSetting) {
-    return Builder(builder: (context) {
-      return _userInformation(
-        description: Text(
-          context.msg.main.settings.list.accountInfo.businessNumber.description,
-        ),
-        child: businessNumberSetting.isSuppressed
-            ? _StringValue(
-                context.msg.main.settings.list.accountInfo.businessNumber
-                    .suppressed,
-              )
-            : _StringSettingValue(businessNumberSetting),
       );
     });
   }
@@ -347,13 +330,11 @@ class SettingTile extends StatelessWidget {
 
   static Widget availability(
     AvailabilitySetting setting, {
-    Key? key,
     required SystemUser systemUser,
   }) {
     final availability = setting.value!;
 
     return Builder(
-      key: key,
       builder: (context) {
         void openAddAvailabilityWebView() {
           WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -484,6 +465,71 @@ class SettingTile extends StatelessWidget {
       ],
     );
   }
+
+  static Widget outgoingNumber(
+    ClientOutgoingNumbersSetting clientOutgoingNumbersSetting,
+    OutgoingNumberSetting setting, {
+    required SystemUser systemUser,
+  }) {
+    final availableOutgoingNumbers = clientOutgoingNumbersSetting.value.numbers;
+
+    return Builder(
+      builder: (context) {
+        return SettingTile(
+          description: Text(
+            context
+                .msg.main.settings.list.accountInfo.businessNumber.description,
+          ),
+          childFillWidth: true,
+          child: _EditableSettingField(
+            unlocked: Expanded(
+              child: _MultipleChoiceSettingValue<OutgoingNumberSetting>(
+                value: setting,
+                padding: const EdgeInsets.only(
+                  bottom: 8,
+                  right: 8,
+                ),
+                onChanged: (setting) =>
+                    context.read<SettingsCubit>().changeSetting(setting),
+                isExpanded: false,
+                items: [
+                  DropdownMenuItem<OutgoingNumberSetting>(
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        context.msg.main.settings.list.accountInfo
+                            .businessNumber.suppressed,
+                      ),
+                    ),
+                    value: OutgoingNumberSetting.suppressed(),
+                  ),
+                  ...availableOutgoingNumbers.map(
+                    (number) => DropdownMenuItem<OutgoingNumberSetting>(
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(number),
+                      ),
+                      value: OutgoingNumberSetting(number),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            locked: setting.isSuppressed
+                ? _StringValue(
+                    context.msg.main.settings.list.accountInfo.businessNumber
+                        .suppressed,
+                    bold: false,
+                  )
+                : _StringSettingValue(
+                    setting,
+                    bold: false,
+                  ),
+          ),
+        );
+      },
+    );
+  }
 }
 
 typedef ValueChangedWithContext<T> = void Function(BuildContext, T);
@@ -515,11 +561,14 @@ class _BoolSettingValue extends StatelessWidget {
 
 class _StringValue extends StatelessWidget {
   final String value;
+  final bool bold;
 
   const _StringValue(
     this.value, {
+    bool? bold,
     Key? key,
-  }) : super(key: key);
+  })  : bold = bold ?? true,
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -527,7 +576,7 @@ class _StringValue extends StatelessWidget {
       value,
       style: TextStyle(
         fontSize: 16,
-        fontWeight: !context.isIOS ? FontWeight.bold : null,
+        fontWeight: bold ? FontWeight.bold : null,
       ),
     );
   }
@@ -535,9 +584,11 @@ class _StringValue extends StatelessWidget {
 
 class _StringSettingValue extends StatelessWidget {
   final Setting<String> setting;
+  final bool? bold;
 
   const _StringSettingValue(
     this.setting, {
+    this.bold,
     Key? key,
   }) : super(key: key);
 
@@ -545,6 +596,44 @@ class _StringSettingValue extends StatelessWidget {
   Widget build(BuildContext context) {
     return _StringValue(
       setting.value,
+      bold: bold,
+    );
+  }
+}
+
+class _EditableSettingField extends StatefulWidget {
+  final Widget unlocked;
+  final Widget locked;
+
+  const _EditableSettingField({
+    required this.unlocked,
+    required this.locked,
+  }) : super();
+
+  @override
+  _EditableSettingFieldState createState() => _EditableSettingFieldState();
+}
+
+class _EditableSettingFieldState extends State<_EditableSettingField> {
+  bool _editing = false;
+
+  void _toggleEditing() {
+    setState(() {
+      _editing = !_editing;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        _editing ? widget.unlocked : widget.locked,
+        IconButton(
+          onPressed: _toggleEditing,
+          icon: const Icon(VialerSans.edit),
+        ),
+      ],
     );
   }
 }
@@ -630,6 +719,7 @@ class _MultipleChoiceSettingValue<T> extends StatelessWidget {
   final List<DropdownMenuItem<T>> items;
   final bool isExpanded;
   final ValueChanged<T> onChanged;
+  final EdgeInsets padding;
 
   const _MultipleChoiceSettingValue({
     Key? key,
@@ -637,12 +727,14 @@ class _MultipleChoiceSettingValue<T> extends StatelessWidget {
     required this.items,
     this.isExpanded = false,
     required this.onChanged,
-  }) : super(key: key);
+    EdgeInsets? padding,
+  })  : padding = padding ?? const EdgeInsets.only(right: 16),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(right: 16),
+      padding: padding,
       child: InputDecorator(
         decoration: InputDecoration(
           border:
@@ -650,7 +742,8 @@ class _MultipleChoiceSettingValue<T> extends StatelessWidget {
         ),
         child: DropdownButtonHideUnderline(
           child: DropdownButton<T>(
-            value: value,
+            value:
+                items.map((item) => item.value).contains(value) ? value : null,
             items: items,
             isExpanded: isExpanded,
             onChanged: (value) => onChanged(value!),
