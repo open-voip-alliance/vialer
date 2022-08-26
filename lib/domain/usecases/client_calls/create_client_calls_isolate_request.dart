@@ -1,21 +1,22 @@
 import 'package:dartx/dartx.dart';
 
+import '../../entities/setting.dart';
 import '../../entities/system_user.dart';
 import '../../repositories/database/client_calls.dart';
 import '../../use_case.dart';
-import '../get_latest_availability.dart';
+import '../get_setting.dart';
 import '../get_user.dart';
 import '../get_voipgrid_base_url.dart';
 
 class CreateClientCallsIsolateRequestUseCase extends UseCase {
   final _getUser = GetUserUseCase();
   final _getBaseUrl = GetVoipgridBaseUrlUseCase();
-  late final _getLatestUserAvailability = GetLatestAvailabilityUseCase();
+  late final _getSetting = GetSettingUseCase<AvailabilitySetting>();
 
   Future<List<int>> get _usersPhoneAccounts async =>
-      _getLatestUserAvailability().then(
+      _getSetting().then(
         (availability) =>
-            availability?.phoneAccounts
+            availability.value?.phoneAccounts
                 .filter((phoneAccount) => phoneAccount.id != null)
                 .map((phoneAccount) => phoneAccount.id!)
                 .toList() ??

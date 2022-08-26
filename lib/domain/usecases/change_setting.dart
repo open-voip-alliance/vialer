@@ -11,7 +11,6 @@ import '../repositories/storage.dart';
 import '../use_case.dart';
 import 'change_availability.dart';
 import 'change_mobile_number.dart';
-import 'client_calls/purge_local_call_records.dart';
 import 'disable_remote_logging.dart';
 import 'enable_remote_logging.dart';
 import 'get_mobile_number.dart';
@@ -41,7 +40,6 @@ class ChangeSettingUseCase extends UseCase with Loggable {
   final _changeAvailability = ChangeAvailabilityUseCase();
   final _incrementAppRatingActionCount =
       IncrementAppRatingSurveyActionCountUseCase();
-  final _purgeLocalCallRecords = PurgeLocalCallRecords();
 
   Future<void> call({required Setting setting, bool remote = true}) async {
     if (setting is AvailabilitySetting) {
@@ -114,10 +112,6 @@ class ChangeSettingUseCase extends UseCase with Loggable {
         _registerToVoipMiddleware();
       }
     } else if (setting is ShowClientCallsSetting) {
-      if (setting.value == false) {
-        _purgeLocalCallRecords(reason: PurgeReason.disabled);
-      }
-
       _eventBus.broadcast(ShowClientCallsSettingChanged(setting.value));
     }
 

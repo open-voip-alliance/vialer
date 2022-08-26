@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
 
@@ -20,6 +22,8 @@ class RecentCallsList extends StatefulWidget {
   final void Function(String) onCallPressed;
   final void Function(String) onCopyPressed;
   final void Function() loadMoreCalls;
+  final void Function() automaticallyPopulateCalls;
+  final void Function() performBackgroundImport;
 
   final ManualRefresher manualRefresher;
 
@@ -34,6 +38,8 @@ class RecentCallsList extends StatefulWidget {
     required this.onCopyPressed,
     required this.loadMoreCalls,
     required this.manualRefresher,
+    required this.automaticallyPopulateCalls,
+    required this.performBackgroundImport,
   }) : super(key: key);
 
   @override
@@ -43,11 +49,24 @@ class RecentCallsList extends StatefulWidget {
 class _RecentCallsListState extends State<RecentCallsList>
     with WidgetsBindingObserver, WidgetsBindingObserverRegistrar {
   final _scrollController = ScrollController();
+  Timer? _localRefreshTimer;
+  Timer? _backgroundImportTimer;
+
+  static const _localRefreshInterval = Duration(seconds: 1);
+  static const _backgroundImportInterval = Duration(seconds: 15);
 
   @override
   void initState() {
     super.initState();
     _scrollController.addListener(_handleScrolling);
+    _localRefreshTimer = Timer.periodic(
+      _localRefreshInterval,
+      (_) => widget.automaticallyPopulateCalls()
+    );
+    _backgroundImportTimer = Timer.periodic(
+      _backgroundImportInterval,
+      (_) => widget.performBackgroundImport(),
+    );
   }
 
   @override
@@ -56,13 +75,17 @@ class _RecentCallsListState extends State<RecentCallsList>
 
     if (state == AppLifecycleState.resumed) {
       widget.manualRefresher.refresh();
+      widget.performBackgroundImport();
     }
   }
 
   @override
   void dispose() {
     _scrollController.dispose();
-
+    _localRefreshTimer?.cancel();
+    _localRefreshTimer = null;
+    _backgroundImportTimer?.cancel();
+    _backgroundImportTimer = null;
     super.dispose();
   }
 
@@ -148,7 +171,7 @@ class ManualRefresher {
 
   /// This will refresh the items in the list
   /// (calling [RecentCallList.onRefresh]), and also show the refresh indicator.
-  Future<void> refresh() => _key.currentState!.show();
+  Future<void>? refresh() => _key.currentState?.show();
 }
 
 extension on List<CallRecord> {

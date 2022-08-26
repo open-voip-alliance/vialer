@@ -7,7 +7,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../domain/entities/call_record.dart';
 import '../../../../domain/entities/client_call_record.dart';
-import '../../../../domain/usecases/client_calls/import_historic_client_call_records.dart';
 import '../../../../domain/usecases/client_calls/import_new_client_calls.dart';
 import '../../../../domain/usecases/get_recent_calls.dart';
 import '../../../../domain/usecases/get_recent_client_calls.dart';
@@ -59,6 +58,16 @@ class RecentCallsCubit extends Cubit<RecentCallsState> {
     }
   }
 
+  Future<void> automaticallyPopulateCalls() async {
+    // Personal calls require API calls so we will never automatically populate
+    // them.
+  }
+
+  Future<void> performBackgroundImport() async {
+    // Personal calls require API calls so there is never any background
+    // import.
+  }
+
   Future<void> _loadRecentCalls({required int page}) async {
     final recentCalls = await _fetch(page: page);
     List<CallRecord> currentCalls;
@@ -85,37 +94,49 @@ class RecentCallsCubit extends Cubit<RecentCallsState> {
 class ClientCallsCubit extends RecentCallsCubit {
   final _getRecentClientCalls = GetRecentClientCallsUseCase();
   final _importNewClientCalls = ImportNewClientCallRecordsUseCase();
-  final _importHistoricClientCalls = ImportHistoricClientCallRecordsUseCase();
 
-  bool _firstRun;
+  ClientCallsCubit(CallerCubit caller) : super(caller);
 
-  bool awaitImport = true;
-
-  ClientCallsCubit(
-    CallerCubit caller, {
-    required bool firstRun,
-  })  : _firstRun = firstRun,
-        super(caller);
+  bool _currentlyLoadedOnlyMissedCalls = false;
 
   @override
   Future<List<ClientCallRecord>> _fetch({required int page}) async {
-    final import = _firstRun && page == 1
-        ? _importHistoricClientCalls()
-        : _importNewClientCalls();
-
-    _firstRun = false;
-
-    if (awaitImport) {
-      await import;
-    }
-
-    // awaitImport is reset so that the next run will await import
-    // (unless it's set to false again before fetching).
-    awaitImport = true;
-
     return await _getRecentClientCalls(
       page: page,
       onlyMissedCalls: onlyMissedCalls,
     );
+  }
+
+  @override
+  Future<void> performBackgroundImport() async {
+    _importNewClientCalls();
+  }
+
+  @override
+  Future<void> automaticallyPopulateCalls() async {
+    refreshRecentCalls();
+  }
+
+  @override
+  Future<void> refreshRecentCalls() async {
+    emit(RefreshingRecentCalls(state.callRecords, state.page));
+
+    await _loadRecentCalls(page: 1);
+  }
+
+  @override
+  Future<void> _loadRecentCalls({required int page}) async {
+    final newlyFetchedCalls = await _fetch(page: page);
+    final existingCalls = _currentlyLoadedOnlyMissedCalls == onlyMissedCalls
+        ? state.callRecords.toList()
+        : <CallRecord>[];
+    _currentlyLoadedOnlyMissedCalls = onlyMissedCalls;
+
+    final calls = (existingCalls + newlyFetchedCalls)
+        .distinct()
+        .sortedByDescending((record) => record.date)
+        .toList();
+
+    emit(RecentCallsLoaded(calls, page));
   }
 }
