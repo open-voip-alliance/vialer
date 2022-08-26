@@ -26,7 +26,6 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  final _availabilityTileKey = GlobalKey();
   final _scrollController = ScrollController();
 
   Future<void> _goToFeedbackPage(BuildContext context) async {
@@ -45,14 +44,6 @@ class _SettingsPageState extends State<SettingsPage> {
     }
 
     context.read<SettingsCubit>().refresh();
-  }
-
-  void _scrollToAvailability() {
-    _scrollController.position.ensureVisible(
-      _availabilityTileKey.currentContext!.findRenderObject()!,
-      alignment: 0,
-      duration: const Duration(seconds: 1),
-    );
   }
 
   void _onStateChanged(BuildContext context, SettingsState state) {
@@ -101,7 +92,6 @@ class _SettingsPageState extends State<SettingsPage> {
                     ? SettingTile.availability(
                         settings.get<AvailabilitySetting>(),
                         systemUser: state.systemUser!,
-                        key: _availabilityTileKey,
                       )
                     : null;
 
@@ -123,7 +113,6 @@ class _SettingsPageState extends State<SettingsPage> {
                                 settings.get<DndSetting>(),
                                 userAvailabilityType:
                                     state.userAvailabilityType!,
-                                showHelp: _scrollToAvailability,
                               ),
                             if (availabilityTile != null) availabilityTile,
                             SettingTileCategory.accountInfo(
@@ -133,9 +122,14 @@ class _SettingsPageState extends State<SettingsPage> {
                                   setting: settings.get<MobileNumberSetting>(),
                                   isVoipAllowed: isVoipAllowed,
                                 ),
-                                SettingTile.associatedNumber(
-                                  settings.get<BusinessNumberSetting>(),
-                                ),
+                                if (state.systemUser?.canChangeOutgoingCli ==
+                                    true)
+                                  SettingTile.outgoingNumber(
+                                    settings
+                                        .get<ClientOutgoingNumbersSetting>(),
+                                    settings.get<OutgoingNumberSetting>(),
+                                    systemUser: state.systemUser!,
+                                  ),
                                 if (state.systemUser != null)
                                   SettingTile.username(
                                     state.systemUser!,
