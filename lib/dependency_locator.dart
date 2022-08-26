@@ -20,6 +20,7 @@ import 'domain/repositories/logging.dart';
 import 'domain/repositories/memory_storage_repository.dart';
 import 'domain/repositories/metrics.dart';
 import 'domain/repositories/operating_system_info.dart';
+import 'domain/repositories/outgoing_numbers.dart';
 import 'domain/repositories/permission.dart';
 import 'domain/repositories/recent_call.dart';
 import 'domain/repositories/server_config.dart';
@@ -92,6 +93,12 @@ Future<void> initializeDependencies({bool ui = true}) async {
     ..registerSingleton<MemoryStorageRepository>(MemoryStorageRepository())
     ..registerSingletonWithDependencies<CallThroughRepository>(
       () => CallThroughRepository(
+        dependencyLocator<VoipgridService>(),
+      ),
+      dependsOn: [StorageRepository],
+    )
+    ..registerSingletonWithDependencies<OutgoingNumbersRepository>(
+      () => OutgoingNumbersRepository(
         dependencyLocator<VoipgridService>(),
       ),
       dependsOn: [StorageRepository],

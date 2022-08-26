@@ -9,14 +9,17 @@ import '../repositories/storage.dart';
 import '../use_case.dart';
 import 'change_availability.dart';
 import 'change_mobile_number.dart';
+import 'change_outgoing_number.dart';
 import 'disable_remote_logging.dart';
 import 'enable_remote_logging.dart';
 import 'get_mobile_number.dart';
 import 'get_settings.dart';
+import 'get_user.dart';
 import 'increment_app_rating_survey_action_count.dart';
 import 'refresh_voip.dart';
 import 'register_to_voip_middleware.dart';
 import 'start_voip.dart';
+import 'suppress_outgoing_number.dart';
 import 'unregister_to_voip_middleware.dart';
 
 class ChangeSettingUseCase extends UseCase with Loggable {
@@ -36,6 +39,9 @@ class ChangeSettingUseCase extends UseCase with Loggable {
   final _changeAvailability = ChangeAvailabilityUseCase();
   final _incrementAppRatingActionCount =
       IncrementAppRatingSurveyActionCountUseCase();
+  final _changeOutgoingNumber = ChangeOutgoingNumberUseCase();
+  final _suppressOutgoingNumber = SuppressOutgoingNumberUseCase();
+  final _getUser = GetUserUseCase();
 
   Future<void> call({required Setting setting, bool remote = true}) async {
     if (setting is AvailabilitySetting) {
@@ -78,6 +84,17 @@ class ChangeSettingUseCase extends UseCase with Loggable {
 
       mobileNumber = (await _getMobileNumber(latest: true))!;
       setting = MobileNumberSetting(mobileNumber);
+    }
+
+    if (remote && setting is OutgoingNumberSetting) {
+      if (setting.isSuppressed) {
+        await _suppressOutgoingNumber();
+      } else {
+        await _changeOutgoingNumber(number: setting.value);
+      }
+
+      final user = (await _getUser(latest: true))!;
+      setting = OutgoingNumberSetting(user.outgoingCli ?? '');
     }
 
     final settings = await _getSettings();
