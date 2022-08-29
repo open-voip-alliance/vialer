@@ -19,7 +19,7 @@ dependencies:
   flutter_phone_lib:
     git:
       url: https://github.com/open-voip-alliance/flutter-phone-lib
-      ref: 1c196951b6d86792a888600f0479566a570c007a
+      ref: 0e69203067930addd83320c6c341f6d52fad4c03
 
   flutter_bloc: ^7.0.0
   pedantic: ^1.9.0

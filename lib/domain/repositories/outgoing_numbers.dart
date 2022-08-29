@@ -22,7 +22,7 @@ class OutgoingNumbersRepository with Loggable {
     required String number,
   }) async {
     final response = await _service.updateVoipAccount(
-      user.clientId!,
+      user.clientId!.toString(),
       user.appAccountId!,
       {
         'outgoing_caller_identification': {

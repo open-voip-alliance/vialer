@@ -1,0 +1,2 @@
+- It is now possible to configure your outgoing number, this can be done via Settings.
+- iOS: Fixed a rare bug that caused calls to fail.
