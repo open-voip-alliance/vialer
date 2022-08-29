@@ -1,0 +1,2 @@
+- Het is nu mogelijk je uitgaande nummer te wijzigen via de instellingen.
+- iOS: Een probleem dat in uitzonderlijke gevallen mislukte gesprekken veroorzaakte is opgelost.
