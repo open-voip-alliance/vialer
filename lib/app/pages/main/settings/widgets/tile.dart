@@ -475,57 +475,61 @@ class SettingTile extends StatelessWidget {
 
     return Builder(
       builder: (context) {
+        final unlockedWidget = setting.isSuppressed
+            ? _StringValue(
+                context.msg.main.settings.list.accountInfo.businessNumber
+                    .suppressed,
+                bold: false,
+              )
+            : _StringSettingValue(
+                setting,
+                bold: false,
+              );
+
         return SettingTile(
           description: Text(
             context
                 .msg.main.settings.list.accountInfo.businessNumber.description,
           ),
           childFillWidth: true,
-          child: _EditableSettingField(
-            unlocked: Expanded(
-              child: _MultipleChoiceSettingValue<OutgoingNumberSetting>(
-                value: setting,
-                padding: const EdgeInsets.only(
-                  bottom: 8,
-                  right: 8,
-                ),
-                onChanged: (setting) =>
-                    context.read<SettingsCubit>().changeSetting(setting),
-                isExpanded: false,
-                items: [
-                  DropdownMenuItem<OutgoingNumberSetting>(
-                    child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Text(
-                        context.msg.main.settings.list.accountInfo
-                            .businessNumber.suppressed,
+          child: systemUser.canChangeOutgoingCli
+              ? _EditableSettingField(
+                  unlocked: Expanded(
+                    child: _MultipleChoiceSettingValue<OutgoingNumberSetting>(
+                      value: setting,
+                      padding: const EdgeInsets.only(
+                        bottom: 8,
+                        right: 8,
                       ),
+                      onChanged: (setting) =>
+                          context.read<SettingsCubit>().changeSetting(setting),
+                      isExpanded: false,
+                      items: [
+                        DropdownMenuItem<OutgoingNumberSetting>(
+                          child: FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Text(
+                              context.msg.main.settings.list.accountInfo
+                                  .businessNumber.suppressed,
+                            ),
+                          ),
+                          value: OutgoingNumberSetting.suppressed(),
+                        ),
+                        ...availableOutgoingNumbers.map(
+                          (number) => DropdownMenuItem<OutgoingNumberSetting>(
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Text(number),
+                            ),
+                            value: OutgoingNumberSetting(number),
+                          ),
+                        ),
+                      ],
                     ),
-                    value: OutgoingNumberSetting.suppressed(),
                   ),
-                  ...availableOutgoingNumbers.map(
-                    (number) => DropdownMenuItem<OutgoingNumberSetting>(
-                      child: FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: Text(number),
-                      ),
-                      value: OutgoingNumberSetting(number),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            locked: setting.isSuppressed
-                ? _StringValue(
-                    context.msg.main.settings.list.accountInfo.businessNumber
-                        .suppressed,
-                    bold: false,
-                  )
-                : _StringSettingValue(
-                    setting,
-                    bold: false,
-                  ),
-          ),
+                  locked: unlockedWidget,
+                )
+              : unlockedWidget,
         );
       },
     );

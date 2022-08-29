@@ -122,14 +122,12 @@ class _SettingsPageState extends State<SettingsPage> {
                                   setting: settings.get<MobileNumberSetting>(),
                                   isVoipAllowed: isVoipAllowed,
                                 ),
-                                if (state.systemUser?.canChangeOutgoingCli ==
-                                    true)
-                                  SettingTile.outgoingNumber(
-                                    settings
-                                        .get<ClientOutgoingNumbersSetting>(),
-                                    settings.get<OutgoingNumberSetting>(),
-                                    systemUser: state.systemUser!,
-                                  ),
+                                SettingTile.outgoingNumber(
+                                  settings
+                                      .get<ClientOutgoingNumbersSetting>(),
+                                  settings.get<OutgoingNumberSetting>(),
+                                  systemUser: state.systemUser!,
+                                ),
                                 if (state.systemUser != null)
                                   SettingTile.username(
                                     state.systemUser!,
