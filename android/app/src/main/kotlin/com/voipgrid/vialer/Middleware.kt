@@ -105,6 +105,7 @@ class Middleware(
         val callStartTime = remoteMessage.messageStartTime!!
         val pushSentTime = remoteMessage.pushSentTime
         val pushResponseTime = remoteMessage.secondsSincePushWasSent
+        val responseUrl = remoteMessage.responseUrl!!
 
         log("Middleware Respond: Attempting for call=$callId, correlationId=$correlationId, available=$available, sent at=$pushSentTime, response time=$pushResponseTime")
 
@@ -122,7 +123,7 @@ class Middleware(
         val request = createMiddlewareRequest(
             middlewareCredentials.email,
             middlewareCredentials.loginToken,
-            url = "${baseUrl}/call-response/",
+            url = responseUrl,
         )
             .post(data)
             .build()
@@ -266,6 +267,9 @@ private val RemoteMessage.messageStartTime
 private val RemoteMessage.isCall
     get() = data["type"] == "call"
 
+private val RemoteMessage.responseUrl
+    get() = data["response_api"]
+
 private val RemoteMessage.pushSentTime
     get() = try {
         val startTime = messageStartTime
@@ -290,6 +294,7 @@ private val RemoteMessage.trackingProperties
         "correlation_id" to correlationId,
         "message_start_time" to messageStartTime,
         "push_sent_time" to pushSentTime.toString(),
+        "response_url" to responseUrl,
     )
 
 private fun RemoteMessage.toCurrentCallInfo() = Middleware.CurrentCallInfo(

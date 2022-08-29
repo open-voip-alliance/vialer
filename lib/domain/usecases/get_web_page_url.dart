@@ -67,7 +67,7 @@ class GetWebPageUrlUseCase extends UseCase {
     // All the values from the url within curly brackets will be replaced
     // with the corresponding user information.
     final placeholders = {
-      'client': user.clientId,
+      'client': user.clientId?.toString(),
     };
 
     for (final placeholder in placeholders.entries) {

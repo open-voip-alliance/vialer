@@ -230,6 +230,7 @@ main:
       accountInfo:
         title: "User information"
         businessNumber:
+          title: "Outgoing number"
           suppressed: "Suppressed"
           description: >-
             The outgoing number is displayed on the screen of those you are calling.
@@ -441,9 +442,8 @@ onboarding:
       iUnderstand: "I understand"
     phone:
       title: "Phone permission"
-      description: >-
-        This permission is required to be able to make calls with the
-        app by using the default call app.
+      description(String appName): >-
+        Allows $appName to set up and manage phone calls.
     microphone:
       title: "Microphone permission"
       description(String appName): >-

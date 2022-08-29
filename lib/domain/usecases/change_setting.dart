@@ -9,14 +9,17 @@ import '../repositories/storage.dart';
 import '../use_case.dart';
 import 'change_availability.dart';
 import 'change_mobile_number.dart';
+import 'change_outgoing_number.dart';
 import 'disable_remote_logging.dart';
 import 'enable_remote_logging.dart';
 import 'get_mobile_number.dart';
 import 'get_settings.dart';
+import 'get_user.dart';
 import 'increment_app_rating_survey_action_count.dart';
 import 'refresh_voip.dart';
 import 'register_to_voip_middleware.dart';
 import 'start_voip.dart';
+import 'suppress_outgoing_number.dart';
 import 'unregister_to_voip_middleware.dart';
 
 class ChangeSettingUseCase extends UseCase with Loggable {
@@ -36,6 +39,9 @@ class ChangeSettingUseCase extends UseCase with Loggable {
   final _changeAvailability = ChangeAvailabilityUseCase();
   final _incrementAppRatingActionCount =
       IncrementAppRatingSurveyActionCountUseCase();
+  final _changeOutgoingNumber = ChangeOutgoingNumberUseCase();
+  final _suppressOutgoingNumber = SuppressOutgoingNumberUseCase();
+  final _getUser = GetUserUseCase();
 
   Future<void> call({required Setting setting, bool remote = true}) async {
     if (setting is AvailabilitySetting) {
@@ -80,7 +86,19 @@ class ChangeSettingUseCase extends UseCase with Loggable {
       setting = MobileNumberSetting(mobileNumber);
     }
 
+    if (remote && setting is OutgoingNumberSetting) {
+      if (setting.isSuppressed) {
+        await _suppressOutgoingNumber();
+      } else {
+        await _changeOutgoingNumber(number: setting.value);
+      }
+
+      final user = (await _getUser(latest: true))!;
+      setting = OutgoingNumberSetting(user.outgoingCli ?? '');
+    }
+
     final settings = await _getSettings();
+    final hasSettingValueChanged = _didSettingChange(settings, setting);
 
     final newSettings = List<Setting>.from(settings)
       ..removeWhere((e) => e.runtimeType == setting.runtimeType)
@@ -108,11 +126,27 @@ class ChangeSettingUseCase extends UseCase with Loggable {
       } else {
         _registerToVoipMiddleware();
       }
+    }
 
-      _metricsRepository
-          .track('dnd-status-changed', {'enabled': setting.value});
+    if (hasSettingValueChanged && setting.shouldTrack) {
+      _metricsRepository.track(
+        '${setting.asMetricKeyName}_changed',
+        setting.asMetricProperties,
+      );
     }
 
     _incrementAppRatingActionCount();
   }
+
+  bool _didSettingChange(
+    List<Setting> currentSettings,
+    Setting newSetting,
+  ) =>
+      currentSettings
+          .where(
+            (setting) => setting.runtimeType == newSetting.runtimeType,
+          )
+          .first
+          .value !=
+      newSetting.value;
 }

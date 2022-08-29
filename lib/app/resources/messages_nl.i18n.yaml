@@ -229,6 +229,7 @@ main:
       accountInfo:
         title: "Accountinformatie"
         businessNumber:
+          title: "Uitgaande nummer"
           suppressed: "Onderdrukt"
           description: >-
             Het uitgaande nummer wordt weergegeven op het scherm van degenen die je belt.
@@ -442,8 +443,8 @@ onboarding:
       iUnderstand: "Ik begrijp het"
     phone:
       title: "Toestemming voor telefonie"
-      description: >-
-        Je toestemming is nodig zodat je met de app kunt bellen door gebruik te maken van de standaard telefoon app.
+      description(String appName): >-
+        Hiermee kan $appName gesprekken opzetten en beheren.
     microphone:
       title: "Toestemming voor microfoon"
       description(String appName): >-

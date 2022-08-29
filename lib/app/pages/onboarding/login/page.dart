@@ -95,7 +95,7 @@ class _LoginPageState extends State<LoginPage>
                       AnimatedContainer(
                         curve: _curve,
                         duration: _duration,
-                        height: isKeyboardVisible ? 24 : 48,
+                        height: isKeyboardVisible ? 16 : 48,
                       ),
                       BlocBuilder<ConnectivityCheckerCubit, ConnectivityState>(
                         builder: (context, connectivityState) {

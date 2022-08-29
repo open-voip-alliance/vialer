@@ -80,4 +80,18 @@ abstract class VoipgridService extends ChopperService {
 
   @Get(path: 'v2/vialer/middlewares/')
   Future<Response> getMiddleware();
+
+  @Get(path: 'v2/clients/{clientUuid}/callerid_numbers')
+  Future<Response> getClientBusinessNumbers({
+    @Path() required String clientUuid,
+    @Query('page') int page = 1,
+    @Query('per_page') int perPage = 500,
+  });
+
+  @Patch(path: 'v2/clients/{clientId}/voip_accounts/{voipAccountId}')
+  Future<Response> updateVoipAccount(
+    @Path() String clientId,
+    @Path() String voipAccountId,
+    @Body() Map<String, dynamic> data,
+  );
 }
