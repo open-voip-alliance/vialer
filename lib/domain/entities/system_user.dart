@@ -23,8 +23,8 @@ class SystemUser extends Equatable {
 
   final String? outgoingCli;
 
+  final int? clientId;
   final String? clientUuid;
-  final String? clientId;
   final String? clientName;
 
   String? get appAccountId => appAccountUrl?.pathSegments.lastOrNullWhere(
@@ -66,7 +66,7 @@ class SystemUser extends Equatable {
     String? outgoingCli,
     Uri? clientUrl,
     String? clientUuid,
-    String? clientId,
+    int? clientId,
     String? clientName,
   }) {
     return SystemUser(
