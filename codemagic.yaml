@@ -274,7 +274,7 @@ custom: # Custom properties to make workflows cleaner
     environment: &config_environment
       flutter: 3.0.1
       xcode: latest
-      cocoapods: 1.11.2
+      cocoapods: 1.11.3
   brand_config: # Specific configuration that should be applied to a workflow when building for this brand
     vialer_env_vars: &brand_config_vialer_env_vars
       BRAND: vialer
