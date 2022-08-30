@@ -7,13 +7,16 @@ import '../mappers/item.dart';
 import 'item.dart';
 
 extension ContactMapper on Contact {
-  domain.Contact toDomainEntity() {
+  domain.Contact toDomainEntity({
+    bool shouldLoadAvatar = true,
+  }) {
     return domain.Contact(
       givenName: givenName,
       middleName: middleName,
       familyName: familyName,
       chosenName: displayName,
-      avatar: FastContacts.getContactImage(identifier!),
+      avatar:
+          shouldLoadAvatar ? FastContacts.getContactImage(identifier!) : null,
       phoneNumbers:
           phones?.toDomainEntities().distinct().toList(growable: false) ?? [],
       emails: emails?.toDomainEntities().toList(growable: false) ?? [],
@@ -24,5 +27,12 @@ extension ContactMapper on Contact {
 }
 
 extension ContactIterableMapper on Iterable<Contact> {
-  Iterable<domain.Contact> toDomainEntities() => map((i) => i.toDomainEntity());
+  Iterable<domain.Contact> toDomainEntities({
+    bool shouldLoadAvatar = true,
+  }) =>
+      map(
+        (i) => i.toDomainEntity(
+          shouldLoadAvatar: shouldLoadAvatar,
+        ),
+      );
 }
