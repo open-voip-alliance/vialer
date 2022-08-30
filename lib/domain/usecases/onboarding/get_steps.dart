@@ -20,8 +20,7 @@ class GetOnboardingStepsUseCase extends UseCase {
     if (Platform.isAndroid)
       OnboardingStep.ignoreBatteryOptimizationsPermission:
           Permission.ignoreBatteryOptimizations,
-    if (Platform.isIOS)
-      OnboardingStep.notificationPermission: Permission.notifications,
+    OnboardingStep.notificationPermission: Permission.notifications,
   };
 
   Future<List<OnboardingStep>> call() async => [
