@@ -101,7 +101,7 @@ class _RecentCallsPageState extends State<RecentCallsPage> {
   }
 }
 
-class _Content extends StatelessWidget {
+class _Content extends StatefulWidget {
   final bool showClientCalls;
   final EdgeInsets listPadding;
   final EdgeInsets snackBarPadding;
@@ -117,11 +117,36 @@ class _Content extends StatelessWidget {
   });
 
   @override
+  State<_Content> createState() => _ContentState();
+}
+
+class _ContentState extends State<_Content> with TickerProviderStateMixin {
+  late TabController tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.showClientCalls) {
+      tabController = TabController(
+        initialIndex: 0,
+        length: 2,
+        vsync: this,
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    tabController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final personalCalls = _Calls<RecentCallsCubit>(
-      listPadding: listPadding,
-      snackBarPadding: snackBarPadding,
-      manualRefresher: manualRefresher,
+      listPadding: widget.listPadding,
+      snackBarPadding: widget.snackBarPadding,
+      manualRefresher: widget.manualRefresher,
     );
 
     final content = BlocProvider<RecentCallsCubit>(
@@ -131,7 +156,7 @@ class _Content extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
-          bottom: showClientCalls
+          bottom: widget.showClientCalls
               ? TabBar(
                   labelStyle: const TextStyle(
                     fontWeight: FontWeight.bold,
@@ -162,13 +187,13 @@ class _Content extends StatelessWidget {
           child: Column(
             children: [
               Expanded(
-                child: showClientCalls
+                child: widget.showClientCalls
                     ? TabBarView(
                         children: [
                           _Calls<ClientCallsCubit>(
-                            listPadding: listPadding,
-                            snackBarPadding: snackBarPadding,
-                            manualRefresher: clientManualRefresher,
+                            listPadding: widget.listPadding,
+                            snackBarPadding: widget.snackBarPadding,
+                            manualRefresher: widget.clientManualRefresher,
                           ),
                           personalCalls,
                         ],
@@ -176,8 +201,9 @@ class _Content extends StatelessWidget {
                     : personalCalls,
               ),
               _MissedCallsToggle(
-                showClientCalls: showClientCalls,
-                manualRefresher: manualRefresher,
+                showClientCalls: widget.showClientCalls,
+                manualRefresher: widget.manualRefresher,
+                clientManualRefresher: widget.clientManualRefresher,
               ),
             ],
           ),
@@ -185,12 +211,27 @@ class _Content extends StatelessWidget {
       ),
     );
 
-    if (showClientCalls) {
+    if (widget.showClientCalls) {
       return BlocProvider<ClientCallsCubit>(
         create: (context) => ClientCallsCubit(context.read<CallerCubit>()),
         child: DefaultTabController(
           length: 2,
-          child: content,
+          child: Builder(
+            builder: (context) {
+              final tabController = DefaultTabController.of(context)!;
+              tabController.addListener(
+                () {
+                  // The client calls will periodically refresh, so only manual
+                  // refresh personal call when switching to the second tab.
+                  if (!tabController.indexIsChanging &&
+                      tabController.index == 1) {
+                    widget.manualRefresher.refresh();
+                  }
+                },
+              );
+              return content;
+            },
+          ),
         ),
       );
     } else {
@@ -244,10 +285,12 @@ class _Calls<C extends RecentCallsCubit> extends StatelessWidget {
 class _MissedCallsToggle extends StatefulWidget {
   final bool showClientCalls;
   final ManualRefresher manualRefresher;
+  final ManualRefresher clientManualRefresher;
 
   const _MissedCallsToggle({
     required this.showClientCalls,
     required this.manualRefresher,
+    required this.clientManualRefresher,
   });
 
   @override
@@ -263,6 +306,8 @@ class _MissedCallsToggleState extends State<_MissedCallsToggle> {
     if (widget.showClientCalls) {
       final cubit = context.read<ClientCallsCubit>();
       cubit.onlyMissedCalls = value;
+
+      widget.clientManualRefresher.refresh();
     }
 
     widget.manualRefresher.refresh();
