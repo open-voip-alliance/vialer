@@ -167,11 +167,10 @@ main:
           internal:
             title: "Call between "
             subtitle(String time, String duration): "Internal call at $time - $duration"
-        wasMissed(String time): "You missed a call at $time"
+        wasMissed(String time): "You missed this call at $time"
         inbound(String time, String duration): "You answered at $time - $duration"
         outbound(String time, String duration): "You called at $time - $duration"
-        answeredElsewhere(String time, String duration): >-
-          answered at $time - $duration
+        answeredElsewhere(String time, String duration): "answered at $time - $duration"
         popupMenu:
           copy: "Copy"
           call: *call
@@ -184,8 +183,7 @@ main:
         description: "Your recent calls will show here soon. Please wait a moment."
       empty:
         title: "No call history"
-        description: >-
-          After you made or received your first call, it shows up here.
+        description: "After you made or received your first call, it shows up here."
     clientWideCallsDialog:
       title: "Company-wide call history"
       description: >-
@@ -320,11 +318,11 @@ main:
           description: >-
             This application will no longer be restricted by Android battery optimization, increasing the reliability of incoming calls. It is highly recommended that this is enabled.
         showClientCalls:
-          title: "Show client calls"
+          title: "Add tab with all calls"
           description: >-
-            When enabled, calls made by your colleagues will be shown as the default tab on your recents screen.
+            Adds an 'All' screen on the Recents page that shows all calls in your organization.
           noPermission: >-
-            You do not have permission to use this feature. Please contact your administrator.
+            You don't have the right permission to view all calls.
       version: "Version"
       portalLinks:
         title: "VoIP platform"
