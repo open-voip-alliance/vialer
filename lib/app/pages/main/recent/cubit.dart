@@ -24,6 +24,8 @@ class RecentCallsCubit extends Cubit<RecentCallsState> {
 
   final CallerCubit _caller;
 
+  bool _currentlyLoadedOnlyMissedCalls = false;
+
   RecentCallsCubit(this._caller) : super(const LoadingInitialRecentCalls()) {
     _loadRecentCalls(page: 1);
   }
@@ -69,22 +71,29 @@ class RecentCallsCubit extends Cubit<RecentCallsState> {
   }
 
   Future<void> _loadRecentCalls({required int page}) async {
-    final recentCalls = await _fetch(page: page);
-    List<CallRecord> currentCalls;
+    final newlyFetchedCalls = await _fetch(page: page);
+    final existingCalls = _currentlyLoadedOnlyMissedCalls == onlyMissedCalls
+        ? state.callRecords
+        : <CallRecord>[];
+    _currentlyLoadedOnlyMissedCalls == onlyMissedCalls;
+    List<CallRecord> calls;
 
     if (state is LoadingMoreRecentCalls) {
-      currentCalls = [
-        ...state.callRecords,
-        ...recentCalls,
+      calls = [
+        ...existingCalls,
+        ...newlyFetchedCalls,
       ];
     } else {
-      currentCalls = [
-        ...recentCalls,
-        ...state.callRecords,
+      calls = [
+        ...newlyFetchedCalls,
+        ...existingCalls,
       ];
     }
 
-    emit(RecentCallsLoaded(currentCalls.distinct().toList(), page));
+    calls =
+        calls.distinct().sortedByDescending((record) => record.date).toList();
+
+    emit(RecentCallsLoaded(calls, page));
   }
 
   Future<List<CallRecord>> _fetch({required int page}) async =>
@@ -96,8 +105,6 @@ class ClientCallsCubit extends RecentCallsCubit {
   final _importNewClientCalls = ImportNewClientCallRecordsUseCase();
 
   ClientCallsCubit(CallerCubit caller) : super(caller);
-
-  bool _currentlyLoadedOnlyMissedCalls = false;
 
   @override
   Future<List<ClientCallRecord>> _fetch({required int page}) async {
