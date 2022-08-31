@@ -1,22 +1,28 @@
+import 'dart:io';
+
 import 'package:contacts_service/contacts_service.dart';
 import 'package:dartx/dartx.dart';
-import 'package:fast_contacts/fast_contacts.dart' hide Contact;
 
 import '../../entities/contact.dart' as domain;
+import '../contact.dart';
 import '../mappers/item.dart';
 import 'item.dart';
 
 extension ContactMapper on Contact {
-  domain.Contact toDomainEntity({
-    bool shouldLoadAvatar = true,
-  }) {
+  Future<domain.Contact> toDomainEntity({
+    required Directory avatarCacheDirectory,
+  }) async {
+    final avatarPath = createAvatarPath(
+      directory: avatarCacheDirectory,
+      identifier: identifier!,
+    );
+
     return domain.Contact(
       givenName: givenName,
       middleName: middleName,
       familyName: familyName,
       chosenName: displayName,
-      avatar:
-          shouldLoadAvatar ? FastContacts.getContactImage(identifier!) : null,
+      avatar: identifier != null ? File(avatarPath) : null,
       phoneNumbers:
           phones?.toDomainEntities().distinct().toList(growable: false) ?? [],
       emails: emails?.toDomainEntities().toList(growable: false) ?? [],
@@ -27,12 +33,14 @@ extension ContactMapper on Contact {
 }
 
 extension ContactIterableMapper on Iterable<Contact> {
-  Iterable<domain.Contact> toDomainEntities({
-    bool shouldLoadAvatar = true,
-  }) =>
-      map(
-        (i) => i.toDomainEntity(
-          shouldLoadAvatar: shouldLoadAvatar,
+  Future<Iterable<domain.Contact>> toDomainEntities({
+    required Directory avatarCacheDirectory,
+  }) async =>
+      Future.wait(
+        map(
+          (i) => i.toDomainEntity(
+            avatarCacheDirectory: avatarCacheDirectory,
+          ),
         ),
       );
 }

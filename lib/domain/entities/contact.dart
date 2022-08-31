@@ -1,4 +1,4 @@
-import 'dart:typed_data';
+import 'dart:io';
 
 import '../../app/util/contact.dart';
 import 'item.dart';
@@ -8,7 +8,7 @@ class Contact {
   final String? middleName;
   final String? familyName;
   final String? chosenName;
-  final Future<Uint8List?>? avatar;
+  final File? avatar;
   final List<Item> phoneNumbers;
   final List<Item> emails;
   final String? identifier;
