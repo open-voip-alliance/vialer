@@ -22,7 +22,7 @@ extension ContactMapper on Contact {
       middleName: middleName,
       familyName: familyName,
       chosenName: displayName,
-      avatar: identifier != null ? File(avatarPath) : null,
+      avatarPath: avatarPath,
       phoneNumbers:
           phones?.toDomainEntities().distinct().toList(growable: false) ?? [],
       emails: emails?.toDomainEntities().toList(growable: false) ?? [],

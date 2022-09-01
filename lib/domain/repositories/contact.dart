@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'dart:io';
+import 'dart:isolate';
 
 import 'package:contacts_service/contacts_service.dart' hide Contact;
 import 'package:dartx/dartx.dart';
@@ -10,50 +12,126 @@ import '../entities/contact.dart';
 import 'mappers/contact.dart';
 
 class ContactRepository {
+  var _memoryCache = <Contact>[];
+
   Future<List<Contact>> getContacts({
-    bool onlyWithPhoneNumber = true,
+    bool onlyFromCache = false,
   }) async {
-    final avatarCacheDirectory = await avatarDirectory;
+    if (_memoryCache.isNotEmpty && onlyFromCache) {
+      return _memoryCache;
+    }
 
-    final contacts = await ContactsService.getContacts(
-      withThumbnails: false,
-      photoHighResolution: false,
-    ).then(
-      (contacts) => contacts.toDomainEntities(
-        avatarCacheDirectory: avatarCacheDirectory,
-      ),
-    );
+    final isFirstLoad = !(await _hasItemsInCache);
 
-    _cacheAvatarsLocally(contacts);
+    // If we're only loading from the cache and it's the first load (so there's
+    // no data) then there is nothing to fetch and we can just return an empty
+    // list.
+    if (isFirstLoad && onlyFromCache) return _memoryCache;
 
-    return contacts
-        .filterHasPhoneNumber(applyWhen: onlyWithPhoneNumber)
-        .toList(growable: false);
+    if (!onlyFromCache) {
+      // If this is the first time the user loads contacts we're going to wait
+      // until the cache file has been written to before returning.
+      if (isFirstLoad) {
+        await _cacheContactsLocally();
+      } else {
+        _cacheContactsLocally();
+      }
+    }
+
+    _memoryCache = await _readContactsFromFileCache();
+
+    if (!onlyFromCache) {
+      _cacheAvatarsLocally(_memoryCache);
+    }
+
+    return _memoryCache.toList(growable: false);
   }
 
+  /// Reads the contacts from the file based cache.
+  Future<List<Contact>> _readContactsFromFileCache() async => contactsCacheFile
+      .then((file) => file.readAsString())
+      .then((json) => (jsonDecode(json) as List)
+          .map((e) => Contact.fromJson(e as Map<String, dynamic>))
+          .toList());
+
+  Future<bool> get _hasItemsInCache async {
+    final cacheFile = await contactsCacheFile;
+    final exists = await cacheFile.exists();
+
+    if (!exists) return false;
+
+    final stats = await cacheFile.stat();
+
+    return stats.size > 0;
+  }
+
+  /// Spawns an isolate to import avatars for all known contacts and store
+  /// them in a local directory.
+  ///
+  /// Fetching avatars is very performance intensive which is why this is exists
+  /// and is done off the main-thread.
   Future<void> _cacheAvatarsLocally(
-    Iterable<Contact> domainContacts,
+    List<Contact> domainContacts,
   ) async =>
       FlutterIsolate.spawn(
-        _cacheAvatarsToLocalFiles,
+        _isolateCacheAllAvatars,
         domainContacts
             .filter((element) => element.identifier != null)
             .map((contact) => contact.identifier!)
-            .toList(),
+            .shuffled(),
       );
 
-  Future<Contact?> getContactByPhoneNumber(String number) async {
-    final avatarCacheDirectory = await avatarDirectory;
+  /// Spawns an isolate to read the contacts database, serialize them and store
+  /// them in a local file.
+  ///
+  /// Performance is heavily impacted when users have thousands of contacts
+  /// so this optimizes that.
+  Future<void> _cacheContactsLocally() async {
+    final receivePort = ReceivePort();
 
-    return ContactsService.getContactsForPhone(
-      number,
-      withThumbnails: false,
-      photoHighResolution: false,
-    ).then(
-      (contacts) => contacts.firstOrNull?.toDomainEntity(
-        avatarCacheDirectory: avatarCacheDirectory,
-      ),
+    FlutterIsolate.spawn(
+      _isolateCacheAllContacts,
+      receivePort.sendPort,
     );
+
+    _memoryCache = [];
+
+    return receivePort.first;
+  }
+
+  /// Retrieve a mapping between a phone number and a contact, this allows for
+  /// optimized look-up of contacts.
+  Future<Map<String, Contact>> getContactPhoneNumberMap() async {
+    final contacts = await getContacts(onlyFromCache: true);
+    final map = <String, Contact>{};
+
+    for (final contact in contacts) {
+      for (final item in contact.phoneNumbers) {
+        final phoneNumber = item.value;
+        map[phoneNumber.replaceAll(' ', '')] = contact;
+
+        // Most contacts format numbers with country codes to
+        // e.g. +31 6 4....
+        // So we will replace the first item with a 0 to match with
+        // non-country code phone numbers.
+        final split = item.value.split(' ');
+
+        if (split.length > 1) {
+          split[0] = '0';
+          map[split.join()] = contact;
+        }
+      }
+    }
+
+    return map;
+  }
+
+  /// Clean-up the contacts caches, this must always be performed if we don't
+  /// have contact permissions.
+  Future<void> cleanUp() async {
+    _memoryCache = [];
+    contactsCacheFile.then((file) => file.delete());
+    avatarDirectory.then((dir) => dir.delete(recursive: true));
   }
 }
 
@@ -75,16 +153,35 @@ Future<Directory> get avatarDirectory async {
   return directory;
 }
 
-String createAvatarPath({
-  required Directory directory,
-  required String identifier,
-}) {
-  return '${directory.path}/$identifier.jpg';
+/// Performs an import of all the user's contacts into a local file
+/// in JSON format.
+///
+/// Designed to be run in an ISOLATE.
+Future<void> _isolateCacheAllContacts(SendPort sendPort) async {
+  final avatarCacheDirectory = await avatarDirectory;
+  final cacheFile = await contactsCacheFile;
+
+  final contacts = (await ContactsService.getContacts(
+    withThumbnails: false,
+    photoHighResolution: false,
+  ).then(
+    (contacts) => contacts.toDomainEntities(
+      avatarCacheDirectory: avatarCacheDirectory,
+    ),
+  ))
+      .filterHasPhoneNumber()
+      .toList(growable: false);
+
+  final json = jsonEncode(contacts);
+
+  cacheFile.writeAsString(json, flush: true).then((_) => sendPort.send(null));
 }
 
 /// Iterates through an entire list of contact identifiers and caches them to a
-/// local file. This is for performance reasons while rendering them.
-Future<void> _cacheAvatarsToLocalFiles(List<String> contactIdentifiers) async {
+/// local file.
+///
+/// Designed to be run in an ISOLATE.
+Future<void> _isolateCacheAllAvatars(List<String> contactIdentifiers) async {
   for (final identifier in contactIdentifiers) {
     final file = File(createAvatarPath(
       directory: await avatarDirectory,
@@ -123,4 +220,16 @@ Future<void> _cleanUpUnusedAvatars() async {
       }
     }
   }
+}
+
+Future<File> get contactsCacheFile async {
+  final directory = (await getApplicationDocumentsDirectory()).path;
+  return File('$directory/contacts_cache.json');
+}
+
+String createAvatarPath({
+  required Directory directory,
+  required String identifier,
+}) {
+  return '${directory.path}/$identifier.jpg';
 }

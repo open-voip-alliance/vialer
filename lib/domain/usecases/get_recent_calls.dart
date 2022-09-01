@@ -6,16 +6,16 @@ import '../../dependency_locator.dart';
 import '../entities/call_record.dart';
 import '../entities/call_record_with_contact.dart';
 import '../entities/contact.dart';
+import '../repositories/contact.dart';
 import '../repositories/recent_call.dart';
 import '../use_case.dart';
-import 'get_contact.dart';
 import 'get_user.dart';
 
 class GetRecentCallsUseCase extends UseCase {
   final _recentCallRepository = dependencyLocator<RecentCallRepository>();
+  final _contactsRepository = dependencyLocator<ContactRepository>();
 
   final _getUser = GetUserUseCase();
-  final _getContact = GetContactUseCase();
 
   /// [page] starts at 1.
   Future<List<CallRecordWithContact>> call({
@@ -42,8 +42,10 @@ class GetRecentCallsUseCase extends UseCase {
     final uniqueNumbers =
         callRecords.map((e) => e.numberForContactLookup).distinct();
 
+    final contacts = await _contactsRepository.getContactPhoneNumberMap();
+
     for (var number in uniqueNumbers) {
-      final contact = await _getContact(number: number);
+      final contact = contacts[number];
 
       if (contact != null) {
         foundContacts[number] = contact;
