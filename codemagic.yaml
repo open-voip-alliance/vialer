@@ -375,16 +375,16 @@ custom: # Custom properties to make workflows cleaner
         in_app_update_priority: 3
 
     publish_for_internal_alpha: &publish_for_internal_alpha
-      app_store_connect:
-        api_key: $APP_STORE_CONNECT_PRIVATE_KEY
-        key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
-        issuer_id: $APP_STORE_CONNECT_ISSUER_ID
-        submit_to_testflight: true
-        beta_groups:
-          - Internal Alpha
+#      app_store_connect:
+#        api_key: $APP_STORE_CONNECT_PRIVATE_KEY
+#        key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
+#        issuer_id: $APP_STORE_CONNECT_ISSUER_ID
+#        submit_to_testflight: true
+#        beta_groups:
+#          - Internal Alpha
       google_play:
         credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
-        track: Internal Alpha
+        track: internal
 
 workflows:
   main: &main_workflow
@@ -680,7 +680,7 @@ workflows:
       - *flutter_pub_get
       - *analyze
       - *build_aab
-      - *update_ios_signing_for_current_brand
-      - *build_ipa
+#      - *update_ios_signing_for_current_brand
+#      - *build_ipa
       - *release_to_sentry
     publishing: *publish_for_internal_alpha
