@@ -304,6 +304,10 @@ main:
           title: "Altijd op de achtergrond laten draaien"
           description: >-
             Deze app wordt niet langer beperkt door Android batterij optimalisatie, waardoor de betrouwbaarheid van inkomende gesprekken wordt verhoogd. Het wordt sterk geadviseerd dit in te schakelen.
+        useMobileNumberAsFallback:
+          title: "Gebruik mobiele nummer wanneer er geen VoIP-gesprek opgezet kan worden"
+          description(String mobileNumber): >-
+            Als deze optie aan staat, dan verlopen gesprekken via je mobiele nummer ($mobileNumber) als het niet lukt om verbinding te maken met je VoIP-account. Deze instelling brengt extra kosten met zich mee.
       version: "Versie"
       portalLinks:
         title: "VoIP-platform"

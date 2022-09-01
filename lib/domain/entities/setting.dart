@@ -58,6 +58,7 @@ abstract class Setting<T> {
     AvailabilitySetting.preset(),
     ClientOutgoingNumbersSetting.preset(),
     DndSetting.preset(),
+    UseMobileNumberAsFallbackSetting.preset(),
   ];
 
   /// The setting formatted as properties to submit to metrics, these
@@ -97,7 +98,7 @@ abstract class Setting<T> {
       return ShowDialerConfirmPopupSetting(value as bool);
     } else if (type == (ShowSurveysSetting).toString()) {
       return ShowSurveysSetting(value as bool);
-    // ignore: deprecated_member_use_from_same_package
+      // ignore: deprecated_member_use_from_same_package
     } else if (type == (BusinessNumberSetting).toString() ||
         type == (OutgoingNumberSetting).toString()) {
       return OutgoingNumberSetting(value as String);
@@ -125,7 +126,11 @@ abstract class Setting<T> {
       );
     } else if (type == (DndSetting).toString()) {
       return DndSetting(value as bool);
-    } else {
+    }
+    else if (type == (UseMobileNumberAsFallbackSetting).toString()) {
+      return UseMobileNumberAsFallbackSetting(value as bool);
+    }
+    else {
       assert(false, 'Setting type does not exist: $type');
       return null;
     }
@@ -305,10 +310,24 @@ class ClientOutgoingNumbersSetting
   final bool isPii = true;
 
   @override
+  final bool shouldTrack = false;
+
+  @override
   ClientOutgoingNumbersSetting copyWith({
     ClientAvailableOutgoingNumbers? value,
   }) =>
       ClientOutgoingNumbersSetting(value ?? this.value);
+}
+
+class UseMobileNumberAsFallbackSetting extends Setting<bool> {
+  const UseMobileNumberAsFallbackSetting(bool value)
+      : super(value, mutable: true, external: true);
+
+  const UseMobileNumberAsFallbackSetting.preset() : this(false);
+
+  @override
+  UseMobileNumberAsFallbackSetting copyWith({bool? value}) =>
+      UseMobileNumberAsFallbackSetting(value ?? this.value);
 }
 
 extension SettingsByType on Iterable<Setting> {

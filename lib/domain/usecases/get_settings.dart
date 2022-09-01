@@ -16,6 +16,11 @@ class GetSettingsUseCase extends UseCase {
     final storedSettings = _storageRepository.settings;
 
     return [
+      UseMobileNumberAsFallbackSetting(
+        user?.isMobileNumberFallbackEnabled ?? false,
+      ),
+      OutgoingNumberSetting(user?.outgoingCli ?? ''),
+      MobileNumberSetting(user?.mobileNumber ?? ''),
       ...storedSettings,
       // Add presets for which no stored setting is found.
       ...Setting.presets.where(
@@ -23,8 +28,6 @@ class GetSettingsUseCase extends UseCase {
           (stored) => stored.runtimeType == s.runtimeType,
         ),
       ),
-      OutgoingNumberSetting(user?.outgoingCli ?? ''),
-      MobileNumberSetting(user?.mobileNumber ?? ''),
     ];
   }
 }

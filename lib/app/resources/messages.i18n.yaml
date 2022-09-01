@@ -304,6 +304,10 @@ main:
           title: "Always run in background"
           description: >-
             This application will no longer be restricted by Android battery optimization, increasing the reliability of incoming calls. It is highly recommended that this is enabled.
+        useMobileNumberAsFallback:
+          title: "Call mobile number if incoming VoIP call fails"
+          description(String mobileNumber): >-
+            When enabled, your mobile number ($mobileNumber) and network will be used when an incoming VoIP call is not possible. This will incur additional costs at your expense.
       version: "Version"
       portalLinks:
         title: "VoIP platform"
