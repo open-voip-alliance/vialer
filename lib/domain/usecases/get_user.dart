@@ -14,7 +14,12 @@ class GetUserUseCase extends UseCase {
     }
 
     var user = await _authRepository.getUserUsingStoredCredentials();
-    user = user.copyWith(token: _storageRepository.systemUser?.token);
+
+    user = user.copyWith(
+      token: _storageRepository.systemUser?.token,
+      isMobileNumberFallbackEnabled:
+          await _authRepository.isUserUsingMobileNumberAsFallback(user),
+    );
 
     _storageRepository.systemUser = user;
 

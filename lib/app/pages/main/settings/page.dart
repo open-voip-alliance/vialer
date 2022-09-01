@@ -147,6 +147,11 @@ class _SettingsPageState extends State<SettingsPage> {
                                   SettingTile.useVoip(
                                     settings.get<UseVoipSetting>(),
                                   ),
+                                  SettingTile.useMobileNumberAsFallback(
+                                    state.systemUser!,
+                                    settings.get<
+                                        UseMobileNumberAsFallbackSetting>(),
+                                  ),
                                   if (context.isIOS)
                                     SettingTile.showCallsInNativeRecents(
                                       settings.get<

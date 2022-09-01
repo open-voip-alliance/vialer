@@ -10,6 +10,7 @@ import '../use_case.dart';
 import 'change_availability.dart';
 import 'change_mobile_number.dart';
 import 'change_outgoing_number.dart';
+import 'change_use_mobile_number_as_fallback.dart';
 import 'disable_remote_logging.dart';
 import 'enable_remote_logging.dart';
 import 'get_mobile_number.dart';
@@ -42,6 +43,8 @@ class ChangeSettingUseCase extends UseCase with Loggable {
   final _changeOutgoingNumber = ChangeOutgoingNumberUseCase();
   final _suppressOutgoingNumber = SuppressOutgoingNumberUseCase();
   final _getUser = GetUserUseCase();
+  final _changeUseMobileNumberAsFallback =
+      ChangeUseMobileNumberAsFallbackUseCase();
 
   Future<void> call({required Setting setting, bool remote = true}) async {
     if (setting is AvailabilitySetting) {
@@ -95,6 +98,14 @@ class ChangeSettingUseCase extends UseCase with Loggable {
 
       final user = (await _getUser(latest: true))!;
       setting = OutgoingNumberSetting(user.outgoingCli ?? '');
+    }
+
+    if (remote && setting is UseMobileNumberAsFallbackSetting) {
+      await _changeUseMobileNumberAsFallback(enable: setting.value);
+      final user = await _getUser(latest: true);
+      setting = UseMobileNumberAsFallbackSetting(
+        user?.isMobileNumberFallbackEnabled ?? false,
+      );
     }
 
     final settings = await _getSettings();
