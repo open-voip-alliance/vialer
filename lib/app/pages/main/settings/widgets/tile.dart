@@ -395,6 +395,29 @@ class SettingTile extends StatelessWidget {
     );
   }
 
+  static Widget useMobileNumberAsFallback(
+    SystemUser user,
+    UseMobileNumberAsFallbackSetting setting,
+  ) {
+    return Builder(
+      builder: (context) {
+        return SettingTile(
+          label: Text(
+            context
+                .msg.main.settings.list.calling.useMobileNumberAsFallback.title,
+          ),
+          description: Text(
+            context.msg.main.settings.list.calling.useMobileNumberAsFallback
+                .description(
+              user.mobileNumber ?? '',
+            ),
+          ),
+          child: _BoolSettingValue(setting),
+        );
+      },
+    );
+  }
+
   bool _shouldRenderBorder(BuildContext context) =>
       bordered != null ? bordered! : context.isIOS;
 

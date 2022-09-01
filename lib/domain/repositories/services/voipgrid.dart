@@ -105,6 +105,19 @@ abstract class VoipgridService extends ChopperService {
     @Query('call_date__lt') String? to,
   });
 
+  @Get(path: 'v2/clients/{clientId}/users/{userId}')
+  Future<Response> getUserSettings({
+    @Path() required String clientId,
+    @Path() required String userId,
+  });
+
+  @Patch(path: 'v2/clients/{clientId}/users/{userId}')
+  Future<Response> updateUserSettings({
+    @Path() required String clientId,
+    @Path() required String userId,
+    @Body() required Map<String, dynamic> body,
+  });
+
   @Get(path: 'v2/clients/{clientUuid}/callerid_numbers')
   Future<Response> getClientBusinessNumbers({
     @Path() required String clientUuid,

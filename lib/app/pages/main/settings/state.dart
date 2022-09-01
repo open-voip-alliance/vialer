@@ -48,6 +48,8 @@ class SettingsState extends Equatable {
       buildInfo: buildInfo,
       isVoipAllowed: isVoipAllowed,
       systemUser: systemUser,
+      hasIgnoreBatteryOptimizationsPermission:
+          hasIgnoreBatteryOptimizationsPermission,
     );
   }
 

@@ -1,4 +1,4 @@
-import 'dart:typed_data';
+import 'dart:io';
 
 import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +8,7 @@ class Avatar extends StatelessWidget {
   static const defaultSize = 36.0;
 
   final String? name;
-  final Future<Uint8List?>? image;
+  final File? image;
 
   final Color? foregroundColor;
   final Color? backgroundColor;
@@ -44,12 +44,15 @@ class Avatar extends StatelessWidget {
     }
   }
 
+  Future<bool> get hasImage async =>
+      image != null && image?.existsSync() == true;
+
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Uint8List?>(
-      future: image,
+    return FutureBuilder<bool>(
+      future: hasImage,
       builder: (context, snapshot) {
-        final hasImage = image != null && snapshot.hasData;
+        final hasImage = snapshot.data ?? false;
         final showFallback = this.showFallback ?? name == null && !hasImage;
 
         return Container(
@@ -60,7 +63,7 @@ class Avatar extends StatelessWidget {
             child: CircleAvatar(
               foregroundColor: foregroundColor,
               backgroundColor: backgroundColor,
-              backgroundImage: hasImage ? MemoryImage(snapshot.data!) : null,
+              backgroundImage: hasImage ? FileImage(image!) : null,
               child: showFallback
                   ? _withStyle(fallback)
                   : name != null && !hasImage

@@ -1,9 +1,13 @@
 import 'dart:core';
 
+import 'package:dartx/dartx.dart';
 
 import '../../dependency_locator.dart';
 import '../contact_populator.dart';
+import '../entities/call_record.dart';
 import '../entities/call_record_with_contact.dart';
+import '../entities/contact.dart';
+import '../repositories/contact.dart';
 import '../repositories/recent_call.dart';
 import '../use_case.dart';
 import 'get_user.dart';
