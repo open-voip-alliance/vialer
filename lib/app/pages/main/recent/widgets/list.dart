@@ -60,9 +60,7 @@ class _RecentCallsListState extends State<RecentCallsList>
     super.initState();
     _scrollController.addListener(_handleScrolling);
     _localRefreshTimer = Timer.periodic(
-      _localRefreshInterval,
-      (_) => widget.automaticallyPopulateCalls()
-    );
+        _localRefreshInterval, (_) => widget.automaticallyPopulateCalls());
     _backgroundImportTimer = Timer.periodic(
       _backgroundImportInterval,
       (_) => widget.performBackgroundImport(),
@@ -109,28 +107,31 @@ class _RecentCallsListState extends State<RecentCallsList>
 
   @override
   Widget build(BuildContext context) {
-    return ConditionalPlaceholder(
-      showPlaceholder: widget.callRecords.isEmpty || widget.isLoadingInitial,
-      placeholder: widget.isLoadingInitial
-          ? LoadingIndicator(
-              title: Text(
-                context.msg.main.recent.list.loading.title,
+    return RefreshIndicator(
+      key: widget.manualRefresher._key,
+      onRefresh: widget.onRefresh,
+      color: context.brand.theme.colors.primary,
+      child: ConditionalPlaceholder(
+        showPlaceholder: widget.callRecords.isEmpty || widget.isLoadingInitial,
+        placeholder: widget.isLoadingInitial
+            ? LoadingIndicator(
+                title: Text(
+                  context.msg.main.recent.list.loading.title,
+                ),
+                description: Text(
+                  context.msg.main.recent.list.loading.description,
+                ),
+              )
+            : SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: Warning(
+                  icon: const Icon(VialerSans.missedCall),
+                  title: Text(context.msg.main.recent.list.empty.title),
+                  description: Text(
+                    context.msg.main.recent.list.empty.description,
+                  ),
+                ),
               ),
-              description: Text(
-                context.msg.main.recent.list.loading.description,
-              ),
-            )
-          : Warning(
-              icon: const Icon(VialerSans.missedCall),
-              title: Text(context.msg.main.recent.list.empty.title),
-              description: Text(
-                context.msg.main.recent.list.empty.description,
-              ),
-            ),
-      child: RefreshIndicator(
-        key: widget.manualRefresher._key,
-        onRefresh: widget.onRefresh,
-        color: context.brand.theme.colors.primary,
         child: ListView.builder(
           physics: const AlwaysScrollableScrollPhysics(),
           controller: _scrollController,
