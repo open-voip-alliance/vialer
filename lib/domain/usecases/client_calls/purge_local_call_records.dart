@@ -15,13 +15,13 @@ class PurgeLocalCallRecords extends UseCase with Loggable {
   Future<void> call({
     required PurgeReason reason,
   }) async {
-    logger.info(
-      'Deleting all locally stored client calls due to ${reason.name}',
-    );
-
     final amountDeleted = await _clientCallsRepository.deleteAll();
 
-    logger.info('Removed $amountDeleted local client calls.');
+    if (amountDeleted <= 0) return;
+
+    logger.info(
+      'Removed $amountDeleted local client calls because  ${reason.name}',
+    );
 
     _metricsRepository.track('client-calls-purged', {
       'amount': amountDeleted,

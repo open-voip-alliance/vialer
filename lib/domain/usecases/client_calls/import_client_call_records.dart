@@ -12,7 +12,6 @@ import '../get_setting.dart';
 import 'create_client_calls_isolate_request.dart';
 import 'import_historic_client_call_records.dart';
 import 'import_new_client_calls.dart';
-import 'purge_local_call_records.dart';
 
 /// This is a generic use case that enables you to import client calls between
 /// any date range.
@@ -20,11 +19,12 @@ import 'purge_local_call_records.dart';
 /// You should use [ImportHistoricClientCallRecordsUseCase]
 /// or [ImportNewClientCallRecordsUseCase] in almost all situations.
 class ImportClientCallsUseCase with Loggable {
-  final _purgeLocalCallRecords = PurgeLocalCallRecords();
   late final _getClientCallSetting =
       GetSettingUseCase<ShowClientCallsSetting>();
   final _createClientCallsIsolateRequest =
       CreateClientCallsIsolateRequestUseCase();
+
+  static var _isIsolateRunning = false;
 
   Future<bool> get _shouldImport async =>
       _getClientCallSetting().then((setting) => setting.value);
@@ -45,13 +45,27 @@ class ImportClientCallsUseCase with Loggable {
       to: to.toUtc(),
     );
 
-    // This is a heavy task so we are starting it in a separate isolate.
-    await compute(
+    final request = await _createClientCallsIsolateRequest(
+      dateRangesToQuery: dateRangesToQuery,
+    );
+
+    if (_isIsolateRunning) {
+      logger.info('Not spawning isolate as one is already running.');
+      return;
+    }
+
+    _isIsolateRunning = true;
+
+    compute(
       _performImport,
-      await _createClientCallsIsolateRequest(
-        dateRangesToQuery: dateRangesToQuery,
-      ),
-    ).catchError(_handleError);
+      request,
+    ).onError((error, stackTrace) {
+      _isIsolateRunning = false;
+      logger.warning('Client calls import isolate exited with error: $error');
+    }).whenComplete(() {
+      _isIsolateRunning = false;
+      logger.info('Client calls import isolate has completed');
+    });
   }
 
   /// Iterates through the date range given and creates a map of from and to
@@ -78,30 +92,6 @@ class ImportClientCallsUseCase with Loggable {
     monthsToQuery[to.firstDayOfMonth] = to;
 
     return monthsToQuery;
-  }
-
-  /// Iterates through a list of phone account ids and fetches and imports
-  /// any that are missing from our local database.
-
-  /// It's import that if the user ever loses permissions that we wipe the
-  /// local call records so they are no longer stored on the phone.
-  ///
-  /// If we detect an error from the [RemoteClientCallsRepository] that
-  /// indicates this we will trigger a purge of the local database.
-  void _handleError(dynamic error) {
-    if (error is UserLacksCallRecordsPermission ||
-        error is UserWasUnauthorized) {
-      _purgeLocalCallRecords(
-        reason: error! is UserLacksCallRecordsPermission
-            ? PurgeReason.permissionFailed
-            : PurgeReason.unauthorized,
-      );
-      return;
-    }
-
-    if (error is Exception) {
-      throw error;
-    }
   }
 }
 
@@ -131,7 +121,6 @@ extension on DateTime {
 /// [LocalClientCallsRepository] manually.
 Future<void> _performImport(ClientCallsIsolateRequest request) async {
   initializeTimeZones();
-
   final remoteClientCalls = RemoteClientCallsRepository(
     VoipgridService.createInIsolate(
       user: request.user,
@@ -164,6 +153,8 @@ Future<void> _performImport(ClientCallsIsolateRequest request) async {
   );
 }
 
+/// Iterates through a list of phone account ids and fetches and imports
+/// any that are missing from our local database.
 Future<void> _importPhoneAccountsIfNecessary(
   LocalClientCallsRepository localClientCalls,
   RemoteClientCallsRepository remoteClientCalls,
