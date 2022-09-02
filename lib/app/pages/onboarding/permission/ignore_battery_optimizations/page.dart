@@ -17,8 +17,8 @@ class IgnoreBatteryOptimizationsPermissionPage extends StatelessWidget {
         context.msg.onboarding.permission.ignoreBatteryOptimizations.title,
       ),
       description: Text(
-        context
-            .msg.onboarding.permission.ignoreBatteryOptimizations.description,
+        context.msg.onboarding.permission.ignoreBatteryOptimizations
+            .description(context.brand.appName),
       ),
     );
   }
