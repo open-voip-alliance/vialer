@@ -487,11 +487,11 @@ onboarding:
         If you allow $appName permission, you can also select other Bluetooth devices.
     ignoreBatteryOptimizations:
       title: "Battery Optimization"
-      description: >-
+      description(String appName): >-
         Battery optimization may silently shut down the app, block incoming calls and notifications, etc.
 
 
-        This permission will whitelist Vialer to prevent such issues.
+        This permission will whitelist $appName to prevent such issues.
 
 
         We are aware how important battery is and use it very conservatively.

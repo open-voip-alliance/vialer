@@ -489,11 +489,11 @@ onboarding:
         Als je Bluetooth-rechten toestaat aan $appName, kun je ook andere Bluetooth-apparaten selecteren.
     ignoreBatteryOptimizations:
       title: "Batterij-optimalisatie"
-      description: >-
+      description(String appName): >-
         Batterij-optimalisatie kan ervoor zorgen dat de app langzaam wordt gestopt, gesprekken en notificaties worden geblokkeerd etc.
 
 
-        Deze toestemming zorgt ervoor dat Vialer als veilig wordt gemarkeerd, waardoor dit gedrag zich niet voor zal doen.
+        Deze toestemming zorgt ervoor dat $appName als veilig wordt gemarkeerd, waardoor dit gedrag zich niet voor zal doen.
 
 
         We zijn ons ervan bewust hoe belangrijk je batterij is en gaan hier dan ook zuinig mee om.
