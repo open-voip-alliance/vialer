@@ -4,6 +4,7 @@ enum CallFailureReason {
   noConnectivity,
   inCall,
   rejectedByAndroidTelecomFramework,
+  rejectedByCallKit,
   unableToRegister,
   unknown,
 }
