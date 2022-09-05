@@ -124,6 +124,7 @@ main:
         noConnectivity: "Geen internet verbinding. Ben je verbonden met het internet?"
         inCall: "Je bent al aan het bellen."
         rejectedByAndroidTelecomFramework: "Geweigerd door Android."
+        rejectedByCallKit: "Geweigerd door iOS."
         unableToRegister: "Kon geen SIP registratie doen."
       callThrough:
         invalidDestination: "Gekozen nummer is ongeldig."

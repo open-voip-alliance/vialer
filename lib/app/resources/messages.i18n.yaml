@@ -129,6 +129,7 @@ main:
         noConnectivity: "No internet connection. Are you connected to the internet?"
         inCall: "You are already in a call."
         rejectedByAndroidTelecomFramework: "Rejected by Android."
+        rejectedByCallKit: "Rejected by iOS."
         unableToRegister: "Unable to do a SIP registration."
       callThrough:
         invalidDestination: "Dialed number is invalid."
