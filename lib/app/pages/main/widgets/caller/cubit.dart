@@ -641,6 +641,8 @@ extension on fpl.Reason {
       return CallFailureReason.rejectedByAndroidTelecomFramework;
     } else if (this == fpl.Reason.unableToRegister) {
       return CallFailureReason.unableToRegister;
+    } else if (this == fpl.Reason.rejectedByCallKit) {
+      return CallFailureReason.rejectedByCallKit;
     } else {
       throw UnsupportedError('Unsupported fpl.Reason: $this');
     }
