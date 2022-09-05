@@ -15,7 +15,9 @@ class GetContactsUseCase extends UseCase {
   final _permissionRepository = dependencyLocator<PermissionRepository>();
   final _metricsRepository = dependencyLocator<MetricsRepository>();
 
-  Future<List<Contact>> call() async {
+  Future<List<Contact>> call({
+    bool latest = true,
+  }) async {
     final status = await _permissionRepository.getPermissionStatus(
       Permission.contacts,
     );
@@ -25,7 +27,9 @@ class GetContactsUseCase extends UseCase {
       throw NoPermissionException();
     }
 
-    final contacts = await _contactsRepository.getContacts();
+    final contacts = await _contactsRepository.getContacts(
+      onlyFromCache: !latest,
+    );
 
     _metricsRepository.track('contacts-loaded', {
       'amount': contacts.length,

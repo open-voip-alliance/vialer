@@ -3,9 +3,11 @@ import 'dart:io';
 
 import 'package:dartx/dartx.dart';
 import 'package:diacritic/diacritic.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rxdart/rxdart.dart';
 
+import '../../../../../../domain/entities/contact.dart';
 import '../../../../../../domain/entities/permission.dart';
 import '../../../../../../domain/entities/permission_status.dart';
 import '../../../../../../domain/entities/t9_contact.dart';
@@ -48,7 +50,7 @@ class T9ContactsBloc extends Bloc<T9ContactsEvent, T9ContactsState> {
 
     final debounceStream = events
         .where((event) => event is FilterT9Contacts)
-        .debounceTime(const Duration(milliseconds: 200));
+        .debounceTime(const Duration(milliseconds: 500));
 
     // ignore: deprecated_member_use
     return super.transformEvents(
@@ -77,7 +79,7 @@ class T9ContactsBloc extends Bloc<T9ContactsEvent, T9ContactsState> {
       yield LoadingContacts();
     }
 
-    yield ContactsLoaded(await _getContacts(), []);
+    yield ContactsLoaded(await _getContacts(latest: false), []);
   }
 
   Stream<T9ContactsState> _filterContacts(FilterT9Contacts event) async* {
@@ -94,29 +96,13 @@ class T9ContactsBloc extends Bloc<T9ContactsEvent, T9ContactsState> {
         return;
       }
 
-      final regex = _getT9Regex(input);
-
-      // Map each contact with multiple phone numbers to multiple t9 contacts
-      // with a single phone number.
-      final t9Contacts = state.contacts
-          .map(
-            (contact) => contact.phoneNumbers.map(
-              (number) => T9Contact(
-                displayName: contact.displayName,
-                avatarPath: contact.avatarPath,
-                relevantPhoneNumber: number,
-              ),
-            ),
-          )
-          .flatten()
-          // Only keep those whose name or number matches the regex.
-          .where(
-            (contact) =>
-                removeDiacritics(contact.displayName).contains(regex) ||
-                contact.relevantPhoneNumber.value.contains(regex),
-          )
-          .distinct()
-          .toList();
+      final t9Contacts = await compute(
+        _filterContactsByRegularExpression,
+        _FilterByRegularExpressionRequest(
+          contacts: state.contacts,
+          regex: _getT9Regex(input),
+        ),
+      );
 
       yield ContactsLoaded(state.contacts, t9Contacts);
     }
@@ -162,4 +148,43 @@ class T9ContactsBloc extends Bloc<T9ContactsEvent, T9ContactsState> {
 
     return RegExp('(\\b$inputName|$inputPhoneNumber)', caseSensitive: false);
   }
+}
+
+/// Filters the list of contacts by a given T9 search, for a large amount of
+/// contacts this can be computationally heavy so it is designed to be run
+/// in an isolate.
+Future<List<T9Contact>> _filterContactsByRegularExpression(
+  _FilterByRegularExpressionRequest request,
+) async {
+  // Map each contact with multiple phone numbers to multiple t9 contacts
+  // with a single phone number.
+  return request.contacts
+      .map(
+        (contact) => contact.phoneNumbers.map(
+          (number) => T9Contact(
+            displayName: contact.displayName,
+            avatarPath: contact.avatarPath,
+            relevantPhoneNumber: number,
+          ),
+        ),
+      )
+      .flatten()
+      // Only keep those whose name or number matches the regex.
+      .where(
+        (contact) =>
+            removeDiacritics(contact.displayName).contains(request.regex) ||
+            contact.relevantPhoneNumber.value.contains(request.regex),
+      )
+      .distinct()
+      .toList();
+}
+
+class _FilterByRegularExpressionRequest {
+  final List<Contact> contacts;
+  final RegExp regex;
+
+  const _FilterByRegularExpressionRequest({
+    required this.contacts,
+    required this.regex,
+  });
 }
