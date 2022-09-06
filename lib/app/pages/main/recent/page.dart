@@ -170,10 +170,10 @@ class _ContentState extends State<_Content> with TickerProviderStateMixin {
                   indicatorColor: Theme.of(context).primaryColor,
                   indicatorSize: TabBarIndicatorSize.label,
                   tabs: [
-                    Text(context.msg.main.recent.tabs.all.toUpperCase()),
                     Text(
                       context.msg.main.recent.tabs.personal.toUpperCase(),
                     ),
+                    Text(context.msg.main.recent.tabs.all.toUpperCase()),
                   ],
                 )
               : null,
@@ -190,12 +190,12 @@ class _ContentState extends State<_Content> with TickerProviderStateMixin {
                 child: widget.showClientCalls
                     ? TabBarView(
                         children: [
+                          personalCalls,
                           _Calls<ClientCallsCubit>(
                             listPadding: widget.listPadding,
                             snackBarPadding: widget.snackBarPadding,
                             manualRefresher: widget.clientManualRefresher,
                           ),
-                          personalCalls,
                         ],
                       )
                     : personalCalls,
