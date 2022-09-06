@@ -123,8 +123,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                   isVoipAllowed: isVoipAllowed,
                                 ),
                                 SettingTile.outgoingNumber(
-                                  settings
-                                      .get<ClientOutgoingNumbersSetting>(),
+                                  settings.get<ClientOutgoingNumbersSetting>(),
                                   settings.get<OutgoingNumberSetting>(),
                                   systemUser: state.systemUser!,
                                 ),
@@ -147,11 +146,12 @@ class _SettingsPageState extends State<SettingsPage> {
                                   SettingTile.useVoip(
                                     settings.get<UseVoipSetting>(),
                                   ),
-                                  SettingTile.useMobileNumberAsFallback(
-                                    state.systemUser!,
-                                    settings.get<
-                                        UseMobileNumberAsFallbackSetting>(),
-                                  ),
+                                  if (settings.get<UseVoipSetting>().value)
+                                    SettingTile.useMobileNumberAsFallback(
+                                      state.systemUser!,
+                                      settings.get<
+                                          UseMobileNumberAsFallbackSetting>(),
+                                    ),
                                   if (context.isIOS)
                                     SettingTile.showCallsInNativeRecents(
                                       settings.get<

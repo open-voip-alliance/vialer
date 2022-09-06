@@ -158,6 +158,14 @@ class StorageRepository {
   set loginTime(DateTime? value) =>
       _preferences.setOrRemoveDateTime(_loginTimeKey, value);
 
+  static const _lastCallRatingAskedTimeKey = 'last_call_rating_asked_time';
+
+  DateTime? get lastCallRatingAskedTime =>
+      _preferences.getDateTime(_lastCallRatingAskedTimeKey);
+
+  set lastCallRatingAskedTime(DateTime? value) =>
+      _preferences.setOrRemoveDateTime(_lastCallRatingAskedTimeKey, value);
+
   static const _appRatingSurveyActionCountKey =
       'app_rating_survey_action_count';
 
