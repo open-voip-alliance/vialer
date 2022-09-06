@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:dartx/dartx.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_phone_lib/flutter_phone_lib.dart' hide Reason;
 import 'package:flutter_phone_lib/flutter_phone_lib.dart' as fpl;
 
+import '../../../../../dependency_locator.dart';
 import '../../../../../domain/connectivity_type.dart';
 import '../../../../../domain/entities/call_failure_reason.dart';
 import '../../../../../domain/entities/call_problem.dart';
@@ -14,6 +16,7 @@ import '../../../../../domain/entities/exceptions/voip_not_allowed.dart';
 import '../../../../../domain/entities/permission.dart';
 import '../../../../../domain/entities/permission_status.dart';
 import '../../../../../domain/entities/setting.dart';
+import '../../../../../domain/repositories/storage.dart';
 import '../../../../../domain/usecases/answer_voip_call.dart';
 import '../../../../../domain/usecases/call/call.dart';
 import '../../../../../domain/usecases/call/voip/begin_transfer.dart';
@@ -56,6 +59,8 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
 
   final _getShowDialerConfirmPopUpSetting =
       GetSettingUseCase<ShowDialerConfirmPopupSetting>();
+
+  final _storageRepository = dependencyLocator<StorageRepository>();
 
   final _call = CallUseCase();
   final _trackVoipCall = TrackVoipCallUseCase();
@@ -583,6 +588,32 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
 
   void openAppSettings() async {
     await _openAppSettings();
+  }
+
+  /// The minimum duration after a call rating has been submitted before we
+  /// request another.
+  static const _durationBetweenCallRatings = Duration(days: 7);
+
+  /// We will only ask for a call rating on this percentage of calls.
+  static const _percentageChanceOfAskingForCallRating = 15;
+
+  /// Determine whether or not we should prompt the user for a call rating, this
+  /// is partially random with a minimum duration between requests.
+  bool shouldRequestCallRating() {
+    if (Random().nextInt(100) > _percentageChanceOfAskingForCallRating) {
+      return false;
+    }
+
+    final isCallRatingDue =
+        _storageRepository.lastCallRatingAskedTime?.isBefore(
+              DateTime.now().subtract(_durationBetweenCallRatings),
+            ) ??
+            true;
+
+    if (!isCallRatingDue) return false;
+
+    _storageRepository.lastCallRatingAskedTime = DateTime.now();
+    return true;
   }
 }
 

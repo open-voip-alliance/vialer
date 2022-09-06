@@ -385,6 +385,7 @@ custom: # Custom properties to make workflows cleaner
       google_play:
         credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
         track: Internal Alpha
+        in_app_update_priority: 5
 
 workflows:
   main: &main_workflow
