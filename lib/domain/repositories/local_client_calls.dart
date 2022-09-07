@@ -98,7 +98,14 @@ class LocalClientCallsRepository with Loggable {
         ),
       ],
     )
-      ..orderBy([OrderingTerm.desc(db.clientCalls.date)])
+      ..orderBy(
+        [
+          OrderingTerm.desc(db.clientCalls.date),
+          // We order by the id too so we guarantee a static sort order even
+          // for records with the same date.
+          OrderingTerm.desc(db.clientCalls.id),
+        ],
+      )
       ..limit(perPage, offset: (page - 1) * perPage);
 
     if (onlyMissedCalls) {
