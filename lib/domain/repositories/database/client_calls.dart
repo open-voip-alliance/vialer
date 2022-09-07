@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:drift/drift.dart';
@@ -85,25 +84,4 @@ LazyDatabase _openConnectionForIsolate(String path) {
 Future<File> getDatabaseDirectory() async {
   final dbFolder = await getApplicationDocumentsDirectory();
   return File(p.join(dbFolder.path, 'db.sqlite'));
-}
-
-class CallPartyConverter extends TypeConverter<CallParty, String>
-    with JsonTypeConverter<CallParty, String> {
-  const CallPartyConverter();
-  @override
-  CallParty? mapToDart(String? fromDb) {
-    if (fromDb == null) {
-      return null;
-    }
-    return CallParty.fromJson(json.decode(fromDb) as Map<String, dynamic>);
-  }
-
-  @override
-  String? mapToSql(CallParty? value) {
-    if (value == null) {
-      return null;
-    }
-
-    return json.encode(value.toJson());
-  }
 }

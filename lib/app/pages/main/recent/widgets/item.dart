@@ -277,9 +277,6 @@ class _RecentItemSubtitleText extends StatelessWidget {
     switch (callRecord.renderType) {
       case CallRecordRenderType.incomingMissedNoColleagueCall:
       case CallRecordRenderType.incomingMissedColleagueCall:
-        return context.msg.main.recent.list.item.client.incomingMissedCall(
-          _time,
-        );
       case CallRecordRenderType.incomingMissedLoggedInUserCall:
         return context.msg.main.recent.list.item.client.incomingMissedCall(
           _time,
@@ -297,10 +294,6 @@ class _RecentItemSubtitleText extends StatelessWidget {
         );
       case CallRecordRenderType.outgoingNoColleagueCall:
       case CallRecordRenderType.outgoingColleagueCall:
-        return context.msg.main.recent.list.item.client.outgoingCall(
-          _time,
-          _duration,
-        );
       case CallRecordRenderType.outgoingLoggedInUserCall:
         return context.msg.main.recent.list.item.client.outgoingCall(
           _time,

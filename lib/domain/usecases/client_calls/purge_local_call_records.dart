@@ -33,6 +33,5 @@ class PurgeLocalCallRecords extends UseCase with Loggable {
 enum PurgeReason {
   permissionFailed,
   logout,
-  unauthorized,
   disabled,
 }
