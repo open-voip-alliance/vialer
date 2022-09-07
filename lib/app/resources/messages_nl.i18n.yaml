@@ -323,7 +323,6 @@ main:
             Voegt een 'Alle' scherm toe aan de Recent-pagina met alle oproepen binnen je organisatie.
           noPermission: >-
             Je hebt niet de juiste rechten om alle oproepen te zien.
-            Deze app wordt niet langer beperkt door Android batterij optimalisatie, waardoor de betrouwbaarheid van inkomende gesprekken wordt verhoogd. Het wordt sterk geadviseerd dit in te schakelen.
         useMobileNumberAsFallback:
           title: "Gebruik mobiele nummer wanneer er geen VoIP-gesprek opgezet kan worden"
           description(String mobileNumber): >-
