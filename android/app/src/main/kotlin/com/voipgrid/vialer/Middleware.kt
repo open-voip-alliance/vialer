@@ -79,7 +79,7 @@ class Middleware(
                     lastRegisteredToken = null
                 }
 
-                override fun onResponse(call: Call, response: Response) {
+                override fun onResponse(call: Call, response: Response) = response.use {
                     when (response.isSuccessful) {
                         true -> log("Registration successful")
                         false -> {
