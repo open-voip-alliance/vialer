@@ -133,11 +133,10 @@ class _ContentState extends State<_Content> with TickerProviderStateMixin {
     );
 
     tabController.addListener(
-          () {
+      () {
         // The client calls will periodically refresh, so only manual
         // refresh personal call when switching to the second tab.
-        if (!tabController.indexIsChanging &&
-            tabController.index == 1) {
+        if (!tabController.indexIsChanging && tabController.index == 1) {
           widget.manualRefresher.refresh();
         }
       },
@@ -222,14 +221,12 @@ class _ContentState extends State<_Content> with TickerProviderStateMixin {
       ),
     );
 
-    if (widget.showClientCalls) {
-      return BlocProvider<ClientCallsCubit>(
-        create: (context) => ClientCallsCubit(context.read<CallerCubit>()),
-        child: content,
-      );
-    } else {
-      return content;
-    }
+    return widget.showClientCalls
+        ? BlocProvider<ClientCallsCubit>(
+            create: (context) => ClientCallsCubit(context.read<CallerCubit>()),
+            child: content,
+          )
+        : content;
   }
 }
 
