@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../routes.dart';
 import '../../../../util/widgets_binding_observer_registrar.dart';
 
 import 'cubit.dart';
@@ -55,29 +54,13 @@ class _UserDataRefresherState extends State<_UserDataRefresher>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
 
-    final cubit = context.read<UserDataRefresherCubit>();
-
-    if (cubit.state is! LoggedOut && state == AppLifecycleState.resumed) {
-      cubit.refresh();
-    }
-  }
-
-  void _onStateChanged(BuildContext context, UserDataRefresherState state) {
-    if (state is LoggedOut) {
-      Navigator.pushNamedAndRemoveUntil(
-        context,
-        Routes.onboarding,
-        (_) => false,
-      );
+    if (state == AppLifecycleState.resumed) {
+      context.read<UserDataRefresherCubit>().refresh();
     }
   }
 
   @override
-  Widget build(BuildContext context) =>
-      BlocListener<UserDataRefresherCubit, UserDataRefresherState>(
-        listener: _onStateChanged,
-        child: widget.child,
-      );
+  Widget build(BuildContext context) => widget.child;
 
   @override
   void dispose() {

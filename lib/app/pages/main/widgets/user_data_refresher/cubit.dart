@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../dependency_locator.dart';
 import '../../../../../domain/repositories/storage.dart';
 import '../../../../../domain/usecases/get_client_outgoing_numbers.dart';
+import '../../../../../domain/usecases/get_is_authenticated.dart';
 import '../../../../../domain/usecases/get_is_logged_in_somewhere_else.dart';
 import '../../../../../domain/usecases/get_is_voip_allowed.dart';
 import '../../../../../domain/usecases/get_latest_availability.dart';
@@ -20,6 +21,7 @@ export 'state.dart';
 
 class UserDataRefresherCubit extends Cubit<UserDataRefresherState>
     with Loggable {
+  final _isAuthenticated = GetIsAuthenticatedUseCase();
   final _getUser = GetUserUseCase();
   final _getLatestAvailability = GetLatestAvailabilityUseCase();
   final _getVoipConfig = GetVoipConfigUseCase();
@@ -34,6 +36,8 @@ class UserDataRefresherCubit extends Cubit<UserDataRefresherState>
   UserDataRefresherCubit() : super(const NotRefreshing());
 
   Future<void> refresh() async {
+    if (!await _isAuthenticated()) return;
+
     final oldUser = _storageRepository.systemUser;
 
     emit(const Refreshing());
@@ -41,9 +45,6 @@ class UserDataRefresherCubit extends Cubit<UserDataRefresherState>
     if (await _isLoggedInSomewhereElse()) {
       logger.info('Logging out because user is logged in somewhere else');
       await _logout();
-
-      emit(const LoggedOut());
-
       logger.info('Logged out');
       return;
     }
