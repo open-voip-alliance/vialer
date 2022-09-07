@@ -121,19 +121,48 @@ class _Content extends StatefulWidget {
 }
 
 class _ContentState extends State<_Content> with TickerProviderStateMixin {
-  late TabController tabController;
+  TabController? tabController;
 
   @override
   void initState() {
     super.initState();
-    tabController = TabController(
+
+    if (widget.showClientCalls) {
+      _createTabController();
+    }
+  }
+
+  @override
+  void dispose() {
+    tabController?.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(_Content oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (widget.showClientCalls && !oldWidget.showClientCalls) {
+      _createTabController();
+      return;
+    }
+
+    if (!widget.showClientCalls) {
+      tabController?.dispose();
+      tabController = null;
+      return;
+    }
+  }
+
+  void _createTabController() {
+    final tabController = TabController(
       initialIndex: 0,
       length: 2,
       vsync: this,
     );
 
     tabController.addListener(
-      () {
+          () {
         // The client calls will periodically refresh, so only manual
         // refresh personal call when switching to the second tab.
         if (!tabController.indexIsChanging && tabController.index == 1) {
@@ -141,12 +170,8 @@ class _ContentState extends State<_Content> with TickerProviderStateMixin {
         }
       },
     );
-  }
 
-  @override
-  void dispose() {
-    tabController.dispose();
-    super.dispose();
+    this.tabController = tabController;
   }
 
   @override
