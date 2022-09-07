@@ -282,10 +282,6 @@ class _RecentItemSubtitleText extends StatelessWidget {
           _time,
         );
       case CallRecordRenderType.incomingAnsweredNoColleagueCall:
-        return context.msg.main.recent.list.item.client.incomingAnsweredCall(
-          _time,
-          _duration,
-        );
       case CallRecordRenderType.incomingAnsweredColleagueCall:
       case CallRecordRenderType.incomingAnsweredLoggedInUserCall:
         return context.msg.main.recent.list.item.client.incomingAnsweredCall(
