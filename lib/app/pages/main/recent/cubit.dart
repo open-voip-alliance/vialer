@@ -75,7 +75,7 @@ class RecentCallsCubit extends Cubit<RecentCallsState> {
     final existingCalls = _currentlyLoadedOnlyMissedCalls == onlyMissedCalls
         ? state.callRecords
         : <CallRecord>[];
-    _currentlyLoadedOnlyMissedCalls == onlyMissedCalls;
+    _currentlyLoadedOnlyMissedCalls = onlyMissedCalls;
     List<CallRecord> calls;
 
     if (state is LoadingMoreRecentCalls) {

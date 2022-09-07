@@ -15,7 +15,8 @@ class StylizedButton extends StatelessWidget {
   final EdgeInsets? margin;
   final Widget child;
 
-  StylizedButton._(this._type, {
+  StylizedButton._(
+    this._type, {
     Key? key,
     this.colored = false,
     this.margin,
@@ -89,13 +90,9 @@ class StylizedButton extends StatelessWidget {
     if (_type == _Type.raised) {
       textColor = colored
           ? context.brand.theme.colors.raisedColoredButtonText
-          : Theme
-          .of(context)
-          .primaryColorDark;
+          : Theme.of(context).primaryColorDark;
     } else {
-      textColor = colored ? Theme
-          .of(context)
-          .primaryColor : Colors.white;
+      textColor = colored ? Theme.of(context).primaryColor : Colors.white;
     }
 
     final shape = RoundedRectangleBorder(
@@ -131,16 +128,16 @@ class StylizedButton extends StatelessWidget {
               // types
               border: isOutline
                   ? Border.all(
-                color: colored ? color : Colors.white,
-                width: _borderWidth,
-              )
+                      color: colored ? color : Colors.white,
+                      width: _borderWidth,
+                    )
                   : null,
               borderRadius: shape.borderRadius,
               color: disabled
                   ? const Color(0xFFF5F5F5)
                   : isRaised
-                  ? (colored ? color : Colors.white)
-                  : Colors.transparent,
+                      ? (colored ? color : Colors.white)
+                      : Colors.transparent,
             ),
             child: CustomPaint(
               painter: _BottomBorderPainter(
@@ -217,8 +214,7 @@ class _BottomBorderPainter extends CustomPainter {
           Offset(-2, size.height - thickness),
           Offset(size.width + 2, size.height + thickness),
         ),
-        Paint()
-          ..color = color,
+        Paint()..color = color,
       );
     }
   }

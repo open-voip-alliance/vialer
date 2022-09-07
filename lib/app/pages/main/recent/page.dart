@@ -126,13 +126,22 @@ class _ContentState extends State<_Content> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    if (widget.showClientCalls) {
-      tabController = TabController(
-        initialIndex: 0,
-        length: 2,
-        vsync: this,
-      );
-    }
+    tabController = TabController(
+      initialIndex: 0,
+      length: 2,
+      vsync: this,
+    );
+
+    tabController.addListener(
+          () {
+        // The client calls will periodically refresh, so only manual
+        // refresh personal call when switching to the second tab.
+        if (!tabController.indexIsChanging &&
+            tabController.index == 1) {
+          widget.manualRefresher.refresh();
+        }
+      },
+    );
   }
 
   @override
@@ -158,6 +167,7 @@ class _ContentState extends State<_Content> with TickerProviderStateMixin {
           elevation: 0,
           bottom: widget.showClientCalls
               ? TabBar(
+                  controller: tabController,
                   labelStyle: const TextStyle(
                     fontWeight: FontWeight.bold,
                   ),
@@ -189,6 +199,7 @@ class _ContentState extends State<_Content> with TickerProviderStateMixin {
               Expanded(
                 child: widget.showClientCalls
                     ? TabBarView(
+                        controller: tabController,
                         children: [
                           personalCalls,
                           _Calls<ClientCallsCubit>(
@@ -214,25 +225,7 @@ class _ContentState extends State<_Content> with TickerProviderStateMixin {
     if (widget.showClientCalls) {
       return BlocProvider<ClientCallsCubit>(
         create: (context) => ClientCallsCubit(context.read<CallerCubit>()),
-        child: DefaultTabController(
-          length: 2,
-          child: Builder(
-            builder: (context) {
-              final tabController = DefaultTabController.of(context)!;
-              tabController.addListener(
-                () {
-                  // The client calls will periodically refresh, so only manual
-                  // refresh personal call when switching to the second tab.
-                  if (!tabController.indexIsChanging &&
-                      tabController.index == 1) {
-                    widget.manualRefresher.refresh();
-                  }
-                },
-              );
-              return content;
-            },
-          ),
-        ),
+        child: content,
       );
     } else {
       return content;
@@ -304,8 +297,7 @@ class _MissedCallsToggleState extends State<_MissedCallsToggle> {
     context.read<RecentCallsCubit>().onlyMissedCalls = value;
 
     if (widget.showClientCalls) {
-      final cubit = context.read<ClientCallsCubit>();
-      cubit.onlyMissedCalls = value;
+      cubit.onlyMissedCalls = context.read<ClientCallsCubit>();
 
       widget.clientManualRefresher.refresh();
     }

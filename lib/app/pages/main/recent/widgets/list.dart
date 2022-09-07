@@ -52,8 +52,8 @@ class _RecentCallsListState extends State<RecentCallsList>
   Timer? _localRefreshTimer;
   Timer? _backgroundImportTimer;
 
-  static const _localRefreshInterval = Duration(seconds: 1);
-  static const _backgroundImportInterval = Duration(seconds: 15);
+  static const _localRefreshInterval = Duration(seconds: 5);
+  static const _backgroundImportInterval = Duration(seconds: 30);
 
   @override
   void initState() {
@@ -81,9 +81,7 @@ class _RecentCallsListState extends State<RecentCallsList>
   void dispose() {
     _scrollController.dispose();
     _localRefreshTimer?.cancel();
-    _localRefreshTimer = null;
     _backgroundImportTimer?.cancel();
-    _backgroundImportTimer = null;
     super.dispose();
   }
 
