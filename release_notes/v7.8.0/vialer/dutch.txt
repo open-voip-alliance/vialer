@@ -1,0 +1,5 @@
+- Je kan nu gesprekken zien van collega's in Recente gesprekken. Dit moet je aanzetten in Instellingen.
+- We vragen nu veel minder vaak voor een beoordeling na een gesprek.
+- De app zal nu veel sneller en vlotter aanvoelen als je veel contacten hebt.
+- Android: De tekst voor "batterij optimalisatie" bij onboarden is verbeterd.
+- iOS: Een zeldzaam probleem waarbij mogelijk bellen mislukte is opgelost.
