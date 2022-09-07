@@ -297,7 +297,7 @@ class _MissedCallsToggleState extends State<_MissedCallsToggle> {
     context.read<RecentCallsCubit>().onlyMissedCalls = value;
 
     if (widget.showClientCalls) {
-      cubit.onlyMissedCalls = context.read<ClientCallsCubit>();
+      context.read<ClientCallsCubit>().onlyMissedCalls = value;
 
       widget.clientManualRefresher.refresh();
     }
