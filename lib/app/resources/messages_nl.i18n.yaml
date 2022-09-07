@@ -146,34 +146,46 @@ main:
     menu:
       title: "Recent"
     tabs:
-      all: "Alle gesprekken"
-      missed: "Gemiste gesprekken"
+      all: "Alles"
+      personal: "Persoonlijk"
     snackBar:
       copied: "Telefoonnummer gekopieerd"
+    onlyShowMissedCalls: "Alleen gemiste oproepen"
     list:
       headers:
-        today: "vandaag"
-        yesterday: "gisteren"
-      minuteAgo: "1 minuut geleden"
-      minutesAgo(int minutes): "$minutes minuten geleden"
-      hourAgo: "1 uur geleden"
-      hoursAgo(int hours): "$hours uren geleden"
-      popupMenu:
-        copy: "Kopiëren"
-        call: *call
-        from: "Belgesprek van"
+        today: "Vandaag"
+        yesterday: "Gisteren"
+      item:
+        client:
+          currentUser: "Je"
+          incomingMissedCall(String time): "miste dit gesprek om $time"
+          incomingAnsweredCall(String time, String duration): "nam op om $time - $duration"
+          outgoingCall(String time, String duration): "belde om $time - $duration"
+          internal:
+            title: "Gesprek tussen "
+            subtitle(String time, String duration): "Intern gesprek om $time - $duration"
+        wasMissed(String time): "Je miste dit gesprek om $time"
+        inbound(String time, String duration): "Je nam op om $time - $duration"
+        outbound(String time, String duration): "Je belde om $time - $duration"
+        answeredElsewhere(String time, String duration): "nam op om $time - $duration"
+        popupMenu:
+          copy: "Kopiëren"
+          call: *call
+          from: "Gesprek van"
+          answered: "Beantwoord door"
+          internal:
+            title: "Gesprek tussen"
       loading:
         title: "Gesprekken worden opgehaald"
         description: "Je recente gesprekken komen hier zo te staan. Graag nog even geduld."
       empty:
         title: "Geen recente gesprekken"
-        description: >-
-          Nadat je eerste gesprek is afgelopen, wordt deze hier weergegeven.
+        description: "Nadat je eerste gesprek is afgelopen, wordt deze hier weergegeven."
     clientWideCallsDialog:
       title: "Bedrijfsbrede gesprekkenlijst"
       description: >-
-        Recente oproepen van collega’s vind je via de link “Gesprekken” op de Instellingen-pagina.
-
+        Je kan recente oproepen van collega's zien als je bedrijfsbrede gesprekken aanzet
+        op de Instellingen-pagina.
 
   contacts:
     title: &contactsTitle "Contacten"
@@ -304,7 +316,13 @@ main:
         ignoreBatteryOptimizations:
           title: "Altijd op de achtergrond laten draaien"
           description: >-
-            Deze app wordt niet langer beperkt door Android batterij optimalisatie, waardoor de betrouwbaarheid van inkomende gesprekken wordt verhoogd. Het wordt sterk geadviseerd dit in te schakelen.
+            Deze app wordt niet langer beperkt door Android batterij-optimalisatie, waardoor de betrouwbaarheid van inkomende gesprekken wordt verhoogd. Het wordt sterk geadviseerd dit in te schakelen.
+        showClientCalls:
+          title: "Toon tabblad met alle oproepen"
+          description: >-
+            Voegt een 'Alle' scherm toe aan de Recent-pagina met alle oproepen binnen je organisatie.
+          noPermission: >-
+            Je hebt niet de juiste rechten om alle oproepen te zien.
         useMobileNumberAsFallback:
           title: "Gebruik mobiele nummer wanneer er geen VoIP-gesprek opgezet kan worden"
           description(String mobileNumber): >-

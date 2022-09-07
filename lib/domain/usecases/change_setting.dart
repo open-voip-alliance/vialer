@@ -3,6 +3,8 @@ import 'dart:async';
 import '../../app/util/loggable.dart';
 import '../../dependency_locator.dart';
 import '../entities/setting.dart';
+import '../events/event_bus.dart';
+import '../events/show_client_calls_setting_enabled.dart';
 import '../repositories/destination.dart';
 import '../repositories/metrics.dart';
 import '../repositories/storage.dart';
@@ -27,6 +29,8 @@ class ChangeSettingUseCase extends UseCase with Loggable {
   final _storageRepository = dependencyLocator<StorageRepository>();
   final _metricsRepository = dependencyLocator<MetricsRepository>();
   final _destinationRepository = dependencyLocator<DestinationRepository>();
+
+  final _eventBus = dependencyLocator<EventBus>();
 
   final _getSettings = GetSettingsUseCase();
   final _enableRemoteLogging = EnableRemoteLoggingUseCase();
@@ -58,12 +62,10 @@ class ChangeSettingUseCase extends UseCase with Loggable {
         logger.info('Changed ${setting.runtimeType} '
             'to ${setting.value!.selectedDestinationInfo}');
       }
-    } else {
-      logger.info('Set ${setting.runtimeType} to ${setting.value}');
     }
 
     if (setting is RemoteLoggingSetting) {
-      if (setting.value) {
+      if (setting.value == true) {
         await _enableRemoteLogging();
       } else {
         await _disableRemoteLogging();
@@ -137,9 +139,13 @@ class ChangeSettingUseCase extends UseCase with Loggable {
       } else {
         _registerToVoipMiddleware();
       }
+    } else if (setting is ShowClientCallsSetting) {
+      _eventBus.broadcast(ShowClientCallsSettingChanged(setting.value));
     }
 
     if (hasSettingValueChanged && setting.shouldTrack) {
+      logger.info('Set ${setting.runtimeType} to ${setting.value}');
+
       _metricsRepository.track(
         '${setting.asMetricKeyName}_changed',
         setting.asMetricProperties,

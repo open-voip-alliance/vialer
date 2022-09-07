@@ -19,6 +19,7 @@ import '../../../../resources/theme.dart';
 import '../../../../util/conditional_capitalization.dart';
 import '../../../onboarding/widgets/stylized_text_field.dart';
 import '../../../web_view/page.dart';
+import '../../widgets/stylized_switch.dart';
 import '../cubit.dart';
 import 'availability_tile.dart';
 
@@ -218,13 +219,38 @@ class SettingTile extends StatelessWidget {
             context.msg.main.settings.list.calling.ignoreBatteryOptimizations
                 .description,
           ),
-          child: _Switch(
+          child: StylizedSwitch(
             value: hasIgnoreBatteryOptimizationsPermission,
             // It is not possible to disable battery optimization via the app
             // so if we have the permission, this should just be disabled.
             onChanged:
                 !hasIgnoreBatteryOptimizationsPermission ? onChanged : null,
           ),
+        );
+      },
+    );
+  }
+
+  static Widget showClientCalls({
+    required ShowClientCallsSetting setting,
+    required VoipgridPermissionsSetting permissions,
+  }) {
+    return Builder(
+      builder: (context) {
+        return SettingTile(
+          label: Text(
+            context.msg.main.settings.list.calling.showClientCalls.title,
+          ),
+          description: Text(
+            permissions.value.hasClientCallsPermission
+                ? context
+                    .msg.main.settings.list.calling.showClientCalls.description
+                : context.msg.main.settings.list.calling.showClientCalls
+                    .noPermission,
+          ),
+          child: permissions.value.hasClientCallsPermission
+              ? _BoolSettingValue(setting)
+              : const StylizedSwitch(value: false, onChanged: null),
         );
       },
     );
@@ -550,40 +576,13 @@ class _BoolSettingValue extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _Switch(
+    return StylizedSwitch(
       value: setting.value,
       onChanged: (value) => onChanged(
         context,
         setting.copyWith(value: value),
       ),
     );
-  }
-}
-
-class _Switch extends StatelessWidget {
-  final bool value;
-  final ValueChanged<bool>? onChanged;
-
-  const _Switch({
-    Key? key,
-    required this.value,
-    required this.onChanged,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    if (context.isIOS) {
-      return CupertinoSwitch(
-        value: value,
-        onChanged: onChanged,
-      );
-    } else {
-      return Switch(
-        value: value,
-        onChanged: onChanged,
-        activeColor: Theme.of(context).primaryColor,
-      );
-    }
   }
 }
 

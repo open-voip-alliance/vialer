@@ -12,12 +12,14 @@ class StylizedButton extends StatelessWidget {
   final _Type _type;
   final bool colored;
   final VoidCallback? onPressed;
+  final EdgeInsets? margin;
   final Widget child;
 
   StylizedButton._(
     this._type, {
     Key? key,
     this.colored = false,
+    this.margin,
     this.onPressed,
     required this.child,
   }) : super(key: key);
@@ -25,6 +27,7 @@ class StylizedButton extends StatelessWidget {
   factory StylizedButton.raised({
     Key? key,
     bool colored = false,
+    EdgeInsets? margin,
     VoidCallback? onPressed,
     required Widget child,
   }) {
@@ -32,6 +35,7 @@ class StylizedButton extends StatelessWidget {
       _Type.raised,
       key: key,
       colored: colored,
+      margin: margin,
       onPressed: onPressed,
       child: child,
     );
@@ -40,6 +44,7 @@ class StylizedButton extends StatelessWidget {
   factory StylizedButton.outline({
     Key? key,
     bool colored = false,
+    EdgeInsets? margin,
     VoidCallback? onPressed,
     required Widget child,
   }) {
@@ -47,6 +52,7 @@ class StylizedButton extends StatelessWidget {
       _Type.outline,
       key: key,
       colored: colored,
+      margin: margin,
       onPressed: onPressed,
       child: child,
     );
@@ -55,6 +61,7 @@ class StylizedButton extends StatelessWidget {
   factory StylizedButton.flat({
     Key? key,
     bool colored = false,
+    EdgeInsets? margin,
     VoidCallback? onPressed,
     required Widget child,
   }) {
@@ -62,6 +69,7 @@ class StylizedButton extends StatelessWidget {
       _Type.flat,
       key: key,
       colored: colored,
+      margin: margin,
       onPressed: onPressed,
       child: child,
     );
@@ -73,7 +81,12 @@ class StylizedButton extends StatelessWidget {
     final color = context.brand.theme.colors.buttonBackground;
     final shadeColor = context.brand.theme.colors.buttonShade;
 
+    final disabled = onPressed == null;
+
     Color textColor;
+    if (disabled) {
+      textColor = const Color(0xFF555555);
+    }
     if (_type == _Type.raised) {
       textColor = colored
           ? context.brand.theme.colors.raisedColoredButtonText
@@ -81,8 +94,6 @@ class StylizedButton extends StatelessWidget {
     } else {
       textColor = colored ? Theme.of(context).primaryColor : Colors.white;
     }
-
-    final disabled = onPressed == null;
 
     final shape = RoundedRectangleBorder(
       borderRadius: borderRadius,
@@ -93,7 +104,7 @@ class StylizedButton extends StatelessWidget {
     final isFlat = _type == _Type.flat;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
+      padding: margin ?? const EdgeInsets.symmetric(horizontal: 24),
       child: AnimatedContainer(
         duration: _duration,
         curve: _curve,
@@ -150,14 +161,21 @@ class StylizedButton extends StatelessWidget {
                       horizontal: 16 + (!isOutline ? 1.0 : 0.0),
                     ),
                     child: Center(
-                      child: AnimatedDefaultTextStyle(
+                      child: AnimatedTheme(
                         duration: _duration,
                         curve: _curve,
-                        style: TextStyle(
-                          color: disabled ? const Color(0xFF555555) : textColor,
-                          fontWeight: FontWeight.bold,
+                        data: Theme.of(context).copyWith(
+                          iconTheme: IconThemeData(color: textColor),
                         ),
-                        child: child,
+                        child: AnimatedDefaultTextStyle(
+                          duration: _duration,
+                          curve: _curve,
+                          style: TextStyle(
+                            color: textColor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          child: child,
+                        ),
                       ),
                     ),
                   ),

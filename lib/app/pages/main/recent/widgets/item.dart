@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dartx/dartx.dart';
 import 'package:duration/duration.dart';
 import 'package:flutter/material.dart';
@@ -5,19 +7,17 @@ import 'package:intl/intl.dart';
 
 import '../../../../../domain/entities/call_record.dart';
 import '../../../../../domain/entities/call_record_with_contact.dart';
+import '../../../../../domain/entities/client_call_record.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
 import '../../../../util/contact.dart';
 import '../../util/color.dart';
 import '../../widgets/avatar.dart';
-import '../../widgets/contact_list/widgets/group_header.dart';
 import 'popup_menu.dart';
 
-
 class RecentCallItem extends StatelessWidget {
-  final CallRecordWithContact callRecord;
+  final CallRecord callRecord;
 
-  /// Also called when whole item is pressed.
   final VoidCallback onCallPressed;
   final VoidCallback onCopyPressed;
 
@@ -27,6 +27,101 @@ class RecentCallItem extends StatelessWidget {
     required this.onCopyPressed,
     required this.onCallPressed,
   }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return _RecentCallItemContainer(
+      callRecord: callRecord,
+      onCopyPressed: onCopyPressed,
+      onCallPressed: onCallPressed,
+      child: _RecentCallItemBody(
+        title: _RecentCallItemTitle(callRecord),
+        subtitle: _RecentItemSubtitle(callRecord),
+      ),
+    );
+  }
+}
+
+class _RecentCallItemTitle extends StatelessWidget {
+  final CallRecord callRecord;
+
+  const _RecentCallItemTitle(this.callRecord);
+
+  @override
+  Widget build(BuildContext context) {
+    if (callRecord.renderType == CallRecordRenderType.internalCall) {
+      return Row(
+        children: [
+          Text(context.msg.main.recent.list.item.client.internal.title),
+          _WidthAdjustedText(callRecord.caller.number),
+          const Text(' & '),
+          _WidthAdjustedText(callRecord.destination.number),
+        ],
+      );
+    }
+
+    return Text(callRecord.displayLabel);
+  }
+}
+
+class _WidthAdjustedText extends StatelessWidget {
+  final String text;
+  final TextStyle? style;
+
+  const _WidthAdjustedText(
+    this.text, {
+    this.style,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Flexible(
+      child: Text(
+        text,
+        overflow: TextOverflow.ellipsis,
+        style: style,
+      ),
+    );
+  }
+}
+
+class _RecentCallItemBody extends StatelessWidget {
+  final Widget title;
+  final Widget subtitle;
+
+  const _RecentCallItemBody({
+    required this.title,
+    required this.subtitle,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        title,
+        const SizedBox(height: 2),
+        subtitle,
+      ],
+    );
+  }
+}
+
+class _RecentCallItemContainer extends StatelessWidget {
+  final CallRecord callRecord;
+
+  final VoidCallback onCallPressed;
+  final VoidCallback onCopyPressed;
+
+  final Widget child;
+
+  const _RecentCallItemContainer({
+    required this.callRecord,
+    required this.onCopyPressed,
+    required this.onCallPressed,
+    required this.child,
+  });
 
   void _onPopupMenuItemPress(RecentCallMenuAction _action) {
     switch (_action) {
@@ -45,28 +140,24 @@ class RecentCallItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-      leading: Avatar(
+      leading: !callRecord.isClientCall ? Avatar(
         name: callRecord.displayLabel,
         backgroundColor: calculateColorForPhoneNumber(
           context,
           callRecord.thirdPartyNumber,
         ),
-        showFallback: callRecord.contact?.displayName == null,
-        image: callRecord.contact?.avatar,
-        fallback: const Icon(VialerSans.phone, size: 20),
-      ),
+        showFallback: callRecord is CallRecordWithContact
+            ? (callRecord as CallRecordWithContact).contact?.displayName == null
+            : false,
+        image: callRecord is CallRecordWithContact
+            ? (callRecord as CallRecordWithContact).contact?.avatar
+            : null,
+        fallback: const Text('#'),
+      ) : null,
       title: GestureDetector(
         behavior: HitTestBehavior.translucent,
         onTap: onCallPressed,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(callRecord.displayLabel),
-            const SizedBox(height: 2),
-            _RecentItemSubtitle(callRecord),
-          ],
-        ),
+        child: child,
       ),
       // Empty onTap so we still keep the splash behavior
       onTap: () => {},
@@ -83,12 +174,18 @@ class _RecentItemSubtitle extends StatelessWidget {
 
   const _RecentItemSubtitle(this.callRecord, {Key? key}) : super(key: key);
 
-  String get _time => DateFormat.Hm().format(callRecord.date.toLocal());
-
   IconData _icon(BuildContext context) {
-    if (callRecord.answeredElsewhere) return VialerSans.answeredElsewhere;
+    if (callRecord.renderType == CallRecordRenderType.internalCall) {
+      return VialerSans.internalCall;
+    }
 
-    if (callRecord.wasMissed) return VialerSans.missedCall;
+    if (callRecord.isIncomingAndAnsweredElsewhere) {
+      return VialerSans.answeredElsewhereCall;
+    }
+
+    if (callRecord.wasMissed && callRecord.direction == Direction.inbound) {
+      return VialerSans.missedCallRecord;
+    }
 
     return callRecord.isOutbound
         ? VialerSans.outgoingCall
@@ -96,37 +193,19 @@ class _RecentItemSubtitle extends StatelessWidget {
   }
 
   Color _iconColor(BuildContext context) {
-    if (callRecord.wasMissed) return Colors.red;
+    if (callRecord.renderType == CallRecordRenderType.internalCall) {
+      return context.brand.theme.colors.answeredElsewhere;
+    }
 
-    if (callRecord.answeredElsewhere) {
+    if (callRecord.wasMissed && callRecord.direction == Direction.inbound) {
+      return Colors.red;
+    }
+
+    if (callRecord.isIncomingAndAnsweredElsewhere) {
       return context.brand.theme.colors.answeredElsewhere;
     }
 
     return context.brand.theme.colors.green1;
-  }
-
-  String _text(BuildContext context) {
-    if (callRecord.wasMissed) return _time;
-
-    final duration = prettyDuration(
-      callRecord.duration,
-      abbreviated: true,
-      delimiter: ' ',
-      spacer: '',
-    );
-
-    return '$_time, $duration';
-  }
-
-  String _createAnsweredElsewhereText() {
-    if (callRecord.destination.name == null ||
-        callRecord.destination.name!.isEmpty ||
-        callRecord.destination.name == callRecord.destination.number) {
-      return '${callRecord.destination.number}';
-    } else {
-      return '${callRecord.destination.name} '
-          '(${callRecord.destination.number})';
-    }
   }
 
   @override
@@ -138,37 +217,176 @@ class _RecentItemSubtitle extends StatelessWidget {
             Icon(
               _icon(context),
               color: _iconColor(context),
-              size: 12,
+              size: 16,
             ),
             const SizedBox(width: 8),
-            Text(
-              _text(context),
-              style: TextStyle(
-                color: context.brand.theme.colors.grey4,
-                fontSize: 12,
-              ),
-            ),
+            Expanded(child: _RecentItemSubtitleText(callRecord)),
           ],
         ),
-        if (callRecord.answeredElsewhere)
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Text(
-              _createAnsweredElsewhereText(),
-              style: TextStyle(color: context.brand.theme.colors.grey4),
-            ),
-          ),
       ],
     );
   }
 }
 
-extension CallDestinationLabel on CallRecordWithContact {
-  String get displayLabel {
-    final contact = this.contact;
+class _RecentItemSubtitleText extends StatelessWidget {
+  final CallRecord callRecord;
 
-    // We always want to prioritize a local contact in the user's phone.
-    if (contact != null) return contact.displayName;
+  const _RecentItemSubtitleText(this.callRecord, {Key? key}) : super(key: key);
+
+  String get _time => DateFormat.Hm().format(callRecord.date.toLocal());
+
+  String get _duration => prettyDuration(
+        callRecord.duration,
+        abbreviated: true,
+        delimiter: ' ',
+        spacer: '',
+      );
+
+  String _callPartyText(CallParty party) {
+    if (party.name == null ||
+        party.name!.isEmpty ||
+        party.name == party.number) {
+      return '${party.number}';
+    } else {
+      return '${party.name}';
+    }
+  }
+
+  String? _buildClientCallSubjectText(BuildContext context) {
+    switch (callRecord.renderType) {
+      case CallRecordRenderType.incomingMissedNoColleagueCall:
+      case CallRecordRenderType.incomingMissedColleagueCall:
+      case CallRecordRenderType.incomingAnsweredNoColleagueCall:
+      case CallRecordRenderType.incomingAnsweredColleagueCall:
+        return callRecord.destination.label;
+
+      case CallRecordRenderType.outgoingNoColleagueCall:
+      case CallRecordRenderType.outgoingColleagueCall:
+        return callRecord.caller.label;
+
+      case CallRecordRenderType.incomingAnsweredLoggedInUserCall:
+      case CallRecordRenderType.incomingMissedLoggedInUserCall:
+      case CallRecordRenderType.outgoingLoggedInUserCall:
+        return context.msg.main.recent.list.item.client.currentUser;
+      default:
+        return null;
+    }
+  }
+
+  String _buildClientCallText(BuildContext context) {
+    switch (callRecord.renderType) {
+      case CallRecordRenderType.incomingMissedNoColleagueCall:
+      case CallRecordRenderType.incomingMissedColleagueCall:
+      case CallRecordRenderType.incomingMissedLoggedInUserCall:
+        return context.msg.main.recent.list.item.client.incomingMissedCall(
+          _time,
+        );
+      case CallRecordRenderType.incomingAnsweredNoColleagueCall:
+      case CallRecordRenderType.incomingAnsweredColleagueCall:
+      case CallRecordRenderType.incomingAnsweredLoggedInUserCall:
+        return context.msg.main.recent.list.item.client.incomingAnsweredCall(
+          _time,
+          _duration,
+        );
+      case CallRecordRenderType.outgoingNoColleagueCall:
+      case CallRecordRenderType.outgoingColleagueCall:
+      case CallRecordRenderType.outgoingLoggedInUserCall:
+        return context.msg.main.recent.list.item.client.outgoingCall(
+          _time,
+          _duration,
+        );
+      case CallRecordRenderType.internalCall:
+        return context.msg.main.recent.list.item.client.internal.subtitle(
+          _time,
+          _duration,
+        );
+      default:
+        return '';
+    }
+  }
+
+  String _text(BuildContext context) {
+    if (callRecord.isInbound) {
+      if (callRecord.wasMissed) {
+        return context.msg.main.recent.list.item.wasMissed(_time);
+      } else {
+        return context.msg.main.recent.list.item.inbound(_time, _duration);
+      }
+    }
+
+    if (callRecord.isOutbound) {
+      return context.msg.main.recent.list.item.outbound(_time, _duration);
+    }
+
+    return '$_time - $_duration';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final textStyle = TextStyle(
+      color: context.brand.theme.colors.grey4,
+      fontSize: 12,
+    );
+
+    if (callRecord.isClientCall) {
+      final subject = _buildClientCallSubjectText(context);
+
+      return Row(
+        children: [
+          if (subject != null) ...[
+            _WidthAdjustedText(
+              subject,
+              style: textStyle,
+            ),
+            const Text(' '),
+          ],
+          Text(
+            _buildClientCallText(context),
+            style: textStyle,
+          ),
+        ],
+      );
+    }
+
+    if (callRecord.isIncomingAndAnsweredElsewhere) {
+      return Row(
+        children: [
+          Flexible(
+            child: Text(
+              '${_callPartyText(callRecord.destination)} ',
+              overflow: TextOverflow.ellipsis,
+              style: textStyle,
+            ),
+          ),
+          Text(
+            context.msg.main.recent.list.item.answeredElsewhere(
+              _time,
+              _duration,
+            ),
+            overflow: TextOverflow.ellipsis,
+            style: textStyle,
+          )
+        ],
+      );
+    }
+
+    return Text(
+      _text(context),
+      style: textStyle,
+    );
+  }
+}
+
+extension CallDestinationLabel on CallRecord {
+  String get displayLabel {
+    final callRecord = this;
+
+    if (callRecord is CallRecordWithContact) {
+      final contact = callRecord.contact;
+
+      // We always want to prioritize a local contact in the user's phone.
+      if (contact != null) return contact.displayName;
+    }
 
     // When a colleague is calling, they may have a display name setup so
     // we will use that. We don't want to use the display name for other calls
@@ -197,42 +415,128 @@ class RecentCallHeader extends StatelessWidget {
     BuildContext context, {
     required DateTime headerDate,
   }) {
-    final today = DateTime.now().toLocal();
-    final yesterday = today.subtract(
-      const Duration(
-        days: 1,
-      ),
-    );
+    final date = DateFormat.yMd(Platform.localeName).format(headerDate);
+    final prefix = headerDate.isToday
+        ? '${context.msg.main.recent.list.headers.today} - '
+        : headerDate.wasYesterday
+            ? '${context.msg.main.recent.list.headers.yesterday} - '
+            : '';
 
-    if (headerDate.isAtSameDayAs(today)) {
-      return context.msg.main.recent.list.headers.today.toUpperCase();
-    } else if (headerDate.isAtSameDayAs(yesterday)) {
-      return context.msg.main.recent.list.headers.yesterday.toUpperCase();
-    }
-
-    return DateFormat('d MMMM y').format(headerDate);
+    return '$prefix$date';
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (!isFirst) const Divider(height: 1),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16).copyWith(
-            top: isFirst ? 15 : 10,
-          ),
-          child: GroupHeader(
-            group: _text(
-              context,
-              headerDate: date.toLocal(),
-            ),
-            padding: const EdgeInsets.all(0),
-          ),
-        ),
-        child,
-      ],
+    final color = context.brand.theme.colors.grey4;
+
+    final divider = Expanded(
+      child: Divider(height: 1, color: color),
     );
+
+    return Padding(
+      padding: const EdgeInsets.only(top: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                divider,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Text(
+                    _text(context, headerDate: date.toLocal()),
+                    style: TextStyle(
+                      color: color,
+                    ),
+                  ),
+                ),
+                divider,
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+          child,
+        ],
+      ),
+    );
+  }
+}
+
+/// These represents all the different states a call record can be in that
+/// require specific rendering rules.
+///
+/// Any thing that doesn't require specific render should be
+/// [CallRecordRenderType.other].
+///
+/// See [CallRecord.renderType]
+enum CallRecordRenderType {
+  incomingMissedNoColleagueCall,
+  incomingMissedColleagueCall,
+  incomingMissedLoggedInUserCall,
+  incomingAnsweredNoColleagueCall,
+  incomingAnsweredColleagueCall,
+  incomingAnsweredLoggedInUserCall,
+  outgoingNoColleagueCall,
+  outgoingColleagueCall,
+  outgoingLoggedInUserCall,
+  internalCall,
+  other,
+}
+
+extension RenderType on CallRecord {
+  bool get isClientCall => this is ClientCallRecord;
+
+  /// See [CallRecordRenderType]
+  CallRecordRenderType get renderType {
+    final callRecord = this;
+
+    if (callRecord is ClientCallRecord) {
+      return callRecord.renderType;
+    }
+
+    return CallRecordRenderType.other;
+  }
+}
+
+extension ClientRenderType on ClientCallRecord {
+  CallRecordRenderType get renderType {
+    if (callType == CallType.colleague) {
+      return CallRecordRenderType.internalCall;
+    }
+
+    if (direction == Direction.inbound && !answered) {
+      if (didTargetColleague) {
+        return CallRecordRenderType.incomingMissedColleagueCall;
+      } else if (didTargetLoggedInUser) {
+        return CallRecordRenderType.incomingMissedLoggedInUserCall;
+      } else {
+        return CallRecordRenderType.incomingMissedNoColleagueCall;
+      }
+    }
+
+    if (direction == Direction.inbound && answered) {
+      if (didTargetColleague) {
+        return CallRecordRenderType.incomingAnsweredColleagueCall;
+      } else if (didTargetLoggedInUser) {
+        return CallRecordRenderType.incomingAnsweredLoggedInUserCall;
+      } else {
+        return CallRecordRenderType.incomingAnsweredNoColleagueCall;
+      }
+    }
+
+    if (direction == Direction.outbound) {
+      if (wasInitiatedByColleague) {
+        return CallRecordRenderType.outgoingColleagueCall;
+      } else if (wasInitiatedByLoggedInUser) {
+        return CallRecordRenderType.outgoingLoggedInUserCall;
+      } else {
+        return CallRecordRenderType.outgoingNoColleagueCall;
+      }
+    }
+
+    return CallRecordRenderType.other;
   }
 }

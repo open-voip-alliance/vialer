@@ -1,12 +1,12 @@
 PODS:
-  - Alamofire (5.6.1)
-  - Amplitude (8.10.2):
+  - Alamofire (5.6.2)
+  - Amplitude (8.12.0):
     - AnalyticsConnector (~> 1.0.0)
   - Analytics (4.1.6)
   - AnalyticsConnector (1.0.0)
-  - AppsFlyerFramework (6.5.4):
-    - AppsFlyerFramework/Main (= 6.5.4)
-  - AppsFlyerFramework/Main (6.5.4)
+  - AppsFlyerFramework (6.8.1):
+    - AppsFlyerFramework/Main (= 6.8.1)
+  - AppsFlyerFramework/Main (6.8.1)
   - connectivity_plus (0.0.1):
     - Flutter
     - ReachabilitySwift
@@ -27,11 +27,11 @@ PODS:
   - flutter_phone_lib (0.0.1):
     - Flutter
     - iOSPhoneLib
-  - flutter_segment (0.0.1):
+  - flutter_segment (3.12.1):
     - Analytics (= 4.1.6)
     - Flutter
     - Segment-Amplitude (= 3.3.2)
-    - segment-appsflyer-ios (= 6.5.2)
+    - segment-appsflyer-ios (= 6.8.0)
   - in_app_review (0.2.0):
     - Flutter
   - integration_test (0.0.1):
@@ -74,35 +74,35 @@ PODS:
   - Segment-Amplitude (3.3.2):
     - Amplitude (~> 8.3)
     - Analytics
-  - segment-appsflyer-ios (6.5.2):
+  - segment-appsflyer-ios (6.8.0):
     - Analytics
-    - segment-appsflyer-ios/Main (= 6.5.2)
-  - segment-appsflyer-ios/Main (6.5.2):
+    - segment-appsflyer-ios/Main (= 6.8.0)
+  - segment-appsflyer-ios/Main (6.8.0):
     - Analytics
-    - AppsFlyerFramework (~> 6.5.2)
-  - Sentry (7.18.1):
-    - Sentry/Core (= 7.18.1)
-  - Sentry/Core (7.18.1)
+    - AppsFlyerFramework (~> 6.8.0)
+  - Sentry (7.23.0):
+    - Sentry/Core (= 7.23.0)
+  - Sentry/Core (7.23.0)
   - sentry_flutter (0.0.1):
     - Flutter
     - FlutterMacOS
-    - Sentry (~> 7.18.0)
+    - Sentry (~> 7.23.0)
   - shared_preferences_ios (0.0.1):
     - Flutter
-  - sqlite3 (3.39.0):
-    - sqlite3/common (= 3.39.0)
-  - sqlite3/common (3.39.0)
-  - sqlite3/fts5 (3.39.0):
+  - sqlite3 (3.39.2):
+    - sqlite3/common (= 3.39.2)
+  - sqlite3/common (3.39.2)
+  - sqlite3/fts5 (3.39.2):
     - sqlite3/common
-  - sqlite3/json1 (3.39.0):
+  - sqlite3/json1 (3.39.2):
     - sqlite3/common
-  - sqlite3/perf-threadsafe (3.39.0):
+  - sqlite3/perf-threadsafe (3.39.2):
     - sqlite3/common
-  - sqlite3/rtree (3.39.0):
+  - sqlite3/rtree (3.39.2):
     - sqlite3/common
   - sqlite3_flutter_libs (0.0.1):
     - Flutter
-    - sqlite3 (~> 3.39.0)
+    - sqlite3 (~> 3.39.2)
     - sqlite3/fts5
     - sqlite3/json1
     - sqlite3/perf-threadsafe
@@ -221,11 +221,11 @@ CHECKOUT OPTIONS:
     :git: https://github.com/LogentriesCommunity/le_ios.git
 
 SPEC CHECKSUMS:
-  Alamofire: 87bd8c952f9a4454320fce00d9cc3de57bcadaf5
-  Amplitude: de83eb4d886a4905948baa9aad40f8cbb1fa54ee
+  Alamofire: d368e1ff8a298e6dde360e35a3e68e6c610e7204
+  Amplitude: dd7170426ed983dd5aeafa694db40180cff62bd6
   Analytics: eefe524436f904b8bb3f8c8c3425280e43b34efc
   AnalyticsConnector: 4c386d5972ac9da86e22d668564dbbac97558754
-  AppsFlyerFramework: e309a6cab366296bf891dc68b175de1e9a44f86c
+  AppsFlyerFramework: a664325124485223296354b4eec335f5340a6df8
   connectivity_plus: 413a8857dd5d9f1c399a39130850d02fe0feaf7e
   contacts_service: 849e1f84281804c8bfbec1b4c3eedcb23c5d3eca
   device_info: d7d233b645a32c40dfdc212de5cf646ca482f175
@@ -235,7 +235,7 @@ SPEC CHECKSUMS:
   flutter_keyboard_visibility: 0339d06371254c3eb25eeb90ba8d17dca8f9c069
   flutter_libphonenumber: 6a23afdf063b34d1e53e6dbd6c6bc905d18e8e46
   flutter_phone_lib: 060b342f95c63f9e07e1577f76db7e06f349ef8a
-  flutter_segment: 0bdb477aacb471eed01a2c3cc9b6c3ad54afe8c7
+  flutter_segment: 367b7d9f7d74b3875198524ff4d24c381d93e317
   in_app_review: 4a97249f7a2f539a0f294c2d9196b7fe35e49541
   integration_test: a1e7d09bd98eca2fc37aefd79d4f41ad37bdbbe5
   iOSPhoneLib: 8adc5d457bb16a5922b5db0fa847ec69e6c9e543
@@ -251,12 +251,12 @@ SPEC CHECKSUMS:
   PhoneNumberKit: 441e8b26ec88d598e3591de9061eff18f5dd12e8
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
   Segment-Amplitude: 6c1e59c8c278a21029ba7a6a788fcb31b9233a2c
-  segment-appsflyer-ios: 78c65acfd78dd17ed347623f01919c44b0226174
-  Sentry: 2d70348d6247a29702a8317e710c5ba890672df5
-  sentry_flutter: b635e75d735415172e54bf3b72c39ce69882b4ca
+  segment-appsflyer-ios: 9b84c1b7f94bb7a3c5826c9214cd0630b831e208
+  Sentry: a0d4563fa4ddacba31fdcc35daaa8573d87224d6
+  sentry_flutter: 8bde7d0e57a721727fe573f13bb292c497b5a249
   shared_preferences_ios: 548a61f8053b9b8a49ac19c1ffbc8b92c50d68ad
-  sqlite3: ddcd34fff6490ab01f36560b87eabbebf8b2121d
-  sqlite3_flutter_libs: f2619ae5df7f92e8bc330243073c815ee061e033
+  sqlite3: d115522c740c457b805c018b0296b5ba003da280
+  sqlite3_flutter_libs: 1641350489d5c2bcb9d0773ade9693624111b24c
   Swinject: ddf78b8486dd9b71a667b852cad919ab4484478e
   url_launcher_ios: 839c58cdb4279282219f5e248c3321761ff3c4de
   webview_flutter_wkwebview: b7e70ef1ddded7e69c796c7390ee74180182971f

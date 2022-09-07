@@ -164,6 +164,12 @@ class _SettingsPageState extends State<SettingsPage> {
                                       onChanged: (enabled) =>
                                           cubit.requestBatteryPermission(),
                                     ),
+                                  SettingTile.showClientCalls(
+                                    setting:
+                                        settings.get<ShowClientCallsSetting>(),
+                                    permissions: settings
+                                        .get<VoipgridPermissionsSetting>(),
+                                  ),
                                 ],
                               ),
                               SettingTileCategory.portalLinks(

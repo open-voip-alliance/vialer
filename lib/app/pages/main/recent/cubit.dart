@@ -5,8 +5,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../domain/entities/call_record_with_contact.dart';
+import '../../../../domain/entities/call_record.dart';
+import '../../../../domain/entities/client_call_record.dart';
+import '../../../../domain/usecases/client_calls/import_new_client_calls.dart';
 import '../../../../domain/usecases/get_recent_calls.dart';
+import '../../../../domain/usecases/get_recent_client_calls.dart';
 import '../../../../domain/usecases/metrics/track_copy_number.dart';
 import '../widgets/caller/cubit.dart';
 import 'state.dart';
@@ -20,6 +23,8 @@ class RecentCallsCubit extends Cubit<RecentCallsState> {
   final _trackCopyNumber = TrackCopyNumberUseCase();
 
   final CallerCubit _caller;
+
+  bool _currentlyLoadedOnlyMissedCalls = false;
 
   RecentCallsCubit(this._caller) : super(const LoadingInitialRecentCalls()) {
     _loadRecentCalls(page: 1);
@@ -39,47 +44,106 @@ class RecentCallsCubit extends Cubit<RecentCallsState> {
     Clipboard.setData(ClipboardData(text: number));
   }
 
+  bool onlyMissedCalls = false;
+
   Future<void> refreshRecentCalls() async {
     emit(RefreshingRecentCalls(state.callRecords, state.page));
 
-    _loadRecentCalls(page: 1);
+    await _loadRecentCalls(page: 1);
   }
 
   Future<void> loadMoreRecentCalls() async {
     if (state is RecentCallsLoaded && !state.maxPagesLoaded) {
       emit(LoadingMoreRecentCalls(state.callRecords, state.page));
 
-      _loadRecentCalls(page: state.page + 1);
+      await _loadRecentCalls(page: state.page + 1);
     }
+  }
+
+  Future<void> automaticallyPopulateCalls() async {
+    // Personal calls require API calls so we will never automatically populate
+    // them.
+  }
+
+  Future<void> performBackgroundImport() async {
+    // Personal calls require API calls so there is never any background
+    // import.
   }
 
   Future<void> _loadRecentCalls({required int page}) async {
-    final recentCalls = await _fetch(page: page);
-    List<CallRecordWithContact> currentCalls;
+    final newlyFetchedCalls = await _fetch(page: page);
+    final existingCalls = _currentlyLoadedOnlyMissedCalls == onlyMissedCalls
+        ? state.callRecords
+        : <CallRecord>[];
+    _currentlyLoadedOnlyMissedCalls = onlyMissedCalls;
+    List<CallRecord> calls;
 
     if (state is LoadingMoreRecentCalls) {
-      currentCalls = [
-        ...state.callRecords,
-        ...recentCalls,
+      calls = [
+        ...existingCalls,
+        ...newlyFetchedCalls,
       ];
     } else {
-      currentCalls = [
-        ...recentCalls,
-        ...state.callRecords,
+      calls = [
+        ...newlyFetchedCalls,
+        ...existingCalls,
       ];
     }
 
-    emit(RecentCallsLoaded(currentCalls.distinct().toList(), page));
+    calls =
+        calls.distinct().sortedByDescending((record) => record.date).toList();
+
+    emit(RecentCallsLoaded(calls, page));
   }
 
-  Future<List<CallRecordWithContact>> _fetch({required int page}) async =>
-      await getRecentCalls(page: page);
+  Future<List<CallRecord>> _fetch({required int page}) async =>
+      await getRecentCalls(page: page, onlyMissedCalls: onlyMissedCalls);
 }
 
-class MissedCallsCubit extends RecentCallsCubit {
-  MissedCallsCubit(CallerCubit caller) : super(caller);
+class ClientCallsCubit extends RecentCallsCubit {
+  final _getRecentClientCalls = GetRecentClientCallsUseCase();
+  final _importNewClientCalls = ImportNewClientCallRecordsUseCase();
+
+  ClientCallsCubit(CallerCubit caller) : super(caller);
 
   @override
-  Future<List<CallRecordWithContact>> _fetch({required int page}) async =>
-      await getRecentCalls(page: page, onlyMissedCalls: true);
+  Future<List<ClientCallRecord>> _fetch({required int page}) async {
+    return await _getRecentClientCalls(
+      page: page,
+      onlyMissedCalls: onlyMissedCalls,
+    );
+  }
+
+  @override
+  Future<void> performBackgroundImport() async {
+    _importNewClientCalls();
+  }
+
+  @override
+  Future<void> automaticallyPopulateCalls() async {
+    refreshRecentCalls();
+  }
+
+  @override
+  Future<void> refreshRecentCalls() async {
+    emit(RefreshingRecentCalls(state.callRecords, state.page));
+
+    await _loadRecentCalls(page: 1);
+  }
+
+  @override
+  Future<void> _loadRecentCalls({required int page}) async {
+    final newlyFetchedCalls = await _fetch(page: page);
+    final existingCalls = _currentlyLoadedOnlyMissedCalls == onlyMissedCalls
+        ? state.callRecords.toList()
+        : <CallRecord>[];
+    _currentlyLoadedOnlyMissedCalls = onlyMissedCalls;
+
+    final calls = (existingCalls + newlyFetchedCalls)
+        .distinct()
+        .sortedByDescending((record) => record.date)
+        .toList();
+
+    emit(RecentCallsLoaded(calls, page));
+  }
 }

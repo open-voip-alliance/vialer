@@ -150,33 +150,46 @@ main:
     menu:
       title: "Recents"
     tabs:
-      all: "All calls"
-      missed: "Missed calls"
+      all: "All"
+      personal: "Personal"
     snackBar:
       copied: "Phone number copied"
+    onlyShowMissedCalls: "Missed calls only"
     list:
       headers:
-        today: "today"
-        yesterday: "yesterday"
-      minuteAgo: "1 minute ago"
-      minutesAgo(int minutes): "$minutes minutes ago"
-      hourAgo: "1 hour ago"
-      hoursAgo(int hours): "$hours hours ago"
-      popupMenu:
-        copy: "Copy"
-        call: *call
-        from: "Call from"
+        today: "Today"
+        yesterday: "Yesterday"
+      item:
+        client:
+          currentUser: "You"
+          incomingMissedCall(String time): "missed this call at $time"
+          incomingAnsweredCall(String time, String duration): "picked up at $time - $duration"
+          outgoingCall(String time, String duration): "called at $time - $duration"
+          internal:
+            title: "Call between "
+            subtitle(String time, String duration): "Internal call at $time - $duration"
+        wasMissed(String time): "You missed this call at $time"
+        inbound(String time, String duration): "You answered at $time - $duration"
+        outbound(String time, String duration): "You called at $time - $duration"
+        answeredElsewhere(String time, String duration): "answered at $time - $duration"
+        popupMenu:
+          copy: "Copy"
+          call: *call
+          from: "Call from"
+          answered: "Answered by"
+          internal:
+            title: "Call between"
       loading:
         title: "Loading your call history"
         description: "Your recent calls will show here soon. Please wait a moment."
       empty:
         title: "No call history"
-        description: >-
-          After you made or received your first call, it shows up here.
+        description: "After you made or received your first call, it shows up here."
     clientWideCallsDialog:
       title: "Company-wide call history"
       description: >-
-        You can find recent calls made by colleagues via the "Calls" link on the Settings page.
+        You can see recent calls made by colleagues by enabling
+        client-wide calls in the Settings page.
 
 
   contacts:
@@ -305,6 +318,12 @@ main:
           title: "Always run in background"
           description: >-
             This application will no longer be restricted by Android battery optimization, increasing the reliability of incoming calls. It is highly recommended that this is enabled.
+        showClientCalls:
+          title: "Add tab with all calls"
+          description: >-
+            Adds an 'All' screen on the Recents page that shows all calls in your organization.
+          noPermission: >-
+            You don't have the right permission to view all calls.
         useMobileNumberAsFallback:
           title: "Call mobile number if incoming VoIP call fails"
           description(String mobileNumber): >-
@@ -327,7 +346,6 @@ main:
       logout: "Log out"
     feedback:
       title: "Send feedback"
-      header: "Your feedback is valuable to us."
       description(String appName): >-
         If you encounter a problem or want to let our development team know about your
         experience with $appName, use the form below.

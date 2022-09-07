@@ -8,7 +8,7 @@ extension Broadcasting on StreamController {
 }
 
 extension Observing on Stream {
-  void on<T>(
+  StreamSubscription<T> on<T>(
     void onData(T event)?, {
     Function? onError,
     void onDone()?,

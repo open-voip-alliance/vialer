@@ -1,19 +1,16 @@
 import 'dart:core';
 
-import 'package:dartx/dartx.dart';
-
 import '../../dependency_locator.dart';
-import '../entities/call_record.dart';
+import '../contact_populator.dart';
 import '../entities/call_record_with_contact.dart';
-import '../entities/contact.dart';
-import '../repositories/contact.dart';
 import '../repositories/recent_call.dart';
 import '../use_case.dart';
 import 'get_user.dart';
 
 class GetRecentCallsUseCase extends UseCase {
   final _recentCallRepository = dependencyLocator<RecentCallRepository>();
-  final _contactsRepository = dependencyLocator<ContactRepository>();
+  final _callRecordContactPopulator =
+      dependencyLocator<CallRecordContactPopulator>();
 
   final _getUser = GetUserUseCase();
 
@@ -31,38 +28,6 @@ class GetRecentCallsUseCase extends UseCase {
       onlyMissedCalls: onlyMissedCalls,
     );
 
-    return populateWithContacts(callRecords);
+    return _callRecordContactPopulator.populate(callRecords);
   }
-
-  Future<List<CallRecordWithContact>> populateWithContacts(
-    List<CallRecord> callRecords,
-  ) async {
-    final foundContacts = <String, Contact>{};
-
-    final uniqueNumbers =
-        callRecords.map((e) => e.numberForContactLookup).distinct();
-
-    final contacts = await _contactsRepository.getContactPhoneNumberMap();
-
-    for (var number in uniqueNumbers) {
-      final contact = contacts[number];
-
-      if (contact != null) {
-        foundContacts[number] = contact;
-      }
-    }
-
-    return callRecords
-        .map(
-          (call) => call.withContact(
-            foundContacts[call.numberForContactLookup],
-          ),
-        )
-        .toList();
-  }
-}
-
-extension on CallRecord {
-  String get numberForContactLookup =>
-      isOutbound ? destination.number : caller.number;
 }

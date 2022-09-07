@@ -21,8 +21,6 @@ abstract class VialerSans {
   static const settings = IconData(0xE949, fontFamily: _family);
   static const correct = IconData(0xE910, fontFamily: _family);
   static const ellipsis = IconData(0xE981, fontFamily: _family);
-  static const incomingCall = IconData(0xE924, fontFamily: _family);
-  static const outgoingCall = IconData(0xE92A, fontFamily: _family);
   static const missedCall = IconData(0xE923, fontFamily: _family);
   static const speaker = IconData(0xE984, fontFamily: _family);
   static const voicemail = IconData(0xE98B, fontFamily: _family);
@@ -51,9 +49,16 @@ abstract class VialerSans {
   static const mobilePhone = IconData(0xE97B, fontFamily: _family);
   static const dnd = IconData(0xE928, fontFamily: _family);
   static const available = IconData(0xE929, fontFamily: _family);
-  static const answeredElsewhere = IconData(0xE922, fontFamily: _family);
   static const feedback = IconData(0xE959, fontFamily: _family);
   static const edit = IconData(0xE90E, fontFamily: _family);
   static const info = IconData(0xE918, fontFamily: _family);
   static const battery = IconData(0xE9AC, fontFamily: _family);
+  static const outgoingCall = IconData(0xE9AD, fontFamily: _family);
+  static const incomingCall = IconData(0xE9AE, fontFamily: _family);
+  /// This is only for missed calls when displayed within the context of the
+  /// call records screen. It wouldn't be evident what it is referring to
+  /// if not within this context. So use [missedCall] elsewhere.
+  static const missedCallRecord = IconData(0xE9AF, fontFamily: _family);
+  static const answeredElsewhereCall = IconData(0xE9B0, fontFamily: _family);
+  static const internalCall = IconData(0xE9B1, fontFamily: _family);
 }

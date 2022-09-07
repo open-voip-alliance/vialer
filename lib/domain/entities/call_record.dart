@@ -1,4 +1,7 @@
 import 'package:equatable/equatable.dart';
+import 'package:json_annotation/json_annotation.dart';
+
+part 'call_record.g.dart';
 
 class CallRecord extends Equatable {
   final String id;
@@ -11,7 +14,7 @@ class CallRecord extends Equatable {
   final CallParty caller;
   final CallParty destination;
 
-  CallRecord({
+  const CallRecord({
     required this.id,
     required this.callType,
     required Direction direction,
@@ -44,6 +47,8 @@ class CallRecord extends Equatable {
       destination.type == CallerType.app;
 
   bool get _isColleagueCall => callType == CallType.colleague;
+
+  bool get isIncomingAndAnsweredElsewhere => answeredElsewhere && isInbound;
 
   @override
   String toString() => '$id: ${destination.number}';
@@ -93,6 +98,7 @@ enum CallerType {
   other,
 }
 
+@JsonSerializable()
 class CallParty extends Equatable {
   final String? name;
   final String number;
@@ -104,8 +110,15 @@ class CallParty extends Equatable {
     required this.type,
   });
 
+  String get label => hasName ? name! : number;
+
   bool get hasName => name?.isNotEmpty == true;
 
   @override
   List<Object?> get props => [name, number, type];
+
+  factory CallParty.fromJson(Map<String, dynamic> json) =>
+      _$CallPartyFromJson(json);
+
+  Map<String, dynamic> toJson() => _$CallPartyToJson(this);
 }
