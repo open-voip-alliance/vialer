@@ -330,7 +330,9 @@ custom: # Custom properties to make workflows cleaner
         - pattern: '*beta*'
           include: true
 
-    # Expecting a tag similar to: [v7.8.0-internal-alpha.01]
+    # We expect internal alpha builds to be tagged as (e.g.) [v7.8.0-internal-alpha.01],
+    # however we also want to release all builds to this internal alpha testing so users
+    # can continue to stay enrolled and get all releases.
     internal_alpha_trigger: &internal_alpha_was_tagged
       events:
         - tag
@@ -342,7 +344,7 @@ custom: # Custom properties to make workflows cleaner
           include: true
           source: false
       tag_patterns:
-        - pattern: '*internal-alpha*'
+        - pattern: '*'
           include: true
 
     publish_for_production: &publish_for_production
