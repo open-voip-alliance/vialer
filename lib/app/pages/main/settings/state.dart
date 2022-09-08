@@ -63,5 +63,3 @@ class SettingsState extends Equatable {
         hasIgnoreBatteryOptimizationsPermission,
       ];
 }
-
-class LoggedOut extends SettingsState {}
