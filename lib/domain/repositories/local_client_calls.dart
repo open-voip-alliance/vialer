@@ -1,5 +1,7 @@
 import 'package:dartx/dartx.dart';
 import 'package:drift/drift.dart';
+import 'package:rxdart/rxdart.dart';
+import 'package:watcher/watcher.dart';
 
 import '../../app/util/loggable.dart';
 import '../entities/call_record.dart';
@@ -124,5 +126,13 @@ class LocalClientCallsRepository with Loggable {
               row.readTableOrNull(sourceAccountTable),
             ))
         .get();
+  }
+
+  Future<Stream> watch() async {
+    final file = await getDatabaseFile();
+
+    return FileWatcher(file.path)
+        .events
+        .debounceTime(const Duration(seconds: 1));
   }
 }

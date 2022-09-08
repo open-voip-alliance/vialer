@@ -288,7 +288,6 @@ class _Calls<C extends RecentCallsCubit> extends StatelessWidget {
           onCallPressed: cubit.call,
           onCopyPressed: cubit.copyNumber,
           loadMoreCalls: cubit.loadMoreRecentCalls,
-          automaticallyPopulateCalls: cubit.automaticallyPopulateCalls,
           performBackgroundImport: cubit.performBackgroundImport,
           manualRefresher: manualRefresher,
         );

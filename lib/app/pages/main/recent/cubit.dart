@@ -5,8 +5,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../dependency_locator.dart';
 import '../../../../domain/entities/call_record.dart';
 import '../../../../domain/entities/client_call_record.dart';
+import '../../../../domain/repositories/local_client_calls.dart';
 import '../../../../domain/usecases/client_calls/import_new_client_calls.dart';
 import '../../../../domain/usecases/get_recent_calls.dart';
 import '../../../../domain/usecases/get_recent_client_calls.dart';
@@ -60,11 +62,6 @@ class RecentCallsCubit extends Cubit<RecentCallsState> {
     }
   }
 
-  Future<void> automaticallyPopulateCalls() async {
-    // Personal calls require API calls so we will never automatically populate
-    // them.
-  }
-
   Future<void> performBackgroundImport() async {
     // Personal calls require API calls so there is never any background
     // import.
@@ -103,8 +100,13 @@ class RecentCallsCubit extends Cubit<RecentCallsState> {
 class ClientCallsCubit extends RecentCallsCubit {
   final _getRecentClientCalls = GetRecentClientCallsUseCase();
   final _importNewClientCalls = ImportNewClientCallRecordsUseCase();
+  final _localClientCalls = dependencyLocator<LocalClientCallsRepository>();
 
-  ClientCallsCubit(CallerCubit caller) : super(caller);
+  ClientCallsCubit(CallerCubit caller) : super(caller) {
+    _localClientCalls.watch().then((value) => value.listen((event) {
+      refreshRecentCalls();
+    }));
+  }
 
   @override
   Future<List<ClientCallRecord>> _fetch({required int page}) async {
@@ -117,11 +119,6 @@ class ClientCallsCubit extends RecentCallsCubit {
   @override
   Future<void> performBackgroundImport() async {
     _importNewClientCalls();
-  }
-
-  @override
-  Future<void> automaticallyPopulateCalls() async {
-    refreshRecentCalls();
   }
 
   @override
