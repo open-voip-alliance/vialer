@@ -1,0 +1,5 @@
+- You can now see calls that are made by others in your organization in Recents. You must enable this in Settings.
+- We will now ask for call ratings far less often.
+- The app will feel faster and more responsive if you have a lot of contacts.
+- Android: The text for the "battery optimization" onboarding step has been improved.
+- iOS: A rare bug that could cause calls to fail has been fixed.
