@@ -123,8 +123,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                   isVoipAllowed: isVoipAllowed,
                                 ),
                                 SettingTile.outgoingNumber(
-                                  settings
-                                      .get<ClientOutgoingNumbersSetting>(),
+                                  settings.get<ClientOutgoingNumbersSetting>(),
                                   settings.get<OutgoingNumberSetting>(),
                                   systemUser: state.systemUser!,
                                 ),
@@ -147,6 +146,12 @@ class _SettingsPageState extends State<SettingsPage> {
                                   SettingTile.useVoip(
                                     settings.get<UseVoipSetting>(),
                                   ),
+                                  if (settings.get<UseVoipSetting>().value)
+                                    SettingTile.useMobileNumberAsFallback(
+                                      state.systemUser!,
+                                      settings.get<
+                                          UseMobileNumberAsFallbackSetting>(),
+                                    ),
                                   if (context.isIOS)
                                     SettingTile.showCallsInNativeRecents(
                                       settings.get<
@@ -159,6 +164,12 @@ class _SettingsPageState extends State<SettingsPage> {
                                       onChanged: (enabled) =>
                                           cubit.requestBatteryPermission(),
                                     ),
+                                  SettingTile.showClientCalls(
+                                    setting:
+                                        settings.get<ShowClientCallsSetting>(),
+                                    permissions: settings
+                                        .get<VoipgridPermissionsSetting>(),
+                                  ),
                                 ],
                               ),
                               SettingTileCategory.portalLinks(

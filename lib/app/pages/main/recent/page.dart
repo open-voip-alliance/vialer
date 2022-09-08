@@ -1,27 +1,72 @@
-import 'package:dartx/dartx.dart';
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../domain/entities/call_record_with_contact.dart';
+import '../../../../dependency_locator.dart';
+import '../../../../domain/entities/setting.dart';
+import '../../../../domain/events/event_bus.dart';
+import '../../../../domain/events/show_client_calls_setting_enabled.dart';
+import '../../../../domain/usecases/get_latest_voipgrid_permissions.dart';
+import '../../../../domain/usecases/get_setting.dart';
 import '../../../resources/localizations.dart';
 import '../../../resources/theme.dart';
-import '../../../util/widgets_binding_observer_registrar.dart';
 import '../util/stylized_snack_bar.dart';
 import '../widgets/caller/cubit.dart';
-import '../widgets/conditional_placeholder.dart';
 import '../widgets/header.dart';
+import '../widgets/stylized_switch.dart';
 import 'cubit.dart';
-import 'widgets/item.dart';
+import 'widgets/list.dart';
 
-class RecentCallsPage extends StatelessWidget {
-  final double listBottomPadding;
-  final double snackBarRightPadding;
+class RecentCallsPage extends StatefulWidget {
+  /// Note that `top` will always be overridden to `8`.
+  final EdgeInsets listPadding;
+  final EdgeInsets snackBarPadding;
 
-  RecentCallsPage({
+  const RecentCallsPage({
     Key? key,
-    this.listBottomPadding = 0,
-    this.snackBarRightPadding = 0,
+    this.listPadding = EdgeInsets.zero,
+    this.snackBarPadding = EdgeInsets.zero,
   }) : super(key: key);
+
+  @override
+  State<RecentCallsPage> createState() => _RecentCallsPageState();
+}
+
+class _RecentCallsPageState extends State<RecentCallsPage> {
+  final _eventBus = dependencyLocator<EventBusObserver>();
+  StreamSubscription? _eventBusSubscription;
+
+  final _getVoipgridPermissions = GetLatestVoipgridPermissions();
+  final _getShowClientCallsSetting =
+      GetSettingUseCase<ShowClientCallsSetting>();
+
+  bool _showClientCalls = false;
+
+  final _manualRefresher = ManualRefresher();
+  final _clientManualRefresher = ManualRefresher();
+
+  @override
+  void initState() {
+    super.initState();
+
+    _getShowClientCallsSetting().then((setting) async {
+      _updateShowClientCalls(settingValue: setting.value);
+    });
+
+    _eventBusSubscription = _eventBus.on<ShowClientCallsSettingChanged>((e) {
+      _updateShowClientCalls(settingValue: e.clientCallsEnabled);
+    });
+  }
+
+  Future<void> _updateShowClientCalls({required bool settingValue}) async {
+    final hasPermission =
+        await _getVoipgridPermissions().then((p) => p.hasClientCallsPermission);
+
+    setState(() {
+      _showClientCalls = settingValue && hasPermission;
+    });
+  }
 
   void _onStateChanged(BuildContext context, CallerState state) {
     if (state is NoPermission) {
@@ -34,249 +79,278 @@ class RecentCallsPage extends StatelessWidget {
     }
   }
 
-  Future<void> _refreshCalls(BuildContext context) async {
-    context.read<RecentCallsCubit>().refreshRecentCalls();
-    context.read<MissedCallsCubit>().refreshRecentCalls();
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.only(top: 16),
-          child: BlocListener<CallerCubit, CallerState>(
-            listener: _onStateChanged,
-            child: MultiBlocProvider(
-              providers: [
-                BlocProvider<RecentCallsCubit>(
-                  create: (context) =>
-                      RecentCallsCubit(context.read<CallerCubit>()),
-                ),
-                BlocProvider<MissedCallsCubit>(
-                  create: (context) =>
-                      MissedCallsCubit(context.read<CallerCubit>()),
-                ),
-              ],
-              child: DefaultTabController(
-                length: 2,
-                child: Scaffold(
-                  appBar: AppBar(
-                    backgroundColor: Colors.transparent,
-                    elevation: 0,
-                    bottom: TabBar(
-                      labelPadding: const EdgeInsets.only(
-                        top: 18,
-                        bottom: 8,
-                      ),
-                      labelColor: Theme.of(context).primaryColor,
-                      unselectedLabelColor: Colors.grey,
-                      indicatorColor: Theme.of(context).primaryColor,
-                      indicatorSize: TabBarIndicatorSize.label,
-                      tabs: [
-                        Text(context.msg.main.recent.tabs.all.toUpperCase()),
-                        Text(context.msg.main.recent.tabs.missed.toUpperCase()),
-                      ],
-                    ),
-                    centerTitle: false,
-                    title: Header(
-                      context.msg.main.recent.title,
-                      padding: const EdgeInsets.all(0),
-                    ),
-                  ),
-                  body: BlocBuilder<RecentCallsCubit, RecentCallsState>(
-                    builder: (context, recentCallState) {
-                      final cubit = context.watch<RecentCallsCubit>();
-                      final recentCalls = recentCallState.callRecords;
-
-                      return BlocBuilder<MissedCallsCubit, RecentCallsState>(
-                        builder: (context, missedCallsState) {
-                          final missedCallsCubit =
-                              context.watch<MissedCallsCubit>();
-                          final missedCalls = missedCallsState.callRecords;
-
-                          return TabBarView(
-                            children: [
-                              _RecentCallsList(
-                                listBottomPadding: listBottomPadding,
-                                snackBarRightPadding: snackBarRightPadding,
-                                isLoadingInitial: recentCallState
-                                    is LoadingInitialRecentCalls,
-                                callRecords: recentCalls,
-                                onRefresh: () => _refreshCalls(context),
-                                onCallPressed: cubit.call,
-                                onCopyPressed: cubit.copyNumber,
-                                loadMoreCalls: cubit.loadMoreRecentCalls,
-                              ),
-                              _RecentCallsList(
-                                listBottomPadding: listBottomPadding,
-                                snackBarRightPadding: snackBarRightPadding,
-                                isLoadingInitial: missedCallsState
-                                    is LoadingInitialRecentCalls,
-                                callRecords: missedCalls,
-                                onRefresh: () => _refreshCalls(context),
-                                onCallPressed: missedCallsCubit.call,
-                                onCopyPressed: missedCallsCubit.copyNumber,
-                                loadMoreCalls:
-                                    missedCallsCubit.loadMoreRecentCalls,
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    },
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
+    return BlocListener<CallerCubit, CallerState>(
+      listener: _onStateChanged,
+      child: _Content(
+        showClientCalls: _showClientCalls,
+        listPadding: widget.listPadding,
+        snackBarPadding: widget.snackBarPadding,
+        manualRefresher: _manualRefresher,
+        clientManualRefresher: _clientManualRefresher,
       ),
     );
   }
-}
-
-class _RecentCallsList extends StatefulWidget {
-  final double listBottomPadding;
-  final double snackBarRightPadding;
-
-  final bool isLoadingInitial;
-
-  final List<CallRecordWithContact> callRecords;
-  final Future<void> Function() onRefresh;
-  final void Function(String) onCallPressed;
-  final void Function(String) onCopyPressed;
-  final void Function() loadMoreCalls;
-
-  const _RecentCallsList({
-    Key? key,
-    required this.listBottomPadding,
-    required this.snackBarRightPadding,
-    this.isLoadingInitial = false,
-    required this.callRecords,
-    required this.onRefresh,
-    required this.onCallPressed,
-    required this.onCopyPressed,
-    required this.loadMoreCalls,
-  }) : super(key: key);
 
   @override
-  _RecentCallsListState createState() => _RecentCallsListState();
+  void dispose() {
+    _eventBusSubscription?.cancel();
+
+    super.dispose();
+  }
 }
 
-class _RecentCallsListState extends State<_RecentCallsList>
-    with WidgetsBindingObserver, WidgetsBindingObserverRegistrar {
-  final _scrollController = ScrollController();
+class _Content extends StatefulWidget {
+  final bool showClientCalls;
+  final EdgeInsets listPadding;
+  final EdgeInsets snackBarPadding;
+  final ManualRefresher manualRefresher;
+  final ManualRefresher clientManualRefresher;
+
+  const _Content({
+    required this.showClientCalls,
+    required this.listPadding,
+    required this.snackBarPadding,
+    required this.manualRefresher,
+    required this.clientManualRefresher,
+  });
+
+  @override
+  State<_Content> createState() => _ContentState();
+}
+
+class _ContentState extends State<_Content> with TickerProviderStateMixin {
+  TabController? tabController;
 
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(_handleScrolling);
-  }
 
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    super.didChangeAppLifecycleState(state);
-
-    if (state == AppLifecycleState.resumed) {
-      widget.onRefresh();
+    if (widget.showClientCalls) {
+      _createTabController();
     }
   }
 
   @override
   void dispose() {
-    _scrollController.dispose();
-
+    tabController?.dispose();
     super.dispose();
   }
 
-  void _handleScrolling() {
-    final maxScroll = _scrollController.position.maxScrollExtent;
-    final currentScroll = _scrollController.position.pixels;
+  @override
+  void didUpdateWidget(_Content oldWidget) {
+    super.didUpdateWidget(oldWidget);
 
-    if (currentScroll >= maxScroll - 200) {
-      widget.loadMoreCalls();
+    if (widget.showClientCalls && !oldWidget.showClientCalls) {
+      _createTabController();
+      return;
+    }
+
+    if (!widget.showClientCalls) {
+      tabController?.dispose();
+      tabController = null;
+      return;
     }
   }
 
-  void _showSnackBar(BuildContext context) {
-    showSnackBar(
-      context,
-      icon: const Icon(VialerSans.copy),
-      label: Text(context.msg.main.recent.snackBar.copied),
-      padding: EdgeInsets.only(
-        right: widget.snackBarRightPadding,
-      ),
+  void _createTabController() {
+    final tabController = TabController(
+      initialIndex: 0,
+      length: 2,
+      vsync: this,
     );
+
+    tabController.addListener(
+      () {
+        // The client calls will periodically refresh, so only manual
+        // refresh personal call when switching to the second tab.
+        if (!tabController.indexIsChanging && tabController.index == 0) {
+          widget.manualRefresher.refresh();
+        }
+      },
+    );
+
+    this.tabController = tabController;
   }
 
   @override
   Widget build(BuildContext context) {
-    return ConditionalPlaceholder(
-      showPlaceholder: widget.callRecords.isEmpty || widget.isLoadingInitial,
-      placeholder: widget.isLoadingInitial
-          ? LoadingIndicator(
-              title: Text(
-                context.msg.main.recent.list.loading.title,
-              ),
-              description: Text(
-                context.msg.main.recent.list.loading.description,
-              ),
-            )
-          : Warning(
-              icon: const Icon(VialerSans.missedCall),
-              title: Text(context.msg.main.recent.list.empty.title),
-              description: Text(
-                context.msg.main.recent.list.empty.description,
-              ),
-            ),
-      child: RefreshIndicator(
-        onRefresh: widget.onRefresh,
-        child: ListView.builder(
-          physics: const AlwaysScrollableScrollPhysics(),
-          controller: _scrollController,
-          padding: EdgeInsets.only(
-            bottom: widget.listBottomPadding,
+    final personalCalls = _Calls<RecentCallsCubit>(
+      listPadding: widget.listPadding,
+      snackBarPadding: widget.snackBarPadding,
+      manualRefresher: widget.manualRefresher,
+    );
+
+    final content = BlocProvider<RecentCallsCubit>(
+      create: (context) => RecentCallsCubit(context.read<CallerCubit>()),
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          bottom: widget.showClientCalls
+              ? TabBar(
+                  controller: tabController,
+                  labelStyle: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                  labelPadding: const EdgeInsets.only(
+                    top: 18,
+                    bottom: 8,
+                  ),
+                  labelColor: Theme.of(context).primaryColor,
+                  unselectedLabelColor: context.brand.theme.colors.grey1,
+                  indicatorColor: Theme.of(context).primaryColor,
+                  indicatorSize: TabBarIndicatorSize.label,
+                  tabs: [
+                    Text(
+                      context.msg.main.recent.tabs.personal.toUpperCase(),
+                    ),
+                    Text(context.msg.main.recent.tabs.all.toUpperCase()),
+                  ],
+                )
+              : null,
+          centerTitle: false,
+          title: Header(
+            context.msg.main.recent.title,
+            padding: const EdgeInsets.only(top: 8),
           ),
-          itemCount: widget.callRecords.length,
-          itemBuilder: (context, index) {
-            final callRecord = widget.callRecords[index];
-
-            final item = RecentCallItem(
-              callRecord: callRecord,
-              onCallPressed: () {
-                widget.onCallPressed(callRecord.thirdPartyNumber);
-              },
-              onCopyPressed: () {
-                widget.onCopyPressed(callRecord.thirdPartyNumber);
-                _showSnackBar(context);
-              },
-            );
-
-            if (widget.callRecords.isHeaderRequiredAt(index)) {
-              return RecentCallHeader(
-                date: callRecord.date,
-                isFirst: index == 0,
-                child: item,
-              );
-            }
-
-            return item;
-          },
+        ),
+        body: SafeArea(
+          child: Column(
+            children: [
+              Expanded(
+                child: widget.showClientCalls
+                    ? TabBarView(
+                        controller: tabController,
+                        children: [
+                          personalCalls,
+                          _Calls<ClientCallsCubit>(
+                            listPadding: widget.listPadding,
+                            snackBarPadding: widget.snackBarPadding,
+                            manualRefresher: widget.clientManualRefresher,
+                          ),
+                        ],
+                      )
+                    : personalCalls,
+              ),
+              _MissedCallsToggle(
+                showClientCalls: widget.showClientCalls,
+                manualRefresher: widget.manualRefresher,
+                clientManualRefresher: widget.clientManualRefresher,
+              ),
+            ],
+          ),
         ),
       ),
+    );
+
+    return widget.showClientCalls
+        ? BlocProvider<ClientCallsCubit>(
+            create: (context) => ClientCallsCubit(context.read<CallerCubit>()),
+            child: content,
+          )
+        : content;
+  }
+}
+
+class _Calls<C extends RecentCallsCubit> extends StatelessWidget {
+  final EdgeInsets listPadding;
+  final EdgeInsets snackBarPadding;
+  final ManualRefresher manualRefresher;
+
+  const _Calls({
+    super.key,
+    required this.listPadding,
+    required this.snackBarPadding,
+    required this.manualRefresher,
+  });
+
+  Future<void> _refreshCalls(BuildContext context) async {
+    await context.read<C>().performBackgroundImport();
+    await context.read<C>().refreshRecentCalls();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<C, RecentCallsState>(
+      builder: (context, state) {
+        final cubit = context.watch<C>();
+        final recentCalls = state.callRecords;
+
+        return RecentCallsList(
+          listPadding: listPadding,
+          snackBarPadding: snackBarPadding,
+          isLoadingInitial: state is LoadingInitialRecentCalls,
+          callRecords: recentCalls,
+          onRefresh: () => _refreshCalls(context),
+          onCallPressed: cubit.call,
+          onCopyPressed: cubit.copyNumber,
+          loadMoreCalls: cubit.loadMoreRecentCalls,
+          automaticallyPopulateCalls: cubit.automaticallyPopulateCalls,
+          performBackgroundImport: cubit.performBackgroundImport,
+          manualRefresher: manualRefresher,
+        );
+      },
     );
   }
 }
 
-extension on List<CallRecordWithContact> {
-  bool isHeaderRequiredAt(int index) {
-    final previous = index >= 1 ? this[index - 1] : null;
+class _MissedCallsToggle extends StatefulWidget {
+  final bool showClientCalls;
+  final ManualRefresher manualRefresher;
+  final ManualRefresher clientManualRefresher;
 
-    return previous == null ||
-        !previous.date.isAtSameDayAs(
-          this[index].date,
-        );
+  const _MissedCallsToggle({
+    required this.showClientCalls,
+    required this.manualRefresher,
+    required this.clientManualRefresher,
+  });
+
+  @override
+  State<_MissedCallsToggle> createState() => _MissedCallsToggleState();
+}
+
+class _MissedCallsToggleState extends State<_MissedCallsToggle> {
+  bool _toggleValue = false;
+
+  void _toggleOnlyMissedCalls(bool value) {
+    context.read<RecentCallsCubit>().onlyMissedCalls = value;
+
+    if (widget.showClientCalls) {
+      context.read<ClientCallsCubit>().onlyMissedCalls = value;
+
+      widget.clientManualRefresher.refresh();
+    }
+
+    widget.manualRefresher.refresh();
+
+    setState(() {
+      _toggleValue = value;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      elevation: 8,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            context.msg.main.recent.onlyShowMissedCalls,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(width: 16),
+          StylizedSwitch(
+            value: _toggleValue,
+            onChanged: _toggleOnlyMissedCalls,
+          )
+        ],
+      ),
+    );
   }
 }

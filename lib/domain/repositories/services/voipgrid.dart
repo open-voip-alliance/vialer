@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:chopper/chopper.dart' hide JsonConverter;
 
+import '../../entities/system_user.dart';
 import '../../usecases/get_voipgrid_base_url.dart';
 import 'util.dart';
 
@@ -23,6 +24,21 @@ abstract class VoipgridService extends ChopperService {
             ],
           ),
           UnauthorizedResponseInterceptor(),
+        ],
+      ),
+    );
+  }
+
+  static VoipgridService createInIsolate({
+    required SystemUser user,
+    required String baseUrl,
+  }) {
+    return _$VoipgridService(
+      ChopperClient(
+        baseUrl: baseUrl,
+        converter: JsonConverter(),
+        interceptors: [
+          AuthorizationInterceptor(user: user),
         ],
       ),
     );
@@ -80,6 +96,27 @@ abstract class VoipgridService extends ChopperService {
 
   @Get(path: 'v2/vialer/middlewares/')
   Future<Response> getMiddleware();
+
+  @Get(path: 'cdr/record/')
+  Future<Response> getClientCalls({
+    @Query('limit') int limit = 20,
+    @Query('offset') int offset = 0,
+    @Query('call_date__gt') String? from,
+    @Query('call_date__lt') String? to,
+  });
+
+  @Get(path: 'v2/clients/{clientId}/users/{userId}')
+  Future<Response> getUserSettings({
+    @Path() required String clientId,
+    @Path() required String userId,
+  });
+
+  @Patch(path: 'v2/clients/{clientId}/users/{userId}')
+  Future<Response> updateUserSettings({
+    @Path() required String clientId,
+    @Path() required String userId,
+    @Body() required Map<String, dynamic> body,
+  });
 
   @Get(path: 'v2/clients/{clientUuid}/callerid_numbers')
   Future<Response> getClientBusinessNumbers({

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../../domain/entities/call_record.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
+import 'item.dart';
 
 class RecentItemPopupMenu extends StatelessWidget {
   final CallRecord callRecord;
@@ -13,21 +14,62 @@ class RecentItemPopupMenu extends StatelessWidget {
     required this.onPopupMenuItemPress,
   });
 
+  List<PopupMenuEntry<RecentCallMenuAction>> _createInformationItem({
+    required String title,
+    required List<CallParty> callParties,
+  }) {
+    return [
+      PopupMenuItem<RecentCallMenuAction>(
+        value: RecentCallMenuAction.none,
+        enabled: false,
+        child: _CallParties(
+          title: title.toUpperCase(),
+          callParties: callParties,
+        ),
+      ),
+      const PopupMenuDivider(),
+    ];
+  }
+
+  /// Creates all the items that will change based on the type of call record
+  /// that we are currently rendering.
+  List<PopupMenuEntry<RecentCallMenuAction>> _createRecordSpecificItems(
+    BuildContext context,
+  ) {
+    if (callRecord.renderType == CallRecordRenderType.other) {
+      return [
+        if (callRecord.isInbound)
+          ..._createInformationItem(
+            title: context.msg.main.recent.list.item.popupMenu.from,
+            callParties: [callRecord.caller],
+          ),
+        if (callRecord.answeredElsewhere && callRecord.isInbound)
+          ..._createInformationItem(
+            title: context.msg.main.recent.list.item.popupMenu.answered,
+            callParties: [callRecord.destination],
+          ),
+      ];
+    }
+
+    if (callRecord.renderType == CallRecordRenderType.internalCall) {
+      return _createInformationItem(
+        title: context.msg.main.recent.list.item.popupMenu.internal.title
+            .toUpperCase(),
+        callParties: [callRecord.caller, callRecord.destination],
+      );
+    }
+
+    return [];
+  }
+
   @override
   Widget build(BuildContext context) {
+    final recordSpecificItems = _createRecordSpecificItems(context);
+
     return PopupMenuButton<RecentCallMenuAction>(
       onSelected: onPopupMenuItemPress,
       itemBuilder: (context) => [
-        if (callRecord.isInbound) ...[
-          PopupMenuItem<RecentCallMenuAction>(
-            value: RecentCallMenuAction.none,
-            enabled: false,
-            child: _CallFrom(
-              callRecord: callRecord,
-            ),
-          ),
-          const PopupMenuDivider(),
-        ],
+        ...recordSpecificItems,
         PopupMenuItem<RecentCallMenuAction>(
           value: RecentCallMenuAction.copy,
           child: ListTile(
@@ -36,7 +78,7 @@ class RecentItemPopupMenu extends StatelessWidget {
               alignment: Alignment.center,
               child: const Icon(VialerSans.copy, size: 20),
             ),
-            title: Text(context.msg.main.recent.list.popupMenu.copy),
+            title: Text(context.msg.main.recent.list.item.popupMenu.copy),
           ),
         ),
         PopupMenuItem<RecentCallMenuAction>(
@@ -47,7 +89,7 @@ class RecentItemPopupMenu extends StatelessWidget {
               alignment: Alignment.center,
               child: const Icon(VialerSans.phone, size: 20),
             ),
-            title: Text(context.msg.main.recent.list.popupMenu.call),
+            title: Text(context.msg.main.recent.list.item.popupMenu.call),
           ),
         ),
       ],
@@ -60,21 +102,23 @@ class RecentItemPopupMenu extends StatelessWidget {
   }
 }
 
-class _CallFrom extends StatelessWidget {
-  final CallRecord callRecord;
+class _CallParties extends StatelessWidget {
+  final String title;
+  final List<CallParty> callParties;
 
   static const _callFromFontSize = 14.0;
 
-  const _CallFrom({
-    required this.callRecord,
+  const _CallParties({
+    required this.title,
+    required this.callParties,
   });
 
-  String _text(BuildContext context) {
-    if (!callRecord.caller.hasName) {
-      return callRecord.caller.number;
+  String _text(CallParty callParty, BuildContext context) {
+    if (!callParty.hasName) {
+      return callParty.number;
     }
 
-    return '${callRecord.caller.name!} (${callRecord.caller.number})';
+    return '${callParty.name!} (${callParty.number})';
   }
 
   @override
@@ -83,7 +127,7 @@ class _CallFrom extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          context.msg.main.recent.list.popupMenu.from.toUpperCase(),
+          title,
           style: const TextStyle(
             fontSize: _callFromFontSize,
             fontWeight: FontWeight.bold,
@@ -91,7 +135,7 @@ class _CallFrom extends StatelessWidget {
         ),
         const SizedBox(height: 6),
         Text(
-          _text(context),
+          callParties.map((party) => _text(party, context)).join(' & '),
           style: const TextStyle(
             fontSize: _callFromFontSize,
           ),

@@ -133,4 +133,28 @@ class AuthRepository with Loggable {
     });
     return response.isSuccessful;
   }
+
+  Future<bool> isUserUsingMobileNumberAsFallback(SystemUser user) async =>
+      _service
+          .getUserSettings(
+            clientId: user.clientId.toString(),
+            userId: user.uuid,
+          )
+          .then(
+            (response) =>
+                response.body['app']['use_mobile_number_as_fallback'] as bool,
+          );
+
+  Future<bool> setUseMobileNumberAsFallback(
+    SystemUser user, {
+    required bool enable,
+  }) async =>
+      _service.updateUserSettings(
+          clientId: user.clientId.toString(),
+          userId: user.uuid,
+          body: {
+            'app': {
+              'use_mobile_number_as_fallback': enable,
+            }
+          }).then((response) => response.isSuccessful);
 }

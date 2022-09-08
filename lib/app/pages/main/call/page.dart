@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -91,9 +90,6 @@ class _CallPageState extends State<_CallPage>
   // we will store this timer so we can cancel it if another call is started.
   Timer? _dismissScreenTimer;
 
-  /// We will only ask for a call rating on this percentage of calls.
-  static const _percentageChanceOfAskingForCallRating = 15;
-
   @override
   void initState() {
     super.initState();
@@ -147,14 +143,13 @@ class _CallPageState extends State<_CallPage>
   // Only called when the state type has changed, not when a state with the same
   // type but different call information has been emitted.
   Future<void> _onStateChanged(BuildContext context, CallerState state) async {
-    if (state is CanCall) {
-      final shouldAskForCallRating =
-          Random().nextInt(100) < _percentageChanceOfAskingForCallRating;
+    final cubit = context.read<CallerCubit>();
 
+    if (state is CanCall) {
       if (state is FinishedCalling &&
           state.voipCall != null &&
           state.voipCall!.duration >= 1 &&
-          shouldAskForCallRating) {
+          cubit.shouldRequestCallRating()) {
         Timer(const Duration(seconds: 1), () {
           if (mounted) {
             _requestCallRating(context, state)

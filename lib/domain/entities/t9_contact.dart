@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:equatable/equatable.dart';
 
 import 'contact.dart';
@@ -10,9 +8,9 @@ class T9Contact extends Contact with EquatableMixin {
 
   T9Contact({
     required String displayName,
-    Future<Uint8List?>? avatar,
+    String? avatarPath,
     required this.relevantPhoneNumber,
-  }) : super(chosenName: displayName, avatar: avatar);
+  }) : super(chosenName: displayName, avatarPath: avatarPath);
 
   @override
   String toString() => '$chosenName - $relevantPhoneNumber';

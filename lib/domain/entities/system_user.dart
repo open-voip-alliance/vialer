@@ -35,6 +35,10 @@ class SystemUser extends Equatable {
 
   bool get isOutgoingCliSuppressed => outgoingCli?.isSuppressed ?? false;
 
+  /// If set to [TRUE] the user has decided they want incoming calls to
+  /// fallback to their configured mobile number, via a GSM call.
+  final bool? isMobileNumberFallbackEnabled;
+
   /// This is only nullable for backwards compatibility, it can be made
   /// non-nullable in a future update.
   @JsonKey(name: 'client')
@@ -53,6 +57,7 @@ class SystemUser extends Equatable {
     this.clientUuid,
     this.clientId,
     this.clientName,
+    this.isMobileNumberFallbackEnabled,
   });
 
   SystemUser copyWith({
@@ -68,6 +73,7 @@ class SystemUser extends Equatable {
     String? clientUuid,
     int? clientId,
     String? clientName,
+    bool? isMobileNumberFallbackEnabled,
   }) {
     return SystemUser(
       uuid: uuid ?? this.uuid,
@@ -82,6 +88,8 @@ class SystemUser extends Equatable {
       clientUuid: clientUuid ?? this.clientUuid,
       clientId: clientId ?? this.clientId,
       clientName: clientName ?? this.clientName,
+      isMobileNumberFallbackEnabled:
+      isMobileNumberFallbackEnabled ?? this.isMobileNumberFallbackEnabled,
     );
   }
 

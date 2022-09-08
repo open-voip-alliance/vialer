@@ -3,6 +3,8 @@ import 'dart:async';
 import '../../app/util/loggable.dart';
 import '../../dependency_locator.dart';
 import '../entities/setting.dart';
+import '../events/event_bus.dart';
+import '../events/show_client_calls_setting_enabled.dart';
 import '../repositories/destination.dart';
 import '../repositories/metrics.dart';
 import '../repositories/storage.dart';
@@ -10,6 +12,7 @@ import '../use_case.dart';
 import 'change_availability.dart';
 import 'change_mobile_number.dart';
 import 'change_outgoing_number.dart';
+import 'change_use_mobile_number_as_fallback.dart';
 import 'disable_remote_logging.dart';
 import 'enable_remote_logging.dart';
 import 'get_mobile_number.dart';
@@ -27,6 +30,8 @@ class ChangeSettingUseCase extends UseCase with Loggable {
   final _metricsRepository = dependencyLocator<MetricsRepository>();
   final _destinationRepository = dependencyLocator<DestinationRepository>();
 
+  final _eventBus = dependencyLocator<EventBus>();
+
   final _getSettings = GetSettingsUseCase();
   final _enableRemoteLogging = EnableRemoteLoggingUseCase();
   final _disableRemoteLogging = DisableRemoteLoggingUseCase();
@@ -42,6 +47,8 @@ class ChangeSettingUseCase extends UseCase with Loggable {
   final _changeOutgoingNumber = ChangeOutgoingNumberUseCase();
   final _suppressOutgoingNumber = SuppressOutgoingNumberUseCase();
   final _getUser = GetUserUseCase();
+  final _changeUseMobileNumberAsFallback =
+      ChangeUseMobileNumberAsFallbackUseCase();
 
   Future<void> call({required Setting setting, bool remote = true}) async {
     if (setting is AvailabilitySetting) {
@@ -55,12 +62,10 @@ class ChangeSettingUseCase extends UseCase with Loggable {
         logger.info('Changed ${setting.runtimeType} '
             'to ${setting.value!.selectedDestinationInfo}');
       }
-    } else {
-      logger.info('Set ${setting.runtimeType} to ${setting.value}');
     }
 
     if (setting is RemoteLoggingSetting) {
-      if (setting.value) {
+      if (setting.value == true) {
         await _enableRemoteLogging();
       } else {
         await _disableRemoteLogging();
@@ -97,6 +102,14 @@ class ChangeSettingUseCase extends UseCase with Loggable {
       setting = OutgoingNumberSetting(user.outgoingCli ?? '');
     }
 
+    if (remote && setting is UseMobileNumberAsFallbackSetting) {
+      await _changeUseMobileNumberAsFallback(enable: setting.value);
+      final user = await _getUser(latest: true);
+      setting = UseMobileNumberAsFallbackSetting(
+        user?.isMobileNumberFallbackEnabled ?? false,
+      );
+    }
+
     final settings = await _getSettings();
     final hasSettingValueChanged = _didSettingChange(settings, setting);
 
@@ -126,9 +139,13 @@ class ChangeSettingUseCase extends UseCase with Loggable {
       } else {
         _registerToVoipMiddleware();
       }
+    } else if (setting is ShowClientCallsSetting) {
+      _eventBus.broadcast(ShowClientCallsSettingChanged(setting.value));
     }
 
     if (hasSettingValueChanged && setting.shouldTrack) {
+      logger.info('Set ${setting.runtimeType} to ${setting.value}');
+
       _metricsRepository.track(
         '${setting.asMetricKeyName}_changed',
         setting.asMetricProperties,

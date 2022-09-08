@@ -5,6 +5,7 @@ import 'package:chopper/chopper.dart';
 import 'package:dartx/dartx.dart';
 
 import '../../../dependency_locator.dart';
+import '../../entities/system_user.dart';
 import '../../events/event_bus.dart';
 import '../../events/unauthorized_api_response.dart';
 import '../../usecases/get_user.dart';
@@ -23,12 +24,18 @@ class AuthorizationInterceptor implements chopper.RequestInterceptor {
   /// way of authentication.
   final List<String> forcedLegacyAuthPaths;
 
-  const AuthorizationInterceptor({this.forcedLegacyAuthPaths = const []});
+  /// The user can be passed in directly rather than inferred, this is used
+  /// to support creation within an isolate.
+  final SystemUser? user;
+
+  const AuthorizationInterceptor({
+    this.forcedLegacyAuthPaths = const [],
+    this.user,
+  });
 
   @override
   FutureOr<chopper.Request> onRequest(chopper.Request request) async {
-    final getUser = GetUserUseCase();
-    final user = await getUser(latest: false);
+    final user = this.user ?? (await GetUserUseCase()(latest: false));
 
     if (user != null) {
       bool useLegacyAuth;

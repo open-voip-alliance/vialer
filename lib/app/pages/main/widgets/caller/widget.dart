@@ -224,6 +224,9 @@ Future<void> _showInitiatingCallFailedDialog(
       message =
           context.msg.main.call.error.voip.rejectedByAndroidTelecomFramework;
       break;
+    case CallFailureReason.rejectedByCallKit:
+      message = context.msg.main.call.error.voip.rejectedByCallKit;
+      break;
     case CallFailureReason.unableToRegister:
       message = context.msg.main.call.error.voip.unableToRegister;
       break;

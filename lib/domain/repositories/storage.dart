@@ -136,12 +136,12 @@ class StorageRepository {
 
   /// We store whether the Recent page was shown, to display a dialog on the
   /// first show explaining where to find company calls.
-  static const _shownRecentsKey = 'shown_recents';
+  static const _shownRecentCallsKey = 'shown_recent_calls';
 
-  bool? get shownRecents => _preferences.getBool(_shownRecentsKey);
+  bool? get shownRecentCalls => _preferences.getBool(_shownRecentCallsKey);
 
-  set shownRecents(bool? shownRecents) =>
-      _preferences.setOrRemoveBool(_shownRecentsKey, shownRecents);
+  set shownRecentCalls(bool? shownRecents) =>
+      _preferences.setOrRemoveBool(_shownRecentCallsKey, shownRecents);
 
   static const _isLoggedInSomewhereElseKey = 'is_logged_in_somewhere_else';
 
@@ -157,6 +157,14 @@ class StorageRepository {
 
   set loginTime(DateTime? value) =>
       _preferences.setOrRemoveDateTime(_loginTimeKey, value);
+
+  static const _lastCallRatingAskedTimeKey = 'last_call_rating_asked_time';
+
+  DateTime? get lastCallRatingAskedTime =>
+      _preferences.getDateTime(_lastCallRatingAskedTimeKey);
+
+  set lastCallRatingAskedTime(DateTime? value) =>
+      _preferences.setOrRemoveDateTime(_lastCallRatingAskedTimeKey, value);
 
   static const _appRatingSurveyActionCountKey =
       'app_rating_survey_action_count';

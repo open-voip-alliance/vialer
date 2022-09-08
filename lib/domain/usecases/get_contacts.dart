@@ -6,22 +6,35 @@ import '../entities/exceptions/no_permission.dart';
 import '../entities/permission.dart';
 import '../entities/permission_status.dart';
 import '../repositories/contact.dart';
+import '../repositories/metrics.dart';
 import '../repositories/permission.dart';
 import '../use_case.dart';
 
 class GetContactsUseCase extends UseCase {
   final _contactsRepository = dependencyLocator<ContactRepository>();
   final _permissionRepository = dependencyLocator<PermissionRepository>();
+  final _metricsRepository = dependencyLocator<MetricsRepository>();
 
-  Future<List<Contact>> call() async {
+  Future<List<Contact>> call({
+    bool latest = true,
+  }) async {
     final status = await _permissionRepository.getPermissionStatus(
       Permission.contacts,
     );
 
     if (status != PermissionStatus.granted) {
+      _contactsRepository.cleanUp();
       throw NoPermissionException();
-    } else {
-      return await _contactsRepository.getContacts();
     }
+
+    final contacts = await _contactsRepository.getContacts(
+      onlyFromCache: !latest,
+    );
+
+    _metricsRepository.track('contacts-loaded', {
+      'amount': contacts.length,
+    });
+
+    return contacts;
   }
 }
