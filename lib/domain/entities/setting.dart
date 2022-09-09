@@ -137,8 +137,7 @@ abstract class Setting<T> {
       );
     } else if (type == (UseMobileNumberAsFallbackSetting).toString()) {
       return UseMobileNumberAsFallbackSetting(value as bool);
-    }
-    else {
+    } else {
       assert(false, 'Setting type does not exist: $type');
       return null;
     }
@@ -317,7 +316,12 @@ class VoipgridPermissionsSetting extends Setting<VoipgridPermissions> {
       : super(value, mutable: true, external: true);
 
   const VoipgridPermissionsSetting.preset()
-      : this(const VoipgridPermissions(hasClientCallsPermission: false));
+      : this(
+          const VoipgridPermissions(
+            hasClientCallsPermission: false,
+            hasMobileNumberFallbackPermission: false,
+          ),
+        );
 
   @override
   VoipgridPermissionsSetting copyWith({VoipgridPermissions? value}) =>
