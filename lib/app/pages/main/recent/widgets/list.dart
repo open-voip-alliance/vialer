@@ -22,7 +22,6 @@ class RecentCallsList extends StatefulWidget {
   final void Function(String) onCallPressed;
   final void Function(String) onCopyPressed;
   final void Function() loadMoreCalls;
-  final void Function() automaticallyPopulateCalls;
   final void Function() performBackgroundImport;
 
   final ManualRefresher manualRefresher;
@@ -38,7 +37,6 @@ class RecentCallsList extends StatefulWidget {
     required this.onCopyPressed,
     required this.loadMoreCalls,
     required this.manualRefresher,
-    required this.automaticallyPopulateCalls,
     required this.performBackgroundImport,
   }) : super(key: key);
 
@@ -52,15 +50,12 @@ class _RecentCallsListState extends State<RecentCallsList>
   Timer? _localRefreshTimer;
   Timer? _backgroundImportTimer;
 
-  static const _localRefreshInterval = Duration(seconds: 5);
   static const _backgroundImportInterval = Duration(seconds: 30);
 
   @override
   void initState() {
     super.initState();
     _scrollController.addListener(_handleScrolling);
-    _localRefreshTimer = Timer.periodic(
-        _localRefreshInterval, (_) => widget.automaticallyPopulateCalls());
     _backgroundImportTimer = Timer.periodic(
       _backgroundImportInterval,
       (_) => widget.performBackgroundImport(),

@@ -71,7 +71,7 @@ class VialerDatabase extends _$VialerDatabase {
 
 LazyDatabase _openConnection() {
   return LazyDatabase(() async {
-    return NativeDatabase(await getDatabaseDirectory());
+    return NativeDatabase(await getDatabaseFile());
   });
 }
 
@@ -81,7 +81,7 @@ LazyDatabase _openConnectionForIsolate(String path) {
   });
 }
 
-Future<File> getDatabaseDirectory() async {
+Future<File> getDatabaseFile() async {
   final dbFolder = await getApplicationDocumentsDirectory();
   return File(p.join(dbFolder.path, 'db.sqlite'));
 }
