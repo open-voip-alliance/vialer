@@ -138,7 +138,8 @@ class _SettingsPageState extends State<SettingsPage> {
                                   SettingTile.useVoip(
                                     settings.get<UseVoipSetting>(),
                                   ),
-                                  if (settings.get<UseVoipSetting>().value)
+                                  if (settings.get<UseVoipSetting>().value &&
+                                      settings.hasMobileFallbackPermission)
                                     SettingTile.useMobileNumberAsFallback(
                                       state.systemUser!,
                                       settings.get<
@@ -378,4 +379,12 @@ class _Keys {
   const _Keys();
 
   final mobileNumber = const Key('mobileNumberSetting');
+}
+
+extension on List<Setting> {
+  bool get hasMobileFallbackPermission =>
+      get<VoipgridPermissionsSetting>()
+          .value
+          .hasMobileNumberFallbackPermission ==
+      true;
 }
