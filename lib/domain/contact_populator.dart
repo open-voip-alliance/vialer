@@ -13,7 +13,17 @@ class CallRecordContactPopulator {
 
     return callRecords
         .map(
-          (call) => call.withContact(contacts[call.numberForContactLookup]),
+          (call) {
+            for (final number in call.lookupVariations) {
+              final contact = contacts[number];
+
+              if (contact != null) {
+                return call.withContact(contact);
+              }
+            }
+
+            return call.withContact(null);
+          },
         )
         .toList();
   }
@@ -22,4 +32,21 @@ class CallRecordContactPopulator {
 extension on CallRecord {
   String get numberForContactLookup =>
       isOutbound ? destination.number : caller.number;
+
+  /// Creates a prioritized list of numbers to perform a look-up with in
+  /// contacts, this is mainly a simple way to remove the country code
+  /// without introducing any complicated/slow phone number parsing.
+  List<String> get lookupVariations {
+    final number = numberForContactLookup;
+
+    if (number.length <= 5) return [number];
+
+    return [
+      number,
+      number.replaceRange(0, 3, '0'),
+      number.replaceRange(0, 2, '0'),
+      number.replaceRange(0, 1, '0'),
+      number.replaceRange(0, 4, '0'),
+    ];
+  }
 }
