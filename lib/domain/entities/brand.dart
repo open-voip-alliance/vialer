@@ -64,3 +64,28 @@ class Brand extends Equatable {
       'encryptedSipUrl: $encryptedSipUrl, '
       'unencryptedSipUrl: $unencryptedSipUrl)';
 }
+
+extension GetBrandValue on Brand {
+  /// Select and get a value depending on the current brand.
+  ///
+  /// Note: [vialer] is chosen when either [isVialer] or [isVialerStaging]
+  /// is true.
+  T select<T>({
+    required T vialer,
+    required T voys,
+    required T verbonden,
+    required T annabel,
+  }) {
+    if (isVialer || isVialerStaging) {
+      return vialer;
+    } else if (isVoys) {
+      return voys;
+    } else if (isVerbonden) {
+      return verbonden;
+    } else if (isAnnabel) {
+      return annabel;
+    } else {
+      throw UnsupportedError('Unsupported brand: $identifier');
+    }
+  }
+}

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../../domain/entities/permission.dart';
 import '../../../../resources/localizations.dart';
@@ -12,7 +13,7 @@ class BluetoothPermissionPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return PermissionPage(
       permission: Permission.bluetooth,
-      icon: const Icon(VialerSans.bluetooth),
+      icon: const FaIcon(FontAwesomeIcons.bluetooth),
       title: Text(context.msg.onboarding.permission.bluetooth.title),
       description: Text(
         context.msg.onboarding.permission.bluetooth.description(

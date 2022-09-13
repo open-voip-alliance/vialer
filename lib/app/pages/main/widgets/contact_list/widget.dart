@@ -4,6 +4,7 @@ import 'package:dartx/dartx.dart';
 import 'package:diacritic/diacritic.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
@@ -236,7 +237,7 @@ class _Placeholder extends StatelessWidget {
       placeholder: SingleChildScrollView(
         child: state is NoPermission
             ? Warning(
-                icon: const Icon(VialerSans.lockOn),
+                icon: const FaIcon(FontAwesomeIcons.lock),
                 title: Text(
                   context.msg.main.contacts.list.noPermission.title(appName),
                 ),
@@ -280,7 +281,7 @@ class _Placeholder extends StatelessWidget {
                     ),
                   )
                 : Warning(
-                    icon: const Icon(VialerSans.userOff),
+                    icon: const FaIcon(FontAwesomeIcons.userSlash),
                     title: Text(
                       context.msg.main.contacts.list.empty.title,
                     ),
@@ -549,16 +550,17 @@ class _SearchTextFieldState extends State<_SearchTextField> {
           borderSide: BorderSide.none,
           gapPadding: 0,
         ),
+        // Must be `Icon` and not `FaIcon` because it's expected as a square.
         prefixIcon: Icon(
-          VialerSans.search,
+          FontAwesomeIcons.magnifyingGlass,
           size: 20,
           color: context.brand.theme.colors.grey4,
         ),
         suffixIcon: _canClear
             ? IconButton(
                 onPressed: _handleClear,
-                icon: Icon(
-                  VialerSans.close,
+                icon: FaIcon(
+                  FontAwesomeIcons.xmark,
                   size: 20,
                   color: context.brand.theme.colors.grey4,
                 ),

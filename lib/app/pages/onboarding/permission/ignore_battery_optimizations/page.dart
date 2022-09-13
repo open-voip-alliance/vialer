@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../../domain/entities/permission.dart';
 import '../../../../resources/localizations.dart';
-import '../../../../resources/theme.dart';
+import '../../../../util/brand.dart';
 import '../abstract/page.dart';
 
 class IgnoreBatteryOptimizationsPermissionPage extends StatelessWidget {
@@ -12,7 +13,7 @@ class IgnoreBatteryOptimizationsPermissionPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return PermissionPage(
       permission: Permission.ignoreBatteryOptimizations,
-      icon: const Icon(VialerSans.battery),
+      icon: const FaIcon(FontAwesomeIcons.batteryLow),
       title: Text(
         context.msg.onboarding.permission.ignoreBatteryOptimizations.title,
       ),

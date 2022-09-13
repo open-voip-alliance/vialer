@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../resources/localizations.dart';
-import '../../../resources/theme.dart';
 import '../../../widgets/connectivity_checker/cubit.dart';
 import '../util/stylized_snack_bar.dart';
 
@@ -35,7 +35,7 @@ class _ConnectivityAlertState extends State<ConnectivityAlert> {
         context,
         // Hacky way off showing the snack bar 'forever'
         duration: const Duration(days: 365),
-        icon: const Icon(VialerSans.exclamationMark),
+        icon: const FaIcon(FontAwesomeIcons.exclamation),
         label: Text(context.msg.connectivity.noConnection.message),
       );
     }

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../../domain/entities/call_record.dart';
 import '../../../../resources/localizations.dart';
@@ -92,7 +93,7 @@ class _RecentCallsListState extends State<RecentCallsList>
   void _showSnackBar(BuildContext context) {
     showSnackBar(
       context,
-      icon: const Icon(VialerSans.copy),
+      icon: const FaIcon(FontAwesomeIcons.copy),
       label: Text(context.msg.main.recent.snackBar.copied),
       padding: widget.snackBarPadding,
     );
@@ -118,7 +119,7 @@ class _RecentCallsListState extends State<RecentCallsList>
             : SingleChildScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
                 child: Warning(
-                  icon: const Icon(VialerSans.missedCall),
+                  icon: const FaIcon(FontAwesomeIcons.phoneXmark),
                   title: Text(context.msg.main.recent.list.empty.title),
                   description: Text(
                     context.msg.main.recent.list.empty.description,

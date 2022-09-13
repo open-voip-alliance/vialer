@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart' hide Colors;
 
 import '../../../domain/entities/brand.dart';
+import 'brand_icon_code_points.dart';
+import 'color_values.dart';
 import 'colors.dart';
-import 'raw_colors.dart';
-import 'vialer_sans.dart';
 
 @immutable
 class BrandTheme {
@@ -72,31 +72,35 @@ class BrandTheme {
   }
 }
 
-// Theme is cached here to prevent constant object creation.
-BrandTheme? _theme;
-
 extension ThemeOfBrand on Brand {
+  // Theme is cached here to prevent constant object creation.
+  static BrandTheme? _theme;
+
   BrandTheme get theme => _theme ??= BrandTheme(
-        Colors(rawColors),
-        logo,
+        Colors(colorValues),
+        icon,
       );
 }
 
-// Unfortunately this logic has to be copied over, if we construct an
-// IconData dynamically using rawLogo Flutter won't tree-shake icons.
-extension on Brand {
-  IconData get logo {
-    if (isVialer || isVialerStaging) {
-      return VialerSans.brandVialer;
-    } else if (isVoys) {
-      return VialerSans.brandVoys;
-    } else if (isVerbonden) {
-      return VialerSans.brandVerbonden;
-    } else if (isAnnabel) {
-      return VialerSans.brandAnnabel;
-    } else {
-      throw UnsupportedError('A logo must be added for $identifier');
-    }
+extension BrandIcon on Brand {
+  IconData get icon {
+    const family = 'BrandIcons';
+
+    // Always use a const constructor for IconData, don't use
+    // the `iconCodePoint` extension directly.
+    // Otherwise, icons are not tree-shaken.
+    return select(
+      vialer: const IconData(BrandIconCodePoints.vialer, fontFamily: family),
+      voys: const IconData(BrandIconCodePoints.voys, fontFamily: family),
+      verbonden: const IconData(
+        BrandIconCodePoints.verbonden,
+        fontFamily: family,
+      ),
+      annabel: const IconData(
+        BrandIconCodePoints.annabel,
+        fontFamily: family,
+      ),
+    );
   }
 }
 

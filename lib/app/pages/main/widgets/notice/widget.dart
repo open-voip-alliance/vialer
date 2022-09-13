@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../../domain/entities/permission.dart';
 import '../../../../resources/localizations.dart';
@@ -51,15 +52,15 @@ class _NoticeState extends State<_Notice>
 
   IconData _iconFor(NoticeState state) {
     if (state is PhonePermissionDeniedNotice) {
-      return VialerSans.missedCall;
+      return FontAwesomeIcons.phoneXmark;
     } else if (state is MicrophonePermissionDeniedNotice) {
-      return VialerSans.mute;
+      return FontAwesomeIcons.microphoneSlash;
     } else if (state is BluetoothConnectPermissionDeniedNotice) {
-      return VialerSans.bluetooth;
+      return FontAwesomeIcons.bluetooth;
     } else if (state is NotificationsPermissionDeniedNotice) {
-      return VialerSans.eyeOff;
+      return FontAwesomeIcons.eyeSlash;
     } else {
-      return VialerSans.exclamationMark;
+      return FontAwesomeIcons.exclamation;
     }
   }
 
@@ -105,7 +106,7 @@ class _NoticeState extends State<_Notice>
             return AnimatedVisibility(
               visible: state is! NoNotice,
               child: NoticeBanner(
-                icon: Icon(_iconFor(state)),
+                icon: FaIcon(_iconFor(state)),
                 title: Text(_titleFor(state)),
                 content: Text(_contentFor(state)),
                 actions: [

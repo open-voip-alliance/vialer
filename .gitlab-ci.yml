@@ -23,8 +23,15 @@ build & test:
     reports:
       junit: "test_results/**/test_result_*.xml"
   before_script:
+    # Prepare SSH
+    - 'command -v ssh-agent >/dev/null || (apt-get update -y && apt-get install openssh-client -y)'
+    - eval $(ssh-agent -s)
+    - echo "$FONT_AWESOME_SSH_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - echo "$SSH_KNOWN_HOSTS" >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
     - dart ./utils/ci/gitlab/remove_build_url.dart
-    - apt-get update && apt-get -y -qq install python3
     - dart pub get
   script:
     - dart ./utils/ci/gitlab/build_via_codemagic.dart

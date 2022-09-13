@@ -1,5 +1,6 @@
 import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
@@ -29,7 +30,7 @@ class SettingTileCategory extends StatelessWidget {
       builder: (context) {
         return SettingTileCategory(
           highlight: true,
-          icon: VialerSans.user,
+          icon: FontAwesomeIcons.user,
           title: context.msg.main.settings.list.accountInfo.title,
           children: children,
         );
@@ -41,7 +42,7 @@ class SettingTileCategory extends StatelessWidget {
     return Builder(
       builder: (context) {
         return SettingTileCategory(
-          icon: VialerSans.speaker,
+          icon: FontAwesomeIcons.volume,
           title: context.msg.main.settings.list.audio.title,
           children: children,
         );
@@ -53,20 +54,8 @@ class SettingTileCategory extends StatelessWidget {
     return Builder(
       builder: (context) {
         return SettingTileCategory(
-          icon: VialerSans.phone,
+          icon: FontAwesomeIcons.phone,
           title: context.msg.main.settings.list.calling.title,
-          children: children,
-        );
-      },
-    );
-  }
-
-  static Widget userDestination({List<Widget> children = const []}) {
-    return Builder(
-      builder: (context) {
-        return SettingTileCategory(
-          icon: VialerSans.incomingCall,
-          title: context.msg.main.settings.list.calling.availability.title,
           children: children,
         );
       },
@@ -77,7 +66,7 @@ class SettingTileCategory extends StatelessWidget {
     return Builder(
       builder: (context) {
         return SettingTileCategory(
-          icon: VialerSans.bug,
+          icon: FontAwesomeIcons.bug,
           title: context.msg.main.settings.list.debug.title,
           children: children,
         );
@@ -89,7 +78,7 @@ class SettingTileCategory extends StatelessWidget {
     return Builder(
       builder: (context) {
         return SettingTileCategory(
-          icon: VialerSans.bug,
+          icon: FontAwesomeIcons.bug,
           title: context.msg.main.settings.list.advancedSettings.title,
           children: children,
         );
@@ -101,7 +90,7 @@ class SettingTileCategory extends StatelessWidget {
     return Builder(
       builder: (context) {
         return SettingTileCategory(
-          icon: VialerSans.phone,
+          icon: FontAwesomeIcons.phone,
           title: context.msg.main.settings.list.advancedSettings.troubleshooting
               .list.calling.title,
           children: children,
@@ -114,7 +103,7 @@ class SettingTileCategory extends StatelessWidget {
     return Builder(
       builder: (context) {
         return SettingTileCategory(
-          icon: VialerSans.speaker,
+          icon: FontAwesomeIcons.volume,
           title: context.msg.main.settings.list.advancedSettings.troubleshooting
               .list.audio.title,
           children: children,
@@ -127,7 +116,7 @@ class SettingTileCategory extends StatelessWidget {
     return Builder(
       builder: (context) {
         return SettingTileCategory(
-          icon: VialerSans.voipCloud,
+          icon: FontAwesomeIcons.browsers,
           title: context.msg.main.settings.list.portalLinks.title,
           children: context.isIOS
               ? children
@@ -178,7 +167,7 @@ class SettingTileCategory extends StatelessWidget {
               children: <Widget>[
                 Row(
                   children: <Widget>[
-                    Icon(
+                    FaIcon(
                       icon,
                       color: context.brand.theme.colors.grey1,
                       size: !context.isIOS ? 16 : null,

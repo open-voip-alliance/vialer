@@ -4,7 +4,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 import '../../../domain/entities/brand.dart';
 
-part 'raw_colors.g.dart';
+part 'color_values.g.dart';
 
 // Why ints?
 //
@@ -18,8 +18,8 @@ part 'raw_colors.g.dart';
 // Another small bonus is that writing color definitions is shorter since you
 // don't have to call the Color constructor everytime!
 @JsonSerializable(createFactory: false)
-class RawColors {
-  const RawColors({
+class ColorValues {
+  const ColorValues({
     required this.primary,
     required this.primaryDark,
     required this.primaryLight,
@@ -131,7 +131,7 @@ class RawColors {
   final int notificationBackground;
 
   /// Defaults should be left as-is.
-  const RawColors.vialer({
+  const ColorValues.vialer({
     int primary = 0xFFFF7B24,
     int primaryDark = 0xFFD45400,
     int primaryLight = 0xFFFFD0A3,
@@ -152,7 +152,7 @@ class RawColors {
         );
 
   /// Defaults should be left as-is.
-  const RawColors.voys({
+  const ColorValues.voys({
     int primary = 0xFF3B14B9,
     int primaryDark = 0xFF31227A,
     int primaryLight = 0xFFC0B4E8,
@@ -171,7 +171,7 @@ class RawColors {
         );
 
   /// Defaults should be left as-is.
-  const RawColors.verbonden({
+  const ColorValues.verbonden({
     int primary = 0xFF003A63,
     int primaryDark = 0xFF01243C,
     int primaryLight = 0xFF70D8FF,
@@ -190,7 +190,7 @@ class RawColors {
         );
 
   /// Defaults should be left as-is.
-  const RawColors.annabel({
+  const ColorValues.annabel({
     int primary = 0xFF5F4B8B,
     int primaryDark = 0xFF3C247F,
     int primaryLight = 0xFFD9D2EF,
@@ -208,24 +208,17 @@ class RawColors {
           buttonRaisedColorText: 0xFFFFFFFF,
         );
 
-  Map<String, dynamic> toJson() => _$RawColorsToJson(this);
+  Map<String, dynamic> toJson() => _$ColorValuesToJson(this);
 }
 
 extension BrandColors on Brand {
-  /// The raw colors associated with this [Brand].
+  /// The color values associated with this [Brand].
   ///
   /// To use `dart:ui` `Color`s, use `brand.theme.colors`.
-  RawColors get rawColors {
-    if (isVialer || isVialerStaging) {
-      return const RawColors.vialer();
-    } else if (isVoys) {
-      return const RawColors.voys();
-    } else if (isVerbonden) {
-      return const RawColors.verbonden();
-    } else if (isAnnabel) {
-      return const RawColors.annabel();
-    } else {
-      throw UnsupportedError('Colors must be added for $identifier}');
-    }
-  }
+  ColorValues get colorValues => select(
+        vialer: const ColorValues.vialer(),
+        voys: const ColorValues.voys(),
+        verbonden: const ColorValues.verbonden(),
+        annabel: const ColorValues.annabel(),
+      );
 }

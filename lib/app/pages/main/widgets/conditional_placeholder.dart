@@ -131,14 +131,13 @@ class _Illustration extends StatelessWidget {
           color: backgroundColor,
           shape: BoxShape.circle,
         ),
+        alignment: Alignment.center,
         child: IconTheme(
           data: IconTheme.of(context).copyWith(
             color: Theme.of(context).primaryColor,
-            size: 48,
+            size: 42,
           ),
-          child: Center(
-            child: child,
-          ),
+          child: child
         ),
       ),
     );

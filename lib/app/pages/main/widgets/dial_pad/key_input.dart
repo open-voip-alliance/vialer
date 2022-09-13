@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
@@ -260,8 +261,9 @@ class _DeleteButtonState extends State<_DeleteButton> {
                       : context.brand.theme.colors.grey2,
                 ),
           ),
+          // Must stay as `Icon` (used in a `TextField`).
           child: const Icon(
-            VialerSans.correct,
+            FontAwesomeIcons.deleteLeft,
             size: _DeleteButton.size,
           ),
         ),

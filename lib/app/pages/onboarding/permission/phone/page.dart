@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../../domain/entities/permission.dart';
 import '../../../../resources/localizations.dart';
@@ -14,7 +15,7 @@ class PhonePermissionPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return PermissionPage(
       permission: Permission.phone,
-      icon: const Icon(VialerSans.phone),
+      icon: const FaIcon(FontAwesomeIcons.phone),
       title: Text(context.msg.onboarding.permission.phone.title),
       description: Text(
         context.msg.onboarding.permission.phone
