@@ -159,7 +159,7 @@ fun IncomingCallPage(
         ) {
             ConcentricCircleGraphic(size = 250.dp) {
                 Icon(
-                    icon = VialerSans(integerResource(R.integer.logo)),
+                    icon = BrandIcons(integerResource(R.integer.brand_icon)),
                     size = 60.sp,
                     color = LocalContext.current.primary,
                 )
@@ -266,7 +266,7 @@ fun CallHeader(callHeaderInformation: CallHeaderInformation, fontSize: TextUnit 
             Column() {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
-                        VialerSans.INCOMING_CALL,
+                        FontAwesome.PHONE_ARROW_DOWN_LEFT,
                         size = fontSize * 0.6,
                         color = textStyle.color,
                     )
@@ -362,7 +362,7 @@ fun AnswerButton(onClick: () -> Unit) {
         text = stringResource(R.string.main_call_incoming_answer),
         textColor = colorResource(R.color.primary_dark),
     ) {
-        Icon(icon = VialerSans.PHONE)
+        Icon(icon = FontAwesome.SOLID_PHONE)
     }
 }
 
@@ -374,15 +374,23 @@ fun DeclineButton(onClick: () -> Unit) {
         text = stringResource(R.string.main_call_incoming_decline),
         textColor = colorResource(R.color.primary_dark),
     ) {
-        Icon(icon = VialerSans.HANG_UP)
+        Icon(icon = FontAwesome.SOLID_PHONE_HANGUP)
     }
 }
 
 @Composable
-fun Icon(icon: VialerSans, size: TextUnit = 32.sp, color: Color = Color.Unspecified) {
+fun Icon(icon: Icon, size: TextUnit = 26.sp, color: Color = Color.Unspecified) {
+    val fontFamily = when (icon) {
+        is BrandIcons -> R.font.brand_icons
+        is FontAwesome -> when {
+            icon.solid -> R.font.fa_solid_900
+            else -> R.font.fa_regular_400
+        }
+    }
+
     Text(
         text = String(charArrayOf(icon.character.toChar())),
-        fontFamily = FontFamily(Font(R.font.vialer_sans)),
+        fontFamily = FontFamily(Font(fontFamily)),
         fontSize = size,
         color = color,
     )
@@ -417,12 +425,18 @@ fun ActionButton(
     }
 }
 
+sealed interface Icon {
+    val character: Int
+}
+
 @JvmInline
-value class VialerSans(val character: Int) {
+value class BrandIcons(override val character: Int) : Icon
+
+data class FontAwesome(override val character: Int, val solid: Boolean) : Icon {
     companion object {
-        val HANG_UP = VialerSans(0xE96B)
-        val PHONE = VialerSans(0xE980)
-        val INCOMING_CALL = VialerSans(0xE924)
+        val SOLID_PHONE_HANGUP = FontAwesome(0xE225, solid = true)
+        val SOLID_PHONE = FontAwesome(0xF095, solid = true)
+        val PHONE_ARROW_DOWN_LEFT = FontAwesome(0xE223, solid = false)
     }
 }
 

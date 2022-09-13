@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_phone_lib/flutter_phone_lib.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
@@ -75,8 +76,8 @@ class _IncomingCallPageState extends State<IncomingCallPage>
                               padding: const EdgeInsets.all(24),
                               child: Icon(
                                 // This will be replaced with an animation,
-                                // which resembles the Vialer brand icon.
-                                VialerSans.brandVialer,
+                                // which resembles the brand icon.
+                                context.brand.icon,
                                 size: 56,
                                 color: context.brand.theme.colors.primary,
                               ),
@@ -185,7 +186,7 @@ class _Info extends StatelessWidget {
                 foregroundColor: context.brand.theme.colors.primary,
                 backgroundColor: Colors.white,
                 showFallback: call.contact?.name == null,
-                fallback: const Icon(VialerSans.phone, size: 20),
+                fallback: const FaIcon(FontAwesomeIcons.phone, size: 16),
               ),
             ),
             const SizedBox(width: 16),
@@ -205,8 +206,8 @@ class _Info extends StatelessWidget {
                   const SizedBox(height: 4),
                   Row(
                     children: [
-                      const Icon(
-                        VialerSans.incomingCall,
+                      const FaIcon(
+                        FontAwesomeIcons.phoneArrowDownLeft,
                         size: 12,
                       ),
                       const SizedBox(width: 8),

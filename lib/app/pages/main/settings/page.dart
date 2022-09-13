@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../domain/entities/build_info.dart';
 import '../../../../domain/entities/setting.dart';
@@ -38,7 +39,7 @@ class _SettingsPageState extends State<SettingsPage> {
     if (sent) {
       showSnackBar(
         context,
-        icon: const Icon(VialerSans.check),
+        icon: const FaIcon(FontAwesomeIcons.check),
         label: Text(context.msg.main.settings.feedback.snackBar),
       );
     }

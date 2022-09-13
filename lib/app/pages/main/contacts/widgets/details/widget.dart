@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../../../domain/entities/contact.dart';
 import '../../../../../resources/localizations.dart';
@@ -40,7 +41,7 @@ class _ContactPageDetailsState extends State<ContactPageDetails>
   void _showSnackBar(BuildContext context) {
     showSnackBar(
       context,
-      icon: const Icon(VialerSans.exclamationMark),
+      icon: const FaIcon(FontAwesomeIcons.exclamation),
       label: Text(context.msg.main.contacts.snackBar.noPermission),
       padding: const EdgeInsets.only(right: 72),
     );
@@ -99,7 +100,7 @@ class _ContactPageDetailsState extends State<ContactPageDetails>
                                     ),
                                   ),
                                 )
-                              : const Icon(Icons.edit),
+                              : const FaIcon(FontAwesomeIcons.pen),
                         ),
                       ),
                     ],

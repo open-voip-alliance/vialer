@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-
-import '../../../resources/theme.dart';
 
 class NavigationControls extends StatelessWidget {
   final WebViewController? _webViewController;
@@ -33,15 +32,15 @@ class NavigationControls extends StatelessWidget {
     return Row(
       children: <Widget>[
         IconButton(
-          icon: const Icon(VialerSans.caretLeft),
+          icon: const FaIcon(FontAwesomeIcons.angleLeft),
           onPressed: _webviewIsReady ? _onBackButtonPressed : null,
         ),
         IconButton(
-          icon: const Icon(VialerSans.caretRight),
+          icon: const FaIcon(FontAwesomeIcons.angleRight),
           onPressed: _webviewIsReady ? _onForwardButtonPressed : null,
         ),
         IconButton(
-          icon: const Icon(VialerSans.refresh),
+          icon: const FaIcon(FontAwesomeIcons.arrowsRotate),
           onPressed: _webviewIsReady ? _onReloadButtonPressed : null,
         ),
       ],

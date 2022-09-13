@@ -72,6 +72,8 @@ class StylizedTextField extends StatelessWidget {
         enabled: enabled,
         decoration: InputDecoration(
           prefixIcon: prefixIcon != null
+              // We have to use `Icon` here instead of `FaIcon`, otherwise
+              // the alignment will be off.
               ? Icon(
                   prefixIcon,
                   color: hasError

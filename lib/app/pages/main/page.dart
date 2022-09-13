@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../resources/localizations.dart';
 import '../../resources/theme.dart';
@@ -166,7 +167,10 @@ class MainPageState extends State<MainPage> {
                             backgroundColor: context.brand.theme.colors.green1,
                             onPressed: () =>
                                 Navigator.pushNamed(context, Routes.dialer),
-                            child: const Icon(VialerSans.dialpad, size: 31),
+                            child: const FaIcon(
+                              FontAwesomeIcons.solidGrid,
+                              size: 31,
+                            ),
                           ),
                         ),
                       ),
@@ -235,19 +239,35 @@ class _BottomNavigationBar extends StatelessWidget {
         items: [
           if (dialerIsPage)
             BottomNavigationBarItem(
-              icon: const _BottomNavigationBarIcon(VialerSans.dialpad),
+              icon: const _BottomNavigationBarIcon(
+                FontAwesomeIcons.mobileNotch,
+              ),
+              activeIcon: const _BottomNavigationBarIcon(
+                FontAwesomeIcons.solidMobileNotch,
+              ),
               label: context.msg.main.dialer.menu.title,
             ),
           BottomNavigationBarItem(
-            icon: const _BottomNavigationBarIcon(VialerSans.contacts),
+            icon: const _BottomNavigationBarIcon(FontAwesomeIcons.addressBook),
+            activeIcon: const _BottomNavigationBarIcon(
+              FontAwesomeIcons.solidAddressBook,
+            ),
             label: context.msg.main.contacts.menu.title,
           ),
           BottomNavigationBarItem(
-            icon: const _BottomNavigationBarIcon(VialerSans.clock),
+            icon: const _BottomNavigationBarIcon(
+              FontAwesomeIcons.clockRotateLeft,
+            ),
+            activeIcon: const _BottomNavigationBarIcon(
+              FontAwesomeIcons.solidClockRotateLeft,
+            ),
             label: context.msg.main.recent.menu.title,
           ),
           BottomNavigationBarItem(
-            icon: const _BottomNavigationBarIcon(VialerSans.settings),
+            icon: const _BottomNavigationBarIcon(FontAwesomeIcons.gear),
+            activeIcon: const _BottomNavigationBarIcon(
+              FontAwesomeIcons.solidGear,
+            ),
             label: context.msg.main.settings.menu.title,
           ),
         ],
@@ -265,7 +285,7 @@ class _BottomNavigationBarIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 4),
-      child: Icon(icon),
+      child: FaIcon(icon),
     );
   }
 }

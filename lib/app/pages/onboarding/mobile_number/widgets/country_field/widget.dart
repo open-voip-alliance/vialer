@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../../../domain/entities/country.dart';
 import '../../../../../resources/localizations.dart';
-import '../../../../../resources/theme.dart';
 import '../country_field/cubit.dart';
 
 class CountryFlagField extends StatefulWidget {
@@ -184,8 +184,8 @@ class _CountryFlagFieldState extends State<CountryFlagField> {
               ),
             );
           } else {
-            return const Icon(
-              VialerSans.mobilePhone,
+            return const FaIcon(
+              FontAwesomeIcons.mobile,
               color: Colors.grey,
               size: 16,
             );

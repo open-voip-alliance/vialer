@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../../resources/localizations.dart';
 import '../../../../../resources/theme.dart';
@@ -285,8 +286,8 @@ class _AndroidInputs extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Icon(
-                    VialerSans.phone,
+                  FaIcon(
+                    FontAwesomeIcons.phone,
                     size: 16,
                     color: context.brand.theme.colors.green3,
                   ),

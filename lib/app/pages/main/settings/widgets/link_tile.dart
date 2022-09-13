@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../../domain/entities/web_page.dart';
 import '../../../../resources/localizations.dart';
@@ -123,8 +124,8 @@ class SettingLinkTile extends StatelessWidget {
         description: description,
         center: center,
         bordered: bordered,
-        child: Icon(
-          VialerSans.caretRight,
+        child: FaIcon(
+          FontAwesomeIcons.angleRight,
           color: context.brand.theme.colors.grey4,
         ),
       ),

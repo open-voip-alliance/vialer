@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_phone_lib/flutter_phone_lib.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
@@ -57,8 +58,8 @@ class _CallTransferState extends State<CallTransfer> {
     final bottomIconColor = mainContext.brand.theme.colors.grey5;
 
     final closeButton = IconButton(
-      icon: Icon(
-        VialerSans.close,
+      icon: FaIcon(
+        FontAwesomeIcons.xmark,
         color: bottomIconColor,
       ),
       iconSize: bottomIconSize,
@@ -95,15 +96,15 @@ class _CallTransferState extends State<CallTransfer> {
             routes: {
               _dialPadRoute: (context, _) {
                 return T9DialPad(
-                  callButtonIcon: VialerSans.transfer,
+                  callButtonIcon: FontAwesomeIcons.arrowRightArrowLeft,
                   callButtonColor: context.brand.theme.colors.green1,
                   callButtonSemanticsHint:
                       context.msg.main.call.ongoing.actions.transfer.label,
                   onCallButtonPressed: widget.onTransferTargetSelected,
                   bottomLeftButton: closeButton,
                   bottomRightButton: IconButton(
-                    icon: Icon(
-                      VialerSans.contacts,
+                    icon: FaIcon(
+                      FontAwesomeIcons.addressBook,
                       color: bottomIconColor,
                     ),
                     iconSize: bottomIconSize,
@@ -141,8 +142,8 @@ class _CallTransferState extends State<CallTransfer> {
                           children: [
                             closeButton,
                             IconButton(
-                              icon: Icon(
-                                VialerSans.dialpad,
+                              icon: FaIcon(
+                                FontAwesomeIcons.grid,
                                 color: bottomIconColor,
                               ),
                               iconSize: bottomIconSize,

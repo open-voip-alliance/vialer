@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../resources/localizations.dart';
 import '../../resources/theme.dart';
@@ -32,7 +33,7 @@ class ReleaseNotesDialog extends StatelessWidget {
     }
 
     return StylizedDialog(
-      headerIcon: VialerSans.star,
+      headerIcon: FontAwesomeIcons.star,
       title: context.msg.main.update.releaseNotes.header.title(
         context.brand.appName,
       ),

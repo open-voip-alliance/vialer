@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
@@ -39,7 +40,7 @@ class CallButton extends StatelessWidget {
         return CallButton(
           onPressed: onPressed,
           backgroundColor: context.brand.theme.colors.green1,
-          icon: VialerSans.phone,
+          icon: FontAwesomeIcons.solidPhone,
           heroTag: heroTag,
           constraints: constraints,
           semanticsHint: semanticsHint ?? context.msg.main.call.incoming.answer,
@@ -60,7 +61,7 @@ class CallButton extends StatelessWidget {
         return CallButton(
           onPressed: onPressed,
           backgroundColor: context.brand.theme.colors.red1,
-          icon: VialerSans.hangUp,
+          icon: FontAwesomeIcons.solidPhoneHangup,
           heroTag: heroTag,
           constraints: constraints,
           semanticsHint:
@@ -123,9 +124,9 @@ class CallButton extends StatelessWidget {
             backgroundColor: onPressed != null
                 ? backgroundColor
                 : context.brand.theme.colors.grey3,
-            child: Icon(
+            child: FaIcon(
               icon,
-              size: 32,
+              size: 24,
             ),
           ),
         ),

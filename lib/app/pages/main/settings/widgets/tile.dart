@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter_switch/flutter_switch.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../domain/entities/audio_codec.dart';
@@ -658,7 +659,7 @@ class _EditableSettingFieldState extends State<_EditableSettingField> {
         _editing ? widget.unlocked : widget.locked,
         IconButton(
           onPressed: _toggleEditing,
-          icon: const Icon(VialerSans.edit),
+          icon: const _EditIcon(),
         ),
       ],
     );
@@ -717,7 +718,7 @@ class _StringEditSettingValueState extends State<_StringEditSettingValue> {
         autoCorrect: false,
         suffix: IconButton(
           onPressed: () => _onPressed(context),
-          icon: const Icon(VialerSans.check),
+          icon: const FaIcon(FontAwesomeIcons.check),
         ),
         elevation: 0,
       );
@@ -733,7 +734,7 @@ class _StringEditSettingValueState extends State<_StringEditSettingValue> {
           ),
           IconButton(
             onPressed: _toggleEditing,
-            icon: const Icon(VialerSans.edit),
+            icon: const _EditIcon(),
           ),
         ],
       );
@@ -1015,13 +1016,25 @@ class _DndToggle extends StatelessWidget {
                 ),
                 child: FlutterSwitch(
                   value: setting.value,
-                  inactiveIcon: Icon(
-                    VialerSans.available,
-                    color: _accentColor(context),
+                  inactiveIcon: SizedBox(
+                    width: 28,
+                    height: 28,
+                    child: Center(
+                      child: FaIcon(
+                        FontAwesomeIcons.bell,
+                        color: _accentColor(context),
+                      ),
+                    ),
                   ),
-                  activeIcon: Icon(
-                    VialerSans.dnd,
-                    color: _accentColor(context),
+                  activeIcon: SizedBox(
+                    width: 28,
+                    height: 28,
+                    child: Center(
+                      child: FaIcon(
+                        FontAwesomeIcons.bellSlash,
+                        color: _accentColor(context),
+                      ),
+                    ),
                   ),
                   switchBorder: Border.all(
                     color: _color(context),
@@ -1072,5 +1085,17 @@ extension Display on UserAvailabilityType {
     } else {
       return context.brand.theme.colors.availableAccent;
     }
+  }
+}
+
+class _EditIcon extends StatelessWidget {
+  const _EditIcon({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return const FaIcon(
+      FontAwesomeIcons.pen,
+      size: 22,
+    );
   }
 }

@@ -1,9 +1,9 @@
 import 'dart:ui';
 
-import 'raw_colors.dart';
+import 'color_values.dart';
 
 // Regex (for IntelliJ) for find and replace to automatically
-// access the correct property from raw:
+// access the correct property from the values:
 //
 // Fields:
 // Find: final int ([A-z0-9]+);
@@ -11,49 +11,49 @@ import 'raw_colors.dart';
 //
 // Initializer:
 // Find: ([A-z0-9]+),
-// Replace: $1 = raw.$1.color,
+// Replace: $1 = v.$1.color,
 class Colors {
-  Colors(RawColors raw)
-      : primary = raw.primary.color,
-        primaryDark = raw.primaryDark.color,
-        primaryLight = raw.primaryLight.color,
-        onPrimary = raw.onPrimary.color,
-        grey1 = raw.grey1.color,
-        grey2 = raw.grey2.color,
-        grey3 = raw.grey3.color,
-        grey4 = raw.grey4.color,
-        grey5 = raw.grey5.color,
-        grey6 = raw.grey6.color,
-        settingsBackgroundHighlight = raw.settingsBackgroundHighlight.color,
-        green1 = raw.green1.color,
-        green2 = raw.green2.color,
-        green3 = raw.green3.color,
-        red1 = raw.red1.color,
-        answeredElsewhere = raw.answeredElsewhere.color,
-        notAvailable = raw.notAvailable.color,
-        notAvailableAccent = raw.notAvailableAccent.color,
-        availableElsewhere = raw.availableElsewhere.color,
-        availableElsewhereAccent = raw.availableElsewhereAccent.color,
-        dnd = raw.dnd.color,
-        dndAccent = raw.dndAccent.color,
-        available = raw.available.color,
-        availableAccent = raw.availableAccent.color,
-        splashScreen = raw.splashScreen.color,
-        onboardingGradientStart = raw.onboardingGradientStart.color,
-        onboardingGradientEnd = raw.onboardingGradientEnd.color,
-        primaryGradientStart = raw.primaryGradientStart.color,
-        primaryGradientEnd = raw.primaryGradientEnd.color,
-        onPrimaryGradient = raw.onPrimaryGradient.color,
-        errorBorder = raw.errorBorder.color,
-        errorContent = raw.errorContent.color,
-        errorBackground = raw.errorBackground.color,
-        textButtonForeground = raw.textButtonForeground.color,
-        buttonBackground = raw.buttonBackground.color,
-        buttonShade = raw.buttonShade.color,
-        raisedColoredButtonText = raw.raisedColoredButtonText.color,
-        appBarForeground = raw.appBarForeground.color,
-        appBarBackground = raw.appBarBackground.color,
-        notificationBackground = raw.notificationBackground.color;
+  Colors(ColorValues v)
+      : primary = v.primary.color,
+        primaryDark = v.primaryDark.color,
+        primaryLight = v.primaryLight.color,
+        onPrimary = v.onPrimary.color,
+        grey1 = v.grey1.color,
+        grey2 = v.grey2.color,
+        grey3 = v.grey3.color,
+        grey4 = v.grey4.color,
+        grey5 = v.grey5.color,
+        grey6 = v.grey6.color,
+        settingsBackgroundHighlight = v.settingsBackgroundHighlight.color,
+        green1 = v.green1.color,
+        green2 = v.green2.color,
+        green3 = v.green3.color,
+        red1 = v.red1.color,
+        answeredElsewhere = v.answeredElsewhere.color,
+        notAvailable = v.notAvailable.color,
+        notAvailableAccent = v.notAvailableAccent.color,
+        availableElsewhere = v.availableElsewhere.color,
+        availableElsewhereAccent = v.availableElsewhereAccent.color,
+        dnd = v.dnd.color,
+        dndAccent = v.dndAccent.color,
+        available = v.available.color,
+        availableAccent = v.availableAccent.color,
+        splashScreen = v.splashScreen.color,
+        onboardingGradientStart = v.onboardingGradientStart.color,
+        onboardingGradientEnd = v.onboardingGradientEnd.color,
+        primaryGradientStart = v.primaryGradientStart.color,
+        primaryGradientEnd = v.primaryGradientEnd.color,
+        onPrimaryGradient = v.onPrimaryGradient.color,
+        errorBorder = v.errorBorder.color,
+        errorContent = v.errorContent.color,
+        errorBackground = v.errorBackground.color,
+        textButtonForeground = v.textButtonForeground.color,
+        buttonBackground = v.buttonBackground.color,
+        buttonShade = v.buttonShade.color,
+        raisedColoredButtonText = v.raisedColoredButtonText.color,
+        appBarForeground = v.appBarForeground.color,
+        appBarBackground = v.appBarBackground.color,
+        notificationBackground = v.notificationBackground.color;
 
   final Color primary;
   final Color primaryDark;

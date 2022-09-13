@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../../../domain/entities/contact.dart';
 import '../../../../../resources/localizations.dart';
-import '../../../../../resources/theme.dart';
 import '../../../../../util/contact.dart';
 import '../../../widgets/caller.dart';
 import '../../../widgets/header.dart';
@@ -185,7 +185,9 @@ class _Item extends StatelessWidget {
       leading: Container(
         width: _leadingSize,
         alignment: Alignment.center,
-        child: Icon(isEmail ? VialerSans.mail : VialerSans.phone),
+        child: FaIcon(
+          isEmail ? FontAwesomeIcons.envelope : FontAwesomeIcons.phone,
+        ),
       ),
       title: Text(value),
       subtitle: Text(label),

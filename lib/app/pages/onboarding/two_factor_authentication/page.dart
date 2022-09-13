@@ -3,10 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
 import '../../../resources/localizations.dart';
-import '../../../resources/theme.dart';
 import '../../../util/widgets_binding_observer_registrar.dart';
 import '../cubit.dart';
 import '../widgets/error.dart';
@@ -100,8 +100,8 @@ class _TwoFactorAuthenticationPageState
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(
-                          VialerSans.check,
+                        const FaIcon(
+                          FontAwesomeIcons.check,
                           size: 60,
                         ),
                         const SizedBox(height: 16),
