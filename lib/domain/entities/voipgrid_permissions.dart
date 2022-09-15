@@ -5,10 +5,15 @@ part 'voipgrid_permissions.g.dart';
 
 @JsonSerializable()
 class VoipgridPermissions extends Equatable {
+  @JsonKey(defaultValue: false)
   final bool hasClientCallsPermission;
+
+  @JsonKey(defaultValue: false)
+  final bool hasMobileNumberFallbackPermission;
 
   const VoipgridPermissions({
     required this.hasClientCallsPermission,
+    required this.hasMobileNumberFallbackPermission,
   });
 
   factory VoipgridPermissions.fromJson(Map<String, dynamic> json) =>
@@ -18,6 +23,7 @@ class VoipgridPermissions extends Equatable {
 
   @override
   List<Object?> get props => [
-    hasClientCallsPermission,
-  ];
+        hasClientCallsPermission,
+        hasMobileNumberFallbackPermission,
+      ];
 }

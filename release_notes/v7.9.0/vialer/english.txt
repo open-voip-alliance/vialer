@@ -1,0 +1,2 @@
+- The mobile fallback setting will not show anymore if you don't have permission
+- An issue where contact info wasn't always visible in Recents has been fixed
