@@ -1,0 +1,2 @@
+- De instelling om je mobiele telefoon als backup te gebruiken is nu niet meer zichtbaar als je geen toestemming hebt
+- Een probleem waar contacten niet altijd werden getoond in Recente gesprekken is opgelost
