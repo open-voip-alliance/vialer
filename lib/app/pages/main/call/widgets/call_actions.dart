@@ -473,7 +473,7 @@ class _AudioRouteButton extends StatelessWidget {
         );
 
         return _ActionButton(
-          icon: Icon(
+          icon: FaIcon(
             _iconFor(
               context: context,
               hasBluetooth: hasBluetooth,
