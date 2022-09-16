@@ -11,21 +11,19 @@ class CallRecordContactPopulator {
   ) async {
     final contacts = await _contactsRepository.getContactPhoneNumberMap();
 
-    return callRecords
-        .map(
-          (call) {
-            for (final number in call.lookupVariations) {
-              final contact = contacts[number];
+    return callRecords.map(
+      (call) {
+        for (final number in call.lookupVariations) {
+          final contact = contacts[number];
 
-              if (contact != null) {
-                return call.withContact(contact);
-              }
-            }
+          if (contact != null) {
+            return call.withContact(contact);
+          }
+        }
 
-            return call.withContact(null);
-          },
-        )
-        .toList();
+        return call.withContact(null);
+      },
+    ).toList();
   }
 }
 

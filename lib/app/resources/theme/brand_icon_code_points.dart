@@ -14,9 +14,9 @@ class BrandIconCodePoints {
 extension BrandIconCodePoint on Brand {
   /// The icon code point in Vialer Sans.
   int get iconCodePoint => select(
-    vialer: BrandIconCodePoints.vialer,
-    voys: BrandIconCodePoints.voys,
-    verbonden: BrandIconCodePoints.verbonden,
-    annabel: BrandIconCodePoints.annabel,
-  );
+        vialer: BrandIconCodePoints.vialer,
+        voys: BrandIconCodePoints.voys,
+        verbonden: BrandIconCodePoints.verbonden,
+        annabel: BrandIconCodePoints.annabel,
+      );
 }

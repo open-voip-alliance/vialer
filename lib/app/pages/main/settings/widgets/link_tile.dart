@@ -129,10 +129,12 @@ class SettingLinkTile extends StatelessWidget {
         description: description,
         center: center,
         bordered: bordered,
-        child: showNavigationIndicator ? FaIcon(
-          FontAwesomeIcons.angleRight,
-          color: context.brand.theme.colors.grey4,
-        ) : Container(),
+        child: showNavigationIndicator
+            ? FaIcon(
+                FontAwesomeIcons.angleRight,
+                color: context.brand.theme.colors.grey4,
+              )
+            : Container(),
       ),
     );
   }

@@ -89,7 +89,7 @@ class SystemUser extends Equatable {
       clientId: clientId ?? this.clientId,
       clientName: clientName ?? this.clientName,
       isMobileNumberFallbackEnabled:
-      isMobileNumberFallbackEnabled ?? this.isMobileNumberFallbackEnabled,
+          isMobileNumberFallbackEnabled ?? this.isMobileNumberFallbackEnabled,
     );
   }
 

@@ -104,8 +104,8 @@ class ClientCallsCubit extends RecentCallsCubit {
 
   ClientCallsCubit(CallerCubit caller) : super(caller) {
     _localClientCalls.watch().then((value) => value.listen((event) {
-      refreshRecentCalls();
-    }));
+          refreshRecentCalls();
+        }));
   }
 
   @override

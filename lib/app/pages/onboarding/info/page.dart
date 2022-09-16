@@ -46,7 +46,7 @@ class InfoPage extends StatelessWidget {
                     Padding(
                       padding: EdgeInsets.only(
                         top: 64 * sizeFactor,
-                        bottom: 24
+                        bottom: 24,
                       ),
                       child: IconTheme(
                         data: IconTheme.of(context).copyWith(size: 54),
