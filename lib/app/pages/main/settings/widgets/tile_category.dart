@@ -86,19 +86,6 @@ class SettingTileCategory extends StatelessWidget {
     );
   }
 
-  static Widget troubleshootingCalling({List<Widget> children = const []}) {
-    return Builder(
-      builder: (context) {
-        return SettingTileCategory(
-          icon: FontAwesomeIcons.phone,
-          title: context.msg.main.settings.list.advancedSettings.troubleshooting
-              .list.calling.title,
-          children: children,
-        );
-      },
-    );
-  }
-
   static Widget troubleshootingAudio({List<Widget> children = const []}) {
     return Builder(
       builder: (context) {

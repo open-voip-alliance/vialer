@@ -7,7 +7,6 @@ import 'package:flutter_switch/flutter_switch.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../../domain/entities/audio_codec.dart';
 import '../../../../../domain/entities/availability.dart';
 import '../../../../../domain/entities/destination.dart';
 import '../../../../../domain/entities/fixed_destination.dart';
@@ -23,6 +22,7 @@ import '../../../web_view/page.dart';
 import '../../widgets/stylized_switch.dart';
 import '../cubit.dart';
 import 'availability_tile.dart';
+import 'link_tile.dart';
 
 class SettingTile extends StatelessWidget {
   final Widget? label;
@@ -286,44 +286,22 @@ class SettingTile extends StatelessWidget {
     );
   }
 
-  static Widget useEncryption(UseEncryptionSetting setting) {
+  static Widget echoCancellationCalibration() {
     return Builder(
       builder: (context) {
-        return SettingTile(
-          label: Text(
+        return SettingLinkTile(
+          title: Text(
             context.msg.main.settings.list.advancedSettings.troubleshooting.list
-                .calling.useEncryption,
+                .audio.echoCancellationCalibration.title,
           ),
-          child: _BoolSettingValue(setting),
-        );
-      },
-    );
-  }
-
-  static Widget audioCodec(AudioCodecSetting setting) {
-    return Builder(
-      builder: (context) {
-        return SettingTile(
-          label: Text(
+          description: Text(
             context.msg.main.settings.list.advancedSettings.troubleshooting.list
-                .calling.useEncryption,
+                .audio.echoCancellationCalibration.description,
           ),
-          childFillWidth: true,
-          child: _MultipleChoiceSettingValue<AudioCodec>(
-            value: setting.value,
-            isExpanded: true,
-            items: [
-              // TODO: Get values from PIL.
-              DropdownMenuItem(
-                value: AudioCodec.opus,
-                child: Text(AudioCodec.opus.value.toUpperCase()),
-              ),
-            ],
-            onChanged: (codec) => defaultOnChanged(
-              context,
-              setting.copyWith(value: codec),
-            ),
-          ),
+          onTap: () => context
+              .read<SettingsCubit>()
+              .performEchoCancellationCalibration(),
+          showNavigationIndicator: false,
         );
       },
     );

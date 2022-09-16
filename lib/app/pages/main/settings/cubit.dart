@@ -14,6 +14,7 @@ import '../../../../domain/usecases/get_settings.dart';
 import '../../../../domain/usecases/get_user.dart';
 import '../../../../domain/usecases/logout.dart';
 import '../../../../domain/usecases/onboarding/request_permission.dart';
+import '../../../../domain/usecases/perform_echo_cancellation_calibration.dart';
 import '../../../../domain/usecases/send_saved_logs_to_remote.dart';
 import '../../../util/loggable.dart';
 import '../widgets/user_data_refresher/cubit.dart';
@@ -32,6 +33,8 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
   final _requestPermission = RequestPermissionUseCase();
   final _logout = LogoutUseCase();
   final _getUser = GetUserUseCase();
+  final _performEchoCancellationCalibration =
+      PerformEchoCancellationCalibrationUseCase();
 
   late StreamSubscription _userRefresherSubscription;
 
@@ -103,4 +106,7 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
     await _userRefresherSubscription.cancel();
     await super.close();
   }
+
+  Future<void> performEchoCancellationCalibration() =>
+      _performEchoCancellationCalibration();
 }
