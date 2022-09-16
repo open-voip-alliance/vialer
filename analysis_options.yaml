@@ -16,6 +16,7 @@ linter:
 analyzer:
   errors:
     missing_required_param: error
+    invalid_annotation_target: ignore
   strong-mode:
     implicit-casts: false
   exclude:
