@@ -59,13 +59,13 @@ Future<void> initializeDependencies({bool ui = true}) async {
       return legacyStorageRepository;
     })
     ..registerSingletonWithDependencies<ServerConfigRepository>(
-          () => ServerConfigRepository(
+      () => ServerConfigRepository(
         dependencyLocator<VoipgridService>(),
       ),
       dependsOn: [StorageRepository],
     )
     ..registerSingletonAsync<MiddlewareService>(
-          () async => await MiddlewareService.create(),
+      () async => await MiddlewareService.create(),
       dependsOn: [StorageRepository, ServerConfigRepository],
     );
 

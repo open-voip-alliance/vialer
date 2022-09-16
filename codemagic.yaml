@@ -4,7 +4,11 @@ custom: # Custom properties to make workflows cleaner
       name: Analyzing the codebase
       script: |
         ln -s "${FLUTTER_ROOT}/bin/dart" /usr/local/bin/dart
-        dart format -o none --fix --set-exit-if-changed lib/
+        dart format --fix --set-exit-if-changed $(find lib -name "*.dart" -not \( -name "pigeon.dart" \) )
+        if [ $? -eq 1 ]
+        then
+            exit 1
+        fi
         dart analyze . --fatal-infos --fatal-warnings
     - &set_version_string
       name: Updating versioning information for this build

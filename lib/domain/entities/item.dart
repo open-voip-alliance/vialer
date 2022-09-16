@@ -18,8 +18,7 @@ class Item extends Equatable {
         value,
       ];
 
-  factory Item.fromJson(Map<String, dynamic> json) =>
-      _$ItemFromJson(json);
+  factory Item.fromJson(Map<String, dynamic> json) => _$ItemFromJson(json);
 
   Map<String, dynamic> toJson() => _$ItemToJson(this);
 }

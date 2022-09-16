@@ -13,8 +13,7 @@ class CreateClientCallsIsolateRequestUseCase extends UseCase {
   final _getBaseUrl = GetVoipgridBaseUrlUseCase();
   late final _getSetting = GetSettingUseCase<AvailabilitySetting>();
 
-  Future<List<int>> get _usersPhoneAccounts async =>
-      _getSetting().then(
+  Future<List<int>> get _usersPhoneAccounts async => _getSetting().then(
         (availability) =>
             availability.value?.phoneAccounts
                 .filter((phoneAccount) => phoneAccount.id != null)

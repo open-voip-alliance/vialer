@@ -133,12 +133,11 @@ class _Illustration extends StatelessWidget {
         ),
         alignment: Alignment.center,
         child: IconTheme(
-          data: IconTheme.of(context).copyWith(
-            color: Theme.of(context).primaryColor,
-            size: 42,
-          ),
-          child: child
-        ),
+            data: IconTheme.of(context).copyWith(
+              color: Theme.of(context).primaryColor,
+              size: 42,
+            ),
+            child: child),
       ),
     );
   }

@@ -67,8 +67,8 @@ class CallThroughRepository with Loggable {
     // A mapping of all the possible error codes we might expect in the response
     // and the exceptions that should be thrown if they are found.
     final possibleErrors = {
-      'invalid_destination' : InvalidDestinationException(),
-      'no_mobile_number' : NoMobileNumberException(),
+      'invalid_destination': InvalidDestinationException(),
+      'no_mobile_number': NoMobileNumberException(),
       'unsupported_region': UnsupportedRegionException(),
     };
 

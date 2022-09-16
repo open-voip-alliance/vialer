@@ -1,7 +1,6 @@
 import 'call_record.dart';
 
 class ClientCallRecord extends CallRecord {
-
   final bool didTargetColleague;
   final bool didTargetLoggedInUser;
   final bool wasInitiatedByColleague;
