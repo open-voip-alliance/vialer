@@ -167,8 +167,8 @@ class MainPageState extends State<MainPage> {
                             backgroundColor: context.brand.theme.colors.green1,
                             onPressed: () =>
                                 Navigator.pushNamed(context, Routes.dialer),
-                            child: const FaIcon(
-                              FontAwesomeIcons.solidGrid,
+                            child: const Icon(
+                              Icons.dialpad,
                               size: 31,
                             ),
                           ),
@@ -240,10 +240,7 @@ class _BottomNavigationBar extends StatelessWidget {
           if (dialerIsPage)
             BottomNavigationBarItem(
               icon: const _BottomNavigationBarIcon(
-                FontAwesomeIcons.mobileNotch,
-              ),
-              activeIcon: const _BottomNavigationBarIcon(
-                FontAwesomeIcons.solidMobileNotch,
+                Icons.dialpad,
               ),
               label: context.msg.main.dialer.menu.title,
             ),
