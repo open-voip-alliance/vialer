@@ -278,6 +278,9 @@ class VoipRepository with Loggable {
 
   Stream<bool> get missedCallNotificationPresses =>
       _missedCallNotificationPressedController.stream;
+
+  Future<void> performEchoCancellationCalibration() async =>
+      (await _phoneLib).performEchoCancellationCalibration();
 }
 
 // This class should not keep any state of it's own.

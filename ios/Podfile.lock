@@ -1,6 +1,6 @@
 PODS:
   - Alamofire (5.6.2)
-  - Amplitude (8.12.0):
+  - Amplitude (8.13.0):
     - AnalyticsConnector (~> 1.0.0)
   - Analytics (4.1.6)
   - AnalyticsConnector (1.0.0)
@@ -37,26 +37,26 @@ PODS:
   - integration_test (0.0.1):
     - Flutter
   - iOSPhoneLib (0.1.1):
-    - linphone-sdk-novideo (= 5.1.32)
+    - linphone-sdk-novideo (= 5.1.58)
     - Swinject (~> 2.7.1)
   - le (1.2)
   - libphonenumber (0.0.1):
     - Flutter
     - libPhoneNumber-iOS
   - libPhoneNumber-iOS (0.9.15)
-  - linphone-sdk-novideo (5.1.32):
-    - linphone-sdk-novideo/all-frameworks (= 5.1.32)
-    - linphone-sdk-novideo/app-extension (= 5.1.32)
-    - linphone-sdk-novideo/app-extension-swift (= 5.1.32)
-    - linphone-sdk-novideo/basic-frameworks (= 5.1.32)
-    - linphone-sdk-novideo/swift (= 5.1.32)
-  - linphone-sdk-novideo/all-frameworks (5.1.32)
-  - linphone-sdk-novideo/app-extension (5.1.32)
-  - linphone-sdk-novideo/app-extension-swift (5.1.32):
+  - linphone-sdk-novideo (5.1.58):
+    - linphone-sdk-novideo/all-frameworks (= 5.1.58)
+    - linphone-sdk-novideo/app-extension (= 5.1.58)
+    - linphone-sdk-novideo/app-extension-swift (= 5.1.58)
+    - linphone-sdk-novideo/basic-frameworks (= 5.1.58)
+    - linphone-sdk-novideo/swift (= 5.1.58)
+  - linphone-sdk-novideo/all-frameworks (5.1.58)
+  - linphone-sdk-novideo/app-extension (5.1.58)
+  - linphone-sdk-novideo/app-extension-swift (5.1.58):
     - linphone-sdk-novideo/app-extension
-  - linphone-sdk-novideo/basic-frameworks (5.1.32):
+  - linphone-sdk-novideo/basic-frameworks (5.1.58):
     - linphone-sdk-novideo/app-extension
-  - linphone-sdk-novideo/swift (5.1.32):
+  - linphone-sdk-novideo/swift (5.1.58):
     - linphone-sdk-novideo/app-extension-swift
     - linphone-sdk-novideo/basic-frameworks
   - native_shared_preferences (1.0.0):
@@ -89,16 +89,16 @@ PODS:
     - Sentry (~> 7.23.0)
   - shared_preferences_ios (0.0.1):
     - Flutter
-  - sqlite3 (3.39.2):
-    - sqlite3/common (= 3.39.2)
-  - sqlite3/common (3.39.2)
-  - sqlite3/fts5 (3.39.2):
+  - sqlite3 (3.39.3):
+    - sqlite3/common (= 3.39.3)
+  - sqlite3/common (3.39.3)
+  - sqlite3/fts5 (3.39.3):
     - sqlite3/common
-  - sqlite3/json1 (3.39.2):
+  - sqlite3/json1 (3.39.3):
     - sqlite3/common
-  - sqlite3/perf-threadsafe (3.39.2):
+  - sqlite3/perf-threadsafe (3.39.3):
     - sqlite3/common
-  - sqlite3/rtree (3.39.2):
+  - sqlite3/rtree (3.39.3):
     - sqlite3/common
   - sqlite3_flutter_libs (0.0.1):
     - Flutter
@@ -214,7 +214,7 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   iOSPhoneLib:
-    :commit: 1b6c64e6b76f8ab6677cc688f7e097c65ef23ec0
+    :commit: fb3467896a4800a5fb5fae45e1d862686dc472d2
     :git: https://github.com/open-voip-alliance/iOS-Phone-Lib.git
   le:
     :commit: ce8800f6d3290e182d48082680679d64a05ca778
@@ -222,7 +222,7 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   Alamofire: d368e1ff8a298e6dde360e35a3e68e6c610e7204
-  Amplitude: dd7170426ed983dd5aeafa694db40180cff62bd6
+  Amplitude: 0a239d682bc9ec1eb7a7b318af2541130ecd4bd3
   Analytics: eefe524436f904b8bb3f8c8c3425280e43b34efc
   AnalyticsConnector: 4c386d5972ac9da86e22d668564dbbac97558754
   AppsFlyerFramework: a664325124485223296354b4eec335f5340a6df8
@@ -230,7 +230,7 @@ SPEC CHECKSUMS:
   contacts_service: 849e1f84281804c8bfbec1b4c3eedcb23c5d3eca
   device_info: d7d233b645a32c40dfdc212de5cf646ca482f175
   fast_contacts: d5f0da976a40f8fd07a9ff730c2e9bee8c3898dd
-  Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
+  Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   flutter_isolate: 0edf5081826d071adf21759d1eb10ff5c24503b5
   flutter_keyboard_visibility: 0339d06371254c3eb25eeb90ba8d17dca8f9c069
   flutter_libphonenumber: 6a23afdf063b34d1e53e6dbd6c6bc905d18e8e46
@@ -238,11 +238,11 @@ SPEC CHECKSUMS:
   flutter_segment: 367b7d9f7d74b3875198524ff4d24c381d93e317
   in_app_review: 4a97249f7a2f539a0f294c2d9196b7fe35e49541
   integration_test: a1e7d09bd98eca2fc37aefd79d4f41ad37bdbbe5
-  iOSPhoneLib: 8adc5d457bb16a5922b5db0fa847ec69e6c9e543
+  iOSPhoneLib: 89ccda35bd20ead65f3db0ccf683a87bf785ba7c
   le: 6854003e293bf5b3cb822ef06971f1cc23a77eb9
   libphonenumber: bd14d5abfc5939ab0b0767234e2d8e2593af258e
   libPhoneNumber-iOS: 0a32a9525cf8744fe02c5206eb30d571e38f7d75
-  linphone-sdk-novideo: e1f9e86628cb52f232bf1e43e7c4b82894b25ca0
+  linphone-sdk-novideo: 0aa44c6d9750db25a2a799377296b5487838d5e2
   native_shared_preferences: 21a805f6149643c25a20a4f534692131faebadfe
   package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
   package_info_plus: 6c92f08e1f853dc01228d6f553146438dafcd14e
@@ -255,7 +255,7 @@ SPEC CHECKSUMS:
   Sentry: a0d4563fa4ddacba31fdcc35daaa8573d87224d6
   sentry_flutter: 8bde7d0e57a721727fe573f13bb292c497b5a249
   shared_preferences_ios: 548a61f8053b9b8a49ac19c1ffbc8b92c50d68ad
-  sqlite3: d115522c740c457b805c018b0296b5ba003da280
+  sqlite3: 50117e9e063a9ef2b865f7bdf2f2601e5d368e9a
   sqlite3_flutter_libs: 1641350489d5c2bcb9d0773ade9693624111b24c
   Swinject: ddf78b8486dd9b71a667b852cad919ab4484478e
   url_launcher_ios: 839c58cdb4279282219f5e248c3321761ff3c4de
