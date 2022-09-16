@@ -1,39 +1,30 @@
 import 'package:dartx/dartx.dart';
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class Colleague extends Equatable {
-  final int id;
-  final String name;
-  final ColleagueAvailabilityStatus status;
-  final ColleagueDestination destination;
+part 'colleague.freezed.dart';
 
-  /// A list of [ColleagueContext] events that are relevant to this colleague.
-  ///
-  /// These are sorted in order of priority with the first in the list
-  /// representing the most recent/relevant.
-  final List<ColleagueContext> context;
-
-  /// The most relevant/recent context event. For example, if the user is
-  /// in a meeting (NYI) but also in a call, then this would show them as being
-  /// in a call even if the meeting is more recent.
+@freezed
+class Colleague with _$Colleague {
   ColleagueContext? get mostRelevantContext => context.firstOrNull;
 
-  const Colleague({
-    required this.id,
-    required this.name,
-    required this.status,
-    required this.context,
-    required this.destination,
-  });
+  const Colleague._();
 
-  @override
-  List<Object?> get props => [
-        id,
-        name,
-        status,
-        context,
-        destination,
-      ];
+  const factory Colleague({
+    required int id,
+    required String name,
+    required ColleagueAvailabilityStatus status,
+
+    /// A list of [ColleagueContext] events that are relevant to this colleague.
+    ///
+    /// These are sorted in order of priority with the first in the list
+    /// representing the most recent/relevant.
+    required List<ColleagueContext> context,
+
+    /// The most relevant/recent context event. For example, if the user is
+    /// in a meeting (NYI) but also in a call, then this would show them as
+    /// being in a call even if the meeting is more recent.
+    required ColleagueDestination destination,
+  }) = _Colleague;
 }
 
 /// A single status that represents the availability of the colleague.
@@ -54,23 +45,13 @@ enum ColleagueAvailabilityStatus {
 }
 
 /// The destination that we can call to reach the given colleague.
-class ColleagueDestination extends Equatable {
-  final int id;
-  final String number;
-  final ColleagueDestinationType type;
-
-  const ColleagueDestination({
-    required this.id,
-    required this.number,
-    required this.type,
-  });
-
-  @override
-  List<Object?> get props => [
-        id,
-        number,
-        type,
-      ];
+@freezed
+class ColleagueDestination with _$ColleagueDestination {
+  const factory ColleagueDestination({
+    required int id,
+    required String number,
+    required ColleagueDestinationType type,
+  }) = _ColleagueDestination;
 }
 
 enum ColleagueDestinationType {
@@ -83,20 +64,8 @@ enum ColleagueDestinationType {
 /// Represents a possible event that the colleague has currently performed,
 /// (e.g. that their phone is currently ringing), including any
 /// associated relevant data (e.g. the number that is calling them).
-abstract class ColleagueContext {
-  const ColleagueContext();
-}
-
-abstract class ColleagueContextCalling extends ColleagueContext {
-  final String thirdParty;
-
-  const ColleagueContextCalling({required this.thirdParty});
-}
-
-class ColleagueContextRinging extends ColleagueContextCalling {
-  const ColleagueContextRinging({required super.thirdParty});
-}
-
-class ColleagueContextInCall extends ColleagueContextCalling {
-  const ColleagueContextInCall({required super.thirdParty});
+@freezed
+class ColleagueContext with _$ColleagueContext {
+  const factory ColleagueContext.ringing(String number) = Ringing;
+  const factory ColleagueContext.inCall(String number) = InCall;
 }
