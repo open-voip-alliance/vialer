@@ -160,7 +160,7 @@ class _CallActionButtons extends StatelessWidget {
                 ),
                 Expanded(
                   child: _ActionButton(
-                    icon: const FaIcon(FontAwesomeIcons.grid),
+                    icon: const Icon(Icons.dialpad),
                     label: context.msg.main.call.ongoing.actions.keypad.label,
                     onPressed: !state.isFinished
                         ? () => _toggleDialPad(context)

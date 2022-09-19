@@ -142,8 +142,8 @@ class _CallTransferState extends State<CallTransfer> {
                           children: [
                             closeButton,
                             IconButton(
-                              icon: FaIcon(
-                                FontAwesomeIcons.grid,
+                              icon: Icon(
+                                Icons.dialpad,
                                 color: bottomIconColor,
                               ),
                               iconSize: bottomIconSize,
