@@ -470,10 +470,18 @@ class SettingTile extends StatelessWidget {
 
   static Widget outgoingNumber(
     ClientOutgoingNumbersSetting clientOutgoingNumbersSetting,
+    ClientRecentOutgoingNumbersSetting clientRecentOutgoingNumbersSetting,
     OutgoingNumberSetting setting, {
     required SystemUser systemUser,
   }) {
-    final availableOutgoingNumbers = clientOutgoingNumbersSetting.value.numbers;
+    var availableOutgoingNumbers = clientOutgoingNumbersSetting.value.numbers;
+    final recentOutgoingNumbers =
+        clientRecentOutgoingNumbersSetting.value.numbers;
+
+    // No duplicates allowed in a dropdown, so remove the recent outgoing
+    // numbers from the available numbers.
+    availableOutgoingNumbers = List.from(availableOutgoingNumbers
+        .where((value) => !recentOutgoingNumbers.contains(value)));
 
     return Builder(
       builder: (context) {
@@ -507,6 +515,15 @@ class SettingTile extends StatelessWidget {
                           context.read<SettingsCubit>().changeSetting(setting),
                       isExpanded: false,
                       items: [
+                        ...recentOutgoingNumbers.map(
+                          (number) => DropdownMenuItem<OutgoingNumberSetting>(
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Text(number),
+                            ),
+                            value: OutgoingNumberSetting(number),
+                          ),
+                        ),
                         DropdownMenuItem<OutgoingNumberSetting>(
                           child: FittedBox(
                             fit: BoxFit.scaleDown,

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:dartx/dartx.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../entities/client_recent_outgoing_numbers.dart';
 import '../entities/server_config.dart';
 import '../entities/setting.dart';
 import '../entities/system_user.dart';
@@ -201,6 +202,25 @@ class StorageRepository {
   set serverConfig(ServerConfig? value) => _preferences.setOrRemoveString(
         _serverConfigKey,
         value != null ? json.encode(value.toJson()) : null,
+      );
+
+  static const _clientRecentOutgoingNumbers = 'client_recent_outgoing_numbers';
+
+  ClientRecentOutgoingNumbers get clientRecentOutgoingNumbers {
+    final preference = _preferences.getString(_clientRecentOutgoingNumbers);
+    if (preference == null) {
+      return ClientRecentOutgoingNumbers(numbers: []);
+    }
+
+    return ClientRecentOutgoingNumbers.fromJson(
+      json.decode(preference) as Map<String, dynamic>,
+    );
+  }
+
+  set clientRecentOutgoingNumbers(ClientRecentOutgoingNumbers value) =>
+      _preferences.setOrRemoveString(
+        _clientRecentOutgoingNumbers,
+        json.encode(value.toJson()),
       );
 
   Future<void> clear() => _preferences.clear();

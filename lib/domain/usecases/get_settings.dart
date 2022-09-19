@@ -21,6 +21,9 @@ class GetSettingsUseCase extends UseCase {
       ),
       OutgoingNumberSetting(user?.outgoingCli ?? ''),
       MobileNumberSetting(user?.mobileNumber ?? ''),
+      ClientRecentOutgoingNumbersSetting(
+        _storageRepository.clientRecentOutgoingNumbers,
+      ),
       ...storedSettings,
       // Add presets for which no stored setting is found.
       ...Setting.presets.where(

@@ -7,6 +7,7 @@ import 'package:recase/recase.dart';
 import 'audio_codec.dart';
 import 'availability.dart';
 import 'client_available_outgoing_numbers.dart';
+import 'client_recent_outgoing_numbers.dart';
 import 'system_user.dart';
 import 'voipgrid_permissions.dart';
 
@@ -126,6 +127,10 @@ abstract class Setting<T> {
     } else if (type == (ClientOutgoingNumbersSetting).toString()) {
       return ClientOutgoingNumbersSetting(
         ClientAvailableOutgoingNumbers.fromJson(value as Map<String, dynamic>),
+      );
+    } else if (type == (ClientRecentOutgoingNumbersSetting).toString()) {
+      return ClientRecentOutgoingNumbersSetting(
+        ClientRecentOutgoingNumbers.fromJson(value as Map<String, dynamic>),
       );
     } else if (type == (DndSetting).toString()) {
       return DndSetting(value as bool);
@@ -351,6 +356,31 @@ class ClientOutgoingNumbersSetting
     ClientAvailableOutgoingNumbers? value,
   }) =>
       ClientOutgoingNumbersSetting(value ?? this.value);
+}
+
+class ClientRecentOutgoingNumbersSetting
+    extends Setting<ClientRecentOutgoingNumbers> {
+  const ClientRecentOutgoingNumbersSetting(ClientRecentOutgoingNumbers value)
+      : super(value, mutable: true, external: false);
+
+  ClientRecentOutgoingNumbersSetting.preset()
+      : this(
+          ClientRecentOutgoingNumbers(
+            numbers: [],
+          ),
+        );
+
+  @override
+  final bool isPii = true;
+
+  @override
+  final bool shouldTrack = false;
+
+  @override
+  ClientRecentOutgoingNumbersSetting copyWith({
+    ClientRecentOutgoingNumbers? value,
+  }) =>
+      ClientRecentOutgoingNumbersSetting(value ?? this.value);
 }
 
 class UseMobileNumberAsFallbackSetting extends Setting<bool> {

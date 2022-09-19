@@ -117,6 +117,8 @@ class _SettingsPageState extends State<SettingsPage> {
                                 ),
                                 SettingTile.outgoingNumber(
                                   settings.get<ClientOutgoingNumbersSetting>(),
+                                  settings.get<
+                                      ClientRecentOutgoingNumbersSetting>(),
                                   settings.get<OutgoingNumberSetting>(),
                                   systemUser: state.systemUser!,
                                 ),
