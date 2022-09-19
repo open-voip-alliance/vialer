@@ -130,8 +130,17 @@ class ContactRepository {
   /// have contact permissions.
   Future<void> cleanUp() async {
     _memoryCache = [];
-    contactsCacheFile.then((file) => file.delete());
-    avatarDirectory.then((dir) => dir.delete(recursive: true));
+
+    final cacheFiles = [
+      await contactsCacheFile,
+      await avatarDirectory,
+    ];
+
+    for (final file in cacheFiles) {
+      if (await file.exists()) {
+        file.delete(recursive: true);
+      }
+    }
   }
 }
 
