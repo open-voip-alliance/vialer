@@ -10,7 +10,7 @@ class Colleague with _$Colleague {
   const Colleague._();
 
   const factory Colleague({
-    required int id,
+    required String id,
     required String name,
     required ColleagueAvailabilityStatus status,
 
@@ -48,7 +48,7 @@ enum ColleagueAvailabilityStatus {
 @freezed
 class ColleagueDestination with _$ColleagueDestination {
   const factory ColleagueDestination({
-    required int id,
+    required String id,
     required String number,
     required ColleagueDestinationType type,
   }) = _ColleagueDestination;
