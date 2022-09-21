@@ -2,6 +2,10 @@ import UIKit
 import Flutter
 import flutter_phone_lib
 import Intents
+import flutter_isolate
+import contacts_service
+import fast_contacts
+import path_provider_ios
 
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {
@@ -30,7 +34,8 @@ import Intents
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
         UIApplication.shared.registerForRemoteNotifications()
-        
+        FlutterIsolatePlugin.isolatePluginRegistrantClassName = "IsolatePluginRegistrant"
+
         let registerPlugins = GeneratedPluginRegistrant.register
         registerPlugins(self)
 
@@ -122,5 +127,16 @@ extension Bundle {
 extension String {
     fileprivate init(deviceToken: Data) {
         self = deviceToken.map { String(format: "%.2hhx", $0) }.joined()
+    }
+}
+
+/// This registers the plugins that will be available when using a FlutterIsolate. These are specified so we don't load anything unnecessary
+/// but anything else that is required will need to be added here.
+@objc(IsolatePluginRegistrant) class IsolatePluginRegistrant: NSObject {
+    @objc static func register(withRegistry registry: FlutterPluginRegistry) {
+        ContactsServicePlugin.register(with: registry.registrar(forPlugin: "ContactsServicePlugin")!)
+        FastContactsPlugin.register(with: registry.registrar(forPlugin: "FastContactsPlugin")!)
+        FlutterIsolatePlugin.register(with: registry.registrar(forPlugin: "FlutterIsolatePlugin")!)
+        FLTPathProviderPlugin.register(with: registry.registrar(forPlugin: "FLTPathProviderPlugin")!)
     }
 }

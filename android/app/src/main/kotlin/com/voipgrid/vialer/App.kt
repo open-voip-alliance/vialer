@@ -1,10 +1,15 @@
 package com.voipgrid.vialer
 
+import com.rmawatson.flutterisolate.FlutterIsolatePlugin
 import com.voipgrid.vialer.logging.Logger
 import io.flutter.app.FlutterApplication
 import org.openvoipalliance.flutterphonelib.*
 
 class App : FlutterApplication() {
+
+    init {
+        FlutterIsolatePlugin.setCustomIsolateRegistrant(CustomPluginRegistrant::class.java)
+    }
 
     override fun onCreate() {
         super.onCreate()

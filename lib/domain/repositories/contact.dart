@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:isolate';
 
 import 'package:contacts_service/contacts_service.dart' hide Contact;
 import 'package:dartx/dartx.dart';
@@ -8,11 +7,15 @@ import 'package:fast_contacts/fast_contacts.dart' as fast_contacts;
 import 'package:flutter_isolate/flutter_isolate.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../../app/util/loggable.dart';
 import '../entities/contact.dart';
 import 'mappers/contact.dart';
 
-class ContactRepository {
+class ContactRepository with Loggable {
   var _memoryCache = <Contact>[];
+
+  static var _isContactIsolateRunning = false;
+  static var _isAvatarIsolateRunning = false;
 
   Future<List<Contact>> getContacts({
     bool onlyFromCache = false,
@@ -72,14 +75,27 @@ class ContactRepository {
   /// and is done off the main-thread.
   Future<void> _cacheAvatarsLocally(
     List<Contact> domainContacts,
-  ) async =>
-      FlutterIsolate.spawn(
-        _isolateCacheAllAvatars,
-        domainContacts
-            .filter((element) => element.identifier != null)
-            .map((contact) => contact.identifier!)
-            .shuffled(),
-      );
+  ) async {
+    if (_isAvatarIsolateRunning) {
+      logger.info('Skipping avatar import as it is already running.');
+      return;
+    }
+
+    _isAvatarIsolateRunning = true;
+
+    return flutterCompute(
+      _isolateCacheAllAvatars,
+      domainContacts
+          .filter((element) => element.identifier != null)
+          .map((contact) => contact.identifier!)
+          .shuffled(),
+    ).onError((error, stackTrace) {
+      _isAvatarIsolateRunning = false;
+      logger.warning('Avatar import isolate exited with error: $error');
+    }).whenComplete(() {
+      _isAvatarIsolateRunning = false;
+    });
+  }
 
   /// Spawns an isolate to read the contacts database, serialize them and store
   /// them in a local file.
@@ -87,16 +103,22 @@ class ContactRepository {
   /// Performance is heavily impacted when users have thousands of contacts
   /// so this optimizes that.
   Future<void> _cacheContactsLocally() async {
-    final receivePort = ReceivePort();
+    if (_isContactIsolateRunning) {
+      logger.info('Skipping contact import as it is already running.');
+      return;
+    }
 
-    FlutterIsolate.spawn(
+    _isContactIsolateRunning = true;
+
+    return flutterCompute(
       _isolateCacheAllContacts,
-      receivePort.sendPort,
-    );
-
-    _memoryCache = [];
-
-    return receivePort.first;
+      <String>[],
+    ).onError((error, stackTrace) {
+      _isContactIsolateRunning = false;
+      logger.warning('Contact import isolate exited with error: $error');
+    }).whenComplete(() {
+      _isContactIsolateRunning = false;
+    });
   }
 
   /// Retrieve a mapping between a phone number and a contact, this allows for
@@ -166,7 +188,8 @@ Future<Directory> get avatarDirectory async {
 /// in JSON format.
 ///
 /// Designed to be run in an ISOLATE.
-Future<void> _isolateCacheAllContacts(SendPort sendPort) async {
+@pragma('vm:entry-point')
+Future<void> _isolateCacheAllContacts(List<String> args) async {
   final avatarCacheDirectory = await avatarDirectory;
   final cacheFile = await contactsCacheFile;
 
@@ -183,13 +206,14 @@ Future<void> _isolateCacheAllContacts(SendPort sendPort) async {
 
   final json = jsonEncode(contacts);
 
-  cacheFile.writeAsString(json, flush: true).then((_) => sendPort.send(null));
+  await cacheFile.writeAsString(json, flush: true);
 }
 
 /// Iterates through an entire list of contact identifiers and caches them to a
 /// local file.
 ///
 /// Designed to be run in an ISOLATE.
+@pragma('vm:entry-point')
 Future<void> _isolateCacheAllAvatars(List<String> contactIdentifiers) async {
   for (final identifier in contactIdentifiers) {
     final file = File(createAvatarPath(
@@ -211,7 +235,7 @@ Future<void> _isolateCacheAllAvatars(List<String> contactIdentifiers) async {
     file.writeAsBytes(List<int>.from(image));
   }
 
-  _cleanUpUnusedAvatars();
+  await _cleanUpUnusedAvatars();
 }
 
 /// We will clean up any files that haven't been cached recently to make sure
@@ -223,11 +247,13 @@ Future<void> _cleanUpUnusedAvatars() async {
   for (final fileSystemEntity in directory.listSync()) {
     final file = File(fileSystemEntity.path);
 
-    if (file.existsSync()) {
-      if (file.lastModifiedSync().isBefore(deleteBefore)) {
-        fileSystemEntity.delete();
-      }
-    }
+    if (!(await file.exists())) continue;
+
+    final lastModified = await file.lastModified();
+
+    if (lastModified.isAfter(deleteBefore)) continue;
+
+    fileSystemEntity.delete();
   }
 }
 

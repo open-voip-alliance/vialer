@@ -125,3 +125,27 @@ class MainActivity : FlutterActivity(), Pigeon.CallScreenBehavior {
                 or WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON)
     }
 }
+
+/**
+ * This registers the plugins that will be available when using a FlutterIsolate.
+ * These are specified so we don't load anything unnecessary but anything else that is required
+ * will need to be added here.
+ */
+class CustomPluginRegistrant {
+    companion object {
+        @JvmStatic fun registerWith(flutterEngine: FlutterEngine) {
+            val plugins = listOf(
+                flutter.plugins.contactsservice.contactsservice.ContactsServicePlugin(),
+                com.github.s0nerik.fast_contacts.FastContactsPlugin(),
+                com.rmawatson.flutterisolate.FlutterIsolatePlugin(),
+                io.flutter.plugins.pathprovider.PathProviderPlugin(),
+            )
+
+            plugins.forEach { plugin ->
+                if (!flutterEngine.plugins.has(plugin.javaClass)) {
+                    flutterEngine.plugins.add(plugin)
+                }
+            }
+        }
+    }
+}
