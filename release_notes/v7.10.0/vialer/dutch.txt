@@ -1,0 +1,3 @@
+- De app heeft een nieuwe "look and feel" dankzij nieuwe iconen
+- Echo wanneer je de speaker gebruikt is vermindert
+- Het laden van contacten is nu stabieler
