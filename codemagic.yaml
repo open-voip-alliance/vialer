@@ -439,6 +439,8 @@ workflows:
   release-candidate:
     name: Release Candidate
     <<: *main_workflow
+    triggering:
+      events: []
     publishing:
       slack:
         channel: '#vialer_mobile_release_candidates'
