@@ -7,10 +7,6 @@ import org.openvoipalliance.flutterphonelib.*
 
 class App : FlutterApplication() {
 
-    init {
-        FlutterIsolatePlugin.setCustomIsolateRegistrant(CustomPluginRegistrant::class.java)
-    }
-
     override fun onCreate() {
         super.onCreate()
         prefs = FlutterSharedPreferences(this)
