@@ -52,7 +52,10 @@ class Avatar extends StatelessWidget {
     return FutureBuilder<bool>(
       future: hasImage,
       builder: (context, snapshot) {
-        final hasImage = snapshot.data ?? false;
+        final hasImage = snapshot.connectionState == ConnectionState.done &&
+            !snapshot.hasError &&
+            snapshot.hasData &&
+            snapshot.data == true;
         final showFallback = this.showFallback ?? name == null && !hasImage;
 
         return Container(
