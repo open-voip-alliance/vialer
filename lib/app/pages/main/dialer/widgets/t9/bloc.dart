@@ -162,8 +162,7 @@ Future<List<T9Contact>> _filterContactsByRegularExpression(
       .map(
         (contact) => contact.phoneNumbers.map(
           (number) => T9Contact(
-            displayName: contact.displayName,
-            avatarPath: contact.avatarPath,
+            contact: contact,
             relevantPhoneNumber: number,
           ),
         ),
@@ -171,9 +170,9 @@ Future<List<T9Contact>> _filterContactsByRegularExpression(
       .flatten()
       // Only keep those whose name or number matches the regex.
       .where(
-        (contact) =>
-            removeDiacritics(contact.displayName).contains(request.regex) ||
-            contact.relevantPhoneNumber.value.contains(request.regex),
+        (t9) =>
+            removeDiacritics(t9.contact.displayName).contains(request.regex) ||
+            t9.relevantPhoneNumber.value.contains(request.regex),
       )
       .distinct()
       .toList();

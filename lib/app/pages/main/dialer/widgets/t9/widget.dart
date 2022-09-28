@@ -110,12 +110,12 @@ class _T9ContactsListState extends State<_T9ContactsList> {
               itemCount:
                   _height == null ? max(contacts.length, 1) : contacts.length,
               itemBuilder: (context, index) {
-                final contact =
+                final t9Contact =
                     contacts.length > index ? contacts[index] : null;
 
                 // This happens on the first frame,
                 // to calculate the size of the list.
-                if (contact == null) {
+                if (t9Contact == null) {
                   return Visibility(
                     visible: false,
                     maintainSize: true,
@@ -136,11 +136,11 @@ class _T9ContactsListState extends State<_T9ContactsList> {
                 }
 
                 return ListTile(
-                  leading: ContactAvatar(contact),
-                  title: Text(contact.displayName),
-                  subtitle: Text(contact.relevantPhoneNumber.value),
+                  leading: ContactAvatar(t9Contact.contact),
+                  title: Text(t9Contact.contact.displayName),
+                  subtitle: Text(t9Contact.relevantPhoneNumber.value),
                   onTap: () => widget.controller.text =
-                      contact.relevantPhoneNumber.value,
+                      t9Contact.relevantPhoneNumber.value,
                 );
               },
             ),

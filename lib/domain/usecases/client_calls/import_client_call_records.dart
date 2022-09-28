@@ -129,7 +129,7 @@ Future<void> _performImport(ClientCallsIsolateRequest request) async {
   );
 
   final localClientCalls = LocalClientCallsRepository(
-    VialerDatabase.createInIsolate(
+    ClientCallsDatabase.createInIsolate(
       request.databasePath,
     ),
   );

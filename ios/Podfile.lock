@@ -14,11 +14,7 @@ PODS:
     - Flutter
   - device_info (0.0.1):
     - Flutter
-  - fast_contacts (0.0.1):
-    - Flutter
   - Flutter (1.0.0)
-  - flutter_isolate (0.0.1):
-    - Flutter
   - flutter_keyboard_visibility (0.0.1):
     - Flutter
   - flutter_libphonenumber (0.0.1):
@@ -80,13 +76,13 @@ PODS:
   - segment-appsflyer-ios/Main (6.8.0):
     - Analytics
     - AppsFlyerFramework (~> 6.8.0)
-  - Sentry (7.23.0):
-    - Sentry/Core (= 7.23.0)
-  - Sentry/Core (7.23.0)
+  - Sentry (7.25.1):
+    - Sentry/Core (= 7.25.1)
+  - Sentry/Core (7.25.1)
   - sentry_flutter (0.0.1):
     - Flutter
     - FlutterMacOS
-    - Sentry (~> 7.23.0)
+    - Sentry (~> 7.25.1)
   - shared_preferences_ios (0.0.1):
     - Flutter
   - sqlite3 (3.39.3):
@@ -94,17 +90,14 @@ PODS:
   - sqlite3/common (3.39.3)
   - sqlite3/fts5 (3.39.3):
     - sqlite3/common
-  - sqlite3/json1 (3.39.3):
-    - sqlite3/common
   - sqlite3/perf-threadsafe (3.39.3):
     - sqlite3/common
   - sqlite3/rtree (3.39.3):
     - sqlite3/common
   - sqlite3_flutter_libs (0.0.1):
     - Flutter
-    - sqlite3 (~> 3.39.2)
+    - sqlite3 (~> 3.39.3)
     - sqlite3/fts5
-    - sqlite3/json1
     - sqlite3/perf-threadsafe
     - sqlite3/rtree
   - Swinject (2.7.1)
@@ -119,9 +112,7 @@ DEPENDENCIES:
   - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
   - contacts_service (from `.symlinks/plugins/contacts_service/ios`)
   - device_info (from `.symlinks/plugins/device_info/ios`)
-  - fast_contacts (from `.symlinks/plugins/fast_contacts/ios`)
   - Flutter (from `Flutter`)
-  - flutter_isolate (from `.symlinks/plugins/flutter_isolate/ios`)
   - flutter_keyboard_visibility (from `.symlinks/plugins/flutter_keyboard_visibility/ios`)
   - flutter_libphonenumber (from `.symlinks/plugins/flutter_libphonenumber/ios`)
   - flutter_phone_lib (from `.symlinks/plugins/flutter_phone_lib/ios`)
@@ -167,12 +158,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/contacts_service/ios"
   device_info:
     :path: ".symlinks/plugins/device_info/ios"
-  fast_contacts:
-    :path: ".symlinks/plugins/fast_contacts/ios"
   Flutter:
     :path: Flutter
-  flutter_isolate:
-    :path: ".symlinks/plugins/flutter_isolate/ios"
   flutter_keyboard_visibility:
     :path: ".symlinks/plugins/flutter_keyboard_visibility/ios"
   flutter_libphonenumber:
@@ -214,7 +201,7 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   iOSPhoneLib:
-    :commit: fb3467896a4800a5fb5fae45e1d862686dc472d2
+    :commit: 600bfd4435c1d15618838c066d67ae9031ba39c7
     :git: https://github.com/open-voip-alliance/iOS-Phone-Lib.git
   le:
     :commit: ce8800f6d3290e182d48082680679d64a05ca778
@@ -229,16 +216,14 @@ SPEC CHECKSUMS:
   connectivity_plus: 413a8857dd5d9f1c399a39130850d02fe0feaf7e
   contacts_service: 849e1f84281804c8bfbec1b4c3eedcb23c5d3eca
   device_info: d7d233b645a32c40dfdc212de5cf646ca482f175
-  fast_contacts: d5f0da976a40f8fd07a9ff730c2e9bee8c3898dd
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
-  flutter_isolate: 0edf5081826d071adf21759d1eb10ff5c24503b5
   flutter_keyboard_visibility: 0339d06371254c3eb25eeb90ba8d17dca8f9c069
   flutter_libphonenumber: 6a23afdf063b34d1e53e6dbd6c6bc905d18e8e46
   flutter_phone_lib: 060b342f95c63f9e07e1577f76db7e06f349ef8a
   flutter_segment: 367b7d9f7d74b3875198524ff4d24c381d93e317
   in_app_review: 4a97249f7a2f539a0f294c2d9196b7fe35e49541
   integration_test: a1e7d09bd98eca2fc37aefd79d4f41ad37bdbbe5
-  iOSPhoneLib: 89ccda35bd20ead65f3db0ccf683a87bf785ba7c
+  iOSPhoneLib: 310198258cc299a1faa4723fceed2a1c003d0ded
   le: 6854003e293bf5b3cb822ef06971f1cc23a77eb9
   libphonenumber: bd14d5abfc5939ab0b0767234e2d8e2593af258e
   libPhoneNumber-iOS: 0a32a9525cf8744fe02c5206eb30d571e38f7d75
@@ -252,15 +237,15 @@ SPEC CHECKSUMS:
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
   Segment-Amplitude: 6c1e59c8c278a21029ba7a6a788fcb31b9233a2c
   segment-appsflyer-ios: 9b84c1b7f94bb7a3c5826c9214cd0630b831e208
-  Sentry: a0d4563fa4ddacba31fdcc35daaa8573d87224d6
-  sentry_flutter: 8bde7d0e57a721727fe573f13bb292c497b5a249
+  Sentry: dd29c18c32b0af9269949f079cf631d581ca76ca
+  sentry_flutter: 544b23de27343d0cd12d8d16b0fac71dc884f0e6
   shared_preferences_ios: 548a61f8053b9b8a49ac19c1ffbc8b92c50d68ad
   sqlite3: 50117e9e063a9ef2b865f7bdf2f2601e5d368e9a
-  sqlite3_flutter_libs: 1641350489d5c2bcb9d0773ade9693624111b24c
+  sqlite3_flutter_libs: c6ab7f23670a98fef45a137159452004bc552168
   Swinject: ddf78b8486dd9b71a667b852cad919ab4484478e
   url_launcher_ios: 839c58cdb4279282219f5e248c3321761ff3c4de
   webview_flutter_wkwebview: b7e70ef1ddded7e69c796c7390ee74180182971f
 
-PODFILE CHECKSUM: 5cbde205bc638a60e6eaf1140e9808670c3b3178
+PODFILE CHECKSUM: 79548a32624e155c7e01b4523617109de6480dd5
 
 COCOAPODS: 1.11.3

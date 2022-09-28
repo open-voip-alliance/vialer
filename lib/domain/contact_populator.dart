@@ -1,6 +1,7 @@
 import '../dependency_locator.dart';
 import 'entities/call_record.dart';
 import 'entities/call_record_with_contact.dart';
+import 'entities/contact.dart';
 import 'repositories/contact.dart';
 
 class CallRecordContactPopulator {
@@ -9,7 +10,7 @@ class CallRecordContactPopulator {
   Future<List<CallRecordWithContact>> populate(
     List<CallRecord> callRecords,
   ) async {
-    final contacts = await _contactsRepository.getContactPhoneNumberMap();
+    final contacts = await getContactPhoneNumberMap();
 
     return callRecords.map(
       (call) {
@@ -24,6 +25,33 @@ class CallRecordContactPopulator {
         return call.withContact(null);
       },
     ).toList();
+  }
+
+  /// Retrieve a mapping between a phone number and a contact, this allows for
+  /// optimized look-up of contacts.
+  Future<Map<String, Contact>> getContactPhoneNumberMap() async {
+    final contacts = await _contactsRepository.getContacts();
+    final map = <String, Contact>{};
+
+    for (final contact in contacts) {
+      for (final item in contact.phoneNumbers) {
+        final phoneNumber = item.value;
+        map[phoneNumber.replaceAll(' ', '')] = contact;
+
+        // Most contacts format numbers with country codes to
+        // e.g. +31 6 4....
+        // So we will replace the first item with a 0 to match with
+        // non-country code phone numbers.
+        final split = item.value.split(' ');
+
+        if (split.length > 1) {
+          split[0] = '0';
+          map[split.join()] = contact;
+        }
+      }
+    }
+
+    return map;
   }
 }
 

@@ -1,24 +1,14 @@
-import 'package:equatable/equatable.dart';
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
+part 'item.freezed.dart';
 part 'item.g.dart';
 
-@JsonSerializable()
-class Item extends Equatable {
-  final String label;
-  final String value;
-
-  const Item(this.label, this.value);
-
-  @override
-  String toString() => '$label: $value';
-
-  @override
-  List<Object?> get props => [
-        value,
-      ];
+@freezed
+class Item with _$Item {
+  const factory Item({
+    required String label,
+    required String value,
+  }) = _Item;
 
   factory Item.fromJson(Map<String, dynamic> json) => _$ItemFromJson(json);
-
-  Map<String, dynamic> toJson() => _$ItemToJson(this);
 }
