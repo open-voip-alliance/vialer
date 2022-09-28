@@ -10,7 +10,7 @@ import 'database/client_calls.dart';
 import 'mappers/client_call_record.dart';
 
 class LocalClientCallsRepository with Loggable {
-  final VialerDatabase db;
+  final ClientCallsDatabase db;
 
   LocalClientCallsRepository(this.db);
 
@@ -129,7 +129,7 @@ class LocalClientCallsRepository with Loggable {
   }
 
   Future<Stream> watch() async {
-    final file = await getDatabaseFile();
+    final file = await ClientCallsDatabase.databaseFile;
 
     return FileWatcher(file.path)
         .events

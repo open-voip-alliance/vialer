@@ -47,7 +47,7 @@ Future<void> initializeDependencies({bool ui = true}) async {
     ..registerSingleton<VoipgridService>(
       VoipgridService.create(),
     )
-    ..registerSingleton<VialerDatabase>(VialerDatabase())
+    ..registerSingleton<ClientCallsDatabase>(ClientCallsDatabase())
     ..registerSingletonAsync<StorageRepository>(() async {
       final storageRepository = StorageRepository();
       await storageRepository.load();
@@ -95,7 +95,7 @@ Future<void> initializeDependencies({bool ui = true}) async {
       ),
     )
     ..registerSingleton<LocalClientCallsRepository>(
-      LocalClientCallsRepository(dependencyLocator<VialerDatabase>()),
+      LocalClientCallsRepository(dependencyLocator<ClientCallsDatabase>()),
     )
     ..registerSingleton<RemoteClientCallsRepository>(
       RemoteClientCallsRepository(

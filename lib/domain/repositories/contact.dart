@@ -1,161 +1,112 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:contacts_service/contacts_service.dart' hide Contact;
 import 'package:dartx/dartx.dart';
-import 'package:fast_contacts/fast_contacts.dart' as fast_contacts;
-import 'package:flutter_isolate/flutter_isolate.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../../app/util/loggable.dart';
+import '../../app/util/pigeon.dart';
+import '../../app/util/single_task.dart';
 import '../entities/contact.dart';
-import 'mappers/contact.dart';
 
 class ContactRepository with Loggable {
   var _memoryCache = <Contact>[];
 
-  static var _isContactIsolateRunning = false;
-  static var _isAvatarIsolateRunning = false;
-
   Future<List<Contact>> getContacts({
-    bool onlyFromCache = false,
+    bool latest = false,
   }) async {
-    if (_memoryCache.isNotEmpty && onlyFromCache) {
+    final import = _importContactsIntoLocalCaches();
+
+    // If the latest data has been requested, we are going to wait for the
+    // import to be completed before returning any records.
+    if (latest) {
+      return await import;
+    }
+
+    // We will then check our two caches to see if there is any data there,
+    // if we have then we will return directly from the caches.
+    if (_isMemoryCachePopulated) {
       return _memoryCache;
+    } else if (await _isFileCachePopulated) {
+      return _readContactsFromFileCache();
     }
 
-    final isFirstLoad = !(await _hasItemsInCache);
-
-    // If we're only loading from the cache and it's the first load (so there's
-    // no data) then there is nothing to fetch and we can just return an empty
-    // list.
-    if (isFirstLoad && onlyFromCache) return _memoryCache;
-
-    if (!onlyFromCache) {
-      // If this is the first time the user loads contacts we're going to wait
-      // until the cache file has been written to before returning.
-      if (isFirstLoad) {
-        await _cacheContactsLocally();
-      } else {
-        _cacheContactsLocally();
-      }
-    }
-
-    _memoryCache = await _readContactsFromFileCache();
-
-    if (!onlyFromCache) {
-      _cacheAvatarsLocally(_memoryCache);
-    }
-
-    return _memoryCache.toList(growable: false);
+    // If there is no cached data then we have no choice but to wait for
+    // the import.
+    return await import;
   }
 
-  /// Reads the contacts from the file based cache.
-  Future<List<Contact>> _readContactsFromFileCache() async => contactsCacheFile
-      .then((file) => file.readAsString())
-      .then((json) => (jsonDecode(json) as List)
-          .map((e) => Contact.fromJson(e as Map<String, dynamic>))
-          .toList());
+  /// Performs the performance and time consuming task of importing contacts
+  /// from the native OS database, into a local cache (both memory and
+  /// file-based) that we can access much more quickly.
+  ///
+  /// This will also begin the import of avatars, this can be an extremely
+  /// long running task so we will never wait for this to complete.
+  ///
+  /// Only one instance of contact importing and one instance of avatar
+  /// importing will be running simultaneously regardless of how many times
+  /// this method is called.
+  Future<List<Contact>> _importContactsIntoLocalCaches() async {
+    final contactImporter = Contacts();
+    final cachePath = (await _contactsCacheFile).path;
+    final avatarCacheDirectory = (await _avatarCacheDirectory).path;
 
-  Future<bool> get _hasItemsInCache async {
-    final cacheFile = await contactsCacheFile;
+    await SingleInstanceTask.named('Contact Import').run(
+      () => contactImporter.importContacts(cachePath),
+    );
+
+    SingleInstanceTask.named('Avatar Import').run(
+      () => contactImporter.importContactAvatars(avatarCacheDirectory),
+    );
+
+    return _memoryCache = await _readContactsFromFileCache();
+  }
+
+  bool get _isMemoryCachePopulated => _memoryCache.isNotEmpty;
+
+  /// Returns [TRUE] when the file cache has any data in it at all, this could
+  /// be an empty contact list.
+  Future<bool> get _isFileCachePopulated async {
+    final cacheFile = await _contactsCacheFile;
     final exists = await cacheFile.exists();
 
     if (!exists) return false;
 
     final stats = await cacheFile.stat();
 
-    return stats.size > 0;
+    if (stats.type == FileSystemEntityType.notFound) return false;
+
+    // We're just going to check the file has more than an empty array in it.
+    return stats.size > 5;
   }
 
-  /// Spawns an isolate to import avatars for all known contacts and store
-  /// them in a local directory.
+  Future<List<Contact>> _readContactsFromFileCache() async {
+    final file = await _contactsCacheFile;
+
+    if (!(await file.exists())) {
+      return [];
+    }
+
+    final json = await file.readAsString();
+
+    return (jsonDecode(json) as List)
+        .map((e) => Contact.fromJson(e as Map<String, dynamic>))
+        .attachAvatarPaths(await _avatarCacheDirectory)
+        .toList(growable: false);
+  }
+
+  /// Purges all cached contact data, this must be performed in the event
+  /// that the app should no longer have access to contacts. This can be due
+  /// to permissions being revoked, the user logging out etc.
   ///
-  /// Fetching avatars is very performance intensive which is why this is exists
-  /// and is done off the main-thread.
-  Future<void> _cacheAvatarsLocally(
-    List<Contact> domainContacts,
-  ) async {
-    if (_isAvatarIsolateRunning) {
-      logger.info('Skipping avatar import as it is already running.');
-      return;
-    }
-
-    _isAvatarIsolateRunning = true;
-
-    return flutterCompute(
-      _isolateCacheAllAvatars,
-      domainContacts
-          .filter((element) => element.identifier != null)
-          .map((contact) => contact.identifier!)
-          .shuffled(),
-    ).onError((error, stackTrace) {
-      _isAvatarIsolateRunning = false;
-      logger.warning('Avatar import isolate exited with error: $error');
-    }).whenComplete(() {
-      _isAvatarIsolateRunning = false;
-    });
-  }
-
-  /// Spawns an isolate to read the contacts database, serialize them and store
-  /// them in a local file.
-  ///
-  /// Performance is heavily impacted when users have thousands of contacts
-  /// so this optimizes that.
-  Future<void> _cacheContactsLocally() async {
-    if (_isContactIsolateRunning) {
-      logger.info('Skipping contact import as it is already running.');
-      return;
-    }
-
-    _isContactIsolateRunning = true;
-
-    return flutterCompute(
-      _isolateCacheAllContacts,
-      <String>[],
-    ).onError((error, stackTrace) {
-      _isContactIsolateRunning = false;
-      logger.warning('Contact import isolate exited with error: $error');
-    }).whenComplete(() {
-      _isContactIsolateRunning = false;
-    });
-  }
-
-  /// Retrieve a mapping between a phone number and a contact, this allows for
-  /// optimized look-up of contacts.
-  Future<Map<String, Contact>> getContactPhoneNumberMap() async {
-    final contacts = await getContacts(onlyFromCache: true);
-    final map = <String, Contact>{};
-
-    for (final contact in contacts) {
-      for (final item in contact.phoneNumbers) {
-        final phoneNumber = item.value;
-        map[phoneNumber.replaceAll(' ', '')] = contact;
-
-        // Most contacts format numbers with country codes to
-        // e.g. +31 6 4....
-        // So we will replace the first item with a 0 to match with
-        // non-country code phone numbers.
-        final split = item.value.split(' ');
-
-        if (split.length > 1) {
-          split[0] = '0';
-          map[split.join()] = contact;
-        }
-      }
-    }
-
-    return map;
-  }
-
-  /// Clean-up the contacts caches, this must always be performed if we don't
-  /// have contact permissions.
+  /// If this isn't called, the user will potentially still see contact data
+  /// in the app even if we don't have access to it.
   Future<void> cleanUp() async {
-    _memoryCache = [];
+    _memoryCache.clear();
 
     final cacheFiles = [
-      await contactsCacheFile,
-      await avatarDirectory,
+      await _contactsCacheFile,
+      await _avatarCacheDirectory,
     ];
 
     for (final file in cacheFiles) {
@@ -164,107 +115,36 @@ class ContactRepository with Loggable {
       }
     }
   }
+
+  /// Contacts are cached into a single `.json` file, this is the path to
+  /// that specific file.
+  Future<File> get _contactsCacheFile async {
+    final directory = (await getApplicationDocumentsDirectory()).path;
+    return File('$directory/contacts_cache.json');
+  }
+
+  /// Avatars are cached as individual files with a format of
+  /// `avatar_cache/12342.jpg` for Android
+  /// or `avatar_cache/1996d240-0d5f-4b60-9630-42eb4c71fa29.jpg` for iOS. This
+  /// is due to the way that each OS stores their identifiers, UUID for iOS
+  /// but a regular int for Android.
+  ///
+  /// This provides the directory that all these cached avatar files will be
+  /// stored.
+  Future<Directory> get _avatarCacheDirectory async {
+    final documentPath = (await getApplicationDocumentsDirectory()).path;
+    final directory = Directory('$documentPath/avatar_cache');
+    await directory.create();
+    return directory;
+  }
 }
 
 extension on Iterable<Contact> {
-  Iterable<Contact> filterHasPhoneNumber({
-    bool applyWhen = true,
-  }) =>
-      applyWhen ? where((contact) => contact.phoneNumbers.isNotEmpty) : this;
-}
-
-/// The time that we will keep avatars before checking for them again. A user
-/// updating an avatar won't see changes until at least this time.
-const avatarTtl = Duration(minutes: 5);
-
-Future<Directory> get avatarDirectory async {
-  final documentPath = (await getApplicationDocumentsDirectory()).path;
-  final directory = Directory('$documentPath/avatar_cache');
-  await directory.create();
-  return directory;
-}
-
-/// Performs an import of all the user's contacts into a local file
-/// in JSON format.
-///
-/// Designed to be run in an ISOLATE.
-@pragma('vm:entry-point')
-Future<void> _isolateCacheAllContacts(List<String> args) async {
-  final avatarCacheDirectory = await avatarDirectory;
-  final cacheFile = await contactsCacheFile;
-
-  final contacts = (await ContactsService.getContacts(
-    withThumbnails: false,
-    photoHighResolution: false,
-  ).then(
-    (contacts) => contacts.toDomainEntities(
-      avatarCacheDirectory: avatarCacheDirectory,
-    ),
-  ))
-      .filterHasPhoneNumber()
-      .toList(growable: false);
-
-  final json = jsonEncode(contacts);
-
-  await cacheFile.writeAsString(json, flush: true);
-}
-
-/// Iterates through an entire list of contact identifiers and caches them to a
-/// local file.
-///
-/// Designed to be run in an ISOLATE.
-@pragma('vm:entry-point')
-Future<void> _isolateCacheAllAvatars(List<String> contactIdentifiers) async {
-  for (final identifier in contactIdentifiers) {
-    final file = File(createAvatarPath(
-      directory: await avatarDirectory,
-      identifier: identifier,
-    ));
-    final isStale = (await file.exists())
-        ? file.lastModifiedSync().isBefore(DateTime.now().subtract(avatarTtl))
-        : true;
-
-    if (!isStale) continue;
-
-    final image = await fast_contacts.FastContacts.getContactImage(
-      identifier,
-    );
-
-    if (image == null) continue;
-
-    file.writeAsBytes(List<int>.from(image));
-  }
-
-  await _cleanUpUnusedAvatars();
-}
-
-/// We will clean up any files that haven't been cached recently to make sure
-/// we aren't keeping old data around.
-Future<void> _cleanUpUnusedAvatars() async {
-  final directory = await avatarDirectory;
-  final deleteBefore = DateTime.now().subtract(const Duration(days: 7));
-
-  for (final fileSystemEntity in directory.listSync()) {
-    final file = File(fileSystemEntity.path);
-
-    if (!(await file.exists())) continue;
-
-    final lastModified = await file.lastModified();
-
-    if (lastModified.isAfter(deleteBefore)) continue;
-
-    fileSystemEntity.delete();
-  }
-}
-
-Future<File> get contactsCacheFile async {
-  final directory = (await getApplicationDocumentsDirectory()).path;
-  return File('$directory/contacts_cache.json');
-}
-
-String createAvatarPath({
-  required Directory directory,
-  required String identifier,
-}) {
-  return '${directory.path}/$identifier.jpg';
+  Iterable<Contact> attachAvatarPaths(Directory avatarPath) => filter(
+        (contact) => contact.identifier.isNotNullOrBlank,
+      ).map(
+        (contact) => contact.copyWith(
+          avatarPath: '${avatarPath.path}/${contact.identifier}.jpg',
+        ),
+      );
 }

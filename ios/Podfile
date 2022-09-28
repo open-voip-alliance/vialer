@@ -40,7 +40,7 @@ target 'Runner' do
   pod 'le', :git => 'https://github.com/LogentriesCommunity/le_ios.git'
   pod 'Alamofire', '~> 5.4'
   pod 'Analytics', '~> 4.1'
-
+  
   target 'RunnerTests' do
     inherit! :search_paths
   end
