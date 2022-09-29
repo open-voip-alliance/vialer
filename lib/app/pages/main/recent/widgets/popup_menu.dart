@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../../domain/entities/call_record.dart';
 import '../../../../resources/localizations.dart';
@@ -76,7 +77,7 @@ class RecentItemPopupMenu extends StatelessWidget {
             leading: Container(
               width: 24,
               alignment: Alignment.center,
-              child: const Icon(VialerSans.copy, size: 20),
+              child: const FaIcon(FontAwesomeIcons.copy, size: 20),
             ),
             title: Text(context.msg.main.recent.list.item.popupMenu.copy),
           ),
@@ -87,14 +88,14 @@ class RecentItemPopupMenu extends StatelessWidget {
             leading: Container(
               width: 24,
               alignment: Alignment.center,
-              child: const Icon(VialerSans.phone, size: 20),
+              child: const FaIcon(FontAwesomeIcons.phone, size: 20),
             ),
             title: Text(context.msg.main.recent.list.item.popupMenu.call),
           ),
         ),
       ],
-      icon: Icon(
-        VialerSans.ellipsis,
+      icon: FaIcon(
+        FontAwesomeIcons.ellipsisVertical,
         color: context.brand.theme.colors.grey1,
         size: 16,
       ),

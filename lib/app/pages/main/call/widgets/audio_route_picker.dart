@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_phone_lib/flutter_phone_lib.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../resources/localizations.dart';
@@ -23,13 +24,13 @@ class AudioRoutePicker extends StatelessWidget {
           _AudioRouteDialogOption(
             route: AudioRoute.phone,
             currentRoute: audioState.currentRoute,
-            icon: const Icon(VialerSans.phone),
+            icon: const FaIcon(FontAwesomeIcons.phone),
             label: context.msg.main.call.ongoing.actions.audioRoute.phone,
           ),
           _AudioRouteDialogOption(
             route: AudioRoute.speaker,
             currentRoute: audioState.currentRoute,
-            icon: const Icon(VialerSans.speaker),
+            icon: const FaIcon(FontAwesomeIcons.volume),
             label: context.msg.main.call.ongoing.actions.audioRoute.speaker,
           ),
           ..._buildBluetoothOptions(
@@ -50,7 +51,7 @@ class AudioRoutePicker extends StatelessWidget {
         _AudioRouteDialogOption(
           route: AudioRoute.bluetooth,
           currentRoute: audioState.currentRoute,
-          icon: const Icon(VialerSans.bluetooth),
+          icon: const FaIcon(FontAwesomeIcons.bluetooth),
           label: _bluetoothLabelFor(
             context: context,
             bluetoothDeviceName: audioState.bluetoothDeviceName ?? '',
@@ -67,7 +68,7 @@ class AudioRoutePicker extends StatelessWidget {
               displayName: audioState.bluetoothDeviceName ?? '',
               identifier: audioState.bluetoothDeviceName ?? '',
             ),
-            icon: const Icon(VialerSans.bluetooth),
+            icon: const FaIcon(FontAwesomeIcons.bluetooth),
             label: route.displayName,
           ),
         )
@@ -122,7 +123,7 @@ class _AudioRouteDialogOption extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
               ),
             ),
-            if (_isCurrentRoute()) const Icon(VialerSans.check),
+            if (_isCurrentRoute()) const FaIcon(FontAwesomeIcons.check),
           ],
         ),
       ),

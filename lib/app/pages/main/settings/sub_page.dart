@@ -34,18 +34,10 @@ class SettingsSubPage extends StatelessWidget {
             final settings = state.settings;
 
             return [
-              SettingTileCategory.troubleshootingCalling(
-                children: [
-                  SettingTile.useEncryption(
-                    settings.get<UseEncryptionSetting>(),
-                  ),
-                ],
-              ),
               SettingTileCategory.troubleshootingAudio(
                 children: [
-                  SettingTile.audioCodec(
-                    settings.get<AudioCodecSetting>(),
-                  ),
+                  if (settings.get<UseVoipSetting>().value == true)
+                    SettingTile.echoCancellationCalibration(),
                 ],
               ),
             ];

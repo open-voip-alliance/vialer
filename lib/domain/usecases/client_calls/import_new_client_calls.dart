@@ -16,8 +16,7 @@ class ImportNewClientCallRecordsUseCase extends UseCase with Loggable {
     // We will take the date of the most recent call record as our starting
     // point, applying some leeway around it to make sure we have all the
     // records.
-    final start = mostRecentRecord?.date ??
-        DateTime.now().firstDayOfMonth;
+    final start = mostRecentRecord?.date ?? DateTime.now().firstDayOfMonth;
 
     return _importClientCalls(
       from: start,

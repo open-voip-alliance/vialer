@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dartx/dartx.dart';
 import 'package:duration/duration.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../../domain/entities/call_record.dart';
@@ -140,20 +141,25 @@ class _RecentCallItemContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-      leading: !callRecord.isClientCall ? Avatar(
-        name: callRecord.displayLabel,
-        backgroundColor: calculateColorForPhoneNumber(
-          context,
-          callRecord.thirdPartyNumber,
-        ),
-        showFallback: callRecord is CallRecordWithContact
-            ? (callRecord as CallRecordWithContact).contact?.displayName == null
-            : false,
-        image: callRecord is CallRecordWithContact
-            ? (callRecord as CallRecordWithContact).contact?.avatar
-            : null,
-        fallback: const Text('#'),
-      ) : null,
+      leading: !callRecord.isClientCall
+          ? Avatar(
+              name: callRecord.displayLabel,
+              backgroundColor: calculateColorForPhoneNumber(
+                context,
+                callRecord.thirdPartyNumber,
+              ),
+              showFallback: callRecord is CallRecordWithContact
+                  ? (callRecord as CallRecordWithContact)
+                          .contact
+                          ?.displayName ==
+                      null
+                  : false,
+              image: callRecord is CallRecordWithContact
+                  ? (callRecord as CallRecordWithContact).contact?.avatar
+                  : null,
+              fallback: const Text('#'),
+            )
+          : null,
       title: GestureDetector(
         behavior: HitTestBehavior.translucent,
         onTap: onCallPressed,
@@ -176,20 +182,20 @@ class _RecentItemSubtitle extends StatelessWidget {
 
   IconData _icon(BuildContext context) {
     if (callRecord.renderType == CallRecordRenderType.internalCall) {
-      return VialerSans.internalCall;
+      return FontAwesomeIcons.arrowRightArrowLeft;
     }
 
     if (callRecord.isIncomingAndAnsweredElsewhere) {
-      return VialerSans.answeredElsewhereCall;
+      return FontAwesomeIcons.arrowTrendDown;
     }
 
     if (callRecord.wasMissed && callRecord.direction == Direction.inbound) {
-      return VialerSans.missedCallRecord;
+      return FontAwesomeIcons.xmark;
     }
 
     return callRecord.isOutbound
-        ? VialerSans.outgoingCall
-        : VialerSans.incomingCall;
+        ? FontAwesomeIcons.arrowUpRight
+        : FontAwesomeIcons.arrowDownLeft;
   }
 
   Color _iconColor(BuildContext context) {
@@ -210,15 +216,22 @@ class _RecentItemSubtitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final icon = Icon(
+      _icon(context),
+      color: _iconColor(context),
+      size: 16,
+    );
+
     return Column(
       children: [
         Row(
           children: <Widget>[
-            Icon(
-              _icon(context),
-              color: _iconColor(context),
-              size: 16,
-            ),
+            if (callRecord.isIncomingAndAnsweredElsewhere)
+              Mirrored(
+                child: icon,
+              )
+            else
+              icon,
             const SizedBox(width: 8),
             Expanded(child: _RecentItemSubtitleText(callRecord)),
           ],
@@ -538,5 +551,19 @@ extension ClientRenderType on ClientCallRecord {
     }
 
     return CallRecordRenderType.other;
+  }
+}
+
+class Mirrored extends StatelessWidget {
+  final Widget child;
+
+  const Mirrored({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Transform.scale(
+      scaleX: -1,
+      child: child,
+    );
   }
 }

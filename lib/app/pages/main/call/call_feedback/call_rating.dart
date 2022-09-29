@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
@@ -28,13 +29,13 @@ class CallRating extends StatelessWidget {
             itemCount: 5,
             tapOnlyMode: true,
             ratingWidget: RatingWidget(
-              full: Icon(
-                VialerSans.star,
+              full: FaIcon(
+                FontAwesomeIcons.solidStar,
                 color: context.brand.theme.colors.primary,
               ),
               half: const SizedBox(),
               empty: Icon(
-                VialerSans.starOutline,
+                FontAwesomeIcons.star,
                 color: context.brand.theme.colors.grey4,
               ),
             ),

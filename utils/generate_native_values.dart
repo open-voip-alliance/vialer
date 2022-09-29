@@ -1,8 +1,9 @@
 import 'dart:io';
 
 import 'package:basic_utils/basic_utils.dart';
-import 'package:vialer/app/resources/theme/raw_colors.dart';
-import 'package:vialer/app/resources/theme/raw_logo.dart';
+import 'package:package_config/package_config.dart';
+import 'package:vialer/app/resources/theme/brand_icon_code_points.dart';
+import 'package:vialer/app/resources/theme/color_values.dart';
 import 'package:vialer/domain/entities/brand.dart';
 import 'package:vialer/domain/repositories/brand.dart';
 import 'package:xml/xml.dart';
@@ -23,7 +24,8 @@ Future<void> main() async {
       writeColorValues(brand),
       writeLanguageValues(brand),
     ],
-    copyVialerSans(),
+    copyBrandIcons(),
+    copyFontAwesome(),
   ]);
 }
 
@@ -75,11 +77,11 @@ Future<void> writeBrandValues(Brand brand) async {
     builder.element(
       'integer',
       attributes: {
-        'name': 'logo',
+        'name': 'brand_icon',
       },
       // Not necessary to put in hex but makes more sense since it's referring
       // to a code point in Vialer Sans.
-      nest: '0x${brand.rawLogo.toRadixString(16).toUpperCase()}',
+      nest: '0x${brand.iconCodePoint.toRadixString(16).toUpperCase()}',
     );
   });
 
@@ -92,7 +94,7 @@ Future<void> writeBrandValues(Brand brand) async {
 Future<void> writeColorValues(Brand brand) async {
   final builder = createXmlBuilder();
 
-  final colors = brand.rawColors.toJson();
+  final colors = brand.colorValues.toJson();
 
   builder.element('resources', nest: () {
     for (final entry in colors.entries) {
@@ -243,12 +245,40 @@ Future<void> writeLanguageValues(Brand brand) async {
   await Future.wait([write(dutch: false), write(dutch: true)]);
 }
 
-Future<void> copyVialerSans() async =>
-    await File('assets/vialer_sans.ttf').copy(
-      await File('android/app/src/main/res/font/vialer_sans.ttf')
+Future<void> copyBrandIcons() async {
+  const fileName = 'brand_icons.ttf';
+
+  await File('assets/$fileName').copy(
+    await File('android/app/src/main/res/font/$fileName')
+        .create(recursive: true)
+        .then((f) => f.path),
+  );
+}
+
+Future<void> copyFontAwesome() async {
+  final packageConfig = (await findPackageConfig(Directory.current))!;
+
+  const fontFileNames = [
+    'fa-light-300.ttf',
+    'fa-regular-400.ttf',
+    'fa-solid-900.ttf',
+  ];
+
+  for (final fontFileName in fontFileNames) {
+    final fontFile = File.fromUri(packageConfig.packages
+        .firstWhere((p) => p.name == 'font_awesome_flutter')
+        .root
+        .resolve('lib/fonts/$fontFileName'));
+
+    final newFontFileName = fontFileName.replaceAll('-', '_');
+
+    await fontFile.copy(
+      await File('android/app/src/main/res/font/$newFontFileName')
           .create(recursive: true)
           .then((f) => f.path),
     );
+  }
+}
 
 XmlBuilder createXmlBuilder() =>
     XmlBuilder()..processing('xml', 'version="1.0"');

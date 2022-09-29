@@ -80,3 +80,12 @@ abstract class AndroidFlexibleUpdateHandler {
 abstract class CallThrough {
   void startCall(String number);
 }
+
+@HostApi()
+// ignore: one_member_abstracts
+abstract class Contacts {
+  @async
+  void importContacts(String cacheFilePath);
+  @async
+  void importContactAvatars(String avatarDirectoryPath);
+}

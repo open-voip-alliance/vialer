@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_phone_lib/flutter_phone_lib.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
@@ -146,7 +147,7 @@ class _CallActionButtons extends StatelessWidget {
               children: [
                 Expanded(
                   child: _ActionButton(
-                    icon: const Icon(VialerSans.mute),
+                    icon: const FaIcon(FontAwesomeIcons.microphoneSlash),
                     label: context.msg.main.call.ongoing.actions.mute,
                     includeActiveStatusInSemanticLabel: true,
                     onPressedTogglesActiveStatus: true,
@@ -159,7 +160,7 @@ class _CallActionButtons extends StatelessWidget {
                 ),
                 Expanded(
                   child: _ActionButton(
-                    icon: const Icon(VialerSans.dialpad),
+                    icon: const Icon(Icons.dialpad),
                     label: context.msg.main.call.ongoing.actions.keypad.label,
                     onPressed: !state.isFinished
                         ? () => _toggleDialPad(context)
@@ -182,8 +183,8 @@ class _CallActionButtons extends StatelessWidget {
                   flex: 2,
                   child: _ActionButton(
                     icon: state.isInTransfer
-                        ? const Icon(VialerSans.merge)
-                        : const Icon(VialerSans.transfer),
+                        ? const FaIcon(FontAwesomeIcons.merge)
+                        : const FaIcon(FontAwesomeIcons.arrowRightArrowLeft),
                     label: state.isInTransfer
                         ? context.msg.main.call.ongoing.actions.merge
                         : context.msg.main.call.ongoing.actions.transfer.label,
@@ -197,7 +198,7 @@ class _CallActionButtons extends StatelessWidget {
                 Expanded(
                   flex: 2,
                   child: _ActionButton(
-                    icon: const Icon(VialerSans.onHold),
+                    icon: const FaIcon(FontAwesomeIcons.pause),
                     label: context.msg.main.call.ongoing.actions.hold,
                     includeActiveStatusInSemanticLabel: true,
                     onPressedTogglesActiveStatus: true,
@@ -337,7 +338,9 @@ class _ActionButtonState extends State<_ActionButton> {
                     size: 32,
                     color: _pickIconColor(context),
                   ),
-                  child: widget.icon,
+                  child: Center(
+                    child: widget.icon,
+                  ),
                 ),
               ),
             ),
@@ -414,14 +417,14 @@ class _AudioRouteButton extends StatelessWidget {
     required AudioRoute currentRoute,
   }) {
     if (!hasBluetooth || currentRoute == AudioRoute.speaker) {
-      return VialerSans.speaker;
+      return FontAwesomeIcons.volume;
     }
 
     if (currentRoute == AudioRoute.bluetooth) {
-      return VialerSans.bluetooth;
+      return FontAwesomeIcons.bluetooth;
     }
 
-    return VialerSans.phone;
+    return FontAwesomeIcons.phone;
   }
 
   String _labelFor({
@@ -470,7 +473,7 @@ class _AudioRouteButton extends StatelessWidget {
         );
 
         return _ActionButton(
-          icon: Icon(
+          icon: FaIcon(
             _iconFor(
               context: context,
               hasBluetooth: hasBluetooth,
@@ -529,9 +532,12 @@ class _DialPad extends StatelessWidget {
               borderOnIos: false,
               child: InkResponse(
                 onTap: onCancelButtonPressed,
-                child: Icon(
-                  VialerSans.close,
-                  color: context.brand.theme.colors.grey5,
+                child: Center(
+                  child: FaIcon(
+                    FontAwesomeIcons.xmark,
+                    size: 32,
+                    color: context.brand.theme.colors.grey5,
+                  ),
                 ),
               ),
             ),

@@ -19,7 +19,14 @@ dependencies:
   flutter_phone_lib:
     git:
       url: https://github.com/open-voip-alliance/flutter-phone-lib
-      ref: 0e69203067930addd83320c6c341f6d52fad4c03
+      ref: af90a190c63773081db142d16c863c62ba804212
+
+  # We use our own fork, this is required when using Font Awesome Pro.
+  # See: https://pub.dev/packages/font_awesome_flutter#enable-pro-icons
+  font_awesome_flutter:
+    git:
+      url: git@gitlab.wearespindle.com:vialer/mobile/font-awesome.git
+      ref: c44f11fb144e1424582c395352b583a103a709f4
 
   flutter_bloc: ^7.0.0
   pedantic: ^1.9.0
@@ -32,7 +39,6 @@ dependencies:
   permission_handler: ^10.0.0
   url_launcher: ^6.0.3
   contacts_service: ^0.6.1
-  fast_contacts: ^1.1.1
   characters: ^1.0.0
   diacritic: ^0.1.1
   scrollable_positioned_list: ^0.3.2
@@ -67,8 +73,8 @@ dependencies:
   flutter_keyboard_visibility: ^5.3.0
   drift: ^1.7.1
   recase: ^4.0.0
-  flutter_isolate: ^2.0.2
   watcher: ^1.0.1
+  freezed_annotation: ^2.1.0
 
 dev_dependencies:
   integration_test:
@@ -90,6 +96,8 @@ dev_dependencies:
   yaml_edit: ^2.0.1
   glob: ^2.0.2
   drift_dev: ^1.7.0
+  package_config: ^2.1.0
+  freezed: ^2.1.0+1
 
 
 # For information on the generic Dart part of this file, see the
@@ -110,9 +118,9 @@ flutter:
     - assets/survey/yay.png
 
   fonts:
-    - family: 'VialerSans'
+    - family: 'BrandIcons'
       fonts:
-        - asset: assets/vialer_sans.ttf
+        - asset: assets/brand_icons.ttf
 
 
   # To add assets to your application, add an assets section, like this:

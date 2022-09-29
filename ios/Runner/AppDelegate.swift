@@ -30,7 +30,7 @@ import Intents
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
         UIApplication.shared.registerForRemoteNotifications()
-        
+
         let registerPlugins = GeneratedPluginRegistrant.register
         registerPlugins(self)
 
@@ -70,6 +70,7 @@ import Intents
         NativeMetricsSetup(controller.binaryMessenger, Metrics())
         CallScreenBehaviorSetup(controller.binaryMessenger, CallScreenBehaviorApi())
         TonesSetup(controller.binaryMessenger, SystemTones())
+        ContactsSetup(controller.binaryMessenger, ContactImporter(logger: logger))
         
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
     }

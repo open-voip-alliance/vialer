@@ -4,9 +4,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter_switch/flutter_switch.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../../domain/entities/audio_codec.dart';
 import '../../../../../domain/entities/availability.dart';
 import '../../../../../domain/entities/destination.dart';
 import '../../../../../domain/entities/fixed_destination.dart';
@@ -22,6 +22,7 @@ import '../../../web_view/page.dart';
 import '../../widgets/stylized_switch.dart';
 import '../cubit.dart';
 import 'availability_tile.dart';
+import 'link_tile.dart';
 
 class SettingTile extends StatelessWidget {
   final Widget? label;
@@ -285,44 +286,22 @@ class SettingTile extends StatelessWidget {
     );
   }
 
-  static Widget useEncryption(UseEncryptionSetting setting) {
+  static Widget echoCancellationCalibration() {
     return Builder(
       builder: (context) {
-        return SettingTile(
-          label: Text(
+        return SettingLinkTile(
+          title: Text(
             context.msg.main.settings.list.advancedSettings.troubleshooting.list
-                .calling.useEncryption,
+                .audio.echoCancellationCalibration.title,
           ),
-          child: _BoolSettingValue(setting),
-        );
-      },
-    );
-  }
-
-  static Widget audioCodec(AudioCodecSetting setting) {
-    return Builder(
-      builder: (context) {
-        return SettingTile(
-          label: Text(
+          description: Text(
             context.msg.main.settings.list.advancedSettings.troubleshooting.list
-                .calling.useEncryption,
+                .audio.echoCancellationCalibration.description,
           ),
-          childFillWidth: true,
-          child: _MultipleChoiceSettingValue<AudioCodec>(
-            value: setting.value,
-            isExpanded: true,
-            items: [
-              // TODO: Get values from PIL.
-              DropdownMenuItem(
-                value: AudioCodec.opus,
-                child: Text(AudioCodec.opus.value.toUpperCase()),
-              ),
-            ],
-            onChanged: (codec) => defaultOnChanged(
-              context,
-              setting.copyWith(value: codec),
-            ),
-          ),
+          onTap: () => context
+              .read<SettingsCubit>()
+              .performEchoCancellationCalibration(),
+          showNavigationIndicator: false,
         );
       },
     );
@@ -658,7 +637,7 @@ class _EditableSettingFieldState extends State<_EditableSettingField> {
         _editing ? widget.unlocked : widget.locked,
         IconButton(
           onPressed: _toggleEditing,
-          icon: const Icon(VialerSans.edit),
+          icon: const _EditIcon(),
         ),
       ],
     );
@@ -717,7 +696,7 @@ class _StringEditSettingValueState extends State<_StringEditSettingValue> {
         autoCorrect: false,
         suffix: IconButton(
           onPressed: () => _onPressed(context),
-          icon: const Icon(VialerSans.check),
+          icon: const FaIcon(FontAwesomeIcons.check),
         ),
         elevation: 0,
       );
@@ -733,7 +712,7 @@ class _StringEditSettingValueState extends State<_StringEditSettingValue> {
           ),
           IconButton(
             onPressed: _toggleEditing,
-            icon: const Icon(VialerSans.edit),
+            icon: const _EditIcon(),
           ),
         ],
       );
@@ -1015,13 +994,25 @@ class _DndToggle extends StatelessWidget {
                 ),
                 child: FlutterSwitch(
                   value: setting.value,
-                  inactiveIcon: Icon(
-                    VialerSans.available,
-                    color: _accentColor(context),
+                  inactiveIcon: SizedBox(
+                    width: 28,
+                    height: 28,
+                    child: Center(
+                      child: FaIcon(
+                        FontAwesomeIcons.bell,
+                        color: _accentColor(context),
+                      ),
+                    ),
                   ),
-                  activeIcon: Icon(
-                    VialerSans.dnd,
-                    color: _accentColor(context),
+                  activeIcon: SizedBox(
+                    width: 28,
+                    height: 28,
+                    child: Center(
+                      child: FaIcon(
+                        FontAwesomeIcons.bellSlash,
+                        color: _accentColor(context),
+                      ),
+                    ),
                   ),
                   switchBorder: Border.all(
                     color: _color(context),
@@ -1072,5 +1063,17 @@ extension Display on UserAvailabilityType {
     } else {
       return context.brand.theme.colors.availableAccent;
     }
+  }
+}
+
+class _EditIcon extends StatelessWidget {
+  const _EditIcon({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return const FaIcon(
+      FontAwesomeIcons.pen,
+      size: 22,
+    );
   }
 }

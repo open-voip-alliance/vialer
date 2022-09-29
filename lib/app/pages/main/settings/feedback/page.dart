@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
@@ -224,8 +225,8 @@ class _FeedbackFormHeader extends StatelessWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Icon(
-                  VialerSans.feedback,
+                FaIcon(
+                  FontAwesomeIcons.comments,
                   size: 24,
                   color: context.brand.theme.colors.grey5,
                 ),

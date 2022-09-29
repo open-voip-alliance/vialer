@@ -16,7 +16,6 @@ class SendSurveyResultsUseCase extends UseCase {
       _metricsRepository.track('${id.eventName}-survey', data);
 }
 
-
 extension on SurveyId {
   /// Changes e.g. `appRating` to `app-rating`.
   String get eventName {

@@ -15,7 +15,7 @@ class ServerConfig extends Equatable {
   final String encryptedSipUrl;
 
   static String _middlewareUrlFromJson(String json) =>
-       json.startsWith('https://') ? json : 'https://$json';
+      json.startsWith('https://') ? json : 'https://$json';
 
   const ServerConfig({
     required this.middlewareUrl,
@@ -25,10 +25,10 @@ class ServerConfig extends Equatable {
 
   @override
   List<Object?> get props => [
-    middlewareUrl,
-    unencryptedSipUrl,
-    encryptedSipUrl,
-  ];
+        middlewareUrl,
+        unencryptedSipUrl,
+        encryptedSipUrl,
+      ];
 
   @override
   String toString() => '$runtimeType('

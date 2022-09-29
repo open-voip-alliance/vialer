@@ -64,6 +64,8 @@ class MainActivity : FlutterActivity(), Pigeon.CallScreenBehavior {
                 override fun completeAndroidFlexibleUpdate() = updater.completeFlexibleUpdate()
             }
         )
+
+        Pigeon.Contacts.setup(binaryMessenger, ContactImporter(this))
     }
 
     override fun enable() {

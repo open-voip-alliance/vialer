@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../resources/localizations.dart';
 import '../../../resources/theme.dart';
@@ -89,7 +90,7 @@ class _DialerPageState extends State<DialerPage>
                           context.msg.main.dialer.noPermission
                               .permanentDescription(appName),
                         ),
-                  icon: const Icon(VialerSans.missedCall),
+                  icon: const FaIcon(FontAwesomeIcons.phoneXmark),
                   children: <Widget>[
                     const SizedBox(height: 40),
                     StylizedButton.raised(
@@ -113,7 +114,7 @@ class _DialerPageState extends State<DialerPage>
                 ),
                 child: T9DialPad(
                   callButtonColor: context.brand.theme.colors.green1,
-                  callButtonIcon: VialerSans.phone,
+                  callButtonIcon: FontAwesomeIcons.solidPhone,
                   callButtonSemanticsHint: context.msg.generic.button.call,
                   onCallButtonPressed: state is CanCall
                       ? (number) => _onCallButtonPressed(context, number)

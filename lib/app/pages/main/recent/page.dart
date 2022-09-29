@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../dependency_locator.dart';
 import '../../../../domain/entities/setting.dart';
@@ -72,7 +73,7 @@ class _RecentCallsPageState extends State<RecentCallsPage> {
     if (state is NoPermission) {
       showSnackBar(
         context,
-        icon: const Icon(VialerSans.exclamationMark),
+        icon: const FaIcon(FontAwesomeIcons.exclamation),
         label: Text(context.msg.main.contacts.snackBar.noPermission),
         padding: const EdgeInsets.only(right: 72),
       );

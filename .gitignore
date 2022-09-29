@@ -40,6 +40,7 @@ lib/generated_plugin_registrant.dart
 
 # Generated files
 *.g.dart
+*.freezed.dart
 *.chopper.dart
 *.i18n.dart
 lib/app/util/pigeon.dart

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../../domain/entities/web_page.dart';
 import '../../../../resources/localizations.dart';
@@ -20,6 +21,10 @@ class SettingLinkTile extends StatelessWidget {
   /// See [SettingTile.bordered] for more information.
   final bool? bordered;
 
+  /// When TRUE will show a right-arrow indicating to the user that pressing
+  /// this navigates to another page.
+  final bool showNavigationIndicator;
+
   const SettingLinkTile({
     Key? key,
     required this.title,
@@ -27,6 +32,7 @@ class SettingLinkTile extends StatelessWidget {
     this.onTap,
     this.center = false,
     this.bordered,
+    this.showNavigationIndicator = true,
   }) : super(key: key);
 
   static Widget troubleshooting() {
@@ -123,10 +129,12 @@ class SettingLinkTile extends StatelessWidget {
         description: description,
         center: center,
         bordered: bordered,
-        child: Icon(
-          VialerSans.caretRight,
-          color: context.brand.theme.colors.grey4,
-        ),
+        child: showNavigationIndicator
+            ? FaIcon(
+                FontAwesomeIcons.angleRight,
+                color: context.brand.theme.colors.grey4,
+              )
+            : Container(),
       ),
     );
   }

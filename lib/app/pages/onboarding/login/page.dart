@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -119,7 +120,7 @@ class _LoginPageState extends State<LoginPage>
                         controller: _emailController,
                         autoCorrect: false,
                         textCapitalization: TextCapitalization.none,
-                        prefixIcon: VialerSans.user,
+                        prefixIcon: FontAwesomeIcons.user,
                         labelText:
                             context.msg.onboarding.login.placeholder.email,
                         keyboardType: TextInputType.emailAddress,
@@ -140,18 +141,19 @@ class _LoginPageState extends State<LoginPage>
                       StylizedTextField(
                         key: LoginPage.keys.passwordField,
                         controller: _passwordController,
-                        prefixIcon: VialerSans.lockOn,
+                        prefixIcon: FontAwesomeIcons.lock,
                         suffix: IconButton(
                           key: LoginPage.keys.showPasswordButton,
                           icon: AnimatedSwitcher(
                             duration: const Duration(milliseconds: 200),
                             switchInCurve: Curves.decelerate,
                             switchOutCurve: Curves.decelerate.flipped,
-                            child: Icon(
+                            child: FaIcon(
                               _hidePassword
-                                  ? VialerSans.eyeOff
-                                  : VialerSans.eye,
+                                  ? FontAwesomeIcons.eyeSlash
+                                  : FontAwesomeIcons.eye,
                               color: context.brand.theme.colors.primary,
+                              size: 20,
                               key: ValueKey(_hidePassword),
                             ),
                           ),

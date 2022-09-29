@@ -13,8 +13,7 @@ class CreateClientCallsIsolateRequestUseCase extends UseCase {
   final _getBaseUrl = GetVoipgridBaseUrlUseCase();
   late final _getSetting = GetSettingUseCase<AvailabilitySetting>();
 
-  Future<List<int>> get _usersPhoneAccounts async =>
-      _getSetting().then(
+  Future<List<int>> get _usersPhoneAccounts async => _getSetting().then(
         (availability) =>
             availability.value?.phoneAccounts
                 .filter((phoneAccount) => phoneAccount.id != null)
@@ -29,7 +28,7 @@ class CreateClientCallsIsolateRequestUseCase extends UseCase {
     return ClientCallsIsolateRequest(
       user: (await _getUser(latest: false))!,
       voipgridApiBaseUrl: await _getBaseUrl(),
-      databasePath: (await getDatabaseFile()).path,
+      databasePath: (await ClientCallsDatabase.databaseFile).path,
       dateRangesToQuery: dateRangesToQuery,
       userPhoneAccountIds: await _usersPhoneAccounts,
     );

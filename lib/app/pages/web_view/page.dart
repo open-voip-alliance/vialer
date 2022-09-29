@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import './cubit.dart';
@@ -10,7 +11,6 @@ import './widgets/navigation_controls.dart';
 import '../../../domain/entities/web_page.dart';
 import '../../pages/main/widgets/conditional_placeholder.dart';
 import '../../resources/localizations.dart';
-import '../../resources/theme.dart';
 import '../../util/conditional_capitalization.dart';
 import '../../widgets/stylized_button.dart';
 
@@ -69,7 +69,7 @@ class _WebViewPageState extends State<WebViewPage> {
             if (state is LoadPortalUrlError || state is LoadWebViewError) {
               return Warning(
                 description: Text(context.msg.webview.error.description),
-                icon: const Icon(VialerSans.exclamationMark),
+                icon: const FaIcon(FontAwesomeIcons.exclamation),
                 title: Text(context.msg.webview.error.title),
                 children: [
                   const SizedBox(height: 16),

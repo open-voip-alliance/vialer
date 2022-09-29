@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../resources/theme.dart';
 import '../../../widgets/animated_visibility.dart';
@@ -62,8 +63,8 @@ class ErrorAlert extends StatelessWidget {
                         shape: BoxShape.circle,
                         color: Colors.black.withOpacity(0.5),
                       ),
-                      child: Icon(
-                        VialerSans.exclamationMark,
+                      child: FaIcon(
+                        FontAwesomeIcons.exclamation,
                         size: 12,
                         color: context.brand.theme.colors.errorContent,
                       ),

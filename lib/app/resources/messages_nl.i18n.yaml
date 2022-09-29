@@ -265,12 +265,14 @@ main:
             Pas deze instellingen alleen aan als je problemen probeert op te lossen.
             Aanpassingen kunnen leiden tot nieuwe problemen, dus wees voorzichtig.
           list:
-            calling:
-              title: "Bellen"
-              useEncryption: "Gebruik encryptie"
             audio:
               title: "Audio"
-              audioCodec: "Audio codec"
+              echoCancellationCalibration:
+                title: "Echo cancellation kalibreren"
+                description: >-
+                  Klik om een kort proces te beginnen om echo cancellation te kalibreren, je hoort
+                  een aantal geluiden terwijl dit gebeurt. Wanneer de geluiden zijn gestopt is het
+                  kalibreren klaar.
       audio:
         title: "Audio"
         usePhoneRingtone:

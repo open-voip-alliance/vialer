@@ -59,29 +59,29 @@ class ClientCallWithColleaguePhoneAccount {
   tables: [ClientCalls, ColleaguePhoneAccounts],
   include: {'queries.drift'},
 )
-class VialerDatabase extends _$VialerDatabase {
-  VialerDatabase() : super(_openConnection());
+class ClientCallsDatabase extends _$ClientCallsDatabase {
+  ClientCallsDatabase() : super(_openConnection());
 
-  VialerDatabase.createInIsolate(String path)
+  ClientCallsDatabase.createInIsolate(String path)
       : super(_openConnectionForIsolate(path));
 
   @override
   int get schemaVersion => 1;
-}
 
-LazyDatabase _openConnection() {
-  return LazyDatabase(() async {
-    return NativeDatabase(await getDatabaseFile());
-  });
-}
+  static LazyDatabase _openConnection() {
+    return LazyDatabase(() async {
+      return NativeDatabase(await databaseFile);
+    });
+  }
 
-LazyDatabase _openConnectionForIsolate(String path) {
-  return LazyDatabase(() async {
-    return NativeDatabase(File(path));
-  });
-}
+  static LazyDatabase _openConnectionForIsolate(String path) {
+    return LazyDatabase(() async {
+      return NativeDatabase(File(path));
+    });
+  }
 
-Future<File> getDatabaseFile() async {
-  final dbFolder = await getApplicationDocumentsDirectory();
-  return File(p.join(dbFolder.path, 'db.sqlite'));
+  static Future<File> get databaseFile async {
+    final dbFolder = await getApplicationDocumentsDirectory();
+    return File(p.join(dbFolder.path, 'db.sqlite'));
+  }
 }

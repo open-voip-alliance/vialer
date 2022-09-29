@@ -266,12 +266,14 @@ main:
             Only adjust these settings when trying to solve any issues.
             Any changes might cause new issues, so please use with caution.
           list:
-            calling:
-              title: "Calling"
-              useEncryption: "Use encryption"
             audio:
               title: "Audio"
-              audioCodec: "Audio codec"
+              echoCancellationCalibration:
+                title: "Calibrate echo cancellation"
+                description: >-
+                  Press to start a short process that will calibrate echo cancellation, you will hear
+                  a series of beeps while this is happening. When the beeps stop the calibration
+                  has completed.
       audio:
         title: "Audio"
         usePhoneRingtone:

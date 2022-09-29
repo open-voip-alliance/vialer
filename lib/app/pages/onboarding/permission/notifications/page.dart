@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../../domain/entities/permission.dart';
 import '../../../../resources/localizations.dart';
@@ -12,7 +13,7 @@ class NotificationsPermissionPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return PermissionPage(
       permission: Permission.notifications,
-      icon: const Icon(VialerSans.available),
+      icon: const FaIcon(FontAwesomeIcons.bell),
       title: Text(
         context.msg.onboarding.permission.notifications.title,
       ),

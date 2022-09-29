@@ -4,7 +4,11 @@ custom: # Custom properties to make workflows cleaner
       name: Analyzing the codebase
       script: |
         ln -s "${FLUTTER_ROOT}/bin/dart" /usr/local/bin/dart
-        dart format -o none --fix --set-exit-if-changed lib/
+        dart format --fix --set-exit-if-changed $(find lib -name "*.dart" -not \( -name "pigeon.dart" \) )
+        if [ $? -eq 1 ]
+        then
+            exit 1
+        fi
         dart analyze . --fatal-infos --fatal-warnings
     - &set_version_string
       name: Updating versioning information for this build
@@ -82,6 +86,8 @@ custom: # Custom properties to make workflows cleaner
     - &flutter_pub_get
       name: Installing flutter dependencies and generate code
       script: |
+        eval `ssh-agent -s`
+        echo "$FONT_AWESOME_KEY" | tr -d '\r' | ssh-add -
         flutter packages pub get
         flutter pub run build_runner build
         flutter pub run pigeon --input utils/pigeon/scheme.dart --dart_out lib/app/util/pigeon.dart --objc_header_out ios/Runner/pigeon.h --objc_source_out ios/Runner/pigeon.m --java_out android/app/src/main/java/com/voipgrid/vialer/Pigeon.java --java_package com.voipgrid.vialer
@@ -315,6 +321,8 @@ custom: # Custom properties to make workflows cleaner
           include: false
         - pattern: '*alpha*'
           include: false
+        - pattern: '*internal*'
+          include: false
 
     beta_trigger: &beta_was_tagged
       events:
@@ -330,10 +338,10 @@ custom: # Custom properties to make workflows cleaner
         - pattern: '*beta*'
           include: true
 
-    # We expect internal alpha builds to be tagged as (e.g.) [v7.8.0-internal-alpha.01],
-    # however we also want to release all builds to this internal alpha testing so users
+    # We expect internal preview builds to be tagged as (e.g.) [v7.8.0-internal-preview.01],
+    # however we also want to release all builds to this internal preview testing so users
     # can continue to stay enrolled and get all releases.
-    internal_alpha_trigger: &internal_alpha_was_tagged
+    internal_preview_trigger: &internal_preview_was_tagged
       events:
         - tag
       branch_patterns:
@@ -376,14 +384,14 @@ custom: # Custom properties to make workflows cleaner
         track: beta
         in_app_update_priority: 3
 
-    publish_for_internal_alpha: &publish_for_internal_alpha
+    publish_for_internal_alpha: &publish_for_internal_preview
       app_store_connect:
         api_key: $APP_STORE_CONNECT_PRIVATE_KEY
         key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
         issuer_id: $APP_STORE_CONNECT_ISSUER_ID
         submit_to_testflight: true
         beta_groups:
-          - Internal Alpha
+          - Internal Preview
       google_play:
         credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
         track: internal
@@ -431,6 +439,8 @@ workflows:
   release-candidate:
     name: Release Candidate
     <<: *main_workflow
+    triggering:
+      events: []
     publishing:
       slack:
         channel: '#vialer_mobile_release_candidates'
@@ -658,8 +668,8 @@ workflows:
         <<: *release_env_vars
         <<: *brand_config_annabel_env_vars
 
-  internal-alpha-vialer:
-    name: Internal Alpha (Vialer)
+  internal-preview-vialer:
+    name: Internal Preview (Vialer)
     <<: *config
     environment:
       groups:
@@ -676,7 +686,7 @@ workflows:
         ENABLE_IOS_SANDBOX_PUSH_NOTIFICATIONS: "false"
         FINALIZE_SENTRY_RELEASE: "true"
     artifacts: *defaults_artifacts
-    triggering: *internal_alpha_was_tagged
+    triggering: *internal_preview_was_tagged
     scripts:
       - *set_up_env_file
       - *set_version_string
@@ -686,4 +696,4 @@ workflows:
       - *update_ios_signing_for_current_brand
       - *build_ipa
       - *release_to_sentry
-    publishing: *publish_for_internal_alpha
+    publishing: *publish_for_internal_preview
