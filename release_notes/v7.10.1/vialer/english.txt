@@ -1,0 +1,3 @@
+- The app has a new look and feel thanks to new icons
+- Echo when using speaker has been reduced
+- Loading contacts is now more reliable
