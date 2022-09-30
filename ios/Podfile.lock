@@ -33,26 +33,26 @@ PODS:
   - integration_test (0.0.1):
     - Flutter
   - iOSPhoneLib (0.1.1):
-    - linphone-sdk-novideo (= 5.1.58)
+    - linphone-sdk-novideo (= 5.1.63)
     - Swinject (~> 2.7.1)
   - le (1.2)
   - libphonenumber (0.0.1):
     - Flutter
     - libPhoneNumber-iOS
   - libPhoneNumber-iOS (0.9.15)
-  - linphone-sdk-novideo (5.1.58):
-    - linphone-sdk-novideo/all-frameworks (= 5.1.58)
-    - linphone-sdk-novideo/app-extension (= 5.1.58)
-    - linphone-sdk-novideo/app-extension-swift (= 5.1.58)
-    - linphone-sdk-novideo/basic-frameworks (= 5.1.58)
-    - linphone-sdk-novideo/swift (= 5.1.58)
-  - linphone-sdk-novideo/all-frameworks (5.1.58)
-  - linphone-sdk-novideo/app-extension (5.1.58)
-  - linphone-sdk-novideo/app-extension-swift (5.1.58):
+  - linphone-sdk-novideo (5.1.63):
+    - linphone-sdk-novideo/all-frameworks (= 5.1.63)
+    - linphone-sdk-novideo/app-extension (= 5.1.63)
+    - linphone-sdk-novideo/app-extension-swift (= 5.1.63)
+    - linphone-sdk-novideo/basic-frameworks (= 5.1.63)
+    - linphone-sdk-novideo/swift (= 5.1.63)
+  - linphone-sdk-novideo/all-frameworks (5.1.63)
+  - linphone-sdk-novideo/app-extension (5.1.63)
+  - linphone-sdk-novideo/app-extension-swift (5.1.63):
     - linphone-sdk-novideo/app-extension
-  - linphone-sdk-novideo/basic-frameworks (5.1.58):
+  - linphone-sdk-novideo/basic-frameworks (5.1.63):
     - linphone-sdk-novideo/app-extension
-  - linphone-sdk-novideo/swift (5.1.58):
+  - linphone-sdk-novideo/swift (5.1.63):
     - linphone-sdk-novideo/app-extension-swift
     - linphone-sdk-novideo/basic-frameworks
   - native_shared_preferences (1.0.0):
@@ -201,7 +201,7 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   iOSPhoneLib:
-    :commit: 600bfd4435c1d15618838c066d67ae9031ba39c7
+    :commit: e897f43a18988f4a6862cf40d87ef7c971f4751a
     :git: https://github.com/open-voip-alliance/iOS-Phone-Lib.git
   le:
     :commit: ce8800f6d3290e182d48082680679d64a05ca778
@@ -223,11 +223,11 @@ SPEC CHECKSUMS:
   flutter_segment: 367b7d9f7d74b3875198524ff4d24c381d93e317
   in_app_review: 4a97249f7a2f539a0f294c2d9196b7fe35e49541
   integration_test: a1e7d09bd98eca2fc37aefd79d4f41ad37bdbbe5
-  iOSPhoneLib: 310198258cc299a1faa4723fceed2a1c003d0ded
+  iOSPhoneLib: c25e28649ab5dbc57e27bcdd803257119a3bf018
   le: 6854003e293bf5b3cb822ef06971f1cc23a77eb9
   libphonenumber: bd14d5abfc5939ab0b0767234e2d8e2593af258e
   libPhoneNumber-iOS: 0a32a9525cf8744fe02c5206eb30d571e38f7d75
-  linphone-sdk-novideo: 0aa44c6d9750db25a2a799377296b5487838d5e2
+  linphone-sdk-novideo: 24127c66568ae49ba841d205af25af9ce7be97e7
   native_shared_preferences: 21a805f6149643c25a20a4f534692131faebadfe
   package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
   package_info_plus: 6c92f08e1f853dc01228d6f553146438dafcd14e
