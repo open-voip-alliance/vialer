@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io' show HttpClient, Platform, exit;
 
-import '../ci_utils.dart';
+import '../../ci_utils.dart';
 
 Future<void> main(List<String> args) async {
   final env = Platform.environment;
