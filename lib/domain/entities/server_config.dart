@@ -39,5 +39,6 @@ class ServerConfig extends Equatable {
   factory ServerConfig.fromJson(Map<String, dynamic> json) =>
       _$ServerConfigFromJson(json);
 
-  Map<String, dynamic> toJson() => _$ServerConfigToJson(this);
+  static Map<String, dynamic> toJson(ServerConfig value) =>
+      _$ServerConfigToJson(value);
 }

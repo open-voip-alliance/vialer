@@ -57,7 +57,8 @@ class VoipConfig extends Equatable {
   factory VoipConfig.fromJson(Map<String, dynamic> json) =>
       _$VoipConfigFromJson(json);
 
-  Map<String, dynamic> toJson() => _$VoipConfigToJson(this);
+  static Map<String, dynamic> toJson(VoipConfig value) =>
+      _$VoipConfigToJson(value);
 
   NonEmptyVoipConfig toNonEmptyConfig() => NonEmptyVoipConfig.from(this);
 }

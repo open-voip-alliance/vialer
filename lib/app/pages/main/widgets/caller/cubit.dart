@@ -15,7 +15,7 @@ import '../../../../../domain/entities/exceptions/call_through.dart';
 import '../../../../../domain/entities/exceptions/voip_not_allowed.dart';
 import '../../../../../domain/entities/permission.dart';
 import '../../../../../domain/entities/permission_status.dart';
-import '../../../../../domain/entities/setting.dart';
+import '../../../../../domain/entities/settings/app_setting.dart';
 import '../../../../../domain/repositories/storage.dart';
 import '../../../../../domain/usecases/answer_voip_call.dart';
 import '../../../../../domain/usecases/call/call.dart';
@@ -34,9 +34,9 @@ import '../../../../../domain/usecases/get_current_connectivity_status.dart';
 import '../../../../../domain/usecases/get_has_voip_enabled.dart';
 import '../../../../../domain/usecases/get_has_voip_started.dart';
 import '../../../../../domain/usecases/get_is_authenticated.dart';
+import '../../../../../domain/usecases/get_logged_in_user.dart';
 import '../../../../../domain/usecases/get_permission_status.dart';
 import '../../../../../domain/usecases/get_server_config.dart';
-import '../../../../../domain/usecases/get_setting.dart';
 import '../../../../../domain/usecases/get_voip_call_event_stream.dart';
 import '../../../../../domain/usecases/increment_app_rating_survey_action_count.dart';
 import '../../../../../domain/usecases/metrics/track_call_initiated.dart';
@@ -57,8 +57,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
   final _isAuthenticated = GetIsAuthenticatedUseCase();
   final _getConnectivityType = GetCurrentConnectivityTypeUseCase();
 
-  final _getShowDialerConfirmPopUpSetting =
-      GetSettingUseCase<ShowDialerConfirmPopupSetting>();
+  final _getUser = GetLoggedInUserUseCase();
 
   final _storageRepository = dependencyLocator<StorageRepository>();
 
@@ -101,11 +100,9 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
   StreamSubscription? _voipCallEventSubscription;
 
   CallerCubit() : super(const CanCall()) {
-    _isAuthenticated().then((isAuthenticated) {
-      if (isAuthenticated) {
-        initialize();
-      }
-    });
+    if (_isAuthenticated()) {
+      initialize();
+    }
 
     _hasVoipStarted().then(
       (_) {
@@ -227,9 +224,9 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
     required CallOrigin origin,
     bool showingConfirmPage = false,
   }) async {
-    final shouldShowConfirmPage = await _getShowDialerConfirmPopUpSetting()
-            .then((setting) => setting.value) &&
-        !showingConfirmPage;
+    final shouldShowConfirmPage =
+        _getUser().settings.get(AppSetting.showDialerConfirmPopup) &&
+            !showingConfirmPage;
 
     // First request to allow to make phone calls,
     // otherwise don't show the call-through page at all.

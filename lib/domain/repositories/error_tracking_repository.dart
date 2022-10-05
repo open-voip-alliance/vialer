@@ -1,11 +1,11 @@
 import 'package:sentry_flutter/sentry_flutter.dart';
-import '../entities/system_user.dart';
+import '../entities/user.dart';
 
 class ErrorTrackingRepository {
   Future<void> run(
     void Function() appRunner,
     String dsn,
-    SystemUser? user,
+    User? user,
   ) async {
     await SentryFlutter.init(
       (options) => options

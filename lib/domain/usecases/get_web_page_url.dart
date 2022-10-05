@@ -1,16 +1,16 @@
 import '../../dependency_locator.dart';
-import '../entities/system_user.dart';
+import '../entities/user.dart';
 import '../entities/web_page.dart';
 import '../repositories/auth.dart';
 import '../use_case.dart';
 import 'get_brand.dart';
-import 'get_user.dart';
+import 'get_logged_in_user.dart';
 
 class GetWebPageUrlUseCase extends UseCase {
   final _authRepository = dependencyLocator<AuthRepository>();
 
   final _getBrand = GetBrandUseCase();
-  final _getUser = GetUserUseCase();
+  final _getUser = GetLoggedInUserUseCase();
 
   /// The url that the webview will load, it is possible to add placeholders
   /// in-between curly brackets (e.g. {client}) and the client id will be
@@ -34,9 +34,9 @@ class GetWebPageUrlUseCase extends UseCase {
     }
 
     // Authenticated portal page.
-    final user = await _getUser(latest: false);
+    final user = _getUser();
     final autoLoginToken = await _authRepository.getAutoLoginToken();
-    final username = user!.email;
+    final username = user.email;
     final url = replacePlaceholders(
       url: _pagePathMapping[page],
       user: user,
@@ -56,18 +56,18 @@ class GetWebPageUrlUseCase extends UseCase {
 
   String? replacePlaceholders({
     required String? url,
-    required SystemUser user,
+    required User user,
   }) {
     if (url == null) return null;
 
     // The client id should only ever be null if the user has an old
     // [SystemUser] cached.
-    assert(user.clientId != null);
+    assert(user.client?.id != null);
 
     // All the values from the url within curly brackets will be replaced
     // with the corresponding user information.
     final placeholders = {
-      'client': user.clientId?.toString(),
+      'client': user.client?.id.toString(),
     };
 
     for (final placeholder in placeholders.entries) {

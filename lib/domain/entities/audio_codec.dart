@@ -8,7 +8,7 @@ class AudioCodec {
 
   static const opus = AudioCodec('opus');
 
-  dynamic toJson() => value;
+  static String toJson(AudioCodec codec) => codec.value;
 
   static AudioCodec fromJson(dynamic json) => AudioCodec(json as String);
 

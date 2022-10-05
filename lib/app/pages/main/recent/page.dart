@@ -5,11 +5,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../dependency_locator.dart';
-import '../../../../domain/entities/setting.dart';
+import '../../../../domain/entities/settings/app_setting.dart';
 import '../../../../domain/events/event_bus.dart';
-import '../../../../domain/events/show_client_calls_setting_enabled.dart';
-import '../../../../domain/usecases/get_latest_voipgrid_permissions.dart';
-import '../../../../domain/usecases/get_setting.dart';
+import '../../../../domain/events/setting_changed.dart';
+import '../../../../domain/usecases/get_latest_logged_in_user.dart';
 import '../../../resources/localizations.dart';
 import '../../../resources/theme.dart';
 import '../util/stylized_snack_bar.dart';
@@ -38,9 +37,7 @@ class _RecentCallsPageState extends State<RecentCallsPage> {
   final _eventBus = dependencyLocator<EventBusObserver>();
   StreamSubscription? _eventBusSubscription;
 
-  final _getVoipgridPermissions = GetLatestVoipgridPermissions();
-  final _getShowClientCallsSetting =
-      GetSettingUseCase<ShowClientCallsSetting>();
+  final _getLatestUser = GetLatestLoggedInUserUseCase();
 
   bool _showClientCalls = false;
 
@@ -51,21 +48,25 @@ class _RecentCallsPageState extends State<RecentCallsPage> {
   void initState() {
     super.initState();
 
-    _getShowClientCallsSetting().then((setting) async {
-      _updateShowClientCalls(settingValue: setting.value);
-    });
+    _updateShowClientCalls();
 
-    _eventBusSubscription = _eventBus.on<ShowClientCallsSettingChanged>((e) {
-      _updateShowClientCalls(settingValue: e.clientCallsEnabled);
-    });
+    _eventBusSubscription = _eventBus.onSettingChange<bool>(
+      AppSetting.showClientCalls,
+      (oldValue, newValue) {
+        _updateShowClientCalls(settingValue: newValue);
+      },
+    );
   }
 
-  Future<void> _updateShowClientCalls({required bool settingValue}) async {
-    final hasPermission =
-        await _getVoipgridPermissions().then((p) => p.hasClientCallsPermission);
+  Future<void> _updateShowClientCalls({bool? settingValue}) async {
+    final user = await _getLatestUser();
+
+    final enabled =
+        settingValue ?? user.settings.get(AppSetting.showClientCalls);
+    final hasPermission = user.permissions.canSeeClientCalls;
 
     setState(() {
-      _showClientCalls = settingValue && hasPermission;
+      _showClientCalls = enabled && hasPermission;
     });
   }
 

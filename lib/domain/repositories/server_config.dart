@@ -18,8 +18,7 @@ class ServerConfigRepository {
   ServerConfigRepository(this._service);
 
   Future<ServerConfig> get() async {
-    final isAuthenticated = await _isAuthenticated();
-    if (!isAuthenticated) {
+    if (!_isAuthenticated()) {
       // The user isn't logged in, so retrieving it from the API will fail.
       // So get the branded urls as fallback.
       return _fallbackServerConfig;

@@ -1,16 +1,23 @@
-import '../entities/setting.dart';
+import '../../dependency_locator.dart';
+import '../entities/settings/app_setting.dart';
+import '../repositories/storage.dart';
 import '../use_case.dart';
 import 'enable_remote_logging.dart';
-import 'get_setting.dart';
+import 'get_stored_user.dart';
 
 class EnableRemoteLoggingIfNeededUseCase extends UseCase {
-  final _getSetting = GetSettingUseCase<RemoteLoggingSetting>();
+  final _storageRepository = dependencyLocator<StorageRepository>();
+
+  final _getUser = GetStoredUserUseCase();
   final _enableRemoteLogging = EnableRemoteLoggingUseCase();
 
   Future<void> call() async {
-    final setting = await _getSetting();
+    final settings =
+        _getUser()?.settings ?? _storageRepository.previousSessionSettings;
 
-    if (setting.value == true) {
+    final enabled = settings.getOrNull(AppSetting.remoteLogging) ?? false;
+
+    if (enabled) {
       await _enableRemoteLogging();
     }
   }

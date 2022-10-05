@@ -1,6 +1,5 @@
 import '../../app/util/loggable.dart';
-import '../entities/client_available_outgoing_numbers.dart';
-import '../entities/system_user.dart';
+import '../entities/user.dart';
 import 'services/voipgrid.dart';
 
 class OutgoingNumbersRepository with Loggable {
@@ -8,21 +7,19 @@ class OutgoingNumbersRepository with Loggable {
 
   OutgoingNumbersRepository(this._service);
 
-  Future<ClientAvailableOutgoingNumbers> getOutgoingNumbersAvailableToClient({
-    required SystemUser user,
-  }) async =>
-      ClientAvailableOutgoingNumbers(
-        numbers: await _fetchAllAvailableNumbers(
-          clientUuid: user.clientUuid!,
-        ).distinct().toList(),
-      );
+  Future<Iterable<String>> getOutgoingNumbersAvailableToClient({
+    required User user,
+  }) =>
+      _fetchAllAvailableNumbers(
+        clientUuid: user.client!.uuid,
+      ).distinct().toList();
 
   Future<bool> changeOutgoingNumber({
-    required SystemUser user,
+    required User user,
     required String number,
   }) async {
     final response = await _service.updateVoipAccount(
-      user.clientId!.toString(),
+      user.client!.id.toString(),
       user.appAccountId!,
       {
         'outgoing_caller_identification': {
@@ -41,7 +38,7 @@ class OutgoingNumbersRepository with Loggable {
   }
 
   Future<bool> suppressOutgoingNumber({
-    required SystemUser user,
+    required User user,
   }) =>
       changeOutgoingNumber(
         user: user,

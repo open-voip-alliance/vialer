@@ -1,9 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../../../domain/entities/setting.dart';
-import '../../../../../../domain/usecases/change_setting.dart';
+import '../../../../../../domain/entities/settings/app_setting.dart';
+import '../../../../../../domain/entities/settings/call_setting.dart';
 import '../../../../../../domain/usecases/get_call_through_region_number.dart';
-import '../../../../../../domain/usecases/get_outgoing_cli.dart';
+import '../../../../../../domain/usecases/get_logged_in_user.dart';
+import '../../../../../../domain/usecases/settings/change_setting.dart';
 import '../../../../../util/loggable.dart';
 import '../../../widgets/caller.dart';
 import 'state.dart';
@@ -12,21 +13,26 @@ export 'state.dart';
 
 class ConfirmCubit extends Cubit<ConfirmState> with Loggable {
   final _changeSetting = ChangeSettingUseCase();
-  final _getOutgoingCli = GetOutgoingCliUseCase();
   final _getCallThroughRegionNumber = GetCallThroughRegionNumberUseCase();
 
   final CallerCubit _caller;
   final String _destination;
 
   ConfirmCubit(this._caller, this._destination)
-      : super(const ConfirmState(showConfirmPage: true)) {
+      : super(
+          ConfirmState(
+            showConfirmPage: true,
+            outgoingNumber: GetLoggedInUserUseCase()()
+                .settings
+                .get(CallSetting.outgoingNumber),
+          ),
+        ) {
     _emitInitialState();
   }
 
   Future<void> _emitInitialState() async {
     emit(
       state.copyWith(
-        outgoingCli: await _getOutgoingCli(),
         regionNumber: await _getCallThroughRegionNumber(
           destination: _destination,
         ),
@@ -36,9 +42,7 @@ class ConfirmCubit extends Cubit<ConfirmState> with Loggable {
 
   // ignore: avoid_positional_boolean_parameters
   Future<void> updateShowPopupSetting(bool showConfirmPage) async {
-    await _changeSetting(
-      setting: ShowDialerConfirmPopupSetting(showConfirmPage),
-    );
+    await _changeSetting(AppSetting.showDialerConfirmPopup, showConfirmPage);
 
     emit(state.copyWith(showConfirmPage: showConfirmPage));
   }

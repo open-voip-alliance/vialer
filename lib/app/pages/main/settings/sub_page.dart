@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../domain/entities/setting.dart';
+import '../../../../domain/entities/settings/call_setting.dart';
 import '../../../resources/localizations.dart';
 import 'cubit.dart';
 import 'widgets/tile.dart';
@@ -31,12 +31,10 @@ class SettingsSubPage extends StatelessWidget {
                 .msg.main.settings.list.advancedSettings.troubleshooting.title,
           ),
           children: (state) {
-            final settings = state.settings;
-
             return [
               SettingTileCategory.troubleshootingAudio(
                 children: [
-                  if (settings.get<UseVoipSetting>().value == true)
+                  if (state.user.settings.get(CallSetting.useVoip) == true)
                     SettingTile.echoCancellationCalibration(),
                 ],
               ),

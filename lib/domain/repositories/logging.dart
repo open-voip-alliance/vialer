@@ -5,7 +5,7 @@ import 'dart:io';
 import 'package:logging/logging.dart';
 
 import '../../app/util/pigeon.dart';
-import '../entities/system_user.dart';
+import '../entities/user.dart';
 
 class LoggingRepository {
   /// A map that will be used to anonymize the logs in both dart and the native
@@ -183,7 +183,7 @@ class LoggingRepository {
       _nativeRemoteLogging.stopNativeConsoleLogging();
 }
 
-extension Logging on SystemUser {
+extension Logging on User {
   String get loggingIdentifier => uuid;
 }
 

@@ -4,7 +4,7 @@ import '../../repositories/local_client_calls.dart';
 import '../../repositories/metrics.dart';
 import '../../use_case.dart';
 
-class PurgeLocalCallRecords extends UseCase with Loggable {
+class PurgeLocalCallRecordsUseCase extends UseCase with Loggable {
   final _clientCallsRepository =
       dependencyLocator<LocalClientCallsRepository>();
   final _metricsRepository = dependencyLocator<MetricsRepository>();

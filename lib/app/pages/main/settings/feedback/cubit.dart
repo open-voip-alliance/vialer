@@ -1,9 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../../domain/entities/setting.dart';
-import '../../../../../domain/usecases/change_setting.dart';
 
+import '../../../../../domain/entities/settings/app_setting.dart';
 import '../../../../../domain/usecases/send_feedback.dart';
 import '../../../../../domain/usecases/send_saved_logs_to_remote.dart';
+import '../../../../../domain/usecases/settings/change_setting.dart';
 import 'state.dart';
 
 export 'state.dart';
@@ -24,7 +24,11 @@ class FeedbackCubit extends Cubit<FeedbackState> {
     emit(FeedbackSent());
   }
 
-  Future<void> enableThenSendLogsToRemote() => _changeSetting(
-        setting: const RemoteLoggingSetting(true),
-      ).then((_) => _sendSavedLogsToRemote());
+  Future<void> enableThenSendLogsToRemote() async {
+    final result = await _changeSetting(AppSetting.remoteLogging, true);
+
+    if (result != SettingChangeResult.failed) {
+      _sendSavedLogsToRemote();
+    }
+  }
 }

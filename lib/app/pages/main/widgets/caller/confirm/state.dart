@@ -1,32 +1,30 @@
 import 'package:equatable/equatable.dart';
 
-import '../../../../../../domain/entities/system_user.dart';
+import '../../../../../../domain/entities/settings/call_setting.dart';
 
 class ConfirmState extends Equatable {
-  final String? outgoingCli;
+  final OutgoingNumber outgoingNumber;
   final String? regionNumber;
   final bool showConfirmPage;
 
   const ConfirmState({
-    this.outgoingCli,
+    required this.outgoingNumber,
     this.regionNumber,
     required this.showConfirmPage,
   });
 
-  bool get isOutgoingCliSuppressed => outgoingCli?.isSuppressed ?? false;
-
   ConfirmState copyWith({
-    String? outgoingCli,
+    OutgoingNumber? outgoingNumber,
     String? regionNumber,
     bool? showConfirmPage,
   }) {
     return ConfirmState(
-      outgoingCli: outgoingCli ?? this.outgoingCli,
+      outgoingNumber: outgoingNumber ?? this.outgoingNumber,
       regionNumber: regionNumber ?? this.regionNumber,
       showConfirmPage: showConfirmPage ?? this.showConfirmPage,
     );
   }
 
   @override
-  List<Object?> get props => [outgoingCli, regionNumber, showConfirmPage];
+  List<Object?> get props => [outgoingNumber, regionNumber, showConfirmPage];
 }

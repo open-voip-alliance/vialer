@@ -13,7 +13,7 @@ import '../widgets/stylized_text_field.dart';
 import 'cubit.dart';
 
 class PasswordPage extends StatefulWidget {
-  PasswordPage({Key? key}) : super(key: key);
+  const PasswordPage({Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _PasswordPageState();

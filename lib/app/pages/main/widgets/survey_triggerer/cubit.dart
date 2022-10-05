@@ -2,12 +2,11 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../../domain/entities/setting.dart';
 import '../../../../../domain/entities/survey/survey.dart';
 import '../../../../../domain/entities/survey/survey_trigger.dart';
 import '../../../../../domain/usecases/get_app_rating_survey_action_count.dart';
 import '../../../../../domain/usecases/get_app_rating_survey_last_shown_time.dart';
-import '../../../../../domain/usecases/get_setting.dart';
+import '../../../../../domain/usecases/get_logged_in_user.dart';
 import '../../../../../domain/usecases/mark_now_as_app_rating_survey_shown.dart';
 import '../../../../../domain/usecases/reset_app_rating_survey_action_count.dart';
 import '../../../../util/loggable.dart';
@@ -17,7 +16,7 @@ import 'state.dart';
 export 'state.dart';
 
 class SurveyTriggererCubit extends Cubit<SurveyTriggererState> with Loggable {
-  final _getShowSurveysSetting = GetSettingUseCase<ShowSurveysSetting>();
+  final _getUser = GetLoggedInUserUseCase();
   final _getAppRatingLastShownTime = GetAppRatingSurveyLastShownTimeUseCase();
   final _getAppRatingActionCount = GetAppRatingSurveyActionCountUseCase();
   final _markNowAsAppRatingSurveyShown = MarkNowAsAppRatingSurveyShownUseCase();
@@ -38,8 +37,10 @@ class SurveyTriggererCubit extends Cubit<SurveyTriggererState> with Loggable {
         ? DateTime.now().difference(appRatingLastShown)
         : null;
 
+    final user = _getUser();
+
     final isTriggered = AfterAnAmountOfActionsOnAppLaunchTrigger.isTriggered(
-      await _getShowSurveysSetting(),
+      settings: user.settings,
       actionsCount: _getAppRatingActionCount(),
       timeSinceLastSurvey: timePassed,
     );

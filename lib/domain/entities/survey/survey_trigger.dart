@@ -2,7 +2,8 @@ import 'dart:math';
 
 import 'package:dartx/dartx.dart';
 
-import '../setting.dart';
+import '../settings/app_setting.dart';
+import '../settings/settings.dart';
 
 /// When and where the survey is displayed.
 class SurveyTrigger {
@@ -38,12 +39,12 @@ class AfterAnAmountOfActionsOnAppLaunchTrigger extends SurveyTrigger {
 
   const AfterAnAmountOfActionsOnAppLaunchTrigger();
 
-  static bool isTriggered(
-    ShowSurveysSetting setting, {
+  static bool isTriggered({
+    required Settings settings,
     required int actionsCount,
     required Duration? timeSinceLastSurvey,
   }) {
-    if (setting.value != true) return false;
+    if (!settings.get(AppSetting.showSurveys)) return false;
 
     const requiredActionsCount =
         AfterAnAmountOfActionsOnAppLaunchTrigger.actionsCount;
