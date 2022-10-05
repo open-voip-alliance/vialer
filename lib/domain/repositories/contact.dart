@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:dartx/dartx.dart';
@@ -8,6 +7,7 @@ import '../../app/util/loggable.dart';
 import '../../app/util/pigeon.dart';
 import '../../app/util/single_task.dart';
 import '../entities/contact.dart';
+import '../entities/item.dart';
 
 class ContactRepository with Loggable {
   var _memoryCache = <Contact>[];
@@ -19,17 +19,11 @@ class ContactRepository with Loggable {
 
     // If the latest data has been requested, we are going to wait for the
     // import to be completed before returning any records.
-    if (latest) {
-      return await import;
-    }
+    if (latest) return await import;
 
     // We will then check our two caches to see if there is any data there,
     // if we have then we will return directly from the caches.
-    if (_isMemoryCachePopulated) {
-      return _memoryCache;
-    } else if (await _isFileCachePopulated) {
-      return _readContactsFromFileCache();
-    }
+    if (_isMemoryCachePopulated) return _memoryCache;
 
     // If there is no cached data then we have no choice but to wait for
     // the import.
@@ -37,8 +31,8 @@ class ContactRepository with Loggable {
   }
 
   /// Performs the performance and time consuming task of importing contacts
-  /// from the native OS database, into a local cache (both memory and
-  /// file-based) that we can access much more quickly.
+  /// from the native OS database, into a memory-based cache that we can access
+  /// much more quickly.
   ///
   /// This will also begin the import of avatars, this can be an extremely
   /// long running task so we will never wait for this to complete.
@@ -48,52 +42,24 @@ class ContactRepository with Loggable {
   /// this method is called.
   Future<List<Contact>> _importContactsIntoLocalCaches() async {
     final contactImporter = Contacts();
-    final cachePath = (await _contactsCacheFile).path;
-    final avatarCacheDirectory = (await _avatarCacheDirectory).path;
+    final avatarCacheDirectory = await _avatarCacheDirectory;
 
     await SingleInstanceTask.named('Contact Import').run(
-      () => contactImporter.importContacts(cachePath),
+      () async {
+        _memoryCache = (await contactImporter.fetchContacts())
+            .toDomainContacts(avatarCacheDirectory)
+            .toList(growable: false);
+      },
     );
 
     SingleInstanceTask.named('Avatar Import').run(
-      () => contactImporter.importContactAvatars(avatarCacheDirectory),
+      () => contactImporter.importContactAvatars(avatarCacheDirectory.path),
     );
 
-    return _memoryCache = await _readContactsFromFileCache();
+    return _memoryCache;
   }
 
   bool get _isMemoryCachePopulated => _memoryCache.isNotEmpty;
-
-  /// Returns [TRUE] when the file cache has any data in it at all, this could
-  /// be an empty contact list.
-  Future<bool> get _isFileCachePopulated async {
-    final cacheFile = await _contactsCacheFile;
-    final exists = await cacheFile.exists();
-
-    if (!exists) return false;
-
-    final stats = await cacheFile.stat();
-
-    if (stats.type == FileSystemEntityType.notFound) return false;
-
-    // We're just going to check the file has more than an empty array in it.
-    return stats.size > 5;
-  }
-
-  Future<List<Contact>> _readContactsFromFileCache() async {
-    final file = await _contactsCacheFile;
-
-    if (!(await file.exists())) {
-      return [];
-    }
-
-    final json = await file.readAsString();
-
-    return (jsonDecode(json) as List)
-        .map((e) => Contact.fromJson(e as Map<String, dynamic>))
-        .attachAvatarPaths(await _avatarCacheDirectory)
-        .toList(growable: false);
-  }
 
   /// Purges all cached contact data, this must be performed in the event
   /// that the app should no longer have access to contacts. This can be due
@@ -105,7 +71,6 @@ class ContactRepository with Loggable {
     _memoryCache.clear();
 
     final cacheFiles = [
-      await _contactsCacheFile,
       await _avatarCacheDirectory,
     ];
 
@@ -114,13 +79,6 @@ class ContactRepository with Loggable {
         file.delete(recursive: true);
       }
     }
-  }
-
-  /// Contacts are cached into a single `.json` file, this is the path to
-  /// that specific file.
-  Future<File> get _contactsCacheFile async {
-    final directory = (await getApplicationDocumentsDirectory()).path;
-    return File('$directory/contacts_cache.json');
   }
 
   /// Avatars are cached as individual files with a format of
@@ -139,12 +97,34 @@ class ContactRepository with Loggable {
   }
 }
 
-extension on Iterable<Contact> {
-  Iterable<Contact> attachAvatarPaths(Directory avatarPath) => filter(
-        (contact) => contact.identifier.isNotNullOrBlank,
-      ).map(
-        (contact) => contact.copyWith(
-          avatarPath: '${avatarPath.path}/${contact.identifier}.jpg',
-        ),
+extension on List<PigeonContact?> {
+  List<Contact> toDomainContacts(Directory avatarDirectory) => filterNotNull()
+      .map((nativeContact) => nativeContact.toDomainContact(avatarDirectory))
+      .toList(growable: false);
+}
+
+extension on PigeonContact {
+  Contact toDomainContact(Directory avatarDirectory) => Contact(
+        givenName: givenName,
+        middleName: middleName,
+        familyName: familyName,
+        chosenName: chosenName,
+        phoneNumbers: phoneNumbers.toDomainItems(),
+        emails: emails.toDomainItems(),
+        identifier: identifier,
+        company: company,
+        avatarPath: '${avatarDirectory.path}/$identifier.jpg',
       );
+}
+
+extension on List<PigeonContactItem?> {
+  List<Item> toDomainItems() => filterNotNull()
+      .filter((nativeItem) => nativeItem.value?.isNotNullOrBlank == true)
+      .map(
+        (nativeItem) => Item(
+          label: nativeItem.label ?? '',
+          value: nativeItem.value!,
+        ),
+      )
+      .toList(growable: false);
 }

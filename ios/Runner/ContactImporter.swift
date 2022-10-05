@@ -9,51 +9,22 @@ class ContactImporter: NSObject, Contacts {
         self.logger = logger
     }
     
-    func importCacheFilePath(_ cacheFilePath: String, completion: @escaping (FlutterError?) -> Void) {
+    func fetch(completion: @escaping ([PigeonContact]?, FlutterError?) -> Void) {
          DispatchQueue.main.async {
             let results = self.findAllContacts().map { contact in
-                Contact(
+                PigeonContact.makeWith(
                     givenName: contact.givenName,
                     middleName: contact.middleName,
                     familyName: contact.familyName,
                     chosenName: nil,
-                    phoneNumbers: contact.phoneNumbers.map({ phoneNumber in
-                        Item(
-                            label: CNLabeledValue<CNPhoneNumber>.localizedString(forLabel: phoneNumber.label ?? ""),
-                            value: phoneNumber.value.stringValue
-                        )
-                    }),
-                    emails: contact.emailAddresses.map({ emailAddress in
-                        Item(
-                            label: CNLabeledValue<NSString>.localizedString(forLabel: emailAddress.label ?? ""),
-                            value: emailAddress.value as String
-                        )
-                    }),
-                    identifier: contact.identifier,
+                    phoneNumbers: contact.phoneNumbers.toPhoneItems(),
+                    emails: contact.emailAddresses.toEmailItems(),
+                    identifier:  contact.identifier,
                     company: contact.organizationName
                 )
             }
-            
-            do {
-                if !results.isEmpty {
-                    let json = self.convertToJson(contacts: results)
-                    try json.write(toFile: cacheFilePath, atomically: true, encoding: .utf8)
-                }
-            } catch {
-                self.logger.writeLog("Contact importing failed: \(error)")
-            }
-            
-            completion(nil)
-        }
-    }
-    
-    private func convertToJson(contacts: [Contact]) -> String {
-        do {
-            let data = try JSONEncoder().encode(contacts)
-            return String(data: data, encoding: .utf8) ?? "[]"
-        } catch {
-            logger.writeLog("Unable to convert to JSON: \(error)")
-            return "[]"
+             
+             completion(results, nil)
         }
     }
     
@@ -120,34 +91,24 @@ class ContactImporter: NSObject, Contacts {
     }
 }
 
-struct Contact : Codable {
-    internal init(givenName: String? = nil, middleName: String? = nil, familyName: String? = nil, chosenName: String? = nil, phoneNumbers: [Item], emails: [Item], identifier: String? = nil, company: String? = nil) {
-        self.givenName = givenName
-        self.middleName = middleName
-        self.familyName = familyName
-        self.chosenName = chosenName
-        self.phoneNumbers = phoneNumbers
-        self.emails = emails
-        self.identifier = identifier
-        self.company = company
+extension [CNLabeledValue<CNPhoneNumber>]  {
+    func toPhoneItems() -> [PigeonContactItem] {
+        return map({ phoneNumber in
+            PigeonContactItem.make(
+                withLabel: CNLabeledValue<CNPhoneNumber>.localizedString(forLabel: phoneNumber.label ?? ""),
+                value: phoneNumber.value.stringValue
+            )
+        })
     }
-    
-    let givenName: String?
-    let middleName: String?
-    let familyName: String?
-    let chosenName: String?
-    let phoneNumbers: [Item]
-    let emails: [Item]
-    let identifier: String?
-    let company: String?
 }
-    
-struct Item : Codable {
-    internal init(label: String, value: String) {
-        self.label = label
-        self.value = value
+
+extension [CNLabeledValue<NSString>]  {
+    func toEmailItems() -> [PigeonContactItem] {
+        return map({ emailAddress in
+            PigeonContactItem.make(
+                withLabel: CNLabeledValue<NSString>.localizedString(forLabel: emailAddress.label ?? ""),
+                value: emailAddress.value as String
+            )
+        })
     }
-    
-    let label: String
-    let value: String
 }

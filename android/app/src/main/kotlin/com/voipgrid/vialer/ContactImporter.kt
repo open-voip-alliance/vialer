@@ -4,51 +4,49 @@ import android.content.Context
 import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.toLowerCase
-import com.google.gson.Gson
 import contacts.core.Contacts
 import contacts.core.Fields
 import contacts.core.entities.Email
 import contacts.core.entities.Phone
 import contacts.core.isNotNullOrEmpty
-import contacts.core.util.*
+import contacts.core.util.emailList
+import contacts.core.util.organizations
+import contacts.core.util.phoneList
+import contacts.core.util.photoThumbnailBytes
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
 
 class ContactImporter(context: Context) : Pigeon.Contacts {
-    private val gson = Gson()
     private val contacts: Contacts
 
     init {
         contacts = Contacts(context)
     }
 
-    override fun importContacts(
-        cacheFilePath: String,
-        result: Pigeon.Result<Void>?,
+    override fun fetchContacts(
+        result: Pigeon.Result<List<Pigeon.PigeonContact>>?,
     ) {
         CoroutineScope(Dispatchers.IO).launch {
             val results = contacts
                 .broadQuery()
                 .find()
                 .map {
-                    Contact(
-                        identifier = it.id.toString(),
-                        givenName = it.rawContacts.firstOrNull()?.name?.givenName,
-                        middleName = it.rawContacts.firstOrNull()?.name?.middleName,
-                        familyName = it.rawContacts.firstOrNull()?.name?.familyName,
-                        chosenName = it.displayNamePrimary,
-                        company = it.organizations().firstOrNull()?.company,
-                        phoneNumbers = it.phoneList().toPhoneItems(),
-                        emails = it.emailList().toEmailItems(),
-                    )
+                    Pigeon.PigeonContact.Builder().apply {
+                        setChosenName(it.displayNamePrimary)
+                        setCompany(it.organizations().firstOrNull()?.company)
+                        setFamilyName(it.rawContacts.firstOrNull()?.name?.familyName)
+                        setIdentifier(it.id.toString())
+                        setGivenName(it.rawContacts.firstOrNull()?.name?.givenName)
+                        setMiddleName(it.rawContacts.firstOrNull()?.name?.middleName)
+                        setPhoneNumbers(it.phoneList().toPhoneItems())
+                        setEmails(it.emailList().toEmailItems())
+                    }.build()
                 }
 
-            if (results.isNotEmpty()) {
-                File(cacheFilePath).writeText(gson.toJson(results))
-            }
-            result?.success(null)
+
+            result?.success(results)
         }
     }
 
@@ -78,35 +76,23 @@ class ContactImporter(context: Context) : Pigeon.Contacts {
     }
 
     private fun removeOrphanedAvatars(avatarDirectoryPath: String, validIds: List<String>) =
-        File(avatarDirectoryPath).listFiles()?.forEach {
-            if (!validIds.contains(it.nameWithoutExtension)) {
-                it.delete()
-            }
-        }
+        File(avatarDirectoryPath).listFiles()
+            ?.filter { !validIds.contains(it.nameWithoutExtension) }
+            ?.forEach { it.delete() }
 }
 
-data class Contact(
-    val givenName: String?,
-    val middleName: String?,
-    val familyName: String?,
-    val chosenName: String?,
-    val phoneNumbers: List<Item>,
-    val emails: List<Item>,
-    val identifier: String?,
-    val company: String?,
-)
-
-data class Item(
-    val label: String,
-    val value: String,
-)
-
 fun List<Phone>.toPhoneItems() = filter { phone -> phone.number?.isNotBlank() == true }
-        .map { phone -> Item(phone.displayLabel, phone.number!!) }
-        .distinctBy { item -> item.value.replace(Regex("[^0-9]"), "") }
+        .map { phone -> Pigeon.PigeonContactItem.Builder().apply {
+            setLabel(phone.displayLabel)
+            setValue(phone.number!!)
+        }.build() }
+        .distinctBy { item -> item.value?.replace(Regex("[^0-9]"), "") }
 
 fun List<Email>.toEmailItems() = filter { email -> email.primaryValue?.isNotBlank() == true }
-    .map { email -> Item(email.displayLabel, email.primaryValue!!) }
+    .map { email -> Pigeon.PigeonContactItem.Builder().apply {
+        setLabel(email.displayLabel)
+        setValue(email.primaryValue!!)
+    }.build() }
     .distinctBy { item -> item.value }
 
 fun String.formatLabel() = toLowerCase(Locale.current).capitalize(Locale.current)
