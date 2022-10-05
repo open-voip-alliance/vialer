@@ -5,7 +5,7 @@ import 'package:glob/glob.dart';
 import 'package:glob/list_local_fs.dart';
 import 'package:xml/xml.dart';
 
-import '../ci_utils.dart';
+import '../../ci_utils.dart';
 
 const _codemagicBaseUrl = 'https://api.codemagic.io/builds';
 

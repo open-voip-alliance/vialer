@@ -6,7 +6,7 @@ stages:
   - build and test
 
 build & test:
-  image: cirrusci/flutter:latest
+  image: dart:latest
   stage: build and test
   rules:
     - if: '$CI_MERGE_REQUEST_EVENT_TYPE == "detached"'
@@ -31,7 +31,8 @@ build & test:
     - chmod 700 ~/.ssh
     - echo "$SSH_KNOWN_HOSTS" >> ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts
-    - dart ./utils/ci/gitlab/remove_build_url.dart
+    - cd ./utils/ci/gitlab
     - dart pub get
   script:
-    - dart ./utils/ci/gitlab/build_via_codemagic.dart
+    - dart ./bin/remove_build_url.dart
+    - dart ./bin/build_via_codemagic.dart
