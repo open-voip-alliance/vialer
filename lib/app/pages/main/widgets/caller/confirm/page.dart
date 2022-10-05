@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../../../../../domain/entities/settings/call_setting.dart';
 import '../../../../../resources/localizations.dart';
 import '../../../../../resources/theme.dart';
 import '../../../../../routes.dart';
@@ -152,6 +153,8 @@ class ConfirmPageState extends State<ConfirmPage>
               builder: (context, state) {
                 final cubit = context.watch<ConfirmCubit>();
 
+                final outgoingNumber = state.outgoingNumber;
+
                 final paragraphDistance =
                     48 * (1.0 - (MediaQuery.textScaleFactorOf(context) - 1.0));
 
@@ -191,21 +194,13 @@ class ConfirmPageState extends State<ConfirmPage>
                                 textAlign: TextAlign.center,
                               ),
                               const SizedBox(height: 8),
-                              // Is null for the first (few) frame(s).
-                              if (state.outgoingCli != null)
-                                Text(
-                                  !state.isOutgoingCliSuppressed
-                                      ? state.outgoingCli!
-                                      : context
-                                          .msg
-                                          .main
-                                          .settings
-                                          .list
-                                          .accountInfo
-                                          .businessNumber
-                                          .suppressed,
-                                  style: _largeStyle,
-                                ),
+                              Text(
+                                outgoingNumber is UnsuppressedOutgoingNumber
+                                    ? outgoingNumber.value
+                                    : context.msg.main.settings.list.accountInfo
+                                        .businessNumber.suppressed,
+                                style: _largeStyle,
+                              ),
                               SizedBox(height: paragraphDistance),
                             ],
                           ),

@@ -7,12 +7,13 @@ import 'package:flutter_switch/flutter_switch.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../../domain/entities/availability.dart';
 import '../../../../../domain/entities/destination.dart';
 import '../../../../../domain/entities/fixed_destination.dart';
 import '../../../../../domain/entities/phone_account.dart';
-import '../../../../../domain/entities/setting.dart';
-import '../../../../../domain/entities/system_user.dart';
+import '../../../../../domain/entities/settings/app_setting.dart';
+import '../../../../../domain/entities/settings/call_setting.dart';
+import '../../../../../domain/entities/settings/settings.dart';
+import '../../../../../domain/entities/user.dart';
 import '../../../../../domain/entities/web_page.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
@@ -62,10 +63,7 @@ class SettingTile extends StatelessWidget {
             ),
         super(key: key);
 
-  static Widget dnd(
-    DndSetting setting, {
-    required UserAvailabilityType userAvailabilityType,
-  }) {
+  static Widget dnd(User user) {
     return Builder(
       builder: (context) {
         return Padding(
@@ -78,10 +76,7 @@ class SettingTile extends StatelessWidget {
           child: Row(
             children: [
               Expanded(
-                child: _DndToggle(
-                  setting: setting,
-                  userAvailabilityType: userAvailabilityType,
-                ),
+                child: _DndToggle(user),
               ),
             ],
           ),
@@ -90,26 +85,27 @@ class SettingTile extends StatelessWidget {
     );
   }
 
-  static Widget username(SystemUser systemUser) {
+  static Widget username(User user) {
     return Builder(builder: (context) {
       return _userInformation(
         description: Text(
           context.msg.main.settings.list.accountInfo.username.description,
         ),
-        child: _StringValue(systemUser.email),
+        child: _StringValue(user.email),
       );
     });
   }
 
-  static Widget mobileNumber({
+  static Widget mobileNumber(
+    Settings settings, {
     Key? key,
-    required MobileNumberSetting setting,
     required bool isVoipAllowed,
   }) {
+    const key = CallSetting.mobileNumber;
+
     return Builder(
       builder: (context) {
         return SettingTile(
-          key: key,
           description: isVoipAllowed
               ? Text(
                   context.msg.main.settings.list.accountInfo.mobileNumber
@@ -121,8 +117,8 @@ class SettingTile extends StatelessWidget {
                 ),
           childFillWidth: isVoipAllowed,
           child: isVoipAllowed
-              ? _StringEditSettingValue(setting)
-              : _StringSettingValue(setting),
+              ? _StringEditSettingValue(settings, key)
+              : _StringSettingValue(settings, key),
         );
       },
     );
@@ -151,7 +147,7 @@ class SettingTile extends StatelessWidget {
     );
   }
 
-  static Widget usePhoneRingtone(UsePhoneRingtoneSetting setting) {
+  static Widget usePhoneRingtone(Settings settings) {
     return Builder(
       builder: (context) {
         return SettingTile(
@@ -163,13 +159,13 @@ class SettingTile extends StatelessWidget {
               context.brand.appName,
             ),
           ),
-          child: _BoolSettingValue(setting),
+          child: _BoolSettingValue(settings, CallSetting.usePhoneRingtone),
         );
       },
     );
   }
 
-  static Widget useVoip(UseVoipSetting setting) {
+  static Widget useVoip(Settings settings) {
     return Builder(
       builder: (context) {
         return SettingTile(
@@ -177,15 +173,13 @@ class SettingTile extends StatelessWidget {
           description: Text(
             context.msg.main.settings.list.calling.useVoip.description,
           ),
-          child: _BoolSettingValue(setting),
+          child: _BoolSettingValue(settings, CallSetting.useVoip),
         );
       },
     );
   }
 
-  static Widget showCallsInNativeRecents(
-    ShowCallsInNativeRecentsSetting setting,
-  ) {
+  static Widget showCallsInNativeRecents(Settings settings) {
     return Builder(
       builder: (context) {
         return SettingTile(
@@ -195,11 +189,12 @@ class SettingTile extends StatelessWidget {
           ),
           description: Text(
             context.msg.main.settings.list.calling.showCallsInNativeRecents
-                .description(
-              context.brand.appName,
-            ),
+                .description(context.brand.appName),
           ),
-          child: _BoolSettingValue(setting),
+          child: _BoolSettingValue(
+            settings,
+            AppSetting.showCallsInNativeRecents,
+          ),
         );
       },
     );
@@ -232,10 +227,7 @@ class SettingTile extends StatelessWidget {
     );
   }
 
-  static Widget showClientCalls({
-    required ShowClientCallsSetting setting,
-    required VoipgridPermissionsSetting permissions,
-  }) {
+  static Widget showClientCalls(User user) {
     return Builder(
       builder: (context) {
         return SettingTile(
@@ -243,21 +235,24 @@ class SettingTile extends StatelessWidget {
             context.msg.main.settings.list.calling.showClientCalls.title,
           ),
           description: Text(
-            permissions.value.hasClientCallsPermission
+            user.permissions.canSeeClientCalls
                 ? context
                     .msg.main.settings.list.calling.showClientCalls.description
                 : context.msg.main.settings.list.calling.showClientCalls
                     .noPermission,
           ),
-          child: permissions.value.hasClientCallsPermission
-              ? _BoolSettingValue(setting)
-              : const StylizedSwitch(value: false, onChanged: null),
+          child: _BoolSettingValue(
+            user.settings,
+            AppSetting.showClientCalls,
+            onChanged:
+                user.permissions.canSeeClientCalls ? defaultOnChanged : null,
+          ),
         );
       },
     );
   }
 
-  static Widget remoteLogging(RemoteLoggingSetting setting) {
+  static Widget remoteLogging(Settings settings) {
     return Builder(
       builder: (context) {
         return SettingTile(
@@ -266,11 +261,12 @@ class SettingTile extends StatelessWidget {
             context.msg.main.settings.list.debug.remoteLogging.description,
           ),
           child: _BoolSettingValue(
-            setting,
-            onChanged: (context, setting) {
+            settings,
+            AppSetting.remoteLogging,
+            onChanged: (context, key, value) {
               // Show a popup, asking if the user wants to send their locally
               // saved logs to the remote.
-              if (setting.value) {
+              if (value == true) {
                 showDialog(
                   context: context,
                   builder: (_) => _RemoteLoggingSendLogsDialog(
@@ -278,7 +274,7 @@ class SettingTile extends StatelessWidget {
                   ),
                 );
               }
-              defaultOnChanged(context, setting);
+              defaultOnChanged(context, key, value);
             },
           ),
         );
@@ -307,11 +303,9 @@ class SettingTile extends StatelessWidget {
     );
   }
 
-  static Widget availability(
-    AvailabilitySetting setting, {
-    required SystemUser systemUser,
-  }) {
-    final availability = setting.value!;
+  static Widget availability(User user) {
+    const key = CallSetting.availability;
+    final availability = user.settings.get(key);
 
     return Builder(
       builder: (context) {
@@ -334,8 +328,8 @@ class SettingTile extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 8),
           child: AvailabilityTile(
             availability: availability,
-            userAvailabilityType: systemUser.availabilityType(availability),
-            user: systemUser,
+            userAvailabilityType: user.availabilityType,
+            user: user,
             child: _MultipleChoiceSettingValue<Destination?>(
               value: availability.activeDestination,
               items: [
@@ -359,10 +353,9 @@ class SettingTile extends StatelessWidget {
               onChanged: (destination) => destination != null
                   ? defaultOnChanged(
                       context,
-                      setting.copyWith(
-                        value: availability.copyWithSelectedDestination(
-                          destination: destination,
-                        ),
+                      key,
+                      availability.copyWithSelectedDestination(
+                        destination: destination,
                       ),
                     )
                   : () {},
@@ -374,10 +367,9 @@ class SettingTile extends StatelessWidget {
     );
   }
 
-  static Widget useMobileNumberAsFallback(
-    SystemUser user,
-    UseMobileNumberAsFallbackSetting setting,
-  ) {
+  static Widget useMobileNumberAsFallback(Settings settings) {
+    final mobileNumber = settings.get(CallSetting.mobileNumber);
+
     return Builder(
       builder: (context) {
         return SettingTile(
@@ -387,11 +379,12 @@ class SettingTile extends StatelessWidget {
           ),
           description: Text(
             context.msg.main.settings.list.calling.useMobileNumberAsFallback
-                .description(
-              user.mobileNumber ?? '',
-            ),
+                .description(mobileNumber),
           ),
-          child: _BoolSettingValue(setting),
+          child: _BoolSettingValue(
+            settings,
+            CallSetting.useMobileNumberAsFallback,
+          ),
         );
       },
     );
@@ -468,25 +461,22 @@ class SettingTile extends StatelessWidget {
     );
   }
 
-  static Widget outgoingNumber(
-    ClientOutgoingNumbersSetting clientOutgoingNumbersSetting,
-    OutgoingNumberSetting setting, {
-    required SystemUser systemUser,
-  }) {
-    final availableOutgoingNumbers = clientOutgoingNumbersSetting.value.numbers;
+  static Widget outgoingNumber(User user) {
+    const key = CallSetting.outgoingNumber;
+    final value = user.settings.get(key);
+    final availableOutgoingNumbers = user.client?.outgoingNumbers ?? const [];
 
     return Builder(
       builder: (context) {
-        final unlockedWidget = setting.isSuppressed
-            ? _StringValue(
-                context.msg.main.settings.list.accountInfo.businessNumber
-                    .suppressed,
-                bold: false,
-              )
-            : _StringSettingValue(
-                setting,
-                bold: false,
-              );
+        final unlockedWidget = _StringSettingValue(
+          user.settings,
+          key,
+          value: (number) => number is UnsuppressedOutgoingNumber
+              ? number.value
+              : context
+                  .msg.main.settings.list.accountInfo.businessNumber.suppressed,
+          bold: false,
+        );
 
         return SettingTile(
           description: Text(
@@ -494,20 +484,20 @@ class SettingTile extends StatelessWidget {
                 .msg.main.settings.list.accountInfo.businessNumber.description,
           ),
           childFillWidth: true,
-          child: systemUser.canChangeOutgoingCli
+          child: user.canChangeOutgoingNumber
               ? _EditableSettingField(
                   unlocked: Expanded(
-                    child: _MultipleChoiceSettingValue<OutgoingNumberSetting>(
-                      value: setting,
+                    child: _MultipleChoiceSettingValue<OutgoingNumber>(
+                      value: value,
                       padding: const EdgeInsets.only(
                         bottom: 8,
                         right: 8,
                       ),
-                      onChanged: (setting) =>
-                          context.read<SettingsCubit>().changeSetting(setting),
+                      onChanged: (number) =>
+                          defaultOnChanged(context, key, number),
                       isExpanded: false,
                       items: [
-                        DropdownMenuItem<OutgoingNumberSetting>(
+                        DropdownMenuItem<OutgoingNumber>(
                           child: FittedBox(
                             fit: BoxFit.scaleDown,
                             child: Text(
@@ -515,15 +505,15 @@ class SettingTile extends StatelessWidget {
                                   .businessNumber.suppressed,
                             ),
                           ),
-                          value: OutgoingNumberSetting.suppressed(),
+                          value: const OutgoingNumber.suppressed(),
                         ),
                         ...availableOutgoingNumbers.map(
-                          (number) => DropdownMenuItem<OutgoingNumberSetting>(
+                          (number) => DropdownMenuItem<OutgoingNumber>(
                             child: FittedBox(
                               fit: BoxFit.scaleDown,
                               child: Text(number),
                             ),
-                            value: OutgoingNumberSetting(number),
+                            value: OutgoingNumber(number),
                           ),
                         ),
                       ],
@@ -538,29 +528,38 @@ class SettingTile extends StatelessWidget {
   }
 }
 
-typedef ValueChangedWithContext<T> = void Function(BuildContext, T);
+typedef ValueChangedWithContext<T extends Object> = void Function(
+  BuildContext,
+  SettingKey<T>,
+  T,
+);
 
-Future<void> defaultOnChanged<T>(BuildContext context, Setting<T> setting) =>
-    context.read<SettingsCubit>().changeSetting(setting);
+Future<void> defaultOnChanged<T extends Object>(
+  BuildContext context,
+  SettingKey<T> key,
+  T value,
+) async {
+  await context.read<SettingsCubit>().changeSetting(key, value);
+}
 
 class _BoolSettingValue extends StatelessWidget {
-  final Setting<bool> setting;
-  final ValueChangedWithContext<Setting<bool>> onChanged;
+  final Settings settings;
+  final SettingKey<bool> settingKey;
+  final ValueChangedWithContext<bool>? onChanged;
 
   const _BoolSettingValue(
-    this.setting, {
+    this.settings,
+    this.settingKey, {
     this.onChanged = defaultOnChanged,
-    Key? key,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return StylizedSwitch(
-      value: setting.value,
-      onChanged: (value) => onChanged(
-        context,
-        setting.copyWith(value: value),
-      ),
+      value: settings.getOrNull(settingKey) ?? false,
+      onChanged: onChanged != null
+          ? (value) => onChanged!(context, settingKey, value)
+          : null,
     );
   }
 }
@@ -588,20 +587,31 @@ class _StringValue extends StatelessWidget {
   }
 }
 
-class _StringSettingValue extends StatelessWidget {
-  final Setting<String> setting;
+typedef GetStringValue<T> = String Function(T);
+
+class _StringSettingValue<T extends Object> extends StatelessWidget {
+  final Settings settings;
+  final SettingKey<T> settingKey;
+
+  /// If [T] is not [String], use this function to retrieve the
+  /// desired string value of [T].
+  final GetStringValue<T> value;
   final bool? bold;
 
-  const _StringSettingValue(
-    this.setting, {
+  _StringSettingValue(
+    this.settings,
+    this.settingKey, {
+    GetStringValue<T>? value,
     this.bold,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  })  : value = value ?? ((obj) => obj.toString()),
+        assert(T == String || value != null);
 
   @override
   Widget build(BuildContext context) {
+    final settingValue = settings.getOrNull(settingKey);
     return _StringValue(
-      setting.value,
+      settingValue != null ? value(settingValue) : '',
       bold: bold,
     );
   }
@@ -645,15 +655,18 @@ class _EditableSettingFieldState extends State<_EditableSettingField> {
 }
 
 class _StringEditSettingValue extends StatefulWidget {
-  final Setting<String> setting;
-  final ValueChangedWithContext<Setting<String>> onChanged;
+  final Settings settings;
+  final SettingKey<String> setting;
+  final ValueChangedWithContext<String> onChanged;
 
-  const _StringEditSettingValue(
+  final String value;
+
+  _StringEditSettingValue(
+    this.settings,
     this.setting, {
-    Key? key,
     // ignore: unused_element
     this.onChanged = defaultOnChanged,
-  }) : super(key: key);
+  }) : value = settings.get(setting);
 
   @override
   _StringEditSettingValueState createState() => _StringEditSettingValueState();
@@ -668,16 +681,13 @@ class _StringEditSettingValueState extends State<_StringEditSettingValue> {
     super.initState();
 
     _textEditingController.value = TextEditingValue(
-      text: widget.setting.value,
-      selection: TextSelection.collapsed(offset: widget.setting.value.length),
+      text: widget.value,
+      selection: TextSelection.collapsed(offset: widget.value.length),
     );
   }
 
   void _onPressed(BuildContext context) {
-    widget.onChanged(
-      context,
-      widget.setting.copyWith(value: _textEditingController.text),
-    );
+    widget.onChanged(context, widget.setting, _textEditingController.text);
     _toggleEditing();
   }
 
@@ -705,7 +715,7 @@ class _StringEditSettingValueState extends State<_StringEditSettingValue> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Text(
-            widget.setting.value,
+            widget.value,
             style: const TextStyle(
               fontSize: 16,
             ),
@@ -856,8 +866,10 @@ extension DestinationDescription on Destination {
   }
 }
 
-extension AvailabilityType on SystemUser {
-  UserAvailabilityType availabilityType(Availability availability) {
+extension AvailabilityType on User {
+  UserAvailabilityType get availabilityType {
+    final availability = settings.get(CallSetting.availability);
+
     final selectedDestination = availability.selectedDestinationInfo ?? null;
 
     if (selectedDestination == null ||
@@ -877,18 +889,18 @@ extension AvailabilityType on SystemUser {
 /// Responsible for rendering the dnd toggle but also the current state of the
 /// user's availability by updating the text/color.
 class _DndToggle extends StatelessWidget {
-  final DndSetting setting;
+  final User user;
   final UserAvailabilityType userAvailabilityType;
+  final bool value;
 
-  const _DndToggle({
-    required this.setting,
-    required this.userAvailabilityType,
-  });
+  static const _key = CallSetting.dnd;
+
+  _DndToggle(this.user)
+      : value = user.settings.get(_key),
+        userAvailabilityType = user.availabilityType;
 
   String _text(BuildContext context, {bool? settingValue}) {
-    if (settingValue == null) {
-      settingValue = setting.value;
-    }
+    settingValue ??= value;
 
     if (settingValue == true) {
       return context.msg.main.settings.list.calling.availability.dnd.title;
@@ -907,11 +919,11 @@ class _DndToggle extends StatelessWidget {
     return context.msg.main.settings.list.calling.availability.available.title;
   }
 
-  Color _color(BuildContext context) => setting.value == true
+  Color _color(BuildContext context) => value == true
       ? context.brand.theme.colors.dnd
       : userAvailabilityType.asColor(context);
 
-  Color _accentColor(BuildContext context) => setting.value == true
+  Color _accentColor(BuildContext context) => value == true
       ? context.brand.theme.colors.dndAccent
       : userAvailabilityType.asAccentColor(context);
 
@@ -940,18 +952,15 @@ class _DndToggle extends StatelessWidget {
   }
 
   Future<bool> _toggleDndSetting(BuildContext context) async {
-    final newValue = !setting.value;
+    final newValue = !value;
 
-    return defaultOnChanged(
-      context,
-      setting.copyWith(value: newValue),
-    ).then((_) => newValue);
+    return defaultOnChanged(context, _key, newValue).then((_) => newValue);
   }
 
   @override
   Widget build(BuildContext context) {
     return Semantics(
-      label: _prepareVoiceOverForAccessibility(context, setting.value),
+      label: _prepareVoiceOverForAccessibility(context, value),
       enabled: true,
       container: true,
       onTap: () => _toggleDndSetting(context).then(
@@ -993,7 +1002,7 @@ class _DndToggle extends StatelessWidget {
                   vertical: 6,
                 ),
                 child: FlutterSwitch(
-                  value: setting.value,
+                  value: value,
                   inactiveIcon: SizedBox(
                     width: 28,
                     height: 28,
@@ -1025,7 +1034,7 @@ class _DndToggle extends StatelessWidget {
                   inactiveColor: _accentColor(context),
                   activeToggleColor: _color(context),
                   inactiveToggleColor: _color(context),
-                  onToggle: (dnd) => _toggleDndSetting(context),
+                  onToggle: (_) => _toggleDndSetting(context),
                 ),
               )
             ],

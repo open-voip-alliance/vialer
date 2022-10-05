@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:chopper/chopper.dart' hide JsonConverter;
 
-import '../../entities/system_user.dart';
+import '../../entities/user.dart';
 import '../../usecases/get_voipgrid_base_url.dart';
 import 'util.dart';
 
@@ -30,7 +30,7 @@ abstract class VoipgridService extends ChopperService {
   }
 
   static VoipgridService createInIsolate({
-    required SystemUser user,
+    required User user,
     required String baseUrl,
   }) {
     return _$VoipgridService(

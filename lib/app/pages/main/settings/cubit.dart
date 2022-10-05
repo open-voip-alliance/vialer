@@ -4,18 +4,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../domain/entities/permission.dart';
 import '../../../../domain/entities/permission_status.dart';
-import '../../../../domain/entities/setting.dart';
-import '../../../../domain/usecases/change_setting.dart';
+import '../../../../domain/entities/settings/settings.dart';
 import '../../../../domain/usecases/get_build_info.dart';
 import '../../../../domain/usecases/get_is_voip_allowed.dart';
-import '../../../../domain/usecases/get_latest_availability.dart';
+import '../../../../domain/usecases/get_latest_logged_in_user.dart';
+import '../../../../domain/usecases/get_logged_in_user.dart';
 import '../../../../domain/usecases/get_permission_status.dart';
-import '../../../../domain/usecases/get_settings.dart';
-import '../../../../domain/usecases/get_user.dart';
 import '../../../../domain/usecases/logout.dart';
 import '../../../../domain/usecases/onboarding/request_permission.dart';
 import '../../../../domain/usecases/perform_echo_cancellation_calibration.dart';
 import '../../../../domain/usecases/send_saved_logs_to_remote.dart';
+import '../../../../domain/usecases/settings/change_settings.dart';
 import '../../../util/loggable.dart';
 import '../widgets/user_data_refresher/cubit.dart';
 import 'state.dart';
@@ -23,24 +22,23 @@ import 'state.dart';
 export 'state.dart';
 
 class SettingsCubit extends Cubit<SettingsState> with Loggable {
-  final _getSettings = GetSettingsUseCase();
-  final _changeSetting = ChangeSettingUseCase();
+  final _changeSettings = ChangeSettingsUseCase();
   final _getBuildInfo = GetBuildInfoUseCase();
-  final _getLatestAvailability = GetLatestAvailabilityUseCase();
   final _sendSavedLogsToRemote = SendSavedLogsToRemoteUseCase();
   final _getIsVoipAllowed = GetIsVoipAllowedUseCase();
   final _getPermissionStatus = GetPermissionStatusUseCase();
   final _requestPermission = RequestPermissionUseCase();
   final _logout = LogoutUseCase();
-  final _getUser = GetUserUseCase();
   final _performEchoCancellationCalibration =
       PerformEchoCancellationCalibrationUseCase();
+  final _getUser = GetLoggedInUserUseCase();
+  final _getLatestUser = GetLatestLoggedInUserUseCase();
 
   late StreamSubscription _userRefresherSubscription;
 
   SettingsCubit(
     UserDataRefresherCubit userDataRefresher,
-  ) : super(SettingsState()) {
+  ) : super(SettingsState(user: GetLoggedInUserUseCase()())) {
     _emitUpdatedState();
     _userRefresherSubscription = userDataRefresher.stream.listen(
       (state) {
@@ -54,10 +52,9 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
   Future<void> _emitUpdatedState() async {
     emit(
       SettingsState(
-        settings: await _getSettings(),
+        user: _getUser(),
         buildInfo: await _getBuildInfo(),
         isVoipAllowed: await _getIsVoipAllowed(),
-        systemUser: await _getUser(latest: false),
         hasIgnoreBatteryOptimizationsPermission: await _getPermissionStatus(
           permission: Permission.ignoreBatteryOptimizations,
         ).then(
@@ -67,23 +64,30 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
     );
   }
 
-  Future<void> changeSetting(Setting setting) async {
+  Future<void> changeSetting<T extends Object>(
+    SettingKey<T> key,
+    T value,
+  ) async {
     // Immediately emit a copy of the state with the changed setting for extra
     // smoothness.
-    emit(state.withChanged(setting));
+    final newSettings = Settings({key: value});
 
-    await _changeSetting(setting: setting);
+    emit(state.withChanged(newSettings));
 
-    // TODO (possibly): Use something like the built_value package for lists
-    // in states, so that if there's no difference in the setting after it has
-    // been changed for real, we don't emit the basically same state again.
-    await _emitUpdatedState();
+    final result = await _changeSettings(newSettings);
+
+    // If the setting didn't change, it means we have to revert our previous
+    // state change.
+    if (!result.changed.contains(key)) {
+      await _emitUpdatedState();
+    }
   }
 
   Future<void> refreshAvailability() async {
     logger.info('Refreshing availability');
 
-    await _getLatestAvailability();
+    // TODO: Add ability to refresh a user partially?
+    await _getLatestUser();
     await _emitUpdatedState();
   }
 

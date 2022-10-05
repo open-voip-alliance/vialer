@@ -3,14 +3,14 @@ import 'dart:io';
 import 'package:device_info/device_info.dart';
 import 'package:package_info/package_info.dart';
 
-import '../entities/system_user.dart';
+import '../entities/user.dart';
 import 'services/feedback.dart';
 
 class FeedbackRepository {
   Future<void> send({
     required String title,
     required String text,
-    required SystemUser user,
+    required User user,
   }) async {
     final service = FeedbackService.create();
     final packageInfo = await PackageInfo.fromPlatform();
@@ -45,7 +45,7 @@ class FeedbackRepository {
         'email_address': user.email,
         'given_name': user.firstName,
         'family_name': user.lastName,
-        'client_id': user.clientId,
+        'client_id': user.client?.id,
       },
       'application': {
         'id': packageInfo.packageName,

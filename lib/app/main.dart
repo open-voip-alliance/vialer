@@ -12,7 +12,8 @@ import '../domain/repositories/error_tracking_repository.dart';
 import '../domain/usecases/automatically_login_legacy_user.dart';
 import '../domain/usecases/enable_console_logging.dart';
 import '../domain/usecases/enable_remote_logging_if_needed.dart';
-import '../domain/usecases/get_user.dart';
+import '../domain/usecases/get_is_authenticated.dart';
+import '../domain/usecases/get_stored_user.dart';
 import '../domain/usecases/initialize_metric_collection.dart';
 import '../domain/usecases/register_event_listeners.dart';
 import 'pages/main/page.dart';
@@ -46,27 +47,38 @@ Future<void> main() async {
 
   final errorTrackingRepository = dependencyLocator<ErrorTrackingRepository>();
   final dsn = await dependencyLocator<EnvRepository>().errorTrackingDsn;
-  final user = await GetUserUseCase()(latest: false);
+  final user = await GetStoredUserUseCase()();
 
   if (dsn.isEmpty) {
-    runApp(App());
+    runApp(const App());
   } else {
-    await errorTrackingRepository.run(() => runApp(App()), dsn, user);
+    await errorTrackingRepository.run(() => runApp(const App()), dsn, user);
   }
 }
 
-class App extends StatelessWidget {
-  static final _navigatorKey = GlobalKey<NavigatorState>();
-
-  static final EventBusObserver _eventBus =
-      dependencyLocator<EventBusObserver>();
-
-  App({Key? key}) : super(key: key) {
-    _listenForEvents();
-  }
+class App extends StatefulWidget {
+  const App();
 
   static void navigateTo(MainPageTab tab) =>
       MainPage.keys.page.currentState!.navigateTo(tab);
+
+  @override
+  State<App> createState() => _AppState();
+}
+
+class _AppState extends State<App> {
+  final _navigatorKey = GlobalKey<NavigatorState>();
+
+  final EventBusObserver _eventBus = dependencyLocator<EventBusObserver>();
+
+  late final bool _isAuthenticatedAtAppStart;
+
+  @override
+  void initState() {
+    super.initState();
+    _isAuthenticatedAtAppStart = GetIsAuthenticatedUseCase()();
+    _listenForEvents();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,12 +90,14 @@ class App extends StatelessWidget {
             child: ConnectivityChecker.create(
               child: MissedCallNotificationPressedListener(
                 onMissedCallNotificationPressed: () =>
-                    navigateTo(MainPageTab.recents),
+                    App.navigateTo(MainPageTab.recents),
                 child: MaterialApp(
                   navigatorKey: _navigatorKey,
                   title: context.brand.appName,
                   theme: context.brand.theme.themeData,
-                  initialRoute: Routes.root,
+                  initialRoute: _isAuthenticatedAtAppStart
+                      ? Routes.main
+                      : Routes.onboarding,
                   routes: Routes.mapped,
                   localizationsDelegates: [
                     VialerLocalizations.delegate,

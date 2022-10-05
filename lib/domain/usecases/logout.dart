@@ -1,19 +1,22 @@
 import 'dart:async';
 
 import '../../dependency_locator.dart';
-import '../entities/setting.dart';
+import '../entities/settings/app_setting.dart';
 import '../events/event_bus.dart';
 import '../events/user_was_logged_out.dart';
 import '../repositories/storage.dart';
 import '../use_case.dart';
 import 'client_calls/purge_local_call_records.dart';
+import 'get_logged_in_user.dart';
 import 'stop_voip.dart';
 
 class LogoutUseCase extends UseCase {
   final _storageRepository = dependencyLocator<StorageRepository>();
-  final _stopVoip = StopVoipUseCase();
-  final _purgeClientCalls = PurgeLocalCallRecords();
   final _eventBus = dependencyLocator<EventBus>();
+
+  final _getUser = GetLoggedInUserUseCase();
+  final _stopVoip = StopVoipUseCase();
+  final _purgeClientCalls = PurgeLocalCallRecordsUseCase();
 
   Future<void> call() async {
     await _stopVoip();
@@ -23,8 +26,10 @@ class LogoutUseCase extends UseCase {
 
   /// Clear the storage of all user-specific values.
   Future<void> _clearStorage() async {
-    final remoteLoggingSetting =
-        _storageRepository.settings.getOrNull<RemoteLoggingSetting>();
+    // Settings that we want to save across sessions.
+    final crossSessionSettings = _getUser().settings.getAll([
+      AppSetting.remoteLogging,
+    ]);
 
     final pushToken = _storageRepository.pushToken;
 
@@ -32,12 +37,7 @@ class LogoutUseCase extends UseCase {
 
     _storageRepository.pushToken = pushToken;
 
-    // If the setting was null, it was not set yet, and we leave it like that.
-    if (remoteLoggingSetting != null) {
-      _storageRepository.settings = [
-        remoteLoggingSetting,
-      ];
-    }
+    _storageRepository.previousSessionSettings = crossSessionSettings;
 
     await _purgeClientCalls(reason: PurgeReason.logout);
 

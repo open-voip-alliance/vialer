@@ -1,13 +1,13 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:in_app_review/in_app_review.dart';
 
-import '../../../../domain/entities/setting.dart';
+import '../../../../domain/entities/settings/app_setting.dart';
 import '../../../../domain/entities/survey/survey.dart';
 import '../../../../domain/entities/survey/survey_trigger.dart';
-import '../../../../domain/usecases/change_setting.dart';
-import '../../../../domain/usecases/get_settings.dart';
+import '../../../../domain/usecases/get_logged_in_user.dart';
 import '../../../../domain/usecases/get_survey.dart';
 import '../../../../domain/usecases/send_survey_results.dart';
+import '../../../../domain/usecases/settings/change_setting.dart';
 import '../../../util/loggable.dart';
 import 'state.dart';
 
@@ -17,7 +17,7 @@ class SurveyCubit extends Cubit<SurveyState> with Loggable {
   final _getSurvey = GetSurveyUseCase();
   final _sendSurveyResults = SendSurveyResultsUseCase();
 
-  final _getSettings = GetSettingsUseCase();
+  final _getUser = GetLoggedInUserUseCase();
   final _changeSetting = ChangeSettingUseCase();
 
   SurveyCubit({
@@ -26,32 +26,33 @@ class SurveyCubit extends Cubit<SurveyState> with Loggable {
     required SurveyTrigger trigger,
   }) : super(const LoadingSurvey()) {
     _getSurvey(id, language: language, trigger: trigger).then((survey) {
-      _getSettings().then((settings) {
-        // Necessary for auto cast.
-        final state = this.state;
+      final user = _getUser();
+      // Necessary for auto cast.
+      final state = this.state;
 
-        if (state is LoadingSurvey) {
-          if (survey.skipIntro) {
-            emit(
-              ShowQuestion(
-                survey.questions.first,
-                survey: survey,
+      if (state is LoadingSurvey) {
+        if (survey.skipIntro) {
+          emit(
+            ShowQuestion(
+              survey.questions.first,
+              survey: survey,
+            ),
+          );
+        } else {
+          emit(
+            ShowHelpUsPrompt(
+              survey: survey,
+              dontShowThisAgain: !user.settings.get(
+                AppSetting.showSurveys,
               ),
-            );
-          } else {
-            emit(
-              ShowHelpUsPrompt(
-                survey: survey,
-                dontShowThisAgain: !settings.get<ShowSurveysSetting>().value,
-              ),
-            );
-          }
+            ),
+          );
         }
-      });
+      }
     });
   }
 
-  // ignore: avoid_positional_boolean_parameters
+// ignore: avoid_positional_boolean_parameters
   Future<void> setDontShowThisAgain(bool value) async {
     // Necessary for auto cast
     final state = this.state;
@@ -60,7 +61,7 @@ class SurveyCubit extends Cubit<SurveyState> with Loggable {
       emit(state.copyWith(dontShowThisAgain: value));
     }
 
-    await _changeSetting(setting: ShowSurveysSetting(!value));
+    await _changeSetting(AppSetting.showSurveys, !value);
   }
 
   void previous() {

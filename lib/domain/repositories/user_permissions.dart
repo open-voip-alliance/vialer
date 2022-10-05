@@ -1,20 +1,20 @@
 import 'package:chopper/chopper.dart';
 
-import '../entities/system_user.dart';
+import '../entities/user.dart';
 import 'mappers/client_call_record.dart';
 import 'services/voipgrid.dart';
 
-class VoipgridPermissionsRepository {
+class UserPermissionsRepository {
   final VoipgridService _service;
 
-  VoipgridPermissionsRepository(this._service);
+  UserPermissionsRepository(this._service);
 
   Future<PermissionResult> hasPermission({
-    required VoipgridPermission type,
-    required SystemUser user,
+    required UserPermission type,
+    required User user,
   }) {
     switch (type) {
-      case VoipgridPermission.clientCalls:
+      case UserPermission.clientCalls:
         return _service
             .getClientCalls(
               limit: 1,
@@ -23,10 +23,10 @@ class VoipgridPermissionsRepository {
               to: DateTime.now().asVoipgridFormat,
             )
             .then(_handle);
-      case VoipgridPermission.mobileNumberFallback:
+      case UserPermission.mobileNumberFallback:
         return _service
             .getUserSettings(
-              clientId: user.clientId.toString(),
+              clientId: user.client!.id.toString(),
               userId: user.uuid,
             )
             .then(_handle);
@@ -44,7 +44,7 @@ class VoipgridPermissionsRepository {
   }
 }
 
-enum VoipgridPermission {
+enum UserPermission {
   clientCalls,
   mobileNumberFallback,
 }

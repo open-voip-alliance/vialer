@@ -2,7 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../dependency_locator.dart';
 import '../../../domain/repositories/storage.dart';
-import '../../../domain/usecases/get_latest_voipgrid_permissions.dart';
+import '../../../domain/usecases/get_latest_logged_in_user.dart';
 
 class MainState {
   const MainState();
@@ -10,7 +10,7 @@ class MainState {
 
 class MainCubit extends Cubit<MainState> {
   final _storageRepository = dependencyLocator<StorageRepository>();
-  final _getLatestVoipgridPermissions = GetLatestVoipgridPermissions();
+  final _getLatestUser = GetLatestLoggedInUserUseCase();
 
   MainCubit() : super(const MainState());
 
@@ -19,6 +19,6 @@ class MainCubit extends Cubit<MainState> {
   }
 
   Future<bool> shouldShowClientWideCallsDialog() async =>
-      (await _getLatestVoipgridPermissions()).hasClientCallsPermission &&
+      (await _getLatestUser().permissions).canSeeClientCalls &&
       !(_storageRepository.shownRecentCalls ?? false);
 }

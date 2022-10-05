@@ -7,15 +7,16 @@ import '../../app/util/loggable.dart';
 import '../../dependency_locator.dart';
 import '../entities/brand.dart';
 import '../entities/build_info.dart';
-import '../entities/setting.dart';
+import '../entities/settings/app_setting.dart';
+import '../entities/settings/call_setting.dart';
 import '../entities/voip_config.dart';
 import '../usecases/get_allowed_voip_config.dart';
 import '../usecases/get_build_info.dart';
 import '../usecases/get_is_logged_in_somewhere_else.dart';
+import '../usecases/get_latest_logged_in_user.dart';
+import '../usecases/get_logged_in_user.dart';
 import '../usecases/get_login_time.dart';
 import '../usecases/get_server_config.dart';
-import '../usecases/get_setting.dart';
-import '../usecases/get_user.dart';
 import 'env.dart';
 import 'operating_system_info.dart';
 import 'services/middleware.dart';
@@ -193,14 +194,16 @@ class VoipRepository with Loggable {
   }
 
   Future<Preferences> _createPreferences(VoipConfig config) async {
-    final getPhoneRingtone = GetSettingUseCase<UsePhoneRingtoneSetting>();
-    final getShowCallsInNativeRecents =
-        GetSettingUseCase<ShowCallsInNativeRecentsSetting>();
+    final user = (await GetLatestLoggedInUserUseCase()());
 
     return Preferences(
       codecs: [Codec.opus],
-      useApplicationProvidedRingtone: !(await getPhoneRingtone()).value,
-      showCallsInNativeRecents: (await getShowCallsInNativeRecents()).value,
+      useApplicationProvidedRingtone: !user.settings.get(
+        CallSetting.usePhoneRingtone,
+      ),
+      showCallsInNativeRecents: user.settings.get(
+        AppSetting.showCallsInNativeRecents,
+      ),
     );
   }
 
@@ -287,9 +290,8 @@ class VoipRepository with Loggable {
 class _Middleware with Loggable {
   final _service = dependencyLocator<MiddlewareService>();
 
-  final _getUser = GetUserUseCase();
+  final _getUser = GetLoggedInUserUseCase();
   final _getBuildInfo = GetBuildInfoUseCase();
-  final _getDndSetting = GetSettingUseCase<DndSetting>();
   final _getVoipConfig = GetNonEmptyVoipConfigUseCase();
   final _isLoggedInSomewhereElse = GetIsLoggedInSomewhereElseUseCase();
   final _getLoginTime = GetLoginTimeUseCase();
@@ -315,9 +317,9 @@ class _Middleware with Loggable {
       return;
     }
 
-    final dnd = await _getDndSetting();
+    final user = _getUser();
 
-    if (dnd.value == true) {
+    if (user.settings.get(CallSetting.dnd) == true) {
       unregister(voipConfig);
       logger.info('Registration cancelled: User has enabled DND');
       return;
@@ -328,8 +330,6 @@ class _Middleware with Loggable {
       return;
     }
 
-    final user = await _getUser(latest: false);
-
     if (_token == null) {
       logger.info('Registration cancelled: No token');
       return;
@@ -337,7 +337,7 @@ class _Middleware with Loggable {
 
     final buildInfo = await _getBuildInfo();
 
-    final name = user!.email;
+    final name = user.email;
     final token = _token!;
     final remoteNotificationToken = _remoteNotificationToken ?? '';
     final sipUserId = voipConfig!.sipUserId;
@@ -437,9 +437,9 @@ class _Middleware with Loggable {
     // While we should have unregistered from the middleware if the user
     // enables DND, it is possible the unregister request failed. This will
     // ensure that the user does not receive a call in this scenario.
-    final dnd = await _getDndSetting();
+    final dndEnabled = _getUser().settings.get(CallSetting.dnd);
 
-    if (dnd.value == true) {
+    if (dndEnabled) {
       available = false;
       logger.warning('Overriding available to false as user has enabled DND');
     }

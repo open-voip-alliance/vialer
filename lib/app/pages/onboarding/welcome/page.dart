@@ -11,7 +11,7 @@ import '../cubit.dart';
 import 'cubit.dart';
 
 class WelcomePage extends StatefulWidget {
-  WelcomePage({Key? key}) : super(key: key);
+  const WelcomePage({Key? key}) : super(key: key);
 
   @override
   _WelcomePageState createState() => _WelcomePageState();

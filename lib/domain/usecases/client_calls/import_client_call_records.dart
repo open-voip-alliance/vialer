@@ -3,12 +3,12 @@ import 'package:flutter/foundation.dart';
 import 'package:timezone/data/latest.dart';
 
 import '../../../app/util/loggable.dart';
-import '../../entities/setting.dart';
+import '../../entities/settings/app_setting.dart';
 import '../../repositories/database/client_calls.dart';
 import '../../repositories/local_client_calls.dart';
 import '../../repositories/remote_client_calls.dart';
 import '../../repositories/services/voipgrid.dart';
-import '../get_setting.dart';
+import '../get_logged_in_user.dart';
 import 'create_client_calls_isolate_request.dart';
 import 'import_historic_client_call_records.dart';
 import 'import_new_client_calls.dart';
@@ -19,23 +19,22 @@ import 'import_new_client_calls.dart';
 /// You should use [ImportHistoricClientCallRecordsUseCase]
 /// or [ImportNewClientCallRecordsUseCase] in almost all situations.
 class ImportClientCallsUseCase with Loggable {
-  late final _getClientCallSetting =
-      GetSettingUseCase<ShowClientCallsSetting>();
+  late final _getUser = GetLoggedInUserUseCase();
   final _createClientCallsIsolateRequest =
       CreateClientCallsIsolateRequestUseCase();
 
   static var _isIsolateRunning = false;
 
-  Future<bool> get _shouldImport async =>
-      _getClientCallSetting().then((setting) => setting.value);
+  bool get _shouldImport => _getUser().settings.get(AppSetting.showClientCalls);
 
   Future<void> call({
     required DateTime from,
     required DateTime to,
   }) async {
-    if (!await _shouldImport) {
+    if (!_shouldImport) {
       logger.info(
-        'Not importing client calls as [ShowClientCallsSetting] is disabled.',
+        'Not importing client calls as '
+        '[AppSetting.showClientCalls] is disabled.',
       );
       return;
     }

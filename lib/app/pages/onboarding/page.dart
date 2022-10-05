@@ -48,10 +48,10 @@ class OnboardingPageState extends State<OnboardingPage> {
 
     _allPages = {
       OnboardingStep.login: (_) => const LoginPage(),
-      OnboardingStep.password: (_) => PasswordPage(),
+      OnboardingStep.password: (_) => const PasswordPage(),
       OnboardingStep.twoFactorAuthentication: (_) =>
           const TwoFactorAuthenticationPage(),
-      OnboardingStep.mobileNumber: (_) => MobileNumberPage(),
+      OnboardingStep.mobileNumber: (_) => const MobileNumberPage(),
       OnboardingStep.phonePermission: (_) => const PhonePermissionPage(),
       OnboardingStep.microphonePermission: (_) =>
           const MicrophonePermissionPage(),
@@ -63,7 +63,7 @@ class OnboardingPageState extends State<OnboardingPage> {
       OnboardingStep.notificationPermission: (_) =>
           const NotificationsPermissionPage(),
       OnboardingStep.voicemail: (_) => const VoicemailPage(),
-      OnboardingStep.welcome: (_) => WelcomePage(),
+      OnboardingStep.welcome: (_) => const WelcomePage(),
     };
 
     currentPages = Map.fromEntries([_allPages.entries.first]);
