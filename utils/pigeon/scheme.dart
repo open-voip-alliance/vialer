@@ -85,7 +85,39 @@ abstract class CallThrough {
 // ignore: one_member_abstracts
 abstract class Contacts {
   @async
-  void importContacts(String cacheFilePath);
+  List<PigeonContact> fetchContacts();
   @async
   void importContactAvatars(String avatarDirectoryPath);
+}
+
+class PigeonContact {
+  final String? givenName;
+  final String? middleName;
+  final String? familyName;
+  final String? chosenName;
+  final List<PigeonContactItem?> phoneNumbers;
+  final List<PigeonContactItem?> emails;
+  final String? identifier;
+  final String? company;
+
+  const PigeonContact(
+    this.givenName,
+    this.middleName,
+    this.familyName,
+    this.chosenName,
+    this.phoneNumbers,
+    this.emails,
+    this.identifier,
+    this.company,
+  );
+}
+
+class PigeonContactItem {
+  final String? label;
+  final String? value;
+
+  const PigeonContactItem(
+    this.label,
+    this.value,
+  );
 }
