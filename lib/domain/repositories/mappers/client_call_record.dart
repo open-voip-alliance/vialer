@@ -55,30 +55,30 @@ ClientCallsCompanion toClientCallDatabaseRecord(
   final sourceAccountId = (object['src_account'] as String?).extractedId;
 
   return ClientCallsCompanion.insert(
-      id: Value(object['id'] as int),
-      callType: destinationAccountId != null && sourceAccountId != null
-          ? CallType.colleague
-          : CallType.outside,
-      direction: object['direction'] == 'outbound'
-          ? Direction.outbound
-          : Direction.inbound,
-      answered: (object['atime'] as int) > 0,
-      duration: object['atime'] as int,
-      date: (object['call_date'] as String).toDateTimeFromVoipgridFormat,
-      callerNumber: object['caller_num'] as String,
-      sourceNumber: object['src_number'] as String,
-      destinationNumber: object['dst_number'] as String,
-      dialedNumber: object['dialed_number'] as String,
-      callerId: object['callerid'] as String,
-      originalCallerId: object['orig_callerid'] as String,
-      destinationAccountId: Value(destinationAccountId),
-      sourceAccountId: Value(sourceAccountId),
-      isDestinationAccountLoggedInUser: destinationAccountId != null
-          ? isUserPhoneAccount(destinationAccountId)
-          : false,
-      isSourceAccountLoggedInUser: sourceAccountId != null
-          ? isUserPhoneAccount(sourceAccountId)
-          : false);
+    id: Value(object['id'] as int),
+    callType: destinationAccountId != null && sourceAccountId != null
+        ? CallType.colleague
+        : CallType.outside,
+    direction: object['direction'] == 'outbound'
+        ? Direction.outbound
+        : Direction.inbound,
+    answered: !(object['dst_account'] == null && object['dst_code'] == 'sip'),
+    duration: object['atime'] as int,
+    date: (object['call_date'] as String).toDateTimeFromVoipgridFormat,
+    callerNumber: object['caller_num'] as String,
+    sourceNumber: object['src_number'] as String,
+    destinationNumber: object['dst_number'] as String,
+    dialedNumber: object['dialed_number'] as String,
+    callerId: object['callerid'] as String,
+    originalCallerId: object['orig_callerid'] as String,
+    destinationAccountId: Value(destinationAccountId),
+    sourceAccountId: Value(sourceAccountId),
+    isDestinationAccountLoggedInUser: destinationAccountId != null
+        ? isUserPhoneAccount(destinationAccountId)
+        : false,
+    isSourceAccountLoggedInUser:
+        sourceAccountId != null ? isUserPhoneAccount(sourceAccountId) : false,
+  );
 }
 
 /// This is the timezone that the VoIPGRID API operates in.
