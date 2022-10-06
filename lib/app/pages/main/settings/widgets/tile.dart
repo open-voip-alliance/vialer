@@ -812,14 +812,14 @@ class _RemoteLoggingSendLogsDialog extends StatelessWidget {
         actions: [
           TextButton(
             style: TextButton.styleFrom(
-              primary: context.brand.theme.colors.primary,
+              foregroundColor: context.brand.theme.colors.primary,
             ),
             onPressed: onDenyPressed,
             child: deny,
           ),
           TextButton(
             style: TextButton.styleFrom(
-              primary: context.brand.theme.colors.primary,
+              foregroundColor: context.brand.theme.colors.primary,
             ),
             onPressed: onConfirmPressed,
             child: confirm,

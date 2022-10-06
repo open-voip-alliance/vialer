@@ -70,7 +70,8 @@ class NoticeBanner extends StatelessWidget {
                   data: theme.copyWith(
                     textButtonTheme: TextButtonThemeData(
                       style: TextButton.styleFrom(
-                        primary: context.brand.theme.colors.onPrimaryGradient,
+                        foregroundColor:
+                            context.brand.theme.colors.onPrimaryGradient,
                         textStyle: TextStyle(
                           fontWeight: FontWeight.w600,
                           shadows: [
