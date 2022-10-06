@@ -1,11 +1,12 @@
-import '../dependency_locator.dart';
 import 'entities/call_record.dart';
 import 'entities/call_record_with_contact.dart';
 import 'entities/contact.dart';
 import 'repositories/contact.dart';
 
 class CallRecordContactPopulator {
-  final _contactsRepository = dependencyLocator<ContactRepository>();
+  final ContactRepository _contactsRepository;
+
+  const CallRecordContactPopulator(this._contactsRepository);
 
   Future<List<CallRecordWithContact>> populate(
     List<CallRecord> callRecords,

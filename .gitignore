@@ -42,6 +42,7 @@ lib/generated_plugin_registrant.dart
 *.g.dart
 *.freezed.dart
 *.chopper.dart
+*.mocks.dart
 *.i18n.dart
 lib/app/util/pigeon.dart
 ios/Runner/pigeon.h
