@@ -56,7 +56,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
         actions: [
           TextButton(
             style: TextButton.styleFrom(
-              primary: context.brand.theme.colors.primary,
+              foregroundColor: context.brand.theme.colors.primary,
             ),
             onPressed: () => _sendFeedback(
               buildContext,
@@ -69,7 +69,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
           ),
           TextButton(
             style: TextButton.styleFrom(
-              primary: context.brand.theme.colors.primary,
+              foregroundColor: context.brand.theme.colors.primary,
             ),
             onPressed: () => _sendFeedback(
               buildContext,

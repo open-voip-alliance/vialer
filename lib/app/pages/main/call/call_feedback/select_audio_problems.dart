@@ -55,7 +55,7 @@ class _SelectAudioProblemsState extends State<SelectAudioProblems> {
             context.msg.main.call.feedback.audioProblems.done.toUpperCase(),
           ),
           style: TextButton.styleFrom(
-            primary: context.brand.theme.colors.raisedColoredButtonText,
+            foregroundColor: context.brand.theme.colors.raisedColoredButtonText,
           ),
         )
       ],

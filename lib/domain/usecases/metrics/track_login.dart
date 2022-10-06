@@ -2,7 +2,6 @@ import 'dart:async';
 
 import '../../../../domain/entities/permission.dart';
 import '../../../dependency_locator.dart';
-import '../../entities/permission.dart';
 import '../../entities/permission_status.dart';
 import '../../repositories/metrics.dart';
 import '../../use_case.dart';

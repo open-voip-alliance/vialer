@@ -47,7 +47,8 @@ class _WrittenFeedbackState extends State<WrittenFeedback> {
               context.msg.main.call.feedback.written.dismiss.toUpperCase(),
             ),
             style: TextButton.styleFrom(
-              primary: context.brand.theme.colors.raisedColoredButtonText,
+              foregroundColor:
+                  context.brand.theme.colors.raisedColoredButtonText,
             ),
           ),
           TextButton(
@@ -56,7 +57,8 @@ class _WrittenFeedbackState extends State<WrittenFeedback> {
               context.msg.main.call.feedback.written.button.toUpperCase(),
             ),
             style: TextButton.styleFrom(
-              primary: context.brand.theme.colors.raisedColoredButtonText,
+              foregroundColor:
+                  context.brand.theme.colors.raisedColoredButtonText,
             ),
           ),
         ],
