@@ -32,6 +32,7 @@ import 'domain/repositories/services/middleware.dart';
 import 'domain/repositories/services/voipgrid.dart';
 import 'domain/repositories/storage.dart';
 import 'domain/repositories/user_permissions.dart';
+import 'domain/repositories/voicemail_repository.dart';
 import 'domain/repositories/voip.dart';
 import 'domain/repositories/voip_config.dart';
 
@@ -107,6 +108,11 @@ Future<void> initializeDependencies({bool ui = true}) async {
     )
     ..registerSingleton<UserPermissionsRepository>(
       UserPermissionsRepository(
+        dependencyLocator<VoipgridService>(),
+      ),
+    )
+    ..registerSingleton<VoicemailRepository>(
+      VoicemailRepository(
         dependencyLocator<VoipgridService>(),
       ),
     )

@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
+import 'voicemail.dart';
 
 part 'client.g.dart';
 
@@ -16,12 +17,15 @@ class Client extends Equatable {
   /// the logged-in user belongs to.
   final Iterable<String> outgoingNumbers;
 
+  final Iterable<VoicemailAccount> voicemailAccounts;
+
   const Client({
     required this.id,
     required this.uuid,
     required this.name,
     required this.url,
     this.outgoingNumbers = const [],
+    this.voicemailAccounts = const [],
   });
 
   @override
@@ -33,6 +37,7 @@ class Client extends Equatable {
     String? name,
     Uri? url,
     Iterable<String>? outgoingNumbers,
+    Iterable<VoicemailAccount>? voicemailAccounts,
   }) {
     return Client(
       id: id ?? this.id,
@@ -40,6 +45,7 @@ class Client extends Equatable {
       name: name ?? this.name,
       url: url ?? this.url,
       outgoingNumbers: outgoingNumbers ?? this.outgoingNumbers,
+      voicemailAccounts: voicemailAccounts ?? this.voicemailAccounts,
     );
   }
 

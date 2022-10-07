@@ -3,6 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import '../entities/exceptions/temporary_redirect.dart';
 import '../entities/temporary_redirect.dart';
 import '../entities/user.dart';
+import '../entities/voicemail.dart';
 import 'services/business_availability.dart';
 
 part 'business_availability_repository.freezed.dart';
@@ -14,15 +15,12 @@ class BusinessAvailabilityRepository {
   BusinessAvailabilityRepository(this._service);
 
   Map<String, dynamic> _prepareRequestData(
-      TemporaryRedirect temporaryRedirect) {
-    final end = temporaryRedirect.endsAt.toString();
-    final destination = temporaryRedirect.destination;
-
-    return {
-      'end': end,
-      'destination': destination,
-    };
-  }
+    TemporaryRedirect temporaryRedirect,
+  ) =>
+      {
+        'end': temporaryRedirect.endsAt.toString(),
+        'destination': temporaryRedirect.destination,
+      };
 
   Future<TemporaryRedirect?> getCurrentTemporaryRedirect({
     required User user,
@@ -42,9 +40,11 @@ class BusinessAvailabilityRepository {
     //TODO: Replace the dummy data below with real data
     //TODO: from the list we will be storing locally
     final destination = const TemporaryRedirectDestination.voicemail(
-      'Example Voicemail Id',
-      'Example Voicemail Name',
-      'Example Voicemail Details',
+      VoicemailAccount(
+        id: 'Example Voicemail Id',
+        name: 'Example Voicemail Name',
+        description: 'Example Voicemail Details',
+      ),
     );
 
     final endsAt = DateTime.tryParse(
@@ -99,8 +99,10 @@ class BusinessAvailabilityRepository {
     required User user,
     required TemporaryRedirect temporaryRedirect,
   }) async {
-    final response =
-        await _service.deleteTemporaryRedirect(user.uuid, temporaryRedirect.id);
+    final response = await _service.deleteTemporaryRedirect(
+      user.uuid,
+      temporaryRedirect.id,
+    );
 
     if (!response.isSuccessful) {
       throw NoTemporaryRedirectSetupException();
@@ -113,7 +115,7 @@ class _TemporaryRedirectResponse with _$_TemporaryRedirectResponse {
   const factory _TemporaryRedirectResponse({
     required String id,
     required String end,
-    @JsonKey(name: 'destination') required Map<String, dynamic> destinations,
+    required Map<String, dynamic> destinations,
   }) = __TemporaryRedirectResponse;
 
   factory _TemporaryRedirectResponse.fromJson(Map<String, Object?> json) =>
