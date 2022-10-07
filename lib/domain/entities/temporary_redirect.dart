@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'voicemail.dart';
 
 part 'temporary_redirect.freezed.dart';
 
@@ -14,8 +15,6 @@ class TemporaryRedirect with _$TemporaryRedirect {
 @freezed
 class TemporaryRedirectDestination with _$TemporaryRedirectDestination {
   const factory TemporaryRedirectDestination.voicemail(
-    String id,
-    String name,
-    String description,
+    VoicemailAccount voicemailAccount,
   ) = Voicemail;
 }

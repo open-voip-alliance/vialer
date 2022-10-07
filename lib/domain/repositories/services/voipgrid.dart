@@ -131,4 +131,11 @@ abstract class VoipgridService extends ChopperService {
     @Path() String voipAccountId,
     @Body() Map<String, dynamic> data,
   );
+
+  @Get(path: 'v2/clients/{clientId}/voicemails')
+  Future<Response> getVoicemailAccounts(
+    @Path() String clientId, {
+    @Query() int page = 1,
+    @Query('per_page') int perPage = 500,
+  });
 }

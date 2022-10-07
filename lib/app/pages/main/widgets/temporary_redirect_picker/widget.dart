@@ -44,7 +44,7 @@ class TemporaryRedirectPicker extends StatelessWidget {
                             .msg.main.temporaryRedirect.explanation.start,
                       ),
                       TextSpan(
-                        text: state.currentDestination.name,
+                        text: state.currentDestination.voicemailAccount.name,
                         style: const TextStyle(
                           fontStyle: FontStyle.italic,
                         ),
@@ -68,7 +68,7 @@ class TemporaryRedirectPicker extends StatelessWidget {
                     (dest) {
                       return DropdownMenuItem<TemporaryRedirectDestination>(
                         value: dest,
-                        child: Text(dest.name),
+                        child: Text(dest.voicemailAccount.name),
                       );
                     },
                   ).toList(),

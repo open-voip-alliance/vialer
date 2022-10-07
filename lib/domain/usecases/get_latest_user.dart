@@ -13,6 +13,7 @@ import '../repositories/destination.dart';
 import '../repositories/outgoing_numbers.dart';
 import '../repositories/storage.dart';
 import '../repositories/user_permissions.dart';
+import '../repositories/voicemail_repository.dart';
 import '../use_case.dart';
 import 'client_calls/purge_local_call_records.dart';
 
@@ -24,6 +25,7 @@ class GetLatestUserUseCase extends UseCase with Loggable {
       dependencyLocator<OutgoingNumbersRepository>();
   final _userPermissionsRepository =
       dependencyLocator<UserPermissionsRepository>();
+  final _voicemailRepository = dependencyLocator<VoicemailRepository>();
 
   final _purgeLocalCallRecords = PurgeLocalCallRecordsUseCase();
 
@@ -49,6 +51,7 @@ class GetLatestUserUseCase extends UseCase with Loggable {
     user = await _getRemoteSettings(user);
     user = await _getRemotePermissions(user);
     user = await _getRemoteClientOutgoingNumbers(user);
+    user = await _getClientVoicemailAccounts(user);
 
     // User should have a value for all settings.
     assert(
@@ -153,6 +156,19 @@ class GetLatestUserUseCase extends UseCase with Loggable {
       client: user.client?.copyWith(
         outgoingNumbers: await _outgoingNumbersRepository
             .getOutgoingNumbersAvailableToClient(user: user),
+      ),
+    );
+  }
+
+  /// Retrieving client outgoing numbers and handling its possible side effects.
+  Future<User> _getClientVoicemailAccounts(User user) async {
+    if (user.client == null) return user;
+
+    return user.copyWith(
+      client: user.client?.copyWith(
+        voicemailAccounts: await _voicemailRepository.getVoicemailAccounts(
+          user: user,
+        ),
       ),
     );
   }

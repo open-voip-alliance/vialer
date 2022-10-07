@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../domain/entities/temporary_redirect.dart';
+import '../../../../../domain/entities/voicemail.dart';
 import 'state.dart';
 
 export 'state.dart';
@@ -20,21 +21,27 @@ class TemporaryRedirectPickerCubit extends Cubit<TemporaryRedirectPickerState> {
     // in the constructor and remove the
     // LoadingDestinations state class.
     const current = TemporaryRedirectDestination.voicemail(
-      '1',
-      'Voicemail One',
-      'The first voicemail',
+      VoicemailAccount(
+        id: '1',
+        name: 'Voicemail One',
+        description: 'The first voicemail',
+      ),
     );
     const destinations = <TemporaryRedirectDestination>[
       current,
       TemporaryRedirectDestination.voicemail(
-        '2',
-        'Voicemail Two',
-        'The second voicemail',
+        VoicemailAccount(
+          id: '2',
+          name: 'Voicemail Two',
+          description: 'The second voicemail',
+        ),
       ),
       TemporaryRedirectDestination.voicemail(
-        '3',
-        'Voicemail Three',
-        'The third voicemail',
+        VoicemailAccount(
+          id: '3',
+          name: 'Voicemail Three',
+          description: 'The third voicemail',
+        ),
       ),
     ];
     emit(const LoadedDestinations(current, destinations));
