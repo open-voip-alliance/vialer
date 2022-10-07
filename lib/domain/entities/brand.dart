@@ -15,6 +15,7 @@ class Brand extends Equatable {
   final Uri voipgridUrl;
   final Uri encryptedSipUrl;
   final Uri unencryptedSipUrl;
+  final Uri businessAvailabilityUrl;
 
   const Brand({
     required this.identifier,
@@ -25,6 +26,7 @@ class Brand extends Equatable {
     required this.voipgridUrl,
     required this.encryptedSipUrl,
     required this.unencryptedSipUrl,
+    required this.businessAvailabilityUrl,
   });
 
   @override
@@ -37,6 +39,7 @@ class Brand extends Equatable {
         voipgridUrl,
         encryptedSipUrl,
         unencryptedSipUrl,
+        businessAvailabilityUrl,
       ];
 
   bool get isVialer => identifier == 'vialer';
@@ -62,7 +65,8 @@ class Brand extends Equatable {
       'middlewareUrl: $middlewareUrl, '
       'voipgridUrl: $voipgridUrl, '
       'encryptedSipUrl: $encryptedSipUrl, '
-      'unencryptedSipUrl: $unencryptedSipUrl)';
+      'unencryptedSipUrl: $unencryptedSipUrl, '
+      'businessAvailabilityUrl: $businessAvailabilityUrl)';
 }
 
 extension GetBrandValue on Brand {
