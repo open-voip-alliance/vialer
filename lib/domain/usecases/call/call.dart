@@ -22,19 +22,24 @@ class CallUseCase extends UseCase {
     required String destination,
     required bool useVoip,
   }) async {
-    if (useVoip) {
-      await _voipRepository.call(destination);
-    } else {
-      final user = _getUser();
-      final regionNumber = await _getCallThroughRegionNumber(
-        destination: destination,
-      );
+    final numberToCall = destination.normalizedForCalling;
 
-      await _callThroughRepository(destination, regionNumber, user: user);
+    if (useVoip) {
+      await _voipRepository.call(numberToCall);
+    } else {
+      await _callThroughRepository(
+        numberToCall,
+        await _getCallThroughRegionNumber(destination: destination),
+        user: _getUser(),
+      );
 
       _clearCallThroughRegionNumber();
     }
 
     _storageRepository.lastDialedNumber = destination;
   }
+}
+
+extension on String {
+  String get normalizedForCalling => replaceAll(RegExp('[-()]'), '');
 }
