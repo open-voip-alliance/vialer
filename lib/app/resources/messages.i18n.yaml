@@ -405,6 +405,15 @@ main:
       title: "Thank you for your feedback!"
       content: "We'll use it to make the app even better."
 
+  temporaryRedirect:
+    explanation:
+      start: "All incoming calls to all numbers go straight to voicemail "
+      end: " until the end of the day."
+    dropdownTitle: "Choose voicemail"
+    actions:
+      startRedirect: "Start redirect"
+      cancel: "Cancel"
+
   update:
     readyToInstall:
       title: "Update downloaded"

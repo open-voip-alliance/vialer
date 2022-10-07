@@ -18,6 +18,7 @@ import '../../../../../domain/entities/web_page.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
 import '../../../../util/conditional_capitalization.dart';
+import '../../../../widgets/stylized_dropdown.dart';
 import '../../../onboarding/widgets/stylized_text_field.dart';
 import '../../../web_view/page.dart';
 import '../../widgets/stylized_switch.dart';
@@ -738,34 +739,23 @@ class _MultipleChoiceSettingValue<T> extends StatelessWidget {
   final EdgeInsets padding;
 
   const _MultipleChoiceSettingValue({
-    Key? key,
+    super.key,
     required this.value,
     required this.items,
     this.isExpanded = false,
     required this.onChanged,
     EdgeInsets? padding,
-  })  : padding = padding ?? const EdgeInsets.only(right: 16),
-        super(key: key);
+  }) : padding = padding ?? const EdgeInsets.only(right: 16);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: padding,
-      child: InputDecorator(
-        decoration: InputDecoration(
-          border:
-              context.isAndroid ? const OutlineInputBorder() : InputBorder.none,
-        ),
-        child: DropdownButtonHideUnderline(
-          child: DropdownButton<T>(
-            value:
-                items.map((item) => item.value).contains(value) ? value : null,
-            items: items,
-            isExpanded: isExpanded,
-            onChanged: (value) => onChanged(value!),
-            isDense: true,
-          ),
-        ),
+      child: StylizedDropdown<T>(
+        value: items.map((item) => item.value).contains(value) ? value : null,
+        items: items,
+        isExpanded: isExpanded,
+        onChanged: (value) => onChanged(value!),
       ),
     );
   }

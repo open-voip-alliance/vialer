@@ -405,6 +405,15 @@ main:
       title: "Bedankt voor je feedback!"
       content: "We zullen het gebruiken om de app nog beter te maken."
 
+  temporaryRedirect:
+    explanation:
+      start: "Alle inkomende oproepen naar alle nummers gaan rechtstreeks naar voicemail "
+      end: " tot aan het einde van de dag."
+    dropdownTitle: "Kies voicemail"
+    actions:
+      startRedirect: "Start omleiding"
+      cancel: "Annuleren"
+
   update:
     readyToInstall:
       title: "Update is gedownload"
