@@ -59,6 +59,7 @@
             android:excludeFromRecents="true"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTask"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoActionBar"/>
 
         <!-- Don't delete the meta-data below.
