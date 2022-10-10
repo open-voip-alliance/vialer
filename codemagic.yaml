@@ -699,8 +699,8 @@ workflows:
     publishing: *publish_for_internal_preview
 
   # Generate production .aab/.ipa files, these are for manually uploading.
-  proudction-artifacts-vialer:
-    name: Generate Vialer production builds without publishing
+  production-artifacts-vialer:
+    name: Generate Vialer production builds for manual upload
     <<: *config
     environment:
       groups:
