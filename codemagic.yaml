@@ -700,7 +700,7 @@ workflows:
 
   # Generate production .aab/.ipa files, these are for manually uploading.
   production-artifacts-vialer:
-    name: Generate Vialer production builds for manual upload
+    name: Generate Vialer production artifacts for manual upload
     <<: *config
     environment:
       groups:
