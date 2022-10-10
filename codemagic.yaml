@@ -705,17 +705,15 @@ workflows:
     environment:
       groups:
         - configuration
-        - diagnostics
+        - production_diagnostics
         - vialer_android_firebase
         - vialer_upload_keystore_credentials
         - vialer_playstore_credentials
         - vialer_ios_appstore_credentials
       <<: *config_environment
       vars:
+        <<: *release_env_vars
         <<: *brand_config_vialer_env_vars
-        IOS_SIGNING_TYPE: "IOS_APP_STORE"
-        ENABLE_IOS_SANDBOX_PUSH_NOTIFICATIONS: "false"
-        FINALIZE_SENTRY_RELEASE: "true"
     artifacts: *defaults_artifacts
     scripts:
       - *set_up_env_file
