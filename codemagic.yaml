@@ -697,3 +697,34 @@ workflows:
       - *build_ipa
       - *release_to_sentry
     publishing: *publish_for_internal_preview
+
+  # Generate production .aab/.ipa files, these are for manually uploading.
+  proudction-artifacts-vialer:
+    name: Generate Vialer production builds without publishing
+    <<: *config
+    environment:
+      groups:
+        - configuration
+        - diagnostics
+        - vialer_android_firebase
+        - vialer_upload_keystore_credentials
+        - vialer_playstore_credentials
+        - vialer_ios_appstore_credentials
+      <<: *config_environment
+      vars:
+        <<: *brand_config_vialer_env_vars
+        IOS_SIGNING_TYPE: "IOS_APP_STORE"
+        ENABLE_IOS_SANDBOX_PUSH_NOTIFICATIONS: "false"
+        FINALIZE_SENTRY_RELEASE: "true"
+    artifacts: *defaults_artifacts
+    scripts:
+      - *set_up_env_file
+      - *set_version_string
+      - *flutter_pub_get
+      - *analyze
+      - *prepare_release_notes_from_files
+      - *flutter_test
+      - *build_aab
+      #- *update_ios_signing_for_current_brand
+      #- *build_ipa
+    publishing: {}
