@@ -720,7 +720,6 @@ workflows:
       - *set_version_string
       - *flutter_pub_get
       - *analyze
-      - *prepare_release_notes_from_files
       - *flutter_test
       - *build_aab
       #- *update_ios_signing_for_current_brand
