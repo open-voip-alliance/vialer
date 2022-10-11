@@ -62,7 +62,7 @@ class BusinessAvailabilityRepository {
     );
   }
 
-  Future<void> createCurrentTemporaryRedirect({
+  Future<void> createTemporaryRedirect({
     required User user,
     required TemporaryRedirect temporaryRedirect,
   }) async {
@@ -95,7 +95,7 @@ class BusinessAvailabilityRepository {
     }
   }
 
-  Future<void> cancelCurrentTemporaryRedirect({
+  Future<void> cancelTemporaryRedirect({
     required User user,
     required TemporaryRedirect temporaryRedirect,
   }) async {

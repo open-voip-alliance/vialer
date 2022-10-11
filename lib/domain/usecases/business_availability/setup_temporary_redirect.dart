@@ -17,7 +17,7 @@ class SetupTemporaryRedirect extends UseCase {
   }) async {
     final endingAt = _endingAt;
 
-    _businessAvailability.createCurrentTemporaryRedirect(
+    _businessAvailability.createTemporaryRedirect(
       user: _getUser(),
       temporaryRedirect: TemporaryRedirect(
         endsAt: endingAt,
