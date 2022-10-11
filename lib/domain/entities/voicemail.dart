@@ -6,7 +6,7 @@ part 'voicemail.g.dart';
 @freezed
 class VoicemailAccount with _$VoicemailAccount {
   const factory VoicemailAccount({
-    @JsonKey(fromJson: _intIdToString) required String id,
+    @JsonKey(fromJson: _handleIntOrStringId) required String id,
     required String name,
     required String description,
   }) = _VoicemailAccount;
@@ -15,4 +15,8 @@ class VoicemailAccount with _$VoicemailAccount {
       _$VoicemailAccountFromJson(json);
 }
 
-String _intIdToString(int id) => id.toString();
+String _handleIntOrStringId(dynamic id) {
+  if (id is String) return id;
+
+  return (id as int).toString();
+}

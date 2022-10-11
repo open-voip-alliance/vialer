@@ -6,7 +6,7 @@ part 'temporary_redirect.freezed.dart';
 @freezed
 class TemporaryRedirect with _$TemporaryRedirect {
   const factory TemporaryRedirect({
-    required String id,
+    String? id,
     required DateTime endsAt,
     required TemporaryRedirectDestination destination,
   }) = _TemporaryRedirect;

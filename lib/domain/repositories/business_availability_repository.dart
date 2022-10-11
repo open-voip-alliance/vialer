@@ -86,7 +86,7 @@ class BusinessAvailabilityRepository {
 
     final response = await _service.updateTemporaryRedirect(
       user.uuid,
-      temporaryRedirect.id,
+      temporaryRedirect.id.toString(),
       requestData,
     );
 
@@ -101,7 +101,7 @@ class BusinessAvailabilityRepository {
   }) async {
     final response = await _service.deleteTemporaryRedirect(
       user.uuid,
-      temporaryRedirect.id,
+      temporaryRedirect.id.toString(),
     );
 
     if (!response.isSuccessful) {
