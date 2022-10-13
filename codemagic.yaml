@@ -4,7 +4,11 @@ custom: # Custom properties to make workflows cleaner
       name: Analyzing the codebase
       script: |
         ln -s "${FLUTTER_ROOT}/bin/dart" /usr/local/bin/dart
-        dart format -o none --fix --set-exit-if-changed lib/
+        dart format --fix --set-exit-if-changed $(find lib -name "*.dart" -not \( -name "pigeon.dart" \) )
+        if [ $? -eq 1 ]
+        then
+            exit 1
+        fi
         dart analyze . --fatal-infos --fatal-warnings
     - &set_version_string
       name: Updating versioning information for this build
@@ -82,6 +86,8 @@ custom: # Custom properties to make workflows cleaner
     - &flutter_pub_get
       name: Installing flutter dependencies and generate code
       script: |
+        eval `ssh-agent -s`
+        echo "$FONT_AWESOME_KEY" | tr -d '\r' | ssh-add -
         flutter packages pub get
         flutter pub run build_runner build
         flutter pub run pigeon --input utils/pigeon/scheme.dart --dart_out lib/app/util/pigeon.dart --objc_header_out ios/Runner/pigeon.h --objc_source_out ios/Runner/pigeon.m --java_out android/app/src/main/java/com/voipgrid/vialer/Pigeon.java --java_package com.voipgrid.vialer
@@ -272,9 +278,9 @@ custom: # Custom properties to make workflows cleaner
     max_build_duration: 60
     instance_type: mac_pro
     environment: &config_environment
-      flutter: 3.0.1
+      flutter: 3.3.4
       xcode: latest
-      cocoapods: 1.11.2
+      cocoapods: 1.11.3
   brand_config: # Specific configuration that should be applied to a workflow when building for this brand
     vialer_env_vars: &brand_config_vialer_env_vars
       BRAND: vialer
@@ -315,6 +321,8 @@ custom: # Custom properties to make workflows cleaner
           include: false
         - pattern: '*alpha*'
           include: false
+        - pattern: '*internal*'
+          include: false
 
     beta_trigger: &beta_was_tagged
       events:
@@ -328,6 +336,23 @@ custom: # Custom properties to make workflows cleaner
           source: false
       tag_patterns:
         - pattern: '*beta*'
+          include: true
+
+    # We expect internal preview builds to be tagged as (e.g.) [v7.8.0-internal-preview.01],
+    # however we also want to release all builds to this internal preview testing so users
+    # can continue to stay enrolled and get all releases.
+    internal_preview_trigger: &internal_preview_was_tagged
+      events:
+        - tag
+      branch_patterns:
+        - pattern: main
+          include: true
+          source: true
+        - pattern: main
+          include: true
+          source: false
+      tag_patterns:
+        - pattern: '*'
           include: true
 
     publish_for_production: &publish_for_production
@@ -358,6 +383,19 @@ custom: # Custom properties to make workflows cleaner
         credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
         track: beta
         in_app_update_priority: 3
+
+    publish_for_internal_alpha: &publish_for_internal_preview
+      app_store_connect:
+        api_key: $APP_STORE_CONNECT_PRIVATE_KEY
+        key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
+        issuer_id: $APP_STORE_CONNECT_ISSUER_ID
+        submit_to_testflight: true
+        beta_groups:
+          - Internal Preview
+      google_play:
+        credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
+        track: internal
+        in_app_update_priority: 5
 
 workflows:
   main: &main_workflow
@@ -401,6 +439,8 @@ workflows:
   release-candidate:
     name: Release Candidate
     <<: *main_workflow
+    triggering:
+      events: []
     publishing:
       slack:
         channel: '#vialer_mobile_release_candidates'
@@ -627,3 +667,61 @@ workflows:
       vars:
         <<: *release_env_vars
         <<: *brand_config_annabel_env_vars
+
+  internal-preview-vialer:
+    name: Internal Preview (Vialer)
+    <<: *config
+    environment:
+      groups:
+        - configuration
+        - diagnostics
+        - vialer_android_firebase
+        - vialer_upload_keystore_credentials
+        - vialer_playstore_credentials
+        - vialer_ios_appstore_credentials
+      <<: *config_environment
+      vars:
+        <<: *brand_config_vialer_env_vars
+        IOS_SIGNING_TYPE: "IOS_APP_STORE"
+        ENABLE_IOS_SANDBOX_PUSH_NOTIFICATIONS: "false"
+        FINALIZE_SENTRY_RELEASE: "true"
+    artifacts: *defaults_artifacts
+    triggering: *internal_preview_was_tagged
+    scripts:
+      - *set_up_env_file
+      - *set_version_string
+      - *flutter_pub_get
+      - *analyze
+      - *build_aab
+      - *update_ios_signing_for_current_brand
+      - *build_ipa
+      - *release_to_sentry
+    publishing: *publish_for_internal_preview
+
+  # Generate production .aab/.ipa files, these are for manually uploading.
+  production-artifacts-vialer:
+    name: Generate Vialer production artifacts for manual upload
+    <<: *config
+    environment:
+      groups:
+        - configuration
+        - production_diagnostics
+        - vialer_android_firebase
+        - vialer_upload_keystore_credentials
+        - vialer_playstore_credentials
+        - vialer_ios_appstore_credentials
+      <<: *config_environment
+      vars:
+        <<: *release_env_vars
+        <<: *brand_config_vialer_env_vars
+    artifacts: *defaults_artifacts
+    scripts:
+      - *set_up_env_file
+      - *set_version_string
+      - *flutter_pub_get
+      - *analyze
+      - *flutter_test
+      - *build_aab
+      #- *update_ios_signing_for_current_brand
+      #- *build_ipa
+    publishing: {}
