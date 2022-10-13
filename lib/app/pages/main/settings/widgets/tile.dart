@@ -3,9 +3,9 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:provider/provider.dart';
 
 import '../../../../../domain/entities/destination.dart';
 import '../../../../../domain/entities/fixed_destination.dart';
@@ -18,10 +18,12 @@ import '../../../../../domain/entities/web_page.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
 import '../../../../util/conditional_capitalization.dart';
+import '../../../../widgets/stylized_button.dart';
 import '../../../../widgets/stylized_dropdown.dart';
 import '../../../onboarding/widgets/stylized_text_field.dart';
 import '../../../web_view/page.dart';
 import '../../widgets/stylized_switch.dart';
+import '../../widgets/temporary_redirect_picker/widget.dart';
 import '../cubit.dart';
 import 'availability_tile.dart';
 import 'link_tile.dart';
@@ -368,6 +370,67 @@ class SettingTile extends StatelessWidget {
     );
   }
 
+  static Widget temporaryRedirect() {
+    // TODO: Use own cubit/riverpod instead of using SettingsCubit for state.
+    return BlocBuilder<SettingsCubit, SettingsState>(
+      builder: (context, state) {
+        final cubit = context.read<SettingsCubit>();
+
+        return SettingTile(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 4),
+              if (state.hasTemporaryRedirect) ...[
+                StylizedButton.raised(
+                  onPressed: cubit.stopTemporaryRedirect,
+                  colored: true,
+                  margin: EdgeInsets.zero,
+                  child: Text(
+                    context.msg.main.settings.list.temporaryRedirect
+                        .stopRedirect.label
+                        .toUpperCaseIfAndroid(context),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  context.msg.main.settings.list.temporaryRedirect.stopRedirect
+                      .description,
+                ),
+                const SizedBox(height: 16),
+              ],
+              StylizedButton.outline(
+                onPressed: () => Navigator.push(
+                  context,
+                  // TODO: Use proper TemporaryRedirectPickerPage
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return const Material(
+                        child: TemporaryRedirectPicker(),
+                      );
+                    },
+                  ),
+                ),
+                colored: true,
+                margin: EdgeInsets.zero,
+                child: Text(
+                  context.msg.main.settings.list.temporaryRedirect
+                      .changeRedirect.label
+                      .toUpperCaseIfAndroid(context),
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                context.msg.main.settings.list.temporaryRedirect.changeRedirect
+                    .description,
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   static Widget useMobileNumberAsFallback(Settings settings) {
     final mobileNumber = settings.get(CallSetting.mobileNumber);
 
@@ -439,7 +502,7 @@ class SettingTile extends StatelessWidget {
                     ],
                   ),
                 ),
-              if (childFillWidth) child,
+              if (childFillWidth || label == null) child,
             ],
           ),
         ),

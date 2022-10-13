@@ -24,7 +24,9 @@ class TemporaryRedirectPicker extends StatelessWidget {
           TemporaryRedirectPickerState>(
         builder: (context, state) {
           if (state is LoadingDestinations) {
-            return const CircularProgressIndicator();
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
           }
 
           final cubit = context.watch<TemporaryRedirectPickerCubit>();

@@ -42,7 +42,7 @@ abstract class BusinessAvailabilityService extends ChopperService {
 
   @Get(path: '{client_uuid}/temporary-redirect')
   Future<Response> getTemporaryRedirect({
-    @Path() String clientUuid,
+    @Path() required String clientUuid,
   });
 
   @Post(path: '{client_uuid}/temporary-redirect')

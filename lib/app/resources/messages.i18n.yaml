@@ -339,6 +339,15 @@ main:
           title: "Statistics"
         calls:
           title: "Calls"
+      temporaryRedirect:
+        title: "Temporary redirect"
+        stopRedirect:
+          label: "Stop redirect"
+          description: "All your calls will follow your dial plan(s) and opening hours again."
+        changeRedirect:
+          label: "Change redirect"
+          description: "You can change the settings without interrupting the redirect."
+
     troubleshootingProgressPopUp(int remainingTaps): >-
       You can access troubleshooting settings after $remainingTaps more taps on your screen.
     troubleshootingUnlockedPopUp: "You now have access to troubleshooting settings."
