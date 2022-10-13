@@ -463,15 +463,26 @@ class SettingTile extends StatelessWidget {
   }
 
   static Widget outgoingNumber(User user) {
-    const key = CallSetting.outgoingNumber;
-    final value = user.settings.get(key);
-    final availableOutgoingNumbers = user.client?.outgoingNumbers ?? const [];
+    const outgoingNumberKey = CallSetting.outgoingNumber;
+    const recentOutgoingNumbersKey = CallSetting.recentOutgoingNumbers;
+    final outgoingNumber = user.settings.get(outgoingNumberKey);
+    final recentOutgoingNumbers = user.settings.get(recentOutgoingNumbersKey);
+    var availableOutgoingNumbers =
+        user.client?.outgoingNumbers ?? const [];
+    // final recentOutgoingNumbers = const <String>[];
+    // final recentOutgoingNumbers =
+    //     user.client?.recentOutgoingNumbers ?? const <String>[];
+
+    // No duplicates allowed in a dropdown, so remove the recent outgoing
+    // numbers from the available numbers.
+    availableOutgoingNumbers = List.from(availableOutgoingNumbers
+        .where((number) => !recentOutgoingNumbers.contains(number)));
 
     return Builder(
       builder: (context) {
         final unlockedWidget = _StringSettingValue(
           user.settings,
-          key,
+          outgoingNumberKey,
           value: (number) => number is UnsuppressedOutgoingNumber
               ? number.value
               : context
@@ -489,15 +500,24 @@ class SettingTile extends StatelessWidget {
               ? _EditableSettingField(
                   unlocked: Expanded(
                     child: _MultipleChoiceSettingValue<OutgoingNumber>(
-                      value: value,
+                      value: outgoingNumber,
                       padding: const EdgeInsets.only(
                         bottom: 8,
                         right: 8,
                       ),
                       onChanged: (number) =>
-                          defaultOnChanged(context, key, number),
+                          defaultOnChanged(context, outgoingNumberKey, number),
                       isExpanded: false,
                       items: [
+                        ...recentOutgoingNumbers.map(
+                          (number) => DropdownMenuItem<OutgoingNumber>(
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Text(number),
+                            ),
+                            value: OutgoingNumber(number),
+                          ),
+                        ),
                         DropdownMenuItem<OutgoingNumber>(
                           child: FittedBox(
                             fit: BoxFit.scaleDown,

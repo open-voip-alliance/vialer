@@ -212,6 +212,7 @@ class StorageRepository {
     final settings = <SettingKey, Object>{};
 
     Iterable<String>? clientOutgoingNumbers;
+    Iterable<String>? recentClientOutgoingNumbers;
     UserPermissions? permissions;
 
     for (final j in settingsJson) {
@@ -264,6 +265,10 @@ class StorageRepository {
           break;
         case 'ClientOutgoingNumbersSetting':
           clientOutgoingNumbers = (value['numbers'] as List<dynamic>).cast();
+          break;
+        case 'RecentClientOutgoingNumbersSetting':
+          settings[CallSetting.recentOutgoingNumbers] =
+              (value['numbers'] as List<dynamic>).cast();
           break;
         case 'VoipgridPermissionsSetting':
           permissions = UserPermissions(

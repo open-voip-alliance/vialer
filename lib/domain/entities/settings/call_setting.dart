@@ -11,6 +11,7 @@ enum CallSetting<T extends Object> with SettingKey<T> {
       OutgoingNumber.fromJson,
     ),
   ),
+  recentOutgoingNumbers<Iterable<String>>(), // TODO: converter?
   mobileNumber<String>(),
   dnd<bool>(),
   usePhoneRingtone<bool>(),
@@ -30,11 +31,12 @@ enum CallSetting<T extends Object> with SettingKey<T> {
 
   const CallSetting([this.valueJsonConverter]);
 
-  static const Map<CallSetting, bool> defaultValues = {
+  static const Map<CallSetting, bool> defaultValues = { // TODO: not bool?
     CallSetting.useVoip: true,
     CallSetting.dnd: false,
     CallSetting.usePhoneRingtone: false,
     CallSetting.useMobileNumberAsFallback: false,
+//    CallSetting.recentOutgoingNumbers: [],
   };
 }
 

@@ -60,6 +60,8 @@ class OutgoingNumbersRepository with Loggable {
 
     final body = response.body;
 
+    if (body == null) return;
+
     for (final number in (body['items'] as List<dynamic>)) {
       yield number as String;
     }
