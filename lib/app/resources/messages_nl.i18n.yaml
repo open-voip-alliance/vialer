@@ -338,6 +338,15 @@ main:
           title: "Statistieken"
         calls:
           title: "Gesprekken"
+      temporaryRedirect:
+        title: "Tijdelijke omleiding"
+        stopRedirect:
+          label: "Omleiding stoppen"
+          description: "Al je oproepen zullen weer je belplan(nen) en openingstijden volgen."
+        changeRedirect:
+          label: "Omleiding aanpassen"
+          description: "Je kan de instellingen aanpassen zonder de omleiding te onderbreken."
+
     troubleshootingProgressPopUp(int remainingTaps): >-
       Nog $remainingTaps keer tikken en de geavanceerde instellingen worden beschikbaar.
     troubleshootingUnlockedPopUp: "Je hebt nu toegang tot de geavanceerde instellingen."
@@ -392,6 +401,7 @@ main:
         Alle inkomende oproepen naar alle nummers gaan rechtstreeks naar de voicemail tot het einde van de dag (23:59).
     actions:
       givePermission: "Geef toestemming"
+      changeRedirect: "Omleiding wijzigen"
 
   survey:
     helpUs:
@@ -415,7 +425,7 @@ main:
       end: " tot aan het einde van de dag."
     dropdownTitle: "Kies voicemail"
     actions:
-      startRedirect: "Start omleiding"
+      startRedirect: "Omleiding starten"
       cancel: "Annuleren"
 
   update:

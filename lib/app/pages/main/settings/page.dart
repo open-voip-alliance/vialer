@@ -134,6 +134,12 @@ class _SettingsPageState extends State<SettingsPage> {
                                 SettingTile.showClientCalls(user),
                               ],
                             ),
+                            // TODO: If has temp redirect permission
+                            SettingTileCategory.temporaryRedirect(
+                              children: [
+                                SettingTile.temporaryRedirect(),
+                              ],
+                            ),
                             SettingTileCategory.portalLinks(
                               children: [
                                 SettingLinkTile.calls(),
