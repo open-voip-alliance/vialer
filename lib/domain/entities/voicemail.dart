@@ -8,7 +8,7 @@ class VoicemailAccount with _$VoicemailAccount {
   const factory VoicemailAccount({
     @JsonKey(fromJson: _handleIntOrStringId) required String id,
     required String name,
-    required String description,
+    required String? description,
   }) = _VoicemailAccount;
 
   factory VoicemailAccount.fromJson(Map<String, dynamic> json) =>
