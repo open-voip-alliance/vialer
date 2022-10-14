@@ -8,6 +8,7 @@ import 'domain/events/event_bus.dart';
 import 'domain/repositories/auth.dart';
 import 'domain/repositories/brand.dart';
 import 'domain/repositories/build_info.dart';
+import 'domain/repositories/business_availability_repository.dart';
 import 'domain/repositories/call_through.dart';
 import 'domain/repositories/connectivity.dart';
 import 'domain/repositories/contact.dart';
@@ -28,6 +29,7 @@ import 'domain/repositories/permission.dart';
 import 'domain/repositories/recent_call.dart';
 import 'domain/repositories/remote_client_calls.dart';
 import 'domain/repositories/server_config.dart';
+import 'domain/repositories/services/business_availability.dart';
 import 'domain/repositories/services/middleware.dart';
 import 'domain/repositories/services/voipgrid.dart';
 import 'domain/repositories/storage.dart';
@@ -150,6 +152,11 @@ Future<void> initializeDependencies({bool ui = true}) async {
       inDebugMode
           ? ConsoleLoggingMetricsRepository()
           : SegmentMetricsRepository(),
+    )
+    ..registerSingleton<BusinessAvailabilityRepository>(
+      BusinessAvailabilityRepository(
+        BusinessAvailabilityService.create(),
+      ),
     );
 
   await dependencyLocator.allReady();
