@@ -1,7 +1,7 @@
 import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../../../domain/entities/contact.dart';
+import '../../../../../../domain/contacts/contact.dart';
 import '../../../util/color.dart';
 
 extension ContactColor on Contact {

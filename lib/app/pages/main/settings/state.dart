@@ -1,10 +1,10 @@
 import 'package:equatable/equatable.dart';
 
-import '../../../../domain/entities/build_info.dart';
-import '../../../../domain/entities/settings/app_setting.dart';
-import '../../../../domain/entities/settings/call_setting.dart';
-import '../../../../domain/entities/settings/settings.dart';
-import '../../../../domain/entities/user.dart';
+import '../../../../domain/user/info/build_info.dart';
+import '../../../../domain/user/settings/app_setting.dart';
+import '../../../../domain/user/settings/call_setting.dart';
+import '../../../../domain/user/settings/settings.dart';
+import '../../../../domain/user/user.dart';
 
 class SettingsState extends Equatable {
   final User user;

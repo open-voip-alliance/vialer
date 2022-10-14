@@ -3,10 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../domain/entities/onboarding/step.dart';
+import '../../../../domain/onboarding/step.dart';
 import '../../../resources/localizations.dart';
 import '../../../util/brand.dart';
-
 import '../cubit.dart';
 import 'cubit.dart';
 

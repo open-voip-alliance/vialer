@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
-import '../../../../domain/entities/survey/question.dart';
-import '../../../../domain/entities/survey/survey.dart';
+import '../../../../domain/feedback/survey/question.dart';
+import '../../../../domain/feedback/survey/survey.dart';
 
 abstract class SurveyState extends Equatable {
   final Survey? survey;

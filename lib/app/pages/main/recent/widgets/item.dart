@@ -6,9 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 
-import '../../../../../domain/entities/call_record.dart';
-import '../../../../../domain/entities/call_record_with_contact.dart';
-import '../../../../../domain/entities/client_call_record.dart';
+import '../../../../../domain/call_records/call_record.dart';
+import '../../../../../domain/call_records/call_record_with_contact.dart';
+import '../../../../../domain/call_records/client/client_call_record.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
 import '../../../../util/contact.dart';

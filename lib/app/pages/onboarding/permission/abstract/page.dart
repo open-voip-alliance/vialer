@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../../domain/entities/permission.dart';
+import '../../../../../domain/user/permissions/permission.dart';
 import '../../cubit.dart';
 import '../../info/page.dart';
 import 'cubit.dart';

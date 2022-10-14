@@ -1,11 +1,11 @@
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
-import 'package:vialer/domain/contact_populator.dart';
-import 'package:vialer/domain/entities/call_record.dart';
-import 'package:vialer/domain/entities/contact.dart';
-import 'package:vialer/domain/entities/item.dart';
-import 'package:vialer/domain/repositories/contact.dart';
+import 'package:vialer/domain/call_records/call_record.dart';
+import 'package:vialer/domain/call_records/item.dart';
+import 'package:vialer/domain/contacts/contact.dart';
+import 'package:vialer/domain/contacts/contact_populator.dart';
+import 'package:vialer/domain/contacts/contact_repository.dart';
 
 @GenerateNiceMocks([MockSpec<ContactRepository>()])
 import 'contact_populator_test.mocks.dart';

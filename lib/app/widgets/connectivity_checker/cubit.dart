@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../domain/connectivity_type.dart';
-import '../../../domain/usecases/get_connectivity_status_stream.dart';
-import '../../../domain/usecases/get_current_connectivity_status.dart';
+import '../../../domain/user/connectivity/connectivity_type.dart';
+import '../../../domain/user/connectivity/get_connectivity_status_stream.dart';
+import '../../../domain/user/connectivity/get_current_connectivity_status.dart';
 import 'state.dart';
 
 export 'state.dart';

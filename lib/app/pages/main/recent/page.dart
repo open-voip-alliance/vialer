@@ -5,10 +5,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../dependency_locator.dart';
-import '../../../../domain/entities/settings/app_setting.dart';
-import '../../../../domain/events/event_bus.dart';
-import '../../../../domain/events/setting_changed.dart';
-import '../../../../domain/usecases/get_latest_logged_in_user.dart';
+import '../../../../domain/event/event_bus.dart';
+import '../../../../domain/user/get_latest_logged_in_user.dart';
+import '../../../../domain/user/settings/app_setting.dart';
+import '../../../../domain/user/settings/setting_changed.dart';
 import '../../../resources/localizations.dart';
 import '../../../resources/theme.dart';
 import '../util/stylized_snack_bar.dart';

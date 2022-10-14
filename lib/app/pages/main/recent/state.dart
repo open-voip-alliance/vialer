@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import '../../../../domain/entities/call_record.dart';
+import '../../../../domain/call_records/call_record.dart';
 
 abstract class RecentCallsState extends Equatable {
   final List<CallRecord> callRecords;

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
-import '../../../domain/entities/onboarding/step.dart';
+import '../../../domain/onboarding/step.dart';
 import '../../routes.dart';
 import '../main/widgets/caller.dart';
 import 'cubit.dart';

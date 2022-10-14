@@ -4,7 +4,7 @@ import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../../../../domain/entities/call_record.dart';
+import '../../../../../domain/call_records/call_record.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
 import '../../../../util/widgets_binding_observer_registrar.dart';

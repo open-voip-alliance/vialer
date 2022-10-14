@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
-import '../../../../../domain/entities/survey/survey.dart';
-import '../../../../../domain/entities/survey/survey_trigger.dart';
+import '../../../../../domain/feedback/survey/survey.dart';
+import '../../../../../domain/feedback/survey/survey_trigger.dart';
 
 abstract class SurveyTriggererState extends Equatable {
   const SurveyTriggererState();

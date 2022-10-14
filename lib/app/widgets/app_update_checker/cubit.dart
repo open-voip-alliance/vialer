@@ -1,13 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../domain/usecases/check_app_updates.dart';
-import '../../../domain/usecases/complete_flexible_update.dart';
-import '../../../domain/usecases/get_build_info.dart';
-import '../../../domain/usecases/get_did_app_update_to_new_version.dart';
 
-import '../../../domain/usecases/get_has_voip_enabled.dart';
-import '../../../domain/usecases/get_has_voip_started.dart';
+import '../../../domain/calling/voip/get_has_voip_enabled.dart';
+import '../../../domain/calling/voip/get_has_voip_started.dart';
+import '../../../domain/in_app_updates/check_app_updates.dart';
+import '../../../domain/in_app_updates/complete_flexible_update.dart';
+import '../../../domain/in_app_updates/get_did_app_update_to_new_version.dart';
+import '../../../domain/user/get_build_info.dart';
 import '../../pages/main/widgets/caller.dart';
 import 'state.dart';
 

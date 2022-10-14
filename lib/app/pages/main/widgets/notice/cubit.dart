@@ -3,11 +3,11 @@ import 'dart:io';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../../domain/entities/permission.dart';
-import '../../../../../domain/entities/permission_status.dart';
-import '../../../../../domain/usecases/get_permission_status.dart';
-import '../../../../../domain/usecases/onboarding/request_permission.dart';
-import '../../../../../domain/usecases/open_settings.dart';
+import '../../../../../domain/onboarding/request_permission.dart';
+import '../../../../../domain/user/get_permission_status.dart';
+import '../../../../../domain/user/permissions/permission.dart';
+import '../../../../../domain/user/permissions/permission_status.dart';
+import '../../../../../domain/user/settings/open_settings.dart';
 import '../../../../util/loggable.dart';
 import '../caller.dart';
 import 'state.dart';
