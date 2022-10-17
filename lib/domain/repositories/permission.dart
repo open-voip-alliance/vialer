@@ -22,7 +22,7 @@ class PermissionRepository {
     domain.Permission permission,
   ) async {
     if (permission == domain.Permission.contacts) {
-      return;
+      return domain.PermissionStatus.granted;
     }
     final mappedPermission = permission.toThirdPartyEntity();
 
