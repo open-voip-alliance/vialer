@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../../../domain/entities/build_info.dart';
 import '../../../../domain/entities/settings/app_setting.dart';
@@ -162,6 +163,14 @@ class _SettingsPageState extends State<SettingsPage> {
                             ),
                             child: Column(
                               children: <Widget>[
+                                ElevatedButton(
+                                  onPressed: () {
+                                    launchUrlString(
+                                      'https://www.voys.nl/app-privacy/',
+                                    );
+                                  },
+                                  child: const Text('Privacy Policy'),
+                                ),
                                 SizedBox(
                                   width: double.infinity,
                                   child: StylizedButton.raised(
