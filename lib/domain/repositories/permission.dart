@@ -10,9 +10,6 @@ class PermissionRepository {
   Future<domain.PermissionStatus> getPermissionStatus(
     domain.Permission permission,
   ) async {
-    if (permission == domain.Permission.contacts) {
-      return domain.PermissionStatus.granted;
-    }
     final phonePermissionStatus = await permission.toThirdPartyEntity().status;
 
     return phonePermissionStatus.toDomainEntity();
@@ -21,9 +18,6 @@ class PermissionRepository {
   Future<domain.PermissionStatus> requestPermission(
     domain.Permission permission,
   ) async {
-    if (permission == domain.Permission.contacts) {
-      return domain.PermissionStatus.granted;
-    }
     final mappedPermission = permission.toThirdPartyEntity();
 
     final status = await mappedPermission.request();

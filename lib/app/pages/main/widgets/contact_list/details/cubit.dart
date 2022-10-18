@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:android_intent/android_intent.dart';
-import 'package:contacts_service/contacts_service.dart';
+//import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -38,10 +38,10 @@ class ContactDetailsCubit extends Cubit<ContactDetailsState> {
 
         await intent.launch();
       } else {
-        try {
-          final _contact = Contact()..identifier = contact.identifier;
-          await ContactsService.openExistingContact(_contact);
-        } on FormOperationException {} // Thrown when native edit is cancelled.
+        // try {
+        //   final _contact = Contact()..identifier = contact.identifier;
+        //   await ContactsService.openExistingContact(_contact);
+        // } on FormOperationException {} // Thrown when native edit is cancelled.
       }
     }
   }
