@@ -5,10 +5,15 @@ part 'colleague.freezed.dart';
 
 @freezed
 class Colleague with _$Colleague {
-  ColleagueContext? get mostRelevantContext => context.firstOrNull;
+  ColleagueContext? get mostRelevantContext => map(
+        (colleague) => colleague.context.firstOrNull,
+        unconnectedVoipAccount: (_) => null,
+      );
 
   const Colleague._();
 
+  /// A Voipgrid user which we fully support, including their current
+  /// availability and context.
   const factory Colleague({
     required String id,
     required String name,
@@ -25,6 +30,15 @@ class Colleague with _$Colleague {
     /// being in a call even if the meeting is more recent.
     required ColleagueDestination destination,
   }) = _Colleague;
+
+  /// A voip account that is not connected to any user, we do not get
+  /// information about their current availability, they only exist for the
+  /// user to be able to see and call them.
+  const factory Colleague.unconnectedVoipAccount({
+    required String id,
+    required String name,
+    required String number,
+  }) = UnconnectedVoipAccount;
 }
 
 /// A single status that represents the availability of the colleague.
