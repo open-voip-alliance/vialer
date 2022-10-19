@@ -1,3 +1,4 @@
+import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
 import '../availability.dart';
@@ -58,12 +59,27 @@ abstract class OutgoingNumber {
 
 class SuppressedOutgoingNumber implements OutgoingNumber {
   const SuppressedOutgoingNumber();
+
+  @override
+  int get hashCode => toString().hashCode;
+
+  @override
+  bool operator ==(Object other) => other is SuppressedOutgoingNumber;
+
+  @override
+  String toString() => OutgoingNumber._suppressed;
 }
 
-class UnsuppressedOutgoingNumber implements OutgoingNumber {
+class UnsuppressedOutgoingNumber extends Equatable implements OutgoingNumber {
   final String value;
 
   const UnsuppressedOutgoingNumber(this.value);
+
+  @override
+  String toString() => value;
+
+  @override
+  List<Object?> get props => [value];
 }
 
 extension OutgoingNumberExt on OutgoingNumber {

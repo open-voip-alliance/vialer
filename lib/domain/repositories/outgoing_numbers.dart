@@ -1,4 +1,5 @@
 import '../../app/util/loggable.dart';
+import '../entities/settings/call_setting.dart';
 import '../entities/user.dart';
 import 'services/voipgrid.dart';
 
@@ -7,7 +8,7 @@ class OutgoingNumbersRepository with Loggable {
 
   OutgoingNumbersRepository(this._service);
 
-  Future<Iterable<String>> getOutgoingNumbersAvailableToClient({
+  Future<Iterable<OutgoingNumber>> getOutgoingNumbersAvailableToClient({
     required User user,
   }) =>
       _fetchAllAvailableNumbers(
@@ -49,7 +50,7 @@ class OutgoingNumbersRepository with Loggable {
 
   /// The results we get from the API are paginated, this will go through each
   /// page and return a stream of numbers.
-  Stream<String> _fetchAllAvailableNumbers({
+  Stream<OutgoingNumber> _fetchAllAvailableNumbers({
     required String clientUuid,
     int page = 1,
   }) async* {
@@ -61,7 +62,7 @@ class OutgoingNumbersRepository with Loggable {
     final body = response.body;
 
     for (final number in (body['items'] as List<dynamic>)) {
-      yield number as String;
+      yield OutgoingNumber(number as String);
     }
 
     final next = body['next'] as String?;
