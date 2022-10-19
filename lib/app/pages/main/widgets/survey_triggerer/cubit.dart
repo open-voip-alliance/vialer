@@ -2,13 +2,13 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../../domain/entities/survey/survey.dart';
-import '../../../../../domain/entities/survey/survey_trigger.dart';
-import '../../../../../domain/usecases/get_app_rating_survey_action_count.dart';
-import '../../../../../domain/usecases/get_app_rating_survey_last_shown_time.dart';
-import '../../../../../domain/usecases/get_logged_in_user.dart';
-import '../../../../../domain/usecases/mark_now_as_app_rating_survey_shown.dart';
-import '../../../../../domain/usecases/reset_app_rating_survey_action_count.dart';
+import '../../../../../domain/feedback/mark_now_as_app_rating_survey_shown.dart';
+import '../../../../../domain/feedback/reset_app_rating_survey_action_count.dart';
+import '../../../../../domain/feedback/survey/get_app_rating_survey_action_count.dart';
+import '../../../../../domain/feedback/survey/get_app_rating_survey_last_shown_time.dart';
+import '../../../../../domain/feedback/survey/survey.dart';
+import '../../../../../domain/feedback/survey/survey_trigger.dart';
+import '../../../../../domain/user/get_logged_in_user.dart';
 import '../../../../util/loggable.dart';
 import '../caller/cubit.dart';
 import 'state.dart';

@@ -8,7 +8,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 import './cubit.dart';
 import './state.dart';
 import './widgets/navigation_controls.dart';
-import '../../../domain/entities/web_page.dart';
+import '../../../domain/voipgrid/web_page.dart';
 import '../../pages/main/widgets/conditional_placeholder.dart';
 import '../../resources/localizations.dart';
 import '../../util/conditional_capitalization.dart';

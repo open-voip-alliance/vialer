@@ -1,10 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../../../domain/entities/settings/app_setting.dart';
-import '../../../../../../domain/entities/settings/call_setting.dart';
-import '../../../../../../domain/usecases/get_call_through_region_number.dart';
-import '../../../../../../domain/usecases/get_logged_in_user.dart';
-import '../../../../../../domain/usecases/settings/change_setting.dart';
+import '../../../../../../domain/calling/call_through/get_call_through_region_number.dart';
+import '../../../../../../domain/user/get_logged_in_user.dart';
+import '../../../../../../domain/user/settings/app_setting.dart';
+import '../../../../../../domain/user/settings/call_setting.dart';
+import '../../../../../../domain/user/settings/change_setting.dart';
 import '../../../../../util/loggable.dart';
 import '../../../widgets/caller.dart';
 import 'state.dart';

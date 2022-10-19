@@ -2,10 +2,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:webview_flutter/platform_interface.dart';
 
-import '../../../domain/entities/exceptions/auto_login.dart';
-import '../../../domain/entities/web_page.dart';
-import '../../../domain/usecases/get_web_page_url.dart';
-import '../../../domain/usecases/metrics/track_web_view.dart';
+import '../../../domain/metrics/track_web_view.dart';
+import '../../../domain/onboarding/auto_login.dart';
+import '../../../domain/voipgrid/get_web_page_url.dart';
+import '../../../domain/voipgrid/web_page.dart';
 import '../../util/loggable.dart';
 import 'state.dart';
 

@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import '../../../../../../domain/entities/country.dart';
+import '../../../../../../domain/onboarding/country.dart';
 
 abstract class CountryFieldState extends Equatable {
   @override

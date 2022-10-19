@@ -1,10 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../domain/entities/exceptions/two_factor_authentication_required.dart';
-import '../../../../domain/entities/login_credentials.dart';
-import '../../../../domain/entities/onboarding/step.dart';
-import '../../../../domain/usecases/change_password.dart';
-import '../../../../domain/usecases/onboarding/login.dart';
+import '../../../../domain/authentication/change_password.dart';
+import '../../../../domain/onboarding/login.dart';
+import '../../../../domain/onboarding/login_credentials.dart';
+import '../../../../domain/onboarding/step.dart';
+import '../../../../domain/onboarding/two_factor_authentication_required.dart';
 import '../../../util/loggable.dart';
 import '../../../util/password.dart';
 import '../cubit.dart';

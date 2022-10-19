@@ -2,8 +2,8 @@ import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../../domain/entities/survey/question.dart';
-import '../../../../../domain/entities/survey/survey.dart';
+import '../../../../../domain/feedback/survey/question.dart';
+import '../../../../../domain/feedback/survey/survey.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
 import '../../../../util/conditional_capitalization.dart';

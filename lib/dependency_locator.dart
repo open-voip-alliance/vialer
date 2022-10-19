@@ -3,40 +3,38 @@ import 'dart:async';
 import 'package:get_it/get_it.dart';
 
 import 'app/util/debug.dart';
-import 'domain/contact_populator.dart';
-import 'domain/events/event_bus.dart';
-import 'domain/repositories/auth.dart';
-import 'domain/repositories/brand.dart';
-import 'domain/repositories/build_info.dart';
-import 'domain/repositories/business_availability_repository.dart';
-import 'domain/repositories/call_through.dart';
-import 'domain/repositories/connectivity.dart';
-import 'domain/repositories/contact.dart';
-import 'domain/repositories/country.dart';
-import 'domain/repositories/database/client_calls.dart';
-import 'domain/repositories/destination.dart';
-import 'domain/repositories/env.dart';
-import 'domain/repositories/error_tracking_repository.dart';
-import 'domain/repositories/feedback.dart';
-import 'domain/repositories/legacy_storage_repository.dart';
-import 'domain/repositories/local_client_calls.dart';
-import 'domain/repositories/logging.dart';
-import 'domain/repositories/memory_storage_repository.dart';
-import 'domain/repositories/metrics.dart';
-import 'domain/repositories/operating_system_info.dart';
-import 'domain/repositories/outgoing_numbers.dart';
-import 'domain/repositories/permission.dart';
-import 'domain/repositories/recent_call.dart';
-import 'domain/repositories/remote_client_calls.dart';
-import 'domain/repositories/server_config.dart';
-import 'domain/repositories/services/business_availability.dart';
-import 'domain/repositories/services/middleware.dart';
-import 'domain/repositories/services/voipgrid.dart';
-import 'domain/repositories/storage.dart';
-import 'domain/repositories/user_permissions.dart';
-import 'domain/repositories/voicemail_repository.dart';
-import 'domain/repositories/voip.dart';
-import 'domain/repositories/voip_config.dart';
+import 'domain/authentication/authentication_repository.dart';
+import 'domain/call_records/client/database/client_calls.dart';
+import 'domain/call_records/client/local_client_calls.dart';
+import 'domain/call_records/client/remote_client_calls.dart';
+import 'domain/call_records/personal/recent_call_repository.dart';
+import 'domain/calling/call_through/call_through.dart';
+import 'domain/calling/middleware/middleware_service.dart';
+import 'domain/calling/outgoing_number/outgoing_numbers.dart';
+import 'domain/calling/voip/server_config.dart';
+import 'domain/calling/voip/voip.dart';
+import 'domain/calling/voip/voip_config.dart';
+import 'domain/contacts/contact_populator.dart';
+import 'domain/contacts/contact_repository.dart';
+import 'domain/env.dart';
+import 'domain/error_tracking/error_tracking_repository.dart';
+import 'domain/event/event_bus.dart';
+import 'domain/feedback/feedback.dart';
+import 'domain/legacy/legacy_storage_repository.dart';
+import 'domain/legacy/memory_storage_repository.dart';
+import 'domain/legacy/storage.dart';
+import 'domain/metrics/metrics.dart';
+import 'domain/onboarding/country_repository.dart';
+import 'domain/remote_logging/logging.dart';
+import 'domain/user/brand_repository.dart';
+import 'domain/user/connectivity/connectivity.dart';
+import 'domain/user/info/build_info_repository.dart';
+import 'domain/user/info/operating_system_info_repository.dart';
+import 'domain/user/permissions/permission_repository.dart';
+import 'domain/voicemail/voicemail_account_repository.dart';
+import 'domain/voipgrid/destination_repository.dart';
+import 'domain/voipgrid/user_permissions.dart';
+import 'domain/voipgrid/voipgrid_service.dart';
 
 final dependencyLocator = GetIt.instance;
 
@@ -113,8 +111,8 @@ Future<void> initializeDependencies({bool ui = true}) async {
         dependencyLocator<VoipgridService>(),
       ),
     )
-    ..registerSingleton<VoicemailRepository>(
-      VoicemailRepository(
+    ..registerSingleton<VoicemailAccountsRepository>(
+      VoicemailAccountsRepository(
         dependencyLocator<VoipgridService>(),
       ),
     )

@@ -1,4 +1,4 @@
-import '../../domain/entities/call_record.dart';
+import '../../domain/call_records/call_record.dart';
 import '../models/voipgrid_call_record.dart';
 
 extension FromVoipgridCallRecord on VoipgridCallRecord {

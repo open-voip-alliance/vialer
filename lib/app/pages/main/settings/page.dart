@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../../../domain/entities/build_info.dart';
-import '../../../../domain/entities/settings/app_setting.dart';
-import '../../../../domain/entities/settings/call_setting.dart';
+import '../../../../domain/user/info/build_info.dart';
+import '../../../../domain/user/settings/app_setting.dart';
+import '../../../../domain/user/settings/call_setting.dart';
 import '../../../resources/localizations.dart';
 import '../../../resources/theme.dart';
 import '../../../routes.dart';

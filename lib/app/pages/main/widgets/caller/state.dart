@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_phone_lib/flutter_phone_lib.dart';
 
-import '../../../../../domain/entities/call_failure_reason.dart';
-import '../../../../../domain/entities/exceptions/call_through.dart';
+import '../../../../../domain/calling/call_failure_reason.dart';
+import '../../../../../domain/calling/call_through/call_through_exception.dart';
 
 abstract class CallerState extends Equatable {
   const CallerState();

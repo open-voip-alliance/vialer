@@ -1,8 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../domain/entities/onboarding/step.dart';
-import '../../../domain/usecases/get_is_voip_allowed.dart';
-import '../../../domain/usecases/onboarding/get_steps.dart';
+import '../../../domain/calling/voip/get_is_voip_allowed.dart';
+import '../../../domain/onboarding/get_steps.dart';
+import '../../../domain/onboarding/step.dart';
 import '../../util/loggable.dart';
 import '../main/widgets/caller.dart';
 import 'state.dart';

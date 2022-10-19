@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../../domain/entities/temporary_redirect.dart';
+import '../../../../../domain/business_availability/temporary_redirect.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../util/conditional_capitalization.dart';
 import '../../../../widgets/stylized_button.dart';

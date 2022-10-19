@@ -1,8 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../domain/entities/settings/call_setting.dart';
-import '../../../../domain/usecases/get_logged_in_user.dart';
-import '../../../../domain/usecases/settings/change_setting.dart';
+import '../../../../domain/user/get_logged_in_user.dart';
+import '../../../../domain/user/settings/call_setting.dart';
+import '../../../../domain/user/settings/change_setting.dart';
 import 'state.dart';
 
 export 'state.dart';

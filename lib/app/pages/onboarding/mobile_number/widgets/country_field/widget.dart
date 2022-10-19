@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../../../../../domain/entities/country.dart';
+import '../../../../../../domain/onboarding/country.dart';
 import '../../../../../resources/localizations.dart';
 import '../country_field/cubit.dart';
 

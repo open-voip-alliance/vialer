@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import '../../../../../../domain/entities/settings/call_setting.dart';
+import '../../../../../../domain/user/settings/call_setting.dart';
 
 class ConfirmState extends Equatable {
   final OutgoingNumber outgoingNumber;

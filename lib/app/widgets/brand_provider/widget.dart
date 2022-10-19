@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
-import '../../../domain/entities/brand.dart';
+import '../../../domain/user/brand.dart';
 import '../../resources/theme.dart';
 import 'cubit.dart';
 

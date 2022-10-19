@@ -5,10 +5,10 @@ import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
-import '../../../../../../domain/entities/contact.dart' as domain;
-import '../../../../../../domain/entities/permission.dart';
-import '../../../../../../domain/entities/permission_status.dart';
-import '../../../../../../domain/usecases/onboarding/request_permission.dart';
+import '../../../../../../domain/contacts/contact.dart' as domain;
+import '../../../../../../domain/onboarding/request_permission.dart';
+import '../../../../../../domain/user/permissions/permission.dart';
+import '../../../../../../domain/user/permissions/permission_status.dart';
 import '../../../widgets/caller.dart';
 import 'state.dart';
 

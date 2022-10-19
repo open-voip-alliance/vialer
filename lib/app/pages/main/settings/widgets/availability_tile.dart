@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../domain/entities/availability.dart';
-import '../../../../../domain/entities/user.dart';
+import '../../../../../domain/user/user.dart';
+import '../../../../../domain/voipgrid/availability.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
 import '../../../../util/stylized_txt.dart';
