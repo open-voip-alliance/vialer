@@ -116,6 +116,7 @@ class _NoticeState extends State<_Notice>
                   icon: FaIcon(_iconFor(state)),
                   title: Text(_titleFor(state)),
                   content: Text(_contentFor(state)),
+<<<<<<< HEAD
                 actions: [
                   if (state is TemporaryRedirectNotice) ...[
                     const TextButton(
@@ -154,6 +155,45 @@ class _NoticeState extends State<_Notice>
                   ],
                 ],
               ),
+=======
+                  actions: state is TemporaryRedirectNotice
+                      ? [
+                          const TextButton(
+                            //TODO: Add here functionality/text to change redirect
+                            onPressed: null,
+                            child: Text(''),
+                          )
+                        ]
+                      : [
+                          TextButton(
+                            onPressed: cubit.dismiss,
+                            child: Text(
+                              context.msg.generic.button.close
+                                  .toUpperCaseIfAndroid(context),
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () => cubit.requestPermission([
+                              if (state is PhonePermissionDeniedNotice)
+                                Permission.phone
+                              else if (state
+                                  is MicrophonePermissionDeniedNotice)
+                                Permission.microphone
+                              else if (state
+                                  is BluetoothConnectPermissionDeniedNotice)
+                                Permission.bluetooth
+                              else if (state
+                                  is NotificationsPermissionDeniedNotice)
+                                Permission.notifications
+                              else ...[Permission.phone, Permission.microphone],
+                            ]),
+                            child: Text(
+                              context.msg.main.notice.actions.givePermission
+                                  .toUpperCaseIfAndroid(context),
+                            ),
+                          ),
+                        ]),
+>>>>>>> added Notice for active redirect
             );
           },
         ),
