@@ -101,6 +101,9 @@ class StorageRepository {
   String? get remoteNotificationToken =>
       _preferences.getString(_remoteNotificationTokenKey);
 
+  set remoteNotificationToken(String? value) =>
+      _preferences.setOrRemoveString(_remoteNotificationTokenKey, value);
+
   static const _voipConfigKey = 'voip_config';
 
   VoipConfig? get voipConfig {

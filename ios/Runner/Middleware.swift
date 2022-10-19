@@ -38,13 +38,13 @@ public class Middleware: NativeMiddleware {
     }
 
     public func tokenReceived(token: String) {
-        if (lastRegisteredToken == token) {
+        if lastRegisteredToken == token {
             return
         }
         
         lastRegisteredToken = token
 
-        if (flutterSharedPreferences.getBoolSetting(name: "DndSetting")) {
+        if flutterSharedPreferences.getBoolSetting(name: "DndSetting") {
             logger.writeLog("Registration cancelled: do not disturb is enabled")
             return
         }
@@ -153,7 +153,7 @@ public class Middleware: NativeMiddleware {
     }
 
     public func inspect(payload: PKPushPayload, type: PKPushType) {
-        if (payload.isLoggedInSomewhereElse) {
+        if payload.isLoggedInSomewhereElse {
             logger.writeLog("User has logged in somewhere else, marking as such..")
             flutterSharedPreferences.isLoggedInSomewhereElse = true
             return
@@ -202,35 +202,35 @@ private struct MiddlewareCredentials {
 extension PKPushPayload {
 
     var message: String {
-        return dictionaryPayload["message"] as? String ?? ""
+        dictionaryPayload["message"] as? String ?? ""
     }
 
     var isLoggedInSomewhereElse: Bool {
-        return message.hasPrefix("An other device has registered for the same account")
+        message.hasPrefix("An other device has registered for the same account")
     }
 
     var callId: String {
-        return dictionaryPayload["unique_key"] as? String ?? ""
+        dictionaryPayload["unique_key"] as? String ?? ""
     }
 
     var correlationId: String {
-        return dictionaryPayload["vg_cid"] as? String ?? ""
+        dictionaryPayload["vg_cid"] as? String ?? ""
     }
 
     var messageStartTime: Int {
-        return Int(dictionaryPayload["message_start_time"] as? Double ?? 0.0)
+        Int(dictionaryPayload["message_start_time"] as? Double ?? 0.0)
     }
 
     var isCall: Bool {
-        return (dictionaryPayload["type"] as? String ?? "") == "call"
+        (dictionaryPayload["type"] as? String ?? "") == "call"
     }
 
     var responseUrl: String {
-        return dictionaryPayload["response_api"] as! String
+        dictionaryPayload["response_api"] as! String
     }
 
     var trackingProperties: [String : String] {
-        return [
+        [
             "call_id" : callId,
             "correlation_id" : correlationId,
             "message_start_time" : String(messageStartTime),
@@ -244,7 +244,7 @@ extension PKPushPayload {
     }
 
     var secondsSincePushWasSent: Int {
-        return Int((Date().timeIntervalSince1970)) - messageStartTime
+        Int((Date().timeIntervalSince1970)) - messageStartTime
     }
 
     func toCurrentCallInfo() -> CurrentCallInfo {

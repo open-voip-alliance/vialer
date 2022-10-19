@@ -2,6 +2,7 @@ import UIKit
 import Flutter
 import flutter_phone_lib
 import Intents
+import UserNotifications
 
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {
@@ -31,10 +32,12 @@ import Intents
     ) -> Bool {
         UIApplication.shared.registerForRemoteNotifications()
 
+        UNUserNotificationCenter.current().delegate = self
+
         let registerPlugins = GeneratedPluginRegistrant.register
         registerPlugins(self)
 
-        if (segment == nil) {
+        if segment == nil {
             segment = Segment(logger: self.logger, prefs: self.flutterSharedPreferences)
             segment?.initialize()
         }
@@ -97,6 +100,30 @@ import Intents
                     error: Error) {
         logger.writeLog("Failed to register for remote notifications: \(error).")
     }
+    
+    override func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                         didReceive response: UNNotificationResponse,
+                                         withCompletionHandler completionHandler: @escaping () -> Void) {
+        if response.notification.isLoggedInSomewhereElse {
+            // User pressed the logout notification.
+            logger.writeLog("User has logged in somewhere else, marking as such..")
+            
+            flutterSharedPreferences.isLoggedInSomewhereElse = true
+        }
+        
+        completionHandler()
+    }
+
+    override func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        // Only called when the app is in the foreground
+        if notification.isLoggedInSomewhereElse {
+            logger.writeLog("User has logged in somewhere else, marking as such..")
+
+            flutterSharedPreferences.isLoggedInSomewhereElse = true
+        }
+       
+        completionHandler([.alert])
+    }
 }
 
 protocol SupportedStartCallIntent {
@@ -123,5 +150,15 @@ extension Bundle {
 extension String {
     fileprivate init(deviceToken: Data) {
         self = deviceToken.map { String(format: "%.2hhx", $0) }.joined()
+    }
+}
+
+extension UNNotification {
+    var message: String {
+        request.content.body
+    }
+
+    var isLoggedInSomewhereElse: Bool {
+        message.hasPrefix("An other device has registered for the same account")
     }
 }
