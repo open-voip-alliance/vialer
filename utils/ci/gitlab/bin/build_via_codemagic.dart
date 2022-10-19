@@ -120,6 +120,7 @@ Future<String> _startCodemagicBuild({
 Future<_CodemagicBuild> _fetchCodemagicBuild({
   required String apiToken,
   required String buildId,
+  bool retry = true,
 }) async {
   final build = await HttpClient()
       .getUrl(Uri.parse('$_codemagicBaseUrl/$buildId'))
@@ -131,7 +132,24 @@ Future<_CodemagicBuild> _fetchCodemagicBuild({
       .then(jsonDecode)
       .then((response) => response['build']);
 
-  final status = (build['status'] as String).toCodemagicBuildStatus();
+  final status = (build['status'] as String?);
+
+  if (status == null) {
+    if (!retry) {
+      throw Exception('Unable to fetch codemagic build: [$buildId].');
+    }
+
+    // If we weren't able to fetch the build immediately, we will wait briefly
+    // and then try again.
+    sleep(_apiQueryInterval);
+    return _fetchCodemagicBuild(
+      apiToken: apiToken,
+      buildId: buildId,
+      retry: false,
+    );
+  }
+
+  final buildStatus = status.toCodemagicBuildStatus();
 
   final buildActions = build['buildActions'] as List<dynamic>;
 
@@ -147,13 +165,13 @@ Future<_CodemagicBuild> _fetchCodemagicBuild({
 
     if (currentActions.isNotEmpty) {
       return _CodemagicBuild(
-        status,
+        buildStatus,
         currentAction: currentActions.last['name'] as String,
       );
     }
   }
 
-  return _CodemagicBuild(status);
+  return _CodemagicBuild(buildStatus);
 }
 
 /// Returns true if tests succeeded, false otherwise.
