@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import '../../../domain/entities/brand.dart';
+import '../../../domain/user/brand.dart';
 
 class BrandProviderState extends Equatable {
   final Brand brand;

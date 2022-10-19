@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import '../../../domain/entities/onboarding/step.dart';
+import '../../../domain/onboarding/step.dart';
 
 class OnboardingState extends Equatable {
   /// All steps to go through in the onboarding process. Steps may be

@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
-import '../../../../../../domain/entities/contact.dart';
-import '../../../../../../domain/entities/t9_contact.dart';
+import '../../../../../../domain/contacts/contact.dart';
+import '../../../../../../domain/contacts/t9_contact.dart';
 
 abstract class T9ContactsState extends Equatable {
   @override

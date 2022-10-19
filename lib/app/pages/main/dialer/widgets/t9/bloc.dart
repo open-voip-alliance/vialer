@@ -7,12 +7,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rxdart/rxdart.dart';
 
-import '../../../../../../domain/entities/contact.dart';
-import '../../../../../../domain/entities/permission.dart';
-import '../../../../../../domain/entities/permission_status.dart';
-import '../../../../../../domain/entities/t9_contact.dart';
-import '../../../../../../domain/usecases/get_contacts.dart';
-import '../../../../../../domain/usecases/get_permission_status.dart';
+import '../../../../../../domain/contacts/contact.dart';
+import '../../../../../../domain/contacts/get_contacts.dart';
+import '../../../../../../domain/contacts/t9_contact.dart';
+import '../../../../../../domain/user/get_permission_status.dart';
+import '../../../../../../domain/user/permissions/permission.dart';
+import '../../../../../../domain/user/permissions/permission_status.dart';
 import '../../../../../util/contact.dart';
 import '../../../../../util/extensions.dart';
 import 'event.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../domain/entities/call_problem.dart';
+import '../../../../../domain/feedback/call_problem.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
 import 'call_feedback.dart';

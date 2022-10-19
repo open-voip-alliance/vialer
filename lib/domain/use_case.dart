@@ -2,7 +2,7 @@ import 'package:recase/recase.dart';
 
 import '../app/util/loggable.dart';
 import '../dependency_locator.dart';
-import 'repositories/metrics.dart';
+import 'metrics/metrics.dart';
 
 abstract class UseCase with Loggable {
   late final _metrics = dependencyLocator<MetricsRepository>();

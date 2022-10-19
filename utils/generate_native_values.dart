@@ -4,8 +4,8 @@ import 'package:basic_utils/basic_utils.dart';
 import 'package:package_config/package_config.dart';
 import 'package:vialer/app/resources/theme/brand_icon_code_points.dart';
 import 'package:vialer/app/resources/theme/color_values.dart';
-import 'package:vialer/domain/entities/brand.dart';
-import 'package:vialer/domain/repositories/brand.dart';
+import 'package:vialer/domain/user/brand.dart';
+import 'package:vialer/domain/user/brand_repository.dart';
 import 'package:xml/xml.dart';
 import 'package:yaml/yaml.dart';
 

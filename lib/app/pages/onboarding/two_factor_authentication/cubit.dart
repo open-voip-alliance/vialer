@@ -1,9 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../domain/entities/exceptions/need_to_change_password.dart';
-import '../../../../domain/entities/login_credentials.dart';
-import '../../../../domain/entities/onboarding/step.dart';
-import '../../../../domain/usecases/onboarding/login.dart';
+import '../../../../domain/onboarding/login.dart';
+import '../../../../domain/onboarding/login_credentials.dart';
+import '../../../../domain/onboarding/need_to_change_password.dart';
+import '../../../../domain/onboarding/step.dart';
 import '../../../util/loggable.dart';
 import '../cubit.dart';
 import 'state.dart';

@@ -1,9 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../../domain/entities/settings/app_setting.dart';
-import '../../../../../domain/usecases/send_feedback.dart';
-import '../../../../../domain/usecases/send_saved_logs_to_remote.dart';
-import '../../../../../domain/usecases/settings/change_setting.dart';
+import '../../../../../domain/feedback/send_feedback.dart';
+import '../../../../../domain/feedback/send_saved_logs_to_remote.dart';
+import '../../../../../domain/user/settings/app_setting.dart';
+import '../../../../../domain/user/settings/change_setting.dart';
 import 'state.dart';
 
 export 'state.dart';

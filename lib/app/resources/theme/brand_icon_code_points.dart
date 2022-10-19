@@ -1,6 +1,6 @@
 // Never import anything from Flutter here!
 
-import '../../../domain/entities/brand.dart';
+import '../../../domain/user/brand.dart';
 
 class BrandIconCodePoints {
   BrandIconCodePoints._();

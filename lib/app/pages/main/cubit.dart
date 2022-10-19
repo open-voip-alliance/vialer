@@ -1,8 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../dependency_locator.dart';
-import '../../../domain/repositories/storage.dart';
-import '../../../domain/usecases/get_latest_logged_in_user.dart';
+import '../../../domain/legacy/storage.dart';
+import '../../../domain/user/get_latest_logged_in_user.dart';
 
 class MainState {
   const MainState();

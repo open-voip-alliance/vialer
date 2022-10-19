@@ -3,7 +3,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-import '../../../../../domain/entities/call_problem.dart';
+import '../../../../../domain/feedback/call_problem.dart';
 import '../../../../resources/theme.dart';
 import 'call_rating.dart';
 import 'select_audio_problems.dart';

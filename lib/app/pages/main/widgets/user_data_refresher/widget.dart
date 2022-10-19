@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../util/widgets_binding_observer_registrar.dart';
 
+import '../../../../util/widgets_binding_observer_registrar.dart';
 import 'cubit.dart';
 
 class UserDataRefresher extends StatelessWidget {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart' hide Colors;
 
-import '../../../domain/entities/brand.dart';
+import '../../../domain/user/brand.dart';
 import 'brand_icon_code_points.dart';
 import 'color_values.dart';
 import 'colors.dart';

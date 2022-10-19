@@ -2,7 +2,7 @@
 
 import 'package:json_annotation/json_annotation.dart';
 
-import '../../../domain/entities/brand.dart';
+import '../../../domain/user/brand.dart';
 
 part 'color_values.g.dart';
 

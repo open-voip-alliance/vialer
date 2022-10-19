@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../domain/entities/survey/survey.dart';
-import '../../../../domain/entities/survey/survey_trigger.dart';
+import '../../../../domain/feedback/survey/survey.dart';
+import '../../../../domain/feedback/survey/survey_trigger.dart';
 import 'cubit.dart';
 import 'screen/help_us.dart';
 import 'screen/question.dart';

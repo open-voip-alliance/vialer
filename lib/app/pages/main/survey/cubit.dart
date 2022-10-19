@@ -1,13 +1,13 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:in_app_review/in_app_review.dart';
 
-import '../../../../domain/entities/settings/app_setting.dart';
-import '../../../../domain/entities/survey/survey.dart';
-import '../../../../domain/entities/survey/survey_trigger.dart';
-import '../../../../domain/usecases/get_logged_in_user.dart';
-import '../../../../domain/usecases/get_survey.dart';
-import '../../../../domain/usecases/send_survey_results.dart';
-import '../../../../domain/usecases/settings/change_setting.dart';
+import '../../../../domain/feedback/send_survey_results.dart';
+import '../../../../domain/feedback/survey/get_survey.dart';
+import '../../../../domain/feedback/survey/survey.dart';
+import '../../../../domain/feedback/survey/survey_trigger.dart';
+import '../../../../domain/user/get_logged_in_user.dart';
+import '../../../../domain/user/settings/app_setting.dart';
+import '../../../../domain/user/settings/change_setting.dart';
 import '../../../util/loggable.dart';
 import 'state.dart';
 

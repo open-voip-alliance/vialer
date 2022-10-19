@@ -2,7 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:vialer/app/pages/onboarding/login/page.dart';
 import 'package:vialer/app/pages/onboarding/mobile_number/page.dart';
 import 'package:vialer/app/pages/onboarding/page.dart';
-import 'package:vialer/domain/entities/onboarding/step.dart';
+import 'package:vialer/domain/onboarding/step.dart';
 
 import '../../../util.dart';
 

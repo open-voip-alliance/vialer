@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../../../../domain/entities/permission.dart';
+import '../../../../../domain/user/permissions/permission.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../util/brand.dart';
 import '../abstract/page.dart';
