@@ -27,16 +27,16 @@ class LogoutUseCase extends UseCase {
   /// Clear the storage of all user-specific values.
   Future<void> _clearStorage() async {
     // Settings that we want to save across sessions.
+    final pushToken = _storageRepository.pushToken;
+    final remoteNotificationToken = _storageRepository.remoteNotificationToken;
     final crossSessionSettings = _getUser().settings.getAll([
       AppSetting.remoteLogging,
     ]);
 
-    final pushToken = _storageRepository.pushToken;
-
     await _storageRepository.clear();
 
     _storageRepository.pushToken = pushToken;
-
+    _storageRepository.remoteNotificationToken = remoteNotificationToken;
     _storageRepository.previousSessionSettings = crossSessionSettings;
 
     await _purgeClientCalls(reason: PurgeReason.logout);
