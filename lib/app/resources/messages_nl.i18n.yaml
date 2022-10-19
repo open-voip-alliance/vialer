@@ -386,6 +386,10 @@ main:
       title: "Geen notificaties toestemming"
       content: >-
         Zonder toestemming tot notificaties is het mogelijk dat je belangrijke informatie mist, zoals gemiste of inkomende gesprekken.
+    temporaryRedirect:
+      title: "Tijdelijke Omleiding"
+      content(String voicemail): >-
+        Alle inkomende oproepen naar alle nummers gaan rechtstreeks naar de voicemail tot het einde van de dag (23:59).
     actions:
       givePermission: "Geef toestemming"
 

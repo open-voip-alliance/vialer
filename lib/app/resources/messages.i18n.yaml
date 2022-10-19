@@ -386,6 +386,10 @@ main:
       title: "No Notifications permission"
       content: >-
         Without notifications permission, you might miss important information such as missed or incoming calls.
+    temporaryRedirect:
+      title: "Temporary Redirect"
+      content(String voicemail): >-
+        All incoming calls to all numbers go straight to voicemail $voicemail until the end of the day (23:59).
     actions:
       givePermission: "Give permission"
 
