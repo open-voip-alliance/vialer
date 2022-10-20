@@ -475,7 +475,7 @@ onboarding:
   permission:
     button:
       iUnderstand: "Ik begrijp het"
-      giveConsent: "Ik ga akkoord"
+      giveConsent: "Ik ben akkoord"
       declineConsent: "Ik ben niet akkoord"
     phone:
       title: "Toestemming voor telefonie"
