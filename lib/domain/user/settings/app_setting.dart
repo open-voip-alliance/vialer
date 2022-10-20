@@ -14,7 +14,7 @@ enum AppSetting<T extends Object> with SettingKey<T> {
     AppSetting.showDialerConfirmPopup: true,
     AppSetting.showSurveys: true,
     AppSetting.showCallsInNativeRecents: true,
-    AppSetting.showTroubleshooting: true,
+    AppSetting.showTroubleshooting: false,
     AppSetting.showClientCalls: false,
   };
 }

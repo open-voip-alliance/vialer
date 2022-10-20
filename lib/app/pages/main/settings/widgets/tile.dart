@@ -512,9 +512,9 @@ class SettingTile extends StatelessWidget {
                           (number) => DropdownMenuItem<OutgoingNumber>(
                             child: FittedBox(
                               fit: BoxFit.scaleDown,
-                              child: Text(number),
+                              child: Text(number.toString()),
                             ),
-                            value: OutgoingNumber(number),
+                            value: number,
                           ),
                         ),
                       ],

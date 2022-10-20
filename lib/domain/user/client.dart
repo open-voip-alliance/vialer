@@ -3,6 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 
 import '../voicemail/voicemail_account.dart';
+import 'settings/call_setting.dart';
 
 part 'client.g.dart';
 
@@ -16,7 +17,8 @@ class Client extends Equatable {
 
   /// This represents the business numbers that are available to the client
   /// the logged-in user belongs to.
-  final Iterable<String> outgoingNumbers;
+  @JsonKey(toJson: _outgoingNumbersToJson)
+  final Iterable<OutgoingNumber> outgoingNumbers;
 
   final Iterable<VoicemailAccount> voicemailAccounts;
 
@@ -37,7 +39,7 @@ class Client extends Equatable {
     String? uuid,
     String? name,
     Uri? url,
-    Iterable<String>? outgoingNumbers,
+    Iterable<OutgoingNumber>? outgoingNumbers,
     Iterable<VoicemailAccount>? voicemailAccounts,
   }) {
     return Client(
@@ -56,3 +58,6 @@ class Client extends Equatable {
   static Client? fromJson(Map<String, dynamic>? json) =>
       json != null ? _$ClientFromJson(json) : null;
 }
+
+List<String> _outgoingNumbersToJson(Iterable<OutgoingNumber> numbers) =>
+    numbers.map(OutgoingNumber.toJson).toList();
