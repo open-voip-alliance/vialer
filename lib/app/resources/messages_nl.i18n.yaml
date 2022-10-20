@@ -475,8 +475,8 @@ onboarding:
   permission:
     button:
       iUnderstand: "Ik begrijp het"
-      giveConsent: "Ik ben akkoord"
-      declineConsent: "Ik ben niet akkoord"
+      giveConsent: "Accepteren"
+      declineConsent: "Weigeren"
     phone:
       title: "Toestemming voor telefonie"
       description(String appName): >-

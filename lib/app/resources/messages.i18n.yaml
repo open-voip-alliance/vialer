@@ -474,8 +474,8 @@ onboarding:
   permission:
     button:
       iUnderstand: "I understand"
-      giveConsent: "I agree"
-      declineConsent: "I disagree"
+      giveConsent: "Accept"
+      declineConsent: "Decline"
     phone:
       title: "Phone permission"
       description(String appName): >-
