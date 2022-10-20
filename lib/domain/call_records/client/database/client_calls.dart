@@ -58,10 +58,10 @@ class ClientCallWithColleaguePhoneAccount {
 class ClientCallsDatabase extends _$ClientCallsDatabase {
   static String get dbFilename => 'db.sqlite';
 
-  ClientCallsDatabase() : super(DatabaseUtils.openConnection(dbFilename));
+  ClientCallsDatabase() : super(openDatabaseConnection(dbFilename));
 
   ClientCallsDatabase.createInIsolate(String path)
-      : super(DatabaseUtils.openConnectionForIsolate(path));
+      : super(openDatabaseConnectionInIsolate(path));
 
   @override
   int get schemaVersion => 1;

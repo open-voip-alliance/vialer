@@ -129,8 +129,7 @@ class LocalClientCallsRepository with Loggable {
   }
 
   Future<Stream> watch() async {
-    final file =
-        await DatabaseUtils.databaseFile(ClientCallsDatabase.dbFilename);
+    final file = await getDatabaseFile(ClientCallsDatabase.dbFilename);
 
     return FileWatcher(file.path)
         .events

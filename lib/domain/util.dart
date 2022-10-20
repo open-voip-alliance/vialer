@@ -107,21 +107,19 @@ class JsonConverter extends chopper.JsonConverter {
   }
 }
 
-class DatabaseUtils {
-  static LazyDatabase openConnection(String filename) {
-    return LazyDatabase(() async {
-      return NativeDatabase(await databaseFile(filename));
-    });
-  }
+LazyDatabase openDatabaseConnection(String filename) {
+  return LazyDatabase(() async {
+    return NativeDatabase(await getDatabaseFile(filename));
+  });
+}
 
-  static LazyDatabase openConnectionForIsolate(String path) {
-    return LazyDatabase(() async {
-      return NativeDatabase(File(path));
-    });
-  }
+LazyDatabase openDatabaseConnectionInIsolate(String path) {
+  return LazyDatabase(() async {
+    return NativeDatabase(File(path));
+  });
+}
 
-  static Future<File> databaseFile(String filename) async {
-    final dbFolder = await getApplicationDocumentsDirectory();
-    return File(p.join(dbFolder.path, filename));
-  }
+Future<File> getDatabaseFile(String filename) async {
+  final dbFolder = await getApplicationDocumentsDirectory();
+  return File(p.join(dbFolder.path, filename));
 }

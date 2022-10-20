@@ -15,10 +15,10 @@ class LogEvents extends Table {
 class LoggingDatabase extends _$LoggingDatabase {
   static String get dbFilename => 'logging_db.sqlite';
 
-  LoggingDatabase() : super(DatabaseUtils.openConnection(dbFilename));
+  LoggingDatabase() : super(openDatabaseConnection(dbFilename));
 
   LoggingDatabase.createInIsolate(String path)
-      : super(DatabaseUtils.openConnectionForIsolate(path));
+      : super(openDatabaseConnectionInIsolate(path));
 
   @override
   int get schemaVersion => 1;

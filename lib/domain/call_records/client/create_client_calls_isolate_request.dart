@@ -30,8 +30,7 @@ class CreateClientCallsIsolateRequestUseCase extends UseCase {
       user: _getUser(),
       voipgridApiBaseUrl: await _getBaseUrl(),
       databasePath:
-          (await DatabaseUtils.databaseFile(ClientCallsDatabase.dbFilename))
-              .path,
+          (await getDatabaseFile(ClientCallsDatabase.dbFilename)).path,
       dateRangesToQuery: dateRangesToQuery,
       userPhoneAccountIds: await _usersPhoneAccounts,
     );
