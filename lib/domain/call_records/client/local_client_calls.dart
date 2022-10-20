@@ -4,6 +4,7 @@ import 'package:rxdart/rxdart.dart';
 import 'package:watcher/watcher.dart';
 
 import '../../../app/util/loggable.dart';
+import '../../util.dart';
 import '../call_record.dart';
 import 'client_call_record.dart';
 import 'database/client_calls.dart';
@@ -128,7 +129,8 @@ class LocalClientCallsRepository with Loggable {
   }
 
   Future<Stream> watch() async {
-    final file = await ClientCallsDatabase.databaseFile;
+    final file =
+        await DatabaseUtils.databaseFile(ClientCallsDatabase.dbFilename);
 
     return FileWatcher(file.path)
         .events

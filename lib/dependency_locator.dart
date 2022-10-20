@@ -25,6 +25,7 @@ import 'domain/legacy/memory_storage_repository.dart';
 import 'domain/legacy/storage.dart';
 import 'domain/metrics/metrics.dart';
 import 'domain/onboarding/country_repository.dart';
+import 'domain/remote_logging/database/log_events.dart';
 import 'domain/remote_logging/logging.dart';
 import 'domain/user/brand_repository.dart';
 import 'domain/user/connectivity/connectivity.dart';
@@ -49,6 +50,7 @@ Future<void> initializeDependencies({bool ui = true}) async {
       VoipgridService.create(),
     )
     ..registerSingleton<ClientCallsDatabase>(ClientCallsDatabase())
+    ..registerSingleton<LoggingDatabase>(LoggingDatabase())
     ..registerSingletonAsync<StorageRepository>(() async {
       final storageRepository = StorageRepository();
       await storageRepository.load();

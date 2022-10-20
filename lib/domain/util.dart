@@ -1,8 +1,13 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:chopper/chopper.dart' as chopper;
 import 'package:chopper/chopper.dart';
 import 'package:dartx/dartx.dart';
+import 'package:drift/drift.dart';
+import 'package:drift/native.dart';
+import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
 
 import '../dependency_locator.dart';
 import 'authentication/unauthorized_api_response.dart';
@@ -99,5 +104,24 @@ class JsonConverter extends chopper.JsonConverter {
     }
 
     return super.decodeJson(response);
+  }
+}
+
+class DatabaseUtils {
+  static LazyDatabase openConnection(String filename) {
+    return LazyDatabase(() async {
+      return NativeDatabase(await databaseFile(filename));
+    });
+  }
+
+  static LazyDatabase openConnectionForIsolate(String path) {
+    return LazyDatabase(() async {
+      return NativeDatabase(File(path));
+    });
+  }
+
+  static Future<File> databaseFile(String filename) async {
+    final dbFolder = await getApplicationDocumentsDirectory();
+    return File(p.join(dbFolder.path, filename));
   }
 }
