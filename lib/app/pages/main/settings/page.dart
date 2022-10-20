@@ -192,6 +192,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                   onPressed: () => LaunchPrivacyPolicy()(),
                                   child: Text(privacyPolicyText),
                                 ),
+                                const SizedBox(height: 16),
                               ],
                             ),
                           ),
