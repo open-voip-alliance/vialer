@@ -1,8 +1,8 @@
 import 'package:chopper/chopper.dart' hide JsonConverter;
 
+import '../service_util.dart';
 import '../user/get_brand.dart';
 import '../user/user.dart';
-import '../util.dart';
 
 part 'business_availability_service.chopper.dart';
 

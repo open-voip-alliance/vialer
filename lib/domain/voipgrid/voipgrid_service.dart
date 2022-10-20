@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:chopper/chopper.dart' hide JsonConverter;
 
+import '../service_util.dart';
 import '../user/user.dart';
-import '../util.dart';
 import 'get_voipgrid_base_url.dart';
 
 part 'voipgrid_service.chopper.dart';

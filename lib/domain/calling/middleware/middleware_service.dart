@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:chopper/chopper.dart' hide JsonConverter;
 
-import '../../util.dart';
+import '../../service_util.dart';
 import '../voip/get_server_config.dart';
 
 part 'middleware_service.chopper.dart';
