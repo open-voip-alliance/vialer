@@ -18,7 +18,7 @@ abstract class SettingChangeListener<T extends Object> {
     return SettingChangeListenResult(
       log: log,
       sync: success,
-      failed: success,
+      failed: !success,
     );
   }
 
