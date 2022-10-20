@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../domain/user/info/build_info.dart';
+import '../../../../domain/user/launch_privacy_policy.dart';
 import '../../../../domain/user/settings/app_setting.dart';
 import '../../../../domain/user/settings/call_setting.dart';
 import '../../../resources/localizations.dart';
@@ -188,9 +189,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                 ),
                                 const SizedBox(height: 16),
                                 TextButton(
-                                  onPressed: context
-                                      .watch<SettingsCubit>()
-                                      .launchPrivacyPolicy,
+                                  onPressed: () => LaunchPrivacyPolicy()(),
                                   child: Text(privacyPolicyText),
                                 ),
                               ],
