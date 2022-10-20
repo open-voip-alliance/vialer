@@ -4,7 +4,7 @@ import 'package:rxdart/rxdart.dart';
 import 'package:watcher/watcher.dart';
 
 import '../../../app/util/loggable.dart';
-import '../../util.dart';
+import '../../database_util.dart';
 import '../call_record.dart';
 import 'client_call_record.dart';
 import 'database/client_calls.dart';

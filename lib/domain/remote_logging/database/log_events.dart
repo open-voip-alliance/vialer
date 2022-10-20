@@ -1,6 +1,6 @@
 import 'package:drift/drift.dart';
 
-import '../../util.dart';
+import '../../database_util.dart';
 
 part 'log_events.g.dart';
 

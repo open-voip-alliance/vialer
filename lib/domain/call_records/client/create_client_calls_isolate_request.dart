@@ -1,10 +1,10 @@
 import 'package:dartx/dartx.dart';
 
+import '../../database_util.dart';
 import '../../use_case.dart';
 import '../../user/get_logged_in_user.dart';
 import '../../user/settings/call_setting.dart';
 import '../../user/user.dart';
-import '../../util.dart';
 import '../../voipgrid/get_voipgrid_base_url.dart';
 import 'database/client_calls.dart';
 

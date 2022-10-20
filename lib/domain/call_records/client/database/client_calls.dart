@@ -1,6 +1,6 @@
 import 'package:drift/drift.dart';
 
-import '../../../util.dart';
+import '../../../database_util.dart';
 import '../../call_record.dart';
 
 part 'client_calls.g.dart';
