@@ -12,7 +12,8 @@ const brands = '''
     "voipgridUrl": "https://partner.voipgrid.nl",
     "encryptedSipUrl": "sip.encryptedsip.com",
     "unencryptedSipUrl": "sipproxy.voipgrid.nl",
-    "businessAvailabilityUrl": "https://api.eu-prod.holodeck.wearespindle.com/business-availability/clients/"
+    "businessAvailabilityUrl": "https://api.eu-prod.holodeck.wearespindle.com/business-availability/clients/",
+    "privacyPolicyUrl": "https://vialerapp.com/privacy/"
   },
   {
     "identifier": "voys",
@@ -24,7 +25,8 @@ const brands = '''
     "voipgridUrl": "https://partner.voipgrid.nl",
     "encryptedSipUrl": "sip.encryptedsip.com",
     "unencryptedSipUrl": "sipproxy.voipgrid.nl",
-    "businessAvailabilityUrl": "https://api.eu-prod.holodeck.wearespindle.com/business-availability/clients/"
+    "businessAvailabilityUrl": "https://api.eu-prod.holodeck.wearespindle.com/business-availability/clients/",
+    "privacyPolicyUrl": "https://www.voys.nl/app-privacy/"
   },
   {
     "identifier": "vialerStaging",
@@ -35,7 +37,8 @@ const brands = '''
     "voipgridUrl": "https://staging.voipgrid.nl",
     "encryptedSipUrl": "staging.encryptedsip.com",
     "unencryptedSipUrl": "sipproxy-staging.voipgrid.nl",
-    "businessAvailabilityUrl": "https://api.eu-stag.holodeck.wearespindle.com/business-availability/clients/"
+    "businessAvailabilityUrl": "https://api.eu-stag.holodeck.wearespindle.com/business-availability/clients/",
+    "privacyPolicyUrl": "https://vialerapp.com/privacy/"
   },
   {
     "identifier": "verbonden",
@@ -46,7 +49,8 @@ const brands = '''
     "voipgridUrl": "https://partner.voipgrid.nl",
     "encryptedSipUrl": "sip.encryptedsip.com",
     "unencryptedSipUrl": "sipproxy.voipgrid.nl",
-    "businessAvailabilityUrl": "https://api.eu-prod.holodeck.wearespindle.com/business-availability/clients/"
+    "businessAvailabilityUrl": "https://api.eu-prod.holodeck.wearespindle.com/business-availability/clients/",
+    "privacyPolicyUrl": "https://verbonden.nl/app/privacy"
   },
   {
     "identifier": "annabel",
@@ -57,7 +61,8 @@ const brands = '''
     "voipgridUrl": "https://partner.voipgrid.nl",
     "encryptedSipUrl": "sip-ams.encryptedsip.com",
     "unencryptedSipUrl": "sipproxy.voipgrid.nl",
-    "businessAvailabilityUrl": "https://api.eu-prod.holodeck.wearespindle.com/business-availability/clients/"
+    "businessAvailabilityUrl": "https://api.eu-prod.holodeck.wearespindle.com/business-availability/clients/",
+    "privacyPolicyUrl": "https://bellenmetannabel.nl/app/uploads/Terms-Of-Use-And-Privacy.pdf"
   }
 ]
 ''';

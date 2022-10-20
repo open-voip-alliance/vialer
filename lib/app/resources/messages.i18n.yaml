@@ -370,6 +370,7 @@ main:
       snackBar: "Feedback sent, thank you!"
       buttons:
         send: "Send feedback"
+    privacyPolicy: "Privacy Policy"
 
   notice:
     microphone:
@@ -483,6 +484,8 @@ onboarding:
   permission:
     button:
       iUnderstand: "I understand"
+      giveConsent: "Accept"
+      declineConsent: "Decline"
     phone:
       title: "Phone permission"
       description(String appName): >-
@@ -493,12 +496,21 @@ onboarding:
         $appName needs access to the microphone so you can make and receive calls.
     contacts:
       title: "Contacts permission"
-      description(String appName): >-
-        This permission allows $appName to show your contacts, call history, 
-        and makes it possible for you to search through them.
+      description:
+        android(String appName): >-
+          This permission allows $appName to show your contacts, call history, and makes it possible for you to search through them.
 
 
-        $appName only displays your contacts and won't share them with third parties.
+          $appName stores your contacts safely, enabling contact management in the Webphone in the future.
+
+
+          We do not share any contact information with third parties.
+        iOS(String appName): >-
+          This permission allows $appName to show your contacts, call history,
+          and makes it possible for you to search through them.
+
+
+          $appName only displays your contacts and won't share them with third parties.
     bluetooth:
       title: "Bluetooth permission"
       description(String appName): >-
