@@ -476,6 +476,8 @@ onboarding:
   permission:
     button:
       iUnderstand: "Ik begrijp het"
+      giveConsent: "Accepteren"
+      declineConsent: "Weigeren"
     phone:
       title: "Toestemming voor telefonie"
       description(String appName): >-
@@ -486,12 +488,21 @@ onboarding:
         $appName heeft toegang tot de microfoon nodig zodat je gesprekken op kunt zetten en ontvangen.
     contacts:
       title: "Toestemming voor contacten"
-      description(String appName): >-
-        Door toestemming te geven worden je contacten en recente gesprekken
-        in $appName zichtbaar en kun je ze makkelijk doorzoeken.
+      description:
+        android(String appName): >-
+          Door toestemming te geven worden je contacten en recente gesprekken in $appName zichtbaar en kun je ze makkelijk doorzoeken.
 
 
-        $appName geeft alleen je contacten weer en ze worden nooit gedeeld met derden.
+          $appName slaat jouw contacten veilig op, waardoor in de toekomst het beheren van contacten in de webphone mogelijk wordt.
+
+
+          We delen geen contactgegevens met derden.
+        iOS(String appName):
+          Door toestemming te geven worden je contacten en recente gesprekken
+          in $appName zichtbaar en kun je ze makkelijk doorzoeken.
+
+
+          $appName geeft alleen je contacten weer en ze worden nooit gedeeld met derden.
     bluetooth:
       title: "Toestemming voor Bluetooth"
       description(String appName): >-
