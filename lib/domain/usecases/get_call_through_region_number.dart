@@ -6,14 +6,14 @@ import '../repositories/call_through.dart';
 import '../repositories/memory_storage_repository.dart';
 import '../repositories/metrics.dart';
 import '../use_case.dart';
-import 'get_user.dart';
+import 'get_logged_in_user.dart';
 
 class GetCallThroughRegionNumberUseCase extends UseCase {
   final _memoryStorageRepository = dependencyLocator<MemoryStorageRepository>();
   final _callThroughRepository = dependencyLocator<CallThroughRepository>();
   final _metricsRepository = dependencyLocator<MetricsRepository>();
 
-  final _getUser = GetUserUseCase();
+  final _getUser = GetLoggedInUserUseCase();
 
   Future<String?> call({
     required String destination,
@@ -21,16 +21,10 @@ class GetCallThroughRegionNumberUseCase extends UseCase {
     var regionNumber = _memoryStorageRepository.regionNumber;
 
     if (regionNumber == null) {
-      final user = await _getUser(latest: false);
-
-      if (user == null) {
-        throw CallThroughException();
-      }
-
       try {
         regionNumber = await _callThroughRepository.retrieveRegionNumber(
           destination,
-          user: user,
+          user: _getUser(),
         );
       } on CallThroughException catch (e) {
         _metricsRepository.track('call-through-region-number-failed', {

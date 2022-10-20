@@ -1,35 +1,31 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../domain/usecases/change_mobile_number.dart';
-import '../../../../domain/usecases/get_mobile_number.dart';
+import '../../../../domain/entities/settings/call_setting.dart';
+import '../../../../domain/usecases/get_logged_in_user.dart';
+import '../../../../domain/usecases/settings/change_setting.dart';
 import 'state.dart';
 
 export 'state.dart';
 
 class MobileNumberCubit extends Cubit<MobileNumberState> {
-  final _getMobileNumber = GetMobileNumberUseCase();
-  final _changeMobileNumber = ChangeMobileNumberUseCase();
+  final _changeSetting = ChangeSettingUseCase();
 
-  MobileNumberCubit() : super(MobileNumberState(mobileNumber: null)) {
-    _loadMobileNumber();
-  }
-
-  void _loadMobileNumber() async {
-    emit(
-      state.copyWith(
-        mobileNumber: await _getMobileNumber(),
-      ),
-    );
-  }
+  MobileNumberCubit()
+      : super(
+          MobileNumberState(
+            GetLoggedInUserUseCase()().settings.get(CallSetting.mobileNumber),
+          ),
+        );
 
   void changeMobileNumber(String mobileNumber) async {
     final accepted = mobileNumber == '' ||
-        await _changeMobileNumber(mobileNumber: mobileNumber);
+        await _changeSetting(CallSetting.mobileNumber, mobileNumber) !=
+            SettingChangeResult.failed;
 
     emit(
       accepted
-          ? MobileNumberAccepted(mobileNumber: mobileNumber)
-          : MobileNumberNotAccepted(mobileNumber: mobileNumber),
+          ? MobileNumberAccepted(mobileNumber)
+          : MobileNumberNotAccepted(mobileNumber),
     );
   }
 }

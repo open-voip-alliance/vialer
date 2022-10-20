@@ -443,6 +443,8 @@ class TestApp extends StatelessWidget {
         voipgridUrl: Uri.parse('https://partner.voipgrid.nl'),
         encryptedSipUrl: Uri.parse('sip.encryptedsip.com'),
         unencryptedSipUrl: Uri.parse('sipproxy.voipgrid.nl'),
+        businessAvailabilityUrl: Uri.parse(
+            'https://api.eu-prod.holodeck.wearespindle.com/business-availability/clients/'),
       ),
       child: Builder(builder: (context) {
         return MaterialApp(

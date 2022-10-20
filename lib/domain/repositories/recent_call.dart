@@ -17,7 +17,6 @@ class RecentCallRepository with Loggable {
   /// [page] starts at 1.
   Future<List<CallRecord>> getRecentCalls({
     required int page,
-    required String outgoingNumber,
     bool onlyMissedCalls = false,
     Iterable<domain.Contact> contacts = const [],
   }) async {

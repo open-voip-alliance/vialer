@@ -24,3 +24,4 @@ analyzer:
     - lib/**.chopper.dart
     - lib/**.g.dart
     - lib/app/util/pigeon.dart
+    - lib/**.freezed.dart

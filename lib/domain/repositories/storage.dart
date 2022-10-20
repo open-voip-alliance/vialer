@@ -1,11 +1,15 @@
 import 'dart:convert';
 
-import 'package:dartx/dartx.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../entities/availability.dart';
+import '../entities/client.dart';
 import '../entities/server_config.dart';
-import '../entities/setting.dart';
-import '../entities/system_user.dart';
+import '../entities/settings/app_setting.dart';
+import '../entities/settings/call_setting.dart';
+import '../entities/settings/settings.dart';
+import '../entities/user.dart';
+import '../entities/user_permissions.dart';
 import '../entities/voip_config.dart';
 
 class StorageRepository {
@@ -15,56 +19,49 @@ class StorageRepository {
     _preferences = await SharedPreferences.getInstance();
   }
 
-  static const _systemUserKey = 'system_user';
+  // Value must stay the same, otherwise everything breaks.
+  static const _userKey = 'system_user';
 
-  SystemUser? get systemUser {
-    final preference = _preferences.getString(_systemUserKey);
-    if (preference == null) {
-      return null;
-    }
+  User? get user {
+    final userJson = _preferences.getJson(
+          _userKey,
+          (j) => j as Map<String, dynamic>,
+        ) ??
+        const {};
 
-    return SystemUser.fromJson(json.decode(preference) as Map<String, dynamic>);
-  }
+    User? user;
 
-  set systemUser(SystemUser? user) => _preferences.setOrRemoveString(
-        _systemUserKey,
-        user != null ? json.encode(user.toJson()) : null,
+    // TODO: Remove legacy User deserialization eventually.
+    // If the user has a 'settings' key, we know it's not a legacy user.
+    if (userJson.containsKey('settings')) {
+      user = _preferences.getJson(_userKey, User.fromJson);
+    } else {
+      final legacyUser = _preferences.getJson(
+        _legacySettingsKey,
+        (settingsJson) => _legacyUserFromJson(
+          userJson,
+          settingsJson as List<dynamic>,
+        ),
       );
 
-  static const _settingsKey = 'settings';
-
-  List<Setting>? _settingsCache;
-
-  List<Setting> get settings {
-    if (_settingsCache == null) {
-      final preference = _preferences.getString(_settingsKey);
-      final settings = preference != null
-          ? (json.decode(preference) as List)
-              .map((s) => Setting.fromJson(s as Map<String, dynamic>))
-              .filterNotNull()
-              .toList()
-          : <Setting>[];
-
-      return _settingsCache = settings;
-    } else {
-      return _settingsCache!;
+      // Legacy settings are deleted to prevent
+      // overwriting new settings later on.
+      if (legacyUser != null) {
+        user = legacyUser;
+        // Save to non-legacy user.
+        this.user = user;
+        _preferences.setOrRemoveString(_legacySettingsKey, null);
+      }
     }
+
+    return user;
   }
 
-  /// If you need to `await` completion of the write, use [setSettings].
-  set settings(List<Setting>? settings) => setSettings(settings);
+  set user(User? user) =>
+      _preferences.setOrRemoveJson(_userKey, user, User.toJson);
 
-  /// Set (replace) the settings. Future completes when writing is done.
-  Future<void> setSettings(List<Setting>? settings) {
-    _settingsCache = settings;
-
-    return _preferences.setOrRemoveString(
-      _settingsKey,
-      settings != null
-          ? json.encode(settings.map((s) => s.toJson()).toList())
-          : null,
-    );
-  }
+  // This value cannot change.
+  static const _legacySettingsKey = 'settings';
 
   static const _logsKey = 'logs';
 
@@ -107,22 +104,18 @@ class StorageRepository {
   static const _voipConfigKey = 'voip_config';
 
   VoipConfig? get voipConfig {
-    final preference = _preferences.getString(_voipConfigKey);
-    if (preference == null) {
-      return null;
-    }
-
-    final config = VoipConfig.fromJson(
-      json.decode(preference) as Map<String, dynamic>,
+    final config = _preferences.getJson(
+      _voipConfigKey,
+      VoipConfig.fromJson,
     );
 
-    return config.isNotEmpty ? config.toNonEmptyConfig() : config;
+    if (config == null) return null;
+
+    return config.isNotEmpty == true ? config.toNonEmptyConfig() : config;
   }
 
-  set voipConfig(VoipConfig? value) => _preferences.setOrRemoveString(
-        _voipConfigKey,
-        value != null ? json.encode(value.toJson()) : null,
-      );
+  set voipConfig(VoipConfig? value) =>
+      _preferences.setOrRemoveJson(_voipConfigKey, value, VoipConfig.toJson);
 
   /// We store the last installed version so we can check if the user has
   /// updated the app, and if they have display the release notes to them.
@@ -185,27 +178,135 @@ class StorageRepository {
 
   static const _serverConfigKey = 'server_config';
 
-  ServerConfig? get serverConfig {
-    final preference = _preferences.getString(_serverConfigKey);
-    if (preference == null) {
-      return null;
-    }
+  ServerConfig? get serverConfig =>
+      _preferences.getJson(_serverConfigKey, ServerConfig.fromJson);
 
-    final config = ServerConfig.fromJson(
-      json.decode(preference) as Map<String, dynamic>,
-    );
-
-    return config;
-  }
-
-  set serverConfig(ServerConfig? value) => _preferences.setOrRemoveString(
+  set serverConfig(ServerConfig? value) => _preferences.setOrRemoveJson(
         _serverConfigKey,
-        value != null ? json.encode(value.toJson()) : null,
+        value,
+        ServerConfig.toJson,
+      );
+
+  static const _previousSessionSettingsKey = 'previous_session_settings';
+
+  Settings get previousSessionSettings =>
+      _preferences.getJson(_previousSessionSettingsKey, Settings.fromJson) ??
+      const Settings.empty();
+
+  set previousSessionSettings(Settings? value) => _preferences.setOrRemoveJson(
+        _previousSessionSettingsKey,
+        value,
+        Settings.toJson,
       );
 
   Future<void> clear() => _preferences.clear();
 
   Future<void> reload() => _preferences.reload();
+
+  static User? _legacyUserFromJson(
+    Map<String, dynamic> userJson,
+    List<dynamic> settingsJson,
+  ) {
+    if (userJson.isEmpty) return null;
+
+    final settings = <SettingKey, Object>{};
+
+    Iterable<String>? clientOutgoingNumbers;
+    UserPermissions? permissions;
+
+    for (final j in settingsJson) {
+      final type = j['type'];
+      final value = j['value'];
+
+      assert(type != null);
+      assert(value != null);
+
+      // Make sure to add an explicit type cast if using `value` directly.
+      switch (type) {
+        case 'RemoteLoggingSetting':
+          settings[AppSetting.remoteLogging] = value as bool;
+          break;
+        case 'ShowDialerConfirmPopupSetting':
+          settings[AppSetting.showDialerConfirmPopup] = value as bool;
+          break;
+        case 'ShowSurveysSetting':
+          settings[AppSetting.showSurveys] = value as bool;
+          break;
+        case 'BusinessNumberSetting':
+        case 'OutgoingNumberSetting':
+          settings[CallSetting.outgoingNumber] = OutgoingNumber.fromJson(value);
+          break;
+        case 'MobileNumberSetting':
+          settings[CallSetting.mobileNumber] = value as String;
+          break;
+        case 'UsePhoneRingtoneSetting':
+          settings[CallSetting.usePhoneRingtone] = value as bool;
+          break;
+        case 'UseVoipSetting':
+          settings[CallSetting.useVoip] = value as bool;
+          break;
+        case 'ShowCallsInNativeRecentsSetting':
+          settings[AppSetting.showCallsInNativeRecents] = value as bool;
+          break;
+        case 'AvailabilitySetting':
+          settings[CallSetting.availability] = Availability.fromJson(
+            value as Map<String, dynamic>,
+          );
+          break;
+        case 'DndSetting':
+          settings[CallSetting.dnd] = value as bool;
+          break;
+        case 'ShowClientCallsSetting':
+          settings[AppSetting.showClientCalls] = value as bool;
+          break;
+        case 'UseMobileNumberAsFallbackSetting':
+          settings[CallSetting.useMobileNumberAsFallback] = value as bool;
+          break;
+        case 'ClientOutgoingNumbersSetting':
+          clientOutgoingNumbers = (value['numbers'] as List<dynamic>).cast();
+          break;
+        case 'VoipgridPermissionsSetting':
+          permissions = UserPermissions(
+            canSeeClientCalls:
+                value['hasClientCallsPermission'] as bool? ?? false,
+            canUseMobileNumberFallback:
+                value['hasMobileNumberFallbackPermission'] as bool? ?? false,
+          );
+          break;
+      }
+    }
+
+    final appAccountUrlString = userJson['app_account'] as String?;
+    final clientId = userJson['client_id'] as int?;
+    final clientUuid = userJson['client_uuid'] as String?;
+    final clientName = userJson['client_name'] as String?;
+    final clientUrlString = userJson['client'] as String?;
+
+    return User(
+      uuid: userJson['uuid'] as String,
+      email: userJson['email'] as String,
+      firstName: userJson['first_name'] as String,
+      lastName: userJson['last_name'] as String,
+      token: userJson['token'] as String?,
+      appAccountUrl:
+          appAccountUrlString != null ? Uri.parse(appAccountUrlString) : null,
+      client: clientId != null &&
+              clientUuid != null &&
+              clientName != null &&
+              clientUrlString != null
+          ? Client(
+              id: clientId,
+              uuid: clientUuid,
+              name: clientName,
+              url: Uri.parse(clientUrlString),
+              outgoingNumbers:
+                  clientOutgoingNumbers?.map(OutgoingNumber.new) ?? const [],
+            )
+          : null,
+      settings: const Settings.defaults().copyWithAll(settings),
+      permissions: permissions ?? const UserPermissions.defaults(),
+    );
+  }
 }
 
 extension on SharedPreferences {
@@ -247,5 +348,27 @@ extension on SharedPreferences {
     }
 
     return setBool(key, value);
+  }
+
+  T? getJson<T, J>(
+    String key,
+    T Function(J) fromJson,
+  ) {
+    final preference = getString(key);
+
+    if (preference == null) return null;
+
+    return fromJson(json.decode(preference) as J);
+  }
+
+  Future<bool> setOrRemoveJson<T>(
+    String key,
+    T? value,
+    dynamic Function(T) toJson,
+  ) {
+    return setOrRemoveString(
+      key,
+      value != null ? json.encode(toJson(value)) : null,
+    );
   }
 }

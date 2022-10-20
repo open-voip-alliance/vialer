@@ -1,10 +1,17 @@
+import 'package:json_annotation/json_annotation.dart';
+
 import '../../app/util/loggable.dart';
 
+import '../entities/client.dart';
 import '../entities/exceptions/auto_login.dart';
 import '../entities/exceptions/need_to_change_password.dart';
 import '../entities/exceptions/two_factor_authentication_required.dart';
-import '../entities/system_user.dart';
+import '../entities/settings/call_setting.dart';
+import '../entities/settings/settings.dart';
+import '../entities/user.dart';
 import 'services/voipgrid.dart';
+
+part 'auth.g.dart';
 
 class AuthRepository with Loggable {
   final VoipgridService _service;
@@ -17,9 +24,9 @@ class AuthRepository with Loggable {
   static const _twoFactorKey = 'two_factor_token';
 
   /// Returns the latest user from the portal.
-  Future<SystemUser> getUserUsingStoredCredentials() => _getUser();
+  Future<User> getUserUsingStoredCredentials() => _getUser();
 
-  Future<SystemUser> getUserUsingProvidedCredentials({
+  Future<User> getUserUsingProvidedCredentials({
     required String email,
     required String token,
   }) =>
@@ -28,28 +35,28 @@ class AuthRepository with Loggable {
         token: token,
       );
 
-  Future<SystemUser> _getUser({String? email, String? token}) async {
+  Future<User> _getUser({String? email, String? token}) async {
     assert(
       (email == null && token == null) || (email != null && token != null),
     );
 
-    final systemUserResponse = await _service.getSystemUser(
+    final response = await _service.getSystemUser(
       authorization:
           email != null && token != null ? 'Token $email:$token' : null,
     );
-    if (systemUserResponse.error
+    if (response.error
         .toString()
         .contains('You need to change your password in the portal')) {
       throw NeedToChangePasswordException();
     }
 
-    return SystemUser.fromJson(
-      systemUserResponse.body as Map<String, dynamic>,
-    );
+    return _SystemUserResponse.fromJson(
+      response.body as Map<String, dynamic>,
+    ).toUser();
   }
 
   /// If null is returned, authentication failed.
-  Future<SystemUser?> authenticate(
+  Future<User?> authenticate(
     String email,
     String password, {
     bool cachePassword = true,
@@ -134,9 +141,9 @@ class AuthRepository with Loggable {
     return response.isSuccessful;
   }
 
-  Future<bool> isUserUsingMobileNumberAsFallback(SystemUser user) async {
+  Future<bool> isUserUsingMobileNumberAsFallback(User user) async {
     final response = await _service.getUserSettings(
-      clientId: user.clientId.toString(),
+      clientId: user.client?.id.toString() ?? 'null',
       userId: user.uuid,
     );
 
@@ -152,15 +159,85 @@ class AuthRepository with Loggable {
   }
 
   Future<bool> setUseMobileNumberAsFallback(
-    SystemUser user, {
+    User user, {
     required bool enable,
   }) async =>
       _service.updateUserSettings(
-          clientId: user.clientId.toString(),
+          clientId: user.client?.id.toString() ?? 'null',
           userId: user.uuid,
           body: {
             'app': {
               'use_mobile_number_as_fallback': enable,
             }
           }).then((response) => response.isSuccessful);
+}
+
+@JsonSerializable(fieldRename: FieldRename.snake)
+class _SystemUserResponse {
+  final String uuid;
+
+  final String email;
+
+  @JsonKey(name: 'mobile_nr')
+  final String? mobileNumber;
+
+  final String firstName;
+  final String lastName;
+
+  @JsonKey(name: 'app_account')
+  final Uri? appAccountUrl;
+
+  final String? outgoingCli;
+
+  final int? clientId;
+  final String? clientUuid;
+  final String? clientName;
+
+  @JsonKey(name: 'client')
+  final Uri? clientUrl;
+
+  const _SystemUserResponse({
+    required this.uuid,
+    required this.email,
+    this.mobileNumber,
+    required this.firstName,
+    required this.lastName,
+    this.appAccountUrl,
+    this.outgoingCli,
+    this.clientId,
+    this.clientUuid,
+    this.clientName,
+    this.clientUrl,
+  });
+
+  factory _SystemUserResponse.fromJson(Map<String, dynamic> json) =>
+      _$SystemUserResponseFromJson(json);
+
+  bool get _hasClientData =>
+      clientId != null &&
+      clientUuid != null &&
+      clientName != null &&
+      clientUrl != null;
+
+  User toUser() => User(
+        uuid: uuid,
+        email: email,
+        firstName: firstName,
+        lastName: lastName,
+        appAccountUrl: appAccountUrl,
+        client: _hasClientData
+            ? Client(
+                id: clientId!,
+                uuid: clientUuid!,
+                name: clientName!,
+                url: clientUrl!,
+              )
+            : null,
+        settings: Settings({
+          CallSetting.mobileNumber: mobileNumber ?? '',
+          CallSetting.outgoingNumber: OutgoingNumber.fromJson(
+            outgoingCli ?? '',
+          ),
+        }),
+      );
 }

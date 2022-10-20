@@ -22,7 +22,7 @@ class AutomaticallyLoginLegacyUser extends UseCase with Loggable {
 
   Future<bool> call() async {
     /// If the user is already logged in, we don't need to do anything.
-    if (storageRepository.systemUser != null) return false;
+    if (storageRepository.user != null) return false;
 
     final token = legacyStorageRepository.token;
     final email = legacyStorageRepository.emailAddress;

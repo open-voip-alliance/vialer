@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../domain/entities/availability.dart';
-import '../../../../../domain/entities/system_user.dart';
+import '../../../../../domain/entities/user.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
 import '../../../../util/stylized_txt.dart';
@@ -10,7 +10,7 @@ import 'tile.dart';
 class AvailabilityTile extends StatelessWidget {
   final Availability availability;
   final UserAvailabilityType userAvailabilityType;
-  final SystemUser user;
+  final User user;
   final Widget child;
 
   const AvailabilityTile({

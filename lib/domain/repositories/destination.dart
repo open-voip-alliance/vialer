@@ -20,19 +20,19 @@ class DestinationRepository {
         .first;
   }
 
-  Future<void> setAvailability({
+  Future<bool> setAvailability({
     required int selectedDestinationId,
     int? phoneAccountId,
     int? fixedDestinationId,
   }) async {
     assert(!(phoneAccountId != null && fixedDestinationId != null));
 
-    await _service.setAvailability(
+    return await _service.setAvailability(
       selectedDestinationId.toString(),
       {
         'phoneaccount': phoneAccountId?.toString(),
         'fixeddestination': fixedDestinationId?.toString(),
       },
-    );
+    ).then((r) => r.isSuccessful);
   }
 }

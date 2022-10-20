@@ -7,7 +7,7 @@ import 'destination.dart';
 import 'fixed_destination.dart';
 import 'phone_account.dart';
 import 'selected_destination_info.dart';
-import 'system_user.dart';
+import 'user.dart';
 
 part 'availability.g.dart';
 
@@ -94,7 +94,7 @@ class Availability extends Equatable {
 
   /// Find the an app account for the given user. This should never be null
   /// with a user properly configured for the app.
-  PhoneAccount? findAppAccountFor({required SystemUser user}) =>
+  PhoneAccount? findAppAccountFor({required User user}) =>
       phoneAccounts.firstOrNullWhere(
         (phoneAccount) => user.appAccountId == phoneAccount.id.toString(),
       );
@@ -107,10 +107,12 @@ class Availability extends Equatable {
       'internalNumber: $internalNumber, '
       'selectedDestinationInfo: $selectedDestinationInfo)';
 
-  factory Availability.fromJson(Map<String, dynamic> json) =>
-      _$AvailabilityFromJson(json);
+  factory Availability.fromJson(dynamic json) =>
+      _$AvailabilityFromJson(json as Map<String, dynamic>);
 
-  Map<String, dynamic> toJson() => _$AvailabilityToJson(this);
+  // This has to be static, to make it work in [SettingKey].
+  static Map<String, dynamic> toJson(Availability availability) =>
+      _$AvailabilityToJson(availability);
 
   @override
   List<Object?> get props => [

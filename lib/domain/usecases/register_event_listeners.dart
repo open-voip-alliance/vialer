@@ -1,7 +1,8 @@
 import '../../app/util/loggable.dart';
 import '../../dependency_locator.dart';
+import '../entities/settings/app_setting.dart';
 import '../events/event_bus.dart';
-import '../events/show_client_calls_setting_enabled.dart';
+import '../events/setting_changed.dart';
 import '../events/unauthorized_api_response.dart';
 import '../use_case.dart';
 import 'client_calls/import_historic_client_call_records.dart';
@@ -16,13 +17,11 @@ class RegisterDomainEventListenersUseCase extends UseCase with Loggable {
   final _logout = LogoutUseCase();
   final _isAuthenticated = GetIsAuthenticatedUseCase();
   final _importHistoricClientCalls = ImportHistoricClientCallRecordsUseCase();
-  final _purgeLocalCallRecords = PurgeLocalCallRecords();
+  final _purgeLocalCallRecords = PurgeLocalCallRecordsUseCase();
 
   void call() {
-    _eventBus.on<UnauthorizedApiResponseEvent>((event) async {
-      final isAuthenticated = await _isAuthenticated();
-
-      if (!isAuthenticated) return;
+    _eventBus.on<UnauthorizedApiResponseEvent>((event) {
+      if (!_isAuthenticated()) return;
 
       logger.warning(
         'Logging unauthorized user out, code was: ${event.statusCode}.',
@@ -30,12 +29,15 @@ class RegisterDomainEventListenersUseCase extends UseCase with Loggable {
       _logout();
     });
 
-    _eventBus.on<ShowClientCallsSettingChanged>((event) async {
-      if (event.clientCallsEnabled) {
-        _importHistoricClientCalls();
-      } else {
-        _purgeLocalCallRecords(reason: PurgeReason.disabled);
-      }
-    });
+    _eventBus.onSettingChange<bool>(
+      AppSetting.showClientCalls,
+      (oldValue, newValue) {
+        if (newValue == true) {
+          _importHistoricClientCalls();
+        } else {
+          _purgeLocalCallRecords(reason: PurgeReason.disabled);
+        }
+      },
+    );
   }
 }

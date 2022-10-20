@@ -2,16 +2,12 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../../dependency_locator.dart';
-import '../../../../../domain/repositories/storage.dart';
-import '../../../../../domain/usecases/get_client_outgoing_numbers.dart';
 import '../../../../../domain/usecases/get_is_authenticated.dart';
 import '../../../../../domain/usecases/get_is_logged_in_somewhere_else.dart';
 import '../../../../../domain/usecases/get_is_voip_allowed.dart';
-import '../../../../../domain/usecases/get_latest_availability.dart';
-import '../../../../../domain/usecases/get_latest_voipgrid_permissions.dart';
+import '../../../../../domain/usecases/get_latest_logged_in_user.dart';
+import '../../../../../domain/usecases/get_logged_in_user.dart';
 import '../../../../../domain/usecases/get_server_config.dart';
-import '../../../../../domain/usecases/get_user.dart';
 import '../../../../../domain/usecases/get_voip_config.dart';
 import '../../../../../domain/usecases/logout.dart';
 import '../../../../../domain/usecases/register_to_voip_middleware.dart';
@@ -23,24 +19,21 @@ export 'state.dart';
 class UserDataRefresherCubit extends Cubit<UserDataRefresherState>
     with Loggable {
   final _isAuthenticated = GetIsAuthenticatedUseCase();
-  final _getUser = GetUserUseCase();
-  final _getLatestAvailability = GetLatestAvailabilityUseCase();
+  final _getLoggedInUser = GetLoggedInUserUseCase();
+  final _getLatestUser = GetLatestLoggedInUserUseCase();
   final _getVoipConfig = GetVoipConfigUseCase();
   final _registerToVoipMiddleware = RegisterToVoipMiddlewareUseCase();
   final _isVoipAllowed = GetIsVoipAllowedUseCase();
   final _isLoggedInSomewhereElse = GetIsLoggedInSomewhereElseUseCase();
   final _logout = LogoutUseCase();
-  final _storageRepository = dependencyLocator<StorageRepository>();
   final _getServerConfig = GetServerConfigUseCase();
-  final _getClientOutgoingNumbers = GetClientOutgoingNumbersUseCase();
-  final _getLatestVoipgridPermissions = GetLatestVoipgridPermissions();
 
   UserDataRefresherCubit() : super(const NotRefreshing());
 
   Future<void> refresh() async {
-    if (!await _isAuthenticated()) return;
+    if (!_isAuthenticated()) return;
 
-    final oldUser = _storageRepository.systemUser;
+    final oldUser = _getLoggedInUser();
 
     emit(const Refreshing());
 
@@ -51,11 +44,8 @@ class UserDataRefresherCubit extends Cubit<UserDataRefresherState>
       return;
     }
 
-    await _getUser(latest: true);
-    await _getLatestAvailability();
-    await _getLatestVoipgridPermissions();
+    final newUser = await _getLatestUser();
     await _getServerConfig(latest: true);
-    await _getClientOutgoingNumbers();
 
     if (await _isVoipAllowed()) {
       await _getVoipConfig(latest: true);
@@ -63,8 +53,6 @@ class UserDataRefresherCubit extends Cubit<UserDataRefresherState>
 
     await _registerToVoipMiddleware();
     emit(const NotRefreshing());
-
-    final newUser = _storageRepository.systemUser;
 
     if (oldUser != newUser) {
       logger.info('Refreshed user data with new changes applied');

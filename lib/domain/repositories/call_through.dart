@@ -7,7 +7,8 @@ import 'package:url_launcher/url_launcher_string.dart';
 import '../../app/util/loggable.dart';
 import '../../app/util/pigeon.dart' as native;
 import '../entities/exceptions/call_through.dart';
-import '../entities/system_user.dart';
+import '../entities/settings/call_setting.dart';
+import '../entities/user.dart';
 import 'services/voipgrid.dart';
 
 class CallThroughRepository with Loggable {
@@ -18,7 +19,7 @@ class CallThroughRepository with Loggable {
   Future<void> call(
     String destination,
     String? regionNumber, {
-    required SystemUser user,
+    required User user,
   }) async {
     if (regionNumber == null) {
       throw CallThroughException();
@@ -33,12 +34,12 @@ class CallThroughRepository with Loggable {
 
   Future<String> retrieveRegionNumber(
     String destination, {
-    required SystemUser user,
+    required User user,
   }) async {
-    final mobileNumber = user.mobileNumber;
+    final mobileNumber = user.settings.get(CallSetting.mobileNumber);
 
     // If there's no mobile number set, throw an exception.
-    if (mobileNumber == null || mobileNumber.isEmpty) {
+    if (mobileNumber.isEmpty) {
       throw NoMobileNumberException();
     }
 
@@ -83,7 +84,7 @@ class CallThroughRepository with Loggable {
 
   Future<String> _normalizePhoneNumber({
     required String number,
-    required SystemUser user,
+    required User user,
   }) async {
     if (number.isInternalNumber) return number;
 
@@ -112,14 +113,14 @@ class CallThroughRepository with Loggable {
 
   /// We are attempting to guess what country code the user intends to dial
   /// with so we will attempt with various data until we find a usable ISO code.
-  String _findIsoCode({required SystemUser user}) {
+  String _findIsoCode({required User user}) {
     final numbers = [
-      user.outgoingCli,
-      user.mobileNumber,
+      user.settings.get(CallSetting.outgoingNumber).valueOrEmpty,
+      user.settings.get(CallSetting.mobileNumber),
     ];
 
     for (final number in numbers) {
-      final isoCode = _findIsoCodeForPhoneNumber(number!);
+      final isoCode = _findIsoCodeForPhoneNumber(number);
 
       if (isoCode != null) return isoCode;
     }

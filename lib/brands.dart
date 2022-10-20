@@ -11,7 +11,8 @@ const brands = '''
     "middlewareUrl": "https://vialerpush.voipgrid.nl",
     "voipgridUrl": "https://partner.voipgrid.nl",
     "encryptedSipUrl": "sip.encryptedsip.com",
-    "unencryptedSipUrl": "sipproxy.voipgrid.nl"
+    "unencryptedSipUrl": "sipproxy.voipgrid.nl",
+    "businessAvailabilityUrl": "https://api.eu-prod.holodeck.wearespindle.com/business-availability/clients/"
   },
   {
     "identifier": "voys",
@@ -22,7 +23,8 @@ const brands = '''
     "middlewareUrl": "https://vialerpush.voipgrid.nl",
     "voipgridUrl": "https://partner.voipgrid.nl",
     "encryptedSipUrl": "sip.encryptedsip.com",
-    "unencryptedSipUrl": "sipproxy.voipgrid.nl"
+    "unencryptedSipUrl": "sipproxy.voipgrid.nl",
+    "businessAvailabilityUrl": "https://api.eu-prod.holodeck.wearespindle.com/business-availability/clients/"
   },
   {
     "identifier": "vialerStaging",
@@ -32,7 +34,8 @@ const brands = '''
     "middlewareUrl": "https://vialerpush-staging.voipgrid.nl",
     "voipgridUrl": "https://staging.voipgrid.nl",
     "encryptedSipUrl": "staging.encryptedsip.com",
-    "unencryptedSipUrl": "sipproxy-staging.voipgrid.nl"
+    "unencryptedSipUrl": "sipproxy-staging.voipgrid.nl",
+    "businessAvailabilityUrl": "https://api.eu-stag.holodeck.wearespindle.com/business-availability/clients/"
   },
   {
     "identifier": "verbonden",
@@ -42,7 +45,8 @@ const brands = '''
     "middlewareUrl": "https://vialerpush.voipgrid.nl",
     "voipgridUrl": "https://partner.voipgrid.nl",
     "encryptedSipUrl": "sip.encryptedsip.com",
-    "unencryptedSipUrl": "sipproxy.voipgrid.nl"
+    "unencryptedSipUrl": "sipproxy.voipgrid.nl",
+    "businessAvailabilityUrl": "https://api.eu-prod.holodeck.wearespindle.com/business-availability/clients/"
   },
   {
     "identifier": "annabel",
@@ -52,7 +56,8 @@ const brands = '''
     "middlewareUrl": "https://vialerpush.voipgrid.nl",
     "voipgridUrl": "https://partner.voipgrid.nl",
     "encryptedSipUrl": "sip-ams.encryptedsip.com",
-    "unencryptedSipUrl": "sipproxy.voipgrid.nl"
+    "unencryptedSipUrl": "sipproxy.voipgrid.nl",
+    "businessAvailabilityUrl": "https://api.eu-prod.holodeck.wearespindle.com/business-availability/clients/"
   }
 ]
 ''';

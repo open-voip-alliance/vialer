@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:chopper/chopper.dart' hide JsonConverter;
 
-import '../../entities/system_user.dart';
+import '../../entities/user.dart';
 import '../../usecases/get_voipgrid_base_url.dart';
 import 'util.dart';
 
@@ -30,7 +30,7 @@ abstract class VoipgridService extends ChopperService {
   }
 
   static VoipgridService createInIsolate({
-    required SystemUser user,
+    required User user,
     required String baseUrl,
   }) {
     return _$VoipgridService(
@@ -131,4 +131,11 @@ abstract class VoipgridService extends ChopperService {
     @Path() String voipAccountId,
     @Body() Map<String, dynamic> data,
   );
+
+  @Get(path: 'v2/clients/{clientId}/voicemails')
+  Future<Response> getVoicemailAccounts(
+    @Path() String clientId, {
+    @Query() int page = 1,
+    @Query('per_page') int perPage = 500,
+  });
 }
