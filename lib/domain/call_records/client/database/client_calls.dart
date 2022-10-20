@@ -1,10 +1,6 @@
-import 'dart:io';
-
 import 'package:drift/drift.dart';
-import 'package:drift/native.dart';
-import 'package:path/path.dart' as p;
-import 'package:path_provider/path_provider.dart';
 
+import '../../../database_util.dart';
 import '../../call_record.dart';
 
 part 'client_calls.g.dart';
@@ -60,28 +56,13 @@ class ClientCallWithColleaguePhoneAccount {
   include: {'queries.drift'},
 )
 class ClientCallsDatabase extends _$ClientCallsDatabase {
-  ClientCallsDatabase() : super(_openConnection());
+  static String get dbFilename => 'db.sqlite';
+
+  ClientCallsDatabase() : super(openDatabaseConnection(dbFilename));
 
   ClientCallsDatabase.createInIsolate(String path)
-      : super(_openConnectionForIsolate(path));
+      : super(openDatabaseConnectionInIsolate(path));
 
   @override
   int get schemaVersion => 1;
-
-  static LazyDatabase _openConnection() {
-    return LazyDatabase(() async {
-      return NativeDatabase(await databaseFile);
-    });
-  }
-
-  static LazyDatabase _openConnectionForIsolate(String path) {
-    return LazyDatabase(() async {
-      return NativeDatabase(File(path));
-    });
-  }
-
-  static Future<File> get databaseFile async {
-    final dbFolder = await getApplicationDocumentsDirectory();
-    return File(p.join(dbFolder.path, 'db.sqlite'));
-  }
 }

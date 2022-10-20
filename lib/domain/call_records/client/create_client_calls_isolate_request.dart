@@ -1,5 +1,6 @@
 import 'package:dartx/dartx.dart';
 
+import '../../database_util.dart';
 import '../../use_case.dart';
 import '../../user/get_logged_in_user.dart';
 import '../../user/settings/call_setting.dart';
@@ -28,7 +29,8 @@ class CreateClientCallsIsolateRequestUseCase extends UseCase {
     return ClientCallsIsolateRequest(
       user: _getUser(),
       voipgridApiBaseUrl: await _getBaseUrl(),
-      databasePath: (await ClientCallsDatabase.databaseFile).path,
+      databasePath:
+          (await getDatabaseFile(ClientCallsDatabase.dbFilename)).path,
       dateRangesToQuery: dateRangesToQuery,
       userPhoneAccountIds: await _usersPhoneAccounts,
     );
