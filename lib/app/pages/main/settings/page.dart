@@ -59,6 +59,8 @@ class _SettingsPageState extends State<SettingsPage> {
         .toUpperCaseIfAndroid(context);
     final logoutButtonText =
         context.msg.main.settings.buttons.logout.toUpperCaseIfAndroid(context);
+    final privacyPolicyText =
+        context.msg.main.settings.privacyPolicy.toUpperCaseIfAndroid(context);
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -185,6 +187,12 @@ class _SettingsPageState extends State<SettingsPage> {
                                   ),
                                 ),
                                 const SizedBox(height: 16),
+                                TextButton(
+                                  onPressed: context
+                                      .watch<SettingsCubit>()
+                                      .launchPrivacyPolicy,
+                                  child: Text(privacyPolicyText),
+                                ),
                               ],
                             ),
                           ),

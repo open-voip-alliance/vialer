@@ -361,6 +361,7 @@ main:
       snackBar: "Feedback verstuurd bedankt!"
       buttons:
         send: "Feedback sturen"
+    privacyPolicy: "Privacybeleid"
 
   notice:
     microphone:

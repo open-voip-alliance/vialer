@@ -11,6 +11,7 @@ import '../../../../domain/user/get_build_info.dart';
 import '../../../../domain/user/get_latest_logged_in_user.dart';
 import '../../../../domain/user/get_logged_in_user.dart';
 import '../../../../domain/user/get_permission_status.dart';
+import '../../../../domain/user/launch_privacy_policy.dart';
 import '../../../../domain/user/permissions/permission.dart';
 import '../../../../domain/user/permissions/permission_status.dart';
 import '../../../../domain/user/settings/change_settings.dart';
@@ -33,6 +34,7 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
       PerformEchoCancellationCalibrationUseCase();
   final _getUser = GetLoggedInUserUseCase();
   final _getLatestUser = GetLatestLoggedInUserUseCase();
+  final _launchPrivacyPolicy = LaunchPrivacyPolicy();
 
   late StreamSubscription _userRefresherSubscription;
 
@@ -104,6 +106,8 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
     await _logout();
     logger.info('Logged out');
   }
+
+  Future<void> launchPrivacyPolicy() async => _launchPrivacyPolicy();
 
   @override
   Future<void> close() async {

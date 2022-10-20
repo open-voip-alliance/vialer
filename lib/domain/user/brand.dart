@@ -16,6 +16,7 @@ class Brand extends Equatable {
   final Uri encryptedSipUrl;
   final Uri unencryptedSipUrl;
   final Uri businessAvailabilityUrl;
+  final Uri privacyPolicyUrl;
 
   const Brand({
     required this.identifier,
@@ -27,6 +28,7 @@ class Brand extends Equatable {
     required this.encryptedSipUrl,
     required this.unencryptedSipUrl,
     required this.businessAvailabilityUrl,
+    required this.privacyPolicyUrl,
   });
 
   @override
@@ -40,6 +42,7 @@ class Brand extends Equatable {
         encryptedSipUrl,
         unencryptedSipUrl,
         businessAvailabilityUrl,
+        privacyPolicyUrl,
       ];
 
   bool get isVialer => identifier == 'vialer';
