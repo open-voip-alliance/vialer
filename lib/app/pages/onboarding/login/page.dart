@@ -5,6 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
+import '../../../../domain/user/launch_privacy_policy.dart';
 import '../../../resources/localizations.dart';
 import '../../../resources/theme.dart';
 import '../../../util/conditional_capitalization.dart';
@@ -244,6 +245,15 @@ class _LoginPageState extends State<LoginPage>
                                     .msg.onboarding.login.button.forgotPassword
                                     .toUpperCaseIfAndroid(context),
                               ),
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          TextButton(
+                            onPressed: () => LaunchPrivacyPolicy()(),
+                            child: Text(
+                              context.msg.main.settings.privacyPolicy
+                                  .toUpperCaseIfAndroid(context),
+                              style: const TextStyle(color: Colors.white),
                             ),
                           ),
                         ],

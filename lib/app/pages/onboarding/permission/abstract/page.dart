@@ -13,6 +13,11 @@ class PermissionPage extends StatelessWidget {
   final Permission permission;
   final VoidCallback? onPermissionGranted;
 
+  /// When set to TRUE, the user will be provided with a clear choice between
+  /// providing consent which will display the permission dialog and not
+  /// providing consent, which will skip it.
+  final bool requestConsent;
+
   PermissionPage({
     Key? key,
     required this.icon,
@@ -20,6 +25,7 @@ class PermissionPage extends StatelessWidget {
     required this.description,
     required this.permission,
     this.onPermissionGranted,
+    this.requestConsent = false,
   }) : super(key: key);
 
   void _onStateChanged(BuildContext context, PermissionState state) {
@@ -45,6 +51,9 @@ class PermissionPage extends StatelessWidget {
               title: title,
               description: description,
               onPressed: context.watch<PermissionCubit>().request,
+              onConsentDeclined: requestConsent
+                  ? context.watch<OnboardingCubit>().forward
+                  : null,
             ),
           );
         },

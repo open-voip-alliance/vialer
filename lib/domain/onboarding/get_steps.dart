@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:dartx/dartx.dart';
+
 import '../../../dependency_locator.dart';
 import '../use_case.dart';
 import '../user/permissions/permission.dart';
@@ -39,6 +41,12 @@ class GetOnboardingStepsUseCase extends UseCase {
       }
     }
 
-    return steps;
+    // We always want to show the contacts step on Android as we are
+    // specifically requesting consent.
+    if (Platform.isAndroid) {
+      steps.add(OnboardingStep.contactsPermission);
+    }
+
+    return steps.distinct().toList(growable: false);
   }
 }

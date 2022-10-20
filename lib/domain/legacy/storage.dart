@@ -302,7 +302,8 @@ class StorageRepository {
               uuid: clientUuid,
               name: clientName,
               url: Uri.parse(clientUrlString),
-              outgoingNumbers: clientOutgoingNumbers ?? const [],
+              outgoingNumbers:
+                  clientOutgoingNumbers?.map(OutgoingNumber.new) ?? const [],
             )
           : null,
       settings: const Settings.defaults().copyWithAll(settings),

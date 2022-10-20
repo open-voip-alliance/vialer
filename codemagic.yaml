@@ -365,10 +365,10 @@ custom: # Custom properties to make workflows cleaner
         beta_groups:
           - Beta Testers
           - External Testers
-      google_play:
-        credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
-        track: production
-        in_app_update_priority: 3
+#      google_play:
+#        credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
+#        track: production
+#        in_app_update_priority: 3
 
     publish_for_beta: &publish_for_beta
       app_store_connect:
@@ -529,8 +529,8 @@ workflows:
       - *analyze
       - *prepare_release_notes_from_files
       - *flutter_test
-      - *build_aab
-      - *build_universal_apk_from_aab
+#      - *build_aab
+#      - *build_universal_apk_from_aab
       - *update_ios_signing_for_current_brand
       - *build_ipa
       - *release_to_sentry
