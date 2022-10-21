@@ -54,6 +54,8 @@ private object LogEvents : BaseColumns {
     }
 }
 
+// We need a context wrapper, otherwise the helper will search in the wrong
+// directory for the database file.
 private class FlutterDatabaseContext(base: Context?) : ContextWrapper(base) {
     override fun getDatabasePath(name: String) =
         File(PathUtils.getDataDirectory(this)).resolve(name)
