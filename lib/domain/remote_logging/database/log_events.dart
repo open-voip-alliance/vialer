@@ -20,6 +20,12 @@ class LoggingDatabase extends _$LoggingDatabase {
   LoggingDatabase.createInIsolate(String path)
       : super(openDatabaseConnectionInIsolate(path));
 
+  // TODO: TEMPORARY: We must call something on the database so that it's
+  // created. Can be removed once we log things in Dart.
+  void open() {
+    select(logEvents).get();
+  }
+
   @override
   int get schemaVersion => 1;
 }
