@@ -488,21 +488,14 @@ onboarding:
         $appName heeft toegang tot de microfoon nodig zodat je gesprekken op kunt zetten en ontvangen.
     contacts:
       title: "Toestemming voor contacten"
-      description:
-        android(String appName): >-
-          Door toestemming te geven worden je contacten en recente gesprekken in $appName zichtbaar en kun je ze makkelijk doorzoeken.
+      description(String appName):
+        Door toestemming te geven worden je contacten en recente gesprekken in $appName zichtbaar en kun je ze makkelijk doorzoeken.
 
 
-          $appName slaat jouw contacten veilig op, waardoor in de toekomst het beheren van contacten in de webphone mogelijk wordt.
+        $appName om je contacten doorzoekbaar en beheerbaar te maken slaan we deze veilig en alleen op jouw apparaat op.
 
 
-          We delen geen contactgegevens met derden.
-        iOS(String appName):
-          Door toestemming te geven worden je contacten en recente gesprekken
-          in $appName zichtbaar en kun je ze makkelijk doorzoeken.
-
-
-          $appName geeft alleen je contacten weer en ze worden nooit gedeeld met derden.
+        We delen geen contactgegevens met derden.
     bluetooth:
       title: "Toestemming voor Bluetooth"
       description(String appName): >-

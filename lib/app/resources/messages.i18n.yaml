@@ -487,21 +487,14 @@ onboarding:
         $appName needs access to the microphone so you can make and receive calls.
     contacts:
       title: "Contacts permission"
-      description:
-        android(String appName): >-
-          This permission allows $appName to show your contacts, call history, and makes it possible for you to search through them.
+      description(String appName):
+        This permission allows $appName to show your contacts, call history, and makes it possible for you to search through them.
 
 
-          $appName stores your contacts safely, enabling contact management in the Webphone in the future.
+        $appName stores your contacts safely on your device only, enabling contact searching and management.
 
 
-          We do not share any contact information with third parties.
-        iOS(String appName): >-
-          This permission allows $appName to show your contacts, call history,
-          and makes it possible for you to search through them.
-
-
-          $appName only displays your contacts and won't share them with third parties.
+        We do not share any contact information with third parties.
     bluetooth:
       title: "Bluetooth permission"
       description(String appName): >-
