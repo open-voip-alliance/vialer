@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../domain/business_availability/get_current_temporary_redirect.dart';
 import '../../../../../domain/onboarding/request_permission.dart';
 import '../../../../../domain/user/get_permission_status.dart';
 import '../../../../../domain/user/permissions/permission.dart';
@@ -15,9 +16,10 @@ import 'state.dart';
 export 'state.dart';
 
 class NoticeCubit extends Cubit<NoticeState> with Loggable {
-  final _getPermissionStatus = GetPermissionStatusUseCase();
-  final _requestPermission = RequestPermissionUseCase();
-  final _openAppSettings = OpenSettingsAppUseCase();
+  late final _getCurrentRedirect = GetCurrentTemporaryRedirectUseCase();
+  late final _getPermissionStatus = GetPermissionStatusUseCase();
+  late final _requestPermission = RequestPermissionUseCase();
+  late final _openAppSettings = OpenSettingsAppUseCase();
 
   final CallerCubit _caller;
 
@@ -55,6 +57,8 @@ class NoticeCubit extends Cubit<NoticeState> with Loggable {
           )
         : PermissionStatus.granted;
 
+    final currentRedirect = await _getCurrentRedirect();
+
     if (phoneStatus != PermissionStatus.granted &&
         microphoneStatus != PermissionStatus.granted) {
       emit(const PhoneAndMicrophonePermissionDeniedNotice());
@@ -66,6 +70,8 @@ class NoticeCubit extends Cubit<NoticeState> with Loggable {
       emit(const BluetoothConnectPermissionDeniedNotice());
     } else if (notificationsStatus != PermissionStatus.granted) {
       emit(const NotificationsPermissionDeniedNotice());
+    } else if (currentRedirect != null) {
+      emit(TemporaryRedirectNotice(temporaryRedirect: currentRedirect));
     } else {
       emit(const NoNotice());
     }
