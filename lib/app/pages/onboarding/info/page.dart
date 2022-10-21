@@ -12,17 +12,12 @@ class InfoPage extends StatelessWidget {
   final Widget description;
   final VoidCallback onPressed;
 
-  /// When provided, an additional button will be added that will allow the user
-  /// to not consent to the information on the page.
-  final VoidCallback? onConsentDeclined;
-
   InfoPage({
     Key? key,
     required this.icon,
     required this.title,
     required this.description,
     required this.onPressed,
-    this.onConsentDeclined,
   }) : super(key: key);
 
   @override
@@ -91,37 +86,13 @@ class InfoPage extends StatelessWidget {
               ),
             ),
           ),
-          Row(
-            children: [
-              Expanded(
-                child: StylizedButton.raised(
-                  key: keys.continueButton,
-                  onPressed: onPressed,
-                  margin: EdgeInsets.zero,
-                  child: Text(
-                    (onConsentDeclined != null
-                            ? context
-                                .msg.onboarding.permission.button.giveConsent
-                            : context
-                                .msg.onboarding.permission.button.iUnderstand)
-                        .toUpperCaseIfAndroid(context),
-                  ),
-                ),
-              ),
-              if (onConsentDeclined != null) ...[
-                const SizedBox(width: 32),
-                Expanded(
-                  child: StylizedButton.raised(
-                    onPressed: onConsentDeclined,
-                    margin: EdgeInsets.zero,
-                    child: Text(
-                      context.msg.onboarding.permission.button.declineConsent
-                          .toUpperCaseIfAndroid(context),
-                    ),
-                  ),
-                ),
-              ],
-            ],
+          StylizedButton.raised(
+            key: keys.continueButton,
+            onPressed: onPressed,
+            child: Text(
+              context.msg.onboarding.permission.button.iUnderstand
+                  .toUpperCaseIfAndroid(context),
+            ),
           ),
         ],
       ),
@@ -139,8 +110,8 @@ extension on BuildContext {
   // The default screen width value is loosely based
   // on the Nexus 5X screen width.
   double get sizeFactor => (MediaQuery.of(this).size.width / 416)
-      // On bigger (or extremely small) screens, the
-      // values are clamped to prevent extreme sizes.
+  // On bigger (or extremely small) screens, the
+  // values are clamped to prevent extreme sizes.
       .clamp(0.5, 1);
 }
 
