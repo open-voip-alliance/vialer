@@ -6,13 +6,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../dependency_locator.dart';
-import '../../../../domain/entities/call_record.dart';
-import '../../../../domain/entities/client_call_record.dart';
-import '../../../../domain/repositories/local_client_calls.dart';
-import '../../../../domain/usecases/client_calls/import_new_client_calls.dart';
-import '../../../../domain/usecases/get_recent_calls.dart';
-import '../../../../domain/usecases/get_recent_client_calls.dart';
-import '../../../../domain/usecases/metrics/track_copy_number.dart';
+import '../../../../domain/call_records/call_record.dart';
+import '../../../../domain/call_records/client/client_call_record.dart';
+import '../../../../domain/call_records/client/get_recent_client_calls.dart';
+import '../../../../domain/call_records/client/import_new_client_calls.dart';
+import '../../../../domain/call_records/client/local_client_calls.dart';
+import '../../../../domain/call_records/personal/get_recent_calls.dart';
+import '../../../../domain/metrics/track_copy_number.dart';
 import '../widgets/caller/cubit.dart';
 import 'state.dart';
 

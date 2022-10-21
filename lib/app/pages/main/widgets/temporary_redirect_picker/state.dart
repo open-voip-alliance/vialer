@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import '../../../../../domain/entities/temporary_redirect.dart';
+import '../../../../../domain/business_availability/temporary_redirect.dart';
 
 abstract class TemporaryRedirectPickerState extends Equatable {
   const TemporaryRedirectPickerState();

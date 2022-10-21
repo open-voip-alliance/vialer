@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import '../../../../domain/entities/user.dart';
+import '../../../../domain/user/user.dart';
 
 class WelcomeState extends Equatable {
   final User? user;

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../domain/entities/settings/call_setting.dart';
+import '../../../../domain/user/settings/call_setting.dart';
 import '../../../resources/localizations.dart';
 import 'cubit.dart';
 import 'widgets/tile.dart';

@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../../../domain/entities/build_info.dart';
-import '../../../../domain/entities/settings/app_setting.dart';
-import '../../../../domain/entities/settings/call_setting.dart';
+import '../../../../domain/user/info/build_info.dart';
+import '../../../../domain/user/launch_privacy_policy.dart';
+import '../../../../domain/user/settings/app_setting.dart';
+import '../../../../domain/user/settings/call_setting.dart';
 import '../../../resources/localizations.dart';
 import '../../../resources/theme.dart';
 import '../../../routes.dart';
@@ -59,6 +60,8 @@ class _SettingsPageState extends State<SettingsPage> {
         .toUpperCaseIfAndroid(context);
     final logoutButtonText =
         context.msg.main.settings.buttons.logout.toUpperCaseIfAndroid(context);
+    final privacyPolicyText =
+        context.msg.main.settings.privacyPolicy.toUpperCaseIfAndroid(context);
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -183,6 +186,11 @@ class _SettingsPageState extends State<SettingsPage> {
                                       logoutButtonText,
                                     ),
                                   ),
+                                ),
+                                const SizedBox(height: 16),
+                                TextButton(
+                                  onPressed: () => LaunchPrivacyPolicy()(),
+                                  child: Text(privacyPolicyText),
                                 ),
                                 const SizedBox(height: 16),
                               ],

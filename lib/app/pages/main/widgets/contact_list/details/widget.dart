@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 
-import '../../../../../../domain/entities/contact.dart';
+import '../../../../../../domain/contacts/contact.dart';
 import '../../../../../resources/localizations.dart';
 import '../../../../../util/contact.dart';
 import '../../../widgets/caller.dart';

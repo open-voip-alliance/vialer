@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:vialer/app/pages/main/widgets/dial_pad/key_input.dart';
 import 'package:vialer/app/resources/localizations.dart';
 import 'package:vialer/app/widgets/brand_provider/widget.dart';
-import 'package:vialer/domain/entities/brand.dart';
+import 'package:vialer/domain/user/brand.dart';
 
 void main() {
   final controller = TextEditingController();
@@ -29,6 +29,7 @@ void main() {
           unencryptedSipUrl: Uri.parse('sipproxy.voipgrid.nl'),
           businessAvailabilityUrl: Uri.parse(
               'https://api.eu-prod.holodeck.wearespindle.com/business-availability/clients/'),
+          privacyPolicyUrl: Uri.parse('dummypolicy.com'),
         ),
         child: KeyInput(
           controller: controller,

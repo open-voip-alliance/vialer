@@ -1,9 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../../domain/entities/permission.dart';
-import '../../../../../domain/entities/permission_status.dart';
-import '../../../../../domain/usecases/metrics/track_permission.dart';
-import '../../../../../domain/usecases/onboarding/request_permission.dart';
+import '../../../../../domain/metrics/track_permission.dart';
+import '../../../../../domain/onboarding/request_permission.dart';
+import '../../../../../domain/user/permissions/permission.dart';
+import '../../../../../domain/user/permissions/permission_status.dart';
 import '../../../../util/loggable.dart';
 import 'state.dart';
 

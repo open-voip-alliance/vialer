@@ -3,8 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_libphonenumber/flutter_libphonenumber.dart';
 
-import '../../../../../../domain/entities/country.dart';
-import '../../../../../../domain/usecases/get_countries.dart';
+import '../../../../../../domain/onboarding/country.dart';
+import '../../../../../../domain/onboarding/get_countries.dart';
 import 'state.dart';
 
 export 'state.dart';

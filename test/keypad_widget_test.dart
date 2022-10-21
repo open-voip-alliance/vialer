@@ -5,7 +5,7 @@ import 'package:vialer/app/pages/main/widgets/dial_pad/keypad.dart';
 import 'package:vialer/app/resources/localizations.dart';
 import 'package:vialer/app/resources/theme.dart';
 import 'package:vialer/app/widgets/brand_provider/widget.dart';
-import 'package:vialer/domain/entities/brand.dart';
+import 'package:vialer/domain/user/brand.dart';
 
 void main() {
   final textController = TextEditingController();
@@ -445,6 +445,7 @@ class TestApp extends StatelessWidget {
         unencryptedSipUrl: Uri.parse('sipproxy.voipgrid.nl'),
         businessAvailabilityUrl: Uri.parse(
             'https://api.eu-prod.holodeck.wearespindle.com/business-availability/clients/'),
+        privacyPolicyUrl: Uri.parse('dummypolicy.com'),
       ),
       child: Builder(builder: (context) {
         return MaterialApp(

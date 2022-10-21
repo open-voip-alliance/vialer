@@ -1,0 +1,377 @@
+import 'dart:convert';
+
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../user/client.dart';
+import '../user/permissions/user_permissions.dart';
+import '../user/settings/app_setting.dart';
+import '../user/settings/call_setting.dart';
+import '../user/settings/settings.dart';
+import '../user/user.dart';
+import '../voipgrid/availability.dart';
+import '../voipgrid/server_config.dart';
+import '../voipgrid/voip_config.dart';
+
+class StorageRepository {
+  late SharedPreferences _preferences;
+
+  Future<void> load() async {
+    _preferences = await SharedPreferences.getInstance();
+  }
+
+  // Value must stay the same, otherwise everything breaks.
+  static const _userKey = 'system_user';
+
+  User? get user {
+    final userJson = _preferences.getJson(
+          _userKey,
+          (j) => j as Map<String, dynamic>,
+        ) ??
+        const {};
+
+    User? user;
+
+    // TODO: Remove legacy User deserialization eventually.
+    // If the user has a 'settings' key, we know it's not a legacy user.
+    if (userJson.containsKey('settings')) {
+      user = _preferences.getJson(_userKey, User.fromJson);
+    } else {
+      final legacyUser = _preferences.getJson(
+        _legacySettingsKey,
+        (settingsJson) => _legacyUserFromJson(
+          userJson,
+          settingsJson as List<dynamic>,
+        ),
+      );
+
+      // Legacy settings are deleted to prevent
+      // overwriting new settings later on.
+      if (legacyUser != null) {
+        user = legacyUser;
+        // Save to non-legacy user.
+        this.user = user;
+        _preferences.setOrRemoveString(_legacySettingsKey, null);
+      }
+    }
+
+    return user;
+  }
+
+  set user(User? user) =>
+      _preferences.setOrRemoveJson(_userKey, user, User.toJson);
+
+  // This value cannot change.
+  static const _legacySettingsKey = 'settings';
+
+  static const _logsKey = 'logs';
+
+  String? get logs => _preferences.getString(_logsKey);
+
+  set logs(String? value) => _preferences.setOrRemoveString(_logsKey, value);
+
+  Future<void> appendLogs(String value) async {
+    await reload();
+    _preferences.setString(_logsKey, '$logs\n$value');
+  }
+
+  static const _lastDialedNumberKey = 'last_dialed_number';
+
+  String? get lastDialedNumber => _preferences.getString(_lastDialedNumberKey);
+
+  set lastDialedNumber(String? value) =>
+      _preferences.setOrRemoveString(_lastDialedNumberKey, value);
+
+  static const _callThroughCallsCountKey = 'call_through_calls_count';
+
+  int? get callThroughCallsCount =>
+      _preferences.getInt(_callThroughCallsCountKey);
+
+  set callThroughCallsCount(int? value) =>
+      _preferences.setOrRemoveInt(_callThroughCallsCountKey, value);
+
+  static const _pushTokenKey = 'push_token';
+
+  String? get pushToken => _preferences.getString(_pushTokenKey);
+
+  set pushToken(String? value) =>
+      _preferences.setOrRemoveString(_pushTokenKey, value);
+
+  static const _remoteNotificationTokenKey = 'remote_notification_token';
+
+  String? get remoteNotificationToken =>
+      _preferences.getString(_remoteNotificationTokenKey);
+
+  set remoteNotificationToken(String? value) =>
+      _preferences.setOrRemoveString(_remoteNotificationTokenKey, value);
+
+  static const _voipConfigKey = 'voip_config';
+
+  VoipConfig? get voipConfig {
+    final config = _preferences.getJson(
+      _voipConfigKey,
+      VoipConfig.fromJson,
+    );
+
+    if (config == null) return null;
+
+    return config.isNotEmpty == true ? config.toNonEmptyConfig() : config;
+  }
+
+  set voipConfig(VoipConfig? value) =>
+      _preferences.setOrRemoveJson(_voipConfigKey, value, VoipConfig.toJson);
+
+  /// We store the last installed version so we can check if the user has
+  /// updated the app, and if they have display the release notes to them.
+  static const _lastInstalledVersionKey = 'last_installed_version';
+
+  String? get lastInstalledVersion =>
+      _preferences.getString(_lastInstalledVersionKey);
+
+  set lastInstalledVersion(String? version) =>
+      _preferences.setOrRemoveString(_lastInstalledVersionKey, version);
+
+  /// We store whether the Recent page was shown, to display a dialog on the
+  /// first show explaining where to find company calls.
+  static const _shownRecentCallsKey = 'shown_recent_calls';
+
+  bool? get shownRecentCalls => _preferences.getBool(_shownRecentCallsKey);
+
+  set shownRecentCalls(bool? shownRecents) =>
+      _preferences.setOrRemoveBool(_shownRecentCallsKey, shownRecents);
+
+  static const _isLoggedInSomewhereElseKey = 'is_logged_in_somewhere_else';
+
+  bool? get isLoggedInSomewhereElse =>
+      _preferences.getBool(_isLoggedInSomewhereElseKey);
+
+  set isLoggedInSomewhereElse(bool? value) =>
+      _preferences.setOrRemoveBool(_isLoggedInSomewhereElseKey, value);
+
+  static const _loginTimeKey = 'login_time';
+
+  DateTime? get loginTime => _preferences.getDateTime(_loginTimeKey);
+
+  set loginTime(DateTime? value) =>
+      _preferences.setOrRemoveDateTime(_loginTimeKey, value);
+
+  static const _lastCallRatingAskedTimeKey = 'last_call_rating_asked_time';
+
+  DateTime? get lastCallRatingAskedTime =>
+      _preferences.getDateTime(_lastCallRatingAskedTimeKey);
+
+  set lastCallRatingAskedTime(DateTime? value) =>
+      _preferences.setOrRemoveDateTime(_lastCallRatingAskedTimeKey, value);
+
+  static const _appRatingSurveyActionCountKey =
+      'app_rating_survey_action_count';
+
+  int? get appRatingSurveyActionCount =>
+      _preferences.getInt(_appRatingSurveyActionCountKey);
+
+  set appRatingSurveyActionCount(int? value) =>
+      _preferences.setOrRemoveInt(_appRatingSurveyActionCountKey, value);
+
+  static const _appRatingSurveyShownTimeKey = 'app_rating_survey_shown_time';
+
+  DateTime? get appRatingSurveyShownTime =>
+      _preferences.getDateTime(_appRatingSurveyShownTimeKey);
+
+  set appRatingSurveyShownTime(DateTime? value) =>
+      _preferences.setOrRemoveDateTime(_appRatingSurveyShownTimeKey, value);
+
+  static const _serverConfigKey = 'server_config';
+
+  ServerConfig? get serverConfig =>
+      _preferences.getJson(_serverConfigKey, ServerConfig.fromJson);
+
+  set serverConfig(ServerConfig? value) => _preferences.setOrRemoveJson(
+        _serverConfigKey,
+        value,
+        ServerConfig.toJson,
+      );
+
+  static const _previousSessionSettingsKey = 'previous_session_settings';
+
+  Settings get previousSessionSettings =>
+      _preferences.getJson(_previousSessionSettingsKey, Settings.fromJson) ??
+      const Settings.empty();
+
+  set previousSessionSettings(Settings? value) => _preferences.setOrRemoveJson(
+        _previousSessionSettingsKey,
+        value,
+        Settings.toJson,
+      );
+
+  Future<void> clear() => _preferences.clear();
+
+  Future<void> reload() => _preferences.reload();
+
+  static User? _legacyUserFromJson(
+    Map<String, dynamic> userJson,
+    List<dynamic> settingsJson,
+  ) {
+    if (userJson.isEmpty) return null;
+
+    final settings = <SettingKey, Object>{};
+
+    Iterable<String>? clientOutgoingNumbers;
+    UserPermissions? permissions;
+
+    for (final j in settingsJson) {
+      final type = j['type'];
+      final value = j['value'];
+
+      assert(type != null);
+      assert(value != null);
+
+      // Make sure to add an explicit type cast if using `value` directly.
+      switch (type) {
+        case 'RemoteLoggingSetting':
+          settings[AppSetting.remoteLogging] = value as bool;
+          break;
+        case 'ShowDialerConfirmPopupSetting':
+          settings[AppSetting.showDialerConfirmPopup] = value as bool;
+          break;
+        case 'ShowSurveysSetting':
+          settings[AppSetting.showSurveys] = value as bool;
+          break;
+        case 'BusinessNumberSetting':
+        case 'OutgoingNumberSetting':
+          settings[CallSetting.outgoingNumber] = OutgoingNumber.fromJson(value);
+          break;
+        case 'MobileNumberSetting':
+          settings[CallSetting.mobileNumber] = value as String;
+          break;
+        case 'UsePhoneRingtoneSetting':
+          settings[CallSetting.usePhoneRingtone] = value as bool;
+          break;
+        case 'UseVoipSetting':
+          settings[CallSetting.useVoip] = value as bool;
+          break;
+        case 'ShowCallsInNativeRecentsSetting':
+          settings[AppSetting.showCallsInNativeRecents] = value as bool;
+          break;
+        case 'AvailabilitySetting':
+          settings[CallSetting.availability] = Availability.fromJson(
+            value as Map<String, dynamic>,
+          );
+          break;
+        case 'DndSetting':
+          settings[CallSetting.dnd] = value as bool;
+          break;
+        case 'ShowClientCallsSetting':
+          settings[AppSetting.showClientCalls] = value as bool;
+          break;
+        case 'UseMobileNumberAsFallbackSetting':
+          settings[CallSetting.useMobileNumberAsFallback] = value as bool;
+          break;
+        case 'ClientOutgoingNumbersSetting':
+          clientOutgoingNumbers = (value['numbers'] as List<dynamic>).cast();
+          break;
+        case 'VoipgridPermissionsSetting':
+          permissions = UserPermissions(
+            canSeeClientCalls:
+                value['hasClientCallsPermission'] as bool? ?? false,
+            canUseMobileNumberFallback:
+                value['hasMobileNumberFallbackPermission'] as bool? ?? false,
+          );
+          break;
+      }
+    }
+
+    final appAccountUrlString = userJson['app_account'] as String?;
+    final clientId = userJson['client_id'] as int?;
+    final clientUuid = userJson['client_uuid'] as String?;
+    final clientName = userJson['client_name'] as String?;
+    final clientUrlString = userJson['client'] as String?;
+
+    return User(
+      uuid: userJson['uuid'] as String,
+      email: userJson['email'] as String,
+      firstName: userJson['first_name'] as String,
+      lastName: userJson['last_name'] as String,
+      token: userJson['token'] as String?,
+      appAccountUrl:
+          appAccountUrlString != null ? Uri.parse(appAccountUrlString) : null,
+      client: clientId != null &&
+              clientUuid != null &&
+              clientName != null &&
+              clientUrlString != null
+          ? Client(
+              id: clientId,
+              uuid: clientUuid,
+              name: clientName,
+              url: Uri.parse(clientUrlString),
+              outgoingNumbers:
+                  clientOutgoingNumbers?.map(OutgoingNumber.new) ?? const [],
+            )
+          : null,
+      settings: const Settings.defaults().copyWithAll(settings),
+      permissions: permissions ?? const UserPermissions.defaults(),
+    );
+  }
+}
+
+extension on SharedPreferences {
+  DateTime? getDateTime(String key) {
+    final isoDate = getString(key);
+
+    if (isoDate == null) return null;
+
+    return DateTime.parse(isoDate);
+  }
+
+  Future<bool> setOrRemoveDateTime(String key, DateTime? value) {
+    return setOrRemoveString(
+      key,
+      value?.toUtc().toIso8601String(),
+    );
+  }
+
+  Future<bool> setOrRemoveString(String key, String? value) {
+    if (value == null) {
+      return remove(key);
+    }
+
+    return setString(key, value);
+  }
+
+  Future<bool> setOrRemoveInt(String key, int? value) {
+    if (value == null) {
+      return remove(key);
+    }
+
+    return setInt(key, value);
+  }
+
+  // ignore: avoid_positional_boolean_parameters
+  Future<bool> setOrRemoveBool(String key, bool? value) {
+    if (value == null) {
+      return remove(key);
+    }
+
+    return setBool(key, value);
+  }
+
+  T? getJson<T, J>(
+    String key,
+    T Function(J) fromJson,
+  ) {
+    final preference = getString(key);
+
+    if (preference == null) return null;
+
+    return fromJson(json.decode(preference) as J);
+  }
+
+  Future<bool> setOrRemoveJson<T>(
+    String key,
+    T? value,
+    dynamic Function(T) toJson,
+  ) {
+    return setOrRemoveString(
+      key,
+      value != null ? json.encode(toJson(value)) : null,
+    );
+  }
+}

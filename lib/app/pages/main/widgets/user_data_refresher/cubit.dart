@@ -2,15 +2,15 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../../domain/usecases/get_is_authenticated.dart';
-import '../../../../../domain/usecases/get_is_logged_in_somewhere_else.dart';
-import '../../../../../domain/usecases/get_is_voip_allowed.dart';
-import '../../../../../domain/usecases/get_latest_logged_in_user.dart';
-import '../../../../../domain/usecases/get_logged_in_user.dart';
-import '../../../../../domain/usecases/get_server_config.dart';
-import '../../../../../domain/usecases/get_voip_config.dart';
-import '../../../../../domain/usecases/logout.dart';
-import '../../../../../domain/usecases/register_to_voip_middleware.dart';
+import '../../../../../domain/authentication/get_is_authenticated.dart';
+import '../../../../../domain/authentication/get_is_logged_in_somewhere_else.dart';
+import '../../../../../domain/authentication/logout.dart';
+import '../../../../../domain/calling/voip/get_is_voip_allowed.dart';
+import '../../../../../domain/calling/voip/get_server_config.dart';
+import '../../../../../domain/calling/voip/get_voip_config.dart';
+import '../../../../../domain/calling/voip/register_to_voip_middleware.dart';
+import '../../../../../domain/user/get_latest_logged_in_user.dart';
+import '../../../../../domain/user/get_logged_in_user.dart';
 import '../../../../util/loggable.dart';
 import 'state.dart';
 

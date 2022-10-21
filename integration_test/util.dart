@@ -10,7 +10,7 @@ import 'package:vialer/app/pages/onboarding/info/page.dart';
 import 'package:vialer/app/pages/onboarding/login/page.dart';
 import 'package:vialer/app/pages/onboarding/mobile_number/page.dart';
 import 'package:vialer/app/pages/onboarding/page.dart';
-import 'package:vialer/domain/entities/onboarding/step.dart';
+import 'package:vialer/domain/onboarding/step.dart';
 
 void runTest(
   List<String> name,

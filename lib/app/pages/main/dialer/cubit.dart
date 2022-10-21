@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../domain/usecases/get_latest_dialed_number.dart';
+import '../../../../domain/calling/get_latest_dialed_number.dart';
 import '../widgets/caller/cubit.dart';
 import 'state.dart';
 

@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../../domain/entities/temporary_redirect.dart';
-import '../../../../../domain/entities/voicemail.dart';
+import '../../../../../domain/business_availability/temporary_redirect.dart';
+import '../../../../../domain/voicemail/voicemail_account.dart';
 import 'state.dart';
 
 export 'state.dart';
