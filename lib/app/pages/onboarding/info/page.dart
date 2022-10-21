@@ -110,8 +110,8 @@ extension on BuildContext {
   // The default screen width value is loosely based
   // on the Nexus 5X screen width.
   double get sizeFactor => (MediaQuery.of(this).size.width / 416)
-  // On bigger (or extremely small) screens, the
-  // values are clamped to prevent extreme sizes.
+      // On bigger (or extremely small) screens, the
+      // values are clamped to prevent extreme sizes.
       .clamp(0.5, 1);
 }
 
