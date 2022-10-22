@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:dartx/dartx.dart';
-
 import '../../../dependency_locator.dart';
 import '../use_case.dart';
 import '../user/permissions/permission.dart';
@@ -35,18 +33,25 @@ class GetOnboardingStepsUseCase extends UseCase {
     final steps = <OnboardingStep>[];
 
     for (var entry in _permissionSteps.entries) {
-      if (await _permissionRepository.getPermissionStatus(entry.value) !=
-          PermissionStatus.granted) {
+      final permission = entry.value;
+
+      if (await _isPermissionNotGranted(permission)) {
+        steps.add(entry.key);
+      } else if (_shouldShowStepEvenIfPermissionGranted(permission)) {
         steps.add(entry.key);
       }
     }
 
-    // We always want to show the contacts step on Android as we are
-    // specifically requesting consent.
-    if (Platform.isAndroid) {
-      steps.add(OnboardingStep.contactsPermission);
-    }
-
-    return steps.distinct().toList(growable: false);
+    return steps;
   }
+
+  Future<bool> _isPermissionNotGranted(Permission permission) =>
+      _permissionRepository
+          .getPermissionStatus(permission)
+          .then((value) => value != PermissionStatus.granted);
+
+  /// We always want to show the contacts step on Android as we are
+  /// specifically requesting consent.
+  bool _shouldShowStepEvenIfPermissionGranted(Permission permission) =>
+      Platform.isAndroid && permission == Permission.contacts;
 }

@@ -502,21 +502,12 @@ onboarding:
         $appName heeft toegang tot de microfoon nodig zodat je gesprekken op kunt zetten en ontvangen.
     contacts:
       title: "Toestemming voor contacten"
-      description:
-        android(String appName): >-
-          Door toestemming te geven worden je contacten en recente gesprekken in $appName zichtbaar en kun je ze makkelijk doorzoeken.
+      description(String appName):
+        Door toestemming te geven worden je contacten en recente gesprekken in $appName zichtbaar en kun je ze makkelijk doorzoeken.
 
+        $appName slaat uw contacten veilig alleen op uw telefoon op, waardoor het zoeken en beheren van contacten mogelijk is.
 
-          $appName slaat jouw contacten veilig op, waardoor in de toekomst het beheren van contacten in de webphone mogelijk wordt.
-
-
-          We delen geen contactgegevens met derden.
-        iOS(String appName):
-          Door toestemming te geven worden je contacten en recente gesprekken
-          in $appName zichtbaar en kun je ze makkelijk doorzoeken.
-
-
-          $appName geeft alleen je contacten weer en ze worden nooit gedeeld met derden.
+        We delen geen contactgegevens met derden.
     bluetooth:
       title: "Toestemming voor Bluetooth"
       description(String appName): >-
