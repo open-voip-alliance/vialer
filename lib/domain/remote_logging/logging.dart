@@ -57,9 +57,6 @@ class LoggingRepository {
 
   final _nativeRemoteLogging = NativeLogging();
 
-  int _restartRemoteConnectionCount = 0;
-  bool _connectedToRemote = false;
-
   final LoggingDatabase db;
 
   LoggingRepository(this.db);
@@ -105,62 +102,6 @@ class LoggingRepository {
         message: Value(record.message),
       ));
     });
-  }
-
-  Future<void> enableRemoteLogging({
-    String userIdentifier = '',
-    required String token,
-  }) async {
-    Future<void> startConnection() async {
-      try {
-        _remoteLoggingSocket = await SecureSocket.connect(
-          'data.logentries.com',
-          443,
-        );
-
-        _remoteLoggingSocket!.done.onError(
-          (error, stackTrace) {
-            // Keep track if we need to restart remote logging if we got
-            // disconnected.
-            if (error is SocketException) {
-              _connectedToRemote = false;
-            }
-          },
-        );
-
-        _restartRemoteConnectionCount = 0;
-        _connectedToRemote = true;
-      } on SocketException catch (e) {
-        log('Can not connect to Logentries. Reason: $e');
-
-        _restartRemoteConnectionCount++;
-        _connectedToRemote = false;
-      }
-    }
-
-    await startConnection();
-
-    if (token.isNotEmpty) {
-      _remoteLogSubscription ??= Logger.root.onRecord.listen((record) async {
-        final message = _logStringOf(
-          record,
-          userIdentifier: userIdentifier,
-          remote: true,
-        );
-
-        if (!_connectedToRemote && _restartRemoteConnectionCount < 10) {
-          await startConnection();
-
-          if (_restartRemoteConnectionCount == 10) {
-            log('Can not connect to Logentries, not trying again');
-          }
-        }
-
-        if (_connectedToRemote) {
-          _remoteLoggingSocket!.writeln('$token $message');
-        }
-      });
-    }
   }
 
   Future<void> sendLogsToRemote(
