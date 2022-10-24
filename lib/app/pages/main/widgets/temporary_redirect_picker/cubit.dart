@@ -2,49 +2,46 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../domain/business_availability/get_current_temporary_redirect.dart';
 import '../../../../../domain/business_availability/temporary_redirect.dart';
+import '../../../../../domain/user/get_logged_in_user.dart';
 import '../../../../../domain/voicemail/voicemail_account.dart';
 import 'state.dart';
 
 export 'state.dart';
 
 class TemporaryRedirectPickerCubit extends Cubit<TemporaryRedirectPickerState> {
+  final _getCurrentTemporaryRedirect = GetCurrentTemporaryRedirect();
+  final _getUser = GetLoggedInUserUseCase();
+
   TemporaryRedirectPickerCubit() : super(const LoadingDestinations()) {
     _emitInitialState();
   }
 
   Future<void> _emitInitialState() async {
-    await Future.delayed(const Duration(seconds: 2));
+    final current = await _getCurrentTemporaryRedirect();
+    final user = _getUser();
+    final voicemailAccounts = user.client != null
+        ? user.client!.voicemailAccounts
+        : <VoicemailAccount>[];
 
-    // TODO: Get destinations from API
-    // TODO: If the initial data can be retrieved syncly, put this logic
-    // in the constructor and remove the
-    // LoadingDestinations state class.
-    const current = TemporaryRedirectDestination.voicemail(
-      VoicemailAccount(
-        id: '1',
-        name: 'Voicemail One',
-        description: 'The first voicemail',
-      ),
+    final destinations = <TemporaryRedirectDestination>[];
+
+    if (current != null) {
+      destinations.add(current.destination);
+    }
+
+    destinations.addAll(
+      voicemailAccounts
+          .where(
+            (element) => element.id != current?.destination.voicemailAccount.id,
+          )
+          .map(
+            TemporaryRedirectDestination.voicemail,
+          ),
     );
-    const destinations = <TemporaryRedirectDestination>[
-      current,
-      TemporaryRedirectDestination.voicemail(
-        VoicemailAccount(
-          id: '2',
-          name: 'Voicemail Two',
-          description: 'The second voicemail',
-        ),
-      ),
-      TemporaryRedirectDestination.voicemail(
-        VoicemailAccount(
-          id: '3',
-          name: 'Voicemail Three',
-          description: 'The third voicemail',
-        ),
-      ),
-    ];
-    emit(const LoadedDestinations(current, destinations));
+
+    emit(LoadedDestinations(current?.destination, destinations));
   }
 
   void changeCurrentDestination(TemporaryRedirectDestination destination) {

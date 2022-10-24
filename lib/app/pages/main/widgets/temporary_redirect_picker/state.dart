@@ -14,7 +14,7 @@ class LoadingDestinations extends TemporaryRedirectPickerState {
 }
 
 class LoadedDestinations extends TemporaryRedirectPickerState {
-  final TemporaryRedirectDestination currentDestination;
+  final TemporaryRedirectDestination? currentDestination;
   final Iterable<TemporaryRedirectDestination> availableDestinations;
 
   const LoadedDestinations(

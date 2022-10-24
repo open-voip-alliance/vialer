@@ -16,7 +16,7 @@ import 'state.dart';
 export 'state.dart';
 
 class NoticeCubit extends Cubit<NoticeState> with Loggable {
-  late final _getCurrentRedirect = GetCurrentTemporaryRedirectUseCase();
+  late final _getCurrentRedirect = GetCurrentTemporaryRedirect();
   late final _getPermissionStatus = GetPermissionStatusUseCase();
   late final _requestPermission = RequestPermissionUseCase();
   late final _openAppSettings = OpenSettingsAppUseCase();

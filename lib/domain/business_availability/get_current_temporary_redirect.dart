@@ -4,7 +4,7 @@ import '../user/get_logged_in_user.dart';
 import 'business_availability_repository.dart';
 import 'temporary_redirect.dart';
 
-class GetCurrentTemporaryRedirectUseCase extends UseCase {
+class GetCurrentTemporaryRedirect extends UseCase {
   late final _getUser = GetLoggedInUserUseCase();
   late final _businessAvailability =
       dependencyLocator<BusinessAvailabilityRepository>();

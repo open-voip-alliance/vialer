@@ -45,16 +45,18 @@ class TemporaryRedirectPicker extends StatelessWidget {
                         text: context
                             .msg.main.temporaryRedirect.explanation.start,
                       ),
-                      TextSpan(
-                        text: state.currentDestination.voicemailAccount.name,
-                        style: const TextStyle(
-                          fontStyle: FontStyle.italic,
+                      if (state.currentDestination != null) ...[
+                        TextSpan(
+                          text: state.currentDestination!.voicemailAccount.name,
+                          style: const TextStyle(
+                            fontStyle: FontStyle.italic,
+                          ),
                         ),
-                      ),
-                      TextSpan(
-                        text:
-                            context.msg.main.temporaryRedirect.explanation.end,
-                      )
+                        TextSpan(
+                          text: context
+                              .msg.main.temporaryRedirect.explanation.end,
+                        ),
+                      ],
                     ],
                   ),
                 ),

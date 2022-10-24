@@ -18,8 +18,9 @@ abstract class BusinessAvailabilityService extends ChopperService {
         baseUrl: _businessAvailabilityBaseUrl,
         converter: JsonConverter(),
         interceptors: [
-          const AuthorizationInterceptor(),
-          UnauthorizedResponseInterceptor(),
+          const AuthorizationInterceptor(
+            onlyModernAuth: true,
+          ),
         ],
       ),
     );
@@ -40,25 +41,25 @@ abstract class BusinessAvailabilityService extends ChopperService {
     );
   }
 
-  @Get(path: '{client_uuid}/temporary-redirect')
+  @Get(path: '{clientUuid}/temporary-redirect')
   Future<Response> getTemporaryRedirect({
     @Path() required String clientUuid,
   });
 
-  @Post(path: '{client_uuid}/temporary-redirect')
+  @Post(path: '{clientUuid}/temporary-redirect')
   Future<Response> setTemporaryRedirect(
     @Path() String clientUuid,
     @Body() Map<String, dynamic> body,
   );
 
-  @Put(path: '{client_uuid}/temporary-redirect/{temporary_redirect_id}')
+  @Put(path: '{clientUuid}/temporary-redirect/{temporary_redirect_id}')
   Future<Response> updateTemporaryRedirect(
     @Path() String clientUuid,
     @Path() String temporaryRedirectId,
     @Body() Map<String, dynamic> body,
   );
 
-  @Delete(path: '{client_uuid}/temporary-redirect/{temporary_redirect_id}')
+  @Delete(path: '{clientUuid}/temporary-redirect/{temporary_redirect_id}')
   Future<Response> deleteTemporaryRedirect(
     @Path() String clientUuid,
     @Path() String temporaryRedirectId,

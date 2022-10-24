@@ -35,7 +35,7 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
       PerformEchoCancellationCalibrationUseCase();
   final _getUser = GetLoggedInUserUseCase();
   final _getLatestUser = GetLatestLoggedInUserUseCase();
-  final _getCurrentTemporaryRedirect = GetCurrentTemporaryRedirectUseCase();
+  final _getCurrentTemporaryRedirect = GetCurrentTemporaryRedirect();
   final _stopCurrentTemporaryRedirect = StopCurrentTemporaryRedirectUseCase();
 
   late StreamSubscription _userRefresherSubscription;

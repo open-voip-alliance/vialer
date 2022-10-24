@@ -5,7 +5,7 @@ import 'business_availability_repository.dart';
 import 'get_current_temporary_redirect.dart';
 
 class StopCurrentTemporaryRedirectUseCase extends UseCase {
-  late final _getCurrentRedirect = GetCurrentTemporaryRedirectUseCase();
+  late final _getCurrentRedirect = GetCurrentTemporaryRedirect();
   late final _getUser = GetLoggedInUserUseCase();
   late final _businessAvailability =
       dependencyLocator<BusinessAvailabilityRepository>();
