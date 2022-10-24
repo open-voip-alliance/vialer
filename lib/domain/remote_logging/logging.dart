@@ -164,25 +164,24 @@ extension on Map<String, String> {
 
 extension LogLevelMapper on Level {
   LogLevel toLogLevel() {
-    return LogLevel.warning;
-    // switch (this) {
-    //   case Level.ALL:
-    //   case Level.FINEST:
-    //   case Level.FINER:
-    //   case Level.FINE:
-    //     return LogLevel.info;
-    //   case Level.CONFIG:
-    //     return LogLevel.debug;
-    //   case Level.INFO:
-    //     return LogLevel.info;
-    //   case Level.WARNING:
-    //     return LogLevel.warning;
-    //   case Level.SEVERE:
-    //   case Level.SHOUT:
-    //   case Level.OFF: // TODO: correct to only show the most severe ones?
-    //     return LogLevel.error;
-    //   default:
-    //     return LogLevel.error;
-    // }
+    if ([
+      Level.ALL,
+      Level.FINEST,
+      Level.FINER,
+      Level.FINE,
+      Level.INFO,
+    ].contains(this)) {
+      return LogLevel.info;
+    } else if (this == Level.CONFIG) {
+      return LogLevel.debug;
+    } else if (this == Level.WARNING) {
+      return LogLevel.warning;
+    } else if ([Level.SEVERE, Level.SHOUT].contains(this)) {
+      return LogLevel.error;
+    // } else if (this == Level.OFF) {
+    //   return LogLevel.error; // TODO: not sure
+    } else {
+      return LogLevel.error;
+    }
   }
 }
