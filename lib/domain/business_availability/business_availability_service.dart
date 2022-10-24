@@ -52,14 +52,14 @@ abstract class BusinessAvailabilityService extends ChopperService {
     @Body() Map<String, dynamic> body,
   );
 
-  @Put(path: '{clientUuid}/temporary-redirect/{temporary_redirect_id}')
+  @Put(path: '{clientUuid}/temporary-redirect/{temporaryRedirectId}')
   Future<Response> updateTemporaryRedirect(
     @Path() String clientUuid,
     @Path() String temporaryRedirectId,
     @Body() Map<String, dynamic> body,
   );
 
-  @Delete(path: '{clientUuid}/temporary-redirect/{temporary_redirect_id}')
+  @Delete(path: '{clientUuid}/temporary-redirect/{temporaryRedirectId}')
   Future<Response> deleteTemporaryRedirect(
     @Path() String clientUuid,
     @Path() String temporaryRedirectId,

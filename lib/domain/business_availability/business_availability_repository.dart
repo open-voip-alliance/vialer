@@ -36,9 +36,15 @@ class BusinessAvailabilityRepository with Loggable {
       throw NoTemporaryRedirectSetupException();
     }
 
-    final temporaryRedirectResponse = _TemporaryRedirectResponse.fromJson(
-      response.body as Map<String, dynamic>,
-    );
+    late final _TemporaryRedirectResponse temporaryRedirectResponse;
+
+    try {
+       temporaryRedirectResponse = _TemporaryRedirectResponse.fromJson(
+        response.body as Map<String, dynamic>,
+      );
+    } on Exception {
+      return null;
+    }
 
     final voicemail = temporaryRedirectResponse.voicemailAccount(user.client!);
 
@@ -95,7 +101,7 @@ class BusinessAvailabilityRepository with Loggable {
     required TemporaryRedirect temporaryRedirect,
   }) async {
     final response = await _service.deleteTemporaryRedirect(
-      user.uuid,
+      user.client?.uuid ?? '',
       temporaryRedirect.id.toString(),
     );
 

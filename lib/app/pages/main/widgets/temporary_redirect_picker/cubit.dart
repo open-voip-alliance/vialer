@@ -25,21 +25,12 @@ class TemporaryRedirectPickerCubit extends Cubit<TemporaryRedirectPickerState> {
         ? user.client!.voicemailAccounts
         : <VoicemailAccount>[];
 
-    final destinations = <TemporaryRedirectDestination>[];
-
-    if (current != null) {
-      destinations.add(current.destination);
-    }
-
-    destinations.addAll(
-      voicemailAccounts
-          .where(
-            (element) => element.id != current?.destination.voicemailAccount.id,
-          )
-          .map(
-            TemporaryRedirectDestination.voicemail,
-          ),
-    );
+    final destinations = voicemailAccounts
+        .where(
+          (destination) =>
+              destination.id != current?.destination.voicemailAccount.id,
+        )
+        .map(TemporaryRedirectDestination.voicemail);
 
     emit(LoadedDestinations(current?.destination, destinations));
   }
