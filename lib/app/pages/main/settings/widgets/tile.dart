@@ -23,8 +23,8 @@ import '../../../../widgets/stylized_dropdown.dart';
 import '../../../onboarding/widgets/stylized_text_field.dart';
 import '../../../web_view/page.dart';
 import '../../widgets/stylized_switch.dart';
-import '../../widgets/temporary_redirect_picker/widget.dart';
 import '../cubit.dart';
+import '../sub_page.dart';
 import 'availability_tile.dart';
 import 'link_tile.dart';
 
@@ -402,11 +402,10 @@ class SettingTile extends StatelessWidget {
               StylizedButton.outline(
                 onPressed: () => Navigator.push(
                   context,
-                  // TODO: Use proper TemporaryRedirectPickerPage
                   MaterialPageRoute(
-                    builder: (context) {
-                      return const Material(
-                        child: TemporaryRedirectPicker(),
+                    builder: (_) {
+                      return SettingsSubPage.temporaryRedirect(
+                        cubit: cubit,
                       );
                     },
                   ),
