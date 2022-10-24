@@ -52,7 +52,7 @@ class Logger(private val context: Context, private val prefs: FlutterSharedPrefe
     }
 
     private fun logToRemote(message: String, level: PhoneLibLogLevel) = anonymize(message).also {
-        loggingDatabase?.insertLog(it, level)
+        loggingDatabase?.insertLog(it, level, userIdentifier, "APL")
     }
 
     private fun anonymize(message: String) =

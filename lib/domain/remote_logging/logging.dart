@@ -99,6 +99,8 @@ class LoggingRepository {
       _storeLogEvent(LogEventsCompanion(
         logTime: Value(record.time),
         level: Value(record.level.toLogLevel()),
+        uuid: Value(userIdentifier),
+        name: Value(record.loggerName),
         message: Value(record.message),
       ));
     });
