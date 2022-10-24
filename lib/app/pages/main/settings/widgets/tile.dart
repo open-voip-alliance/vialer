@@ -403,9 +403,11 @@ class SettingTile extends StatelessWidget {
                 onPressed: () => Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (_) => SettingsSubPage.temporaryRedirect(
-                      cubit: cubit,
-                    ),
+                    builder: (_) {
+                      return SettingsSubPage.temporaryRedirect(
+                        cubit: cubit,
+                      );
+                    },
                   ),
                 ),
                 colored: true,
