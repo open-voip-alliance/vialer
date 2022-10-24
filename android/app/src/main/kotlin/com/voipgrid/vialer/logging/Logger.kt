@@ -34,7 +34,7 @@ class Logger(private val context: Context, private val prefs: FlutterSharedPrefe
 
     private fun logToConsole(message: String, level: PhoneLibLogLevel) {
         // Format message to be consistent with Dart logs.
-        val time = DateTimeFormatter.ofPattern("uuuu-MM-dd HH-mm-ss.SSSSSS")
+        val time = DateTimeFormatter.ofPattern("uuuu-MM-dd HH:mm:ss.SSSSSS")
             .format(ZonedDateTime.now(ZoneId.systemDefault()))
 
         val formattedMessage = "[$time] $level APL: $message"
