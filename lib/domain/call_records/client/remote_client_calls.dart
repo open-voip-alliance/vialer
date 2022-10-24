@@ -34,7 +34,7 @@ class RemoteClientCallsRepository with Loggable {
 
   /// The delay that will be added between each API requests to avoid rate
   /// limiting.
-  static const _durationBetweenRequests = Duration(milliseconds: 25);
+  static const _durationBetweenRequests = Duration(seconds: 5);
 
   /// The duration that we will wait after a failed request before retrying it
   /// once. This is to wait for any potential rate limits to be removed.

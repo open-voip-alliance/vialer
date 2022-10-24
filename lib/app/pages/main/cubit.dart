@@ -2,7 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../dependency_locator.dart';
 import '../../../domain/legacy/storage.dart';
-import '../../../domain/user/get_latest_logged_in_user.dart';
+import '../../../domain/user/get_logged_in_user.dart';
 
 class MainState {
   const MainState();
@@ -10,7 +10,7 @@ class MainState {
 
 class MainCubit extends Cubit<MainState> {
   final _storageRepository = dependencyLocator<StorageRepository>();
-  final _getLatestUser = GetLatestLoggedInUserUseCase();
+  final _getLatestUser = GetLoggedInUserUseCase();
 
   MainCubit() : super(const MainState());
 

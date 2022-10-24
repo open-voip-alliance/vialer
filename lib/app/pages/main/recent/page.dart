@@ -6,7 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../dependency_locator.dart';
 import '../../../../domain/event/event_bus.dart';
-import '../../../../domain/user/get_latest_logged_in_user.dart';
+import '../../../../domain/user/get_logged_in_user.dart';
 import '../../../../domain/user/settings/app_setting.dart';
 import '../../../../domain/user/settings/setting_changed.dart';
 import '../../../resources/localizations.dart';
@@ -37,7 +37,7 @@ class _RecentCallsPageState extends State<RecentCallsPage> {
   final _eventBus = dependencyLocator<EventBusObserver>();
   StreamSubscription? _eventBusSubscription;
 
-  final _getLatestUser = GetLatestLoggedInUserUseCase();
+  final _getLatestUser = GetLoggedInUserUseCase();
 
   bool _showClientCalls = false;
 
