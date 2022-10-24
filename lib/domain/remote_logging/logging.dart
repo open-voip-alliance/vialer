@@ -2,10 +2,12 @@ import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:drift/drift.dart';
 import 'package:logging/logging.dart';
 
 import '../../app/util/pigeon.dart';
 import '../user/user.dart';
+import 'database/log_events.dart';
 
 class LoggingRepository {
   /// A map that will be used to anonymize the logs in both dart and the native
@@ -58,6 +60,10 @@ class LoggingRepository {
   int _restartRemoteConnectionCount = 0;
   bool _connectedToRemote = false;
 
+  final LoggingDatabase db;
+
+  LoggingRepository(this.db);
+
   String _logStringOf(
     LogRecord record, {
     required String userIdentifier,
@@ -68,6 +74,10 @@ class LoggingRepository {
 
     return '[${record.time}] ${record.level.name} '
         '$userIdentifier${record.loggerName}: $message';
+  }
+
+  Future<void> _storeLogEvent(LogEventsCompanion logEvent) async {
+    await db.logEvents.insertOnConflictUpdate(logEvent);
   }
 
   Future<void> enableConsoleLogging({
@@ -82,6 +92,18 @@ class LoggingRepository {
       );
       onLog?.call(logString);
       log(logString);
+    });
+  }
+
+  Future<void> enableDatabaseLogging({
+    String userIdentifier = '',
+  }) async {
+    Logger.root.onRecord.listen((record) {
+      _storeLogEvent(LogEventsCompanion(
+        logTime: Value(record.time),
+        level: Value(record.level.toLogLevel()),
+        message: Value(record.message),
+      ));
     });
   }
 
@@ -195,4 +217,29 @@ extension on Map<String, String> {
           element.value,
         ),
       );
+}
+
+extension LogLevelMapper on Level {
+  LogLevel toLogLevel() {
+    return LogLevel.warning;
+    // switch (this) {
+    //   case Level.ALL:
+    //   case Level.FINEST:
+    //   case Level.FINER:
+    //   case Level.FINE:
+    //     return LogLevel.info;
+    //   case Level.CONFIG:
+    //     return LogLevel.debug;
+    //   case Level.INFO:
+    //     return LogLevel.info;
+    //   case Level.WARNING:
+    //     return LogLevel.warning;
+    //   case Level.SEVERE:
+    //   case Level.SHOUT:
+    //   case Level.OFF: // TODO: correct to only show the most severe ones?
+    //     return LogLevel.error;
+    //   default:
+    //     return LogLevel.error;
+    // }
+  }
 }

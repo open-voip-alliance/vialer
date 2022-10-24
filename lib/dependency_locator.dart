@@ -118,7 +118,9 @@ Future<void> initializeDependencies({bool ui = true}) async {
         dependencyLocator<VoipgridService>(),
       ),
     )
-    ..registerSingleton<LoggingRepository>(LoggingRepository())
+    ..registerSingleton<LoggingRepository>(
+      LoggingRepository(dependencyLocator<LoggingDatabase>()),
+    )
     ..registerSingleton<PermissionRepository>(PermissionRepository())
     ..registerSingleton<MemoryStorageRepository>(MemoryStorageRepository())
     ..registerSingletonWithDependencies<CallThroughRepository>(
