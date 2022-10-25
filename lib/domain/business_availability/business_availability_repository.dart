@@ -1,64 +1,55 @@
+import 'package:collection/collection.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import '../../app/util/loggable.dart';
+import '../user/client.dart';
 import '../user/user.dart';
 import '../voicemail/voicemail_account.dart';
 import 'business_availability_service.dart';
-import 'temporary_redirect.dart';
-import 'temporary_redirect_exception.dart';
+import 'temporary_redirect/temporary_redirect.dart';
+import 'temporary_redirect/temporary_redirect_exception.dart';
 
 part 'business_availability_repository.freezed.dart';
 part 'business_availability_repository.g.dart';
 
-class BusinessAvailabilityRepository {
+class BusinessAvailabilityRepository with Loggable {
   final BusinessAvailabilityService _service;
 
   BusinessAvailabilityRepository(this._service);
-
-  Map<String, dynamic> _prepareRequestData(
-    TemporaryRedirect temporaryRedirect,
-  ) =>
-      {
-        'end': temporaryRedirect.endsAt.toString(),
-        'destination': temporaryRedirect.destination,
-      };
 
   Future<TemporaryRedirect?> getCurrentTemporaryRedirect({
     required User user,
   }) async {
     final response = await _service.getTemporaryRedirect(
-      clientUuid: user.uuid,
+      clientUuid: user.clientUuid,
     );
 
     if (!response.isSuccessful) {
       throw NoTemporaryRedirectSetupException();
     }
 
+    if (response.body['id'] == null) {
+      return null;
+    }
+
     final temporaryRedirectResponse = _TemporaryRedirectResponse.fromJson(
       response.body as Map<String, dynamic>,
     );
 
-    //TODO: Replace the dummy data below with real data
-    //TODO: from the list we will be storing locally
-    final destination = const TemporaryRedirectDestination.voicemail(
-      VoicemailAccount(
-        id: 'Example Voicemail Id',
-        name: 'Example Voicemail Name',
-        description: 'Example Voicemail Details',
-      ),
-    );
+    final voicemail = temporaryRedirectResponse.voicemailAccount(user.client!);
 
-    final endsAt = DateTime.tryParse(
-      temporaryRedirectResponse.end,
-    );
-
-    if (endsAt == null) {
-      throw NoTemporaryRedirectSetupException();
+    if (voicemail == null) {
+      logger.warning(
+        'There is no matching voicemail found, this should be '
+        'automatically corrected on next refresh.',
+      );
+      return null;
     }
 
     return TemporaryRedirect(
       id: temporaryRedirectResponse.id,
-      endsAt: endsAt,
-      destination: destination,
+      endsAt: temporaryRedirectResponse.end,
+      destination: TemporaryRedirectDestination.voicemail(voicemail),
     );
   }
 
@@ -66,10 +57,10 @@ class BusinessAvailabilityRepository {
     required User user,
     required TemporaryRedirect temporaryRedirect,
   }) async {
-    final requestData = _prepareRequestData(temporaryRedirect);
+    final requestData = temporaryRedirect.asRequestData();
 
     final response = await _service.setTemporaryRedirect(
-      user.uuid,
+      user.clientUuid,
       requestData,
     );
 
@@ -82,10 +73,10 @@ class BusinessAvailabilityRepository {
     required User user,
     required TemporaryRedirect temporaryRedirect,
   }) async {
-    final requestData = _prepareRequestData(temporaryRedirect);
+    final requestData = temporaryRedirect.asRequestData();
 
     final response = await _service.updateTemporaryRedirect(
-      user.uuid,
+      user.clientUuid,
       temporaryRedirect.id.toString(),
       requestData,
     );
@@ -100,7 +91,7 @@ class BusinessAvailabilityRepository {
     required TemporaryRedirect temporaryRedirect,
   }) async {
     final response = await _service.deleteTemporaryRedirect(
-      user.uuid,
+      user.clientUuid,
       temporaryRedirect.id.toString(),
     );
 
@@ -114,10 +105,46 @@ class BusinessAvailabilityRepository {
 class _TemporaryRedirectResponse with _$_TemporaryRedirectResponse {
   const factory _TemporaryRedirectResponse({
     required String id,
-    required String end,
-    required Map<String, dynamic> destinations,
+    @JsonKey(fromJson: _dateTimeFromJson) required DateTime end,
+    required Map<String, dynamic> destination,
   }) = __TemporaryRedirectResponse;
 
   factory _TemporaryRedirectResponse.fromJson(Map<String, Object?> json) =>
       _$_TemporaryRedirectResponseFromJson(json);
+}
+
+DateTime _dateTimeFromJson(String datetime) => DateTime.parse(datetime);
+
+extension on Client {
+  VoicemailAccount? findVoicemailAccount(String id) =>
+      voicemailAccounts.firstWhereOrNull((voicemail) => voicemail.id == id);
+}
+
+extension on _TemporaryRedirectResponse {
+  VoicemailAccount? voicemailAccount(Client client) =>
+      client.findVoicemailAccount(
+        (destination['id'] as int).toString(),
+      );
+}
+
+extension on TemporaryRedirect {
+  Map<String, dynamic> asRequestData() => {
+        'end': endsAt.toString(),
+        'destination': {
+          'type': 'VOICEMAIL',
+          'id': destination.voicemailAccount.id,
+        },
+      };
+}
+
+extension on User {
+  String get clientUuid {
+    final clientUuid = client?.uuid;
+
+    if (clientUuid == null) {
+      throw NoClientException();
+    }
+
+    return clientUuid;
+  }
 }

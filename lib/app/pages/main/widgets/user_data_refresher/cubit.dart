@@ -52,6 +52,7 @@ class UserDataRefresherCubit extends Cubit<UserDataRefresherState>
     }
 
     await _registerToVoipMiddleware();
+
     emit(const NotRefreshing());
 
     if (oldUser != newUser) {

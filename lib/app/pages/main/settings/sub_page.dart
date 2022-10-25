@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../domain/user/settings/call_setting.dart';
 import '../../../resources/localizations.dart';
+import '../business_availability/temporary_redirect/cubit.dart';
+import '../business_availability/temporary_redirect/state.dart';
 import '../widgets/temporary_redirect_picker/widget.dart';
 import 'cubit.dart';
 import 'widgets/tile.dart';
@@ -22,19 +24,37 @@ class SettingsSubPage extends StatelessWidget {
     required this.children,
   }) : super(key: key);
 
-  static Widget temporaryRedirect({required SettingsCubit cubit}) {
-    return Builder(
-      builder: (context) {
-        return SettingsSubPage(
-          cubit: cubit,
-          title: Text(context.msg.main.settings.list.temporaryRedirect.title),
-          children: (state) {
-            return [
-              const TemporaryRedirectPicker(),
-            ];
-          },
-        );
-      },
+  static Widget temporaryRedirect({
+    required SettingsCubit cubit,
+    required TemporaryRedirectCubit temporaryRedirectCubit,
+  }) {
+    return BlocProvider.value(
+      value: temporaryRedirectCubit,
+      child: BlocBuilder<TemporaryRedirectCubit, TemporaryRedirectState>(
+        builder: (context, temporaryRedirectState) {
+          final tempRedirectCubit = context.watch<TemporaryRedirectCubit>();
+
+          return SettingsSubPage(
+            cubit: cubit,
+            title: Text(context.msg.main.settings.list.temporaryRedirect.title),
+            children: (state) {
+              return [
+                TemporaryRedirectPicker(
+                  initialTemporaryRedirect: temporaryRedirectState is Active
+                      ? temporaryRedirectState.redirect
+                      : null,
+                  onStart: (destination) => tempRedirectCubit
+                      .startOrUpdateCurrentTemporaryRedirect(destination)
+                      .then((_) => Navigator.pop(context)),
+                  onCancel: temporaryRedirectState is Active
+                      ? tempRedirectCubit.stopTemporaryRedirect
+                      : null,
+                ),
+              ];
+            },
+          );
+        },
+      ),
     );
   }
 

@@ -3,6 +3,7 @@ import 'dart:async';
 import '../../app/util/loggable.dart';
 import '../../dependency_locator.dart';
 import '../authentication/authentication_repository.dart';
+import '../business_availability/temporary_redirect/get_current_temporary_redirect.dart';
 import '../call_records/client/purge_local_call_records.dart';
 import '../calling/outgoing_number/outgoing_numbers.dart';
 import '../legacy/storage.dart';
@@ -52,6 +53,7 @@ class GetLatestUserUseCase extends UseCase with Loggable {
     user = await _getRemotePermissions(user);
     user = await _getRemoteClientOutgoingNumbers(user);
     user = await _getClientVoicemailAccounts(user);
+    user = await _getCurrentTemporaryRedirect(user);
 
     // User should have a value for all settings.
     assert(
@@ -186,4 +188,10 @@ class GetLatestUserUseCase extends UseCase with Loggable {
 
     return user;
   }
+
+  Future<User> _getCurrentTemporaryRedirect(User user) async => user.copyWith(
+        client: user.client?.copyWith(
+          currentTemporaryRedirect: await GetCurrentTemporaryRedirect()(),
+        ),
+      );
 }

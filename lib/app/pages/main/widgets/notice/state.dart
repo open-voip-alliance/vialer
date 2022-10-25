@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import '../../../../../domain/business_availability/temporary_redirect.dart';
+import '../../../../../domain/business_availability/temporary_redirect/temporary_redirect.dart';
 
 abstract class NoticeState extends Equatable {
   const NoticeState();
@@ -41,4 +41,7 @@ class TemporaryRedirectNotice extends NoticeState {
   final TemporaryRedirect temporaryRedirect;
 
   const TemporaryRedirectNotice({required this.temporaryRedirect});
+
+  @override
+  List<Object> get props => [temporaryRedirect];
 }
