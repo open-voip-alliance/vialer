@@ -54,7 +54,7 @@ class AuthorizationInterceptor implements chopper.RequestInterceptor {
           useLegacyAuth = true;
         } else {
           final pathSegments =
-          Uri.parse(request.url).pathSegments.where((s) => s.isNotBlank);
+              Uri.parse(request.url).pathSegments.where((s) => s.isNotBlank);
 
           useLegacyAuth = !pathSegments.any((s) => s == 'v2');
         }

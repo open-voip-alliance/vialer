@@ -3,8 +3,6 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../domain/authentication/logout.dart';
-import '../../../../domain/business_availability/get_current_temporary_redirect.dart';
-import '../../../../domain/business_availability/stop_current_temporary_redirect.dart';
 import '../../../../domain/calling/voip/get_is_voip_allowed.dart';
 import '../../../../domain/calling/voip/perform_echo_cancellation_calibration.dart';
 import '../../../../domain/feedback/send_saved_logs_to_remote.dart';
@@ -35,8 +33,6 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
       PerformEchoCancellationCalibrationUseCase();
   final _getUser = GetLoggedInUserUseCase();
   final _getLatestUser = GetLatestLoggedInUserUseCase();
-  final _getCurrentTemporaryRedirect = GetCurrentTemporaryRedirect();
-  final _stopCurrentTemporaryRedirect = StopCurrentTemporaryRedirectUseCase();
 
   late StreamSubscription _userRefresherSubscription;
 
@@ -64,7 +60,6 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
         ).then(
           (status) => status == PermissionStatus.granted,
         ),
-        hasTemporaryRedirect: await _getCurrentTemporaryRedirect() != null,
       ),
     );
   }
@@ -101,8 +96,6 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
       );
 
   Future<void> sendSavedLogsToRemote() => _sendSavedLogsToRemote();
-
-  Future<void> stopTemporaryRedirect() => _stopCurrentTemporaryRedirect();
 
   Future<void> refresh() => _emitUpdatedState();
 

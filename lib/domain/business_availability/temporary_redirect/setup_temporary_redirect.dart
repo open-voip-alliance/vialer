@@ -1,13 +1,14 @@
 import 'package:dartx/dartx.dart';
 
-import '../../../dependency_locator.dart';
-import '../use_case.dart';
-import '../user/get_logged_in_user.dart';
-import '../voicemail/voicemail_account.dart';
-import 'business_availability_repository.dart';
+import '../../../../dependency_locator.dart';
+import '../../use_case.dart';
+import '../../user/get_logged_in_user.dart';
+import '../../voicemail/voicemail_account.dart';
+import '../business_availability_repository.dart';
+import 'get_current_temporary_redirect.dart';
 import 'temporary_redirect.dart';
 
-class SetupTemporaryRedirect extends UseCase {
+class StartTemporaryRedirect extends UseCase with TemporaryRedirectEvents {
   late final _getUser = GetLoggedInUserUseCase();
   late final _businessAvailability =
       dependencyLocator<BusinessAvailabilityRepository>();
@@ -17,7 +18,7 @@ class SetupTemporaryRedirect extends UseCase {
   }) async {
     final endingAt = _endingAt;
 
-    _businessAvailability.createTemporaryRedirect(
+    await _businessAvailability.createTemporaryRedirect(
       user: _getUser(),
       temporaryRedirect: TemporaryRedirect(
         endsAt: endingAt,
@@ -25,9 +26,8 @@ class SetupTemporaryRedirect extends UseCase {
       ),
     );
 
-    track({
-      'ending-at': _endingAt.toIso8601String(),
-    });
+    track({'ending-at': _endingAt.toIso8601String()});
+    broadcast();
   }
 
   DateTime get _endingAt =>

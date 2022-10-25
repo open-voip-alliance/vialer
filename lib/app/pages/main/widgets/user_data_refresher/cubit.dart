@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../domain/authentication/get_is_authenticated.dart';
 import '../../../../../domain/authentication/get_is_logged_in_somewhere_else.dart';
 import '../../../../../domain/authentication/logout.dart';
+import '../../../../../domain/business_availability/temporary_redirect/get_current_temporary_redirect.dart';
 import '../../../../../domain/calling/voip/get_is_voip_allowed.dart';
 import '../../../../../domain/calling/voip/get_server_config.dart';
 import '../../../../../domain/calling/voip/get_voip_config.dart';
@@ -27,6 +28,7 @@ class UserDataRefresherCubit extends Cubit<UserDataRefresherState>
   final _isLoggedInSomewhereElse = GetIsLoggedInSomewhereElseUseCase();
   final _logout = LogoutUseCase();
   final _getServerConfig = GetServerConfigUseCase();
+  final _getTemporaryRedirect = GetCurrentTemporaryRedirect();
 
   UserDataRefresherCubit() : super(const NotRefreshing());
 
@@ -52,6 +54,8 @@ class UserDataRefresherCubit extends Cubit<UserDataRefresherState>
     }
 
     await _registerToVoipMiddleware();
+    _getTemporaryRedirect();
+
     emit(const NotRefreshing());
 
     if (oldUser != newUser) {

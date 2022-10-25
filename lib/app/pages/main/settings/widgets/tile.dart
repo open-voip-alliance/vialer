@@ -22,6 +22,8 @@ import '../../../../widgets/stylized_button.dart';
 import '../../../../widgets/stylized_dropdown.dart';
 import '../../../onboarding/widgets/stylized_text_field.dart';
 import '../../../web_view/page.dart';
+import '../../business_availability/temporary_redirect/cubit.dart';
+import '../../business_availability/temporary_redirect/state.dart';
 import '../../widgets/stylized_switch.dart';
 import '../cubit.dart';
 import '../sub_page.dart';
@@ -371,62 +373,73 @@ class SettingTile extends StatelessWidget {
   }
 
   static Widget temporaryRedirect() {
-    // TODO: Use own cubit/riverpod instead of using SettingsCubit for state.
-    return BlocBuilder<SettingsCubit, SettingsState>(
-      builder: (context, state) {
-        final cubit = context.read<SettingsCubit>();
+    return BlocProvider<TemporaryRedirectCubit>(
+      create: (_) => TemporaryRedirectCubit(),
+      child: BlocBuilder<TemporaryRedirectCubit, TemporaryRedirectState>(
+        builder: (context, state) {
+          final cubit = context.read<SettingsCubit>();
+          final temporaryRedirectCubit = context.read<TemporaryRedirectCubit>();
+          final hasTemporaryRedirect = state is Active;
 
-        return SettingTile(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 4),
-              if (state.hasTemporaryRedirect) ...[
-                StylizedButton.raised(
-                  onPressed: cubit.stopTemporaryRedirect,
+          return SettingTile(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 4),
+                if (hasTemporaryRedirect) ...[
+                  StylizedButton.raised(
+                    onPressed: temporaryRedirectCubit.stopTemporaryRedirect,
+                    colored: true,
+                    margin: EdgeInsets.zero,
+                    child: Text(
+                      context.msg.main.settings.list.temporaryRedirect
+                          .stopRedirect.label
+                          .toUpperCaseIfAndroid(context),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    context.msg.main.settings.list.temporaryRedirect
+                        .stopRedirect.description,
+                  ),
+                  const SizedBox(height: 16),
+                ],
+                StylizedButton.outline(
+                  onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) {
+                        return SettingsSubPage.temporaryRedirect(
+                          cubit: cubit,
+                          temporaryRedirectCubit: temporaryRedirectCubit,
+                        );
+                      },
+                    ),
+                  ),
                   colored: true,
                   margin: EdgeInsets.zero,
                   child: Text(
-                    context.msg.main.settings.list.temporaryRedirect
-                        .stopRedirect.label
+                    (hasTemporaryRedirect
+                            ? context.msg.main.settings.list.temporaryRedirect
+                                .changeRedirect.label
+                            : context.msg.main.settings.list.temporaryRedirect
+                                .setupRedirect.label)
                         .toUpperCaseIfAndroid(context),
                   ),
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  context.msg.main.settings.list.temporaryRedirect.stopRedirect
-                      .description,
+                  hasTemporaryRedirect
+                      ? context.msg.main.settings.list.temporaryRedirect
+                          .changeRedirect.description
+                      : context.msg.main.settings.list.temporaryRedirect
+                          .setupRedirect.description,
                 ),
-                const SizedBox(height: 16),
               ],
-              StylizedButton.outline(
-                onPressed: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) {
-                      return SettingsSubPage.temporaryRedirect(
-                        cubit: cubit,
-                      );
-                    },
-                  ),
-                ),
-                colored: true,
-                margin: EdgeInsets.zero,
-                child: Text(
-                  context.msg.main.settings.list.temporaryRedirect
-                      .changeRedirect.label
-                      .toUpperCaseIfAndroid(context),
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                context.msg.main.settings.list.temporaryRedirect.changeRedirect
-                    .description,
-              ),
-            ],
-          ),
-        );
-      },
+            ),
+          );
+        },
+      ),
     );
   }
 

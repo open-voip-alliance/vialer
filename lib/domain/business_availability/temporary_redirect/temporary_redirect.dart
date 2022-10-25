@@ -1,7 +1,7 @@
 import 'package:dartx/dartx.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../voicemail/voicemail_account.dart';
+import '../../voicemail/voicemail_account.dart';
 
 part 'temporary_redirect.freezed.dart';
 

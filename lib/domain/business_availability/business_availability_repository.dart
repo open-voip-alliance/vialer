@@ -6,8 +6,8 @@ import '../user/client.dart';
 import '../user/user.dart';
 import '../voicemail/voicemail_account.dart';
 import 'business_availability_service.dart';
-import 'temporary_redirect.dart';
-import 'temporary_redirect_exception.dart';
+import 'temporary_redirect/temporary_redirect.dart';
+import 'temporary_redirect/temporary_redirect_exception.dart';
 
 part 'business_availability_repository.freezed.dart';
 part 'business_availability_repository.g.dart';
@@ -17,34 +17,24 @@ class BusinessAvailabilityRepository with Loggable {
 
   BusinessAvailabilityRepository(this._service);
 
-  Map<String, dynamic> _prepareRequestData(
-    TemporaryRedirect temporaryRedirect,
-  ) =>
-      {
-        'end': temporaryRedirect.endsAt.toString(),
-        'destination': temporaryRedirect.destination,
-      };
-
   Future<TemporaryRedirect?> getCurrentTemporaryRedirect({
     required User user,
   }) async {
     final response = await _service.getTemporaryRedirect(
-      clientUuid: user.client?.uuid ?? '',
+      clientUuid: user.clientUuid,
     );
 
     if (!response.isSuccessful) {
       throw NoTemporaryRedirectSetupException();
     }
 
-    late final _TemporaryRedirectResponse temporaryRedirectResponse;
-
-    try {
-       temporaryRedirectResponse = _TemporaryRedirectResponse.fromJson(
-        response.body as Map<String, dynamic>,
-      );
-    } on Exception {
+    if (response.body['id'] == null) {
       return null;
     }
+
+    final temporaryRedirectResponse = _TemporaryRedirectResponse.fromJson(
+      response.body as Map<String, dynamic>,
+    );
 
     final voicemail = temporaryRedirectResponse.voicemailAccount(user.client!);
 
@@ -67,10 +57,10 @@ class BusinessAvailabilityRepository with Loggable {
     required User user,
     required TemporaryRedirect temporaryRedirect,
   }) async {
-    final requestData = _prepareRequestData(temporaryRedirect);
+    final requestData = temporaryRedirect.asRequestData();
 
     final response = await _service.setTemporaryRedirect(
-      user.uuid,
+      user.clientUuid,
       requestData,
     );
 
@@ -83,10 +73,10 @@ class BusinessAvailabilityRepository with Loggable {
     required User user,
     required TemporaryRedirect temporaryRedirect,
   }) async {
-    final requestData = _prepareRequestData(temporaryRedirect);
+    final requestData = temporaryRedirect.asRequestData();
 
     final response = await _service.updateTemporaryRedirect(
-      user.uuid,
+      user.clientUuid,
       temporaryRedirect.id.toString(),
       requestData,
     );
@@ -101,7 +91,7 @@ class BusinessAvailabilityRepository with Loggable {
     required TemporaryRedirect temporaryRedirect,
   }) async {
     final response = await _service.deleteTemporaryRedirect(
-      user.client?.uuid ?? '',
+      user.clientUuid,
       temporaryRedirect.id.toString(),
     );
 
@@ -135,4 +125,26 @@ extension on _TemporaryRedirectResponse {
       client.findVoicemailAccount(
         (destination['id'] as int).toString(),
       );
+}
+
+extension on TemporaryRedirect {
+  Map<String, dynamic> asRequestData() => {
+        'end': endsAt.toString(),
+        'destination': {
+          'type': 'VOICEMAIL',
+          'id': destination.voicemailAccount.id,
+        },
+      };
+}
+
+extension on User {
+  String get clientUuid {
+    final clientUuid = client?.uuid;
+
+    if (clientUuid == null) {
+      throw NoClientException();
+    }
+
+    return clientUuid;
+  }
 }

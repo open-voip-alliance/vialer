@@ -340,6 +340,9 @@ main:
           title: "Gesprekken"
       temporaryRedirect:
         title: "Tijdelijke omleiding"
+        setupRedirect:
+          label: "Set up redirect"
+          description: "Let all incoming calls skip the dial plan(s) and opening hours temporarily"
         stopRedirect:
           label: "Omleiding stoppen"
           description: "Al je oproepen zullen weer je belplan(nen) en openingstijden volgen."

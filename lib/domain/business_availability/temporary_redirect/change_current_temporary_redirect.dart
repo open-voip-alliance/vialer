@@ -1,11 +1,13 @@
-import '../../../dependency_locator.dart';
-import '../use_case.dart';
-import '../user/get_logged_in_user.dart';
-import 'business_availability_repository.dart';
+import '../../../../dependency_locator.dart';
+import '../../use_case.dart';
+import '../../user/get_logged_in_user.dart';
+import '../business_availability_repository.dart';
+import 'get_current_temporary_redirect.dart';
 import 'temporary_redirect.dart';
 import 'temporary_redirect_exception.dart';
 
-class ChangeCurrentTemporaryRedirectUseCase extends UseCase {
+class ChangeCurrentTemporaryRedirect extends UseCase
+    with TemporaryRedirectEvents {
   late final _getUser = GetLoggedInUserUseCase();
   late final _businessAvailability =
       dependencyLocator<BusinessAvailabilityRepository>();
@@ -29,5 +31,7 @@ class ChangeCurrentTemporaryRedirectUseCase extends UseCase {
       'ending-at': temporaryRedirect.endsAt,
       'id': temporaryRedirect.id,
     });
+
+    broadcast();
   }
 }
