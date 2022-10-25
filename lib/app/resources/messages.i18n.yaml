@@ -341,6 +341,9 @@ main:
           title: "Calls"
       temporaryRedirect:
         title: "Temporary redirect"
+        setupRedirect:
+          label: "Set up redirect"
+          description: "Let all incoming calls skip the dial plan(s) and opening hours temporarily"
         stopRedirect:
           label: "Stop redirect"
           description: "All your calls will follow your dial plan(s) and opening hours again."

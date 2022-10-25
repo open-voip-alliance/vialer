@@ -1,65 +1,47 @@
-import 'dart:async';
-
+import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../../domain/business_availability/temporary_redirect.dart';
+import '../../../../../dependency_locator.dart';
+import '../../../../../domain/business_availability/temporary_redirect/temporary_redirect.dart';
+import '../../../../../domain/business_availability/temporary_redirect/temporary_redirect_did_change_event.dart';
+import '../../../../../domain/event/event_bus.dart';
+import '../../../../../domain/user/get_logged_in_user.dart';
 import '../../../../../domain/voicemail/voicemail_account.dart';
 import 'state.dart';
 
 export 'state.dart';
 
 class TemporaryRedirectPickerCubit extends Cubit<TemporaryRedirectPickerState> {
-  TemporaryRedirectPickerCubit() : super(const LoadingDestinations()) {
-    _emitInitialState();
-  }
+  late final _eventBus = dependencyLocator<EventBusObserver>();
 
-  Future<void> _emitInitialState() async {
-    await Future.delayed(const Duration(seconds: 2));
-
-    // TODO: Get destinations from API
-    // TODO: If the initial data can be retrieved syncly, put this logic
-    // in the constructor and remove the
-    // LoadingDestinations state class.
-    const current = TemporaryRedirectDestination.voicemail(
-      VoicemailAccount(
-        id: '1',
-        name: 'Voicemail One',
-        description: 'The first voicemail',
-      ),
-    );
-    const destinations = <TemporaryRedirectDestination>[
-      current,
-      TemporaryRedirectDestination.voicemail(
-        VoicemailAccount(
-          id: '2',
-          name: 'Voicemail Two',
-          description: 'The second voicemail',
-        ),
-      ),
-      TemporaryRedirectDestination.voicemail(
-        VoicemailAccount(
-          id: '3',
-          name: 'Voicemail Three',
-          description: 'The third voicemail',
-        ),
-      ),
-    ];
-    emit(const LoadedDestinations(current, destinations));
+  TemporaryRedirectPickerCubit(TemporaryRedirect? initialTemporaryRedirect)
+      : super(_createState(initialTemporaryRedirect)) {
+    _eventBus.on<TemporaryRedirectDidChangeEvent>((event) {
+      emit(_createState(event.current));
+    });
   }
 
   void changeCurrentDestination(TemporaryRedirectDestination destination) {
     final state = this.state;
 
-    if (state is! LoadedDestinations) return;
-
-    emit(state.copyWith(currentDestination: destination));
+    emit(state.copyWith(currentlySelectedDestination: destination));
   }
 
-  Future<void> startRedirect() async {
-    final state = this.state;
-    if (state is! LoadedDestinations) return;
+  static TemporaryRedirectPickerState _createState([
+    TemporaryRedirect? temporaryRedirect,
+  ]) {
+    final user = GetLoggedInUserUseCase()();
+    final voicemailAccounts = user.client != null
+        ? user.client!.voicemailAccounts
+        : <VoicemailAccount>[];
+    final destinations =
+        voicemailAccounts.map(TemporaryRedirectDestination.voicemail);
 
-    // TODO: Replace
-    print('Start redirect to ${state.currentDestination}');
+    return TemporaryRedirectPickerState(
+      temporaryRedirect != null
+          ? temporaryRedirect.destination
+          : destinations.firstOrNull,
+      destinations,
+    );
   }
 }

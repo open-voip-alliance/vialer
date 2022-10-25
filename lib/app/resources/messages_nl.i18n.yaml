@@ -340,6 +340,9 @@ main:
           title: "Gesprekken"
       temporaryRedirect:
         title: "Tijdelijke omleiding"
+        setupRedirect:
+          label: "Tijdelijke omleiding opzetten"
+          description: "Laat alle inkomende oproepen belplan(en) en openingstijden tijdelijk omzeilen"
         stopRedirect:
           label: "Omleiding stoppen"
           description: "Al je oproepen zullen weer je belplan(nen) en openingstijden volgen."
