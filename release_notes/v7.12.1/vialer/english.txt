@@ -1,0 +1,6 @@
+- Contacts will now show the company name if there's no personal name
+- Calls that go to voicemail will now show as missed calls (same as in the portal)
+- Android: Fixed a bug where the microphone would unmute when enabling the speaker
+- Android: Fixed a bug where certain phone numbers could not be called
+- Android: The incoming call screen can no longer change to landscape
+- iOS: Fixed a bug where the ringback tone was not being played
