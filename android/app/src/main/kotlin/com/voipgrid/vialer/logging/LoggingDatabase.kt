@@ -28,7 +28,7 @@ class LoggingDatabase(private val context: Context) {
         override fun onDowngrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {}
     }.writableDatabase
 
-    fun insertLog(message: String, level: PhoneLibLogLevel, userIdentifier: String, loggerName: String) {
+    fun insertLog(message: String, level: PhoneLibLogLevel, userIdentifier: String?, loggerName: String) {
         db.insert(
             LogEvents.TABLE_NAME,
             null,

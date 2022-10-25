@@ -74,7 +74,7 @@ class LoggingRepository {
   }
 
   Future<void> _storeLogEvent(LogEventsCompanion logEvent) async {
-    await db.logEvents.insertOnConflictUpdate(logEvent);
+    await db.logEvents.insertOne(logEvent);
   }
 
   Future<void> enableConsoleLogging({
@@ -88,6 +88,15 @@ class LoggingRepository {
         remote: false,
       );
       onLog?.call(logString);
+
+      _storeLogEvent(LogEventsCompanion(
+        logTime: Value(record.time),
+        level: Value(record.level.toLogLevel()),
+        uuid: Value(userIdentifier),
+        name: Value(record.loggerName),
+        message: Value(record.message),
+      ));
+
       log(logString);
     });
   }
