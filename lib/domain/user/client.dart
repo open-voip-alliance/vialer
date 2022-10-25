@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 
+import '../business_availability/temporary_redirect/temporary_redirect.dart';
 import '../voicemail/voicemail_account.dart';
 import 'settings/call_setting.dart';
 
@@ -22,6 +23,8 @@ class Client extends Equatable {
 
   final Iterable<VoicemailAccount> voicemailAccounts;
 
+  final TemporaryRedirect? currentTemporaryRedirect;
+
   const Client({
     required this.id,
     required this.uuid,
@@ -29,6 +32,7 @@ class Client extends Equatable {
     required this.url,
     this.outgoingNumbers = const [],
     this.voicemailAccounts = const [],
+    this.currentTemporaryRedirect,
   });
 
   @override
@@ -41,6 +45,7 @@ class Client extends Equatable {
     Uri? url,
     Iterable<OutgoingNumber>? outgoingNumbers,
     Iterable<VoicemailAccount>? voicemailAccounts,
+    TemporaryRedirect? currentTemporaryRedirect,
   }) {
     return Client(
       id: id ?? this.id,
@@ -49,6 +54,8 @@ class Client extends Equatable {
       url: url ?? this.url,
       outgoingNumbers: outgoingNumbers ?? this.outgoingNumbers,
       voicemailAccounts: voicemailAccounts ?? this.voicemailAccounts,
+      currentTemporaryRedirect:
+          currentTemporaryRedirect ?? this.currentTemporaryRedirect,
     );
   }
 
