@@ -180,7 +180,8 @@ extension LogLevelMapper on Level {
       return LogLevel.warning;
     } else if (this == Level.OFF) {
       return LogLevel.off;
-    } else { // Level.SEVERE || Level.SHOUT
+    } else {
+      // Level.SEVERE || Level.SHOUT
       return LogLevel.error;
     }
   }
