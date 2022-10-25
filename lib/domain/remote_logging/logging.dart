@@ -178,11 +178,9 @@ extension LogLevelMapper on Level {
       return LogLevel.debug;
     } else if (this == Level.WARNING) {
       return LogLevel.warning;
-    } else if (const [Level.SEVERE, Level.SHOUT].contains(this)) {
-      return LogLevel.error;
     } else if (this == Level.OFF) {
       return LogLevel.off;
-    } else {
+    } else { // Level.SEVERE || Level.SHOUT
       return LogLevel.error;
     }
   }

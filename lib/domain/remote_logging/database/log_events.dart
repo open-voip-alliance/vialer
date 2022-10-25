@@ -32,7 +32,6 @@ class LoggingDatabase extends _$LoggingDatabase {
 }
 
 enum LogLevel {
-  verbose,
   debug,
   info,
   warning,

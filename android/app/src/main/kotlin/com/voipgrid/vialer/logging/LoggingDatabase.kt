@@ -35,7 +35,7 @@ class LoggingDatabase(private val context: Context) {
             with(LogEvents.COLUMN) {
                 ContentValues().apply {
                     put(LOG_TIME, Calendar.getInstance().timeInMillis)
-                    put(LEVEL, level.ordinal) // TODO: does this match with LogLevel?
+                    put(LEVEL, level.ordinal)
                     put(NAME, loggerName)
                     put(MESSAGE, message)
                 }
