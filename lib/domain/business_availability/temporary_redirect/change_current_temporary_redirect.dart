@@ -7,7 +7,7 @@ import 'temporary_redirect.dart';
 import 'temporary_redirect_exception.dart';
 
 class ChangeCurrentTemporaryRedirect extends UseCase
-    with TemporaryRedirectEvents {
+    with TemporaryRedirectEventBroadcaster {
   late final _getUser = GetLoggedInUserUseCase();
   late final _businessAvailability =
       dependencyLocator<BusinessAvailabilityRepository>();

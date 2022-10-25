@@ -29,8 +29,6 @@ class TemporaryRedirectPicker extends StatelessWidget {
         builder: (context, state) {
           final cubit = context.watch<TemporaryRedirectPickerCubit>();
 
-          state as LoadedDestinations;
-
           return Padding(
             padding: const EdgeInsets.all(32.0),
             child: Column(

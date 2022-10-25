@@ -8,7 +8,8 @@ import '../business_availability_repository.dart';
 import 'get_current_temporary_redirect.dart';
 import 'temporary_redirect.dart';
 
-class StartTemporaryRedirect extends UseCase with TemporaryRedirectEvents {
+class StartTemporaryRedirect extends UseCase
+    with TemporaryRedirectEventBroadcaster {
   late final _getUser = GetLoggedInUserUseCase();
   late final _businessAvailability =
       dependencyLocator<BusinessAvailabilityRepository>();

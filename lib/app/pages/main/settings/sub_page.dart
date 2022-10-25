@@ -44,9 +44,7 @@ class SettingsSubPage extends StatelessWidget {
                       ? temporaryRedirectState.redirect
                       : null,
                   onStart: (destination) => tempRedirectCubit
-                      .startOrUpdateCurrentTemporaryRedirect(
-                        destination
-                      )
+                      .startOrUpdateCurrentTemporaryRedirect(destination)
                       .then((_) => Navigator.pop(context)),
                   onCancel: temporaryRedirectState is Active
                       ? tempRedirectCubit.stopTemporaryRedirect

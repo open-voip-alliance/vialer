@@ -15,21 +15,19 @@ class TemporaryRedirectPickerCubit extends Cubit<TemporaryRedirectPickerState> {
   late final _eventBus = dependencyLocator<EventBusObserver>();
 
   TemporaryRedirectPickerCubit(TemporaryRedirect? initialTemporaryRedirect)
-      : super(_createLoadedState(initialTemporaryRedirect)) {
+      : super(_createState(initialTemporaryRedirect)) {
     _eventBus.on<TemporaryRedirectDidChangeEvent>((event) {
-      emit(_createLoadedState(event.current));
+      emit(_createState(event.current));
     });
   }
 
   void changeCurrentDestination(TemporaryRedirectDestination destination) {
     final state = this.state;
 
-    if (state is! LoadedDestinations) return;
-
     emit(state.copyWith(currentlySelectedDestination: destination));
   }
 
-  static LoadedDestinations _createLoadedState([
+  static TemporaryRedirectPickerState _createState([
     TemporaryRedirect? temporaryRedirect,
   ]) {
     final user = GetLoggedInUserUseCase()();
@@ -39,7 +37,7 @@ class TemporaryRedirectPickerCubit extends Cubit<TemporaryRedirectPickerState> {
     final destinations =
         voicemailAccounts.map(TemporaryRedirectDestination.voicemail);
 
-    return LoadedDestinations(
+    return TemporaryRedirectPickerState(
       temporaryRedirect != null
           ? temporaryRedirect.destination
           : destinations.firstOrNull,

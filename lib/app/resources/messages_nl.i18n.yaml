@@ -341,8 +341,8 @@ main:
       temporaryRedirect:
         title: "Tijdelijke omleiding"
         setupRedirect:
-          label: "Set up redirect"
-          description: "Let all incoming calls skip the dial plan(s) and opening hours temporarily"
+          label: "Tijdelijke omleiding opzetten"
+          description: "Laat alle inkomende oproepen belplan(en) en openingstijden tijdelijk omzeilen"
         stopRedirect:
           label: "Omleiding stoppen"
           description: "Al je oproepen zullen weer je belplan(nen) en openingstijden volgen."

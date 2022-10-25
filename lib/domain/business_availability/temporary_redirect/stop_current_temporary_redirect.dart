@@ -5,7 +5,7 @@ import '../business_availability_repository.dart';
 import 'get_current_temporary_redirect.dart';
 
 class StopCurrentTemporaryRedirect extends UseCase
-    with TemporaryRedirectEvents {
+    with TemporaryRedirectEventBroadcaster {
   late final _getCurrentRedirect = GetCurrentTemporaryRedirect();
   late final _getUser = GetLoggedInUserUseCase();
   late final _businessAvailability =
