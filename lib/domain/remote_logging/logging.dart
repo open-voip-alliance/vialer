@@ -89,14 +89,6 @@ class LoggingRepository {
       );
       onLog?.call(logString);
 
-      _storeLogEvent(LogEventsCompanion(
-        logTime: Value(record.time),
-        level: Value(record.level.toLogLevel()),
-        uuid: Value(userIdentifier),
-        name: Value(record.loggerName),
-        message: Value(record.message),
-      ));
-
       log(logString);
     });
   }
@@ -105,13 +97,14 @@ class LoggingRepository {
     String userIdentifier = '',
   }) async {
     Logger.root.onRecord.listen((record) {
-      _storeLogEvent(LogEventsCompanion(
-        logTime: Value(record.time),
-        level: Value(record.level.toLogLevel()),
-        uuid: Value(userIdentifier),
-        name: Value(record.loggerName),
-        message: Value(record.message),
-      ));
+      if (record.level != Level.OFF) {
+        _storeLogEvent(LogEventsCompanion(
+          logTime: Value(record.time),
+          level: Value(record.level.toLogLevel()),
+          name: Value(record.loggerName),
+          message: Value(record.message),
+        ));
+      }
     });
   }
 
@@ -173,7 +166,7 @@ extension on Map<String, String> {
 
 extension LogLevelMapper on Level {
   LogLevel toLogLevel() {
-    if ([
+    if (const [
       Level.ALL,
       Level.FINEST,
       Level.FINER,
@@ -185,10 +178,10 @@ extension LogLevelMapper on Level {
       return LogLevel.debug;
     } else if (this == Level.WARNING) {
       return LogLevel.warning;
-    } else if ([Level.SEVERE, Level.SHOUT].contains(this)) {
+    } else if (const [Level.SEVERE, Level.SHOUT].contains(this)) {
       return LogLevel.error;
-      // } else if (this == Level.OFF) {
-      //   return LogLevel.error; // TODO: not sure
+    } else if (this == Level.OFF) {
+      return LogLevel.off;
     } else {
       return LogLevel.error;
     }

@@ -8,7 +8,6 @@ class LogEvents extends Table {
   IntColumn get id => integer().autoIncrement()();
   DateTimeColumn get logTime => dateTime()();
   IntColumn get level => intEnum<LogLevel>()();
-  TextColumn get uuid => text()();
   TextColumn get name => text()();
   TextColumn get message => text()();
 }
@@ -38,4 +37,5 @@ enum LogLevel {
   info,
   warning,
   error,
+  off,
 }
