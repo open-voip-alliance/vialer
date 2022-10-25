@@ -16,11 +16,12 @@ class GetLoggingTokenUseCase extends UseCase {
             ? await _envRepository.logentriesIosToken
             : '';
 
-    if (token.isEmpty) {
-      throw UnsupportedError(
-        'No logging token for platform: ${Platform.operatingSystem}',
-      );
-    }
+    //WIP This needs to
+    // if (token.isEmpty) {
+    //   throw UnsupportedError(
+    //     'No logging token for platform: ${Platform.operatingSystem}',
+    //   );
+    // }
 
     return token;
   }

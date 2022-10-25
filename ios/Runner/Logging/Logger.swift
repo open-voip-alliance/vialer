@@ -1,20 +1,20 @@
 import Foundation
-import le
 
 class Logger: NSObject, NativeLogging {
 
     private static let CONSOLE_LOG_KEY = "VIALER-PIL"
     private var anonymizationRules = [NSRegularExpression : String]()
-    private var logEntries: LELog? = nil
+    private var loggingDatabase: LoggingDatabase? = nil
     private var userIdentifier: String? = nil
     private var isConsoleLoggingEnabled = false
     private var isRemoteLoggingEnabled: Bool {
-        logEntries != nil
+        loggingDatabase != nil
     }
 
     private let flutterSharedPreferences = FlutterSharedPreferences()
 
     internal func writeLog(_ message: String) {
+        print("//wip IN writeLog of LOGGER!!! -------")
         if isConsoleLoggingEnabled {
             logToConsole(message: message)
         }
@@ -40,10 +40,10 @@ class Logger: NSObject, NativeLogging {
     }
     
     private func logToRemote(message: String) {
-        let message = anonymize(message: message)
+        let message = anonymize(message: message) //wip do we still to anonymize?
         let userIdentifier = userIdentifier ?? ""
         
-        logEntries?.log("\(userIdentifier) \(message)" as NSString)
+        loggingDatabase?.insertLog(message: "\(userIdentifier) \(message)")
     }
     
     private func anonymize(message: String) -> String {
@@ -52,9 +52,12 @@ class Logger: NSObject, NativeLogging {
         })
     }
     
+    //wip used by pigeon - do we need to apply any changes now that we don't use log entries? is token used anywhere with Loki? Do we need this whole function? Do we need to change/remove the GetLoggingTokenUseCase since when user activates the remote logging from settings an exception is triggered: Unsupported operation: No logging token for platform: ios
+//    #0      GetLoggingTokenUseCase.call (package:vialer/domain/remote_logging/get_logging_token.dart:20:7)
+//    <asynchronous suspension>
+//    #1      EnableRemoteLoggingUseCase.call ...
     func startNativeRemoteLoggingToken(_ token: String?, userIdentifier: String?, anonymizationRules: [String : String]?, completion: @escaping (FlutterError?) -> Void) {
-        logEntries = LELog.session(withToken: token)
-        logEntries?.debugLogs = false
+        loggingDatabase = LoggingDatabase()
         self.userIdentifier = userIdentifier
         
         do {
@@ -71,7 +74,7 @@ class Logger: NSObject, NativeLogging {
     }
     
     func stopNativeRemoteLoggingWithError(_ error: AutoreleasingUnsafeMutablePointer<FlutterError?>) {
-        logEntries = nil
+        loggingDatabase = nil
         userIdentifier = nil
     }
     
