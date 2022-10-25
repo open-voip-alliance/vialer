@@ -187,8 +187,8 @@ extension LogLevelMapper on Level {
       return LogLevel.warning;
     } else if ([Level.SEVERE, Level.SHOUT].contains(this)) {
       return LogLevel.error;
-    // } else if (this == Level.OFF) {
-    //   return LogLevel.error; // TODO: not sure
+      // } else if (this == Level.OFF) {
+      //   return LogLevel.error; // TODO: not sure
     } else {
       return LogLevel.error;
     }
