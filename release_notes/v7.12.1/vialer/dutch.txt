@@ -1,0 +1,6 @@
+- Contacten gebruiken nu de bedrijfsnaam als er geen persoonlijke naam is
+- Oproepen die naar voicemail gaan worden nu getoond als gemiste oproep
+- Android: Probleem waarbij de microfoon ongedempt werd wanneer de speaker werd aangezet, is opgelost
+- Android: Probleem waarbij sommige telefoonnummers niet gebeld konden worden, is opgelost
+- Android: Het inkomende oproep scherm kan niet meer naar landscape veranderen
+- iOS: Probleem waarbij de ringbacktoon niet werd afgespeeld, is opgelost
