@@ -23,6 +23,6 @@ class GetCurrentTemporaryRedirect extends UseCase {
   }
 }
 
-mixin TemporaryRedirectEvents {
+mixin TemporaryRedirectEventBroadcaster {
   Future<void> broadcast() async => GetCurrentTemporaryRedirect()();
 }
