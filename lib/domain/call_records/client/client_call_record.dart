@@ -1,6 +1,6 @@
 import 'package:dartx/dartx.dart';
 import 'package:drift/drift.dart';
-import 'package:flutter_phone_lib/call/call_direction.dart';
+import 'package:flutter_phone_lib/flutter_phone_lib.dart';
 import 'package:intl/intl.dart';
 import 'package:timezone/timezone.dart';
 
