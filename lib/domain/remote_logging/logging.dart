@@ -165,7 +165,7 @@ extension on Map<String, String> {
 }
 
 extension LogLevelMapper on Level {
-  LogLevel? toLogLevel() {
+  LogLevel toLogLevel() {
     if (const [
       Level.ALL,
       Level.FINEST,
