@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:timezone/data/latest.dart';
 
@@ -16,6 +17,7 @@ import '../domain/metrics/initialize_metric_collection.dart';
 import '../domain/remote_logging/enable_console_logging.dart';
 import '../domain/remote_logging/enable_remote_logging_if_needed.dart';
 import '../domain/user/get_stored_user.dart';
+import 'pages/main/business_availability/temporary_redirect/cubit.dart';
 import 'pages/main/page.dart';
 import 'pages/main/widgets/caller/widget.dart';
 import 'resources/localizations.dart';
@@ -91,31 +93,34 @@ class _AppState extends State<App> {
               child: MissedCallNotificationPressedListener(
                 onMissedCallNotificationPressed: () =>
                     App.navigateTo(MainPageTab.recents),
-                child: MaterialApp(
-                  navigatorKey: _navigatorKey,
-                  title: context.brand.appName,
-                  theme: context.brand.theme.themeData,
-                  initialRoute: _isAuthenticatedAtAppStart
-                      ? Routes.main
-                      : Routes.onboarding,
-                  routes: Routes.mapped,
-                  localizationsDelegates: [
-                    VialerLocalizations.delegate,
-                    GlobalMaterialLocalizations.delegate,
-                    GlobalWidgetsLocalizations.delegate,
-                    GlobalCupertinoLocalizations.delegate,
-                  ],
-                  supportedLocales: [
-                    const Locale('en'),
-                    const Locale('nl'),
-                  ],
-                  builder: (context, child) {
-                    if (!inDebugMode) {
-                      ErrorWidget.builder = (_) => const BuildError();
-                    }
+                child: BlocProvider<TemporaryRedirectCubit>(
+                  create: (_) => TemporaryRedirectCubit(),
+                  child: MaterialApp(
+                    navigatorKey: _navigatorKey,
+                    title: context.brand.appName,
+                    theme: context.brand.theme.themeData,
+                    initialRoute: _isAuthenticatedAtAppStart
+                        ? Routes.main
+                        : Routes.onboarding,
+                    routes: Routes.mapped,
+                    localizationsDelegates: [
+                      VialerLocalizations.delegate,
+                      GlobalMaterialLocalizations.delegate,
+                      GlobalWidgetsLocalizations.delegate,
+                      GlobalCupertinoLocalizations.delegate,
+                    ],
+                    supportedLocales: [
+                      const Locale('en'),
+                      const Locale('nl'),
+                    ],
+                    builder: (context, child) {
+                      if (!inDebugMode) {
+                        ErrorWidget.builder = (_) => const BuildError();
+                      }
 
-                    return child!;
-                  },
+                      return child!;
+                    },
+                  ),
                 ),
               ),
             ),

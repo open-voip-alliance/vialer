@@ -6,7 +6,12 @@ part 'state.freezed.dart';
 
 @freezed
 class TemporaryRedirectState with _$TemporaryRedirectState {
-  const factory TemporaryRedirectState.none() = None;
-  const factory TemporaryRedirectState.active(TemporaryRedirect redirect) =
-      Active;
+  const factory TemporaryRedirectState.none(
+    Iterable<TemporaryRedirectDestination> availableDestinations,
+  ) = None;
+
+  const factory TemporaryRedirectState.active(
+    Iterable<TemporaryRedirectDestination> availableDestinations,
+    TemporaryRedirect redirect,
+  ) = Active;
 }
