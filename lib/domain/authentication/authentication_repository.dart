@@ -2,7 +2,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 import '../../app/util/loggable.dart';
 import '../onboarding/auto_login.dart';
-import '../onboarding/need_to_change_password.dart';
+import '../onboarding/exceptions.dart';
 import '../onboarding/two_factor_authentication_required.dart';
 import '../user/client.dart';
 import '../user/settings/call_setting.dart';
@@ -47,6 +47,11 @@ class AuthRepository with Loggable {
         .toString()
         .contains('You need to change your password in the portal')) {
       throw NeedToChangePasswordException();
+    }
+
+    if (!response.isSuccessful) {
+      logger.warning('Failed to retrieve the user: ${response.error}');
+      throw FailedToRetrieveUserException();
     }
 
     return _SystemUserResponse.fromJson(

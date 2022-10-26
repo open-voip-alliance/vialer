@@ -6,6 +6,7 @@ import '../authentication/authentication_repository.dart';
 import '../call_records/client/purge_local_call_records.dart';
 import '../calling/outgoing_number/outgoing_numbers.dart';
 import '../legacy/storage.dart';
+import '../onboarding/exceptions.dart';
 import '../onboarding/login_credentials.dart';
 import '../use_case.dart';
 import '../voicemail/voicemail_account_repository.dart';
@@ -81,7 +82,11 @@ class GetLatestUserUseCase extends UseCase with Loggable {
       );
     }
 
-    return await _authRepository.getUserUsingStoredCredentials();
+    try {
+      return await _authRepository.getUserUsingStoredCredentials();
+    } on FailedToRetrieveUserException {
+      return null;
+    }
   }
 
   /// Retrieving settings and handling its possible side effects.
