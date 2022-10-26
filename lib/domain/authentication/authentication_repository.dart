@@ -43,6 +43,7 @@ class AuthRepository with Loggable {
       authorization:
           email != null && token != null ? 'Token $email:$token' : null,
     );
+
     if (response.error
         .toString()
         .contains('You need to change your password in the portal')) {
@@ -50,7 +51,7 @@ class AuthRepository with Loggable {
     }
 
     if (!response.isSuccessful) {
-      logger.warning('Failed to retrieve the user: ${response.error}');
+      logFailedResponse(response, name: 'Fetch User');
       throw FailedToRetrieveUserException();
     }
 
@@ -137,13 +138,11 @@ class AuthRepository with Loggable {
   Future<bool> updateAppAccount({
     bool useOpus = true,
     bool useEncryption = true,
-  }) async {
-    final response = await _service.updateMobileProfile({
-      'appaccount_use_opus': useOpus,
-      'appaccount_use_encryption': useEncryption,
-    });
-    return response.isSuccessful;
-  }
+  }) =>
+      _service.updateMobileProfile({
+        'appaccount_use_opus': useOpus,
+        'appaccount_use_encryption': useEncryption,
+      }).then((response) => response.isSuccessful);
 
   Future<bool> isUserUsingMobileNumberAsFallback(User user) async {
     final response = await _service.getUserSettings(

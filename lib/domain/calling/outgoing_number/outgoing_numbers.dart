@@ -59,6 +59,11 @@ class OutgoingNumbersRepository with Loggable {
       page: page,
     );
 
+    if (!response.isSuccessful) {
+      logFailedResponse(response, name: 'Fetch Outgoing Numbers');
+      return;
+    }
+
     final body = response.body;
 
     for (final number in (body['items'] as List<dynamic>)) {

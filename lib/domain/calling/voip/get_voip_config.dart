@@ -18,8 +18,16 @@ class GetVoipConfigUseCase extends UseCase {
     var voipConfig = _storageRepository.voipConfig;
 
     if (latest || voipConfig == null) {
-      voipConfig = await _voipConfigRepository.get();
-      _storageRepository.voipConfig = voipConfig;
+      final latestVoipConfig = await _voipConfigRepository.get();
+
+      if (latestVoipConfig != null) {
+        _storageRepository.voipConfig = latestVoipConfig;
+        voipConfig = latestVoipConfig;
+      }
+    }
+
+    if (voipConfig == null) {
+      throw Exception('Unable to find a VoipConfig.');
     }
 
     return !voipConfig.isEmpty ? voipConfig.toNonEmptyConfig() : voipConfig;
