@@ -99,8 +99,8 @@ class LoggingRepository {
     Logger.root.onRecord.listen((record) {
       if (record.level != Level.OFF) {
         _storeLogEvent(LogEventsCompanion(
-          logTime: Value(record.time),
-          level: Value(record.level.toLogLevel()),
+          logTime: Value(record.time.millisecondsSinceEpoch),
+          level: Value.ofNullable(record.level.toLogLevel()),
           name: Value(record.loggerName),
           message: Value(record.message),
         ));
@@ -165,7 +165,7 @@ extension on Map<String, String> {
 }
 
 extension LogLevelMapper on Level {
-  LogLevel toLogLevel() {
+  LogLevel? toLogLevel() {
     if (const [
       Level.ALL,
       Level.FINEST,
@@ -178,8 +178,6 @@ extension LogLevelMapper on Level {
       return LogLevel.debug;
     } else if (this == Level.WARNING) {
       return LogLevel.warning;
-    } else if (this == Level.OFF) {
-      return LogLevel.off;
     } else {
       // Level.SEVERE || Level.SHOUT
       return LogLevel.error;

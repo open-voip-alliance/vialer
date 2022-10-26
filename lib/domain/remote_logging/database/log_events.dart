@@ -6,7 +6,7 @@ part 'log_events.g.dart';
 
 class LogEvents extends Table {
   IntColumn get id => integer().autoIncrement()();
-  DateTimeColumn get logTime => dateTime()();
+  IntColumn get logTime => integer()();
   IntColumn get level => intEnum<LogLevel>()();
   TextColumn get name => text()();
   TextColumn get message => text()();
@@ -36,5 +36,4 @@ enum LogLevel {
   info,
   warning,
   error,
-  off,
 }
