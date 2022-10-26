@@ -28,7 +28,7 @@ class LoggingDatabase(private val context: Context) {
         override fun onDowngrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {}
     }.writableDatabase
 
-    fun insertLog(message: String, level: PhoneLibLogLevel) {
+    fun insertLog(message: String, level: PhoneLibLogLevel, loggerName: String) {
         db.insert(
             LogEvents.TABLE_NAME,
             null,
@@ -36,6 +36,7 @@ class LoggingDatabase(private val context: Context) {
                 ContentValues().apply {
                     put(LOG_TIME, Calendar.getInstance().timeInMillis)
                     put(LEVEL, level.ordinal)
+                    put(NAME, loggerName)
                     put(MESSAGE, message)
                 }
             }
@@ -50,6 +51,7 @@ private object LogEvents : BaseColumns {
         const val ID = "id"
         const val LOG_TIME = "log_time"
         const val LEVEL = "level"
+        const val NAME = "name"
         const val MESSAGE = "message"
     }
 }

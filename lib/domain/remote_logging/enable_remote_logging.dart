@@ -29,9 +29,8 @@ class EnableRemoteLoggingUseCase extends UseCase {
       await _loggingRepository.disableRemoteLogging();
     }
 
-    return _loggingRepository.enableRemoteLogging(
+    return _loggingRepository.enableDatabaseLogging(
       userIdentifier: loggingIdentifier,
-      token: token,
     );
   }
 }
