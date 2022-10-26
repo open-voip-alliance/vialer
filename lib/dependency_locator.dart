@@ -50,7 +50,7 @@ Future<void> initializeDependencies({bool ui = true}) async {
       VoipgridService.create(),
     )
     ..registerSingleton<ClientCallsDatabase>(ClientCallsDatabase())
-    ..registerSingleton<LoggingDatabase>(LoggingDatabase()..open())
+    ..registerSingleton<LoggingDatabase>(LoggingDatabase())
     ..registerSingletonAsync<StorageRepository>(() async {
       final storageRepository = StorageRepository();
       await storageRepository.load();
