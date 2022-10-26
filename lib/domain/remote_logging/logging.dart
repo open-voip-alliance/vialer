@@ -100,7 +100,7 @@ class LoggingRepository {
       if (record.level != Level.OFF) {
         _storeLogEvent(LogEventsCompanion(
           logTime: Value(record.time.millisecondsSinceEpoch),
-          level: Value.ofNullable(record.level.toLogLevel()),
+          level: Value(record.level.toLogLevel()),
           name: Value(record.loggerName),
           message: Value(record.message),
         ));
