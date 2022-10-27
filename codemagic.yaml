@@ -469,8 +469,8 @@ workflows:
       events: [ ]
 
   # Run automatically via `.gitlab-ci.yml`
-  merge-requests:
-    name: Merge Requests (Run automatically by Gitlab CI)
+  merge-request:
+    name: Merge Request (Run automatically by Gitlab CI)
     <<: *main_workflow
     scripts:
       - *set_up_env_file
@@ -495,7 +495,6 @@ workflows:
           success: true
           failure: true
 
-  # Allows manually running integration tests on a given branch.
   run-integration-tests:
     name: Run Integration Tests
     <<: *main_workflow

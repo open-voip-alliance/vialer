@@ -11,13 +11,13 @@ build & test:
   rules:
     - if: '$CI_MERGE_REQUEST_EVENT_TYPE == "detached"'
       variables:
-        CODEMAGIC_WORKFLOW: "merge-requests"
+        CODEMAGIC_WORKFLOW: "merge-request"
     - if: '$CI_MERGE_REQUEST_EVENT_TYPE == "merged_result"'
       variables:
-        CODEMAGIC_WORKFLOW: "merge-requests"
+        CODEMAGIC_WORKFLOW: "merge-request"
     - if: '$CI_MERGE_REQUEST_EVENT_TYPE == "merge_train"'
       variables:
-        CODEMAGIC_WORKFLOW: "main"
+        CODEMAGIC_WORKFLOW: "merge-train"
   artifacts:
     when: always
     reports:
