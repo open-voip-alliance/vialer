@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import '../../../app/util/loggable.dart';
 import '../../authentication/get_is_authenticated.dart';
 import '../../voipgrid/server_config.dart';
 import '../../voipgrid/voipgrid_service.dart';
@@ -7,7 +8,7 @@ import 'get_encrypted_sip_url.dart';
 import 'get_middleware_base_url.dart';
 import 'get_unencrypted_sip_url.dart';
 
-class ServerConfigRepository {
+class ServerConfigRepository with Loggable {
   final VoipgridService _service;
 
   final _isAuthenticated = GetIsAuthenticatedUseCase();
@@ -27,6 +28,7 @@ class ServerConfigRepository {
     final response = await _service.getMiddleware();
 
     if (response.body == null) {
+      logFailedResponse(response, name: 'Fetch Server Config');
       // Use branded urls as fallback.
       return _fallbackServerConfig;
     }
