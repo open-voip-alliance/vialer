@@ -484,7 +484,6 @@ workflows:
       - *build_ipa
       - *update_gitlab_merge_request_with_build_url
       - *release_to_sentry
-      - *run_integration_tests
     triggering:
       events: [ ]
     publishing:
