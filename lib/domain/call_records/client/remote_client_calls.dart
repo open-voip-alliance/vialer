@@ -113,10 +113,7 @@ class RemoteClientCallsRepository with Loggable {
     logger.info('Fetching phone account: $id');
 
     if (!response.isSuccessful) {
-      logger.warning(
-        'Failed to fetch phone account with code '
-        '[${response.statusCode}] and message: ${response.bodyString}',
-      );
+      logFailedResponse(response, name: 'Fetch Phone Account');
       return null;
     }
 
