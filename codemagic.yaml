@@ -450,8 +450,8 @@ workflows:
           failure: false
 
   # Run automatically via `.gitlab-ci.yml`
-  merge-train:
-    name: Merge Train (Run automatically by Gitlab CI)
+  gitlab-ci-merge-train:
+    name: Gitlab CI Merge Train
     <<: *main_workflow
     scripts:
       - *set_up_env_file
@@ -469,8 +469,8 @@ workflows:
       events: [ ]
 
   # Run automatically via `.gitlab-ci.yml`
-  merge-request:
-    name: Merge Request (Run automatically by Gitlab CI)
+  gitlab-ci-merge-request:
+    name: Gitlab CI Merge Request
     <<: *main_workflow
     scripts:
       - *set_up_env_file
