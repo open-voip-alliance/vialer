@@ -61,6 +61,8 @@ class CallThroughRepository with Loggable {
 
     if (response.isSuccessful) {
       return destination = response.body['phonenumber'] as String;
+    } else {
+      logFailedResponse(response, name: 'Retrieve Region Number');
     }
 
     final error = response.error as String;
