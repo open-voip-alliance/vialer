@@ -140,7 +140,7 @@ class MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    return NestedChildren(
+    return MultiWidgetParent(
       [
         (child) => SurveyTriggerer(child: child),
         (child) => AppUpdateChecker.create(child: child),
