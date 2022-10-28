@@ -91,7 +91,7 @@ class _NoticeState extends State<_Notice>
       );
     }
 
-    String content;
+    final String content;
     if (state is PhonePermissionDeniedNotice) {
       content = context.msg.main.notice.phone.content(context.brand.appName);
     } else if (state is MicrophonePermissionDeniedNotice) {
