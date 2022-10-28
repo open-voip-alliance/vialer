@@ -4,7 +4,7 @@ import '../../../../../domain/business_availability/temporary_redirect/temporary
 import '../../../../resources/localizations.dart';
 
 class TemporaryRedirectExplanation extends StatelessWidget {
-  final TemporaryRedirectDestination currentDestination;
+  final TemporaryRedirectDestination? currentDestination;
 
   const TemporaryRedirectExplanation({
     super.key,
@@ -20,7 +20,8 @@ class TemporaryRedirectExplanation extends StatelessWidget {
             text: context.msg.main.temporaryRedirect.explanation.start,
           ),
           TextSpan(
-            text: currentDestination.displayName,
+            text: currentDestination?.displayName ??
+                context.msg.main.temporaryRedirect.explanation.selectVoicemail,
             style: const TextStyle(
               fontStyle: FontStyle.italic,
             ),

@@ -41,7 +41,10 @@ class TemporaryRedirectSettingTile extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
               ],
-              StylizedButton.outline(
+              StylizedButton(
+                type: hasTemporaryRedirect
+                    ? StylizedButtonType.outline
+                    : StylizedButtonType.raised,
                 onPressed: () => Navigator.push(
                   context,
                   TemporaryRedirectPickerPage.route(),

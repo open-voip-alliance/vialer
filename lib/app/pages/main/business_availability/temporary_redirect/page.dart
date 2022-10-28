@@ -26,6 +26,7 @@ class TemporaryRedirectPickerPage extends StatelessWidget {
             onStop: state is Active
                 ? () => context.popAfter(cubit.stopTemporaryRedirect())
                 : null,
+            onCancel: () => Navigator.pop(context),
           ),
         );
       },

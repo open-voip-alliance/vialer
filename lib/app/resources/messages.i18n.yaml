@@ -412,7 +412,15 @@ main:
     explanation:
       start: "All incoming calls to all numbers go straight to voicemail "
       end: " until the end of the day."
-    dropdownTitle: "Choose voicemail"
+      selectVoicemail: "[select voicemail below]"
+    dropdown:
+      title: "Choose voicemail"
+      noVoicemails:
+        item: "No voicemails available"
+        hint:
+          start: "No voicemails found, please add them in your "
+          link: "VoIP portal"
+          end: "."
     actions:
       setupRedirect:
         label: "Set up redirect"
@@ -421,6 +429,7 @@ main:
         label: "Start redirect"
       stopRedirect:
         label: "Stop redirect"
+        labelOngoing: "Stop ongoing redirect"
         description: "All your calls will follow your dial plan(s) and opening hours again."
       changeRedirect:
         label: "Change redirect"

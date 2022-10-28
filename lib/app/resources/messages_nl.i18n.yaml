@@ -412,7 +412,15 @@ main:
     explanation:
       start: "Alle inkomende oproepen naar alle nummers gaan rechtstreeks naar voicemail "
       end: " tot aan het einde van de dag."
-    dropdownTitle: "Kies voicemail"
+      selectVoicemail: "[kies voicemail hieronder]"
+    dropdown:
+      title: "Kies voicemail"
+      noVoicemails:
+        item: "Geen voicemails beschikbaar"
+        hint:
+          start: "Geen voicemails gevonden, voeg ze alsjeblieft toe in je "
+          link: "VoIP portal"
+          end: "."
     actions:
       title: "Tijdelijke omleiding"
       setupRedirect:
@@ -422,6 +430,7 @@ main:
         label: "Omleiding starten"
       stopRedirect:
         label: "Omleiding stoppen"
+        labelOngoing: "Huidige omleiding stoppen"
         description: "Al je oproepen zullen weer je belplan(nen) en openingstijden volgen."
       changeRedirect:
         label: "Omleiding aanpassen"
