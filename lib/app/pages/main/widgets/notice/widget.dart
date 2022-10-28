@@ -8,6 +8,8 @@ import '../../../../resources/theme.dart';
 import '../../../../util/conditional_capitalization.dart';
 import '../../../../util/widgets_binding_observer_registrar.dart';
 import '../../../../widgets/animated_visibility.dart';
+import '../../business_availability/temporary_redirect/explanation.dart';
+import '../../business_availability/temporary_redirect/page.dart';
 import 'cubit.dart';
 import 'widgets/banner.dart';
 
@@ -76,30 +78,37 @@ class _NoticeState extends State<_Notice>
     } else if (state is NotificationsPermissionDeniedNotice) {
       return context.msg.main.notice.notifications.title;
     } else if (state is TemporaryRedirectNotice) {
-      return context.msg.main.notice.temporaryRedirect.title;
+      return context.msg.main.temporaryRedirect.title;
     } else {
       return context.msg.main.notice.phoneAndMicrophone.title;
     }
   }
 
-  String _contentFor(NoticeState state) {
+  Widget _contentFor(NoticeState state) {
+    if (state is TemporaryRedirectNotice) {
+      return TemporaryRedirectExplanation(
+        currentDestination: state.temporaryRedirect.destination,
+      );
+    }
+
+    final String content;
     if (state is PhonePermissionDeniedNotice) {
-      return context.msg.main.notice.phone.content(context.brand.appName);
+      content = context.msg.main.notice.phone.content(context.brand.appName);
     } else if (state is MicrophonePermissionDeniedNotice) {
-      return context.msg.main.notice.microphone.content(context.brand.appName);
+      content =
+          context.msg.main.notice.microphone.content(context.brand.appName);
     } else if (state is BluetoothConnectPermissionDeniedNotice) {
-      return context.msg.main.notice.bluetoothConnect
+      content = context.msg.main.notice.bluetoothConnect
           .content(context.brand.appName);
     } else if (state is NotificationsPermissionDeniedNotice) {
-      return context.msg.main.notice.notifications.content;
-    } else if (state is TemporaryRedirectNotice) {
-      return context.msg.main.notice.temporaryRedirect
-          .content(state.temporaryRedirect.destination.voicemailAccount.name);
+      content = context.msg.main.notice.notifications.content;
     } else {
-      return context.msg.main.notice.phoneAndMicrophone.content(
+      content = context.msg.main.notice.phoneAndMicrophone.content(
         context.brand.appName,
       );
     }
+
+    return Text(content);
   }
 
   @override
@@ -115,22 +124,21 @@ class _NoticeState extends State<_Notice>
               child: NoticeBanner(
                 icon: FaIcon(_iconFor(state)),
                 title: Text(_titleFor(state)),
-                content: Text(_contentFor(state)),
+                content: _contentFor(state),
                 actions: [
+                  // TODO: Only show button if user has permission to change
                   if (state is TemporaryRedirectNotice) ...[
-                    const TextButton(
-                      //TODO: Add functionality to change redirect
-                      onPressed: null,
-                      child: Text(''),
+                    TextButton(
+                      onPressed: () => Navigator.push(
+                        context,
+                        TemporaryRedirectPickerPage.route(),
+                      ),
+                      child: Text(
+                        context.msg.main.temporaryRedirect.actions
+                            .changeRedirect.label
+                            .toUpperCaseIfAndroid(context),
+                      ),
                     ),
-                    //TODO: Replace the above button with this one
-                    // TextButton(
-                    //   onPressed: null,
-                    //   child: Text(
-                    //     context.msg.main.notice.actions.changeRedirect
-                    //         .toUpperCaseIfAndroid(context),
-                    //   ),
-                    // ),
                   ] else ...[
                     TextButton(
                       onPressed: cubit.dismiss,

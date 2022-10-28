@@ -11,6 +11,7 @@ import '../../../resources/theme.dart';
 import '../../../routes.dart';
 import '../../../util/conditional_capitalization.dart';
 import '../../../widgets/stylized_button.dart';
+import '../business_availability/temporary_redirect/setting_tile.dart';
 import '../util/stylized_snack_bar.dart';
 import '../widgets/header.dart';
 import '../widgets/user_data_refresher/cubit.dart';
@@ -140,7 +141,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             // TODO: If has temp redirect permission
                             SettingTileCategory.temporaryRedirect(
                               children: [
-                                SettingTile.temporaryRedirect(),
+                                const TemporaryRedirectSettingTile(),
                               ],
                             ),
                             SettingTileCategory.portalLinks(

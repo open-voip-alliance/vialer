@@ -24,11 +24,7 @@ class BusinessAvailabilityRepository with Loggable {
       clientUuid: user.clientUuid,
     );
 
-    if (!response.isSuccessful) {
-      throw NoTemporaryRedirectSetupException();
-    }
-
-    if (response.body['id'] == null) {
+    if (!response.isSuccessful || response.body['id'] == null) {
       return null;
     }
 

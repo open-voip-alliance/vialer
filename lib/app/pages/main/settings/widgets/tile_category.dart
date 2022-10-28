@@ -127,7 +127,7 @@ class SettingTileCategory extends StatelessWidget {
       builder: (context) {
         return SettingTileCategory(
           icon: FontAwesomeIcons.listTree,
-          title: context.msg.main.settings.list.temporaryRedirect.title,
+          title: context.msg.main.temporaryRedirect.title,
           children: children,
         );
       },
