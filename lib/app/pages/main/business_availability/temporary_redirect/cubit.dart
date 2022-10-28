@@ -7,14 +7,18 @@ import '../../../../../domain/business_availability/temporary_redirect/stop_curr
 import '../../../../../domain/business_availability/temporary_redirect/temporary_redirect.dart';
 import '../../../../../domain/business_availability/temporary_redirect/temporary_redirect_did_change_event.dart';
 import '../../../../../domain/event/event_bus.dart';
+import '../../../../../domain/user/get_logged_in_user.dart';
+
 import 'state.dart';
+export 'state.dart';
 
 class TemporaryRedirectCubit extends Cubit<TemporaryRedirectState> {
   late final _eventBus = dependencyLocator<EventBusObserver>();
   late final _startTemporaryRedirect = StartTemporaryRedirect();
   late final _changeCurrentTemporaryRedirect = ChangeCurrentTemporaryRedirect();
+  late final _getUser = GetLoggedInUserUseCase();
 
-  TemporaryRedirectCubit() : super(const TemporaryRedirectState.none()) {
+  TemporaryRedirectCubit() : super(const TemporaryRedirectState.none([])) {
     _emitInitialState();
 
     _eventBus.on<TemporaryRedirectDidChangeEvent>((event) {
@@ -22,11 +26,22 @@ class TemporaryRedirectCubit extends Cubit<TemporaryRedirectState> {
     });
   }
 
-  void _emitInitialState([TemporaryRedirect? temporaryRedirect]) => emit(
-        temporaryRedirect != null
-            ? TemporaryRedirectState.active(temporaryRedirect)
-            : const TemporaryRedirectState.none(),
-      );
+  void _emitInitialState([TemporaryRedirect? temporaryRedirect]) {
+    final availableDestinations = _getUser()
+            .client
+            ?.voicemailAccounts
+            .map(TemporaryRedirectDestination.voicemail) ??
+        [];
+
+    emit(
+      temporaryRedirect != null
+          ? TemporaryRedirectState.active(
+              availableDestinations,
+              temporaryRedirect,
+            )
+          : TemporaryRedirectState.none(availableDestinations),
+    );
+  }
 
   Future<void> stopTemporaryRedirect() => StopCurrentTemporaryRedirect()();
 

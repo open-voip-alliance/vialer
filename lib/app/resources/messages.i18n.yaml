@@ -339,17 +339,6 @@ main:
           title: "Statistics"
         calls:
           title: "Calls"
-      temporaryRedirect:
-        title: "Temporary redirect"
-        setupRedirect:
-          label: "Set up redirect"
-          description: "Let all incoming calls skip the dial plan(s) and opening hours temporarily"
-        stopRedirect:
-          label: "Stop redirect"
-          description: "All your calls will follow your dial plan(s) and opening hours again."
-        changeRedirect:
-          label: "Change redirect"
-          description: "You can change the settings without interrupting the redirect."
 
     troubleshootingProgressPopUp(int remainingTaps): >-
       You can access troubleshooting settings after $remainingTaps more taps on your screen.
@@ -399,13 +388,8 @@ main:
       title: "No Notifications permission"
       content: >-
         Without notifications permission, you might miss important information such as missed or incoming calls.
-    temporaryRedirect:
-      title: "Temporary redirect"
-      content(String voicemail): >-
-        All incoming calls to all numbers go straight to voicemail $voicemail until the end of the day (23:59).
     actions:
       givePermission: "Give permission"
-      changeRedirect: "Change redirect"
 
   survey:
     helpUs:
@@ -424,13 +408,32 @@ main:
       content: "We'll use it to make the app even better."
 
   temporaryRedirect:
+    title: "Temporary redirect"
     explanation:
       start: "All incoming calls to all numbers go straight to voicemail "
       end: " until the end of the day."
-    dropdownTitle: "Choose voicemail"
+      selectVoicemail: "[select voicemail below]"
+    dropdown:
+      title: "Choose voicemail"
+      noVoicemails:
+        item: "No voicemails available"
+        hint:
+          start: "No voicemails found, please add them in your "
+          link: "VoIP portal"
+          end: "."
     actions:
-      startRedirect: "Start redirect"
-      cancel: "Cancel"
+      setupRedirect:
+        label: "Set up redirect"
+        description: "Let all incoming calls skip the dial plan(s) and opening hours temporarily"
+      startRedirect:
+        label: "Start redirect"
+      stopRedirect:
+        label: "Stop redirect"
+        labelOngoing: "Stop ongoing redirect"
+        description: "All your calls will follow your dial plan(s) and opening hours again."
+      changeRedirect:
+        label: "Change redirect"
+        description: "You can change the settings without interrupting the redirect."
 
   update:
     readyToInstall:
