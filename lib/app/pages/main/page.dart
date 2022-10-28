@@ -7,6 +7,7 @@ import '../../resources/theme.dart';
 import '../../routes.dart';
 import '../../util/conditional_capitalization.dart';
 import '../../widgets/app_update_checker/widget.dart';
+import '../../widgets/nested_children.dart';
 import '../../widgets/transparent_status_bar.dart';
 import 'call/widgets/call_button.dart';
 import 'contacts/page.dart';
@@ -139,60 +140,63 @@ class MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SurveyTriggerer(
-      child: AppUpdateChecker.create(
-        child: BlocListener<CallerCubit, CallerState>(
-          listener: _onCallerStateChanged,
-          child: Scaffold(
-            resizeToAvoidBottomInset: false,
-            floatingActionButton: _currentIndex != 2 && !_dialerIsPage
-                ? AnimatedContainer(
-                    duration: const Duration(milliseconds: 100),
-                    curve: Curves.decelerate,
-                    padding: _currentIndex == 1
-                        // TODO: Ideally this value should not be hardcoded. Now
-                        // it's not responsive to e.g. font size changes.
-                        ? const EdgeInsets.only(bottom: 64)
-                        : EdgeInsets.zero,
-                    child: SizedBox(
-                      height: 62,
-                      width: 62,
-                      child: MergeSemantics(
-                        child: Semantics(
-                          label: context.msg.main.dialer.title,
-                          child: FloatingActionButton(
-                            // We use the CallButton's hero tag for a nice
-                            // transition between the dialer and call button.
-                            heroTag: CallButton.defaultHeroTag,
-                            backgroundColor: context.brand.theme.colors.green1,
-                            onPressed: () =>
-                                Navigator.pushNamed(context, Routes.dialer),
-                            child: const Icon(
-                              Icons.dialpad,
-                              size: 31,
-                            ),
-                          ),
+    return NestedChildren(
+      [
+        (child) => SurveyTriggerer(child: child),
+        (child) => AppUpdateChecker.create(child: child),
+        (child) => BlocListener<CallerCubit, CallerState>(
+              listener: _onCallerStateChanged,
+              child: child,
+            ),
+      ],
+      Scaffold(
+        resizeToAvoidBottomInset: false,
+        floatingActionButton: _currentIndex != 2 && !_dialerIsPage
+            ? AnimatedContainer(
+                duration: const Duration(milliseconds: 100),
+                curve: Curves.decelerate,
+                padding: _currentIndex == 1
+                    // TODO: Ideally this value should not be hardcoded. Now
+                    // it's not responsive to e.g. font size changes.
+                    ? const EdgeInsets.only(bottom: 64)
+                    : EdgeInsets.zero,
+                child: SizedBox(
+                  height: 62,
+                  width: 62,
+                  child: MergeSemantics(
+                    child: Semantics(
+                      label: context.msg.main.dialer.title,
+                      child: FloatingActionButton(
+                        // We use the CallButton's hero tag for a nice
+                        // transition between the dialer and call button.
+                        heroTag: CallButton.defaultHeroTag,
+                        backgroundColor: context.brand.theme.colors.green1,
+                        onPressed: () =>
+                            Navigator.pushNamed(context, Routes.dialer),
+                        child: const Icon(
+                          Icons.dialpad,
+                          size: 31,
                         ),
                       ),
                     ),
-                  )
-                : null,
-            bottomNavigationBar: _BottomNavigationBar(
-              currentIndex: _currentIndex!,
-              dialerIsPage: _dialerIsPage,
-              onTap: _navigateTo,
-            ),
-            body: TransparentStatusBar(
-              brightness: Brightness.dark,
-              child: UserDataRefresher(
-                child: ConnectivityAlert(
-                  child: SafeArea(
-                    child: Notice(
-                      child: _AnimatedIndexedStack(
-                        index: _currentIndex!,
-                        children: _pages!,
-                      ),
-                    ),
+                  ),
+                ),
+              )
+            : null,
+        bottomNavigationBar: _BottomNavigationBar(
+          currentIndex: _currentIndex!,
+          dialerIsPage: _dialerIsPage,
+          onTap: _navigateTo,
+        ),
+        body: TransparentStatusBar(
+          brightness: Brightness.dark,
+          child: UserDataRefresher(
+            child: ConnectivityAlert(
+              child: SafeArea(
+                child: Notice(
+                  child: _AnimatedIndexedStack(
+                    index: _currentIndex!,
+                    children: _pages!,
                   ),
                 ),
               ),

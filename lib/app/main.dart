@@ -28,6 +28,7 @@ import 'widgets/brand_provider/widget.dart';
 import 'widgets/build_error.dart';
 import 'widgets/connectivity_checker/widget.dart';
 import 'widgets/missed_call_notification_listener/widget.dart';
+import 'widgets/nested_children.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -87,42 +88,47 @@ class _AppState extends State<App> {
     return BrandProvider(
       child: Builder(
         builder: (context) {
-          return Caller.create(
-            navigatorKey: _navigatorKey,
-            child: ConnectivityChecker.create(
-              child: MissedCallNotificationPressedListener(
-                onMissedCallNotificationPressed: () =>
-                    App.navigateTo(MainPageTab.recents),
-                child: BlocProvider<TemporaryRedirectCubit>(
-                  create: (_) => TemporaryRedirectCubit(),
-                  child: MaterialApp(
+          return NestedChildren(
+            [
+              (child) => Caller.create(
                     navigatorKey: _navigatorKey,
-                    title: context.brand.appName,
-                    theme: context.brand.theme.themeData,
-                    initialRoute: _isAuthenticatedAtAppStart
-                        ? Routes.main
-                        : Routes.onboarding,
-                    routes: Routes.mapped,
-                    localizationsDelegates: [
-                      VialerLocalizations.delegate,
-                      GlobalMaterialLocalizations.delegate,
-                      GlobalWidgetsLocalizations.delegate,
-                      GlobalCupertinoLocalizations.delegate,
-                    ],
-                    supportedLocales: [
-                      const Locale('en'),
-                      const Locale('nl'),
-                    ],
-                    builder: (context, child) {
-                      if (!inDebugMode) {
-                        ErrorWidget.builder = (_) => const BuildError();
-                      }
-
-                      return child!;
-                    },
+                    child: child,
                   ),
-                ),
-              ),
+              (child) => ConnectivityChecker.create(child: child),
+              (child) => MissedCallNotificationPressedListener(
+                    onMissedCallNotificationPressed: () =>
+                        App.navigateTo(MainPageTab.recents),
+                    child: child,
+                  ),
+              (child) => BlocProvider<TemporaryRedirectCubit>(
+                    create: (_) => TemporaryRedirectCubit(),
+                    child: child,
+                  ),
+            ],
+            MaterialApp(
+              navigatorKey: _navigatorKey,
+              title: context.brand.appName,
+              theme: context.brand.theme.themeData,
+              initialRoute:
+                  _isAuthenticatedAtAppStart ? Routes.main : Routes.onboarding,
+              routes: Routes.mapped,
+              localizationsDelegates: [
+                VialerLocalizations.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              supportedLocales: [
+                const Locale('en'),
+                const Locale('nl'),
+              ],
+              builder: (context, child) {
+                if (!inDebugMode) {
+                  ErrorWidget.builder = (_) => const BuildError();
+                }
+
+                return child!;
+              },
             ),
           );
         },
