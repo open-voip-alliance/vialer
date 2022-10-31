@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'loggable.dart';
 
 /// Wraps a task that should only be executed once at a time.
@@ -11,7 +13,7 @@ class SingleInstanceTask<T> with Loggable {
   ///
   /// The name maps to a future which is the actual logic of the running
   /// task.
-  static final _runningTasks = <String, Future>{};
+  static final _runningTasks = <String, Completer>{};
 
   SingleInstanceTask._(this.name);
 
@@ -27,13 +29,19 @@ class SingleInstanceTask<T> with Loggable {
   Future<T> run(Future<T> Function() task) async {
     if (_runningTasks.containsKey(name)) {
       logger.info('Unable to start [$name] as it is already running.');
-      return _runningTasks[name] as Future<T>;
+      return _runningTasks[name]!.future as Future<T>;
     }
 
-    final future = task();
-    _runningTasks[name] = future;
-    final result = await task();
-    _runningTasks.remove(name);
-    return result;
+    final completer = Completer<T>();
+    _runningTasks[name] = completer;
+
+    try {
+      final result = await task();
+      completer.complete(result);
+      return result;
+    }
+    finally {
+      _runningTasks.remove(name);
+    }
   }
 }

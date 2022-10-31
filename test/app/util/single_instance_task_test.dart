@@ -85,6 +85,22 @@ void main() {
 
     expect(task1.name, task2.name);
   });
+
+  test('A task throwing an exception does not prevent others', () async {
+    var testValue = 0;
+
+    try {
+      await SingleInstanceTask.named('Testing').run(() async {
+        throw Exception('Testing exceptions');
+      });
+    } on Exception {}
+
+    await SingleInstanceTask.named('Testing').run(() async {
+      testValue = 1;
+    });
+
+    expect(testValue, 1);
+  });
 }
 
 class _DummyClass {}
