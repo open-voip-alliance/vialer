@@ -92,7 +92,7 @@ class Availability extends Equatable {
     );
   }
 
-  /// Find the an app account for the given user. This should never be null
+  /// Find the app account for the given user. This should never be null
   /// with a user properly configured for the app.
   PhoneAccount? findAppAccountFor({required User user}) =>
       phoneAccounts.firstOrNullWhere(

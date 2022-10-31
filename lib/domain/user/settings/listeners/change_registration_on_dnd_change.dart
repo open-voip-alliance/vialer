@@ -14,7 +14,7 @@ class ChangeRegistrationOnDndChange extends SettingChangeListener<bool>
   final key = CallSetting.dnd;
 
   @override
-  FutureOr<SettingChangeListenResult> afterStore(User user, bool dndEnabled) {
+  FutureOr<SettingChangeListenResult> postSave(User user, bool dndEnabled) {
     // This will happen in the background because we do not need to rely
     // on this to have happened when the user changes the setting.
     //
