@@ -76,6 +76,43 @@ class ChangeSettingsUseCase extends UseCase with Loggable {
     // If you want a custom log message, log it manually.
     final skipLogging = <SettingKey>{};
 
+    Future<void> _notifyListeners(
+      Iterable<MapEntry<SettingKey, Object>> entries, {
+      required bool before,
+    }) async {
+      for (final entry in entries) {
+        final key = entry.key;
+        final value = entry.value;
+
+        for (final listener in _listeners) {
+          if (listener.key != key) continue;
+
+          final futureOrResult = before
+              ? listener.preSave(user, value)
+              : listener.postSave(user, value);
+
+          final result =
+              futureOrResult is Future ? await futureOrResult : futureOrResult;
+
+          if (!result.log) {
+            skipLogging.add(key);
+          }
+
+          if (result.sync) {
+            needSync.add(key);
+            assert(
+              before,
+              'No sync will happen after storing. Use `beforeStore`',
+            );
+          }
+
+          if (result.failed) {
+            failed.add(key);
+          }
+        }
+      }
+    }
+
     // This is a function, because the second listener run might add
     // more failed setting changes.
     Settings getChanged() => diff.getAll(diff.keys.difference(failed));

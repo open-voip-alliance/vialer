@@ -18,7 +18,7 @@ class UpdateAvailabilityListener extends SettingChangeListener<Availability>
   final key = CallSetting.availability;
 
   @override
-  FutureOr<SettingChangeListenResult> beforeStore(
+  FutureOr<SettingChangeListenResult> preSave(
     User user,
     Availability availability,
   ) async {
