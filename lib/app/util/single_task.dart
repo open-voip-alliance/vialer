@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'loggable.dart';
 
-/// Wraps a task that should only be executed once at a time.
+/// Wraps a task that should only be executed one at a time.
 class SingleInstanceTask<T> with Loggable {
   /// A unique identifier for this task, a matching task is what defines
   /// if it is running.
@@ -11,8 +11,8 @@ class SingleInstanceTask<T> with Loggable {
   /// The map of running tasks, if the name of this task is in this map
   /// it means it is running.
   ///
-  /// The name maps to a future which is the actual logic of the running
-  /// task.
+  /// The name maps to a [Completer] which will be notified when the logic
+  /// has completed.
   static final _runningTasks = <String, Completer>{};
 
   SingleInstanceTask._(this.name);
