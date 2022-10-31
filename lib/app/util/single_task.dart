@@ -39,8 +39,7 @@ class SingleInstanceTask<T> with Loggable {
       final result = await task();
       completer.complete(result);
       return result;
-    }
-    finally {
+    } finally {
       _runningTasks.remove(name);
     }
   }
