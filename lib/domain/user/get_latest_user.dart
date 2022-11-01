@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import '../../app/util/loggable.dart';
+import '../../app/util/single_task.dart';
 import '../../dependency_locator.dart';
 import '../authentication/authentication_repository.dart';
 import '../business_availability/temporary_redirect/get_current_temporary_redirect.dart';
@@ -37,35 +38,37 @@ class GetLatestUserUseCase extends UseCase with Loggable {
 
     if (latestUser == null) return storedUser;
 
-    // Latest user contains some settings, such as mobile and outgoing number.
-    var user = storedUser?.copyFrom(latestUser) ??
-        latestUser.copyWith(
-          settings: const Settings.defaults().copyFrom(latestUser.settings),
-        );
+    return SingleInstanceTask<User?>.of(this).run(() async {
+      // Latest user contains some settings, such as mobile and outgoing number.
+      var user = storedUser?.copyFrom(latestUser) ??
+          latestUser.copyWith(
+            settings: const Settings.defaults().copyFrom(latestUser.settings),
+          );
 
-    // If we're retrieving the user for the first time (logging in), we store
-    // the user already, so that the AuthorizationInterceptor can use it.
-    if (storedUser == null) {
+      // If we're retrieving the user for the first time (logging in), we store
+      // the user already, so that the AuthorizationInterceptor can use it.
+      if (storedUser == null) {
+        _storageRepository.user = user;
+      }
+
+      user = _getPreviousSessionSettings(user);
+      user = await _getRemoteSettings(user);
+      user = await _getRemotePermissions(user);
+      user = await _getRemoteClientOutgoingNumbers(user);
+      user = await _getClientVoicemailAccounts(user);
+      user = await _getCurrentTemporaryRedirect(user);
+
+      // User should have a value for all settings.
+      assert(
+        user.settings.isComplete,
+        'The following settings are missing from the user: '
+        '${Settings.possibleKeys.difference(user.settings.keys).toList()}',
+      );
+
       _storageRepository.user = user;
-    }
 
-    user = _getPreviousSessionSettings(user);
-    user = await _getRemoteSettings(user);
-    user = await _getRemotePermissions(user);
-    user = await _getRemoteClientOutgoingNumbers(user);
-    user = await _getClientVoicemailAccounts(user);
-    user = await _getCurrentTemporaryRedirect(user);
-
-    // User should have a value for all settings.
-    assert(
-      user.settings.isComplete,
-      'The following settings are missing from the user: '
-      '${Settings.possibleKeys.difference(user.settings.keys).toList()}',
-    );
-
-    _storageRepository.user = user;
-
-    return user;
+      return user;
+    });
   }
 
   Future<User?> _getUserFromCredentials(LoginCredentials? credentials) async {
