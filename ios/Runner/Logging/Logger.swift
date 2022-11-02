@@ -3,6 +3,8 @@ import Foundation
 class Logger: NSObject, NativeLogging {
 
     private static let CONSOLE_LOG_KEY = "VIALER-PIL"
+    private static let LOGGER_NAME = "IPL"
+    
     private var anonymizationRules = [NSRegularExpression : String]()
     private var loggingDatabase: LoggingDatabase? = nil
     private var userIdentifier: String? = nil
@@ -14,7 +16,6 @@ class Logger: NSObject, NativeLogging {
     private let flutterSharedPreferences = FlutterSharedPreferences()
 
     internal func writeLog(_ message: String) {
-        print("//wip IN writeLog of LOGGER!!! -------")
         if isConsoleLoggingEnabled {
             logToConsole(message: message)
         }
@@ -27,10 +28,10 @@ class Logger: NSObject, NativeLogging {
     private func logToConsole(message: String) {
         // Format message to be consistent with Dart logs.
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "uuuu-MM-dd HH-mm-ss.SSSSSS"
+        dateFormatter.dateFormat = "uuuu-MM-dd HH:mm:ss.SSSSSS"
         let time = dateFormatter.string(from: Date())
 
-        let formattedMessage = "[\(time)] IPL: \(message)"
+        let formattedMessage = "[\(time)] \(Logger.LOGGER_NAME): \(message)"
 
         print("\(Logger.CONSOLE_LOG_KEY) \(formattedMessage)")
 
@@ -40,10 +41,10 @@ class Logger: NSObject, NativeLogging {
     }
     
     private func logToRemote(message: String) {
-        let message = anonymize(message: message) //wip do we still to anonymize?
+        let message = anonymize(message: message) //wip do we still need to anonymize and add the userIdentifier to the log message?
         let userIdentifier = userIdentifier ?? ""
         
-        loggingDatabase?.insertLog(message: "\(userIdentifier) \(message)")
+        loggingDatabase?.insertLog(message: "\(userIdentifier) \(message)", loggerName: Logger.LOGGER_NAME)
     }
     
     private func anonymize(message: String) -> String {
@@ -52,10 +53,7 @@ class Logger: NSObject, NativeLogging {
         })
     }
     
-    //wip used by pigeon - do we need to apply any changes now that we don't use log entries? is token used anywhere with Loki? Do we need this whole function? Do we need to change/remove the GetLoggingTokenUseCase since when user activates the remote logging from settings an exception is triggered: Unsupported operation: No logging token for platform: ios
-//    #0      GetLoggingTokenUseCase.call (package:vialer/domain/remote_logging/get_logging_token.dart:20:7)
-//    <asynchronous suspension>
-//    #1      EnableRemoteLoggingUseCase.call ...
+    //wip used by pigeon - do we need to apply any changes now that we don't use log entries? is token going to be used anywhere with Loki? Do we need this whole function? Do we need to change/remove the GetLoggingTokenUseCase? I guess in a another ticket for Loki epic.
     func startNativeRemoteLoggingToken(_ token: String?, userIdentifier: String?, anonymizationRules: [String : String]?, completion: @escaping (FlutterError?) -> Void) {
         loggingDatabase = LoggingDatabase()
         self.userIdentifier = userIdentifier

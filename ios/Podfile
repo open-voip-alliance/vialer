@@ -39,11 +39,6 @@ target 'Runner' do
   pod 'iOSPhoneLib', :git =>'https://github.com/open-voip-alliance/iOS-Phone-Lib.git'
   pod 'Alamofire', '~> 5.4'
   pod 'Analytics', '~> 4.1'
-  #//wip
-#  pod 'SQLite.swift', '~> 0.13.3'
-#  pod 'GRDB.swift', '~> 6.1.0'
-#  pod 'FMDB'
-
   
   target 'RunnerTests' do
     inherit! :search_paths

@@ -16,7 +16,8 @@ class GetLoggingTokenUseCase extends UseCase {
             ? await _envRepository.logentriesIosToken
             : '';
 
-    //WIP This needs to
+    //WIP This needs to be removed since we are not using logentries any more
+    //WIP and it is throwing an exception for ios
     // if (token.isEmpty) {
     //   throw UnsupportedError(
     //     'No logging token for platform: ${Platform.operatingSystem}',
