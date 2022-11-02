@@ -10,6 +10,9 @@ class DestinationRepository {
 
   Future<Availability?> getLatestAvailability() async {
     final response = await _service.getAvailability();
+
+    if (!response.isSuccessful) return null;
+
     final objects = response.body['objects'] as List<dynamic>? ?? [];
 
     if (objects.isEmpty) return null;
