@@ -20,16 +20,7 @@ abstract class ContactSortHostApi {
 @HostApi()
 // ignore:one_member_abstracts
 abstract class NativeLogging {
-  @async
-  void startNativeRemoteLogging(
-    String token,
-    String userIdentifier,
-    Map<String, String> anonymizationRules,
-  );
-
   void startNativeConsoleLogging();
-
-  void stopNativeRemoteLogging();
 
   void stopNativeConsoleLogging();
 }
