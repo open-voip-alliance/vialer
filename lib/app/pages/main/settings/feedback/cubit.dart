@@ -1,7 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../domain/feedback/send_feedback.dart';
-import '../../../../../domain/feedback/send_saved_logs_to_remote.dart';
 import '../../../../../domain/user/settings/app_setting.dart';
 import '../../../../../domain/user/settings/change_setting.dart';
 import 'state.dart';
@@ -10,7 +9,6 @@ export 'state.dart';
 
 class FeedbackCubit extends Cubit<FeedbackState> {
   final _sendFeedback = SendFeedbackUseCase();
-  final _sendSavedLogsToRemote = SendSavedLogsToRemoteUseCase();
   final _changeSetting = ChangeSettingUseCase();
 
   FeedbackCubit() : super(FeedbackNotSent());
@@ -28,7 +26,7 @@ class FeedbackCubit extends Cubit<FeedbackState> {
     final result = await _changeSetting(AppSetting.remoteLogging, true);
 
     if (result != SettingChangeResult.failed) {
-      _sendSavedLogsToRemote();
+      // TODO: Prune the database of records that shouldn't be uploaded
     }
   }
 }

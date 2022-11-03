@@ -1,11 +1,11 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../domain/logging/remote_logging/enable_remote_logging_if_needed.dart';
 import '../../../../domain/onboarding/exceptions.dart';
 import '../../../../domain/onboarding/login.dart';
 import '../../../../domain/onboarding/login_credentials.dart';
 import '../../../../domain/onboarding/step.dart';
 import '../../../../domain/onboarding/two_factor_authentication_required.dart';
-import '../../../../domain/remote_logging/enable_remote_logging_if_needed.dart';
 import '../../../util/loggable.dart';
 import '../../../util/password.dart' as util;
 import '../cubit.dart';
