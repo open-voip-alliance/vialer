@@ -1,15 +1,22 @@
 import 'dart:async';
 
+import '../../app/util/loggable.dart';
 import 'availability.dart';
 import 'voipgrid_service.dart';
 
-class DestinationRepository {
+class DestinationRepository with Loggable {
   final VoipgridService _service;
 
   DestinationRepository(this._service);
 
   Future<Availability?> getLatestAvailability() async {
     final response = await _service.getAvailability();
+
+    if (!response.isSuccessful) {
+      logFailedResponse(response, name: 'Get Latest Availability');
+      return null;
+    }
+
     final objects = response.body['objects'] as List<dynamic>? ?? [];
 
     if (objects.isEmpty) return null;
