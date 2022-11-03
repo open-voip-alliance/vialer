@@ -73,4 +73,12 @@ abstract class MiddlewareService extends ChopperService {
     @Field('message_start_time') required String messageStartTime,
     @Field('sip_user_id') required String sipUserId,
   });
+
+  @FactoryConverter(response: null)
+  @Post(path: 'log/')
+  Future<Response> log({
+    @Field('token') required String token,
+    @Field('app_id') required String appId,
+    @Field('logs') required List<dynamic> logs,
+  });
 }

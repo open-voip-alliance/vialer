@@ -20,6 +20,8 @@ class EnvRepository {
 
   Future<String> get logentriesIosToken => _get('LOGENTRIES_IOS_TOKEN');
 
+  Future<String> get logToken => _get('LOG_TOKEN');
+
   Future<String> get segmentAndroidKey => _get('SEGMENT_ANDROID_KEY');
 
   Future<String> get segmentIosKey => _get('SEGMENT_IOS_KEY');

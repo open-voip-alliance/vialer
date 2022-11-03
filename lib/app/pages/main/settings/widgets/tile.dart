@@ -791,7 +791,6 @@ class _RemoteLoggingSendLogsDialog extends StatelessWidget {
 
     void onDenyPressed() => Navigator.pop(context);
     void onConfirmPressed() {
-      cubit.sendSavedLogsToRemote();
       Navigator.pop(context);
     }
 
