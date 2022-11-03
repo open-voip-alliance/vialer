@@ -3,7 +3,7 @@ import '../feedback/clear_saved_logs_on_new_day.dart';
 import '../legacy/storage.dart';
 import '../use_case.dart';
 import '../user/get_stored_user.dart';
-import 'logging.dart';
+import 'logging_repository.dart';
 
 class EnableConsoleLoggingUseCase extends UseCase {
   final _loggingRepository = dependencyLocator<LoggingRepository>();

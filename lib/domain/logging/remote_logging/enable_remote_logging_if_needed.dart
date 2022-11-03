@@ -1,8 +1,8 @@
-import '../../dependency_locator.dart';
-import '../legacy/storage.dart';
-import '../use_case.dart';
-import '../user/get_stored_user.dart';
-import '../user/settings/app_setting.dart';
+import '../../../dependency_locator.dart';
+import '../../legacy/storage.dart';
+import '../../use_case.dart';
+import '../../user/get_stored_user.dart';
+import '../../user/settings/app_setting.dart';
 import 'enable_remote_logging.dart';
 
 class EnableRemoteLoggingIfNeededUseCase extends UseCase {

@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../domain/authentication/logout.dart';
 import '../../../../domain/calling/voip/get_is_voip_allowed.dart';
 import '../../../../domain/calling/voip/perform_echo_cancellation_calibration.dart';
-import '../../../../domain/feedback/send_saved_logs_to_remote.dart';
 import '../../../../domain/onboarding/request_permission.dart';
 import '../../../../domain/user/get_build_info.dart';
 import '../../../../domain/user/get_latest_logged_in_user.dart';
@@ -24,7 +23,6 @@ export 'state.dart';
 class SettingsCubit extends Cubit<SettingsState> with Loggable {
   final _changeSettings = ChangeSettingsUseCase();
   final _getBuildInfo = GetBuildInfoUseCase();
-  final _sendSavedLogsToRemote = SendSavedLogsToRemoteUseCase();
   final _getIsVoipAllowed = GetIsVoipAllowedUseCase();
   final _getPermissionStatus = GetPermissionStatusUseCase();
   final _requestPermission = RequestPermissionUseCase();
@@ -95,7 +93,8 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
         permission: Permission.ignoreBatteryOptimizations,
       );
 
-  Future<void> sendSavedLogsToRemote() => _sendSavedLogsToRemote();
+  Future<void> sendSavedLogsToRemote() async {}
+  // TODO: Prune the database of records that shouldn't be uploaded
 
   Future<void> refresh() => _emitUpdatedState();
 
