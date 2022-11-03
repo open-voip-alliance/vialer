@@ -70,7 +70,7 @@ class Segment(
             return
         }
 
-        val systemUser = prefs.systemUser ?: run {
+        val user = prefs.user ?: run {
             logger.writeLog("Unable to identify user for native metrics.")
             return
         }
@@ -80,7 +80,7 @@ class Segment(
             return
         }
 
-        instance.identify(systemUser.getString("uuid"))
+        instance.identify(user.uuid)
         isIdentified = true
         logger.writeLog("Identifying user so waiting for ${DELAY_AFTER_IDENTIFY}ms to track")
 

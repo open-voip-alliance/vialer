@@ -6,7 +6,10 @@ import '../../dependency_locator.dart';
 import '../authentication/authentication_repository.dart';
 import '../call_records/client/purge_local_call_records.dart';
 import '../calling/outgoing_number/outgoing_numbers.dart';
+import '../calling/voip/client_voip_config_repository.dart';
+import '../calling/voip/user_voip_config_repository.dart';
 import '../legacy/storage.dart';
+import '../metrics/metrics.dart';
 import '../onboarding/exceptions.dart';
 import '../onboarding/login_credentials.dart';
 import '../use_case.dart';
@@ -28,6 +31,11 @@ class GetLatestUserUseCase extends UseCase with Loggable {
   final _userPermissionsRepository =
       dependencyLocator<UserPermissionsRepository>();
   final _voicemailRepository = dependencyLocator<VoicemailAccountsRepository>();
+  final _userVoipConfigRepository =
+      dependencyLocator<UserVoipConfigRepository>();
+  final _clientVoipConfigRepository =
+      dependencyLocator<ClientVoipConfigRepository>();
+  final _metricsRepository = dependencyLocator<MetricsRepository>();
 
   final _purgeLocalCallRecords = PurgeLocalCallRecordsUseCase();
 
@@ -55,6 +63,8 @@ class GetLatestUserUseCase extends UseCase with Loggable {
       user = await _getRemotePermissions(user);
       user = await _getRemoteClientOutgoingNumbers(user);
       user = await _getClientVoicemailAccounts(user);
+      user = await _getUserVoipConfig(user);
+      user = await _getClientVoipConfig(user);
 
       // User should have a value for all settings.
       assert(
@@ -153,15 +163,8 @@ class GetLatestUserUseCase extends UseCase with Loggable {
 
   /// Retrieving client outgoing numbers and handling its possible side effects.
   Future<User> _getRemoteClientOutgoingNumbers(User user) async {
-    if (user.client == null) return user;
-
-    if (!user.canChangeOutgoingNumber) {
-      logger.warning('Unable to get client outgoing numbers as no client_uuid');
-      return user;
-    }
-
     return user.copyWith(
-      client: user.client?.copyWith(
+      client: user.client.copyWith(
         outgoingNumbers: await _outgoingNumbersRepository
             .getOutgoingNumbersAvailableToClient(user: user),
       ),
@@ -170,15 +173,55 @@ class GetLatestUserUseCase extends UseCase with Loggable {
 
   /// Retrieving client outgoing numbers and handling its possible side effects.
   Future<User> _getClientVoicemailAccounts(User user) async {
-    if (user.client == null) return user;
-
     return user.copyWith(
-      client: user.client?.copyWith(
+      client: user.client.copyWith(
         voicemailAccounts: await _voicemailRepository.getVoicemailAccounts(
           user: user,
         ),
       ),
     );
+  }
+
+  /// Retrieving user voip config and handling its possible side effects.
+  Future<User> _getUserVoipConfig(User user) async {
+    final latestVoipConfig = await _userVoipConfigRepository.get();
+
+    if (latestVoipConfig != null) {
+      return user.copyWith(
+        voip: latestVoipConfig,
+      );
+    }
+
+    return user;
+  }
+
+  /// Retrieving user voip config and handling its possible side effects.
+  Future<User> _getClientVoipConfig(User user) async {
+    final current = user.client.voip;
+    final latest = await _clientVoipConfigRepository.get();
+
+    if (current != latest) {
+      _metricsRepository.track('server-config-changed', {
+        'from': current,
+        'to': latest,
+      });
+
+      if (current.isFallback) {
+        logger.info('Loaded CLIENT VOIP CONFIG: $latest');
+      } else {
+        logger.info(
+          'Switching CLIENT VOIP CONFIG from [$current] to [$latest]',
+        );
+      }
+
+      return user.copyWith(
+        client: user.client.copyWith(
+          voip: latest,
+        ),
+      );
+    }
+
+    return user;
   }
 
   User _getPreviousSessionSettings(User user) {

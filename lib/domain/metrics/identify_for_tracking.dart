@@ -9,7 +9,7 @@ import 'metrics.dart';
 class IdentifyForTrackingUseCase extends UseCase {
   final _metricsRepository = dependencyLocator<MetricsRepository>();
 
-  final _getBrand = GetBrandUseCase();
+  final _getBrand = GetBrand();
   final _getUser = GetLoggedInUserUseCase();
 
   /// Add an artificial delay so we know that the user has been properly
