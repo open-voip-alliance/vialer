@@ -1,15 +1,16 @@
 import Foundation
-import le
 
 class Logger: NSObject, NativeLogging {
 
     private static let CONSOLE_LOG_KEY = "VIALER-PIL"
+    private static let LOGGER_NAME = "IPL"
+    
     private var anonymizationRules = [NSRegularExpression : String]()
-    private var logEntries: LELog? = nil
+    private var loggingDatabase: LoggingDatabase? = nil
     private var userIdentifier: String? = nil
     private var isConsoleLoggingEnabled = false
     private var isRemoteLoggingEnabled: Bool {
-        logEntries != nil
+        loggingDatabase != nil
     }
 
     private let flutterSharedPreferences = FlutterSharedPreferences()
@@ -27,10 +28,10 @@ class Logger: NSObject, NativeLogging {
     private func logToConsole(message: String) {
         // Format message to be consistent with Dart logs.
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "uuuu-MM-dd HH-mm-ss.SSSSSS"
+        dateFormatter.dateFormat = "uuuu-MM-dd HH:mm:ss.SSSSSS"
         let time = dateFormatter.string(from: Date())
 
-        let formattedMessage = "[\(time)] IPL: \(message)"
+        let formattedMessage = "[\(time)] \(Logger.LOGGER_NAME): \(message)"
 
         print("\(Logger.CONSOLE_LOG_KEY) \(formattedMessage)")
 
@@ -43,7 +44,7 @@ class Logger: NSObject, NativeLogging {
         let message = anonymize(message: message)
         let userIdentifier = userIdentifier ?? ""
         
-        logEntries?.log("\(userIdentifier) \(message)" as NSString)
+        loggingDatabase?.insertLog(message: "\(userIdentifier) \(message)", loggerName: Logger.LOGGER_NAME)
     }
     
     private func anonymize(message: String) -> String {
@@ -53,8 +54,7 @@ class Logger: NSObject, NativeLogging {
     }
     
     func startNativeRemoteLoggingToken(_ token: String?, userIdentifier: String?, anonymizationRules: [String : String]?, completion: @escaping (FlutterError?) -> Void) {
-        logEntries = LELog.session(withToken: token)
-        logEntries?.debugLogs = false
+        loggingDatabase = LoggingDatabase()
         self.userIdentifier = userIdentifier
         
         do {
@@ -71,7 +71,7 @@ class Logger: NSObject, NativeLogging {
     }
     
     func stopNativeRemoteLoggingWithError(_ error: AutoreleasingUnsafeMutablePointer<FlutterError?>) {
-        logEntries = nil
+        loggingDatabase = nil
         userIdentifier = nil
     }
     
