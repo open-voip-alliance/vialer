@@ -41,7 +41,7 @@ class Logger: NSObject, NativeLogging {
     }
     
     private func logToRemote(message: String) {
-        let message = anonymize(message: message) //wip do we still need to anonymize and add the userIdentifier to the log message?
+        let message = anonymize(message: message)
         let userIdentifier = userIdentifier ?? ""
         
         loggingDatabase?.insertLog(message: "\(userIdentifier) \(message)", loggerName: Logger.LOGGER_NAME)
@@ -53,7 +53,6 @@ class Logger: NSObject, NativeLogging {
         })
     }
     
-    //wip used by pigeon - do we need to apply any changes now that we don't use log entries? is token going to be used anywhere with Loki? Do we need this whole function? Do we need to change/remove the GetLoggingTokenUseCase? I guess in a another ticket for Loki epic.
     func startNativeRemoteLoggingToken(_ token: String?, userIdentifier: String?, anonymizationRules: [String : String]?, completion: @escaping (FlutterError?) -> Void) {
         loggingDatabase = LoggingDatabase()
         self.userIdentifier = userIdentifier

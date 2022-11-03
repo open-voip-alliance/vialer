@@ -9,7 +9,7 @@ class LoggingDatabase {
     let dbPath = "logging_db.sqlite"
     let tableName = "log_events"
     
-    var db:OpaquePointer?
+    var db: OpaquePointer?
     
     func openDatabase() -> OpaquePointer? {
         let filePath = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
