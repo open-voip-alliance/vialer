@@ -201,14 +201,14 @@ class GetLatestUserUseCase extends UseCase with Loggable {
     final latest = await _clientVoipConfigRepository.get();
 
     if (current != latest) {
-      _metricsRepository.track('server-config-changed', {
-        'from': current,
-        'to': latest,
-      });
-
       if (current.isFallback) {
         logger.info('Loaded CLIENT VOIP CONFIG: $latest');
       } else {
+        _metricsRepository.track('server-config-changed', {
+          'from': current,
+          'to': latest,
+        });
+
         logger.info(
           'Switching CLIENT VOIP CONFIG from [$current] to [$latest]',
         );
