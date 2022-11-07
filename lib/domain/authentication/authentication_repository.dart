@@ -2,7 +2,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 import '../../app/util/loggable.dart';
 import '../onboarding/auto_login.dart';
-import '../onboarding/need_to_change_password.dart';
+import '../onboarding/exceptions.dart';
 import '../onboarding/two_factor_authentication_required.dart';
 import '../user/client.dart';
 import '../user/settings/call_setting.dart';
@@ -43,10 +43,16 @@ class AuthRepository with Loggable {
       authorization:
           email != null && token != null ? 'Token $email:$token' : null,
     );
+
     if (response.error
         .toString()
         .contains('You need to change your password in the portal')) {
       throw NeedToChangePasswordException();
+    }
+
+    if (!response.isSuccessful) {
+      logFailedResponse(response, name: 'Fetch User');
+      throw FailedToRetrieveUserException();
     }
 
     return _SystemUserResponse.fromJson(
@@ -132,13 +138,11 @@ class AuthRepository with Loggable {
   Future<bool> updateAppAccount({
     bool useOpus = true,
     bool useEncryption = true,
-  }) async {
-    final response = await _service.updateMobileProfile({
-      'appaccount_use_opus': useOpus,
-      'appaccount_use_encryption': useEncryption,
-    });
-    return response.isSuccessful;
-  }
+  }) =>
+      _service.updateMobileProfile({
+        'appaccount_use_opus': useOpus,
+        'appaccount_use_encryption': useEncryption,
+      }).then((response) => response.isSuccessful);
 
   Future<bool> isUserUsingMobileNumberAsFallback(User user) async {
     final response = await _service.getUserSettings(

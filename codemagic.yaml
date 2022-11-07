@@ -449,23 +449,29 @@ workflows:
           success: true
           failure: false
 
-  merge-requests:
-    name: merge requests
-    <<: *config
-    environment:
-      groups:
-        - configuration
-        - diagnostics
-        - vialer_playstore_credentials
-        - vialer_android_firebase
-        - vialer_upload_keystore_credentials
-        - vialer_ios_appstore_credentials
-      <<: *config_environment
-      vars:
-        <<: *brand_config_vialer_env_vars
-        IOS_SIGNING_TYPE: "IOS_APP_DEVELOPMENT"
-        ENABLE_IOS_SANDBOX_PUSH_NOTIFICATIONS: "true"
-        FINALIZE_SENTRY_RELEASE: "false"
+  # Run automatically via `.gitlab-ci.yml`
+  gitlab-ci-merge-train:
+    name: Gitlab CI Merge Train
+    <<: *main_workflow
+    scripts:
+      - *set_up_env_file
+      - *set_version_string_for_merge_request
+      - *flutter_pub_get
+      - *analyze
+      - *flutter_test
+      - *build_aab
+      - *build_universal_apk_from_aab
+      - *update_ios_signing_for_current_brand
+      - *build_ipa
+      - *release_to_sentry
+      - *run_integration_tests
+    triggering:
+      events: [ ]
+
+  # Run automatically via `.gitlab-ci.yml`
+  gitlab-ci-merge-request:
+    name: Gitlab CI Merge Request
+    <<: *main_workflow
     scripts:
       - *set_up_env_file
       - *set_version_string_for_merge_request
@@ -478,8 +484,8 @@ workflows:
       - *build_ipa
       - *update_gitlab_merge_request_with_build_url
       - *release_to_sentry
-      - *run_integration_tests
-    artifacts: *defaults_artifacts
+    triggering:
+      events: [ ]
     publishing:
       slack:
         channel: '#vialer_mobile_ci'
@@ -487,6 +493,23 @@ workflows:
         notify:
           success: true
           failure: true
+
+  run-integration-tests:
+    name: Run Integration Tests
+    <<: *main_workflow
+    scripts:
+      - *set_up_env_file
+      - *set_version_string_for_merge_request
+      - *flutter_pub_get
+      - *analyze
+      - *flutter_test
+      - *build_aab
+      - *build_universal_apk_from_aab
+      - *update_ios_signing_for_current_brand
+      - *build_ipa
+      - *run_integration_tests
+    triggering:
+      events: [ ]
 
   staging:
     name: Staging

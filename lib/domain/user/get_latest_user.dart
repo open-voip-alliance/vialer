@@ -1,11 +1,13 @@
 import 'dart:async';
 
 import '../../app/util/loggable.dart';
+import '../../app/util/single_task.dart';
 import '../../dependency_locator.dart';
 import '../authentication/authentication_repository.dart';
 import '../call_records/client/purge_local_call_records.dart';
 import '../calling/outgoing_number/outgoing_numbers.dart';
 import '../legacy/storage.dart';
+import '../onboarding/exceptions.dart';
 import '../onboarding/login_credentials.dart';
 import '../use_case.dart';
 import '../voicemail/voicemail_account_repository.dart';
@@ -35,34 +37,36 @@ class GetLatestUserUseCase extends UseCase with Loggable {
 
     if (latestUser == null) return storedUser;
 
-    // Latest user contains some settings, such as mobile and outgoing number.
-    var user = storedUser?.copyFrom(latestUser) ??
-        latestUser.copyWith(
-          settings: const Settings.defaults().copyFrom(latestUser.settings),
-        );
+    return SingleInstanceTask<User?>.of(this).run(() async {
+      // Latest user contains some settings, such as mobile and outgoing number.
+      var user = storedUser?.copyFrom(latestUser) ??
+          latestUser.copyWith(
+            settings: const Settings.defaults().copyFrom(latestUser.settings),
+          );
 
-    // If we're retrieving the user for the first time (logging in), we store
-    // the user already, so that the AuthorizationInterceptor can use it.
-    if (storedUser == null) {
+      // If we're retrieving the user for the first time (logging in), we store
+      // the user already, so that the AuthorizationInterceptor can use it.
+      if (storedUser == null) {
+        _storageRepository.user = user;
+      }
+
+      user = _getPreviousSessionSettings(user);
+      user = await _getRemoteSettings(user);
+      user = await _getRemotePermissions(user);
+      user = await _getRemoteClientOutgoingNumbers(user);
+      user = await _getClientVoicemailAccounts(user);
+
+      // User should have a value for all settings.
+      assert(
+        user.settings.isComplete,
+        'The following settings are missing from the user: '
+        '${Settings.possibleKeys.difference(user.settings.keys).toList()}',
+      );
+
       _storageRepository.user = user;
-    }
 
-    user = _getPreviousSessionSettings(user);
-    user = await _getRemoteSettings(user);
-    user = await _getRemotePermissions(user);
-    user = await _getRemoteClientOutgoingNumbers(user);
-    user = await _getClientVoicemailAccounts(user);
-
-    // User should have a value for all settings.
-    assert(
-      user.settings.isComplete,
-      'The following settings are missing from the user: '
-      '${Settings.possibleKeys.difference(user.settings.keys).toList()}',
-    );
-
-    _storageRepository.user = user;
-
-    return user;
+      return user;
+    });
   }
 
   Future<User?> _getUserFromCredentials(LoginCredentials? credentials) async {
@@ -81,7 +85,11 @@ class GetLatestUserUseCase extends UseCase with Loggable {
       );
     }
 
-    return await _authRepository.getUserUsingStoredCredentials();
+    try {
+      return await _authRepository.getUserUsingStoredCredentials();
+    } on FailedToRetrieveUserException {
+      return null;
+    }
   }
 
   /// Retrieving settings and handling its possible side effects.

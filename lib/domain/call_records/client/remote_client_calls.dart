@@ -34,7 +34,7 @@ class RemoteClientCallsRepository with Loggable {
 
   /// The delay that will be added between each API requests to avoid rate
   /// limiting.
-  static const _durationBetweenRequests = Duration(milliseconds: 25);
+  static const _durationBetweenRequests = Duration(seconds: 2);
 
   /// The duration that we will wait after a failed request before retrying it
   /// once. This is to wait for any potential rate limits to be removed.
@@ -113,10 +113,7 @@ class RemoteClientCallsRepository with Loggable {
     logger.info('Fetching phone account: $id');
 
     if (!response.isSuccessful) {
-      logger.warning(
-        'Failed to fetch phone account with code '
-        '[${response.statusCode}] and message: ${response.bodyString}',
-      );
+      logFailedResponse(response, name: 'Fetch Phone Account');
       return null;
     }
 
