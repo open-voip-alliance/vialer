@@ -16,11 +16,6 @@ class VoicemailAccountsRepository with Loggable {
   }) async {
     final client = user.client;
 
-    if (client == null) {
-      logger.warning('Unable to fetch client voicemails as client is null');
-      return [];
-    }
-
     return apiResourceCollector.collect(
       requester: (page) => _service.getVoicemailAccounts(
         client.id.toString(),
