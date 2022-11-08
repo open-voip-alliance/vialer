@@ -36,8 +36,8 @@ class LoggingDatabase(private val context: Context) {
 
     fun insertLog(message: String, level: PhoneLibLogLevel, loggerName: String) {
         // We will drop logs until the database table has been created in Flutter
-        if (!dbFile.exists() || true) return
-
+        if (!dbFile.exists()) return
+// TODO: Enable this when the database has been created
 //        db.insert(
 //            LogEvents.TABLE_NAME,
 //            null,
