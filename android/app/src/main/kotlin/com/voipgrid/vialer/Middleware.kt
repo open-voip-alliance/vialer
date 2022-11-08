@@ -16,7 +16,6 @@ class Middleware(
     private val prefs: FlutterSharedPreferences,
     private val segment: Segment,
 ) : NativeMiddleware {
-
     private val client = OkHttpClient()
 
     /**
@@ -38,8 +37,12 @@ class Middleware(
      */
     private var callIdsBeingHandled = mutableListOf<String>()
 
-    public val baseUrl: String
-        get() = "${prefs.middlewareUrl}/api"
+    val baseUrl: String
+        get() {
+            val base = prefs.user?.client?.voip?.middlewareUrl
+                ?: context.getString(R.string.middleware_url)
+            return "$base/api"
+        }
 
     override fun tokenReceived(token: String) {
         if (lastRegisteredToken == token) {
@@ -48,7 +51,7 @@ class Middleware(
 
         lastRegisteredToken = token
 
-        if (prefs.getBoolSetting("DndSetting")) {
+        if (prefs.user?.settings?.get<Boolean>("CallSetting.dnd") == true) {
             log("Registration cancelled: do not disturb is enabled")
             return
         }
@@ -65,12 +68,12 @@ class Middleware(
         }.build()
 
         val request = createMiddlewareRequest(
-                middlewareCredentials.email,
-                middlewareCredentials.loginToken,
-                url = "${baseUrl}/android-device/",
-            )
-                .post(data)
-                .build()
+            middlewareCredentials.email,
+            middlewareCredentials.loginToken,
+            url = "${baseUrl}/android-device/",
+        )
+            .post(data)
+            .build()
 
         client.newCall(request).enqueue(
             object : Callback {
@@ -180,11 +183,13 @@ class Middleware(
         }
 
         return true.also {
-            segment.track("notification-received", remoteMessage.trackingProperties + mapOf(
-                "seconds_from_call_to_received" to remoteMessage.secondsSincePushWasSent.toString(),
-                "is_ignoring_battery_optimizations" to context.isIgnoringBatteryOptimizations.toString(),
-                "middleware_url" to baseUrl,
-            ))
+            segment.track(
+                "notification-received", remoteMessage.trackingProperties + mapOf(
+                    "seconds_from_call_to_received" to remoteMessage.secondsSincePushWasSent.toString(),
+                    "is_ignoring_battery_optimizations" to context.isIgnoringBatteryOptimizations.toString(),
+                    "middleware_url" to baseUrl,
+                )
+            )
         }
     }
 
@@ -195,14 +200,16 @@ class Middleware(
         reason: NativeMiddlewareUnavailableReason? = null,
         responseTime: Long,
     ) =
-        segment.track("notification-result", remoteMessage.trackingProperties + mapOf(
-            "middleware_response" to middlewareResponse,
-            "available" to available.toString(),
-            "unavailable_reason" to (reason?.name ?: ""),
-            "seconds_from_call_to_responded" to responseTime.toString(),
-            "is_ignoring_battery_optimizations" to context.isIgnoringBatteryOptimizations.toString(),
-            "middleware_url" to baseUrl,
-        ))
+        segment.track(
+            "notification-result", remoteMessage.trackingProperties + mapOf(
+                "middleware_response" to middlewareResponse,
+                "available" to available.toString(),
+                "unavailable_reason" to (reason?.name ?: ""),
+                "seconds_from_call_to_responded" to responseTime.toString(),
+                "is_ignoring_battery_optimizations" to context.isIgnoringBatteryOptimizations.toString(),
+                "middleware_url" to baseUrl,
+            )
+        )
 
     /**
      * Check to see if a call is being handled currently, if we are handling the call already
@@ -223,9 +230,9 @@ class Middleware(
 
     private val middlewareCredentials
         get() = MiddlewareCredentials(
-            sipUserId = prefs.voipConfig.getString("appaccount_account_id"),
-            email = prefs.systemUser!!.getString("email"),
-            loginToken = prefs.systemUser!!.getString("token")
+            sipUserId = prefs.user!!.voip!!.sipUserId,
+            email = prefs.user!!.email,
+            loginToken = prefs.user!!.token
         )
 
     companion object {
@@ -281,7 +288,7 @@ private val RemoteMessage.pushSentTime
             startTime.uppercase().contains("E") -> BigDecimal(messageStartTime).toLong()
             else -> startTime.toLong()
         }
-    } catch(e: Throwable) {
+    } catch (e: Throwable) {
         0
     }
 

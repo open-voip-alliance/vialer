@@ -8,7 +8,7 @@ import 'package:flutter_phone_lib/flutter_phone_lib.dart' hide Reason;
 import 'package:flutter_phone_lib/flutter_phone_lib.dart' as fpl;
 
 import '../../../../../dependency_locator.dart';
-import '../../../../../domain/authentication/get_is_authenticated.dart';
+import '../../../../../domain/authentication/is_authenticated.dart';
 import '../../../../../domain/calling/call.dart';
 import '../../../../../domain/calling/call_failure_reason.dart';
 import '../../../../../domain/calling/call_through/call_through_exception.dart';
@@ -18,7 +18,6 @@ import '../../../../../domain/calling/voip/end.dart';
 import '../../../../../domain/calling/voip/get_call_session_state.dart';
 import '../../../../../domain/calling/voip/get_has_voip_enabled.dart';
 import '../../../../../domain/calling/voip/get_has_voip_started.dart';
-import '../../../../../domain/calling/voip/get_server_config.dart';
 import '../../../../../domain/calling/voip/get_voip_call_event_stream.dart';
 import '../../../../../domain/calling/voip/hold.dart';
 import '../../../../../domain/calling/voip/launch_ios_audio_route_picker.dart';
@@ -54,7 +53,7 @@ import 'state.dart' hide AttendedTransferStarted;
 export 'state.dart';
 
 class CallerCubit extends Cubit<CallerState> with Loggable {
-  final _isAuthenticated = GetIsAuthenticatedUseCase();
+  final _isAuthenticated = IsAuthenticated();
   final _getConnectivityType = GetCurrentConnectivityTypeUseCase();
 
   final _getUser = GetLoggedInUserUseCase();
@@ -116,11 +115,8 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
 
   void initialize() {
     checkPhonePermission();
-    _getServerConfig();
     _startVoipIfNecessary();
   }
-
-  Future<void> _getServerConfig() async => await GetServerConfigUseCase()();
 
   Future<void> _startVoipIfNecessary() async {
     if (!(await _getHasVoipEnabled())) return;
