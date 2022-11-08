@@ -6,7 +6,6 @@ import 'package:flutter/foundation.dart';
 import '../../../app/util/single_task.dart';
 import '../../../dependency_locator.dart';
 import '../../calling/voip/get_server_config.dart';
-import '../../database_util.dart';
 import '../../env.dart';
 import '../../use_case.dart';
 import '../../user/get_build_info.dart';
@@ -28,9 +27,6 @@ class UploadPendingRemoteLogs extends UseCase {
   /// The number of logs we will read from the database, and submit to the API
   /// in a single request.
   static const _batchSize = 1000;
-
-  Future<String> get _dbFilename =>
-      getDatabaseFile(LoggingDatabase.dbFilename).then((value) => value.path);
 
   Future<void> call() async {
     final user = _getUser();
@@ -64,7 +60,7 @@ class UploadPendingRemoteLogs extends UseCase {
           remoteLoggingId: user.loggingIdentifier,
           serviceBaseUrl: baseUrl,
           logToken: logToken,
-          databasePath: await _dbFilename,
+          databaseIsolateSendPort: LoggingDatabase.portToSendToIsolate,
         ),
       );
     });
@@ -104,12 +100,10 @@ Future<void> _uploadPendingLogsToRemote(
 
   final logging = localLoggingRepository ??
       LoggingRepository(
-        LoggingDatabase.createInIsolate(request.databasePath),
+        await LoggingDatabase.fromSendPort(request.databaseIsolateSendPort),
       );
 
   final events = await logging.getOldestLogs(amount: request.batchSize);
-
-  if (events.isEmpty) return;
 
   final success = await remoteLogging.upload(
     request.packageName,
@@ -128,7 +122,7 @@ Future<void> _uploadPendingLogsToRemote(
     logging.deleteLogs(events.map((e) => e.id).toList());
 
     /// We will call this recursively to upload all the logs that we have.
-    await _uploadPendingLogsToRemote(
+    return await _uploadPendingLogsToRemote(
       request,
       remoteLoggingRepository: remoteLogging,
       localLoggingRepository: logging,

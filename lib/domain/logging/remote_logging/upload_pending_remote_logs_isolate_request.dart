@@ -1,3 +1,5 @@
+import 'dart:isolate';
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'upload_pending_remote_logs_isolate_request.freezed.dart';
@@ -12,6 +14,6 @@ class UploadPendingRemoteLogsIsolateRequest
     required String remoteLoggingId,
     required String serviceBaseUrl,
     required String logToken,
-    required String databasePath,
+    required SendPort databaseIsolateSendPort,
   }) = _UploadPendingRemoteLogsIsolateRequest;
 }

@@ -12,8 +12,7 @@ import '../domain/env.dart';
 import '../domain/error_tracking/error_tracking_repository.dart';
 import '../domain/event/event_bus.dart';
 import '../domain/event/register_event_listeners.dart';
-import '../domain/logging/enable_console_logging.dart';
-import '../domain/logging/remote_logging/enable_remote_logging_if_needed.dart';
+import '../domain/logging/enable_logging.dart';
 import '../domain/metrics/initialize_metric_collection.dart';
 import '../domain/user/get_stored_user.dart';
 import 'pages/main/page.dart';
@@ -38,8 +37,7 @@ Future<void> main() async {
 
   InitializeMetricCollection()();
   RegisterDomainEventListenersUseCase()();
-  EnableConsoleLoggingUseCase()();
-  EnableRemoteLoggingIfNeededUseCase()();
+  EnableLoggingUseCase()();
 
   // Check to see if there are user credentials stored from the legacy app,
   // and if there are, automatically import them. This is temporary

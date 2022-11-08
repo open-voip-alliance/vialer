@@ -11,9 +11,13 @@ class LogUploaderCubit extends Cubit<LogUploaderState> {
   final _loggingRepository = dependencyLocator<LoggingRepository>();
 
   LogUploaderCubit() : super(NotUploadingLogs()) {
-    _loggingRepository.watch().then((value) => value.listen((event) {
-          upload();
-        }));
+    _loggingRepository.watch().then(
+          (value) => value.listen(
+            (event) {
+              upload();
+            },
+          ),
+        );
   }
 
   void upload() async {

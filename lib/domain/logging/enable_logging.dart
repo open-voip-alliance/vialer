@@ -5,7 +5,7 @@ import '../use_case.dart';
 import '../user/get_stored_user.dart';
 import 'logging_repository.dart';
 
-class EnableConsoleLoggingUseCase extends UseCase {
+class EnableLoggingUseCase extends UseCase {
   final _loggingRepository = dependencyLocator<LoggingRepository>();
   final _storageRepository = dependencyLocator<StorageRepository>();
 
@@ -26,5 +26,7 @@ class EnableConsoleLoggingUseCase extends UseCase {
         }
       },
     );
+
+    await _loggingRepository.enableDatabaseLogging();
   }
 }
