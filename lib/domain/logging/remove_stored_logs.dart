@@ -6,8 +6,13 @@ import 'logging_repository.dart';
 class RemoveStoredLogs extends UseCase {
   late final _loggingRepository = dependencyLocator<LoggingRepository>();
 
-  Future<void> call({required bool keepPastDay}) async =>
-      _loggingRepository.remove(
-        before: DateTime.now().subtract(const Duration(days: 1)),
-      );
+  Future<void> call({required bool keepPastDay}) async {
+    final before = keepPastDay
+        ? DateTime.now().subtract(const Duration(days: 1))
+        : DateTime.now();
+
+    _loggingRepository.remove(
+      before: before,
+    );
+  }
 }
