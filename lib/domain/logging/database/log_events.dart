@@ -81,9 +81,7 @@ void _startBackground(_IsolateStartRequest request) =>
     request.sendDriftIsolate.send(
       DriftIsolate.inCurrent(
         () => DatabaseConnection.fromExecutor(
-          NativeDatabase(
-            File(request.targetPath),
-          ),
+          NativeDatabase(File(request.targetPath)),
         ),
       ),
     );
