@@ -105,6 +105,8 @@ Future<void> _uploadPendingLogsToRemote(
 
   final events = await logging.getOldestLogs(amount: request.batchSize);
 
+  if (events.isEmpty) return;
+
   final success = await remoteLogging.upload(
     request.packageName,
     request.logToken,
@@ -119,7 +121,7 @@ Future<void> _uploadPendingLogsToRemote(
   );
 
   if (success) {
-    logging.deleteLogs(events.map((e) => e.id).toList());
+    await logging.deleteLogs(events.map((e) => e.id).toList());
 
     /// We will call this recursively to upload all the logs that we have.
     return await _uploadPendingLogsToRemote(
