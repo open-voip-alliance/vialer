@@ -11,8 +11,6 @@ class RemoveStoredLogs extends UseCase {
         ? DateTime.now().subtract(const Duration(days: 1))
         : DateTime.now();
 
-    _loggingRepository.remove(
-      before: before,
-    );
+    _loggingRepository.remove(before: before);
   }
 }
