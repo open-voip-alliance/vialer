@@ -12,5 +12,7 @@ class CreateNativeLoggingDatabase extends UseCase {
 
     // Just a simple query to force Drift to create the table.
     await (db.select(db.nativeLogEvents)..limit(1)).getSingleOrNull();
+
+    return db.close();
   }
 }

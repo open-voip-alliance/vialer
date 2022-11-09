@@ -40,6 +40,11 @@ class LoggingDatabase extends _$LoggingDatabase {
   /// this should only ever be called once when the application is booted.
   /// Calling this multiple times will caused multiple isolates to be created.
   static Future<DriftIsolate> createIsolate() async {
+    assert(
+      !dependencyLocator.isReadySync<DriftIsolate>(),
+      '[DriftIsolate] must not be created more than once.',
+    );
+
     final receivePort = ReceivePort();
 
     await Isolate.spawn(
