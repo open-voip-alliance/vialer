@@ -10,16 +10,7 @@ import '../../database_util.dart';
 
 part 'log_events.g.dart';
 
-class LogEvents extends Table {
-  IntColumn get id => integer().autoIncrement()();
-  IntColumn get logTime => integer()();
-  IntColumn get level => intEnum<LogLevel>()();
-  TextColumn get name => text()();
-  TextColumn get message => text()();
-}
-
 @DriftDatabase(tables: [LogEvents])
-
 /// This database routes all queries via a [DriftIsolate] which is why there
 /// are no typical methods to creating the database. This is required to
 /// prevent database locking when accessing from background isolates while
@@ -66,6 +57,14 @@ class LoggingDatabase extends _$LoggingDatabase {
   int get schemaVersion => 1;
 }
 
+class LogEvents extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get logTime => integer()();
+  IntColumn get level => intEnum<LogLevel>()();
+  TextColumn get name => text()();
+  TextColumn get message => text()();
+}
+
 enum LogLevel {
   debug,
   info,
@@ -91,4 +90,21 @@ class _IsolateStartRequest {
   final String targetPath;
 
   _IsolateStartRequest(this.sendDriftIsolate, this.targetPath);
+}
+
+@DriftDatabase(tables: [NativeLogEvents])
+/// This is used to log from native, it is being created here to keep
+/// consistency between the schemas. It should not be used in Dart.
+class NativeLoggingDatabase extends _$NativeLoggingDatabase {
+  static String get dbFilename => 'logging_native_db.sqlite';
+
+  NativeLoggingDatabase() : super(openDatabaseConnection(dbFilename));
+
+  @override
+  int get schemaVersion => 1;
+}
+
+class NativeLogEvents extends LogEvents {
+  @override
+  String get tableName => 'log_events';
 }

@@ -12,6 +12,7 @@ import '../domain/env.dart';
 import '../domain/error_tracking/error_tracking_repository.dart';
 import '../domain/event/event_bus.dart';
 import '../domain/event/register_event_listeners.dart';
+import '../domain/logging/create_native_logging_database.dart';
 import '../domain/logging/enable_logging.dart';
 import '../domain/metrics/initialize_metric_collection.dart';
 import '../domain/user/get_stored_user.dart';
@@ -37,6 +38,7 @@ Future<void> main() async {
 
   InitializeMetricCollection()();
   RegisterDomainEventListenersUseCase()();
+  CreateNativeLoggingDatabase()();
   EnableLoggingUseCase()();
 
   // Check to see if there are user credentials stored from the legacy app,
