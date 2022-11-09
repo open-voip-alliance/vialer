@@ -1,3 +1,4 @@
+import '../../app/util/pigeon.dart';
 import '../../dependency_locator.dart';
 import '../use_case.dart';
 import 'logging_repository.dart';
@@ -12,5 +13,7 @@ class RemoveStoredLogs extends UseCase {
         : DateTime.now();
 
     _loggingRepository.remove(before: before);
+
+    NativeLogging().removeStoredLogs(keepPastDay);
   }
 }

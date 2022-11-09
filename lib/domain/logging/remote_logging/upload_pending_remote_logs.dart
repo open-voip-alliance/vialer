@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:dartx/dartx.dart';
 import 'package:flutter/foundation.dart';
 
+import '../../../app/util/pigeon.dart';
 import '../../../app/util/single_task.dart';
 import '../../../dependency_locator.dart';
 import '../../calling/voip/get_server_config.dart';
@@ -23,6 +24,7 @@ class UploadPendingRemoteLogs extends UseCase {
   late final _envRepository = dependencyLocator<EnvRepository>();
   late final _getBuildInfo = GetBuildInfoUseCase();
   late final _getUser = GetStoredUserUseCase();
+  late final _nativeLogging = NativeLogging();
 
   /// The number of logs we will read from the database, and submit to the API
   /// in a single request.
@@ -51,17 +53,29 @@ class UploadPendingRemoteLogs extends UseCase {
     );
 
     return SingleInstanceTask.of(this).run(() async {
-      return compute(
-        _uploadPendingLogsToRemote,
-        UploadPendingRemoteLogsIsolateRequest(
-          batchSize: _batchSize,
-          packageName: buildInfo.packageName,
-          appVersion: buildInfo.version,
-          remoteLoggingId: user.loggingIdentifier,
-          serviceBaseUrl: baseUrl,
-          logToken: logToken,
-          databaseIsolateSendPort: LoggingDatabase.portToSendToIsolate,
-        ),
+      return Future.wait(
+        [
+          compute(
+            _uploadPendingLogsToRemote,
+            UploadPendingRemoteLogsIsolateRequest(
+              batchSize: _batchSize,
+              packageName: buildInfo.packageName,
+              appVersion: buildInfo.version,
+              remoteLoggingId: user.loggingIdentifier,
+              serviceBaseUrl: baseUrl,
+              logToken: logToken,
+              databaseIsolateSendPort: LoggingDatabase.portToSendToIsolate,
+            ),
+          ),
+          _nativeLogging.uploadPendingLogs(
+            _batchSize,
+            buildInfo.packageName,
+            buildInfo.version,
+            user.loggingIdentifier,
+            baseUrl,
+            logToken,
+          ),
+        ],
       );
     });
   }

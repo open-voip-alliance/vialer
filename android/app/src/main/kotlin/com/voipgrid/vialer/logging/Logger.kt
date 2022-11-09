@@ -64,6 +64,22 @@ class Logger(private val context: Context, private val prefs: FlutterSharedPrefe
         isConsoleLoggingEnabled = false
     }
 
+    override fun removeStoredLogs(keepPastDay: Boolean, result: Pigeon.Result<Void>) {
+        result.success(null)
+    }
+
+    override fun uploadPendingLogs(
+        batchSize: Long,
+        packageName: String,
+        appVersion: String,
+        remoteLoggingId: String,
+        url: String,
+        logToken: String,
+        result: Pigeon.Result<Void>
+    ) {
+        result.success(null)
+    }
+
     companion object {
         private const val CONSOLE_LOG_KEY = "VIALER-PIL"
     }

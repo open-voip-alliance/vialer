@@ -55,4 +55,12 @@ class Logger: NSObject, NativeLogging {
     func stopNativeConsoleLoggingWithError(_ error: AutoreleasingUnsafeMutablePointer<FlutterError?>) {
         isConsoleLoggingEnabled = false
     }
+    
+    func uploadPendingLogsBatchSize(_ batchSize: NSNumber, packageName: String, appVersion: String, remoteLoggingId: String, url: String, logToken: String, completion: @escaping (FlutterError?) -> Void) {
+        completion(nil)
+    }
+    
+    func removeStoredLogsKeepPastDay(_ keepPastDay: NSNumber, completion: @escaping (FlutterError?) -> Void) {
+        completion(nil)
+    }
 }

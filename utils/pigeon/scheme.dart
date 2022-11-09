@@ -23,6 +23,20 @@ abstract class NativeLogging {
   void startNativeConsoleLogging();
 
   void stopNativeConsoleLogging();
+
+  @async
+  void uploadPendingLogs(
+    int batchSize,
+    String packageName,
+    String appVersion,
+    String remoteLoggingId,
+    String url,
+    String logToken,
+  );
+
+  @async
+  // ignore: avoid_positional_boolean_parameters
+  void removeStoredLogs(bool keepPastDay);
 }
 
 @HostApi()
