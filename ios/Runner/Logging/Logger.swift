@@ -39,7 +39,7 @@ class Logger: NSObject, NativeLogging {
         let message = anonymize(message: message)
         let userIdentifier = userIdentifier ?? ""
         
-        loggingDatabase?.insertLog(message: "\(userIdentifier) \(message)", loggerName: Logger.LOGGER_NAME)
+        loggingDatabase.insertLog(message: "\(userIdentifier) \(message)", loggerName: Logger.LOGGER_NAME)
     }
     
     private func anonymize(message: String) -> String {
