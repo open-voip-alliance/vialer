@@ -12,11 +12,7 @@ class LogUploaderCubit extends Cubit<LogUploaderState> {
 
   LogUploaderCubit() : super(NotUploadingLogs()) {
     _loggingRepository.watch().then(
-          (value) => value.listen(
-            (event) {
-              upload();
-            },
-          ),
+          (value) => value.listen((_) => upload()),
         );
   }
 

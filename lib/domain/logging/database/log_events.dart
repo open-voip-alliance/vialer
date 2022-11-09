@@ -82,7 +82,7 @@ enum LogLevel {
 ///
 /// [Initialization on the main thread](https://drift.simonbinder.eu/docs/advanced-features/isolates/#initialization-on-the-main-thread)
 void _startBackground(_IsolateStartRequest request) =>
-    request.sendDriftIsolate.send(
+    request.driftIsolateSendPort.send(
       DriftIsolate.inCurrent(
         () => DatabaseConnection.fromExecutor(
           NativeDatabase(File(request.targetPath)),
@@ -91,10 +91,10 @@ void _startBackground(_IsolateStartRequest request) =>
     );
 
 class _IsolateStartRequest {
-  final SendPort sendDriftIsolate;
+  final SendPort driftIsolateSendPort;
   final String targetPath;
 
-  _IsolateStartRequest(this.sendDriftIsolate, this.targetPath);
+  _IsolateStartRequest(this.driftIsolateSendPort, this.targetPath);
 }
 
 /// This is used to log from native, it is being created here to keep
