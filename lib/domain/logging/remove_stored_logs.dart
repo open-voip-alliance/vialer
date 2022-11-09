@@ -14,6 +14,6 @@ class RemoveStoredLogs extends UseCase {
 
     _loggingRepository.remove(before: before);
 
-    NativeLogging().removeStoredLogs(keepPastDay);
+    await NativeLogging().removeStoredLogs(keepPastDay);
   }
 }

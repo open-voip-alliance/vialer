@@ -90,7 +90,7 @@ class LoggingRepository {
         .debounceTime(const Duration(seconds: 20));
   }
 
-  void remove({required DateTime before}) async {
+  Future<void> remove({required DateTime before}) async {
     await (_db.delete(_db.logEvents)
           ..where(
             (t) => t.logTime.isSmallerThanValue(before.millisecondsSinceEpoch),
