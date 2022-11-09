@@ -11,6 +11,7 @@ import '../../database_util.dart';
 part 'log_events.g.dart';
 
 @DriftDatabase(tables: [LogEvents])
+
 /// This database routes all queries via a [DriftIsolate] which is why there
 /// are no typical methods to creating the database. This is required to
 /// prevent database locking when accessing from background isolates while
@@ -93,6 +94,7 @@ class _IsolateStartRequest {
 }
 
 @DriftDatabase(tables: [NativeLogEvents])
+
 /// This is used to log from native, it is being created here to keep
 /// consistency between the schemas. It should not be used in Dart.
 class NativeLoggingDatabase extends _$NativeLoggingDatabase {
