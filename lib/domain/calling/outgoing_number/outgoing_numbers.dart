@@ -12,7 +12,7 @@ class OutgoingNumbersRepository with Loggable {
     required User user,
   }) =>
       _fetchAllAvailableNumbers(
-        clientUuid: user.client!.uuid,
+        clientUuid: user.client.uuid,
       ).distinct().toList();
 
   Future<bool> changeOutgoingNumber({
@@ -20,7 +20,7 @@ class OutgoingNumbersRepository with Loggable {
     required String number,
   }) async {
     final response = await _service.updateVoipAccount(
-      user.client!.id.toString(),
+      user.client.id.toString(),
       user.appAccountId!,
       {
         'outgoing_caller_identification': {

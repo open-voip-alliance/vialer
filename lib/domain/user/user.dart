@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 
+import '../voipgrid/user_voip_config.dart';
 import 'client.dart';
 import 'permissions/user_permissions.dart';
 import 'settings/settings.dart';
@@ -27,10 +28,11 @@ class User extends Equatable {
         (p) => p.isNotEmpty,
       );
 
-  @JsonKey(defaultValue: null, toJson: Client.toJson, fromJson: Client.fromJson)
-  final Client? client;
+  @JsonKey(toJson: Client.toJson, fromJson: Client.fromJson)
+  final Client client;
 
-  bool get canChangeOutgoingNumber => client?.uuid != null;
+  @JsonKey(toJson: UserVoipConfig.toJson, fromJson: UserVoipConfig.fromJson)
+  final UserVoipConfig? voip;
 
   @JsonKey(toJson: Settings.toJson, fromJson: Settings.fromJson)
   final Settings settings;
@@ -45,7 +47,8 @@ class User extends Equatable {
     required this.lastName,
     this.token,
     this.appAccountUrl,
-    this.client,
+    required this.client,
+    this.voip,
     required this.settings,
     this.permissions = const UserPermissions.defaults(),
   });
@@ -58,6 +61,7 @@ class User extends Equatable {
     String? token,
     Uri? appAccountUrl,
     Client? client,
+    UserVoipConfig? voip,
     Settings? settings,
     UserPermissions? permissions,
   }) {
@@ -69,6 +73,7 @@ class User extends Equatable {
       token: token ?? this.token,
       appAccountUrl: appAccountUrl ?? this.appAccountUrl,
       client: client ?? this.client,
+      voip: voip ?? this.voip,
       settings: settings ?? this.settings,
       permissions: permissions ?? this.permissions,
     );
@@ -83,6 +88,7 @@ class User extends Equatable {
       token: user.token,
       appAccountUrl: user.appAccountUrl,
       client: user.client,
+      voip: user.voip,
       settings: settings.copyFrom(user.settings),
       permissions: user.permissions,
     );
@@ -97,6 +103,7 @@ class User extends Equatable {
         token,
         appAccountUrl,
         client,
+        voip,
         settings,
         permissions,
       ];

@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../domain/authentication/logout.dart';
-import '../../../../domain/calling/voip/get_is_voip_allowed.dart';
 import '../../../../domain/calling/voip/perform_echo_cancellation_calibration.dart';
 import '../../../../domain/onboarding/request_permission.dart';
 import '../../../../domain/user/get_build_info.dart';
@@ -14,6 +13,7 @@ import '../../../../domain/user/permissions/permission.dart';
 import '../../../../domain/user/permissions/permission_status.dart';
 import '../../../../domain/user/settings/change_settings.dart';
 import '../../../../domain/user/settings/settings.dart';
+import '../../../../domain/voipgrid/user_voip_config.dart';
 import '../../../util/loggable.dart';
 import '../widgets/user_data_refresher/cubit.dart';
 import 'state.dart';
@@ -23,7 +23,6 @@ export 'state.dart';
 class SettingsCubit extends Cubit<SettingsState> with Loggable {
   final _changeSettings = ChangeSettingsUseCase();
   final _getBuildInfo = GetBuildInfoUseCase();
-  final _getIsVoipAllowed = GetIsVoipAllowedUseCase();
   final _getPermissionStatus = GetPermissionStatusUseCase();
   final _requestPermission = RequestPermissionUseCase();
   final _logout = LogoutUseCase();
@@ -48,11 +47,12 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
   }
 
   Future<void> _emitUpdatedState() async {
+    final user = _getUser();
     emit(
       SettingsState(
-        user: _getUser(),
+        user: user,
         buildInfo: await _getBuildInfo(),
-        isVoipAllowed: await _getIsVoipAllowed(),
+        isVoipAllowed: user.voip.isAllowedCalling,
         hasIgnoreBatteryOptimizationsPermission: await _getPermissionStatus(
           permission: Permission.ignoreBatteryOptimizations,
         ).then(

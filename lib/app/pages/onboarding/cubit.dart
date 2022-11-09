@@ -1,8 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../domain/calling/voip/get_is_voip_allowed.dart';
 import '../../../domain/onboarding/get_steps.dart';
 import '../../../domain/onboarding/step.dart';
+import '../../../domain/user/get_logged_in_user.dart';
+import '../../../domain/voipgrid/user_voip_config.dart';
 import '../../util/loggable.dart';
 import '../main/widgets/caller.dart';
 import 'state.dart';
@@ -11,7 +12,7 @@ export 'state.dart';
 
 class OnboardingCubit extends Cubit<OnboardingState> with Loggable {
   final _getSteps = GetOnboardingStepsUseCase();
-  final _getIsVoipAllowed = GetIsVoipAllowedUseCase();
+  final _getUser = GetLoggedInUserUseCase();
 
   final CallerCubit _caller;
 
@@ -85,8 +86,10 @@ class OnboardingCubit extends Cubit<OnboardingState> with Loggable {
 
   /// Adds the appropriate steps to the onboarding process based on whether
   /// the user is allowed to use VoIP.
+  ///
+  /// User will be logged in at this stage.
   Future<void> addStepsBasedOnUserType() async {
-    if (!await _getIsVoipAllowed()) {
+    if (!_getUser().voip.isAllowedCalling) {
       addStep(OnboardingStep.voicemail);
     } else {
       addStep(OnboardingStep.mobileNumber);

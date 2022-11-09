@@ -42,7 +42,7 @@ class Logger(private val context: Context, private val prefs: FlutterSharedPrefe
             ERROR -> Log.e(CONSOLE_LOG_KEY, formattedMessage)
         }
 
-        if (prefs.systemUser != null) {
+        if (prefs.user != null) {
             MainScope().launch { prefs.appendLogs(anonymize(formattedMessage)) }
         }
     }

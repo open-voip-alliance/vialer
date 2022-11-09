@@ -9,8 +9,8 @@ import '../user/settings/call_setting.dart';
 import '../user/settings/settings.dart';
 import '../user/user.dart';
 import '../voipgrid/availability.dart';
-import '../voipgrid/server_config.dart';
-import '../voipgrid/voip_config.dart';
+import '../voipgrid/client_voip_config.dart';
+import '../voipgrid/user_voip_config.dart';
 
 class StorageRepository {
   late SharedPreferences _preferences;
@@ -54,6 +54,30 @@ class StorageRepository {
       }
     }
 
+    if (_preferences.containsKey(_legacyVoipConfigKey)) {
+      user = user?.copyWith(
+        voip: _preferences.getJson<UserVoipConfig?, Map<String, dynamic>>(
+          _legacyVoipConfigKey,
+          UserVoipConfig.fromJson,
+        ),
+      );
+      this.user = user;
+      _preferences.setOrRemoveString(_legacyVoipConfigKey, null);
+    }
+
+    if (_preferences.containsKey(_legacyServerConfigKey)) {
+      user = user?.copyWith(
+        client: user.client.copyWith(
+          voip: _preferences.getJson(
+            _legacyServerConfigKey,
+            ClientVoipConfig.fromJson,
+          ),
+        ),
+      );
+      this.user = user;
+      _preferences.setOrRemoveString(_legacyVoipConfigKey, null);
+    }
+
     return user;
   }
 
@@ -93,24 +117,10 @@ class StorageRepository {
   set remoteNotificationToken(String? value) =>
       _preferences.setOrRemoveString(_remoteNotificationTokenKey, value);
 
-  static const _voipConfigKey = 'voip_config';
-
-  VoipConfig? get voipConfig {
-    final config = _preferences.getJson(
-      _voipConfigKey,
-      VoipConfig.fromJson,
-    );
-
-    if (config == null) return null;
-
-    return config.isNotEmpty == true ? config.toNonEmptyConfig() : config;
-  }
-
-  set voipConfig(VoipConfig? value) =>
-      _preferences.setOrRemoveJson(_voipConfigKey, value, VoipConfig.toJson);
+  static const _legacyVoipConfigKey = 'voip_config';
 
   /// We store the last installed version so we can check if the user has
-  /// updated the app, and if they have display the release notes to them.
+  /// updated the app, and if they need to be shown the release notes.
   static const _lastInstalledVersionKey = 'last_installed_version';
 
   String? get lastInstalledVersion =>
@@ -168,16 +178,7 @@ class StorageRepository {
   set appRatingSurveyShownTime(DateTime? value) =>
       _preferences.setOrRemoveDateTime(_appRatingSurveyShownTimeKey, value);
 
-  static const _serverConfigKey = 'server_config';
-
-  ServerConfig? get serverConfig =>
-      _preferences.getJson(_serverConfigKey, ServerConfig.fromJson);
-
-  set serverConfig(ServerConfig? value) => _preferences.setOrRemoveJson(
-        _serverConfigKey,
-        value,
-        ServerConfig.toJson,
-      );
+  static const _legacyServerConfigKey = 'server_config';
 
   static const _previousSessionSettingsKey = 'previous_session_settings';
 
@@ -195,7 +196,7 @@ class StorageRepository {
 
   Future<void> reload() => _preferences.reload();
 
-  static User? _legacyUserFromJson(
+  User? _legacyUserFromJson(
     Map<String, dynamic> userJson,
     List<dynamic> settingsJson,
   ) {
@@ -269,10 +270,10 @@ class StorageRepository {
     }
 
     final appAccountUrlString = userJson['app_account'] as String?;
-    final clientId = userJson['client_id'] as int?;
-    final clientUuid = userJson['client_uuid'] as String?;
-    final clientName = userJson['client_name'] as String?;
-    final clientUrlString = userJson['client'] as String?;
+    final clientId = userJson['client_id'] as int;
+    final clientUuid = userJson['client_uuid'] as String;
+    final clientName = userJson['client_name'] as String;
+    final clientUrlString = userJson['client'] as String;
 
     return User(
       uuid: userJson['uuid'] as String,
@@ -282,19 +283,15 @@ class StorageRepository {
       token: userJson['token'] as String?,
       appAccountUrl:
           appAccountUrlString != null ? Uri.parse(appAccountUrlString) : null,
-      client: clientId != null &&
-              clientUuid != null &&
-              clientName != null &&
-              clientUrlString != null
-          ? Client(
-              id: clientId,
-              uuid: clientUuid,
-              name: clientName,
-              url: Uri.parse(clientUrlString),
-              outgoingNumbers:
-                  clientOutgoingNumbers?.map(OutgoingNumber.new) ?? const [],
-            )
-          : null,
+      client: Client(
+        id: clientId,
+        uuid: clientUuid,
+        name: clientName,
+        url: Uri.parse(clientUrlString),
+        voip: ClientVoipConfig.fallback(),
+        outgoingNumbers:
+            clientOutgoingNumbers?.map(OutgoingNumber.new) ?? const [],
+      ),
       settings: const Settings.defaults().copyWithAll(settings),
       permissions: permissions ?? const UserPermissions.defaults(),
     );
