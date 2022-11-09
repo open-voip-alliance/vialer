@@ -26,7 +26,7 @@ class UserPermissionsRepository {
       case UserPermission.mobileNumberFallback:
         return _service
             .getUserSettings(
-              clientId: user.client!.id.toString(),
+              clientId: user.client.id.toString(),
               userId: user.uuid,
             )
             .then(_handle);

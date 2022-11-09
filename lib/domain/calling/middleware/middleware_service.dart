@@ -3,21 +3,20 @@ import 'dart:async';
 import 'package:chopper/chopper.dart' hide JsonConverter;
 
 import '../../service_util.dart';
-import '../voip/get_server_config.dart';
+import '../../user/get_stored_user.dart';
+import '../../voipgrid/client_voip_config.dart';
 
 part 'middleware_service.chopper.dart';
 
 @ChopperApi(baseUrl: '/api/')
 abstract class MiddlewareService extends ChopperService {
   static Future<MiddlewareService> create() async {
-    final _getServerConfig = GetServerConfigUseCase();
-    final _baseUrl = await _getServerConfig().then(
-      (config) => config.middlewareUrl.toString(),
-    );
+    final voipConfig =
+        GetStoredUserUseCase()()?.client.voip ?? ClientVoipConfig.fallback();
 
     return _$MiddlewareService(
       ChopperClient(
-        baseUrl: _baseUrl,
+        baseUrl: voipConfig.middlewareUrl.toString(),
         converter: JsonConverter(),
         interceptors: [
           const AuthorizationInterceptor(),

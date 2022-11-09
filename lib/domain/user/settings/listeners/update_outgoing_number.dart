@@ -23,11 +23,6 @@ class UpdateOutgoingNumberListener extends SettingChangeListener<OutgoingNumber>
     OutgoingNumber number,
   ) =>
       changeRemoteValue(() async {
-        if (!user.canChangeOutgoingNumber) {
-          logger.warning('Unable to update outgoing number, no client_uuid');
-          return false;
-        }
-
         if (number is SuppressedOutgoingNumber) {
           logger.info('Attempting to suppress the user\'s outgoing number');
 

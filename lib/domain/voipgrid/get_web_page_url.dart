@@ -9,7 +9,7 @@ import 'web_page.dart';
 class GetWebPageUrlUseCase extends UseCase {
   final _authRepository = dependencyLocator<AuthRepository>();
 
-  final _getBrand = GetBrandUseCase();
+  final _getBrand = GetBrand();
   final _getUser = GetLoggedInUserUseCase();
 
   /// The url that the webview will load, it is possible to add placeholders
@@ -60,21 +60,17 @@ class GetWebPageUrlUseCase extends UseCase {
   }) {
     if (url == null) return null;
 
-    // The client id should only ever be null if the user has an old
-    // [SystemUser] cached.
-    assert(user.client?.id != null);
-
     // All the values from the url within curly brackets will be replaced
     // with the corresponding user information.
     final placeholders = {
-      'client': user.client?.id.toString(),
+      'client': user.client.id.toString(),
     };
 
     for (final placeholder in placeholders.entries) {
       final target = placeholder.key;
       final replacement = placeholder.value;
 
-      if (replacement == null || replacement.isEmpty) continue;
+      if (replacement.isEmpty) continue;
 
       url = url?.replaceAll('{$target}', replacement);
     }

@@ -278,7 +278,7 @@ custom: # Custom properties to make workflows cleaner
     max_build_duration: 60
     instance_type: mac_pro
     environment: &config_environment
-      flutter: 3.3.4
+      flutter: 3.3.7
       xcode: latest
       cocoapods: 1.11.3
   brand_config: # Specific configuration that should be applied to a workflow when building for this brand

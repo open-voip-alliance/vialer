@@ -6,7 +6,6 @@ import 'package:flutter/foundation.dart';
 import '../../../app/util/pigeon.dart';
 import '../../../app/util/single_task.dart';
 import '../../../dependency_locator.dart';
-import '../../calling/voip/get_server_config.dart';
 import '../../env.dart';
 import '../../use_case.dart';
 import '../../user/get_build_info.dart';
@@ -48,9 +47,7 @@ class UploadPendingRemoteLogs extends UseCase {
     if (await _loggingRepository.logsAreEmpty) return;
 
     final buildInfo = await _getBuildInfo();
-    final baseUrl = await GetServerConfigUseCase()().then(
-      (config) => config.middlewareUrl.toString(),
-    );
+    final baseUrl = await user.client.voip.middlewareUrl.toString();
 
     return SingleInstanceTask.of(this).run(() async {
       return Future.wait(

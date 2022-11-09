@@ -1,6 +1,6 @@
 import '../../app/util/loggable.dart';
 import '../../dependency_locator.dart';
-import '../authentication/get_is_authenticated.dart';
+import '../authentication/is_authenticated.dart';
 import '../authentication/logout.dart';
 import '../authentication/unauthorized_api_response.dart';
 import '../call_records/client/import_historic_client_call_records.dart';
@@ -15,7 +15,7 @@ import 'event_bus.dart';
 class RegisterDomainEventListenersUseCase extends UseCase with Loggable {
   final _eventBus = dependencyLocator<EventBusObserver>();
   final _logout = LogoutUseCase();
-  final _isAuthenticated = GetIsAuthenticatedUseCase();
+  final _isAuthenticated = IsAuthenticated();
   final _importHistoricClientCalls = ImportHistoricClientCallRecordsUseCase();
   final _purgeLocalCallRecords = PurgeLocalCallRecordsUseCase();
 
