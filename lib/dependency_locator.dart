@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:drift/isolate.dart';
 import 'package:get_it/get_it.dart';
 
 import 'app/util/debug.dart';
@@ -50,7 +51,18 @@ Future<void> initializeDependencies({bool ui = true}) async {
       VoipgridService.create(),
     )
     ..registerSingleton<ClientCallsDatabase>(ClientCallsDatabase())
-    ..registerSingleton<LoggingDatabase>(LoggingDatabase())
+    ..registerSingletonAsync<DriftIsolate>(LoggingDatabase.createIsolate)
+    ..registerSingletonAsync<LoggingDatabase>(
+      () async {
+        final isolate = await dependencyLocator<DriftIsolate>();
+        return LoggingDatabase.connect(await isolate.connect());
+      },
+      dependsOn: [DriftIsolate],
+    )
+    ..registerSingletonAsync<LoggingRepository>(
+      () async => LoggingRepository(dependencyLocator<LoggingDatabase>()),
+      dependsOn: [DriftIsolate, LoggingDatabase],
+    )
     ..registerSingletonAsync<StorageRepository>(() async {
       final storageRepository = StorageRepository();
       await storageRepository.load();
@@ -117,9 +129,6 @@ Future<void> initializeDependencies({bool ui = true}) async {
       VoicemailAccountsRepository(
         dependencyLocator<VoipgridService>(),
       ),
-    )
-    ..registerSingleton<LoggingRepository>(
-      LoggingRepository(dependencyLocator<LoggingDatabase>()),
     )
     ..registerSingleton<PermissionRepository>(PermissionRepository())
     ..registerSingleton<MemoryStorageRepository>(MemoryStorageRepository())

@@ -7,6 +7,7 @@ import 'package:flutter_switch/flutter_switch.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../../domain/logging/remove_stored_logs.dart';
 import '../../../../../domain/user/settings/app_setting.dart';
 import '../../../../../domain/user/settings/call_setting.dart';
 import '../../../../../domain/user/settings/settings.dart';
@@ -789,8 +790,13 @@ class _RemoteLoggingSendLogsDialog extends StatelessWidget {
           .toUpperCaseIfAndroid(context),
     );
 
-    void onDenyPressed() => Navigator.pop(context);
+    void onDenyPressed() {
+      RemoveStoredLogs()(keepPastDay: false);
+      Navigator.pop(context);
+    }
+
     void onConfirmPressed() {
+      RemoveStoredLogs()(keepPastDay: true);
       Navigator.pop(context);
     }
 

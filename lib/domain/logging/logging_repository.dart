@@ -45,9 +45,7 @@ class LoggingRepository {
     });
   }
 
-  Future<void> enableDatabaseLogging({
-    String userIdentifier = '',
-  }) async {
+  Future<void> enableDatabaseLogging() async {
     Logger.root.onRecord.listen((record) {
       if (record.level != Level.OFF) {
         _storeLogEvent(LogEventsCompanion(
@@ -89,7 +87,15 @@ class LoggingRepository {
 
     return FileWatcher(file.path)
         .events
-        .debounceTime(const Duration(seconds: 5));
+        .debounceTime(const Duration(seconds: 20));
+  }
+
+  Future<void> remove({required DateTime before}) async {
+    await (_db.delete(_db.logEvents)
+          ..where(
+            (t) => t.logTime.isSmallerThanValue(before.millisecondsSinceEpoch),
+          ))
+        .go();
   }
 }
 

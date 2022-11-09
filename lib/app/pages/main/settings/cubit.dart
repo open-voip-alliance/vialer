@@ -93,9 +93,6 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
         permission: Permission.ignoreBatteryOptimizations,
       );
 
-  Future<void> sendSavedLogsToRemote() async {}
-  // TODO: Prune the database of records that shouldn't be uploaded
-
   Future<void> refresh() => _emitUpdatedState();
 
   Future<void> logout() async {

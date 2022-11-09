@@ -1,6 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../domain/logging/remote_logging/enable_remote_logging_if_needed.dart';
 import '../../../../domain/onboarding/exceptions.dart';
 import '../../../../domain/onboarding/login.dart';
 import '../../../../domain/onboarding/login_credentials.dart';
@@ -15,13 +14,9 @@ export 'state.dart';
 
 class LoginCubit extends Cubit<LoginState> with Loggable {
   final OnboardingCubit _onboarding;
-
-  final _enableRemoteLoggingIfNeeded = EnableRemoteLoggingIfNeededUseCase();
   final _login = LoginUseCase();
 
-  LoginCubit(this._onboarding) : super(const NotLoggedIn()) {
-    _enableRemoteLoggingIfNeeded();
-  }
+  LoginCubit(this._onboarding) : super(const NotLoggedIn());
 
   Future<void> login(String email, String password) async {
     logger.info('Logging in');
@@ -71,11 +66,6 @@ class LoginCubit extends Cubit<LoginState> with Loggable {
 
     if (loginSuccessful) {
       await _onboarding.addStepsBasedOnUserType();
-
-      // We call this again so we're now logging with the user ID, if
-      // remote logging was still enabled from a previous session.
-      // We await so all future logs are consistently associated with the ID.
-      await _enableRemoteLoggingIfNeeded();
 
       emit(const LoggedIn());
 

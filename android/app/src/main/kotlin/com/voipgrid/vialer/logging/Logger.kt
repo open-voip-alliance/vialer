@@ -16,20 +16,16 @@ class Logger(private val context: Context, private val prefs: FlutterSharedPrefe
     Pigeon.NativeLogging {
 
     private var anonymizationRules: Map<String, String> = mapOf()
-    private var loggingDatabase: LoggingDatabase? = null
+    private var loggingDatabase = LoggingDatabase(context)
     private var userIdentifier: String? = null
     private var isConsoleLoggingEnabled = false
-    private val isRemoteLoggingEnabled
-        get() = loggingDatabase != null
 
     internal fun writeLog(message: String, level: PhoneLibLogLevel = INFO) {
         if (isConsoleLoggingEnabled) {
             logToConsole(message, level)
         }
 
-        if (isRemoteLoggingEnabled) {
-            logToRemote(message, level)
-        }
+        logToDatabase(message, level)
     }
 
     private fun logToConsole(message: String, level: PhoneLibLogLevel) {
@@ -51,7 +47,7 @@ class Logger(private val context: Context, private val prefs: FlutterSharedPrefe
         }
     }
 
-    private fun logToRemote(message: String, level: PhoneLibLogLevel) = anonymize(message).also {
+    private fun logToDatabase(message: String, level: PhoneLibLogLevel) = anonymize(message).also {
         loggingDatabase?.insertLog(it, level, loggerName = "APL")
     }
 
@@ -60,30 +56,28 @@ class Logger(private val context: Context, private val prefs: FlutterSharedPrefe
             acc.replace(entry.key.toRegex(), entry.value)
         }
 
-    override fun startNativeRemoteLogging(
-        token: String,
-        userIdentifier: String,
-        anonymizationRules: MutableMap<String, String>,
-        result: Pigeon.Result<Void>
-    ) {
-        loggingDatabase = LoggingDatabase(context)
-        this.userIdentifier = userIdentifier
-        this.anonymizationRules = anonymizationRules
-        result.success(null)
-    }
-
     override fun startNativeConsoleLogging() {
         isConsoleLoggingEnabled = true
     }
 
-    override fun stopNativeRemoteLogging() {
-        loggingDatabase = null
-        userIdentifier = null
-        anonymizationRules = emptyMap()
-    }
-
     override fun stopNativeConsoleLogging() {
         isConsoleLoggingEnabled = false
+    }
+
+    override fun removeStoredLogs(keepPastDay: Boolean, result: Pigeon.Result<Void>) {
+        result.success(null)
+    }
+
+    override fun uploadPendingLogs(
+        batchSize: Long,
+        packageName: String,
+        appVersion: String,
+        remoteLoggingId: String,
+        url: String,
+        logToken: String,
+        result: Pigeon.Result<Void>
+    ) {
+        result.success(null)
     }
 
     companion object {

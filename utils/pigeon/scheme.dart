@@ -20,18 +20,23 @@ abstract class ContactSortHostApi {
 @HostApi()
 // ignore:one_member_abstracts
 abstract class NativeLogging {
-  @async
-  void startNativeRemoteLogging(
-    String token,
-    String userIdentifier,
-    Map<String, String> anonymizationRules,
-  );
-
   void startNativeConsoleLogging();
 
-  void stopNativeRemoteLogging();
-
   void stopNativeConsoleLogging();
+
+  @async
+  void uploadPendingLogs(
+    int batchSize,
+    String packageName,
+    String appVersion,
+    String remoteLoggingId,
+    String url,
+    String logToken,
+  );
+
+  @async
+  // ignore: avoid_positional_boolean_parameters
+  void removeStoredLogs(bool keepPastDay);
 }
 
 @HostApi()
