@@ -7,9 +7,10 @@ import '../../voipgrid/server_config.dart';
 import 'server_config.dart';
 
 class GetServerConfigUseCase extends UseCase with Loggable {
-  final _storageRepository = dependencyLocator<StorageRepository>();
-  final _serverConfigRepository = dependencyLocator<ServerConfigRepository>();
-  final _metricsRepository = dependencyLocator<MetricsRepository>();
+  late final _storageRepository = dependencyLocator<StorageRepository>();
+  late final _serverConfigRepository =
+      dependencyLocator<ServerConfigRepository>();
+  late final _metricsRepository = dependencyLocator<MetricsRepository>();
 
   /// Gets the currently saved server config. If it's null or [latest]
   /// is true, it's fetched from the API.

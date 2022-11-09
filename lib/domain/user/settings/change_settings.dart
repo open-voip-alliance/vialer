@@ -18,7 +18,6 @@ import 'listeners/start_voip_on_use_voip_enabled.dart';
 import 'listeners/update_availability.dart';
 import 'listeners/update_mobile_number.dart';
 import 'listeners/update_outgoing_number.dart';
-import 'listeners/update_remote_logging.dart';
 import 'listeners/update_use_mobile_number_as_fallback.dart';
 import 'setting_changed.dart';
 import 'settings.dart';
@@ -39,7 +38,6 @@ class ChangeSettingsUseCase extends UseCase with Loggable {
     UpdateAvailabilityListener(),
     UpdateMobileNumberListener(),
     UpdateOutgoingNumberListener(),
-    UpdateRemoteLoggingListener(),
     UpdateUseMobileNumberAsFallbackListener(),
     StartVoipOnUseVoipEnabledListener(),
     ChangeRegistrationOnDndChange(),

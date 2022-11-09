@@ -25,6 +25,12 @@ class LogUploader extends StatefulWidget {
 class _LogUploaderState extends State<LogUploader>
     with WidgetsBindingObserver, WidgetsBindingObserverRegistrar {
   @override
+  void initState() {
+    super.initState();
+    context.read<LogUploaderCubit>().upload();
+  }
+
+  @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
     context.read<LogUploaderCubit>().upload();

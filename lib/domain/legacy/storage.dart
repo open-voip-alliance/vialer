@@ -63,17 +63,6 @@ class StorageRepository {
   // This value cannot change.
   static const _legacySettingsKey = 'settings';
 
-  static const _logsKey = 'logs';
-
-  String? get logs => _preferences.getString(_logsKey);
-
-  set logs(String? value) => _preferences.setOrRemoveString(_logsKey, value);
-
-  Future<void> appendLogs(String value) async {
-    await reload();
-    _preferences.setString(_logsKey, '$logs\n$value');
-  }
-
   static const _lastDialedNumberKey = 'last_dialed_number';
 
   String? get lastDialedNumber => _preferences.getString(_lastDialedNumberKey);

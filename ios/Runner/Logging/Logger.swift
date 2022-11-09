@@ -6,12 +6,9 @@ class Logger: NSObject, NativeLogging {
     private static let LOGGER_NAME = "IPL"
     
     private var anonymizationRules = [NSRegularExpression : String]()
-    private var loggingDatabase: LoggingDatabase? = nil
+    private var loggingDatabase: LoggingDatabase = LoggingDatabase()
     private var userIdentifier: String? = nil
     private var isConsoleLoggingEnabled = false
-    private var isRemoteLoggingEnabled: Bool {
-        loggingDatabase != nil
-    }
 
     private let flutterSharedPreferences = FlutterSharedPreferences()
 
@@ -20,9 +17,7 @@ class Logger: NSObject, NativeLogging {
             logToConsole(message: message)
         }
 
-        if isRemoteLoggingEnabled {
-            logToRemote(message: message)
-        }
+        logToDatabase(message: message)
     }
 
     private func logToConsole(message: String) {
@@ -40,11 +35,11 @@ class Logger: NSObject, NativeLogging {
         }
     }
     
-    private func logToRemote(message: String) {
+    private func logToDatabase(message: String) {
         let message = anonymize(message: message)
         let userIdentifier = userIdentifier ?? ""
         
-        loggingDatabase?.insertLog(message: "\(userIdentifier) \(message)", loggerName: Logger.LOGGER_NAME)
+        loggingDatabase.insertLog(message: "\(userIdentifier) \(message)", loggerName: Logger.LOGGER_NAME)
     }
     
     private func anonymize(message: String) -> String {
@@ -53,29 +48,19 @@ class Logger: NSObject, NativeLogging {
         })
     }
     
-    func startNativeRemoteLoggingToken(_ token: String?, userIdentifier: String?, anonymizationRules: [String : String]?, completion: @escaping (FlutterError?) -> Void) {
-        loggingDatabase = LoggingDatabase()
-        self.userIdentifier = userIdentifier
-        
-        do {
-            self.anonymizationRules = try anonymizationRules?.reduce(into: [NSRegularExpression:String]()) { dict, entry in
-                return dict[try NSRegularExpression(pattern: entry.key)] = entry.value
-            } ?? [NSRegularExpression:String]()
-        } catch {}
-        
-        completion(nil)
-    }
-    
     func startNativeConsoleLoggingWithError(_ error: AutoreleasingUnsafeMutablePointer<FlutterError?>) {
         isConsoleLoggingEnabled = true
     }
     
-    func stopNativeRemoteLoggingWithError(_ error: AutoreleasingUnsafeMutablePointer<FlutterError?>) {
-        loggingDatabase = nil
-        userIdentifier = nil
-    }
-    
     func stopNativeConsoleLoggingWithError(_ error: AutoreleasingUnsafeMutablePointer<FlutterError?>) {
         isConsoleLoggingEnabled = false
+    }
+    
+    func uploadPendingLogsBatchSize(_ batchSize: NSNumber, packageName: String, appVersion: String, remoteLoggingId: String, url: String, logToken: String, completion: @escaping (FlutterError?) -> Void) {
+        completion(nil)
+    }
+    
+    func removeStoredLogsKeepPastDay(_ keepPastDay: NSNumber, completion: @escaping (FlutterError?) -> Void) {
+        completion(nil)
     }
 }
