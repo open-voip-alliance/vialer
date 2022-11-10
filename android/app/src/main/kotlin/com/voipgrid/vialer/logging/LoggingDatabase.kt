@@ -7,6 +7,12 @@ import android.database.DatabaseErrorHandler
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.provider.BaseColumns
+import com.voipgrid.vialer.logging.LogEvents.COLUMN.ID
+import com.voipgrid.vialer.logging.LogEvents.COLUMN.LEVEL
+import com.voipgrid.vialer.logging.LogEvents.COLUMN.LOG_TIME
+import com.voipgrid.vialer.logging.LogEvents.COLUMN.MESSAGE
+import com.voipgrid.vialer.logging.LogEvents.COLUMN.NAME
+import com.voipgrid.vialer.logging.LogEvents.TABLE_NAME
 import io.flutter.util.PathUtils
 import org.openvoipalliance.flutterphonelib.PhoneLibLogLevel
 import java.io.File
@@ -14,42 +20,93 @@ import java.util.*
 
 
 class LoggingDatabase(private val context: Context) {
-    private val databaseFilename = "logging_db.sqlite"
+    companion object {
+        private const val FILE_NAME = "android_logging_db.sqlite"
+    }
 
-    private val flutterDatabaseContext = FlutterDatabaseContext(context)
-
-    private val dbFile
-        get() = flutterDatabaseContext.getDatabasePath(databaseFilename)
-
-    private val db: SQLiteDatabase
-        get() = object : SQLiteOpenHelper(
-            flutterDatabaseContext,
-            databaseFilename,
+    private val db: SQLiteDatabase by lazy {
+        object : SQLiteOpenHelper(
+            context,
+            FILE_NAME,
             null,
             1
         ) {
+
+            override fun onCreate(db: SQLiteDatabase) {
+                db.execSQL(
+                    // language=SQL
+                    """
+                    CREATE TABLE $TABLE_NAME (
+                       $ID INTEGER PRIMARY KEY,
+                       $LOG_TIME INT,
+                       $LEVEL INT,
+                       $NAME TEXT,
+                       $MESSAGE TEXT
+                   )
+                   """.trimIndent()
+                )
+            }
+
             // We don't care about these.
-            override fun onCreate(db: SQLiteDatabase) {}
             override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {}
             override fun onDowngrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {}
         }.writableDatabase
+    }
 
     fun insertLog(message: String, level: PhoneLibLogLevel, loggerName: String) {
-        // We will drop logs until the database table has been created in Flutter
-        if (!dbFile.exists()) return
-// TODO: Enable this when the database has been created
-//        db.insert(
-//            LogEvents.TABLE_NAME,
-//            null,
-//            with(LogEvents.COLUMN) {
-//                ContentValues().apply {
-//                    put(LOG_TIME, Calendar.getInstance().timeInMillis)
-//                    put(LEVEL, level.ordinal)
-//                    put(NAME, loggerName)
-//                    put(MESSAGE, message)
-//                }
-//            }
-//        )
+        db.insert(
+            LogEvents.TABLE_NAME,
+            null,
+            ContentValues().apply {
+                put(LOG_TIME, Calendar.getInstance().timeInMillis)
+                put(LEVEL, level.ordinal)
+                put(NAME, loggerName)
+                put(MESSAGE, message)
+            }
+        )
+    }
+
+    fun getLogs(batchSize: Long): List<Log> {
+        val cursor = db.query(
+            TABLE_NAME,
+            arrayOf(LOG_TIME, LEVEL, NAME, MESSAGE),
+            null,
+            null,
+            null,
+            null,
+            LOG_TIME,
+            batchSize.toString(),
+        )
+
+        val logs = mutableListOf<Log>()
+
+        cursor.use {
+            fun columnIndexOf(column: String) = cursor.getColumnIndexOrThrow(column)
+
+            while (it.moveToNext()) {
+                logs += Log(
+                    time = it.getLong(columnIndexOf(LOG_TIME)),
+                    level = PhoneLibLogLevel.values()[it.getInt(columnIndexOf(LEVEL))],
+                    name = it.getString(columnIndexOf(NAME)),
+                    message = it.getString(columnIndexOf(MESSAGE))
+                )
+            }
+        }
+
+        return logs
+    }
+
+    /**
+     * Remove logs from the database, from [start] to [end] time. Both are inclusive.
+     */
+    fun removeLogs(start: Long, end: Long) {
+        val rows = db.delete(
+            TABLE_NAME,
+            "$LOG_TIME BETWEEN ? AND ?",
+            arrayOf(start.toString(), end.toString())
+        )
+
+        println("ROWS DELETED: $rows")
     }
 }
 
@@ -64,6 +121,13 @@ private object LogEvents : BaseColumns {
         const val MESSAGE = "message"
     }
 }
+
+data class Log(
+    val time: Long,
+    val level: PhoneLibLogLevel,
+    val name: String,
+    val message: String
+)
 
 // We need a context wrapper, otherwise the helper will search in the wrong
 // directory for the database file.

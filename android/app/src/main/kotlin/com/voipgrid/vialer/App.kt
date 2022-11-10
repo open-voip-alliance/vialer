@@ -9,7 +9,7 @@ class App : FlutterApplication() {
     override fun onCreate() {
         super.onCreate()
         prefs = FlutterSharedPreferences(this)
-        logger = Logger(this, prefs)
+        logger = Logger(this)
         segment = Segment(this, logger, prefs)
         middleware = Middleware(this, logger, prefs, segment)
 
