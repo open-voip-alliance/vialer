@@ -97,13 +97,28 @@ class LoggingDatabase(private val context: Context) {
     }
 
     /**
-     * Remove logs from the database, from [start] to [end] time. Both are inclusive.
+     * Remove logs from the database, from [after] until [before].
+     * Both [after] and [before] can be null, to make the range boundless in either direction.
+     *
+     * If both [after] and [before] are null, removes everything
+     * (which case [inclusive] has no effect).
      */
-    fun removeLogs(start: Long, end: Long) {
+    fun removeLogs(after: Long? = null, before: Long? = null, inclusive: Boolean = true) {
+        val eq = if (inclusive) "=" else ""
+
+        val whereClause = listOfNotNull(
+            if (after != null) "$LOG_TIME >$eq ?" else null,
+            if (before != null) "$LOG_TIME <$eq ?" else null
+        )
+            .joinToString(separator = " AND ")
+            .ifEmpty { null }
+
+        val whereArgs = listOfNotNull(after?.toString(), before?.toString()).toTypedArray()
+
         db.delete(
             TABLE_NAME,
-            "$LOG_TIME BETWEEN ? AND ?",
-            arrayOf(start.toString(), end.toString())
+            whereClause,
+            whereArgs
         )
     }
 }
