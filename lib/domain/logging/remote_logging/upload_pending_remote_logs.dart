@@ -47,7 +47,8 @@ class UploadPendingRemoteLogs extends UseCase {
     if (await _loggingRepository.logsAreEmpty) return;
 
     final buildInfo = await _getBuildInfo();
-    final baseUrl = await user.client.voip.middlewareUrl.toString();
+    final baseUrl = user.client.voip.middlewareUrl.toString();
+    final url = baseUrl + RemoteLoggingService.url;
 
     return SingleInstanceTask.of(this).run(() async {
       return Future.wait(
@@ -69,7 +70,7 @@ class UploadPendingRemoteLogs extends UseCase {
             buildInfo.packageName,
             buildInfo.version,
             user.loggingIdentifier,
-            baseUrl,
+            url,
             logToken,
           ),
         ],

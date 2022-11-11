@@ -89,7 +89,7 @@ class MainActivity : FlutterActivity(), Pigeon.CallScreenBehavior {
         sendBroadcast(Intent(INCOMING_CALL_CANCEL_INTENT))
     }
 
-    protected override fun onNewIntent(intent: Intent) {
+    override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         when (intent.action) {
             Intent.ACTION_DIAL, Intent.ACTION_CALL, Intent.ACTION_VIEW ->
@@ -107,7 +107,7 @@ class MainActivity : FlutterActivity(), Pigeon.CallScreenBehavior {
         }
     }
 
-    protected override fun onResume() {
+    override fun onResume() {
         super.onResume()
 
         val pressedNotification = getIntent()?.getBooleanExtra(PhoneLib.PRESSED_MISSED_CALL_NOTIFICATION_EXTRA, false)
