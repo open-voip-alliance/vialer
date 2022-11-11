@@ -13,6 +13,7 @@ import org.openvoipalliance.flutterphonelib.PhoneLibLogLevel.*
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Calendar
 
 
 class Logger(context: Context) : Pigeon.NativeLogging {
@@ -57,6 +58,15 @@ class Logger(context: Context) : Pigeon.NativeLogging {
     }
 
     override fun removeStoredLogs(keepPastDay: Boolean, result: Pigeon.Result<Void>) {
+        loggingDatabase.removeLogs(
+            before = when {
+                // Current time minus 24 hours.
+                keepPastDay -> Calendar.getInstance().timeInMillis - (24 * 60 * 60 * 1000)
+                else -> null
+            },
+            inclusive = false
+        )
+
         result.success(null)
     }
 
@@ -121,8 +131,8 @@ class Logger(context: Context) : Pigeon.NativeLogging {
                 }
 
                 loggingDatabase.removeLogs(
-                    start = logs.first().time,
-                    end = logs.last().time
+                    after = logs.first().time,
+                    before = logs.last().time
                 )
 
                 logs = loggingDatabase.getLogs(batchSize)
