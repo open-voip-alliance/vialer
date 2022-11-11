@@ -1,23 +1,25 @@
 package com.voipgrid.vialer.logging
 
 import android.content.Context
-import android.util.Log
-import com.voipgrid.vialer.FlutterSharedPreferences
+import android.util.Log as AndroidLog
 import com.voipgrid.vialer.Pigeon
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import okhttp3.*
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONObject
 import org.openvoipalliance.flutterphonelib.PhoneLibLogLevel
 import org.openvoipalliance.flutterphonelib.PhoneLibLogLevel.*
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
-class Logger(private val context: Context, private val prefs: FlutterSharedPreferences) :
-    Pigeon.NativeLogging {
 
-    private var anonymizationRules: Map<String, String> = mapOf()
-    private var loggingDatabase = LoggingDatabase(context)
-    private var userIdentifier: String? = null
+class Logger(context: Context) : Pigeon.NativeLogging {
+    private val ioScope = CoroutineScope(Dispatchers.IO)
+    private val loggingDatabase = LoggingDatabase(context)
+    private val httpClient = OkHttpClient()
+
     private var isConsoleLoggingEnabled = false
 
     internal fun writeLog(message: String, level: PhoneLibLogLevel = INFO) {
@@ -36,25 +38,15 @@ class Logger(private val context: Context, private val prefs: FlutterSharedPrefe
         val formattedMessage = "[$time] $level APL: $message"
 
         when (level) {
-            DEBUG -> Log.d(CONSOLE_LOG_KEY, formattedMessage)
-            INFO -> Log.i(CONSOLE_LOG_KEY, formattedMessage)
-            WARNING -> Log.w(CONSOLE_LOG_KEY, formattedMessage)
-            ERROR -> Log.e(CONSOLE_LOG_KEY, formattedMessage)
-        }
-
-        if (prefs.user != null) {
-            MainScope().launch { prefs.appendLogs(anonymize(formattedMessage)) }
+            DEBUG -> AndroidLog.d(CONSOLE_LOG_KEY, formattedMessage)
+            INFO -> AndroidLog.i(CONSOLE_LOG_KEY, formattedMessage)
+            WARNING -> AndroidLog.w(CONSOLE_LOG_KEY, formattedMessage)
+            ERROR -> AndroidLog.e(CONSOLE_LOG_KEY, formattedMessage)
         }
     }
 
-    private fun logToDatabase(message: String, level: PhoneLibLogLevel) = anonymize(message).also {
-        loggingDatabase?.insertLog(it, level, loggerName = "APL")
-    }
-
-    private fun anonymize(message: String) =
-        anonymizationRules.asIterable().fold(message) { acc, entry ->
-            acc.replace(entry.key.toRegex(), entry.value)
-        }
+    private fun logToDatabase(message: String, level: PhoneLibLogLevel) =
+        loggingDatabase.insertLog(message, level, loggerName = "APL")
 
     override fun startNativeConsoleLogging() {
         isConsoleLoggingEnabled = true
@@ -77,10 +69,75 @@ class Logger(private val context: Context, private val prefs: FlutterSharedPrefe
         logToken: String,
         result: Pigeon.Result<Void>
     ) {
-        result.success(null)
+        ioScope.launch {
+            var logs = loggingDatabase.getLogs(batchSize)
+            while (logs.isNotEmpty()) {
+                val logsJson = logs.joinToString(separator = ", ", prefix = "[", postfix = "]") {
+                    val message = JSONObject.quote(
+                        // language=JSON
+                        """
+                        {
+                            "user": "$remoteLoggingId",
+                            "logged_from": "${it.name}",
+                            "message": "${it.message}",
+                            "level": "${it.level.ordinal}",
+                            "app_version": "$appVersion"
+                        }
+                        """.trimIndent()
+                    )
+
+                    // Note: `message` is surrounded in quotes already.
+                    // language=JSON
+                    """
+                    [
+                        "${it.time * 1000 * 1000}",
+                        $message
+                    ]
+                    """.trimIndent()
+                }
+
+                // language=JSON
+                val json =
+                    """
+                    {
+                        "token": "$logToken",
+                        "app_id": "$packageName",
+                        "logs": $logsJson
+                    }
+                    """.trimIndent()
+
+                val response = httpClient
+                    .newCall(
+                        Request.Builder()
+                            .url(url)
+                            .post(json.toRequestBody("application/json".toMediaType()))
+                            .build()
+                    )
+                    .execute()
+
+                if (!response.isSuccessful) {
+                    result.error(ApiException(response))
+                    return@launch
+                }
+
+                loggingDatabase.removeLogs(
+                    start = logs.first().time,
+                    end = logs.last().time
+                )
+
+                logs = loggingDatabase.getLogs(batchSize)
+            }
+
+            // All logs are processed.
+            result.success(null)
+        }
     }
 
     companion object {
-        private const val CONSOLE_LOG_KEY = "VIALER-PIL"
+        private const val CONSOLE_LOG_KEY = "VIALER-APL"
     }
+}
+
+private class ApiException(response: Response) : Exception() {
+    override val message = "API call failed (${response.code}), body: ${response.message}"
 }
