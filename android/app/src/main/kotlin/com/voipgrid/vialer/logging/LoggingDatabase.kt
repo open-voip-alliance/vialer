@@ -100,13 +100,11 @@ class LoggingDatabase(private val context: Context) {
      * Remove logs from the database, from [start] to [end] time. Both are inclusive.
      */
     fun removeLogs(start: Long, end: Long) {
-        val rows = db.delete(
+        db.delete(
             TABLE_NAME,
             "$LOG_TIME BETWEEN ? AND ?",
             arrayOf(start.toString(), end.toString())
         )
-
-        println("ROWS DELETED: $rows")
     }
 }
 
