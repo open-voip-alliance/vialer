@@ -4,6 +4,7 @@ import '../../app/util/loggable.dart';
 import '../../app/util/single_task.dart';
 import '../../dependency_locator.dart';
 import '../authentication/authentication_repository.dart';
+import '../business_availability/temporary_redirect/get_current_temporary_redirect.dart';
 import '../call_records/client/purge_local_call_records.dart';
 import '../calling/outgoing_number/outgoing_numbers.dart';
 import '../calling/voip/client_voip_config_repository.dart';
@@ -65,6 +66,7 @@ class GetLatestUserUseCase extends UseCase with Loggable {
       user = await _getClientVoicemailAccounts(user);
       user = await _getUserVoipConfig(user);
       user = await _getClientVoipConfig(user);
+      user = await _getCurrentTemporaryRedirect(user);
 
       // User should have a value for all settings.
       assert(
@@ -117,29 +119,28 @@ class GetLatestUserUseCase extends UseCase with Loggable {
 
   /// Retrieving permissions and handling its possible side effects.
   Future<User> _getRemotePermissions(User user) async {
-    final clientCallsVgPermission =
-        await _userPermissionsRepository.hasPermission(
-      type: UserPermission.clientCalls,
-      user: user,
-    );
+    late final List<UserPermission> granted;
 
-    final mobileNumberFallbackPermission =
-        await _userPermissionsRepository.hasPermission(
-      type: UserPermission.mobileNumberFallback,
-      user: user,
-    );
-
-    // If we are unable to get the current permissions we should just leave
-    // the current permission as it is.
-    if (clientCallsVgPermission == PermissionResult.unavailable ||
-        mobileNumberFallbackPermission == PermissionResult.unavailable) {
+    try {
+      granted = await _userPermissionsRepository.getGrantedPermissions(
+        user: user,
+      );
+    } on UnableToRetrievePermissionsException {
+      // If we are unable to get the current permissions we should just leave
+      // the current permission as it is.
       return user;
     }
 
     final permissions = UserPermissions(
-      canSeeClientCalls: clientCallsVgPermission == PermissionResult.granted,
-      canUseMobileNumberFallback:
-          mobileNumberFallbackPermission == PermissionResult.granted,
+      canSeeClientCalls: granted.contains(UserPermission.clientCalls),
+      canChangeMobileNumberFallback:
+          granted.contains(UserPermission.changeMobileNumberFallback),
+      canViewMobileNumberFallbackStatus:
+          granted.contains(UserPermission.viewMobileNumberFallback),
+      // The only redirect target currently is Voicemail, so if the user
+      // cannot view Voicemail they can't use the feature.
+      canUseTemporaryRedirect: granted.contains(UserPermission.viewVoicemail) &&
+          granted.contains(UserPermission.temporaryRedirect),
     );
 
     if (!permissions.canSeeClientCalls) {
@@ -237,4 +238,10 @@ class GetLatestUserUseCase extends UseCase with Loggable {
 
     return user;
   }
+
+  Future<User> _getCurrentTemporaryRedirect(User user) async => user.copyWith(
+        client: user.client?.copyWith(
+          currentTemporaryRedirect: await GetCurrentTemporaryRedirect()(),
+        ),
+      );
 }

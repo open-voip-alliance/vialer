@@ -28,9 +28,18 @@ class AuthorizationInterceptor implements chopper.RequestInterceptor {
   /// to support creation within an isolate.
   final User? user;
 
+  /// When set to `true` will never use legacy auth regardless of the URL
+  /// structure.
+  ///
+  /// This should be set when it is known that no legacy auth is ever used
+  /// on any URLs for the service and the service does not use the standard
+  /// `v2` url scheme.
+  final bool onlyModernAuth;
+
   const AuthorizationInterceptor({
     this.forcedLegacyAuthPaths = const [],
     this.user,
+    this.onlyModernAuth = false,
   });
 
   @override
@@ -40,13 +49,17 @@ class AuthorizationInterceptor implements chopper.RequestInterceptor {
     if (user != null) {
       bool useLegacyAuth;
 
-      if (forcedLegacyAuthPaths.any(request.url.contains)) {
-        useLegacyAuth = true;
-      } else {
-        final pathSegments =
-            Uri.parse(request.url).pathSegments.where((s) => s.isNotBlank);
+      if (!onlyModernAuth) {
+        if (forcedLegacyAuthPaths.any(request.url.contains)) {
+          useLegacyAuth = true;
+        } else {
+          final pathSegments =
+              Uri.parse(request.url).pathSegments.where((s) => s.isNotBlank);
 
-        useLegacyAuth = !pathSegments.any((s) => s == 'v2');
+          useLegacyAuth = !pathSegments.any((s) => s == 'v2');
+        }
+      } else {
+        useLegacyAuth = false;
       }
 
       return request.copyWith(

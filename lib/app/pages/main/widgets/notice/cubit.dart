@@ -3,6 +3,10 @@ import 'dart:io';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../dependency_locator.dart';
+import '../../../../../domain/business_availability/temporary_redirect/temporary_redirect.dart';
+import '../../../../../domain/business_availability/temporary_redirect/temporary_redirect_did_change_event.dart';
+import '../../../../../domain/event/event_bus.dart';
 import '../../../../../domain/onboarding/request_permission.dart';
 import '../../../../../domain/user/get_permission_status.dart';
 import '../../../../../domain/user/permissions/permission.dart';
@@ -15,14 +19,19 @@ import 'state.dart';
 export 'state.dart';
 
 class NoticeCubit extends Cubit<NoticeState> with Loggable {
-  final _getPermissionStatus = GetPermissionStatusUseCase();
-  final _requestPermission = RequestPermissionUseCase();
-  final _openAppSettings = OpenSettingsAppUseCase();
+  late final _getPermissionStatus = GetPermissionStatusUseCase();
+  late final _requestPermission = RequestPermissionUseCase();
+  late final _openAppSettings = OpenSettingsAppUseCase();
+  late final _eventBus = dependencyLocator<EventBusObserver>();
 
   final CallerCubit _caller;
 
   NoticeCubit(this._caller) : super(const NoNotice()) {
     check();
+
+    _eventBus.on<TemporaryRedirectDidChangeEvent>((event) {
+      check(currentRedirect: event.current);
+    });
   }
 
   Future<void> check({
@@ -30,6 +39,7 @@ class NoticeCubit extends Cubit<NoticeState> with Loggable {
     PermissionStatus? phoneStatus,
     PermissionStatus? bluetoothStatus,
     PermissionStatus? notificationsStatus,
+    TemporaryRedirect? currentRedirect,
   }) async {
     if (state is NoticeDismissed) return;
 
@@ -66,6 +76,8 @@ class NoticeCubit extends Cubit<NoticeState> with Loggable {
       emit(const BluetoothConnectPermissionDeniedNotice());
     } else if (notificationsStatus != PermissionStatus.granted) {
       emit(const NotificationsPermissionDeniedNotice());
+    } else if (currentRedirect != null) {
+      emit(TemporaryRedirectNotice(temporaryRedirect: currentRedirect));
     } else {
       emit(const NoNotice());
     }

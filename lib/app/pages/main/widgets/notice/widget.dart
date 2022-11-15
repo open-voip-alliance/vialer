@@ -8,6 +8,8 @@ import '../../../../resources/theme.dart';
 import '../../../../util/conditional_capitalization.dart';
 import '../../../../util/widgets_binding_observer_registrar.dart';
 import '../../../../widgets/animated_visibility.dart';
+import '../../business_availability/temporary_redirect/explanation.dart';
+import '../../business_availability/temporary_redirect/page.dart';
 import 'cubit.dart';
 import 'widgets/banner.dart';
 
@@ -59,6 +61,8 @@ class _NoticeState extends State<_Notice>
       return FontAwesomeIcons.bluetooth;
     } else if (state is NotificationsPermissionDeniedNotice) {
       return FontAwesomeIcons.eyeSlash;
+    } else if (state is TemporaryRedirectNotice) {
+      return FontAwesomeIcons.listTree;
     } else {
       return FontAwesomeIcons.exclamation;
     }
@@ -73,26 +77,38 @@ class _NoticeState extends State<_Notice>
       return context.msg.main.notice.bluetoothConnect.title;
     } else if (state is NotificationsPermissionDeniedNotice) {
       return context.msg.main.notice.notifications.title;
+    } else if (state is TemporaryRedirectNotice) {
+      return context.msg.main.temporaryRedirect.title;
     } else {
       return context.msg.main.notice.phoneAndMicrophone.title;
     }
   }
 
-  String _contentFor(NoticeState state) {
+  Widget _contentFor(NoticeState state) {
+    if (state is TemporaryRedirectNotice) {
+      return TemporaryRedirectExplanation(
+        currentDestination: state.temporaryRedirect.destination,
+      );
+    }
+
+    final String content;
     if (state is PhonePermissionDeniedNotice) {
-      return context.msg.main.notice.phone.content(context.brand.appName);
+      content = context.msg.main.notice.phone.content(context.brand.appName);
     } else if (state is MicrophonePermissionDeniedNotice) {
-      return context.msg.main.notice.microphone.content(context.brand.appName);
+      content =
+          context.msg.main.notice.microphone.content(context.brand.appName);
     } else if (state is BluetoothConnectPermissionDeniedNotice) {
-      return context.msg.main.notice.bluetoothConnect
+      content = context.msg.main.notice.bluetoothConnect
           .content(context.brand.appName);
     } else if (state is NotificationsPermissionDeniedNotice) {
-      return context.msg.main.notice.notifications.content;
+      content = context.msg.main.notice.notifications.content;
     } else {
-      return context.msg.main.notice.phoneAndMicrophone.content(
+      content = context.msg.main.notice.phoneAndMicrophone.content(
         context.brand.appName,
       );
     }
+
+    return Text(content);
   }
 
   @override
@@ -108,32 +124,50 @@ class _NoticeState extends State<_Notice>
               child: NoticeBanner(
                 icon: FaIcon(_iconFor(state)),
                 title: Text(_titleFor(state)),
-                content: Text(_contentFor(state)),
+                content: _contentFor(state),
                 actions: [
-                  TextButton(
-                    onPressed: cubit.dismiss,
-                    child: Text(
-                      context.msg.generic.button.close
-                          .toUpperCaseIfAndroid(context),
+                  // TODO: Only show button if user has permission to change
+                  if (state is TemporaryRedirectNotice) ...[
+                    TextButton(
+                      onPressed: () => Navigator.push(
+                        context,
+                        TemporaryRedirectPickerPage.route(),
+                      ),
+                      child: Text(
+                        context.msg.main.temporaryRedirect.actions
+                            .changeRedirect.label
+                            .toUpperCaseIfAndroid(context),
+                      ),
                     ),
-                  ),
-                  TextButton(
-                    onPressed: () => cubit.requestPermission([
-                      if (state is PhonePermissionDeniedNotice)
-                        Permission.phone
-                      else if (state is MicrophonePermissionDeniedNotice)
-                        Permission.microphone
-                      else if (state is BluetoothConnectPermissionDeniedNotice)
-                        Permission.bluetooth
-                      else if (state is NotificationsPermissionDeniedNotice)
-                        Permission.notifications
-                      else ...[Permission.phone, Permission.microphone],
-                    ]),
-                    child: Text(
-                      context.msg.main.notice.actions.givePermission
-                          .toUpperCaseIfAndroid(context),
+                  ] else ...[
+                    TextButton(
+                      onPressed: cubit.dismiss,
+                      child: Text(
+                        context.msg.generic.button.close
+                            .toUpperCaseIfAndroid(context),
+                      ),
                     ),
-                  ),
+                    TextButton(
+                      onPressed: () => cubit.requestPermission(
+                        [
+                          if (state is PhonePermissionDeniedNotice)
+                            Permission.phone
+                          else if (state is MicrophonePermissionDeniedNotice)
+                            Permission.microphone
+                          else if (state
+                              is BluetoothConnectPermissionDeniedNotice)
+                            Permission.bluetooth
+                          else if (state is NotificationsPermissionDeniedNotice)
+                            Permission.notifications
+                          else ...[Permission.phone, Permission.microphone],
+                        ],
+                      ),
+                      child: Text(
+                        context.msg.main.notice.actions.givePermission
+                            .toUpperCaseIfAndroid(context),
+                      ),
+                    ),
+                  ],
                 ],
               ),
             );

@@ -338,6 +338,7 @@ main:
           title: "Statistieken"
         calls:
           title: "Gesprekken"
+
     troubleshootingProgressPopUp(int remainingTaps): >-
       Nog $remainingTaps keer tikken en de geavanceerde instellingen worden beschikbaar.
     troubleshootingUnlockedPopUp: "Je hebt nu toegang tot de geavanceerde instellingen."
@@ -407,13 +408,33 @@ main:
       content: "We zullen het gebruiken om de app nog beter te maken."
 
   temporaryRedirect:
+    title: "Tijdelijke omleiding"
     explanation:
       start: "Alle inkomende oproepen naar alle nummers gaan rechtstreeks naar voicemail "
       end: " tot aan het einde van de dag."
-    dropdownTitle: "Kies voicemail"
+      selectVoicemail: "[kies voicemail hieronder]"
+    dropdown:
+      title: "Kies voicemail"
+      noVoicemails:
+        item: "Geen voicemails beschikbaar"
+        hint:
+          start: "Geen voicemails gevonden, voeg ze alsjeblieft toe in je "
+          link: "VoIP portal"
+          end: "."
     actions:
-      startRedirect: "Start omleiding"
-      cancel: "Annuleren"
+      title: "Tijdelijke omleiding"
+      setupRedirect:
+        label: "Tijdelijke omleiding opzetten"
+        description: "Laat alle inkomende oproepen belplan(en) en openingstijden tijdelijk omzeilen"
+      startRedirect:
+        label: "Omleiding starten"
+      stopRedirect:
+        label: "Omleiding stoppen"
+        labelOngoing: "Huidige omleiding stoppen"
+        description: "Al je oproepen zullen weer je belplan(nen) en openingstijden volgen."
+      changeRedirect:
+        label: "Omleiding aanpassen"
+        description: "Je kan de instellingen aanpassen zonder de omleiding te onderbreken."
 
   update:
     readyToInstall:
