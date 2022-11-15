@@ -28,9 +28,9 @@ class TemporaryRedirectCubit extends Cubit<TemporaryRedirectState> {
 
   void _emitInitialState([TemporaryRedirect? temporaryRedirect]) {
     final availableDestinations = _getUser()
-            .client
-            .voicemailAccounts
-            .map(TemporaryRedirectDestination.voicemail);
+        .client
+        .voicemailAccounts
+        .map(TemporaryRedirectDestination.voicemail);
 
     emit(
       temporaryRedirect != null
