@@ -13,8 +13,14 @@ class GetCurrentTemporaryRedirect extends UseCase {
   late final _eventBus = dependencyLocator<EventBus>();
 
   Future<TemporaryRedirect?> call() async {
+    final user = _getUser();
+
+    if (!user.permissions.canUseTemporaryRedirect) {
+      return null;
+    }
+
     final redirect = await _businessAvailability.getCurrentTemporaryRedirect(
-      user: _getUser(),
+      user: user,
     );
 
     _eventBus.broadcast(TemporaryRedirectDidChangeEvent(current: redirect));

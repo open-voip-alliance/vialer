@@ -127,7 +127,9 @@ class GetLatestUserUseCase extends UseCase with Loggable {
           granted.contains(UserPermission.changeMobileNumberFallback),
       canViewMobileNumberFallbackStatus:
           granted.contains(UserPermission.viewMobileNumberFallback),
-      canUseTemporaryRedirect:
+      // The only redirect target currently is Voicemail, so if the user
+      // cannot view Voicemail they can't use the feature.
+      canUseTemporaryRedirect: granted.contains(UserPermission.viewVoicemail) &&
           granted.contains(UserPermission.temporaryRedirect),
     );
 

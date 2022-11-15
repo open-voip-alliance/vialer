@@ -18,6 +18,7 @@ class UserPermissionsRepository with Loggable {
     // between viewing and changing.
     'business_availability.change_temporary_redirect':
         UserPermission.temporaryRedirect,
+    'voicemail.view_voicemail': UserPermission.viewVoicemail,
   };
 
   Future<List<UserPermission>> getGrantedPermissions({
@@ -46,6 +47,7 @@ enum UserPermission {
   viewMobileNumberFallback,
   changeMobileNumberFallback,
   temporaryRedirect,
+  viewVoicemail,
 }
 
 class UnableToRetrievePermissionsException extends VialerException {}
