@@ -20,9 +20,11 @@ import 'permissions/user_permissions.dart';
 import 'settings/app_setting.dart';
 import 'settings/call_setting.dart';
 import 'settings/settings.dart';
+import 'synchronized_user_editor.dart';
 import 'user.dart';
 
-class GetLatestUserUseCase extends UseCase with Loggable {
+class GetLatestUserUseCase extends UseCase
+    with SynchronizedUserEditor, Loggable {
   final _storageRepository = dependencyLocator<StorageRepository>();
   final _authRepository = dependencyLocator<AuthRepository>();
   final _destinationRepository = dependencyLocator<DestinationRepository>();
@@ -39,45 +41,54 @@ class GetLatestUserUseCase extends UseCase with Loggable {
 
   final _purgeLocalCallRecords = PurgeLocalCallRecordsUseCase();
 
-  Future<User?> call([LoginCredentials? credentials]) async {
-    final storedUser = _storageRepository.user;
-    final latestUser = await _getUserFromCredentials(credentials);
+  Future<User?> call([LoginCredentials? credentials]) => editUser(
+        () async {
+          final storedUser = _storageRepository.user;
+          final latestUser = await _getUserFromCredentials(credentials);
 
-    if (latestUser == null) return storedUser;
+          if (latestUser == null) return storedUser;
 
-    return SingleInstanceTask<User?>.of(this).run(() async {
-      // Latest user contains some settings, such as mobile and outgoing number.
-      var user = storedUser?.copyFrom(latestUser) ??
-          latestUser.copyWith(
-            settings: const Settings.defaults().copyFrom(latestUser.settings),
-          );
+          return SingleInstanceTask<User?>.of(this).run(() async {
+            // Latest user contains some settings, such as mobile and
+            // outgoing number.
+            var user = storedUser?.copyFrom(latestUser) ??
+                latestUser.copyWith(
+                  settings:
+                      const Settings.defaults().copyFrom(latestUser.settings),
+                );
 
-      // If we're retrieving the user for the first time (logging in), we store
-      // the user already, so that the AuthorizationInterceptor can use it.
-      if (storedUser == null) {
-        _storageRepository.user = user;
-      }
+            // If we're retrieving the user for the first time (logging in),
+            // we store  the user already, so that the AuthorizationInterceptor
+            // can use it.
+            if (storedUser == null) {
+              _storageRepository.user = user;
+            }
 
-      user = _getPreviousSessionSettings(user);
-      user = await _getRemoteSettings(user);
-      user = await _getRemotePermissions(user);
-      user = await _getRemoteClientOutgoingNumbers(user);
-      user = await _getClientVoicemailAccounts(user);
-      user = await _getUserVoipConfig(user);
-      user = await _getClientVoipConfig(user);
+            user = _getPreviousSessionSettings(user);
+            user = await _getRemoteSettings(user);
+            user = await _getRemotePermissions(user);
+            user = await _getRemoteClientOutgoingNumbers(user);
+            user = await _getClientVoicemailAccounts(user);
+            user = await _getUserVoipConfig(user);
+            user = await _getClientVoipConfig(user);
 
-      // User should have a value for all settings.
-      assert(
-        user.settings.isComplete,
-        'The following settings are missing from the user: '
-        '${Settings.possibleKeys.difference(user.settings.keys).toList()}',
+            // User should have a value for all settings.
+            assert(
+              user.settings.isComplete,
+              // ignore: prefer_interpolation_to_compose_strings
+              'The following settings are missing from the user: ' +
+                  Settings.possibleKeys
+                      .difference(user.settings.keys)
+                      .toList()
+                      .toString(),
+            );
+
+            _storageRepository.user = user;
+
+            return user;
+          });
+        },
       );
-
-      _storageRepository.user = user;
-
-      return user;
-    });
-  }
 
   Future<User?> _getUserFromCredentials(LoginCredentials? credentials) async {
     if (credentials is UserProvidedCredentials) {
