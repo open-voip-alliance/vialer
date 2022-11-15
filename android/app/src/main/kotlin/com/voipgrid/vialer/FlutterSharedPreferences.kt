@@ -5,43 +5,30 @@ import android.content.SharedPreferences
 import android.os.Build
 import android.os.PowerManager
 import kotlinx.coroutines.channels.Channel
-import org.json.JSONArray
 import org.json.JSONObject
 
 class FlutterSharedPreferences(private val context: Context) {
     private val prefs: SharedPreferences =
         context.getSharedPreferences("FlutterSharedPreferences", Context.MODE_PRIVATE)
 
-    val systemUser: JSONObject?
+    val user: UserJson?
         get() {
-            val pref = prefs.getString(FLUTTER_SHARED_PREF_SYSTEM_USER, null) ?: return null
-            return JSONObject(pref)
-        }
-
-    val voipConfig
-        get() = JSONObject(prefs.getString(FLUTTER_SHARED_PREF_VOIP_CONFIG, "{}")!!)
-
-    val middlewareUrl: String
-        get() {
-            val pref = prefs.getString(FLUTTER_SHARED_PREF_SERVER_CONFIG, null) ?: return context.getString(R.string.middleware_url)
-            return JSONObject(pref).getString("MIDDLEWARE")
+            val pref = prefs.getString(USER_KEY, null) ?: return null
+            return UserJson(JSONObject(pref))
         }
 
     var pushToken
-        get() = prefs.getString(FLUTTER_SHARED_PREF_PUSH_TOKEN, "")
-        set(value) = prefs.edit().putString(FLUTTER_SHARED_PREF_PUSH_TOKEN, value).apply()
+        get() = prefs.getString(PUSH_TOKEN_KEY, "")
+        set(value) = prefs.edit().putString(PUSH_TOKEN_KEY, value).apply()
 
     var isLoggedInSomewhereElse
-        get() = prefs.getBoolean(FLUTTER_SHARED_PREF_IS_LOGGED_IN_SOMEWHERE_ELSE, false)
-        set(value) = prefs.edit().putBoolean(FLUTTER_SHARED_PREF_IS_LOGGED_IN_SOMEWHERE_ELSE, value)
+        get() = prefs.getBoolean(IS_LOGGED_IN_SOMEWHERE_ELSE_KEY, false)
+        set(value) = prefs.edit().putBoolean(IS_LOGGED_IN_SOMEWHERE_ELSE_KEY, value)
             .apply()
 
-    private val settings
-        get() = JSONArray(prefs.getString(FLUTTER_SHARED_PREF_SETTINGS, "[]"))
-
     private var logs
-        get() = prefs.getString(FLUTTER_SHARED_PREF_LOGS, "")
-        set(value) = prefs.edit().putString(FLUTTER_SHARED_PREF_LOGS, value).apply()
+        get() = prefs.getString(LOGS_KEY, "")
+        set(value) = prefs.edit().putString(LOGS_KEY, value).apply()
 
     suspend fun appendLogs(log: String) {
         if (!isAppendingLogs) {
@@ -63,36 +50,13 @@ class FlutterSharedPreferences(private val context: Context) {
         }
     }
 
-    private fun getSetting(name: String, defaultValue: String = ""): String {
-        val settings = settings
-
-        for (i in 0..settings.length()) {
-            try {
-                val item = (settings.get(i) as JSONObject)
-                val settingName = item["type"] as String
-
-                if (settingName == name) return item.getString("value")
-            } catch (e: Exception) {
-                continue
-            }
-        }
-
-        return defaultValue
-    }
-
-    fun getBoolSetting(name: String, defaultValue: Boolean = false): Boolean =
-        getSetting(name, defaultValue.toString()).toBoolean()
-
     companion object {
-        private const val SHARED_PREF_PREFIX = "flutter."
-        private const val FLUTTER_SHARED_PREF_SYSTEM_USER = "${SHARED_PREF_PREFIX}system_user"
-        private const val FLUTTER_SHARED_PREF_VOIP_CONFIG = "${SHARED_PREF_PREFIX}voip_config"
-        private const val FLUTTER_SHARED_PREF_SERVER_CONFIG = "${SHARED_PREF_PREFIX}server_config"
-        private const val FLUTTER_SHARED_PREF_PUSH_TOKEN = "${SHARED_PREF_PREFIX}push_token"
-        private const val FLUTTER_SHARED_PREF_SETTINGS = "${SHARED_PREF_PREFIX}settings"
-        private const val FLUTTER_SHARED_PREF_LOGS = "${SHARED_PREF_PREFIX}logs"
-        private const val FLUTTER_SHARED_PREF_IS_LOGGED_IN_SOMEWHERE_ELSE =
-            "${SHARED_PREF_PREFIX}is_logged_in_somewhere_else"
+        private const val KEY_PREFIX = "flutter."
+        private const val USER_KEY = "${KEY_PREFIX}system_user"
+        private const val PUSH_TOKEN_KEY = "${KEY_PREFIX}push_token"
+        private const val LOGS_KEY = "${KEY_PREFIX}logs"
+        private const val IS_LOGGED_IN_SOMEWHERE_ELSE_KEY =
+            "${KEY_PREFIX}is_logged_in_somewhere_else"
     }
 }
 
@@ -104,3 +68,48 @@ val Context.isIgnoringBatteryOptimizations: Boolean
         }
         return true;
     }
+
+@JvmInline
+value class UserJson(private val json: JSONObject) {
+    val email: String
+        get() = json.getString("email")
+
+    val token: String
+        get() = json.getString("token")
+
+    val uuid: String
+        get() = json.getString("uuid")
+
+    val voip: UserVoipConfigJson?
+        get() = json.optJSONObject("voip")?.let { UserVoipConfigJson(it) }
+
+    val client: ClientJson
+        get() = ClientJson(json.getJSONObject("client"))
+
+    val settings: SettingsJson
+        get() = SettingsJson(json.getJSONObject("settings"))
+}
+
+@JvmInline
+value class SettingsJson(val json: JSONObject) {
+    inline fun <reified T> get(key: String): T = json.get(key) as T
+}
+
+@JvmInline
+value class ClientJson(val json: JSONObject) {
+    val voip: ClientVoipConfigJson
+        get() = json.getJSONObject("voip").let { ClientVoipConfigJson(it) }
+}
+
+@JvmInline
+value class ClientVoipConfigJson(val json: JSONObject) {
+    // Fallback will be stored here as well.
+    val middlewareUrl: String
+        get() = json.getString("MIDDLEWARE")
+}
+
+@JvmInline
+value class UserVoipConfigJson(val json: JSONObject) {
+    val sipUserId: String
+        get() = json.getString("appaccount_account_id")
+}

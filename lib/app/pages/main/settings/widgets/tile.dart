@@ -468,7 +468,7 @@ class SettingTile extends StatelessWidget {
   static Widget outgoingNumber(User user) {
     const key = CallSetting.outgoingNumber;
     final value = user.settings.get(key);
-    final availableOutgoingNumbers = user.client?.outgoingNumbers ?? const [];
+    final availableOutgoingNumbers = user.client.outgoingNumbers;
 
     return Builder(
       builder: (context) {
@@ -488,44 +488,41 @@ class SettingTile extends StatelessWidget {
                 .msg.main.settings.list.accountInfo.businessNumber.description,
           ),
           childFillWidth: true,
-          child: user.canChangeOutgoingNumber
-              ? _EditableSettingField(
-                  unlocked: Expanded(
-                    child: _MultipleChoiceSettingValue<OutgoingNumber>(
-                      value: value,
-                      padding: const EdgeInsets.only(
-                        bottom: 8,
-                        right: 8,
+          child: _EditableSettingField(
+            unlocked: Expanded(
+              child: _MultipleChoiceSettingValue<OutgoingNumber>(
+                value: value,
+                padding: const EdgeInsets.only(
+                  bottom: 8,
+                  right: 8,
+                ),
+                onChanged: (number) => defaultOnChanged(context, key, number),
+                isExpanded: false,
+                items: [
+                  DropdownMenuItem<OutgoingNumber>(
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        context.msg.main.settings.list.accountInfo
+                            .businessNumber.suppressed,
                       ),
-                      onChanged: (number) =>
-                          defaultOnChanged(context, key, number),
-                      isExpanded: false,
-                      items: [
-                        DropdownMenuItem<OutgoingNumber>(
-                          child: FittedBox(
-                            fit: BoxFit.scaleDown,
-                            child: Text(
-                              context.msg.main.settings.list.accountInfo
-                                  .businessNumber.suppressed,
-                            ),
-                          ),
-                          value: const OutgoingNumber.suppressed(),
-                        ),
-                        ...availableOutgoingNumbers.map(
-                          (number) => DropdownMenuItem<OutgoingNumber>(
-                            child: FittedBox(
-                              fit: BoxFit.scaleDown,
-                              child: Text(number.toString()),
-                            ),
-                            value: number,
-                          ),
-                        ),
-                      ],
+                    ),
+                    value: const OutgoingNumber.suppressed(),
+                  ),
+                  ...availableOutgoingNumbers.map(
+                    (number) => DropdownMenuItem<OutgoingNumber>(
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(number.toString()),
+                      ),
+                      value: number,
                     ),
                   ),
-                  locked: unlockedWidget,
-                )
-              : unlockedWidget,
+                ],
+              ),
+            ),
+            locked: unlockedWidget,
+          ),
         );
       },
     );

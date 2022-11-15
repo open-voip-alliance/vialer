@@ -17,12 +17,28 @@ import '../../user/info/build_info.dart';
 import '../../user/info/operating_system_info_repository.dart';
 import '../../user/settings/app_setting.dart';
 import '../../user/settings/call_setting.dart';
-import '../../voipgrid/voip_config.dart';
+import '../../voipgrid/client_voip_config.dart';
+import '../../voipgrid/user_voip_config.dart';
 import '../middleware/middleware_service.dart';
-import 'get_allowed_voip_config.dart';
-import 'get_server_config.dart';
 
 class VoipRepository with Loggable {
+  final _service = dependencyLocator<MiddlewareService>();
+
+  final _getUser = GetLoggedInUserUseCase();
+  final _getBuildInfo = GetBuildInfoUseCase();
+  final _isLoggedInSomewhereElse = GetIsLoggedInSomewhereElseUseCase();
+  final _getLoginTime = GetLoginTimeUseCase();
+
+  final _storageRepository = dependencyLocator<StorageRepository>();
+  final _operatingSystemInfoRepository =
+      dependencyLocator<OperatingSystemInfoRepository>();
+  final _envRepository = dependencyLocator<EnvRepository>();
+
+  String? get _token => _storageRepository.pushToken;
+
+  String? get _remoteNotificationToken =>
+      _storageRepository.remoteNotificationToken;
+
   PhoneLib? __phoneLib;
 
   Future<PhoneLib> get _phoneLib {
@@ -31,7 +47,8 @@ class VoipRepository with Loggable {
         'PhoneLib was accessed and not initialized, initializing now',
       );
 
-      if (_startUpConfig == null ||
+      if (_startUpUserConfig == null ||
+          _startUpClientConfig == null ||
           _startUpBrand == null ||
           _startUpBuildInfo == null) {
         logger.severe(
@@ -41,7 +58,8 @@ class VoipRepository with Loggable {
       }
 
       return initializeAndStart(
-        config: _startUpConfig!,
+        userConfig: _startUpUserConfig!,
+        clientConfig: _startUpClientConfig!,
         brand: _startUpBrand!,
         buildInfo: _startUpBuildInfo!,
       ).then((_) => __phoneLib!);
@@ -54,22 +72,22 @@ class VoipRepository with Loggable {
 
   Future<bool> get hasStarted => _hasStartedCompleter.future;
 
-  final _getServerConfig = GetServerConfigUseCase();
-
   // We pass through events so app level subscribers don't have to resubscribe
   // if we stop and start the PhoneLib.
   final _eventsController = StreamController<Event>.broadcast();
   StreamSubscription? _eventsSubscription;
 
   // Start-up values.
-  NonEmptyVoipConfig? _startUpConfig;
+  UserVoipConfig? _startUpUserConfig;
+  ClientVoipConfig? _startUpClientConfig;
   Brand? _startUpBrand;
   BuildInfo? _startUpBuildInfo;
 
   bool _initializingAndStarting = false;
 
   Future<void> initializeAndStart({
-    required NonEmptyVoipConfig config,
+    required UserVoipConfig userConfig,
+    required ClientVoipConfig clientConfig,
     required Brand brand,
     required BuildInfo buildInfo,
   }) async {
@@ -87,15 +105,16 @@ class VoipRepository with Loggable {
 
     _initializingAndStarting = true;
 
-    _startUpConfig = config;
+    _startUpUserConfig = userConfig;
+    _startUpClientConfig = clientConfig;
     _startUpBrand = brand;
     _startUpBuildInfo = buildInfo;
 
-    final preferences = await _createPreferences(config);
+    final preferences = await _createPreferences();
 
     /// Returns true if successfully initialized, false otherwise.
     Future<bool> initialize({bool firstTry = true}) async {
-      final auth = await _createAuth(config);
+      final auth = await _createAuth(userConfig, clientConfig);
       try {
         __phoneLib = await initializePhoneLib((builder) {
           builder
@@ -142,8 +161,8 @@ class VoipRepository with Loggable {
     Future<bool> start({bool firstTry = true}) async {
       try {
         await __phoneLib!.start(
-          await _createPreferences(config),
-          await _createAuth(config),
+          await _createPreferences(),
+          await _createAuth(userConfig, clientConfig),
         );
       } on Exception catch (e) {
         if (!firstTry) {
@@ -178,22 +197,23 @@ class VoipRepository with Loggable {
     _initializingAndStarting = false;
   }
 
-  Future<Auth> _createAuth(NonEmptyVoipConfig config) async {
-    final encryptedSipUrl = await _getServerConfig()
-        .then((config) => config.encryptedSipUrl.toString());
-    final unencryptedSipUrl = await _getServerConfig()
-        .then((config) => config.unencryptedSipUrl.toString());
+  Future<Auth> _createAuth(
+    UserVoipConfig userConfig,
+    ClientVoipConfig clientConfig,
+  ) async {
+    final encryptedSipUrl = clientConfig.encryptedSipUrl.toString();
+    final unencryptedSipUrl = clientConfig.unencryptedSipUrl.toString();
 
     return Auth(
-      username: config.sipUserId.toString(),
-      password: config.password,
-      domain: config.useEncryption ? encryptedSipUrl : unencryptedSipUrl,
-      port: config.useEncryption ? 5061 : 5060,
-      secure: config.useEncryption,
+      username: userConfig.sipUserId.toString(),
+      password: userConfig.password,
+      domain: userConfig.useEncryption ? encryptedSipUrl : unencryptedSipUrl,
+      port: userConfig.useEncryption ? 5061 : 5060,
+      secure: userConfig.useEncryption,
     );
   }
 
-  Future<Preferences> _createPreferences(VoipConfig config) async {
+  Future<Preferences> _createPreferences() async {
     final user = (await GetLatestLoggedInUserUseCase()());
 
     return Preferences(
@@ -228,87 +248,7 @@ class VoipRepository with Loggable {
     }
   }
 
-  Future<void> answerCall() async => (await _phoneLib).actions.answer();
-
-  Future<void> refreshPreferences(VoipConfig config) async =>
-      (await _phoneLib).updatePreferences(await _createPreferences(config));
-
-  Future<Call?> get activeCall async => (await _phoneLib).calls.active;
-
-  Future<CallSessionState> get sessionState async =>
-      (await _phoneLib).sessionState;
-
-  Future<void> endCall() async => (await _phoneLib).actions.end();
-
-  Future<void> sendDtmf(String dtmf) async =>
-      (await _phoneLib).actions.sendDtmf(dtmf);
-
-  Stream<Event> get events => _eventsController.stream;
-
-  Future<void> register(NonEmptyVoipConfig voipConfig) =>
-      _Middleware().register(voipConfig);
-
-  Future<void> unregister(NonEmptyVoipConfig voipConfig) =>
-      _Middleware().unregister(voipConfig);
-
-  Future<bool> get isMuted async => (await _phoneLib).audio.isMicrophoneMuted;
-
-  Future<void> toggleMute() async => (await _phoneLib).audio.toggleMute();
-
-  Future<void> toggleHold() async => (await _phoneLib).actions.toggleHold();
-
-  Future<void> hold() async => (await _phoneLib).actions.hold();
-
-  Future<void> routeAudio(AudioRoute route) async =>
-      (await _phoneLib).audio.routeAudio(route);
-
-  Future<void> launchAudioRoutePicker() async =>
-      (await _phoneLib).audio.launchAudioRoutePicker();
-
-  Future<AudioState> get audioState async => (await _phoneLib).audio.state;
-
-  Future<void> routeAudioToBluetoothDevice(BluetoothAudioRoute route) async =>
-      (await _phoneLib).audio.routeAudioToBluetoothDevice(route);
-
-  Future<void> beginTransfer(String number) async =>
-      (await _phoneLib).actions.beginAttendedTransfer(number.normalize());
-
-  Future<void> mergeTransferCalls() async =>
-      (await _phoneLib).actions.completeAttendedTransfer();
-
-  final _missedCallNotificationPressedController =
-      StreamController<bool>.broadcast();
-
-  Stream<bool> get missedCallNotificationPresses =>
-      _missedCallNotificationPressedController.stream;
-
-  Future<void> performEchoCancellationCalibration() async =>
-      (await _phoneLib).performEchoCancellationCalibration();
-}
-
-// This class should not keep any state of it's own.
-class _Middleware with Loggable {
-  final _service = dependencyLocator<MiddlewareService>();
-
-  final _getUser = GetLoggedInUserUseCase();
-  final _getBuildInfo = GetBuildInfoUseCase();
-  final _getVoipConfig = GetNonEmptyVoipConfigUseCase();
-  final _isLoggedInSomewhereElse = GetIsLoggedInSomewhereElseUseCase();
-  final _getLoginTime = GetLoginTimeUseCase();
-
-  final _storageRepository = dependencyLocator<StorageRepository>();
-  final _operatingSystemInfoRepository =
-      dependencyLocator<OperatingSystemInfoRepository>();
-  final _envRepository = dependencyLocator<EnvRepository>();
-
-  String? get _token => _storageRepository.pushToken;
-
-  String? get _remoteNotificationToken =>
-      _storageRepository.remoteNotificationToken;
-
-  Future<NonEmptyVoipConfig> get _config => _getVoipConfig(latest: false);
-
-  Future<void> register(NonEmptyVoipConfig? voipConfig) async {
+  Future<void> register(UserVoipConfig? voipConfig) async {
     logger.info('Registering..');
 
     if (await _isLoggedInSomewhereElse()) {
@@ -382,12 +322,10 @@ class _Middleware with Loggable {
       return;
     }
 
-    _storageRepository.voipConfig = voipConfig;
-
     logger.info('Registered!');
   }
 
-  Future<void> unregister(NonEmptyVoipConfig? voipConfig) async {
+  Future<void> unregister(UserVoipConfig? voipConfig) async {
     assert(voipConfig?.sipUserId != null);
 
     logger.info('Unregistering..');
@@ -425,70 +363,72 @@ class _Middleware with Loggable {
       return;
     }
 
-    _storageRepository.voipConfig = null;
-
     logger.info('Unregistered!');
   }
 
-  // ignore: avoid_positional_boolean_parameters
-  void respond(RemoteMessage remoteMessage, bool available) async {
-    logger.info('Responding to middleware..');
+  Future<void> answerCall() async => (await _phoneLib).actions.answer();
 
-    // While we should have unregistered from the middleware if the user
-    // enables DND, it is possible the unregister request failed. This will
-    // ensure that the user does not receive a call in this scenario.
-    final dndEnabled = _getUser().settings.get(CallSetting.dnd);
+  Future<void> refreshPreferences() async =>
+      (await _phoneLib).updatePreferences(await _createPreferences());
 
-    if (dndEnabled) {
-      available = false;
-      logger.warning('Overriding available to false as user has enabled DND');
-    }
+  Future<Call?> get activeCall async => (await _phoneLib).calls.active;
 
-    final response = await _service.callResponse(
-      uniqueKey: remoteMessage.data['unique_key'] as String,
-      available: available.toString(),
-      messageStartTime: remoteMessage.data['message_start_time'].toString(),
-      sipUserId: (await _config).sipUserId,
-    );
+  Future<CallSessionState> get sessionState async =>
+      (await _phoneLib).sessionState;
 
-    if (response.isSuccessful) {
-      logger.info('Responded to middleware');
-    } else {
-      logger.warning(
-        'Responding failed: ${response.statusCode} ${response.error}',
-      );
-    }
-  }
+  Future<void> endCall() async => (await _phoneLib).actions.end();
 
-  Future<void> tokenReceived(String token) async {
-    logger.info('Token received');
+  Future<void> sendDtmf(String dtmf) async =>
+      (await _phoneLib).actions.sendDtmf(dtmf);
 
-    // Only save the token and register if the new token is actually different.
-    if (_storageRepository.pushToken != token) {
-      _storageRepository.pushToken = token;
-      register(await _config);
-    } else {
-      logger.info(
-        'Not storing token and not registering: Token has not changed',
-      );
-    }
+  Stream<Event> get events => _eventsController.stream;
 
-    register(await _config);
-  }
+  Future<bool> get isMuted async => (await _phoneLib).audio.isMicrophoneMuted;
+
+  Future<void> toggleMute() async => (await _phoneLib).audio.toggleMute();
+
+  Future<void> toggleHold() async => (await _phoneLib).actions.toggleHold();
+
+  Future<void> hold() async => (await _phoneLib).actions.hold();
+
+  Future<void> routeAudio(AudioRoute route) async =>
+      (await _phoneLib).audio.routeAudio(route);
+
+  Future<void> launchAudioRoutePicker() async =>
+      (await _phoneLib).audio.launchAudioRoutePicker();
+
+  Future<AudioState> get audioState async => (await _phoneLib).audio.state;
+
+  Future<void> routeAudioToBluetoothDevice(BluetoothAudioRoute route) async =>
+      (await _phoneLib).audio.routeAudioToBluetoothDevice(route);
+
+  Future<void> beginTransfer(String number) async =>
+      (await _phoneLib).actions.beginAttendedTransfer(number.normalize());
+
+  Future<void> mergeTransferCalls() async =>
+      (await _phoneLib).actions.completeAttendedTransfer();
+
+  final _missedCallNotificationPressedController =
+      StreamController<bool>.broadcast();
+
+  Stream<bool> get missedCallNotificationPresses =>
+      _missedCallNotificationPressedController.stream;
+
+  Future<void> performEchoCancellationCalibration() async =>
+      (await _phoneLib).performEchoCancellationCalibration();
 }
-
-Future<void> _initialize() => initializeDependencies(ui: false);
-
-void _middlewareRespond(RemoteMessage message, bool available) =>
-    _Middleware().respond(message, available);
-
-void _middlewareTokenReceived(String token) =>
-    _Middleware().tokenReceived(token);
-
-bool _middlewareInspect(RemoteMessage message) => true;
 
 extension on String {
   String normalize() {
     return replaceAll(RegExp(r'\s'), '');
   }
 }
+
+// TODO: Remove these once FPL supports optional arguments properly
+Future<void> _initialize() async {}
+
+void _middlewareRespond(RemoteMessage message, bool available) {}
+
+void _middlewareTokenReceived(String token) {}
+
+bool _middlewareInspect(RemoteMessage message) => true;

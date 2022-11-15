@@ -7,7 +7,7 @@ import 'package:timezone/data/latest.dart';
 
 import '../dependency_locator.dart';
 import '../domain/authentication/automatically_login_legacy_user.dart';
-import '../domain/authentication/get_is_authenticated.dart';
+import '../domain/authentication/is_authenticated.dart';
 import '../domain/authentication/user_was_logged_out.dart';
 import '../domain/env.dart';
 import '../domain/error_tracking/error_tracking_repository.dart';
@@ -79,7 +79,7 @@ class _AppState extends State<App> {
   @override
   void initState() {
     super.initState();
-    _isAuthenticatedAtAppStart = GetIsAuthenticatedUseCase()();
+    _isAuthenticatedAtAppStart = IsAuthenticated()();
     _listenForEvents();
   }
 

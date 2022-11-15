@@ -21,7 +21,7 @@ class BusinessAvailabilityRepository with Loggable {
     required User user,
   }) async {
     final response = await _service.getTemporaryRedirect(
-      clientUuid: user.clientUuid,
+      clientUuid: user.client.uuid,
     );
 
     if (!response.isSuccessful || response.body['id'] == null) {
@@ -32,7 +32,7 @@ class BusinessAvailabilityRepository with Loggable {
       response.body as Map<String, dynamic>,
     );
 
-    final voicemail = temporaryRedirectResponse.voicemailAccount(user.client!);
+    final voicemail = temporaryRedirectResponse.voicemailAccount(user.client);
 
     if (voicemail == null) {
       logger.warning(
@@ -56,7 +56,7 @@ class BusinessAvailabilityRepository with Loggable {
     final requestData = temporaryRedirect.asRequestData();
 
     final response = await _service.setTemporaryRedirect(
-      user.clientUuid,
+      user.client.uuid,
       requestData,
     );
 
@@ -72,7 +72,7 @@ class BusinessAvailabilityRepository with Loggable {
     final requestData = temporaryRedirect.asRequestData();
 
     final response = await _service.updateTemporaryRedirect(
-      user.clientUuid,
+      user.client.uuid,
       temporaryRedirect.id.toString(),
       requestData,
     );
@@ -87,7 +87,7 @@ class BusinessAvailabilityRepository with Loggable {
     required TemporaryRedirect temporaryRedirect,
   }) async {
     final response = await _service.deleteTemporaryRedirect(
-      user.clientUuid,
+      user.client.uuid,
       temporaryRedirect.id.toString(),
     );
 
@@ -131,16 +131,4 @@ extension on TemporaryRedirect {
           'id': destination.voicemailAccount.id,
         },
       };
-}
-
-extension on User {
-  String get clientUuid {
-    final clientUuid = client?.uuid;
-
-    if (clientUuid == null) {
-      throw NoClientException();
-    }
-
-    return clientUuid;
-  }
 }

@@ -12,7 +12,7 @@ mixin Loggable {
   /// potentially cause spammy logs, this way there is a direct decision
   /// to log this.
   ///
-  /// @param name A name that you wish to give to this response to make
+  /// You can provide a [name] that you wish to give to this response to make
   /// logging clearer.
   void logFailedResponse(Response response, {String? name}) {
     if (response.isSuccessful) return;

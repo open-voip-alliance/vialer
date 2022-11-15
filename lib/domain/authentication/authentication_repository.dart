@@ -8,6 +8,7 @@ import '../user/client.dart';
 import '../user/settings/call_setting.dart';
 import '../user/settings/settings.dart';
 import '../user/user.dart';
+import '../voipgrid/client_voip_config.dart';
 import '../voipgrid/voipgrid_service.dart';
 
 part 'authentication_repository.g.dart';
@@ -146,7 +147,7 @@ class AuthRepository with Loggable {
 
   Future<bool> isUserUsingMobileNumberAsFallback(User user) async {
     final response = await _service.getUserSettings(
-      clientId: user.client?.id.toString() ?? 'null',
+      clientId: user.client.id.toString(),
       userId: user.uuid,
     );
 
@@ -166,7 +167,7 @@ class AuthRepository with Loggable {
     required bool enable,
   }) async =>
       _service.updateUserSettings(
-          clientId: user.client?.id.toString() ?? 'null',
+          clientId: user.client.id.toString(),
           userId: user.uuid,
           body: {
             'app': {
@@ -192,12 +193,12 @@ class _SystemUserResponse {
 
   final String? outgoingCli;
 
-  final int? clientId;
-  final String? clientUuid;
-  final String? clientName;
+  final int clientId;
+  final String clientUuid;
+  final String clientName;
 
   @JsonKey(name: 'client')
-  final Uri? clientUrl;
+  final Uri clientUrl;
 
   const _SystemUserResponse({
     required this.uuid,
@@ -207,20 +208,14 @@ class _SystemUserResponse {
     required this.lastName,
     this.appAccountUrl,
     this.outgoingCli,
-    this.clientId,
-    this.clientUuid,
-    this.clientName,
-    this.clientUrl,
+    required this.clientId,
+    required this.clientUuid,
+    required this.clientName,
+    required this.clientUrl,
   });
 
   factory _SystemUserResponse.fromJson(Map<String, dynamic> json) =>
       _$SystemUserResponseFromJson(json);
-
-  bool get _hasClientData =>
-      clientId != null &&
-      clientUuid != null &&
-      clientName != null &&
-      clientUrl != null;
 
   User toUser() => User(
         uuid: uuid,
@@ -228,14 +223,13 @@ class _SystemUserResponse {
         firstName: firstName,
         lastName: lastName,
         appAccountUrl: appAccountUrl,
-        client: _hasClientData
-            ? Client(
-                id: clientId!,
-                uuid: clientUuid!,
-                name: clientName!,
-                url: clientUrl!,
-              )
-            : null,
+        client: Client(
+          id: clientId,
+          uuid: clientUuid,
+          name: clientName,
+          url: clientUrl,
+          voip: ClientVoipConfig.fallback(),
+        ),
         settings: Settings({
           CallSetting.mobileNumber: mobileNumber ?? '',
           CallSetting.outgoingNumber: OutgoingNumber.fromJson(
