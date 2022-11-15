@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import '../../../app/util/loggable.dart';
+import '../../../app/util/synchronized_task.dart';
 import '../../../dependency_locator.dart';
 import '../../calling/voip/refresh_voip.dart';
 import '../../event/event_bus.dart';
@@ -10,7 +11,6 @@ import '../../metrics/metrics.dart';
 import '../../use_case.dart';
 import '../../user/get_latest_logged_in_user.dart';
 import '../../user/get_logged_in_user.dart';
-import '../synchronized_user_editor.dart';
 import 'app_setting.dart';
 import 'call_setting.dart';
 import 'listeners/change_registration_on_dnd_change.dart';
@@ -24,8 +24,7 @@ import 'listeners/update_use_mobile_number_as_fallback.dart';
 import 'setting_changed.dart';
 import 'settings.dart';
 
-class ChangeSettingsUseCase extends UseCase
-    with Loggable, SynchronizedUserEditor {
+class ChangeSettingsUseCase extends UseCase with Loggable {
   final _storageRepository = dependencyLocator<StorageRepository>();
   final _metricsRepository = dependencyLocator<MetricsRepository>();
 
@@ -47,7 +46,11 @@ class ChangeSettingsUseCase extends UseCase
     ChangeRegistrationOnDndChange(),
   ];
 
-  Future<ChangeSettingsResult> call(Settings settings) => editUser(
+  Future<ChangeSettingsResult> call(Settings settings) =>
+      SynchronizedTask<ChangeSettingsResult>.named(
+        editUserTask,
+        SynchronizedTaskMode.queue,
+      ).run(
         () async {
           var user = _getCurrentUser();
           final currentSettings = user.settings;

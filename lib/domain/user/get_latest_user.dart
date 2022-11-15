@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import '../../app/util/loggable.dart';
-import '../../app/util/single_task.dart';
+import '../../app/util/synchronized_task.dart';
 import '../../dependency_locator.dart';
 import '../authentication/authentication_repository.dart';
 import '../call_records/client/purge_local_call_records.dart';
@@ -20,11 +20,9 @@ import 'permissions/user_permissions.dart';
 import 'settings/app_setting.dart';
 import 'settings/call_setting.dart';
 import 'settings/settings.dart';
-import 'synchronized_user_editor.dart';
 import 'user.dart';
 
-class GetLatestUserUseCase extends UseCase
-    with SynchronizedUserEditor, Loggable {
+class GetLatestUserUseCase extends UseCase with Loggable {
   final _storageRepository = dependencyLocator<StorageRepository>();
   final _authRepository = dependencyLocator<AuthRepository>();
   final _destinationRepository = dependencyLocator<DestinationRepository>();
@@ -41,14 +39,18 @@ class GetLatestUserUseCase extends UseCase
 
   final _purgeLocalCallRecords = PurgeLocalCallRecordsUseCase();
 
-  Future<User?> call([LoginCredentials? credentials]) => editUser(
+  Future<User?> call([LoginCredentials? credentials]) =>
+      SynchronizedTask<User?>.named(
+        editUserTask,
+        SynchronizedTaskMode.queue,
+      ).run(
         () async {
           final storedUser = _storageRepository.user;
           final latestUser = await _getUserFromCredentials(credentials);
 
           if (latestUser == null) return storedUser;
 
-          return SingleInstanceTask<User?>.of(this).run(() async {
+          return SynchronizedTask<User?>.of(this).run(() async {
             // Latest user contains some settings, such as mobile and
             // outgoing number.
             var user = storedUser?.copyFrom(latestUser) ??

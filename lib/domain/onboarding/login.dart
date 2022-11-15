@@ -1,16 +1,16 @@
 import 'dart:async';
 
 import '../../../dependency_locator.dart';
+import '../../app/util/synchronized_task.dart';
 import '../legacy/storage.dart';
 import '../metrics/identify_for_tracking.dart';
 import '../metrics/track_login.dart';
 import '../use_case.dart';
 import '../user/get_latest_user.dart';
-import '../user/synchronized_user_editor.dart';
 import 'login_credentials.dart';
 import 'mark_now_as_login_time.dart';
 
-class LoginUseCase extends UseCase with SynchronizedUserEditor {
+class LoginUseCase extends UseCase {
   final _storageRepository = dependencyLocator<StorageRepository>();
   final _identifyForTracking = IdentifyForTrackingUseCase();
   final _trackLogin = TrackLoginUseCase();
@@ -20,7 +20,10 @@ class LoginUseCase extends UseCase with SynchronizedUserEditor {
   Future<bool> call({
     required LoginCredentials credentials,
   }) =>
-      editUser(
+      SynchronizedTask<bool>.named(
+        editUserTask,
+        SynchronizedTaskMode.queue,
+      ).run(
         () async {
           final user = await _getLatestUser(credentials);
 
