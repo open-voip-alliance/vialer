@@ -9,17 +9,27 @@ class UserPermissions extends Equatable {
   final bool canSeeClientCalls;
 
   @JsonKey(defaultValue: false)
-  final bool canUseMobileNumberFallback;
+  final bool canChangeMobileNumberFallback;
+
+  @JsonKey(defaultValue: false)
+  final bool canViewMobileNumberFallbackStatus;
+
+  @JsonKey(defaultValue: false)
+  final bool canUseTemporaryRedirect;
 
   const UserPermissions({
     required this.canSeeClientCalls,
-    required this.canUseMobileNumberFallback,
+    required this.canChangeMobileNumberFallback,
+    required this.canViewMobileNumberFallbackStatus,
+    required this.canUseTemporaryRedirect,
   });
 
   const UserPermissions.defaults()
       : this(
           canSeeClientCalls: false,
-          canUseMobileNumberFallback: false,
+          canChangeMobileNumberFallback: false,
+          canViewMobileNumberFallbackStatus: false,
+          canUseTemporaryRedirect: false,
         );
 
   static UserPermissions fromJson(Map<String, dynamic> json) =>
@@ -31,6 +41,8 @@ class UserPermissions extends Equatable {
   @override
   List<Object?> get props => [
         canSeeClientCalls,
-        canUseMobileNumberFallback,
+        canChangeMobileNumberFallback,
+        canViewMobileNumberFallbackStatus,
+        canUseTemporaryRedirect,
       ];
 }
