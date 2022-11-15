@@ -368,8 +368,8 @@ class SettingTile extends StatelessWidget {
     );
   }
 
-  static Widget useMobileNumberAsFallback(Settings settings) {
-    final mobileNumber = settings.get(CallSetting.mobileNumber);
+  static Widget useMobileNumberAsFallback(User user) {
+    final mobileNumber = user.settings.get(CallSetting.mobileNumber);
 
     return Builder(
       builder: (context) {
@@ -383,8 +383,11 @@ class SettingTile extends StatelessWidget {
                 .description(mobileNumber),
           ),
           child: _BoolSettingValue(
-            settings,
+            user.settings,
             CallSetting.useMobileNumberAsFallback,
+            onChanged: user.permissions.canChangeMobileNumberFallback
+                ? defaultOnChanged
+                : null,
           ),
         );
       },

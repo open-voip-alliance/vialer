@@ -272,8 +272,12 @@ class StorageRepository {
           permissions = UserPermissions(
             canSeeClientCalls:
                 value['hasClientCallsPermission'] as bool? ?? false,
-            canUseMobileNumberFallback:
-                value['hasMobileNumberFallbackPermission'] as bool? ?? false,
+            canChangeMobileNumberFallback:
+                value['canChangeMobileNumberFallback'] as bool? ?? false,
+            canUseTemporaryRedirect:
+                value['canUseTemporaryRedirect'] as bool? ?? false,
+            canViewMobileNumberFallbackStatus:
+                value['canViewMobileNumberFallbackStatus'] as bool? ?? false,
           );
           break;
       }

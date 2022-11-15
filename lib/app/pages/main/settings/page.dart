@@ -120,9 +120,10 @@ class _SettingsPageState extends State<SettingsPage> {
                               children: [
                                 SettingTile.useVoip(user.settings),
                                 if (user.settings.get(CallSetting.useVoip) &&
-                                    user.permissions.canUseMobileNumberFallback)
+                                    user.permissions
+                                        .canViewMobileNumberFallbackStatus)
                                   SettingTile.useMobileNumberAsFallback(
-                                    user.settings,
+                                    user,
                                   ),
                                 if (context.isIOS)
                                   SettingTile.showCallsInNativeRecents(
