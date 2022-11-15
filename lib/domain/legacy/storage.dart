@@ -269,15 +269,11 @@ class StorageRepository {
           clientOutgoingNumbers = (value['numbers'] as List<dynamic>).cast();
           break;
         case 'VoipgridPermissionsSetting':
-          permissions = UserPermissions(
-            canSeeClientCalls:
-                value['hasClientCallsPermission'] as bool? ?? false,
-            canChangeMobileNumberFallback:
-                value['canChangeMobileNumberFallback'] as bool? ?? false,
-            canUseTemporaryRedirect:
-                value['canUseTemporaryRedirect'] as bool? ?? false,
-            canViewMobileNumberFallbackStatus:
-                value['canViewMobileNumberFallbackStatus'] as bool? ?? false,
+          permissions = const UserPermissions(
+            canSeeClientCalls: false,
+            canChangeMobileNumberFallback: false,
+            canUseTemporaryRedirect: false,
+            canViewMobileNumberFallbackStatus: false,
           );
           break;
       }
