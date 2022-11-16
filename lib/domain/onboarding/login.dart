@@ -11,7 +11,6 @@ import 'login_credentials.dart';
 import 'mark_now_as_login_time.dart';
 
 class LoginUseCase extends UseCase {
-  final _storageRepository = dependencyLocator<StorageRepository>();
   final _identifyForTracking = IdentifyForTrackingUseCase();
   final _trackLogin = TrackLoginUseCase();
   final _markNowAsLoginTime = MarkNowAsLoginTimeUseCase();
@@ -19,29 +18,22 @@ class LoginUseCase extends UseCase {
 
   Future<bool> call({
     required LoginCredentials credentials,
-  }) =>
-      SynchronizedTask<bool>.named(
-        editUserTask,
-        SynchronizedTaskMode.queue,
-      ).run(
-        () async {
-          final user = await _getLatestUser(credentials);
+  }) async {
+    final user = await _getLatestUser(credentials);
 
-          if (user == null) {
-            return false;
-          }
+    if (user == null) {
+      return false;
+    }
 
-          _storageRepository.user = user;
+    _track(
+      usedTwoFactor: _isUsingTwoFactor(credentials),
+      isLoginFromLegacyApp: credentials is ImportedLegacyAppCredentials,
+    );
 
-          _track(
-            usedTwoFactor: _isUsingTwoFactor(credentials),
-            isLoginFromLegacyApp: credentials is ImportedLegacyAppCredentials,
-          );
-          _markNowAsLoginTime();
+    _markNowAsLoginTime();
 
-          return true;
-        },
-      );
+    return true;
+  }
 
   Future<void> _track({
     required bool usedTwoFactor,
