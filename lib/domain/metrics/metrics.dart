@@ -6,14 +6,15 @@ import 'package:recase/recase.dart';
 
 import '../user/settings/call_setting.dart';
 import '../user/settings/settings.dart';
+import '../user/user.dart';
 
 abstract class MetricsRepository {
   Future<void> initialize(String? key);
 
   Future<void> identify(
-    String userId,
-    String brandIdentifier,
-  );
+    User user, [
+    Map<String, dynamic>? properties,
+  ]);
 
   Future<void> track(
     String eventName, [
@@ -50,17 +51,17 @@ class ConsoleLoggingMetricsRepository extends MetricsRepository {
 
   @override
   Future<void> identify(
-    String userId,
-    String brandIdentifier,
-  ) =>
-      _log('Identified $userId from brand $brandIdentifier');
+    User user, [
+    Map<String, dynamic>? properties,
+  ]) =>
+      _log('Identified [${user.uuid}]: $properties');
 
   @override
   Future<void> track(
     String eventName, [
     Map<String, dynamic>? properties,
   ]) =>
-      _log('$eventName: $properties');
+      _log('[$eventName]: $properties');
 
   Future<void> _log(String message, {Level? level}) async {
     // Using log() rather than Logger as this provides nice formatting
@@ -100,14 +101,12 @@ class SegmentMetricsRepository extends MetricsRepository {
 
   @override
   Future<void> identify(
-    String userId,
-    String brandIdentifier,
-  ) async =>
+    User user, [
+    Map<String, dynamic>? properties,
+  ]) async =>
       await Segment.identify(
-        userId: userId,
-        traits: {
-          'brand': brandIdentifier,
-        },
+        userId: user.uuid,
+        traits: properties,
       );
 
   @override
