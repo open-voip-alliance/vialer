@@ -6,6 +6,7 @@ import '../../../dependency_locator.dart';
 import '../use_case.dart';
 import '../user/get_brand.dart';
 import '../user/get_logged_in_user.dart';
+import '../user/settings/settings.dart';
 import '../user/user.dart';
 import 'metrics.dart';
 
@@ -39,10 +40,19 @@ extension on User {
       // For now we only care about bool settings, but can be expanded in the
       // future.
       if (a.value is bool) {
-        properties[a.key.name.paramCase] = a.value;
+        properties[a.key.asPropertyKey] = a.value;
       }
     }
 
     return properties;
+  }
+}
+
+extension on SettingKey {
+  String get asPropertyKey {
+    // We don't care about the generic argument, just the base type.
+    final type = runtimeType.toString().replaceAll(RegExp(r'<.+>'), '');
+
+    return ('$type-$name').paramCase;
   }
 }
