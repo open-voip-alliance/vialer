@@ -23,7 +23,10 @@ class IdentifyForTrackingUseCase extends UseCase {
 
     return await _metricsRepository.identify(
       user,
-      {'brand': _getBrand().identifier, ...user.toIdentifyProperties()},
+      {
+        'brand': _getBrand().identifier,
+        ...user.toIdentifyProperties(),
+      },
     ).then((_) => Future.delayed(_artificialDelay));
   }
 }
