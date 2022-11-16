@@ -53,6 +53,6 @@ extension on SettingKey {
     // We don't care about the generic argument, just the base type.
     final type = runtimeType.toString().replaceAll(RegExp(r'<.+>'), '');
 
-    return ('$type-$name').paramCase;
+    return '$type-$name'.paramCase;
   }
 }
