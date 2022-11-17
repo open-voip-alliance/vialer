@@ -6,6 +6,7 @@ import '../../../../../domain/business_availability/temporary_redirect/setup_tem
 import '../../../../../domain/business_availability/temporary_redirect/stop_current_temporary_redirect.dart';
 import '../../../../../domain/business_availability/temporary_redirect/temporary_redirect.dart';
 import '../../../../../domain/business_availability/temporary_redirect/temporary_redirect_did_change_event.dart';
+import '../../../../../domain/business_availability/temporary_redirect/temporary_redirect_exception.dart';
 import '../../../../../domain/event/event_bus.dart';
 import '../../../../../domain/user/get_logged_in_user.dart';
 
@@ -52,6 +53,7 @@ class TemporaryRedirectCubit extends Cubit<TemporaryRedirectState> {
           voicemail: (voicemail) => _startTemporaryRedirect(
             voicemailAccount: voicemail.voicemailAccount,
           ),
+          unknown: (_) => throw UnableToRedirectToUnknownDestination(),
         ),
         active: (state) => _changeCurrentTemporaryRedirect(
           temporaryRedirect: state.redirect.copyWith(destination: destination),

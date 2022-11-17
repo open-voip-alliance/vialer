@@ -139,7 +139,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                 SettingTile.showClientCalls(user),
                               ],
                             ),
-                            if (user.permissions.canUseTemporaryRedirect)
+                            if (user.permissions.canChangeTemporaryRedirect)
                               SettingTileCategory.temporaryRedirect(
                                 children: [
                                   const TemporaryRedirectSettingTile(),

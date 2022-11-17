@@ -24,18 +24,23 @@ class TemporaryRedirectDestination with _$TemporaryRedirectDestination {
     VoicemailAccount voicemailAccount,
   ) = Voicemail;
 
+  const factory TemporaryRedirectDestination.unknown() = Unknown;
+
   factory TemporaryRedirectDestination.fromJson(Map<String, dynamic> json) =>
       _$TemporaryRedirectDestinationFromJson(json);
 }
 
 extension Display on TemporaryRedirectDestination {
-  String get displayName {
-    var name = voicemailAccount.name;
+  String get displayName => map(
+        voicemail: (voicemail) {
+          var name = voicemail.voicemailAccount.name;
 
-    if (voicemailAccount.description.isNotNullOrBlank) {
-      name = '$name - ${voicemailAccount.description}';
-    }
+          if (voicemail.voicemailAccount.description.isNotNullOrBlank) {
+            name = '$name - ${voicemail.voicemailAccount.description}';
+          }
 
-    return name;
-  }
+          return name;
+        },
+        unknown: (unknown) => '',
+      );
 }
