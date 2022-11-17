@@ -15,10 +15,6 @@ class GetCurrentTemporaryRedirect extends UseCase {
   Future<TemporaryRedirect?> call() async {
     final user = _getUser();
 
-    if (!user.permissions.canUseTemporaryRedirect) {
-      return null;
-    }
-
     final redirect = await _businessAvailability.getCurrentTemporaryRedirect(
       user: user,
     );

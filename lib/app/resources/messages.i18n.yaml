@@ -410,8 +410,8 @@ main:
   temporaryRedirect:
     title: "Temporary redirect"
     explanation:
-      start: "All incoming calls to all numbers go straight to voicemail "
-      end: " until the end of the day."
+      start: "All incoming calls to all numbers go straight to voicemail"
+      end: "until the end of the day."
       selectVoicemail: "[select voicemail below]"
     dropdown:
       title: "Choose voicemail"
