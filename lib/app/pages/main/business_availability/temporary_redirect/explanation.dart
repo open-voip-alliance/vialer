@@ -6,14 +6,9 @@ import '../../../../resources/localizations.dart';
 class TemporaryRedirectExplanation extends StatelessWidget {
   final TemporaryRedirectDestination? currentDestination;
 
-  /// When enabled, will include a hint to select a destination if
-  /// one isn't chosen.
-  final bool enableHint;
-
   const TemporaryRedirectExplanation({
     super.key,
     required this.currentDestination,
-    this.enableHint = true,
   });
 
   String _voicemailText(BuildContext context) =>
