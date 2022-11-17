@@ -1,8 +1,8 @@
 import Foundation
+import Alamofire
 
 class Logger: NSObject, NativeLogging {
-
-    private static let CONSOLE_LOG_KEY = "VIALER-PIL"
+    private static let CONSOLE_LOG_KEY = "VIALER-IPL"
     private static let LOGGER_NAME = "IPL"
     
     private var anonymizationRules = [NSRegularExpression : String]()
@@ -48,6 +48,18 @@ class Logger: NSObject, NativeLogging {
         })
     }
     
+    func startNativeRemoteLoggingToken(_ token: String, userIdentifier: String, anonymizationRules: [String : String], completion: @escaping (FlutterError?) -> Void) {
+        completion(nil)
+    }
+    
+    @available(iOS 13.0.0, *)
+    func startNativeRemoteLoggingToken(_ token: String, userIdentifier: String, anonymizationRules: [String : String]) async -> FlutterError? {
+        return nil
+    }
+    
+    func stopNativeRemoteLoggingWithError(_ error: AutoreleasingUnsafeMutablePointer<FlutterError?>) {
+    }
+    
     func startNativeConsoleLoggingWithError(_ error: AutoreleasingUnsafeMutablePointer<FlutterError?>) {
         isConsoleLoggingEnabled = true
     }
@@ -57,10 +69,79 @@ class Logger: NSObject, NativeLogging {
     }
     
     func uploadPendingLogsBatchSize(_ batchSize: NSNumber, packageName: String, appVersion: String, remoteLoggingId: String, url: String, logToken: String, completion: @escaping (FlutterError?) -> Void) {
+        var logs = [String: Any]()
+        var dbLogs = loggingDatabase.getLogs(batchSize: batchSize)
+        
+        while (!dbLogs.isEmpty) {
+            for dbLog in dbLogs {
+                let message = [
+                    "user": remoteLoggingId,
+                    "logged_from": dbLog.name,
+                    "message": dbLog.message,
+                    "level": String(dbLog.level.rawValue),
+                    "app_version": appVersion,
+                ]
+                
+                logs[String(dbLog.log_time*1000*1000)] = message
+            }
+            
+            if (logs.isEmpty) {
+                debugPrint("No logs to upload to Loki.")
+                completion(nil)
+                return
+            }
+            
+            let data: [String : Any] = [
+                "token": logToken,
+                "app_id": packageName,
+                "logs": logs,
+            ]
+            
+            var request = createLokiRequest(url: url)
+            request.httpBody = try! JSONSerialization.data(withJSONObject: data)
+            
+            AF.request(request).response { (response) -> Void in
+                if response.error != nil {
+                    let errorMessage = "Loki respond failed: \(response.error!)"
+                    debugPrint(errorMessage)
+                    completion(FlutterError(
+                        code: String(describing: type(of: response.error)),
+                        message: errorMessage,
+                        details: Thread.callStackSymbols.joined(separator: "\n")
+                    ))
+                }
+                
+                switch response.result {
+                case .success(_):
+                    debugPrint("Loki responded with success. Deleting sent logs from db")
+                    for dbLog in dbLogs {
+                        self.loggingDatabase.deleteLog(id: dbLog.id)
+                    }
+                case .failure(_):
+                    let statusCode = response.response?.statusCode
+                    let errorMessage = "Loki respond failed: response code was \(String(describing: statusCode))"
+                    debugPrint(errorMessage)
+                    completion(FlutterError(
+                        code: String(describing: type(of: response.error)),
+                        message: errorMessage,
+                        details: Thread.callStackSymbols.joined(separator: "\n")
+                    ))
+                }
+            }
+        }
         completion(nil)
     }
     
     func removeStoredLogsKeepPastDay(_ keepPastDay: NSNumber, completion: @escaping (FlutterError?) -> Void) {
         completion(nil)
+    }
+    
+    private func createLokiRequest(url: String) -> URLRequest {
+        var request = URLRequest(url: NSURL(string: url)! as URL)
+
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        return request
     }
 }
