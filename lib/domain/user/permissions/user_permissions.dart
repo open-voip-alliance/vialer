@@ -49,5 +49,6 @@ class UserPermissions extends Equatable {
         canChangeMobileNumberFallback,
         canViewMobileNumberFallbackStatus,
         canChangeTemporaryRedirect,
+        canViewVoicemailAccounts,
       ];
 }
