@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:synchronized/synchronized.dart';
+
 import 'loggable.dart';
 
 /// Wraps a task that should only be executed one at a time.
@@ -10,12 +12,16 @@ class SynchronizedTask<T> with Loggable {
 
   final SynchronizedTaskMode mode;
 
-  /// The map of running tasks, if the name of this task is in this map
-  /// it means it is running.
+  /// The map of running single ([SynchronizedTaskMode.single]) tasks,
+  /// if the name of this task is in this map it means it is running.
   ///
   /// The name maps to a [Completer] which will be notified when the logic
   /// has completed.
-  static final _runningTasks = <String, Completer>{};
+  static final _runningSingleTasks = <String, Completer>{};
+
+  /// The map of locks associated by [name]. The lock is used while running
+  /// a task, making sure they are properly queued.
+  static final _queueTaskLocks = <String, Lock>{};
 
   SynchronizedTask._(this.name, this.mode);
 
@@ -35,35 +41,36 @@ class SynchronizedTask<T> with Loggable {
       SynchronizedTask.named(name.runtimeType.toString());
 
   Future<T> run(Future<T> Function() task) async {
-    final runningTask = _runningTasks[name];
+    switch (mode) {
+      case SynchronizedTaskMode.single:
+        return _runSingleTask(task);
+      case SynchronizedTaskMode.queue:
+        return _runQueueTask(task);
+    }
+  }
+
+  Future<T> _runSingleTask(Future<T> Function() task) async {
+    final runningTask = _runningSingleTasks[name];
     if (runningTask != null) {
-      final future = runningTask.future;
-      switch (mode) {
-        case SynchronizedTaskMode.single:
-          logger.info('Unable to start [$name] as it is already running.');
-          return future as Future<T>;
-        case SynchronizedTaskMode.queue:
-          logger.info('Waiting for [$name] as it is already running.');
-          await future;
-          break;
-      }
+      logger.info('Unable to start [$name] as it is already running.');
+      return runningTask.future as Future<T>;
     }
 
     final completer = Completer<T>();
-    _runningTasks[name] = completer;
+    _runningSingleTasks[name] = completer;
 
     try {
       final result = await task();
-      // The task must be removed before completing, otherwise a new queued
-      // task could already have been inserted which then gets
-      // removed immediately.
-      _runningTasks.remove(name);
       completer.complete(result);
       return result;
-    } on Exception {
-      _runningTasks.remove(name);
-      rethrow;
+    } finally {
+      _runningSingleTasks.remove(name);
     }
+  }
+
+  Future<T> _runQueueTask(Future<T> Function() task) {
+    final lock = _queueTaskLocks[name] ??= Lock();
+    return lock.synchronized(task);
   }
 }
 
