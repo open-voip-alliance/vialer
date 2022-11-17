@@ -19,13 +19,13 @@ class TemporaryRedirectExplanation extends StatelessWidget {
           TextSpan(
             text: context.msg.main.temporaryRedirect.explanation.start,
           ),
-          TextSpan(
-            text: currentDestination?.displayName ??
-                context.msg.main.temporaryRedirect.explanation.selectVoicemail,
-            style: const TextStyle(
-              fontStyle: FontStyle.italic,
+          if (currentDestination is Voicemail)
+            TextSpan(
+              text: '${currentDestination?.displayName} ',
+              style: const TextStyle(
+                fontStyle: FontStyle.italic,
+              ),
             ),
-          ),
           TextSpan(
             text: context.msg.main.temporaryRedirect.explanation.end,
           ),

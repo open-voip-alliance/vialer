@@ -8,6 +8,7 @@ import '../../../../../domain/business_availability/temporary_redirect/temporary
 import '../../../../../domain/business_availability/temporary_redirect/temporary_redirect_did_change_event.dart';
 import '../../../../../domain/event/event_bus.dart';
 import '../../../../../domain/onboarding/request_permission.dart';
+import '../../../../../domain/user/get_logged_in_user.dart';
 import '../../../../../domain/user/get_permission_status.dart';
 import '../../../../../domain/user/permissions/permission.dart';
 import '../../../../../domain/user/permissions/permission_status.dart';
@@ -23,6 +24,7 @@ class NoticeCubit extends Cubit<NoticeState> with Loggable {
   late final _requestPermission = RequestPermissionUseCase();
   late final _openAppSettings = OpenSettingsAppUseCase();
   late final _eventBus = dependencyLocator<EventBusObserver>();
+  late final _getUser = GetLoggedInUserUseCase();
 
   final CallerCubit _caller;
 
@@ -77,7 +79,11 @@ class NoticeCubit extends Cubit<NoticeState> with Loggable {
     } else if (notificationsStatus != PermissionStatus.granted) {
       emit(const NotificationsPermissionDeniedNotice());
     } else if (currentRedirect != null) {
-      emit(TemporaryRedirectNotice(temporaryRedirect: currentRedirect));
+      final user = _getUser();
+      emit(TemporaryRedirectNotice(
+        temporaryRedirect: currentRedirect,
+        canChangeTemporaryRedirect: user.permissions.canChangeTemporaryRedirect,
+      ));
     } else {
       emit(const NoNotice());
     }

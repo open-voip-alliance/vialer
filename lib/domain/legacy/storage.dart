@@ -273,8 +273,9 @@ class StorageRepository {
           permissions = const UserPermissions(
             canSeeClientCalls: false,
             canChangeMobileNumberFallback: false,
-            canUseTemporaryRedirect: false,
+            canChangeTemporaryRedirect: false,
             canViewMobileNumberFallbackStatus: false,
+            canViewVoicemailAccounts: false,
           );
           break;
       }

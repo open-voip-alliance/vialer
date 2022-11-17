@@ -126,19 +126,20 @@ class _NoticeState extends State<_Notice>
                 title: Text(_titleFor(state)),
                 content: _contentFor(state),
                 actions: [
-                  // TODO: Only show button if user has permission to change
                   if (state is TemporaryRedirectNotice) ...[
-                    TextButton(
-                      onPressed: () => Navigator.push(
-                        context,
-                        TemporaryRedirectPickerPage.route(),
+                    if (state.canChangeTemporaryRedirect) ...[
+                      TextButton(
+                        onPressed: () => Navigator.push(
+                          context,
+                          TemporaryRedirectPickerPage.route(),
+                        ),
+                        child: Text(
+                          context.msg.main.temporaryRedirect.actions
+                              .changeRedirect.label
+                              .toUpperCaseIfAndroid(context),
+                        ),
                       ),
-                      child: Text(
-                        context.msg.main.temporaryRedirect.actions
-                            .changeRedirect.label
-                            .toUpperCaseIfAndroid(context),
-                      ),
-                    ),
+                    ],
                   ] else ...[
                     TextButton(
                       onPressed: cubit.dismiss,

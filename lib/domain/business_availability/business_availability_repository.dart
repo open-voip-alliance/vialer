@@ -34,18 +34,12 @@ class BusinessAvailabilityRepository with Loggable {
 
     final voicemail = temporaryRedirectResponse.voicemailAccount(user.client);
 
-    if (voicemail == null) {
-      logger.warning(
-        'There is no matching voicemail found, this should be '
-        'automatically corrected on next refresh.',
-      );
-      return null;
-    }
-
     return TemporaryRedirect(
       id: temporaryRedirectResponse.id,
       endsAt: temporaryRedirectResponse.end,
-      destination: TemporaryRedirectDestination.voicemail(voicemail),
+      destination: voicemail != null
+          ? TemporaryRedirectDestination.voicemail(voicemail)
+          : const TemporaryRedirectDestination.unknown(),
     );
   }
 
@@ -128,7 +122,10 @@ extension on TemporaryRedirect {
         'end': endsAt.toString(),
         'destination': {
           'type': 'VOICEMAIL',
-          'id': destination.voicemailAccount.id,
+          'id': destination.map(
+            voicemail: (destination) => destination.voicemailAccount.id,
+            unknown: (_) => throw UnableToRedirectToUnknownDestination(),
+          ),
         },
       };
 }
