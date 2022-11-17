@@ -410,7 +410,7 @@ main:
   temporaryRedirect:
     title: "Tijdelijke omleiding"
     explanation:
-      start: "Alle inkomende oproepen naar alle nummers gaan rechtstreeks naar voicemail "
+      start: "Alle inkomende oproepen naar alle nummers gaan rechtstreeks naar voicemail"
       end: "tot aan het einde van de dag."
       selectVoicemail: "[kies voicemail hieronder]"
     dropdown:
