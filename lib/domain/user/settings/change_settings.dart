@@ -88,17 +88,20 @@ class ChangeSettingsUseCase extends UseCase with Loggable {
       // Nothing has changed, return.
       if (diff.isEmpty) return const ChangeSettingsResult();
 
-      await _notifyListeners(
-        user,
-        skipLogging,
-        needSync,
-        failed,
-        diff.entries,
-        before: true,
-      );
-
       return null; // Not done yet.
     });
+
+    // The listeners must be notified outside of the synchronized tasks,
+    // because they might start an [EditUser] task themselves, causing a
+    // deadlock.
+    await _notifyListeners(
+      user,
+      skipLogging,
+      needSync,
+      failed,
+      diff.entries,
+      before: true,
+    );
 
     if (intermediateResult != null) {
       return intermediateResult;
@@ -111,53 +114,57 @@ class ChangeSettingsUseCase extends UseCase with Loggable {
       settings = settings.copyFrom(user.settings.getAll(needSync));
     }
 
-    return await SynchronizedTask<ChangeSettingsResult>.named(
+    await SynchronizedTask<void>.named(
       editUserTask,
       SynchronizedTaskMode.queue,
     ).run(() async {
       _storageRepository.user = user.copyWith(
         settings: user.settings.copyFrom(settings),
       );
-
-      // We do this after storing the settings so setting checks work.
-      await _notifyListeners(
-        user,
-        skipLogging,
-        needSync,
-        failed,
-        getChanged().entries,
-        before: false,
-      );
-
-      if (diff.hasAnyKeyOf([
-        CallSetting.usePhoneRingtone,
-        AppSetting.showCallsInNativeRecents,
-      ])) {
-        await _refreshVoip();
-      }
-
-      for (final entry in getChanged().entries) {
-        final key = entry.key;
-        final value = entry.value;
-        final oldValue = currentSettings.get(key);
-
-        if (!skipLogging.contains(key)) {
-          logger.info('Set $key to $value');
-        }
-
-        _metricsRepository.trackSettingChange(key, value);
-
-        _eventBus.broadcast(
-          SettingChanged(key, oldValue, value),
-        );
-      }
-
-      _incrementAppRatingActionCount();
-      return ChangeSettingsResult(
-        changed: diff.keys.where((k) => !failed.contains(k)),
-        failed: failed,
-      );
     });
+
+    // We do this after storing the settings so setting checks work.
+    //
+    // The listeners must be notified outside of the synchronized tasks,
+    // because they might start an [EditUser] task themselves, causing a
+    // deadlock.
+    await _notifyListeners(
+      user,
+      skipLogging,
+      needSync,
+      failed,
+      getChanged().entries,
+      before: false,
+    );
+
+    if (diff.hasAnyKeyOf([
+      CallSetting.usePhoneRingtone,
+      AppSetting.showCallsInNativeRecents,
+    ])) {
+      await _refreshVoip();
+    }
+
+    for (final entry in getChanged().entries) {
+      final key = entry.key;
+      final value = entry.value;
+      final oldValue = currentSettings.get(key);
+
+      if (!skipLogging.contains(key)) {
+        logger.info('Set $key to $value');
+      }
+
+      _metricsRepository.trackSettingChange(key, value);
+
+      _eventBus.broadcast(
+        SettingChanged(key, oldValue, value),
+      );
+    }
+
+    _incrementAppRatingActionCount();
+    return ChangeSettingsResult(
+      changed: diff.keys.where((k) => !failed.contains(k)),
+      failed: failed,
+    );
   }
 
   Future<void> _notifyListeners(
