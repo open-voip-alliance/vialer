@@ -37,7 +37,7 @@ const brands = '''
     "voipgridUrl": "https://staging.voipgrid.nl",
     "encryptedSipUrl": "staging.encryptedsip.com",
     "unencryptedSipUrl": "sipproxy-staging.voipgrid.nl",
-    "businessAvailabilityUrl": "https://api.prod.holodeck.spindle.dev/business-availability/clients/",
+    "businessAvailabilityUrl": "https://api.stag.holodeck.spindle.dev/business-availability/clients/",
     "privacyPolicyUrl": "https://vialerapp.com/privacy/"
   },
   {
