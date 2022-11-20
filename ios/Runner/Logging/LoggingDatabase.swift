@@ -7,7 +7,7 @@ class LoggingDatabase {
         createTable()
     }
     
-    let dbPath = "ios_logging_db.sqlite" //wip OR logging_native_db.sqlite like on log_events.dart
+    let dbPath = "logging_native_db.sqlite"
     let tableName = "log_events"
     
     var db: OpaquePointer?
@@ -76,30 +76,48 @@ class LoggingDatabase {
                 let message = String(describing: String(cString: sqlite3_column_text(queryStatement, 4)))
                 let logEvent = LogEvent(id: Int(id), log_time: log_time, level: LogLevel.init(rawValue: Int(level)) ?? .debug, name: name, message: message)
                 logs.append(logEvent)
-                print("\(logEvent.id) | \(logEvent.log_time) | \(logEvent.level) | \(logEvent.name) | \(logEvent.message)") //wip for debugging
             }
         } else {
-            print("SELECT statement could not be prepared")
+            debugPrint("SELECT statement could not be prepared")
         }
         sqlite3_finalize(queryStatement)
         return logs
     }
     
     func deleteLog(id:Int) {
-            let deleteStatementString = "DELETE FROM \(tableName) WHERE Id = ?;"
-            var deleteStatement: OpaquePointer? = nil
-            if sqlite3_prepare_v2(db, deleteStatementString, -1, &deleteStatement, nil) == SQLITE_OK {
-                sqlite3_bind_int(deleteStatement, 1, Int32(id))
-                if sqlite3_step(deleteStatement) == SQLITE_DONE {
-                    print("Successfully deleted row with id = \(id).") //wip for debugging
-                } else {
-                    print("Could not delete row.")
-                }
-            } else {
-                print("DELETE statement could not be prepared")
+        let deleteStatementString = "DELETE FROM \(tableName) WHERE Id = ?;"
+        var deleteStatement: OpaquePointer? = nil
+        if sqlite3_prepare_v2(db, deleteStatementString, -1, &deleteStatement, nil) == SQLITE_OK {
+            sqlite3_bind_int(deleteStatement, 1, Int32(id))
+            if sqlite3_step(deleteStatement) != SQLITE_DONE {
+                debugPrint("Could not delete row with id = \(id).")
             }
-            sqlite3_finalize(deleteStatement)
+        } else {
+            debugPrint("DELETE statement could not be prepared")
         }
+        sqlite3_finalize(deleteStatement)
+    }
+    
+    func deleteLogs(keepPastDay: Bool) {
+        var deleteStatementString = "DELETE FROM \(tableName);"
+        let pastDayDateInMilSecs = Int64(Date().timeIntervalSince1970.rounded() - (60 * 60)) * 1000
+        if (keepPastDay) {
+            deleteStatementString = "DELETE FROM \(tableName) WHERE (log_time < \(pastDayDateInMilSecs));"
+        }
+        
+        var deleteStatement: OpaquePointer? = nil
+        if sqlite3_prepare_v2(db, deleteStatementString, -1, &deleteStatement, nil) == SQLITE_OK {
+            if (keepPastDay) {
+                sqlite3_bind_int64(deleteStatement, 1, pastDayDateInMilSecs)
+            }
+            if sqlite3_step(deleteStatement) != SQLITE_DONE {
+                debugPrint("Could not delete rows from \(tableName)")
+            }
+        } else {
+            debugPrint("DELETE statement could not be prepared")
+        }
+        sqlite3_finalize(deleteStatement)
+    }
 }
   
 //TODO: Implement log levels in iOSPhoneLib log messages and logger.writelog. On Pil's LogLevel add the : Int so the rawValue can be used and remove this LogLevel here.
