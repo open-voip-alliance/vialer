@@ -1,0 +1,2 @@
+- Een bug waarbij de app crashte wanneer je "Toon tabblad met alle oproepen" aanzette, is opgelost
+- iOS: Als je veel contacten hebt, is de app nu misschien sneller

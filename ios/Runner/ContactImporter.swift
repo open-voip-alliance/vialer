@@ -10,7 +10,7 @@ class ContactImporter: NSObject, Contacts {
     }
     
     func importCacheFilePath(_ cacheFilePath: String, completion: @escaping (FlutterError?) -> Void) {
-         DispatchQueue.main.async {
+        DispatchQueue.global(qos: .background).async {
             let results = self.findAllContacts().map { contact in
                 Contact(
                     givenName: contact.givenName,
@@ -80,7 +80,7 @@ class ContactImporter: NSObject, Contacts {
     }
     
     func importContactAvatarsAvatarDirectoryPath(_ avatarDirectoryPath: String, completion: @escaping (FlutterError?) -> Void) {
-        DispatchQueue.main.async {
+        DispatchQueue.global(qos: .background).async {
             let contacts = self.findAllContacts(withImages: true)
                 .filter { contact in contact.imageDataAvailable}
                 

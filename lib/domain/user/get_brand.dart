@@ -3,7 +3,7 @@ import '../use_case.dart';
 import 'brand.dart';
 import 'brand_repository.dart';
 
-class GetBrandUseCase extends UseCase {
+class GetBrand extends UseCase {
   final _brandRepository = dependencyLocator<BrandRepository>();
 
   Brand call() {
