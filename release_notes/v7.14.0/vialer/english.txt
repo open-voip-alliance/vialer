@@ -1,0 +1,2 @@
+- A bug that would cause the app to crash when turning on "Add tab with all calls", has been fixed
+- iOS: If you have many contacts, the app might be smoother now
