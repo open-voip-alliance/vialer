@@ -7,7 +7,6 @@ import android.database.DatabaseErrorHandler
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.provider.BaseColumns
-import com.voipgrid.vialer.logging.LogEvents.COLUMN.ID
 import com.voipgrid.vialer.logging.LogEvents.COLUMN.LEVEL
 import com.voipgrid.vialer.logging.LogEvents.COLUMN.LOG_TIME
 import com.voipgrid.vialer.logging.LogEvents.COLUMN.MESSAGE
@@ -21,40 +20,42 @@ import java.util.*
 
 class LoggingDatabase(private val context: Context) {
     companion object {
-        private const val FILE_NAME = "android_logging_db.sqlite"
+        private const val FILE_NAME = "logging_native_db.sqlite"
     }
 
-    private val db: SQLiteDatabase by lazy {
-        object : SQLiteOpenHelper(
-            context,
-            FILE_NAME,
-            null,
-            1
-        ) {
+    /**
+     * The raw database instance, this should ONLY be accessed via [db].
+     */
+    private lateinit var sqliteDb: SQLiteDatabase
 
-            override fun onCreate(db: SQLiteDatabase) {
-                db.execSQL(
-                    // language=SQL
-                    """
-                    CREATE TABLE $TABLE_NAME (
-                       $ID INTEGER PRIMARY KEY,
-                       $LOG_TIME INT,
-                       $LEVEL INT,
-                       $NAME TEXT,
-                       $MESSAGE TEXT
-                   )
-                   """.trimIndent()
-                )
+    /**
+     * The safe database instance, should always be used for accessing the database.
+     */
+    private val db: SQLiteDatabase?
+        get() {
+            if (this::sqliteDb.isInitialized) return sqliteDb
+
+            val dbFile = FlutterDatabaseContext(context).getDatabasePath(FILE_NAME)
+
+            // If Flutter hasn't created the db file, we will just ignore any requests for now.
+            if (!dbFile.exists()) return null
+
+            return object : SQLiteOpenHelper(
+                context,
+                dbFile.path,
+                null,
+                1
+            ) {
+                override fun onCreate(db: SQLiteDatabase) {}
+                override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {}
+                override fun onDowngrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {}
+            }.writableDatabase.also {
+                sqliteDb = it
             }
-
-            // We don't care about these.
-            override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {}
-            override fun onDowngrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {}
-        }.writableDatabase
-    }
+        }
 
     fun insertLog(message: String, level: PhoneLibLogLevel, loggerName: String) {
-        db.insert(
+        db?.insert(
             LogEvents.TABLE_NAME,
             null,
             ContentValues().apply {
@@ -67,7 +68,7 @@ class LoggingDatabase(private val context: Context) {
     }
 
     fun getLogs(batchSize: Long): List<Log> {
-        val cursor = db.query(
+        val cursor = db?.query(
             TABLE_NAME,
             arrayOf(LOG_TIME, LEVEL, NAME, MESSAGE),
             null,
@@ -76,7 +77,7 @@ class LoggingDatabase(private val context: Context) {
             null,
             LOG_TIME,
             batchSize.toString(),
-        )
+        ) ?: return listOf()
 
         val logs = mutableListOf<Log>()
 
@@ -115,7 +116,7 @@ class LoggingDatabase(private val context: Context) {
 
         val whereArgs = listOfNotNull(after?.toString(), before?.toString()).toTypedArray()
 
-        db.delete(
+        db?.delete(
             TABLE_NAME,
             whereClause,
             whereArgs
@@ -127,7 +128,6 @@ private object LogEvents : BaseColumns {
     const val TABLE_NAME = "log_events"
 
     object COLUMN {
-        const val ID = "id"
         const val LOG_TIME = "log_time"
         const val LEVEL = "level"
         const val NAME = "name"
