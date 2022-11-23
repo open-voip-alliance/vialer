@@ -135,7 +135,11 @@ class _TemporaryRedirectPickerState extends State<TemporaryRedirectPicker> {
                 ? () => widget.onStart(_selectedDestination!)
                 : null,
             child: Text(
-              context.msg.main.temporaryRedirect.actions.startRedirect.label
+              (widget.activeRedirect != null
+                      ? context.msg.main.temporaryRedirect.actions
+                          .changeRedirect.label
+                      : context.msg.main.temporaryRedirect.actions.startRedirect
+                          .label)
                   .toUpperCaseIfAndroid(context),
             ),
           ),
