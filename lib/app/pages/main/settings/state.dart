@@ -13,12 +13,14 @@ class SettingsState extends Equatable {
   final bool showTroubleshooting;
   final bool showDnd;
   final bool hasIgnoreBatteryOptimizationsPermission;
+  final bool hasTemporaryRedirect;
 
   SettingsState({
     this.buildInfo,
     this.isVoipAllowed = true,
     required this.user,
     this.hasIgnoreBatteryOptimizationsPermission = false,
+    this.hasTemporaryRedirect = false,
   })  : showTroubleshooting = user.settings.get(AppSetting.showTroubleshooting),
         showDnd = isVoipAllowed && (user.settings.get(CallSetting.useVoip));
 
@@ -29,6 +31,7 @@ class SettingsState extends Equatable {
       isVoipAllowed: isVoipAllowed,
       hasIgnoreBatteryOptimizationsPermission:
           hasIgnoreBatteryOptimizationsPermission,
+      hasTemporaryRedirect: hasTemporaryRedirect,
     );
   }
 
@@ -40,5 +43,6 @@ class SettingsState extends Equatable {
         showTroubleshooting,
         showDnd,
         hasIgnoreBatteryOptimizationsPermission,
+        hasTemporaryRedirect,
       ];
 }
