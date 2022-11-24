@@ -1,5 +1,7 @@
 import 'package:equatable/equatable.dart';
 
+import '../../../../../domain/business_availability/temporary_redirect/temporary_redirect.dart';
+
 abstract class NoticeState extends Equatable {
   const NoticeState();
 
@@ -33,4 +35,20 @@ class BluetoothConnectPermissionDeniedNotice extends NoticeState {
 
 class NotificationsPermissionDeniedNotice extends NoticeState {
   const NotificationsPermissionDeniedNotice();
+}
+
+class TemporaryRedirectNotice extends NoticeState {
+  final TemporaryRedirect temporaryRedirect;
+  final bool canChangeTemporaryRedirect;
+
+  const TemporaryRedirectNotice({
+    required this.temporaryRedirect,
+    required this.canChangeTemporaryRedirect,
+  });
+
+  @override
+  List<Object> get props => [
+        temporaryRedirect,
+        canChangeTemporaryRedirect,
+      ];
 }

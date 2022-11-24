@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:timezone/data/latest.dart';
 
@@ -16,6 +17,7 @@ import '../domain/logging/create_native_logging_database.dart';
 import '../domain/logging/enable_logging.dart';
 import '../domain/metrics/initialize_metric_collection.dart';
 import '../domain/user/get_stored_user.dart';
+import 'pages/main/business_availability/temporary_redirect/cubit.dart';
 import 'pages/main/page.dart';
 import 'pages/main/widgets/caller/widget.dart';
 import 'resources/localizations.dart';
@@ -100,6 +102,10 @@ class _AppState extends State<App> {
                     child: child,
                   ),
               (child) => LogUploader.create(child: child),
+              (child) => BlocProvider<TemporaryRedirectCubit>(
+                    create: (_) => TemporaryRedirectCubit(),
+                    child: child,
+                  ),
             ],
             MaterialApp(
               navigatorKey: _navigatorKey,

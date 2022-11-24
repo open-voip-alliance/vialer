@@ -5,6 +5,8 @@ import 'package:get_it/get_it.dart';
 
 import 'app/util/debug.dart';
 import 'domain/authentication/authentication_repository.dart';
+import 'domain/business_availability/business_availability_repository.dart';
+import 'domain/business_availability/business_availability_service.dart';
 import 'domain/call_records/client/database/client_calls.dart';
 import 'domain/call_records/client/local_client_calls.dart';
 import 'domain/call_records/client/remote_client_calls.dart';
@@ -163,6 +165,11 @@ Future<void> initializeDependencies({bool ui = true}) async {
       inDebugMode
           ? ConsoleLoggingMetricsRepository()
           : SegmentMetricsRepository(),
+    )
+    ..registerSingleton<BusinessAvailabilityRepository>(
+      BusinessAvailabilityRepository(
+        BusinessAvailabilityService.create(),
+      ),
     );
 
   await dependencyLocator.allReady();
