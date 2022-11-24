@@ -3,8 +3,7 @@ import sqlite3
 
 class LoggingDatabase {
     init() {
-        db = openDatabase()
-        createTable()
+        establishDatabaseConnection()
     }
     
     let dbPath = "logging_native_db.sqlite"
@@ -12,13 +11,19 @@ class LoggingDatabase {
     
     var db: OpaquePointer?
     
-    ///This will create the database if needed
+    private func establishDatabaseConnection() {
+        if db == nil {
+            db = openDatabase()
+        }
+    }
+    
+    //This will just open the database and will not create it if it does not already exist
     private func openDatabase() -> OpaquePointer? {
         let filePath = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
             .appendingPathComponent(dbPath)
         var db: OpaquePointer? = nil
         
-        if sqlite3_open(filePath.path, &db) != SQLITE_OK {
+        if sqlite3_open_v2(filePath.path, &db, SQLITE_OPEN_READWRITE, nil) != SQLITE_OK {
             debugPrint("Cannot open the sqlite database.")
             return nil
         } else {
@@ -27,27 +32,12 @@ class LoggingDatabase {
         }
     }
     
-    private func createTable() {
-        let createTableString = "CREATE TABLE IF NOT EXISTS \(tableName)(id INTEGER PRIMARY KEY AUTOINCREMENT, log_time TEXT, level TEXT, name TEXT, message TEXT);"
-        var createTableStatement: OpaquePointer? = nil
-        if sqlite3_prepare_v2(db, createTableString, -1, &createTableStatement, nil) == SQLITE_OK
-        {
-            if sqlite3_step(createTableStatement) == SQLITE_DONE
-            {
-                debugPrint("\(tableName) table was created.")
-            } else {
-                debugPrint("\(tableName) table could not be created.")
-            }
-        } else {
-            debugPrint("CREATE TABLE statement could not be prepared.")
-        }
-        sqlite3_finalize(createTableStatement)
-    }
-    
     func insertLog(message:String, logLevel: LogLevel = .info, loggerName:String) {
+        establishDatabaseConnection()
+        
         let insertStatementString = "INSERT INTO \(tableName) (id, log_time, level, name, message) VALUES (?, ?, ?, ?, ?);"
         var insertStatement: OpaquePointer? = nil
-        
+                
         if sqlite3_prepare_v2(db, insertStatementString, -1, &insertStatement, nil) == SQLITE_OK {
             sqlite3_bind_int64(insertStatement, 2,  Int64((Date().timeIntervalSince1970 * 1000.0).rounded()))
             sqlite3_bind_int(insertStatement, 3, Int32(logLevel.rawValue))
@@ -64,6 +54,8 @@ class LoggingDatabase {
     }
     
     func getLogs(batchSize: NSNumber) -> [LogEvent] {
+        establishDatabaseConnection()
+        
         let queryStatementString = "SELECT * FROM \(tableName) LIMIT \(batchSize.stringValue);"
         var queryStatement: OpaquePointer? = nil
         var logs : [LogEvent] = []
@@ -85,6 +77,8 @@ class LoggingDatabase {
     }
     
     func deleteLog(id:Int) {
+        establishDatabaseConnection()
+        
         let deleteStatementString = "DELETE FROM \(tableName) WHERE Id = ?;"
         var deleteStatement: OpaquePointer? = nil
         if sqlite3_prepare_v2(db, deleteStatementString, -1, &deleteStatement, nil) == SQLITE_OK {
@@ -99,6 +93,8 @@ class LoggingDatabase {
     }
     
     func deleteLogs(keepPastDay: Bool) {
+        establishDatabaseConnection()
+        
         var deleteStatementString = "DELETE FROM \(tableName);"
         let pastDayDateInMilSecs = Int64(Date().timeIntervalSince1970.rounded() - (60 * 60)) * 1000
         if (keepPastDay) {

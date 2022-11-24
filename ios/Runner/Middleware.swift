@@ -138,12 +138,12 @@ public class Middleware: NativeMiddleware {
             track(String(response.response?.statusCode ?? 0))
 
             switch response.result {
-                case .success(_):
-                    self.logger.writeLog("Middleware respond success: \(String(describing: callId))")
-                case .failure(_):
-                    let statusCode = response.response?.statusCode
-                    self.logger.writeLog("Middleware respond failed: response code was \(String(describing: statusCode))")
-                    self.lastRegisteredToken = nil
+            case .success(_):
+                self.logger.writeLog("Middleware respond success: \(String(describing: callId))")
+            case .failure(_):
+                let statusCode = response.response?.statusCode
+                self.logger.writeLog("Middleware respond failed: response code was \(String(describing: statusCode))")
+                self.lastRegisteredToken = nil
            }
         }
 

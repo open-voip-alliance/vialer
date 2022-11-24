@@ -48,18 +48,6 @@ class Logger: NSObject, NativeLogging {
         })
     }
     
-    func startNativeRemoteLoggingToken(_ token: String, userIdentifier: String, anonymizationRules: [String : String], completion: @escaping (FlutterError?) -> Void) {
-        completion(nil)
-    }
-    
-    @available(iOS 13.0.0, *)
-    func startNativeRemoteLoggingToken(_ token: String, userIdentifier: String, anonymizationRules: [String : String]) async -> FlutterError? {
-        return nil
-    }
-    
-    func stopNativeRemoteLoggingWithError(_ error: AutoreleasingUnsafeMutablePointer<FlutterError?>) {
-    }
-    
     func startNativeConsoleLoggingWithError(_ error: AutoreleasingUnsafeMutablePointer<FlutterError?>) {
         isConsoleLoggingEnabled = true
     }
@@ -70,7 +58,7 @@ class Logger: NSObject, NativeLogging {
     
     func uploadPendingLogsBatchSize(_ batchSize: NSNumber, packageName: String, appVersion: String, remoteLoggingId: String, url: String, logToken: String, completion: @escaping (FlutterError?) -> Void) {
         var logs = [String: Any]()
-        var dbLogs = loggingDatabase.getLogs(batchSize: batchSize)
+        let dbLogs = loggingDatabase.getLogs(batchSize: batchSize)
         
         for dbLog in dbLogs {
             let message = [
