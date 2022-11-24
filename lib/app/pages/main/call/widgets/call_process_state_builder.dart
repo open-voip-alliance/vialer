@@ -22,7 +22,7 @@ class CallProcessStateBuilder extends StatelessWidget with Loggable {
         if (current.voipCall == null) {
           logger.warning(
             'State is ${current.runtimeType}(CallProcessState) but no active '
-                'voip call',
+            'voip call',
           );
           return false;
         }
