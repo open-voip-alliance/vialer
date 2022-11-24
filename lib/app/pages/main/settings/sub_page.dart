@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../domain/user/settings/call_setting.dart';
 import '../../../resources/localizations.dart';
+import '../widgets/full_screen_page.dart';
 import 'cubit.dart';
 import 'widgets/tile.dart';
 import 'widgets/tile_category.dart';
@@ -47,11 +48,8 @@ class SettingsSubPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: title,
-        centerTitle: true,
-      ),
+    return FullScreenPage(
+      title: title,
       body: BlocProvider.value(
         value: cubit,
         child: BlocBuilder<SettingsCubit, SettingsState>(

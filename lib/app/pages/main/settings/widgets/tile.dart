@@ -3,9 +3,9 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:provider/provider.dart';
 
 import '../../../../../domain/user/settings/app_setting.dart';
 import '../../../../../domain/user/settings/call_setting.dart';
@@ -368,8 +368,8 @@ class SettingTile extends StatelessWidget {
     );
   }
 
-  static Widget useMobileNumberAsFallback(Settings settings) {
-    final mobileNumber = settings.get(CallSetting.mobileNumber);
+  static Widget useMobileNumberAsFallback(User user) {
+    final mobileNumber = user.settings.get(CallSetting.mobileNumber);
 
     return Builder(
       builder: (context) {
@@ -383,8 +383,11 @@ class SettingTile extends StatelessWidget {
                 .description(mobileNumber),
           ),
           child: _BoolSettingValue(
-            settings,
+            user.settings,
             CallSetting.useMobileNumberAsFallback,
+            onChanged: user.permissions.canChangeMobileNumberFallback
+                ? defaultOnChanged
+                : null,
           ),
         );
       },
@@ -439,7 +442,7 @@ class SettingTile extends StatelessWidget {
                     ],
                   ),
                 ),
-              if (childFillWidth) child,
+              if (childFillWidth || label == null) child,
             ],
           ),
         ),
