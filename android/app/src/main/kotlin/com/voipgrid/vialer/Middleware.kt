@@ -58,6 +58,11 @@ class Middleware(
 
         val middlewareCredentials = middlewareCredentials
 
+        if (middlewareCredentials == null) {
+            log("Registration cancelled: Middleware credentials are not set.")
+            return
+        }
+
         val data = FormBody.Builder().apply {
             add("name", middlewareCredentials.email)
             add("token", token)
@@ -111,6 +116,11 @@ class Middleware(
         val responseUrl = remoteMessage.responseUrl!!
 
         log("Middleware Respond: Attempting for call=$callId, correlationId=$correlationId, available=$available, sent at=$pushSentTime, response time=$pushResponseTime")
+
+        if (middlewareCredentials == null) {
+            log("Middleware credentials are not set, not responding.")
+            return
+        }
 
         if (pushResponseTime > MIDDLEWARE_SECONDS_BEFORE_REJECTED) {
             log("The response time is $pushResponseTime, it is likely we are too late for this call.")
@@ -229,11 +239,15 @@ class Middleware(
     private fun log(message: String) = logger.writeLog("NATIVE-MIDDLEWARE: $message")
 
     private val middlewareCredentials
-        get() = MiddlewareCredentials(
-            sipUserId = prefs.user!!.voip!!.sipUserId,
-            email = prefs.user!!.email,
-            loginToken = prefs.user!!.token
-        )
+        get() = prefs.user?.let { user ->
+            user.voip?.let { voip ->
+                MiddlewareCredentials(
+                    sipUserId = voip.sipUserId,
+                    email = user.email,
+                    loginToken = user.token
+                )
+            }
+        }
 
     companion object {
         /**
