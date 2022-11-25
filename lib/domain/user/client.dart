@@ -17,7 +17,7 @@ class Client extends Equatable {
   final String name;
   final Uri url;
 
-  @JsonKey(toJson: ClientVoipConfig.toJson, fromJson: ClientVoipConfig.fromJson)
+  @JsonKey(toJson: ClientVoipConfig.toJson, fromJson: _clientVoipConfigFromJson)
   final ClientVoipConfig voip;
 
   /// This represents the business numbers that are available to the client
@@ -81,3 +81,9 @@ class Client extends Equatable {
 
 List<String> _outgoingNumbersToJson(Iterable<OutgoingNumber> numbers) =>
     numbers.map(OutgoingNumber.toJson).toList();
+
+ClientVoipConfig _clientVoipConfigFromJson(Map<String, dynamic>? json) {
+  if (json == null) return ClientVoipConfig.fallback();
+
+  return ClientVoipConfig.fromJson(json);
+}
