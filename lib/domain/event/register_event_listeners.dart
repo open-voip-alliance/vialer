@@ -5,6 +5,7 @@ import '../authentication/logout.dart';
 import '../authentication/unauthorized_api_response.dart';
 import '../call_records/client/import_historic_client_call_records.dart';
 import '../call_records/client/purge_local_call_records.dart';
+import '../metrics/identify_for_tracking.dart';
 import '../use_case.dart';
 import '../user/settings/app_setting.dart';
 import '../user/settings/setting_changed.dart';
@@ -18,6 +19,7 @@ class RegisterDomainEventListenersUseCase extends UseCase with Loggable {
   final _isAuthenticated = IsAuthenticated();
   final _importHistoricClientCalls = ImportHistoricClientCallRecordsUseCase();
   final _purgeLocalCallRecords = PurgeLocalCallRecordsUseCase();
+  final _identifyForTracking = IdentifyForTrackingUseCase();
 
   void call() {
     _eventBus.on<UnauthorizedApiResponseEvent>((event) {
@@ -39,5 +41,7 @@ class RegisterDomainEventListenersUseCase extends UseCase with Loggable {
         }
       },
     );
+
+    _eventBus.on<SettingChanged>((_) => _identifyForTracking());
   }
 }
