@@ -3,13 +3,18 @@ import 'dart:io';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../dependency_locator.dart';
 import '../../../../../domain/contacts/get_contact_sort.dart';
 import '../../../../../domain/contacts/get_contacts.dart';
 import '../../../../../domain/onboarding/request_permission.dart';
+import '../../../../../domain/user/get_logged_in_user.dart';
 import '../../../../../domain/user/get_permission_status.dart';
 import '../../../../../domain/user/permissions/permission.dart';
 import '../../../../../domain/user/permissions/permission_status.dart';
 import '../../../../../domain/user/settings/open_settings.dart';
+import '../../../../../domain/user_availability/colleagues/colleagues_repository.dart';
+import '../../../../../domain/user_availability/colleagues/get_colleague_availability.dart';
+import '../../../../../domain/user_availability/colleagues/import_colleagues.dart';
 import 'state.dart';
 
 export 'state.dart';

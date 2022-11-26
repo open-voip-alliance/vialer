@@ -2,6 +2,7 @@ import 'package:dartx/dartx.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'colleague.freezed.dart';
+part 'colleague.g.dart';
 
 @freezed
 class Colleague with _$Colleague {
@@ -17,18 +18,16 @@ class Colleague with _$Colleague {
   const factory Colleague({
     required String id,
     required String name,
-    required ColleagueAvailabilityStatus status,
-
     /// A list of [ColleagueContext] events that are relevant to this colleague.
     ///
     /// These are sorted in order of priority with the first in the list
     /// representing the most recent/relevant.
     required List<ColleagueContext> context,
-
+    ColleagueAvailabilityStatus? status,
     /// The most relevant/recent context event. For example, if the user is
     /// in a meeting (NYI) but also in a call, then this would show them as
     /// being in a call even if the meeting is more recent.
-    required ColleagueDestination destination,
+    ColleagueDestination? destination,
   }) = _Colleague;
 
   /// A voip account that is not connected to any user, we do not get
@@ -39,6 +38,9 @@ class Colleague with _$Colleague {
     required String name,
     required String number,
   }) = UnconnectedVoipAccount;
+
+  factory Colleague.fromJson(Map<String, dynamic> json) =>
+      _$ColleagueFromJson(json);
 }
 
 /// A single status that represents the availability of the colleague.
@@ -66,6 +68,9 @@ class ColleagueDestination with _$ColleagueDestination {
     required String number,
     required ColleagueDestinationType type,
   }) = _ColleagueDestination;
+
+  factory ColleagueDestination.fromJson(Map<String, dynamic> json) =>
+      _$ColleagueDestinationFromJson(json);
 }
 
 enum ColleagueDestinationType {
@@ -82,4 +87,7 @@ enum ColleagueDestinationType {
 class ColleagueContext with _$ColleagueContext {
   const factory ColleagueContext.ringing(String number) = Ringing;
   const factory ColleagueContext.inCall(String number) = InCall;
+
+  factory ColleagueContext.fromJson(Map<String, dynamic> json) =>
+      _$ColleagueContextFromJson(json);
 }
