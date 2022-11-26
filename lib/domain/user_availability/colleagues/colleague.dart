@@ -18,12 +18,14 @@ class Colleague with _$Colleague {
   const factory Colleague({
     required String id,
     required String name,
+
     /// A list of [ColleagueContext] events that are relevant to this colleague.
     ///
     /// These are sorted in order of priority with the first in the list
     /// representing the most recent/relevant.
     required List<ColleagueContext> context,
     ColleagueAvailabilityStatus? status,
+
     /// The most relevant/recent context event. For example, if the user is
     /// in a meeting (NYI) but also in a call, then this would show them as
     /// being in a call even if the meeting is more recent.
@@ -44,6 +46,7 @@ class Colleague with _$Colleague {
 }
 
 /// A single status that represents the availability of the colleague.
+@JsonEnum(alwaysCreate: true, fieldRename: FieldRename.snake)
 enum ColleagueAvailabilityStatus {
   available,
   doNotDisturb,
@@ -64,7 +67,6 @@ enum ColleagueAvailabilityStatus {
 @freezed
 class ColleagueDestination with _$ColleagueDestination {
   const factory ColleagueDestination({
-    required String id,
     required String number,
     required ColleagueDestinationType type,
   }) = _ColleagueDestination;
@@ -78,6 +80,7 @@ enum ColleagueDestinationType {
   webphone,
   voipAccount,
   fixed,
+  none,
 }
 
 /// Represents a possible event that the colleague has currently performed,

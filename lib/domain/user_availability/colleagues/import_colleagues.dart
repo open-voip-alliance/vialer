@@ -8,7 +8,7 @@ import 'colleagues_repository.dart';
 /// Builds up and imports the colleagues into a cache. This should be performed
 /// regularly (e.g. when the user opens the app) but should not be refreshed
 /// regularly as the data is updated constantly via websockets.
-class ImportColleaguesIntoCache extends UseCase {
+class ImportColleagues extends UseCase {
   late final _colleaguesRepository = dependencyLocator<ColleaguesRepository>();
   late final _storage = dependencyLocator<StorageRepository>();
   late final _getUser = GetLoggedInUserUseCase();

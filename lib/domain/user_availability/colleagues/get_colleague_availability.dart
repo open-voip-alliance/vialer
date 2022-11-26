@@ -1,5 +1,4 @@
 import 'package:rxdart/rxdart.dart';
-import 'package:dartx/dartx.dart';
 import '../../../dependency_locator.dart';
 import '../../legacy/storage.dart';
 import '../../use_case.dart';
@@ -10,7 +9,7 @@ import 'colleagues_repository.dart';
 import 'import_colleagues.dart';
 
 class GetColleagueAvailability extends UseCase {
-  late final _importColleagues = ImportColleaguesIntoCache();
+  late final _importColleagues = ImportColleagues();
   late final _getUser = GetLoggedInUserUseCase();
   late final _storage = dependencyLocator<StorageRepository>();
   late final _colleagueRepository = dependencyLocator<ColleaguesRepository>();
@@ -40,7 +39,8 @@ class GetColleagueAvailability extends UseCase {
           brand: _brand(),
           colleagues: colleagues,
         )
-        .asBroadcastStream();
+        .asBroadcastStream()
+        .debounceTime(const Duration(seconds: 1));
 
     _regularlyCacheColleagues(stream);
 

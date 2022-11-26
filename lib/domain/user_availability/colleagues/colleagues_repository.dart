@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:dartx/dartx.dart';
 
 import '../../../app/util/loggable.dart';
@@ -13,11 +12,14 @@ import 'colleague.dart';
 class ColleaguesRepository with Loggable {
   final VoipgridService _service;
   final VoipgridApiResourceCollector apiResourceCollector =
-  VoipgridApiResourceCollector();
+      VoipgridApiResourceCollector();
   WebSocket? _socket;
 
   ColleaguesRepository(this._service);
 
+  /// This only provides the most basic information about colleagues,
+  /// the rest needs to be queried by calling [startListeningForAvailability]
+  /// and listening for updates.
   Future<List<Colleague>> getColleagues(User user) async {
     final clientId = user.client.id.toString();
 
@@ -78,9 +80,10 @@ class ColleaguesRepository with Loggable {
 
     await for (final eventString in socket) {
       final event = jsonDecode(eventString as String);
+      print(eventString);
       if (event['name'] != 'user_availability_changed') continue;
 
-      final payload = event['payload'];
+      final payload = event['payload'] as Map<String, dynamic>;
 
       final colleague = colleagues
           .where((element) => element.id == payload['user_uuid'])
@@ -88,24 +91,76 @@ class ColleaguesRepository with Loggable {
 
       if (colleague == null) continue;
 
+      // We don't want to display colleagues that do not have linked
+      // destinations as these are essentially inactive users that do not
+      // have any possible availability status.
+      if (payload['has_linked_destinations'] != true) {
+        colleagues.remove(colleague);
+        yield colleagues;
+        return;
+      }
+
+      final populatedColleague = _populateColleagueWithAvailability(
+        colleague,
+        payload,
+      );
+
+      print(populatedColleague);
       yield colleagues
         ..remove(colleague)
-        ..add(
-          colleague.map(
-                (user) => user.copyWith(
-              status: ColleagueAvailabilityStatus.offline,
-              destination: ColleagueDestination(
-                id: '',
-                number: payload['internal_number'].toString(),
-                type: ColleagueDestinationType.voipAccount,
-              ),
-              context: [],
-            ),
-            // We don't get availability updates for voip accounts so we will
-            // just leave them as is.
-            unconnectedVoipAccount: (voipAccount) => voipAccount,
+        ..add(populatedColleague);
+    }
+  }
+
+  Colleague _populateColleagueWithAvailability(
+    Colleague colleague,
+    Map<String, dynamic> payload,
+  ) =>
+      colleague.map(
+        (colleague) => colleague.copyWith(
+          status: _findAvailabilityStatus(payload),
+          destination: ColleagueDestination(
+            number: payload['internal_number'].toString(),
+            type: _findDestinationType(payload),
           ),
-        );
+          // It doesn't seem like context is implemented at all currently so
+          // it will just be an empty array for now.
+          context: [],
+        ),
+        // We don't get availability updates for voip accounts so we will
+        // just leave them as is.
+        unconnectedVoipAccount: (voipAccount) => voipAccount,
+      );
+
+  ColleagueAvailabilityStatus _findAvailabilityStatus(
+    Map<String, dynamic> payload,
+  ) {
+    switch (payload['availability']) {
+      case 'doNotDisturb':
+        return ColleagueAvailabilityStatus.doNotDisturb;
+      case 'offline':
+        return ColleagueAvailabilityStatus.offline;
+      case 'available':
+        return ColleagueAvailabilityStatus.available;
+      case 'busy':
+        return ColleagueAvailabilityStatus.busy;
+      default:
+        return ColleagueAvailabilityStatus.unknown;
+    }
+  }
+
+  ColleagueDestinationType _findDestinationType(Map<String, dynamic> payload) {
+    switch (payload['destination_type']) {
+      case 'app_account':
+        return ColleagueDestinationType.app;
+      case 'webphone_account':
+        return ColleagueDestinationType.webphone;
+      case 'voip_account':
+        return ColleagueDestinationType.voipAccount;
+      case 'fixeddestination':
+        return ColleagueDestinationType.fixed;
+      default:
+        return ColleagueDestinationType.none;
     }
   }
 
