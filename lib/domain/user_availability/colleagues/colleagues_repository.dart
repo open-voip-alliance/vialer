@@ -80,7 +80,9 @@ class ColleaguesRepository with Loggable {
 
     await for (final eventString in socket) {
       final event = jsonDecode(eventString as String);
-      print(eventString);
+
+      // We only care about this type of event for now (and that's all there is
+      // currently) so if it's anything aside from this we just ignore it.
       if (event['name'] != 'user_availability_changed') continue;
 
       final payload = event['payload'] as Map<String, dynamic>;
