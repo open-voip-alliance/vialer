@@ -44,7 +44,7 @@ class Brand extends Equatable {
         encryptedSipUrl,
         unencryptedSipUrl,
         businessAvailabilityUrl,
-    userAvailabilityWsUrl,
+        userAvailabilityWsUrl,
         privacyPolicyUrl,
       ];
 

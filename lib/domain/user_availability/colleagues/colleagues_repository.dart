@@ -105,7 +105,6 @@ class ColleaguesRepository with Loggable {
         payload,
       );
 
-      print(populatedColleague);
       yield colleagues
         ..remove(colleague)
         ..add(populatedColleague);
