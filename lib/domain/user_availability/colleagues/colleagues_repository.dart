@@ -3,7 +3,9 @@ import 'dart:io';
 import 'package:dartx/dartx.dart';
 
 import '../../../app/util/loggable.dart';
+import '../../event/event_bus.dart';
 import '../../user/brand.dart';
+import '../../user/events/logged_in_user_data_is_stale_event.dart';
 import '../../user/user.dart';
 import '../../voipgrid/voipgrid_api_resource_collector.dart';
 import '../../voipgrid/voipgrid_service.dart';
@@ -11,11 +13,16 @@ import 'colleague.dart';
 
 class ColleaguesRepository with Loggable {
   final VoipgridService _service;
-  final VoipgridApiResourceCollector apiResourceCollector =
-      VoipgridApiResourceCollector();
+  final VoipgridApiResourceCollector _apiResourceCollector;
+  final EventBus _eventBus;
+
   WebSocket? _socket;
 
-  ColleaguesRepository(this._service);
+  ColleaguesRepository(
+    this._service,
+    this._apiResourceCollector,
+    this._eventBus,
+  );
 
   /// This only provides the most basic information about colleagues,
   /// the rest needs to be queried by calling [startListeningForAvailability]
@@ -23,7 +30,7 @@ class ColleaguesRepository with Loggable {
   Future<List<Colleague>> getColleagues(User user) async {
     final clientId = user.client.id.toString();
 
-    final users = await apiResourceCollector.collect(
+    final users = await _apiResourceCollector.collect(
       requester: (page) => _service.getUsers(
         clientId,
         page: page,
@@ -31,7 +38,7 @@ class ColleaguesRepository with Loggable {
       deserializer: (json) => json,
     );
 
-    final voipAccounts = await apiResourceCollector.collect(
+    final voipAccounts = await _apiResourceCollector.collect(
       requester: (page) => _service.getUnconnectedVoipAccounts(
         clientId,
         page: page,
@@ -87,9 +94,15 @@ class ColleaguesRepository with Loggable {
 
       final payload = event['payload'] as Map<String, dynamic>;
 
-      final colleague = colleagues
-          .where((element) => element.id == payload['user_uuid'])
-          .firstOrNull;
+      final userUuid = payload['user_uuid'] as String;
+
+      final colleague = colleagues.findByUserUuid(userUuid);
+
+      // We are going to hijack this WebSocket and emit an event when we know
+      // our user has changed on the server.
+      if (userUuid == user.uuid) {
+        _eventBus.broadcast(LoggedInUserDataIsStaleEvent());
+      }
 
       if (colleague == null) continue;
 
@@ -102,66 +115,9 @@ class ColleaguesRepository with Loggable {
         return;
       }
 
-      final populatedColleague = _populateColleagueWithAvailability(
-        colleague,
-        payload,
-      );
-
       yield colleagues
         ..remove(colleague)
-        ..add(populatedColleague);
-    }
-  }
-
-  Colleague _populateColleagueWithAvailability(
-    Colleague colleague,
-    Map<String, dynamic> payload,
-  ) =>
-      colleague.map(
-        (colleague) => colleague.copyWith(
-          status: _findAvailabilityStatus(payload),
-          destination: ColleagueDestination(
-            number: payload['internal_number'].toString(),
-            type: _findDestinationType(payload),
-          ),
-          // It doesn't seem like context is implemented at all currently so
-          // it will just be an empty array for now.
-          context: [],
-        ),
-        // We don't get availability updates for voip accounts so we will
-        // just leave them as is.
-        unconnectedVoipAccount: (voipAccount) => voipAccount,
-      );
-
-  ColleagueAvailabilityStatus _findAvailabilityStatus(
-    Map<String, dynamic> payload,
-  ) {
-    switch (payload['availability']) {
-      case 'doNotDisturb':
-        return ColleagueAvailabilityStatus.doNotDisturb;
-      case 'offline':
-        return ColleagueAvailabilityStatus.offline;
-      case 'available':
-        return ColleagueAvailabilityStatus.available;
-      case 'busy':
-        return ColleagueAvailabilityStatus.busy;
-      default:
-        return ColleagueAvailabilityStatus.unknown;
-    }
-  }
-
-  ColleagueDestinationType _findDestinationType(Map<String, dynamic> payload) {
-    switch (payload['destination_type']) {
-      case 'app_account':
-        return ColleagueDestinationType.app;
-      case 'webphone_account':
-        return ColleagueDestinationType.webphone;
-      case 'voip_account':
-        return ColleagueDestinationType.voipAccount;
-      case 'fixeddestination':
-        return ColleagueDestinationType.fixed;
-      default:
-        return ColleagueDestinationType.none;
+        ..add(colleague.populateWithAvailability(payload));
     }
   }
 
@@ -174,4 +130,32 @@ extension on List<Colleague> {
   /// the logged in user from the list of colleagues.
   List<Colleague> without({required User user}) =>
       filter((colleague) => colleague.id != user.uuid).toList();
+
+  Colleague? findByUserUuid(String uuid) =>
+      where((colleague) => colleague.id == uuid).firstOrNull;
+}
+
+extension on Colleague {
+  Colleague populateWithAvailability(
+    Map<String, dynamic> payload,
+  ) =>
+      map(
+        (colleague) => colleague.copyWith(
+          status: ColleagueAvailabilityStatus.fromServerValue(
+            payload['availability'] as String,
+          ),
+          destination: ColleagueDestination(
+            number: payload['internal_number'].toString(),
+            type: ColleagueDestinationType.fromServerValue(
+              payload['destination_type'] as String,
+            ),
+          ),
+          // It doesn't seem like context is implemented at all currently so
+          // it will just be an empty array for now.
+          context: [],
+        ),
+        // We don't get availability updates for voip accounts so we will
+        // just leave them as is.
+        unconnectedVoipAccount: (voipAccount) => voipAccount,
+      );
 }

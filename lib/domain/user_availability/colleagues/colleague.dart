@@ -46,7 +46,6 @@ class Colleague with _$Colleague {
 }
 
 /// A single status that represents the availability of the colleague.
-@JsonEnum(alwaysCreate: true, fieldRename: FieldRename.snake)
 enum ColleagueAvailabilityStatus {
   available,
   doNotDisturb,
@@ -60,7 +59,22 @@ enum ColleagueAvailabilityStatus {
 
   /// A user will only appear as offline when they don't have an app account
   /// linked to their user AND they are not SIP registered anywhere.
-  offline,
+  offline;
+
+  static ColleagueAvailabilityStatus fromServerValue(String value) {
+    switch (value) {
+      case 'doNotDisturb':
+        return ColleagueAvailabilityStatus.doNotDisturb;
+      case 'offline':
+        return ColleagueAvailabilityStatus.offline;
+      case 'available':
+        return ColleagueAvailabilityStatus.available;
+      case 'busy':
+        return ColleagueAvailabilityStatus.busy;
+      default:
+        return ColleagueAvailabilityStatus.unknown;
+    }
+  }
 }
 
 /// The destination that we can call to reach the given colleague.
@@ -80,7 +94,22 @@ enum ColleagueDestinationType {
   webphone,
   voipAccount,
   fixed,
-  none,
+  none;
+
+  static ColleagueDestinationType fromServerValue(String value) {
+    switch (value) {
+      case 'app_account':
+        return ColleagueDestinationType.app;
+      case 'webphone_account':
+        return ColleagueDestinationType.webphone;
+      case 'voip_account':
+        return ColleagueDestinationType.voipAccount;
+      case 'fixeddestination':
+        return ColleagueDestinationType.fixed;
+      default:
+        return ColleagueDestinationType.none;
+    }
+  }
 }
 
 /// Represents a possible event that the colleague has currently performed,
