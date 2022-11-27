@@ -8,7 +8,7 @@ import 'colleague.dart';
 import 'colleagues_repository.dart';
 import 'import_colleagues.dart';
 
-class GetColleagueAvailability extends UseCase {
+class ReceiveColleagueAvailability extends UseCase {
   late final _importColleagues = ImportColleagues();
   late final _getUser = GetLoggedInUserUseCase();
   late final _storage = dependencyLocator<StorageRepository>();
