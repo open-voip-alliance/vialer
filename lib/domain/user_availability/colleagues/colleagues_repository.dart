@@ -54,7 +54,7 @@ class ColleaguesRepository with Loggable {
           number: e['internal_number'] as String,
         ),
       ),
-    ];
+    ].without(user: user);
   }
 
   /// Listens to a websocket for availability updates, and will then update
@@ -167,4 +167,11 @@ class ColleaguesRepository with Loggable {
 
   Future<void> stopListeningForAvailability() async =>
       _socket?.close().then((value) => _socket = null);
+}
+
+extension on List<Colleague> {
+  /// Removes any users that match the provided user, this is used to remove
+  /// the logged in user from the list of colleagues.
+  List<Colleague> without({required User user}) =>
+      filter((colleague) => colleague.id != user.uuid).toList();
 }
