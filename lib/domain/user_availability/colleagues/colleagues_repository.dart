@@ -73,6 +73,7 @@ class ColleaguesRepository with Loggable {
         _eventBus.broadcast(LoggedInUserDataIsStaleEvent());
       }
 
+      // If no colleague is found, we can't update the availability of it.
       if (colleague == null) return;
 
       // We don't want to display colleagues that do not have linked
