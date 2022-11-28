@@ -94,7 +94,7 @@ class ColleaguesRepository with Loggable {
     return _controller.stream;
   }
 
-  Future<void> _connectToWebSocketServer(
+  Future<WebSocket> _connectToWebSocketServer(
     User user,
     Brand brand,
   ) async {
@@ -103,7 +103,7 @@ class ColleaguesRepository with Loggable {
 
     logger.info('Attempting connection to UA WebSocket at: $url');
 
-    _socket = await WebSocket.connect(
+    return _socket = await WebSocket.connect(
       url,
       headers: {
         'Authorization': 'Bearer ${user.token}',
