@@ -8,7 +8,6 @@ import '../../../../../domain/authentication/logout.dart';
 import '../../../../../domain/calling/voip/register_to_voip_middleware.dart';
 import '../../../../../domain/user/get_latest_logged_in_user.dart';
 import '../../../../../domain/user/get_logged_in_user.dart';
-import '../../../../../domain/user_availability/colleagues/import_colleagues.dart';
 import '../../../../util/loggable.dart';
 import 'state.dart';
 
@@ -22,7 +21,6 @@ class UserDataRefresherCubit extends Cubit<UserDataRefresherState>
   final _registerToVoipMiddleware = RegisterToVoipMiddlewareUseCase();
   final _isLoggedInSomewhereElse = GetIsLoggedInSomewhereElseUseCase();
   final _logout = LogoutUseCase();
-  final _importColleagues = ImportColleagues();
 
   UserDataRefresherCubit() : super(const NotRefreshing());
 
@@ -43,7 +41,6 @@ class UserDataRefresherCubit extends Cubit<UserDataRefresherState>
     final newUser = await _getLatestUser();
 
     await _registerToVoipMiddleware();
-    _importColleagues();
 
     emit(const NotRefreshing());
 

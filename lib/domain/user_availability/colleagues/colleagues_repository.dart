@@ -21,11 +21,103 @@ class ColleaguesRepository with Loggable {
 
   late final _controller = StreamController<List<Colleague>>();
 
+  /// This is the base list of colleagues that we use to update with changes
+  /// from the WebSocket. The WebSocket does *not* provide enough data by
+  /// itself, we need the data from the API and that is the data that is
+  /// stored here.
+  ///
+  /// When there is new API data, this should be updated.
+  List<Colleague> _colleagues = [];
+
   ColleaguesRepository(
     this._service,
     this._apiResourceCollector,
     this._eventBus,
   );
+
+  /// Listens to a WebSocket for availability updates, and will then update
+  /// the provided list of colleagues with the new status and broadcast it
+  /// to the returned stream.
+  ///
+  /// The availability of all users is only delivered when first opening
+  /// a socket, so if you want to force a refresh you must first call
+  /// [stopListeningForAvailability] and then call this method again.
+  Future<Stream<List<Colleague>>> startListeningForAvailability({
+    required User user,
+    required Brand brand,
+    required List<Colleague> initialColleagues,
+  }) async {
+    _colleagues = initialColleagues;
+
+    if (_socket == null || _socket?.closeCode != null) {
+      await _connectToWebSocketServer(user, brand);
+    }
+
+    _socket!.listen((eventString) {
+      final event = jsonDecode(eventString as String);
+
+      // We only care about this type of event for now (and that's all there
+      // is currently) so if it's anything aside from this we just ignore
+      // it.
+      if (event['name'] != 'user_availability_changed') return;
+
+      final payload = event['payload'] as Map<String, dynamic>;
+
+      final userUuid = payload['user_uuid'] as String;
+
+      final colleague = _colleagues.findByUserUuid(userUuid);
+
+      // We are going to hijack this WebSocket and emit an event when we
+      // know our user has changed on the server.
+      if (userUuid == user.uuid) {
+        _eventBus.broadcast(LoggedInUserDataIsStaleEvent());
+      }
+
+      if (colleague == null) return;
+
+      // We don't want to display colleagues that do not have linked
+      // destinations as these are essentially inactive users that do not
+      // have any possible availability status.
+      if (payload['has_linked_destinations'] != true) {
+        _controller.add(_colleagues..remove(colleague));
+        return;
+      }
+
+      _colleagues.replace(
+        original: colleague,
+        replacement: colleague.populateWithAvailability(payload),
+      );
+
+      _controller.add(_colleagues);
+    });
+
+    return _controller.stream;
+  }
+
+  Future<void> _connectToWebSocketServer(
+    User user,
+    Brand brand,
+  ) async {
+    _socket?.close();
+    final url = '${brand.userAvailabilityWsUrl}/${user.client.uuid}';
+
+    logger.info('Attempting connection to UA WebSocket at: $url');
+
+    _socket = await WebSocket.connect(
+      url,
+      headers: {
+        'Authorization': 'Bearer ${user.token}',
+      },
+    );
+  }
+
+  Future<void> stopListeningForAvailability() async =>
+      _socket?.close().then((_) => _socket = null);
+
+  // ignore: use_setters_to_change_properties
+  void updateColleagueList(List<Colleague> colleagues) {
+    _colleagues = colleagues;
+  }
 
   /// This only provides the most basic information about colleagues,
   /// the rest needs to be queried by calling [startListeningForAvailability]
@@ -66,75 +158,6 @@ class ColleaguesRepository with Loggable {
       ),
     ].without(user: user);
   }
-
-  /// Listens to a websocket for availability updates, and will then update
-  /// the provided list of colleagues with the new status and broadcast it
-  /// to the returned stream.
-  Future<Stream<List<Colleague>>> startListeningForAvailability({
-    required User user,
-    required Brand brand,
-    required List<Colleague> colleagues,
-  }) async {
-    if (_socket != null) {
-      await stopListeningForAvailability();
-    }
-
-    final socket = await WebSocket.connect(
-      '${brand.userAvailabilityWsUrl}/${user.client.uuid}',
-      headers: {
-        'Authorization': 'Bearer ${user.token}',
-      },
-    );
-
-    _socket = socket;
-
-    socket.listen((eventString) {
-      final event = jsonDecode(eventString as String);
-
-      // We only care about this type of event for now (and that's all there is
-      // currently) so if it's anything aside from this we just ignore it.
-      if (event['name'] != 'user_availability_changed') return;
-
-      final payload = event['payload'] as Map<String, dynamic>;
-
-      final userUuid = payload['user_uuid'] as String;
-
-      final colleague = colleagues.findByUserUuid(userUuid);
-
-      // We are going to hijack this WebSocket and emit an event when we know
-      // our user has changed on the server.
-      if (userUuid == user.uuid) {
-        _eventBus.broadcast(LoggedInUserDataIsStaleEvent());
-      }
-
-      if (colleague == null) return;
-
-      // We don't want to display colleagues that do not have linked
-      // destinations as these are essentially inactive users that do not
-      // have any possible availability status.
-      if (payload['has_linked_destinations'] != true) {
-        _controller.add(
-          colleagues..remove(colleague),
-        );
-        return;
-      }
-
-      final index = colleagues.indexOf(colleague);
-
-      colleagues.replaceRange(
-        index,
-        index + 1,
-        [colleague.populateWithAvailability(payload)],
-      );
-
-      _controller.add(colleagues);
-    });
-
-    return _controller.stream;
-  }
-
-  Future<void> stopListeningForAvailability() async =>
-      _socket?.close().then((_) => _socket = null);
 }
 
 extension on List<Colleague> {
@@ -145,6 +168,16 @@ extension on List<Colleague> {
 
   Colleague? findByUserUuid(String uuid) =>
       where((colleague) => colleague.id == uuid).firstOrNull;
+
+  void replace({required Colleague original, required Colleague replacement}) {
+    final index = indexOf(original);
+
+    replaceRange(
+      index,
+      index + 1,
+      [replacement],
+    );
+  }
 }
 
 extension on Colleague {
