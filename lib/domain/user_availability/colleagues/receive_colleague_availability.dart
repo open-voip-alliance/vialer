@@ -10,7 +10,7 @@ class ReceiveColleagueAvailability extends UseCase {
   late final _getUser = GetLoggedInUserUseCase();
   late final _storage = dependencyLocator<StorageRepository>();
   late final _colleaguesRepository = dependencyLocator<ColleaguesRepository>();
-  late final _brand = GetBrand();
+  late final _getBrand = GetBrand();
 
   /// Emits a stream of all colleagues with their latest availability status
   /// included.
@@ -40,7 +40,7 @@ class ReceiveColleagueAvailability extends UseCase {
 
     final stream = _colleaguesRepository.startListeningForAvailability(
       user: _getUser(),
-      brand: _brand(),
+      brand: _getBrand(),
       initialColleagues: colleagues,
     );
 
