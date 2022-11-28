@@ -195,7 +195,8 @@ extension on Colleague {
               payload['destination_type'] as String?,
             ),
           ),
-          context: (payload['context'] as List<dynamic>).buildContext(),
+          context: (payload['context'] as List<dynamic>)
+              .buildUserAvailabilityContext(),
         ),
         // We don't get availability updates for voip accounts so we will
         // just leave them as is.
@@ -204,7 +205,7 @@ extension on Colleague {
 }
 
 extension on List<dynamic> {
-  List<ColleagueContext> buildContext() => map(
+  List<ColleagueContext> buildUserAvailabilityContext() => map(
         (e) => ColleagueContext.fromServerValue(
           (e as Map<String, dynamic>)['type'] as String,
         ),
