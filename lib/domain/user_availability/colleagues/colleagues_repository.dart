@@ -133,7 +133,8 @@ class ColleaguesRepository with Loggable {
     return _controller.stream;
   }
 
-  Future<void> stopListeningForAvailability() async {}
+  Future<void> stopListeningForAvailability() async =>
+      _socket?.close().then((_) => _socket = null);
 }
 
 extension on List<Colleague> {
