@@ -18,8 +18,8 @@ class ReceiveColleagueAvailability extends UseCase {
   /// There is no set order so they should be sorted by the consumer.
   ///
   /// Setting [forceFullAvailabilityRefresh] to true will disconnect the
-  /// WebSocket first, this means that the full availability of all users will be
-  /// provided up-front upon reconnecting.
+  /// WebSocket first, this means that the full availability of all users will
+  /// be provided up-front upon reconnecting.
   Stream<List<Colleague>> call({
     bool forceFullAvailabilityRefresh = false,
   }) async* {
