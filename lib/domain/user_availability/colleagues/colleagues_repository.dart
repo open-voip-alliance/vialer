@@ -114,11 +114,6 @@ class ColleaguesRepository with Loggable {
   Future<void> stopListeningForAvailability() async =>
       _socket?.close().then((_) => _socket = null);
 
-  // ignore: use_setters_to_change_properties
-  void updateColleagueList(List<Colleague> colleagues) {
-    _colleagues = colleagues;
-  }
-
   /// This only provides the most basic information about colleagues,
   /// the rest needs to be queried by calling [startListeningForAvailability]
   /// and listening for updates.

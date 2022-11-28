@@ -17,30 +17,24 @@ class ReceiveColleagueAvailability extends UseCase {
   ///
   /// There is no set order so they should be sorted by the consumer.
   ///
-  /// Setting [forceRefresh] will force disconnect the WebSocket first, this
-  /// means that the full availability of all users will be provided up-front
-  /// reconnecting.
-  Stream<List<Colleague>> call({bool forceRefresh = false}) async* {
-    var colleagues = _storage.colleagues;
+  /// Setting [forceFullAvailabilityRefresh] will force disconnect the WebSocket
+  /// first, this means that the full availability of all users will be
+  /// provided up-front reconnecting.
+  Stream<List<Colleague>> call({
+    bool forceFullAvailabilityRefresh = false,
+  }) async* {
+    var cachedColleagues = _storage.colleagues;
 
     // We are first checking if our cache has colleagues, if it does we will
-    // immediately broadcast the contents of the cache before awaiting further
-    // updates.
-    if (colleagues.isNotEmpty) {
-      yield colleagues;
-
-      // If we already have values stored in the cache, we don't want to wait
-      // to fetch them from the server, so instead we immediately return the
-      // value from the cache and then make sure the colleague list is updated
-      // for the web socket eventually.
-      _refreshColleagueCache().then(
-        _colleaguesRepository.updateColleagueList,
-      );
-    } else {
-      colleagues = await _refreshColleagueCache();
+    // immediately broadcast the contents of the cache before fetching
+    // the new list.
+    if (cachedColleagues.isNotEmpty) {
+      yield cachedColleagues;
     }
 
-    if (forceRefresh) {
+    final colleagues = await _refreshColleagueCache();
+
+    if (forceFullAvailabilityRefresh) {
       await _colleaguesRepository.stopListeningForAvailability();
     }
 
