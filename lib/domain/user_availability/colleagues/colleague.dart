@@ -61,9 +61,9 @@ enum ColleagueAvailabilityStatus {
   /// linked to their user AND they are not SIP registered anywhere.
   offline;
 
-  static ColleagueAvailabilityStatus fromServerValue(String value) {
+  static ColleagueAvailabilityStatus fromServerValue(String? value) {
     switch (value) {
-      case 'doNotDisturb':
+      case 'do_not_disturb':
         return ColleagueAvailabilityStatus.doNotDisturb;
       case 'offline':
         return ColleagueAvailabilityStatus.offline;
@@ -96,7 +96,7 @@ enum ColleagueDestinationType {
   fixed,
   none;
 
-  static ColleagueDestinationType fromServerValue(String value) {
+  static ColleagueDestinationType fromServerValue(String? value) {
     switch (value) {
       case 'app_account':
         return ColleagueDestinationType.app;
@@ -117,9 +117,20 @@ enum ColleagueDestinationType {
 /// associated relevant data (e.g. the number that is calling them).
 @freezed
 class ColleagueContext with _$ColleagueContext {
-  const factory ColleagueContext.ringing(String number) = Ringing;
-  const factory ColleagueContext.inCall(String number) = InCall;
+  const factory ColleagueContext.ringing() = Ringing;
+  const factory ColleagueContext.inCall() = InCall;
 
   factory ColleagueContext.fromJson(Map<String, dynamic> json) =>
       _$ColleagueContextFromJson(json);
+
+  static ColleagueContext? fromServerValue(String? value) {
+    switch (value) {
+      case 'in_call':
+        return const ColleagueContext.inCall();
+      case 'ringing':
+        return const ColleagueContext.ringing();
+      default:
+        return null;
+    }
+  }
 }

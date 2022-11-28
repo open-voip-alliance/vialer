@@ -1,4 +1,3 @@
-import 'package:rxdart/rxdart.dart';
 import '../../../dependency_locator.dart';
 import '../../legacy/storage.dart';
 import '../../use_case.dart';
@@ -15,10 +14,6 @@ class ReceiveColleagueAvailability extends UseCase {
   late final _colleagueRepository = dependencyLocator<ColleaguesRepository>();
   late final _brand = GetBrand();
 
-  /// The frequency that we will write the latest user availability data to the
-  /// cache.
-  static const _cacheInterval = Duration(seconds: 15);
-
   /// Emits a stream of all colleagues with their latest availability. These
   /// is no set order so they should be sorted by the consumer.
   Stream<List<Colleague>> call() async* {
@@ -33,25 +28,14 @@ class ReceiveColleagueAvailability extends UseCase {
       colleagues = await _importColleagues();
     }
 
-    final stream = _colleagueRepository
-        .startListeningForAvailability(
-          user: _getUser(),
-          brand: _brand(),
-          colleagues: colleagues,
-        )
-        .asBroadcastStream()
-        .debounceTime(const Duration(seconds: 1));
+    final stream = _colleagueRepository.startListeningForAvailability(
+      user: _getUser(),
+      brand: _brand(),
+      colleagues: colleagues,
+    );
 
-    _regularlyCacheColleagues(stream);
-
-    await for (final colleagues in stream) {
+    await for (final colleagues in await stream) {
       yield colleagues;
     }
-  }
-
-  void _regularlyCacheColleagues(Stream stream) {
-    stream.debounceTime(_cacheInterval).listen((colleagues) {
-      _storage.colleagues = colleagues as List<Colleague>;
-    });
   }
 }

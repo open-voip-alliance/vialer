@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:dartx/dartx.dart';
@@ -17,6 +18,8 @@ class ColleaguesRepository with Loggable {
   final EventBus _eventBus;
 
   WebSocket? _socket;
+
+  late final _controller = StreamController<List<Colleague>>();
 
   ColleaguesRepository(
     this._service,
@@ -67,11 +70,11 @@ class ColleaguesRepository with Loggable {
   /// Listens to a websocket for availability updates, and will then update
   /// the provided list of colleagues with the new status and broadcast it
   /// to the returned stream.
-  Stream<List<Colleague>> startListeningForAvailability({
+  Future<Stream<List<Colleague>>> startListeningForAvailability({
     required User user,
     required Brand brand,
     required List<Colleague> colleagues,
-  }) async* {
+  }) async {
     if (_socket != null) {
       await stopListeningForAvailability();
     }
@@ -85,12 +88,12 @@ class ColleaguesRepository with Loggable {
 
     _socket = socket;
 
-    await for (final eventString in socket) {
+    socket.listen((eventString) {
       final event = jsonDecode(eventString as String);
 
       // We only care about this type of event for now (and that's all there is
       // currently) so if it's anything aside from this we just ignore it.
-      if (event['name'] != 'user_availability_changed') continue;
+      if (event['name'] != 'user_availability_changed') return;
 
       final payload = event['payload'] as Map<String, dynamic>;
 
@@ -104,25 +107,33 @@ class ColleaguesRepository with Loggable {
         _eventBus.broadcast(LoggedInUserDataIsStaleEvent());
       }
 
-      if (colleague == null) continue;
+      if (colleague == null) return;
 
       // We don't want to display colleagues that do not have linked
       // destinations as these are essentially inactive users that do not
       // have any possible availability status.
       if (payload['has_linked_destinations'] != true) {
-        colleagues.remove(colleague);
-        yield colleagues;
+        _controller.add(
+          colleagues..remove(colleague),
+        );
         return;
       }
 
-      yield colleagues
-        ..remove(colleague)
-        ..add(colleague.populateWithAvailability(payload));
-    }
+      final index = colleagues.indexOf(colleague);
+
+      colleagues.replaceRange(
+        index,
+        index + 1,
+        [colleague.populateWithAvailability(payload)],
+      );
+
+      _controller.add(colleagues);
+    });
+
+    return _controller.stream;
   }
 
-  Future<void> stopListeningForAvailability() async =>
-      _socket?.close().then((value) => _socket = null);
+  Future<void> stopListeningForAvailability() async {}
 }
 
 extension on List<Colleague> {
@@ -142,20 +153,26 @@ extension on Colleague {
       map(
         (colleague) => colleague.copyWith(
           status: ColleagueAvailabilityStatus.fromServerValue(
-            payload['availability'] as String,
+            payload['availability'] as String?,
           ),
           destination: ColleagueDestination(
             number: payload['internal_number'].toString(),
             type: ColleagueDestinationType.fromServerValue(
-              payload['destination_type'] as String,
+              payload['destination_type'] as String?,
             ),
           ),
-          // It doesn't seem like context is implemented at all currently so
-          // it will just be an empty array for now.
-          context: [],
+          context: (payload['context'] as List<dynamic>).buildContext(),
         ),
         // We don't get availability updates for voip accounts so we will
         // just leave them as is.
         unconnectedVoipAccount: (voipAccount) => voipAccount,
       );
+}
+
+extension on List<dynamic> {
+  List<ColleagueContext> buildContext() => map(
+        (e) => ColleagueContext.fromServerValue(
+          (e as Map<String, dynamic>)['type'] as String,
+        ),
+      ).filterNotNull().toList();
 }
