@@ -1,5 +1,4 @@
 import '../../../dependency_locator.dart';
-import '../../authentication/authentication_repository.dart';
 import '../../use_case.dart';
 import '../../user/get_brand.dart';
 import '../../user/get_build_info.dart';
