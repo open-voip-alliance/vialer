@@ -11,6 +11,7 @@ import '../../../resources/theme.dart';
 import '../../../routes.dart';
 import '../../../util/conditional_capitalization.dart';
 import '../../../widgets/stylized_button.dart';
+import '../business_availability/temporary_redirect/setting_tile.dart';
 import '../util/stylized_snack_bar.dart';
 import '../widgets/header.dart';
 import '../widgets/user_data_refresher/cubit.dart';
@@ -119,9 +120,10 @@ class _SettingsPageState extends State<SettingsPage> {
                               children: [
                                 SettingTile.useVoip(user.settings),
                                 if (user.settings.get(CallSetting.useVoip) &&
-                                    user.permissions.canUseMobileNumberFallback)
+                                    user.permissions
+                                        .canViewMobileNumberFallbackStatus)
                                   SettingTile.useMobileNumberAsFallback(
-                                    user.settings,
+                                    user,
                                   ),
                                 if (context.isIOS)
                                   SettingTile.showCallsInNativeRecents(
@@ -137,6 +139,12 @@ class _SettingsPageState extends State<SettingsPage> {
                                 SettingTile.showClientCalls(user),
                               ],
                             ),
+                            if (user.permissions.canChangeTemporaryRedirect)
+                              SettingTileCategory.temporaryRedirect(
+                                children: [
+                                  const TemporaryRedirectSettingTile(),
+                                ],
+                              ),
                             SettingTileCategory.portalLinks(
                               children: [
                                 SettingLinkTile.calls(),

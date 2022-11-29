@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 
+import '../business_availability/temporary_redirect/temporary_redirect.dart';
 import '../voicemail/voicemail_account.dart';
 import '../voipgrid/client_voip_config.dart';
 import 'settings/call_setting.dart';
@@ -16,7 +17,7 @@ class Client extends Equatable {
   final String name;
   final Uri url;
 
-  @JsonKey(toJson: ClientVoipConfig.toJson, fromJson: ClientVoipConfig.fromJson)
+  @JsonKey(toJson: ClientVoipConfig.toJson, fromJson: _clientVoipConfigFromJson)
   final ClientVoipConfig voip;
 
   /// This represents the business numbers that are available to the client
@@ -26,6 +27,8 @@ class Client extends Equatable {
 
   final Iterable<VoicemailAccount> voicemailAccounts;
 
+  final TemporaryRedirect? currentTemporaryRedirect;
+
   const Client({
     required this.id,
     required this.uuid,
@@ -34,6 +37,7 @@ class Client extends Equatable {
     required this.voip,
     this.outgoingNumbers = const [],
     this.voicemailAccounts = const [],
+    this.currentTemporaryRedirect,
   });
 
   @override
@@ -55,6 +59,7 @@ class Client extends Equatable {
     ClientVoipConfig? voip,
     Iterable<OutgoingNumber>? outgoingNumbers,
     Iterable<VoicemailAccount>? voicemailAccounts,
+    TemporaryRedirect? currentTemporaryRedirect,
   }) {
     return Client(
       id: id ?? this.id,
@@ -64,6 +69,8 @@ class Client extends Equatable {
       voip: voip ?? this.voip,
       outgoingNumbers: outgoingNumbers ?? this.outgoingNumbers,
       voicemailAccounts: voicemailAccounts ?? this.voicemailAccounts,
+      currentTemporaryRedirect:
+          currentTemporaryRedirect ?? this.currentTemporaryRedirect,
     );
   }
 
@@ -74,3 +81,9 @@ class Client extends Equatable {
 
 List<String> _outgoingNumbersToJson(Iterable<OutgoingNumber> numbers) =>
     numbers.map(OutgoingNumber.toJson).toList();
+
+ClientVoipConfig _clientVoipConfigFromJson(Map<String, dynamic>? json) {
+  if (json == null) return ClientVoipConfig.fallback();
+
+  return ClientVoipConfig.fromJson(json);
+}

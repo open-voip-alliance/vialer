@@ -104,14 +104,12 @@ extension on DateTime {
         second,
       );
 
-  DateTime get endOfMonth => DateTime(
-        lastDayOfMonth.year,
-        lastDayOfMonth.month,
-        lastDayOfMonth.day,
-        23,
-        59,
-        59,
-        999,
+  DateTime get endOfMonth => copyWith(
+        day: daysInMonth,
+        hour: 23,
+        minute: 59,
+        second: 59,
+        microsecond: 999,
       );
 }
 
