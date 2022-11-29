@@ -9,8 +9,8 @@ import '../../feedback/increment_app_rating_survey_action_count.dart';
 import '../../legacy/storage.dart';
 import '../../metrics/metrics.dart';
 import '../../use_case.dart';
-import '../../user/get_latest_logged_in_user.dart';
 import '../../user/get_logged_in_user.dart';
+import '../refresh_user.dart';
 import '../user.dart';
 import 'app_setting.dart';
 import 'call_setting.dart';
@@ -35,7 +35,7 @@ class ChangeSettingsUseCase extends UseCase with Loggable {
   final _incrementAppRatingActionCount =
       IncrementAppRatingSurveyActionCountUseCase();
   final _getCurrentUser = GetLoggedInUserUseCase();
-  final _getLatestUser = GetLatestLoggedInUserUseCase();
+  final _refreshUser = RefreshUser();
 
   final _listeners = <SettingChangeListener>[
     UpdateAvailabilityListener(),
@@ -88,20 +88,17 @@ class ChangeSettingsUseCase extends UseCase with Loggable {
       // Nothing has changed, return.
       if (diff.isEmpty) return const ChangeSettingsResult();
 
+      await _notifyListeners(
+        user,
+        skipLogging,
+        needSync,
+        failed,
+        diff.entries,
+        before: true,
+      );
+
       return null; // Not done yet.
     });
-
-    // The listeners must be notified outside of the synchronized tasks,
-    // because they might start an [EditUser] task themselves, causing a
-    // deadlock.
-    await _notifyListeners(
-      user,
-      skipLogging,
-      needSync,
-      failed,
-      diff.entries,
-      before: true,
-    );
 
     if (intermediateResult != null) {
       return intermediateResult;
@@ -110,61 +107,63 @@ class ChangeSettingsUseCase extends UseCase with Loggable {
     // Retrieve the latest user with latest remote setting values, and
     // copy them into the settings result.
     if (needSync.isNotEmpty) {
-      user = await _getLatestUser();
-      settings = settings.copyFrom(user.settings.getAll(needSync));
+      final freshUser = await _refreshUser();
+
+      // Technically freshUser should never be null, but doing a check to avoid
+      // a rare exception.
+      if (freshUser != null) {
+        user = freshUser;
+        settings = settings.copyFrom(user.settings.getAll(needSync));
+      }
     }
 
-    await SynchronizedTask<void>.named(
+    return await SynchronizedTask<ChangeSettingsResult>.named(
       editUserTask,
       SynchronizedTaskMode.queue,
     ).run(() async {
       _storageRepository.user = user.copyWith(
         settings: user.settings.copyFrom(settings),
       );
-    });
 
-    // We do this after storing the settings so setting checks work.
-    //
-    // The listeners must be notified outside of the synchronized tasks,
-    // because they might start an [EditUser] task themselves, causing a
-    // deadlock.
-    await _notifyListeners(
-      user,
-      skipLogging,
-      needSync,
-      failed,
-      getChanged().entries,
-      before: false,
-    );
+      // We do this after storing the settings so setting checks work.
+      await _notifyListeners(
+        user,
+        skipLogging,
+        needSync,
+        failed,
+        getChanged().entries,
+        before: false,
+      );
 
-    if (diff.hasAnyKeyOf([
-      CallSetting.usePhoneRingtone,
-      AppSetting.showCallsInNativeRecents,
-    ])) {
-      await _refreshVoip();
-    }
-
-    for (final entry in getChanged().entries) {
-      final key = entry.key;
-      final value = entry.value;
-      final oldValue = currentSettings.get(key);
-
-      if (!skipLogging.contains(key)) {
-        logger.info('Set $key to $value');
+      if (diff.hasAnyKeyOf([
+        CallSetting.usePhoneRingtone,
+        AppSetting.showCallsInNativeRecents,
+      ])) {
+        await _refreshVoip();
       }
 
-      _metricsRepository.trackSettingChange(key, value);
+      for (final entry in getChanged().entries) {
+        final key = entry.key;
+        final value = entry.value;
+        final oldValue = currentSettings.get(key);
 
-      _eventBus.broadcast(
-        SettingChanged(key, oldValue, value),
+        if (!skipLogging.contains(key)) {
+          logger.info('Set $key to $value');
+        }
+
+        _metricsRepository.trackSettingChange(key, value);
+
+        _eventBus.broadcast(
+          SettingChanged(key, oldValue, value),
+        );
+      }
+
+      _incrementAppRatingActionCount();
+      return ChangeSettingsResult(
+        changed: diff.keys.where((k) => !failed.contains(k)),
+        failed: failed,
       );
-    }
-
-    _incrementAppRatingActionCount();
-    return ChangeSettingsResult(
-      changed: diff.keys.where((k) => !failed.contains(k)),
-      failed: failed,
-    );
+    });
   }
 
   Future<void> _notifyListeners(

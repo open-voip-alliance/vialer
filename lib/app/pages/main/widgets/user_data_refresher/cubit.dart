@@ -6,8 +6,8 @@ import '../../../../../domain/authentication/get_is_logged_in_somewhere_else.dar
 import '../../../../../domain/authentication/is_authenticated.dart';
 import '../../../../../domain/authentication/logout.dart';
 import '../../../../../domain/calling/voip/register_to_voip_middleware.dart';
-import '../../../../../domain/user/get_latest_logged_in_user.dart';
 import '../../../../../domain/user/get_logged_in_user.dart';
+import '../../../../../domain/user/refresh_user.dart';
 import '../../../../util/loggable.dart';
 import 'state.dart';
 
@@ -17,7 +17,7 @@ class UserDataRefresherCubit extends Cubit<UserDataRefresherState>
     with Loggable {
   final _isAuthenticated = IsAuthenticated();
   final _getLoggedInUser = GetLoggedInUserUseCase();
-  final _getLatestUser = GetLatestLoggedInUserUseCase();
+  final _refreshUser = RefreshUser();
   final _registerToVoipMiddleware = RegisterToVoipMiddlewareUseCase();
   final _isLoggedInSomewhereElse = GetIsLoggedInSomewhereElseUseCase();
   final _logout = LogoutUseCase();
@@ -38,7 +38,7 @@ class UserDataRefresherCubit extends Cubit<UserDataRefresherState>
       return;
     }
 
-    final newUser = await _getLatestUser();
+    final newUser = await _refreshUser();
 
     await _registerToVoipMiddleware();
     emit(const NotRefreshing());

@@ -22,7 +22,9 @@ import 'settings/call_setting.dart';
 import 'settings/settings.dart';
 import 'user.dart';
 
-class GetLatestUserUseCase extends UseCase with Loggable {
+/// With the exception of `UserDataRefresherCubit`, should generally not
+/// be called outside of a few select use cases.
+class RefreshUser extends UseCase with Loggable {
   final _storageRepository = dependencyLocator<StorageRepository>();
   final _authRepository = dependencyLocator<AuthRepository>();
   final _destinationRepository = dependencyLocator<DestinationRepository>();
