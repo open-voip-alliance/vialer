@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:dartx/dartx.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../user/client.dart';
@@ -8,6 +9,7 @@ import '../user/settings/app_setting.dart';
 import '../user/settings/call_setting.dart';
 import '../user/settings/settings.dart';
 import '../user/user.dart';
+import '../user_availability/colleagues/colleague.dart';
 import '../voipgrid/availability.dart';
 import '../voipgrid/client_voip_config.dart';
 import '../voipgrid/user_voip_config.dart';
@@ -201,6 +203,27 @@ class StorageRepository {
         _previousSessionSettingsKey,
         value,
         Settings.toJson,
+      );
+
+  static const _colleaguesKey = 'colleagues';
+
+  List<Colleague> get colleagues {
+    final jsonString = _preferences.getString(_colleaguesKey);
+
+    if (jsonString.isNullOrBlank) return const [];
+
+    try {
+      return (jsonDecode(jsonString!) as List<dynamic>)
+          .map((e) => Colleague.fromJson(e as Map<String, dynamic>))
+          .toList();
+    } on Exception {
+      return const [];
+    }
+  }
+
+  set colleagues(List<Colleague> colleagues) => _preferences.setOrRemoveString(
+        _colleaguesKey,
+        jsonEncode(colleagues),
       );
 
   Future<void> clear() => _preferences.clear();

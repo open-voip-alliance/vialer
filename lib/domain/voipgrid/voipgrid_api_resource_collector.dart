@@ -57,6 +57,11 @@ class VoipgridApiResourceCollector with Loggable {
 
     final response = await requester(page);
 
+    // We sometimes have to query subsequent pages to check if there are more
+    // records. In this situation we don't want to log anything because it is
+    // a valid scenario.
+    if (response.statusCode == 404 && page != 1) return;
+
     if (!response.isSuccessful) {
       logger.warning(
         'Request failed with code: ${response.statusCode}',
@@ -64,9 +69,20 @@ class VoipgridApiResourceCollector with Loggable {
       return;
     }
 
-    final paginatedResponse = _PaginatedVoipgridApiResponse.fromJson(
-      response.body as Map<String, dynamic>,
-    );
+    late final _PaginatedVoipgridApiResponse paginatedResponse;
+
+    if (response.body is Map) {
+      paginatedResponse = _PaginatedVoipgridApiResponse.fromJson(
+        response.body as Map<String, dynamic>,
+      );
+    } else {
+      // This will handle APIs that allow for this type of pagination, but
+      // don't return an explicit next field. We have to query the next page
+      // and see if a 404 is given.
+      paginatedResponse = _PaginatedVoipgridApiResponse.ambiguous(
+        items: response.body as List<dynamic>,
+      );
+    }
 
     for (final vc in paginatedResponse.items) {
       yield vc;
@@ -92,6 +108,11 @@ class _PaginatedVoipgridApiResponse with _$_PaginatedVoipgridApiResponse {
 
   factory _PaginatedVoipgridApiResponse.fromJson(Map<String, dynamic> json) =>
       _$_PaginatedVoipgridApiResponseFromJson(json);
+
+  factory _PaginatedVoipgridApiResponse.ambiguous({
+    required List<dynamic> items,
+  }) =>
+      _PaginatedVoipgridApiResponse(next: ' ', items: items);
 
   bool get hasMore => next != null;
 }
