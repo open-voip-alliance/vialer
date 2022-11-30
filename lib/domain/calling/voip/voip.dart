@@ -14,7 +14,6 @@ import '../../user/get_logged_in_user.dart';
 import '../../user/get_login_time.dart';
 import '../../user/info/build_info.dart';
 import '../../user/info/operating_system_info_repository.dart';
-import '../../user/refresh_user.dart';
 import '../../user/settings/app_setting.dart';
 import '../../user/settings/call_setting.dart';
 import '../../user/user.dart';
@@ -367,9 +366,9 @@ class VoipRepository with Loggable {
 
   Future<void> answerCall() async => (await _phoneLib).actions.answer();
 
-  Future<void> refreshPreferences() async =>
+  Future<void> refreshPreferences(User user) async =>
       (await _phoneLib).updatePreferences(
-        await _createPreferences(await RefreshUser()().then((u) => u!)),
+        await _createPreferences(user),
       );
 
   Future<Call?> get activeCall async => (await _phoneLib).calls.active;

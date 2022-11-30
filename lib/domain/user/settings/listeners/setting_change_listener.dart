@@ -5,6 +5,9 @@ import 'package:meta/meta.dart';
 import '../../../user/user.dart';
 import '../settings.dart';
 
+/// A listener that can execute any side effects based on a setting change.
+///
+/// It must not call any `[EditUser]` task, even indirectly.
 abstract class SettingChangeListener<T extends Object> {
   /// Which key to listen to.
   SettingKey<T> get key;

@@ -3,7 +3,7 @@ import 'dart:async';
 import '../../../app/util/loggable.dart';
 import '../../../app/util/synchronized_task.dart';
 import '../../../dependency_locator.dart';
-import '../../calling/voip/refresh_voip.dart';
+import '../../calling/voip/voip.dart';
 import '../../event/event_bus.dart';
 import '../../feedback/increment_app_rating_survey_action_count.dart';
 import '../../legacy/storage.dart';
@@ -28,10 +28,10 @@ import 'settings.dart';
 class ChangeSettingsUseCase extends UseCase with Loggable {
   final _storageRepository = dependencyLocator<StorageRepository>();
   final _metricsRepository = dependencyLocator<MetricsRepository>();
+  final _voipRepository = dependencyLocator<VoipRepository>();
 
   final _eventBus = dependencyLocator<EventBus>();
 
-  final _refreshVoip = RefreshVoipUseCase();
   final _incrementAppRatingActionCount =
       IncrementAppRatingSurveyActionCountUseCase();
   final _getCurrentUser = GetLoggedInUserUseCase();
@@ -49,6 +49,11 @@ class ChangeSettingsUseCase extends UseCase with Loggable {
 
   // The function is split into two [EditUser] tasks, because in between
   // we have to get the latest user again.
+  //
+  // If the settings page ever appears "broken" (settings are only changed
+  // in the UI but have no effect), it means some code is called that
+  // launches an [EditUser] task while calling this use case (most likely
+  // the culprit is calling RefreshUser).
   Future<ChangeSettingsResult> call(Settings settings) async {
     // These variables have to be defined outside of the tasks, to share
     // state between tasks.
@@ -139,7 +144,7 @@ class ChangeSettingsUseCase extends UseCase with Loggable {
         CallSetting.usePhoneRingtone,
         AppSetting.showCallsInNativeRecents,
       ])) {
-        await _refreshVoip();
+        await _voipRepository.refreshPreferences(user);
       }
 
       for (final entry in getChanged().entries) {
