@@ -210,14 +210,14 @@ class StorageRepository {
   List<Colleague> get colleagues {
     final jsonString = _preferences.getString(_colleaguesKey);
 
-    if (jsonString.isNullOrBlank) return [];
+    if (jsonString.isNullOrBlank) return const [];
 
     try {
       return (jsonDecode(jsonString!) as List<dynamic>)
           .map((e) => Colleague.fromJson(e as Map<String, dynamic>))
           .toList();
     } on Exception {
-      return [];
+      return const [];
     }
   }
 
