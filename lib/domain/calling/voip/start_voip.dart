@@ -4,7 +4,6 @@ import '../../use_case.dart';
 import '../../user/get_brand.dart';
 import '../../user/get_build_info.dart';
 import '../../user/get_logged_in_user.dart';
-import '../../user/user.dart';
 import '../../voipgrid/user_voip_config.dart';
 import 'register_to_voip_middleware.dart';
 import 'voip.dart';
@@ -38,8 +37,6 @@ class StartVoipUseCase extends UseCase {
     await _registerToMiddleware();
   }
 
-
-
   /// Update the VoIP config with the correct values if necessary.
   Future<void> _updateVoipConfig(UserVoipConfig config) async {
     if (config.useOpus && config.useEncryption) return;
@@ -49,5 +46,4 @@ class StartVoipUseCase extends UseCase {
       useOpus: true,
     );
   }
-
 }
