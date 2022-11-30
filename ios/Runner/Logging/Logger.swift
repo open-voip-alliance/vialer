@@ -57,9 +57,10 @@ class Logger: NSObject, NativeLogging {
     }
     
     func uploadPendingLogsBatchSize(_ batchSize: NSNumber, packageName: String, appVersion: String, remoteLoggingId: String, url: String, logToken: String, completion: @escaping (FlutterError?) -> Void) {
-        var logs = [String: Any]()
-        let dbLogs = loggingDatabase.getLogs(batchSize: batchSize)
         
+        var logs = [Any]()
+        let dbLogs = loggingDatabase.getLogs(batchSize: batchSize)
+
         for dbLog in dbLogs {
             let message = [
                 "user": remoteLoggingId,
@@ -69,23 +70,24 @@ class Logger: NSObject, NativeLogging {
                 "app_version": appVersion,
             ]
             
-            logs[String(dbLog.log_time*1000*1000)] = message
+            let log: [Any] = ["\(dbLog.log_time*1000*1000)", message]
+            logs.append(log)
         }
-        
+
         if (logs.isEmpty) {
             debugPrint("No logs to upload to Loki.")
             completion(nil)
             return
         }
-        
-        let data: [String : Any] = [
+
+        let lokiBatch: [String : Any] = [
             "token": logToken,
             "app_id": packageName,
             "logs": logs,
         ]
         
         var request = createLokiRequest(url: url)
-        request.httpBody = try! JSONSerialization.data(withJSONObject: data)
+        request.httpBody = try! JSONSerialization.data(withJSONObject: lokiBatch)
         
         AF.request(request).response { (response) -> Void in
             if response.error != nil {
@@ -124,7 +126,7 @@ class Logger: NSObject, NativeLogging {
     }
     
     private func createLokiRequest(url: String) -> URLRequest {
-        var request = URLRequest(url: NSURL(string: url)! as URL)
+        var request = URLRequest(url: URL(string: url)!)
 
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
