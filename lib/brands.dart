@@ -13,6 +13,7 @@ const brands = '''
     "encryptedSipUrl": "sip.encryptedsip.com",
     "unencryptedSipUrl": "sipproxy.voipgrid.nl",
     "businessAvailabilityUrl": "https://api.prod.holodeck.spindle.dev/business-availability/clients/",
+    "userAvailabilityWsUrl": "wss://api.prod.holodeck.spindle.dev/user-availability-ws/useravailability-ws",
     "privacyPolicyUrl": "https://vialerapp.com/privacy/"
   },
   {
@@ -26,6 +27,7 @@ const brands = '''
     "encryptedSipUrl": "sip.encryptedsip.com",
     "unencryptedSipUrl": "sipproxy.voipgrid.nl",
     "businessAvailabilityUrl": "https://api.prod.holodeck.spindle.dev/business-availability/clients/",
+    "userAvailabilityWsUrl": "wss://api.prod.holodeck.spindle.dev/user-availability-ws/useravailability-ws",
     "privacyPolicyUrl": "https://www.voys.nl/app-privacy/"
   },
   {
@@ -38,6 +40,7 @@ const brands = '''
     "encryptedSipUrl": "staging.encryptedsip.com",
     "unencryptedSipUrl": "sipproxy-staging.voipgrid.nl",
     "businessAvailabilityUrl": "https://api.stag.holodeck.spindle.dev/business-availability/clients/",
+    "userAvailabilityWsUrl": "wss://api.stag.holodeck.spindle.dev/user-availability-ws/useravailability-ws",
     "privacyPolicyUrl": "https://vialerapp.com/privacy/"
   },
   {
@@ -50,6 +53,7 @@ const brands = '''
     "encryptedSipUrl": "sip.encryptedsip.com",
     "unencryptedSipUrl": "sipproxy.voipgrid.nl",
     "businessAvailabilityUrl": "https://api.prod.holodeck.spindle.dev/business-availability/clients/",
+    "userAvailabilityWsUrl": "wss://api.prod.holodeck.spindle.dev/user-availability-ws/useravailability-ws",
     "privacyPolicyUrl": "https://verbonden.nl/app/privacy"
   },
   {
@@ -62,6 +66,7 @@ const brands = '''
     "encryptedSipUrl": "sip-ams.encryptedsip.com",
     "unencryptedSipUrl": "sipproxy.voipgrid.nl",
     "businessAvailabilityUrl": "https://api.prod.holodeck.spindle.dev/business-availability/clients/",
+    "userAvailabilityWsUrl": "wss://api.prod.holodeck.spindle.dev/user-availability-ws/useravailability-ws",
     "privacyPolicyUrl": "https://bellenmetannabel.nl/app/uploads/Terms-Of-Use-And-Privacy.pdf"
   }
 ]
