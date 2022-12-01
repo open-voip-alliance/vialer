@@ -170,15 +170,30 @@ class AuthRepository with Loggable {
   Future<bool> setUseMobileNumberAsFallback(
     User user, {
     required bool enable,
-  }) async =>
-      _service.updateUserSettings(
-          clientId: user.client.id.toString(),
-          userId: user.uuid,
-          body: {
-            'app': {
-              'use_mobile_number_as_fallback': enable,
-            }
-          }).then((response) => response.isSuccessful);
+  }) async {
+    final response = await _service.updateUserSettings(
+        clientId: user.client.id.toString(),
+        userId: user.uuid,
+        body: {
+          'app': {
+            'use_mobile_number_as_fallback': enable,
+          }
+        });
+
+    logFailedResponse(response);
+
+    // There is a bug when using the above API that disables encryption on
+    // the voip account, so when changing this setting we need to manually
+    // enable it again.
+    //
+    // TODO: Remove this when the webapp bug is fixed.
+    await updateAppAccount(
+      useOpus: true,
+      useEncryption: true,
+    );
+
+    return response.isSuccessful;
+  }
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake)
