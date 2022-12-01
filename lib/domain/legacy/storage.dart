@@ -140,15 +140,6 @@ class StorageRepository {
   set lastInstalledVersion(String? version) =>
       _preferences.setOrRemoveString(_lastInstalledVersionKey, version);
 
-  /// We store whether the Recent page was shown, to display a dialog on the
-  /// first show explaining where to find company calls.
-  static const _shownRecentCallsKey = 'shown_recent_calls';
-
-  bool? get shownRecentCalls => _preferences.getBool(_shownRecentCallsKey);
-
-  set shownRecentCalls(bool? shownRecents) =>
-      _preferences.setOrRemoveBool(_shownRecentCallsKey, shownRecents);
-
   static const _isLoggedInSomewhereElseKey = 'is_logged_in_somewhere_else';
 
   bool? get isLoggedInSomewhereElse =>
