@@ -171,26 +171,39 @@ class AuthRepository with Loggable {
     User user, {
     required bool enable,
   }) async {
+    final settingsResponse = await _service.getUserSettings(
+      clientId: user.client.id.toString(),
+      userId: user.uuid,
+    );
+
+    if (!settingsResponse.isSuccessful) {
+      logFailedResponse(
+        settingsResponse,
+        name: 'Fetching current user to update it',
+      );
+      return false;
+    }
+
+    final app = (settingsResponse.body as Map<String, dynamic>)['app'];
+
+    // This API requires us to provide all the content, rather than being able
+    // to patch the nested objects. This is why we must perform the request
+    // before to fetch the latest data.
     final response = await _service.updateUserSettings(
-        clientId: user.client.id.toString(),
-        userId: user.uuid,
-        body: {
-          'app': {
-            'use_mobile_number_as_fallback': enable,
+      clientId: user.client.id.toString(),
+      userId: user.uuid,
+      body: {
+        'app': {
+          'mobile_number': app['mobile_number'],
+          'use_mobile_number_as_fallback': enable,
+          'voip_account': {
+            'id': app['voip_account']['id'],
           }
-        });
+        }
+      },
+    );
 
     logFailedResponse(response);
-
-    // There is a bug when using the above API that disables encryption on
-    // the voip account, so when changing this setting we need to manually
-    // enable it again.
-    //
-    // TODO: Remove this when the webapp bug is fixed.
-    await updateAppAccount(
-      useOpus: true,
-      useEncryption: true,
-    );
 
     return response.isSuccessful;
   }
