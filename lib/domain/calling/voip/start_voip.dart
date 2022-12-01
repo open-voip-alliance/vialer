@@ -25,7 +25,7 @@ class StartVoipUseCase extends UseCase {
       throw VoipNotAllowedException();
     }
 
-    await _updateVoipConfig(user.voip!);
+    await _updateRemoteVoipConfiguration(user.voip!);
 
     await _voipRepository.initializeAndStart(
       user: user,
@@ -37,13 +37,10 @@ class StartVoipUseCase extends UseCase {
     await _registerToMiddleware();
   }
 
-  /// Update the VoIP config with the correct values if necessary.
-  Future<void> _updateVoipConfig(UserVoipConfig config) async {
-    if (config.useOpus && config.useEncryption) return;
-
-    await _authRepository.updateAppAccount(
-      useEncryption: true,
-      useOpus: true,
-    );
-  }
+  /// Ensures the voip account on the server is configured as we expect.
+  Future<void> _updateRemoteVoipConfiguration(UserVoipConfig config) =>
+      _authRepository.updateAppAccount(
+        useEncryption: true,
+        useOpus: true,
+      );
 }
