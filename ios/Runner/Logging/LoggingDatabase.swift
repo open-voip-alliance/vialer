@@ -6,9 +6,22 @@ class LoggingDatabase {
     let dbPath = "logging_native_db.sqlite"
     let tableName = "log_events"
     
-    lazy var db: OpaquePointer = {
-        return openDatabase()!
-    }()
+    /// The raw database instance, this should ONLY be accessed via [db].
+    private var sqliteDb: OpaquePointer?
+    
+    /// The safe database instance, should always be used for accessing the database.
+    private var db: OpaquePointer? {
+        if let db = sqliteDb {
+            return db
+        }
+            
+        if let db = openDatabase() {
+            sqliteDb = db
+            return db
+        }
+        
+        return nil
+    }
     
     //This will just open the database and will not create it if it does not already exist
     private func openDatabase() -> OpaquePointer? {
@@ -26,6 +39,10 @@ class LoggingDatabase {
     }
     
     func insertLog(message:String, logLevel: LogLevel = .info, loggerName:String) {
+        guard let db = self.db else {
+            return
+        }
+        
         let insertStatementString = "INSERT INTO \(tableName) (id, log_time, level, name, message) VALUES (?, ?, ?, ?, ?);"
         var insertStatement: OpaquePointer? = nil
                 
@@ -45,6 +62,10 @@ class LoggingDatabase {
     }
     
     func getLogs(batchSize: NSNumber) -> [LogEvent] {
+        guard let db = self.db else {
+            return []
+        }
+        
         let queryStatementString = "SELECT * FROM \(tableName) LIMIT \(batchSize.stringValue);"
         var queryStatement: OpaquePointer? = nil
         var logs : [LogEvent] = []
@@ -66,6 +87,10 @@ class LoggingDatabase {
     }
     
     func deleteLog(id:Int) {
+        guard let db = self.db else {
+            return
+        }
+        
         let deleteStatementString = "DELETE FROM \(tableName) WHERE Id = ?;"
         var deleteStatement: OpaquePointer? = nil
         if sqlite3_prepare_v2(db, deleteStatementString, -1, &deleteStatement, nil) == SQLITE_OK {
@@ -80,6 +105,10 @@ class LoggingDatabase {
     }
     
     func deleteLogs(keepPastDay: Bool) {
+        guard let db = self.db else {
+            return
+        }
+        
         var deleteStatementString = "DELETE FROM \(tableName);"
         let pastDayDateInMilSecs = Int64(Date().timeIntervalSince1970.rounded() - (60 * 60)) * 1000
         if (keepPastDay) {
