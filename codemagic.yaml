@@ -128,6 +128,7 @@ custom: # Custom properties to make workflows cleaner
         echo "flutter.sdk=$HOME/programs/flutter" > "$FCI_BUILD_DIR/android/local.properties"
         echo $ANDROID_FIREBASE_SECRET | base64 --decode > $FCI_BUILD_DIR/android/app/google-services.json
         echo $FCI_KEYSTORE | base64 --decode > $FCI_KEYSTORE_PATH
+        echo "BUILD_NR=$BUILD_NR"
         flutter build appbundle --release --target=lib/app/main.dart --build-number=$BUILD_NR -v --dart-define BRAND=$BRAND --dart-define SEGMENT_ANDROID_KEY=$SEGMENT_ANDROID_WRITE_KEY
     - &build_universal_apk_from_aab
       name: Building "Universal APK" (.apk) for Android
