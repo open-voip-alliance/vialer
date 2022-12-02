@@ -3,11 +3,11 @@ custom: # Custom properties to make workflows cleaner
     - &use_project_build_number
       name: Use project build number
       script: |
-        export BUILD_NR=$PROJECT_BUILD_NUMBER
+        echo "BUILD_NR=$PROJECT_BUILD_NUMBER" >> $CM_ENV
     - &use_workflow_build_number
       name: Use workflow build number
       script: |
-        export BUILD_NR=$BUILD_NUMBER
+        echo "BUILD_NR=$BUILD_NUMBER" >> $CM_ENV
     - &analyze
       name: Analyzing the codebase
       script: |
