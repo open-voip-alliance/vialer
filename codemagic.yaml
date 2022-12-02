@@ -3,11 +3,11 @@ custom: # Custom properties to make workflows cleaner
     - &use_project_build_number
       name: Use project build number
       script: |
-        BUILD_NR=$PROJECT_BUILD_NUMBER
+        export BUILD_NR=$PROJECT_BUILD_NUMBER
     - &use_workflow_build_number
       name: Use workflow build number
       script: |
-        BUILD_NR=$BUILD_NUMBER
+        export BUILD_NR=$BUILD_NUMBER
     - &analyze
       name: Analyzing the codebase
       script: |
