@@ -115,7 +115,6 @@ class Logger(context: Context) : Pigeon.NativeLogging {
                         "logs": $logsJson
                     }
                     """.trimIndent()
-
                 val response = httpClient
                     .newCall(
                         Request.Builder()
