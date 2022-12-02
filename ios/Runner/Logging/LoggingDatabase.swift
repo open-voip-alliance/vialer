@@ -2,20 +2,13 @@ import Foundation
 import sqlite3
 
 class LoggingDatabase {
-    init() {
-        establishDatabaseConnection()
-    }
     
     let dbPath = "logging_native_db.sqlite"
     let tableName = "log_events"
     
-    var db: OpaquePointer?
-    
-    private func establishDatabaseConnection() {
-        if db == nil {
-            db = openDatabase()
-        }
-    }
+    lazy var db: OpaquePointer = {
+        return openDatabase()!
+    }()
     
     //This will just open the database and will not create it if it does not already exist
     private func openDatabase() -> OpaquePointer? {
@@ -33,8 +26,6 @@ class LoggingDatabase {
     }
     
     func insertLog(message:String, logLevel: LogLevel = .info, loggerName:String) {
-        establishDatabaseConnection()
-        
         let insertStatementString = "INSERT INTO \(tableName) (id, log_time, level, name, message) VALUES (?, ?, ?, ?, ?);"
         var insertStatement: OpaquePointer? = nil
                 
@@ -54,8 +45,6 @@ class LoggingDatabase {
     }
     
     func getLogs(batchSize: NSNumber) -> [LogEvent] {
-        establishDatabaseConnection()
-        
         let queryStatementString = "SELECT * FROM \(tableName) LIMIT \(batchSize.stringValue);"
         var queryStatement: OpaquePointer? = nil
         var logs : [LogEvent] = []
@@ -77,8 +66,6 @@ class LoggingDatabase {
     }
     
     func deleteLog(id:Int) {
-        establishDatabaseConnection()
-        
         let deleteStatementString = "DELETE FROM \(tableName) WHERE Id = ?;"
         var deleteStatement: OpaquePointer? = nil
         if sqlite3_prepare_v2(db, deleteStatementString, -1, &deleteStatement, nil) == SQLITE_OK {
@@ -93,8 +80,6 @@ class LoggingDatabase {
     }
     
     func deleteLogs(keepPastDay: Bool) {
-        establishDatabaseConnection()
-        
         var deleteStatementString = "DELETE FROM \(tableName);"
         let pastDayDateInMilSecs = Int64(Date().timeIntervalSince1970.rounded() - (60 * 60)) * 1000
         if (keepPastDay) {

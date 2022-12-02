@@ -6,7 +6,9 @@ class Logger: NSObject, NativeLogging {
     private static let LOGGER_NAME = "IPL"
     
     private var anonymizationRules = [NSRegularExpression : String]()
-    private var loggingDatabase: LoggingDatabase = LoggingDatabase()
+    private lazy var loggingDatabase: LoggingDatabase = {
+        LoggingDatabase()
+    }()
     private var userIdentifier: String? = nil
     private var isConsoleLoggingEnabled = false
 
@@ -57,11 +59,9 @@ class Logger: NSObject, NativeLogging {
     }
     
     func uploadPendingLogsBatchSize(_ batchSize: NSNumber, packageName: String, appVersion: String, remoteLoggingId: String, url: String, logToken: String, completion: @escaping (FlutterError?) -> Void) {
-        
-        var logs = [Any]()
         let dbLogs = loggingDatabase.getLogs(batchSize: batchSize)
 
-        for dbLog in dbLogs {
+        let logs = dbLogs.map { dbLog in
             let message = [
                 "user": remoteLoggingId,
                 "logged_from": dbLog.name,
@@ -70,8 +70,12 @@ class Logger: NSObject, NativeLogging {
                 "app_version": appVersion,
             ]
             
-            let log: [Any] = ["\(dbLog.log_time*1000*1000)", message]
-            logs.append(log)
+            let json = try! JSONEncoder().encode(message)
+            
+            return RemoteLoggingMessage(
+                time: String(dbLog.log_time*1000*1000),
+                message: String(decoding: json, as: UTF8.self)
+            )
         }
 
         if (logs.isEmpty) {
@@ -79,27 +83,21 @@ class Logger: NSObject, NativeLogging {
             completion(nil)
             return
         }
-
-        let lokiBatch: [String : Any] = [
+        
+        let lokiBatch = [
             "token": logToken,
             "app_id": packageName,
-            "logs": logs,
-        ]
+            "logs": logs.map({ remoteLoggingMessage in
+                return [remoteLoggingMessage.time, remoteLoggingMessage.message]
+            }),
+        ] as [String : Any]
+                
+        let request = createLokiRequest(
+            url: url,
+            data: try! JSONSerialization.data(withJSONObject: lokiBatch)
+        )
         
-        var request = createLokiRequest(url: url)
-        request.httpBody = try! JSONSerialization.data(withJSONObject: lokiBatch)
-        
-        AF.request(request).response { (response) -> Void in
-            if response.error != nil {
-                let errorMessage = "Loki respond failed: \(response.error!)"
-                debugPrint(errorMessage)
-                completion(FlutterError(
-                    code: String(describing: type(of: response.error)),
-                    message: errorMessage,
-                    details: Thread.callStackSymbols.joined(separator: "\n")
-                ))
-            }
-            
+        AF.request(request).validate().responseString { response in
             switch response.result {
             case .success(_):
                 debugPrint("Loki responded with success. Deleting sent logs from db")
@@ -117,6 +115,7 @@ class Logger: NSObject, NativeLogging {
                 ))
             }
         }
+                                           
         completion(nil)
     }
     
@@ -125,12 +124,18 @@ class Logger: NSObject, NativeLogging {
         completion(nil)
     }
     
-    private func createLokiRequest(url: String) -> URLRequest {
+    private func createLokiRequest(url: String, data: Data) -> URLRequest {
         var request = URLRequest(url: URL(string: url)!)
 
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = data
 
         return request
     }
+}
+
+struct RemoteLoggingMessage: Encodable {
+    let time: String
+    let message: String
 }
