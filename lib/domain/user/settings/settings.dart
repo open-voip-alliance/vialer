@@ -151,9 +151,11 @@ class Settings {
   static Settings fromJson(Map<String, dynamic> json) {
     return Settings(
       Map.fromEntries(
-        json.entries.map((e) {
+        json.entries
+            .where((e) => SettingKey.fromJson(e.key, possibleKeys) != null)
+            .map((e) {
           final key = SettingKey.fromJson(e.key, possibleKeys);
-          final value = key.valueFromJson(e.value);
+          final value = key!.valueFromJson(e.value);
 
           return MapEntry(key, value);
         }),
@@ -167,11 +169,11 @@ mixin SettingKey<T extends Object> on Enum {
 
   String toJson() => toString();
 
-  static K fromJson<K extends SettingKey>(
+  static K? fromJson<K extends SettingKey>(
     String json,
     Iterable<K> all,
   ) =>
-      all.firstWhere((k) => k.toString() == json);
+      all.firstWhereOrNull((k) => k.toString() == json);
 
   @protected
   SettingValueJsonConverter<T>? get valueJsonConverter => null;

@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 
+import '../../../../domain/calling/voip/destination.dart';
 import '../../../../domain/user/info/build_info.dart';
 import '../../../../domain/user/settings/app_setting.dart';
 import '../../../../domain/user/settings/call_setting.dart';
@@ -14,6 +15,8 @@ class SettingsState extends Equatable {
   final bool showDnd;
   final bool hasIgnoreBatteryOptimizationsPermission;
   final bool hasTemporaryRedirect;
+  final int? userNumber;
+  final List<Destination> availableDestinations;
 
   SettingsState({
     this.buildInfo,
@@ -21,6 +24,8 @@ class SettingsState extends Equatable {
     required this.user,
     this.hasIgnoreBatteryOptimizationsPermission = false,
     this.hasTemporaryRedirect = false,
+    this.userNumber,
+    this.availableDestinations = const [Destination.notAvailable()],
   })  : showTroubleshooting = user.settings.get(AppSetting.showTroubleshooting),
         showDnd = isVoipAllowed && (user.settings.get(CallSetting.useVoip));
 
@@ -32,6 +37,8 @@ class SettingsState extends Equatable {
       hasIgnoreBatteryOptimizationsPermission:
           hasIgnoreBatteryOptimizationsPermission,
       hasTemporaryRedirect: hasTemporaryRedirect,
+      userNumber: userNumber,
+      availableDestinations: availableDestinations,
     );
   }
 
@@ -44,5 +51,7 @@ class SettingsState extends Equatable {
         showDnd,
         hasIgnoreBatteryOptimizationsPermission,
         hasTemporaryRedirect,
+        userNumber,
+        availableDestinations,
       ];
 }

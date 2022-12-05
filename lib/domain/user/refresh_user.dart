@@ -8,6 +8,7 @@ import '../business_availability/temporary_redirect/get_current_temporary_redire
 import '../call_records/client/purge_local_call_records.dart';
 import '../calling/outgoing_number/outgoing_numbers.dart';
 import '../calling/voip/client_voip_config_repository.dart';
+import '../calling/voip/destination_repository.dart';
 import '../calling/voip/user_voip_config_repository.dart';
 import '../legacy/storage.dart';
 import '../metrics/metrics.dart';
@@ -15,7 +16,6 @@ import '../onboarding/exceptions.dart';
 import '../onboarding/login_credentials.dart';
 import '../use_case.dart';
 import '../voicemail/voicemail_account_repository.dart';
-import '../voipgrid/destination_repository.dart';
 import '../voipgrid/user_permissions.dart';
 import 'permissions/user_permissions.dart';
 import 'settings/app_setting.dart';
@@ -132,9 +132,8 @@ class RefreshUser extends UseCase with Loggable {
       settings: user.settings.copyWithAll({
         CallSetting.useMobileNumberAsFallback:
             await _authRepository.isUserUsingMobileNumberAsFallback(user),
-        // TODO: Empty availability instead of non-null assert
-        CallSetting.availability:
-            (await _destinationRepository.getLatestAvailability())!,
+        CallSetting.destination:
+            await _destinationRepository.getActiveDestination(),
       }),
     );
   }

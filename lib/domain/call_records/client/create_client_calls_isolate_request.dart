@@ -1,22 +1,25 @@
 import 'package:dartx/dartx.dart';
 
+import '../../../dependency_locator.dart';
+import '../../calling/voip/destination.dart';
+import '../../legacy/storage.dart';
 import '../../use_case.dart';
 import '../../user/get_logged_in_user.dart';
-import '../../user/settings/call_setting.dart';
 import '../../user/user.dart';
 import '../../voipgrid/get_voipgrid_base_url.dart';
 import 'database/client_calls.dart';
 
 class CreateClientCallsIsolateRequestUseCase extends UseCase {
+  final _storageRepository = dependencyLocator<StorageRepository>();
+
   final _getUser = GetLoggedInUserUseCase();
   final _getBaseUrl = GetVoipgridBaseUrlUseCase();
 
   List<int> get _usersPhoneAccounts {
-    final availability = _getUser().settings.get(
-          CallSetting.availability,
-        );
+    final destinations = _storageRepository.availableDestinations;
 
-    return availability.phoneAccounts
+    return destinations
+        .whereType<PhoneAccount>()
         .filter((phoneAccount) => phoneAccount.id != null)
         .map((phoneAccount) => phoneAccount.id!)
         .toList();

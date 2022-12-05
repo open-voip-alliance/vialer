@@ -16,7 +16,7 @@ class UpdateRemoteLoggingListener extends SettingChangeListener<bool>
   final key = AppSetting.remoteLogging;
 
   @override
-  FutureOr<SettingChangeListenResult> preSave(
+  FutureOr<SettingChangeListenResult> preStore(
     User user,
     bool enabled,
   ) async {
