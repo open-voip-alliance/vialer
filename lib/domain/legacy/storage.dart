@@ -3,13 +3,13 @@ import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../calling/voip/availability_repository.dart';
 import '../user/client.dart';
 import '../user/permissions/user_permissions.dart';
 import '../user/settings/app_setting.dart';
 import '../user/settings/call_setting.dart';
 import '../user/settings/settings.dart';
 import '../user/user.dart';
-import '../voipgrid/availability.dart';
 import '../voipgrid/client_voip_config.dart';
 import '../voipgrid/user_voip_config.dart';
 
@@ -245,7 +245,7 @@ class StorageRepository {
           settings[AppSetting.showCallsInNativeRecents] = value as bool;
           break;
         case 'AvailabilitySetting':
-          settings[CallSetting.availability] = Availability.fromJson(
+          settings[CallSetting.destinations] = Destinations.fromJson(
             value as Map<String, dynamic>,
           );
           break;

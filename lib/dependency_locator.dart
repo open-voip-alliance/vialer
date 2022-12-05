@@ -13,6 +13,7 @@ import 'domain/call_records/personal/recent_call_repository.dart';
 import 'domain/calling/call_through/call_through.dart';
 import 'domain/calling/middleware/middleware_service.dart';
 import 'domain/calling/outgoing_number/outgoing_numbers.dart';
+import 'domain/calling/voip/availability_repository.dart';
 import 'domain/calling/voip/client_voip_config_repository.dart';
 import 'domain/calling/voip/user_voip_config_repository.dart';
 import 'domain/calling/voip/voip.dart';
@@ -34,7 +35,6 @@ import 'domain/user/info/build_info_repository.dart';
 import 'domain/user/info/operating_system_info_repository.dart';
 import 'domain/user/permissions/permission_repository.dart';
 import 'domain/voicemail/voicemail_account_repository.dart';
-import 'domain/voipgrid/destination_repository.dart';
 import 'domain/voipgrid/user_permissions.dart';
 import 'domain/voipgrid/voipgrid_service.dart';
 
@@ -80,8 +80,8 @@ Future<void> initializeDependencies({bool ui = true}) async {
         ),
       )
       ..registerSingleton<ConnectivityRepository>(ConnectivityRepository())
-      ..registerSingletonWithDependencies<DestinationRepository>(
-        () => DestinationRepository(
+      ..registerSingletonWithDependencies<AvailabilityRepository>(
+        () => AvailabilityRepository(
           dependencyLocator<VoipgridService>(),
         ),
         dependsOn: [StorageRepository],

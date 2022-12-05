@@ -12,11 +12,17 @@ class CreateClientCallsIsolateRequestUseCase extends UseCase {
   final _getBaseUrl = GetVoipgridBaseUrlUseCase();
 
   List<int> get _usersPhoneAccounts {
-    final availability = _getUser().settings.get(
-          CallSetting.availability,
-        );
+    const key = CallSetting.destinations;
 
-    return availability.phoneAccounts
+    /// Temporarily handle users upgrading from an older version,
+    /// eventually change getOrNull() to get().
+    final destinations = _getUser().settings.getOrNull(key);
+
+    if (destinations == null) {
+      return [];
+    }
+
+    return destinations.phoneAccounts
         .filter((phoneAccount) => phoneAccount.id != null)
         .map((phoneAccount) => phoneAccount.id!)
         .toList();

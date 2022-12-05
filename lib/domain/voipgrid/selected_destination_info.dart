@@ -1,14 +1,9 @@
-import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
-
-import 'destination.dart';
-import 'fixed_destination.dart';
-import 'phone_account.dart';
 
 part 'selected_destination_info.g.dart';
 
 @JsonSerializable(fieldRename: FieldRename.snake)
-class SelectedDestinationInfo extends Equatable {
+class SelectedDestinationInfo {
   final int id;
 
   @JsonKey(name: 'fixeddestination')
@@ -23,44 +18,6 @@ class SelectedDestinationInfo extends Equatable {
     this.phoneAccountId,
   });
 
-  SelectedDestinationInfo copyWith({
-    int? id,
-    int? fixedDestinationId,
-    int? phoneAccountId,
-  }) {
-    return SelectedDestinationInfo(
-      id: id ?? this.id,
-      fixedDestinationId: fixedDestinationId ?? this.fixedDestinationId,
-      phoneAccountId: phoneAccountId ?? this.phoneAccountId,
-    );
-  }
-
-  SelectedDestinationInfo replaceDestination({
-    required Destination destination,
-  }) {
-    return SelectedDestinationInfo(
-      id: id,
-      fixedDestinationId:
-          (destination is FixedDestination) ? destination.id : null,
-      phoneAccountId: (destination is PhoneAccount) ? destination.id : null,
-    );
-  }
-
   factory SelectedDestinationInfo.fromJson(Map<String, dynamic> json) =>
       _$SelectedDestinationInfoFromJson(json);
-
-  Map<String, dynamic> toJson() => _$SelectedDestinationInfoToJson(this);
-
-  @override
-  String toString() => '$runtimeType('
-      'id: $id, '
-      'fixedDestinationId: $fixedDestinationId, '
-      'phoneAccountId: $phoneAccountId)';
-
-  @override
-  List<Object?> get props => [
-        id,
-        fixedDestinationId,
-        phoneAccountId,
-      ];
 }

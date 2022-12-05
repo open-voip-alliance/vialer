@@ -2,55 +2,71 @@ import 'dart:async';
 
 import '../../../../app/util/loggable.dart';
 import '../../../../dependency_locator.dart';
+import '../../../calling/voip/availability_repository.dart';
 import '../../../metrics/metrics.dart';
 import '../../../user/user.dart';
-import '../../../voipgrid/availability.dart';
-import '../../../voipgrid/destination_repository.dart';
 import '../call_setting.dart';
 import 'setting_change_listener.dart';
 
-class UpdateAvailabilityListener extends SettingChangeListener<Availability>
+class UpdateAvailabilityListener extends SettingChangeListener<Destinations>
     with Loggable {
-  final _destinationRepository = dependencyLocator<DestinationRepository>();
+  final _availabilityRepository = dependencyLocator<AvailabilityRepository>();
   final _metricsRepository = dependencyLocator<MetricsRepository>();
 
   @override
-  final key = CallSetting.availability;
+  final key = CallSetting.destinations;
 
   @override
   FutureOr<SettingChangeListenResult> preSave(
     User user,
-    Availability availability,
+    Destinations destinations,
   ) async {
-    final latestAvailability =
-        await _destinationRepository.getLatestAvailability();
-    final oldDestinationInfo =
-        latestAvailability?.selectedDestinationInfo ?? null;
-    final newDestinationInfo = availability.selectedDestinationInfo ?? null;
+    final latestDestinations =
+        await _availabilityRepository.getLatestDestinations();
+
+    final oldActiveDestination = latestDestinations?.activeDestination ?? null;
+    final newActiveDestination = destinations.activeDestination;
 
     var log = true;
 
-    if (oldDestinationInfo != newDestinationInfo) {
-      // Only log the destination, since the whole availability object
-      // contains too much privacy sensitive information.
-      logger.info('Set $key to ${availability.selectedDestinationInfo}');
+    if (oldActiveDestination != newActiveDestination) {
+      // if ((newActiveDestination is PhoneAccount) |
+      //     (newActiveDestination is PhoneNumber)) {
+      //   logger.info('Set $key to ${newActiveDestination.id}');
+      // } else {
+      //   // NotAvailable
+      //   logger.info('Set $key to $newActiveDestination');
+      // }
+
+      // if (newActiveDestination is PhoneAccount) {
+      //   logger.info('Set $key to ${newActiveDestination.id}');
+      // } else if (newActiveDestination is PhoneNumber) {
+      //   logger.info('Set $key to ${newActiveDestination.id}');
+      // } else {
+      //   // NotAvailable
+      //   logger.info('Set $key to $newActiveDestination');
+      // }
+
+      logger.info('Set $key to $newActiveDestination');
+
       log = false;
     }
 
-    final destination = availability.selectedDestinationInfo!;
+    final destination = destinations.activeDestination;
 
     return changeRemoteValue(log: log, () async {
-      final success = await _destinationRepository.setAvailability(
-        selectedDestinationId: destination.id,
-        phoneAccountId: destination.phoneAccountId,
-        fixedDestinationId: destination.fixedDestinationId,
+      final success = await _availabilityRepository.setDestination(
+        selectedDestinationId: destinations.selectedDestinationId,
+        destination: destination,
       );
 
-      _metricsRepository.track('destination-changed', {
-        'has-app-account': user.appAccountUrl != null,
-        'to-fixed-destination': destination.fixedDestinationId != null,
-        'to-phone-account': destination.phoneAccountId != null,
-      });
+      if (success) {
+        _metricsRepository.track('destination-changed', {
+          'has-app-account': user.appAccountUrl != null,
+          'to-fixed-destination': destination is PhoneNumber,
+          'to-phone-account': destination is PhoneAccount,
+        });
+      }
 
       return success;
     });

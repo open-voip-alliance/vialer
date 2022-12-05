@@ -7,6 +7,7 @@ import '../authentication/authentication_repository.dart';
 import '../business_availability/temporary_redirect/get_current_temporary_redirect.dart';
 import '../call_records/client/purge_local_call_records.dart';
 import '../calling/outgoing_number/outgoing_numbers.dart';
+import '../calling/voip/availability_repository.dart';
 import '../calling/voip/client_voip_config_repository.dart';
 import '../calling/voip/user_voip_config_repository.dart';
 import '../legacy/storage.dart';
@@ -15,7 +16,6 @@ import '../onboarding/exceptions.dart';
 import '../onboarding/login_credentials.dart';
 import '../use_case.dart';
 import '../voicemail/voicemail_account_repository.dart';
-import '../voipgrid/destination_repository.dart';
 import '../voipgrid/user_permissions.dart';
 import 'permissions/user_permissions.dart';
 import 'settings/app_setting.dart';
@@ -28,7 +28,7 @@ import 'user.dart';
 class RefreshUser extends UseCase with Loggable {
   final _storageRepository = dependencyLocator<StorageRepository>();
   final _authRepository = dependencyLocator<AuthRepository>();
-  final _destinationRepository = dependencyLocator<DestinationRepository>();
+  final _availabilityRepository = dependencyLocator<AvailabilityRepository>();
   final _outgoingNumbersRepository =
       dependencyLocator<OutgoingNumbersRepository>();
   final _userPermissionsRepository =
@@ -133,8 +133,8 @@ class RefreshUser extends UseCase with Loggable {
         CallSetting.useMobileNumberAsFallback:
             await _authRepository.isUserUsingMobileNumberAsFallback(user),
         // TODO: Empty availability instead of non-null assert
-        CallSetting.availability:
-            (await _destinationRepository.getLatestAvailability())!,
+        CallSetting.destinations:
+            (await _availabilityRepository.getLatestDestinations())!,
       }),
     );
   }
