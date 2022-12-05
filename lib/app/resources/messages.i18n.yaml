@@ -339,6 +339,7 @@ main:
           title: "Statistics"
         calls:
           title: "Calls"
+
     troubleshootingProgressPopUp(int remainingTaps): >-
       You can access troubleshooting settings after $remainingTaps more taps on your screen.
     troubleshootingUnlockedPopUp: "You now have access to troubleshooting settings."
@@ -407,13 +408,32 @@ main:
       content: "We'll use it to make the app even better."
 
   temporaryRedirect:
+    title: "Temporary redirect"
     explanation:
-      start: "All incoming calls to all numbers go straight to voicemail "
-      end: " until the end of the day."
-    dropdownTitle: "Choose voicemail"
+      start: "All incoming calls to all numbers go straight to voicemail"
+      end: "until the end of the day (23:59)."
+      selectVoicemail: "[select voicemail below]"
+    dropdown:
+      title: "Choose voicemail"
+      noVoicemails:
+        item: "No voicemail available"
+        hint:
+          start: "No voicemail found, please add it in "
+          link: "the platform"
+          end: "."
     actions:
-      startRedirect: "Start redirect"
-      cancel: "Cancel"
+      setupRedirect:
+        label: "Set up redirect"
+        description: "Temporarily redirect all incoming calls for the organization and skip dial plan(s) and opening hours."
+      startRedirect:
+        label: "Start redirect"
+      stopRedirect:
+        label: "Stop redirect"
+        labelOngoing: "Stop ongoing redirect"
+        description: "All incoming calls will follow the dial plan(s) and opening hours again."
+      changeRedirect:
+        label: "Change redirect"
+        description: "You can change the settings without interrupting the redirect."
 
   update:
     readyToInstall:

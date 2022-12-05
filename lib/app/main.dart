@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:timezone/data/latest.dart';
 
@@ -16,6 +17,7 @@ import '../domain/metrics/initialize_metric_collection.dart';
 import '../domain/remote_logging/enable_console_logging.dart';
 import '../domain/remote_logging/enable_remote_logging_if_needed.dart';
 import '../domain/user/get_stored_user.dart';
+import 'pages/main/business_availability/temporary_redirect/cubit.dart';
 import 'pages/main/page.dart';
 import 'pages/main/widgets/caller/widget.dart';
 import 'resources/localizations.dart';
@@ -26,6 +28,7 @@ import 'widgets/brand_provider/widget.dart';
 import 'widgets/build_error.dart';
 import 'widgets/connectivity_checker/widget.dart';
 import 'widgets/missed_call_notification_listener/widget.dart';
+import 'widgets/nested_children.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -85,39 +88,47 @@ class _AppState extends State<App> {
     return BrandProvider(
       child: Builder(
         builder: (context) {
-          return Caller.create(
-            navigatorKey: _navigatorKey,
-            child: ConnectivityChecker.create(
-              child: MissedCallNotificationPressedListener(
-                onMissedCallNotificationPressed: () =>
-                    App.navigateTo(MainPageTab.recents),
-                child: MaterialApp(
-                  navigatorKey: _navigatorKey,
-                  title: context.brand.appName,
-                  theme: context.brand.theme.themeData,
-                  initialRoute: _isAuthenticatedAtAppStart
-                      ? Routes.main
-                      : Routes.onboarding,
-                  routes: Routes.mapped,
-                  localizationsDelegates: [
-                    VialerLocalizations.delegate,
-                    GlobalMaterialLocalizations.delegate,
-                    GlobalWidgetsLocalizations.delegate,
-                    GlobalCupertinoLocalizations.delegate,
-                  ],
-                  supportedLocales: [
-                    const Locale('en'),
-                    const Locale('nl'),
-                  ],
-                  builder: (context, child) {
-                    if (!inDebugMode) {
-                      ErrorWidget.builder = (_) => const BuildError();
-                    }
+          return MultiWidgetParent(
+            [
+              (child) => Caller.create(
+                    navigatorKey: _navigatorKey,
+                    child: child,
+                  ),
+              (child) => ConnectivityChecker.create(child: child),
+              (child) => MissedCallNotificationPressedListener(
+                    onMissedCallNotificationPressed: () =>
+                        App.navigateTo(MainPageTab.recents),
+                    child: child,
+                  ),
+              (child) => BlocProvider<TemporaryRedirectCubit>(
+                    create: (_) => TemporaryRedirectCubit(),
+                    child: child,
+                  ),
+            ],
+            MaterialApp(
+              navigatorKey: _navigatorKey,
+              title: context.brand.appName,
+              theme: context.brand.theme.themeData,
+              initialRoute:
+                  _isAuthenticatedAtAppStart ? Routes.main : Routes.onboarding,
+              routes: Routes.mapped,
+              localizationsDelegates: [
+                VialerLocalizations.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              supportedLocales: [
+                const Locale('en'),
+                const Locale('nl'),
+              ],
+              builder: (context, child) {
+                if (!inDebugMode) {
+                  ErrorWidget.builder = (_) => const BuildError();
+                }
 
-                    return child!;
-                  },
-                ),
-              ),
+                return child!;
+              },
             ),
           );
         },

@@ -1,14 +1,17 @@
 import 'dart:async';
 
+import 'package:recase/recase.dart';
+
 import '../../../dependency_locator.dart';
 import '../use_case.dart';
 import '../user/get_brand.dart';
 import '../user/get_logged_in_user.dart';
+import '../user/settings/settings.dart';
+import '../user/user.dart';
 import 'metrics.dart';
 
 class IdentifyForTrackingUseCase extends UseCase {
   final _metricsRepository = dependencyLocator<MetricsRepository>();
-
   final _getBrand = GetBrand();
   final _getUser = GetLoggedInUserUseCase();
 
@@ -17,11 +20,39 @@ class IdentifyForTrackingUseCase extends UseCase {
   static const _artificialDelay = Duration(seconds: 2);
 
   Future<void> call() async {
-    return await _metricsRepository
-        .identify(
-          _getUser().uuid,
-          _getBrand().identifier,
-        )
-        .then((_) => Future.delayed(_artificialDelay));
+    final user = _getUser();
+
+    return await _metricsRepository.identify(
+      user,
+      {
+        'brand': _getBrand().identifier,
+        ...user.toIdentifyProperties(),
+      },
+    ).then((_) => Future.delayed(_artificialDelay));
+  }
+}
+
+extension on User {
+  Map<String, dynamic> toIdentifyProperties() {
+    final properties = <String, dynamic>{};
+
+    for (final a in settings.entries) {
+      // For now we only care about bool settings, but can be expanded in the
+      // future.
+      if (a.value is bool) {
+        properties[a.key.asPropertyKey] = a.value;
+      }
+    }
+
+    return properties;
+  }
+}
+
+extension on SettingKey {
+  String get asPropertyKey {
+    // We don't care about the generic argument, just the base type.
+    final type = runtimeType.toString().replaceAll(RegExp(r'<.+>'), '');
+
+    return '$type-$name'.paramCase;
   }
 }

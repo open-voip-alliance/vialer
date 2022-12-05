@@ -122,6 +122,18 @@ class SettingTileCategory extends StatelessWidget {
     );
   }
 
+  static Widget temporaryRedirect({List<Widget> children = const []}) {
+    return Builder(
+      builder: (context) {
+        return SettingTileCategory(
+          icon: FontAwesomeIcons.listTree,
+          title: context.msg.main.temporaryRedirect.title,
+          children: children,
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     const dividerHeight = 1.0;

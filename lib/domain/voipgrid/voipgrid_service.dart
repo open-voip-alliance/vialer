@@ -138,4 +138,7 @@ abstract class VoipgridService extends ChopperService {
     @Query() int page = 1,
     @Query('per_page') int perPage = 500,
   });
+
+  @Get(path: 'v2/users/auth-context')
+  Future<Response> getVoipgridPermissions();
 }
