@@ -54,7 +54,7 @@ class ChangeSettingsUseCase extends UseCase with Loggable {
   // in the UI but have no effect), it means some code is called that
   // launches an [EditUser] task while calling this use case (most likely
   // the culprit is calling RefreshUser).
-  Future<ChangeSettingsResult> call(Settings settings) async {
+  Future<ChangeSettingsResult> call(Settings settings) {
     // These variables have to be defined outside of the tasks, to share
     // state between tasks.
     late User user;
@@ -80,8 +80,7 @@ class ChangeSettingsUseCase extends UseCase with Loggable {
     // more failed setting changes.
     Settings getChanged() => diff.getAll(diff.keys.difference(failed));
 
-    final intermediateResult =
-        await SynchronizedTask<ChangeSettingsResult?>.named(
+    return SynchronizedTask<ChangeSettingsResult>.named(
       editUserTask,
       SynchronizedTaskMode.queue,
     ).run(() async {
@@ -102,30 +101,19 @@ class ChangeSettingsUseCase extends UseCase with Loggable {
         before: true,
       );
 
-      return null; // Not done yet.
-    });
+      // Retrieve the latest user with latest remote setting values, and
+      // copy them into the settings result.
+      if (needSync.isNotEmpty) {
+        final freshUser = await _refreshUser(synchronized: false);
 
-    if (intermediateResult != null) {
-      return intermediateResult;
-    }
-
-    // Retrieve the latest user with latest remote setting values, and
-    // copy them into the settings result.
-    if (needSync.isNotEmpty) {
-      final freshUser = await _refreshUser();
-
-      // Technically freshUser should never be null, but doing a check to avoid
-      // a rare exception.
-      if (freshUser != null) {
-        user = freshUser;
-        settings = settings.copyFrom(user.settings.getAll(needSync));
+        // Technically freshUser should never be null, but doing a check
+        // to avoid a rare exception.
+        if (freshUser != null) {
+          user = freshUser;
+          settings = settings.copyFrom(user.settings.getAll(needSync));
+        }
       }
-    }
 
-    return await SynchronizedTask<ChangeSettingsResult>.named(
-      editUserTask,
-      SynchronizedTaskMode.queue,
-    ).run(() async {
       _storageRepository.user = user.copyWith(
         settings: user.settings.copyFrom(settings),
       );

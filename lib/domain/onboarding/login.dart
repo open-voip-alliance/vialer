@@ -16,7 +16,7 @@ class LoginUseCase extends UseCase {
   Future<bool> call({
     required LoginCredentials credentials,
   }) async {
-    final user = await _refreshUser(credentials);
+    final user = await _refreshUser(credentials: credentials);
 
     if (user == null) {
       return false;

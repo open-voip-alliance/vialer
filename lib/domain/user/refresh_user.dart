@@ -42,59 +42,66 @@ class RefreshUser extends UseCase with Loggable {
 
   final _purgeLocalCallRecords = PurgeLocalCallRecordsUseCase();
 
-  Future<User?> call([LoginCredentials? credentials]) =>
-      SynchronizedTask<User?>.named(
+  Future<User?> call({
+    LoginCredentials? credentials,
+    bool synchronized = true,
+  }) {
+    if (synchronized) {
+      return SynchronizedTask<User?>.named(
         editUserTask,
         SynchronizedTaskMode.queue,
-      ).run(
-        () async {
-          final storedUser = _storageRepository.user;
-          final latestUser = await _getUserFromCredentials(credentials);
+      ).run(() => _refreshUser(credentials));
+    }
 
-          if (latestUser == null) return storedUser;
+    return _refreshUser(credentials);
+  }
 
-          return SynchronizedTask<User?>.of(this).run(() async {
-            // Latest user contains some settings, such as mobile and
-            // outgoing number.
-            var user = storedUser?.copyFrom(latestUser) ??
-                latestUser.copyWith(
-                  settings:
-                      const Settings.defaults().copyFrom(latestUser.settings),
-                );
+  Future<User?> _refreshUser(LoginCredentials? credentials) async {
+    final storedUser = _storageRepository.user;
+    final latestUser = await _getUserFromCredentials(credentials);
 
-            // If we're retrieving the user for the first time (logging in),
-            // we store  the user already, so that the AuthorizationInterceptor
-            // can use it.
-            if (storedUser == null) {
-              _storageRepository.user = user;
-            }
+    if (latestUser == null) return storedUser;
 
-            user = _getPreviousSessionSettings(user);
-            user = await _getRemoteSettings(user);
-            user = await _getRemotePermissions(user);
-            user = await _getRemoteClientOutgoingNumbers(user);
-            user = await _getClientVoicemailAccounts(user);
-            user = await _getUserVoipConfig(user);
-            user = await _getClientVoipConfig(user);
-            user = await _getCurrentTemporaryRedirect(user);
+    return SynchronizedTask<User?>.of(this).run(() async {
+      // Latest user contains some settings, such as mobile and
+      // outgoing number.
+      var user = storedUser?.copyFrom(latestUser) ??
+          latestUser.copyWith(
+            settings: const Settings.defaults().copyFrom(latestUser.settings),
+          );
 
-            // User should have a value for all settings.
-            assert(
-              user.settings.isComplete,
-              // ignore: prefer_interpolation_to_compose_strings
-              'The following settings are missing from the user: ' +
-                  Settings.possibleKeys
-                      .difference(user.settings.keys)
-                      .toList()
-                      .toString(),
-            );
+      // If we're retrieving the user for the first time (logging in),
+      // we store  the user already, so that the AuthorizationInterceptor
+      // can use it.
+      if (storedUser == null) {
+        _storageRepository.user = user;
+      }
 
-            _storageRepository.user = user;
+      user = _getPreviousSessionSettings(user);
+      user = await _getRemoteSettings(user);
+      user = await _getRemotePermissions(user);
+      user = await _getRemoteClientOutgoingNumbers(user);
+      user = await _getClientVoicemailAccounts(user);
+      user = await _getUserVoipConfig(user);
+      user = await _getClientVoipConfig(user);
+      user = await _getCurrentTemporaryRedirect(user);
 
-            return user;
-          });
-        },
+      // User should have a value for all settings.
+      assert(
+        user.settings.isComplete,
+        // ignore: prefer_interpolation_to_compose_strings
+        'The following settings are missing from the user: ' +
+            Settings.possibleKeys
+                .difference(user.settings.keys)
+                .toList()
+                .toString(),
       );
+
+      _storageRepository.user = user;
+
+      return user;
+    });
+  }
 
   Future<User?> _getUserFromCredentials(LoginCredentials? credentials) async {
     if (credentials is UserProvidedCredentials) {
