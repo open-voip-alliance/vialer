@@ -17,8 +17,17 @@ class UserVoipConfigRepository with Loggable {
       return null;
     }
 
-    return UserVoipConfig.fromJson(
-      response.body as Map<String, dynamic>,
-    );
+    final body = response.body as Map<String, dynamic>;
+
+    if (!body.hasVoipConfig) {
+      logger.info('This user does not have an app account configured.');
+      return null;
+    }
+
+    return UserVoipConfig.fromJson(body);
   }
+}
+
+extension on Map<String, dynamic> {
+  bool get hasVoipConfig => this['appaccount_account_id'] != null;
 }

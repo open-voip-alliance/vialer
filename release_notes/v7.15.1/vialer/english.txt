@@ -1,0 +1,4 @@
+- You can now configure a Temporary Redirect, redirecting all calls for your organization to voicemail.
+- A banner will be displayed when your organization has a Temporary Redirect active.
+- Fixed a bug that would cause calls to fail when enabling mobile number fallback.
+- Fixed a bug where the call screen would not always appear.
