@@ -1,5 +1,13 @@
 custom: # Custom properties to make workflows cleaner
   scripts:
+    - &use_project_build_number
+      name: Use project build number
+      script: |
+        echo "BUILD_NR=$PROJECT_BUILD_NUMBER" >> $CM_ENV
+    - &use_workflow_build_number
+      name: Use workflow build number
+      script: |
+        echo "BUILD_NR=$BUILD_NUMBER" >> $CM_ENV
     - &analyze
       name: Analyzing the codebase
       script: |
@@ -22,7 +30,7 @@ custom: # Custom properties to make workflows cleaner
         sed -i -e "s/^version:.*//g" pubspec.yaml
         echo "version: $version_tag" >> pubspec.yaml
         # Prepare the version name for a Sentry release
-        sentry_version="$BUNDLE_ID@$version_tag+$PROJECT_BUILD_NUMBER"
+        sentry_version="$BUNDLE_ID@$version_tag+$BUILD_NR"
         echo $sentry_version > SENTRY_VERSION
         # Fix CFBundleVersion for iOS
         version_tag=$(echo $version_tag | cut -f1 -d "-")
@@ -41,7 +49,7 @@ custom: # Custom properties to make workflows cleaner
         sed -i -e "s/^version:.*//g" pubspec.yaml
         echo "version: $version_tag-MR.$GITLAB_MERGE_REQUEST_IID-$escaped_branch" >> pubspec.yaml
         # Prepare the version name for a Sentry release
-        sentry_version="$BUNDLE_ID@$version_tag-$escaped_branch+$PROJECT_BUILD_NUMBER"
+        sentry_version="$BUNDLE_ID@$version_tag-$escaped_branch+$BUILD_NR"
         echo $sentry_version > SENTRY_VERSION
         # Fix CFBundleVersion for iOS
         version_tag=$(echo $version_tag | cut -f1 -d "-")
@@ -59,7 +67,7 @@ custom: # Custom properties to make workflows cleaner
         sed -i -e "s/^version:.*//g" pubspec.yaml
         echo "version: $version_tag-$escaped_branch" >> pubspec.yaml
         # Prepare the version name for a Sentry release
-        sentry_version="$BUNDLE_ID@$version_tag-$escaped_branch+$PROJECT_BUILD_NUMBER"
+        sentry_version="$BUNDLE_ID@$version_tag-$escaped_branch+$BUILD_NR"
         echo $sentry_version > SENTRY_VERSION
         # Fix CFBundleVersion for iOS
         version_tag=$(echo $version_tag | cut -f1 -d "-")
@@ -120,7 +128,7 @@ custom: # Custom properties to make workflows cleaner
         echo "flutter.sdk=$HOME/programs/flutter" > "$FCI_BUILD_DIR/android/local.properties"
         echo $ANDROID_FIREBASE_SECRET | base64 --decode > $FCI_BUILD_DIR/android/app/google-services.json
         echo $FCI_KEYSTORE | base64 --decode > $FCI_KEYSTORE_PATH
-        flutter build appbundle --release --target=lib/app/main.dart --build-number=$PROJECT_BUILD_NUMBER -v --dart-define BRAND=$BRAND --dart-define SEGMENT_ANDROID_KEY=$SEGMENT_ANDROID_WRITE_KEY
+        flutter build appbundle --release --target=lib/app/main.dart --build-number=$BUILD_NR -v --dart-define BRAND=$BRAND --dart-define SEGMENT_ANDROID_KEY=$SEGMENT_ANDROID_WRITE_KEY
     - &build_universal_apk_from_aab
       name: Building "Universal APK" (.apk) for Android
       script: |
@@ -185,7 +193,7 @@ custom: # Custom properties to make workflows cleaner
         flutter build ipa --release \
         --target=lib/app/main.dart \
         --export-options-plist=/Users/builder/export_options.plist \
-        --build-number=$PROJECT_BUILD_NUMBER \
+        --build-number=$BUILD_NR \
         --dart-define BRAND=$BRAND \
         --dart-define SEGMENT_IOS_KEY=$SEGMENT_IOS_WRITE_KEY \
     - &run_integration_tests
@@ -423,6 +431,7 @@ workflows:
         - pattern: main
           include: true
     scripts:
+      - *use_workflow_build_number
       - *set_up_env_file
       - *set_version_string_to_most_recent_tag
       - *flutter_pub_get
@@ -454,6 +463,7 @@ workflows:
     name: Gitlab CI Merge Train
     <<: *main_workflow
     scripts:
+      - *use_workflow_build_number
       - *set_up_env_file
       - *set_version_string_for_merge_request
       - *flutter_pub_get
@@ -473,6 +483,7 @@ workflows:
     name: Gitlab CI Merge Request
     <<: *main_workflow
     scripts:
+      - *use_workflow_build_number
       - *set_up_env_file
       - *set_version_string_for_merge_request
       - *flutter_pub_get
@@ -498,6 +509,7 @@ workflows:
     name: Run Integration Tests
     <<: *main_workflow
     scripts:
+      - *use_workflow_build_number
       - *set_up_env_file
       - *set_version_string_for_merge_request
       - *flutter_pub_get
@@ -546,6 +558,7 @@ workflows:
     triggering: *production_was_tagged
     artifacts: *defaults_artifacts
     scripts:
+      - *use_project_build_number
       - *set_up_env_file
       - *set_version_string
       - *flutter_pub_get
@@ -629,6 +642,7 @@ workflows:
     artifacts: *defaults_artifacts
     triggering: *beta_was_tagged
     scripts:
+      - *use_project_build_number
       - *set_up_env_file
       - *set_version_string
       - *flutter_pub_get
@@ -711,6 +725,7 @@ workflows:
     artifacts: *defaults_artifacts
     triggering: *internal_preview_was_tagged
     scripts:
+      - *use_project_build_number
       - *set_up_env_file
       - *set_version_string
       - *flutter_pub_get
@@ -739,6 +754,7 @@ workflows:
         <<: *brand_config_vialer_env_vars
     artifacts: *defaults_artifacts
     scripts:
+      - *use_project_build_number
       - *set_up_env_file
       - *set_version_string
       - *flutter_pub_get
