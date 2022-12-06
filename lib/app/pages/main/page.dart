@@ -5,13 +5,11 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../resources/localizations.dart';
 import '../../resources/theme.dart';
 import '../../routes.dart';
-import '../../util/conditional_capitalization.dart';
 import '../../widgets/app_update_checker/widget.dart';
 import '../../widgets/nested_children.dart';
 import '../../widgets/transparent_status_bar.dart';
 import 'call/widgets/call_button.dart';
 import 'contacts/page.dart';
-import 'cubit.dart';
 import 'dialer/page.dart';
 import 'recent/page.dart';
 import 'settings/page.dart';
@@ -23,17 +21,10 @@ import 'widgets/user_data_refresher/widget.dart';
 
 class MainPage extends StatefulWidget {
   /// There can only be one.
-  MainPage._() : super(key: keys.page);
+  MainPage() : super(key: keys.page);
 
   @override
   State<StatefulWidget> createState() => MainPageState();
-
-  static Widget create() {
-    return BlocProvider(
-      create: (_) => MainCubit(),
-      child: MainPage._(),
-    );
-  }
 
   static final keys = _Keys();
 }
@@ -67,36 +58,6 @@ class MainPageState extends State<MainPage> {
         }
       }
     });
-
-    // Show a dialog when navigating to the Recents page for the first time.
-    if ((_dialerIsPage && _currentIndex == 2) ||
-        (!_dialerIsPage && _currentIndex == 1)) {
-      final cubit = context.read<MainCubit>();
-
-      if (await cubit.shouldShowClientWideCallsDialog()) {
-        showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: Text(context.msg.main.recent.clientWideCallsDialog.title),
-              content: Text(
-                context.msg.main.recent.clientWideCallsDialog.description,
-              ),
-              actions: [
-                TextButton(
-                  onPressed: Navigator.of(context, rootNavigator: true).pop,
-                  child: Text(
-                    context.msg.generic.button.ok.toUpperCaseIfAndroid(context),
-                  ),
-                ),
-              ],
-            );
-          },
-        );
-
-        cubit.markRecentCallsShown();
-      }
-    }
   }
 
   @override
