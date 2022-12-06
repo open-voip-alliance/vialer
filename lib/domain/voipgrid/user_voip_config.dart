@@ -46,8 +46,13 @@ class UserVoipConfig extends Equatable {
       'useEncryption: $useEncryption, '
       'useOpus: $useOpus)';
 
-  static UserVoipConfig? fromJson(Map<String, dynamic>? json) =>
-      json != null ? _$UserVoipConfigFromJson(json) : null;
+  static UserVoipConfig? fromJson(Map<String, dynamic>? json) {
+    if (json == null) return null;
+
+    if (json['appaccount_password'] == null) return null;
+
+    return _$UserVoipConfigFromJson(json);
+  }
 
   static Map<String, dynamic>? toJson(UserVoipConfig? value) =>
       value != null ? _$UserVoipConfigToJson(value) : null;
