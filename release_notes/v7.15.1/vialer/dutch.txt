@@ -1,0 +1,4 @@
+- Het is nu mogelijk een Tijdelijke omleiding in te stellen, zodat alle inkomende oproepen van je organisatie rechtstreeks naar voicemail gaan.
+- Een banner geeft aan wanneer een Tijdelijke omleiding actief is.
+- Een probleem met oproepen die mislukten is opgelost. Dit trad op nadat je je mobiele number als backup voor VoIP-gesprekken had ingesteld.
+- Een probleem dat het belscherm niet toonde, is opgelost.
