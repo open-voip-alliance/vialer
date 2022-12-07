@@ -110,49 +110,50 @@ class _SettingsPageState extends State<SettingsPage> {
                               SettingTile.username(user),
                             ],
                           ),
-                          if (isVoipAllowed) ...[
+                          if (isVoipAllowed)
                             SettingTileCategory.audio(
                               children: [
                                 SettingTile.usePhoneRingtone(user.settings),
                               ],
                             ),
-                            SettingTileCategory.calling(
-                              children: [
+                          SettingTileCategory.calling(
+                            children: [
+                              if (isVoipAllowed)
                                 SettingTile.useVoip(user.settings),
-                                if (user.settings.get(CallSetting.useVoip) &&
-                                    user.permissions
-                                        .canViewMobileNumberFallbackStatus)
-                                  SettingTile.useMobileNumberAsFallback(
-                                    user,
-                                  ),
-                                if (context.isIOS)
-                                  SettingTile.showCallsInNativeRecents(
-                                    user.settings,
-                                  ),
-                                if (context.isAndroid)
-                                  SettingTile.ignoreBatteryOptimizations(
-                                    hasIgnoreBatteryOptimizationsPermission:
-                                        hasIgnoreOptimizationsPermission,
-                                    onChanged: (enabled) =>
-                                        cubit.requestBatteryPermission(),
-                                  ),
-                                SettingTile.showClientCalls(user),
-                              ],
-                            ),
-                            if (user.permissions.canChangeTemporaryRedirect)
-                              SettingTileCategory.temporaryRedirect(
-                                children: [
-                                  const TemporaryRedirectSettingTile(),
-                                ],
-                              ),
-                            SettingTileCategory.portalLinks(
+                              if (user.settings.get(CallSetting.useVoip) &&
+                                  user.permissions
+                                      .canViewMobileNumberFallbackStatus &&
+                                  isVoipAllowed)
+                                SettingTile.useMobileNumberAsFallback(
+                                  user,
+                                ),
+                              if (context.isIOS && isVoipAllowed)
+                                SettingTile.showCallsInNativeRecents(
+                                  user.settings,
+                                ),
+                              if (context.isAndroid)
+                                SettingTile.ignoreBatteryOptimizations(
+                                  hasIgnoreBatteryOptimizationsPermission:
+                                      hasIgnoreOptimizationsPermission,
+                                  onChanged: (enabled) =>
+                                      cubit.requestBatteryPermission(),
+                                ),
+                              SettingTile.showClientCalls(user),
+                            ],
+                          ),
+                          if (user.permissions.canChangeTemporaryRedirect)
+                            SettingTileCategory.temporaryRedirect(
                               children: [
-                                SettingLinkTile.calls(),
-                                SettingLinkTile.dialPlan(),
-                                SettingLinkTile.stats(),
+                                const TemporaryRedirectSettingTile(),
                               ],
                             ),
-                          ],
+                          SettingTileCategory.portalLinks(
+                            children: [
+                              SettingLinkTile.calls(),
+                              SettingLinkTile.dialPlan(),
+                              SettingLinkTile.stats(),
+                            ],
+                          ),
                           SettingTileCategory.debug(
                             children: [
                               SettingTile.remoteLogging(user.settings),
