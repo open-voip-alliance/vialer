@@ -25,7 +25,7 @@ class PurgeLocalCallRecordsUseCase extends UseCase with Loggable {
 
     _metricsRepository.track('client-calls-purged', {
       'amount': amountDeleted,
-      'reason': reason,
+      'reason': reason.name,
     });
   }
 }

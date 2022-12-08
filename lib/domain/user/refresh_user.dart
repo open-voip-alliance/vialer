@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import '../../app/util/loggable.dart';
-import '../../app/util/single_task.dart';
+import '../../app/util/synchronized_task.dart';
 import '../../dependency_locator.dart';
 import '../authentication/authentication_repository.dart';
 import '../business_availability/temporary_redirect/get_current_temporary_redirect.dart';
@@ -23,7 +23,9 @@ import 'settings/call_setting.dart';
 import 'settings/settings.dart';
 import 'user.dart';
 
-class GetLatestUserUseCase extends UseCase with Loggable {
+/// With the exception of `UserDataRefresherCubit`, should generally not
+/// be called outside of a few select use cases.
+class RefreshUser extends UseCase with Loggable {
   final _storageRepository = dependencyLocator<StorageRepository>();
   final _authRepository = dependencyLocator<AuthRepository>();
   final _destinationRepository = dependencyLocator<DestinationRepository>();
@@ -40,21 +42,37 @@ class GetLatestUserUseCase extends UseCase with Loggable {
 
   final _purgeLocalCallRecords = PurgeLocalCallRecordsUseCase();
 
-  Future<User?> call([LoginCredentials? credentials]) async {
+  Future<User?> call({
+    LoginCredentials? credentials,
+    bool synchronized = true,
+  }) {
+    if (synchronized) {
+      return SynchronizedTask<User?>.named(
+        editUserTask,
+        SynchronizedTaskMode.queue,
+      ).run(() => _refreshUser(credentials));
+    }
+
+    return _refreshUser(credentials);
+  }
+
+  Future<User?> _refreshUser(LoginCredentials? credentials) async {
     final storedUser = _storageRepository.user;
     final latestUser = await _getUserFromCredentials(credentials);
 
     if (latestUser == null) return storedUser;
 
-    return SingleInstanceTask<User?>.of(this).run(() async {
-      // Latest user contains some settings, such as mobile and outgoing number.
+    return SynchronizedTask<User?>.of(this).run(() async {
+      // Latest user contains some settings, such as mobile and
+      // outgoing number.
       var user = storedUser?.copyFrom(latestUser) ??
           latestUser.copyWith(
             settings: const Settings.defaults().copyFrom(latestUser.settings),
           );
 
-      // If we're retrieving the user for the first time (logging in), we store
-      // the user already, so that the AuthorizationInterceptor can use it.
+      // If we're retrieving the user for the first time (logging in),
+      // we store  the user already, so that the AuthorizationInterceptor
+      // can use it.
       if (storedUser == null) {
         _storageRepository.user = user;
       }
@@ -71,8 +89,12 @@ class GetLatestUserUseCase extends UseCase with Loggable {
       // User should have a value for all settings.
       assert(
         user.settings.isComplete,
-        'The following settings are missing from the user: '
-        '${Settings.possibleKeys.difference(user.settings.keys).toList()}',
+        // ignore: prefer_interpolation_to_compose_strings
+        'The following settings are missing from the user: ' +
+            Settings.possibleKeys
+                .difference(user.settings.keys)
+                .toList()
+                .toString(),
       );
 
       _storageRepository.user = user;
