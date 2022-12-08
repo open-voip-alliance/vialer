@@ -10,13 +10,13 @@ import '../../env.dart';
 import '../../legacy/storage.dart';
 import '../../user/brand.dart';
 import '../../user/get_build_info.dart';
-import '../../user/get_latest_logged_in_user.dart';
 import '../../user/get_logged_in_user.dart';
 import '../../user/get_login_time.dart';
 import '../../user/info/build_info.dart';
 import '../../user/info/operating_system_info_repository.dart';
 import '../../user/settings/app_setting.dart';
 import '../../user/settings/call_setting.dart';
+import '../../user/user.dart';
 import '../../voipgrid/client_voip_config.dart';
 import '../../voipgrid/user_voip_config.dart';
 import '../middleware/middleware_service.dart';
@@ -47,7 +47,7 @@ class VoipRepository with Loggable {
         'PhoneLib was accessed and not initialized, initializing now',
       );
 
-      if (_startUpUserConfig == null ||
+      if (_startUpUser == null ||
           _startUpClientConfig == null ||
           _startUpBrand == null ||
           _startUpBuildInfo == null) {
@@ -58,7 +58,7 @@ class VoipRepository with Loggable {
       }
 
       return initializeAndStart(
-        userConfig: _startUpUserConfig!,
+        user: _startUpUser!,
         clientConfig: _startUpClientConfig!,
         brand: _startUpBrand!,
         buildInfo: _startUpBuildInfo!,
@@ -78,7 +78,7 @@ class VoipRepository with Loggable {
   StreamSubscription? _eventsSubscription;
 
   // Start-up values.
-  UserVoipConfig? _startUpUserConfig;
+  User? _startUpUser;
   ClientVoipConfig? _startUpClientConfig;
   Brand? _startUpBrand;
   BuildInfo? _startUpBuildInfo;
@@ -86,7 +86,7 @@ class VoipRepository with Loggable {
   bool _initializingAndStarting = false;
 
   Future<void> initializeAndStart({
-    required UserVoipConfig userConfig,
+    required User user,
     required ClientVoipConfig clientConfig,
     required Brand brand,
     required BuildInfo buildInfo,
@@ -105,12 +105,14 @@ class VoipRepository with Loggable {
 
     _initializingAndStarting = true;
 
-    _startUpUserConfig = userConfig;
+    _startUpUser = user;
     _startUpClientConfig = clientConfig;
     _startUpBrand = brand;
     _startUpBuildInfo = buildInfo;
 
-    final preferences = await _createPreferences();
+    final userConfig = user.voip!;
+
+    final preferences = await _createPreferences(user);
 
     /// Returns true if successfully initialized, false otherwise.
     Future<bool> initialize({bool firstTry = true}) async {
@@ -161,7 +163,7 @@ class VoipRepository with Loggable {
     Future<bool> start({bool firstTry = true}) async {
       try {
         await __phoneLib!.start(
-          await _createPreferences(),
+          await _createPreferences(user),
           await _createAuth(userConfig, clientConfig),
         );
       } on Exception catch (e) {
@@ -213,19 +215,15 @@ class VoipRepository with Loggable {
     );
   }
 
-  Future<Preferences> _createPreferences() async {
-    final user = (await GetLatestLoggedInUserUseCase()());
-
-    return Preferences(
-      codecs: [Codec.opus],
-      useApplicationProvidedRingtone: !user.settings.get(
-        CallSetting.usePhoneRingtone,
-      ),
-      showCallsInNativeRecents: user.settings.get(
-        AppSetting.showCallsInNativeRecents,
-      ),
-    );
-  }
+  Preferences _createPreferences(User user) => Preferences(
+        codecs: [Codec.opus],
+        useApplicationProvidedRingtone: !user.settings.get(
+          CallSetting.usePhoneRingtone,
+        ),
+        showCallsInNativeRecents: user.settings.get(
+          AppSetting.showCallsInNativeRecents,
+        ),
+      );
 
   // We refer to the backing field `__phoneLib` instead of
   // the getter `_phoneLib`, because if for some reason the phone lib was not
@@ -368,8 +366,10 @@ class VoipRepository with Loggable {
 
   Future<void> answerCall() async => (await _phoneLib).actions.answer();
 
-  Future<void> refreshPreferences() async =>
-      (await _phoneLib).updatePreferences(await _createPreferences());
+  Future<void> refreshPreferences(User user) async =>
+      (await _phoneLib).updatePreferences(
+        await _createPreferences(user),
+      );
 
   Future<Call?> get activeCall async => (await _phoneLib).calls.active;
 
