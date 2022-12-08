@@ -370,6 +370,7 @@ custom: # Custom properties to make workflows cleaner
         issuer_id: $APP_STORE_CONNECT_ISSUER_ID
         submit_to_app_store: true
         submit_to_testflight: true
+        release_type: MANUAL
         beta_groups:
           - Beta Testers
           - External Testers
