@@ -139,11 +139,16 @@ class AuthRepository with Loggable {
   Future<bool> updateAppAccount({
     bool useOpus = true,
     bool useEncryption = true,
-  }) =>
-      _service.updateMobileProfile({
-        'appaccount_use_opus': useOpus,
-        'appaccount_use_encryption': useEncryption,
-      }).then((response) => response.isSuccessful);
+  }) async {
+    final response = await _service.updateMobileProfile({
+      'appaccount_use_opus': useOpus,
+      'appaccount_use_encryption': useEncryption,
+    });
+
+    logFailedResponse(response);
+
+    return response.isSuccessful;
+  }
 
   Future<bool> isUserUsingMobileNumberAsFallback(User user) async {
     final response = await _service.getUserSettings(
