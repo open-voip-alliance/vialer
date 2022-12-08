@@ -6,7 +6,7 @@ import 'package:path_provider/path_provider.dart';
 
 import '../../app/util/loggable.dart';
 import '../../app/util/pigeon.dart';
-import '../../app/util/single_task.dart';
+import '../../app/util/synchronized_task.dart';
 import 'contact.dart';
 
 class ContactRepository with Loggable {
@@ -51,11 +51,11 @@ class ContactRepository with Loggable {
     final cachePath = (await _contactsCacheFile).path;
     final avatarCacheDirectory = (await _avatarCacheDirectory).path;
 
-    await SingleInstanceTask.named('Contact Import').run(
+    await SynchronizedTask.named('Contact Import').run(
       () => contactImporter.importContacts(cachePath),
     );
 
-    SingleInstanceTask.named('Avatar Import').run(
+    SynchronizedTask.named('Avatar Import').run(
       () => contactImporter.importContactAvatars(avatarCacheDirectory),
     );
 

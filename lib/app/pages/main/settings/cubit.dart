@@ -6,11 +6,11 @@ import '../../../../domain/authentication/logout.dart';
 import '../../../../domain/calling/voip/perform_echo_cancellation_calibration.dart';
 import '../../../../domain/onboarding/request_permission.dart';
 import '../../../../domain/user/get_build_info.dart';
-import '../../../../domain/user/get_latest_logged_in_user.dart';
 import '../../../../domain/user/get_logged_in_user.dart';
 import '../../../../domain/user/get_permission_status.dart';
 import '../../../../domain/user/permissions/permission.dart';
 import '../../../../domain/user/permissions/permission_status.dart';
+import '../../../../domain/user/refresh_user.dart';
 import '../../../../domain/user/settings/change_settings.dart';
 import '../../../../domain/user/settings/settings.dart';
 import '../../../../domain/voipgrid/user_voip_config.dart';
@@ -29,7 +29,7 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
   final _performEchoCancellationCalibration =
       PerformEchoCancellationCalibrationUseCase();
   final _getUser = GetLoggedInUserUseCase();
-  final _getLatestUser = GetLatestLoggedInUserUseCase();
+  final _refreshUser = RefreshUser();
 
   late StreamSubscription _userRefresherSubscription;
 
@@ -85,7 +85,7 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
     logger.info('Refreshing availability');
 
     // TODO: Add ability to refresh a user partially?
-    await _getLatestUser();
+    await _refreshUser();
     await _emitUpdatedState();
   }
 
