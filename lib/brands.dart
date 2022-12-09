@@ -67,7 +67,7 @@ const brands = '''
     "unencryptedSipUrl": "sipproxy.voipgrid.nl",
     "businessAvailabilityUrl": "https://api.prod.holodeck.spindle.dev/business-availability/clients/",
     "userAvailabilityWsUrl": "wss://api.prod.holodeck.spindle.dev/user-availability-ws/ws",
-    "privacyPolicyUrl": "https://bellenmetannabel.nl/app/uploads/Terms-Of-Use-And-Privacy.pdf"
+    "privacyPolicyUrl": "https://bellenmetannabel.nl/privacy-app/"
   }
 ]
 ''';
