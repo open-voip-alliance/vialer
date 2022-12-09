@@ -1172,6 +1172,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.3.1"
+  synchronized:
+    dependency: "direct main"
+    description:
+      name: synchronized
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.0+3"
   term_glyph:
     dependency: transitive
     description:
@@ -1405,4 +1412,4 @@ packages:
     version: "2.0.3"
 sdks:
   dart: ">=2.18.0 <3.0.0"
-  flutter: ">=3.3.7"
+  flutter: ">=3.3.9"

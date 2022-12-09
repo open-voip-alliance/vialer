@@ -136,6 +136,9 @@ class Settings {
   @override
   int get hashCode => _map.hashCode;
 
+  @override
+  String toString() => 'Settings($_map)';
+
   static dynamic toJson(Settings value) => Map.fromEntries(
         value._map.entries.map(
           (e) => MapEntry(

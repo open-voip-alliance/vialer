@@ -13,7 +13,7 @@ abstract class Routes {
 
   static final mapped = <String, WidgetBuilder>{
     Routes.onboarding: (_) => OnboardingPage(),
-    Routes.main: (_) => MainPage.create(),
+    Routes.main: (_) => MainPage(),
     Routes.dialer: (_) => const DialerPage(isInBottomNavBar: false),
     Routes.feedback: (_) => const FeedbackPage(),
   };

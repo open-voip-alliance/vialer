@@ -1,24 +1,24 @@
 import 'package:test/test.dart';
-import 'package:vialer/app/util/single_task.dart';
+import 'package:vialer/app/util/synchronized_task.dart';
 
 void main() {
   test('A task only executes the first future if already running', () async {
     var testValue = 0;
 
-    final expectedRun = SingleInstanceTask.named('Testing').run(() async {
+    final expectedRun = SynchronizedTask.named('Testing').run(() async {
       testValue = 1;
       Future.delayed(const Duration(seconds: 1));
     });
 
-    final unexpectedRun1 = SingleInstanceTask.named('Testing').run(() async {
+    final unexpectedRun1 = SynchronizedTask.named('Testing').run(() async {
       testValue = 2;
     });
 
-    final unexpectedRun2 = SingleInstanceTask.named('Testing').run(() async {
+    final unexpectedRun2 = SynchronizedTask.named('Testing').run(() async {
       testValue = 2;
     });
 
-    final unexpectedRun3 = SingleInstanceTask.named('Testing').run(() async {
+    final unexpectedRun3 = SynchronizedTask.named('Testing').run(() async {
       testValue = 2;
     });
 
@@ -35,8 +35,7 @@ void main() {
   test('Get the result of an executed task', () async {
     final expected = 'expected return value';
 
-    final value =
-        await SingleInstanceTask<String>.named('Testing').run(() async {
+    final value = await SynchronizedTask<String>.named('Testing').run(() async {
       Future.delayed(const Duration(seconds: 1));
       return expected;
     });
@@ -47,12 +46,12 @@ void main() {
   test('Get result when in-progress task completes', () async {
     final expected = 'expected return value';
 
-    SingleInstanceTask<String>.named('Testing').run(() async {
+    SynchronizedTask<String>.named('Testing').run(() async {
       Future.delayed(const Duration(seconds: 1));
       return expected;
     });
 
-    final value = await SingleInstanceTask<String>.named('Testing').run(
+    final value = await SynchronizedTask<String>.named('Testing').run(
       () async => 'should not be returned',
     );
 
@@ -62,12 +61,12 @@ void main() {
   test('Get result when in-progress task completes', () async {
     final expected = 'expected return value';
 
-    SingleInstanceTask<String>.named('Testing').run(() async {
+    SynchronizedTask<String>.named('Testing').run(() async {
       Future.delayed(const Duration(seconds: 1));
       return expected;
     });
 
-    final value = await SingleInstanceTask<String>.named('Testing').run(
+    final value = await SynchronizedTask<String>.named('Testing').run(
       () async => 'should not be returned',
     );
 
@@ -77,11 +76,11 @@ void main() {
   test('Create a task based on object alone', () async {
     final object = _DummyClass();
 
-    final task1 = SingleInstanceTask.of(object);
+    final task1 = SynchronizedTask.of(object);
 
     expect(task1.name, '_DummyClass');
 
-    final task2 = SingleInstanceTask.of(object);
+    final task2 = SynchronizedTask.of(object);
 
     expect(task1.name, task2.name);
   });
@@ -90,16 +89,43 @@ void main() {
     var testValue = 0;
 
     try {
-      await SingleInstanceTask.named('Testing').run(() async {
+      await SynchronizedTask.named('Testing').run(() async {
         throw Exception('Testing exceptions');
       });
     } on Exception {}
 
-    await SingleInstanceTask.named('Testing').run(() async {
+    await SynchronizedTask.named('Testing').run(() async {
       testValue = 1;
     });
 
     expect(testValue, 1);
+  });
+
+  test('Tasks are queued properly in queue mode', () async {
+    const mode = SynchronizedTaskMode.queue;
+    // A string is used to test the order as well.
+    var testValue = '0';
+
+    final run1 = SynchronizedTask.named('Testing', mode).run(() async {
+      testValue += '1';
+      Future.delayed(const Duration(seconds: 1));
+    });
+
+    final run2 = SynchronizedTask.named('Testing', mode).run(() async {
+      testValue += '2';
+    });
+
+    final run3 = SynchronizedTask.named('Testing', mode).run(() async {
+      testValue += '3';
+    });
+
+    final run4 = SynchronizedTask.named('Testing', mode).run(() async {
+      testValue += '4';
+    });
+
+    await Future.wait([run1, run2, run3, run4]);
+
+    expect(testValue, '01234');
   });
 }
 
