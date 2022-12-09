@@ -4,7 +4,7 @@ import 'package:dartx/dartx.dart';
 import 'package:flutter/foundation.dart';
 
 import '../../../app/util/pigeon.dart';
-import '../../../app/util/single_task.dart';
+import '../../../app/util/synchronized_task.dart';
 import '../../../dependency_locator.dart';
 import '../../env.dart';
 import '../../use_case.dart';
@@ -37,12 +37,11 @@ class UploadPendingRemoteLogs extends UseCase {
 
     if (!user.hasEnabledRemoteLogging) return;
 
-    if (logToken.isNullOrBlank) {
-      throw ArgumentError(
-        'Log token is not set while remote logging has been enabled. '
-        'Update .env file with LOG_TOKEN=xxxx',
-      );
-    }
+    assert(
+      logToken.isNotNullOrBlank,
+      'Log token is not set while remote logging has been enabled. '
+      'Update .env file with LOG_TOKEN=xxxx',
+    );
 
     if (await _loggingRepository.logsAreEmpty) return;
 
@@ -50,7 +49,7 @@ class UploadPendingRemoteLogs extends UseCase {
     final baseUrl = user.client.voip.middlewareUrl.toString();
     final url = baseUrl + RemoteLoggingService.url;
 
-    return SingleInstanceTask.of(this).run(() async {
+    return SynchronizedTask.of(this).run(() async {
       return Future.wait(
         [
           compute(
