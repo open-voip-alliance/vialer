@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../../domain/contacts/t9_contact.dart';
+import '../../../../../../domain/metrics/track_t9_usage.dart';
 import '../../../../../util/contact.dart';
 import '../../../widgets/contact_list/widgets/avatar.dart';
 import 'bloc.dart';
@@ -144,8 +145,11 @@ class _T9ContactsListState extends State<_T9ContactsList> {
                     ),
                   ),
                   subtitle: Text(t9Contact.relevantPhoneNumber.value),
-                  onTap: () => widget.controller.text =
-                      t9Contact.relevantPhoneNumber.value,
+                  onTap: () {
+                    TrackT9Usage()(t9Contact.colltact);
+                    widget.controller.text =
+                        t9Contact.relevantPhoneNumber.value;
+                  },
                 );
               },
             ),
