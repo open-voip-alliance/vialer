@@ -7,7 +7,8 @@ export 'state.dart';
 
 class ColleagueCubit extends Cubit<ColleagueState> {
   late final _receiveColleagueAvailability = ReceiveColleagueAvailability();
-  late final _stopReceivingColleagueAvailability = StopReceivingColleagueAvailability();
+  late final _stopReceivingColleagueAvailability =
+      StopReceivingColleagueAvailability();
 
   ColleagueCubit() : super(const ColleagueState.loading());
 

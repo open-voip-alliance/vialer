@@ -24,7 +24,6 @@ class ColleagueWebSocket extends StatefulWidget {
 
 class _ColleagueWebSocketState extends State<ColleagueWebSocket>
     with WidgetsBindingObserver, WidgetsBindingObserverRegistrar {
-
   @override
   void initState() {
     super.initState();
