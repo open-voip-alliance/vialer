@@ -1,34 +1,49 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../util/widgets_binding_observer_registrar.dart';
 import 'cubit.dart';
 
-//TODO: This is a temporary widget, to ensure that the cubit is started when
-// the app is launched. This can be removed when the colleagues page exists
-// if it is built when the app launches.
-class ColleagueRefresher extends StatefulWidget {
+class ColleagueWebSocket extends StatefulWidget {
   final Widget child;
 
-  ColleagueRefresher._(this.child);
+  ColleagueWebSocket._(this.child);
 
-  static Widget create({
+  static Widget connect({
     required Widget child,
   }) {
     return BlocProvider<ColleagueCubit>(
       create: (_) => ColleagueCubit(),
-      child: ColleagueRefresher._(child),
+      child: ColleagueWebSocket._(child),
     );
   }
 
   @override
-  State<StatefulWidget> createState() => _ColleagueRefresherState();
+  State<StatefulWidget> createState() => _ColleagueWebSocketState();
 }
 
-class _ColleagueRefresherState extends State<ColleagueRefresher> {
+class _ColleagueWebSocketState extends State<ColleagueWebSocket>
+    with WidgetsBindingObserver, WidgetsBindingObserverRegistrar {
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<ColleagueCubit>().connectToWebSocket();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+
+    if (state == AppLifecycleState.resumed) {
+      context.read<ColleagueCubit>().connectToWebSocket();
+    } else if (state == AppLifecycleState.paused) {
+      context.read<ColleagueCubit>().disconnectFromWebSocket();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    // Make sure the cubit is created and running.
-    context.read<ColleagueCubit>();
     return widget.child;
   }
 }

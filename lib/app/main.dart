@@ -105,7 +105,7 @@ class _AppState extends State<App> {
                     create: (_) => TemporaryRedirectCubit(),
                     child: child,
                   ),
-              (child) => ColleagueRefresher.create(child: child),
+              (child) => ColleagueWebSocket.connect(child: child),
             ],
             MaterialApp(
               navigatorKey: _navigatorKey,

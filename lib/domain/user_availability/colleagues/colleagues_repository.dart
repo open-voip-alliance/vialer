@@ -21,6 +21,8 @@ class ColleaguesRepository with Loggable {
 
   late final _controller = StreamController<List<Colleague>>();
 
+  late Stream<List<Colleague>>? _broadcastStream;
+
   /// This is the base list of colleagues that we use to update with changes
   /// from the WebSocket. The WebSocket does *not* provide enough data by
   /// itself, we need the data from the API and that is the data that is
@@ -49,50 +51,59 @@ class ColleaguesRepository with Loggable {
   }) async {
     colleagues = initialColleagues;
 
-    if (_socket == null || _socket?.closeCode != null) {
-      await _connectToWebSocketServer(user, brand);
-    }
+    if (_socket != null) return _broadcastStream!;
 
-    _socket!.listen((eventString) {
-      final event = jsonDecode(eventString as String);
+    final socket = await _connectToWebSocketServer(user, brand);
 
-      // We only care about this type of event for now (and that's all there
-      // is currently) so if it's anything aside from this we just ignore
-      // it.
-      if (event['name'] != 'user_availability_changed') return;
+    socket.listen(
+      (eventString) {
+        print(eventString);
+        final event = jsonDecode(eventString as String);
 
-      final payload = event['payload'] as Map<String, dynamic>;
+        // We only care about this type of event for now (and that's all there
+        // is currently) so if it's anything aside from this we just ignore
+        // it.
+        if (event['name'] != 'user_availability_changed') return;
 
-      final userUuid = payload['user_uuid'] as String;
+        final payload = event['payload'] as Map<String, dynamic>;
 
-      final colleague = colleagues.findByUserUuid(userUuid);
+        final userUuid = payload['user_uuid'] as String;
 
-      // We are going to hijack this WebSocket and emit an event when we
-      // know our user has changed on the server.
-      if (userUuid == user.uuid) {
-        _eventBus.broadcast(LoggedInUserDataIsStaleEvent());
-      }
+        final colleague = colleagues.findByUserUuid(userUuid);
 
-      // If no colleague is found, we can't update the availability of it.
-      if (colleague == null) return;
+        // We are going to hijack this WebSocket and emit an event when we
+        // know our user has changed on the server.
+        if (userUuid == user.uuid) {
+          _eventBus.broadcast(LoggedInUserDataIsStaleEvent());
+        }
 
-      // We don't want to display colleagues that do not have linked
-      // destinations as these are essentially inactive users that do not
-      // have any possible availability status.
-      if (payload['has_linked_destinations'] != true) {
-        _controller.add(colleagues..remove(colleague));
-        return;
-      }
+        // If no colleague is found, we can't update the availability of it.
+        if (colleague == null) return;
 
-      colleagues.replace(
-        original: colleague,
-        replacement: colleague.populateWithAvailability(payload),
-      );
+        // We don't want to display colleagues that do not have linked
+        // destinations as these are essentially inactive users that do not
+        // have any possible availability status.
+        if (payload['has_linked_destinations'] != true) {
+          _controller.add(colleagues..remove(colleague));
+          return;
+        }
 
-      _controller.add(colleagues);
-    });
+        colleagues.replace(
+          original: colleague,
+          replacement: colleague.populateWithAvailability(payload),
+        );
 
-    return _controller.stream;
+        _controller.add(colleagues);
+      },
+      onDone: () => stopListeningForAvailability().then(
+        (_) => logger.warning('UA WS has closed'),
+      ),
+      onError: (e) => stopListeningForAvailability().then(
+        (_) => logger.warning('UA WS error: $e'),
+      ),
+    );
+
+    return _broadcastStream = _controller.stream.asBroadcastStream();
   }
 
   Future<WebSocket> _connectToWebSocketServer(
@@ -112,8 +123,12 @@ class ColleaguesRepository with Loggable {
     );
   }
 
-  Future<void> stopListeningForAvailability() async =>
-      _socket?.close().then((_) => _socket = null);
+  Future<void> stopListeningForAvailability() async {
+    logger.info('Disconnecting from UA WebSocket');
+    await _socket?.close;
+    _socket = null;
+    _broadcastStream = null;
+  }
 
   /// This only provides the most basic information about colleagues,
   /// the rest needs to be queried by calling [startListeningForAvailability]
