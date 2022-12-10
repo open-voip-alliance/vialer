@@ -27,7 +27,7 @@ class ColleaguesRepository with Loggable {
   /// stored here.
   ///
   /// When there is new API data, this should be updated.
-  List<Colleague> _colleagues = [];
+  List<Colleague> colleagues = [];
 
   ColleaguesRepository(
     this._service,
@@ -47,7 +47,7 @@ class ColleaguesRepository with Loggable {
     required Brand brand,
     required List<Colleague> initialColleagues,
   }) async {
-    _colleagues = initialColleagues;
+    colleagues = initialColleagues;
 
     if (_socket == null || _socket?.closeCode != null) {
       await _connectToWebSocketServer(user, brand);
@@ -65,7 +65,7 @@ class ColleaguesRepository with Loggable {
 
       final userUuid = payload['user_uuid'] as String;
 
-      final colleague = _colleagues.findByUserUuid(userUuid);
+      final colleague = colleagues.findByUserUuid(userUuid);
 
       // We are going to hijack this WebSocket and emit an event when we
       // know our user has changed on the server.
@@ -80,16 +80,16 @@ class ColleaguesRepository with Loggable {
       // destinations as these are essentially inactive users that do not
       // have any possible availability status.
       if (payload['has_linked_destinations'] != true) {
-        _controller.add(_colleagues..remove(colleague));
+        _controller.add(colleagues..remove(colleague));
         return;
       }
 
-      _colleagues.replace(
+      colleagues.replace(
         original: colleague,
         replacement: colleague.populateWithAvailability(payload),
       );
 
-      _controller.add(_colleagues);
+      _controller.add(colleagues);
     });
 
     return _controller.stream;

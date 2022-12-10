@@ -92,7 +92,7 @@ class _T9ContactsListState extends State<_T9ContactsList> {
       listener: _onStateChanged,
       builder: (context, state) {
         final contacts =
-            state is ContactsLoaded ? state.filteredContacts : <T9Contact>[];
+            state is ContactsLoaded ? state.filteredContacts : <T9Colltact>[];
 
         return SizedBox(
           // If the height has not been calculated yet (first frame), use the
@@ -136,8 +136,13 @@ class _T9ContactsListState extends State<_T9ContactsList> {
                 }
 
                 return ListTile(
-                  leading: ContactAvatar(t9Contact.contact),
-                  title: Text(t9Contact.contact.displayName),
+                  leading: ColltactAvatar(t9Contact.colltact),
+                  title: Text(
+                    t9Contact.colltact.when(
+                      colleague: (colleague) => colleague.name,
+                      contact: (contact) => contact.displayName,
+                    ),
+                  ),
                   subtitle: Text(t9Contact.relevantPhoneNumber.value),
                   onTap: () => widget.controller.text =
                       t9Contact.relevantPhoneNumber.value,
