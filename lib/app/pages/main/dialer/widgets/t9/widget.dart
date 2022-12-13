@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../../../domain/contacts/t9_contact.dart';
+import '../../../../../../domain/colltacts/t9_colltact.dart';
 import '../../../../../../domain/metrics/track_t9_usage.dart';
 import '../../../../../util/contact.dart';
 import '../../../widgets/contact_list/widgets/avatar.dart';

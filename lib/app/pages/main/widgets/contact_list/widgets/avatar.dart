@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../../data/models/colltact.dart';
-import '../../../../../../domain/contacts/contact.dart';
+import '../../../../../../domain/colltacts/contact.dart';
 import '../../../../../util/contact.dart';
 import '../../../widgets/avatar.dart';
 import '../util/color.dart';

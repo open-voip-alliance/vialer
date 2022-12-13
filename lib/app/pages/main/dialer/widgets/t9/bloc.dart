@@ -9,8 +9,8 @@ import 'package:rxdart/rxdart.dart';
 
 import '../../../../../../data/models/colltact.dart';
 import '../../../../../../domain/call_records/item.dart';
-import '../../../../../../domain/contacts/get_contacts.dart';
-import '../../../../../../domain/contacts/t9_contact.dart';
+import '../../../../../../domain/colltacts/get_contacts.dart';
+import '../../../../../../domain/colltacts/t9_colltact.dart';
 import '../../../../../../domain/user/get_permission_status.dart';
 import '../../../../../../domain/user/permissions/permission.dart';
 import '../../../../../../domain/user/permissions/permission_status.dart';

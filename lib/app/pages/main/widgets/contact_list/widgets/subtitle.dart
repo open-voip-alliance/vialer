@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../../domain/contacts/contact.dart';
+import '../../../../../../domain/colltacts/contact.dart';
 import '../../../../../resources/localizations.dart';
 import '../../../../../resources/theme.dart';
 

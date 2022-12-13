@@ -1,7 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../app/util/contact.dart';
-import '../../domain/contacts/contact.dart';
+import '../../domain/colltacts/contact.dart';
 import '../../domain/user_availability/colleagues/colleague.dart';
 
 part 'colltact.freezed.dart';

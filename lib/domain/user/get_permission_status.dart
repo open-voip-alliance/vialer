@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import '../../dependency_locator.dart';
-import '../contacts/contact_repository.dart';
+import '../colltacts/contact_repository.dart';
 import '../use_case.dart';
 import 'permissions/permission.dart';
 import 'permissions/permission_repository.dart';

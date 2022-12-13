@@ -18,7 +18,7 @@ import '../domain/remote_logging/enable_console_logging.dart';
 import '../domain/remote_logging/enable_remote_logging_if_needed.dart';
 import '../domain/user/get_stored_user.dart';
 import 'pages/main/business_availability/temporary_redirect/cubit.dart';
-import 'pages/main/contacts/colleagues/widget.dart';
+import 'pages/main/colltacts/colleagues/widget.dart';
 import 'pages/main/page.dart';
 import 'pages/main/widgets/caller/widget.dart';
 import 'resources/localizations.dart';

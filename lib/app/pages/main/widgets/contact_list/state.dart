@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 import '../../../../../../app/util/pigeon.dart';
-import '../../../../../domain/contacts/contact.dart';
+import '../../../../../domain/colltacts/contact.dart';
 
 abstract class ContactsState extends Equatable {
   @override

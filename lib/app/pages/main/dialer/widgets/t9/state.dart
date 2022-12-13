@@ -1,7 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../../../../data/models/colltact.dart';
-import '../../../../../../domain/contacts/t9_contact.dart';
+import '../../../../../../domain/colltacts/t9_colltact.dart';
 
 part 'state.freezed.dart';
 
