@@ -1,0 +1,1 @@
+- A bug where some settings were not properly applied, has been fixed
