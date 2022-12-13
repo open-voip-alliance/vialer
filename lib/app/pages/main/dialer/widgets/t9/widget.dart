@@ -9,35 +9,36 @@ import '../../../../../util/contact.dart';
 import '../../../widgets/contact_list/widgets/avatar.dart';
 import 'bloc.dart';
 
-class T9ContactsListView extends StatelessWidget {
+class T9ColltactsListView extends StatelessWidget {
   final TextEditingController controller;
 
-  const T9ContactsListView({
+  const T9ColltactsListView({
     Key? key,
     required this.controller,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<T9ContactsBloc>(
-      create: (_) => T9ContactsBloc(),
-      child: _T9ContactsList(
+    return BlocProvider<T9ColltactsBloc>(
+      create: (_) => T9ColltactsBloc(),
+      child: _T9ColltactsList(
         controller: controller,
       ),
     );
   }
 }
 
-class _T9ContactsList extends StatefulWidget {
+class _T9ColltactsList extends StatefulWidget {
   final TextEditingController controller;
 
-  const _T9ContactsList({Key? key, required this.controller}) : super(key: key);
+  const _T9ColltactsList({Key? key, required this.controller})
+      : super(key: key);
 
   @override
-  _T9ContactsListState createState() => _T9ContactsListState();
+  _T9ColltactsListState createState() => _T9ColltactsListState();
 }
 
-class _T9ContactsListState extends State<_T9ContactsList> {
+class _T9ColltactsListState extends State<_T9ColltactsList> {
   final _listKey = GlobalKey();
 
   final _scrollController = ScrollController();
@@ -62,7 +63,7 @@ class _T9ContactsListState extends State<_T9ContactsList> {
     });
   }
 
-  void _onStateChanged(BuildContext context, T9ContactsState state) {
+  void _onStateChanged(BuildContext context, T9ColltactsState state) {
     // Due to a possible bug in the Scrollbar widget, it does not show the
     // scrollbar when the amount of items goes from zero to non-zero.
     // Below is a workaround, inspired by the Flutter source code: they make
@@ -71,8 +72,8 @@ class _T9ContactsListState extends State<_T9ContactsList> {
     // triggered it's not a problem  anymore, so we do it only once
     // (there's no harm in doing it multiple times, just unnecessary).
     if (!_notifiedScrollbar &&
-        state is ContactsLoaded &&
-        state.filteredContacts.length >= 2) {
+        state is ColltactsLoaded &&
+        state.filteredColltacts.length >= 2) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         // The empty scroll notification.
         _scrollController.position.didUpdateScrollPositionBy(0);
@@ -83,17 +84,17 @@ class _T9ContactsListState extends State<_T9ContactsList> {
 
   void _onInputChanged() {
     context
-        .read<T9ContactsBloc>()
-        .add(FilterT9Contacts(widget.controller.text));
+        .read<T9ColltactsBloc>()
+        .add(FilterT9Colltacts(widget.controller.text));
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<T9ContactsBloc, T9ContactsState>(
+    return BlocConsumer<T9ColltactsBloc, T9ColltactsState>(
       listener: _onStateChanged,
       builder: (context, state) {
         final contacts =
-            state is ContactsLoaded ? state.filteredContacts : <T9Colltact>[];
+            state is ColltactsLoaded ? state.filteredColltacts : <T9Colltact>[];
 
         return SizedBox(
           // If the height has not been calculated yet (first frame), use the
@@ -116,7 +117,7 @@ class _T9ContactsListState extends State<_T9ContactsList> {
 
                 // This happens on the first frame,
                 // to calculate the size of the list.
-                if (t9Contact == null) {
+                if (t9Colltact == null) {
                   return Visibility(
                     visible: false,
                     maintainSize: true,
@@ -137,18 +138,18 @@ class _T9ContactsListState extends State<_T9ContactsList> {
                 }
 
                 return ListTile(
-                  leading: ColltactAvatar(t9Contact.colltact),
+                  leading: ColltactAvatar(t9Colltact.colltact),
                   title: Text(
-                    t9Contact.colltact.when(
+                    t9Colltact.colltact.when(
                       colleague: (colleague) => colleague.name,
                       contact: (contact) => contact.displayName,
                     ),
                   ),
-                  subtitle: Text(t9Contact.relevantPhoneNumber.value),
+                  subtitle: Text(t9Colltact.relevantPhoneNumber.value),
                   onTap: () {
-                    TrackT9Usage()(t9Contact.colltact);
+                    TrackT9Usage()(t9Colltact.colltact);
                     widget.controller.text =
-                        t9Contact.relevantPhoneNumber.value;
+                        t9Colltact.relevantPhoneNumber.value;
                   },
                 );
               },

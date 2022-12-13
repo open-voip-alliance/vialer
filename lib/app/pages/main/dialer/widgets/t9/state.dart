@@ -7,11 +7,11 @@ part 'state.freezed.dart';
 
 @freezed
 class T9ColltactsState with _$T9ColltactsState {
-  const factory T9ContactsState.loading() = LoadingColltacts;
-  const factory T9ContactsState.loaded(
+  const factory T9ColltactsState.loading() = LoadingColltacts;
+  const factory T9ColltactsState.loaded(
     List<Colltact> colltacts,
     List<T9Colltact> filteredColltacts,
-  ) = ContactsLoaded;
-  const factory T9ContactsState.noPermission({required bool dontAskAgain}) =
+  ) = ColltactsLoaded;
+  const factory T9ColltactsState.noPermission({required bool dontAskAgain}) =
       NoPermission;
 }

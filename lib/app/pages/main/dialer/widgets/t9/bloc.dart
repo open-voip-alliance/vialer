@@ -22,36 +22,36 @@ import 'state.dart';
 export 'event.dart';
 export 'state.dart';
 
-class T9ContactsBloc extends Bloc<T9ContactsEvent, T9ContactsState> {
+class T9ColltactsBloc extends Bloc<T9ColltactsEvent, T9ColltactsState> {
   final _getContacts = GetContactsUseCase();
   final _getColleagues = GetColleagues();
   final _getPermissionStatus = GetPermissionStatusUseCase();
 
-  T9ContactsBloc() : super(const LoadingContacts()) {
-    add(LoadContacts());
+  T9ColltactsBloc() : super(const LoadingColltacts()) {
+    add(LoadColltacts());
   }
 
   @override
-  Stream<T9ContactsState> mapEventToState(T9ContactsEvent event) async* {
-    if (event is LoadContacts) {
-      yield* _loadContactsIfAllowed();
-    } else if (event is FilterT9Contacts) {
-      yield* _filterContacts(event);
+  Stream<T9ColltactsState> mapEventToState(T9ColltactsEvent event) async* {
+    if (event is LoadColltacts) {
+      yield* _loadColltactsIfAllowed();
+    } else if (event is FilterT9Colltacts) {
+      yield* _filterConlltacts(event);
     }
   }
 
   @override
-  Stream<Transition<T9ContactsEvent, T9ContactsState>> transformEvents(
-    Stream<T9ContactsEvent> events,
+  Stream<Transition<T9ColltactsEvent, T9ColltactsState>> transformEvents(
+    Stream<T9ColltactsEvent> events,
     // ignore: deprecated_member_use
-    TransitionFunction<T9ContactsEvent, T9ContactsState> transitionFn,
+    TransitionFunction<T9ColltactsEvent, T9ColltactsState> transitionFn,
   ) {
     // Only add a debounce to the filter event.
     final nonDebounceStream =
-        events.where((event) => event is! FilterT9Contacts);
+        events.where((event) => event is! FilterT9Colltacts);
 
     final debounceStream = events
-        .where((event) => event is FilterT9Contacts)
+        .where((event) => event is FilterT9Colltacts)
         .debounceTime(const Duration(milliseconds: 500));
 
     // ignore: deprecated_member_use
@@ -61,11 +61,11 @@ class T9ContactsBloc extends Bloc<T9ContactsEvent, T9ContactsState> {
     );
   }
 
-  Stream<T9ContactsState> _loadContactsIfAllowed() async* {
+  Stream<T9ColltactsState> _loadColltactsIfAllowed() async* {
     final status = await _getPermissionStatus(permission: Permission.contacts);
 
     if (status == PermissionStatus.granted) {
-      yield* _loadContacts();
+      yield* _loadColltacts();
     } else {
       yield NoPermission(
         dontAskAgain: status == PermissionStatus.permanentlyDenied ||
@@ -74,11 +74,11 @@ class T9ContactsBloc extends Bloc<T9ContactsEvent, T9ContactsState> {
     }
   }
 
-  Stream<T9ContactsState> _loadContacts() async* {
+  Stream<T9ColltactsState> _loadColltacts() async* {
     if (state is NoPermission) return;
 
-    if (state is! ContactsLoaded) {
-      yield const LoadingContacts();
+    if (state is! ColltactsLoaded) {
+      yield const LoadingColltacts();
     }
 
     final contacts = await _getContacts(latest: false);
@@ -89,10 +89,10 @@ class T9ContactsBloc extends Bloc<T9ContactsEvent, T9ContactsState> {
       ...colleagues.map(Colltact.colleague),
     ];
 
-    yield ContactsLoaded(colltacts, []);
+    yield ColltactsLoaded(colltacts, []);
   }
 
-  Stream<T9ContactsState> _filterContacts(FilterT9Contacts event) async* {
+  Stream<T9ColltactsState> _filterConlltacts(FilterT9Colltacts event) async* {
     // Necessary for auto cast.
     final state = this.state;
 
@@ -100,21 +100,21 @@ class T9ContactsBloc extends Bloc<T9ContactsEvent, T9ContactsState> {
 
     if (state is NoPermission) return;
 
-    if (state is ContactsLoaded) {
+    if (state is ColltactsLoaded) {
       if (input.isEmpty) {
-        yield ContactsLoaded(state.colltacts, []);
+        yield ColltactsLoaded(state.colltacts, []);
         return;
       }
 
       final t9Colltacts = await compute(
-        _filterContactsByRegularExpression,
+        _filterColltactsByRegularExpression,
         _FilterByRegularExpressionRequest(
           colltacts: state.colltacts,
           regex: _getT9Regex(input),
         ),
       );
 
-      yield ContactsLoaded(state.colltacts, t9Contacts);
+      yield ColltactsLoaded(state.colltacts, t9Colltacts);
     }
   }
 
@@ -163,7 +163,7 @@ class T9ContactsBloc extends Bloc<T9ContactsEvent, T9ContactsState> {
 /// Filters the list of contacts by a given T9 search, for a large amount of
 /// contacts this can be computationally heavy so it is designed to be run
 /// in an isolate.
-Future<List<T9Colltact>> _filterContactsByRegularExpression(
+Future<List<T9Colltact>> _filterColltactsByRegularExpression(
   _FilterByRegularExpressionRequest request,
 ) async {
   // Map each contact with multiple phone numbers to multiple t9 contacts
