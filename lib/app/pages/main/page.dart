@@ -9,7 +9,7 @@ import '../../widgets/app_update_checker/widget.dart';
 import '../../widgets/nested_children.dart';
 import '../../widgets/transparent_status_bar.dart';
 import 'call/widgets/call_button.dart';
-import 'contacts/page.dart';
+import 'colltacts/page.dart';
 import 'dialer/page.dart';
 import 'recent/page.dart';
 import 'settings/page.dart';

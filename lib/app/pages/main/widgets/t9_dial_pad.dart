@@ -61,7 +61,7 @@ class _T9DialPadState extends State<T9DialPad> {
         child: Column(
           children: <Widget>[
             if (context.isAndroid) ...[
-              T9ContactsListView(controller: controller),
+              T9ColltactsListView(controller: controller),
               const Divider(
                 height: 1,
                 thickness: 1,

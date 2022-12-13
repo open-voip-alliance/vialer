@@ -1,7 +1,7 @@
 import 'dart:core';
 
 import '../../../dependency_locator.dart';
-import '../../contacts/contact_populator.dart';
+import '../../colltacts/contact_populator.dart';
 import '../../use_case.dart';
 import '../call_record_with_contact.dart';
 import 'recent_call_repository.dart';
