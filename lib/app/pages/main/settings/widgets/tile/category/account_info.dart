@@ -15,8 +15,9 @@ class AccountInfoCategory extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SettingTileCategory(
-      icon: FontAwesomeIcons.volume,
-      title: context.msg.main.settings.list.audio.title,
+      highlight: true,
+      icon: FontAwesomeIcons.user,
+      title: context.msg.main.settings.list.accountInfo.title,
       children: children,
     );
   }
