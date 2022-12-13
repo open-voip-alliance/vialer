@@ -21,7 +21,7 @@ class ColleaguesRepository with Loggable {
 
   late final _controller = StreamController<List<Colleague>>();
 
-  late Stream<List<Colleague>>? _broadcastStream;
+  Stream<List<Colleague>>? _broadcastStream;
 
   /// This is the base list of colleagues that we use to update with changes
   /// from the WebSocket. The WebSocket does *not* provide enough data by
@@ -57,7 +57,6 @@ class ColleaguesRepository with Loggable {
 
     socket.listen(
       (eventString) {
-        print(eventString);
         final event = jsonDecode(eventString as String);
 
         // We only care about this type of event for now (and that's all there
