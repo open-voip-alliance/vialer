@@ -111,7 +111,7 @@ class _T9ContactsListState extends State<_T9ContactsList> {
               itemCount:
                   _height == null ? max(contacts.length, 1) : contacts.length,
               itemBuilder: (context, index) {
-                final t9Contact =
+                final t9Colltact =
                     contacts.length > index ? contacts[index] : null;
 
                 // This happens on the first frame,

@@ -106,7 +106,7 @@ class T9ContactsBloc extends Bloc<T9ContactsEvent, T9ContactsState> {
         return;
       }
 
-      final t9Contacts = await compute(
+      final t9Colltacts = await compute(
         _filterContactsByRegularExpression,
         _FilterByRegularExpressionRequest(
           colltacts: state.colltacts,
