@@ -3,7 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import '../../data/models/colltact.dart';
 import '../call_records/item.dart';
 
-part 't9_contact.freezed.dart';
+part 't9_colltact.freezed.dart';
 
 @freezed
 class T9Colltact with _$T9Colltact {
