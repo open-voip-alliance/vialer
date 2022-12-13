@@ -6,6 +6,11 @@ part 'colleague.g.dart';
 
 @freezed
 class Colleague with _$Colleague {
+  String? get number => map(
+        (user) => user.destination?.number,
+        unconnectedVoipAccount: (voipAccount) => voipAccount.number,
+      );
+
   ColleagueContext? get mostRelevantContext => map(
         (colleague) => colleague.context.firstOrNull,
         unconnectedVoipAccount: (_) => null,

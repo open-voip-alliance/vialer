@@ -1,30 +1,17 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../../../../../../domain/contacts/contact.dart';
-import '../../../../../../domain/contacts/t9_contact.dart';
+import '../../../../../../data/models/colltact.dart';
+import '../../../../../../domain/colltacts/t9_colltact.dart';
 
-abstract class T9ContactsState extends Equatable {
-  @override
-  List<Object?> get props => [];
-}
+part 'state.freezed.dart';
 
-class LoadingContacts extends T9ContactsState {}
-
-class NoPermission extends T9ContactsState {
-  final bool dontAskAgain;
-
-  NoPermission({required this.dontAskAgain});
-
-  @override
-  List<Object?> get props => [dontAskAgain];
-}
-
-class ContactsLoaded extends T9ContactsState {
-  final List<Contact> contacts;
-  final List<T9Contact> filteredContacts;
-
-  ContactsLoaded(this.contacts, this.filteredContacts);
-
-  @override
-  List<Object?> get props => [contacts, filteredContacts];
+@freezed
+class T9ColltactsState with _$T9ColltactsState {
+  const factory T9ColltactsState.loading() = LoadingColltacts;
+  const factory T9ColltactsState.loaded(
+    List<Colltact> colltacts,
+    List<T9Colltact> filteredColltacts,
+  ) = ColltactsLoaded;
+  const factory T9ColltactsState.noPermission({required bool dontAskAgain}) =
+      NoPermission;
 }

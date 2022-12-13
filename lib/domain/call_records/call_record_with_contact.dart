@@ -1,4 +1,4 @@
-import '../contacts/contact.dart';
+import '../colltacts/contact.dart';
 import 'call_record.dart';
 
 class CallRecordWithContact extends CallRecord {
