@@ -160,8 +160,8 @@ class T9ColltactsBloc extends Bloc<T9ColltactsEvent, T9ColltactsState> {
   }
 }
 
-/// Filters the list of contacts by a given T9 search, for a large amount of
-/// contacts this can be computationally heavy so it is designed to be run
+/// Filters the list of colltacts by a given T9 search, for a large amount of
+/// colltacts this can be computationally heavy so it is designed to be run
 /// in an isolate.
 Future<List<T9Colltact>> _filterColltactsByRegularExpression(
   _FilterByRegularExpressionRequest request,
