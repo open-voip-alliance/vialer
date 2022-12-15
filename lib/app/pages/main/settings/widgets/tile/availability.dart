@@ -64,7 +64,7 @@ class AvailabilityTile extends StatelessWidget {
     ]);
   }();
 
-  String _sharedText(BuildContext context, Destinations destinations) =>
+  String _sharedText(BuildContext context) =>
       context.msg.main.settings.list.calling.availability
           .resume(_accountInfoText);
 
@@ -133,7 +133,6 @@ class AvailabilityTile extends StatelessWidget {
                 child: StyledText(
                   _sharedText(
                     context,
-                    _destinations,
                   ),
                   style: TextStyle(
                     color: _userAvailabilityType.asColor(context),

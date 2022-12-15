@@ -77,10 +77,8 @@ class Destinations with _$Destinations {
   static Map<String, dynamic> serializeToJson(Destinations destinations) =>
       destinations.toJson();
 
-  List<PhoneAccount> get phoneAccounts => availableDestinations
-      .filter((destination) => destination is PhoneAccount)
-      .map((destination) => destination as PhoneAccount)
-      .toList();
+  List<PhoneAccount> get phoneAccounts =>
+      availableDestinations.whereType<PhoneAccount>().toList();
 
   /// Find the app account for the given user. This should never be null
   /// with a user properly configured for the app.
