@@ -142,6 +142,5 @@ extension on List<CallRecord> {
   /// We will discard our existing call records if we are ever loading from
   /// the first page. We only need to retain them if we are loading future
   /// pages.
-  List<CallRecord> keepRecordsIfNecessary(int page) =>
-      page == 1 ? [] : this;
+  List<CallRecord> keepRecordsIfNecessary(int page) => page == 1 ? [] : this;
 }
