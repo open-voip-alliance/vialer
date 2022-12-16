@@ -20,8 +20,8 @@ class MobileNumberTile extends StatelessWidget {
 
     return SettingTile(
       description: Text(
-        context.msg.main.settings.list.accountInfo.mobileNumber
-            .description.voip,
+        context
+            .msg.main.settings.list.accountInfo.mobileNumber.description.voip,
       ),
       childFillWidth: true,
       child: StringEditSettingValue(user.settings, key),
