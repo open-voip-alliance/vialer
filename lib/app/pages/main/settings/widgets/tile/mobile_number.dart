@@ -9,12 +9,10 @@ import 'widget.dart';
 
 class MobileNumberTile extends StatelessWidget {
   final User user;
-  final bool isVoipAllowed;
 
   const MobileNumberTile(
     this.user, {
     super.key,
-    required this.isVoipAllowed,
   });
 
   @override
@@ -22,19 +20,12 @@ class MobileNumberTile extends StatelessWidget {
     const key = CallSetting.mobileNumber;
 
     return SettingTile(
-      description: isVoipAllowed
-          ? Text(
-              context.msg.main.settings.list.accountInfo.mobileNumber
-                  .description.voip,
-            )
-          : Text(
-              context.msg.main.settings.list.accountInfo.mobileNumber
-                  .description.noVoip,
-            ),
-      childFillWidth: isVoipAllowed,
-      child: isVoipAllowed
-          ? StringEditSettingValue(user.settings, key)
-          : StringSettingValue(user.settings, key),
+      description: Text(
+        context.msg.main.settings.list.accountInfo.mobileNumber
+            .description.voip,
+      ),
+      childFillWidth: true,
+      child: StringEditSettingValue(user.settings, key),
     );
   }
 }
