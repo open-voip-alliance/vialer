@@ -23,6 +23,15 @@ connectivity:
     message: >-
       Het lijkt erop dat je geen verbinding hebt met internet. Controleer je wifi- of mobiele dataverbinding en probeer het opnieuw.
 
+loggedInElsewhere:
+  notification:
+    channel:
+      name: "Logged in Elsewhere"
+      description: "Logged in elsewhere channel description placeholder"
+    message:
+      title: "Placeholder logged in elsewhere title"
+      subtitle: "Placeholder logged in elsewhere subtitle"
+
 main:
   dialer:
     title: &keypadTitle "Toetsen"

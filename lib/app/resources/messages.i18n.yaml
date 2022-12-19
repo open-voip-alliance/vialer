@@ -27,6 +27,15 @@ connectivity:
     message: >-
       You don't seem to be connected to the internet. Please check your WiFi or mobile data connection and try again.
 
+loggedInElsewhere:
+  notification:
+    channel:
+      name: "Logged in Elsewhere"
+      description: "Logged in elsewhere channel description placeholder"
+    message:
+      title: "Placeholder logged in elsewhere title"
+      subtitle: "Placeholder logged in elsewhere subtitle"
+
 main:
   dialer:
     title: &keypadTitle "Keypad"
