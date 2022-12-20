@@ -60,7 +60,7 @@ public class Middleware: NativeMiddleware {
             "push_profile": "once",
             "sandbox": Bundle.main.infoDictionary?["Sandbox"] as? String,
             "remote_notification_token": flutterSharedPreferences.remoteNotificationToken,
-            "dnd": dndEnabled
+            "dnd": String(dndEnabled)
         ]
 
         var request = createMiddlewareRequest(email: middlewareCredentials.email, token: middlewareCredentials.loginToken, url: baseUrl + REGISTER_URL)
