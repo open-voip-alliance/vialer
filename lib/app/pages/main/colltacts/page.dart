@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../widgets/contact_list/widget.dart';
+import '../widgets/colltact_list/widget.dart';
 import 'widgets/details/widget.dart';
 
 class ContactsPage extends StatelessWidget {
@@ -21,7 +21,8 @@ class ContactsPage extends StatelessWidget {
         child: ContactList(
           navigatorKey: navigatorKey,
           bottomLettersPadding: bottomLettersPadding,
-          detailsBuilder: (_, contact) => ContactPageDetails(contact: contact),
+          detailsBuilder: (_, colltact) =>
+              ContactPageDetails(colltact: colltact),
         ),
       ),
     );

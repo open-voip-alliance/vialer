@@ -46,6 +46,7 @@ class ContactsCubit extends Cubit<ColltactsState> {
   }
 
   Future<void> _loadContacts() async {
+    //wip change to Colltacts
     if (state is! ColltactsLoaded) {
       emit(LoadingColltacts());
     }

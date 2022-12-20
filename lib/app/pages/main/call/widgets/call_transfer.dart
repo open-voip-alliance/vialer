@@ -4,8 +4,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
-import '../../widgets/contact_list/details/widget.dart';
-import '../../widgets/contact_list/widget.dart';
+import '../../widgets/colltact_list/details/widget.dart';
+import '../../widgets/colltact_list/widget.dart';
 import '../../widgets/nested_navigator.dart';
 import '../../widgets/t9_dial_pad.dart';
 import 'call_header_container.dart';
@@ -117,9 +117,10 @@ class _CallTransferState extends State<CallTransfer> {
                   child: Column(children: [
                     Expanded(
                       child: ContactList(
-                        detailsBuilder: (context, contact) {
+                        //wip
+                        detailsBuilder: (context, colltact) {
                           return ContactDetails(
-                            contact: contact,
+                            colltact: colltact,
                             onPhoneNumberPressed: (number) =>
                                 _onContactPhoneNumberPressed(
                               routeContext,

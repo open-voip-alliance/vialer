@@ -3,22 +3,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../../../../../data/models/colltact.dart';
 import '../../../../../../domain/colltacts/contact.dart';
 import '../../../../../resources/localizations.dart';
 import '../../../../../resources/theme.dart';
 import '../../../../../util/widgets_binding_observer_registrar.dart';
 import '../../../util/stylized_snack_bar.dart';
 import '../../../widgets/caller.dart';
-import '../../../widgets/contact_list/cubit.dart' hide NoPermission;
-import '../../../widgets/contact_list/details/cubit.dart';
-import '../../../widgets/contact_list/details/widget.dart';
+import '../../../widgets/colltact_list/cubit.dart' hide NoPermission;
+import '../../../widgets/colltact_list/details/cubit.dart';
+import '../../../widgets/colltact_list/details/widget.dart';
 
 class ContactPageDetails extends StatefulWidget {
-  final Contact contact;
+  final Colltact colltact;
 
   const ContactPageDetails({
     Key? key,
-    required this.contact,
+    required this.colltact,
   }) : super(key: key);
 
   @override
@@ -57,7 +58,8 @@ class _ContactPageDetailsState extends State<ContactPageDetails>
     if (state is ColltactsLoaded) {
       final colltact = state.colltacts.firstWhereOrNull(
         (colltact) => colltact.when(
-          contact: (contact) => contact.identifier == widget.contact.identifier,
+          contact: (contact) =>
+              contact.identifier == (widget.colltact as Contact).identifier,
           colleague: (colleague) =>
               false, //wip with which property we want to check here?
         ),
@@ -87,14 +89,14 @@ class _ContactPageDetailsState extends State<ContactPageDetails>
                   final cubit = context.read<ContactDetailsCubit>();
 
                   return ContactDetails(
-                    contact: widget.contact,
+                    colltact: widget.colltact,
                     onPhoneNumberPressed: cubit.call,
                     onEmailPressed: cubit.mail,
                     actions: [
                       Padding(
                         padding: const EdgeInsets.only(right: 20),
                         child: GestureDetector(
-                          onTap: () => cubit.edit(widget.contact),
+                          onTap: () => cubit.edit(widget.colltact),
                           child: context.isIOS
                               ? Padding(
                                   padding: const EdgeInsets.only(top: 24),

@@ -30,7 +30,7 @@ abstract class ContactsPageRoutes {
   static const details = '/details';
 }
 
-typedef WidgetWithContactBuilder = Widget Function(BuildContext, Contact);
+typedef WidgetWithContactBuilder = Widget Function(BuildContext, Colltact);
 
 class ContactList extends StatelessWidget {
   final GlobalKey<NavigatorState>? navigatorKey;
@@ -52,8 +52,8 @@ class ContactList extends StatelessWidget {
         navigatorKey: navigatorKey,
         routes: {
           ContactsPageRoutes.root: (_, __) => const _ContactList(),
-          ContactsPageRoutes.details: (context, contact) =>
-              detailsBuilder(context, contact as Contact),
+          ContactsPageRoutes.details: (context, colltact) =>
+              detailsBuilder(context, colltact as Colltact),
         },
       ),
     );
@@ -156,9 +156,10 @@ class _ContactPageState extends State<_ContactList>
 
     final searchTerm = _searchTerm?.toLowerCase();
     for (var colltact in colltacts) {
-      //wip Todo the collegue case
-      if (colltact is Contact) {
-        final contact = colltact as Contact;
+      //wip todo the collegue case
+      if (colltact is ColltactContact) {
+        //wip problem here
+        final contact = colltact.contact;
 
         if (searchTerm != null && !contact.matchesSearchTerm(searchTerm)) {
           continue;

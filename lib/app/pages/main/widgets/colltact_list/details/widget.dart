@@ -3,9 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../../../data/models/colltact.dart';
 import '../../../../../../domain/colltacts/contact.dart';
 import '../../../../../resources/localizations.dart';
-import '../../../../../util/contact.dart';
 import '../../../widgets/caller.dart';
 import '../../../widgets/header.dart';
 import '../cubit.dart' hide NoPermission;
@@ -17,14 +17,14 @@ const _horizontalPadding = 24.0;
 const _leadingSize = 48.0;
 
 class ContactDetails extends StatefulWidget {
-  final Contact contact;
+  final Colltact colltact;
   final void Function(String) onPhoneNumberPressed;
   final void Function(String) onEmailPressed;
   final List<Widget> actions;
 
   const ContactDetails({
     Key? key,
-    required this.contact,
+    required this.colltact,
     required this.onPhoneNumberPressed,
     required this.onEmailPressed,
     this.actions = const [],
@@ -41,15 +41,26 @@ class _ContactDetailsState extends State<ContactDetails> {
       create: (_) => ContactDetailsCubit(context.read<CallerCubit>()),
       child: BlocBuilder<ContactsCubit, ColltactsState>(
         builder: (context, state) {
-          var contact = widget.contact;
+          var colltact = widget.colltact;
 
-          //wip
           // if (state is ColltactsLoaded) {
           //   contact = state.contacts.firstWhere(
           //     (contact) => contact.identifier == widget.contact.identifier,
           //     orElse: () => widget.contact,
           //   );
           // }
+
+          if (state is ColltactsLoaded) {
+            colltact = state.colltacts.firstWhere(
+              (colltact) => colltact.when(
+                contact: (contact) =>
+                    contact.identifier ==
+                    (widget.colltact as Contact).identifier,
+                colleague: (colleague) => false, //wip
+              ),
+              orElse: () => widget.colltact,
+            );
+          }
 
           return Scaffold(
             appBar: AppBar(
@@ -74,20 +85,23 @@ class _ContactDetailsState extends State<ContactDetails> {
                       ),
                       child: Row(
                         children: <Widget>[
-                          ContactAvatar(contact, size: _leadingSize),
+                          //wip until ContactAvatar becomes ColltactAvatar
+                          ContactAvatar(colltact as Contact,
+                              size: _leadingSize),
                           const SizedBox(width: 16),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               Text(
-                                contact.displayName,
+                                colltact.name,
                                 style: const TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
                               const SizedBox(height: 4),
-                              ContactSubtitle(contact),
+                              //wip until ContactSubtitle becomes ColltactSubtitle
+                              ContactSubtitle(colltact as Contact),
                             ],
                           )
                         ],
@@ -99,7 +113,8 @@ class _ContactDetailsState extends State<ContactDetails> {
                         onRefresh: () =>
                             context.read<ContactsCubit>().reloadContacts(),
                         child: _DestinationsList(
-                          contact: contact,
+                          //wip until _DestinationsList accepts Colltact
+                          contact: colltact as Contact,
                           onPhoneNumberPressed: widget.onPhoneNumberPressed,
                           onEmailPressed: widget.onEmailPressed,
                         ),
