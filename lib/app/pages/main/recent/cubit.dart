@@ -26,8 +26,6 @@ class RecentCallsCubit extends Cubit<RecentCallsState> {
 
   final CallerCubit _caller;
 
-  bool _currentlyLoadedOnlyMissedCalls = false;
-
   RecentCallsCubit(this._caller) : super(const LoadingInitialRecentCalls()) {
     _loadRecentCalls(page: 1);
   }
@@ -69,10 +67,8 @@ class RecentCallsCubit extends Cubit<RecentCallsState> {
 
   Future<void> _loadRecentCalls({required int page}) async {
     final newlyFetchedCalls = await _fetch(page: page);
-    final existingCalls = _currentlyLoadedOnlyMissedCalls == onlyMissedCalls
-        ? state.callRecords
-        : <CallRecord>[];
-    _currentlyLoadedOnlyMissedCalls = onlyMissedCalls;
+    final existingCalls = state.callRecords.keepRecordsIfNecessary(page);
+
     List<CallRecord> calls;
 
     if (state is LoadingMoreRecentCalls) {
@@ -131,10 +127,7 @@ class ClientCallsCubit extends RecentCallsCubit {
   @override
   Future<void> _loadRecentCalls({required int page}) async {
     final newlyFetchedCalls = await _fetch(page: page);
-    final existingCalls = _currentlyLoadedOnlyMissedCalls == onlyMissedCalls
-        ? state.callRecords.toList()
-        : <CallRecord>[];
-    _currentlyLoadedOnlyMissedCalls = onlyMissedCalls;
+    final existingCalls = state.callRecords.keepRecordsIfNecessary(page);
 
     final calls = (existingCalls + newlyFetchedCalls)
         .distinct()
@@ -143,4 +136,11 @@ class ClientCallsCubit extends RecentCallsCubit {
 
     emit(RecentCallsLoaded(calls, page));
   }
+}
+
+extension on List<CallRecord> {
+  /// We will discard our existing call records if we are ever loading from
+  /// the first page. We only need to retain them if we are loading future
+  /// pages.
+  List<CallRecord> keepRecordsIfNecessary(int page) => page == 1 ? [] : this;
 }
