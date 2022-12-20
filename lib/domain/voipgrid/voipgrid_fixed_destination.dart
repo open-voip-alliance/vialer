@@ -1,7 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 
 import '../../app/util/json_converter.dart';
-import '../calling/voip/availability_repository.dart';
+import '../calling/voip/destination.dart';
 import 'voipgrid_destination.dart';
 
 part 'voipgrid_fixed_destination.g.dart';

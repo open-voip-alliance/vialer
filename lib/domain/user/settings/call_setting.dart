@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
-import '../../calling/voip/availability_repository.dart';
+import '../../calling/voip/destinations.dart';
 import 'settings.dart';
 
 enum CallSetting<T extends Object> with SettingKey<T> {

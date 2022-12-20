@@ -3,14 +3,14 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../app/util/json_converter.dart';
 import '../../../app/util/loggable.dart';
-import '../../user/user.dart';
 import '../../voipgrid/selected_destination_info.dart';
 import '../../voipgrid/voipgrid_destination.dart';
 import '../../voipgrid/voipgrid_fixed_destination.dart';
 import '../../voipgrid/voipgrid_phone_account.dart';
 import '../../voipgrid/voipgrid_service.dart';
+import 'destination.dart';
+import 'destinations.dart';
 
-part 'availability_repository.freezed.dart';
 part 'availability_repository.g.dart';
 
 class AvailabilityRepository with Loggable {
@@ -42,8 +42,6 @@ class AvailabilityRepository with Loggable {
     required int selectedDestinationId,
     required Destination destination,
   }) async {
-    // assert(!(phoneAccountId != null && fixedDestinationId != null)); // TODO
-
     final response =
         await _service.setAvailability(selectedDestinationId.toString(), {
       'phoneaccount':
@@ -58,56 +56,6 @@ class AvailabilityRepository with Loggable {
 
     return response.isSuccessful;
   }
-}
-
-@freezed
-class Destinations with _$Destinations {
-  const Destinations._();
-
-  const factory Destinations({
-    required Destination activeDestination,
-    required List<Destination> availableDestinations,
-    required int internalNumber,
-    required int selectedDestinationId,
-  }) = _Destinations;
-
-  factory Destinations.fromJson(dynamic json) =>
-      _$DestinationsFromJson(json as Map<String, dynamic>);
-
-  static Map<String, dynamic> serializeToJson(Destinations destinations) =>
-      destinations.toJson();
-
-  List<PhoneAccount> get phoneAccounts =>
-      availableDestinations.whereType<PhoneAccount>().toList();
-
-  /// Find the app account for the given user. This should never be null
-  /// with a user properly configured for the app.
-  PhoneAccount? findAppAccountFor({required User user}) =>
-      phoneAccounts.firstOrNullWhere(
-        (phoneAccount) => user.appAccountId == phoneAccount.id.toString(),
-      );
-}
-
-@freezed
-class Destination with _$Destination {
-  const factory Destination.notAvailable() = NotAvailable;
-
-  // Formally known as FixedDestination.
-  const factory Destination.phoneNumber(
-    int? id,
-    String? description,
-    String? phoneNumber,
-  ) = PhoneNumber;
-
-  const factory Destination.phoneAccount(
-    int? id,
-    String description,
-    int accountId,
-    int internalNumber,
-  ) = PhoneAccount;
-
-  factory Destination.fromJson(dynamic json) =>
-      _$DestinationFromJson(json as Map<String, dynamic>);
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake)
@@ -127,7 +75,7 @@ class _AvailabilityResponse {
   /// Temporarily provide default values to allow for users upgrading from
   /// an older version. defaultValue and includeIfNull can be removed
   /// in the future.
-  @JsonKey(name: 'internal_number', defaultValue: 0, includeIfNull: false)
+  @JsonKey(defaultValue: 0, includeIfNull: false)
   final int internalNumber;
 
   VoipgridDestination? get _activeDestination {

@@ -38,7 +38,7 @@ class ChangeSettingsUseCase extends UseCase with Loggable {
   final _refreshUser = RefreshUser();
 
   final _listeners = <SettingChangeListener>[
-    UpdateAvailabilityListener(),
+    UpdateDestinationListener(),
     UpdateMobileNumberListener(),
     UpdateOutgoingNumberListener(),
     UpdateRemoteLoggingListener(),
