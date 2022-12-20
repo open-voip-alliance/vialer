@@ -165,10 +165,12 @@ class _ContentState extends State<_Content> with TickerProviderStateMixin {
 
     tabController.addListener(
       () {
-        // The client calls will periodically refresh, so only manual
-        // refresh personal call when switching to the second tab.
-        if (!tabController.indexIsChanging && tabController.index == 0) {
-          widget.manualRefresher.refresh();
+        if (!tabController.indexIsChanging) {
+          if (tabController.index == 0) {
+            widget.manualRefresher.refresh();
+          } else if (tabController.index == 1) {
+            widget.clientManualRefresher.refresh();
+          }
         }
       },
     );
