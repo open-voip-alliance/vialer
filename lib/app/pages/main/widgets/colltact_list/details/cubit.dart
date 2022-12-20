@@ -27,7 +27,7 @@ class ContactDetailsCubit extends Cubit<ContactDetailsState> {
   }
 
   Future<void> edit(Colltact colltact) async {
-    if (colltact is Contact) {
+    if (colltact is ColltactContact) {
       final status = await _requestPermission(permission: Permission.contacts);
 
       if (status == PermissionStatus.granted) {

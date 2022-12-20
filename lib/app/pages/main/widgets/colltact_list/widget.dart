@@ -158,7 +158,6 @@ class _ContactPageState extends State<_ContactList>
     for (var colltact in colltacts) {
       //wip todo the collegue case
       if (colltact is ColltactContact) {
-        //wip problem here
         final contact = colltact.contact;
 
         if (searchTerm != null && !contact.matchesSearchTerm(searchTerm)) {
