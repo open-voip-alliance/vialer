@@ -12,29 +12,29 @@ class EnvRepository {
     return __env!;
   }
 
-  Future<String> _get(String key) async => (await _env)[key] ?? '';
+  Future<String> get(String key) async => (await _env)[key] ?? '';
 
-  Future<String> get errorTrackingDsn => _get('SENTRY_DSN');
+  Future<String> get errorTrackingDsn => get('SENTRY_DSN');
 
-  Future<String> get logentriesAndroidToken => _get('LOGENTRIES_ANDROID_TOKEN');
+  Future<String> get logentriesAndroidToken => get('LOGENTRIES_ANDROID_TOKEN');
 
-  Future<String> get logentriesIosToken => _get('LOGENTRIES_IOS_TOKEN');
+  Future<String> get logentriesIosToken => get('LOGENTRIES_IOS_TOKEN');
 
-  Future<String> get logToken => _get('LOG_TOKEN');
+  Future<String> get logToken => get('LOG_TOKEN');
 
-  Future<String> get segmentAndroidKey => _get('SEGMENT_ANDROID_KEY');
+  Future<String> get segmentAndroidKey => get('SEGMENT_ANDROID_KEY');
 
-  Future<String> get segmentIosKey => _get('SEGMENT_IOS_KEY');
+  Future<String> get segmentIosKey => get('SEGMENT_IOS_KEY');
 
-  Future<String> get mergeRequest => _get('MERGE_REQUEST');
+  Future<String> get mergeRequest => get('MERGE_REQUEST');
 
-  Future<String> get branch => _get('BRANCH');
+  Future<String> get branch => get('BRANCH');
 
-  Future<String> get tag => _get('TAG');
+  Future<String> get tag => get('TAG');
 
-  Future<bool> get sandbox async => (await _get('SANDBOX')).toBool();
+  Future<bool> get sandbox async => (await get('SANDBOX')).toBool();
 
-  Future<bool> get inTest async => (await _get('IN_TEST')).toBool();
+  Future<bool> get inTest async => (await get('IN_TEST')).toBool();
 }
 
 extension on String {
