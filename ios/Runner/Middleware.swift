@@ -44,7 +44,7 @@ public class Middleware: NativeMiddleware {
         
         lastRegisteredToken = token
         
-        val dndEnabled = flutterSharedPreferences.getBoolSetting(name: "DndSetting")
+        let dndEnabled = flutterSharedPreferences.getBoolSetting(name: "DndSetting")
 
         if dndEnabled {
             logger.writeLog("Registering in do-not-disturb mode")
