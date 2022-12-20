@@ -3,9 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 
-import '../../../../../../domain/colltacts/contact.dart';
+import '../../../../../../data/models/colltact.dart';
 import '../../../../../resources/localizations.dart';
-import '../../../../../util/contact.dart';
 import '../../../widgets/caller.dart';
 import '../../../widgets/header.dart';
 import '../cubit.dart' hide NoPermission;
@@ -16,50 +15,63 @@ import 'cubit.dart';
 const _horizontalPadding = 24.0;
 const _leadingSize = 48.0;
 
-class ContactDetails extends StatefulWidget {
-  final Contact contact;
+class ColltactDetails extends StatefulWidget {
+  final Colltact colltact;
   final void Function(String) onPhoneNumberPressed;
   final void Function(String) onEmailPressed;
   final List<Widget> actions;
 
-  const ContactDetails({
+  const ColltactDetails({
     Key? key,
-    required this.contact,
+    required this.colltact,
     required this.onPhoneNumberPressed,
     required this.onEmailPressed,
     this.actions = const [],
   }) : super(key: key);
 
   @override
-  _ContactDetailsState createState() => _ContactDetailsState();
+  _ColltactDetailsState createState() => _ColltactDetailsState();
 }
 
-class _ContactDetailsState extends State<ContactDetails> {
+class _ColltactDetailsState extends State<ColltactDetails> {
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<ContactDetailsCubit>(
-      create: (_) => ContactDetailsCubit(context.read<CallerCubit>()),
-      child: BlocBuilder<ContactsCubit, ContactsState>(
+    return BlocProvider<ColltactDetailsCubit>(
+      create: (_) => ColltactDetailsCubit(context.read<CallerCubit>()),
+      child: BlocBuilder<ColltactsCubit, ColltactsState>(
         builder: (context, state) {
-          var contact = widget.contact;
+          var colltact = widget.colltact;
 
-          if (state is ContactsLoaded) {
-            contact = state.contacts.firstWhere(
-              (contact) => contact.identifier == widget.contact.identifier,
-              orElse: () => widget.contact,
+          if (state is ColltactsLoaded) {
+            colltact = state.colltacts.firstWhere(
+              (colltact) => colltact.when(
+                contact: (contact) => widget.colltact is ColltactContact
+                    ? contact.identifier ==
+                        (widget.colltact as ColltactContact).contact.identifier
+                    : false,
+                colleague: (colleague) => widget.colltact is ColltactColleague
+                    ? colleague.id ==
+                        (widget.colltact as ColltactColleague).colleague.id
+                    : false,
+              ),
+              orElse: () => colltact,
             );
           }
 
           return Scaffold(
             appBar: AppBar(
-                backgroundColor: Colors.transparent,
-                elevation: 0,
-                title: Header(context.msg.main.contacts.title),
-                centerTitle: false,
-                iconTheme: IconThemeData(
-                  color: Theme.of(context).primaryColor,
-                ),
-                actions: widget.actions),
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              title: Header(context.msg.main.contacts.title),
+              centerTitle: false,
+              iconTheme: IconThemeData(
+                color: Theme.of(context).primaryColor,
+              ),
+              actions: colltact.when(
+                colleague: (_) => null,
+                contact: (_) => widget.actions,
+              ),
+            ),
             body: SafeArea(
               child: Padding(
                 padding: const EdgeInsets.only(
@@ -73,20 +85,24 @@ class _ContactDetailsState extends State<ContactDetails> {
                       ),
                       child: Row(
                         children: <Widget>[
-                          ContactAvatar(contact, size: _leadingSize),
+                          ColltactAvatar(colltact, size: _leadingSize),
                           const SizedBox(width: 16),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               Text(
-                                contact.displayName,
+                                colltact.name,
                                 style: const TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
                               const SizedBox(height: 4),
-                              ContactSubtitle(contact),
+                              colltact.when(
+                                colleague: (_) => const SizedBox.shrink(),
+                                contact: (contact) =>
+                                    ColltactSubtitle(colltact),
+                              ),
                             ],
                           )
                         ],
@@ -96,9 +112,9 @@ class _ContactDetailsState extends State<ContactDetails> {
                     Expanded(
                       child: RefreshIndicator(
                         onRefresh: () =>
-                            context.read<ContactsCubit>().reloadContacts(),
+                            context.read<ColltactsCubit>().reloadColltacts(),
                         child: _DestinationsList(
-                          contact: contact,
+                          colltact: colltact,
                           onPhoneNumberPressed: widget.onPhoneNumberPressed,
                           onEmailPressed: widget.onEmailPressed,
                         ),
@@ -116,14 +132,14 @@ class _ContactDetailsState extends State<ContactDetails> {
 }
 
 class _DestinationsList extends StatelessWidget {
-  final Contact contact;
+  final Colltact colltact;
 
   final void Function(String) onPhoneNumberPressed;
   final void Function(String) onEmailPressed;
 
   const _DestinationsList({
     Key? key,
-    required this.contact,
+    required this.colltact,
     required this.onPhoneNumberPressed,
     required this.onEmailPressed,
   }) : super(key: key);
@@ -131,33 +147,43 @@ class _DestinationsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView(
-      children: contact.phoneNumbers
-          .map(
-            (p) => _Item(
-              value: p.value,
-              label: p.label,
+      children: colltact.when(
+        colleague: (colleague) => [
+          if (colleague.number != null)
+            _Item(
+              value: colleague.number!,
               isEmail: false,
-              onTap: () => onPhoneNumberPressed.call(p.value),
+              onTap: () => onPhoneNumberPressed.call(colleague.number!),
             ),
-          )
-          .followedBy(
-            contact.emails.map(
-              (e) => _Item(
-                value: e.value,
-                label: e.label,
-                isEmail: true,
-                onTap: () => onEmailPressed.call(e.value),
+        ],
+        contact: (contact) => contact.phoneNumbers
+            .map(
+              (p) => _Item(
+                value: p.value,
+                label: p.label,
+                isEmail: false,
+                onTap: () => onPhoneNumberPressed.call(p.value),
               ),
-            ),
-          )
-          .toList(),
+            )
+            .followedBy(
+              contact.emails.map(
+                (e) => _Item(
+                  value: e.value,
+                  label: e.label,
+                  isEmail: true,
+                  onTap: () => onEmailPressed.call(e.value),
+                ),
+              ),
+            )
+            .toList(),
+      ),
     );
   }
 }
 
 class _Item extends StatelessWidget {
   final String value;
-  final String label;
+  final String? label;
 
   final bool isEmail;
 
@@ -166,17 +192,19 @@ class _Item extends StatelessWidget {
   const _Item({
     Key? key,
     required this.value,
-    required this.label,
+    this.label,
     required this.isEmail,
     this.onTap,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final label = toBeginningOfSentenceCase(
-      this.label,
-      VialerLocalizations.of(context).locale.languageCode,
-    )!;
+    final label = this.label != null
+        ? toBeginningOfSentenceCase(
+            this.label,
+            VialerLocalizations.of(context).locale.languageCode,
+          )
+        : null;
 
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(
@@ -190,7 +218,7 @@ class _Item extends StatelessWidget {
         ),
       ),
       title: Text(value),
-      subtitle: Text(label),
+      subtitle: label == null ? null : Text(label),
       onTap: onTap,
     );
   }

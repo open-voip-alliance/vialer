@@ -198,6 +198,9 @@ main:
       title: *contactsTitle
     snackBar:
       noPermission: "Unable to call without the Phone permission"
+    tabBar:
+      contactsTabTitle: *contactsTitle
+      colleaguesTabTitle: "Colleagues"
     edit: "Edit"
     list:
       loading:

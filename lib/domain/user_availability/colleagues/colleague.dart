@@ -1,4 +1,4 @@
-import 'package:dartx/dartx.dart';
+import 'package:collection/collection.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'colleague.freezed.dart';
@@ -7,12 +7,22 @@ part 'colleague.g.dart';
 @freezed
 class Colleague with _$Colleague {
   String? get number => map(
-        (user) => user.destination?.number,
+        (colleague) => colleague.destination?.number,
         unconnectedVoipAccount: (voipAccount) => voipAccount.number,
       );
 
   ColleagueContext? get mostRelevantContext => map(
         (colleague) => colleague.context.firstOrNull,
+        unconnectedVoipAccount: (_) => null,
+      );
+
+  String? get availabilityText => map(
+        (colleague) => colleague.status?.text(),
+        unconnectedVoipAccount: (_) => null,
+      );
+
+  String? get mostRelevantContextText => map(
+        (colleague) => colleague.context.firstOrNull?.text,
         unconnectedVoipAccount: (_) => null,
       );
 
@@ -80,6 +90,20 @@ enum ColleagueAvailabilityStatus {
         return ColleagueAvailabilityStatus.unknown;
     }
   }
+
+  String text() {
+    switch (this) {
+      case ColleagueAvailabilityStatus.doNotDisturb:
+      case ColleagueAvailabilityStatus.offline:
+        return 'Unavailable';
+      case ColleagueAvailabilityStatus.available:
+        return 'Available';
+      case ColleagueAvailabilityStatus.busy:
+        return 'Busy';
+      default:
+        return 'Unknown';
+    }
+  }
 }
 
 /// The destination that we can call to reach the given colleague.
@@ -138,4 +162,11 @@ class ColleagueContext with _$ColleagueContext {
         return null;
     }
   }
+
+  String get text => when(
+        ringing: () => 'Ringing',
+        inCall: () => 'In Call',
+      );
+
+  const ColleagueContext._();
 }

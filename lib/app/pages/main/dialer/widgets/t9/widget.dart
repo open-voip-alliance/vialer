@@ -6,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../../domain/colltacts/t9_colltact.dart';
 import '../../../../../../domain/metrics/track_t9_usage.dart';
 import '../../../../../util/contact.dart';
-import '../../../widgets/contact_list/widgets/avatar.dart';
+import '../../../widgets/colltact_list/widgets/avatar.dart';
 import 'bloc.dart';
 
 class T9ColltactsListView extends StatelessWidget {
@@ -129,7 +129,7 @@ class _T9ColltactsListState extends State<_T9ColltactsList> {
                       // but better to be safe than sorry.
                       key: index == 0 ? _listKey : null,
                       leading: const SizedBox(
-                        height: ContactAvatar.defaultSize,
+                        height: ColltactAvatar.defaultSize,
                       ),
                       title: const Text(''),
                       subtitle: const Text(''),
