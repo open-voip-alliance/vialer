@@ -53,12 +53,17 @@ class _ContactPageDetailsState extends State<ContactPageDetails>
     }
   }
 
-  void _onStateChanged(BuildContext context, ContactsState state) {
-    if (state is ContactsLoaded) {
-      final contact = state.contacts.firstWhereOrNull(
-        (contact) => contact.identifier == widget.contact.identifier,
+  void _onStateChanged(BuildContext context, ColltactsState state) {
+    if (state is ColltactsLoaded) {
+      final colltact = state.colltacts.firstWhereOrNull(
+        (colltact) => colltact.when(
+          contact: (contact) => contact.identifier == widget.contact.identifier,
+          colleague: (colleague) =>
+              false, //wip with which property we want to check here?
+        ),
       );
-      if (contact == null && _madeEdit) {
+
+      if (colltact == null && _madeEdit) {
         // Contact doesn't exist anymore after returning back to the app,
         // it's probably deleted, so close this detail screen.
         Navigator.pop(context, true);
@@ -72,7 +77,7 @@ class _ContactPageDetailsState extends State<ContactPageDetails>
       listener: _onCallerStateChanged,
       child: BlocProvider<ContactDetailsCubit>(
         create: (_) => ContactDetailsCubit(context.read<CallerCubit>()),
-        child: BlocConsumer<ContactsCubit, ContactsState>(
+        child: BlocConsumer<ContactsCubit, ColltactsState>(
           listener: _onStateChanged,
           builder: (context, state) {
             return BlocProvider<ContactDetailsCubit>(

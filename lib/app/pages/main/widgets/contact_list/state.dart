@@ -1,16 +1,16 @@
 import 'package:equatable/equatable.dart';
 
 import '../../../../../../app/util/pigeon.dart';
-import '../../../../../domain/colltacts/contact.dart';
+import '../../../../../data/models/colltact.dart';
 
-abstract class ContactsState extends Equatable {
+abstract class ColltactsState extends Equatable {
   @override
   List<Object?> get props => [];
 }
 
-class LoadingContacts extends ContactsState {}
+class LoadingColltacts extends ColltactsState {}
 
-class NoPermission extends ContactsState {
+class NoPermission extends ColltactsState {
   final bool dontAskAgain;
 
   NoPermission({required this.dontAskAgain});
@@ -19,12 +19,12 @@ class NoPermission extends ContactsState {
   List<Object?> get props => [dontAskAgain];
 }
 
-class ContactsLoaded extends ContactsState {
-  final Iterable<Contact> contacts;
-  final ContactSort contactSort;
+class ColltactsLoaded extends ColltactsState {
+  final Iterable<Colltact> colltacts;
+  final ContactSort contactSort; //wip What about colleagues sort?
 
-  ContactsLoaded(this.contacts, this.contactSort);
+  ColltactsLoaded(this.colltacts, this.contactSort);
 
   @override
-  List<Object?> get props => [contacts];
+  List<Object?> get props => [colltacts];
 }

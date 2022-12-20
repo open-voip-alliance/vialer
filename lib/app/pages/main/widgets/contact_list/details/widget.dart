@@ -39,16 +39,17 @@ class _ContactDetailsState extends State<ContactDetails> {
   Widget build(BuildContext context) {
     return BlocProvider<ContactDetailsCubit>(
       create: (_) => ContactDetailsCubit(context.read<CallerCubit>()),
-      child: BlocBuilder<ContactsCubit, ContactsState>(
+      child: BlocBuilder<ContactsCubit, ColltactsState>(
         builder: (context, state) {
           var contact = widget.contact;
 
-          if (state is ContactsLoaded) {
-            contact = state.contacts.firstWhere(
-              (contact) => contact.identifier == widget.contact.identifier,
-              orElse: () => widget.contact,
-            );
-          }
+          //wip
+          // if (state is ColltactsLoaded) {
+          //   contact = state.contacts.firstWhere(
+          //     (contact) => contact.identifier == widget.contact.identifier,
+          //     orElse: () => widget.contact,
+          //   );
+          // }
 
           return Scaffold(
             appBar: AppBar(

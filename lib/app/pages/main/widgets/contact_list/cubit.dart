@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../data/models/colltact.dart';
 import '../../../../../domain/colltacts/get_contact_sort.dart';
 import '../../../../../domain/colltacts/get_contacts.dart';
 import '../../../../../domain/onboarding/request_permission.dart';
@@ -14,14 +15,14 @@ import 'state.dart';
 
 export 'state.dart';
 
-class ContactsCubit extends Cubit<ContactsState> {
+class ContactsCubit extends Cubit<ColltactsState> {
   final _getContacts = GetContactsUseCase();
   final _getPermissionStatus = GetPermissionStatusUseCase();
   final _requestPermission = RequestPermissionUseCase();
   final _openAppSettings = OpenSettingsAppUseCase();
   final _getContactSort = GetContactSortUseCase();
 
-  ContactsCubit() : super(LoadingContacts()) {
+  ContactsCubit() : super(LoadingColltacts()) {
     _checkContactsPermission();
   }
 
@@ -45,13 +46,16 @@ class ContactsCubit extends Cubit<ContactsState> {
   }
 
   Future<void> _loadContacts() async {
-    if (state is! ContactsLoaded) {
-      emit(LoadingContacts());
+    if (state is! ColltactsLoaded) {
+      emit(LoadingColltacts());
     }
 
+    final contacts = await _getContacts();
+    final colltacts = contacts.map(Colltact.contact).toList();
+
     emit(
-      ContactsLoaded(
-        await _getContacts(),
+      ColltactsLoaded(
+        colltacts,
         await _getContactSort(),
       ),
     );
