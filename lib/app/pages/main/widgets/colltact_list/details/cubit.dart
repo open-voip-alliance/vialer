@@ -31,7 +31,7 @@ class ContactDetailsCubit extends Cubit<ContactDetailsState> {
       final status = await _requestPermission(permission: Permission.contacts);
 
       if (status == PermissionStatus.granted) {
-        final contact = colltact as Contact;
+        final contact = colltact.contact;
 
         if (Platform.isAndroid) {
           final intent = AndroidIntent(

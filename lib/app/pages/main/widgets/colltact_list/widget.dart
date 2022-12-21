@@ -165,7 +165,7 @@ class _ContactPageState extends State<_ContactList>
           continue;
         }
 
-        final contactItem = ColltactItem(contact: contact);
+        final contactItem = ColltactItem(colltact: colltact);
 
         /// Grouping contacts is based on the first letter of the
         /// given-, family-, or display name or if that fails phone number.
@@ -205,14 +205,18 @@ class _ContactPageState extends State<_ContactList>
         .map(
           (e) => [
             GroupHeader(group: e.key),
-            // Sort the contacts within the group by family- or given name
-            // or as fallback by the display name.
             ...e.value.sortedBy(
-              (e) => ((contactSort!.orderBy == OrderBy.familyName
-                          ? e.contact.familyName
-                          : e.contact.givenName) ??
-                      e.contact.displayName)
-                  .toLowerCase(),
+              (e) => ((e.colltact.when(
+                colleague: (colleague) => colleague.name,
+                // Sort the contacts within the group by family- or given name
+                // or as fallback by the display name.
+                contact: (contact) =>
+                    ((contactSort!.orderBy == OrderBy.familyName
+                                ? contact.familyName
+                                : contact.givenName) ??
+                            contact.displayName)
+                        .toLowerCase(),
+              ))),
             )
           ],
         )

@@ -85,9 +85,8 @@ class _ContactDetailsState extends State<ContactDetails> {
                       ),
                       child: Row(
                         children: <Widget>[
-                          //wip until ContactAvatar becomes ColltactAvatar
-                          ContactAvatar(colltact as Contact,
-                              size: _leadingSize),
+                          //wip
+                          ColltactAvatar(colltact, size: _leadingSize),
                           const SizedBox(width: 16),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -100,8 +99,7 @@ class _ContactDetailsState extends State<ContactDetails> {
                                 ),
                               ),
                               const SizedBox(height: 4),
-                              //wip until ContactSubtitle -> ColltactSubtitle
-                              ContactSubtitle(colltact as Contact),
+                              ColltactSubtitle(colltact),
                             ],
                           )
                         ],

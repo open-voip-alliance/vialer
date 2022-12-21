@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../../../domain/colltacts/contact.dart';
-import '../../../../../util/contact.dart';
+import '../../../../../../data/models/colltact.dart';
 import '../widget.dart';
 import 'avatar.dart';
 import 'subtitle.dart';
 
 class ColltactItem extends StatelessWidget {
-  final Contact contact; //wip
+  final Colltact colltact; //wip
 
   const ColltactItem({
     Key? key,
-    required this.contact,
+    required this.colltact,
   }) : super(key: key);
 
   @override
@@ -22,11 +21,11 @@ class ColltactItem extends StatelessWidget {
       onTap: () => Navigator.pushNamed(
         context,
         ColltactsPageRoutes.details,
-        arguments: contact,
+        arguments: colltact,
       ),
-      leading: ContactAvatar(contact),
-      title: Text(contact.displayName),
-      subtitle: ContactSubtitle(contact),
+      leading: ColltactAvatar(colltact), //wip
+      title: Text(colltact.name),
+      subtitle: ColltactSubtitle(colltact),
     );
   }
 }

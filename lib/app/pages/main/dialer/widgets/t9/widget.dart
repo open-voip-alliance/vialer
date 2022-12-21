@@ -129,7 +129,7 @@ class _T9ColltactsListState extends State<_T9ColltactsList> {
                       // but better to be safe than sorry.
                       key: index == 0 ? _listKey : null,
                       leading: const SizedBox(
-                        height: ContactAvatar.defaultSize,
+                        height: ColltactAvatar.defaultSize,
                       ),
                       title: const Text(''),
                       subtitle: const Text(''),
