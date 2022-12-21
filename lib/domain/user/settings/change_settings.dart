@@ -175,8 +175,8 @@ class ChangeSettingsUseCase extends UseCase with Loggable {
         if (listener.key != key) continue;
 
         final futureOrResult = before
-            ? listener.preSave(user, value)
-            : listener.postSave(user, value);
+            ? listener.preStore(user, value)
+            : listener.postStore(user, value);
 
         final result =
             futureOrResult is Future ? await futureOrResult : futureOrResult;

@@ -26,11 +26,11 @@ abstract class SettingChangeListener<T extends Object> {
   }
 
   /// Before the settings are saved.
-  FutureOr<SettingChangeListenResult> preSave(User user, T value) =>
+  FutureOr<SettingChangeListenResult> preStore(User user, T value) =>
       successResult;
 
   /// After the settings are saved.
-  FutureOr<SettingChangeListenResult> postSave(User user, T value) =>
+  FutureOr<SettingChangeListenResult> postStore(User user, T value) =>
       successResult;
 }
 

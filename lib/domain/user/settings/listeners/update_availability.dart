@@ -19,7 +19,7 @@ class UpdateDestinationListener extends SettingChangeListener<Destinations>
   final key = CallSetting.destinations;
 
   @override
-  FutureOr<SettingChangeListenResult> preSave(
+  FutureOr<SettingChangeListenResult> preStore(
     User user,
     Destinations destinations,
   ) async {
