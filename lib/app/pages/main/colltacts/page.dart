@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import '../widgets/colltact_list/widget.dart';
 import 'widgets/details/widget.dart';
 
-class ContactsPage extends StatelessWidget {
+class ColltactsPage extends StatelessWidget {
   final double bottomLettersPadding;
   final GlobalKey<NavigatorState>? navigatorKey;
 
-  const ContactsPage({
+  const ColltactsPage({
     Key? key,
     this.navigatorKey,
     this.bottomLettersPadding = 0,
@@ -22,7 +22,7 @@ class ContactsPage extends StatelessWidget {
           navigatorKey: navigatorKey,
           bottomLettersPadding: bottomLettersPadding,
           detailsBuilder: (_, colltact) =>
-              ContactPageDetails(colltact: colltact),
+              ColltactPageDetails(colltact: colltact),
         ),
       ),
     );

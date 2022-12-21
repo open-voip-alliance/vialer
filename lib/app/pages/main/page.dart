@@ -70,7 +70,7 @@ class MainPageState extends State<MainPage> {
     if (_pages == null) {
       _pages = [
         if (_dialerIsPage) const DialerPage(isInBottomNavBar: true),
-        ContactsPage(
+        ColltactsPage(
           navigatorKey: _navigatorKeys[0],
           bottomLettersPadding: !_dialerIsPage ? 96 : 0,
         ),

@@ -142,10 +142,11 @@ class _ContactPageState extends State<_ContactList>
   }
 
   List<Widget> _mapAndFilterToWidgets(
+    //wip needs colleague side
     Iterable<Colltact> colltacts,
     ContactSort? contactSort,
   ) {
-    final widgets = <String, List<ContactItem>>{};
+    final widgets = <String, List<ColltactItem>>{};
 
     const nonLetterKey = '#';
 
@@ -164,7 +165,7 @@ class _ContactPageState extends State<_ContactList>
           continue;
         }
 
-        final contactItem = ContactItem(contact: contact);
+        final contactItem = ColltactItem(contact: contact);
 
         /// Grouping contacts is based on the first letter of the
         /// given-, family-, or display name or if that fails phone number.

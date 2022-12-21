@@ -7,10 +7,10 @@ import '../widget.dart';
 import 'avatar.dart';
 import 'subtitle.dart';
 
-class ContactItem extends StatelessWidget {
-  final Contact contact;
+class ColltactItem extends StatelessWidget {
+  final Contact contact; //wip
 
-  const ContactItem({
+  const ColltactItem({
     Key? key,
     required this.contact,
   }) : super(key: key);

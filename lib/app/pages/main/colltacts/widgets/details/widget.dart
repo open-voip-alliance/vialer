@@ -14,19 +14,19 @@ import '../../../widgets/colltact_list/cubit.dart' hide NoPermission;
 import '../../../widgets/colltact_list/details/cubit.dart';
 import '../../../widgets/colltact_list/details/widget.dart';
 
-class ContactPageDetails extends StatefulWidget {
+class ColltactPageDetails extends StatefulWidget {
   final Colltact colltact;
 
-  const ContactPageDetails({
+  const ColltactPageDetails({
     Key? key,
     required this.colltact,
   }) : super(key: key);
 
   @override
-  _ContactPageDetailsState createState() => _ContactPageDetailsState();
+  _ColltactPageDetailsState createState() => _ColltactPageDetailsState();
 }
 
-class _ContactPageDetailsState extends State<ContactPageDetails>
+class _ColltactPageDetailsState extends State<ColltactPageDetails>
     with WidgetsBindingObserver, WidgetsBindingObserverRegistrar {
   bool _madeEdit = false;
 
