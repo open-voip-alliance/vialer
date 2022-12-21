@@ -1,5 +1,6 @@
 package com.voipgrid.vialer
 
+import LoggedInElsewhereNotification
 import android.content.Context
 import android.os.Build
 import com.google.firebase.messaging.RemoteMessage
@@ -15,6 +16,7 @@ class Middleware(
     private val logger: Logger,
     private val prefs: FlutterSharedPreferences,
     private val segment: Segment,
+    private val loggedInElsewhereNotification: LoggedInElsewhereNotification,
 ) : NativeMiddleware {
     private val client = OkHttpClient()
 
@@ -181,6 +183,7 @@ class Middleware(
     override fun inspect(remoteMessage: RemoteMessage): Boolean {
         if (remoteMessage.isLoggedInSomewhereElse) {
             log("User has logged in somewhere else, marking as such..")
+            loggedInElsewhereNotification.show()
             prefs.isLoggedInSomewhereElse = true
             return false
         }

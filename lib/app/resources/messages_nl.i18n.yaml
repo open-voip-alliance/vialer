@@ -584,3 +584,10 @@ notification:
   hangUpAction: *hangUpCall
   declineAction: *declineCall
   incomingContextText: Gaat over…
+  loggedInElsewhere:
+      channel:
+        name: "Logged in Elsewhere"
+        description: "Logged in elsewhere channel description placeholder"
+      message:
+        title: "Placeholder logged in elsewhere title"
+        subtitle: "Placeholder logged in elsewhere subtitle"
