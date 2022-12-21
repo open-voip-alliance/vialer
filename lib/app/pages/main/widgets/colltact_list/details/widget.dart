@@ -39,7 +39,7 @@ class _ContactDetailsState extends State<ContactDetails> {
   Widget build(BuildContext context) {
     return BlocProvider<ContactDetailsCubit>(
       create: (_) => ContactDetailsCubit(context.read<CallerCubit>()),
-      child: BlocBuilder<ContactsCubit, ColltactsState>(
+      child: BlocBuilder<ColltactsCubit, ColltactsState>(
         builder: (context, state) {
           var colltact = widget.colltact;
 
@@ -100,7 +100,7 @@ class _ContactDetailsState extends State<ContactDetails> {
                                 ),
                               ),
                               const SizedBox(height: 4),
-                              //wip until ContactSubtitle becomes ColltactSubtitle
+                              //wip until ContactSubtitle -> ColltactSubtitle
                               ContactSubtitle(colltact as Contact),
                             ],
                           )
@@ -111,7 +111,7 @@ class _ContactDetailsState extends State<ContactDetails> {
                     Expanded(
                       child: RefreshIndicator(
                         onRefresh: () =>
-                            context.read<ContactsCubit>().reloadContacts(),
+                            context.read<ColltactsCubit>().reloadContacts(),
                         child: _DestinationsList(
                           //wip until _DestinationsList accepts Colltact
                           contact: colltact as Contact,

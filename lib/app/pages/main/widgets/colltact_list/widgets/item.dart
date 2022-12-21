@@ -21,7 +21,7 @@ class ContactItem extends StatelessWidget {
       contentPadding: Provider.of<EdgeInsets>(context),
       onTap: () => Navigator.pushNamed(
         context,
-        ContactsPageRoutes.details,
+        ColltactsPageRoutes.details,
         arguments: contact,
       ),
       leading: ContactAvatar(contact),

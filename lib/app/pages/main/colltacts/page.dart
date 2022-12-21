@@ -18,7 +18,7 @@ class ContactsPage extends StatelessWidget {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: SafeArea(
-        child: ContactList(
+        child: ColltactList(
           navigatorKey: navigatorKey,
           bottomLettersPadding: bottomLettersPadding,
           detailsBuilder: (_, colltact) =>

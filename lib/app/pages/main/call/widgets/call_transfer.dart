@@ -116,7 +116,7 @@ class _CallTransferState extends State<CallTransfer> {
                 return Material(
                   child: Column(children: [
                     Expanded(
-                      child: ContactList(
+                      child: ColltactList(
                         //wip
                         detailsBuilder: (context, colltact) {
                           return ContactDetails(

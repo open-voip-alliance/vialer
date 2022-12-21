@@ -79,7 +79,7 @@ class _ContactPageDetailsState extends State<ContactPageDetails>
       listener: _onCallerStateChanged,
       child: BlocProvider<ContactDetailsCubit>(
         create: (_) => ContactDetailsCubit(context.read<CallerCubit>()),
-        child: BlocConsumer<ContactsCubit, ColltactsState>(
+        child: BlocConsumer<ColltactsCubit, ColltactsState>(
           listener: _onStateChanged,
           builder: (context, state) {
             return BlocProvider<ContactDetailsCubit>(

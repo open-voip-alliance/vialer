@@ -25,19 +25,19 @@ import 'cubit.dart';
 import 'widgets/group_header.dart';
 import 'widgets/item.dart';
 
-abstract class ContactsPageRoutes {
+abstract class ColltactsPageRoutes {
   static const root = '/';
   static const details = '/details';
 }
 
-typedef WidgetWithContactBuilder = Widget Function(BuildContext, Colltact);
+typedef WidgetWithColltactBuilder = Widget Function(BuildContext, Colltact);
 
-class ContactList extends StatelessWidget {
+class ColltactList extends StatelessWidget {
   final GlobalKey<NavigatorState>? navigatorKey;
-  final WidgetWithContactBuilder detailsBuilder;
+  final WidgetWithColltactBuilder detailsBuilder;
   final double bottomLettersPadding;
 
-  const ContactList({
+  const ColltactList({
     Key? key,
     this.navigatorKey,
     required this.detailsBuilder,
@@ -46,13 +46,13 @@ class ContactList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<ContactsCubit>(
-      create: (_) => ContactsCubit(),
+    return BlocProvider<ColltactsCubit>(
+      create: (_) => ColltactsCubit(),
       child: NestedNavigator(
         navigatorKey: navigatorKey,
         routes: {
-          ContactsPageRoutes.root: (_, __) => const _ContactList(),
-          ContactsPageRoutes.details: (context, colltact) =>
+          ColltactsPageRoutes.root: (_, __) => const _ContactList(),
+          ColltactsPageRoutes.details: (context, colltact) =>
               detailsBuilder(context, colltact as Colltact),
         },
       ),
@@ -88,7 +88,7 @@ class _ContactPageState extends State<_ContactList>
     super.didChangeAppLifecycleState(state);
 
     if (state == AppLifecycleState.resumed) {
-      context.read<ContactsCubit>().reloadContacts();
+      context.read<ColltactsCubit>().reloadContacts();
     }
   }
 
@@ -98,9 +98,9 @@ class _ContactPageState extends State<_ContactList>
       padding: const EdgeInsets.only(
         top: 16,
       ),
-      child: BlocBuilder<ContactsCubit, ColltactsState>(
+      child: BlocBuilder<ColltactsCubit, ColltactsState>(
         builder: (context, state) {
-          final cubit = context.watch<ContactsCubit>();
+          final cubit = context.watch<ColltactsCubit>();
 
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -235,7 +235,7 @@ class _Placeholder extends StatelessWidget {
     // Needed for auto cast
     final state = this.state;
 
-    final cubit = context.watch<ContactsCubit>();
+    final cubit = context.watch<ColltactsCubit>();
     final appName = context.brand.appName;
 
     return ConditionalPlaceholder(

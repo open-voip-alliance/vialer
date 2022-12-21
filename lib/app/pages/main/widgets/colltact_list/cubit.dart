@@ -15,14 +15,14 @@ import 'state.dart';
 
 export 'state.dart';
 
-class ContactsCubit extends Cubit<ColltactsState> {
+class ColltactsCubit extends Cubit<ColltactsState> {
   final _getContacts = GetContactsUseCase();
   final _getPermissionStatus = GetPermissionStatusUseCase();
   final _requestPermission = RequestPermissionUseCase();
   final _openAppSettings = OpenSettingsAppUseCase();
   final _getContactSort = GetContactSortUseCase();
 
-  ContactsCubit() : super(LoadingColltacts()) {
+  ColltactsCubit() : super(LoadingColltacts()) {
     _checkContactsPermission();
   }
 
