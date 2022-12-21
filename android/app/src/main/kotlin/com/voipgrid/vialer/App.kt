@@ -1,5 +1,6 @@
 package com.voipgrid.vialer
 
+import LoggedInElsewhereNotification
 import com.voipgrid.vialer.logging.Logger
 import io.flutter.app.FlutterApplication
 import org.openvoipalliance.flutterphonelib.*
@@ -11,7 +12,13 @@ class App : FlutterApplication() {
         prefs = FlutterSharedPreferences(this)
         logger = Logger(this)
         segment = Segment(this, logger, prefs)
-        middleware = Middleware(this, logger, prefs, segment)
+        middleware = Middleware(
+            this,
+            logger,
+            prefs,
+            segment,
+            LoggedInElsewhereNotification(this),
+        )
 
         startPhoneLib(
             activityClass = MainActivity::class.java,
