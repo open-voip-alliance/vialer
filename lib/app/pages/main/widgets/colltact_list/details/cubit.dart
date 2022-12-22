@@ -12,12 +12,12 @@ import '../../../../../../domain/user/permissions/permission_status.dart';
 import '../../../widgets/caller.dart';
 import 'state.dart';
 
-class ContactDetailsCubit extends Cubit<ContactDetailsState> {
+class ColltactDetailsCubit extends Cubit<ColltactDetailsState> {
   final _requestPermission = RequestPermissionUseCase();
 
   final CallerCubit _caller;
 
-  ContactDetailsCubit(this._caller) : super(const ContactDetailsState());
+  ColltactDetailsCubit(this._caller) : super(const ColltactDetailsState());
 
   Future<void> call(String destination) =>
       _caller.call(destination, origin: CallOrigin.contacts);

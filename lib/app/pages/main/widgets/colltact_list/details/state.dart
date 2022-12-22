@@ -1,3 +1,3 @@
-class ContactDetailsState {
-  const ContactDetailsState();
+class ColltactDetailsState {
+  const ColltactDetailsState();
 }

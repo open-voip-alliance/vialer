@@ -16,13 +16,13 @@ import 'cubit.dart';
 const _horizontalPadding = 24.0;
 const _leadingSize = 48.0;
 
-class ContactDetails extends StatefulWidget {
+class ColltactDetails extends StatefulWidget {
   final Colltact colltact;
   final void Function(String) onPhoneNumberPressed;
   final void Function(String) onEmailPressed;
   final List<Widget> actions;
 
-  const ContactDetails({
+  const ColltactDetails({
     Key? key,
     required this.colltact,
     required this.onPhoneNumberPressed,
@@ -31,31 +31,24 @@ class ContactDetails extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _ContactDetailsState createState() => _ContactDetailsState();
+  _ColltactDetailsState createState() => _ColltactDetailsState();
 }
 
-class _ContactDetailsState extends State<ContactDetails> {
+class _ColltactDetailsState extends State<ColltactDetails> {
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<ContactDetailsCubit>(
-      create: (_) => ContactDetailsCubit(context.read<CallerCubit>()),
+    return BlocProvider<ColltactDetailsCubit>(
+      create: (_) => ColltactDetailsCubit(context.read<CallerCubit>()),
       child: BlocBuilder<ColltactsCubit, ColltactsState>(
         builder: (context, state) {
           var colltact = widget.colltact;
-
-          // if (state is ColltactsLoaded) {
-          //   contact = state.contacts.firstWhere(
-          //     (contact) => contact.identifier == widget.contact.identifier,
-          //     orElse: () => widget.contact,
-          //   );
-          // }
 
           if (state is ColltactsLoaded) {
             colltact = state.colltacts.firstWhere(
               (colltact) => colltact.when(
                 contact: (contact) =>
                     contact.identifier ==
-                    (widget.colltact as Contact).identifier,
+                    (widget.colltact as ColltactContact).contact.identifier,
                 colleague: (colleague) => false, //wip
               ),
               orElse: () => widget.colltact,
@@ -112,7 +105,7 @@ class _ContactDetailsState extends State<ContactDetails> {
                             context.read<ColltactsCubit>().reloadContacts(),
                         child: _DestinationsList(
                           //wip until _DestinationsList accepts Colltact
-                          contact: colltact as Contact,
+                          contact: (colltact as ColltactContact).contact,
                           onPhoneNumberPressed: widget.onPhoneNumberPressed,
                           onEmailPressed: widget.onEmailPressed,
                         ),
@@ -130,6 +123,7 @@ class _ContactDetailsState extends State<ContactDetails> {
 }
 
 class _DestinationsList extends StatelessWidget {
+  //wip
   final Contact contact;
 
   final void Function(String) onPhoneNumberPressed;

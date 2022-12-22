@@ -7,7 +7,7 @@ import 'avatar.dart';
 import 'subtitle.dart';
 
 class ColltactItem extends StatelessWidget {
-  final Colltact colltact; //wip
+  final Colltact colltact;
 
   const ColltactItem({
     Key? key,
@@ -23,7 +23,7 @@ class ColltactItem extends StatelessWidget {
         ColltactsPageRoutes.details,
         arguments: colltact,
       ),
-      leading: ColltactAvatar(colltact), //wip
+      leading: ColltactAvatar(colltact),
       title: Text(colltact.name),
       subtitle: ColltactSubtitle(colltact),
     );

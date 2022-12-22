@@ -119,7 +119,7 @@ class _CallTransferState extends State<CallTransfer> {
                       child: ColltactList(
                         //wip
                         detailsBuilder: (context, colltact) {
-                          return ContactDetails(
+                          return ColltactDetails(
                             colltact: colltact,
                             onPhoneNumberPressed: (number) =>
                                 _onContactPhoneNumberPressed(

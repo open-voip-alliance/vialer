@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../../../data/models/colltact.dart';
-import '../../../../../../domain/colltacts/contact.dart';
 import '../../../../../resources/localizations.dart';
 import '../../../../../resources/theme.dart';
 import '../../../../../util/widgets_binding_observer_registrar.dart';
@@ -59,9 +58,9 @@ class _ColltactPageDetailsState extends State<ColltactPageDetails>
       final colltact = state.colltacts.firstWhereOrNull(
         (colltact) => colltact.when(
           contact: (contact) =>
-              contact.identifier == (widget.colltact as Contact).identifier,
-          colleague: (colleague) =>
-              false, //wip with which property we want to check here?
+              contact.identifier ==
+              (widget.colltact as ColltactContact).contact.identifier,
+          colleague: (colleague) => false, //wip
         ),
       );
 
@@ -77,18 +76,18 @@ class _ColltactPageDetailsState extends State<ColltactPageDetails>
   Widget build(BuildContext context) {
     return BlocListener<CallerCubit, CallerState>(
       listener: _onCallerStateChanged,
-      child: BlocProvider<ContactDetailsCubit>(
-        create: (_) => ContactDetailsCubit(context.read<CallerCubit>()),
+      child: BlocProvider<ColltactDetailsCubit>(
+        create: (_) => ColltactDetailsCubit(context.read<CallerCubit>()),
         child: BlocConsumer<ColltactsCubit, ColltactsState>(
           listener: _onStateChanged,
           builder: (context, state) {
-            return BlocProvider<ContactDetailsCubit>(
-              create: (_) => ContactDetailsCubit(context.watch<CallerCubit>()),
+            return BlocProvider<ColltactDetailsCubit>(
+              create: (_) => ColltactDetailsCubit(context.watch<CallerCubit>()),
               child: Builder(
                 builder: (context) {
-                  final cubit = context.read<ContactDetailsCubit>();
+                  final cubit = context.read<ColltactDetailsCubit>();
 
-                  return ContactDetails(
+                  return ColltactDetails(
                     colltact: widget.colltact,
                     onPhoneNumberPressed: cubit.call,
                     onEmailPressed: cubit.mail,
