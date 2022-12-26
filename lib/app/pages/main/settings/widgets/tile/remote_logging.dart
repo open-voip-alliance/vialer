@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../../domain/logging/remove_stored_logs.dart';
 import '../../../../../../domain/user/settings/app_setting.dart';
 import '../../../../../../domain/user/user.dart';
 import '../../../../../resources/localizations.dart';
@@ -71,7 +72,7 @@ class _RemoteLoggingSendLogsDialog extends StatelessWidget {
 
     void onDenyPressed() => Navigator.pop(context);
     void onConfirmPressed() {
-      cubit.sendSavedLogsToRemote();
+      RemoveStoredLogs()(keepPastDay: true);
       Navigator.pop(context);
     }
 
