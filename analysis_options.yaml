@@ -26,4 +26,3 @@ analyzer:
     - lib/**.g.dart
     - lib/app/util/pigeon.dart
     - lib/**.freezed.dart
-    - utils/**.dart
