@@ -507,7 +507,7 @@ onboarding:
         $appName needs access to the microphone so you can make and receive calls.
     contacts:
       title: "Contacts permission"
-      description(String appName):
+      description(String appName): >-
         This permission allows $appName to show your contacts, call history, and makes it possible for you to search through them.
 
 
