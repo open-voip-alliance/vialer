@@ -443,7 +443,7 @@ workflows:
       - name: Test
         script: |
           ew-cli \
-            --app app/build/outputs/apk/debug/app-debug.apk \
+            --app app/build/outputs/apk/debug/app-release-universal.apk \
             --test app/build/outputs/apk/androidTest/app-debug-androidTest.apk \
             --outputs-dir results
         test_report: results/**/*.xml
