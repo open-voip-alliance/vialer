@@ -21,7 +21,7 @@ class NoPermission extends ColltactsState {
 
 class ColltactsLoaded extends ColltactsState {
   final Iterable<Colltact> colltacts;
-  final ContactSort contactSort; //wip What about colleagues sort?
+  final ContactSort contactSort; //wip
 
   ColltactsLoaded(this.colltacts, this.contactSort);
 

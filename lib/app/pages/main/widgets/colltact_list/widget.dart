@@ -10,6 +10,7 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import '../../../../../data/models/colltact.dart';
 import '../../../../../domain/colltacts/contact.dart';
+import '../../../../../domain/user_availability/colleagues/colleague.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
 import '../../../../util/conditional_capitalization.dart';
@@ -51,7 +52,9 @@ class ColltactList extends StatelessWidget {
       child: NestedNavigator(
         navigatorKey: navigatorKey,
         routes: {
-          ColltactsPageRoutes.root: (_, __) => const _ContactList(),
+          ColltactsPageRoutes.root: (_, __) => const _ContactList(
+                showColleagues: true, //wip
+              ),
           ColltactsPageRoutes.details: (context, colltact) =>
               detailsBuilder(context, colltact as Colltact),
         },
@@ -62,11 +65,13 @@ class ColltactList extends StatelessWidget {
 
 class _ContactList extends StatefulWidget {
   final double bottomLettersPadding;
+  final bool showColleagues; //wip for permission
 
   const _ContactList({
     Key? key,
     // ignore: unused_element
     this.bottomLettersPadding = 0,
+    required this.showColleagues,
   }) : super(key: key);
 
   @override
@@ -74,8 +79,13 @@ class _ContactList extends StatefulWidget {
 }
 
 class _ContactPageState extends State<_ContactList>
-    with WidgetsBindingObserver, WidgetsBindingObserverRegistrar {
+    with
+        WidgetsBindingObserver,
+        WidgetsBindingObserverRegistrar,
+        SingleTickerProviderStateMixin {
   String? _searchTerm;
+
+  static const nonLetterKey = '#';
 
   void _onSearchTermChanged(String searchTerm) {
     setState(() {
@@ -102,53 +112,64 @@ class _ContactPageState extends State<_ContactList>
         builder: (context, state) {
           final cubit = context.watch<ColltactsCubit>();
 
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Header(context.msg.main.contacts.title),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: _SearchTextField(
-                  onChanged: _onSearchTermChanged,
+          return DefaultTabController(
+            length: 2,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Header(context.msg.main.contacts.title),
                 ),
-              ),
-              Expanded(
-                child: _Placeholder(
-                  state: state,
-                  child: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 200),
-                    switchInCurve: Curves.decelerate,
-                    switchOutCurve: Curves.decelerate.flipped,
-                    child: _AlphabetListView(
-                      key: ValueKey(_searchTerm),
-                      bottomLettersPadding: widget.bottomLettersPadding,
-                      children: _mapAndFilterToWidgets(
-                        state is ColltactsLoaded ? state.colltacts : [],
-                        state is ColltactsLoaded ? state.contactSort : null,
-                      ),
-                      onRefresh: cubit.reloadContacts,
-                    ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: _SearchTextField(
+                    onChanged: _onSearchTermChanged,
                   ),
                 ),
-              ),
-            ],
+                //wip CONTACTS COLLEAGUES
+                TabBar(
+                  labelStyle: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                  labelPadding: const EdgeInsets.only(
+                    top: 18,
+                    bottom: 8,
+                  ),
+                  labelColor: Theme.of(context).primaryColor,
+                  unselectedLabelColor: context.brand.theme.colors.grey1,
+                  indicatorColor: Theme.of(context).primaryColor,
+                  indicatorSize: TabBarIndicatorSize.label,
+                  tabs: [
+                    Text(
+                      context.msg.main.contacts.title.toUpperCase(),
+                    ),
+                    //wip COLLEAGUES
+                    Text(context.msg.main.recent.tabs.all.toUpperCase()),
+                  ],
+                ),
+                Expanded(
+                  child: _Placeholder(
+                    state: state,
+                    child: TabBarView(children: [
+                      _animatedSwitcher(ColltactKind.contact, state, cubit),
+                      _animatedSwitcher(ColltactKind.colleague, state, cubit),
+                    ]),
+                  ),
+                ),
+              ],
+            ),
           );
         },
       ),
     );
   }
 
-  List<Widget> _mapAndFilterToWidgets(
-    //wip needs colleague side
+  List<Widget> _mapAndFilterToContactWidgets(
     Iterable<Colltact> colltacts,
     ContactSort? contactSort,
   ) {
     final widgets = <String, List<ColltactItem>>{};
-
-    const nonLetterKey = '#';
 
     /// Whether the [char] is part of the *letter group*, which consists of
     /// any letter in any language (including non-latin alphabets)
@@ -157,7 +178,6 @@ class _ContactPageState extends State<_ContactList>
 
     final searchTerm = _searchTerm?.toLowerCase();
     for (var colltact in colltacts) {
-      //wip todo the collegue case
       if (colltact is ColltactContact) {
         final contact = colltact.contact;
 
@@ -194,12 +214,89 @@ class _ContactPageState extends State<_ContactList>
       }
     }
 
+    return _createSortedColltactList(widgets, contactSort);
+  }
+
+  List<Widget> _mapAndFilterToColleagueWidgets(
+    Iterable<Colltact> colltacts,
+  ) {
+    final widgets = <String, List<ColltactItem>>{};
+
+    //wip fake data [
+    final colleagueContext1 = const ColleagueContext.inCall();
+    final colleagueContext2 = const ColleagueContext.ringing();
+    var colleagueContextListA = <ColleagueContext>[
+      colleagueContext1,
+      colleagueContext2,
+    ];
+    var colleagueContextListB = <ColleagueContext>[
+      colleagueContext2,
+      colleagueContext1,
+    ];
+
+    final a =
+        Colleague(id: '123', name: 'Anna', context: colleagueContextListA);
+    final b =
+        Colleague(id: '133', name: 'Barbara', context: colleagueContextListB);
+
+    final aa = Colltact.colleague(a);
+    final bb = Colltact.colleague(b);
+
+    colltacts = [aa, bb];
+    //wip ]
+
+    /// Whether the [char] is part of the *letter group*, which consists of
+    /// any letter in any language (including non-latin alphabets)
+    bool isInLetterGroup(String? char) =>
+        char != null ? RegExp(r'\p{L}', unicode: true).hasMatch(char) : false;
+
+    final searchTerm = _searchTerm?.toLowerCase();
+
+    for (var colltact in colltacts) {
+      if (colltact is ColltactColleague) {
+        final colleague = colltact.colleague;
+
+        //wip matchesSearchTerm for Colleagues
+        // if (searchTerm != null && !contact.matchesSearchTerm(searchTerm)) {
+        //   continue;
+        // }
+
+        final contactItem = ColltactItem(colltact: colltact);
+
+        var firstCharacter = colleague.name.characters.firstOrNull;
+
+        if (firstCharacter.isNullOrEmpty &&
+            !colleague.number.isNotNullOrEmpty) {
+          firstCharacter = colleague.number!.characters.firstOrDefault('');
+        }
+
+        /// Group letters case sensitive with or without diacritics together.
+        final groupCharacter =
+            removeDiacritics(firstCharacter ?? '').toUpperCase();
+
+        if (isInLetterGroup(groupCharacter)) {
+          widgets[groupCharacter] ??= [];
+          widgets[groupCharacter]!.add(contactItem);
+        } else {
+          widgets[nonLetterKey] ??= [];
+          widgets[nonLetterKey]!.add(contactItem);
+        }
+      }
+    }
+
+    return _createSortedColltactList(widgets, null);
+  }
+
+  List<Widget> _createSortedColltactList(
+    Map<String, List<ColltactItem>> widgets,
+    ContactSort? contactSort,
+  ) {
     return [
-      // Sort all contact widgets with a letter alphabetically.
+      // Sort all colltact widgets with a letter alphabetically.
       ...widgets.entries
           .filter((e) => e.key != nonLetterKey)
           .sortedBy((e) => e.key),
-      // Place all contacts that belong to the non-letter group at the bottom.
+      // Place all colltacts that belong to the non-letter group at the bottom.
       ...widgets.entries.filter((e) => e.key == nonLetterKey).toList(),
     ]
         .map(
@@ -208,7 +305,7 @@ class _ContactPageState extends State<_ContactList>
             ...e.value.sortedBy(
               (e) => ((e.colltact.when(
                 colleague: (colleague) => colleague.name,
-                // Sort the contacts within the group by family- or given name
+                // Sort the contacts within the group by family or given name
                 // or as fallback by the display name.
                 contact: (contact) =>
                     ((contactSort!.orderBy == OrderBy.familyName
@@ -223,6 +320,35 @@ class _ContactPageState extends State<_ContactList>
         .flatten()
         .toList();
   }
+
+  AnimatedSwitcher _animatedSwitcher(
+      ColltactKind colltactKind, ColltactsState state, ColltactsCubit cubit) {
+    final isForContacts = colltactKind == ColltactKind.contact;
+
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 200),
+      switchInCurve: Curves.decelerate,
+      switchOutCurve: Curves.decelerate.flipped,
+      child: _AlphabetListView(
+        key: ValueKey(_searchTerm),
+        bottomLettersPadding: widget.bottomLettersPadding,
+        children: isForContacts
+            ? _mapAndFilterToContactWidgets(
+                state is ColltactsLoaded ? state.colltacts : [],
+                state is ColltactsLoaded ? state.contactSort : null,
+              )
+            : _mapAndFilterToColleagueWidgets(
+                state is ColltactsLoaded ? state.colltacts : [],
+              ),
+        onRefresh: cubit.reloadContacts, //wip
+      ),
+    );
+  }
+}
+
+enum ColltactKind {
+  contact,
+  colleague,
 }
 
 class _Placeholder extends StatelessWidget {
