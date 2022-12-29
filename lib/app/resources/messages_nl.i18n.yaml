@@ -586,7 +586,7 @@ notification:
   incomingContextText: Gaat over…
   loggedInElsewhere:
     channel:
-      name: "Logged in elsewhere"
+      name: "Ergens anders ingelogd"
     message:
-      title: "Logged in elsewhere"
-      subtitle: "You have logged into a different device and will no longer receive calls here."
+      title: "Ergens anders ingelogd"
+      subtitle: "Je bent op een andere telefoon ingelogd en je ontvangt geen oproepen meer op dit apparaat."
