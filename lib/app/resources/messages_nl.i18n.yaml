@@ -585,9 +585,8 @@ notification:
   declineAction: *declineCall
   incomingContextText: Gaat over…
   loggedInElsewhere:
-      channel:
-        name: "Logged in Elsewhere"
-        description: "Logged in elsewhere channel description placeholder"
-      message:
-        title: "Placeholder logged in elsewhere title"
-        subtitle: "Placeholder logged in elsewhere subtitle"
+    channel:
+      name: "Logged in elsewhere"
+    message:
+      title: "Logged in elsewhere"
+      subtitle: "You have logged into a different device and will no longer receive calls here."
