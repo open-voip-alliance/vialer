@@ -250,11 +250,8 @@ main:
             The outgoing number is displayed on the screen of those you are calling.
         mobileNumber:
           title: "Your mobile number"
-          description:
-            voip: >-
+          description: >-
               Your mobile phone number. It is not visible to others.
-            noVoip: >-
-              This app uses your mobile number to make calls but it is not visible to others.
         username:
           description: >-
             Email address of your user account with which you logged in.

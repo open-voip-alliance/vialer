@@ -126,10 +126,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           AvailabilityTile(user),
                           AccountInfoCategory(
                             children: [
-                              MobileNumberTile(
-                                user,
-                                isVoipAllowed: isVoipAllowed,
-                              ),
+                              MobileNumberTile(user),
                               OutgoingNumberTile(user),
                               UsernameTile(user),
                             ],
