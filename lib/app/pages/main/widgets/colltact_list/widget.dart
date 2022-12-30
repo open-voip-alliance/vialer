@@ -10,7 +10,6 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import '../../../../../data/models/colltact.dart';
 import '../../../../../domain/colltacts/contact.dart';
-import '../../../../../domain/user_availability/colleagues/colleague.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
 import '../../../../util/conditional_capitalization.dart';
@@ -52,9 +51,7 @@ class ColltactList extends StatelessWidget {
       child: NestedNavigator(
         navigatorKey: navigatorKey,
         routes: {
-          ColltactsPageRoutes.root: (_, __) => const _ContactList(
-                showColleagues: true, //wip
-              ),
+          ColltactsPageRoutes.root: (_, __) => const _ContactList(),
           ColltactsPageRoutes.details: (context, colltact) =>
               detailsBuilder(context, colltact as Colltact),
         },
@@ -65,13 +62,11 @@ class ColltactList extends StatelessWidget {
 
 class _ContactList extends StatefulWidget {
   final double bottomLettersPadding;
-  final bool showColleagues; //wip for permission
 
   const _ContactList({
     Key? key,
     // ignore: unused_element
     this.bottomLettersPadding = 0,
-    required this.showColleagues,
   }) : super(key: key);
 
   @override
@@ -224,26 +219,26 @@ class _ContactPageState extends State<_ContactList>
     final widgets = <String, List<ColltactItem>>{};
 
     //wip fake data [
-    final colleagueContext1 = const ColleagueContext.inCall();
-    final colleagueContext2 = const ColleagueContext.ringing();
-    var colleagueContextListA = <ColleagueContext>[
-      colleagueContext1,
-      colleagueContext2,
-    ];
-    var colleagueContextListB = <ColleagueContext>[
-      colleagueContext2,
-      colleagueContext1,
-    ];
-
-    final a =
-        Colleague(id: '123', name: 'Anna', context: colleagueContextListA);
-    final b =
-        Colleague(id: '133', name: 'Barbara', context: colleagueContextListB);
-
-    final aa = Colltact.colleague(a);
-    final bb = Colltact.colleague(b);
-
-    colltacts = [aa, bb];
+    // final colleagueContext1 = const ColleagueContext.inCall();
+    // final colleagueContext2 = const ColleagueContext.ringing();
+    // var colleagueContextListA = <ColleagueContext>[
+    //   colleagueContext1,
+    //   colleagueContext2,
+    // ];
+    // var colleagueContextListB = <ColleagueContext>[
+    //   colleagueContext2,
+    //   colleagueContext1,
+    // ];
+    //
+    // final a =
+    //     Colleague(id: '123', name: 'Anna', context: colleagueContextListA);
+    // final b =
+    //     Colleague(id: '133', name: 'Barbara', context: colleagueContextListB);
+    //
+    // final aa = Colltact.colleague(a);
+    // final bb = Colltact.colleague(b);
+    //
+    // colltacts = [aa, bb];
     //wip ]
 
     /// Whether the [char] is part of the *letter group*, which consists of
