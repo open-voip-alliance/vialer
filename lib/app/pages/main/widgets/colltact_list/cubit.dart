@@ -11,12 +11,14 @@ import '../../../../../domain/user/get_permission_status.dart';
 import '../../../../../domain/user/permissions/permission.dart';
 import '../../../../../domain/user/permissions/permission_status.dart';
 import '../../../../../domain/user/settings/open_settings.dart';
+import '../../../../../domain/user_availability/colleagues/get_colleagues.dart';
 import 'state.dart';
 
 export 'state.dart';
 
 class ColltactsCubit extends Cubit<ColltactsState> {
   final _getContacts = GetContactsUseCase();
+  final _getColleagues = GetColleagues();
   final _getPermissionStatus = GetPermissionStatusUseCase();
   final _requestPermission = RequestPermissionUseCase();
   final _openAppSettings = OpenSettingsAppUseCase();
@@ -24,6 +26,7 @@ class ColltactsCubit extends Cubit<ColltactsState> {
 
   ColltactsCubit() : super(LoadingColltacts()) {
     _checkContactsPermission();
+    loadColleagues();
   }
 
   Future<void> _checkContactsPermission() async {
@@ -46,7 +49,6 @@ class ColltactsCubit extends Cubit<ColltactsState> {
   }
 
   Future<void> _loadContacts() async {
-    //wip change to Colltacts
     if (state is! ColltactsLoaded) {
       emit(LoadingColltacts());
     }
@@ -58,6 +60,22 @@ class ColltactsCubit extends Cubit<ColltactsState> {
       ColltactsLoaded(
         colltacts,
         await _getContactSort(),
+      ),
+    );
+  }
+
+  Future<void> loadColleagues() async {
+    if (state is! ColltactsLoaded) {
+      emit(LoadingColltacts());
+    }
+
+    final colleagues = await _getColleagues();
+    final colltacts = colleagues.map(Colltact.colleague).toList();
+
+    emit(
+      ColltactsLoaded(
+        colltacts,
+        null,
       ),
     );
   }

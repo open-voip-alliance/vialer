@@ -99,6 +99,7 @@ class _ContactPageState extends State<_ContactList>
 
     if (state == AppLifecycleState.resumed) {
       context.read<ColltactsCubit>().reloadContacts();
+      context.read<ColltactsCubit>().loadColleagues(); //wip
     }
   }
 
@@ -340,7 +341,8 @@ class _ContactPageState extends State<_ContactList>
             : _mapAndFilterToColleagueWidgets(
                 state is ColltactsLoaded ? state.colltacts : [],
               ),
-        onRefresh: cubit.reloadContacts, //wip
+        onRefresh:
+            isForContacts ? cubit.reloadContacts : cubit.loadColleagues, //wip
       ),
     );
   }

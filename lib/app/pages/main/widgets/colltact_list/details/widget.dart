@@ -101,8 +101,9 @@ class _ColltactDetailsState extends State<ColltactDetails> {
                     const SizedBox(height: 24),
                     Expanded(
                       child: RefreshIndicator(
-                        onRefresh: () =>
-                            context.read<ColltactsCubit>().reloadContacts(),
+                        onRefresh: () => context
+                            .read<ColltactsCubit>()
+                            .reloadContacts(), //wip
                         child: _DestinationsList(
                           //wip until _DestinationsList accepts Colltact
                           contact: (colltact as ColltactContact).contact,
