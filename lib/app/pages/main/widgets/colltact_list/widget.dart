@@ -94,7 +94,7 @@ class _ContactPageState extends State<_ContactList>
 
     if (state == AppLifecycleState.resumed) {
       context.read<ColltactsCubit>().reloadContacts();
-      context.read<ColltactsCubit>().loadColleagues(); //wip
+      // context.read<ColltactsCubit>().loadColleagues(); //wip
     }
   }
 
@@ -319,6 +319,7 @@ class _ContactPageState extends State<_ContactList>
 
   AnimatedSwitcher _animatedSwitcher(
       ColltactKind colltactKind, ColltactsState state, ColltactsCubit cubit) {
+    //wip Is this really needed
     final isForContacts = colltactKind == ColltactKind.contact;
 
     return AnimatedSwitcher(
@@ -337,7 +338,8 @@ class _ContactPageState extends State<_ContactList>
                 state is ColltactsLoaded ? state.colltacts : [],
               ),
         onRefresh:
-            isForContacts ? cubit.reloadContacts : cubit.loadColleagues, //wip
+            // isForContacts ? cubit.reloadContacts : cubit.loadColleagues, //wip
+            cubit.reloadContacts,
       ),
     );
   }
@@ -707,6 +709,7 @@ class _SearchTextFieldState extends State<_SearchTextField> {
 }
 
 extension on Contact {
+  //wip
   bool matchesSearchTerm(String term) {
     if (displayName.toLowerCase().contains(term)) return true;
 

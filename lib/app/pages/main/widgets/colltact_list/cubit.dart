@@ -26,7 +26,7 @@ class ColltactsCubit extends Cubit<ColltactsState> {
 
   ColltactsCubit() : super(LoadingColltacts()) {
     _checkContactsPermission();
-    loadColleagues();
+    // loadColleagues();
   }
 
   Future<void> _checkContactsPermission() async {
@@ -37,7 +37,7 @@ class ColltactsCubit extends Cubit<ColltactsState> {
 
   Future<void> _loadContactsIfAllowed(PermissionStatus status) async {
     if (status == PermissionStatus.granted) {
-      await _loadContacts();
+      await _loadColltacts();
     } else {
       emit(
         NoPermission(
@@ -48,13 +48,16 @@ class ColltactsCubit extends Cubit<ColltactsState> {
     }
   }
 
-  Future<void> _loadContacts() async {
+  Future<void> _loadColltacts() async {
     if (state is! ColltactsLoaded) {
       emit(LoadingColltacts());
     }
 
     final contacts = await _getContacts();
-    final colltacts = contacts.map(Colltact.contact).toList();
+    var colltacts = contacts.map(Colltact.contact).toList();
+
+    final colleagues = await _getColleagues();
+    colltacts.addAll(colleagues.map(Colltact.colleague).toList());
 
     emit(
       ColltactsLoaded(
@@ -63,22 +66,38 @@ class ColltactsCubit extends Cubit<ColltactsState> {
       ),
     );
   }
-
-  Future<void> loadColleagues() async {
-    if (state is! ColltactsLoaded) {
-      emit(LoadingColltacts());
-    }
-
-    final colleagues = await _getColleagues();
-    final colltacts = colleagues.map(Colltact.colleague).toList();
-
-    emit(
-      ColltactsLoaded(
-        colltacts,
-        null,
-      ),
-    );
-  }
+  //wip
+  // Future<void> _loadContacts() async {
+  //   if (state is! ColltactsLoaded) {
+  //     emit(LoadingColltacts());
+  //   }
+  //
+  //   final contacts = await _getContacts();
+  //   final colltacts = contacts.map(Colltact.contact).toList();
+  //
+  //   emit(
+  //     ColltactsLoaded(
+  //       colltacts,
+  //       await _getContactSort(),
+  //     ),
+  //   );
+  // }
+  //
+  // Future<void> loadColleagues() async {
+  //   if (state is! ColltactsLoaded) {
+  //     emit(LoadingColltacts());
+  //   }
+  //
+  //   final colleagues = await _getColleagues();
+  //   final colltacts = colleagues.map(Colltact.colleague).toList();
+  //
+  //   emit(
+  //     ColltactsLoaded(
+  //       colltacts,
+  //       null,
+  //     ),
+  //   );
+  // }
 
   Future<void> reloadContacts() async => await _checkContactsPermission();
 
