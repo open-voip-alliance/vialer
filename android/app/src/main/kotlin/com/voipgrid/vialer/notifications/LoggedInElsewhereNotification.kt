@@ -11,9 +11,7 @@ class LoggedInElsewhereNotification(private val context: Context) {
             CHANNEL_ID,
             getString(R.string.notification_logged_in_elsewhere_channel_name),
             NotificationManager.IMPORTANCE_HIGH,
-        ).apply {
-            description = getString(R.string.notification_logged_in_elsewhere_channel_description)
-        }
+        )
 
         getSystemService(NotificationManager::class.java).createNotificationChannel(channel)
 

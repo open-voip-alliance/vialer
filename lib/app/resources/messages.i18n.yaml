@@ -583,8 +583,7 @@ notification:
   incomingContextText: Ringing…
   loggedInElsewhere:
       channel:
-        name: "Logged in Elsewhere"
-        description: "Logged in elsewhere channel description placeholder"
+        name: "Logged in elsewhere"
       message:
-        title: "Placeholder logged in elsewhere title"
-        subtitle: "Placeholder logged in elsewhere subtitle"
+        title: "Logged in elsewhere"
+        subtitle: "You have logged into a different device and will no longer receive calls here."
