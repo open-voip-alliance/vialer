@@ -581,9 +581,8 @@ notification:
   declineAction: *declineCall
   incomingContextText: Gaat over…
   loggedInElsewhere:
-      channel:
-        name: "Logged in Elsewhere"
-        description: "Logged in elsewhere channel description placeholder"
-      message:
-        title: "Placeholder logged in elsewhere title"
-        subtitle: "Placeholder logged in elsewhere subtitle"
+    channel:
+      name: "Ergens anders ingelogd"
+    message:
+      title: "Ergens anders ingelogd"
+      subtitle: "Je bent op een andere telefoon ingelogd en je ontvangt geen oproepen meer op dit toestel."
