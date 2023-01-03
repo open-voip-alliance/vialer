@@ -154,6 +154,7 @@ class _DestinationsList extends StatelessWidget {
                 _Item(
                   value: colleague.number!,
                   isEmail: false,
+                  onTap: () => onPhoneNumberPressed.call(colleague.number!),
                 )
               ]
             : [],
