@@ -31,7 +31,7 @@ class ColltactsCubit extends Cubit<ColltactsState> {
 
   Future<void> _checkColltactsPermission() async {
     final status = await _getPermissionStatus(permission: Permission.contacts);
-    //wip change to handle both contacts and colleagues permission
+    //wip handle both contacts and colleagues permission in next ticket?
 
     await _loadColltactsIfAllowed(status);
   }

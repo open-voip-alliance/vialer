@@ -43,7 +43,6 @@ class _ColltactDetailsState extends State<ColltactDetails> {
           var colltact = widget.colltact;
 
           if (state is ColltactsLoaded) {
-            //wip cast checking is needed?
             colltact = state.colltacts.firstWhere(
               (colltact) => colltact.when(
                 contact: (contact) => widget.colltact is ColltactContact
