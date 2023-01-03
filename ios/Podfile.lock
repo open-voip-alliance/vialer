@@ -1,5 +1,5 @@
 PODS:
-  - Alamofire (5.6.2)
+  - Alamofire (5.6.4)
   - Amplitude (8.14.0):
     - AnalyticsConnector (~> 1.0.0)
   - Analytics (4.1.6)
@@ -33,26 +33,26 @@ PODS:
   - integration_test (0.0.1):
     - Flutter
   - iOSPhoneLib (0.1.1):
-    - linphone-sdk-novideo (= 5.1.63)
+    - linphone-sdk-novideo (= 5.1.73)
     - Swinject (~> 2.7.1)
   - le (1.2)
   - libphonenumber (0.0.1):
     - Flutter
     - libPhoneNumber-iOS
   - libPhoneNumber-iOS (0.9.15)
-  - linphone-sdk-novideo (5.1.63):
-    - linphone-sdk-novideo/all-frameworks (= 5.1.63)
-    - linphone-sdk-novideo/app-extension (= 5.1.63)
-    - linphone-sdk-novideo/app-extension-swift (= 5.1.63)
-    - linphone-sdk-novideo/basic-frameworks (= 5.1.63)
-    - linphone-sdk-novideo/swift (= 5.1.63)
-  - linphone-sdk-novideo/all-frameworks (5.1.63)
-  - linphone-sdk-novideo/app-extension (5.1.63)
-  - linphone-sdk-novideo/app-extension-swift (5.1.63):
+  - linphone-sdk-novideo (5.1.73):
+    - linphone-sdk-novideo/all-frameworks (= 5.1.73)
+    - linphone-sdk-novideo/app-extension (= 5.1.73)
+    - linphone-sdk-novideo/app-extension-swift (= 5.1.73)
+    - linphone-sdk-novideo/basic-frameworks (= 5.1.73)
+    - linphone-sdk-novideo/swift (= 5.1.73)
+  - linphone-sdk-novideo/all-frameworks (5.1.73)
+  - linphone-sdk-novideo/app-extension (5.1.73)
+  - linphone-sdk-novideo/app-extension-swift (5.1.73):
     - linphone-sdk-novideo/app-extension
-  - linphone-sdk-novideo/basic-frameworks (5.1.63):
+  - linphone-sdk-novideo/basic-frameworks (5.1.73):
     - linphone-sdk-novideo/app-extension
-  - linphone-sdk-novideo/swift (5.1.63):
+  - linphone-sdk-novideo/swift (5.1.73):
     - linphone-sdk-novideo/app-extension-swift
     - linphone-sdk-novideo/basic-frameworks
   - native_shared_preferences (1.0.0):
@@ -85,14 +85,14 @@ PODS:
     - Sentry (~> 7.27.0)
   - shared_preferences_ios (0.0.1):
     - Flutter
-  - sqlite3 (3.39.3):
-    - sqlite3/common (= 3.39.3)
-  - sqlite3/common (3.39.3)
-  - sqlite3/fts5 (3.39.3):
+  - sqlite3 (3.39.4):
+    - sqlite3/common (= 3.39.4)
+  - sqlite3/common (3.39.4)
+  - sqlite3/fts5 (3.39.4):
     - sqlite3/common
-  - sqlite3/perf-threadsafe (3.39.3):
+  - sqlite3/perf-threadsafe (3.39.4):
     - sqlite3/common
-  - sqlite3/rtree (3.39.3):
+  - sqlite3/rtree (3.39.4):
     - sqlite3/common
   - sqlite3_flutter_libs (0.0.1):
     - Flutter
@@ -201,14 +201,14 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   iOSPhoneLib:
-    :commit: e4fbeae8f43bc0f3a77b7f2e8ff51e4890804563
+    :commit: 8c4fe5eb8619acf65ccabc1107441bbf61f351a4
     :git: https://github.com/open-voip-alliance/iOS-Phone-Lib.git
   le:
     :commit: ce8800f6d3290e182d48082680679d64a05ca778
     :git: https://github.com/LogentriesCommunity/le_ios.git
 
 SPEC CHECKSUMS:
-  Alamofire: d368e1ff8a298e6dde360e35a3e68e6c610e7204
+  Alamofire: 4e95d97098eacb88856099c4fc79b526a299e48c
   Amplitude: bff4ceaad2a79e908682134d75dc862960594ea6
   Analytics: eefe524436f904b8bb3f8c8c3425280e43b34efc
   AnalyticsConnector: 4c386d5972ac9da86e22d668564dbbac97558754
@@ -223,11 +223,11 @@ SPEC CHECKSUMS:
   flutter_segment: 367b7d9f7d74b3875198524ff4d24c381d93e317
   in_app_review: 4a97249f7a2f539a0f294c2d9196b7fe35e49541
   integration_test: a1e7d09bd98eca2fc37aefd79d4f41ad37bdbbe5
-  iOSPhoneLib: c25e28649ab5dbc57e27bcdd803257119a3bf018
+  iOSPhoneLib: 02e9c1edbeb6267b0653f76c4c5476912e5c3754
   le: 6854003e293bf5b3cb822ef06971f1cc23a77eb9
   libphonenumber: bd14d5abfc5939ab0b0767234e2d8e2593af258e
   libPhoneNumber-iOS: 0a32a9525cf8744fe02c5206eb30d571e38f7d75
-  linphone-sdk-novideo: 24127c66568ae49ba841d205af25af9ce7be97e7
+  linphone-sdk-novideo: 357f9f8835371f2bf9ab1aa519ceb6856a7c1070
   native_shared_preferences: 21a805f6149643c25a20a4f534692131faebadfe
   package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
   package_info_plus: 6c92f08e1f853dc01228d6f553146438dafcd14e
@@ -240,7 +240,7 @@ SPEC CHECKSUMS:
   Sentry: bc644307e2eb6a4c9c55cf117a80b895bb2a25a7
   sentry_flutter: a8616c994ac18c371aabee21a953cc727c166421
   shared_preferences_ios: 548a61f8053b9b8a49ac19c1ffbc8b92c50d68ad
-  sqlite3: 50117e9e063a9ef2b865f7bdf2f2601e5d368e9a
+  sqlite3: 401936402fe5aa242c07f87fccfee5fc2b606f45
   sqlite3_flutter_libs: c6ab7f23670a98fef45a137159452004bc552168
   Swinject: ddf78b8486dd9b71a667b852cad919ab4484478e
   url_launcher_ios: 839c58cdb4279282219f5e248c3321761ff3c4de
