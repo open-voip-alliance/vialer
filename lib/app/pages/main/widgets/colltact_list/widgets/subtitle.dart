@@ -53,7 +53,14 @@ class ColltactSubtitle extends StatelessWidget {
   }
 
   String _textForColleague(BuildContext context, Colleague colleague) {
-    return '//wip';
+    if (colleague.mostRelevantContext == null && colleague.number != null) {
+      return colleague.number!;
+    } else if (colleague.mostRelevantContext != null &&
+        colleague.number != null) {
+      return '${colleague.number} - ${colleague.mostRelevantContext}';
+    } else {
+      return '';
+    }
   }
 
   @override

@@ -60,12 +60,14 @@ class _ColltactPageDetailsState extends State<ColltactPageDetails>
           contact: (contact) =>
               contact.identifier ==
               (widget.colltact as ColltactContact).contact.identifier,
-          colleague: (colleague) => false, //wip
+          colleague: (colleague) =>
+              colleague.id ==
+              (widget.colltact as ColltactColleague).colleague.id,
         ),
       );
 
       if (colltact == null && _madeEdit) {
-        // Contact doesn't exist anymore after returning back to the app,
+        // Colltact doesn't exist anymore after returning back to the app,
         // it's probably deleted, so close this detail screen.
         Navigator.pop(context, true);
       }

@@ -93,8 +93,7 @@ class _ContactPageState extends State<_ContactList>
     super.didChangeAppLifecycleState(state);
 
     if (state == AppLifecycleState.resumed) {
-      context.read<ColltactsCubit>().reloadContacts();
-      // context.read<ColltactsCubit>().loadColleagues(); //wip
+      context.read<ColltactsCubit>().reloadColltacts();
     }
   }
 
@@ -123,7 +122,6 @@ class _ContactPageState extends State<_ContactList>
                     onChanged: _onSearchTermChanged,
                   ),
                 ),
-                //wip CONTACTS COLLEAGUES
                 TabBar(
                   labelStyle: const TextStyle(
                     fontWeight: FontWeight.bold,
@@ -138,10 +136,11 @@ class _ContactPageState extends State<_ContactList>
                   indicatorSize: TabBarIndicatorSize.label,
                   tabs: [
                     Text(
-                      context.msg.main.contacts.title.toUpperCase(),
+                      context.msg.main.contacts.tabBar.contactsTabTitle
+                          .toUpperCase(),
                     ),
-                    //wip COLLEAGUES
-                    Text(context.msg.main.recent.tabs.all.toUpperCase()),
+                    Text(context.msg.main.contacts.tabBar.colleaguesTabTitle
+                        .toUpperCase()),
                   ],
                 ),
                 Expanded(
@@ -218,35 +217,12 @@ class _ContactPageState extends State<_ContactList>
   ) {
     final widgets = <String, List<ColltactItem>>{};
 
-    //wip fake data [
-    // final colleagueContext1 = const ColleagueContext.inCall();
-    // final colleagueContext2 = const ColleagueContext.ringing();
-    // var colleagueContextListA = <ColleagueContext>[
-    //   colleagueContext1,
-    //   colleagueContext2,
-    // ];
-    // var colleagueContextListB = <ColleagueContext>[
-    //   colleagueContext2,
-    //   colleagueContext1,
-    // ];
-    //
-    // final a =
-    //     Colleague(id: '123', name: 'Anna', context: colleagueContextListA);
-    // final b =
-    //     Colleague(id: '133', name: 'Barbara', context: colleagueContextListB);
-    //
-    // final aa = Colltact.colleague(a);
-    // final bb = Colltact.colleague(b);
-    //
-    // colltacts = [aa, bb];
-    //wip ]
-
     /// Whether the [char] is part of the *letter group*, which consists of
     /// any letter in any language (including non-latin alphabets)
     bool isInLetterGroup(String? char) =>
         char != null ? RegExp(r'\p{L}', unicode: true).hasMatch(char) : false;
 
-    final searchTerm = _searchTerm?.toLowerCase();
+    // final searchTerm = _searchTerm?.toLowerCase(); //wip
 
     for (var colltact in colltacts) {
       if (colltact is ColltactColleague) {
@@ -337,9 +313,7 @@ class _ContactPageState extends State<_ContactList>
             : _mapAndFilterToColleagueWidgets(
                 state is ColltactsLoaded ? state.colltacts : [],
               ),
-        onRefresh:
-            // isForContacts ? cubit.reloadContacts : cubit.loadColleagues, //wip
-            cubit.reloadContacts,
+        onRefresh: cubit.reloadColltacts,
       ),
     );
   }

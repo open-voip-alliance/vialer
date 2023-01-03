@@ -11,31 +11,32 @@ import '../../../../../domain/user/get_permission_status.dart';
 import '../../../../../domain/user/permissions/permission.dart';
 import '../../../../../domain/user/permissions/permission_status.dart';
 import '../../../../../domain/user/settings/open_settings.dart';
-import '../../../../../domain/user_availability/colleagues/get_colleagues.dart';
+import '../../../../../domain/user_availability/colleagues/receive_colleague_availability.dart';
 import 'state.dart';
 
 export 'state.dart';
 
 class ColltactsCubit extends Cubit<ColltactsState> {
   final _getContacts = GetContactsUseCase();
-  final _getColleagues = GetColleagues();
   final _getPermissionStatus = GetPermissionStatusUseCase();
   final _requestPermission = RequestPermissionUseCase();
   final _openAppSettings = OpenSettingsAppUseCase();
   final _getContactSort = GetContactSortUseCase();
 
+  late final _receiveColleagueAvailability = ReceiveColleagueAvailability();
+
   ColltactsCubit() : super(LoadingColltacts()) {
-    _checkContactsPermission();
-    // loadColleagues();
+    _checkColltactsPermission();
   }
 
-  Future<void> _checkContactsPermission() async {
+  Future<void> _checkColltactsPermission() async {
     final status = await _getPermissionStatus(permission: Permission.contacts);
+    //wip change to handle both contacts and colleagues permission
 
-    await _loadContactsIfAllowed(status);
+    await _loadColltactsIfAllowed(status);
   }
 
-  Future<void> _loadContactsIfAllowed(PermissionStatus status) async {
+  Future<void> _loadColltactsIfAllowed(PermissionStatus status) async {
     if (status == PermissionStatus.granted) {
       await _loadColltacts();
     } else {
@@ -56,8 +57,10 @@ class ColltactsCubit extends Cubit<ColltactsState> {
     final contacts = await _getContacts();
     var colltacts = contacts.map(Colltact.contact).toList();
 
-    final colleagues = await _getColleagues();
-    colltacts.addAll(colleagues.map(Colltact.colleague).toList());
+    _receiveColleagueAvailability(forceFullAvailabilityRefresh: true)
+        .listen((colleagues) {
+      colltacts.addAll(colleagues.map(Colltact.colleague).toList());
+    });
 
     emit(
       ColltactsLoaded(
@@ -66,45 +69,13 @@ class ColltactsCubit extends Cubit<ColltactsState> {
       ),
     );
   }
-  //wip
-  // Future<void> _loadContacts() async {
-  //   if (state is! ColltactsLoaded) {
-  //     emit(LoadingColltacts());
-  //   }
-  //
-  //   final contacts = await _getContacts();
-  //   final colltacts = contacts.map(Colltact.contact).toList();
-  //
-  //   emit(
-  //     ColltactsLoaded(
-  //       colltacts,
-  //       await _getContactSort(),
-  //     ),
-  //   );
-  // }
-  //
-  // Future<void> loadColleagues() async {
-  //   if (state is! ColltactsLoaded) {
-  //     emit(LoadingColltacts());
-  //   }
-  //
-  //   final colleagues = await _getColleagues();
-  //   final colltacts = colleagues.map(Colltact.colleague).toList();
-  //
-  //   emit(
-  //     ColltactsLoaded(
-  //       colltacts,
-  //       null,
-  //     ),
-  //   );
-  // }
 
-  Future<void> reloadContacts() async => await _checkContactsPermission();
+  Future<void> reloadColltacts() async => await _checkColltactsPermission();
 
   Future<void> requestPermission() async {
     final status = await _requestPermission(permission: Permission.contacts);
 
-    await _loadContactsIfAllowed(status);
+    await _loadColltactsIfAllowed(status);
   }
 
   void openAppSettings() async {
