@@ -292,6 +292,8 @@ class StorageRepository {
             canViewMobileNumberFallbackStatus: false,
             canViewVoicemailAccounts: false,
             canChangeOutgoingNumber: false,
+            canViewColleagues: false,
+            canViewVoipAccounts: false,
           );
           break;
       }

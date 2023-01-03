@@ -135,21 +135,25 @@ class ColleaguesRepository with Loggable {
   Future<List<Colleague>> getColleagues(User user) async {
     final clientId = user.client.id.toString();
 
-    final users = await _apiResourceCollector.collect(
-      requester: (page) => _service.getUsers(
-        clientId,
-        page: page,
-      ),
-      deserializer: (json) => json,
-    );
+    final users = user.permissions.canViewColleagues
+        ? await _apiResourceCollector.collect(
+            requester: (page) => _service.getUsers(
+              clientId,
+              page: page,
+            ),
+            deserializer: (json) => json,
+          )
+        : [];
 
-    final voipAccounts = await _apiResourceCollector.collect(
-      requester: (page) => _service.getUnconnectedVoipAccounts(
-        clientId,
-        page: page,
-      ),
-      deserializer: (json) => json,
-    );
+    final voipAccounts = user.permissions.canViewVoipAccounts
+        ? await _apiResourceCollector.collect(
+            requester: (page) => _service.getUnconnectedVoipAccounts(
+              clientId,
+              page: page,
+            ),
+            deserializer: (json) => json,
+          )
+        : [];
 
     return [
       ...users.map(

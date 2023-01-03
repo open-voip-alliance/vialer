@@ -158,7 +158,7 @@ class RefreshUser extends UseCase with Loggable {
       canChangeMobileNumberFallback:
           granted.contains(UserPermission.changeMobileNumberFallback),
       canViewMobileNumberFallbackStatus:
-          granted.contains(UserPermission.viewMobileNumberFallback),
+          granted.contains(UserPermission.viewUser),
       // The only redirect target currently is Voicemail, so if the user
       // cannot view Voicemail they can't use the feature.
       canChangeTemporaryRedirect:
@@ -167,6 +167,8 @@ class RefreshUser extends UseCase with Loggable {
       canViewVoicemailAccounts: granted.contains(UserPermission.viewVoicemail),
       canChangeOutgoingNumber:
           granted.contains(UserPermission.changeVoipAccount),
+      canViewColleagues: granted.contains(UserPermission.viewUser),
+      canViewVoipAccounts: granted.contains(UserPermission.viewVoipAccount),
     );
 
     if (!permissions.canSeeClientCalls) {
