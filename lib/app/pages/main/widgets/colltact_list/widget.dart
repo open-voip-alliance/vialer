@@ -9,7 +9,6 @@ import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import '../../../../../data/models/colltact.dart';
-import '../../../../../domain/colltacts/contact.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
 import '../../../../util/conditional_capitalization.dart';
@@ -51,7 +50,7 @@ class ColltactList extends StatelessWidget {
       child: NestedNavigator(
         navigatorKey: navigatorKey,
         routes: {
-          ColltactsPageRoutes.root: (_, __) => const _ContactList(),
+          ColltactsPageRoutes.root: (_, __) => const _ColltactList(),
           ColltactsPageRoutes.details: (context, colltact) =>
               detailsBuilder(context, colltact as Colltact),
         },
@@ -60,20 +59,20 @@ class ColltactList extends StatelessWidget {
   }
 }
 
-class _ContactList extends StatefulWidget {
+class _ColltactList extends StatefulWidget {
   final double bottomLettersPadding;
 
-  const _ContactList({
+  const _ColltactList({
     Key? key,
     // ignore: unused_element
     this.bottomLettersPadding = 0,
   }) : super(key: key);
 
   @override
-  _ContactPageState createState() => _ContactPageState();
+  _ColltactPageState createState() => _ColltactPageState();
 }
 
-class _ContactPageState extends State<_ContactList>
+class _ColltactPageState extends State<_ColltactList>
     with
         WidgetsBindingObserver,
         WidgetsBindingObserverRegistrar,
@@ -176,7 +175,7 @@ class _ContactPageState extends State<_ContactList>
       if (colltact is ColltactContact) {
         final contact = colltact.contact;
 
-        if (searchTerm != null && !contact.matchesSearchTerm(searchTerm)) {
+        if (searchTerm != null && !colltact.matchesSearchTerm(searchTerm)) {
           continue;
         }
 
@@ -222,16 +221,15 @@ class _ContactPageState extends State<_ContactList>
     bool isInLetterGroup(String? char) =>
         char != null ? RegExp(r'\p{L}', unicode: true).hasMatch(char) : false;
 
-    // final searchTerm = _searchTerm?.toLowerCase(); //wip
+    final searchTerm = _searchTerm?.toLowerCase();
 
     for (var colltact in colltacts) {
       if (colltact is ColltactColleague) {
         final colleague = colltact.colleague;
 
-        //wip matchesSearchTerm for Colleagues
-        // if (searchTerm != null && !contact.matchesSearchTerm(searchTerm)) {
-        //   continue;
-        // }
+        if (searchTerm != null && !colltact.matchesSearchTerm(searchTerm)) {
+          continue;
+        }
 
         final contactItem = ColltactItem(colltact: colltact);
 
@@ -295,8 +293,7 @@ class _ContactPageState extends State<_ContactList>
 
   AnimatedSwitcher _animatedSwitcher(
       ColltactKind colltactKind, ColltactsState state, ColltactsCubit cubit) {
-    //wip Is this really needed
-    final isForContacts = colltactKind == ColltactKind.contact;
+    final isForContacts = colltactKind == ColltactKind.contact; //wip
 
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 200),
@@ -682,27 +679,35 @@ class _SearchTextFieldState extends State<_SearchTextField> {
   }
 }
 
-extension on Contact {
-  //wip
+extension on Colltact {
   bool matchesSearchTerm(String term) {
-    if (displayName.toLowerCase().contains(term)) return true;
+    return when(
+      colleague: (colleague) {
+        if (colleague.name.toLowerCase().contains(term)) return true;
 
-    if (company?.toLowerCase().contains(term) == true) return true;
+        if ((colleague.number ?? '').toLowerCase().replaceAll(' ', '').contains(
+              term.formatForPhoneNumberQuery(),
+            )) return true;
 
-    if (emails.any(
-      (email) => email.value.toLowerCase().contains(term),
-    )) {
-      return true;
-    }
+        return false;
+      },
+      contact: (contact) {
+        if (contact.displayName.toLowerCase().contains(term)) return true;
 
-    if (phoneNumbers.any(
-      (number) => number.value.toLowerCase().replaceAll(' ', '').contains(
-            term.formatForPhoneNumberQuery(),
-          ),
-    )) {
-      return true;
-    }
+        if (contact.company?.toLowerCase().contains(term) == true) return true;
 
-    return false;
+        if (contact.emails.any(
+          (email) => email.value.toLowerCase().contains(term),
+        )) return true;
+
+        if (contact.phoneNumbers.any(
+          (number) => number.value.toLowerCase().replaceAll(' ', '').contains(
+                term.formatForPhoneNumberQuery(),
+              ),
+        )) return true;
+
+        return false;
+      },
+    );
   }
 }

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:dartx/dartx.dart';
 
 import '../../../app/util/loggable.dart';
@@ -58,6 +59,8 @@ class ColleaguesRepository with Loggable {
     socket.listen(
       (eventString) {
         final event = jsonDecode(eventString as String);
+
+        // print('//wip $eventString');
 
         // We only care about this type of event for now (and that's all there
         // is currently) so if it's anything aside from this we just ignore
