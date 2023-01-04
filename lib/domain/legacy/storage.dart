@@ -379,6 +379,8 @@ extension on SharedPreferences {
 }
 
 extension RawPermissions on List<dynamic> {
-  List<String> toRawPermissionsList() =>
-      filterNotNull().map((permission) => permission.toString()).toList();
+  List<String> toRawPermissionsList() => filterNotNull()
+      .map((permission) => permission.toString())
+      .sorted()
+      .toList();
 }
