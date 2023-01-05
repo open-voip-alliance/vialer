@@ -30,7 +30,7 @@ class CallTransfer extends StatefulWidget {
 
 class _CallTransferState extends State<CallTransfer> {
   static const _dialPadRoute = '/';
-  static const _contactsRoute = '/contacts';
+  static const _colltactsRoute = '/colltacts';
 
   final _navigatorKey = GlobalKey<NavigatorState>();
 
@@ -39,11 +39,12 @@ class _CallTransferState extends State<CallTransfer> {
   }
 
   Future<void> _onContactsButtonPressed(BuildContext context) async {
-    final number = await Navigator.pushNamed(context, _contactsRoute) as String;
+    final number =
+        await Navigator.pushNamed(context, _colltactsRoute) as String;
     widget.onTransferTargetSelected(number);
   }
 
-  void _onContactPhoneNumberPressed(BuildContext context, String number) {
+  void _onColltactPhoneNumberPressed(BuildContext context, String number) {
     Navigator.pop(context, number);
   }
 
@@ -112,17 +113,16 @@ class _CallTransferState extends State<CallTransfer> {
                   ),
                 );
               },
-              _contactsRoute: (routeContext, _) {
+              _colltactsRoute: (routeContext, _) {
                 return Material(
                   child: Column(children: [
                     Expanded(
-                      //wip check transfer issue on colleague
                       child: ColltactList(
                         detailsBuilder: (context, colltact) {
                           return ColltactDetails(
                             colltact: colltact,
                             onPhoneNumberPressed: (number) =>
-                                _onContactPhoneNumberPressed(
+                                _onColltactPhoneNumberPressed(
                               routeContext,
                               number,
                             ),
