@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:recase/recase.dart';
 
 import '../../../dependency_locator.dart';
+import '../legacy/storage.dart';
 import '../use_case.dart';
 import '../user/get_brand.dart';
 import '../user/get_logged_in_user.dart';
@@ -12,6 +13,7 @@ import 'metrics.dart';
 
 class IdentifyForTrackingUseCase extends UseCase {
   final _metricsRepository = dependencyLocator<MetricsRepository>();
+  final _storageRepository = dependencyLocator<StorageRepository>();
   final _getBrand = GetBrand();
   final _getUser = GetLoggedInUserUseCase();
 
@@ -27,6 +29,7 @@ class IdentifyForTrackingUseCase extends UseCase {
       {
         'brand': _getBrand().identifier,
         ...user.toIdentifyProperties(),
+        ..._storageRepository.grantedVoipgridPermissions.toIdentifyProperties(),
       },
     ).then((_) => Future.delayed(_artificialDelay));
   }
@@ -46,6 +49,12 @@ extension on User {
 
     return properties;
   }
+}
+
+extension on List<String> {
+  Map<String, dynamic> toIdentifyProperties() => {
+        'granted-voipgrid-permissions': this,
+      };
 }
 
 extension on SettingKey {
