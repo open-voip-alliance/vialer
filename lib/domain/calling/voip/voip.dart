@@ -247,8 +247,6 @@ class VoipRepository with Loggable {
   }
 
   Future<void> register(UserVoipConfig? voipConfig) async {
-    logger.info('Registering..');
-
     if (await _isLoggedInSomewhereElse()) {
       unregister(voipConfig);
       logger.info('Registration cancelled: User has logged in elsewhere');
@@ -256,12 +254,6 @@ class VoipRepository with Loggable {
     }
 
     final user = _getUser();
-
-    if (user.settings.get(CallSetting.dnd) == true) {
-      unregister(voipConfig);
-      logger.info('Registration cancelled: User has enabled DND');
-      return;
-    }
 
     if (voipConfig?.sipUserId == null) {
       logger.info('Registration cancelled: No SIP user ID set');
@@ -286,6 +278,11 @@ class VoipRepository with Loggable {
     final app = buildInfo.packageName;
     final useSandbox = await _envRepository.sandbox;
     final loginTime = _getLoginTime();
+    final dndEnabled = user.settings.get(CallSetting.dnd);
+
+    if (dndEnabled) {
+      logger.info('Registering in do-not-disturb mode');
+    }
 
     final response = Platform.isAndroid
         ? await _service.postAndroidDevice(
@@ -296,6 +293,7 @@ class VoipRepository with Loggable {
             clientVersion: clientVersion,
             app: app,
             appStartupTime: loginTime?.toUtc().toIso8601String(),
+            dnd: dndEnabled,
           )
         : Platform.isIOS
             ? await _service.postAppleDevice(
@@ -308,6 +306,7 @@ class VoipRepository with Loggable {
                 appStartupTime: loginTime?.toUtc().toIso8601String(),
                 sandbox: useSandbox,
                 remoteNotificationToken: remoteNotificationToken,
+                dnd: dndEnabled,
               )
             : throw UnsupportedError(
                 'Unsupported platform: ${Platform.operatingSystem}',
