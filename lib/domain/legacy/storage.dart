@@ -218,6 +218,16 @@ class StorageRepository {
         jsonEncode(colleagues),
       );
 
+  static const _grantedVoipgridPermissionsKey = 'granted_voipgrid_permissions';
+
+  List<String> get grantedVoipgridPermissions => (jsonDecode(
+              _preferences.getString(_grantedVoipgridPermissionsKey) ?? '[]')
+          as List<dynamic>)
+      .toRawPermissionsList();
+
+  set grantedVoipgridPermissions(List<String> value) => _preferences
+      .setOrRemoveString(_grantedVoipgridPermissionsKey, jsonEncode(value));
+
   Future<void> clear() => _preferences.clear();
 
   Future<void> reload() => _preferences.reload();
@@ -390,4 +400,11 @@ extension on SharedPreferences {
       value != null ? json.encode(toJson(value)) : null,
     );
   }
+}
+
+extension RawPermissions on List<dynamic> {
+  List<String> toRawPermissionsList() => filterNotNull()
+      .map((permission) => permission.toString())
+      .sorted()
+      .toList();
 }

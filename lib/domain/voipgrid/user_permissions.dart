@@ -1,14 +1,16 @@
 import 'package:dartx/dartx.dart';
 
 import '../../app/util/loggable.dart';
+import '../legacy/storage.dart';
 import '../user/user.dart';
 import '../vialer.dart';
 import 'voipgrid_service.dart';
 
 class UserPermissionsRepository with Loggable {
   final VoipgridService _service;
+  final StorageRepository _storage;
 
-  UserPermissionsRepository(this._service);
+  UserPermissionsRepository(this._service, this._storage);
 
   static const _permissionsMapping = {
     'cdr.view_record': UserPermission.clientCalls,
@@ -33,7 +35,13 @@ class UserPermissionsRepository with Loggable {
       throw UnableToRetrievePermissionsException();
     }
 
-    return (response.body['permissions'] as List<dynamic>)
+    final grantedPermissions = response.body['permissions'] as List<dynamic>;
+
+    // Storing the raw permissions so we can submit these to metrics later.
+    _storage.grantedVoipgridPermissions =
+        grantedPermissions.toRawPermissionsList();
+
+    return grantedPermissions
         .map(
           (permission) => _permissionsMapping.containsKey(permission)
               ? _permissionsMapping[permission]
