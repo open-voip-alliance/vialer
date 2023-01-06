@@ -53,16 +53,16 @@ class Middleware(
 
         lastRegisteredToken = token
 
-        if (prefs.user?.settings?.get<Boolean>("CallSetting.dnd") == true) {
-            log("Registration cancelled: do not disturb is enabled")
-            return
-        }
-
+        val dndEnabled = prefs.user?.settings?.get<Boolean>("CallSetting.dnd") == true;
         val middlewareCredentials = middlewareCredentials
 
         if (middlewareCredentials == null) {
             log("Registration cancelled: Middleware credentials are not set.")
             return
+        }
+
+        if (dndEnabled) {
+            log("Registering in do-not-disturb mode")
         }
 
         val data = FormBody.Builder().apply {
@@ -72,6 +72,7 @@ class Middleware(
             add("os_version", Build.VERSION.RELEASE)
             add("client_version", BuildConfig.VERSION_NAME)
             add("app", context.packageName)
+            add("dnd", dndEnabled.toString())
         }.build()
 
         val request = createMiddlewareRequest(
