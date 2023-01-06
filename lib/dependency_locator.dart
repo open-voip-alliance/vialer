@@ -122,10 +122,12 @@ Future<void> initializeDependencies({bool ui = true}) async {
     ..registerSingleton(
       CallRecordContactPopulator(dependencyLocator<ContactRepository>()),
     )
-    ..registerSingleton<UserPermissionsRepository>(
-      UserPermissionsRepository(
+    ..registerSingletonWithDependencies<UserPermissionsRepository>(
+      () => UserPermissionsRepository(
         dependencyLocator<VoipgridService>(),
+        dependencyLocator<StorageRepository>(),
       ),
+      dependsOn: [StorageRepository],
     )
     ..registerSingleton<VoicemailAccountsRepository>(
       VoicemailAccountsRepository(
