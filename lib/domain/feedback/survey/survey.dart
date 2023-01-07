@@ -7,6 +7,7 @@ part 'survey.freezed.dart';
 
 @freezed
 class Survey with _$Survey {
+  @Assert('questions.isNotEmpty')
   const factory Survey({
     required SurveyId id,
 
