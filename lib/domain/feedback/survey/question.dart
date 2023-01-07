@@ -1,20 +1,17 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class Question extends Equatable {
-  final int id;
+part 'question.freezed.dart';
 
-  /// The question phrase.
-  final String phrase;
+@freezed
+class Question with _$Question {
+  @Assert('answers.length == 5')
+  const factory Question({
+    required int id,
 
-  /// Answers, from 1 to 5.
-  final List<String> answers;
+    /// The question phrase.
+    required String phrase,
 
-  const Question({
-    required this.id,
-    required this.phrase,
-    required this.answers,
-  }) : assert(answers.length == 5);
-
-  @override
-  List<Object?> get props => [id, phrase, answers];
+    /// Answers, from 1 to 5.
+    required List<String> answers,
+  }) = _Question;
 }

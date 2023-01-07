@@ -1,33 +1,26 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'question.dart';
 import 'survey_trigger.dart';
 
-class Survey extends Equatable {
-  final SurveyId id;
+part 'survey.freezed.dart';
 
-  /// Where and when the survey is shown in the app.
-  final SurveyTrigger trigger;
+@freezed
+class Survey with _$Survey {
+  const factory Survey({
+    required SurveyId id,
 
-  /// The ISO 639-1 language code of the language the questions are in.
-  final String language;
+    /// Where and when the survey is shown in the app.
+    required SurveyTrigger trigger,
 
-  final List<Question> questions;
+    /// The ISO 639-1 language code of the language the questions are in.
+    required String language,
+    required List<Question> questions,
 
-  /// Whether to skip the intro asking if people want
-  /// to participate in the survey, useful for single question surveys.
-  final bool skipIntro;
-
-  Survey({
-    required this.id,
-    required this.trigger,
-    required this.language,
-    this.skipIntro = false,
-    required this.questions,
-  }) : assert(questions.isNotEmpty);
-
-  @override
-  List<Object?> get props => [id, trigger, language, skipIntro, questions];
+    /// Whether to skip the intro asking if people want
+    /// to participate in the survey, useful for single question surveys.
+    required bool skipIntro,
+  }) = _Survey;
 }
 
 enum SurveyId {

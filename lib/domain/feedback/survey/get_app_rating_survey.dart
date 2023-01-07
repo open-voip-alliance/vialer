@@ -24,7 +24,7 @@ class GetAppRatingSurvey extends UseCase {
           language: language,
           skipIntro: true,
           questions: [
-            Question(
+            const Question(
               id: 0,
               phrase: 'Wat vind je van de app?',
               answers: [
@@ -45,7 +45,7 @@ class GetAppRatingSurvey extends UseCase {
           language: language,
           skipIntro: true,
           questions: [
-            Question(
+            const Question(
               id: 0,
               phrase: 'What do you think of the app?',
               answers: [
