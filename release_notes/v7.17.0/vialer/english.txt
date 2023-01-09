@@ -1,0 +1,5 @@
+- A notification will now be shown when logged out due to logging in on a different device.
+- Fixed a bug where some users were not able to change their mobile number.
+- Made the spacing of text during onboarding more consistent.
+- The missed toggle now works properly when switching between call tabs.
+- iOS: Fixed a bug where mute would remain enabled between calls.
