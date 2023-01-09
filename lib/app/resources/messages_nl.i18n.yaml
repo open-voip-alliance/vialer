@@ -248,12 +248,8 @@ main:
             Het uitgaande nummer wordt weergegeven op het scherm van degenen die je belt.
         mobileNumber:
           title: "Jouw mobiele nummer"
-          description:
-            voip: >-
+          description: >-
               Je mobiele telefoonnummer. Deze is niet zichtbaar voor anderen.
-            noVoip: >-
-              Deze app gebruikt je mobiele nummer om te bellen, maar het is niet zichtbaar
-              voor anderen.
         username:
           description: >-
             E-mailadres van je gebruikersaccount waarmee je bent ingelogd.
@@ -509,7 +505,7 @@ onboarding:
         $appName heeft toegang tot de microfoon nodig zodat je gesprekken op kunt zetten en ontvangen.
     contacts:
       title: "Toestemming voor contacten"
-      description(String appName):
+      description(String appName): >-
         Door toestemming te geven worden je contacten en recente gesprekken in $appName zichtbaar en kun je ze makkelijk doorzoeken.
 
         $appName slaat uw contacten veilig alleen op uw telefoon op, waardoor het zoeken en beheren van contacten mogelijk is.
@@ -584,3 +580,9 @@ notification:
   hangUpAction: *hangUpCall
   declineAction: *declineCall
   incomingContextText: Gaat over…
+  loggedInElsewhere:
+    channel:
+      name: "Ergens anders ingelogd"
+    message:
+      title: "Ergens anders ingelogd"
+      subtitle: "Je bent op een andere telefoon ingelogd en je ontvangt geen oproepen meer op dit toestel."

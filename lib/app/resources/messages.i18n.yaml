@@ -250,11 +250,8 @@ main:
             The outgoing number is displayed on the screen of those you are calling.
         mobileNumber:
           title: "Your mobile number"
-          description:
-            voip: >-
+          description: >-
               Your mobile phone number. It is not visible to others.
-            noVoip: >-
-              This app uses your mobile number to make calls but it is not visible to others.
         username:
           description: >-
             Email address of your user account with which you logged in.
@@ -507,7 +504,7 @@ onboarding:
         $appName needs access to the microphone so you can make and receive calls.
     contacts:
       title: "Contacts permission"
-      description(String appName):
+      description(String appName): >-
         This permission allows $appName to show your contacts, call history, and makes it possible for you to search through them.
 
 
@@ -584,3 +581,9 @@ notification:
   hangUpAction: *hangUpCall
   declineAction: *declineCall
   incomingContextText: Ringing…
+  loggedInElsewhere:
+      channel:
+        name: "Logged in elsewhere"
+      message:
+        title: "Logged in elsewhere"
+        subtitle: "You have logged into a different device and will no longer receive calls here."

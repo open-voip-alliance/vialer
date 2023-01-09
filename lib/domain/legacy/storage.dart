@@ -268,6 +268,7 @@ class StorageRepository {
             canChangeTemporaryRedirect: false,
             canViewMobileNumberFallbackStatus: false,
             canViewVoicemailAccounts: false,
+            canChangeOutgoingNumber: false,
           );
           break;
       }

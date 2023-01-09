@@ -16,9 +16,29 @@ import '../util/stylized_snack_bar.dart';
 import '../widgets/header.dart';
 import '../widgets/user_data_refresher/cubit.dart';
 import 'cubit.dart';
-import 'widgets/link_tile.dart';
-import 'widgets/tile.dart';
-import 'widgets/tile_category.dart';
+import 'widgets/tile/availability.dart';
+import 'widgets/tile/category/account_info.dart';
+import 'widgets/tile/category/advanced_settings.dart';
+import 'widgets/tile/category/audio.dart';
+import 'widgets/tile/category/calling.dart';
+import 'widgets/tile/category/debug.dart';
+import 'widgets/tile/category/portal_links.dart';
+import 'widgets/tile/category/temporary_redirect.dart';
+import 'widgets/tile/dnd.dart';
+import 'widgets/tile/ignore_battery_optimizations.dart';
+import 'widgets/tile/link/calls.dart';
+import 'widgets/tile/link/dial_plan.dart';
+import 'widgets/tile/link/stats.dart';
+import 'widgets/tile/link/troubleshooting.dart';
+import 'widgets/tile/mobile_number.dart';
+import 'widgets/tile/outgoing_number.dart';
+import 'widgets/tile/remote_logging.dart';
+import 'widgets/tile/show_calls_in_native_recents.dart';
+import 'widgets/tile/show_client_calls.dart';
+import 'widgets/tile/use_mobile_number_as_fallback.dart';
+import 'widgets/tile/use_phone_ringtone.dart';
+import 'widgets/tile/use_voip.dart';
+import 'widgets/tile/username.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -93,77 +113,72 @@ class _SettingsPageState extends State<SettingsPage> {
                         state.hasIgnoreBatteryOptimizationsPermission;
                     final cubit = context.watch<SettingsCubit>();
 
+                    final useVoip = user.settings.get(CallSetting.useVoip);
+                    final canViewMobileFallback =
+                        user.permissions.canViewMobileNumberFallbackStatus;
+
                     return Expanded(
                       child: ListView(
                         controller: _scrollController,
                         padding: const EdgeInsets.only(top: 8),
                         children: [
-                          if (showDnd) SettingTile.dnd(user),
-                          SettingTile.availability(user),
-                          SettingTileCategory.accountInfo(
+                          if (showDnd) DndTile(user),
+                          AvailabilityTile(user),
+                          AccountInfoCategory(
                             children: [
-                              SettingTile.mobileNumber(
-                                user.settings,
-                                isVoipAllowed: isVoipAllowed,
-                              ),
-                              SettingTile.outgoingNumber(user),
-                              SettingTile.username(user),
+                              MobileNumberTile(user),
+                              OutgoingNumberTile(user),
+                              UsernameTile(user),
                             ],
                           ),
                           if (isVoipAllowed)
-                            SettingTileCategory.audio(
+                            AudioCategory(
                               children: [
-                                SettingTile.usePhoneRingtone(user.settings),
+                                UsePhoneRingtoneTile(user),
                               ],
                             ),
-                          SettingTileCategory.calling(
+                          CallingCategory(
                             children: [
-                              if (isVoipAllowed)
-                                SettingTile.useVoip(user.settings),
-                              if (user.settings.get(CallSetting.useVoip) &&
-                                  user.permissions
-                                      .canViewMobileNumberFallbackStatus &&
+                              if (isVoipAllowed) UseVoipTile(user),
+                              if (useVoip &&
+                                  canViewMobileFallback &&
                                   isVoipAllowed)
-                                SettingTile.useMobileNumberAsFallback(
-                                  user,
-                                ),
+                                UseMobileNumberAsFallbackTile(user),
                               if (context.isIOS && isVoipAllowed)
-                                SettingTile.showCallsInNativeRecents(
-                                  user.settings,
-                                ),
+                                ShowCallsInNativeRecentsTile(user),
                               if (context.isAndroid)
-                                SettingTile.ignoreBatteryOptimizations(
+                                IgnoreBatteryOptimizationsTile(
                                   hasIgnoreBatteryOptimizationsPermission:
                                       hasIgnoreOptimizationsPermission,
                                   onChanged: (enabled) =>
                                       cubit.requestBatteryPermission(),
                                 ),
-                              SettingTile.showClientCalls(user),
+                              ShowClientCallsTile(user),
                             ],
                           ),
                           if (user.permissions.canChangeTemporaryRedirect)
-                            SettingTileCategory.temporaryRedirect(
+                            const TemporaryRedirectCategory(
                               children: [
-                                const TemporaryRedirectSettingTile(),
+                                TemporaryRedirectSettingTile(),
                               ],
                             ),
-                          SettingTileCategory.portalLinks(
+                          const PortalLinksCategory(
                             children: [
-                              SettingLinkTile.calls(),
-                              SettingLinkTile.dialPlan(),
-                              SettingLinkTile.stats(),
+                              CallsLinkTile(),
+                              DialPlanLinkTile(),
+                              StatsLinkTile(),
                             ],
                           ),
-                          SettingTileCategory.debug(
+                          DebugCategory(
                             children: [
-                              SettingTile.remoteLogging(user.settings),
+                              RemoteLoggingTile(user),
                             ],
                           ),
                           // Show advanced settings only if allowed.
                           if (isVoipAllowed && showTroubleshooting)
-                            SettingTileCategory.advancedSettings(
+                            const AdvancedSettingsCategory(
                               children: [
-                                SettingLinkTile.troubleshooting(),
+                                TroubleshootingLinkTile(),
                               ],
                             ),
                           if (state.buildInfo != null)
