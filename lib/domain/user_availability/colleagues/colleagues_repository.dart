@@ -60,8 +60,6 @@ class ColleaguesRepository with Loggable {
       (eventString) {
         final event = jsonDecode(eventString as String);
 
-        // print('//wip $eventString');
-
         // We only care about this type of event for now (and that's all there
         // is currently) so if it's anything aside from this we just ignore
         // it.

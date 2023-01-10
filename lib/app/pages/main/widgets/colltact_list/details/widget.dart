@@ -54,7 +54,7 @@ class _ColltactDetailsState extends State<ColltactDetails> {
                         (widget.colltact as ColltactColleague).colleague.id
                     : false,
               ),
-              orElse: () => widget.colltact,
+              orElse: () => colltact,
             );
           }
 
@@ -148,15 +148,14 @@ class _DestinationsList extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView(
       children: colltact.when(
-        colleague: (colleague) => colleague.number != null
-            ? [
-                _Item(
-                  value: colleague.number!,
-                  isEmail: false,
-                  onTap: () => onPhoneNumberPressed.call(colleague.number!),
-                )
-              ]
-            : [],
+        colleague: (colleague) => [
+          if (colleague.number != null)
+            _Item(
+              value: colleague.number!,
+              isEmail: false,
+              onTap: () => onPhoneNumberPressed.call(colleague.number!),
+            ),
+        ],
         contact: (contact) => contact.phoneNumbers
             .map(
               (p) => _Item(

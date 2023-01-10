@@ -31,7 +31,7 @@ class ColltactsCubit extends Cubit<ColltactsState> {
 
   Future<void> _checkColltactsPermission() async {
     final status = await _getPermissionStatus(permission: Permission.contacts);
-    //wip handle both contacts and colleagues permission in next ticket?
+    //wip handle contacts and colleagues permission in next permission ticket(?)
 
     await _loadColltactsIfAllowed(status);
   }
@@ -55,19 +55,19 @@ class ColltactsCubit extends Cubit<ColltactsState> {
     }
 
     final contacts = await _getContacts();
-    var colltacts = contacts.map(Colltact.contact).toList();
+    final contactSort = await _getContactSort();
 
-    _receiveColleagueAvailability(forceFullAvailabilityRefresh: true)
-        .listen((colleagues) {
-      colltacts.addAll(colleagues.map(Colltact.colleague).toList());
+    _receiveColleagueAvailability().listen((colleagues) {
+      var colltacts = colleagues.map(Colltact.colleague).toList();
+      colltacts.addAll(contacts.map(Colltact.contact).toList());
+
+      emit(
+        ColltactsLoaded(
+          colltacts,
+          contactSort,
+        ),
+      );
     });
-
-    emit(
-      ColltactsLoaded(
-        colltacts,
-        await _getContactSort(),
-      ),
-    );
   }
 
   Future<void> reloadColltacts() async => await _checkColltactsPermission();

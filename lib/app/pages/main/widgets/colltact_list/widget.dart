@@ -293,7 +293,7 @@ class _ColltactPageState extends State<_ColltactList>
 
   AnimatedSwitcher _animatedSwitcher(
       ColltactKind colltactKind, ColltactsState state, ColltactsCubit cubit) {
-    final isForContacts = colltactKind == ColltactKind.contact; //wip
+    final isForContacts = colltactKind == ColltactKind.contact;
 
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 200),

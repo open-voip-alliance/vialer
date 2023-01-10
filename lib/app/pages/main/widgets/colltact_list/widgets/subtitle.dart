@@ -53,11 +53,15 @@ class ColltactSubtitle extends StatelessWidget {
   }
 
   String _textForColleague(BuildContext context, Colleague colleague) {
-    if (colleague.mostRelevantContext == null && colleague.number != null) {
+    final recentStatus =
+        colleague.mostRelevantContextText ?? colleague.availabilityText;
+
+    if (recentStatus == null && colleague.number != null) {
       return colleague.number!;
-    } else if (colleague.mostRelevantContext != null &&
-        colleague.number != null) {
-      return '${colleague.number} - ${colleague.mostRelevantContext}';
+    } else if (recentStatus != null && colleague.number != null) {
+      return '${colleague.number} - $recentStatus';
+    } else if (recentStatus != null && colleague.number == null) {
+      return '$recentStatus';
     } else {
       return '';
     }
