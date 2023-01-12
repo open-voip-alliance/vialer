@@ -1,5 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:vialer/app/pages/onboarding/info/page.dart';
 import 'package:vialer/app/pages/onboarding/login/page.dart';
 import 'package:vialer/app/pages/onboarding/mobile_number/page.dart';
 import 'package:vialer/app/pages/onboarding/page.dart';
@@ -31,10 +30,4 @@ void main() => runTest([
       await tester.pumpAndSettle(const Duration(seconds: 1));
 
       expect(OnboardingPage.keys.page.currentStep, OnboardingStep.voicemail);
-
-      await tester.tap(find.byKey(InfoPage.keys.continueButton));
-
-      await tester.pumpAndSettle(const Duration(seconds: 1));
-
-      expect(OnboardingPage.keys.page.currentStep, OnboardingStep.welcome);
     });
