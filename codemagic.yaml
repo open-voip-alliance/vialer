@@ -214,7 +214,9 @@ custom: # Custom properties to make workflows cleaner
         sed -i -e "s/TEST_USER_1_EMAIL\=*/TEST_USER_1_EMAIL\=$TEST_USER_1_EMAIL/g" .env
         sed -i -e "s/TEST_USER_1_PASSWORD\=*/TEST_USER_1_PASSWORD\=$TEST_USER_1_PASSWORD/g" .env
         sed -i -e "s/TEST_USER_2_EMAIL\=*/TEST_USER_2_EMAIL\=$TEST_USER_2_EMAIL/g" .env
-        sed -i -e "s/TEST_USER_2_PASSWORD\=*/TEST_USER_2_PASSWORD\=$TEST_USER_2_PASSWORD/g" .env
+        sed -i -e "s/TEST_USER_2_EMAIL\=*/TEST_USER_2_EMAIL\=$TEST_USER_2_EMAIL/g" .env
+        sed -i -e "s/TEST_USER_NO_APP_ACCOUNT_EMAIL\=*/TEST_USER_NO_APP_ACCOUNT_EMAIL\=$TEST_USER_NO_APP_ACCOUNT_EMAIL/g" .env
+        sed -i -e "s/TEST_USER_NO_APP_ACCOUNT_PASSWORD\=*/TEST_USER_NO_APP_ACCOUNT_PASSWORD\=$TEST_USER_NO_APP_ACCOUNT_PASSWORD/g" .env
         setopt extended_glob
         cd android
         for filename in ../integration_test/tests/**/*.dart; do
