@@ -17,12 +17,12 @@ void main() => runTest([
 
       await tester.enterText(
         find.byKey(LoginPage.keys.emailField),
-        testUserNoAppAccount.email,
+        testUserWithoutAppAccount.email,
       );
 
       await tester.enterText(
         find.byKey(LoginPage.keys.passwordField),
-        testUserNoAppAccount.password,
+        testUserWithoutAppAccount.password,
       );
 
       await tester.tap(find.byKey(LoginPage.keys.loginButton));
