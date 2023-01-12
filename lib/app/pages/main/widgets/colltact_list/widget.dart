@@ -8,7 +8,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
-import '../../../../../domain/colltacts/contact.dart';
+import '../../../../../data/models/colltact.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
 import '../../../../util/conditional_capitalization.dart';
@@ -24,19 +24,19 @@ import 'cubit.dart';
 import 'widgets/group_header.dart';
 import 'widgets/item.dart';
 
-abstract class ContactsPageRoutes {
+abstract class ColltactsPageRoutes {
   static const root = '/';
   static const details = '/details';
 }
 
-typedef WidgetWithContactBuilder = Widget Function(BuildContext, Contact);
+typedef WidgetWithColltactBuilder = Widget Function(BuildContext, Colltact);
 
-class ContactList extends StatelessWidget {
+class ColltactList extends StatelessWidget {
   final GlobalKey<NavigatorState>? navigatorKey;
-  final WidgetWithContactBuilder detailsBuilder;
+  final WidgetWithColltactBuilder detailsBuilder;
   final double bottomLettersPadding;
 
-  const ContactList({
+  const ColltactList({
     Key? key,
     this.navigatorKey,
     required this.detailsBuilder,
@@ -45,36 +45,41 @@ class ContactList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<ContactsCubit>(
-      create: (_) => ContactsCubit(),
+    return BlocProvider<ColltactsCubit>(
+      create: (_) => ColltactsCubit(),
       child: NestedNavigator(
         navigatorKey: navigatorKey,
         routes: {
-          ContactsPageRoutes.root: (_, __) => const _ContactList(),
-          ContactsPageRoutes.details: (context, contact) =>
-              detailsBuilder(context, contact as Contact),
+          ColltactsPageRoutes.root: (_, __) => const _ColltactList(),
+          ColltactsPageRoutes.details: (context, colltact) =>
+              detailsBuilder(context, colltact as Colltact),
         },
       ),
     );
   }
 }
 
-class _ContactList extends StatefulWidget {
+class _ColltactList extends StatefulWidget {
   final double bottomLettersPadding;
 
-  const _ContactList({
+  const _ColltactList({
     Key? key,
     // ignore: unused_element
     this.bottomLettersPadding = 0,
   }) : super(key: key);
 
   @override
-  _ContactPageState createState() => _ContactPageState();
+  _ColltactPageState createState() => _ColltactPageState();
 }
 
-class _ContactPageState extends State<_ContactList>
-    with WidgetsBindingObserver, WidgetsBindingObserverRegistrar {
+class _ColltactPageState extends State<_ColltactList>
+    with
+        WidgetsBindingObserver,
+        WidgetsBindingObserverRegistrar,
+        SingleTickerProviderStateMixin {
   String? _searchTerm;
+
+  static const nonLetterKey = '#';
 
   void _onSearchTermChanged(String searchTerm) {
     setState(() {
@@ -87,7 +92,7 @@ class _ContactPageState extends State<_ContactList>
     super.didChangeAppLifecycleState(state);
 
     if (state == AppLifecycleState.resumed) {
-      context.read<ContactsCubit>().reloadContacts();
+      context.read<ColltactsCubit>().reloadColltacts();
     }
   }
 
@@ -97,56 +102,73 @@ class _ContactPageState extends State<_ContactList>
       padding: const EdgeInsets.only(
         top: 16,
       ),
-      child: BlocBuilder<ContactsCubit, ContactsState>(
+      child: BlocBuilder<ColltactsCubit, ColltactsState>(
         builder: (context, state) {
-          final cubit = context.watch<ContactsCubit>();
+          final cubit = context.watch<ColltactsCubit>();
 
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Header(context.msg.main.contacts.title),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: _SearchTextField(
-                  onChanged: _onSearchTermChanged,
+          return DefaultTabController(
+            length: 2,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Header(context.msg.main.contacts.title),
                 ),
-              ),
-              Expanded(
-                child: _Placeholder(
-                  state: state,
-                  child: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 200),
-                    switchInCurve: Curves.decelerate,
-                    switchOutCurve: Curves.decelerate.flipped,
-                    child: _AlphabetListView(
-                      key: ValueKey(_searchTerm),
-                      bottomLettersPadding: widget.bottomLettersPadding,
-                      children: _mapAndFilterToWidgets(
-                        state is ContactsLoaded ? state.contacts : [],
-                        state is ContactsLoaded ? state.contactSort : null,
-                      ),
-                      onRefresh: cubit.reloadContacts,
-                    ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: _SearchTextField(
+                    onChanged: _onSearchTermChanged,
                   ),
                 ),
-              ),
-            ],
+                if (cubit.shouldShowColleagues)
+                  TabBar(
+                    labelStyle: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                    labelPadding: const EdgeInsets.only(
+                      top: 18,
+                      bottom: 8,
+                    ),
+                    labelColor: Theme.of(context).primaryColor,
+                    unselectedLabelColor: context.brand.theme.colors.grey1,
+                    indicatorColor: Theme.of(context).primaryColor,
+                    indicatorSize: TabBarIndicatorSize.label,
+                    tabs: [
+                      Text(
+                        context.msg.main.contacts.tabBar.contactsTabTitle
+                            .toUpperCase(),
+                      ),
+                      Text(context.msg.main.contacts.tabBar.colleaguesTabTitle
+                          .toUpperCase()),
+                    ],
+                  ),
+                Expanded(
+                  child: _Placeholder(
+                      state: state,
+                      child: cubit.shouldShowColleagues
+                          ? TabBarView(children: [
+                              _animatedSwitcher(
+                                  ColltactKind.contact, state, cubit),
+                              _animatedSwitcher(
+                                  ColltactKind.colleague, state, cubit),
+                            ])
+                          : _animatedSwitcher(
+                              ColltactKind.contact, state, cubit)),
+                ),
+              ],
+            ),
           );
         },
       ),
     );
   }
 
-  List<Widget> _mapAndFilterToWidgets(
-    Iterable<Contact> contacts,
+  List<Widget> _mapAndFilterToContactWidgets(
+    Iterable<Colltact> colltacts,
     ContactSort? contactSort,
   ) {
-    final widgets = <String, List<ContactItem>>{};
-
-    const nonLetterKey = '#';
+    final widgets = <String, List<ColltactItem>>{};
 
     /// Whether the [char] is part of the *letter group*, which consists of
     /// any letter in any language (including non-latin alphabets)
@@ -154,68 +176,158 @@ class _ContactPageState extends State<_ContactList>
         char != null ? RegExp(r'\p{L}', unicode: true).hasMatch(char) : false;
 
     final searchTerm = _searchTerm?.toLowerCase();
-    for (var contact in contacts) {
-      if (searchTerm != null && !contact.matchesSearchTerm(searchTerm)) {
-        continue;
-      }
+    for (var colltact in colltacts) {
+      if (colltact is ColltactContact) {
+        final contact = colltact.contact;
 
-      final contactItem = ContactItem(contact: contact);
+        if (searchTerm != null && !colltact.matchesSearchTerm(searchTerm)) {
+          continue;
+        }
 
-      /// Grouping contacts is based on the first letter of the
-      /// given-, family-, or display name or if that fails phone number.
-      var firstCharacter = contactSort!.orderBy == OrderBy.familyName
-          ? contact.familyName?.characters.firstOrNull ??
-              contact.displayName.characters.firstOrNull
-          : contact.givenName?.characters.firstOrNull ??
-              contact.displayName.characters.firstOrNull;
+        final contactItem = ColltactItem(colltact: colltact);
 
-      if (firstCharacter.isNullOrEmpty && contact.phoneNumbers.isNotEmpty) {
-        firstCharacter =
-            contact.phoneNumbers.first.value.characters.firstOrDefault('');
-      }
+        /// Grouping contacts is based on the first letter of the
+        /// given-, family-, or display name or if that fails phone number.
+        var firstCharacter = contactSort!.orderBy == OrderBy.familyName
+            ? contact.familyName?.characters.firstOrNull ??
+                contact.displayName.characters.firstOrNull
+            : contact.givenName?.characters.firstOrNull ??
+                contact.displayName.characters.firstOrNull;
 
-      /// Group letters case sensitive with or without diacritics together.
-      final groupCharacter =
-          removeDiacritics(firstCharacter ?? '').toUpperCase();
+        if (firstCharacter.isNullOrEmpty && contact.phoneNumbers.isNotEmpty) {
+          firstCharacter =
+              contact.phoneNumbers.first.value.characters.firstOrDefault('');
+        }
 
-      if (isInLetterGroup(groupCharacter)) {
-        widgets[groupCharacter] ??= [];
-        widgets[groupCharacter]!.add(contactItem);
-      } else {
-        widgets[nonLetterKey] ??= [];
-        widgets[nonLetterKey]!.add(contactItem);
+        /// Group letters case sensitive with or without diacritics together.
+        final groupCharacter =
+            removeDiacritics(firstCharacter ?? '').toUpperCase();
+
+        if (isInLetterGroup(groupCharacter)) {
+          widgets[groupCharacter] ??= [];
+          widgets[groupCharacter]!.add(contactItem);
+        } else {
+          widgets[nonLetterKey] ??= [];
+          widgets[nonLetterKey]!.add(contactItem);
+        }
       }
     }
 
+    return _createSortedColltactList(widgets, contactSort);
+  }
+
+  List<Widget> _mapAndFilterToColleagueWidgets(
+    Iterable<Colltact> colltacts,
+  ) {
+    final widgets = <String, List<ColltactItem>>{};
+
+    /// Whether the [char] is part of the *letter group*, which consists of
+    /// any letter in any language (including non-latin alphabets)
+    bool isInLetterGroup(String? char) =>
+        char != null ? RegExp(r'\p{L}', unicode: true).hasMatch(char) : false;
+
+    final searchTerm = _searchTerm?.toLowerCase();
+
+    for (var colltact in colltacts) {
+      if (colltact is ColltactColleague) {
+        final colleague = colltact.colleague;
+
+        if (searchTerm != null && !colltact.matchesSearchTerm(searchTerm)) {
+          continue;
+        }
+
+        final contactItem = ColltactItem(colltact: colltact);
+
+        var firstCharacter = colleague.name.characters.firstOrNull;
+
+        if (firstCharacter.isNullOrEmpty &&
+            !colleague.number.isNotNullOrEmpty) {
+          firstCharacter = colleague.number!.characters.firstOrDefault('');
+        }
+
+        /// Group letters case sensitive with or without diacritics together.
+        final groupCharacter =
+            removeDiacritics(firstCharacter ?? '').toUpperCase();
+
+        if (isInLetterGroup(groupCharacter)) {
+          widgets[groupCharacter] ??= [];
+          widgets[groupCharacter]!.add(contactItem);
+        } else {
+          widgets[nonLetterKey] ??= [];
+          widgets[nonLetterKey]!.add(contactItem);
+        }
+      }
+    }
+
+    return _createSortedColltactList(widgets, null);
+  }
+
+  List<Widget> _createSortedColltactList(
+    Map<String, List<ColltactItem>> widgets,
+    ContactSort? contactSort,
+  ) {
     return [
-      // Sort all contact widgets with a letter alphabetically.
+      // Sort all colltact widgets with a letter alphabetically.
       ...widgets.entries
           .filter((e) => e.key != nonLetterKey)
           .sortedBy((e) => e.key),
-      // Place all contacts that belong to the non-letter group at the bottom.
+      // Place all colltacts that belong to the non-letter group at the bottom.
       ...widgets.entries.filter((e) => e.key == nonLetterKey).toList(),
     ]
         .map(
           (e) => [
             GroupHeader(group: e.key),
-            // Sort the contacts within the group by family- or given name
-            // or as fallback by the display name.
             ...e.value.sortedBy(
-              (e) => ((contactSort!.orderBy == OrderBy.familyName
-                          ? e.contact.familyName
-                          : e.contact.givenName) ??
-                      e.contact.displayName)
-                  .toLowerCase(),
+              (e) => ((e.colltact.when(
+                colleague: (colleague) => colleague.name,
+                // Sort the contacts within the group by family or given name
+                // or as fallback by the display name.
+                contact: (contact) =>
+                    ((contactSort!.orderBy == OrderBy.familyName
+                                ? contact.familyName
+                                : contact.givenName) ??
+                            contact.displayName)
+                        .toLowerCase(),
+              ))),
             )
           ],
         )
         .flatten()
         .toList();
   }
+
+  AnimatedSwitcher _animatedSwitcher(
+      ColltactKind colltactKind, ColltactsState state, ColltactsCubit cubit) {
+    final isForContacts = colltactKind == ColltactKind.contact;
+
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 200),
+      switchInCurve: Curves.decelerate,
+      switchOutCurve: Curves.decelerate.flipped,
+      child: _AlphabetListView(
+        key: ValueKey(_searchTerm),
+        bottomLettersPadding: widget.bottomLettersPadding,
+        children: isForContacts
+            ? _mapAndFilterToContactWidgets(
+                state is ColltactsLoaded ? state.colltacts : [],
+                state is ColltactsLoaded ? state.contactSort : null,
+              )
+            : _mapAndFilterToColleagueWidgets(
+                state is ColltactsLoaded ? state.colltacts : [],
+              ),
+        onRefresh: cubit.reloadColltacts,
+      ),
+    );
+  }
+}
+
+enum ColltactKind {
+  contact,
+  colleague,
 }
 
 class _Placeholder extends StatelessWidget {
-  final ContactsState state;
+  final ColltactsState state;
   final Widget child;
 
   const _Placeholder({
@@ -229,11 +341,11 @@ class _Placeholder extends StatelessWidget {
     // Needed for auto cast
     final state = this.state;
 
-    final cubit = context.watch<ContactsCubit>();
+    final cubit = context.watch<ColltactsCubit>();
     final appName = context.brand.appName;
 
     return ConditionalPlaceholder(
-      showPlaceholder: state is! ContactsLoaded || state.contacts.isEmpty,
+      showPlaceholder: state is! ColltactsLoaded || state.colltacts.isEmpty,
       placeholder: SingleChildScrollView(
         child: state is NoPermission
             ? Warning(
@@ -271,7 +383,7 @@ class _Placeholder extends StatelessWidget {
                   ),
                 ],
               )
-            : state is LoadingContacts
+            : state is LoadingColltacts
                 ? LoadingIndicator(
                     title: Text(
                       context.msg.main.contacts.list.loading.title,
@@ -572,26 +684,39 @@ class _SearchTextFieldState extends State<_SearchTextField> {
   }
 }
 
-extension on Contact {
+extension on Colltact {
   bool matchesSearchTerm(String term) {
-    if (displayName.toLowerCase().contains(term)) return true;
+    return when(
+      colleague: (colleague) {
+        if (colleague.name.toLowerCase().contains(term)) return true;
 
-    if (company?.toLowerCase().contains(term) == true) return true;
+        if ((colleague.number ?? '').toLowerCase().replaceAll(' ', '').contains(
+              term.formatForPhoneNumberQuery(),
+            )) return true;
 
-    if (emails.any(
-      (email) => email.value.toLowerCase().contains(term),
-    )) {
-      return true;
-    }
+        return false;
+      },
+      contact: (contact) {
+        if (contact.displayName.toLowerCase().contains(term)) return true;
 
-    if (phoneNumbers.any(
-      (number) => number.value.toLowerCase().replaceAll(' ', '').contains(
-            term.formatForPhoneNumberQuery(),
-          ),
-    )) {
-      return true;
-    }
+        if (contact.company?.toLowerCase().contains(term) == true) return true;
 
-    return false;
+        if (contact.emails.any(
+          (email) => email.value.toLowerCase().contains(term),
+        )) {
+          return true;
+        }
+
+        if (contact.phoneNumbers.any(
+          (number) => number.value.toLowerCase().replaceAll(' ', '').contains(
+                term.formatForPhoneNumberQuery(),
+              ),
+        )) {
+          return true;
+        }
+
+        return false;
+      },
+    );
   }
 }

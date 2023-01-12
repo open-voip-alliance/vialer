@@ -36,7 +36,7 @@ class T9ColltactsBloc extends Bloc<T9ColltactsEvent, T9ColltactsState> {
     if (event is LoadColltacts) {
       yield* _loadColltactsIfAllowed();
     } else if (event is FilterT9Colltacts) {
-      yield* _filterConlltacts(event);
+      yield* _filterColltacts(event);
     }
   }
 
@@ -92,7 +92,7 @@ class T9ColltactsBloc extends Bloc<T9ColltactsEvent, T9ColltactsState> {
     yield ColltactsLoaded(colltacts, []);
   }
 
-  Stream<T9ColltactsState> _filterConlltacts(FilterT9Colltacts event) async* {
+  Stream<T9ColltactsState> _filterColltacts(FilterT9Colltacts event) async* {
     // Necessary for auto cast.
     final state = this.state;
 
