@@ -1,0 +1,5 @@
+- Wanneer je inlogt op een ander toestel wordt je uitgelogd en tonen we een notificatie.
+- Een probleem waarbij sommige gebruikers niet hun mobiele nummer konden aanpassen, is opgelost.
+- De layout tijdens onboarding is meer consistent gemaakt.
+- De gemiste oproepen-switch werkt beter wanneer je tussen de tabbladen navigeert.
+- iOS: Een probleem waarbij het geluid gedempt bleef tussen meerdere gesprekken is opgelost.
