@@ -1,15 +1,24 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../../data/models/colltact.dart';
 import '../../../../../../domain/colltacts/contact.dart';
+import '../../../../../../domain/user_availability/colleagues/colleague.dart';
 import '../../../../../resources/localizations.dart';
 import '../../../../../resources/theme.dart';
 
-class ContactSubtitle extends StatelessWidget {
-  final Contact contact;
+class ColltactSubtitle extends StatelessWidget {
+  final Colltact colltact;
 
-  const ContactSubtitle(this.contact, {Key? key}) : super(key: key);
+  const ColltactSubtitle(this.colltact, {Key? key}) : super(key: key);
 
   String _text(BuildContext context) {
+    return colltact.when(
+      contact: (contact) => _textForContact(context, contact),
+      colleague: (colleague) => _textForColleague(context, colleague),
+    );
+  }
+
+  String _textForContact(BuildContext context, Contact contact) {
     final phoneNumbers = contact.phoneNumbers;
     final emails = contact.emails;
 
@@ -40,6 +49,21 @@ class ContactSubtitle extends StatelessWidget {
       } else {
         return '$phoneNumbersText & $emailsText';
       }
+    }
+  }
+
+  String _textForColleague(BuildContext context, Colleague colleague) {
+    final recentStatus =
+        colleague.mostRelevantContextText ?? colleague.availabilityText;
+
+    if (recentStatus == null && colleague.number != null) {
+      return colleague.number!;
+    } else if (recentStatus != null && colleague.number != null) {
+      return '${colleague.number} - $recentStatus';
+    } else if (recentStatus != null && colleague.number == null) {
+      return '$recentStatus';
+    } else {
+      return '';
     }
   }
 
