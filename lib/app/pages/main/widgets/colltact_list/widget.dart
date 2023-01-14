@@ -17,6 +17,7 @@ import '../../../../util/extensions.dart';
 import '../../../../util/pigeon.dart';
 import '../../../../util/widgets_binding_observer_registrar.dart';
 import '../../../../widgets/stylized_button.dart';
+import '../../colltacts/colleagues/cubit.dart';
 import '../conditional_placeholder.dart';
 import '../header.dart';
 import '../nested_navigator.dart';
@@ -46,7 +47,7 @@ class ColltactList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<ColltactsCubit>(
-      create: (_) => ColltactsCubit(),
+      create: (_) => ColltactsCubit(context.watch<ColleagueCubit>()),
       child: NestedNavigator(
         navigatorKey: navigatorKey,
         routes: {

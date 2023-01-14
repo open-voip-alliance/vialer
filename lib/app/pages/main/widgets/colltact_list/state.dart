@@ -1,30 +1,17 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../../../../app/util/pigeon.dart';
 import '../../../../../data/models/colltact.dart';
 
-abstract class ColltactsState extends Equatable {
-  @override
-  List<Object?> get props => [];
-}
+part 'state.freezed.dart';
 
-class LoadingColltacts extends ColltactsState {}
-
-class NoPermission extends ColltactsState {
-  final bool dontAskAgain;
-
-  NoPermission({required this.dontAskAgain});
-
-  @override
-  List<Object?> get props => [dontAskAgain];
-}
-
-class ColltactsLoaded extends ColltactsState {
-  final Iterable<Colltact> colltacts;
-  final ContactSort? contactSort;
-
-  ColltactsLoaded(this.colltacts, this.contactSort);
-
-  @override
-  List<Object?> get props => [colltacts];
+@freezed
+class ColltactsState with _$ColltactsState {
+  const factory ColltactsState.loading() = LoadingColltacts;
+  const factory ColltactsState.noPermission({required bool dontAskAgain}) =
+      NoPermission;
+  const factory ColltactsState.loaded(
+    Iterable<Colltact> colltacts,
+    ContactSort? contactSort,
+  ) = ColltactsLoaded;
 }
