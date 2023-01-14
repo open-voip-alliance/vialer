@@ -57,10 +57,8 @@ class ColltactsCubit extends Cubit<ColltactsState> {
 
     // We want to replace all the colleagues but leave the loaded contacts
     // alone.
-    final colltacts = colleagues.map(Colltact.colleague).toList()
-      ..addAll(
-        state.colltacts.whereType<Contact>() as Iterable<Colltact>,
-      );
+    final colltacts =
+        colleagues.mergeColltacts(state.colltacts.whereType<Contact>());
 
     emit(ColltactsLoaded(colltacts, state.contactSort));
   }
@@ -91,14 +89,12 @@ class ColltactsCubit extends Cubit<ColltactsState> {
       emit(const LoadingColltacts());
     }
 
-    final contacts = await _getContacts();
-    final contactSort = await _getContactSort();
-
-    final colltacts = <Colltact>[]
-      ..addAll(_colleagues.map(Colltact.colleague))
-      ..addAll(contacts.map(Colltact.contact));
-
-    emit(ColltactsLoaded(colltacts, contactSort));
+    emit(
+      ColltactsLoaded(
+        _colleagues.mergeColltacts(await _getContacts()),
+        await _getContactSort(),
+      ),
+    );
   }
 
   Future<void> reloadColltacts() async => await _checkColltactsPermission();
@@ -112,4 +108,9 @@ class ColltactsCubit extends Cubit<ColltactsState> {
   void openAppSettings() async {
     await _openAppSettings();
   }
+}
+
+extension on List<Colleague> {
+  List<Colltact> mergeColltacts(Iterable<Contact> contacts) =>
+      map(Colltact.colleague).toList()..addAll(contacts.map(Colltact.contact));
 }
