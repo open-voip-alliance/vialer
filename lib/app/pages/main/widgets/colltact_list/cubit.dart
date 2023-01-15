@@ -61,6 +61,12 @@ class ColltactsCubit extends Cubit<ColltactsState> {
     final colltacts = colleagues.mergeColltacts(state.colltacts.contacts);
 
     emit(state.copyWith(colltacts: colltacts));
+
+    // If we get a colleagues update before the contacts are loaded we might
+    // get an empty list, so we'll just load them here if we don't have any.
+    if (state.colltacts.contacts.isEmpty) {
+      _checkColltactsPermission();
+    }
   }
 
   Future<void> _checkColltactsPermission() async {
