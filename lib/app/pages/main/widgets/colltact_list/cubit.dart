@@ -60,7 +60,7 @@ class ColltactsCubit extends Cubit<ColltactsState> {
     // alone.
     final colltacts = colleagues.mergeColltacts(state.colltacts.contacts);
 
-    emit(ColltactsLoaded(colltacts, state.contactSort));
+    emit(state.copyWith(colltacts: colltacts));
   }
 
   Future<void> _checkColltactsPermission() async {
