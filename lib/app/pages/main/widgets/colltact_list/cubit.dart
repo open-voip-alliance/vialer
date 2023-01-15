@@ -37,6 +37,7 @@ class ColltactsCubit extends Cubit<ColltactsState> {
   ColltactsCubit(this._colleaguesCubit) : super(const LoadingColltacts()) {
     _checkColltactsPermission();
 
+    // Check the initial state as there may already be some colleagues loaded.
     _colleaguesCubit.state.when(
       loading: () => null,
       loaded: _handleColleaguesUpdate,
@@ -57,8 +58,7 @@ class ColltactsCubit extends Cubit<ColltactsState> {
 
     // We want to replace all the colleagues but leave the loaded contacts
     // alone.
-    final colltacts =
-        colleagues.mergeColltacts(state.colltacts.whereType<Contact>());
+    final colltacts = colleagues.mergeColltacts(state.colltacts.contacts);
 
     emit(ColltactsLoaded(colltacts, state.contactSort));
   }
@@ -113,4 +113,8 @@ class ColltactsCubit extends Cubit<ColltactsState> {
 extension on List<Colleague> {
   List<Colltact> mergeColltacts(Iterable<Contact> contacts) =>
       map(Colltact.colleague).toList()..addAll(contacts.map(Colltact.contact));
+}
+
+extension on Iterable<Colltact> {
+  Iterable<Contact> get contacts => whereType<Contact>();
 }
