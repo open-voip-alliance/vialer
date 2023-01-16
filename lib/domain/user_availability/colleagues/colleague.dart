@@ -96,7 +96,7 @@ enum ColleagueAvailabilityStatus {
       case ColleagueAvailabilityStatus.doNotDisturb:
         return 'Do not disturb';
       case ColleagueAvailabilityStatus.offline:
-        return 'Unavailable';
+        return 'Offline';
       case ColleagueAvailabilityStatus.available:
         return 'Available';
       case ColleagueAvailabilityStatus.busy:
