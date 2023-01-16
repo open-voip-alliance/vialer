@@ -114,7 +114,7 @@ class ColleagueAvatar extends StatelessWidget {
 
     if (context != null) {
       return context.when(
-        ringing: () => FontAwesomeIcons.phoneVolume,
+        ringing: () => FontAwesomeIcons.bell,
         inCall: () => FontAwesomeIcons.phoneVolume,
       );
     }

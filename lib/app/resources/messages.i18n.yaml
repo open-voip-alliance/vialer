@@ -192,6 +192,17 @@ main:
         client-wide calls in the Settings page.
 
 
+  colleagues:
+    status:
+      available: 'Available'
+      doNotDisturb: 'Do not disturb'
+      offline: 'Offline'
+      unknown: 'Unknown'
+      busy: 'Busy'
+    context:
+      ringing: 'Ringing'
+      inCall: 'Ongoing call'
+
   contacts:
     title: &contactsTitle "Contacts"
     menu:
