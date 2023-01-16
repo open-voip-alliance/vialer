@@ -192,11 +192,11 @@ main:
       available: 'Beschikbaar'
       doNotDisturb: 'Do not disturb'
       offline: 'Offline'
-      unknown: 'Onbekende'
-      busy: 'Busy'
+      unknown: 'Onbekend'
+      busy: 'Bezet'
     context:
       ringing: 'Gaat over'
-      inCall: 'Ongoing call'
+      inCall: 'In gesprek'
 
   contacts:
     title: &contactsTitle "Contacten"
