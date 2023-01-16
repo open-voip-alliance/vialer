@@ -9,6 +9,7 @@ import '../../widgets/app_update_checker/widget.dart';
 import '../../widgets/nested_children.dart';
 import '../../widgets/transparent_status_bar.dart';
 import 'call/widgets/call_button.dart';
+import 'colltacts/colleagues/widget.dart';
 import 'colltacts/page.dart';
 import 'dialer/page.dart';
 import 'recent/page.dart';
@@ -109,6 +110,7 @@ class MainPageState extends State<MainPage> {
               listener: _onCallerStateChanged,
               child: child,
             ),
+        (child) => ColleagueWebSocket.connect(child: child),
       ],
       Scaffold(
         resizeToAvoidBottomInset: false,
