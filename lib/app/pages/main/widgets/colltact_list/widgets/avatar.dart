@@ -101,10 +101,6 @@ class ColleagueAvatar extends StatelessWidget {
             return unavailable;
           case ColleagueAvailabilityStatus.busy:
             return busy;
-          case ColleagueAvailabilityStatus.unknown:
-            return unknown;
-          case ColleagueAvailabilityStatus.offline:
-            return unknown;
           default:
             return unknown;
         }
