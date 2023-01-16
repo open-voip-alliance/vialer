@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../data/models/colltact.dart';
+import '../../../../../domain/colltacts/contact.dart';
 import '../../../../../domain/colltacts/get_contact_sort.dart';
 import '../../../../../domain/colltacts/get_contacts.dart';
 import '../../../../../domain/onboarding/request_permission.dart';
@@ -11,7 +12,8 @@ import '../../../../../domain/user/get_permission_status.dart';
 import '../../../../../domain/user/permissions/permission.dart';
 import '../../../../../domain/user/permissions/permission_status.dart';
 import '../../../../../domain/user/settings/open_settings.dart';
-import '../../../../../domain/user_availability/colleagues/receive_colleague_availability.dart';
+import '../../../../../domain/user_availability/colleagues/colleague.dart';
+import '../../colltacts/colleagues/cubit.dart';
 import 'state.dart';
 
 export 'state.dart';
@@ -23,12 +25,48 @@ class ColltactsCubit extends Cubit<ColltactsState> {
   final _openAppSettings = OpenSettingsAppUseCase();
   final _getContactSort = GetContactSortUseCase();
 
-  late final _receiveColleagueAvailability = ReceiveColleagueAvailability();
+  List<Colleague> get _colleagues => _colleaguesCubit.state.when(
+        loading: () => [],
+        loaded: (colleagues) => colleagues,
+      );
 
-  bool shouldShowColleagues = false;
+  bool get shouldShowColleagues => _colleagues.isNotEmpty;
 
-  ColltactsCubit() : super(LoadingColltacts()) {
+  final ColleagueCubit _colleaguesCubit;
+
+  ColltactsCubit(this._colleaguesCubit) : super(const LoadingColltacts()) {
     _checkColltactsPermission();
+
+    // Check the initial state as there may already be some colleagues loaded.
+    _colleaguesCubit.state.when(
+      loading: () => null,
+      loaded: _handleColleaguesUpdate,
+    );
+
+    _colleaguesCubit.stream.listen(
+      (event) => event.when(
+        loading: () => null,
+        loaded: _handleColleaguesUpdate,
+      ),
+    );
+  }
+
+  void _handleColleaguesUpdate(List<Colleague> colleagues) {
+    final state = this.state;
+
+    if (state is! ColltactsLoaded) return;
+
+    // We want to replace all the colleagues but leave the loaded contacts
+    // alone.
+    final colltacts = colleagues.mergeColltacts(state.colltacts.contacts);
+
+    emit(state.copyWith(colltacts: colltacts));
+
+    // If we get a colleagues update before the contacts are loaded we might
+    // get an empty list, so we'll just load them here if we don't have any.
+    if (state.colltacts.contacts.isEmpty) {
+      _checkColltactsPermission();
+    }
   }
 
   Future<void> _checkColltactsPermission() async {
@@ -51,28 +89,18 @@ class ColltactsCubit extends Cubit<ColltactsState> {
   }
 
   Future<void> _loadColltacts() async {
+    final state = this.state;
+
     if (state is! ColltactsLoaded) {
-      emit(LoadingColltacts());
+      emit(const LoadingColltacts());
     }
 
-    final contacts = await _getContacts();
-    final contactSort = await _getContactSort();
-
-    _receiveColleagueAvailability().listen((colleagues) {
-      if (colleagues.isNotEmpty) {
-        shouldShowColleagues = true;
-      }
-
-      var colltacts = colleagues.map(Colltact.colleague).toList();
-      colltacts.addAll(contacts.map(Colltact.contact).toList());
-
-      emit(
-        ColltactsLoaded(
-          colltacts,
-          contactSort,
-        ),
-      );
-    });
+    emit(
+      ColltactsLoaded(
+        _colleagues.mergeColltacts(await _getContacts()),
+        await _getContactSort(),
+      ),
+    );
   }
 
   Future<void> reloadColltacts() async => await _checkColltactsPermission();
@@ -86,4 +114,13 @@ class ColltactsCubit extends Cubit<ColltactsState> {
   void openAppSettings() async {
     await _openAppSettings();
   }
+}
+
+extension on List<Colleague> {
+  List<Colltact> mergeColltacts(Iterable<Contact> contacts) =>
+      map(Colltact.colleague).toList()..addAll(contacts.map(Colltact.contact));
+}
+
+extension on Iterable<Colltact> {
+  Iterable<Contact> get contacts => whereType<Contact>();
 }
