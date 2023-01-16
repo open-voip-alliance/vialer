@@ -9,7 +9,7 @@ import '../../../../../resources/theme.dart';
 import '../../../../../util/widgets_binding_observer_registrar.dart';
 import '../../../util/stylized_snack_bar.dart';
 import '../../../widgets/caller.dart';
-import '../../../widgets/colltact_list/cubit.dart' hide NoPermission;
+import '../../../widgets/colltact_list/cubit.dart';
 import '../../../widgets/colltact_list/details/cubit.dart';
 import '../../../widgets/colltact_list/details/widget.dart';
 

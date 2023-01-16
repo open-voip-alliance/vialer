@@ -7,7 +7,7 @@ import '../../../../../../data/models/colltact.dart';
 import '../../../../../resources/localizations.dart';
 import '../../../widgets/caller.dart';
 import '../../../widgets/header.dart';
-import '../cubit.dart' hide NoPermission;
+import '../cubit.dart';
 import '../widgets/avatar.dart';
 import '../widgets/subtitle.dart';
 import 'cubit.dart';

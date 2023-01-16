@@ -145,17 +145,13 @@ class _ColltactPageState extends State<_ColltactList>
                     ],
                   ),
                 Expanded(
-                  child: _Placeholder(
-                      state: state,
-                      child: cubit.shouldShowColleagues
-                          ? TabBarView(children: [
-                              _animatedSwitcher(
-                                  ColltactKind.contact, state, cubit),
-                              _animatedSwitcher(
-                                  ColltactKind.colleague, state, cubit),
-                            ])
-                          : _animatedSwitcher(
-                              ColltactKind.contact, state, cubit)),
+                  child: cubit.shouldShowColleagues
+                      ? TabBarView(children: [
+                          _animatedSwitcher(ColltactKind.contact, state, cubit),
+                          _animatedSwitcher(
+                              ColltactKind.colleague, state, cubit),
+                        ])
+                      : _animatedSwitcher(ColltactKind.contact, state, cubit),
                 ),
               ],
             ),
@@ -300,114 +296,101 @@ class _ColltactPageState extends State<_ColltactList>
   AnimatedSwitcher _animatedSwitcher(
       ColltactKind colltactKind, ColltactsState state, ColltactsCubit cubit) {
     final isForContacts = colltactKind == ColltactKind.contact;
+    final appName = context.brand.appName;
 
     return AnimatedSwitcher(
-      duration: const Duration(milliseconds: 200),
-      switchInCurve: Curves.decelerate,
-      switchOutCurve: Curves.decelerate.flipped,
-      child: _AlphabetListView(
-        key: ValueKey(_searchTerm),
-        bottomLettersPadding: widget.bottomLettersPadding,
-        children: isForContacts
-            ? _mapAndFilterToContactWidgets(
-                state is ColltactsLoaded ? state.colltacts : [],
-                state is ColltactsLoaded ? state.contactSort : null,
+        duration: const Duration(milliseconds: 200),
+        switchInCurve: Curves.decelerate,
+        switchOutCurve: Curves.decelerate.flipped,
+        child: isForContacts
+            ? ConditionalPlaceholder(
+                showPlaceholder: state is ColltactsLoaded &&
+                    (state.colltacts.isEmpty || state.noContactPermission),
+                placeholder: SingleChildScrollView(
+                  child: state is ColltactsLoaded && state.noContactPermission
+                      ? Warning(
+                          icon: const FaIcon(FontAwesomeIcons.lock),
+                          title: Text(
+                            context.msg.main.contacts.list.noPermission
+                                .title(appName),
+                          ),
+                          description: !state.dontAskAgain
+                              ? Text(
+                                  context.msg.main.contacts.list.noPermission
+                                      .description(appName),
+                                )
+                              : Text(
+                                  context.msg.main.contacts.list.noPermission
+                                      .permanentDescription(appName),
+                                ),
+                          children: <Widget>[
+                            const SizedBox(height: 40),
+                            StylizedButton.raised(
+                              colored: true,
+                              onPressed: !state.dontAskAgain
+                                  ? cubit.requestPermission
+                                  : cubit.openAppSettings,
+                              child: !state.dontAskAgain
+                                  ? Text(
+                                      context.msg.main.contacts.list
+                                          .noPermission.buttonPermission
+                                          .toUpperCaseIfAndroid(context),
+                                    )
+                                  : Text(
+                                      context.msg.main.contacts.list
+                                          .noPermission.buttonOpenSettings
+                                          .toUpperCaseIfAndroid(context),
+                                    ),
+                            ),
+                          ],
+                        )
+                      : state is LoadingColltacts
+                          ? LoadingIndicator(
+                              title: Text(
+                                context.msg.main.contacts.list.loading.title,
+                              ),
+                              description: Text(
+                                context
+                                    .msg.main.contacts.list.loading.description,
+                              ),
+                            )
+                          : Warning(
+                              icon: const FaIcon(FontAwesomeIcons.userSlash),
+                              title: Text(
+                                context.msg.main.contacts.list.empty.title,
+                              ),
+                              description: Text(
+                                context.msg.main.contacts.list.empty
+                                    .description(
+                                  context.brand.appName,
+                                ),
+                              ),
+                            ),
+                ),
+                child: _AlphabetListView(
+                  key: ValueKey(_searchTerm),
+                  bottomLettersPadding: widget.bottomLettersPadding,
+                  children: _mapAndFilterToContactWidgets(
+                    state is ColltactsLoaded ? state.colltacts : [],
+                    state is ColltactsLoaded ? state.contactSort : null,
+                  ),
+                  onRefresh: cubit.reloadColltacts,
+                ),
               )
-            : _mapAndFilterToColleagueWidgets(
-                state is ColltactsLoaded ? state.colltacts : [],
-              ),
-        onRefresh: cubit.reloadColltacts,
-      ),
-    );
+            : _AlphabetListView(
+                key: ValueKey(_searchTerm),
+                bottomLettersPadding: widget.bottomLettersPadding,
+                children: _mapAndFilterToColleagueWidgets(
+                  state is ColltactsLoaded ? state.colltacts : [],
+                ),
+                onRefresh: cubit.reloadColltacts,
+              ));
   }
 }
 
 enum ColltactKind {
   contact,
   colleague,
-}
-
-class _Placeholder extends StatelessWidget {
-  final ColltactsState state;
-  final Widget child;
-
-  const _Placeholder({
-    Key? key,
-    required this.state,
-    required this.child,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    // Needed for auto cast
-    final state = this.state;
-
-    final cubit = context.watch<ColltactsCubit>();
-    final appName = context.brand.appName;
-
-    return ConditionalPlaceholder(
-      showPlaceholder: state is! ColltactsLoaded || state.colltacts.isEmpty,
-      placeholder: SingleChildScrollView(
-        child: state is NoPermission
-            ? Warning(
-                icon: const FaIcon(FontAwesomeIcons.lock),
-                title: Text(
-                  context.msg.main.contacts.list.noPermission.title(appName),
-                ),
-                description: !state.dontAskAgain
-                    ? Text(
-                        context.msg.main.contacts.list.noPermission
-                            .description(appName),
-                      )
-                    : Text(
-                        context.msg.main.contacts.list.noPermission
-                            .permanentDescription(appName),
-                      ),
-                children: <Widget>[
-                  const SizedBox(height: 40),
-                  StylizedButton.raised(
-                    colored: true,
-                    onPressed: !state.dontAskAgain
-                        ? cubit.requestPermission
-                        : cubit.openAppSettings,
-                    child: !state.dontAskAgain
-                        ? Text(
-                            context.msg.main.contacts.list.noPermission
-                                .buttonPermission
-                                .toUpperCaseIfAndroid(context),
-                          )
-                        : Text(
-                            context.msg.main.contacts.list.noPermission
-                                .buttonOpenSettings
-                                .toUpperCaseIfAndroid(context),
-                          ),
-                  ),
-                ],
-              )
-            : state is LoadingColltacts
-                ? LoadingIndicator(
-                    title: Text(
-                      context.msg.main.contacts.list.loading.title,
-                    ),
-                    description: Text(
-                      context.msg.main.contacts.list.loading.description,
-                    ),
-                  )
-                : Warning(
-                    icon: const FaIcon(FontAwesomeIcons.userSlash),
-                    title: Text(
-                      context.msg.main.contacts.list.empty.title,
-                    ),
-                    description: Text(
-                      context.msg.main.contacts.list.empty.description(
-                        context.brand.appName,
-                      ),
-                    ),
-                  ),
-      ),
-      child: child,
-    );
-  }
 }
 
 class _AlphabetListView extends StatefulWidget {
