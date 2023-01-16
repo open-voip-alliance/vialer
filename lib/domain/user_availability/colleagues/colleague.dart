@@ -17,7 +17,7 @@ class Colleague with _$Colleague {
       );
 
   String? get availabilityText => map(
-        (colleague) => colleague.status?.text(),
+        (colleague) => colleague.status?.text,
         unconnectedVoipAccount: (_) => null,
       );
 
@@ -91,9 +91,10 @@ enum ColleagueAvailabilityStatus {
     }
   }
 
-  String text() {
+  String get text {
     switch (this) {
       case ColleagueAvailabilityStatus.doNotDisturb:
+        return 'Do not disturb';
       case ColleagueAvailabilityStatus.offline:
         return 'Unavailable';
       case ColleagueAvailabilityStatus.available:
