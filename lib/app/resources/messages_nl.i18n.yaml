@@ -187,6 +187,17 @@ main:
         Je kan recente oproepen van collega's zien als je bedrijfsbrede gesprekken aanzet
         op de Instellingen-pagina.
 
+  colleagues:
+    status:
+      available: 'Beschikbaar'
+      doNotDisturb: 'Do not disturb'
+      offline: 'Offline'
+      unknown: 'Onbekend'
+      busy: 'Bezet'
+    context:
+      ringing: 'Gaat over'
+      inCall: 'In gesprek'
+
   contacts:
     title: &contactsTitle "Contacten"
     menu:

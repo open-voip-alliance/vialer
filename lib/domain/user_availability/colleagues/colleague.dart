@@ -16,16 +16,6 @@ class Colleague with _$Colleague {
         unconnectedVoipAccount: (_) => null,
       );
 
-  String? get availabilityText => map(
-        (colleague) => colleague.status?.text,
-        unconnectedVoipAccount: (_) => null,
-      );
-
-  String? get mostRelevantContextText => map(
-        (colleague) => colleague.context.firstOrNull?.text,
-        unconnectedVoipAccount: (_) => null,
-      );
-
   const Colleague._();
 
   /// A Voipgrid user which we fully support, including their current
@@ -90,21 +80,6 @@ enum ColleagueAvailabilityStatus {
         return ColleagueAvailabilityStatus.unknown;
     }
   }
-
-  String get text {
-    switch (this) {
-      case ColleagueAvailabilityStatus.doNotDisturb:
-        return 'Do not disturb';
-      case ColleagueAvailabilityStatus.offline:
-        return 'Offline';
-      case ColleagueAvailabilityStatus.available:
-        return 'Available';
-      case ColleagueAvailabilityStatus.busy:
-        return 'Busy';
-      default:
-        return 'Unknown';
-    }
-  }
 }
 
 /// The destination that we can call to reach the given colleague.
@@ -163,11 +138,6 @@ class ColleagueContext with _$ColleagueContext {
         return null;
     }
   }
-
-  String get text => when(
-        ringing: () => 'Ringing',
-        inCall: () => 'In Call',
-      );
 
   const ColleagueContext._();
 }
