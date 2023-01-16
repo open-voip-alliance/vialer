@@ -72,23 +72,10 @@ class ColltactsCubit extends Cubit<ColltactsState> {
   Future<void> _checkColltactsPermission() async {
     final status = await _getPermissionStatus(permission: Permission.contacts);
 
-    await _loadColltactsIfAllowed(status);
+    await _loadColltacts(status);
   }
 
-  Future<void> _loadColltactsIfAllowed(PermissionStatus status) async {
-    if (status == PermissionStatus.granted) {
-      await _loadColltacts();
-    } else {
-      emit(
-        NoPermission(
-          dontAskAgain: status == PermissionStatus.permanentlyDenied ||
-              (Platform.isIOS && status == PermissionStatus.denied),
-        ),
-      );
-    }
-  }
-
-  Future<void> _loadColltacts() async {
+  Future<void> _loadColltacts(PermissionStatus status) async {
     final state = this.state;
 
     if (state is! ColltactsLoaded) {
@@ -97,8 +84,13 @@ class ColltactsCubit extends Cubit<ColltactsState> {
 
     emit(
       ColltactsLoaded(
-        _colleagues.mergeColltacts(await _getContacts()),
-        await _getContactSort(),
+        colltacts: status == PermissionStatus.granted
+            ? _colleagues.mergeColltacts(await _getContacts())
+            : _colleagues.map(Colltact.colleague),
+        contactSort: await _getContactSort(),
+        noContactPermission: status == PermissionStatus.granted,
+        dontAskAgain: status == PermissionStatus.permanentlyDenied ||
+            (Platform.isIOS && status == PermissionStatus.denied),
       ),
     );
   }
@@ -108,7 +100,7 @@ class ColltactsCubit extends Cubit<ColltactsState> {
   Future<void> requestPermission() async {
     final status = await _requestPermission(permission: Permission.contacts);
 
-    await _loadColltactsIfAllowed(status);
+    await _loadColltacts(status);
   }
 
   void openAppSettings() async {
