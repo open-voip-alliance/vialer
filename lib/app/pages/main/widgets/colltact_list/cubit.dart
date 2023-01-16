@@ -88,7 +88,7 @@ class ColltactsCubit extends Cubit<ColltactsState> {
             ? _colleagues.mergeColltacts(await _getContacts())
             : _colleagues.map(Colltact.colleague),
         contactSort: await _getContactSort(),
-        noContactPermission: status == PermissionStatus.granted,
+        noContactPermission: status != PermissionStatus.granted,
         dontAskAgain: status == PermissionStatus.permanentlyDenied ||
             (Platform.isIOS && status == PermissionStatus.denied),
       ),
