@@ -60,6 +60,14 @@ class ColorValues {
     this.appBarForeground = 0xFFFFFFFF,
     int? appBarBackground,
     int? notificationBackground,
+    this.userAvailabilityAvailable = 0xFFACF5A6,
+    this.userAvailabilityAvailableAccent = 0xFF046614,
+    this.userAvailabilityBusy = 0xFFFFD0A3,
+    this.userAvailabilityBusyAccent = 0xFFD45400,
+    this.userAvailabilityUnavailable = 0xFFFFADAD,
+    this.userAvailabilityUnavailableAccent = 0xFF8F0A06,
+    this.userAvailabilityUnknown = 0xFFF5F5F5,
+    this.userAvailabilityUnknownAccent = 0xFF666666,
   })  : onPrimaryGradient = onPrimaryGradient ?? onPrimary,
         textButtonForeground = textButtonForeground ?? primary,
         buttonBackground = buttonBackground ?? primaryLight,
@@ -129,6 +137,15 @@ class ColorValues {
   /// Name should not be changed, this color is expected by
   /// the Android Phone Lib.
   final int notificationBackground;
+
+  final int userAvailabilityAvailable;
+  final int userAvailabilityAvailableAccent;
+  final int userAvailabilityBusy;
+  final int userAvailabilityBusyAccent;
+  final int userAvailabilityUnavailable;
+  final int userAvailabilityUnavailableAccent;
+  final int userAvailabilityUnknown;
+  final int userAvailabilityUnknownAccent;
 
   /// Defaults should be left as-is.
   const ColorValues.vialer({
