@@ -316,9 +316,7 @@ class _ColltactPageState extends State<_ColltactList>
       searchTerm: _searchTerm ?? '',
       onCall: (number) => cubit.call(
         number,
-        origin: colltactKind == ColltactKind.contact
-            ? CallOrigin.contacts
-            : CallOrigin.colleagues,
+        origin: isForContacts ? CallOrigin.contacts : CallOrigin.colleagues,
       ),
       child: AlphabetListView(
         key: ValueKey(_searchTerm),
