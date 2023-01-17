@@ -11,6 +11,7 @@ import '../../../../util/extensions.dart';
 import '../../../../util/pigeon.dart';
 import '../../../../util/widgets_binding_observer_registrar.dart';
 import '../../colltacts/colleagues/cubit.dart';
+import '../caller.dart';
 import '../conditional_placeholder.dart';
 import '../header.dart';
 import '../nested_navigator.dart';
@@ -19,6 +20,7 @@ import 'widgets/alphabet_list.dart';
 import 'widgets/colltact_placeholder.dart';
 import 'widgets/group_header.dart';
 import 'widgets/item.dart';
+import 'widgets/no_results.dart';
 import 'widgets/search.dart';
 
 abstract class ColltactsPageRoutes {
@@ -43,7 +45,10 @@ class ColltactList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<ColltactsCubit>(
-      create: (_) => ColltactsCubit(context.watch<ColleagueCubit>()),
+      create: (_) => ColltactsCubit(
+        context.watch<ColleagueCubit>(),
+        context.watch<CallerCubit>(),
+      ),
       child: NestedNavigator(
         navigatorKey: navigatorKey,
         routes: {
@@ -296,33 +301,53 @@ class _ColltactPageState extends State<_ColltactList>
   ) {
     final isForContacts = colltactKind == ColltactKind.contact;
 
+    final recordWidgets = isForContacts
+        ? _mapAndFilterToContactWidgets(
+            state is ColltactsLoaded ? state.colltacts : [],
+            state is ColltactsLoaded ? state.contactSort : null,
+          )
+        : _mapAndFilterToColleagueWidgets(
+            state is ColltactsLoaded ? state.colltacts : [],
+          );
+
+    final noResults = NoResultsPlaceholder(
+      showPlaceholder: _searchTerm?.isNotEmpty == true && recordWidgets.isEmpty,
+      kind: colltactKind,
+      searchTerm: _searchTerm ?? '',
+      onCall: (number) => cubit.call(
+        number,
+        origin: colltactKind == ColltactKind.contact
+            ? CallOrigin.contacts
+            : CallOrigin.colleagues,
+      ),
+      child: isForContacts
+          ? AlphabetListView(
+              key: ValueKey(_searchTerm),
+              bottomLettersPadding: widget.bottomLettersPadding,
+              children: recordWidgets,
+              onRefresh: cubit.reloadColltacts,
+            )
+          : AlphabetListView(
+              key: ValueKey(_searchTerm),
+              bottomLettersPadding: widget.bottomLettersPadding,
+              children: recordWidgets,
+              onRefresh: cubit.reloadColltacts,
+            ),
+    );
+
     return AnimatedSwitcher(
-        duration: const Duration(milliseconds: 200),
-        switchInCurve: Curves.decelerate,
-        switchOutCurve: Curves.decelerate.flipped,
-        child: isForContacts
-            ? ConditionalPlaceholder(
-                showPlaceholder: state is ColltactsLoaded &&
-                    (state.colltacts.isEmpty || state.noContactPermission),
-                placeholder: ColltactsPlaceholder(cubit: cubit, state: state),
-                child: AlphabetListView(
-                  key: ValueKey(_searchTerm),
-                  bottomLettersPadding: widget.bottomLettersPadding,
-                  children: _mapAndFilterToContactWidgets(
-                    state is ColltactsLoaded ? state.colltacts : [],
-                    state is ColltactsLoaded ? state.contactSort : null,
-                  ),
-                  onRefresh: cubit.reloadColltacts,
-                ),
-              )
-            : AlphabetListView(
-                key: ValueKey(_searchTerm),
-                bottomLettersPadding: widget.bottomLettersPadding,
-                children: _mapAndFilterToColleagueWidgets(
-                  state is ColltactsLoaded ? state.colltacts : [],
-                ),
-                onRefresh: cubit.reloadColltacts,
-              ));
+      duration: const Duration(milliseconds: 200),
+      switchInCurve: Curves.decelerate,
+      switchOutCurve: Curves.decelerate.flipped,
+      child: isForContacts
+          ? ConditionalPlaceholder(
+              showPlaceholder: state is ColltactsLoaded &&
+                  (state.colltacts.isEmpty || state.noContactPermission),
+              placeholder: ColltactsPlaceholder(cubit: cubit, state: state),
+              child: noResults,
+            )
+          : noResults,
+    );
   }
 }
 
