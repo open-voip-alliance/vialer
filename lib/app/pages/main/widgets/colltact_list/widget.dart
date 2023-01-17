@@ -301,7 +301,7 @@ class _ColltactPageState extends State<_ColltactList>
   ) {
     final isForContacts = colltactKind == ColltactKind.contact;
 
-    final recordWidgets = isForContacts
+    final records = isForContacts
         ? _mapAndFilterToContactWidgets(
             state is ColltactsLoaded ? state.colltacts : [],
             state is ColltactsLoaded ? state.contactSort : null,
@@ -311,7 +311,7 @@ class _ColltactPageState extends State<_ColltactList>
           );
 
     final list = NoResultsPlaceholder(
-      showPlaceholder: _searchTerm?.isNotEmpty == true && recordWidgets.isEmpty,
+      showPlaceholder: _searchTerm?.isNotEmpty == true && records.isEmpty,
       kind: colltactKind,
       searchTerm: _searchTerm ?? '',
       onCall: (number) => cubit.call(
@@ -323,7 +323,7 @@ class _ColltactPageState extends State<_ColltactList>
       child: AlphabetListView(
         key: ValueKey(_searchTerm),
         bottomLettersPadding: widget.bottomLettersPadding,
-        children: recordWidgets,
+        children: records,
         onRefresh: cubit.reloadColltacts,
       ),
     );
