@@ -320,19 +320,12 @@ class _ColltactPageState extends State<_ColltactList>
             ? CallOrigin.contacts
             : CallOrigin.colleagues,
       ),
-      child: isForContacts
-          ? AlphabetListView(
-              key: ValueKey(_searchTerm),
-              bottomLettersPadding: widget.bottomLettersPadding,
-              children: recordWidgets,
-              onRefresh: cubit.reloadColltacts,
-            )
-          : AlphabetListView(
-              key: ValueKey(_searchTerm),
-              bottomLettersPadding: widget.bottomLettersPadding,
-              children: recordWidgets,
-              onRefresh: cubit.reloadColltacts,
-            ),
+      child: AlphabetListView(
+        key: ValueKey(_searchTerm),
+        bottomLettersPadding: widget.bottomLettersPadding,
+        children: recordWidgets,
+        onRefresh: cubit.reloadColltacts,
+      ),
     );
 
     return AnimatedSwitcher(
