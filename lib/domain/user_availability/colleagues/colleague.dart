@@ -96,7 +96,6 @@ class ColleagueDestination with _$ColleagueDestination {
 
 enum ColleagueDestinationType {
   app,
-  webphone,
   voipAccount,
   fixed,
   none;
@@ -105,8 +104,6 @@ enum ColleagueDestinationType {
     switch (value) {
       case 'app_account':
         return ColleagueDestinationType.app;
-      case 'webphone_account':
-        return ColleagueDestinationType.webphone;
       case 'voip_account':
         return ColleagueDestinationType.voipAccount;
       case 'fixeddestination':
