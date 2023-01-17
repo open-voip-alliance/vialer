@@ -190,12 +190,12 @@ main:
   colleagues:
     status:
       available: 'Beschikbaar'
-      doNotDisturb: 'Do not disturb'
+      doNotDisturb: 'Niet storen'
       offline: 'Offline'
       unknown: 'Onbekend'
       busy: 'Bezet'
     context:
-      ringing: 'Gaat over'
+      ringing: 'Wordt gebeld'
       inCall: 'In gesprek'
 
   contacts:
