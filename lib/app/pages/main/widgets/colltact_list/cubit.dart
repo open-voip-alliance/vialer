@@ -37,6 +37,8 @@ class ColltactsCubit extends Cubit<ColltactsState> {
   bool get shouldShowColleagues =>
       _getUser().permissions.canViewColleagues && _colleagues.isNotEmpty;
 
+  bool get canViewColleagues => _getUser().permissions.canViewColleagues;
+
   final ColleagueCubit _colleaguesCubit;
 
   ColltactsCubit(this._colleaguesCubit) : super(const LoadingColltacts()) {

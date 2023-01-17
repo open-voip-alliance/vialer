@@ -83,7 +83,9 @@ class _ColltactPageState extends State<_ColltactList>
   @override
   void initState() {
     super.initState();
-    _createTabController();
+    if (context.read<ColltactsCubit>().canViewColleagues) {
+      _createTabController();
+    }
   }
 
   @override
