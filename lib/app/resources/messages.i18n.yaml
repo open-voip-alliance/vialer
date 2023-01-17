@@ -200,8 +200,8 @@ main:
       unknown: 'Unknown'
       busy: 'Busy'
     context:
-      ringing: 'Ringing'
-      inCall: 'Ongoing call'
+      ringing: 'Being called'
+      inCall: 'Busy'
 
   contacts:
     title: &contactsTitle "Contacts"
