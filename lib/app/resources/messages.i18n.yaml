@@ -191,6 +191,14 @@ main:
         You can see recent calls made by colleagues by enabling
         client-wide calls in the Settings page.
 
+  colltacts:
+    noResults:
+      title: "No matches found"
+      button(String number): "Call $number"
+      colleagues(String number): >-
+        There were no colleagues found for "$number".
+      contacts(String number): >-
+        There were no contacts found for "$number".
 
   colleagues:
     status:

@@ -15,6 +15,7 @@ import '../../../../../domain/user/permissions/permission_status.dart';
 import '../../../../../domain/user/settings/open_settings.dart';
 import '../../../../../domain/user_availability/colleagues/colleague.dart';
 import '../../colltacts/colleagues/cubit.dart';
+import '../caller/cubit.dart';
 import 'state.dart';
 
 export 'state.dart';
@@ -36,8 +37,12 @@ class ColltactsCubit extends Cubit<ColltactsState> {
       _getUser().permissions.canViewColleagues && _colleagues.isNotEmpty;
 
   final ColleagueCubit _colleaguesCubit;
+  final CallerCubit _caller;
 
-  ColltactsCubit(this._colleaguesCubit) : super(const LoadingColltacts()) {
+  ColltactsCubit(
+    this._colleaguesCubit,
+    this._caller,
+  ) : super(const LoadingColltacts()) {
     _checkColltactsPermission();
 
     // Check the initial state as there may already be some colleagues loaded.
@@ -53,6 +58,12 @@ class ColltactsCubit extends Cubit<ColltactsState> {
       ),
     );
   }
+
+  Future<void> call(
+    String destination, {
+    CallOrigin origin = CallOrigin.contacts,
+  }) =>
+      _caller.call(destination, origin: origin);
 
   void _handleColleaguesUpdate(List<Colleague> colleagues) {
     final state = this.state;
