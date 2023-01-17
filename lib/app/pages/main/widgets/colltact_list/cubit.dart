@@ -7,6 +7,7 @@ import '../../../../../data/models/colltact.dart';
 import '../../../../../domain/colltacts/contact.dart';
 import '../../../../../domain/colltacts/get_contact_sort.dart';
 import '../../../../../domain/colltacts/get_contacts.dart';
+import '../../../../../domain/metrics/track_colleague_tab_selected.dart';
 import '../../../../../domain/onboarding/request_permission.dart';
 import '../../../../../domain/user/get_logged_in_user.dart';
 import '../../../../../domain/user/get_permission_status.dart';
@@ -26,6 +27,7 @@ class ColltactsCubit extends Cubit<ColltactsState> {
   final _openAppSettings = OpenSettingsAppUseCase();
   final _getContactSort = GetContactSortUseCase();
   final _getUser = GetLoggedInUserUseCase();
+  final _trackColleagueTabSelected = TrackColleagueTabSelectedUseCase();
 
   List<Colleague> get _colleagues => _colleaguesCubit.state.when(
         loading: () => [],
@@ -34,6 +36,8 @@ class ColltactsCubit extends Cubit<ColltactsState> {
 
   bool get shouldShowColleagues =>
       _getUser().permissions.canViewColleagues && _colleagues.isNotEmpty;
+
+  bool get canViewColleagues => _getUser().permissions.canViewColleagues;
 
   final ColleagueCubit _colleaguesCubit;
 
@@ -109,6 +113,8 @@ class ColltactsCubit extends Cubit<ColltactsState> {
   void openAppSettings() async {
     await _openAppSettings();
   }
+
+  void trackColleaguesTabSelected() => _trackColleagueTabSelected();
 }
 
 extension on List<Colleague> {
