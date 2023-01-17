@@ -31,71 +31,71 @@ class NoResultsPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (!showPlaceholder) {
-      return child;
-    }
-
-    return KeyboardVisibilityBuilder(
-      builder: (context, isKeyboardVisible) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 60),
-          child: Column(
-            mainAxisAlignment: isKeyboardVisible
-                ? MainAxisAlignment.start
-                : MainAxisAlignment.center,
-            children: [
-              AnimatedSwitcher(
-                duration: const Duration(milliseconds: 100),
-                child: !isKeyboardVisible ? _CircularGraphic() : null,
-              ),
-              const SizedBox(height: 40),
-              Text(
-                context.msg.main.colltacts.noResults.title,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 10),
-              Text(
-                kind == ColltactKind.contact
-                    ? context.msg.main.colltacts.noResults.contacts(searchTerm)
-                    : context.msg.main.colltacts.noResults
-                        .colleagues(searchTerm),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 40),
-              AnimatedSwitcher(
-                duration: const Duration(milliseconds: 200),
-                child: _shouldShowCallButton
-                    ? StylizedButton.raised(
-                        colored: true,
-                        onPressed: () => onCall(searchTerm),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const FaIcon(FontAwesomeIcons.phone, size: 16),
-                            const SizedBox(width: 10),
-                            Flexible(
-                              child: Text(
-                                context.msg.main.colltacts.noResults
-                                    .button(searchTerm),
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 1,
-                                textAlign: TextAlign.center,
+    return showPlaceholder
+        ? KeyboardVisibilityBuilder(
+            builder: (context, isKeyboardVisible) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 60),
+                child: Column(
+                  mainAxisAlignment: isKeyboardVisible
+                      ? MainAxisAlignment.start
+                      : MainAxisAlignment.center,
+                  children: [
+                    AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 100),
+                      child: !isKeyboardVisible ? _CircularGraphic() : null,
+                    ),
+                    const SizedBox(height: 40),
+                    Text(
+                      context.msg.main.colltacts.noResults.title,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      kind == ColltactKind.contact
+                          ? context.msg.main.colltacts.noResults
+                              .contacts(searchTerm)
+                          : context.msg.main.colltacts.noResults
+                              .colleagues(searchTerm),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 40),
+                    AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 200),
+                      child: _shouldShowCallButton
+                          ? StylizedButton.raised(
+                              colored: true,
+                              onPressed: () => onCall(searchTerm),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const FaIcon(FontAwesomeIcons.phone,
+                                      size: 16),
+                                  const SizedBox(width: 10),
+                                  Flexible(
+                                    child: Text(
+                                      context.msg.main.colltacts.noResults
+                                          .button(searchTerm),
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ),
-                          ],
-                        ),
-                      )
-                    : null,
-              ),
-            ],
-          ),
-        );
-      },
-    );
+                            )
+                          : null,
+                    ),
+                  ],
+                ),
+              );
+            },
+          )
+        : child;
   }
 }
 
