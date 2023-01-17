@@ -8,6 +8,7 @@ import '../../../../../domain/colltacts/contact.dart';
 import '../../../../../domain/colltacts/get_contact_sort.dart';
 import '../../../../../domain/colltacts/get_contacts.dart';
 import '../../../../../domain/onboarding/request_permission.dart';
+import '../../../../../domain/user/get_logged_in_user.dart';
 import '../../../../../domain/user/get_permission_status.dart';
 import '../../../../../domain/user/permissions/permission.dart';
 import '../../../../../domain/user/permissions/permission_status.dart';
@@ -24,13 +25,15 @@ class ColltactsCubit extends Cubit<ColltactsState> {
   final _requestPermission = RequestPermissionUseCase();
   final _openAppSettings = OpenSettingsAppUseCase();
   final _getContactSort = GetContactSortUseCase();
+  final _getUser = GetLoggedInUserUseCase();
 
   List<Colleague> get _colleagues => _colleaguesCubit.state.when(
         loading: () => [],
         loaded: (colleagues) => colleagues,
       );
 
-  bool get shouldShowColleagues => _colleagues.isNotEmpty;
+  bool get shouldShowColleagues =>
+      _getUser().permissions.canViewColleagues && _colleagues.isNotEmpty;
 
   final ColleagueCubit _colleaguesCubit;
 
