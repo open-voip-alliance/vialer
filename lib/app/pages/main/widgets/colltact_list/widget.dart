@@ -310,7 +310,7 @@ class _ColltactPageState extends State<_ColltactList>
             state is ColltactsLoaded ? state.colltacts : [],
           );
 
-    final noResults = NoResultsPlaceholder(
+    final list = NoResultsPlaceholder(
       showPlaceholder: _searchTerm?.isNotEmpty == true && recordWidgets.isEmpty,
       kind: colltactKind,
       searchTerm: _searchTerm ?? '',
@@ -344,9 +344,9 @@ class _ColltactPageState extends State<_ColltactList>
               showPlaceholder: state is ColltactsLoaded &&
                   (state.colltacts.isEmpty || state.noContactPermission),
               placeholder: ColltactsPlaceholder(cubit: cubit, state: state),
-              child: noResults,
+              child: list,
             )
-          : noResults,
+          : list,
     );
   }
 }
