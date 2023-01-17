@@ -78,6 +78,20 @@ class _ColltactPageState extends State<_ColltactList>
 
   static const nonLetterKey = '#';
 
+  TabController? tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _createTabController();
+  }
+
+  @override
+  void dispose() {
+    tabController?.dispose();
+    super.dispose();
+  }
+
   void _onSearchTermChanged(String searchTerm) {
     setState(() {
       _searchTerm = searchTerm;
@@ -91,6 +105,26 @@ class _ColltactPageState extends State<_ColltactList>
     if (state == AppLifecycleState.resumed) {
       context.read<ColltactsCubit>().reloadColltacts();
     }
+  }
+
+  void _createTabController() {
+    final tabController = TabController(
+      initialIndex: 0,
+      length: 2,
+      vsync: this,
+    );
+
+    tabController.addListener(
+      () {
+        if (!tabController.indexIsChanging) {
+          if (tabController.index == 1) {
+            context.read<ColltactsCubit>().trackColleaguesTabSelected();
+          }
+        }
+      },
+    );
+
+    this.tabController = tabController;
   }
 
   @override
@@ -120,6 +154,7 @@ class _ColltactPageState extends State<_ColltactList>
                 ),
                 if (cubit.shouldShowColleagues)
                   TabBar(
+                    controller: tabController,
                     labelStyle: const TextStyle(
                       fontWeight: FontWeight.bold,
                     ),
@@ -142,11 +177,15 @@ class _ColltactPageState extends State<_ColltactList>
                   ),
                 Expanded(
                   child: cubit.shouldShowColleagues
-                      ? TabBarView(children: [
-                          _animatedSwitcher(ColltactKind.contact, state, cubit),
-                          _animatedSwitcher(
-                              ColltactKind.colleague, state, cubit),
-                        ])
+                      ? TabBarView(
+                          controller: tabController,
+                          children: [
+                            _animatedSwitcher(
+                                ColltactKind.contact, state, cubit),
+                            _animatedSwitcher(
+                                ColltactKind.colleague, state, cubit),
+                          ],
+                        )
                       : _animatedSwitcher(ColltactKind.contact, state, cubit),
                 ),
               ],
