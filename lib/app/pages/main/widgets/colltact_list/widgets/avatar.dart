@@ -102,7 +102,7 @@ class ColleagueAvatar extends StatelessWidget {
           case ColleagueAvailabilityStatus.busy:
             return busy;
           default:
-            return unknown;
+            return colleague.isAvailableOnMobileApp ? available : unknown;
         }
       },
       unconnectedVoipAccount: (_) => unknown,

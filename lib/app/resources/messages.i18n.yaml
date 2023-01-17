@@ -207,6 +207,7 @@ main:
       offline: 'Offline'
       unknown: 'Unknown'
       busy: 'Busy'
+      app: 'Available via app'
     context:
       ringing: 'Being called'
       inCall: 'Busy'

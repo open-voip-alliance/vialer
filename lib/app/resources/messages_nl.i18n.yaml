@@ -203,6 +203,7 @@ main:
       offline: 'Offline'
       unknown: 'Onbekend'
       busy: 'Bezet'
+      app: 'Beschikbaar via app'
     context:
       ringing: 'Wordt gebeld'
       inCall: 'In gesprek'
