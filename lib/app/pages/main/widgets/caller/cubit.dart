@@ -621,6 +621,8 @@ extension on CallOrigin {
         return 'recent';
       case CallOrigin.contacts:
         return 'contact';
+      case CallOrigin.colleagues:
+        return 'colleague';
       case CallOrigin.unknown:
         return 'unknown';
     }

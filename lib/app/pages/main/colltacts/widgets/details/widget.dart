@@ -91,7 +91,13 @@ class _ColltactPageDetailsState extends State<ColltactPageDetails>
 
                   return ColltactDetails(
                     colltact: widget.colltact,
-                    onPhoneNumberPressed: cubit.call,
+                    onPhoneNumberPressed: (destination) => cubit.call(
+                      destination,
+                      origin: widget.colltact.map(
+                        colleague: (_) => CallOrigin.colleagues,
+                        contact: (_) => CallOrigin.contacts,
+                      ),
+                    ),
                     onEmailPressed: cubit.mail,
                     actions: [
                       Padding(

@@ -19,8 +19,11 @@ class ColltactDetailsCubit extends Cubit<ColltactDetailsState> {
 
   ColltactDetailsCubit(this._caller) : super(const ColltactDetailsState());
 
-  Future<void> call(String destination) =>
-      _caller.call(destination, origin: CallOrigin.contacts);
+  Future<void> call(
+    String destination, {
+    CallOrigin origin = CallOrigin.contacts,
+  }) =>
+      _caller.call(destination, origin: origin);
 
   void mail(String destination) {
     launchUrlString('mailto:$destination');
