@@ -16,6 +16,13 @@ class Colleague with _$Colleague {
         unconnectedVoipAccount: (_) => null,
       );
 
+  bool get isAvailableOnMobileApp => map(
+        (colleague) =>
+            colleague.destination?.type == ColleagueDestinationType.app &&
+            colleague.status == ColleagueAvailabilityStatus.unknown,
+        unconnectedVoipAccount: (_) => false,
+      );
+
   const Colleague._();
 
   /// A Voipgrid user which we fully support, including their current

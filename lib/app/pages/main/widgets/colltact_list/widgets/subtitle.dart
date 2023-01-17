@@ -85,7 +85,9 @@ extension on Colleague {
       );
 
   String? availabilityText(BuildContext context) => map(
-        (colleague) => colleague.status?.text(context),
+        (colleague) => colleague.isAvailableOnMobileApp
+            ? context.msg.main.colleagues.status.app
+            : colleague.status?.text(context),
         unconnectedVoipAccount: (_) => null,
       );
 }
