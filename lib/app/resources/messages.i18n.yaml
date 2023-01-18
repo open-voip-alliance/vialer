@@ -192,6 +192,9 @@ main:
         client-wide calls in the Settings page.
 
   colltacts:
+    noOnline:
+      title: "No colleagues are online"
+      subtitle: "There are no colleagues online currently, use the toggle below to view offline colleagues."
     noResults:
       title: "No matches found"
       button(String number): "Call $number"

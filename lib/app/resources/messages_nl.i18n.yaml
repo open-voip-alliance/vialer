@@ -189,6 +189,9 @@ main:
 
   colltacts:
     toggle: "Alleen online collega's"
+    noOnline:
+      title: "No colleagues are online"
+      subtitle: "There are no colleagues online currently, use the toggle below to view offline colleagues."
     noResults:
       title: "Niks gevonden"
       button(String number): "Bel $number"
