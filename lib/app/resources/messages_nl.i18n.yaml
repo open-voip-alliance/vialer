@@ -188,7 +188,6 @@ main:
         op de Instellingen-pagina.
 
   colltacts:
-    toggle: "Alleen online collega's"
     noOnline:
       title: "No colleagues are online"
       subtitle: "There are no colleagues online currently, use the toggle below to view offline colleagues."
@@ -201,6 +200,7 @@ main:
         Er waren geen contacten gevonden voor "$number".
 
   colleagues:
+    toggle: "Alleen online collega's"
     status:
       available: 'Beschikbaar'
       doNotDisturb: 'Niet storen'
