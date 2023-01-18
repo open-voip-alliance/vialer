@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:dartx/dartx.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../data/models/colltact.dart';
@@ -13,6 +14,8 @@ import '../../../../../domain/user/get_logged_in_user.dart';
 import '../../../../../domain/user/get_permission_status.dart';
 import '../../../../../domain/user/permissions/permission.dart';
 import '../../../../../domain/user/permissions/permission_status.dart';
+import '../../../../../domain/user/settings/app_setting.dart';
+import '../../../../../domain/user/settings/change_setting.dart';
 import '../../../../../domain/user/settings/open_settings.dart';
 import '../../../../../domain/user_availability/colleagues/colleague.dart';
 import '../../colltacts/colleagues/cubit.dart';
@@ -29,16 +32,33 @@ class ColltactsCubit extends Cubit<ColltactsState> {
   final _getContactSort = GetContactSortUseCase();
   final _getUser = GetLoggedInUserUseCase();
   final _trackColleagueTabSelected = TrackColleagueTabSelectedUseCase();
+  final _changeSetting = ChangeSettingUseCase();
 
   List<Colleague> get _colleagues => _colleaguesCubit.state.when(
         loading: () => [],
-        loaded: (colleagues) => colleagues,
+        loaded: (colleagues) => showOnlineColleaguesOnly
+            ? colleagues.filter((colleague) => colleague.isOnline).toList()
+            : colleagues,
       );
 
   bool get shouldShowColleagues =>
       _getUser().permissions.canViewColleagues && _colleagues.isNotEmpty;
 
   bool get canViewColleagues => _getUser().permissions.canViewColleagues;
+
+  /// Storing the value locally so we don't have to deal with delay when
+  /// changing the value.
+  bool? _transientShowOnlineColleaguesOnly;
+
+  bool get showOnlineColleaguesOnly =>
+      _transientShowOnlineColleaguesOnly ??
+      _getUser().settings.get(AppSetting.showOnlineColleaguesOnly);
+
+  set showOnlineColleaguesOnly(bool value) {
+    _transientShowOnlineColleaguesOnly = value;
+    reloadColltacts();
+    _changeSetting(AppSetting.showOnlineColleaguesOnly, value);
+  }
 
   final ColleagueCubit _colleaguesCubit;
   final CallerCubit _caller;
