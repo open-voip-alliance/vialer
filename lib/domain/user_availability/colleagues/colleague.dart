@@ -23,6 +23,19 @@ class Colleague with _$Colleague {
         unconnectedVoipAccount: (_) => false,
       );
 
+  /// This colleague is online, this means their availability is currently
+  /// known.
+  bool get isOnline => map(
+        (colleague) =>
+            [
+              ColleagueAvailabilityStatus.available,
+              ColleagueAvailabilityStatus.doNotDisturb,
+              ColleagueAvailabilityStatus.busy,
+            ].contains(colleague.status) ||
+            isAvailableOnMobileApp,
+        unconnectedVoipAccount: (_) => false,
+      );
+
   const Colleague._();
 
   /// A Voipgrid user which we fully support, including their current

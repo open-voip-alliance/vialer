@@ -12,9 +12,9 @@ import '../../../../domain/user/settings/setting_changed.dart';
 import '../../../resources/localizations.dart';
 import '../../../resources/theme.dart';
 import '../util/stylized_snack_bar.dart';
+import '../widgets/bottom_toggle.dart';
 import '../widgets/caller/cubit.dart';
 import '../widgets/header.dart';
-import '../widgets/stylized_switch.dart';
 import 'cubit.dart';
 import 'widgets/list.dart';
 
@@ -300,7 +300,7 @@ class _Calls<C extends RecentCallsCubit> extends StatelessWidget {
   }
 }
 
-class _MissedCallsToggle extends StatefulWidget {
+class _MissedCallsToggle extends StatelessWidget {
   final bool showClientCalls;
   final ManualRefresher manualRefresher;
   final ManualRefresher clientManualRefresher;
@@ -312,48 +312,21 @@ class _MissedCallsToggle extends StatefulWidget {
   });
 
   @override
-  State<_MissedCallsToggle> createState() => _MissedCallsToggleState();
-}
-
-class _MissedCallsToggleState extends State<_MissedCallsToggle> {
-  bool _toggleValue = false;
-
-  void _toggleOnlyMissedCalls(bool value) {
-    context.read<RecentCallsCubit>().onlyMissedCalls = value;
-
-    if (widget.showClientCalls) {
-      context.read<ClientCallsCubit>().onlyMissedCalls = value;
-
-      widget.clientManualRefresher.refresh();
-    }
-
-    widget.manualRefresher.refresh();
-
-    setState(() {
-      _toggleValue = value;
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Material(
-      elevation: 8,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            context.msg.main.recent.onlyShowMissedCalls,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(width: 16),
-          StylizedSwitch(
-            value: _toggleValue,
-            onChanged: _toggleOnlyMissedCalls,
-          )
-        ],
-      ),
+    return BottomToggle(
+      name: context.msg.main.recent.onlyShowMissedCalls,
+      initialValue: false,
+      onChanged: (value) {
+        context.read<RecentCallsCubit>().onlyMissedCalls = value;
+
+        if (showClientCalls) {
+          context.read<ClientCallsCubit>().onlyMissedCalls = value;
+
+          clientManualRefresher.refresh();
+        }
+
+        manualRefresher.refresh();
+      },
     );
   }
 }
