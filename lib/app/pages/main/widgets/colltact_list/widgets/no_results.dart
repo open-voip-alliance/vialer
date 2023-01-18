@@ -67,7 +67,7 @@ class NoResultsPlaceholder extends StatelessWidget {
             children: [
               AnimatedSwitcher(
                 duration: const Duration(milliseconds: 100),
-                child: !isKeyboardVisible ? _CircularGraphic() : null,
+                child: !isKeyboardVisible ? _CircularGraphic(type!) : null,
               ),
               const SizedBox(height: 40),
               Text(
@@ -118,6 +118,10 @@ class NoResultsPlaceholder extends StatelessWidget {
 }
 
 class _CircularGraphic extends StatelessWidget {
+  final NoResultsType type;
+
+  const _CircularGraphic(this.type);
+
   @override
   Widget build(BuildContext context) {
     final outerCircleColor =
@@ -137,7 +141,9 @@ class _CircularGraphic extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(24),
               child: FaIcon(
-                FontAwesomeIcons.userSlash,
+                type == NoResultsType.noSearchResults
+                    ? FontAwesomeIcons.userSlash
+                    : FontAwesomeIcons.usersSlash,
                 size: 40,
                 color: context.brand.theme.colors.primary,
               ),
