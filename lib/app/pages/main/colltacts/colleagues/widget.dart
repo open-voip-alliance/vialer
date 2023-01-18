@@ -11,12 +11,8 @@ class ColleagueWebSocket extends StatefulWidget {
 
   static Widget connect({
     required Widget child,
-  }) {
-    return BlocProvider<ColleagueCubit>(
-      create: (_) => ColleagueCubit(),
-      child: ColleagueWebSocket._(child),
-    );
-  }
+  }) =>
+      ColleagueWebSocket._(child);
 
   @override
   State<StatefulWidget> createState() => _ColleagueWebSocketState();
