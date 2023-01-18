@@ -11,6 +11,7 @@ import '../../../../util/extensions.dart';
 import '../../../../util/pigeon.dart';
 import '../../../../util/widgets_binding_observer_registrar.dart';
 import '../../colltacts/colleagues/cubit.dart';
+import '../bottom_toggle.dart';
 import '../caller.dart';
 import '../conditional_placeholder.dart';
 import '../header.dart';
@@ -189,8 +190,24 @@ class _ColltactPageState extends State<_ColltactList>
                           children: [
                             _animatedSwitcher(
                                 ColltactKind.contact, state, cubit),
-                            _animatedSwitcher(
-                                ColltactKind.colleague, state, cubit),
+                            Column(
+                              children: [
+                                Expanded(
+                                  child: _animatedSwitcher(
+                                    ColltactKind.colleague,
+                                    state,
+                                    cubit,
+                                  ),
+                                ),
+                                BottomToggle(
+                                  name: context.msg.main.colleagues.toggle,
+                                  initialValue: cubit.showOnlineColleaguesOnly,
+                                  onChanged: (enabled) {
+                                    cubit.showOnlineColleaguesOnly = enabled;
+                                  },
+                                ),
+                              ],
+                            ),
                           ],
                         )
                       : _animatedSwitcher(ColltactKind.contact, state, cubit),

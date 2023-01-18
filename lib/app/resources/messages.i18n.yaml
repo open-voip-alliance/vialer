@@ -201,6 +201,7 @@ main:
         There were no contacts found for "$number".
 
   colleagues:
+    toggle: 'Online colleagues only'
     status:
       available: 'Available'
       doNotDisturb: 'Do not disturb'

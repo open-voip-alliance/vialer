@@ -188,6 +188,7 @@ main:
         op de Instellingen-pagina.
 
   colltacts:
+    toggle: "Alleen online collega's"
     noResults:
       title: "Niks gevonden"
       button(String number): "Bel $number"
