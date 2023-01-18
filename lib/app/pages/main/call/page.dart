@@ -11,6 +11,7 @@ import '../../../../domain/feedback/call_problem.dart';
 import '../../../resources/localizations.dart';
 import '../../../resources/theme.dart';
 import '../../../util/widgets_binding_observer_registrar.dart';
+import '../colltacts/colleagues/cubit.dart';
 import '../widgets/caller.dart';
 import '../widgets/nested_navigator.dart';
 import 'call_feedback/call_feedback.dart';
@@ -48,21 +49,24 @@ class _CallOrTransferPageState extends State<CallPage> {
               alignment: Alignment.center,
               child: CallProcessStateBuilder(
                 builder: (context, state) {
-                  return CallTransfer(
-                    activeCall: state.voipCall!,
-                    onTransferTargetSelected: (number) {
-                      context.read<CallerCubit>().beginTransfer(number);
-                      Navigator.of(context).pop();
-                    },
-                    onCloseButtonPressed: () =>
-                        Navigator.of(context, rootNavigator: true).pop(),
-                    onContactsButtonPressed: () {
-                      Navigator.pushNamed(context, _contactsRoute).then(
-                        (number) => context
-                            .read<CallerCubit>()
-                            .beginTransfer(number as String),
-                      );
-                    },
+                  return BlocProvider<ColleagueCubit>(
+                    create: (_) => ColleagueCubit(),
+                    child: CallTransfer(
+                      activeCall: state.voipCall!,
+                      onTransferTargetSelected: (number) {
+                        context.read<CallerCubit>().beginTransfer(number);
+                        Navigator.of(context).pop();
+                      },
+                      onCloseButtonPressed: () =>
+                          Navigator.of(context, rootNavigator: true).pop(),
+                      onContactsButtonPressed: () {
+                        Navigator.pushNamed(context, _contactsRoute).then(
+                          (number) => context
+                              .read<CallerCubit>()
+                              .beginTransfer(number as String),
+                        );
+                      },
+                    ),
                   );
                 },
               ),
