@@ -316,17 +316,19 @@ class _MissedCallsToggle extends StatelessWidget {
     return BottomToggle(
       name: context.msg.main.recent.onlyShowMissedCalls,
       initialValue: false,
-      onChanged: (value) {
-        context.read<RecentCallsCubit>().onlyMissedCalls = value;
-
-        if (showClientCalls) {
-          context.read<ClientCallsCubit>().onlyMissedCalls = value;
-
-          clientManualRefresher.refresh();
-        }
-
-        manualRefresher.refresh();
-      },
+      onChanged: (value) => _onChanged(context, value),
     );
+  }
+
+  void _onChanged(BuildContext context, bool value) {
+    context.read<RecentCallsCubit>().onlyMissedCalls = value;
+
+    if (showClientCalls) {
+      context.read<ClientCallsCubit>().onlyMissedCalls = value;
+
+      clientManualRefresher.refresh();
+    }
+
+    manualRefresher.refresh();
   }
 }

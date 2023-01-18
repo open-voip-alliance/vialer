@@ -13,14 +13,10 @@ class BottomToggle extends StatefulWidget {
   });
 
   @override
-  BottomToggleState createState() => BottomToggleState(
-        initialValue: initialValue,
-      );
+  BottomToggleState createState() => BottomToggleState();
 }
 
 class BottomToggleState extends State<BottomToggle> {
-  bool _toggleValue;
-
   late bool _toggleValue = widget.initialValue;
 
   @override
@@ -39,15 +35,17 @@ class BottomToggleState extends State<BottomToggle> {
           const SizedBox(width: 16),
           StylizedSwitch(
             value: _toggleValue,
-            onChanged: (value) {
-              setState(() {
-                _toggleValue = value;
-                widget.onChanged(value);
-              });
-            },
+            onChanged: _onChanged,
           )
         ],
       ),
     );
+  }
+
+  void _onChanged(bool value) {
+    setState(() {
+      _toggleValue = value;
+      widget.onChanged(value);
+    });
   }
 }
