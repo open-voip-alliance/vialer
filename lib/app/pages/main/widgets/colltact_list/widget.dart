@@ -194,7 +194,7 @@ class _ColltactPageState extends State<_ColltactList>
                               children: [
                                 Expanded(
                                   child: _animatedSwitcher(
-                                      ColltactKind.colleague, state, cubit),
+                                      ColltactKind.colleague, state, cubit,),
                                 ),
                                 BottomToggle(
                                   name: context.msg.main.colleagues.toggle,

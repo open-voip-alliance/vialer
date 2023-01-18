@@ -27,7 +27,7 @@ class Colleague with _$Colleague {
   /// known.
   bool get isOnline => map(
         (colleague) =>
-            [
+            const [
               ColleagueAvailabilityStatus.available,
               ColleagueAvailabilityStatus.doNotDisturb,
               ColleagueAvailabilityStatus.busy,

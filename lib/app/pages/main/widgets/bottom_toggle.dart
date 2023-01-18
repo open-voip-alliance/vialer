@@ -4,7 +4,7 @@ import 'stylized_switch.dart';
 class BottomToggle extends StatefulWidget {
   final String name;
   final bool initialValue;
-  final Function(bool enabled) onChanged;
+  final ValueChanged<bool> onChanged;
 
   const BottomToggle({
     required this.name,
@@ -21,7 +21,7 @@ class BottomToggle extends StatefulWidget {
 class BottomToggleState extends State<BottomToggle> {
   bool _toggleValue;
 
-  BottomToggleState({required bool initialValue}) : _toggleValue = initialValue;
+  late bool _toggleValue = widget.initialValue;
 
   @override
   Widget build(BuildContext context) {
