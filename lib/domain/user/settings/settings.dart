@@ -34,7 +34,7 @@ class Settings {
         );
 
   T? getOrNull<T extends Object>(SettingKey<T> key) =>
-      (_map[key] as T?) ?? const Settings.defaults().get(key);
+      (_map[key] as T?) ?? const Settings.defaults().getOrNull(key);
 
   T get<T extends Object>(SettingKey<T> key) => getOrNull(key)!;
 
