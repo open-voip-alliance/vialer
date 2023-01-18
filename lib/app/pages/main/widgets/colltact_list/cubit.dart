@@ -35,9 +35,9 @@ class ColltactsCubit extends Cubit<ColltactsState> {
   final _changeSetting = ChangeSettingUseCase();
 
   List<Colleague> get _colleagues => _colleaguesCubit.state.when(
-    loading: () => [],
-    loaded: (colleagues) => colleagues,
-  );
+        loading: () => [],
+        loaded: (colleagues) => colleagues,
+      );
 
   List<Colleague> get _filteredColleagues => showOnlineColleaguesOnly
       ? _colleagues.filter((colleague) => colleague.isOnline).toList()
