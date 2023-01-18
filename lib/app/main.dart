@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:timezone/data/latest.dart';
+import 'package:vialer/app/pages/main/colltacts/colleagues/cubit.dart';
 
 import '../dependency_locator.dart';
 import '../domain/authentication/automatically_login_legacy_user.dart';
@@ -102,6 +103,10 @@ class _AppState extends State<App> {
                   ),
               (child) => BlocProvider<TemporaryRedirectCubit>(
                     create: (_) => TemporaryRedirectCubit(),
+                    child: child,
+                  ),
+              (child) => BlocProvider<ColleagueCubit>(
+                    create: (_) => ColleagueCubit(),
                     child: child,
                   ),
             ],
