@@ -352,6 +352,18 @@ class _ColltactPageState extends State<_ColltactList>
         .toList();
   }
 
+  NoResultsType? _noResultsType(List<Widget> records, ColltactsCubit cubit) {
+    if (records.isNotEmpty) return null;
+
+    final hasSearchQuery = _searchTerm?.isNotEmpty == true;
+
+    if (cubit.showOnlineColleaguesOnly && !hasSearchQuery) {
+      return NoResultsType.noOnlineColleagues;
+    }
+
+    return hasSearchQuery ? NoResultsType.noSearchResults : null;
+  }
+
   AnimatedSwitcher _animatedSwitcher(
     ColltactKind colltactKind,
     ColltactsState state,
@@ -369,7 +381,7 @@ class _ColltactPageState extends State<_ColltactList>
           );
 
     final list = NoResultsPlaceholder(
-      showPlaceholder: _searchTerm?.isNotEmpty == true && records.isEmpty,
+      type: _noResultsType(records, cubit),
       kind: colltactKind,
       searchTerm: _searchTerm ?? '',
       onCall: (number) => cubit.call(

@@ -8,14 +8,16 @@ import '../../../../../widgets/stylized_button.dart';
 import '../widget.dart';
 
 class NoResultsPlaceholder extends StatelessWidget {
-  final bool showPlaceholder;
+  /// The type of NoResults page to display, if set to [null] then none will be
+  /// displayed.
+  final NoResultsType? type;
   final String searchTerm;
   final ColltactKind kind;
   final Function(String number) onCall;
   final Widget child;
 
   const NoResultsPlaceholder({
-    required this.showPlaceholder,
+    required this.type,
     required this.searchTerm,
     required this.kind,
     required this.onCall,
@@ -25,81 +27,101 @@ class NoResultsPlaceholder extends StatelessWidget {
   /// The call button should only be shown when the text field looks like a
   /// valid number.
   bool get _shouldShowCallButton =>
+      type == NoResultsType.noSearchResults &&
       searchTerm.isNotEmpty &&
       searchTerm.length <= 13 &&
       !RegExp(r'[^0-9+ ]').hasMatch(searchTerm);
 
+  String _title(BuildContext context) {
+    switch (type!) {
+      case NoResultsType.noOnlineColleagues:
+        return context.msg.main.colltacts.noOnline.title;
+      case NoResultsType.noSearchResults:
+        return context.msg.main.colltacts.noResults.title;
+    }
+  }
+
+  String _subtitle(BuildContext context) {
+    switch (type!) {
+      case NoResultsType.noOnlineColleagues:
+        return context.msg.main.colltacts.noOnline.subtitle;
+      case NoResultsType.noSearchResults:
+        return kind == ColltactKind.contact
+            ? context.msg.main.colltacts.noResults.contacts(searchTerm)
+            : context.msg.main.colltacts.noResults.colleagues(searchTerm);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return showPlaceholder
-        ? KeyboardVisibilityBuilder(
-            builder: (context, isKeyboardVisible) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 60),
-                child: Column(
-                  mainAxisAlignment: isKeyboardVisible
-                      ? MainAxisAlignment.start
-                      : MainAxisAlignment.center,
-                  children: [
-                    AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 100),
-                      child: !isKeyboardVisible ? _CircularGraphic() : null,
-                    ),
-                    const SizedBox(height: 40),
-                    Text(
-                      context.msg.main.colltacts.noResults.title,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      kind == ColltactKind.contact
-                          ? context.msg.main.colltacts.noResults
-                              .contacts(searchTerm)
-                          : context.msg.main.colltacts.noResults
-                              .colleagues(searchTerm),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 40),
-                    AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 200),
-                      child: _shouldShowCallButton
-                          ? StylizedButton.raised(
-                              colored: true,
-                              onPressed: () => onCall(searchTerm),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const FaIcon(FontAwesomeIcons.phone,
-                                      size: 16),
-                                  const SizedBox(width: 10),
-                                  Flexible(
-                                    child: Text(
-                                      context.msg.main.colltacts.noResults
-                                          .button(searchTerm),
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 1,
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            )
-                          : null,
-                    ),
-                  ],
+    if (type == null) return child;
+
+    return KeyboardVisibilityBuilder(
+      builder: (context, isKeyboardVisible) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 60),
+          child: Column(
+            mainAxisAlignment: isKeyboardVisible
+                ? MainAxisAlignment.start
+                : MainAxisAlignment.center,
+            children: [
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 100),
+                child: !isKeyboardVisible ? _CircularGraphic(type!) : null,
+              ),
+              const SizedBox(height: 40),
+              Text(
+                _title(context),
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
                 ),
-              );
-            },
-          )
-        : child;
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 10),
+              Text(
+                _subtitle(context),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 40),
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 200),
+                child: _shouldShowCallButton
+                    ? StylizedButton.raised(
+                        colored: true,
+                        onPressed: () => onCall(searchTerm),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const FaIcon(FontAwesomeIcons.phone, size: 16),
+                            const SizedBox(width: 10),
+                            Flexible(
+                              child: Text(
+                                context.msg.main.colltacts.noResults
+                                    .button(searchTerm),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    : null,
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 }
 
 class _CircularGraphic extends StatelessWidget {
+  final NoResultsType type;
+
+  const _CircularGraphic(this.type);
+
   @override
   Widget build(BuildContext context) {
     final outerCircleColor =
@@ -119,7 +141,9 @@ class _CircularGraphic extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(24),
               child: FaIcon(
-                FontAwesomeIcons.userSlash,
+                type == NoResultsType.noSearchResults
+                    ? FontAwesomeIcons.userSlash
+                    : FontAwesomeIcons.usersSlash,
                 size: 40,
                 color: context.brand.theme.colors.primary,
               ),
@@ -129,4 +153,9 @@ class _CircularGraphic extends StatelessWidget {
       ),
     );
   }
+}
+
+enum NoResultsType {
+  noOnlineColleagues,
+  noSearchResults,
 }
