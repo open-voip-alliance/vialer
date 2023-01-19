@@ -193,7 +193,7 @@ main:
 
   colltacts:
     noOnline:
-      title: "No colleagues are online"
+      title: "No colleagues online"
       subtitle: "There are no colleagues online currently, use the toggle below to view all your colleagues."
     noResults:
       title: "No matches found"
