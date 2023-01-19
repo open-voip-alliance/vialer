@@ -62,5 +62,6 @@ extension on DateTime? {
   /// The minimum duration between which a user refresh can happen.
   static const _minInterval = Duration(seconds: 30);
 
-  bool get isReadyForRefresh => this?.isBefore(DateTime.now().subtract(_minInterval)) ?? true;
+  bool get isReadyForRefresh =>
+      this?.isBefore(DateTime.now().subtract(_minInterval)) ?? true;
 }
