@@ -36,11 +36,5 @@ class _ColleagueWebSocketState extends State<ColleagueWebSocket>
   }
 
   @override
-  void dispose() {
-    super.dispose();
-    context.read<ColleagueCubit>().disconnectFromWebSocket();
-  }
-
-  @override
   Widget build(BuildContext context) => widget.child;
 }
