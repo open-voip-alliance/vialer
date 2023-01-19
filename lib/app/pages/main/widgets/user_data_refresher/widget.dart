@@ -42,10 +42,10 @@ class _UserDataRefresherState extends State<_UserDataRefresher>
     super.didChangeDependencies();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      cubit.refresh();
+      cubit.refreshIfReady();
 
-      _refreshTimer ??= Timer.periodic(const Duration(seconds: 30), (_) {
-        cubit.refresh();
+      _refreshTimer ??= Timer.periodic(const Duration(seconds: 10), (_) {
+        cubit.refreshIfReady();
       });
     });
   }
@@ -55,7 +55,7 @@ class _UserDataRefresherState extends State<_UserDataRefresher>
     super.didChangeAppLifecycleState(state);
 
     if (state == AppLifecycleState.resumed) {
-      context.read<UserDataRefresherCubit>().refresh();
+      context.read<UserDataRefresherCubit>().refreshIfReady();
     }
   }
 
