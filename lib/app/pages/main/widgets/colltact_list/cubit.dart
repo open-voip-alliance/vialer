@@ -36,10 +36,12 @@ class ColltactsCubit extends Cubit<ColltactsState> {
 
   List<Colleague> get _colleagues => _colleaguesCubit.state.when(
         loading: () => [],
-        loaded: (colleagues) => showOnlineColleaguesOnly
-            ? colleagues.filter((colleague) => colleague.isOnline).toList()
-            : colleagues,
+        loaded: (colleagues) => colleagues,
       );
+
+  List<Colleague> get _filteredColleagues => showOnlineColleaguesOnly
+      ? _colleagues.filter((colleague) => colleague.isOnline).toList()
+      : _colleagues;
 
   bool get shouldShowColleagues =>
       _getUser().permissions.canViewColleagues && _colleagues.isNotEmpty;
@@ -123,8 +125,8 @@ class ColltactsCubit extends Cubit<ColltactsState> {
     emit(
       ColltactsLoaded(
         colltacts: status == PermissionStatus.granted
-            ? _colleagues.mergeColltacts(await _getContacts())
-            : _colleagues.map(Colltact.colleague),
+            ? _filteredColleagues.mergeColltacts(await _getContacts())
+            : _filteredColleagues.map(Colltact.colleague),
         contactSort: await _getContactSort(),
         noContactPermission: status != PermissionStatus.granted,
         dontAskAgain: status == PermissionStatus.permanentlyDenied ||

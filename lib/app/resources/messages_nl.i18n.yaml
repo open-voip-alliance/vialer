@@ -188,7 +188,9 @@ main:
         op de Instellingen-pagina.
 
   colltacts:
-    toggle: "Alleen online collega's"
+    noOnline:
+      title: "Geen collega's online"
+      subtitle: "Er zijn op het moment geen collega's online, gebruik de knop onderin om alle collega's te bekijken."
     noResults:
       title: "Niks gevonden"
       button(String number): "Bel $number"
@@ -198,6 +200,7 @@ main:
         Er waren geen contacten gevonden voor "$number".
 
   colleagues:
+    toggle: "Alleen online collega's"
     status:
       available: 'Beschikbaar'
       doNotDisturb: 'Niet storen'
