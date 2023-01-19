@@ -23,6 +23,10 @@ class ReceiveColleagueAvailability extends UseCase {
   Stream<List<Colleague>> call({
     bool forceFullAvailabilityRefresh = false,
   }) async* {
+    // If the WebSocket is already connected, we don't need to do anything as
+    // the stream is already set-up.
+    if (_colleaguesRepository.isWebSocketConnected) return;
+
     var cachedColleagues = _storage.colleagues;
 
     // We are first checking if our cache has colleagues, if it does we will
@@ -38,7 +42,7 @@ class ReceiveColleagueAvailability extends UseCase {
       await _colleaguesRepository.stopListeningForAvailability();
     }
 
-    final stream = _colleaguesRepository.startListeningForAvailability(
+    final stream = await _colleaguesRepository.startListeningForAvailability(
       user: _getUser(),
       brand: _getBrand(),
       initialColleagues: colleagues,

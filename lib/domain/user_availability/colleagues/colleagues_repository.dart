@@ -24,6 +24,8 @@ class ColleaguesRepository with Loggable {
 
   Stream<List<Colleague>>? _broadcastStream;
 
+  bool get isWebSocketConnected => _socket != null;
+
   /// This is the base list of colleagues that we use to update with changes
   /// from the WebSocket. The WebSocket does *not* provide enough data by
   /// itself, we need the data from the API and that is the data that is
