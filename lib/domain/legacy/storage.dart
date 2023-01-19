@@ -228,6 +228,14 @@ class StorageRepository {
   set grantedVoipgridPermissions(List<String> value) => _preferences
       .setOrRemoveString(_grantedVoipgridPermissionsKey, jsonEncode(value));
 
+  static const _lastUserRefreshTime = 'last_user_refresh_time';
+
+  DateTime? get lastUserRefreshedTime =>
+      _preferences.getDateTime(_lastUserRefreshTime);
+
+  set lastUserRefreshedTime(DateTime? value) =>
+      _preferences.setOrRemoveDateTime(_lastUserRefreshTime, value);
+
   Future<void> clear() => _preferences.clear();
 
   Future<void> reload() => _preferences.reload();
