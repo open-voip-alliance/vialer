@@ -32,8 +32,6 @@ class _ColleagueWebSocketState extends State<ColleagueWebSocket>
 
     if (state == AppLifecycleState.resumed) {
       context.read<ColleagueCubit>().connectToWebSocket();
-    } else if (state == AppLifecycleState.paused) {
-      context.read<ColleagueCubit>().disconnectFromWebSocket();
     }
   }
 
