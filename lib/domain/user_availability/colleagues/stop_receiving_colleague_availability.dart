@@ -6,5 +6,10 @@ import 'colleagues_repository.dart';
 class StopReceivingColleagueAvailability extends UseCase {
   late final _colleagueRepository = dependencyLocator<ColleaguesRepository>();
 
-  Future<void> call() => _colleagueRepository.stopListeningForAvailability();
+  Future<void> call({bool purgeCache = false}) async {
+    if (purgeCache) {
+      _colleagueRepository.colleagues = [];
+    }
+    return _colleagueRepository.stopListeningForAvailability();
+  }
 }
