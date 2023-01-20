@@ -55,14 +55,15 @@ class _ColltactPageDetailsState extends State<ColltactPageDetails>
 
   void _onStateChanged(BuildContext context, ColltactsState state) {
     if (state is ColltactsLoaded) {
+      final colltactId = widget.colltact.when(
+        colleague: (colleague) => colleague.id,
+        contact: (contact) => contact.identifier,
+      );
+
       final colltact = state.colltacts.firstWhereOrNull(
         (colltact) => colltact.when(
-          contact: (contact) =>
-              contact.identifier ==
-              (widget.colltact as ColltactContact).contact.identifier,
-          colleague: (colleague) =>
-              colleague.id ==
-              (widget.colltact as ColltactColleague).colleague.id,
+          contact: (contact) => contact.identifier == colltactId,
+          colleague: (colleague) => colleague.id == colltactId,
         ),
       );
 
