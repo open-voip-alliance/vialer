@@ -20,7 +20,7 @@ class ColleagueCubit extends Cubit<ColleagueState> {
 
   ColleagueCubit() : super(const ColleagueState.loading()) {
     _eventBus.on<UserWasLoggedOutEvent>((event) {
-      _stopReceivingColleagueAvailability(purgeCache: true);
+      disconnectFromWebSocket(purgeCache: true);
     });
   }
 
@@ -46,10 +46,10 @@ class ColleagueCubit extends Cubit<ColleagueState> {
     );
   }
 
-  Future<void> disconnectFromWebSocket() async {
+  Future<void> disconnectFromWebSocket({bool purgeCache = false}) async {
     _subscription?.cancel();
     _subscription = null;
-    _stopReceivingColleagueAvailability();
+    _stopReceivingColleagueAvailability(purgeCache: purgeCache);
   }
 
   /// Refresh the WebSocket, disconnecting and reconnecting to load all
