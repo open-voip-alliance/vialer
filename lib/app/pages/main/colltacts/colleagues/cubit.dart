@@ -38,9 +38,8 @@ class ColleagueCubit extends Cubit<ColleagueState> {
         emit(ColleagueState.loaded(colleagues));
       },
       onDone: () {
-        emit(const ColleagueState.unreachable());
-      },
-      onError: (_) {
+        _subscription?.cancel();
+        _subscription = null;
         emit(const ColleagueState.unreachable());
       },
     );
