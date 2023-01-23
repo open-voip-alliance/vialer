@@ -21,46 +21,37 @@ class ReceiveColleagueAvailability extends UseCase {
   /// Setting [forceFullAvailabilityRefresh] to true will disconnect the
   /// WebSocket first, this means that the full availability of all users will
   /// be provided up-front upon reconnecting.
-  Stream<List<Colleague>> call({
+  Future<Stream<List<Colleague>>> call({
     bool forceFullAvailabilityRefresh = false,
-  }) async* {
+  }) async {
     // If the WebSocket is already connected, we don't need to do anything as
     // the stream is already set-up.
-    if (_colleaguesRepository.isWebSocketConnected) return;
-
-    var cachedColleagues = _storage.colleagues;
-
-    // We are first checking if our cache has colleagues, if it does we will
-    // immediately broadcast the contents of the cache before fetching
-    // the new list.
-    if (cachedColleagues.isNotEmpty) {
-      yield cachedColleagues;
+    if (_colleaguesRepository.isWebSocketConnected) {
+      return _colleaguesRepository.broadcastStream!;
     }
 
-    final colleagues = await _refreshColleagueCache();
+    final cachedColleagues = _storage.colleagues;
+
+    // Check the cache for some colleagues, if we have colleagues in the cache
+    // then we won't request them from the server.
+    final colleagues = cachedColleagues.isEmpty || forceFullAvailabilityRefresh
+        ? await _fetchColleagues()
+        : cachedColleagues;
 
     if (forceFullAvailabilityRefresh) {
       await _colleaguesRepository.stopListeningForAvailability();
     }
 
-    final stream = await _colleaguesRepository.startListeningForAvailability(
+    return await _colleaguesRepository.startListeningForAvailability(
       user: _getUser(),
       brand: _getBrand(),
       initialColleagues: colleagues,
     );
-
-    await for (final colleagues in await stream) {
-      yield colleagues;
-    }
   }
 
-  Future<List<Colleague>> _refreshColleagueCache() async =>
+  Future<List<Colleague>> _fetchColleagues() async =>
       SynchronizedTask<List<Colleague>>.of(this).run(
-        () async {
-          final colleagues =
-              await _colleaguesRepository.getColleagues(_getUser());
-          _storage.colleagues = colleagues;
-          return colleagues;
-        },
+        () async => _storage.colleagues =
+            await _colleaguesRepository.getColleagues(_getUser()),
       );
 }

@@ -20,9 +20,9 @@ class ColleaguesRepository with Loggable {
 
   WebSocket? _socket;
 
-  late final _controller = StreamController<List<Colleague>>();
+  StreamController<List<Colleague>>? _controller;
 
-  Stream<List<Colleague>>? _broadcastStream;
+  Stream<List<Colleague>>? broadcastStream;
 
   bool get isWebSocketConnected => _socket != null;
 
@@ -54,9 +54,15 @@ class ColleaguesRepository with Loggable {
   }) async {
     colleagues = initialColleagues;
 
-    if (_socket != null) return _broadcastStream!;
+    if (_socket != null) return broadcastStream!;
 
     final socket = await _connectToWebSocketServer(user, brand);
+
+    if (_controller == null || _controller?.isClosed == true) {
+      _controller = StreamController<List<Colleague>>();
+    }
+
+    final controller = _controller!;
 
     socket.listen(
       (eventString) {
@@ -86,7 +92,7 @@ class ColleaguesRepository with Loggable {
         // destinations as these are essentially inactive users that do not
         // have any possible availability status.
         if (payload['has_linked_destinations'] != true) {
-          _controller.add(colleagues..remove(colleague));
+          controller.add(colleagues..remove(colleague));
           return;
         }
 
@@ -95,7 +101,7 @@ class ColleaguesRepository with Loggable {
           replacement: colleague.populateWithAvailability(payload),
         );
 
-        _controller.add(colleagues);
+        controller.add(colleagues);
       },
       onDone: () => stopListeningForAvailability().then(
         (_) => logger.warning('UA WS has closed'),
@@ -105,7 +111,7 @@ class ColleaguesRepository with Loggable {
       ),
     );
 
-    return _broadcastStream = _controller.stream.asBroadcastStream();
+    return broadcastStream = controller.stream.asBroadcastStream();
   }
 
   Future<WebSocket> _connectToWebSocketServer(
@@ -128,8 +134,9 @@ class ColleaguesRepository with Loggable {
   Future<void> stopListeningForAvailability() async {
     logger.info('Disconnecting from UA WebSocket');
     await _socket?.close;
+    _controller?.close();
     _socket = null;
-    _broadcastStream = null;
+    broadcastStream = null;
   }
 
   /// This only provides the most basic information about colleagues,
