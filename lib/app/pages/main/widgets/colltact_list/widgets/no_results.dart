@@ -38,6 +38,9 @@ class NoResultsPlaceholder extends StatelessWidget {
         return context.msg.main.colltacts.noOnline.title;
       case NoResultsType.noSearchResults:
         return context.msg.main.colltacts.noResults.title;
+      case NoResultsType.noColleagueConnectivity:
+        return context
+            .msg.main.colltacts.userAvailabilityWebSocketUnreachable.title;
     }
   }
 
@@ -49,6 +52,9 @@ class NoResultsPlaceholder extends StatelessWidget {
         return kind == ColltactKind.contact
             ? context.msg.main.colltacts.noResults.contacts(searchTerm)
             : context.msg.main.colltacts.noResults.colleagues(searchTerm);
+      case NoResultsType.noColleagueConnectivity:
+        return context
+            .msg.main.colltacts.userAvailabilityWebSocketUnreachable.subtitle;
     }
   }
 
@@ -122,6 +128,17 @@ class _CircularGraphic extends StatelessWidget {
 
   const _CircularGraphic(this.type);
 
+  IconData _icon() {
+    switch (type) {
+      case NoResultsType.noOnlineColleagues:
+        return FontAwesomeIcons.usersSlash;
+      case NoResultsType.noSearchResults:
+        return FontAwesomeIcons.magnifyingGlass;
+      case NoResultsType.noColleagueConnectivity:
+        return FontAwesomeIcons.circleExclamation;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final outerCircleColor =
@@ -141,9 +158,7 @@ class _CircularGraphic extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(24),
               child: FaIcon(
-                type == NoResultsType.noSearchResults
-                    ? FontAwesomeIcons.userSlash
-                    : FontAwesomeIcons.usersSlash,
+                _icon(),
                 size: 40,
                 color: context.brand.theme.colors.primary,
               ),
@@ -158,4 +173,5 @@ class _CircularGraphic extends StatelessWidget {
 enum NoResultsType {
   noOnlineColleagues,
   noSearchResults,
+  noColleagueConnectivity,
 }

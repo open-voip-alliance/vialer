@@ -36,6 +36,7 @@ class ColltactsCubit extends Cubit<ColltactsState> {
 
   List<Colleague> get _colleagues => _colleaguesCubit.state.when(
         loading: () => [],
+        unreachable: () => [],
         loaded: (colleagues) => colleagues,
       );
 
@@ -44,7 +45,9 @@ class ColltactsCubit extends Cubit<ColltactsState> {
       : _colleagues;
 
   bool get shouldShowColleagues =>
-      _getUser().permissions.canViewColleagues && _colleagues.isNotEmpty;
+      _getUser().permissions.canViewColleagues &&
+      (_colleagues.isNotEmpty ||
+          _colleaguesCubit.state is WebSocketUnreachable);
 
   bool get canViewColleagues => _getUser().permissions.canViewColleagues;
 
@@ -74,12 +77,14 @@ class ColltactsCubit extends Cubit<ColltactsState> {
     // Check the initial state as there may already be some colleagues loaded.
     _colleaguesCubit.state.when(
       loading: () => null,
+      unreachable: () => null,
       loaded: _handleColleaguesUpdate,
     );
 
     _colleaguesCubit.stream.listen(
       (event) => event.when(
         loading: () => null,
+        unreachable: () => null,
         loaded: _handleColleaguesUpdate,
       ),
     );
