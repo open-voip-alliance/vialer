@@ -13,12 +13,10 @@ import '../../../../util/widgets_binding_observer_registrar.dart';
 import '../../colltacts/colleagues/cubit.dart';
 import '../bottom_toggle.dart';
 import '../caller.dart';
-import '../conditional_placeholder.dart';
 import '../header.dart';
 import '../nested_navigator.dart';
 import 'cubit.dart';
 import 'widgets/alphabet_list.dart';
-import 'widgets/colltact_placeholder.dart';
 import 'widgets/group_header.dart';
 import 'widgets/item.dart';
 import 'widgets/no_results.dart';
@@ -370,28 +368,48 @@ class _ColltactPageState extends State<_ColltactList>
         .toList();
   }
 
+  /// Inspects the current state and determines why we aren't able to show
+  /// any results for the selected list. This is then passed to
+  /// [NoResultsPlaceholder] to render something useful for the user.
   NoResultsType? _noResultsType(
     List<Widget> records,
     ColltactsCubit cubit,
+    ColltactsState state,
     ColleagueState colleagueState,
     ColltactKind colltactKind,
   ) {
-    if (colleagueState is WebSocketUnreachable &&
-        colltactKind == ColltactKind.colleague) {
-      return NoResultsType.noColleagueConnectivity;
-    }
-
-    if (records.isNotEmpty) return null;
-
     final hasSearchQuery = _searchTerm?.isNotEmpty == true;
 
-    if (cubit.showOnlineColleaguesOnly &&
-        !hasSearchQuery &&
-        colltactKind == ColltactKind.colleague) {
-      return NoResultsType.noOnlineColleagues;
-    }
+    switch (colltactKind) {
+      case ColltactKind.contact:
+        {
+          if (state is LoadingColltacts) {
+            return NoResultsType.contactsLoading;
+          } else if (state is ColltactsLoaded && state.noContactPermission) {
+            return NoResultsType.noContactsPermission;
+          } else if (records.isEmpty) {
+            return hasSearchQuery
+                ? NoResultsType.noSearchResults
+                : NoResultsType.noContactsExist;
+          }
 
-    return hasSearchQuery ? NoResultsType.noSearchResults : null;
+          return null;
+        }
+      case ColltactKind.colleague:
+        {
+          if (colleagueState is WebSocketUnreachable) {
+            return NoResultsType.noColleagueConnectivity;
+          } else if (cubit.showOnlineColleaguesOnly &&
+              !hasSearchQuery &&
+              records.isEmpty) {
+            return NoResultsType.noOnlineColleagues;
+          }
+
+          return hasSearchQuery && records.isEmpty
+              ? NoResultsType.noSearchResults
+              : null;
+        }
+    }
   }
 
   AnimatedSwitcher _animatedSwitcher(
@@ -407,41 +425,39 @@ class _ColltactPageState extends State<_ColltactList>
             state is ColltactsLoaded ? state.colltacts : [],
             state is ColltactsLoaded ? state.contactSort : null,
           )
-        : _mapAndFilterToColleagueWidgets(
-            state is ColltactsLoaded ? state.colltacts : [],
-          );
-
-    final list = NoResultsPlaceholder(
-      type: _noResultsType(records, cubit, colleagueState, colltactKind),
-      kind: colltactKind,
-      searchTerm: _searchTerm ?? '',
-      onCall: (number) => cubit.call(
-        number,
-        origin: isForContacts ? CallOrigin.contacts : CallOrigin.colleagues,
-      ),
-      child: AlphabetListView(
-        key: ValueKey(_searchTerm),
-        bottomLettersPadding: widget.bottomLettersPadding,
-        children: records,
-        onRefresh: () async {
-          await cubit.refreshColleagues();
-          await cubit.reloadColltacts();
-        },
-      ),
-    );
+        : _mapAndFilterToColleagueWidgets(state.colltacts);
 
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 200),
       switchInCurve: Curves.decelerate,
       switchOutCurve: Curves.decelerate.flipped,
-      child: isForContacts
-          ? ConditionalPlaceholder(
-              showPlaceholder: state is ColltactsLoaded &&
-                  (state.colltacts.isEmpty || state.noContactPermission),
-              placeholder: ColltactsPlaceholder(cubit: cubit, state: state),
-              child: list,
-            )
-          : list,
+      child: NoResultsPlaceholder(
+        type: _noResultsType(
+          records,
+          cubit,
+          state,
+          colleagueState,
+          colltactKind,
+        ),
+        kind: colltactKind,
+        searchTerm: _searchTerm ?? '',
+        onCall: (number) => cubit.call(
+          number,
+          origin: isForContacts ? CallOrigin.contacts : CallOrigin.colleagues,
+        ),
+        dontAskForContactsPermissionAgain:
+            state is ColltactsLoaded ? state.dontAskAgain : false,
+        cubit: cubit,
+        child: AlphabetListView(
+          key: ValueKey(_searchTerm),
+          bottomLettersPadding: widget.bottomLettersPadding,
+          children: records,
+          onRefresh: () async {
+            await cubit.refreshColleagues();
+            await cubit.reloadColltacts();
+          },
+        ),
+      ),
     );
   }
 }

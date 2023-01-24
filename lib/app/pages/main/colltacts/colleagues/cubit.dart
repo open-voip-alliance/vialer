@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rxdart/rxdart.dart';
 
 import '../../../../../dependency_locator.dart';
 import '../../../../../domain/authentication/user_was_logged_out.dart';
@@ -8,6 +9,7 @@ import '../../../../../domain/event/event_bus.dart';
 import '../../../../../domain/user_availability/colleagues/receive_colleague_availability.dart';
 import '../../../../../domain/user_availability/colleagues/stop_receiving_colleague_availability.dart';
 import 'state.dart';
+
 export 'state.dart';
 
 class ColleagueCubit extends Cubit<ColleagueState> {
@@ -31,7 +33,8 @@ class ColleagueCubit extends Cubit<ColleagueState> {
       forceFullAvailabilityRefresh: fullRefresh,
     );
 
-    _subscription = stream.listen(
+    _subscription =
+        stream.debounceTime(const Duration(milliseconds: 250)).listen(
       (colleagues) {
         // Emitting loading initially to ensure listeners receive the new state.
         emit(const ColleagueState.loading());

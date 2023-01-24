@@ -99,19 +99,12 @@ class ColltactsCubit extends Cubit<ColltactsState> {
   void _handleColleaguesUpdate(List<Colleague> colleagues) {
     final state = this.state;
 
-    if (state is! ColltactsLoaded) return;
-
     // We want to replace all the colleagues but leave the loaded contacts
     // alone.
-    final colltacts = colleagues.mergeColltacts(state.colltacts.contacts);
+    final colltacts = _filteredColleagues.map(Colltact.colleague).toList()
+      ..addAll(state.colltacts.contacts);
 
     emit(state.copyWith(colltacts: colltacts));
-
-    // If we get a colleagues update before the contacts are loaded we might
-    // get an empty list, so we'll just load them here if we don't have any.
-    if (state.colltacts.contacts.isEmpty) {
-      _checkColltactsPermission();
-    }
   }
 
   Future<void> _checkColltactsPermission() async {
@@ -124,14 +117,19 @@ class ColltactsCubit extends Cubit<ColltactsState> {
     final state = this.state;
 
     if (state is! ColltactsLoaded) {
-      emit(const LoadingColltacts());
+      emit(ColltactsState.loading(
+        colltacts: _filteredColleagues.map(Colltact.colleague),
+      ));
     }
 
+    final contacts =
+        status == PermissionStatus.granted ? await _getContacts() : <Contact>[];
+
     emit(
-      ColltactsLoaded(
-        colltacts: status == PermissionStatus.granted
-            ? _filteredColleagues.mergeColltacts(await _getContacts())
-            : _filteredColleagues.map(Colltact.colleague),
+      ColltactsState.loaded(
+        colltacts: _filteredColleagues
+            .map(Colltact.colleague)
+            .mergeColltacts(contacts),
         contactSort: await _getContactSort(),
         noContactPermission: status != PermissionStatus.granted,
         dontAskAgain: status == PermissionStatus.permanentlyDenied ||
@@ -159,11 +157,11 @@ class ColltactsCubit extends Cubit<ColltactsState> {
   void trackColleaguesTabSelected() => _trackColleagueTabSelected();
 }
 
-extension on List<Colleague> {
+extension on Iterable<Colltact> {
   List<Colltact> mergeColltacts(Iterable<Contact> contacts) =>
-      map(Colltact.colleague).toList()..addAll(contacts.map(Colltact.contact));
+      toList()..addAll(contacts.map(Colltact.contact));
 }
 
 extension on Iterable<Colltact> {
-  Iterable<Contact> get contacts => whereType<Contact>();
+  Iterable<ColltactContact> get contacts => whereType<ColltactContact>();
 }
