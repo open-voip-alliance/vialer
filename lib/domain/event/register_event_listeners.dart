@@ -1,6 +1,6 @@
 import '../../app/util/loggable.dart';
 import '../../dependency_locator.dart';
-import '../authentication/is_authenticated.dart';
+import '../authentication/is_onboard.dart';
 import '../authentication/logout.dart';
 import '../authentication/unauthorized_api_response.dart';
 import '../call_records/client/import_historic_client_call_records.dart';
@@ -15,15 +15,15 @@ import 'event_bus.dart';
 /// event listeners that require the user interface to take action.
 class RegisterDomainEventListenersUseCase extends UseCase with Loggable {
   final _eventBus = dependencyLocator<EventBusObserver>();
-  final _logout = LogoutUseCase();
-  final _isAuthenticated = IsAuthenticated();
+  final _logout = Logout();
+  final _isOnboard = IsOnboard();
   final _importHistoricClientCalls = ImportHistoricClientCallRecordsUseCase();
   final _purgeLocalCallRecords = PurgeLocalCallRecordsUseCase();
   final _identifyForTracking = IdentifyForTrackingUseCase();
 
   void call() {
     _eventBus.on<UnauthorizedApiResponseEvent>((event) {
-      if (!_isAuthenticated()) return;
+      if (!_isOnboard()) return;
 
       logger.warning(
         'Logging unauthorized user out, code was: ${event.statusCode}.',

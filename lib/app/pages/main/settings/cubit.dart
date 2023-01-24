@@ -27,7 +27,7 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
   final _sendSavedLogsToRemote = SendSavedLogsToRemoteUseCase();
   final _getPermissionStatus = GetPermissionStatusUseCase();
   final _requestPermission = RequestPermissionUseCase();
-  final _logout = LogoutUseCase();
+  final _logout = Logout();
   final _performEchoCancellationCalibration =
       PerformEchoCancellationCalibrationUseCase();
   final _getUser = GetLoggedInUserUseCase();
