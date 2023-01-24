@@ -392,7 +392,10 @@ class _ColltactPageState extends State<_ColltactList>
         key: ValueKey(_searchTerm),
         bottomLettersPadding: widget.bottomLettersPadding,
         children: records,
-        onRefresh: cubit.reloadColltacts,
+        onRefresh: () async {
+          await cubit.refreshColleagues();
+          await cubit.reloadColltacts();
+        },
       ),
     );
 

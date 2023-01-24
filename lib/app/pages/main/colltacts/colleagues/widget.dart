@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../util/widgets_binding_observer_registrar.dart';
+import '../../../../widgets/connectivity_checker/cubit.dart';
 import 'cubit.dart';
 
 class ColleagueWebSocket extends StatefulWidget {
@@ -35,6 +36,23 @@ class _ColleagueWebSocketState extends State<ColleagueWebSocket>
     }
   }
 
+  void _handleConnectivityChanges(
+    BuildContext context,
+    ConnectivityState state,
+  ) {
+    final cubit = context.read<ColleagueCubit>();
+
+    state.map(
+      connected: (_) => cubit.connectToWebSocket(),
+      disconnected: (_) => cubit.disconnectFromWebSocket(),
+    );
+  }
+
   @override
-  Widget build(BuildContext context) => widget.child;
+  Widget build(BuildContext context) {
+    return BlocListener<ConnectivityCheckerCubit, ConnectivityState>(
+      listener: _handleConnectivityChanges,
+      child: widget.child,
+    );
+  }
 }
