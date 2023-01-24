@@ -1,10 +1,9 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-abstract class ConnectivityState extends Equatable {
-  @override
-  List<Object?> get props => [];
+part 'state.freezed.dart';
+
+@freezed
+class ConnectivityState with _$ConnectivityState {
+  const factory ConnectivityState.connected() = Connected;
+  const factory ConnectivityState.disconnected() = Disconnected;
 }
-
-class Connected extends ConnectivityState {}
-
-class Disconnected extends ConnectivityState {}

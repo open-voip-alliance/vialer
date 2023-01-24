@@ -20,15 +20,27 @@ class ColleagueCubit extends Cubit<ColleagueState> {
     });
   }
 
-  void connectToWebSocket() {
-    _receiveColleagueAvailability().listen((colleagues) {
-      // Emitting loading initially to ensure listeners receive the new state.
-      emit(const ColleagueState.loading());
-      emit(ColleagueState.loaded(colleagues));
-    });
+  void connectToWebSocket({bool fullRefresh = false}) {
+    _receiveColleagueAvailability(forceFullAvailabilityRefresh: fullRefresh)
+        .listen(
+      (colleagues) {
+        // Emitting loading initially to ensure listeners receive the new state.
+        emit(const ColleagueState.loading());
+        emit(ColleagueState.loaded(colleagues));
+      },
+    );
   }
 
-  void disconnectFromWebSocket() {
-    _stopReceivingColleagueAvailability();
+  Future<void> disconnectFromWebSocket() =>
+      _stopReceivingColleagueAvailability();
+
+  /// Refresh the WebSocket, disconnecting and reconnecting to load all
+  /// new data.
+  ///
+  /// This should only be called on a specific user-action as it has a large
+  /// amount of overhead.
+  Future<void> refresh() async {
+    await disconnectFromWebSocket();
+    connectToWebSocket(fullRefresh: true);
   }
 }

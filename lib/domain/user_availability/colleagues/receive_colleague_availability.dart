@@ -1,3 +1,4 @@
+import '../../../app/util/synchronized_task.dart';
 import '../../../dependency_locator.dart';
 import '../../legacy/storage.dart';
 import '../../use_case.dart';
@@ -53,9 +54,13 @@ class ReceiveColleagueAvailability extends UseCase {
     }
   }
 
-  Future<List<Colleague>> _refreshColleagueCache() async {
-    final colleagues = await _colleaguesRepository.getColleagues(_getUser());
-    _storage.colleagues = colleagues;
-    return colleagues;
-  }
+  Future<List<Colleague>> _refreshColleagueCache() async =>
+      SynchronizedTask<List<Colleague>>.of(this).run(
+        () async {
+          final colleagues =
+              await _colleaguesRepository.getColleagues(_getUser());
+          _storage.colleagues = colleagues;
+          return colleagues;
+        },
+      );
 }

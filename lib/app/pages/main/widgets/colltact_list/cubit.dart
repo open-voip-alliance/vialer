@@ -135,7 +135,11 @@ class ColltactsCubit extends Cubit<ColltactsState> {
     );
   }
 
-  Future<void> reloadColltacts() async => await _checkColltactsPermission();
+  Future<void> reloadColltacts() => _checkColltactsPermission();
+
+  /// This triggers a full refresh of all colleague data and reconnects to the
+  /// WebSocket.
+  Future<void> refreshColleagues() => _colleaguesCubit.refresh();
 
   Future<void> requestPermission() async {
     final status = await _requestPermission(permission: Permission.contacts);
