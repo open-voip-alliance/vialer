@@ -385,7 +385,9 @@ class _ColltactPageState extends State<_ColltactList>
 
     final hasSearchQuery = _searchTerm?.isNotEmpty == true;
 
-    if (cubit.showOnlineColleaguesOnly && !hasSearchQuery) {
+    if (cubit.showOnlineColleaguesOnly &&
+        !hasSearchQuery &&
+        colltactKind == ColltactKind.colleague) {
       return NoResultsType.noOnlineColleagues;
     }
 
