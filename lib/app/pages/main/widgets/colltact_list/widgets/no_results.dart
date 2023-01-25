@@ -4,7 +4,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../../resources/localizations.dart';
 import '../../../../../resources/theme.dart';
+import '../../../../../util/conditional_capitalization.dart';
 import '../../../../../widgets/stylized_button.dart';
+import '../../conditional_placeholder.dart';
+import '../cubit.dart';
 import '../widget.dart';
 
 class NoResultsPlaceholder extends StatelessWidget {
@@ -14,6 +17,8 @@ class NoResultsPlaceholder extends StatelessWidget {
   final String searchTerm;
   final ColltactKind kind;
   final Function(String number) onCall;
+  final bool dontAskForContactsPermissionAgain;
+  final ColltactsCubit cubit;
   final Widget child;
 
   const NoResultsPlaceholder({
@@ -21,6 +26,8 @@ class NoResultsPlaceholder extends StatelessWidget {
     required this.searchTerm,
     required this.kind,
     required this.onCall,
+    required this.dontAskForContactsPermissionAgain,
+    required this.cubit,
     required this.child,
   });
 
@@ -38,6 +45,16 @@ class NoResultsPlaceholder extends StatelessWidget {
         return context.msg.main.colltacts.noOnline.title;
       case NoResultsType.noSearchResults:
         return context.msg.main.colltacts.noResults.title;
+      case NoResultsType.noColleagueConnectivity:
+        return context
+            .msg.main.colltacts.userAvailabilityWebSocketUnreachable.title;
+      case NoResultsType.contactsLoading:
+        return context.msg.main.contacts.list.loading.title;
+      case NoResultsType.noContactsExist:
+        return context.msg.main.contacts.list.empty.title;
+      case NoResultsType.noContactsPermission:
+        return context.msg.main.contacts.list.noPermission
+            .description(context.brand.appName);
     }
   }
 
@@ -49,12 +66,46 @@ class NoResultsPlaceholder extends StatelessWidget {
         return kind == ColltactKind.contact
             ? context.msg.main.colltacts.noResults.contacts(searchTerm)
             : context.msg.main.colltacts.noResults.colleagues(searchTerm);
+      case NoResultsType.noColleagueConnectivity:
+        return context
+            .msg.main.colltacts.userAvailabilityWebSocketUnreachable.subtitle;
+      case NoResultsType.contactsLoading:
+        return context.msg.main.contacts.list.loading.description;
+      case NoResultsType.noContactsExist:
+        return context.msg.main.contacts.list.empty.description(
+          context.brand.appName,
+        );
+      case NoResultsType.noContactsPermission:
+        return context.msg.main.contacts.list.noPermission
+            .permanentDescription(context.brand.appName);
     }
+  }
+
+  Widget? _button(BuildContext context) {
+    if (type == NoResultsType.noContactsPermission) {
+      return _ContactsPermissionButton(
+        dontAskAgain: dontAskForContactsPermissionAgain,
+        cubit: cubit,
+      );
+    }
+
+    if (_shouldShowCallButton) {
+      return _CallButton(searchTerm: searchTerm, onCall: onCall);
+    }
+
+    return null;
   }
 
   @override
   Widget build(BuildContext context) {
     if (type == null) return child;
+
+    if (type == NoResultsType.contactsLoading) {
+      return LoadingIndicator(
+        title: Text(_title(context)),
+        description: Text(_subtitle(context)),
+      );
+    }
 
     return KeyboardVisibilityBuilder(
       builder: (context, isKeyboardVisible) {
@@ -86,28 +137,7 @@ class NoResultsPlaceholder extends StatelessWidget {
               const SizedBox(height: 40),
               AnimatedSwitcher(
                 duration: const Duration(milliseconds: 200),
-                child: _shouldShowCallButton
-                    ? StylizedButton.raised(
-                        colored: true,
-                        onPressed: () => onCall(searchTerm),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const FaIcon(FontAwesomeIcons.phone, size: 16),
-                            const SizedBox(width: 10),
-                            Flexible(
-                              child: Text(
-                                context.msg.main.colltacts.noResults
-                                    .button(searchTerm),
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 1,
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ],
-                        ),
-                      )
-                    : null,
+                child: _button(context),
               ),
             ],
           ),
@@ -121,6 +151,23 @@ class _CircularGraphic extends StatelessWidget {
   final NoResultsType type;
 
   const _CircularGraphic(this.type);
+
+  IconData _icon() {
+    switch (type) {
+      case NoResultsType.noOnlineColleagues:
+        return FontAwesomeIcons.usersSlash;
+      case NoResultsType.noSearchResults:
+        return FontAwesomeIcons.magnifyingGlass;
+      case NoResultsType.noColleagueConnectivity:
+        return FontAwesomeIcons.circleExclamation;
+      case NoResultsType.contactsLoading:
+        return FontAwesomeIcons.abacus;
+      case NoResultsType.noContactsExist:
+        return FontAwesomeIcons.userSlash;
+      case NoResultsType.noContactsPermission:
+        return FontAwesomeIcons.lock;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -141,9 +188,7 @@ class _CircularGraphic extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(24),
               child: FaIcon(
-                type == NoResultsType.noSearchResults
-                    ? FontAwesomeIcons.userSlash
-                    : FontAwesomeIcons.usersSlash,
+                _icon(),
                 size: 40,
                 color: context.brand.theme.colors.primary,
               ),
@@ -158,4 +203,68 @@ class _CircularGraphic extends StatelessWidget {
 enum NoResultsType {
   noOnlineColleagues,
   noSearchResults,
+  noColleagueConnectivity,
+  contactsLoading,
+  noContactsExist,
+  noContactsPermission,
+}
+
+class _ContactsPermissionButton extends StatelessWidget {
+  final bool dontAskAgain;
+  final ColltactsCubit cubit;
+
+  _ContactsPermissionButton({
+    required this.dontAskAgain,
+    required this.cubit,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return StylizedButton.raised(
+      colored: true,
+      onPressed: dontAskAgain ? cubit.requestPermission : cubit.openAppSettings,
+      child: !dontAskAgain
+          ? Text(
+              context.msg.main.contacts.list.noPermission.buttonPermission
+                  .toUpperCaseIfAndroid(context),
+            )
+          : Text(
+              context.msg.main.contacts.list.noPermission.buttonOpenSettings
+                  .toUpperCaseIfAndroid(context),
+            ),
+    );
+  }
+}
+
+class _CallButton extends StatelessWidget {
+  final String searchTerm;
+  final Function(String number) onCall;
+
+  _CallButton({
+    required this.searchTerm,
+    required this.onCall,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return StylizedButton.raised(
+      colored: true,
+      onPressed: () => onCall(searchTerm),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const FaIcon(FontAwesomeIcons.phone, size: 16),
+          const SizedBox(width: 10),
+          Flexible(
+            child: Text(
+              context.msg.main.colltacts.noResults.button(searchTerm),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }

@@ -7,5 +7,6 @@ part 'state.freezed.dart';
 @freezed
 class ColleagueState with _$ColleagueState {
   const factory ColleagueState.loading() = Loading;
+  const factory ColleagueState.unreachable() = WebSocketUnreachable;
   const factory ColleagueState.loaded(List<Colleague> colleagues) = Loaded;
 }

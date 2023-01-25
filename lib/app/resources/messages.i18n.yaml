@@ -202,6 +202,9 @@ main:
         There were no colleagues found for "$number".
       contacts(String number): >-
         There were no contacts found for "$number".
+    userAvailabilityWebSocketUnreachable:
+      title: "Unable to display colleagues"
+      subtitle: "The colleague list is currently unavailable, please try again later."
 
   colleagues:
     toggle: 'Online colleagues only'
