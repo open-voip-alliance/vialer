@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rxdart/rxdart.dart';
 
 import '../../../../../dependency_locator.dart';
 import '../../../../../domain/authentication/user_was_logged_out.dart';
@@ -6,6 +9,7 @@ import '../../../../../domain/event/event_bus.dart';
 import '../../../../../domain/user_availability/colleagues/receive_colleague_availability.dart';
 import '../../../../../domain/user_availability/colleagues/stop_receiving_colleague_availability.dart';
 import 'state.dart';
+
 export 'state.dart';
 
 class ColleagueCubit extends Cubit<ColleagueState> {
@@ -14,25 +18,41 @@ class ColleagueCubit extends Cubit<ColleagueState> {
       StopReceivingColleagueAvailability();
   final _eventBus = dependencyLocator<EventBusObserver>();
 
+  StreamSubscription? _subscription;
+
   ColleagueCubit() : super(const ColleagueState.loading()) {
     _eventBus.on<UserWasLoggedOutEvent>((event) {
-      _stopReceivingColleagueAvailability(purgeCache: true);
+      disconnectFromWebSocket(purgeCache: true);
     });
   }
 
-  void connectToWebSocket({bool fullRefresh = false}) {
-    _receiveColleagueAvailability(forceFullAvailabilityRefresh: fullRefresh)
-        .listen(
+  Future<void> connectToWebSocket({bool fullRefresh = false}) async {
+    if (_subscription != null) return;
+
+    final stream = await _receiveColleagueAvailability(
+      forceFullAvailabilityRefresh: fullRefresh,
+    );
+
+    _subscription =
+        stream.debounceTime(const Duration(milliseconds: 250)).listen(
       (colleagues) {
         // Emitting loading initially to ensure listeners receive the new state.
         emit(const ColleagueState.loading());
         emit(ColleagueState.loaded(colleagues));
       },
+      onDone: () {
+        _subscription?.cancel();
+        _subscription = null;
+        emit(const ColleagueState.unreachable());
+      },
     );
   }
 
-  Future<void> disconnectFromWebSocket() =>
-      _stopReceivingColleagueAvailability();
+  Future<void> disconnectFromWebSocket({bool purgeCache = false}) async {
+    _subscription?.cancel();
+    _subscription = null;
+    _stopReceivingColleagueAvailability(purgeCache: purgeCache);
+  }
 
   /// Refresh the WebSocket, disconnecting and reconnecting to load all
   /// new data.

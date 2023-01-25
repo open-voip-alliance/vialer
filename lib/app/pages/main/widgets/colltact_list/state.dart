@@ -7,7 +7,9 @@ part 'state.freezed.dart';
 
 @freezed
 class ColltactsState with _$ColltactsState {
-  const factory ColltactsState.loading() = LoadingColltacts;
+  const factory ColltactsState.loading({
+    @Default([]) Iterable<Colltact> colltacts,
+  }) = LoadingColltacts;
 
   const factory ColltactsState.loaded({
     required Iterable<Colltact> colltacts,

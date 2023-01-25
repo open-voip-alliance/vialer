@@ -13,12 +13,10 @@ import '../../../../util/widgets_binding_observer_registrar.dart';
 import '../../colltacts/colleagues/cubit.dart';
 import '../bottom_toggle.dart';
 import '../caller.dart';
-import '../conditional_placeholder.dart';
 import '../header.dart';
 import '../nested_navigator.dart';
 import 'cubit.dart';
 import 'widgets/alphabet_list.dart';
-import 'widgets/colltact_placeholder.dart';
 import 'widgets/group_header.dart';
 import 'widgets/item.dart';
 import 'widgets/no_results.dart';
@@ -143,77 +141,95 @@ class _ColltactPageState extends State<_ColltactList>
       ),
       child: BlocBuilder<ColltactsCubit, ColltactsState>(
         builder: (context, state) {
-          final cubit = context.watch<ColltactsCubit>();
+          return BlocBuilder<ColleagueCubit, ColleagueState>(
+            builder: (context, colleagueState) {
+              final cubit = context.watch<ColltactsCubit>();
 
-          return DefaultTabController(
-            length: 2,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Header(context.msg.main.contacts.title),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: SearchTextField(
-                    onChanged: _onSearchTermChanged,
-                  ),
-                ),
-                if (cubit.shouldShowColleagues)
-                  TabBar(
-                    controller: tabController,
-                    labelStyle: const TextStyle(
-                      fontWeight: FontWeight.bold,
+              return DefaultTabController(
+                length: 2,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Header(context.msg.main.contacts.title),
                     ),
-                    labelPadding: const EdgeInsets.only(
-                      top: 18,
-                      bottom: 8,
-                    ),
-                    labelColor: Theme.of(context).primaryColor,
-                    unselectedLabelColor: context.brand.theme.colors.grey1,
-                    indicatorColor: Theme.of(context).primaryColor,
-                    indicatorSize: TabBarIndicatorSize.label,
-                    tabs: [
-                      Text(
-                        context.msg.main.contacts.tabBar.contactsTabTitle
-                            .toUpperCase(),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: SearchTextField(
+                        onChanged: _onSearchTermChanged,
                       ),
-                      Text(context.msg.main.contacts.tabBar.colleaguesTabTitle
-                          .toUpperCase()),
-                    ],
-                  ),
-                Expanded(
-                  child: cubit.shouldShowColleagues
-                      ? TabBarView(
-                          controller: tabController,
-                          children: [
-                            _animatedSwitcher(
-                                ColltactKind.contact, state, cubit),
-                            Column(
+                    ),
+                    if (cubit.shouldShowColleagues)
+                      TabBar(
+                        controller: tabController,
+                        labelStyle: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                        labelPadding: const EdgeInsets.only(
+                          top: 18,
+                          bottom: 8,
+                        ),
+                        labelColor: Theme.of(context).primaryColor,
+                        unselectedLabelColor: context.brand.theme.colors.grey1,
+                        indicatorColor: Theme.of(context).primaryColor,
+                        indicatorSize: TabBarIndicatorSize.label,
+                        tabs: [
+                          Text(
+                            context.msg.main.contacts.tabBar.contactsTabTitle
+                                .toUpperCase(),
+                          ),
+                          Text(
+                            context.msg.main.contacts.tabBar.colleaguesTabTitle
+                                .toUpperCase(),
+                          ),
+                        ],
+                      ),
+                    Expanded(
+                      child: cubit.shouldShowColleagues
+                          ? TabBarView(
+                              controller: tabController,
                               children: [
-                                Expanded(
-                                  child: _animatedSwitcher(
-                                    ColltactKind.colleague,
-                                    state,
-                                    cubit,
-                                  ),
+                                _animatedSwitcher(
+                                  ColltactKind.contact,
+                                  state,
+                                  cubit,
+                                  colleagueState,
                                 ),
-                                BottomToggle(
-                                  name: context.msg.main.colleagues.toggle,
-                                  initialValue: cubit.showOnlineColleaguesOnly,
-                                  onChanged: (enabled) {
-                                    cubit.showOnlineColleaguesOnly = enabled;
-                                  },
+                                Column(
+                                  children: [
+                                    Expanded(
+                                      child: _animatedSwitcher(
+                                        ColltactKind.colleague,
+                                        state,
+                                        cubit,
+                                        colleagueState,
+                                      ),
+                                    ),
+                                    BottomToggle(
+                                      name: context.msg.main.colleagues.toggle,
+                                      initialValue:
+                                          cubit.showOnlineColleaguesOnly,
+                                      onChanged: (enabled) {
+                                        cubit.showOnlineColleaguesOnly =
+                                            enabled;
+                                      },
+                                    ),
+                                  ],
                                 ),
                               ],
+                            )
+                          : _animatedSwitcher(
+                              ColltactKind.contact,
+                              state,
+                              cubit,
+                              colleagueState,
                             ),
-                          ],
-                        )
-                      : _animatedSwitcher(ColltactKind.contact, state, cubit),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              );
+            },
           );
         },
       ),
@@ -352,22 +368,51 @@ class _ColltactPageState extends State<_ColltactList>
         .toList();
   }
 
-  NoResultsType? _noResultsType(List<Widget> records, ColltactsCubit cubit) {
-    if (records.isNotEmpty) return null;
-
+  /// Inspects the current state and determines why we aren't able to show
+  /// any results for the selected list. This is then passed to
+  /// [NoResultsPlaceholder] to render something useful for the user.
+  NoResultsType? _noResultsType(
+    List<Widget> records,
+    ColltactsCubit cubit,
+    ColltactsState state,
+    ColleagueState colleagueState,
+    ColltactKind colltactKind,
+  ) {
     final hasSearchQuery = _searchTerm?.isNotEmpty == true;
 
-    if (cubit.showOnlineColleaguesOnly && !hasSearchQuery) {
-      return NoResultsType.noOnlineColleagues;
-    }
+    switch (colltactKind) {
+      case ColltactKind.contact:
+        if (state is LoadingColltacts) {
+          return NoResultsType.contactsLoading;
+        } else if (state is ColltactsLoaded && state.noContactPermission) {
+          return NoResultsType.noContactsPermission;
+        } else if (records.isEmpty) {
+          return hasSearchQuery
+              ? NoResultsType.noSearchResults
+              : NoResultsType.noContactsExist;
+        }
 
-    return hasSearchQuery ? NoResultsType.noSearchResults : null;
+        return null;
+      case ColltactKind.colleague:
+        if (colleagueState is WebSocketUnreachable) {
+          return NoResultsType.noColleagueConnectivity;
+        } else if (cubit.showOnlineColleaguesOnly &&
+            !hasSearchQuery &&
+            records.isEmpty) {
+          return NoResultsType.noOnlineColleagues;
+        }
+
+        return hasSearchQuery && records.isEmpty
+            ? NoResultsType.noSearchResults
+            : null;
+    }
   }
 
   AnimatedSwitcher _animatedSwitcher(
     ColltactKind colltactKind,
     ColltactsState state,
     ColltactsCubit cubit,
+    ColleagueState colleagueState,
   ) {
     final isForContacts = colltactKind == ColltactKind.contact;
 
@@ -376,41 +421,39 @@ class _ColltactPageState extends State<_ColltactList>
             state is ColltactsLoaded ? state.colltacts : [],
             state is ColltactsLoaded ? state.contactSort : null,
           )
-        : _mapAndFilterToColleagueWidgets(
-            state is ColltactsLoaded ? state.colltacts : [],
-          );
-
-    final list = NoResultsPlaceholder(
-      type: _noResultsType(records, cubit),
-      kind: colltactKind,
-      searchTerm: _searchTerm ?? '',
-      onCall: (number) => cubit.call(
-        number,
-        origin: isForContacts ? CallOrigin.contacts : CallOrigin.colleagues,
-      ),
-      child: AlphabetListView(
-        key: ValueKey(_searchTerm),
-        bottomLettersPadding: widget.bottomLettersPadding,
-        children: records,
-        onRefresh: () async {
-          await cubit.refreshColleagues();
-          await cubit.reloadColltacts();
-        },
-      ),
-    );
+        : _mapAndFilterToColleagueWidgets(state.colltacts);
 
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 200),
       switchInCurve: Curves.decelerate,
       switchOutCurve: Curves.decelerate.flipped,
-      child: isForContacts
-          ? ConditionalPlaceholder(
-              showPlaceholder: state is ColltactsLoaded &&
-                  (state.colltacts.isEmpty || state.noContactPermission),
-              placeholder: ColltactsPlaceholder(cubit: cubit, state: state),
-              child: list,
-            )
-          : list,
+      child: NoResultsPlaceholder(
+        type: _noResultsType(
+          records,
+          cubit,
+          state,
+          colleagueState,
+          colltactKind,
+        ),
+        kind: colltactKind,
+        searchTerm: _searchTerm ?? '',
+        onCall: (number) => cubit.call(
+          number,
+          origin: isForContacts ? CallOrigin.contacts : CallOrigin.colleagues,
+        ),
+        dontAskForContactsPermissionAgain:
+            state is ColltactsLoaded ? state.dontAskAgain : false,
+        cubit: cubit,
+        child: AlphabetListView(
+          key: ValueKey(_searchTerm),
+          bottomLettersPadding: widget.bottomLettersPadding,
+          children: records,
+          onRefresh: () async {
+            await cubit.refreshColleagues();
+            await cubit.reloadColltacts();
+          },
+        ),
+      ),
     );
   }
 }

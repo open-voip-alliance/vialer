@@ -26,41 +26,33 @@ class ReceiveColleagueAvailability extends UseCase {
   }) async* {
     // If the WebSocket is already connected, we don't need to do anything as
     // the stream is already set-up.
-    if (_colleaguesRepository.isWebSocketConnected) return;
-
-    var cachedColleagues = _storage.colleagues;
-
-    // We are first checking if our cache has colleagues, if it does we will
-    // immediately broadcast the contents of the cache before fetching
-    // the new list.
-    if (cachedColleagues.isNotEmpty) {
-      yield cachedColleagues;
+    if (_colleaguesRepository.isWebSocketConnected) {
+      yield* _colleaguesRepository.broadcastStream!;
+      return;
     }
 
-    final colleagues = await _refreshColleagueCache();
+    final cachedColleagues = _storage.colleagues;
+
+    // Check the cache for some colleagues, if we have colleagues in the cache
+    // then we won't request them from the server.
+    final colleagues = cachedColleagues.isEmpty || forceFullAvailabilityRefresh
+        ? await _fetchColleagues()
+        : cachedColleagues;
 
     if (forceFullAvailabilityRefresh) {
       await _colleaguesRepository.stopListeningForAvailability();
     }
 
-    final stream = await _colleaguesRepository.startListeningForAvailability(
+    yield* await _colleaguesRepository.startListeningForAvailability(
       user: _getUser(),
       brand: _getBrand(),
       initialColleagues: colleagues,
     );
-
-    await for (final colleagues in await stream) {
-      yield colleagues;
-    }
   }
 
-  Future<List<Colleague>> _refreshColleagueCache() async =>
+  Future<List<Colleague>> _fetchColleagues() async =>
       SynchronizedTask<List<Colleague>>.of(this).run(
-        () async {
-          final colleagues =
-              await _colleaguesRepository.getColleagues(_getUser());
-          _storage.colleagues = colleagues;
-          return colleagues;
-        },
+        () async => _storage.colleagues =
+            await _colleaguesRepository.getColleagues(_getUser()),
       );
 }
