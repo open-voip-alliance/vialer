@@ -21,9 +21,9 @@ class ReceiveColleagueAvailability extends UseCase {
   /// Setting [forceFullAvailabilityRefresh] to true will disconnect the
   /// WebSocket first, this means that the full availability of all users will
   /// be provided up-front upon reconnecting.
-  Future<Stream<List<Colleague>>> call({
+  Stream<List<Colleague>> call({
     bool forceFullAvailabilityRefresh = false,
-  }) async {
+  }) async* {
     // If the WebSocket is already connected, we don't need to do anything as
     // the stream is already set-up.
     if (_colleaguesRepository.isWebSocketConnected) {
@@ -43,7 +43,7 @@ class ReceiveColleagueAvailability extends UseCase {
       await _colleaguesRepository.stopListeningForAvailability();
     }
 
-    yield* _colleaguesRepository.startListeningForAvailability(
+    yield* await _colleaguesRepository.startListeningForAvailability(
       user: _getUser(),
       brand: _getBrand(),
       initialColleagues: colleagues,

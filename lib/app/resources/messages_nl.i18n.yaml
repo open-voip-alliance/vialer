@@ -199,8 +199,8 @@ main:
       contacts(String number): >-
         Er waren geen contacten gevonden voor "$number".
     userAvailabilityWebSocketUnreachable:
-      title: "Unable to display colleagues"
-      subtitle: "The colleague list is currently unavailable, please try again later."
+      title: "Tonen van collega's mislukt"
+      subtitle: "Het overzicht met collega's is op dit moment niet beschikbaar, probeer het later nog eens."
 
   colleagues:
     toggle: "Alleen online collega's"
