@@ -382,7 +382,6 @@ class _ColltactPageState extends State<_ColltactList>
 
     switch (colltactKind) {
       case ColltactKind.contact:
-        {
           if (state is LoadingColltacts) {
             return NoResultsType.contactsLoading;
           } else if (state is ColltactsLoaded && state.noContactPermission) {
@@ -394,9 +393,7 @@ class _ColltactPageState extends State<_ColltactList>
           }
 
           return null;
-        }
       case ColltactKind.colleague:
-        {
           if (colleagueState is WebSocketUnreachable) {
             return NoResultsType.noColleagueConnectivity;
           } else if (cubit.showOnlineColleaguesOnly &&
@@ -408,7 +405,6 @@ class _ColltactPageState extends State<_ColltactList>
           return hasSearchQuery && records.isEmpty
               ? NoResultsType.noSearchResults
               : null;
-        }
     }
   }
 

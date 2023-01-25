@@ -27,7 +27,8 @@ class ReceiveColleagueAvailability extends UseCase {
     // If the WebSocket is already connected, we don't need to do anything as
     // the stream is already set-up.
     if (_colleaguesRepository.isWebSocketConnected) {
-      return _colleaguesRepository.broadcastStream!;
+      yield* _colleaguesRepository.broadcastStream!;
+      return;
     }
 
     final cachedColleagues = _storage.colleagues;
@@ -42,7 +43,7 @@ class ReceiveColleagueAvailability extends UseCase {
       await _colleaguesRepository.stopListeningForAvailability();
     }
 
-    return await _colleaguesRepository.startListeningForAvailability(
+    yield* _colleaguesRepository.startListeningForAvailability(
       user: _getUser(),
       brand: _getBrand(),
       initialColleagues: colleagues,
