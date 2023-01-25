@@ -39,7 +39,7 @@ class _CallFeedbackState extends State<CallFeedback> {
   /// This is the end result of the user feedback and should be submitted
   /// when it has been completed via the [onFeedbackReady]
   /// callback.
-  var _result = const CallFeedbackResult.fresh();
+  var _result = CallFeedbackResult.fresh();
 
   /// The current stage that should be rendered, this is determined by the
   /// data within the [_result] object.
