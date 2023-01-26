@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import '../../../../../../data/models/colltact.dart';
 import '../../../../../../domain/colltacts/contact.dart';
 import '../../../../../../domain/user_availability/colleagues/colleague.dart';
-import '../../../../../util/contact.dart';
 import '../widget.dart';
 import 'avatar.dart';
 import 'subtitle.dart';
