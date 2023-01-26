@@ -24,7 +24,11 @@ class ColltactItem extends StatelessWidget {
         arguments: colltact,
       ),
       leading: ColltactAvatar(colltact),
-      title: Text(colltact.name),
+      title: Text(
+        colltact.name,
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+      ),
       subtitle: ColltactSubtitle(colltact),
     );
   }

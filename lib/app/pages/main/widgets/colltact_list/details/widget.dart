@@ -87,24 +87,28 @@ class _ColltactDetailsState extends State<ColltactDetails> {
                         children: <Widget>[
                           ColltactAvatar(colltact, size: _leadingSize),
                           const SizedBox(width: 16),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text(
-                                colltact.name,
-                                style: const TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text(
+                                  colltact.name,
+                                  maxLines: 5,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(height: 4),
-                              colltact.when(
-                                colleague: (_) => const SizedBox.shrink(),
-                                contact: (contact) =>
-                                    ColltactSubtitle(colltact),
-                              ),
-                            ],
-                          )
+                                const SizedBox(height: 4),
+                                colltact.when(
+                                  colleague: (_) => const SizedBox.shrink(),
+                                  contact: (contact) =>
+                                      ColltactSubtitle(colltact),
+                                ),
+                              ],
+                            ),
+                          ),
                         ],
                       ),
                     ),
