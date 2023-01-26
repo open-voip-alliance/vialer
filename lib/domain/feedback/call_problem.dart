@@ -1,3 +1,7 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'call_problem.freezed.dart';
+
 enum CallProblem {
   oneWayAudio,
   noAudio,
@@ -23,30 +27,17 @@ extension AudioProblemsString on CallAudioProblem {
   String toShortString() => toString().split('.').last;
 }
 
-class CallFeedbackResult {
-  final double? rating;
-  final CallProblem? problem;
-  final List<CallAudioProblem>? audioProblems;
+@freezed
+class CallFeedbackResult with _$CallFeedbackResult {
+  const factory CallFeedbackResult({
+    required double? rating,
+    required CallProblem? problem,
+    required List<CallAudioProblem>? audioProblems,
+  }) = _CallFeedbackResult;
 
-  const CallFeedbackResult({
-    required this.rating,
-    required this.problem,
-    required this.audioProblems,
-  });
-
-  const CallFeedbackResult.fresh()
-      : rating = null,
-        problem = null,
-        audioProblems = null;
-
-  CallFeedbackResult copyWith({
-    double? rating,
-    CallProblem? problem,
-    List<CallAudioProblem>? audioProblems,
-  }) =>
-      CallFeedbackResult(
-        rating: rating ?? this.rating,
-        problem: problem ?? this.problem,
-        audioProblems: audioProblems ?? this.audioProblems,
+  factory CallFeedbackResult.fresh() => const CallFeedbackResult(
+        rating: null,
+        problem: null,
+        audioProblems: null,
       );
 }
