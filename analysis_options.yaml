@@ -10,7 +10,7 @@ linter:
     annotate_overrides: true
     omit_local_variable_types: true
     prefer_single_quotes: true
-    use_function_type_syntax_for_parameters: true
+    use_function_type_syntax: true
     prefer_const_constructors: true
     avoid_print: true
 

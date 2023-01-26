@@ -21,9 +21,9 @@ class SettingChanged<T extends Object> {
 extension ObservingSettingChange on Stream {
   StreamSubscription<SettingChanged> onSettingChange<T extends Object>(
     SettingKey<T> key,
-    void Function(T oldValue, T value)? onData, {
+    void onData(T oldValue, T value)?, {
     Function? onError,
-    void Function()? onDone,
+    void onDone()?,
     bool? cancelOnError,
   }) =>
       // We cannot check for SettingChange<T>, because they are broadcast
