@@ -16,16 +16,15 @@ class Colltact with _$Colltact {
         contact: (contact) => contact.displayName,
       );
 
-  String Function(ContactSort?) get getSortKey => when(
+  String Function(ContactSort) get getSortKey => when(
         colleague: (colleague) => (_) => colleague.name.toLowerCase(),
         contact: (contact) {
           return (contactSort) {
-            final sortKey = (contactSort?.orderBy == OrderBy.familyName
-                    ? contact.familyName
-                    : contact.givenName ?? contact.displayName) ??
-                '';
+            final sortKey = contactSort.orderBy == OrderBy.familyName
+                ? contact.familyName
+                : contact.givenName ?? contact.displayName;
 
-            return sortKey.toLowerCase();
+            return sortKey?.toLowerCase() ?? '';
           };
         },
       );

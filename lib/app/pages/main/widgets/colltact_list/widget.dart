@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../data/models/colltact.dart';
+import '../../../../../domain/colltacts/get_contact_sort.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
 import '../../../../util/contact.dart';
@@ -239,7 +240,7 @@ class _ColltactPageState extends State<_ColltactList>
   List<Widget> _mapAndFilterToWidgets(
     ColltactKind kind,
     Iterable<Colltact> colltacts,
-    ContactSort? contactSort,
+    ContactSort contactSort,
   ) {
     final groupedColltacts = <String, List<Colltact>>{};
 
@@ -282,7 +283,7 @@ class _ColltactPageState extends State<_ColltactList>
 
   String? _firstCharacterForSorting(
     Colltact colltact,
-    ContactSort? contactSort,
+    ContactSort contactSort,
   ) {
     return colltact.when(
       colleague: (colleague) {
@@ -294,7 +295,7 @@ class _ColltactPageState extends State<_ColltactList>
         return firstCharacter;
       },
       contact: (contact) {
-        var firstCharacter = contactSort?.orderBy == OrderBy.familyName
+        var firstCharacter = contactSort.orderBy == OrderBy.familyName
             ? contact.familyName?.characters.firstOrNull ??
                 contact.displayName.characters.firstOrNull
             : contact.givenName?.characters.firstOrNull ??
@@ -310,7 +311,7 @@ class _ColltactPageState extends State<_ColltactList>
 
   List<Widget> _createSortedColltactList(
     Map<String, List<Colltact>> colltacts,
-    ContactSort? contactSort,
+    ContactSort contactSort,
   ) {
     return [
       // Sort all colltacts with a letter alphabetically.
@@ -324,7 +325,7 @@ class _ColltactPageState extends State<_ColltactList>
           (e) => [
             GroupHeader(group: e.key),
             ...e.value
-                .sortedBy((colltact) => (colltact.getSortKey(contactSort)))
+                .sortedBy((colltact) => colltact.getSortKey(contactSort))
                 .map(ColltactItem.from)
           ],
         )
@@ -378,13 +379,11 @@ class _ColltactPageState extends State<_ColltactList>
     ColltactsCubit cubit,
     ColleagueState colleagueState,
   ) {
-    final records = state is ColltactsLoaded
-        ? _mapAndFilterToWidgets(
-            colltactKind,
-            state.colltacts,
-            state.contactSort,
-          )
-        : const <Widget>[];
+    final records = _mapAndFilterToWidgets(
+      colltactKind,
+      state.colltacts,
+      state is ColltactsLoaded ? state.contactSort : defaultContactSort,
+    );
 
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 200),

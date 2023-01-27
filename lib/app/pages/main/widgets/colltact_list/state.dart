@@ -13,7 +13,7 @@ class ColltactsState with _$ColltactsState {
 
   const factory ColltactsState.loaded({
     required Iterable<Colltact> colltacts,
-    ContactSort? contactSort,
+    required ContactSort contactSort,
     required bool noContactPermission,
     required bool dontAskAgain,
   }) = ColltactsLoaded;
