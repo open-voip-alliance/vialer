@@ -5,7 +5,6 @@ part 'brand.g.dart';
 
 @freezed
 class Brand with _$Brand {
-
   const Brand._();
 
   const factory Brand({
