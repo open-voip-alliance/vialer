@@ -359,7 +359,7 @@ main:
       buttons:
         send: "Feedback sturen"
     privacyPolicy: "Privacybeleid"
-    signUp: "Not already a user? Sign up here."
+    signUp: "Nog geen klant? Meld je hier aan."
 
   notice:
     microphone:
