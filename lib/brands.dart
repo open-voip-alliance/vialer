@@ -14,7 +14,7 @@ const brands = '''
     "unencryptedSipUrl": "sipproxy.voipgrid.nl",
     "businessAvailabilityUrl": "https://api.prod.holodeck.spindle.dev/business-availability/clients/",
     "privacyPolicyUrl": "https://vialerapp.com/privacy/",
-    "signUpUrl": null
+    "signUpUrl": "https://www.voys.nl/samenstellen/"
   },
   {
     "identifier": "voys",
