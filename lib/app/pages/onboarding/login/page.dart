@@ -249,9 +249,7 @@ class _LoginPageState extends State<LoginPage>
                             ),
                           ),
                           const SizedBox(height: 12),
-                          if (context
-                              .read<LoginCubit>()
-                              .shouldShowSignUpLink) ...[
+                          if (context.read<LoginCubit>().shouldShowSignUpLink)
                             TextButton(
                               onPressed: () => LaunchSignUp()(),
                               child: Text(
@@ -260,7 +258,6 @@ class _LoginPageState extends State<LoginPage>
                                 style: const TextStyle(color: Colors.white),
                               ),
                             ),
-                          ],
                           TextButton(
                             onPressed: () => LaunchPrivacyPolicy()(),
                             child: Text(
