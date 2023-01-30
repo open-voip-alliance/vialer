@@ -360,6 +360,7 @@ main:
       buttons:
         send: "Send feedback"
     privacyPolicy: "Privacy Policy"
+    signUp: "Not already a user? Sign up here."
 
   notice:
     microphone:

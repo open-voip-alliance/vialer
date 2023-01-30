@@ -6,6 +6,7 @@ import '../../../../domain/onboarding/login_credentials.dart';
 import '../../../../domain/onboarding/step.dart';
 import '../../../../domain/onboarding/two_factor_authentication_required.dart';
 import '../../../../domain/remote_logging/enable_remote_logging_if_needed.dart';
+import '../../../../domain/user/get_brand.dart';
 import '../../../util/loggable.dart';
 import '../../../util/password.dart' as util;
 import '../cubit.dart';
@@ -18,6 +19,7 @@ class LoginCubit extends Cubit<LoginState> with Loggable {
 
   final _enableRemoteLoggingIfNeeded = EnableRemoteLoggingIfNeededUseCase();
   final _login = LoginUseCase();
+  final _getBrand = GetBrand();
 
   LoginCubit(this._onboarding) : super(const NotLoggedIn()) {
     _enableRemoteLoggingIfNeeded();
@@ -86,4 +88,6 @@ class LoginCubit extends Cubit<LoginState> with Loggable {
       emit(const LoginFailed());
     }
   }
+
+  bool get shouldShowSignUpLink => _getBrand().signUpUrl != null;
 }
