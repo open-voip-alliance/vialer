@@ -13,8 +13,7 @@ const brands = '''
     "encryptedSipUrl": "sip.encryptedsip.com",
     "unencryptedSipUrl": "sipproxy.voipgrid.nl",
     "businessAvailabilityUrl": "https://api.prod.holodeck.spindle.dev/business-availability/clients/",
-    "privacyPolicyUrl": "https://vialerapp.com/privacy/",
-    "signUpUrl": null
+    "privacyPolicyUrl": "https://vialerapp.com/privacy/"
   },
   {
     "identifier": "voys",
@@ -40,8 +39,7 @@ const brands = '''
     "encryptedSipUrl": "staging.encryptedsip.com",
     "unencryptedSipUrl": "sipproxy-staging.voipgrid.nl",
     "businessAvailabilityUrl": "https://api.stag.holodeck.spindle.dev/business-availability/clients/",
-    "privacyPolicyUrl": "https://vialerapp.com/privacy/",
-    "signUpUrl": null
+    "privacyPolicyUrl": "https://vialerapp.com/privacy/"
   },
   {
     "identifier": "verbonden",
@@ -53,8 +51,7 @@ const brands = '''
     "encryptedSipUrl": "sip.encryptedsip.com",
     "unencryptedSipUrl": "sipproxy.voipgrid.nl",
     "businessAvailabilityUrl": "https://api.prod.holodeck.spindle.dev/business-availability/clients/",
-    "privacyPolicyUrl": "https://verbonden.nl/app/privacy",
-    "signUpUrl": null
+    "privacyPolicyUrl": "https://verbonden.nl/app/privacy"
   },
   {
     "identifier": "annabel",
@@ -66,8 +63,7 @@ const brands = '''
     "encryptedSipUrl": "sip-ams.encryptedsip.com",
     "unencryptedSipUrl": "sipproxy.voipgrid.nl",
     "businessAvailabilityUrl": "https://api.prod.holodeck.spindle.dev/business-availability/clients/",
-    "privacyPolicyUrl": "https://bellenmetannabel.nl/app/uploads/Terms-Of-Use-And-Privacy.pdf",
-    "signUpUrl": null
+    "privacyPolicyUrl": "https://bellenmetannabel.nl/app/uploads/Terms-Of-Use-And-Privacy.pdf"
   }
 ]
 ''';
