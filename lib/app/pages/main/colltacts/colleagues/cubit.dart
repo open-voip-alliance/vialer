@@ -7,12 +7,14 @@ import '../../../../../dependency_locator.dart';
 import '../../../../../domain/authentication/user_was_logged_out.dart';
 import '../../../../../domain/event/event_bus.dart';
 import '../../../../../domain/user_availability/colleagues/receive_colleague_availability.dart';
+import '../../../../../domain/user_availability/colleagues/should_show_colleagues.dart';
 import '../../../../../domain/user_availability/colleagues/stop_receiving_colleague_availability.dart';
 import 'state.dart';
 
 export 'state.dart';
 
 class ColleagueCubit extends Cubit<ColleagueState> {
+  late final _shouldShowColleagues = ShouldShowColleagues();
   late final _receiveColleagueAvailability = ReceiveColleagueAvailability();
   late final _stopReceivingColleagueAvailability =
       StopReceivingColleagueAvailability();
@@ -27,7 +29,7 @@ class ColleagueCubit extends Cubit<ColleagueState> {
   }
 
   Future<void> connectToWebSocket({bool fullRefresh = false}) async {
-    if (_subscription != null) return;
+    if (!_shouldShowColleagues() || _subscription != null) return;
 
     final stream = await _receiveColleagueAvailability(
       forceFullAvailabilityRefresh: fullRefresh,

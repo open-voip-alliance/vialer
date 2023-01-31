@@ -1,38 +1,34 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class EnvRepository {
-  Map<String, String>? __env;
+   late Map<String, String> _env;
 
-  Future<Map<String, String>> get _env async {
-    if (__env == null) {
-      await dotenv.load();
-      __env = dotenv.env;
-    }
-
-    return __env!;
+  Future<void> load() async {
+    await dotenv.load();
+    _env = dotenv.env;
   }
 
-  Future<String> get(String key) async => (await _env)[key] ?? '';
+  String get(String key) => _env[key] ?? '';
 
-  Future<String> get errorTrackingDsn => get('SENTRY_DSN');
+  String get errorTrackingDsn => get('SENTRY_DSN');
 
-  Future<String> get logentriesAndroidToken => get('LOGENTRIES_ANDROID_TOKEN');
+  String get logentriesAndroidToken => get('LOGENTRIES_ANDROID_TOKEN');
 
-  Future<String> get logentriesIosToken => get('LOGENTRIES_IOS_TOKEN');
+  String get logentriesIosToken => get('LOGENTRIES_IOS_TOKEN');
 
-  Future<String> get segmentAndroidKey => get('SEGMENT_ANDROID_KEY');
+  String get segmentAndroidKey => get('SEGMENT_ANDROID_KEY');
 
-  Future<String> get segmentIosKey => get('SEGMENT_IOS_KEY');
+  String get segmentIosKey => get('SEGMENT_IOS_KEY');
 
-  Future<String> get mergeRequest => get('MERGE_REQUEST');
+  String get mergeRequest => get('MERGE_REQUEST');
 
-  Future<String> get branch => get('BRANCH');
+  String get branch => get('BRANCH');
 
-  Future<String> get tag => get('TAG');
+  String get tag => get('TAG');
 
-  Future<bool> get sandbox async => (await get('SANDBOX')).toBool();
+  bool get sandbox => get('SANDBOX').toBool();
 
-  Future<bool> get inTest async => (await get('IN_TEST')).toBool();
+  bool get inTest => get('IN_TEST').toBool();
 }
 
 extension on String {
