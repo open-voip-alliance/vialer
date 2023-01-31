@@ -1,7 +1,7 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class EnvRepository {
-   late Map<String, String> _env;
+  late Map<String, String> _env;
 
   Future<void> load() async {
     await dotenv.load();
