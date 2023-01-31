@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../data/models/colltact.dart';
+import '../../../../../domain/colltacts/get_contact_sort.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
 import '../../../../util/contact.dart';
@@ -236,11 +237,12 @@ class _ColltactPageState extends State<_ColltactList>
     );
   }
 
-  List<Widget> _mapAndFilterToContactWidgets(
+  List<Widget> _mapAndFilterToWidgets(
+    ColltactKind kind,
     Iterable<Colltact> colltacts,
-    ContactSort? contactSort,
+    ContactSort contactSort,
   ) {
-    final widgets = <String, List<ColltactItem>>{};
+    final groupedColltacts = <String, List<Colltact>>{};
 
     /// Whether the [char] is part of the *letter group*, which consists of
     /// any letter in any language (including non-latin alphabets)
@@ -248,120 +250,83 @@ class _ColltactPageState extends State<_ColltactList>
         char != null ? RegExp(r'\p{L}', unicode: true).hasMatch(char) : false;
 
     final searchTerm = _searchTerm?.toLowerCase();
+
+    final contactsOnly = kind == ColltactKind.contact;
+
     for (var colltact in colltacts) {
-      if (colltact is ColltactContact) {
-        final contact = colltact.contact;
+      if ((!contactsOnly && colltact is ColltactContact) ||
+          (contactsOnly && colltact is ColltactColleague)) {
+        continue;
+      }
 
-        if (searchTerm != null && !colltact.matchesSearchTerm(searchTerm)) {
-          continue;
-        }
+      if (searchTerm != null && !colltact.matchesSearchTerm(searchTerm)) {
+        continue;
+      }
 
-        final contactItem = ColltactItem(colltact: colltact);
+      final firstCharacter = _firstCharacterForSorting(colltact, contactSort);
 
-        /// Grouping contacts is based on the first letter of the
-        /// given-, family-, or display name or if that fails phone number.
-        var firstCharacter = contactSort!.orderBy == OrderBy.familyName
-            ? contact.familyName?.characters.firstOrNull ??
-                contact.displayName.characters.firstOrNull
-            : contact.givenName?.characters.firstOrNull ??
-                contact.displayName.characters.firstOrNull;
+      /// Group letters case sensitive with or without diacritics together.
+      final groupCharacter =
+          removeDiacritics(firstCharacter ?? '').toUpperCase();
 
-        if (firstCharacter.isNullOrEmpty && contact.phoneNumbers.isNotEmpty) {
-          firstCharacter =
-              contact.phoneNumbers.first.value.characters.firstOrDefault('');
-        }
-
-        /// Group letters case sensitive with or without diacritics together.
-        final groupCharacter =
-            removeDiacritics(firstCharacter ?? '').toUpperCase();
-
-        if (isInLetterGroup(groupCharacter)) {
-          widgets[groupCharacter] ??= [];
-          widgets[groupCharacter]!.add(contactItem);
-        } else {
-          widgets[nonLetterKey] ??= [];
-          widgets[nonLetterKey]!.add(contactItem);
-        }
+      if (isInLetterGroup(groupCharacter)) {
+        groupedColltacts[groupCharacter] ??= [];
+        groupedColltacts[groupCharacter]!.add(colltact);
+      } else {
+        groupedColltacts[nonLetterKey] ??= [];
+        groupedColltacts[nonLetterKey]!.add(colltact);
       }
     }
 
-    return _createSortedColltactList(widgets, contactSort);
+    return _createSortedColltactList(groupedColltacts, contactSort);
   }
 
-  List<Widget> _mapAndFilterToColleagueWidgets(
-    Iterable<Colltact> colltacts,
+  String? _firstCharacterForSorting(
+    Colltact colltact,
+    ContactSort contactSort,
   ) {
-    final widgets = <String, List<ColltactItem>>{};
-
-    /// Whether the [char] is part of the *letter group*, which consists of
-    /// any letter in any language (including non-latin alphabets)
-    bool isInLetterGroup(String? char) =>
-        char != null ? RegExp(r'\p{L}', unicode: true).hasMatch(char) : false;
-
-    final searchTerm = _searchTerm?.toLowerCase();
-
-    for (var colltact in colltacts) {
-      if (colltact is ColltactColleague) {
-        final colleague = colltact.colleague;
-
-        if (searchTerm != null && !colltact.matchesSearchTerm(searchTerm)) {
-          continue;
-        }
-
-        final contactItem = ColltactItem(colltact: colltact);
-
+    return colltact.when(
+      colleague: (colleague) {
         var firstCharacter = colleague.name.characters.firstOrNull;
-
         if (firstCharacter.isNullOrEmpty &&
             !colleague.number.isNotNullOrEmpty) {
           firstCharacter = colleague.number!.characters.firstOrDefault('');
         }
-
-        /// Group letters case sensitive with or without diacritics together.
-        final groupCharacter =
-            removeDiacritics(firstCharacter ?? '').toUpperCase();
-
-        if (isInLetterGroup(groupCharacter)) {
-          widgets[groupCharacter] ??= [];
-          widgets[groupCharacter]!.add(contactItem);
-        } else {
-          widgets[nonLetterKey] ??= [];
-          widgets[nonLetterKey]!.add(contactItem);
+        return firstCharacter;
+      },
+      contact: (contact) {
+        var firstCharacter = contactSort.orderBy == OrderBy.familyName
+            ? contact.familyName?.characters.firstOrNull ??
+                contact.displayName.characters.firstOrNull
+            : contact.givenName?.characters.firstOrNull ??
+                contact.displayName.characters.firstOrNull;
+        if (firstCharacter.isNullOrEmpty && contact.phoneNumbers.isNotEmpty) {
+          firstCharacter =
+              contact.phoneNumbers.first.value.characters.firstOrDefault('');
         }
-      }
-    }
-
-    return _createSortedColltactList(widgets, null);
+        return firstCharacter;
+      },
+    );
   }
 
   List<Widget> _createSortedColltactList(
-    Map<String, List<ColltactItem>> widgets,
-    ContactSort? contactSort,
+    Map<String, List<Colltact>> colltacts,
+    ContactSort contactSort,
   ) {
     return [
-      // Sort all colltact widgets with a letter alphabetically.
-      ...widgets.entries
+      // Sort all colltacts with a letter alphabetically.
+      ...colltacts.entries
           .filter((e) => e.key != nonLetterKey)
           .sortedBy((e) => e.key),
       // Place all colltacts that belong to the non-letter group at the bottom.
-      ...widgets.entries.filter((e) => e.key == nonLetterKey).toList(),
+      ...colltacts.entries.filter((e) => e.key == nonLetterKey).toList(),
     ]
         .map(
           (e) => [
             GroupHeader(group: e.key),
-            ...e.value.sortedBy(
-              (e) => ((e.colltact.when(
-                colleague: (colleague) => colleague.name,
-                // Sort the contacts within the group by family or given name
-                // or as fallback by the display name.
-                contact: (contact) =>
-                    ((contactSort!.orderBy == OrderBy.familyName
-                                ? contact.familyName
-                                : contact.givenName) ??
-                            contact.displayName)
-                        .toLowerCase(),
-              ))),
-            )
+            ...e.value
+                .sortedBy((colltact) => colltact.getSortKey(contactSort))
+                .map(ColltactItem.from)
           ],
         )
         .flatten()
@@ -414,14 +379,11 @@ class _ColltactPageState extends State<_ColltactList>
     ColltactsCubit cubit,
     ColleagueState colleagueState,
   ) {
-    final isForContacts = colltactKind == ColltactKind.contact;
-
-    final records = isForContacts
-        ? _mapAndFilterToContactWidgets(
-            state is ColltactsLoaded ? state.colltacts : [],
-            state is ColltactsLoaded ? state.contactSort : null,
-          )
-        : _mapAndFilterToColleagueWidgets(state.colltacts);
+    final records = _mapAndFilterToWidgets(
+      colltactKind,
+      state.colltacts,
+      state is ColltactsLoaded ? state.contactSort : defaultContactSort,
+    );
 
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 200),
@@ -439,7 +401,9 @@ class _ColltactPageState extends State<_ColltactList>
         searchTerm: _searchTerm ?? '',
         onCall: (number) => cubit.call(
           number,
-          origin: isForContacts ? CallOrigin.contacts : CallOrigin.colleagues,
+          origin: colltactKind == ColltactKind.contact
+              ? CallOrigin.contacts
+              : CallOrigin.colleagues,
         ),
         dontAskForContactsPermissionAgain:
             state is ColltactsLoaded ? state.dontAskAgain : false,
