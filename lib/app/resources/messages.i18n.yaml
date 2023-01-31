@@ -360,7 +360,7 @@ main:
       buttons:
         send: "Send feedback"
     privacyPolicy: "Privacy Policy"
-    signUp: "Not already a user? Sign up here."
+    signUp(String appName): "New to $appName? Sign up here."
 
   notice:
     microphone:
