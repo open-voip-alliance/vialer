@@ -29,6 +29,7 @@ class UpdateDestinationListener extends SettingChangeListener<Destination>
 
     if (currentDestination != newDestination) {
       newDestination.when(
+        unknown: () => logger.info('Set $key to $newDestination'),
         notAvailable: () => logger.info('Set $key to $newDestination'),
         phoneNumber: (id, _, __) => logger.info('Set $key to $id'),
         phoneAccount: (id, _, __, ___) => logger.info('Set $key to $id'),

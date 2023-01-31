@@ -47,7 +47,7 @@ class _DndToggle extends StatelessWidget {
 
   _DndToggle(this.user)
       : _value = user.settings.get(_key),
-        _userAvailabilityType = user.availabilityType();
+        _userAvailabilityType = user.availabilityType;
 
   String _text(BuildContext context, {bool? settingValue}) {
     settingValue ??= _value;

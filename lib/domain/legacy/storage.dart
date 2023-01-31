@@ -216,8 +216,7 @@ class StorageRepository {
 
   static const _userNumberKey = 'user_number';
 
-  int? get userNumber =>
-      _preferences.getInt(_userNumberKey); // TODO: directUserNumber?
+  int? get userNumber => _preferences.getInt(_userNumberKey);
 
   set userNumber(int? number) =>
       _preferences.setOrRemoveInt(_userNumberKey, number);
@@ -225,17 +224,19 @@ class StorageRepository {
   static const _availableDestinationsKey = 'available_destinations';
 
   List<Destination> get availableDestinations =>
-      (jsonDecode(_preferences.getString(_availableDestinationsKey) ?? '[]')
-              as List<dynamic>)
-          .map(Destination.fromJson)
-          .toList();
+      _preferences.getJson<List<Destination>, List<dynamic>>(
+        _availableDestinationsKey,
+        (list) => list.map(Destination.fromJson).toList(),
+      ) ??
+      [];
 
   set availableDestinations(List<Destination> destinations) =>
-      _preferences.setOrRemoveString(
-          _availableDestinationsKey,
-          jsonEncode(destinations
-              .map((destination) => destination.toJson())
-              .toList()));
+      _preferences.setOrRemoveJson<List<Destination>>(
+        _availableDestinationsKey,
+        destinations,
+        (destinations) =>
+            destinations.map((destination) => destination.toJson()).toList(),
+      );
 
   Future<void> clear() => _preferences.clear();
 
@@ -286,7 +287,7 @@ class StorageRepository {
         case 'ShowCallsInNativeRecentsSetting':
           settings[AppSetting.showCallsInNativeRecents] = value as bool;
           break;
-        case 'AvailabilitySetting': // TODO: Naming?
+        case 'AvailabilitySetting':
           settings[CallSetting.destination] = Destination.fromJson(
             value as Map<String, dynamic>,
           );

@@ -27,7 +27,7 @@ class AvailabilityTile extends StatelessWidget {
     this.userNumber,
     required this.destinations,
     super.key,
-  }) : _userAvailabilityType = user.availabilityType();
+  }) : _userAvailabilityType = user.availabilityType;
 
   late final bool _shouldDisplayNoAppAccountWarning =
       destinations.findAppAccountFor(user: user) == null;
@@ -158,7 +158,7 @@ class AvailabilityTile extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             MultipleChoiceSettingValue<Destination?>(
-              value: user.settings.get(CallSetting.destination),
+              value: user.settings.getOrNull(CallSetting.destination),
               items: [
                 ...destinations.map(
                   (destination) => DropdownMenuItem<Destination>(
@@ -194,11 +194,16 @@ class AvailabilityTile extends StatelessWidget {
 }
 
 extension AvailabilityType on User {
-  UserAvailabilityType availabilityType() {
+  UserAvailabilityType get availabilityType {
     final user = this;
-    final destionation = user.settings.get(CallSetting.destination);
+    final destination = user.settings.getOrNull(CallSetting.destination);
 
-    return destionation.when(
+    if (destination == null) {
+      return UserAvailabilityType.notAvailable;
+    }
+
+    return destination.when(
+      unknown: () => UserAvailabilityType.unknown,
       notAvailable: () => UserAvailabilityType.notAvailable,
       phoneAccount: (id, _, __, ___) => id.toString() == user.appAccountId
           ? UserAvailabilityType.available
@@ -208,7 +213,7 @@ extension AvailabilityType on User {
   }
 }
 
-enum UserAvailabilityType { available, elsewhere, notAvailable }
+enum UserAvailabilityType { available, elsewhere, notAvailable, unknown }
 
 extension Display on UserAvailabilityType {
   Color asColor(BuildContext context) {
@@ -237,6 +242,7 @@ extension on Destination {
     final destination = this;
 
     return destination.when(
+      unknown: () => context.msg.main.settings.list.calling.unknown,
       notAvailable: () => context.msg.main.settings.list.calling.notAvailable,
       phoneNumber: (_, description, phoneNumber) =>
           phoneNumber == null ? '$description' : '$phoneNumber / $description',

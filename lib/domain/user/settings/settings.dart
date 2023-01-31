@@ -169,6 +169,8 @@ mixin SettingKey<T extends Object> on Enum {
 
   String toJson() => toString();
 
+  /// Only returns `null` when the key isn't found.
+  /// Most likely in the situation the key isn't used anymore.
   static K? fromJson<K extends SettingKey>(
     String json,
     Iterable<K> all,

@@ -29,16 +29,17 @@ class DestinationRepository with Loggable {
     if (!response.isSuccessful) {
       logFailedResponse(response,
           name: 'Get active and available destinations');
-      return const Destination.notAvailable(); //TODO: ask
+      return const Destination.unknown();
     }
 
     final objects = response.body['objects'] as List<dynamic>? ?? [];
 
-    if (objects.isEmpty) return const Destination.notAvailable(); //TODO: ask
+    if (objects.isEmpty) return const Destination.unknown();
 
     final destinations = objects
-        .map((obj) =>
-            _AvailabilityResponse.fromJson(obj as Map<String, dynamic>))
+        .map(
+          (obj) => _AvailabilityResponse.fromJson(obj as Map<String, dynamic>),
+        )
         .toList()
         .first;
 
