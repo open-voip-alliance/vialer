@@ -16,6 +16,7 @@ import '../domain/event/register_event_listeners.dart';
 import '../domain/logging/create_native_logging_database.dart';
 import '../domain/logging/enable_logging.dart';
 import '../domain/metrics/initialize_metric_collection.dart';
+import '../domain/metrics/periodically_identify_for_tracking.dart';
 import '../domain/user/get_stored_user.dart';
 import 'pages/main/business_availability/temporary_redirect/cubit.dart';
 import 'pages/main/page.dart';
@@ -52,6 +53,8 @@ Future<void> main() async {
   final errorTrackingRepository = dependencyLocator<ErrorTrackingRepository>();
   final dsn = await dependencyLocator<EnvRepository>().errorTrackingDsn;
   final user = await GetStoredUserUseCase()();
+
+  PeriodicallyIdentifyForTracking()();
 
   if (dsn.isEmpty) {
     runApp(const App());
