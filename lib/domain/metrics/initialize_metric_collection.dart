@@ -13,9 +13,9 @@ class InitializeMetricCollection extends UseCase {
   final _nativeMetrics = NativeMetrics();
 
   Future<void> call() async {
-    final key = await (Platform.isAndroid
+    final key = Platform.isAndroid
         ? _envRepository.segmentAndroidKey
-        : _envRepository.segmentIosKey);
+        : _envRepository.segmentIosKey;
 
     _nativeMetrics.initialize();
 

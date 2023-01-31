@@ -78,26 +78,21 @@ TestUser? _tester1;
 TestUser? _tester2;
 TestUser? _testUserWithoutAppAccount;
 
-TestUser get testUser1 =>
-    _tester1 ??
-    (_tester1 = TestUser(
+TestUser get testUser1 => _tester1 ??= TestUser(
       dotenv.env['TEST_USER_1_EMAIL']!,
       dotenv.env['TEST_USER_1_PASSWORD']!,
-    ));
+    );
 
-TestUser get testUser2 =>
-    _tester2 ??
-    (_tester2 = TestUser(
+TestUser get testUser2 => _tester2 ??= TestUser(
       dotenv.env['TEST_USER_2_EMAIL']!,
       dotenv.env['TEST_USER_2_PASSWORD']!,
-    ));
+    );
 
 TestUser get testUserWithoutAppAccount =>
-    _testUserWithoutAppAccount ??
-        (_testUserWithoutAppAccount = TestUser(
-          dotenv.env['TEST_USER_WITHOUT_APP_ACCOUNT_EMAIL']!,
-          dotenv.env['TEST_USER_WITHOUT_APP_ACCOUNT_PASSWORD']!,
-        ));
+    _testUserWithoutAppAccount ??= TestUser(
+      dotenv.env['TEST_USER_WITHOUT_APP_ACCOUNT_EMAIL']!,
+      dotenv.env['TEST_USER_WITHOUT_APP_ACCOUNT_PASSWORD']!,
+    );
 
 extension OnboardingPageTesting on GlobalKey<OnboardingPageState> {
   /// Returns `null` if the onboarding is finished (and the OnboardingPage

@@ -50,7 +50,7 @@ Future<void> main() async {
   await AutomaticallyLoginLegacyUser()();
 
   final errorTrackingRepository = dependencyLocator<ErrorTrackingRepository>();
-  final dsn = await dependencyLocator<EnvRepository>().errorTrackingDsn;
+  final dsn = dependencyLocator<EnvRepository>().errorTrackingDsn;
   final user = await GetStoredUserUseCase()();
 
   if (dsn.isEmpty) {

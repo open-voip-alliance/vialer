@@ -34,7 +34,7 @@ class SendSavedLogsToRemoteUseCase extends UseCase {
 
       await _loggingRepository.sendLogsToRemote(
         formattedLogs,
-        token: await _getLoggingToken(),
+        token: _getLoggingToken(),
       );
 
       // Clear the logs after sending.
