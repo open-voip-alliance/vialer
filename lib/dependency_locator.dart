@@ -103,7 +103,11 @@ Future<void> initializeDependencies({bool ui = true}) async {
   }
 
   dependencyLocator
-    ..registerSingleton<EnvRepository>(EnvRepository())
+    ..registerSingletonAsync<EnvRepository>(() async {
+      final env = EnvRepository();
+      await env.load();
+      return env;
+    })
     ..registerSingleton<AuthRepository>(
       AuthRepository(
         dependencyLocator<VoipgridService>(),
@@ -153,7 +157,7 @@ Future<void> initializeDependencies({bool ui = true}) async {
     )
     ..registerSingletonWithDependencies<VoipRepository>(
       VoipRepository.new,
-      dependsOn: [MiddlewareService],
+      dependsOn: [MiddlewareService, EnvRepository],
     )
     ..registerSingletonWithDependencies<UserVoipConfigRepository>(
       () => UserVoipConfigRepository(

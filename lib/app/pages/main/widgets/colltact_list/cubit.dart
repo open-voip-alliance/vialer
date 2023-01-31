@@ -18,6 +18,7 @@ import '../../../../../domain/user/settings/app_setting.dart';
 import '../../../../../domain/user/settings/change_setting.dart';
 import '../../../../../domain/user/settings/open_settings.dart';
 import '../../../../../domain/user_availability/colleagues/colleague.dart';
+import '../../../../../domain/user_availability/colleagues/should_show_colleagues.dart';
 import '../../colltacts/colleagues/cubit.dart';
 import '../caller/cubit.dart';
 import 'state.dart';
@@ -25,6 +26,7 @@ import 'state.dart';
 export 'state.dart';
 
 class ColltactsCubit extends Cubit<ColltactsState> {
+  final _shouldShowColleagues = ShouldShowColleagues();
   final _getContacts = GetContactsUseCase();
   final _getPermissionStatus = GetPermissionStatusUseCase();
   final _requestPermission = RequestPermissionUseCase();
@@ -45,7 +47,7 @@ class ColltactsCubit extends Cubit<ColltactsState> {
       : _colleagues;
 
   bool get shouldShowColleagues =>
-      _getUser().permissions.canViewColleagues &&
+      _shouldShowColleagues() &&
       (_colleagues.isNotEmpty ||
           _colleaguesCubit.state is WebSocketUnreachable);
 
