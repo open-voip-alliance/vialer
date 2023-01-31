@@ -211,6 +211,7 @@ main:
       unknown: 'Onbekend'
       busy: 'Bezet'
       app: 'Beschikbaar via app'
+      fixed: 'Externe oproep doorverbinden staat aan'
     context:
       ringing: 'Wordt gebeld'
       inCall: 'In gesprek'

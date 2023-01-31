@@ -126,6 +126,8 @@ class ColleagueAvatar extends StatelessWidget {
         switch (colleague.destination?.type) {
           case ColleagueDestinationType.app:
             return FontAwesomeIcons.mobile;
+          case ColleagueDestinationType.fixed:
+            return FontAwesomeIcons.arrowUpLeftFromCircle;
           default:
             return FontAwesomeIcons.phoneOffice;
         }

@@ -215,6 +215,7 @@ main:
       unknown: 'Unknown'
       busy: 'Busy'
       app: 'Available via app'
+      fixed: 'External call forwarding active'
     context:
       ringing: 'Being called'
       inCall: 'Busy'
