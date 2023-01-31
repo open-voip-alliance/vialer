@@ -19,7 +19,7 @@ PODS:
     - Flutter
   - flutter_libphonenumber (0.0.1):
     - Flutter
-    - PhoneNumberKit/PhoneNumberKitCore (~> 3.3.3)
+    - PhoneNumberKit/PhoneNumberKitCore (= 3.3.4)
   - flutter_phone_lib (0.0.1):
     - Flutter
     - iOSPhoneLib
@@ -60,8 +60,9 @@ PODS:
     - Flutter
   - package_info_plus (0.4.5):
     - Flutter
-  - path_provider_ios (0.0.1):
+  - path_provider_foundation (0.0.1):
     - Flutter
+    - FlutterMacOS
   - permission_handler_apple (9.0.4):
     - Flutter
   - PhoneNumberKit/PhoneNumberKitCore (3.3.4)
@@ -75,27 +76,26 @@ PODS:
   - segment-appsflyer-ios/Main (6.8.0):
     - Analytics
     - AppsFlyerFramework (~> 6.8.0)
-  - Sentry (7.27.1):
-    - Sentry/Core (= 7.27.1)
-  - Sentry/Core (7.27.1)
+  - Sentry/HybridSDK (7.31.5)
   - sentry_flutter (0.0.1):
     - Flutter
     - FlutterMacOS
-    - Sentry (~> 7.27.0)
-  - shared_preferences_ios (0.0.1):
+    - Sentry/HybridSDK (= 7.31.5)
+  - shared_preferences_foundation (0.0.1):
     - Flutter
-  - sqlite3 (3.39.4):
-    - sqlite3/common (= 3.39.4)
-  - sqlite3/common (3.39.4)
-  - sqlite3/fts5 (3.39.4):
+    - FlutterMacOS
+  - sqlite3 (3.40.0):
+    - sqlite3/common (= 3.40.0)
+  - sqlite3/common (3.40.0)
+  - sqlite3/fts5 (3.40.0):
     - sqlite3/common
-  - sqlite3/perf-threadsafe (3.39.4):
+  - sqlite3/perf-threadsafe (3.40.0):
     - sqlite3/common
-  - sqlite3/rtree (3.39.4):
+  - sqlite3/rtree (3.40.0):
     - sqlite3/common
   - sqlite3_flutter_libs (0.0.1):
     - Flutter
-    - sqlite3 (~> 3.39.3)
+    - sqlite3 (~> 3.40.0)
     - sqlite3/fts5
     - sqlite3/perf-threadsafe
     - sqlite3/rtree
@@ -123,10 +123,10 @@ DEPENDENCIES:
   - native_shared_preferences (from `.symlinks/plugins/native_shared_preferences/ios`)
   - package_info (from `.symlinks/plugins/package_info/ios`)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
-  - path_provider_ios (from `.symlinks/plugins/path_provider_ios/ios`)
+  - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/ios`)
   - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
   - sentry_flutter (from `.symlinks/plugins/sentry_flutter/ios`)
-  - shared_preferences_ios (from `.symlinks/plugins/shared_preferences_ios/ios`)
+  - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/ios`)
   - sqlite3_flutter_libs (from `.symlinks/plugins/sqlite3_flutter_libs/ios`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
   - webview_flutter_wkwebview (from `.symlinks/plugins/webview_flutter_wkwebview/ios`)
@@ -180,14 +180,14 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/package_info/ios"
   package_info_plus:
     :path: ".symlinks/plugins/package_info_plus/ios"
-  path_provider_ios:
-    :path: ".symlinks/plugins/path_provider_ios/ios"
+  path_provider_foundation:
+    :path: ".symlinks/plugins/path_provider_foundation/ios"
   permission_handler_apple:
     :path: ".symlinks/plugins/permission_handler_apple/ios"
   sentry_flutter:
     :path: ".symlinks/plugins/sentry_flutter/ios"
-  shared_preferences_ios:
-    :path: ".symlinks/plugins/shared_preferences_ios/ios"
+  shared_preferences_foundation:
+    :path: ".symlinks/plugins/shared_preferences_foundation/ios"
   sqlite3_flutter_libs:
     :path: ".symlinks/plugins/sqlite3_flutter_libs/ios"
   url_launcher_ios:
@@ -211,10 +211,10 @@ SPEC CHECKSUMS:
   device_info: d7d233b645a32c40dfdc212de5cf646ca482f175
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   flutter_keyboard_visibility: 0339d06371254c3eb25eeb90ba8d17dca8f9c069
-  flutter_libphonenumber: 6a23afdf063b34d1e53e6dbd6c6bc905d18e8e46
+  flutter_libphonenumber: 8e7a8f974fda0f5915cf0af846879adf90b08f51
   flutter_phone_lib: 060b342f95c63f9e07e1577f76db7e06f349ef8a
   flutter_segment: 367b7d9f7d74b3875198524ff4d24c381d93e317
-  in_app_review: 4a97249f7a2f539a0f294c2d9196b7fe35e49541
+  in_app_review: 318597b3a06c22bb46dc454d56828c85f444f99d
   integration_test: a1e7d09bd98eca2fc37aefd79d4f41ad37bdbbe5
   iOSPhoneLib: 02e9c1edbeb6267b0653f76c4c5476912e5c3754
   libphonenumber: bd14d5abfc5939ab0b0767234e2d8e2593af258e
@@ -223,19 +223,19 @@ SPEC CHECKSUMS:
   native_shared_preferences: 21a805f6149643c25a20a4f534692131faebadfe
   package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
   package_info_plus: 6c92f08e1f853dc01228d6f553146438dafcd14e
-  path_provider_ios: 14f3d2fd28c4fdb42f44e0f751d12861c43cee02
+  path_provider_foundation: 37748e03f12783f9de2cb2c4eadfaa25fe6d4852
   permission_handler_apple: 44366e37eaf29454a1e7b1b7d736c2cceaeb17ce
   PhoneNumberKit: 441e8b26ec88d598e3591de9061eff18f5dd12e8
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
   Segment-Amplitude: 6c1e59c8c278a21029ba7a6a788fcb31b9233a2c
   segment-appsflyer-ios: 9b84c1b7f94bb7a3c5826c9214cd0630b831e208
-  Sentry: bc644307e2eb6a4c9c55cf117a80b895bb2a25a7
-  sentry_flutter: a8616c994ac18c371aabee21a953cc727c166421
-  shared_preferences_ios: 548a61f8053b9b8a49ac19c1ffbc8b92c50d68ad
-  sqlite3: 401936402fe5aa242c07f87fccfee5fc2b606f45
-  sqlite3_flutter_libs: c6ab7f23670a98fef45a137159452004bc552168
+  Sentry: 4c9babff9034785067c896fd580b1f7de44da020
+  sentry_flutter: b10ae7a5ddcbc7f04648eeb2672b5747230172f1
+  shared_preferences_foundation: 297b3ebca31b34ec92be11acd7fb0ba932c822ca
+  sqlite3: 88dd99ef4ac3945f5a15facdd752933c52fd93bf
+  sqlite3_flutter_libs: c00751e981228acb63595236703da79d31282b63
   Swinject: ddf78b8486dd9b71a667b852cad919ab4484478e
-  url_launcher_ios: 839c58cdb4279282219f5e248c3321761ff3c4de
+  url_launcher_ios: ae1517e5e344f5544fb090b079e11f399dfbe4d2
   webview_flutter_wkwebview: b7e70ef1ddded7e69c796c7390ee74180182971f
 
 PODFILE CHECKSUM: 3c94df00420bebbc904d46fb3456a1ceef989d74
