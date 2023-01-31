@@ -206,6 +206,14 @@ class StorageRepository {
   set grantedVoipgridPermissions(List<String> value) => _preferences
       .setOrRemoveString(_grantedVoipgridPermissionsKey, jsonEncode(value));
 
+  static const _lastPeriodicIdentifyTime = 'last_periodic_identify_time';
+
+  DateTime? get lastPeriodicIdentifyTime =>
+      _preferences.getDateTime(_lastPeriodicIdentifyTime);
+
+  set lastPeriodicIdentifyTime(DateTime? value) =>
+      _preferences.setOrRemoveDateTime(_lastPeriodicIdentifyTime, value);
+
   Future<void> clear() => _preferences.clear();
 
   Future<void> reload() => _preferences.reload();
