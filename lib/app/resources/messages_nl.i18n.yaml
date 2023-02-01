@@ -227,12 +227,18 @@ main:
       colleaguesTabTitle: "Collega's"
     edit: "Wijzig"
     list:
-      loading:
+      loadingContacts:
         # UX wants to have the line break specifically at 2 words
         title: |-
           Je contacten
           worden geladen
         description: "De contacten van je telefoon zijn bijna beschikbaar, nog even geduld. Als je veel contacten op je telefoon hebt staan, kan het wat langer duren."
+      loadingColleagues:
+        # UX wants to have the line break specifically at 2 words
+        title: |-
+          Je collega's
+          worden geladen
+        description: "De collega's zijn bijna beschikbaar, nog even geduld. Als er verbindingsproblemen zijn of als er veel collega's zijn, kan het wat langer duren."
       empty:
         title: "Geen contacten gevonden"
         description(String appName): >-

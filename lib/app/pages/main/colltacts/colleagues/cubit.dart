@@ -31,6 +31,8 @@ class ColleagueCubit extends Cubit<ColleagueState> {
   Future<void> connectToWebSocket({bool fullRefresh = false}) async {
     if (!_shouldShowColleagues() || _subscription != null) return;
 
+    emit(const ColleagueState.loading());
+
     final stream = await _receiveColleagueAvailability(
       forceFullAvailabilityRefresh: fullRefresh,
     );

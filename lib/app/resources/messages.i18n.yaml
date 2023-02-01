@@ -231,9 +231,12 @@ main:
       colleaguesTabTitle: "Colleagues"
     edit: "Edit"
     list:
-      loading:
+      loadingContacts:
         title: "Loading your contacts"
         description: "The contacts from your phone are almost available, please wait a moment. If there are a lot of contacts stored on your phone, it may take a little longer."
+      loadingColleagues:
+        title: "Loading your colleagues"
+        description: "Your colleagues are almost available, please wait a moment. If there are connectivity issues or there are a lot of colleagues, it may take a little longer."
       empty:
         title: "No contacts found"
         description(String appName): >-
