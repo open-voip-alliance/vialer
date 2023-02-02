@@ -238,7 +238,7 @@ main:
         title: |-
           Je collega's
           worden geladen
-        description: "De collega's zijn bijna beschikbaar, nog even geduld. Als er verbindingsproblemen zijn of als er veel collega's zijn, kan het wat langer duren."
+        description: "Je collega's zijn bijna beschikbaar, nog even geduld."
       empty:
         title: "Geen contacten gevonden"
         description(String appName): >-
