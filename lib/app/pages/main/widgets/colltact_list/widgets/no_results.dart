@@ -48,8 +48,10 @@ class NoResultsPlaceholder extends StatelessWidget {
       case NoResultsType.noColleagueConnectivity:
         return context
             .msg.main.colltacts.userAvailabilityWebSocketUnreachable.title;
+      case NoResultsType.colleaguesLoading:
+        return context.msg.main.contacts.list.loadingColleagues.title;
       case NoResultsType.contactsLoading:
-        return context.msg.main.contacts.list.loading.title;
+        return context.msg.main.contacts.list.loadingContacts.title;
       case NoResultsType.noContactsExist:
         return context.msg.main.contacts.list.empty.title;
       case NoResultsType.noContactsPermission:
@@ -69,8 +71,10 @@ class NoResultsPlaceholder extends StatelessWidget {
       case NoResultsType.noColleagueConnectivity:
         return context
             .msg.main.colltacts.userAvailabilityWebSocketUnreachable.subtitle;
+      case NoResultsType.colleaguesLoading:
+        return context.msg.main.contacts.list.loadingColleagues.description;
       case NoResultsType.contactsLoading:
-        return context.msg.main.contacts.list.loading.description;
+        return context.msg.main.contacts.list.loadingContacts.description;
       case NoResultsType.noContactsExist:
         return context.msg.main.contacts.list.empty.description(
           context.brand.appName,
@@ -100,7 +104,8 @@ class NoResultsPlaceholder extends StatelessWidget {
   Widget build(BuildContext context) {
     if (type == null) return child;
 
-    if (type == NoResultsType.contactsLoading) {
+    if (type == NoResultsType.contactsLoading ||
+        type == NoResultsType.colleaguesLoading) {
       return LoadingIndicator(
         title: Text(_title(context)),
         description: Text(_subtitle(context)),
@@ -160,6 +165,7 @@ class _CircularGraphic extends StatelessWidget {
         return FontAwesomeIcons.magnifyingGlass;
       case NoResultsType.noColleagueConnectivity:
         return FontAwesomeIcons.circleExclamation;
+      case NoResultsType.colleaguesLoading:
       case NoResultsType.contactsLoading:
         return FontAwesomeIcons.abacus;
       case NoResultsType.noContactsExist:
@@ -204,6 +210,7 @@ enum NoResultsType {
   noOnlineColleagues,
   noSearchResults,
   noColleagueConnectivity,
+  colleaguesLoading,
   contactsLoading,
   noContactsExist,
   noContactsPermission,
