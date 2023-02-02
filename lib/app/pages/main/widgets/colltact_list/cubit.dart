@@ -49,6 +49,7 @@ class ColltactsCubit extends Cubit<ColltactsState> {
   bool get shouldShowColleagues =>
       _shouldShowColleagues() &&
       (_colleagues.isNotEmpty ||
+          _colleaguesCubit.state is Loading ||
           _colleaguesCubit.state is WebSocketUnreachable);
 
   bool get canViewColleagues => _getUser().permissions.canViewColleagues;

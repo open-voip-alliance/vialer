@@ -359,7 +359,9 @@ class _ColltactPageState extends State<_ColltactList>
 
         return null;
       case ColltactKind.colleague:
-        if (colleagueState is WebSocketUnreachable) {
+        if (colleagueState is Loading) {
+          return NoResultsType.colleaguesLoading;
+        } else if (colleagueState is WebSocketUnreachable) {
           return NoResultsType.noColleagueConnectivity;
         } else if (cubit.showOnlineColleaguesOnly &&
             !hasSearchQuery &&
