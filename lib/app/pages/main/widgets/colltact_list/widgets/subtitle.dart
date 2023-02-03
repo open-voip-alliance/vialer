@@ -85,16 +85,9 @@ extension on Colleague {
       );
 
   String? availabilityText(BuildContext context) => map(
-        (colleague) {
-          if (colleague.isAvailableOnMobileApp) {
-            return context.msg.main.colleagues.status.app;
-          } else if (colleague.destination?.type ==
-              ColleagueDestinationType.fixed) {
-            return context.msg.main.colleagues.status.fixed;
-          }
-
-          return colleague.status?.text(context);
-        },
+        (colleague) => colleague.isAvailableOnMobileAppOrFixedDestination
+            ? context.msg.main.colleagues.status.available
+            : colleague.status?.text(context),
         unconnectedVoipAccount: (_) => null,
       );
 }
