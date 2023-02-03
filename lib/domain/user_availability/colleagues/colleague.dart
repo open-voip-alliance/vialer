@@ -18,7 +18,7 @@ class Colleague with _$Colleague {
 
   bool get isAvailableOnMobileAppOrFixedDestination => map(
         (colleague) =>
-            [ColleagueDestinationType.app, ColleagueDestinationType.fixed]
+            const [ColleagueDestinationType.app, ColleagueDestinationType.fixed]
                 .contains(colleague.destination?.type) &&
             colleague.status == ColleagueAvailabilityStatus.unknown,
         unconnectedVoipAccount: (_) => false,
