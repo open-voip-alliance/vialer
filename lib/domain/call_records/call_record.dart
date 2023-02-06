@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
+part 'call_record.freezed.dart';
 part 'call_record.g.dart';
 
 class CallRecord extends Equatable {
@@ -98,27 +99,18 @@ enum CallerType {
   other,
 }
 
-@JsonSerializable()
-class CallParty extends Equatable {
-  final String? name;
-  final String number;
-  final CallerType type;
-
-  const CallParty({
-    this.name,
-    required this.number,
-    required this.type,
-  });
-
-  String get label => hasName ? name! : number;
+@freezed
+class CallParty with _$CallParty {
+  const factory CallParty({
+    String? name,
+    required String number,
+    required CallerType type,
+  }) = _CallParty;
 
   bool get hasName => name?.isNotEmpty == true;
 
-  @override
-  List<Object?> get props => [name, number, type];
+  String get label => hasName ? name! : number;
 
   factory CallParty.fromJson(Map<String, dynamic> json) =>
       _$CallPartyFromJson(json);
-
-  Map<String, dynamic> toJson() => _$CallPartyToJson(this);
 }
