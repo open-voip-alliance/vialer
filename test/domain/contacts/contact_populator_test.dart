@@ -86,7 +86,7 @@ _expectContactMatching(
 }
 
 List<CallRecord> _generateDummyCallRecordsForNumber(String number) => [
-      CallRecord(
+      CallRecordWithoutContact(
         id: 'dummyId',
         callType: CallType.colleague,
         callDirection: Direction.inbound,

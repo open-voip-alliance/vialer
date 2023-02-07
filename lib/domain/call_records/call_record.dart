@@ -9,7 +9,7 @@ part 'call_record.g.dart';
 class CallRecord with _$CallRecord {
   const CallRecord._();
 
-  const factory CallRecord({
+  const factory CallRecord.withoutContact({
     required String id,
     required CallType callType,
     required Direction callDirection,
@@ -19,7 +19,7 @@ class CallRecord with _$CallRecord {
     required DateTime date,
     required CallParty caller,
     required CallParty destination,
-  }) = _CallRecord;
+  }) = CallRecordWithoutContact;
 
   /// CallRecord with a contact that relates to the [destinationNumber].
   const factory CallRecord.withContact({
