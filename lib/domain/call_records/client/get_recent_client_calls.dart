@@ -2,7 +2,7 @@ import 'dart:core';
 
 import '../../../dependency_locator.dart';
 import '../../use_case.dart';
-import 'client_call_record.dart';
+import '../call_record.dart';
 import 'local_client_calls.dart';
 
 class GetRecentClientCallsUseCase extends UseCase {

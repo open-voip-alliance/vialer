@@ -6,7 +6,7 @@ extension FromVoipgridCallRecord on VoipgridCallRecord {
     return CallRecord(
       id: id,
       callType: _mapCallType(type),
-      direction: _mapDirection(direction),
+      callDirection: _mapDirection(direction),
       answered: answered,
       answeredElsewhere: isAnsweredElsewhere,
       duration: Duration(seconds: durationInSeconds),
