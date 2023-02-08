@@ -102,7 +102,9 @@ class ColleagueAvatar extends StatelessWidget {
           case ColleagueAvailabilityStatus.busy:
             return busy;
           default:
-            return colleague.isAvailableOnMobileApp ? available : unknown;
+            return colleague.isAvailableOnMobileAppOrFixedDestination
+                ? available
+                : unknown;
         }
       },
       unconnectedVoipAccount: (_) => unknown,
@@ -119,22 +121,6 @@ class ColleagueAvatar extends StatelessWidget {
       );
     }
 
-    // We will choose an icon based on the account type, this will only be used
-    // based on their availability status below.
-    final accountTypeIcon = colleague.map(
-      (colleague) {
-        switch (colleague.destination?.type) {
-          case ColleagueDestinationType.app:
-            return FontAwesomeIcons.mobile;
-          case ColleagueDestinationType.fixed:
-            return FontAwesomeIcons.arrowUpLeftFromCircle;
-          default:
-            return FontAwesomeIcons.phoneOffice;
-        }
-      },
-      unconnectedVoipAccount: (_) => FontAwesomeIcons.phoneOffice,
-    );
-
     return colleague.map(
       (colleague) {
         switch (colleague.status) {
@@ -145,7 +131,9 @@ class ColleagueAvatar extends StatelessWidget {
           case ColleagueAvailabilityStatus.busy:
             return FontAwesomeIcons.phoneVolume;
           case ColleagueAvailabilityStatus.unknown:
-            return accountTypeIcon;
+            return colleague.isAvailableOnMobileAppOrFixedDestination
+                ? FontAwesomeIcons.wifi
+                : FontAwesomeIcons.wifiSlash;
           case ColleagueAvailabilityStatus.offline:
             return FontAwesomeIcons.wifiSlash;
           default:

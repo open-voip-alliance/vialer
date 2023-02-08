@@ -16,9 +16,10 @@ class Colleague with _$Colleague {
         unconnectedVoipAccount: (_) => null,
       );
 
-  bool get isAvailableOnMobileApp => map(
+  bool get isAvailableOnMobileAppOrFixedDestination => map(
         (colleague) =>
-            colleague.destination?.type == ColleagueDestinationType.app &&
+            const [ColleagueDestinationType.app, ColleagueDestinationType.fixed]
+                .contains(colleague.destination?.type) &&
             colleague.status == ColleagueAvailabilityStatus.unknown,
         unconnectedVoipAccount: (_) => false,
       );
@@ -32,7 +33,7 @@ class Colleague with _$Colleague {
               ColleagueAvailabilityStatus.doNotDisturb,
               ColleagueAvailabilityStatus.busy,
             ].contains(colleague.status) ||
-            isAvailableOnMobileApp,
+            isAvailableOnMobileAppOrFixedDestination,
         unconnectedVoipAccount: (_) => false,
       );
 
