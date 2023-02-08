@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../../../domain/user/launch_privacy_policy.dart';
+import '../../../../domain/user/launch_sign_up.dart';
 import '../../../resources/localizations.dart';
 import '../../../resources/theme.dart';
 import '../../../util/conditional_capitalization.dart';
@@ -248,6 +249,16 @@ class _LoginPageState extends State<LoginPage>
                             ),
                           ),
                           const SizedBox(height: 12),
+                          if (context.read<LoginCubit>().shouldShowSignUpLink)
+                            TextButton(
+                              onPressed: () => LaunchSignUp()(),
+                              child: Text(
+                                context.msg.main.settings
+                                    .signUp(context.brand.appName)
+                                    .toUpperCaseIfAndroid(context),
+                                style: const TextStyle(color: Colors.white),
+                              ),
+                            ),
                           TextButton(
                             onPressed: () => LaunchPrivacyPolicy()(),
                             child: Text(
