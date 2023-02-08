@@ -392,20 +392,10 @@ extension CallDestinationLabel on CallRecord {
   String get displayLabel {
     final callRecord = this;
 
-    final contact = callRecord.whenOrNull(
-      withContact: (
-        _,
-        __,
-        ___,
-        ____,
-        _____,
-        ______,
-        _______,
-        ________,
-        _________,
-        contact,
-      ) =>
-          contact,
+    final contact = callRecord.map(
+      withoutContact: (_) => null,
+      withContact: (callRecord) => callRecord.contact,
+      client: (_) => null,
     );
 
     // We always want to prioritize a local contact in the user's phone.
@@ -516,20 +506,10 @@ extension RenderType on CallRecord {
   CallRecordRenderType get renderType {
     final callRecord = this;
 
-    return callRecord.maybeWhen(
-      withoutContact: (
-        _,
-        __,
-        ___,
-        ____,
-        _____,
-        ______,
-        _______,
-        ________,
-        _________,
-      ) =>
-          callRecord.renderType,
-      orElse: () => CallRecordRenderType.other,
+    return callRecord.map(
+      withoutContact: (_) => CallRecordRenderType.other,
+      withContact: (callRecord) => callRecord.renderType,
+      client: (_) => CallRecordRenderType.other,
     );
   }
 }
