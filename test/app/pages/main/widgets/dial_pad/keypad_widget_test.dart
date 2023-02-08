@@ -447,6 +447,7 @@ class TestApp extends StatelessWidget {
             'https://api.eu-prod.holodeck.wearespindle.com/business-availability/clients/'),
         userAvailabilityWsUrl: Uri.parse('ws'),
         privacyPolicyUrl: Uri.parse('dummypolicy.com'),
+        signUpUrl: null,
       ),
       child: Builder(builder: (context) {
         return MaterialApp(

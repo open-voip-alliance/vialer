@@ -28,7 +28,7 @@ class ChangeCurrentTemporaryRedirect extends UseCase
     }
 
     track({
-      'ending-at': temporaryRedirect.endsAt,
+      'ending-at': temporaryRedirect.endsAt.toIso8601String(),
       'id': temporaryRedirect.id,
     });
 

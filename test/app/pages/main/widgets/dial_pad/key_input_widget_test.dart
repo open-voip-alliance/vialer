@@ -31,6 +31,7 @@ void main() {
               'https://api.eu-prod.holodeck.wearespindle.com/business-availability/clients/'),
           userAvailabilityWsUrl: Uri.parse('ws'),
           privacyPolicyUrl: Uri.parse('dummypolicy.com'),
+          signUpUrl: null,
         ),
         child: KeyInput(
           controller: controller,
