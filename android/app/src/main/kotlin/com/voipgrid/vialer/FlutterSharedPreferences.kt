@@ -97,8 +97,8 @@ value class SettingsJson(val json: JSONObject) {
 
 @JvmInline
 value class ClientJson(val json: JSONObject) {
-    val voip: ClientVoipConfigJson
-        get() = json.getJSONObject("voip").let { ClientVoipConfigJson(it) }
+    val voip: ClientVoipConfigJson?
+        get() = json.optJSONObject("voip")?.let { ClientVoipConfigJson(it) }
 }
 
 @JvmInline
