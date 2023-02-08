@@ -65,10 +65,9 @@ class RefreshUser extends UseCase with Loggable {
     return SynchronizedTask<User?>.of(this).run(() async {
       // Latest user contains some settings, such as mobile and
       // outgoing number.
-      var user = storedUser?.copyFrom(latestUser) ??
-          latestUser.copyWith(
-            settings: const Settings.defaults().copyFrom(latestUser.settings),
-          );
+      var user = (storedUser?.copyFrom(latestUser) ?? latestUser).copyWith(
+        settings: const Settings.defaults().copyFrom(latestUser.settings),
+      );
 
       // If we're retrieving the user for the first time (logging in),
       // we store  the user already, so that the AuthorizationInterceptor
