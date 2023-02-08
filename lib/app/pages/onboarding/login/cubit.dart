@@ -5,6 +5,7 @@ import '../../../../domain/onboarding/login.dart';
 import '../../../../domain/onboarding/login_credentials.dart';
 import '../../../../domain/onboarding/step.dart';
 import '../../../../domain/onboarding/two_factor_authentication_required.dart';
+import '../../../../domain/user/get_brand.dart';
 import '../../../util/loggable.dart';
 import '../../../util/password.dart' as util;
 import '../cubit.dart';
@@ -15,6 +16,7 @@ export 'state.dart';
 class LoginCubit extends Cubit<LoginState> with Loggable {
   final OnboardingCubit _onboarding;
   final _login = LoginUseCase();
+  final _getBrand = GetBrand();
 
   LoginCubit(this._onboarding) : super(const NotLoggedIn());
 
@@ -76,4 +78,6 @@ class LoginCubit extends Cubit<LoginState> with Loggable {
       emit(const LoginFailed());
     }
   }
+
+  bool get shouldShowSignUpLink => _getBrand().signUpUrl != null;
 }
