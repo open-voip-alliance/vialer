@@ -18,7 +18,7 @@ class LogoutOnUnauthorizedResponse extends UseCase {
       'Logging unauthorized user out, code was: ${event.statusCode}.',
     );
 
-    _logout();
+    return _logout();
   }
 
   /// We only want to log the user out if they have received an unauthorized
