@@ -22,7 +22,7 @@ class ImportNewClientCallRecordsUseCase extends UseCase with Loggable {
     final now = DateTime.now();
 
     return _importClientCalls(
-      from: start.isBefore(now) ? start : fallbackStartTime,
+      from: start.toUtc().isBefore(now.toUtc()) ? start : fallbackStartTime,
       to: now,
     );
   }
