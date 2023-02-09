@@ -45,7 +45,7 @@ extension on DateTime {
         second,
       );
 
-  DateTime get endOfMonth => copyWith(
+  DateTime get lastDayOfMonth => copyWith(
         day: daysInMonth,
         hour: 23,
         minute: 59,
