@@ -14,7 +14,7 @@ class MonthSplitter {
     if (to.isBefore(from)) {
       throw ArgumentError(
         'to (${to.toIso8601String()}) must not be '
-        'before {${from.toIso8601String()}',
+        'before from {${from.toIso8601String()}',
       );
     }
 
