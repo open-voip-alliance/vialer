@@ -44,4 +44,32 @@ void main() {
       throwsA(const TypeMatcher<ArgumentError>()),
     );
   });
+
+  test('Handles date ranges across year', () {
+    // Using an actual date range that was causing issues
+    final result = splitter.split(
+      from: DateTime(2022, 12, 30, 15, 25, 16, 000),
+      to: DateTime(
+        2023,
+        02,
+        09,
+        15,
+        46,
+        24,
+        0,
+        624181,
+      ),
+    );
+
+    expect(result.length, 3);
+
+    expect(
+      result,
+      {
+        DateTime(2022, 12, 1): DateTime(2022, 12, 31, 23, 59, 59, 0, 999),
+        DateTime(2023, 1, 1): DateTime(2023, 1, 31, 23, 59, 59, 0, 999),
+        DateTime(2023, 2, 1): DateTime(2023, 2, 28, 23, 59, 59, 0, 624999),
+      },
+    );
+  });
 }

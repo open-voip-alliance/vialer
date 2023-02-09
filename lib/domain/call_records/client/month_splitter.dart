@@ -24,7 +24,7 @@ class MonthSplitter {
 
     var newDate = from.addMonth();
 
-    while (!newDate.isAtSameMonthAs(to)) {
+    while (!newDate.isAtSameMonthAs(to) && !newDate.isAfter(to)) {
       monthsToQuery[newDate.firstDayOfMonth] = newDate.endOfMonth;
       newDate = newDate.addMonth();
     }
