@@ -22,6 +22,10 @@ class NoPermission extends CallerState {
   List<Object?> get props => [dontAskAgain];
 }
 
+class PreparingCall extends CallerState {
+  const PreparingCall();
+}
+
 class CanCall extends CallerState {
   const CanCall();
 }
@@ -59,9 +63,9 @@ abstract class CallProcessState extends CallOriginDetermined {
   /// We are currently in a state where we can perform actions on the call,
   /// such as placing it on hold.
   bool get isActionable =>
-      this is! InitiatingCallFailed &&
+      this is! StartingCallFailed &&
           this is! Ringing &&
-          this is! InitiatingCall &&
+          this is! StartingCall &&
           !isFinished &&
           !isInTransfer ||
       isMergeable;
@@ -92,10 +96,10 @@ abstract class CallProcessState extends CallOriginDetermined {
     CallSessionState? voip,
   });
 
-  InitiatingCallFailed failed(CallThroughException exception) {
-    assert(this is InitiatingCall);
+  StartingCallFailed failed(CallThroughException exception) {
+    assert(this is StartingCall);
 
-    return InitiatingCallFailed.withException(
+    return StartingCallFailed.withException(
       exception,
       origin: origin,
       voip: voip,
@@ -142,7 +146,7 @@ class ShowCallThroughConfirmPage extends CallOriginDetermined
 /// abstraction, we only use [Ringing] to indicate that our app is ringing
 /// because of an incoming call.
 ///
-/// See [InitiatingCall] for the outgoing equivalent.
+/// See [StartingCall] for the outgoing equivalent.
 class Ringing extends CallProcessState {
   const Ringing({
     required CallSessionState voip,
@@ -162,8 +166,8 @@ class Ringing extends CallProcessState {
       );
 }
 
-class InitiatingCall extends CallProcessState {
-  const InitiatingCall({
+class StartingCall extends CallProcessState {
+  const StartingCall({
     required CallOrigin origin,
     CallSessionState? voip,
   }) : super(
@@ -172,29 +176,29 @@ class InitiatingCall extends CallProcessState {
         );
 
   @override
-  InitiatingCall copyWith({
+  StartingCall copyWith({
     CallOrigin? origin,
     CallSessionState? voip,
   }) =>
-      InitiatingCall(
+      StartingCall(
         origin: origin ?? this.origin,
         voip: voip ?? this.voip,
       );
 }
 
-abstract class InitiatingCallFailed extends CallProcessState
+abstract class StartingCallFailed extends CallProcessState
     implements CanCall {
-  const InitiatingCallFailed._({
+  const StartingCallFailed._({
     required CallOrigin origin,
     required CallSessionState? voip,
   }) : super(origin: origin, voip: voip);
 
-  factory InitiatingCallFailed.withException(
+  factory StartingCallFailed.withException(
     Exception exception, {
     required CallOrigin origin,
     required CallSessionState? voip,
   }) =>
-      InitiatingCallFailedWithException(
+      StartingCallFailedWithException(
         exception,
         origin: origin,
         voip: voip,
@@ -202,18 +206,18 @@ abstract class InitiatingCallFailed extends CallProcessState
 
   /// [reason] must not be `unknown`. Use the other constructor if that's the
   /// case.
-  factory InitiatingCallFailed.because(
+  factory StartingCallFailed.because(
     CallFailureReason reason, {
     required CallOrigin origin,
     required bool isVoip,
   }) =>
-      InitiatingCallFailedWithReason(reason, origin: origin, isVoip: isVoip);
+      StartingCallFailedWithReason(reason, origin: origin, isVoip: isVoip);
 }
 
-class InitiatingCallFailedWithException extends InitiatingCallFailed {
+class StartingCallFailedWithException extends StartingCallFailed {
   final Exception exception;
 
-  const InitiatingCallFailedWithException(
+  const StartingCallFailedWithException(
     this.exception, {
     required CallOrigin origin,
     required CallSessionState? voip,
@@ -223,19 +227,19 @@ class InitiatingCallFailedWithException extends InitiatingCallFailed {
   List<Object?> get props => [...super.props, exception];
 
   @override
-  InitiatingCallFailedWithException copyWith({
+  StartingCallFailedWithException copyWith({
     Exception? exception,
     CallOrigin? origin,
     CallSessionState? voip,
   }) =>
-      InitiatingCallFailedWithException(
+      StartingCallFailedWithException(
         exception ?? this.exception,
         origin: origin ?? this.origin,
         voip: voip ?? this.voip,
       );
 }
 
-class InitiatingCallFailedWithReason extends InitiatingCallFailed {
+class StartingCallFailedWithReason extends StartingCallFailed {
   final CallFailureReason reason;
 
   final bool _isVoip;
@@ -243,7 +247,7 @@ class InitiatingCallFailedWithReason extends InitiatingCallFailed {
   @override
   bool get isVoip => _isVoip;
 
-  const InitiatingCallFailedWithReason(
+  const StartingCallFailedWithReason(
     this.reason, {
     required CallOrigin origin,
     CallSessionState? voip,
@@ -256,12 +260,12 @@ class InitiatingCallFailedWithReason extends InitiatingCallFailed {
   List<Object?> get props => [...super.props, reason, _isVoip];
 
   @override
-  InitiatingCallFailedWithReason copyWith({
+  StartingCallFailedWithReason copyWith({
     CallFailureReason? reason,
     CallOrigin? origin,
     CallSessionState? voip,
   }) =>
-      InitiatingCallFailedWithReason(
+      StartingCallFailedWithReason(
         reason ?? this.reason,
         origin: origin ?? this.origin,
         voip: voip ?? this.voip,
