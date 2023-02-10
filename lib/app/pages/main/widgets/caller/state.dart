@@ -186,8 +186,7 @@ class StartingCall extends CallProcessState {
       );
 }
 
-abstract class StartingCallFailed extends CallProcessState
-    implements CanCall {
+abstract class StartingCallFailed extends CallProcessState implements CanCall {
   const StartingCallFailed._({
     required CallOrigin origin,
     required CallSessionState? voip,
