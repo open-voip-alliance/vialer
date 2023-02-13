@@ -58,6 +58,13 @@ class ColleagueAvatar extends StatelessWidget {
   final Colleague colleague;
   final double size;
 
+  static const availableIcon = FontAwesomeIcons.user;
+  static const unavailableIcon = FontAwesomeIcons.userSlash;
+  static const ringingIcon = FontAwesomeIcons.userSlash;
+  static const inCallIcon = FontAwesomeIcons.phoneVolume;
+  static const dndIcon = FontAwesomeIcons.bellSlash;
+  static const voipAccountIcon = FontAwesomeIcons.phoneOffice;
+
   const ColleagueAvatar(
     this.colleague, {
     Key? key,
@@ -116,8 +123,8 @@ class ColleagueAvatar extends StatelessWidget {
 
     if (context != null) {
       return context.when(
-        ringing: () => FontAwesomeIcons.bell,
-        inCall: () => FontAwesomeIcons.phoneVolume,
+        ringing: () => ringingIcon,
+        inCall: () => inCallIcon,
       );
     }
 
@@ -125,22 +132,22 @@ class ColleagueAvatar extends StatelessWidget {
       (colleague) {
         switch (colleague.status) {
           case ColleagueAvailabilityStatus.available:
-            return FontAwesomeIcons.wifi;
+            return availableIcon;
           case ColleagueAvailabilityStatus.doNotDisturb:
-            return FontAwesomeIcons.bellSlash;
+            return dndIcon;
           case ColleagueAvailabilityStatus.busy:
-            return FontAwesomeIcons.phoneVolume;
+            return inCallIcon;
           case ColleagueAvailabilityStatus.unknown:
             return colleague.isAvailableOnMobileAppOrFixedDestination
-                ? FontAwesomeIcons.wifi
-                : FontAwesomeIcons.wifiSlash;
+                ? availableIcon
+                : unavailableIcon;
           case ColleagueAvailabilityStatus.offline:
-            return FontAwesomeIcons.wifiSlash;
+            return unavailableIcon;
           default:
-            return FontAwesomeIcons.phoneOffice;
+            return voipAccountIcon;
         }
       },
-      unconnectedVoipAccount: (_) => FontAwesomeIcons.phoneOffice,
+      unconnectedVoipAccount: (_) => voipAccountIcon,
     );
   }
 
