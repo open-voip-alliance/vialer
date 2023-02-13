@@ -2,9 +2,11 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../dependency_locator.dart';
 import '../../../../domain/authentication/logout.dart';
 import '../../../../domain/calling/voip/perform_echo_cancellation_calibration.dart';
 import '../../../../domain/feedback/send_saved_logs_to_remote.dart';
+import '../../../../domain/legacy/storage.dart';
 import '../../../../domain/onboarding/request_permission.dart';
 import '../../../../domain/user/get_build_info.dart';
 import '../../../../domain/user/get_logged_in_user.dart';
@@ -33,6 +35,8 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
   final _getUser = GetLoggedInUserUseCase();
   final _refreshUser = RefreshUser();
 
+  final _storageRepository = dependencyLocator<StorageRepository>();
+
   late StreamSubscription _userRefresherSubscription;
 
   SettingsCubit(
@@ -60,6 +64,8 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
         ).then(
           (status) => status == PermissionStatus.granted,
         ),
+        userNumber: _storageRepository.userNumber,
+        availableDestinations: _storageRepository.availableDestinations,
       ),
     );
   }

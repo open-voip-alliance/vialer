@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
-import '../../voipgrid/availability.dart';
+import '../../calling/voip/destination.dart';
 import 'settings.dart';
 
 enum CallSetting<T extends Object> with SettingKey<T> {
@@ -15,10 +15,10 @@ enum CallSetting<T extends Object> with SettingKey<T> {
   mobileNumber<String>(),
   dnd<bool>(),
   usePhoneRingtone<bool>(),
-  availability<Availability>(
+  destination<Destination>(
     Converters(
-      Availability.toJson,
-      Availability.fromJson,
+      Destination.serializeToJson,
+      Destination.fromJson,
     ),
   ),
 

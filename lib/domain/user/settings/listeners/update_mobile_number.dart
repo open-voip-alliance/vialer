@@ -17,7 +17,7 @@ class UpdateMobileNumberListener extends SettingChangeListener<String>
   final key = CallSetting.mobileNumber;
 
   @override
-  FutureOr<SettingChangeListenResult> beforeStore(User user, String number) =>
+  FutureOr<SettingChangeListenResult> preStore(User user, String number) =>
       changeRemoteValue(() async {
         final success = await _authRepository.changeMobileNumber(number);
         if (success) {
