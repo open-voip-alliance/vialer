@@ -1,12 +1,10 @@
+import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../../domain/calling/voip/destination.dart';
 import '../../../../../../domain/user/settings/call_setting.dart';
 import '../../../../../../domain/user/user.dart';
-import '../../../../../../domain/voipgrid/availability.dart';
-import '../../../../../../domain/voipgrid/destination.dart';
-import '../../../../../../domain/voipgrid/fixed_destination.dart';
-import '../../../../../../domain/voipgrid/phone_account.dart';
 import '../../../../../../domain/voipgrid/web_page.dart';
 import '../../../../../resources/localizations.dart';
 import '../../../../../resources/theme.dart';
@@ -19,27 +17,31 @@ import 'widget.dart';
 
 class AvailabilityTile extends StatelessWidget {
   final User user;
+  final int? userNumber;
+  final List<Destination> destinations;
 
-  final Availability _availability;
   final UserAvailabilityType _userAvailabilityType;
 
-  AvailabilityTile(this.user, {super.key})
-      : _availability = user.settings.get(CallSetting.availability),
-        _userAvailabilityType = user.availabilityType;
+  AvailabilityTile({
+    required this.user,
+    this.userNumber,
+    required this.destinations,
+    super.key,
+  }) : _userAvailabilityType = user.availabilityType;
 
   late final bool _shouldDisplayNoAppAccountWarning =
-      _availability.findAppAccountFor(user: user) == null;
+      destinations.findAppAccountFor(user: user) == null;
 
   late final bool _shouldDisplayAvailabilityInfo =
       (_userAvailabilityType == UserAvailabilityType.elsewhere ||
               _userAvailabilityType == UserAvailabilityType.notAvailable) &&
-          _availability.phoneAccounts.isNotEmpty;
+          destinations.phoneAccounts.isNotEmpty;
 
   String _text(BuildContext context) {
     var info = _createInfo(
       [
         user.email,
-        _availability.internalNumber.toString(),
+        userNumber.toString(),
       ],
       separator: ' - ',
     );
@@ -58,8 +60,8 @@ class AvailabilityTile extends StatelessWidget {
   }
 
   late final String _accountInfoText = () {
-    final account = _availability.findAppAccountFor(user: user) ??
-        _availability.phoneAccounts.first;
+    final account = destinations.findAppAccountFor(user: user) ??
+        destinations.phoneAccounts.first;
 
     return _createInfo([
       account.internalNumber.toString(),
@@ -67,7 +69,7 @@ class AvailabilityTile extends StatelessWidget {
     ]);
   }();
 
-  String _sharedText(BuildContext context, Availability availability) =>
+  String _sharedText(BuildContext context) =>
       context.msg.main.settings.list.calling.availability
           .resume(_accountInfoText);
 
@@ -94,7 +96,7 @@ class AvailabilityTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const key = CallSetting.availability;
+    const key = CallSetting.destination;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -136,7 +138,6 @@ class AvailabilityTile extends StatelessWidget {
                 child: StyledText(
                   _sharedText(
                     context,
-                    _availability,
                   ),
                   style: TextStyle(
                     color: _userAvailabilityType.asColor(context),
@@ -157,9 +158,9 @@ class AvailabilityTile extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             MultipleChoiceSettingValue<Destination?>(
-              value: _availability.activeDestination,
+              value: user.settings.getOrNull(CallSetting.destination),
               items: [
-                ..._availability.destinations.map(
+                ...destinations.map(
                   (destination) => DropdownMenuItem<Destination>(
                     child: FittedBox(
                       fit: BoxFit.scaleDown,
@@ -180,9 +181,7 @@ class AvailabilityTile extends StatelessWidget {
                   ? defaultOnChanged(
                       context,
                       key,
-                      _availability.copyWithSelectedDestination(
-                        destination: destination,
-                      ),
+                      destination,
                     )
                   : () {},
               isExpanded: true,
@@ -196,25 +195,25 @@ class AvailabilityTile extends StatelessWidget {
 
 extension AvailabilityType on User {
   UserAvailabilityType get availabilityType {
-    final availability = settings.get(CallSetting.availability);
+    final user = this;
+    final destination = user.settings.getOrNull(CallSetting.destination);
 
-    final selectedDestination = availability.selectedDestinationInfo ?? null;
-
-    if (selectedDestination == null ||
-        (selectedDestination.phoneAccountId == null &&
-            selectedDestination.fixedDestinationId == null)) {
+    if (destination == null) {
       return UserAvailabilityType.notAvailable;
     }
 
-    if (selectedDestination.phoneAccountId.toString() == appAccountId) {
-      return UserAvailabilityType.available;
-    }
-
-    return UserAvailabilityType.elsewhere;
+    return destination.when(
+      unknown: () => UserAvailabilityType.unknown,
+      notAvailable: () => UserAvailabilityType.notAvailable,
+      phoneAccount: (id, _, __, ___) => id.toString() == user.appAccountId
+          ? UserAvailabilityType.available
+          : UserAvailabilityType.elsewhere,
+      phoneNumber: (_, __, ___) => UserAvailabilityType.elsewhere,
+    );
   }
 }
 
-enum UserAvailabilityType { available, elsewhere, notAvailable }
+enum UserAvailabilityType { available, elsewhere, notAvailable, unknown }
 
 extension Display on UserAvailabilityType {
   Color asColor(BuildContext context) {
@@ -242,19 +241,28 @@ extension on Destination {
   String dropdownValue(BuildContext context) {
     final destination = this;
 
-    if (destination == FixedDestination.notAvailable) {
-      return context.msg.main.settings.list.calling.notAvailable;
-    } else {
-      if (destination is FixedDestination) {
-        if (destination.phoneNumber == null) {
-          return '${destination.description}';
-        }
+    return destination.when(
+      unknown: () => context.msg.main.settings.list.calling.unknown,
+      notAvailable: () => context.msg.main.settings.list.calling.notAvailable,
+      phoneNumber: (_, description, phoneNumber) =>
+          phoneNumber == null ? '$description' : '$phoneNumber / $description',
+      phoneAccount: (_, description, __, internalNumber) =>
+          '$internalNumber / $description',
+    );
+  }
+}
 
-        return '${destination.phoneNumber} / ${destination.description}';
-      } else {
-        return '${(destination as PhoneAccount).internalNumber} /'
-            ' ${destination.description}';
-      }
-    }
+extension on List<Destination> {
+  List<PhoneAccount> get phoneAccounts {
+    final destinations = this;
+    return destinations.whereType<PhoneAccount>().toList();
+  }
+
+  PhoneAccount? findAppAccountFor({required User user}) {
+    final destinations = this;
+
+    return destinations.phoneAccounts.firstOrNullWhere(
+      (phoneAccount) => user.appAccountId == phoneAccount.id.toString(),
+    );
   }
 }

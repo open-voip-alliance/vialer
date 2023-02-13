@@ -4,13 +4,13 @@ import 'dart:convert';
 import 'package:dartx/dartx.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../calling/voip/destination.dart';
 import '../user/client.dart';
 import '../user/permissions/user_permissions.dart';
 import '../user/settings/app_setting.dart';
 import '../user/settings/call_setting.dart';
 import '../user/settings/settings.dart';
 import '../user/user.dart';
-import '../voipgrid/availability.dart';
 import '../voipgrid/client_voip_config.dart';
 import '../voipgrid/user_voip_config.dart';
 
@@ -214,6 +214,30 @@ class StorageRepository {
   set lastPeriodicIdentifyTime(DateTime? value) =>
       _preferences.setOrRemoveDateTime(_lastPeriodicIdentifyTime, value);
 
+  static const _userNumberKey = 'user_number';
+
+  int? get userNumber => _preferences.getInt(_userNumberKey);
+
+  set userNumber(int? number) =>
+      _preferences.setOrRemoveInt(_userNumberKey, number);
+
+  static const _availableDestinationsKey = 'available_destinations';
+
+  List<Destination> get availableDestinations =>
+      _preferences.getJson<List<Destination>, List<dynamic>>(
+        _availableDestinationsKey,
+        (list) => list.map(Destination.fromJson).toList(),
+      ) ??
+      [];
+
+  set availableDestinations(List<Destination> destinations) =>
+      _preferences.setOrRemoveJson<List<Destination>>(
+        _availableDestinationsKey,
+        destinations,
+        (destinations) =>
+            destinations.map((destination) => destination.toJson()).toList(),
+      );
+
   Future<void> clear() => _preferences.clear();
 
   Future<void> reload() => _preferences.reload();
@@ -264,7 +288,7 @@ class StorageRepository {
           settings[AppSetting.showCallsInNativeRecents] = value as bool;
           break;
         case 'AvailabilitySetting':
-          settings[CallSetting.availability] = Availability.fromJson(
+          settings[CallSetting.destination] = Destination.fromJson(
             value as Map<String, dynamic>,
           );
           break;

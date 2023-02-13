@@ -8,6 +8,8 @@ import '../business_availability/temporary_redirect/get_current_temporary_redire
 import '../call_records/client/purge_local_call_records.dart';
 import '../calling/outgoing_number/outgoing_numbers.dart';
 import '../calling/voip/client_voip_config_repository.dart';
+import '../calling/voip/destination.dart';
+import '../calling/voip/destination_repository.dart';
 import '../calling/voip/user_voip_config_repository.dart';
 import '../legacy/storage.dart';
 import '../metrics/metrics.dart';
@@ -15,7 +17,6 @@ import '../onboarding/exceptions.dart';
 import '../onboarding/login_credentials.dart';
 import '../use_case.dart';
 import '../voicemail/voicemail_account_repository.dart';
-import '../voipgrid/destination_repository.dart';
 import '../voipgrid/user_permissions.dart';
 import 'permissions/user_permissions.dart';
 import 'settings/app_setting.dart';
@@ -128,15 +129,25 @@ class RefreshUser extends UseCase with Loggable {
 
   /// Retrieving settings and handling its possible side effects.
   Future<User> _getRemoteSettings(User user) async {
-    return user.copyWith(
-      settings: user.settings.copyWithAll({
-        CallSetting.useMobileNumberAsFallback:
-            await _authRepository.isUserUsingMobileNumberAsFallback(user),
-        // TODO: Empty availability instead of non-null assert
-        CallSetting.availability:
-            (await _destinationRepository.getLatestAvailability())!,
-      }),
-    );
+    final destination = await _destinationRepository.getActiveDestination();
+    final useMobileNumberAsFallback =
+        await _authRepository.isUserUsingMobileNumberAsFallback(user);
+
+    Settings settings;
+
+    if (destination is Unknown) {
+      // Fallback to the last known destination by not overwriting the current.
+      settings = user.settings.copyWithAll({
+        CallSetting.useMobileNumberAsFallback: useMobileNumberAsFallback,
+      });
+    } else {
+      settings = user.settings.copyWithAll({
+        CallSetting.useMobileNumberAsFallback: useMobileNumberAsFallback,
+        CallSetting.destination: destination,
+      });
+    }
+
+    return user.copyWith(settings: settings);
   }
 
   /// Retrieving permissions and handling its possible side effects.
