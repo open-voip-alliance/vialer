@@ -58,12 +58,12 @@ class ColleagueAvatar extends StatelessWidget {
   final Colleague colleague;
   final double size;
 
-  static const availableIcon = FontAwesomeIcons.user;
-  static const unavailableIcon = FontAwesomeIcons.userSlash;
-  static const ringingIcon = FontAwesomeIcons.userSlash;
-  static const inCallIcon = FontAwesomeIcons.phoneVolume;
-  static const dndIcon = FontAwesomeIcons.bellSlash;
-  static const voipAccountIcon = FontAwesomeIcons.phoneOffice;
+  static const _availableIcon = FontAwesomeIcons.user;
+  static const _unavailableIcon = FontAwesomeIcons.userSlash;
+  static const _ringingIcon = FontAwesomeIcons.userSlash;
+  static const _inCallIcon = FontAwesomeIcons.phoneVolume;
+  static const _dndIcon = FontAwesomeIcons.bellSlash;
+  static const _voipAccountIcon = FontAwesomeIcons.phoneOffice;
 
   const ColleagueAvatar(
     this.colleague, {
@@ -123,8 +123,8 @@ class ColleagueAvatar extends StatelessWidget {
 
     if (context != null) {
       return context.when(
-        ringing: () => ringingIcon,
-        inCall: () => inCallIcon,
+        ringing: () => _ringingIcon,
+        inCall: () => _inCallIcon,
       );
     }
 
@@ -132,22 +132,22 @@ class ColleagueAvatar extends StatelessWidget {
       (colleague) {
         switch (colleague.status) {
           case ColleagueAvailabilityStatus.available:
-            return availableIcon;
+            return _availableIcon;
           case ColleagueAvailabilityStatus.doNotDisturb:
-            return dndIcon;
+            return _dndIcon;
           case ColleagueAvailabilityStatus.busy:
-            return inCallIcon;
+            return _inCallIcon;
           case ColleagueAvailabilityStatus.unknown:
             return colleague.isAvailableOnMobileAppOrFixedDestination
-                ? availableIcon
-                : unavailableIcon;
+                ? _availableIcon
+                : _unavailableIcon;
           case ColleagueAvailabilityStatus.offline:
-            return unavailableIcon;
+            return _unavailableIcon;
           default:
-            return voipAccountIcon;
+            return _voipAccountIcon;
         }
       },
-      unconnectedVoipAccount: (_) => voipAccountIcon,
+      unconnectedVoipAccount: (_) => _voipAccountIcon,
     );
   }
 
