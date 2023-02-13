@@ -15,7 +15,7 @@ class UpdateUseMobileNumberAsFallbackListener
   final key = CallSetting.useMobileNumberAsFallback;
 
   @override
-  FutureOr<SettingChangeListenResult> beforeStore(
+  FutureOr<SettingChangeListenResult> preStore(
     User user,
     bool enabled,
   ) =>

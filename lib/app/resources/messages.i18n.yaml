@@ -334,6 +334,7 @@ main:
               Incoming calls to <b>$user</b> are redirected to a different phone.
           resume(String voipAccount): >-
             Select <b>$voipAccount</b> as the destination to receive calls on this phone.
+        unknown: "Unknown"
         notAvailable: "Unavailable"
         addAvailability: "Add availability"
         useVoip:

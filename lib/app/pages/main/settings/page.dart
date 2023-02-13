@@ -111,6 +111,8 @@ class _SettingsPageState extends State<SettingsPage> {
                     final showDnd = state.showDnd;
                     final hasIgnoreOptimizationsPermission =
                         state.hasIgnoreBatteryOptimizationsPermission;
+                    final userNumber = state.userNumber;
+                    final destinations = state.availableDestinations;
                     final cubit = context.watch<SettingsCubit>();
 
                     final useVoip = user.settings.get(CallSetting.useVoip);
@@ -123,7 +125,11 @@ class _SettingsPageState extends State<SettingsPage> {
                         padding: const EdgeInsets.only(top: 8),
                         children: [
                           if (showDnd) DndTile(user),
-                          AvailabilityTile(user),
+                          AvailabilityTile(
+                            user: user,
+                            userNumber: userNumber,
+                            destinations: destinations,
+                          ),
                           AccountInfoCategory(
                             children: [
                               MobileNumberTile(user),

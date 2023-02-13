@@ -337,6 +337,7 @@ main:
               Inkomende oproepen naar <b>$user</b> worden doorgeschakeld naar een andere telefoon.
           resume(String voipAccount): >-
             Selecteer <b>$voipAccount</b> als bestemming om oproepen op deze telefoon te ontvangen.
+        unknown: "Onbekend"
         notAvailable: "Niet beschikbaar"
         addAvailability: "Bereikbaarheid toevoegen"
         useVoip:
