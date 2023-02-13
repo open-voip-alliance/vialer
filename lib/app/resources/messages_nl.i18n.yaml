@@ -359,6 +359,7 @@ main:
       buttons:
         send: "Feedback sturen"
     privacyPolicy: "Privacybeleid"
+    signUp(String appName): "Nieuw bij $appName? Meld je hier aan."
 
   notice:
     microphone:

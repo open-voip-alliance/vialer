@@ -1,49 +1,27 @@
-import 'package:equatable/equatable.dart';
-import 'package:json_annotation/json_annotation.dart';
-import 'package:meta/meta.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
+part 'brand.freezed.dart';
 part 'brand.g.dart';
 
-@immutable
-@JsonSerializable()
-class Brand extends Equatable {
-  final String identifier;
-  final String appId;
-  final String appName;
-  final Uri url;
-  final Uri middlewareUrl;
-  final Uri voipgridUrl;
-  final Uri encryptedSipUrl;
-  final Uri unencryptedSipUrl;
-  final Uri businessAvailabilityUrl;
-  final Uri privacyPolicyUrl;
+@freezed
+class Brand with _$Brand {
+  const Brand._();
 
-  const Brand({
-    required this.identifier,
-    required this.appId,
-    required this.appName,
-    required this.url,
-    required this.middlewareUrl,
-    required this.voipgridUrl,
-    required this.encryptedSipUrl,
-    required this.unencryptedSipUrl,
-    required this.businessAvailabilityUrl,
-    required this.privacyPolicyUrl,
-  });
+  const factory Brand({
+    required String identifier,
+    required String appId,
+    required String appName,
+    required Uri url,
+    required Uri middlewareUrl,
+    required Uri voipgridUrl,
+    required Uri encryptedSipUrl,
+    required Uri unencryptedSipUrl,
+    required Uri businessAvailabilityUrl,
+    required Uri privacyPolicyUrl,
+    required Uri? signUpUrl,
+  }) = _Brand;
 
-  @override
-  List<Object?> get props => [
-        identifier,
-        appId,
-        appName,
-        url,
-        middlewareUrl,
-        voipgridUrl,
-        encryptedSipUrl,
-        unencryptedSipUrl,
-        businessAvailabilityUrl,
-        privacyPolicyUrl,
-      ];
+  factory Brand.fromJson(Map<String, dynamic> json) => _$BrandFromJson(json);
 
   bool get isVialer => identifier == 'vialer';
 
@@ -54,22 +32,6 @@ class Brand extends Equatable {
   bool get isVerbonden => identifier == 'verbonden';
 
   bool get isAnnabel => identifier == 'annabel';
-
-  static Brand fromJson(Map<String, dynamic> json) => _$BrandFromJson(json);
-
-  Map<String, dynamic> toJson() => _$BrandToJson(this);
-
-  @override
-  String toString() => '$runtimeType('
-      'identifier: $identifier, '
-      'appId: $appId, '
-      'appName: $appName, '
-      'url: $url, '
-      'middlewareUrl: $middlewareUrl, '
-      'voipgridUrl: $voipgridUrl, '
-      'encryptedSipUrl: $encryptedSipUrl, '
-      'unencryptedSipUrl: $unencryptedSipUrl, '
-      'businessAvailabilityUrl: $businessAvailabilityUrl)';
 }
 
 extension GetBrandValue on Brand {

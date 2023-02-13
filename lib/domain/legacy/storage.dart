@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:dartx/dartx.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../user/client.dart';
@@ -195,6 +196,24 @@ class StorageRepository {
         Settings.toJson,
       );
 
+  static const _grantedVoipgridPermissionsKey = 'granted_voipgrid_permissions';
+
+  List<String> get grantedVoipgridPermissions => (jsonDecode(
+              _preferences.getString(_grantedVoipgridPermissionsKey) ?? '[]')
+          as List<dynamic>)
+      .toRawPermissionsList();
+
+  set grantedVoipgridPermissions(List<String> value) => _preferences
+      .setOrRemoveString(_grantedVoipgridPermissionsKey, jsonEncode(value));
+
+  static const _lastPeriodicIdentifyTime = 'last_periodic_identify_time';
+
+  DateTime? get lastPeriodicIdentifyTime =>
+      _preferences.getDateTime(_lastPeriodicIdentifyTime);
+
+  set lastPeriodicIdentifyTime(DateTime? value) =>
+      _preferences.setOrRemoveDateTime(_lastPeriodicIdentifyTime, value);
+
   Future<void> clear() => _preferences.clear();
 
   Future<void> reload() => _preferences.reload();
@@ -365,4 +384,11 @@ extension on SharedPreferences {
       value != null ? json.encode(toJson(value)) : null,
     );
   }
+}
+
+extension RawPermissions on List<dynamic> {
+  List<String> toRawPermissionsList() => filterNotNull()
+      .map((permission) => permission.toString())
+      .sorted()
+      .toList();
 }

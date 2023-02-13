@@ -11,6 +11,7 @@ import 'database/client_calls.dart';
 import 'import_historic_client_call_records.dart';
 import 'import_new_client_calls.dart';
 import 'local_client_calls.dart';
+import 'month_splitter.dart';
 import 'remote_client_calls.dart';
 
 /// This is a generic use case that enables you to import client calls between
@@ -22,6 +23,7 @@ class ImportClientCallsUseCase with Loggable {
   late final _getUser = GetLoggedInUserUseCase();
   final _createClientCallsIsolateRequest =
       CreateClientCallsIsolateRequestUseCase();
+  late final _monthSplitter = MonthSplitter();
 
   static var _isIsolateRunning = false;
 
@@ -39,7 +41,7 @@ class ImportClientCallsUseCase with Loggable {
       return;
     }
 
-    final dateRangesToQuery = _createDateRangesToQuery(
+    final dateRangesToQuery = _monthSplitter.split(
       from: from.toUtc(),
       to: to.toUtc(),
     );
@@ -66,51 +68,6 @@ class ImportClientCallsUseCase with Loggable {
       logger.info('Client calls import isolate has completed');
     });
   }
-
-  /// Iterates through the date range given and creates a map of from and to
-  /// dates of each month that will be queried.
-  Map<DateTime, DateTime> _createDateRangesToQuery({
-    required DateTime from,
-    required DateTime to,
-  }) {
-    if (from.isAtSameMonthAs(to)) {
-      return {from: to};
-    }
-
-    final monthsToQuery = {
-      from.firstDayOfMonth: from.lastDayOfMonth,
-    };
-
-    var newDate = from.addMonth();
-
-    while (!newDate.isAtSameMonthAs(to)) {
-      monthsToQuery[newDate.firstDayOfMonth] = newDate.endOfMonth;
-      newDate = newDate.addMonth();
-    }
-
-    monthsToQuery[to.firstDayOfMonth] = to;
-
-    return monthsToQuery;
-  }
-}
-
-extension on DateTime {
-  DateTime addMonth({int amount = 1}) => DateTime(
-        year,
-        month + amount,
-        day,
-        hour,
-        minute,
-        second,
-      );
-
-  DateTime get endOfMonth => copyWith(
-        day: daysInMonth,
-        hour: 23,
-        minute: 59,
-        second: 59,
-        microsecond: 999,
-      );
 }
 
 /// This function is to be performed on an isolate, it must create all the

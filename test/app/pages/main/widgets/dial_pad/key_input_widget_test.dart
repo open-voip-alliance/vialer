@@ -30,6 +30,7 @@ void main() {
           businessAvailabilityUrl: Uri.parse(
               'https://api.eu-prod.holodeck.wearespindle.com/business-availability/clients/'),
           privacyPolicyUrl: Uri.parse('dummypolicy.com'),
+          signUpUrl: null,
         ),
         child: KeyInput(
           controller: controller,
