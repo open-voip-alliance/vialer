@@ -1,0 +1,2 @@
+- Wat verbeteringen om de app soepeler te laten lopen, voornamelijk met scrollen
+- Android: Soms crashte de app wanneer je werd gebeld, dit is opgelost
