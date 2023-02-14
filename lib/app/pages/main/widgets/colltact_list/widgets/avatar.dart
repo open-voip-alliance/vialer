@@ -60,7 +60,7 @@ class ColleagueAvatar extends StatelessWidget {
 
   static const _availableIcon = FontAwesomeIcons.user;
   static const _unavailableIcon = FontAwesomeIcons.userSlash;
-  static const _ringingIcon = FontAwesomeIcons.userSlash;
+  static const _ringingIcon = FontAwesomeIcons.bellOn;
   static const _inCallIcon = FontAwesomeIcons.phoneVolume;
   static const _dndIcon = FontAwesomeIcons.bellSlash;
   static const _voipAccountIcon = FontAwesomeIcons.phoneOffice;
