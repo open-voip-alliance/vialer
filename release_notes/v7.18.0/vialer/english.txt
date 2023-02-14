@@ -1,0 +1,2 @@
+- Some performance improvements, specifically scrolling
+- Android: Sometimes the app would crash when receiving a call, this has been fixed
