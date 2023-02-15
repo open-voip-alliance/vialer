@@ -5,7 +5,7 @@ adb shell pm grant com.voipgrid.vialer android.permission.CALL_PHONE
 adb shell pm grant com.voipgrid.vialer android.permission.READ_CONTACTS
 adb shell pm grant com.voipgrid.vialer android.permission.RECORD_AUDIO
 
-# With IN_TEST=true, the permission screen are shown but not requested during onboarding. Otherwise
+# With IN_TEST=true, the permission screens are shown but not requested during onboarding. Otherwise
 # onboarding would not progress.
 sed -i -e "s/^IN_TEST\=.*/IN_TEST\=true/g" .env
 
