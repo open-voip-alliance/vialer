@@ -1,9 +1,13 @@
 #!/usr/bin/env zsh
-flutter install
+flutter install --debug
 
 adb shell pm grant com.voipgrid.vialer android.permission.CALL_PHONE
 adb shell pm grant com.voipgrid.vialer android.permission.READ_CONTACTS
 adb shell pm grant com.voipgrid.vialer android.permission.RECORD_AUDIO
+
+# With IN_TEST=true, the permission screen are shown but not requested during onboarding. Otherwise
+# onboarding would not progress.
+sed -i -e "s/^IN_TEST\=.*/IN_TEST\=true/g" .env
 
 function run_test {
   filename=$1
@@ -21,4 +25,5 @@ else
   run_test "$1"
 fi
 
-
+# Revert back, so when debugging the app, you will get the permission requests.
+sed -i -e "s/^IN_TEST\=.*/IN_TEST\=false/g" .env
