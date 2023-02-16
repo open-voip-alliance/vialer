@@ -60,7 +60,7 @@ class StorageRepository {
       user = user?.copyWith(
         voip: _preferences.getJson<UserVoipConfig?, Map<String, dynamic>>(
           _legacyVoipConfigKey,
-          UserVoipConfig.fromJson,
+          UserVoipConfig.serializeFromJson,
         ),
       );
       this.user = user;
