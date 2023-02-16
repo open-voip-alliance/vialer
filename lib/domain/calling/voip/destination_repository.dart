@@ -5,12 +5,12 @@ import '../../../app/util/json_converter.dart';
 import '../../../app/util/loggable.dart';
 import '../../../dependency_locator.dart';
 import '../../legacy/storage.dart';
-import '../../voipgrid/voipgrid_destination.dart';
-import '../../voipgrid/voipgrid_fixed_destination.dart';
-import '../../voipgrid/voipgrid_phone_account.dart';
 import '../../voipgrid/voipgrid_service.dart';
 import 'destination.dart';
 import 'selected_destination_info.dart';
+import 'voipgrid_destination.dart';
+import 'voipgrid_fixed_destination.dart';
+import 'voipgrid_phone_account.dart';
 
 part 'destination_repository.g.dart';
 

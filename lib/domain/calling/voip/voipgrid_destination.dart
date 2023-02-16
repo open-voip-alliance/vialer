@@ -1,4 +1,4 @@
-import '../calling/voip/destination.dart';
+import 'destination.dart';
 
 abstract class VoipgridDestination {
   int? get id;

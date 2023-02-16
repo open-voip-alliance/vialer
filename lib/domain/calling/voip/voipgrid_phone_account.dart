@@ -1,7 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../../app/util/json_converter.dart';
-import '../calling/voip/destination.dart';
+import '../../../app/util/json_converter.dart';
+import 'destination.dart';
 import 'voipgrid_destination.dart';
 
 part 'voipgrid_phone_account.freezed.dart';
