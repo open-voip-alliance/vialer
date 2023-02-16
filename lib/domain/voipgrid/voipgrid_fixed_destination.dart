@@ -1,34 +1,27 @@
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../app/util/json_converter.dart';
 import '../calling/voip/destination.dart';
 import 'voipgrid_destination.dart';
 
+part 'voipgrid_fixed_destination.freezed.dart';
 part 'voipgrid_fixed_destination.g.dart';
 
-@JsonSerializable(fieldRename: FieldRename.snake)
-class VoipgridFixedDestination extends VoipgridDestination {
-  @override
-  @JsonIdConverter()
-  final int? id;
-
-  @JsonKey(name: 'phonenumber', fromJson: _normalizedPhoneNumber)
-  final String? phoneNumber;
-
-  @override
-  final String? description;
-
-  static String _normalizedPhoneNumber(String json) =>
-      json.startsWith('+') ? json : '+$json';
-
-  const VoipgridFixedDestination({
-    this.id,
-    this.phoneNumber,
-    this.description,
-  });
+@freezed
+class VoipgridFixedDestination extends VoipgridDestination
+    with _$VoipgridFixedDestination {
+  const factory VoipgridFixedDestination({
+    @override @JsonIdConverter() int? id,
+    @JsonKey(name: 'phonenumber', fromJson: _normalizedPhoneNumber)
+        String? phoneNumber,
+    @override String? description,
+  }) = _VoipgridFixedDestination;
 
   factory VoipgridFixedDestination.fromJson(Map<String, dynamic> json) =>
       _$VoipgridFixedDestinationFromJson(json);
+
+  static String _normalizedPhoneNumber(String json) =>
+      json.startsWith('+') ? json : '+$json';
 
   @override
   Destination toDestination() => Destination.phoneNumber(
