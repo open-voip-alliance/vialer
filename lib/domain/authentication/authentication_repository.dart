@@ -1,5 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 
+import '../../app/util/automatic_retry.dart';
 import '../../app/util/loggable.dart';
 import '../onboarding/auto_login.dart';
 import '../onboarding/exceptions.dart';
@@ -15,6 +16,8 @@ part 'authentication_repository.g.dart';
 
 class AuthRepository with Loggable {
   final VoipgridService _service;
+  final mobileNumberRetry = AutomaticRetry.http();
+  final useMobileNumberAsFallbackRetry = AutomaticRetry.http();
 
   AuthRepository(this._service);
 
@@ -131,9 +134,21 @@ class AuthRepository with Loggable {
   }
 
   Future<bool> changeMobileNumber(String mobileNumber) async {
-    final response =
-        await _service.changeMobileNumber({'mobile_nr': mobileNumber});
-    return response.isSuccessful;
+    try {
+      return mobileNumberRetry.run(() async {
+        final response =
+            await _service.changeMobileNumber({'mobile_nr': mobileNumber});
+
+        if (!response.isSuccessful) {
+          logFailedResponse(response);
+          throw TaskFailedQueueForRetry;
+        }
+
+        return response.isSuccessful;
+      });
+    } on AutomaticRetryMaximumAttemptsReached {
+      return false;
+    }
   }
 
   Future<bool> updateAppAccount({
@@ -171,41 +186,50 @@ class AuthRepository with Loggable {
     User user, {
     required bool enable,
   }) async {
-    final settingsResponse = await _service.getUserSettings(
-      clientId: user.client.id.toString(),
-      userId: user.uuid,
-    );
+    try {
+      return useMobileNumberAsFallbackRetry.run(() async {
+        final settingsResponse = await _service.getUserSettings(
+          clientId: user.client.id.toString(),
+          userId: user.uuid,
+        );
 
-    if (!settingsResponse.isSuccessful) {
-      logFailedResponse(
-        settingsResponse,
-        name: 'Fetching current user to update it',
-      );
+        if (!settingsResponse.isSuccessful) {
+          logFailedResponse(
+            settingsResponse,
+            name: 'Fetching current user to update it',
+          );
+          return false;
+        }
+
+        final app = (settingsResponse.body as Map<String, dynamic>)['app'];
+
+        // This API requires us to provide all the content, rather than being
+        // able to patch the nested objects. This is why we must perform the
+        // request before to fetch the latest data.
+        final response = await _service.updateUserSettings(
+          clientId: user.client.id.toString(),
+          userId: user.uuid,
+          body: {
+            'app': {
+              'mobile_number': app['mobile_number'],
+              'use_mobile_number_as_fallback': enable,
+              'voip_account': {
+                'id': app['voip_account']['id'],
+              }
+            }
+          },
+        );
+
+        if (!response.isSuccessful) {
+          logFailedResponse(response);
+          throw TaskFailedQueueForRetry;
+        }
+
+        return true;
+      });
+    } on AutomaticRetryMaximumAttemptsReached {
       return false;
     }
-
-    final app = (settingsResponse.body as Map<String, dynamic>)['app'];
-
-    // This API requires us to provide all the content, rather than being able
-    // to patch the nested objects. This is why we must perform the request
-    // before to fetch the latest data.
-    final response = await _service.updateUserSettings(
-      clientId: user.client.id.toString(),
-      userId: user.uuid,
-      body: {
-        'app': {
-          'mobile_number': app['mobile_number'],
-          'use_mobile_number_as_fallback': enable,
-          'voip_account': {
-            'id': app['voip_account']['id'],
-          }
-        }
-      },
-    );
-
-    logFailedResponse(response);
-
-    return response.isSuccessful;
   }
 }
 

@@ -1,3 +1,4 @@
+import '../../../app/util/automatic_retry.dart';
 import '../../../app/util/loggable.dart';
 import '../../user/settings/call_setting.dart';
 import '../../user/user.dart';
@@ -5,6 +6,7 @@ import '../../voipgrid/voipgrid_service.dart';
 
 class OutgoingNumbersRepository with Loggable {
   final VoipgridService _service;
+  final outgoingNumberRetry = AutomaticRetry.http();
 
   OutgoingNumbersRepository(this._service);
 
@@ -19,23 +21,28 @@ class OutgoingNumbersRepository with Loggable {
     required User user,
     required String number,
   }) async {
-    final response = await _service.updateVoipAccount(
-      user.client.id.toString(),
-      user.appAccountId!,
-      {
-        'outgoing_caller_identification': {
-          'phone_number': number,
-        },
-      },
-    );
+    try {
+      return outgoingNumberRetry.run(() async {
+        final response = await _service.updateVoipAccount(
+          user.client.id.toString(),
+          user.appAccountId!,
+          {
+            'outgoing_caller_identification': {
+              'phone_number': number,
+            },
+          },
+        );
 
-    if (!response.isSuccessful) {
-      logger.severe(
-        'Unable to update outgoing mobile number: ${response.bodyString}',
-      );
+        if (!response.isSuccessful) {
+          logFailedResponse(response);
+          throw TaskFailedQueueForRetry;
+        }
+
+        return response.isSuccessful;
+      });
+    } on AutomaticRetryMaximumAttemptsReached {
+      return false;
     }
-
-    return response.isSuccessful;
   }
 
   Future<bool> suppressOutgoingNumber({

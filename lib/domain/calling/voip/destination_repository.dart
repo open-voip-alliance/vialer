@@ -1,6 +1,7 @@
 import 'package:dartx/dartx.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import '../../../app/util/automatic_retry.dart';
 import '../../../app/util/json_converter.dart';
 import '../../../app/util/loggable.dart';
 import '../../../dependency_locator.dart';
@@ -18,6 +19,7 @@ class DestinationRepository with Loggable {
   final _storageRepository = dependencyLocator<StorageRepository>();
 
   final VoipgridService _service;
+  final automaticRetry = AutomaticRetry.http();
 
   late int selectedUserDestinationId;
 
@@ -54,19 +56,30 @@ class DestinationRepository with Loggable {
   Future<bool> setDestination({
     required Destination destination,
   }) async {
-    final response =
-        await _service.setAvailability(selectedUserDestinationId.toString(), {
-      'phoneaccount':
-          destination is PhoneAccount ? destination.id.toString() : null,
-      'fixeddestination':
-          destination is PhoneNumber ? destination.id.toString() : null,
-    });
+    try {
+      automaticRetry.run(
+        () async {
+          final response = await _service
+              .setAvailability(selectedUserDestinationId.toString(), {
+            'phoneaccount':
+                destination is PhoneAccount ? destination.id.toString() : null,
+            'fixeddestination':
+                destination is PhoneNumber ? destination.id.toString() : null,
+          });
 
-    if (!response.isSuccessful) {
-      logFailedResponse(response, name: 'Set destination');
+          if (!response.isSuccessful) {
+            logFailedResponse(response, name: 'Set destination');
+            throw TaskFailedQueueForRetry;
+          }
+
+          return response;
+        },
+      );
+
+      return true;
+    } on AutomaticRetryMaximumAttemptsReached {
+      return false;
     }
-
-    return response.isSuccessful;
   }
 }
 
