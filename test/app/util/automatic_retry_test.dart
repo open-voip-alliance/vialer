@@ -9,7 +9,7 @@ import 'automatic_retry_test.mocks.dart';
 void main() {
   test('A task does not retry if it succeeds', () async {
     final automaticRetry = AutomaticRetry(
-      schedule: const [Duration(milliseconds: 500)],
+      schedule: const [Duration(milliseconds: 50)],
     );
     final mock = MockDummyClass();
     when(mock.getResult()).thenReturn('A value');
@@ -24,9 +24,9 @@ void main() {
   test('A task will retry according to schedule if it fails', () async {
     final automaticRetry = AutomaticRetry(
       schedule: const [
-        Duration(milliseconds: 100),
-        Duration(milliseconds: 200),
-        Duration(milliseconds: 300),
+        Duration(milliseconds: 10),
+        Duration(milliseconds: 20),
+        Duration(milliseconds: 30),
       ],
     );
     final mock = MockDummyClass();
@@ -45,12 +45,12 @@ void main() {
       schedule: const [
         // We want to make sure the schedule is full as only the first two
         // in the schedule should be called.
-        Duration(milliseconds: 100),
-        Duration(milliseconds: 200),
-        Duration(milliseconds: 300),
-        Duration(milliseconds: 400),
-        Duration(milliseconds: 500),
-        Duration(milliseconds: 600),
+        Duration(milliseconds: 10),
+        Duration(milliseconds: 20),
+        Duration(milliseconds: 30),
+        Duration(milliseconds: 40),
+        Duration(milliseconds: 50),
+        Duration(milliseconds: 60),
       ],
     );
     final mock = MockDummyClass();
