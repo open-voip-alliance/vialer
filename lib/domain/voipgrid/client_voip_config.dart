@@ -16,9 +16,6 @@ class ClientVoipConfig with _$ClientVoipConfig {
     @JsonKey(name: 'SIP_TLS') required Uri encryptedSipUrl,
   }) = _ClientVoipConfig;
 
-  static Uri _middlewareUrlFromJson(String json) =>
-      Uri.parse(json.startsWith('https://') ? json : 'https://$json');
-
   /// Fallback config created based on the current brand.
   factory ClientVoipConfig.fallback() {
     final brand = GetBrand()();
@@ -39,3 +36,6 @@ class ClientVoipConfig with _$ClientVoipConfig {
   static Map<String, dynamic> serializeToJson(ClientVoipConfig config) =>
       config.toJson();
 }
+
+Uri _middlewareUrlFromJson(String json) =>
+    Uri.parse(json.startsWith('https://') ? json : 'https://$json');

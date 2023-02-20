@@ -8,13 +8,14 @@ part 'voipgrid_phone_account.freezed.dart';
 part 'voipgrid_phone_account.g.dart';
 
 @freezed
-@JsonSerializable(fieldRename: FieldRename.snake)
 class VoipgridPhoneAccount extends VoipgridDestination
     with _$VoipgridPhoneAccount {
+  const VoipgridPhoneAccount._();
+
   const factory VoipgridPhoneAccount({
     @override @JsonIdConverter() int? id,
-    required int accountId,
-    required int internalNumber,
+    @JsonKey(name: 'account_id') required int accountId,
+    @JsonKey(name: 'internal_number') required int internalNumber,
     @override required String description,
     required String password,
   }) = _VoipgridPhoneAccount;

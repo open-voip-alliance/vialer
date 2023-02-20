@@ -10,6 +10,8 @@ part 'voipgrid_fixed_destination.g.dart';
 @freezed
 class VoipgridFixedDestination extends VoipgridDestination
     with _$VoipgridFixedDestination {
+  const VoipgridFixedDestination._();
+
   const factory VoipgridFixedDestination({
     @override @JsonIdConverter() int? id,
     @JsonKey(name: 'phonenumber', fromJson: _normalizedPhoneNumber)
@@ -20,9 +22,6 @@ class VoipgridFixedDestination extends VoipgridDestination
   factory VoipgridFixedDestination.fromJson(Map<String, dynamic> json) =>
       _$VoipgridFixedDestinationFromJson(json);
 
-  static String _normalizedPhoneNumber(String json) =>
-      json.startsWith('+') ? json : '+$json';
-
   @override
   Destination toDestination() => Destination.phoneNumber(
         id,
@@ -30,3 +29,6 @@ class VoipgridFixedDestination extends VoipgridDestination
         phoneNumber,
       );
 }
+
+String _normalizedPhoneNumber(String json) =>
+    json.startsWith('+') ? json : '+$json';
