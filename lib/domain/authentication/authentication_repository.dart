@@ -16,8 +16,10 @@ part 'authentication_repository.g.dart';
 
 class AuthRepository with Loggable {
   final VoipgridService _service;
-  final mobileNumberRetry = AutomaticRetry.http();
-  final useMobileNumberAsFallbackRetry = AutomaticRetry.http();
+  final mobileNumberRetry = AutomaticRetry.http('Change Mobile Number');
+  final useMobileNumberAsFallbackRetry = AutomaticRetry.http(
+    'Use Mobile Number As Fallback',
+  );
 
   AuthRepository(this._service);
 

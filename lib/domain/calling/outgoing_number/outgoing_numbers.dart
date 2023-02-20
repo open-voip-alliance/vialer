@@ -6,7 +6,7 @@ import '../../voipgrid/voipgrid_service.dart';
 
 class OutgoingNumbersRepository with Loggable {
   final VoipgridService _service;
-  final outgoingNumberRetry = AutomaticRetry.http();
+  final outgoingNumberRetry = AutomaticRetry.http('Change Outgoing Number');
 
   OutgoingNumbersRepository(this._service);
 

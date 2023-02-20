@@ -14,7 +14,10 @@ class AutomaticRetry with Loggable {
 
   AutomaticRetry({required this.schedule, this.name});
 
-  factory AutomaticRetry.http() => AutomaticRetry(schedule: RetrySchedule.http);
+  factory AutomaticRetry.http(String name) => AutomaticRetry(
+        schedule: RetrySchedule.http,
+        name: name,
+      );
 
   /// Will automatically retry the provided task, according to the given
   /// schedule.

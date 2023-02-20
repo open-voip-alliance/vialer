@@ -19,7 +19,7 @@ class DestinationRepository with Loggable {
   final _storageRepository = dependencyLocator<StorageRepository>();
 
   final VoipgridService _service;
-  final automaticRetry = AutomaticRetry.http();
+  final automaticRetry = AutomaticRetry.http('Change Destination');
 
   late int selectedUserDestinationId;
 
