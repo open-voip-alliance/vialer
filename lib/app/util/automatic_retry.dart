@@ -1,13 +1,18 @@
 import 'dart:async';
 
-class AutomaticRetry {
+import 'loggable.dart';
+
+class AutomaticRetry with Loggable {
   final _timers = <Timer>[];
 
   /// The [schedule] provided is relative to the first time it is run, not the
   /// previous retry attempt.
   final List<Duration> schedule;
 
-  AutomaticRetry({required this.schedule});
+  /// If a name is provided, logging will be performed when the task fails.
+  final String? name;
+
+  AutomaticRetry({required this.schedule, this.name});
 
   factory AutomaticRetry.http() => AutomaticRetry(schedule: RetrySchedule.http);
 
@@ -28,15 +33,36 @@ class AutomaticRetry {
   }) async {
     _timers.cancelAll();
 
+    if (!runImmediately && schedule.isEmpty) {
+      throw ArgumentError(
+        'You must either provide a schedule, or enable run immediately, '
+        'otherwise nothing will ever execute.',
+      );
+    }
+
     if (runImmediately) {
       try {
         final result = await task();
         return result;
-      } on TaskFailedQueueForRetry {}
+      } on TaskFailedQueueForRetry {
+        if (schedule.isEmpty) {
+          _logTaskAsFailed();
+          throw AutomaticRetryMaximumAttemptsReached();
+        }
+      }
     }
 
     final completer = Completer<T>();
 
+    _scheduleTimers(task, completer);
+
+    return completer.future;
+  }
+
+  void _scheduleTimers(
+    Future<dynamic> Function() task,
+    Completer<dynamic> completer,
+  ) {
     for (var duration in schedule) {
       final timer = Timer(
         duration,
@@ -48,6 +74,7 @@ class AutomaticRetry {
           } on TaskFailedQueueForRetry {
             if (!_timers.hasAnyActive) {
               completer.completeError(AutomaticRetryMaximumAttemptsReached());
+              _logTaskAsFailed();
               return;
             }
           }
@@ -56,8 +83,15 @@ class AutomaticRetry {
 
       _timers.add(timer);
     }
+  }
 
-    return completer.future;
+  void _logTaskAsFailed() {
+    if (name != null) {
+      logger.warning(
+        'AutomaticRetryTask [$name] has failed after ${schedule.length + 1} '
+        'attempts.',
+      );
+    }
   }
 }
 

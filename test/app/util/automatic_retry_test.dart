@@ -21,6 +21,32 @@ void main() {
     verify(mock.getResult()).called(1);
   });
 
+  test('A task ends even if there is no schedule', () async {
+    final automaticRetry = AutomaticRetry(schedule: []);
+    final mock = MockDummyClass();
+    when(mock.getResult()).thenThrow(TaskFailedQueueForRetry());
+
+    await expectLater(
+      () => automaticRetry.run(() async => mock.getResult()),
+      throwsA(isA<AutomaticRetryMaximumAttemptsReached>()),
+    );
+  });
+
+  test('Argument error is thrown if no schedule and not running immediately',
+      () async {
+    final automaticRetry = AutomaticRetry(schedule: []);
+    final mock = MockDummyClass();
+    when(mock.getResult()).thenThrow(TaskFailedQueueForRetry());
+
+    await expectLater(
+      () => automaticRetry.run(
+        () async => mock.getResult(),
+        runImmediately: false,
+      ),
+      throwsA(isA<ArgumentError>()),
+    );
+  });
+
   test('A task will retry according to schedule if it fails', () async {
     final automaticRetry = AutomaticRetry(
       schedule: const [
