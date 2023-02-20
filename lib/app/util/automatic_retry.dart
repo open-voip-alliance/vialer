@@ -2,6 +2,9 @@ import 'dart:async';
 
 class AutomaticRetry {
   final _timers = <Timer>[];
+
+  /// The [schedule] provided is relative to the first time it is run, not the
+  /// previous retry attempt.
   final List<Duration> schedule;
 
   AutomaticRetry({required this.schedule});
@@ -16,9 +19,6 @@ class AutomaticRetry {
   ///
   /// If every run in the schedule fails, [AutomaticRetryMaximumAttemptsReached]
   /// will be thrown.
-  ///
-  /// The [schedule] provided is relative to the first time it is run, not the
-  /// previous retry attempt.
   ///
   /// Set [runImmediately] to [false] for the first attempt to occur at the
   /// first entry in the schedule, rather than immediately.
