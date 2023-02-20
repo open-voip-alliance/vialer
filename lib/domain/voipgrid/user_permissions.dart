@@ -22,7 +22,7 @@ class UserPermissionsRepository with Loggable {
     'voicemail.view_voicemail': UserPermission.viewVoicemail,
     'phoneaccount.change_phoneaccount': UserPermission.changeVoipAccount,
     'permission.view_user': UserPermission.viewUser,
-    'permission.list_api_voipaccount_basic_info':
+    'phoneaccount.list_api_voipaccount_basic_info':
         UserPermission.listVoipAccounts,
     'permission.list_api_user_basic_info': UserPermission.listUsers,
   };
