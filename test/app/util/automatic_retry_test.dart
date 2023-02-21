@@ -14,10 +14,7 @@ void main() {
     final mock = MockDummyClass();
     when(mock.getResult()).thenReturn('A value');
 
-    await automaticRetry.run(() async {
-      return mock.getResult();
-    });
-
+    await automaticRetry.run(() async => mock.getResult());
     verify(mock.getResult()).called(1);
   });
 
@@ -26,10 +23,7 @@ void main() {
     final mock = MockDummyClass();
     when(mock.getResult()).thenThrow(TaskFailedQueueForRetry());
 
-    await expectLater(
-      () => automaticRetry.run(() async => mock.getResult()),
-      throwsA(isA<AutomaticRetryMaximumAttemptsReached>()),
-    );
+    await _expectMaximumAttemptsReached(automaticRetry, mock);
   });
 
   test('Argument error is thrown if no schedule and not running immediately',
@@ -38,12 +32,11 @@ void main() {
     final mock = MockDummyClass();
     when(mock.getResult()).thenThrow(TaskFailedQueueForRetry());
 
-    await expectLater(
+    await _expectArgumentError(
       () => automaticRetry.run(
         () async => mock.getResult(),
         runImmediately: false,
       ),
-      throwsA(isA<ArgumentError>()),
     );
   });
 
@@ -58,11 +51,7 @@ void main() {
     final mock = MockDummyClass();
     when(mock.getResult()).thenThrow(TaskFailedQueueForRetry());
 
-    await expectLater(
-      () => automaticRetry.run(() async => mock.getResult()),
-      throwsA(isA<AutomaticRetryMaximumAttemptsReached>()),
-    );
-
+    await _expectMaximumAttemptsReached(automaticRetry, mock);
     verify(mock.getResult()).called(4);
   });
 
@@ -94,11 +83,10 @@ void main() {
       return 'A valid value';
     });
 
-    final result = await automaticRetry.run(
-      () async => mock.getResult(),
+    expect(
+      await automaticRetry.run(() async => mock.getResult()),
+      'A valid value',
     );
-
-    expect(result, 'A valid value');
     verify(mock.getResult()).called(3);
   });
 
@@ -110,9 +98,7 @@ void main() {
     when(failingMock.getResult()).thenThrow(TaskFailedQueueForRetry());
 
     automaticRetry.run(
-      () async {
-        return failingMock.getResult();
-      },
+      () async => failingMock.getResult(),
       runImmediately: false,
     );
 
@@ -131,8 +117,23 @@ void main() {
   });
 }
 
+Future<void> _expectArgumentError(Future<String> Function() callback) =>
+    expectLater(
+      callback,
+      throwsA(isA<ArgumentError>()),
+    );
+
+Future<void> _expectMaximumAttemptsReached(
+  AutomaticRetry automaticRetry,
+  MockDummyClass mock,
+) async =>
+    expectLater(
+      () => automaticRetry.run(() async => mock.getResult()),
+      throwsA(isA<AutomaticRetryMaximumAttemptsReached>()),
+    );
+
+// A dummy class just used so we can mock it and verify interactions, it needs
+// to be public so it can be mocked.
 class DummyClass {
-  String getResult() {
-    return '';
-  }
+  String getResult() => '';
 }
