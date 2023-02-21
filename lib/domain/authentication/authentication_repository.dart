@@ -137,17 +137,19 @@ class AuthRepository with Loggable {
 
   Future<bool> changeMobileNumber(String mobileNumber) async {
     try {
-      return mobileNumberRetry.run(() async {
+      await mobileNumberRetry.run(() async {
         final response =
             await _service.changeMobileNumber({'mobile_nr': mobileNumber});
 
         if (!response.isSuccessful) {
           logFailedResponse(response);
-          throw TaskFailedQueueForRetry;
+          return AutomaticRetryTaskOutput.fail(response);
         }
 
-        return response.isSuccessful;
+        return AutomaticRetryTaskOutput.success(response);
       });
+
+      return true;
     } on AutomaticRetryMaximumAttemptsReached {
       return false;
     }
@@ -189,7 +191,7 @@ class AuthRepository with Loggable {
     required bool enable,
   }) async {
     try {
-      return useMobileNumberAsFallbackRetry.run(() async {
+      await useMobileNumberAsFallbackRetry.run(() async {
         final settingsResponse = await _service.getUserSettings(
           clientId: user.client.id.toString(),
           userId: user.uuid,
@@ -200,7 +202,7 @@ class AuthRepository with Loggable {
             settingsResponse,
             name: 'Fetching current user to update it',
           );
-          return false;
+          return AutomaticRetryTaskOutput.fail(settingsResponse);
         }
 
         final app = (settingsResponse.body as Map<String, dynamic>)['app'];
@@ -224,11 +226,13 @@ class AuthRepository with Loggable {
 
         if (!response.isSuccessful) {
           logFailedResponse(response);
-          throw TaskFailedQueueForRetry;
+          return AutomaticRetryTaskOutput.fail(response);
         }
 
-        return true;
+        return AutomaticRetryTaskOutput.success(response);
       });
+
+      return true;
     } on AutomaticRetryMaximumAttemptsReached {
       return false;
     }

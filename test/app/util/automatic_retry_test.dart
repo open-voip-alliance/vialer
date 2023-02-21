@@ -11,30 +11,27 @@ void main() {
     final automaticRetry = AutomaticRetry(
       schedule: const [Duration(milliseconds: 50)],
     );
-    final mock = MockDummyClass();
-    when(mock.getResult()).thenReturn('A value');
-
+    final mock = MockDummyClass()..thenReturnSuccess();
     await automaticRetry.run(() async => mock.getResult());
     verify(mock.getResult()).called(1);
   });
 
   test('A task ends even if there is no schedule', () async {
     final automaticRetry = AutomaticRetry(schedule: []);
-    final mock = MockDummyClass();
-    when(mock.getResult()).thenThrow(TaskFailedQueueForRetry());
-
+    final mock = MockDummyClass()..thenReturnFail();
     await _expectMaximumAttemptsReached(automaticRetry, mock);
   });
 
   test('Argument error is thrown if no schedule and not running immediately',
       () async {
     final automaticRetry = AutomaticRetry(schedule: []);
-    final mock = MockDummyClass();
-    when(mock.getResult()).thenThrow(TaskFailedQueueForRetry());
 
     await _expectArgumentError(
       () => automaticRetry.run(
-        () async => mock.getResult(),
+        () async => const AutomaticRetryTaskOutput(
+          data: '',
+          result: AutomaticRetryTaskResult.fail,
+        ),
         runImmediately: false,
       ),
     );
@@ -48,8 +45,7 @@ void main() {
         Duration(milliseconds: 30),
       ],
     );
-    final mock = MockDummyClass();
-    when(mock.getResult()).thenThrow(TaskFailedQueueForRetry());
+    final mock = MockDummyClass()..thenReturnFail();
 
     await _expectMaximumAttemptsReached(automaticRetry, mock);
     verify(mock.getResult()).called(4);
@@ -77,10 +73,16 @@ void main() {
     when(mock.getResult()).thenAnswer((_) {
       if (runs < 2) {
         runs++;
-        throw TaskFailedQueueForRetry();
+        return const AutomaticRetryTaskOutput(
+          data: '',
+          result: AutomaticRetryTaskResult.fail,
+        );
       }
 
-      return 'A valid value';
+      return const AutomaticRetryTaskOutput(
+        data: 'A valid value',
+        result: AutomaticRetryTaskResult.success,
+      );
     });
 
     expect(
@@ -92,29 +94,43 @@ void main() {
 
   test('Running a task again will cancel all existing retries', () async {
     final automaticRetry = AutomaticRetry(schedule: const [
-      Duration(milliseconds: 50),
+      Duration(milliseconds: 10),
     ]);
-    final failingMock = MockDummyClass();
-    when(failingMock.getResult()).thenThrow(TaskFailedQueueForRetry());
+    final failingMock = MockDummyClass()..thenReturnFail();
 
     automaticRetry.run(
       () async => failingMock.getResult(),
       runImmediately: false,
     );
 
-    final successMock = MockDummyClass();
-    when(successMock.getResult()).thenReturn('A value');
+    final successMock = MockDummyClass()..thenReturnSuccess();
 
-    automaticRetry.run(
-      () async {
-        return successMock.getResult();
-      },
-    );
+    await automaticRetry.run(() async => successMock.getResult());
+
+    // Adding a delay that must be longer than the duration defined at the top
+    // of the test to make sure it is never called.
+    Future.delayed(const Duration(milliseconds: 100));
 
     // The first mock should never get called as [runImmediately] is false.
     verifyNever(failingMock.getResult());
     verify(successMock.getResult()).called(1);
   });
+}
+
+extension on MockDummyClass {
+  void thenReturnSuccess({String value = ''}) => when(getResult()).thenReturn(
+        AutomaticRetryTaskOutput(
+          data: value,
+          result: AutomaticRetryTaskResult.success,
+        ),
+      );
+
+  void thenReturnFail({String value = ''}) => when(getResult()).thenReturn(
+        AutomaticRetryTaskOutput(
+          data: value,
+          result: AutomaticRetryTaskResult.fail,
+        ),
+      );
 }
 
 Future<void> _expectArgumentError(Future<String> Function() callback) =>
@@ -135,5 +151,5 @@ Future<void> _expectMaximumAttemptsReached(
 // A dummy class just used so we can mock it and verify interactions, it needs
 // to be public so it can be mocked.
 class DummyClass {
-  String getResult() => '';
+  AutomaticRetryTaskOutput<String> getResult() => throw Error();
 }

@@ -22,7 +22,7 @@ class OutgoingNumbersRepository with Loggable {
     required String number,
   }) async {
     try {
-      return outgoingNumberRetry.run(() async {
+      await outgoingNumberRetry.run(() async {
         final response = await _service.updateVoipAccount(
           user.client.id.toString(),
           user.appAccountId!,
@@ -35,11 +35,13 @@ class OutgoingNumbersRepository with Loggable {
 
         if (!response.isSuccessful) {
           logFailedResponse(response);
-          throw TaskFailedQueueForRetry;
+          return AutomaticRetryTaskOutput.fail(response);
         }
 
-        return response.isSuccessful;
+        return AutomaticRetryTaskOutput.success(response);
       });
+
+      return true;
     } on AutomaticRetryMaximumAttemptsReached {
       return false;
     }

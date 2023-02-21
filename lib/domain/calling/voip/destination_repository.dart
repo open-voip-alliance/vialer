@@ -57,7 +57,7 @@ class DestinationRepository with Loggable {
     required Destination destination,
   }) async {
     try {
-      automaticRetry.run(
+      await automaticRetry.run(
         () async {
           final response = await _service
               .setAvailability(selectedUserDestinationId.toString(), {
@@ -69,10 +69,10 @@ class DestinationRepository with Loggable {
 
           if (!response.isSuccessful) {
             logFailedResponse(response, name: 'Set destination');
-            throw TaskFailedQueueForRetry;
+            return AutomaticRetryTaskOutput.success(response);
           }
 
-          return response;
+          return AutomaticRetryTaskOutput.success(response);
         },
       );
 

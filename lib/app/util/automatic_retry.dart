@@ -1,6 +1,10 @@
 import 'dart:async';
 
+import 'package:freezed_annotation/freezed_annotation.dart';
+
 import 'loggable.dart';
+
+part 'automatic_retry.freezed.dart';
 
 class AutomaticRetry with Loggable {
   final _timers = <Timer>[];
@@ -31,7 +35,7 @@ class AutomaticRetry with Loggable {
   /// Set [runImmediately] to [false] for the first attempt to occur at the
   /// first entry in the schedule, rather than immediately.
   Future<T> run<T>(
-    Future<T> Function() task, {
+    Future<AutomaticRetryTaskOutput<T>> Function() task, {
     bool runImmediately = true,
   }) async {
     _timers.cancelAll();
@@ -44,44 +48,43 @@ class AutomaticRetry with Loggable {
     }
 
     if (runImmediately) {
-      try {
-        return await task();
-      } on TaskFailedQueueForRetry {
-        if (schedule.isEmpty) {
-          _logTaskAsFailed();
-          throw AutomaticRetryMaximumAttemptsReached();
-        }
+      final output = await task();
+
+      if (output.result == AutomaticRetryTaskResult.success) {
+        return output.data as T;
+      }
+
+      if (schedule.isEmpty) {
+        _logTaskAsFailed();
+        throw AutomaticRetryMaximumAttemptsReached();
       }
     }
 
     final completer = Completer<T>();
 
-    _scheduleTimers(task, completer);
+    _scheduleTimers<T>(task, completer);
 
     return completer.future;
   }
 
-  void _scheduleTimers(
+  void _scheduleTimers<T>(
     Future<dynamic> Function() task,
     Completer<dynamic> completer,
   ) {
     for (var duration in schedule) {
-      final timer = Timer(
-        duration,
-        () async {
-          try {
-            final result = await task();
-            _timers.cancelAll();
-            return completer.complete(result);
-          } on TaskFailedQueueForRetry {
-            if (!_timers.hasAnyActive) {
-              completer.completeError(AutomaticRetryMaximumAttemptsReached());
-              _logTaskAsFailed();
-              return;
-            }
+      final timer = Timer(duration, () async {
+        final output = await task();
+        if (output.result == AutomaticRetryTaskResult.success) {
+          _timers.cancelAll();
+          return completer.complete(output.data as T);
+        } else {
+          if (!_timers.hasAnyActive) {
+            completer.completeError(AutomaticRetryMaximumAttemptsReached());
+            _logTaskAsFailed();
+            return;
           }
-        },
-      );
+        }
+      });
 
       _timers.add(timer);
     }
@@ -106,9 +109,6 @@ extension on List<Timer> {
   bool get hasAnyActive => where((timer) => timer.isActive).isNotEmpty;
 }
 
-/// The exception that any task must throw to indicate that it has failed.
-class TaskFailedQueueForRetry implements Exception {}
-
 /// Indicates that the retry task has reached the maximum number of attempts
 /// and will stop trying any further.
 class AutomaticRetryMaximumAttemptsReached implements Exception {}
@@ -121,4 +121,29 @@ class RetrySchedule {
     Duration(seconds: 3),
     Duration(seconds: 5),
   ];
+}
+
+/// Contains the result of an individual task, the task must provide both the
+/// [AutomaticRetryTaskResult] and the data that it should output.
+@freezed
+class AutomaticRetryTaskOutput<T> with _$AutomaticRetryTaskOutput {
+  const factory AutomaticRetryTaskOutput({
+    required T data,
+    required AutomaticRetryTaskResult result,
+  }) = _AutomaticRetryTaskOutput;
+
+  factory AutomaticRetryTaskOutput.success(T data) => AutomaticRetryTaskOutput(
+        data: data,
+        result: AutomaticRetryTaskResult.success,
+      );
+
+  factory AutomaticRetryTaskOutput.fail(T data) => AutomaticRetryTaskOutput(
+        data: data,
+        result: AutomaticRetryTaskResult.fail,
+      );
+}
+
+enum AutomaticRetryTaskResult {
+  success,
+  fail,
 }
