@@ -16,9 +16,9 @@ class AutomaticRetry with Loggable {
   /// If a name is provided, logging will be performed when the task fails.
   final String? name;
 
-  AutomaticRetry({required this.schedule, this.name});
+  const AutomaticRetry({required this.schedule, this.name});
 
-  factory AutomaticRetry.http(String name) => AutomaticRetry(
+  const factory AutomaticRetry.http(String name) => AutomaticRetry(
         schedule: RetrySchedule.http,
         name: name,
       );
