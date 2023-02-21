@@ -26,9 +26,6 @@ class AutomaticRetry with Loggable {
   /// Will automatically retry the provided task, according to the given
   /// schedule.
   ///
-  /// The task MUST throw a [TaskFailedQueueForRetry] exception to indicate
-  /// that the task failed, otherwise it will be assumed that it succeeded.
-  ///
   /// If every run in the schedule fails, [AutomaticRetryMaximumAttemptsReached]
   /// will be thrown.
   ///
