@@ -109,7 +109,7 @@ void main() {
 
     // Adding a delay that must be longer than the duration defined at the top
     // of the test to make sure it is never called.
-    Future.delayed(const Duration(milliseconds: 100));
+    await Future.delayed(const Duration(milliseconds: 100));
 
     // The first mock should never get called as [runImmediately] is false.
     verifyNever(failingMock.getResult());
