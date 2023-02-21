@@ -45,8 +45,7 @@ class AutomaticRetry with Loggable {
 
     if (runImmediately) {
       try {
-        final result = await task();
-        return result;
+        return await task();
       } on TaskFailedQueueForRetry {
         if (schedule.isEmpty) {
           _logTaskAsFailed();
