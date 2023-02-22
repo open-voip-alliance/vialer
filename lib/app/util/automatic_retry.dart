@@ -52,22 +52,23 @@ class AutomaticRetry with Loggable {
       }
 
       if (schedule.isEmpty) {
-        _logTaskAsFailed(immediate: true);
+        _logTaskAsFailed(runImmediately: runImmediately);
         throw AutomaticRetryMaximumAttemptsReached();
       }
     }
 
     final completer = Completer<T>();
 
-    _scheduleTimers<T>(task, completer);
+    _scheduleTimers<T>(task, completer, runImmediately: runImmediately);
 
     return completer.future;
   }
 
   void _scheduleTimers<T>(
     Future<dynamic> Function() task,
-    Completer<dynamic> completer,
-  ) {
+    Completer<dynamic> completer, {
+    required bool runImmediately,
+  }) {
     for (var duration in schedule) {
       final timer = Timer(duration, () async {
         final output = await task();
@@ -77,7 +78,7 @@ class AutomaticRetry with Loggable {
         } else {
           if (!_timers.hasAnyActive) {
             completer.completeError(AutomaticRetryMaximumAttemptsReached());
-            _logTaskAsFailed();
+            _logTaskAsFailed(runImmediately: runImmediately);
             return;
           }
         }
@@ -87,9 +88,9 @@ class AutomaticRetry with Loggable {
     }
   }
 
-  void _logTaskAsFailed({bool immediate = false}) {
+  void _logTaskAsFailed({required bool runImmediately}) {
     if (name != null) {
-      final attempts = immediate ? 1 : schedule.length + 1;
+      final attempts = runImmediately ? schedule.length + 1 : schedule.length;
 
       logger.warning(
         'AutomaticRetryTask [$name] has failed after [$attempts] attempts.',
