@@ -114,9 +114,11 @@ class ChangeSettingsUseCase extends UseCase with Loggable {
         }
       }
 
-      _storageRepository.user = user.copyWith(
+      user = user.copyWith(
         settings: user.settings.copyFrom(settings),
       );
+
+      _storageRepository.user = user;
 
       // We do this after storing the settings so setting checks work.
       await _notifyListeners(
