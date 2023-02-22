@@ -3,29 +3,29 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../../../../../domain/contacts/contact.dart';
+import '../../../../../../data/models/colltact.dart';
 import '../../../../../resources/localizations.dart';
 import '../../../../../resources/theme.dart';
 import '../../../../../util/widgets_binding_observer_registrar.dart';
 import '../../../util/stylized_snack_bar.dart';
 import '../../../widgets/caller.dart';
-import '../../../widgets/contact_list/cubit.dart' hide NoPermission;
-import '../../../widgets/contact_list/details/cubit.dart';
-import '../../../widgets/contact_list/details/widget.dart';
+import '../../../widgets/colltact_list/cubit.dart';
+import '../../../widgets/colltact_list/details/cubit.dart';
+import '../../../widgets/colltact_list/details/widget.dart';
 
-class ContactPageDetails extends StatefulWidget {
-  final Contact contact;
+class ColltactPageDetails extends StatefulWidget {
+  final Colltact colltact;
 
-  const ContactPageDetails({
+  const ColltactPageDetails({
     Key? key,
-    required this.contact,
+    required this.colltact,
   }) : super(key: key);
 
   @override
-  _ContactPageDetailsState createState() => _ContactPageDetailsState();
+  _ColltactPageDetailsState createState() => _ColltactPageDetailsState();
 }
 
-class _ContactPageDetailsState extends State<ContactPageDetails>
+class _ColltactPageDetailsState extends State<ColltactPageDetails>
     with WidgetsBindingObserver, WidgetsBindingObserverRegistrar {
   bool _madeEdit = false;
 
@@ -53,13 +53,22 @@ class _ContactPageDetailsState extends State<ContactPageDetails>
     }
   }
 
-  void _onStateChanged(BuildContext context, ContactsState state) {
-    if (state is ContactsLoaded) {
-      final contact = state.contacts.firstWhereOrNull(
-        (contact) => contact.identifier == widget.contact.identifier,
+  void _onStateChanged(BuildContext context, ColltactsState state) {
+    if (state is ColltactsLoaded) {
+      final colltactId = widget.colltact.when(
+        colleague: (colleague) => colleague.id,
+        contact: (contact) => contact.identifier,
       );
-      if (contact == null && _madeEdit) {
-        // Contact doesn't exist anymore after returning back to the app,
+
+      final colltact = state.colltacts.firstWhereOrNull(
+        (colltact) => colltact.when(
+          contact: (contact) => contact.identifier == colltactId,
+          colleague: (colleague) => colleague.id == colltactId,
+        ),
+      );
+
+      if (colltact == null && _madeEdit) {
+        // Colltact doesn't exist anymore after returning back to the app,
         // it's probably deleted, so close this detail screen.
         Navigator.pop(context, true);
       }
@@ -70,26 +79,32 @@ class _ContactPageDetailsState extends State<ContactPageDetails>
   Widget build(BuildContext context) {
     return BlocListener<CallerCubit, CallerState>(
       listener: _onCallerStateChanged,
-      child: BlocProvider<ContactDetailsCubit>(
-        create: (_) => ContactDetailsCubit(context.read<CallerCubit>()),
-        child: BlocConsumer<ContactsCubit, ContactsState>(
+      child: BlocProvider<ColltactDetailsCubit>(
+        create: (_) => ColltactDetailsCubit(context.read<CallerCubit>()),
+        child: BlocConsumer<ColltactsCubit, ColltactsState>(
           listener: _onStateChanged,
           builder: (context, state) {
-            return BlocProvider<ContactDetailsCubit>(
-              create: (_) => ContactDetailsCubit(context.watch<CallerCubit>()),
+            return BlocProvider<ColltactDetailsCubit>(
+              create: (_) => ColltactDetailsCubit(context.watch<CallerCubit>()),
               child: Builder(
                 builder: (context) {
-                  final cubit = context.read<ContactDetailsCubit>();
+                  final cubit = context.read<ColltactDetailsCubit>();
 
-                  return ContactDetails(
-                    contact: widget.contact,
-                    onPhoneNumberPressed: cubit.call,
+                  return ColltactDetails(
+                    colltact: widget.colltact,
+                    onPhoneNumberPressed: (destination) => cubit.call(
+                      destination,
+                      origin: widget.colltact.map(
+                        colleague: (_) => CallOrigin.colleagues,
+                        contact: (_) => CallOrigin.contacts,
+                      ),
+                    ),
                     onEmailPressed: cubit.mail,
                     actions: [
                       Padding(
                         padding: const EdgeInsets.only(right: 20),
                         child: GestureDetector(
-                          onTap: () => cubit.edit(widget.contact),
+                          onTap: () => cubit.edit(widget.colltact),
                           child: context.isIOS
                               ? Padding(
                                   padding: const EdgeInsets.only(top: 24),

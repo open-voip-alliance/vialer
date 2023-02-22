@@ -15,13 +15,16 @@ class UserPermissionsRepository with Loggable {
   static const _permissionsMapping = {
     'cdr.view_record': UserPermission.clientCalls,
     'permission.change_user': UserPermission.changeMobileNumberFallback,
-    'permission.view_user': UserPermission.viewMobileNumberFallback,
     // There is only one temporary redirect permission, it is not separated
     // between viewing and changing.
     'business_availability.change_temporary_redirect':
         UserPermission.temporaryRedirect,
     'voicemail.view_voicemail': UserPermission.viewVoicemail,
     'phoneaccount.change_phoneaccount': UserPermission.changeVoipAccount,
+    'permission.view_user': UserPermission.viewUser,
+    'phoneaccount.list_api_voipaccount_basic_info':
+        UserPermission.listVoipAccounts,
+    'permission.list_api_user_basic_info': UserPermission.listUsers,
   };
 
   Future<List<UserPermission>> getGrantedPermissions({
@@ -58,6 +61,9 @@ enum UserPermission {
   temporaryRedirect,
   viewVoicemail,
   changeVoipAccount,
+  viewUser,
+  listVoipAccounts,
+  listUsers,
 }
 
 class UnableToRetrievePermissionsException extends VialerException {}

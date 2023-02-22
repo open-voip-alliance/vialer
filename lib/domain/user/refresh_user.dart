@@ -66,10 +66,11 @@ class RefreshUser extends UseCase with Loggable {
     return SynchronizedTask<User?>.of(this).run(() async {
       // Latest user contains some settings, such as mobile and
       // outgoing number.
-      var user = storedUser?.copyFrom(latestUser) ??
-          latestUser.copyWith(
-            settings: const Settings.defaults().copyFrom(latestUser.settings),
-          );
+      var user = storedUser?.copyFrom(latestUser) ?? latestUser;
+
+      user = user.copyWith(
+        settings: const Settings.defaults().copyFrom(user.settings),
+      );
 
       // If we're retrieving the user for the first time (logging in),
       // we store  the user already, so that the AuthorizationInterceptor
@@ -169,7 +170,7 @@ class RefreshUser extends UseCase with Loggable {
       canChangeMobileNumberFallback:
           granted.contains(UserPermission.changeMobileNumberFallback),
       canViewMobileNumberFallbackStatus:
-          granted.contains(UserPermission.viewMobileNumberFallback),
+          granted.contains(UserPermission.viewUser),
       // The only redirect target currently is Voicemail, so if the user
       // cannot view Voicemail they can't use the feature.
       canChangeTemporaryRedirect:
@@ -178,6 +179,8 @@ class RefreshUser extends UseCase with Loggable {
       canViewVoicemailAccounts: granted.contains(UserPermission.viewVoicemail),
       canChangeOutgoingNumber:
           granted.contains(UserPermission.changeVoipAccount),
+      canViewColleagues: granted.contains(UserPermission.listUsers),
+      canViewVoipAccounts: granted.contains(UserPermission.listVoipAccounts),
     );
 
     if (!permissions.canSeeClientCalls) {

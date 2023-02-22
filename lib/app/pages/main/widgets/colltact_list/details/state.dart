@@ -1,0 +1,3 @@
+class ColltactDetailsState {
+  const ColltactDetailsState();
+}

@@ -9,9 +9,6 @@ import 'feature.dart';
 class HasFeature extends UseCase {
   final _env = dependencyLocator<EnvRepository>();
 
-  Future<bool> call(Feature feature) async {
-    final envName = feature.name.constantCase;
-    final envValue = await _env.get('FEATURE_$envName');
-    return envValue.isNotEmpty;
-  }
+  bool call(Feature feature) =>
+      _env.get('FEATURE_${feature.name.constantCase}').isNotEmpty;
 }

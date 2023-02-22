@@ -17,8 +17,8 @@ import 'domain/calling/voip/client_voip_config_repository.dart';
 import 'domain/calling/voip/destination_repository.dart';
 import 'domain/calling/voip/user_voip_config_repository.dart';
 import 'domain/calling/voip/voip.dart';
-import 'domain/contacts/contact_populator.dart';
-import 'domain/contacts/contact_repository.dart';
+import 'domain/colltacts/contact_populator.dart';
+import 'domain/colltacts/contact_repository.dart';
 import 'domain/env.dart';
 import 'domain/error_tracking/error_tracking_repository.dart';
 import 'domain/event/event_bus.dart';
@@ -34,8 +34,10 @@ import 'domain/user/connectivity/connectivity.dart';
 import 'domain/user/info/build_info_repository.dart';
 import 'domain/user/info/operating_system_info_repository.dart';
 import 'domain/user/permissions/permission_repository.dart';
+import 'domain/user_availability/colleagues/colleagues_repository.dart';
 import 'domain/voicemail/voicemail_account_repository.dart';
 import 'domain/voipgrid/user_permissions.dart';
+import 'domain/voipgrid/voipgrid_api_resource_collector.dart';
 import 'domain/voipgrid/voipgrid_service.dart';
 
 final dependencyLocator = GetIt.instance;
@@ -70,6 +72,9 @@ Future<void> initializeDependencies({bool ui = true}) async {
     ..registerSingletonAsync<MiddlewareService>(
       () async => await MiddlewareService.create(),
       dependsOn: [StorageRepository, ClientVoipConfigRepository],
+    )
+    ..registerFactory<VoipgridApiResourceCollector>(
+      VoipgridApiResourceCollector.new,
     );
 
   if (ui) {
@@ -87,11 +92,22 @@ Future<void> initializeDependencies({bool ui = true}) async {
         dependsOn: [StorageRepository],
       )
       ..registerSingleton<FeedbackRepository>(FeedbackRepository())
-      ..registerSingleton<ContactRepository>(ContactRepository());
+      ..registerSingleton<ContactRepository>(ContactRepository())
+      ..registerSingleton<ColleaguesRepository>(
+        ColleaguesRepository(
+          dependencyLocator<VoipgridService>(),
+          dependencyLocator<VoipgridApiResourceCollector>(),
+          dependencyLocator<EventBus>(),
+        ),
+      );
   }
 
   dependencyLocator
-    ..registerSingleton<EnvRepository>(EnvRepository())
+    ..registerSingletonAsync<EnvRepository>(() async {
+      final env = EnvRepository();
+      await env.load();
+      return env;
+    })
     ..registerSingleton<AuthRepository>(
       AuthRepository(
         dependencyLocator<VoipgridService>(),
@@ -141,7 +157,7 @@ Future<void> initializeDependencies({bool ui = true}) async {
     )
     ..registerSingletonWithDependencies<VoipRepository>(
       VoipRepository.new,
-      dependsOn: [MiddlewareService],
+      dependsOn: [MiddlewareService, EnvRepository],
     )
     ..registerSingletonWithDependencies<UserVoipConfigRepository>(
       () => UserVoipConfigRepository(

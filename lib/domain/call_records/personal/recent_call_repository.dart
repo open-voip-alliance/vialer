@@ -3,7 +3,7 @@ import 'package:dartx/dartx.dart';
 import '../../../app/util/loggable.dart';
 import '../../../data/mappers/call_record.dart';
 import '../../../data/models/voipgrid_call_record.dart';
-import '../../contacts/contact.dart' as domain;
+import '../../colltacts/contact.dart' as domain;
 import '../../voipgrid/voipgrid_service.dart';
 import '../call_record.dart';
 

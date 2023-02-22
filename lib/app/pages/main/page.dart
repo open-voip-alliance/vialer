@@ -9,7 +9,8 @@ import '../../widgets/app_update_checker/widget.dart';
 import '../../widgets/nested_children.dart';
 import '../../widgets/transparent_status_bar.dart';
 import 'call/widgets/call_button.dart';
-import 'contacts/page.dart';
+import 'colltacts/colleagues/widget.dart';
+import 'colltacts/page.dart';
 import 'dialer/page.dart';
 import 'recent/page.dart';
 import 'settings/page.dart';
@@ -70,7 +71,7 @@ class MainPageState extends State<MainPage> {
     if (_pages == null) {
       _pages = [
         if (_dialerIsPage) const DialerPage(isInBottomNavBar: true),
-        ContactsPage(
+        ColltactsPage(
           navigatorKey: _navigatorKeys[0],
           bottomLettersPadding: !_dialerIsPage ? 96 : 0,
         ),
@@ -109,6 +110,7 @@ class MainPageState extends State<MainPage> {
               listener: _onCallerStateChanged,
               child: child,
             ),
+        (child) => ColleagueWebSocket.connect(child: child),
       ],
       Scaffold(
         resizeToAvoidBottomInset: false,

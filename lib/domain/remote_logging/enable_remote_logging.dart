@@ -12,7 +12,7 @@ class EnableRemoteLoggingUseCase extends UseCase {
 
   Future<void> call() async {
     final user = _getUser();
-    final token = await _getLoggingToken();
+    final token = _getLoggingToken();
 
     final loggingIdentifier = user?.loggingIdentifier ?? '';
 
