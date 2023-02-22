@@ -356,5 +356,6 @@ enum CallOrigin {
   dialer,
   recents,
   contacts,
+  colleagues,
   unknown,
 }

@@ -11,6 +11,7 @@ import '../user/settings/app_setting.dart';
 import '../user/settings/call_setting.dart';
 import '../user/settings/settings.dart';
 import '../user/user.dart';
+import '../user_availability/colleagues/colleague.dart';
 import '../voipgrid/client_voip_config.dart';
 import '../voipgrid/user_voip_config.dart';
 
@@ -196,6 +197,27 @@ class StorageRepository {
         Settings.toJson,
       );
 
+  static const _colleaguesKey = 'colleagues';
+
+  List<Colleague> get colleagues {
+    final jsonString = _preferences.getString(_colleaguesKey);
+
+    if (jsonString.isNullOrBlank) return const [];
+
+    try {
+      return (jsonDecode(jsonString!) as List<dynamic>)
+          .map((e) => Colleague.fromJson(e as Map<String, dynamic>))
+          .toList();
+    } on Exception {
+      return const [];
+    }
+  }
+
+  set colleagues(List<Colleague> colleagues) => _preferences.setOrRemoveString(
+        _colleaguesKey,
+        jsonEncode(colleagues),
+      );
+
   static const _grantedVoipgridPermissionsKey = 'granted_voipgrid_permissions';
 
   List<String> get grantedVoipgridPermissions => (jsonDecode(
@@ -213,6 +235,14 @@ class StorageRepository {
 
   set lastPeriodicIdentifyTime(DateTime? value) =>
       _preferences.setOrRemoveDateTime(_lastPeriodicIdentifyTime, value);
+
+  static const _lastUserRefreshTime = 'last_user_refresh_time';
+
+  DateTime? get lastUserRefreshedTime =>
+      _preferences.getDateTime(_lastUserRefreshTime);
+
+  set lastUserRefreshedTime(DateTime? value) =>
+      _preferences.setOrRemoveDateTime(_lastUserRefreshTime, value);
 
   static const _userNumberKey = 'user_number';
 
@@ -312,6 +342,8 @@ class StorageRepository {
             canViewMobileNumberFallbackStatus: false,
             canViewVoicemailAccounts: false,
             canChangeOutgoingNumber: false,
+            canViewColleagues: false,
+            canViewVoipAccounts: false,
           );
           break;
       }

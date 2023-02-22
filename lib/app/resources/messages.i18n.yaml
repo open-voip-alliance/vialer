@@ -191,6 +191,32 @@ main:
         You can see recent calls made by colleagues by enabling
         client-wide calls in the Settings page.
 
+  colltacts:
+    noOnline:
+      title: "No colleagues online"
+      subtitle: "There are no colleagues online currently, use the toggle below to view all your colleagues."
+    noResults:
+      title: "No matches found"
+      button(String number): "Call $number"
+      colleagues(String number): >-
+        There were no colleagues found for "$number".
+      contacts(String number): >-
+        There were no contacts found for "$number".
+    userAvailabilityWebSocketUnreachable:
+      title: "Unable to display colleagues"
+      subtitle: "The colleague list is currently unavailable, please try again later."
+
+  colleagues:
+    toggle: 'Online colleagues only'
+    status:
+      available: 'Available'
+      doNotDisturb: 'Do not disturb'
+      offline: 'Offline'
+      unknown: 'Unknown'
+      busy: 'Busy'
+    context:
+      ringing: 'Being called'
+      inCall: 'Busy'
 
   contacts:
     title: &contactsTitle "Contacts"
@@ -198,11 +224,17 @@ main:
       title: *contactsTitle
     snackBar:
       noPermission: "Unable to call without the Phone permission"
+    tabBar:
+      contactsTabTitle: *contactsTitle
+      colleaguesTabTitle: "Colleagues"
     edit: "Edit"
     list:
-      loading:
+      loadingContacts:
         title: "Loading your contacts"
         description: "The contacts from your phone are almost available, please wait a moment. If there are a lot of contacts stored on your phone, it may take a little longer."
+      loadingColleagues:
+        title: "Loading your colleagues"
+        description: "Your colleagues are almost available, please wait a moment."
       empty:
         title: "No contacts found"
         description(String appName): >-
