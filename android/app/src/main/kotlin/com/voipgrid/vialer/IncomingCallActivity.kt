@@ -12,6 +12,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.FloatingActionButton
@@ -29,6 +30,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.integerResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.*
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -257,13 +259,14 @@ fun CallHeader(callHeaderInformation: CallHeaderInformation, fontSize: TextUnit 
     Column(
         Modifier
             .fillMaxWidth()
-            .padding(10.dp),
+            .padding(10.dp)
+            .semantics(mergeDescendants = true) {},
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Avatar(callHeaderInformation = callHeaderInformation)
             Spacer(modifier = Modifier.size(20.dp))
-            Column() {
+            Column {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
                         FontAwesome.PHONE_ARROW_DOWN_LEFT,
@@ -349,6 +352,7 @@ fun Avatar(callHeaderInformation: CallHeaderInformation) {
                 generateAvatarContent(callHeaderInformation = callHeaderInformation),
                 style = TextStyle(color = LocalContext.current.primary,
                     fontWeight = FontWeight.Bold),
+                modifier = Modifier.clearAndSetSemantics {}
             )
         }
     }
@@ -393,6 +397,7 @@ fun Icon(icon: Icon, size: TextUnit = 26.sp, color: Color = Color.Unspecified) {
         fontFamily = FontFamily(Font(fontFamily)),
         fontSize = size,
         color = color,
+        modifier = Modifier.clearAndSetSemantics {},
     )
 }
 
@@ -404,7 +409,14 @@ fun ActionButton(
     text: String,
     content: @Composable() () -> Unit,
 ) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.clearAndSetSemantics {
+            contentDescription = text
+            role = Role.Button
+            onClick { onClick(); true }
+        }
+    ) {
         Text(
             text.uppercase(),
             modifier = Modifier.padding(bottom = 12.dp),
