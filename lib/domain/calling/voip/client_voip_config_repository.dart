@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import '../../../app/util/loggable.dart';
-import '../../authentication/is_onboard.dart';
+import '../../onboarding/is_onboarded.dart';
 import '../../voipgrid/client_voip_config.dart';
 import '../../voipgrid/voipgrid_service.dart';
 

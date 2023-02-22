@@ -1,11 +1,11 @@
 import '../../app/util/loggable.dart';
 import '../../dependency_locator.dart';
-import '../authentication/is_onboard.dart';
 import '../authentication/logout.dart';
 import '../authentication/unauthorized_api_response.dart';
 import '../call_records/client/import_historic_client_call_records.dart';
 import '../call_records/client/purge_local_call_records.dart';
 import '../metrics/identify_for_tracking.dart';
+import '../onboarding/is_onboarded.dart';
 import '../use_case.dart';
 import '../user/settings/app_setting.dart';
 import '../user/settings/setting_changed.dart';
