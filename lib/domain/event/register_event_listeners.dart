@@ -16,14 +16,14 @@ import 'event_bus.dart';
 class RegisterDomainEventListenersUseCase extends UseCase with Loggable {
   final _eventBus = dependencyLocator<EventBusObserver>();
   final _logout = Logout();
-  final _isOnboard = IsOnboard();
+  final _isOnboarded = IsOnboarded();
   final _importHistoricClientCalls = ImportHistoricClientCallRecordsUseCase();
   final _purgeLocalCallRecords = PurgeLocalCallRecordsUseCase();
   final _identifyForTracking = IdentifyForTrackingUseCase();
 
   void call() {
     _eventBus.on<UnauthorizedApiResponseEvent>((event) {
-      if (!_isOnboard()) return;
+      if (!_isOnboarded()) return;
 
       logger.warning(
         'Logging unauthorized user out, code was: ${event.statusCode}.',

@@ -8,14 +8,14 @@ import '../../voipgrid/voipgrid_service.dart';
 class ClientVoipConfigRepository with Loggable {
   final VoipgridService _service;
 
-  final _isOnboard = IsOnboard();
+  final _isOnboarded = IsOnboarded();
 
   ClientVoipConfigRepository(this._service);
 
   late final _fallbackServerConfig = ClientVoipConfig.fallback();
 
   Future<ClientVoipConfig> get() async {
-    if (!_isOnboard()) {
+    if (!_isOnboarded()) {
       // The user isn't logged in, so retrieving it from the API will fail.
       // So get the branded urls as fallback.
       return _fallbackServerConfig;

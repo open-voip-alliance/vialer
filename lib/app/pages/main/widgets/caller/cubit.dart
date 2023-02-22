@@ -53,7 +53,7 @@ import 'state.dart' hide AttendedTransferStarted;
 export 'state.dart';
 
 class CallerCubit extends Cubit<CallerState> with Loggable {
-  final _isOnboard = IsOnboard();
+  final _isOnboarded = IsOnboarded();
   final _getConnectivityType = GetCurrentConnectivityTypeUseCase();
 
   final _getUser = GetLoggedInUserUseCase();
@@ -99,7 +99,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
   StreamSubscription? _voipCallEventSubscription;
 
   CallerCubit() : super(const CanCall()) {
-    if (_isOnboard() && _storageRepository.hasCompletedOnboarding) {
+    if (_isOnboarded() && _storageRepository.hasCompletedOnboarding) {
       initialize();
     }
 
