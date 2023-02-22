@@ -7,9 +7,8 @@ import '../../voipgrid/user_voip_config.dart';
 class GetHasVoipEnabledUseCase extends UseCase {
   final _getUser = GetLoggedInUserUseCase();
 
-  Future<bool> call() async {
+  bool call() {
     final user = _getUser();
-
     return user.voip.isAllowedCalling && user.settings.get(CallSetting.useVoip);
   }
 }

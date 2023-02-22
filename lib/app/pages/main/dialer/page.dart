@@ -41,7 +41,7 @@ class _DialerPageState extends State<DialerPage>
 
       // We pop the dialer on Android if we're initiating a call-through call.
       if (Platform.isAndroid &&
-          callerState is InitiatingCall &&
+          callerState is StartingCall &&
           !callerState.isVoip) {
         Navigator.of(context).popUntil(
           (route) => route.settings.name == Routes.main,
