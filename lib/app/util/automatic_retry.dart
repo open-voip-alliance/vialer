@@ -52,7 +52,7 @@ class AutomaticRetry with Loggable {
       }
 
       if (schedule.isEmpty) {
-        _logTaskAsFailed();
+        _logTaskAsFailed(immediate: true);
         throw AutomaticRetryMaximumAttemptsReached();
       }
     }
@@ -87,11 +87,12 @@ class AutomaticRetry with Loggable {
     }
   }
 
-  void _logTaskAsFailed() {
+  void _logTaskAsFailed({bool immediate = false}) {
     if (name != null) {
+      final attempts = immediate ? 1 : schedule.length + 1;
+
       logger.warning(
-        'AutomaticRetryTask [$name] has failed after ${schedule.length + 1} '
-        'attempts.',
+        'AutomaticRetryTask [$name] has failed after [$attempts] attempts.',
       );
     }
   }
