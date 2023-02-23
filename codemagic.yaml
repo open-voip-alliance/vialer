@@ -203,7 +203,7 @@ custom: # Custom properties to make workflows cleaner
         --dart-define BRAND=$BRAND \
         --dart-define SEGMENT_IOS_KEY=$SEGMENT_IOS_WRITE_KEY \
     - &run_integration_tests
-      name: Run integration tests
+      name: Run integration tests using emulator.wtf
       script: |
         #!/usr/bin/env zsh
         set -e # Ensures the script exits if any commands fail to execute

@@ -24,7 +24,7 @@ void main() =>
 
       await tester.tap(find.byKey(LoginPage.keys.loginButton));
 
-      await tester.pumpAndSettle(const Duration(seconds: 1));
+      await tester.pumpAndSettle(const Duration(seconds: 5));
 
       expect(OnboardingPage.keys.page.currentStep, OnboardingStep.mobileNumber);
     });
