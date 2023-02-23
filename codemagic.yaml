@@ -286,7 +286,7 @@ custom: # Custom properties to make workflows cleaner
       script: |
         curl "https://hooks.zapier.com/hooks/catch/1394555/blav33z?build_id=${CM_BUILD_ID}"
   config: &config # Default configuration that can be applied to all normal workflows
-    max_build_duration: 60
+    max_build_duration: 90
     instance_type: mac_pro
     environment: &config_environment
       flutter: 3.7.1

@@ -6,8 +6,11 @@ part 'unauthorized_api_response.freezed.dart';
 /// contact the API.
 @freezed
 class UnauthorizedApiResponseEvent with _$UnauthorizedApiResponseEvent {
-  const factory UnauthorizedApiResponseEvent(
+  const factory UnauthorizedApiResponseEvent({
+    /// The url that was being queried that triggered the event.
+    required String url,
+
     /// The status code that caused the user to appear as unauthorized.
-    int statusCode,
-  ) = _UnauthorizedApiResponseEvent;
+    required int statusCode,
+  }) = _UnauthorizedApiResponseEvent;
 }
