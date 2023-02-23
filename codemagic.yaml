@@ -223,7 +223,7 @@ custom: # Custom properties to make workflows cleaner
           --test=../build/app/outputs/apk/androidTest/debug/app-debug-androidTest.apk \
           --num-shards 5 \
           --timeout=30m \
-          --outputs-dir="$FCI_BUILD_ID/$pathname" \
+          --outputs-dir="$HOME/integration_test_output" \
           --use-orchestrator \
           --clear-package-data
         if [ $? -eq 1 ]
@@ -302,6 +302,7 @@ custom: # Custom properties to make workflows cleaner
       - build/ios/ipa/*.ipa
       - /tmp/xcodebuild_logs/*.log
       - flutter_drive.log
+      - $HOME/integration_test_output/**
 
     production_trigger: &production_was_tagged
       events:
