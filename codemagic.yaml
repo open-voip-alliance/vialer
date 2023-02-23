@@ -216,21 +216,13 @@ custom: # Custom properties to make workflows cleaner
         sed -i -e "s/TEST_USER_WITHOUT_APP_ACCOUNT_PASSWORD\=*/TEST_USER_WITHOUT_APP_ACCOUNT_PASSWORD\=$TEST_USER_WITHOUT_APP_ACCOUNT_PASSWORD/g" .env
         setopt extended_glob
         cd android
-        for filename in ../integration_test/tests/**/*.dart; do
-          # Although we're in a subdirectory, during building it uses paths relative to the project root.
-          filename=${filename#"../"}
-          pathname=${filename#"integration_test/"}
-          pathname=${pathname%".dart"}
-          ./gradlew app:assembleAndroidTest && ./gradlew app:assembleDebug -Ptarget="$filename"
-          echo "Starting test ${filename#"integration_test/tests/"}"
-          ew-cli \
-            --app=../build/app/outputs/apk/debug/app-debug.apk \
-            --test=../build/app/outputs/apk/androidTest/debug/app-debug-androidTest.apk \
-            --timeout=5m \
-            --outputs-dir="$FCI_BUILD_ID/$pathname"
-            --quiet
-          #gcloud alpha firebase test android run --type=instrumentation -   --results-bucket=vialer-fcm-423a9.appspot.com
-        done
+        ./gradlew app:assembleAndroidTest
+        ./gradlew app:assembleDebug -Ptarget="../integration_test/integration_tests.dart"
+        ew-cli \
+          --app=../build/app/outputs/apk/debug/app-debug.apk \
+          --test=../build/app/outputs/apk/androidTest/debug/app-debug-androidTest.apk \
+          --timeout=30m \
+          --outputs-dir="$FCI_BUILD_ID/$pathname"
         cd ..
     - &update_gitlab_merge_request_with_build_url
       name: Updating the Merge Request in Gitlab with a link to this build
