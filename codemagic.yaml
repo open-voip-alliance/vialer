@@ -224,6 +224,10 @@ custom: # Custom properties to make workflows cleaner
           --test=../build/app/outputs/apk/androidTest/debug/app-debug-androidTest.apk \
           --timeout=30m \
           --outputs-dir="$FCI_BUILD_ID/$pathname"
+        if [ $? -eq 1 ]
+        then
+            exit 1
+        fi
         cd ..
     - &update_gitlab_merge_request_with_build_url
       name: Updating the Merge Request in Gitlab with a link to this build
