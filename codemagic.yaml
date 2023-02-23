@@ -217,8 +217,7 @@ custom: # Custom properties to make workflows cleaner
         sed -i -e "s/TEST_USER_WITHOUT_APP_ACCOUNT_PASSWORD\=*/TEST_USER_WITHOUT_APP_ACCOUNT_PASSWORD\=$TEST_USER_WITHOUT_APP_ACCOUNT_PASSWORD/g" .env
         setopt extended_glob
         cd android
-        ./gradlew app:assembleAndroidTest \
-          && app:assembleDebug -Ptarget="../android_combined_tests.g.dart"
+        ./gradlew app:assembleAndroidTest && ./gradlew app:assembleDebug -Ptarget="../android_combined_tests.g.dart"
         ew-cli \
           --app=../build/app/outputs/apk/debug/app-debug.apk \
           --test=../build/app/outputs/apk/androidTest/debug/app-debug-androidTest.apk \
