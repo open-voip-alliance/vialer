@@ -202,7 +202,6 @@ custom: # Custom properties to make workflows cleaner
       script: |
         #!/usr/bin/env zsh
         set -e # Ensures the script exits if any commands fail to execute
-        dart utils/test/generate_single_integration_test_file.dart
         mkdir -p $HOME/bin && \
           curl https://maven.emulator.wtf/releases/ew-cli -o $HOME/bin/ew-cli && \
           chmod a+x $HOME/bin/ew-cli
