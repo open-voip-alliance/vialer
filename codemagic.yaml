@@ -201,15 +201,11 @@ custom: # Custom properties to make workflows cleaner
       name: Run integration tests
       script: |
         #!/usr/bin/env zsh
+        mkdir -p $HOME/bin && \
+          curl https://maven.emulator.wtf/releases/ew-cli -o $HOME/bin/ew-cli && \
+          chmod a+x $HOME/bin/ew-cli
+        export PATH="$PATH:$HOME/bin"
         sed -i -e '/SENTRY_DSN\=*/d' .env
-        wget https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-357.0.0-linux-x86_64.tar.gz
-        tar xf google-cloud-sdk-357.0.0-linux-x86_64.tar.gz
-        ./google-cloud-sdk/install.sh --quiet
-        source google-cloud-sdk/path.zsh.inc
-        echo "$GCLOUD_KEY" | base64 -d > gcloud-key.json
-        gcloud auth activate-service-account --key-file=gcloud-key.json
-        gcloud --quiet config set project vialer-fcm-423a9
-        gcloud components install alpha -q
         # Setup test vars
         sed -i -e "s/IN_TEST\=*/IN_TEST\=true/g" .env
         sed -i -e "s/TEST_USER_1_EMAIL\=*/TEST_USER_1_EMAIL\=$TEST_USER_1_EMAIL/g" .env
@@ -227,29 +223,15 @@ custom: # Custom properties to make workflows cleaner
           pathname=${pathname%".dart"}
           ./gradlew app:assembleAndroidTest && ./gradlew app:assembleDebug -Ptarget="$filename"
           echo "Starting test ${filename#"integration_test/tests/"}"
-          gcloud alpha firebase test android run --type=instrumentation --app=../build/app/outputs/apk/debug/app-debug.apk --test=../build/app/outputs/apk/androidTest/debug/app-debug-androidTest.apk --timeout=5m --results-bucket=vialer-fcm-423a9.appspot.com --results-dir="$FCI_BUILD_ID/$pathname" --quiet
+          ew-cli \
+            --app=../build/app/outputs/apk/debug/app-debug.apk \
+            --test=../build/app/outputs/apk/androidTest/debug/app-debug-androidTest.apk \
+            --timeout=5m \
+            --outputs-dir="$FCI_BUILD_ID/$pathname"
+            --quiet
+          #gcloud alpha firebase test android run --type=instrumentation -   --results-bucket=vialer-fcm-423a9.appspot.com
         done
         cd ..
-        # iOS testing (disabled since it doesn't work)
-        #IOS_SDK=15.5
-        #keychain initialize
-        #app-store-connect fetch-signing-files $BUNDLE_ID \
-        #--type IOS_APP_STORE \
-        #--create
-        #keychain add-certificates
-        #xcode-project use-profiles
-        #flutter build ios --target integration_test/main.dart --release \
-        # --config-only \
-        #--export-options-plist=/Users/builder/export_options.plist \
-        #--verbose \
-        #--dart-define BRAND=$BRAND
-        #cd ios
-        #xcodebuild -workspace Runner.xcworkspace -scheme Runner -config Flutter/Release.xcconfig -derivedDataPath ../build/ios_integ -sdk iphoneos$IOS_SDK build-for-testing
-        #cd ..
-        #pushd build/ios_integ/Build/Products
-        #zip -r "ios_tests.zip" "Release-iphoneos" "Runner_iphoneos$IOS_SDK-arm64.xctestrun"
-        #popd
-        #gcloud firebase test ios run --test "build/ios_integ/Build/Products/ios_tests.zip" --device model=iphone13pro,version=15.2,locale=en_US,orientation=portrait
     - &update_gitlab_merge_request_with_build_url
       name: Updating the Merge Request in Gitlab with a link to this build
       script: |
