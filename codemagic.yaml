@@ -222,8 +222,11 @@ custom: # Custom properties to make workflows cleaner
         ew-cli \
           --app=../build/app/outputs/apk/debug/app-debug.apk \
           --test=../build/app/outputs/apk/androidTest/debug/app-debug-androidTest.apk \
+          --num-shards 5 \
           --timeout=30m \
-          --outputs-dir="$FCI_BUILD_ID/$pathname"
+          --outputs-dir="$FCI_BUILD_ID/$pathname" \
+          --use-orchestrator \
+          --clear-package-data
         if [ $? -eq 1 ]
         then
             exit 1
