@@ -498,8 +498,6 @@ workflows:
       - *flutter_pub_get
       - *analyze
       - *flutter_test
-      - *build_aab
-      - *build_universal_apk_from_aab
       - *run_integration_tests
     triggering:
       events: [ ]
