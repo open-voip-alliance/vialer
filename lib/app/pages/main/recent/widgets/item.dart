@@ -508,8 +508,8 @@ extension RenderType on CallRecord {
 
     return callRecord.map(
       withoutContact: (_) => CallRecordRenderType.other,
-      withContact: (callRecord) => callRecord.renderType,
-      client: (_) => CallRecordRenderType.other,
+      withContact: (_) => CallRecordRenderType.other,
+      client: (callRecord) => callRecord.renderType,
     );
   }
 }
