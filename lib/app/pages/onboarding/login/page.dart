@@ -101,7 +101,8 @@ class _LoginPageState extends State<LoginPage>
                           duration: _duration,
                           height: isKeyboardVisible ? 16 : 48,
                         ),
-                        BlocBuilder<ConnectivityCheckerCubit, ConnectivityState>(
+                        BlocBuilder<ConnectivityCheckerCubit,
+                            ConnectivityState>(
                           builder: (context, connectivityState) {
                             return ErrorAlert(
                               visible: loginState is LoginFailed ||
@@ -114,7 +115,8 @@ class _LoginPageState extends State<LoginPage>
                               message: loginState is LoginFailed
                                   ? context.msg.onboarding.login.error
                                       .wrongCombination.message
-                                  : context.msg.connectivity.noConnection.message,
+                                  : context
+                                      .msg.connectivity.noConnection.message,
                             );
                           },
                         ),
@@ -137,8 +139,8 @@ class _LoginPageState extends State<LoginPage>
                           visible: (loginState is LoginNotSubmitted &&
                               !loginState.hasValidEmailFormat),
                           inline: true,
-                          message:
-                              context.msg.onboarding.login.error.wrongEmailFormat,
+                          message: context
+                              .msg.onboarding.login.error.wrongEmailFormat,
                         ),
                         const SizedBox(height: 20),
                         StylizedTextField(
@@ -190,19 +192,23 @@ class _LoginPageState extends State<LoginPage>
                                     key: LoginPage.keys.loginButton,
                                     onPressed: loginState is! LoggingIn &&
                                             connectivityState is! Disconnected
-                                        ? () => context.read<LoginCubit>().login(
-                                              _emailController.text,
-                                              _passwordController.text,
-                                            )
+                                        ? () =>
+                                            context.read<LoginCubit>().login(
+                                                  _emailController.text,
+                                                  _passwordController.text,
+                                                )
                                         : null,
                                     child: AnimatedSwitcher(
                                       switchInCurve: Curves.decelerate,
                                       switchOutCurve: Curves.decelerate.flipped,
-                                      duration: const Duration(milliseconds: 200),
+                                      duration:
+                                          const Duration(milliseconds: 200),
                                       child: loginState is! LoggingIn
                                           ? Text(
-                                              context.msg.onboarding.button.login
-                                                  .toUpperCaseIfAndroid(context),
+                                              context
+                                                  .msg.onboarding.button.login
+                                                  .toUpperCaseIfAndroid(
+                                                      context),
                                             )
                                           : Row(
                                               mainAxisAlignment:
@@ -243,8 +249,8 @@ class _LoginPageState extends State<LoginPage>
                               child: StylizedButton.outline(
                                 onPressed: _goToPasswordReset,
                                 child: Text(
-                                  context
-                                      .msg.onboarding.login.button.forgotPassword
+                                  context.msg.onboarding.login.button
+                                      .forgotPassword
                                       .toUpperCaseIfAndroid(context),
                                 ),
                               ),
