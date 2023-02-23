@@ -201,6 +201,8 @@ custom: # Custom properties to make workflows cleaner
       name: Run integration tests
       script: |
         #!/usr/bin/env zsh
+        # Make sure the script exits if any commands fail to execute
+        set -e
         dart utils/test/generate_single_integration_test_file.dart
         mkdir -p $HOME/bin && \
           curl https://maven.emulator.wtf/releases/ew-cli -o $HOME/bin/ew-cli && \
@@ -226,10 +228,6 @@ custom: # Custom properties to make workflows cleaner
           --outputs-dir="$HOME/integration_test_output" \
           --use-orchestrator \
           --clear-package-data
-        if [ $? -eq 1 ]
-        then
-            exit 1
-        fi
         cd ..
     - &update_gitlab_merge_request_with_build_url
       name: Updating the Merge Request in Gitlab with a link to this build
