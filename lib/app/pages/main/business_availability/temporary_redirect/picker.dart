@@ -15,8 +15,8 @@ import 'explanation.dart';
 class TemporaryRedirectPicker extends StatefulWidget {
   final TemporaryRedirect? activeRedirect;
   final Iterable<TemporaryRedirectDestination> availableDestinations;
-  final Function(TemporaryRedirectDestination) onStart;
-  final VoidCallback? onStop;
+  final Future<void> Function(TemporaryRedirectDestination) onStart;
+  final Future<void> Function()? onStop;
   final VoidCallback? onCancel;
 
   const TemporaryRedirectPicker({
@@ -43,6 +43,23 @@ class _TemporaryRedirectPickerState extends State<TemporaryRedirectPicker> {
     super.initState();
     _selectedDestination = widget.activeRedirect?.destination ??
         widget.availableDestinations.firstOrNull;
+  }
+
+  bool _actionable = true;
+
+  Future<void> _handleAction(Future<void> Function() action) async {
+    // ignore: avoid_positional_boolean_parameters
+    void actionable(bool value) => setState(() {
+          _actionable = value;
+        });
+
+    actionable(false);
+
+    try {
+      await action();
+    } finally {
+      actionable(true);
+    }
   }
 
   void _changeSelectedDestination(TemporaryRedirectDestination? destination) {
@@ -131,8 +148,10 @@ class _TemporaryRedirectPickerState extends State<TemporaryRedirectPicker> {
           const SizedBox(height: 16),
           StylizedButton.raised(
             colored: true,
-            onPressed: _selectedDestination != null
-                ? () => widget.onStart(_selectedDestination!)
+            onPressed: _actionable && _selectedDestination != null
+                ? () => _handleAction(
+                      () => widget.onStart(_selectedDestination!),
+                    )
                 : null,
             child: Text(
               (widget.activeRedirect != null
@@ -158,7 +177,8 @@ class _TemporaryRedirectPickerState extends State<TemporaryRedirectPicker> {
             const SizedBox(height: 48),
             StylizedButton.outline(
               colored: true,
-              onPressed: widget.onStop,
+              onPressed:
+                  _actionable ? () => _handleAction(widget.onStop!) : null,
               child: Text(
                 context.msg.main.temporaryRedirect.actions.stopRedirect
                     .labelOngoing
