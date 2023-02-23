@@ -31,7 +31,10 @@ class User extends Equatable {
   @JsonKey(toJson: Client.toJson, fromJson: Client.fromJson)
   final Client client;
 
-  @JsonKey(toJson: UserVoipConfig.toJson, fromJson: UserVoipConfig.fromJson)
+  @JsonKey(
+    toJson: UserVoipConfig.serializeToJson,
+    fromJson: UserVoipConfig.serializeFromJson,
+  )
   final UserVoipConfig? voip;
 
   @JsonKey(toJson: Settings.toJson, fromJson: Settings.fromJson)

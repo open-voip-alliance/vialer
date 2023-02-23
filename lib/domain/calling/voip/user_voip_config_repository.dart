@@ -24,7 +24,7 @@ class UserVoipConfigRepository with Loggable {
       return null;
     }
 
-    return UserVoipConfig.fromJson(body);
+    return UserVoipConfig.serializeFromJson(body);
   }
 }
 
