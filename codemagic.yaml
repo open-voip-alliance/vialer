@@ -201,6 +201,7 @@ custom: # Custom properties to make workflows cleaner
       name: Run integration tests
       script: |
         #!/usr/bin/env zsh
+        dart utils/test/generate_single_integration_test_file.dart
         mkdir -p $HOME/bin && \
           curl https://maven.emulator.wtf/releases/ew-cli -o $HOME/bin/ew-cli && \
           chmod a+x $HOME/bin/ew-cli
@@ -216,8 +217,8 @@ custom: # Custom properties to make workflows cleaner
         sed -i -e "s/TEST_USER_WITHOUT_APP_ACCOUNT_PASSWORD\=*/TEST_USER_WITHOUT_APP_ACCOUNT_PASSWORD\=$TEST_USER_WITHOUT_APP_ACCOUNT_PASSWORD/g" .env
         setopt extended_glob
         cd android
-        ./gradlew app:assembleAndroidTest
-        ./gradlew app:assembleDebug -Ptarget="../integration_test/integration_tests.dart"
+        ./gradlew app:assembleAndroidTest \
+          && app:assembleDebug -Ptarget="../android_combined_tests.g.dart"
         ew-cli \
           --app=../build/app/outputs/apk/debug/app-debug.apk \
           --test=../build/app/outputs/apk/androidTest/debug/app-debug-androidTest.apk \
