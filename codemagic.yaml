@@ -138,6 +138,11 @@ custom: # Custom properties to make workflows cleaner
         --ks-pass $FCI_KEYSTORE_PASSWORD \
         --ks-key-alias $FCI_KEY_ALIAS \
         --key-pass $FCI_KEY_PASSWORD
+    - &build_debug_apk
+      name: Build APK for debug
+      script: |
+        echo $ANDROID_FIREBASE_SECRET | base64 --decode > $FCI_BUILD_DIR/android/app/google-services.json
+        flutter build apk --target=lib/app/main.dart --debug
     - &update_ios_signing_for_current_brand
       name: Updating iOS project files to use the appropriate signing information for the current brand
       script: |
@@ -502,8 +507,7 @@ workflows:
       - *flutter_pub_get
       - *analyze
       - *flutter_test
-      - echo $ANDROID_FIREBASE_SECRET | base64 --decode > $FCI_BUILD_DIR/android/app/google-services.json
-      - flutter build apk --target=lib/app/main.dart --debug
+      - *build_debug_apk
       - *run_integration_tests
     triggering:
       events: [ ]
