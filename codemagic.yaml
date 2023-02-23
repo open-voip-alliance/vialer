@@ -220,7 +220,7 @@ custom: # Custom properties to make workflows cleaner
         setopt extended_glob
         cd android
         ./gradlew app:assembleAndroidTest
-        ./gradlew app:assembleDebug -Ptarget="$CM_BUILD_DIR/android_combined_tests.g.dart"
+        ./gradlew app:assembleDebug -Ptarget="$CM_BUILD_DIR/integration_test/tests/onboarding/login/login_success.dart"
         ew-cli \
           --app=../build/app/outputs/apk/debug/app-debug.apk \
           --test=../build/app/outputs/apk/androidTest/debug/app-debug-androidTest.apk \
