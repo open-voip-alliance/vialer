@@ -1,52 +1,26 @@
-import 'package:equatable/equatable.dart';
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
+part 'user_voip_config.freezed.dart';
 part 'user_voip_config.g.dart';
 
-@JsonSerializable()
-class UserVoipConfig extends Equatable {
-  /// Must include a default while there are existing users with cached
-  /// VoipConfig, can be removed at a later date.
-  @JsonKey(name: 'allow_appaccount_voip_calling', defaultValue: true)
-  final bool isAllowedCalling;
+@freezed
+class UserVoipConfig with _$UserVoipConfig {
+  const factory UserVoipConfig({
+    /// Must include a default while there are existing users with cached
+    /// VoipConfig, can be removed at a later date.
+    @JsonKey(name: 'allow_appaccount_voip_calling', defaultValue: true)
+        required bool isAllowedCalling,
+    @JsonKey(name: 'appaccount_account_id', fromJson: _sipUserIdFromJson)
+        required String sipUserId,
+    @JsonKey(name: 'appaccount_password') required String password,
+    @JsonKey(name: 'appaccount_use_encryption') required bool useEncryption,
+    @JsonKey(name: 'appaccount_use_opus') required bool useOpus,
+  }) = _UserVoipConfig;
 
-  @JsonKey(name: 'appaccount_account_id', fromJson: _sipUserIdFromJson)
-  final String sipUserId;
+  factory UserVoipConfig.fromJson(Map<String, dynamic> json) =>
+      _$UserVoipConfigFromJson(json);
 
-  @JsonKey(name: 'appaccount_password')
-  final String password;
-
-  @JsonKey(name: 'appaccount_use_encryption')
-  final bool useEncryption;
-
-  @JsonKey(name: 'appaccount_use_opus')
-  final bool useOpus;
-
-  const UserVoipConfig({
-    required this.isAllowedCalling,
-    required this.sipUserId,
-    required this.password,
-    required this.useEncryption,
-    required this.useOpus,
-  });
-
-  @override
-  List<Object?> get props => [
-        isAllowedCalling,
-        sipUserId,
-        password,
-        useEncryption,
-        useOpus,
-      ];
-
-  @override
-  String toString() => '$runtimeType('
-      'isAllowedCalling: $isAllowedCalling, '
-      'sipUserId: $sipUserId, '
-      'useEncryption: $useEncryption, '
-      'useOpus: $useOpus)';
-
-  static UserVoipConfig? fromJson(Map<String, dynamic>? json) {
+  static UserVoipConfig? serializeFromJson(Map<String, dynamic>? json) {
     if (json == null) return null;
 
     if (json['appaccount_password'] == null) return null;
@@ -54,8 +28,15 @@ class UserVoipConfig extends Equatable {
     return _$UserVoipConfigFromJson(json);
   }
 
-  static Map<String, dynamic>? toJson(UserVoipConfig? value) =>
-      value != null ? _$UserVoipConfigToJson(value) : null;
+  static Map<String, dynamic>? serializeToJson(UserVoipConfig? config) =>
+      config != null ? config.toJson() : null;
+
+  @override
+  String toString() => '$runtimeType('
+      'isAllowedCalling: $isAllowedCalling, '
+      'sipUserId: $sipUserId, '
+      'useEncryption: $useEncryption, '
+      'useOpus: $useOpus)';
 }
 
 String _sipUserIdFromJson(dynamic json) =>
