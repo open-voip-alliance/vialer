@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../contacts/contact.dart';
+import '../colltacts/contact.dart';
 
 part 'call_record.freezed.dart';
 part 'call_record.g.dart';
