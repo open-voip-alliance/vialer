@@ -2,11 +2,14 @@
 CI_APK_PATH="build/app/outputs/bundle/release/app-release-universal.apk"
 echo $CI_APK_PATH
 if test -f "$CI_APK_PATH"; then
+  flutter install --uninstall-only
   flutter install --use-application-binary=$CI_APK_PATH
+  echo "Installed app"
 else
   flutter install
 fi
 
+echo "Granting permissions"
 adb shell pm grant com.voipgrid.vialer android.permission.CALL_PHONE
 adb shell pm grant com.voipgrid.vialer android.permission.READ_CONTACTS
 adb shell pm grant com.voipgrid.vialer android.permission.RECORD_AUDIO
