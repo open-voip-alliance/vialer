@@ -1,5 +1,5 @@
 #!/usr/bin/env zsh
-CI_APK_PATH="$FCI_BUILD_DIR/app/outputs/bundle/release/app-release-universal.apk"
+CI_APK_PATH="build/app/outputs/bundle/release/app-release-universal.apk"
 echo $CI_APK_PATH
 if test -f "$CI_APK_PATH"; then
   flutter install --use-application-binary=$CI_APK_PATH
