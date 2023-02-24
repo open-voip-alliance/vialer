@@ -1,5 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:vialer/app/pages/main/settings/page.dart';
 
 import '../../../util.dart';
 
