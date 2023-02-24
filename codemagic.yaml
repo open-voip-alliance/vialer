@@ -237,7 +237,8 @@ custom: # Custom properties to make workflows cleaner
             --outputs-dir="$HOME/integration_test_output" \
             --no-test-cache \
             --use-orchestrator \
-            --clear-package-data
+            --clear-package-data \
+            --record-video
         done
         cd ..
     - &update_gitlab_merge_request_with_build_url
