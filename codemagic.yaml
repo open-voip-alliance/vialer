@@ -234,7 +234,10 @@ custom: # Custom properties to make workflows cleaner
             --app=../build/app/outputs/apk/debug/app-debug.apk \
             --test=../build/app/outputs/apk/androidTest/debug/app-debug-androidTest.apk \
             --timeout=5m \
-            --outputs-dir="$HOME/integration_test_output"
+            --outputs-dir="$HOME/integration_test_output" \
+            --no-test-cache \
+            --use-orchestrator \
+            --clear-package-data
         done
         cd ..
     - &update_gitlab_merge_request_with_build_url
