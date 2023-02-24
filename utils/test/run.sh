@@ -1,5 +1,10 @@
 #!/usr/bin/env zsh
-flutter install
+CI_APK_PATH = "$FCI_BUILD_DIR/app/outputs/bundle/release/app-release-universal.apk"
+if test -f "$CI_APK_PATH"; then
+  flutter install --use-application-binary=$CI_APK_PATH
+else
+  flutter install
+fi
 
 adb shell pm grant com.voipgrid.vialer android.permission.CALL_PHONE
 adb shell pm grant com.voipgrid.vialer android.permission.READ_CONTACTS
