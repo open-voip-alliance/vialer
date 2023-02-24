@@ -222,13 +222,12 @@ custom: # Custom properties to make workflows cleaner
         sed -i -e "s/TEST_USER_WITHOUT_APP_ACCOUNT_PASSWORD\=*/TEST_USER_WITHOUT_APP_ACCOUNT_PASSWORD\=$TEST_USER_WITHOUT_APP_ACCOUNT_PASSWORD/g" .env
         setopt extended_glob
         cd android
-        ./gradlew app:assembleAndroidTest
         for filename in ../integration_test/tests/**/*.dart; do
           # Although we're in a subdirectory, during building it uses paths relative to the project root.
           filename=${filename#"../"}
           pathname=${filename#"integration_test/"}
           pathname=${pathname%".dart"}
-          ./gradlew app:assembleDebug -Ptarget="$filename"
+          ./gradlew app:assembleAndroidTest && ./gradlew app:assembleDebug -Ptarget="$filename"
           echo "Starting test ${filename#"integration_test/tests/"}"
           ew-cli \
             --app=../build/app/outputs/apk/debug/app-debug.apk \
