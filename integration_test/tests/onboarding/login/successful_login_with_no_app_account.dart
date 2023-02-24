@@ -15,6 +15,8 @@ void main() => runTest([
 
       expect(find.byKey(MobileNumberPage.keys.field), isInflated);
 
+      await tester.pumpAndSettle(const Duration(seconds: 1));
+
       await tester.enterText(
         find.byKey(LoginPage.keys.emailField),
         testUserWithoutAppAccount.email,
@@ -24,6 +26,8 @@ void main() => runTest([
         find.byKey(LoginPage.keys.passwordField),
         testUserWithoutAppAccount.password,
       );
+
+      await tester.pumpAndSettle(const Duration(seconds: 5));
 
       await tester.tap(find.byKey(LoginPage.keys.loginButton));
 

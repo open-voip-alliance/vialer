@@ -6,6 +6,7 @@ import '../../../util.dart';
 void main() => runTest(['Onboarding', 'Login', 'Wrong format'], (tester) async {
       await tester.waitForOnboardingIntroAnimation();
 
+      await tester.pumpAndSettle();
       await tester.tap(find.byKey(LoginPage.keys.loginButton));
       await tester.pumpAndSettle();
 
