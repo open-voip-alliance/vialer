@@ -197,8 +197,8 @@ custom: # Custom properties to make workflows cleaner
         --build-number=$BUILD_NR \
         --dart-define BRAND=$BRAND \
         --dart-define SEGMENT_IOS_KEY=$SEGMENT_IOS_WRITE_KEY \
-    - &run_integration_tests
-      name: Run integration tests
+    - &run_integration_tests_android
+      name: Run integration tests on Android emulator
       script: |
         #!/usr/bin/env zsh
         set -e # Ensures the script exits if any commands fail to execute
@@ -444,7 +444,7 @@ workflows:
       - *update_ios_signing_for_current_brand
       - *build_ipa
       - *release_to_sentry
-      - *run_integration_tests
+      - *run_integration_tests_android
     triggering:
       events: [ ]
 
@@ -487,7 +487,7 @@ workflows:
       - *flutter_test
       - *build_aab
       - *build_universal_apk_from_aab
-      - *run_integration_tests
+      - *run_integration_tests_android
     triggering:
       events: [ ]
 

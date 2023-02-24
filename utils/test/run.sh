@@ -1,4 +1,7 @@
 #!/usr/bin/env zsh
+
+# We're going to check if we're currently running on Codemagic, and if we are we will specify
+# a specific apk to use for the tests.
 CI_APK_PATH="build/app/outputs/bundle/release/app-release-universal.apk"
 echo $CI_APK_PATH
 if test -f "$CI_APK_PATH"; then
@@ -17,7 +20,7 @@ adb shell pm grant com.voipgrid.vialer android.permission.RECORD_AUDIO
 function run_test {
   filename=$1
   echo "Starting test ${filename#"integration_test/tests/"}"
-  flutter drive -t "$filename" --driver test_driver/integration_test.dart
+  flutter drive -t "$filename" --driver test_driver/integration_test.dart --use-application-binary=$CI_APK_PATH
 }
 
 setopt extended_glob
