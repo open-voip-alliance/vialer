@@ -216,11 +216,10 @@ custom: # Custom properties to make workflows cleaner
         adb wait-for-device
         for filename in integration_test/tests/**/*.dart; do
           # Although we're in a subdirectory, during building it uses paths relative to the project root.
-          filename=${filename#"../"}
           pathname=${filename#"integration_test/"}
           pathname=${pathname%".dart"}
           echo "Starting test ${filename#"integration_test/tests/"}"
-          flutter -d emulator-5554 test $filename
+          flutter -d emulator-5554 test $pathname
         done
     - &update_gitlab_merge_request_with_build_url
       name: Updating the Merge Request in Gitlab with a link to this build
