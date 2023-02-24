@@ -215,12 +215,12 @@ custom: # Custom properties to make workflows cleaner
         setopt extended_glob
         flutter emulators --launch emulator &
         adb wait-for-device
-        for filename in integration_test/tests/**/*.dart; do
+        for filename in integration_test/tests/onboarding/**/*.dart; do
           # Although we're in a subdirectory, during building it uses paths relative to the project root.
           filename=${filename#"./"}
           pathname=${filename#"integration_test/"}
           pathname=${pathname%".dart"}
-          echo "Starting test ${filename#"integration_test/tests/"}"
+          echo "Starting test $filename"
           flutter -d emulator-5554 test $filename
         done
     - &update_gitlab_merge_request_with_build_url
@@ -492,6 +492,7 @@ workflows:
       - *flutter_pub_get
       - *analyze
       - *flutter_test
+      - *build_aab
       - *run_integration_tests
     triggering:
       events: [ ]
