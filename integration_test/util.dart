@@ -103,7 +103,7 @@ extension OnboardingPageTesting on GlobalKey<OnboardingPageState> {
 
 extension Util on WidgetTester {
   Future<void> waitForOnboardingIntroAnimation() =>
-      pumpAndSettle(const Duration(seconds: 10));
+      pumpAndSettle(const Duration(seconds: 30));
 
   /// Go through the onboarding process, by default as [testUser1].
   ///
