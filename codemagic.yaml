@@ -73,7 +73,7 @@ custom: # Custom properties to make workflows cleaner
         version_tag=$(echo $version_tag | cut -f1 -d "-")
         sed -i -e "s/<string>\$(FLUTTER_BUILD_NAME)<\/string>/<string>${version_tag}<\/string>/g" ios/Runner/Info-Release.plist
     - &set_up_env_file
-      name: Configuring .env file with diagnostics keys
+      name: Configuring .env file
       script: |
         #!/bin/sh
         set -e # exit on first failed command set
@@ -85,6 +85,7 @@ custom: # Custom properties to make workflows cleaner
         sed -i -e "s|SANDBOX=|SANDBOX=${ENABLE_IOS_SANDBOX_PUSH_NOTIFICATIONS}|g" .env
         sed -i -e "s|SEGMENT_ANDROID_KEY=|SEGMENT_ANDROID_KEY=${SEGMENT_ANDROID_WRITE_KEY}|g" .env
         sed -i -e "s|SEGMENT_IOS_KEY=|SEGMENT_IOS_KEY=${SEGMENT_IOS_WRITE_KEY}|g" .env
+        sed -i -e "s|FEATURE_COLLEAGUE_LIST=|FEATURE_COLLEAGUE_LIST=${FEATURE_COLLEAGUE_LIST}|g" .env
     - &prepare_release_notes_from_files
       name: Preparing the release notes from the release notes on the file system
       script: dart utils/ci/codemagic/prepare_release_notes.dart
@@ -285,10 +286,10 @@ custom: # Custom properties to make workflows cleaner
       script: |
         curl "https://hooks.zapier.com/hooks/catch/1394555/blav33z?build_id=${CM_BUILD_ID}"
   config: &config # Default configuration that can be applied to all normal workflows
-    max_build_duration: 60
+    max_build_duration: 90
     instance_type: mac_pro
     environment: &config_environment
-      flutter: 3.7.0
+      flutter: 3.7.1
       xcode: latest
       cocoapods: 1.11.3
   brand_config: # Specific configuration that should be applied to a workflow when building for this brand
@@ -376,10 +377,12 @@ custom: # Custom properties to make workflows cleaner
         beta_groups:
           - Beta Testers
           - External Testers
+        cancel_previous_submissions: true
       google_play:
         credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
         track: production
         in_app_update_priority: 3
+        rollout_fraction: 0.05
 
     publish_for_beta: &publish_for_beta
       app_store_connect:

@@ -53,7 +53,17 @@ class Colors {
         raisedColoredButtonText = v.raisedColoredButtonText.color,
         appBarForeground = v.appBarForeground.color,
         appBarBackground = v.appBarBackground.color,
-        notificationBackground = v.notificationBackground.color;
+        notificationBackground = v.notificationBackground.color,
+        userAvailabilityAvailable = v.userAvailabilityAvailable.color,
+        userAvailabilityAvailableAccent =
+            v.userAvailabilityAvailableAccent.color,
+        userAvailabilityBusy = v.userAvailabilityBusy.color,
+        userAvailabilityBusyAccent = v.userAvailabilityBusyAccent.color,
+        userAvailabilityUnavailable = v.userAvailabilityUnavailable.color,
+        userAvailabilityUnavailableAccent =
+            v.userAvailabilityUnavailableAccent.color,
+        userAvailabilityUnknown = v.userAvailabilityUnknown.color,
+        userAvailabilityUnknownAccent = v.userAvailabilityUnknownAccent.color;
 
   final Color primary;
   final Color primaryDark;
@@ -115,6 +125,15 @@ class Colors {
 
   /// Only used by the Android Phone Lib, here for completionist's sake.
   final Color notificationBackground;
+
+  final Color userAvailabilityAvailable;
+  final Color userAvailabilityAvailableAccent;
+  final Color userAvailabilityBusy;
+  final Color userAvailabilityBusyAccent;
+  final Color userAvailabilityUnavailable;
+  final Color userAvailabilityUnavailableAccent;
+  final Color userAvailabilityUnknown;
+  final Color userAvailabilityUnknownAccent;
 }
 
 extension on int {

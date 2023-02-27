@@ -151,16 +151,9 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
     required CallOrigin origin,
     bool showingConfirmPage = false,
   }) async {
-    final callViaVoip = await _getHasVoipEnabled();
-
-    if (callViaVoip) {
-      _trackUserInitiatedOutboundCall(
-        via: origin.toTrackString(),
-        isVoip: callViaVoip,
-        type: destination == '*8' ? CallType.pickupGroup : CallType.standard,
-      );
-    }
-
+    // Is 'late' because we want to do the state check ASAP to prevent
+    // race conditions/(extremely) quick taps.
+    late final callViaVoip = _getHasVoipEnabled();
     if (state is! CanCall) {
       logger.severe(
         'Unable to place outgoing call, call state: ${state.runtimeType}',
@@ -171,6 +164,17 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
         isVoip: callViaVoip,
       );
       return;
+    }
+
+    emit(const PreparingCall());
+    logger.info('Preparing ${callViaVoip ? 'VoIP' : 'call-through'} call');
+
+    if (callViaVoip) {
+      _trackUserInitiatedOutboundCall(
+        via: origin.toTrackString(),
+        isVoip: callViaVoip,
+        type: destination == '*8' ? CallType.pickupGroup : CallType.standard,
+      );
     }
 
     if (callViaVoip) {
@@ -253,8 +257,8 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
           direction: CallDirection.outbound,
         );
 
-        emit(InitiatingCall(origin: origin));
-        logger.info('Initiating call-through call');
+        emit(StartingCall(origin: origin));
+        logger.info('Starting call-through call');
         await _call(destination: destination, useVoip: false);
         emit(processState.calling());
       } on CallThroughException catch (e) {
@@ -274,6 +278,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
       logger.warning(
         'Outbound VoIP call failed: No mic permission',
       );
+      emit(const CanCall());
       return;
     }
 
@@ -282,6 +287,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
       logger.warning(
         'Outbound VoIP call failed: No internet connection',
       );
+      emit(const CanCall());
       return;
     }
 
@@ -457,13 +463,13 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
       logger.info('Incoming VoIP call, ringing');
     } else if (event is OutgoingCallStarted) {
       emit(
-        InitiatingCall(
+        StartingCall(
           origin:
               state is CallOriginDetermined ? state.origin : CallOrigin.unknown,
           voip: callSessionState,
         ),
       );
-      logger.info('Initiating VoIP call');
+      logger.info('Started VoIP call');
     }
   }
 
@@ -487,7 +493,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
     );
 
     emit(
-      InitiatingCallFailed.because(
+      StartingCallFailed.because(
         reason,
         origin: (state as CallOriginDetermined).origin,
         isVoip: true,
@@ -621,6 +627,8 @@ extension on CallOrigin {
         return 'recent';
       case CallOrigin.contacts:
         return 'contact';
+      case CallOrigin.colleagues:
+        return 'colleague';
       case CallOrigin.unknown:
         return 'unknown';
     }

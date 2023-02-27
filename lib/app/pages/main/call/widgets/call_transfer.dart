@@ -4,8 +4,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
-import '../../widgets/contact_list/details/widget.dart';
-import '../../widgets/contact_list/widget.dart';
+import '../../widgets/colltact_list/details/widget.dart';
+import '../../widgets/colltact_list/widget.dart';
 import '../../widgets/nested_navigator.dart';
 import '../../widgets/t9_dial_pad.dart';
 import 'call_header_container.dart';
@@ -30,7 +30,7 @@ class CallTransfer extends StatefulWidget {
 
 class _CallTransferState extends State<CallTransfer> {
   static const _dialPadRoute = '/';
-  static const _contactsRoute = '/contacts';
+  static const _colltactsRoute = '/colltacts';
 
   final _navigatorKey = GlobalKey<NavigatorState>();
 
@@ -39,11 +39,12 @@ class _CallTransferState extends State<CallTransfer> {
   }
 
   Future<void> _onContactsButtonPressed(BuildContext context) async {
-    final number = await Navigator.pushNamed(context, _contactsRoute) as String;
+    final number =
+        await Navigator.pushNamed(context, _colltactsRoute) as String;
     widget.onTransferTargetSelected(number);
   }
 
-  void _onContactPhoneNumberPressed(BuildContext context, String number) {
+  void _onColltactPhoneNumberPressed(BuildContext context, String number) {
     Navigator.pop(context, number);
   }
 
@@ -112,16 +113,16 @@ class _CallTransferState extends State<CallTransfer> {
                   ),
                 );
               },
-              _contactsRoute: (routeContext, _) {
+              _colltactsRoute: (routeContext, _) {
                 return Material(
                   child: Column(children: [
                     Expanded(
-                      child: ContactList(
-                        detailsBuilder: (context, contact) {
-                          return ContactDetails(
-                            contact: contact,
+                      child: ColltactList(
+                        detailsBuilder: (context, colltact) {
+                          return ColltactDetails(
+                            colltact: colltact,
                             onPhoneNumberPressed: (number) =>
-                                _onContactPhoneNumberPressed(
+                                _onColltactPhoneNumberPressed(
                               routeContext,
                               number,
                             ),

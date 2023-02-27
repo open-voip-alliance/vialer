@@ -276,7 +276,7 @@ class VoipRepository with Loggable {
         .then((i) => i.version);
     final clientVersion = buildInfo.version;
     final app = buildInfo.packageName;
-    final useSandbox = await _envRepository.sandbox;
+    final useSandbox = _envRepository.sandbox;
     final loginTime = _getLoginTime();
     final dndEnabled = user.settings.get(CallSetting.dnd);
 

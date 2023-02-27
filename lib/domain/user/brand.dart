@@ -19,6 +19,7 @@ class Brand with _$Brand {
     required Uri businessAvailabilityUrl,
     required Uri privacyPolicyUrl,
     required Uri? signUpUrl,
+    required Uri userAvailabilityWsUrl,
   }) = _Brand;
 
   factory Brand.fromJson(Map<String, dynamic> json) => _$BrandFromJson(json);

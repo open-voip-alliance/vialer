@@ -15,7 +15,7 @@ class ConnectivityCheckerCubit extends Cubit<ConnectivityState> {
 
   late StreamSubscription _subscription;
 
-  ConnectivityCheckerCubit() : super(Connected()) {
+  ConnectivityCheckerCubit() : super(const Connected()) {
     check();
     _subscription = _getConnectivityTypeStream().listen(
       _emitBasedOnConnectivityType,
@@ -26,7 +26,7 @@ class ConnectivityCheckerCubit extends Cubit<ConnectivityState> {
       _emitBasedOnConnectivityType(await _getCurrentConnectivityType());
 
   void _emitBasedOnConnectivityType(ConnectivityType type) => emit(
-        type.isConnected ? Connected() : Disconnected(),
+        type.isConnected ? const Connected() : const Disconnected(),
       );
 
   @override

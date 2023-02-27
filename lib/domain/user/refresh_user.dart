@@ -8,6 +8,8 @@ import '../business_availability/temporary_redirect/get_current_temporary_redire
 import '../call_records/client/purge_local_call_records.dart';
 import '../calling/outgoing_number/outgoing_numbers.dart';
 import '../calling/voip/client_voip_config_repository.dart';
+import '../calling/voip/destination.dart';
+import '../calling/voip/destination_repository.dart';
 import '../calling/voip/user_voip_config_repository.dart';
 import '../legacy/storage.dart';
 import '../metrics/metrics.dart';
@@ -15,7 +17,6 @@ import '../onboarding/exceptions.dart';
 import '../onboarding/login_credentials.dart';
 import '../use_case.dart';
 import '../voicemail/voicemail_account_repository.dart';
-import '../voipgrid/destination_repository.dart';
 import '../voipgrid/user_permissions.dart';
 import 'permissions/user_permissions.dart';
 import 'settings/app_setting.dart';
@@ -65,10 +66,11 @@ class RefreshUser extends UseCase with Loggable {
     return SynchronizedTask<User?>.of(this).run(() async {
       // Latest user contains some settings, such as mobile and
       // outgoing number.
-      var user = storedUser?.copyFrom(latestUser) ??
-          latestUser.copyWith(
-            settings: const Settings.defaults().copyFrom(latestUser.settings),
-          );
+      var user = storedUser?.copyFrom(latestUser) ?? latestUser;
+
+      user = user.copyWith(
+        settings: const Settings.defaults().copyFrom(user.settings),
+      );
 
       // If we're retrieving the user for the first time (logging in),
       // we store  the user already, so that the AuthorizationInterceptor
@@ -128,15 +130,25 @@ class RefreshUser extends UseCase with Loggable {
 
   /// Retrieving settings and handling its possible side effects.
   Future<User> _getRemoteSettings(User user) async {
-    return user.copyWith(
-      settings: user.settings.copyWithAll({
-        CallSetting.useMobileNumberAsFallback:
-            await _authRepository.isUserUsingMobileNumberAsFallback(user),
-        // TODO: Empty availability instead of non-null assert
-        CallSetting.availability:
-            (await _destinationRepository.getLatestAvailability())!,
-      }),
-    );
+    final destination = await _destinationRepository.getActiveDestination();
+    final useMobileNumberAsFallback =
+        await _authRepository.isUserUsingMobileNumberAsFallback(user);
+
+    Settings settings;
+
+    if (destination is Unknown) {
+      // Fallback to the last known destination by not overwriting the current.
+      settings = user.settings.copyWithAll({
+        CallSetting.useMobileNumberAsFallback: useMobileNumberAsFallback,
+      });
+    } else {
+      settings = user.settings.copyWithAll({
+        CallSetting.useMobileNumberAsFallback: useMobileNumberAsFallback,
+        CallSetting.destination: destination,
+      });
+    }
+
+    return user.copyWith(settings: settings);
   }
 
   /// Retrieving permissions and handling its possible side effects.
@@ -158,7 +170,7 @@ class RefreshUser extends UseCase with Loggable {
       canChangeMobileNumberFallback:
           granted.contains(UserPermission.changeMobileNumberFallback),
       canViewMobileNumberFallbackStatus:
-          granted.contains(UserPermission.viewMobileNumberFallback),
+          granted.contains(UserPermission.viewUser),
       // The only redirect target currently is Voicemail, so if the user
       // cannot view Voicemail they can't use the feature.
       canChangeTemporaryRedirect:
@@ -167,6 +179,8 @@ class RefreshUser extends UseCase with Loggable {
       canViewVoicemailAccounts: granted.contains(UserPermission.viewVoicemail),
       canChangeOutgoingNumber:
           granted.contains(UserPermission.changeVoipAccount),
+      canViewColleagues: granted.contains(UserPermission.listUsers),
+      canViewVoipAccounts: granted.contains(UserPermission.listVoipAccounts),
     );
 
     if (!permissions.canSeeClientCalls) {

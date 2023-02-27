@@ -1,6 +1,6 @@
 import 'package:dartx/dartx.dart';
 
-import '../../domain/contacts/contact.dart';
+import '../../domain/colltacts/contact.dart';
 
 extension Name on Contact {
   String get displayName {

@@ -187,20 +187,56 @@ main:
         Je kan recente oproepen van collega's zien als je bedrijfsbrede gesprekken aanzet
         op de Instellingen-pagina.
 
+  colltacts:
+    noOnline:
+      title: "Geen collega's online"
+      subtitle: "Er zijn op het moment geen collega's online, gebruik de knop onderin om alle collega's te bekijken."
+    noResults:
+      title: "Niks gevonden"
+      button(String number): "Bel $number"
+      colleagues(String number): >-
+        Er waren geen collega's gevonden voor "$number".
+      contacts(String number): >-
+        Er waren geen contacten gevonden voor "$number".
+    userAvailabilityWebSocketUnreachable:
+      title: "Tonen van collega's mislukt"
+      subtitle: "Het overzicht met collega's is op dit moment niet beschikbaar, probeer het later nog eens."
+
+  colleagues:
+    toggle: "Alleen online collega's"
+    status:
+      available: 'Beschikbaar'
+      doNotDisturb: 'Niet storen'
+      offline: 'Offline'
+      unknown: 'Onbekend'
+      busy: 'Bezet'
+    context:
+      ringing: 'Wordt gebeld'
+      inCall: 'In gesprek'
+
   contacts:
     title: &contactsTitle "Contacten"
     menu:
       title: *contactsTitle
     snackBar:
       noPermission: "Je kan niet bellen zonder de Telefonie-toestemming"
+    tabBar:
+      contactsTabTitle: *contactsTitle
+      colleaguesTabTitle: "Collega's"
     edit: "Wijzig"
     list:
-      loading:
+      loadingContacts:
         # UX wants to have the line break specifically at 2 words
         title: |-
           Je contacten
           worden geladen
         description: "De contacten van je telefoon zijn bijna beschikbaar, nog even geduld. Als je veel contacten op je telefoon hebt staan, kan het wat langer duren."
+      loadingColleagues:
+        # UX wants to have the line break specifically at 2 words
+        title: |-
+          Je collega's
+          worden geladen
+        description: "Je collega's zijn bijna beschikbaar, nog even geduld."
       empty:
         title: "Geen contacten gevonden"
         description(String appName): >-
@@ -301,6 +337,7 @@ main:
               Inkomende oproepen naar <b>$user</b> worden doorgeschakeld naar een andere telefoon.
           resume(String voipAccount): >-
             Selecteer <b>$voipAccount</b> als bestemming om oproepen op deze telefoon te ontvangen.
+        unknown: "Onbekend"
         notAvailable: "Niet beschikbaar"
         addAvailability: "Bereikbaarheid toevoegen"
         useVoip:
