@@ -259,7 +259,6 @@ Future<void> copyFontAwesome() async {
   final packageConfig = (await findPackageConfig(Directory.current))!;
 
   const fontFileNames = [
-    'fa-light-300.ttf',
     'fa-regular-400.ttf',
     'fa-solid-900.ttf',
   ];
