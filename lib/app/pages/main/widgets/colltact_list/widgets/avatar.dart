@@ -58,13 +58,6 @@ class ColleagueAvatar extends StatelessWidget {
   final Colleague colleague;
   final double size;
 
-  static const _availableIcon = FontAwesomeIcons.user;
-  static const _unavailableIcon = FontAwesomeIcons.userSlash;
-  static const _ringingIcon = FontAwesomeIcons.bellOn;
-  static const _inCallIcon = FontAwesomeIcons.phoneVolume;
-  static const _dndIcon = FontAwesomeIcons.bellSlash;
-  static const _voipAccountIcon = FontAwesomeIcons.phoneOffice;
-
   const ColleagueAvatar(
     this.colleague, {
     Key? key,
@@ -123,8 +116,8 @@ class ColleagueAvatar extends StatelessWidget {
 
     if (context != null) {
       return context.when(
-        ringing: () => _ringingIcon,
-        inCall: () => _inCallIcon,
+        ringing: () => FontAwesomeIcons.bell,
+        inCall: () => FontAwesomeIcons.phoneVolume,
       );
     }
 
@@ -132,22 +125,22 @@ class ColleagueAvatar extends StatelessWidget {
       (colleague) {
         switch (colleague.status) {
           case ColleagueAvailabilityStatus.available:
-            return _availableIcon;
+            return FontAwesomeIcons.wifi;
           case ColleagueAvailabilityStatus.doNotDisturb:
-            return _dndIcon;
+            return FontAwesomeIcons.bellSlash;
           case ColleagueAvailabilityStatus.busy:
-            return _inCallIcon;
+            return FontAwesomeIcons.phoneVolume;
           case ColleagueAvailabilityStatus.unknown:
             return colleague.isAvailableOnMobileAppOrFixedDestination
-                ? _availableIcon
-                : _unavailableIcon;
+                ? FontAwesomeIcons.wifi
+                : FontAwesomeIcons.wifiSlash;
           case ColleagueAvailabilityStatus.offline:
-            return _unavailableIcon;
+            return FontAwesomeIcons.wifiSlash;
           default:
-            return _voipAccountIcon;
+            return FontAwesomeIcons.phoneOffice;
         }
       },
-      unconnectedVoipAccount: (_) => _voipAccountIcon,
+      unconnectedVoipAccount: (_) => FontAwesomeIcons.phoneOffice,
     );
   }
 

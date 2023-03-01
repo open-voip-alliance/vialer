@@ -21,6 +21,7 @@ import '../domain/user/get_stored_user.dart';
 import 'pages/main/business_availability/temporary_redirect/cubit.dart';
 import 'pages/main/colltacts/colleagues/cubit.dart';
 import 'pages/main/page.dart';
+import 'pages/main/widgets/caller/cubit.dart';
 import 'pages/main/widgets/caller/widget.dart';
 import 'resources/localizations.dart';
 import 'resources/theme.dart';
@@ -108,10 +109,17 @@ class _AppState extends State<App> {
                     create: (_) => TemporaryRedirectCubit(),
                     child: child,
                   ),
-              (child) => BlocProvider<ColleagueCubit>(
-                    create: (_) => ColleagueCubit(),
-                    child: child,
-                  ),
+              (child) => Builder(builder: (context) {
+                    return BlocProvider<ColleagueCubit>(
+                      create: (_) => ColleagueCubit(
+                        //wip Could not find the correct Provider<CallerCubit>
+                        // above this Builder Widget
+                        //wrapping BlocProvider in a builder solved it
+                        context.watch<CallerCubit>(),
+                      ),
+                      child: child,
+                    );
+                  }),
             ],
             MaterialApp(
               navigatorKey: _navigatorKey,
