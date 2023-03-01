@@ -1,6 +1,7 @@
 #!/usr/bin/env zsh
 
 if [[ "$CI" == "true" ]]; then
+  echo "Building debug version of app for testing in CI mode"
   flutter build apk --debug --target=lib/app/main.dart
   flutter install --debug
 else
@@ -15,7 +16,11 @@ adb shell pm grant com.voipgrid.vialer android.permission.RECORD_AUDIO
 function run_test {
   filename=$1
   echo "Starting test ${filename#"integration_test/tests/"}"
-  flutter drive -t "$filename" --driver test_driver/integration_test.dart --debug
+  if [[ "$CI" == "true" ]]; then
+    flutter drive -t "$filename" --driver test_driver/integration_test.dart --debug
+  else
+    flutter drive -t "$filename" --driver test_driver/integration_test.dart
+  fi
 }
 
 setopt extended_glob
