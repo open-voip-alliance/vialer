@@ -439,12 +439,12 @@ workflows:
       - *flutter_pub_get
       - *analyze
       - *flutter_test
+      - *run_integration_tests_android
       - *build_aab
       - *build_universal_apk_from_aab
       - *update_ios_signing_for_current_brand
       - *build_ipa
       - *release_to_sentry
-      - *run_integration_tests_android
     triggering:
       events: [ ]
 
