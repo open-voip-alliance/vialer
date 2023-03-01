@@ -343,10 +343,12 @@ custom: # Custom properties to make workflows cleaner
         beta_groups:
           - Beta Testers
           - External Testers
+        cancel_previous_submissions: true
       google_play:
         credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
         track: production
         in_app_update_priority: 3
+        rollout_fraction: 0.05
 
     publish_for_beta: &publish_for_beta
       app_store_connect:
