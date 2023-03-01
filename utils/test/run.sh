@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 
 if [[ "$CI" == "true" ]]; then
-  flutter build apk --debug
+  flutter build apk --debug --target=lib/app/main.dart
   flutter install
 else
   flutter install
