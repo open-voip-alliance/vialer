@@ -8,7 +8,11 @@ class OpeningHoursRepository with Loggable {
 
   OpeningHoursRepository(this._service);
 
+<<<<<<< HEAD
   Future<List<OpeningHours>?> getOpeningHours({
+=======
+  Future<OpeningHours?> getOpeningHours({
+>>>>>>> 7e22bf86 (fetch time tables)
     required User user,
   }) async {
     final response = await _service.getOpeningHours(
@@ -24,6 +28,7 @@ class OpeningHoursRepository with Loggable {
       return null;
     }
 
+<<<<<<< HEAD
     return _openingHoursFromJson(response.body['items'] as List<dynamic>);
   }
 }
@@ -31,3 +36,10 @@ class OpeningHoursRepository with Loggable {
 List<OpeningHours> _openingHoursFromJson(List<dynamic> values) => values
     .map((v) => OpeningHours.fromJson(v as Map<String, dynamic>))
     .toList();
+=======
+    return OpeningHours.fromJson(
+      response.body['items'] as Map<String, dynamic>,
+    );
+  }
+}
+>>>>>>> 7e22bf86 (fetch time tables)
