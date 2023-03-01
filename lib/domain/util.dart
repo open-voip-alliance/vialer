@@ -92,7 +92,10 @@ class UnauthorizedResponseInterceptor extends chopper.ResponseInterceptor {
     final statusCode = response.statusCode;
 
     if (_isUnauthorized(statusCode)) {
-      _eventBus.broadcast(UnauthorizedApiResponseEvent(statusCode));
+      _eventBus.broadcast(UnauthorizedApiResponseEvent(
+        url: response.base.request?.url.toString() ?? '',
+        statusCode: statusCode,
+      ));
     }
 
     return response;

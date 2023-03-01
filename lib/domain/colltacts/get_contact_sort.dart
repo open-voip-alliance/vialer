@@ -1,0 +1,18 @@
+import 'dart:async';
+import 'dart:io';
+
+import '../../app/util/pigeon.dart';
+import '../use_case.dart';
+
+final ContactSort defaultContactSort = ContactSort()
+  ..orderBy = OrderBy.givenName;
+
+class GetContactSortUseCase extends UseCase {
+  Future<ContactSort> call() async {
+    if (Platform.isIOS) {
+      return await ContactSortHostApi().getSorting();
+    } else {
+      return defaultContactSort;
+    }
+  }
+}

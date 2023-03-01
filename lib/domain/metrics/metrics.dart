@@ -127,7 +127,7 @@ extension _SettingMetrics<T extends Object> on SettingKey<T> {
   bool get isPii => const [
         CallSetting.outgoingNumber,
         CallSetting.mobileNumber,
-        CallSetting.availability,
+        CallSetting.destination,
       ].contains(this);
 
   /// Whether changing this setting should result in an event being sent
@@ -136,7 +136,7 @@ extension _SettingMetrics<T extends Object> on SettingKey<T> {
   /// This should usually only be set
   /// to `false` if it is being tracked elsewhere.
   // Put keys in the array that should NOT be tracked.
-  bool get shouldTrack => !const [CallSetting.availability].contains(this);
+  bool get shouldTrack => !const [CallSetting.destination].contains(this);
 
   String toMetricKey() => ReCase(name).snakeCase;
 

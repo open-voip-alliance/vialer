@@ -311,7 +311,7 @@ class _CallHeader extends StatelessWidget {
                 vertical: 4,
               ),
               child: Text(
-                state is InitiatingCall
+                state is StartingCall
                     ? context.msg.main.call.ongoing.state.calling
                     : state is FinishedCalling
                         ? context.msg.main.call.ongoing.state.callEnded

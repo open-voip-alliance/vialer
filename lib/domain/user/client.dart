@@ -17,7 +17,10 @@ class Client extends Equatable {
   final String name;
   final Uri url;
 
-  @JsonKey(toJson: ClientVoipConfig.toJson, fromJson: _clientVoipConfigFromJson)
+  @JsonKey(
+    toJson: ClientVoipConfig.serializeToJson,
+    fromJson: _clientVoipConfigFromJson,
+  )
   final ClientVoipConfig voip;
 
   /// This represents the business numbers that are available to the client

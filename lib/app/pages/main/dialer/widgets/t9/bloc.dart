@@ -7,13 +7,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rxdart/rxdart.dart';
 
-import '../../../../../../domain/contacts/contact.dart';
-import '../../../../../../domain/contacts/get_contacts.dart';
-import '../../../../../../domain/contacts/t9_contact.dart';
+import '../../../../../../data/models/colltact.dart';
+import '../../../../../../domain/call_records/item.dart';
+import '../../../../../../domain/colltacts/get_contacts.dart';
+import '../../../../../../domain/colltacts/t9_colltact.dart';
 import '../../../../../../domain/user/get_permission_status.dart';
 import '../../../../../../domain/user/permissions/permission.dart';
 import '../../../../../../domain/user/permissions/permission_status.dart';
-import '../../../../../util/contact.dart';
+import '../../../../../../domain/user_availability/colleagues/get_colleagues.dart';
 import '../../../../../util/extensions.dart';
 import 'event.dart';
 import 'state.dart';
@@ -21,35 +22,36 @@ import 'state.dart';
 export 'event.dart';
 export 'state.dart';
 
-class T9ContactsBloc extends Bloc<T9ContactsEvent, T9ContactsState> {
+class T9ColltactsBloc extends Bloc<T9ColltactsEvent, T9ColltactsState> {
   final _getContacts = GetContactsUseCase();
+  final _getColleagues = GetColleagues();
   final _getPermissionStatus = GetPermissionStatusUseCase();
 
-  T9ContactsBloc() : super(LoadingContacts()) {
-    add(LoadContacts());
+  T9ColltactsBloc() : super(const LoadingColltacts()) {
+    add(LoadColltacts());
   }
 
   @override
-  Stream<T9ContactsState> mapEventToState(T9ContactsEvent event) async* {
-    if (event is LoadContacts) {
-      yield* _loadContactsIfAllowed();
-    } else if (event is FilterT9Contacts) {
-      yield* _filterContacts(event);
+  Stream<T9ColltactsState> mapEventToState(T9ColltactsEvent event) async* {
+    if (event is LoadColltacts) {
+      yield* _loadColltactsIfAllowed();
+    } else if (event is FilterT9Colltacts) {
+      yield* _filterColltacts(event);
     }
   }
 
   @override
-  Stream<Transition<T9ContactsEvent, T9ContactsState>> transformEvents(
-    Stream<T9ContactsEvent> events,
+  Stream<Transition<T9ColltactsEvent, T9ColltactsState>> transformEvents(
+    Stream<T9ColltactsEvent> events,
     // ignore: deprecated_member_use
-    TransitionFunction<T9ContactsEvent, T9ContactsState> transitionFn,
+    TransitionFunction<T9ColltactsEvent, T9ColltactsState> transitionFn,
   ) {
     // Only add a debounce to the filter event.
     final nonDebounceStream =
-        events.where((event) => event is! FilterT9Contacts);
+        events.where((event) => event is! FilterT9Colltacts);
 
     final debounceStream = events
-        .where((event) => event is FilterT9Contacts)
+        .where((event) => event is FilterT9Colltacts)
         .debounceTime(const Duration(milliseconds: 500));
 
     // ignore: deprecated_member_use
@@ -59,11 +61,11 @@ class T9ContactsBloc extends Bloc<T9ContactsEvent, T9ContactsState> {
     );
   }
 
-  Stream<T9ContactsState> _loadContactsIfAllowed() async* {
+  Stream<T9ColltactsState> _loadColltactsIfAllowed() async* {
     final status = await _getPermissionStatus(permission: Permission.contacts);
 
     if (status == PermissionStatus.granted) {
-      yield* _loadContacts();
+      yield* _loadColltacts();
     } else {
       yield NoPermission(
         dontAskAgain: status == PermissionStatus.permanentlyDenied ||
@@ -72,17 +74,25 @@ class T9ContactsBloc extends Bloc<T9ContactsEvent, T9ContactsState> {
     }
   }
 
-  Stream<T9ContactsState> _loadContacts() async* {
+  Stream<T9ColltactsState> _loadColltacts() async* {
     if (state is NoPermission) return;
 
-    if (state is! ContactsLoaded) {
-      yield LoadingContacts();
+    if (state is! ColltactsLoaded) {
+      yield const LoadingColltacts();
     }
 
-    yield ContactsLoaded(await _getContacts(latest: false), []);
+    final contacts = await _getContacts(latest: false);
+    final colleagues = await _getColleagues();
+
+    final colltacts = [
+      ...contacts.map(Colltact.contact),
+      ...colleagues.map(Colltact.colleague),
+    ];
+
+    yield ColltactsLoaded(colltacts, []);
   }
 
-  Stream<T9ContactsState> _filterContacts(FilterT9Contacts event) async* {
+  Stream<T9ColltactsState> _filterColltacts(FilterT9Colltacts event) async* {
     // Necessary for auto cast.
     final state = this.state;
 
@@ -90,21 +100,21 @@ class T9ContactsBloc extends Bloc<T9ContactsEvent, T9ContactsState> {
 
     if (state is NoPermission) return;
 
-    if (state is ContactsLoaded) {
+    if (state is ColltactsLoaded) {
       if (input.isEmpty) {
-        yield ContactsLoaded(state.contacts, []);
+        yield ColltactsLoaded(state.colltacts, []);
         return;
       }
 
-      final t9Contacts = await compute(
-        _filterContactsByRegularExpression,
+      final t9Colltacts = await compute(
+        _filterColltactsByRegularExpression,
         _FilterByRegularExpressionRequest(
-          contacts: state.contacts,
+          colltacts: state.colltacts,
           regex: _getT9Regex(input),
         ),
       );
 
-      yield ContactsLoaded(state.contacts, t9Contacts);
+      yield ColltactsLoaded(state.colltacts, t9Colltacts);
     }
   }
 
@@ -150,20 +160,31 @@ class T9ContactsBloc extends Bloc<T9ContactsEvent, T9ContactsState> {
   }
 }
 
-/// Filters the list of contacts by a given T9 search, for a large amount of
-/// contacts this can be computationally heavy so it is designed to be run
+/// Filters the list of colltacts by a given T9 search, for a large amount of
+/// colltacts this can be computationally heavy so it is designed to be run
 /// in an isolate.
-Future<List<T9Contact>> _filterContactsByRegularExpression(
+Future<List<T9Colltact>> _filterColltactsByRegularExpression(
   _FilterByRegularExpressionRequest request,
 ) async {
   // Map each contact with multiple phone numbers to multiple t9 contacts
   // with a single phone number.
-  return request.contacts
+  return request.colltacts
       .map(
-        (contact) => contact.phoneNumbers.map(
-          (number) => T9Contact(
-            contact: contact,
-            relevantPhoneNumber: number,
+        (colltact) => colltact.when(
+          colleague: (colleague) => [
+            T9Colltact(
+              colltact: colltact,
+              relevantPhoneNumber: Item(
+                label: '',
+                value: colleague.number ?? '',
+              ),
+            )
+          ],
+          contact: (contact) => contact.phoneNumbers.map(
+            (number) => T9Colltact(
+              colltact: colltact,
+              relevantPhoneNumber: number,
+            ),
           ),
         ),
       )
@@ -171,7 +192,7 @@ Future<List<T9Contact>> _filterContactsByRegularExpression(
       // Only keep those whose name or number matches the regex.
       .where(
         (t9) =>
-            removeDiacritics(t9.contact.displayName).contains(request.regex) ||
+            removeDiacritics(t9.colltact.name).contains(request.regex) ||
             t9.relevantPhoneNumber.value.contains(request.regex),
       )
       .distinct()
@@ -179,11 +200,11 @@ Future<List<T9Contact>> _filterContactsByRegularExpression(
 }
 
 class _FilterByRegularExpressionRequest {
-  final List<Contact> contacts;
+  final List<Colltact> colltacts;
   final RegExp regex;
 
   const _FilterByRegularExpressionRequest({
-    required this.contacts,
+    required this.colltacts,
     required this.regex,
   });
 }

@@ -4,13 +4,14 @@ import 'dart:convert';
 import 'package:dartx/dartx.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../calling/voip/destination.dart';
 import '../user/client.dart';
 import '../user/permissions/user_permissions.dart';
 import '../user/settings/app_setting.dart';
 import '../user/settings/call_setting.dart';
 import '../user/settings/settings.dart';
 import '../user/user.dart';
-import '../voipgrid/availability.dart';
+import '../user_availability/colleagues/colleague.dart';
 import '../voipgrid/client_voip_config.dart';
 import '../voipgrid/user_voip_config.dart';
 
@@ -60,7 +61,7 @@ class StorageRepository {
       user = user?.copyWith(
         voip: _preferences.getJson<UserVoipConfig?, Map<String, dynamic>>(
           _legacyVoipConfigKey,
-          UserVoipConfig.fromJson,
+          UserVoipConfig.serializeFromJson,
         ),
       );
       this.user = user;
@@ -195,6 +196,27 @@ class StorageRepository {
         Settings.toJson,
       );
 
+  static const _colleaguesKey = 'colleagues';
+
+  List<Colleague> get colleagues {
+    final jsonString = _preferences.getString(_colleaguesKey);
+
+    if (jsonString.isNullOrBlank) return const [];
+
+    try {
+      return (jsonDecode(jsonString!) as List<dynamic>)
+          .map((e) => Colleague.fromJson(e as Map<String, dynamic>))
+          .toList();
+    } on Exception {
+      return const [];
+    }
+  }
+
+  set colleagues(List<Colleague> colleagues) => _preferences.setOrRemoveString(
+        _colleaguesKey,
+        jsonEncode(colleagues),
+      );
+
   static const _grantedVoipgridPermissionsKey = 'granted_voipgrid_permissions';
 
   List<String> get grantedVoipgridPermissions => (jsonDecode(
@@ -212,6 +234,38 @@ class StorageRepository {
 
   set lastPeriodicIdentifyTime(DateTime? value) =>
       _preferences.setOrRemoveDateTime(_lastPeriodicIdentifyTime, value);
+
+  static const _lastUserRefreshTime = 'last_user_refresh_time';
+
+  DateTime? get lastUserRefreshedTime =>
+      _preferences.getDateTime(_lastUserRefreshTime);
+
+  set lastUserRefreshedTime(DateTime? value) =>
+      _preferences.setOrRemoveDateTime(_lastUserRefreshTime, value);
+
+  static const _userNumberKey = 'user_number';
+
+  int? get userNumber => _preferences.getInt(_userNumberKey);
+
+  set userNumber(int? number) =>
+      _preferences.setOrRemoveInt(_userNumberKey, number);
+
+  static const _availableDestinationsKey = 'available_destinations';
+
+  List<Destination> get availableDestinations =>
+      _preferences.getJson<List<Destination>, List<dynamic>>(
+        _availableDestinationsKey,
+        (list) => list.map(Destination.fromJson).toList(),
+      ) ??
+      [];
+
+  set availableDestinations(List<Destination> destinations) =>
+      _preferences.setOrRemoveJson<List<Destination>>(
+        _availableDestinationsKey,
+        destinations,
+        (destinations) =>
+            destinations.map((destination) => destination.toJson()).toList(),
+      );
 
   Future<void> clear() => _preferences.clear();
 
@@ -271,7 +325,7 @@ class StorageRepository {
           settings[AppSetting.showCallsInNativeRecents] = value as bool;
           break;
         case 'AvailabilitySetting':
-          settings[CallSetting.availability] = Availability.fromJson(
+          settings[CallSetting.destination] = Destination.fromJson(
             value as Map<String, dynamic>,
           );
           break;
@@ -295,6 +349,8 @@ class StorageRepository {
             canViewMobileNumberFallbackStatus: false,
             canViewVoicemailAccounts: false,
             canChangeOutgoingNumber: false,
+            canViewColleagues: false,
+            canViewVoipAccounts: false,
           );
           break;
       }

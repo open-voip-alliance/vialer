@@ -14,7 +14,8 @@ const brands = '''
     "unencryptedSipUrl": "sipproxy.voipgrid.nl",
     "businessAvailabilityUrl": "https://api.prod.holodeck.spindle.dev/business-availability/clients/",
     "privacyPolicyUrl": "https://vialerapp.com/privacy/",
-    "signUpUrl": null
+    "signUpUrl": null,
+    "userAvailabilityWsUrl": "wss://api.prod.holodeck.spindle.dev/user-availability-ws/ws"
   },
   {
     "identifier": "voys",
@@ -28,7 +29,8 @@ const brands = '''
     "unencryptedSipUrl": "sipproxy.voipgrid.nl",
     "businessAvailabilityUrl": "https://api.prod.holodeck.spindle.dev/business-availability/clients/",
     "privacyPolicyUrl": "https://www.voys.nl/app-privacy/",
-    "signUpUrl": "https://www.voys.nl/samenstellen/"
+    "signUpUrl": "https://www.voys.nl/samenstellen/",
+    "userAvailabilityWsUrl": "wss://api.prod.holodeck.spindle.dev/user-availability-ws/ws"
   },
   {
     "identifier": "vialerStaging",
@@ -41,7 +43,8 @@ const brands = '''
     "unencryptedSipUrl": "sipproxy-staging.voipgrid.nl",
     "businessAvailabilityUrl": "https://api.stag.holodeck.spindle.dev/business-availability/clients/",
     "privacyPolicyUrl": "https://vialerapp.com/privacy/",
-    "signUpUrl": null
+    "signUpUrl": null,
+    "userAvailabilityWsUrl": "wss://api.stag.holodeck.spindle.dev/user-availability-ws/ws"
   },
   {
     "identifier": "verbonden",
@@ -54,7 +57,8 @@ const brands = '''
     "unencryptedSipUrl": "sipproxy.voipgrid.nl",
     "businessAvailabilityUrl": "https://api.prod.holodeck.spindle.dev/business-availability/clients/",
     "privacyPolicyUrl": "https://verbonden.nl/app/privacy",
-    "signUpUrl": null
+    "signUpUrl": null,
+    "userAvailabilityWsUrl": "wss://api.prod.holodeck.spindle.dev/user-availability-ws/ws"
   },
   {
     "identifier": "annabel",
@@ -67,7 +71,8 @@ const brands = '''
     "unencryptedSipUrl": "sipproxy.voipgrid.nl",
     "businessAvailabilityUrl": "https://api.prod.holodeck.spindle.dev/business-availability/clients/",
     "privacyPolicyUrl": "https://bellenmetannabel.nl/app/uploads/Terms-Of-Use-And-Privacy.pdf",
-    "signUpUrl": null
+    "signUpUrl": null,
+    "userAvailabilityWsUrl": "wss://api.prod.holodeck.spindle.dev/user-availability-ws/ws"
   }
 ]
 ''';

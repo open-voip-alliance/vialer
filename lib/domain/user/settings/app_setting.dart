@@ -6,8 +6,8 @@ enum AppSetting<T extends Object> with SettingKey<T> {
   showSurveys<bool>(),
   showCallsInNativeRecents<bool>(),
   showTroubleshooting<bool>(),
-
-  showClientCalls<bool>();
+  showClientCalls<bool>(),
+  showOnlineColleaguesOnly<bool>();
 
   static const Map<AppSetting, bool> defaultValues = {
     AppSetting.remoteLogging: false,
@@ -16,5 +16,6 @@ enum AppSetting<T extends Object> with SettingKey<T> {
     AppSetting.showCallsInNativeRecents: true,
     AppSetting.showTroubleshooting: false,
     AppSetting.showClientCalls: false,
+    AppSetting.showOnlineColleaguesOnly: true,
   };
 }

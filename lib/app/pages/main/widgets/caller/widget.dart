@@ -111,7 +111,7 @@ class _CallerState extends State<Caller>
       _isRinging = false;
     }
 
-    if (state is InitiatingCall && state.isVoip ||
+    if (state is StartingCall && state.isVoip ||
         (state is Calling &&
             state.isVoip &&
             state.voipCall!.direction.isInbound)) {
@@ -134,8 +134,8 @@ class _CallerState extends State<Caller>
       );
     }
 
-    if (state is InitiatingCallFailed) {
-      if (state is InitiatingCallFailedWithException) {
+    if (state is StartingCallFailed) {
+      if (state is StartingCallFailedWithException) {
         if (state.isVoip) {
           await _showCallThroughErrorDialog(
             _navigatorContext,
@@ -147,7 +147,7 @@ class _CallerState extends State<Caller>
             state.exception,
           );
         }
-      } else if (state is InitiatingCallFailedWithReason) {
+      } else if (state is StartingCallFailedWithReason) {
         await _showInitiatingCallFailedDialog(_navigatorContext, state.reason);
       }
     }

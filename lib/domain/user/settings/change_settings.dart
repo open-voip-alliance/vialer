@@ -38,7 +38,7 @@ class ChangeSettingsUseCase extends UseCase with Loggable {
   final _refreshUser = RefreshUser();
 
   final _listeners = <SettingChangeListener>[
-    UpdateAvailabilityListener(),
+    UpdateDestinationListener(),
     UpdateMobileNumberListener(),
     UpdateOutgoingNumberListener(),
     UpdateRemoteLoggingListener(),
@@ -114,9 +114,11 @@ class ChangeSettingsUseCase extends UseCase with Loggable {
         }
       }
 
-      _storageRepository.user = user.copyWith(
+      user = user.copyWith(
         settings: user.settings.copyFrom(settings),
       );
+
+      _storageRepository.user = user;
 
       // We do this after storing the settings so setting checks work.
       await _notifyListeners(
@@ -175,8 +177,8 @@ class ChangeSettingsUseCase extends UseCase with Loggable {
         if (listener.key != key) continue;
 
         final futureOrResult = before
-            ? listener.beforeStore(user, value)
-            : listener.afterStore(user, value);
+            ? listener.preStore(user, value)
+            : listener.postStore(user, value);
 
         final result =
             futureOrResult is Future ? await futureOrResult : futureOrResult;

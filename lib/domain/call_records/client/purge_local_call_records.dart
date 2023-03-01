@@ -20,7 +20,7 @@ class PurgeLocalCallRecordsUseCase extends UseCase with Loggable {
     if (amountDeleted <= 0) return;
 
     logger.info(
-      'Removed $amountDeleted local client calls because  ${reason.name}',
+      'Removed $amountDeleted local client calls because ${reason.name}',
     );
 
     _metricsRepository.track('client-calls-purged', {

@@ -2,9 +2,11 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../dependency_locator.dart';
 import '../../../../../domain/authentication/get_is_logged_in_somewhere_else.dart';
 import '../../../../../domain/authentication/logout.dart';
 import '../../../../../domain/calling/voip/register_to_voip_middleware.dart';
+import '../../../../../domain/legacy/storage.dart';
 import '../../../../../domain/onboarding/is_onboarded.dart';
 import '../../../../../domain/user/get_logged_in_user.dart';
 import '../../../../../domain/user/refresh_user.dart';
@@ -16,6 +18,7 @@ export 'state.dart';
 class UserDataRefresherCubit extends Cubit<UserDataRefresherState>
     with Loggable {
   final _isOnboarded = IsOnboarded();
+  late final _storageRepository = dependencyLocator<StorageRepository>();
   final _getLoggedInUser = GetLoggedInUserUseCase();
   final _refreshUser = RefreshUser();
   final _registerToVoipMiddleware = RegisterToVoipMiddlewareUseCase();
@@ -24,7 +27,7 @@ class UserDataRefresherCubit extends Cubit<UserDataRefresherState>
 
   UserDataRefresherCubit() : super(const NotRefreshing());
 
-  Future<void> refresh() async {
+  Future<void> refreshIfReady() async {
     if (!_isOnboarded()) return;
 
     final oldUser = _getLoggedInUser();
@@ -38,6 +41,11 @@ class UserDataRefresherCubit extends Cubit<UserDataRefresherState>
       return;
     }
 
+    // If we have refreshed too recently we don't want to do anything.
+    if (!_storageRepository.lastUserRefreshedTime.isReadyForRefresh) return;
+
+    _storageRepository.lastUserRefreshedTime = DateTime.now();
+
     final newUser = await _refreshUser();
 
     await _registerToVoipMiddleware();
@@ -48,4 +56,12 @@ class UserDataRefresherCubit extends Cubit<UserDataRefresherState>
       logger.info('Refreshed user data with new changes applied');
     }
   }
+}
+
+extension on DateTime? {
+  /// The minimum duration between which a user refresh can happen.
+  static const _minInterval = Duration(seconds: 30);
+
+  bool get isReadyForRefresh =>
+      this?.isBefore(DateTime.now().subtract(_minInterval)) ?? true;
 }
