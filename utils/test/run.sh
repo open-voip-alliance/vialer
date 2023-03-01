@@ -2,7 +2,7 @@
 
 if [[ "$CI" == "true" ]]; then
   flutter build apk --debug --target=lib/app/main.dart
-  flutter install
+  flutter install --debug
 else
   flutter install
 fi
@@ -15,7 +15,7 @@ adb shell pm grant com.voipgrid.vialer android.permission.RECORD_AUDIO
 function run_test {
   filename=$1
   echo "Starting test ${filename#"integration_test/tests/"}"
-  flutter drive -t "$filename" --driver test_driver/integration_test.dart
+  flutter drive -t "$filename" --driver test_driver/integration_test.dart --debug
 }
 
 setopt extended_glob
