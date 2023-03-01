@@ -17,6 +17,7 @@ class Brand with _$Brand {
     required Uri encryptedSipUrl,
     required Uri unencryptedSipUrl,
     required Uri businessAvailabilityUrl,
+    required Uri openingHoursBasicUrl,
     required Uri privacyPolicyUrl,
     required Uri? signUpUrl,
     required Uri userAvailabilityWsUrl,
