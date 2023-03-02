@@ -190,7 +190,7 @@ class RefreshUser extends UseCase with Loggable {
 
     return user.copyWith(
       settings:
-          user.settings.copyWithAll({CallSetting.destination: destination}),
+          user.settings.copyWith(CallSetting.destination, destination),
     );
   }
 
@@ -198,9 +198,9 @@ class RefreshUser extends UseCase with Loggable {
     final useMobileNumberAsFallback =
         await _authRepository.isUserUsingMobileNumberAsFallback(user);
 
-    final settings = user.settings.copyWithAll({
-      CallSetting.useMobileNumberAsFallback: useMobileNumberAsFallback,
-    });
+    final settings = user.settings.copyWith(
+      CallSetting.useMobileNumberAsFallback, useMobileNumberAsFallback,
+    );
 
     return user.copyWith(settings: settings);
   }
