@@ -10,9 +10,9 @@ part 'opening_hours.freezed.dart';
 class OpeningHours with _$OpeningHours {
   const factory OpeningHours({
     String? id,
-    String? name,
-    @JsonKey(name: 'work_hours') List<WorkingHours>? workingHours,
-    List<Holiday>? holidays,
+    required String name,
+    @JsonKey(name: 'work_hours') @Default([]) List<WorkingHours> workingHours,
+    @Default([]) List<Holiday> holidays,
   }) = _OpeningHours;
 
   factory OpeningHours.fromJson(Map<String, dynamic> json) =>
