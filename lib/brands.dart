@@ -44,7 +44,7 @@ const brands = '''
     "encryptedSipUrl": "staging.encryptedsip.com",
     "unencryptedSipUrl": "sipproxy-staging.voipgrid.nl",
     "businessAvailabilityUrl": "https://api.stag.holodeck.spindle.dev/business-availability/clients/",
-    "openingHoursBasicUrl": "https://api.prod.holodeck.spindle.dev/opening-hours-basic/client/",
+    "openingHoursBasicUrl": "https://api.stag.holodeck.spindle.dev/opening-hours-basic/client/",
     "privacyPolicyUrl": "https://vialerapp.com/privacy/",
     "signUpUrl": null,
     "userAvailabilityWsUrl": "wss://api.stag.holodeck.spindle.dev/user-availability-ws/ws"
