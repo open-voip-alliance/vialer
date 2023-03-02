@@ -567,11 +567,11 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: c44f11fb144e1424582c395352b583a103a709f4
-      resolved-ref: c44f11fb144e1424582c395352b583a103a709f4
+      ref: f5ad8977b0cf6a75e9cd38750c322216415e3920
+      resolved-ref: f5ad8977b0cf6a75e9cd38750c322216415e3920
       url: "git@gitlab.wearespindle.com:vialer/mobile/font-awesome.git"
     source: git
-    version: "10.1.0"
+    version: "10.4.0"
   freezed:
     dependency: "direct dev"
     description:
