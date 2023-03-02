@@ -3,6 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 
 import '../business_availability/temporary_redirect/temporary_redirect.dart';
+import '../openings_hours_basic/opening_hours.dart';
 import '../voicemail/voicemail_account.dart';
 import '../voipgrid/client_voip_config.dart';
 import 'settings/call_setting.dart';
@@ -32,6 +33,8 @@ class Client extends Equatable {
 
   final TemporaryRedirect? currentTemporaryRedirect;
 
+  final List<OpeningHours>? openingHours;
+
   const Client({
     required this.id,
     required this.uuid,
@@ -41,6 +44,7 @@ class Client extends Equatable {
     this.outgoingNumbers = const [],
     this.voicemailAccounts = const [],
     this.currentTemporaryRedirect,
+    this.openingHours,
   });
 
   @override
@@ -63,6 +67,7 @@ class Client extends Equatable {
     Iterable<OutgoingNumber>? outgoingNumbers,
     Iterable<VoicemailAccount>? voicemailAccounts,
     TemporaryRedirect? currentTemporaryRedirect,
+    List<OpeningHours>? openingHours,
   }) {
     return Client(
       id: id ?? this.id,
@@ -74,6 +79,7 @@ class Client extends Equatable {
       voicemailAccounts: voicemailAccounts ?? this.voicemailAccounts,
       currentTemporaryRedirect:
           currentTemporaryRedirect ?? this.currentTemporaryRedirect,
+      openingHours: openingHours ?? this.openingHours,
     );
   }
 

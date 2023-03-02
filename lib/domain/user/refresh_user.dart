@@ -15,6 +15,7 @@ import '../legacy/storage.dart';
 import '../metrics/metrics.dart';
 import '../onboarding/exceptions.dart';
 import '../onboarding/login_credentials.dart';
+import '../openings_hours_basic/get_opening_hours.dart';
 import '../use_case.dart';
 import '../voicemail/voicemail_account_repository.dart';
 import '../voipgrid/user_permissions.dart';
@@ -87,6 +88,7 @@ class RefreshUser extends UseCase with Loggable {
       user = await _getUserVoipConfig(user);
       user = await _getClientVoipConfig(user);
       user = await _getCurrentTemporaryRedirect(user);
+      user = await _getOpeningHours(user);
 
       // User should have a value for all settings.
       assert(
@@ -281,6 +283,12 @@ class RefreshUser extends UseCase with Loggable {
   Future<User> _getCurrentTemporaryRedirect(User user) async => user.copyWith(
         client: user.client.copyWith(
           currentTemporaryRedirect: await GetCurrentTemporaryRedirect()(),
+        ),
+      );
+
+  Future<User> _getOpeningHours(User user) async => user.copyWith(
+        client: user.client.copyWith(
+          openingHours: await GetOpeningHours()(),
         ),
       );
 }
