@@ -11,7 +11,7 @@ class OpeningHours with _$OpeningHours {
   const factory OpeningHours({
     String? id,
     String? name,
-    @JsonKey(name: 'work_hours') List<WorkHours>? workHours,
+    @JsonKey(name: 'work_hours') List<WorkingHours>? workingHours,
     List<Holiday>? holidays,
   }) = _OpeningHours;
 
@@ -20,25 +20,25 @@ class OpeningHours with _$OpeningHours {
 }
 
 @freezed
-class WorkHours with _$WorkHours {
+class WorkingHours with _$WorkingHours {
   @JsonSerializable(fieldRename: FieldRename.snake)
-  const factory WorkHours({
+  const factory WorkingHours({
     required int dayOfWeek,
     @JsonKey(fromJson: _timeFromJson, toJson: _timeToJson) TimeOfDay? timeStart,
     @JsonKey(fromJson: _timeFromJson, toJson: _timeToJson) TimeOfDay? timeEnd,
-  }) = _WorkHours;
+  }) = _WorkingHours;
 
-  factory WorkHours.fromJson(Map<String, dynamic> json) =>
-      _$WorkHoursFromJson(json);
+  factory WorkingHours.fromJson(Map<String, dynamic> json) =>
+      _$WorkingHoursFromJson(json);
 }
 
-TimeOfDay? _timeFromJson(String? time) => time == null
-    ? null
-    : TimeOfDay.fromDateTime(
+TimeOfDay? _timeFromJson(String? time) => time != null
+    ? TimeOfDay.fromDateTime(
         DateFormat('h:m:s').parse(time),
-      );
+      )
+    : null;
 
-String? _timeToJson(TimeOfDay? time) => time == null ? null : time.formatTime;
+String? _timeToJson(TimeOfDay? time) => time != null ? time.formatTime : null;
 
 @freezed
 class Holiday with _$Holiday {
@@ -53,15 +53,8 @@ class Holiday with _$Holiday {
 
 extension on TimeOfDay {
   String get formatTime {
-    String addLeadingZeroIfNeeded(int value) {
-      if (value < 10) {
-        return '0$value';
-      }
-      return value.toString();
-    }
-
-    final hourLabel = addLeadingZeroIfNeeded(hour);
-    final minuteLabel = addLeadingZeroIfNeeded(minute);
+    final hourLabel = hour.toString().padLeft(2, '0');
+    final minuteLabel = minute.toString().padLeft(2, '0');
 
     return '$hourLabel:$minuteLabel:00';
   }
