@@ -11,5 +11,10 @@ extension Name on Contact {
   }
 
   String get _fullName =>
-      [givenName, middleName, familyName].whereNotNull().join(' ');
+      [givenName, middleName, familyName].whereNotNullOrBlank().join(' ');
+}
+
+extension on List<String?> {
+  Iterable<String?> whereNotNullOrBlank() =>
+      filter((element) => element.isNotNullOrBlank);
 }
