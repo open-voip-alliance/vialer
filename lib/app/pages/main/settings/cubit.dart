@@ -91,9 +91,7 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
 
   Future<void> refreshAvailability() async {
     logger.info('Refreshing availability');
-
-    // TODO: Add ability to refresh a user partially?
-    await _refreshUser();
+    await _refreshUser(tasksToRun: [UserRefreshTask.availability]);
     await _emitUpdatedState();
   }
 

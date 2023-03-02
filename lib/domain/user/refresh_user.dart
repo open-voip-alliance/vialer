@@ -46,24 +46,30 @@ class RefreshUser extends UseCase with Loggable {
   Future<User?> call({
     LoginCredentials? credentials,
     bool synchronized = true,
+    List<UserRefreshTask>? tasksToRun,
   }) {
+    final tasks = tasksToRun ?? UserRefreshTask.values;
+
     if (synchronized) {
       return SynchronizedTask<User?>.named(
         editUserTask,
         SynchronizedTaskMode.queue,
-      ).run(() => _refreshUser(credentials));
+      ).run(() => _refreshUser(credentials, tasks));
     }
 
-    return _refreshUser(credentials);
+    return _refreshUser(credentials, tasks);
   }
 
-  Future<User?> _refreshUser(LoginCredentials? credentials) async {
-    final storedUser = _storageRepository.user;
-    final latestUser = await _getUserFromCredentials(credentials);
+  Future<User?> _refreshUser(
+    LoginCredentials? credentials,
+    List<UserRefreshTask> tasksToRun,
+  ) async {
+    executeUserRefreshTasks() async {
+      final storedUser = _storageRepository.user;
+      final latestUser = await _getUserFromCredentials(credentials);
 
-    if (latestUser == null) return storedUser;
+      if (latestUser == null) return storedUser;
 
-    return SynchronizedTask<User?>.of(this).run(() async {
       // Latest user contains some settings, such as mobile and
       // outgoing number.
       var user = storedUser?.copyFrom(latestUser) ?? latestUser;
@@ -80,13 +86,56 @@ class RefreshUser extends UseCase with Loggable {
       }
 
       user = _getPreviousSessionSettings(user);
-      user = await _getRemoteSettings(user);
-      user = await _getRemotePermissions(user);
-      user = await _getRemoteClientOutgoingNumbers(user);
-      user = await _getClientVoicemailAccounts(user);
-      user = await _getUserVoipConfig(user);
-      user = await _getClientVoipConfig(user);
-      user = await _getCurrentTemporaryRedirect(user);
+
+      user = await tasksToRun.run(
+        UserRefreshTask.remotePermissions,
+        user,
+        () => _getRemotePermissions(user),
+      );
+
+      user = await tasksToRun.run(
+        UserRefreshTask.remoteClientOutgoingNumbers,
+        user,
+        () => _getRemoteClientOutgoingNumbers(user),
+      );
+
+      user = await tasksToRun.run(
+        UserRefreshTask.remoteClientVoicemailAccounts,
+        user,
+        () => _getClientVoicemailAccounts(user),
+      );
+
+      user = await tasksToRun.run(
+        UserRefreshTask.userVoipConfig,
+        user,
+        () => _getUserVoipConfig(user),
+      );
+
+      user = await tasksToRun.run(
+        UserRefreshTask.clientVoipConfig,
+        user,
+        () => _getClientVoipConfig(user),
+      );
+
+      user = await tasksToRun.run(
+        UserRefreshTask.currentTemporaryRedirect,
+        user,
+        () => _getCurrentTemporaryRedirect(user),
+      );
+
+      // These will be executed last, as these are the most important settings
+      // to have as fresh as possible for the best user experience.
+      user = await tasksToRun.run(
+        UserRefreshTask.remoteSettings,
+        user,
+        () => _getRemoteSettings(user),
+      );
+
+      user = await tasksToRun.run(
+        UserRefreshTask.availability,
+        user,
+        () => _getAvailability(user),
+      );
 
       // User should have a value for all settings.
       assert(
@@ -102,7 +151,13 @@ class RefreshUser extends UseCase with Loggable {
       _storageRepository.user = user;
 
       return user;
-    });
+    }
+
+    /// If there aren't many tasks in this list we will always execute
+    /// immediately rather than managing synchronization.
+    return tasksToRun.shouldSkipSynchronization
+        ? executeUserRefreshTasks()
+        : SynchronizedTask<User?>.of(this).run(executeUserRefreshTasks);
   }
 
   Future<User?> _getUserFromCredentials(LoginCredentials? credentials) async {
@@ -128,25 +183,24 @@ class RefreshUser extends UseCase with Loggable {
     }
   }
 
-  /// Retrieving settings and handling its possible side effects.
-  Future<User> _getRemoteSettings(User user) async {
+  Future<User> _getAvailability(User user) async {
     final destination = await _destinationRepository.getActiveDestination();
+
+    if (destination is Unknown) return user;
+
+    return user.copyWith(
+      settings:
+          user.settings.copyWithAll({CallSetting.destination: destination}),
+    );
+  }
+
+  Future<User> _getRemoteSettings(User user) async {
     final useMobileNumberAsFallback =
         await _authRepository.isUserUsingMobileNumberAsFallback(user);
 
-    Settings settings;
-
-    if (destination is Unknown) {
-      // Fallback to the last known destination by not overwriting the current.
-      settings = user.settings.copyWithAll({
-        CallSetting.useMobileNumberAsFallback: useMobileNumberAsFallback,
-      });
-    } else {
-      settings = user.settings.copyWithAll({
-        CallSetting.useMobileNumberAsFallback: useMobileNumberAsFallback,
-        CallSetting.destination: destination,
-      });
-    }
+    final settings = user.settings.copyWithAll({
+      CallSetting.useMobileNumberAsFallback: useMobileNumberAsFallback,
+    });
 
     return user.copyWith(settings: settings);
   }
@@ -283,4 +337,28 @@ class RefreshUser extends UseCase with Loggable {
           currentTemporaryRedirect: await GetCurrentTemporaryRedirect()(),
         ),
       );
+}
+
+enum UserRefreshTask {
+  remotePermissions,
+  remoteClientOutgoingNumbers,
+  remoteClientVoicemailAccounts,
+  userVoipConfig,
+  clientVoipConfig,
+  currentTemporaryRedirect,
+  availability,
+  remoteSettings,
+}
+
+extension on List<UserRefreshTask> {
+  /// Conditionally run the refresh task if it appears in our list of
+  /// tasks to complete.
+  Future<User> run(
+    UserRefreshTask task,
+    User user,
+    Future<User> Function() callback,
+  ) async =>
+      contains(task) ? await callback() : user;
+
+  bool get shouldSkipSynchronization => length <= 2;
 }

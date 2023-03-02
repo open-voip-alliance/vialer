@@ -104,7 +104,13 @@ class ChangeSettingsUseCase extends UseCase with Loggable {
       // Retrieve the latest user with latest remote setting values, and
       // copy them into the settings result.
       if (needSync.isNotEmpty) {
-        final freshUser = await _refreshUser(synchronized: false);
+        final freshUser = await _refreshUser(
+          synchronized: true,
+          tasksToRun: [
+            UserRefreshTask.remoteSettings,
+            UserRefreshTask.availability,
+          ],
+        );
 
         // Technically freshUser should never be null, but doing a check
         // to avoid a rare exception.
