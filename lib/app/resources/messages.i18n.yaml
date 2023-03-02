@@ -218,6 +218,18 @@ main:
       ringing: 'Being called'
       inCall: 'Busy'
 
+  colleagues:
+    toggle: 'Online colleagues only'
+    status:
+      available: 'Available'
+      doNotDisturb: 'Do not disturb'
+      offline: 'Offline'
+      unknown: 'Unknown'
+      busy: 'Busy'
+    context:
+      ringing: 'Being called'
+      inCall: 'Busy'
+
   contacts:
     title: &contactsTitle "Contacts"
     menu:
