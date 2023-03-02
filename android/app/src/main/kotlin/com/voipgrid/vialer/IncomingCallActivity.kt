@@ -2,6 +2,7 @@ package com.voipgrid.vialer
 
 import android.app.Activity
 import android.content.*
+import android.content.res.Resources
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -58,6 +59,8 @@ class IncomingCallActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         registerReceiver(receiver, IntentFilter(INCOMING_CALL_CANCEL_INTENT))
         requestWindowFeature(Window.FEATURE_NO_TITLE)
+        // Although the title is not shown visually, we still set it for screen readers.
+        title = getString(R.string.main_call_incoming_subtitle_with, getString(R.string.app_name))
         ensureScreenShowsWhilePhoneIsLocked()
 
         setContent {
@@ -283,6 +286,8 @@ fun CallHeader(callHeaderInformation: CallHeaderInformation, fontSize: TextUnit 
                         ),
                         fontSize = fontSize * 0.6,
                         style = textStyle,
+                        // This is read out as the activity title screen.
+                        modifier = Modifier.clearAndSetSemantics {  }
                     )
                 }
 
