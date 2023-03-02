@@ -38,7 +38,8 @@ TimeOfDay? _timeFromJson(String? time) => time != null
       )
     : null;
 
-String? _timeToJson(TimeOfDay? time) => time != null ? time.formatTime : null;
+String? _timeToJson(TimeOfDay? time) =>
+    time != null ? time.formattedTime : null;
 
 @freezed
 class Holiday with _$Holiday {
@@ -52,7 +53,7 @@ class Holiday with _$Holiday {
 }
 
 extension on TimeOfDay {
-  String get formatTime {
+  String get formattedTime {
     final hourLabel = hour.toString().padLeft(2, '0');
     final minuteLabel = minute.toString().padLeft(2, '0');
 
