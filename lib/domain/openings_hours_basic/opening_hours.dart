@@ -1,4 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:intl/intl.dart';
 
 part 'opening_hours.g.dart';
 
@@ -9,7 +11,7 @@ class OpeningHours with _$OpeningHours {
   const factory OpeningHours({
     String? id,
     String? name,
-    List<WorkHours>? workHours,
+    @JsonKey(name: 'work_hours') List<WorkHours>? workHours,
     List<Holiday>? holidays,
   }) = _OpeningHours;
 
@@ -19,17 +21,24 @@ class OpeningHours with _$OpeningHours {
 
 @freezed
 class WorkHours with _$WorkHours {
+  @JsonSerializable(fieldRename: FieldRename.snake)
   const factory WorkHours({
     required int dayOfWeek,
-    @JsonKey(fromJson: _dateTimeFromJson) required DateTime timeStart,
-    @JsonKey(fromJson: _dateTimeFromJson) DateTime? timeEnd,
+    @JsonKey(fromJson: _timeFromJson, toJson: _timeToJson) TimeOfDay? timeStart,
+    @JsonKey(fromJson: _timeFromJson, toJson: _timeToJson) TimeOfDay? timeEnd,
   }) = _WorkHours;
 
   factory WorkHours.fromJson(Map<String, dynamic> json) =>
       _$WorkHoursFromJson(json);
 }
 
-DateTime _dateTimeFromJson(String datetime) => DateTime.parse(datetime);
+TimeOfDay? _timeFromJson(String? time) => time == null
+    ? null
+    : TimeOfDay.fromDateTime(
+        DateFormat('h:m:s').parse(time),
+      );
+
+String? _timeToJson(TimeOfDay? time) => time == null ? null : time.formatTime;
 
 @freezed
 class Holiday with _$Holiday {
@@ -40,4 +49,20 @@ class Holiday with _$Holiday {
 
   factory Holiday.fromJson(Map<String, dynamic> json) =>
       _$HolidayFromJson(json);
+}
+
+extension on TimeOfDay {
+  String get formatTime {
+    String addLeadingZeroIfNeeded(int value) {
+      if (value < 10) {
+        return '0$value';
+      }
+      return value.toString();
+    }
+
+    final hourLabel = addLeadingZeroIfNeeded(hour);
+    final minuteLabel = addLeadingZeroIfNeeded(minute);
+
+    return '$hourLabel:$minuteLabel:00';
+  }
 }

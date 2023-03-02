@@ -33,7 +33,7 @@ class Client extends Equatable {
 
   final TemporaryRedirect? currentTemporaryRedirect;
 
-  final OpeningHours? openingHours;
+  final List<OpeningHours>? openingHours;
 
   const Client({
     required this.id,
@@ -67,7 +67,7 @@ class Client extends Equatable {
     Iterable<OutgoingNumber>? outgoingNumbers,
     Iterable<VoicemailAccount>? voicemailAccounts,
     TemporaryRedirect? currentTemporaryRedirect,
-    OpeningHours? openingHours,
+    List<OpeningHours>? openingHours,
   }) {
     return Client(
       id: id ?? this.id,
