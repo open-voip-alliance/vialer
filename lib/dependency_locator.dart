@@ -28,6 +28,8 @@ import 'domain/legacy/memory_storage_repository.dart';
 import 'domain/legacy/storage.dart';
 import 'domain/metrics/metrics.dart';
 import 'domain/onboarding/country_repository.dart';
+import 'domain/openings_hours_basic/opening_hours_repository.dart';
+import 'domain/openings_hours_basic/opening_hours_service.dart';
 import 'domain/remote_logging/logging.dart';
 import 'domain/user/brand_repository.dart';
 import 'domain/user/connectivity/connectivity.dart';
@@ -174,6 +176,11 @@ Future<void> initializeDependencies({bool ui = true}) async {
     ..registerSingleton<BusinessAvailabilityRepository>(
       BusinessAvailabilityRepository(
         BusinessAvailabilityService.create(),
+      ),
+    )
+    ..registerSingleton<OpeningHoursRepository>(
+      OpeningHoursRepository(
+        OpeningHoursService.create(),
       ),
     );
 
