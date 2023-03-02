@@ -58,6 +58,13 @@ class ColleagueAvatar extends StatelessWidget {
   final Colleague colleague;
   final double size;
 
+  static const _availableIcon = FontAwesomeIcons.user;
+  static const _unavailableIcon = FontAwesomeIcons.userSlash;
+  static const _ringingIcon = FontAwesomeIcons.bellOn;
+  static const _inCallIcon = FontAwesomeIcons.phoneVolume;
+  static const _dndIcon = FontAwesomeIcons.bellSlash;
+  static const _voipAccountIcon = FontAwesomeIcons.phoneOffice;
+
   const ColleagueAvatar(
     this.colleague, {
     Key? key,
@@ -116,8 +123,8 @@ class ColleagueAvatar extends StatelessWidget {
 
     if (context != null) {
       return context.when(
-        ringing: () => FontAwesomeIcons.bell,
-        inCall: () => FontAwesomeIcons.phoneVolume,
+        ringing: () => _ringingIcon,
+        inCall: () => _inCallIcon,
       );
     }
 
@@ -125,22 +132,22 @@ class ColleagueAvatar extends StatelessWidget {
       (colleague) {
         switch (colleague.status) {
           case ColleagueAvailabilityStatus.available:
-            return FontAwesomeIcons.wifi;
+            return _availableIcon;
           case ColleagueAvailabilityStatus.doNotDisturb:
-            return FontAwesomeIcons.bellSlash;
+            return _dndIcon;
           case ColleagueAvailabilityStatus.busy:
-            return FontAwesomeIcons.phoneVolume;
+            return _inCallIcon;
           case ColleagueAvailabilityStatus.unknown:
             return colleague.isAvailableOnMobileAppOrFixedDestination
-                ? FontAwesomeIcons.wifi
-                : FontAwesomeIcons.wifiSlash;
+                ? _availableIcon
+                : _unavailableIcon;
           case ColleagueAvailabilityStatus.offline:
-            return FontAwesomeIcons.wifiSlash;
+            return _unavailableIcon;
           default:
-            return FontAwesomeIcons.phoneOffice;
+            return _voipAccountIcon;
         }
       },
-      unconnectedVoipAccount: (_) => FontAwesomeIcons.phoneOffice,
+      unconnectedVoipAccount: (_) => _voipAccountIcon,
     );
   }
 
