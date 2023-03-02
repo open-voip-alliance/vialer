@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -5,6 +6,7 @@ import 'package:intl/intl.dart';
 
 import '../../../../../../data/models/colltact.dart';
 import '../../../../../resources/localizations.dart';
+import '../../../colltacts/colleagues/cubit.dart';
 import '../../../widgets/caller.dart';
 import '../../../widgets/header.dart';
 import '../cubit.dart';
@@ -37,97 +39,112 @@ class _ColltactDetailsState extends State<ColltactDetails> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<ColltactDetailsCubit>(
+      //wip is ColltactDetailsCubit needed here?
       create: (_) => ColltactDetailsCubit(context.read<CallerCubit>()),
-      child: BlocBuilder<ColltactsCubit, ColltactsState>(
-        builder: (context, state) {
-          var colltact = widget.colltact;
+      child: BlocBuilder<ColleagueCubit, ColleagueState>(
+        builder: (context, colleagueState) {
+          return BlocBuilder<ContactsCubit, ContactState>(
+            builder: (context, contactState) {
+              var colltact = widget.colltact;
 
-          if (state is ColltactsLoaded) {
-            colltact = state.colltacts.firstWhere(
-              (colltact) => colltact.when(
-                contact: (contact) => widget.colltact is ColltactContact
-                    ? contact.identifier ==
-                        (widget.colltact as ColltactContact).contact.identifier
-                    : false,
-                colleague: (colleague) => widget.colltact is ColltactColleague
-                    ? colleague.id ==
-                        (widget.colltact as ColltactColleague).colleague.id
-                    : false,
-              ),
-              orElse: () => colltact,
-            );
-          }
+              if (contactState is ContactsLoaded &&
+                  colltact is ColltactContact) {
+                final contact = contactState.contacts.firstWhereOrNull(
+                  (contact) =>
+                      contact.identifier ==
+                      (colltact as ColltactContact).contact.identifier,
+                );
+                if (contact != null) {
+                  colltact = Colltact.contact(contact);
+                }
+              }
 
-          return Scaffold(
-            appBar: AppBar(
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-              title: Header(context.msg.main.contacts.title),
-              centerTitle: false,
-              iconTheme: IconThemeData(
-                color: Theme.of(context).primaryColor,
-              ),
-              actions: colltact.when(
-                colleague: (_) => null,
-                contact: (_) => widget.actions,
-              ),
-            ),
-            body: SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.only(
-                  top: 32,
+              if (colleagueState is Loaded && colltact is ColltactColleague) {
+                final colleague = colleagueState.colleagues.firstWhereOrNull(
+                  (colleague) =>
+                      colleague.id ==
+                      (colltact as ColltactColleague).colleague.id,
+                );
+                if (colleague != null) {
+                  colltact = Colltact.colleague(colleague);
+                }
+              }
+
+              return Scaffold(
+                appBar: AppBar(
+                  backgroundColor: Colors.transparent,
+                  elevation: 0,
+                  title: Header(context.msg.main.contacts.title),
+                  centerTitle: false,
+                  iconTheme: IconThemeData(
+                    color: Theme.of(context).primaryColor,
+                  ),
+                  actions: colltact.when(
+                    colleague: (_) => null,
+                    contact: (_) => widget.actions,
+                  ),
                 ),
-                child: Column(
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: _horizontalPadding,
-                      ),
-                      child: Row(
-                        children: <Widget>[
-                          ColltactAvatar(colltact, size: _leadingSize),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Text(
-                                  colltact.name,
-                                  maxLines: 5,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                body: SafeArea(
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                      top: 32,
+                    ),
+                    child: Column(
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: _horizontalPadding,
+                          ),
+                          child: Row(
+                            children: <Widget>[
+                              ColltactAvatar(colltact, size: _leadingSize),
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Text(
+                                      colltact.name,
+                                      maxLines: 5,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    colltact.when(
+                                      colleague: (_) => const SizedBox.shrink(),
+                                      contact: (contact) =>
+                                          ColltactSubtitle(colltact),
+                                    ),
+                                  ],
                                 ),
-                                const SizedBox(height: 4),
-                                colltact.when(
-                                  colleague: (_) => const SizedBox.shrink(),
-                                  contact: (contact) =>
-                                      ColltactSubtitle(colltact),
-                                ),
-                              ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        Expanded(
+                          child: RefreshIndicator(
+                            onRefresh: () => colltact is ColltactContact
+                                ? context.read<ContactsCubit>().reloadContacts()
+                                : context
+                                    .read<ColleagueCubit>()
+                                    .loadColleagues(), //wip is loadColleagues needed?
+                            child: _DestinationsList(
+                              colltact: colltact,
+                              onPhoneNumberPressed: widget.onPhoneNumberPressed,
+                              onEmailPressed: widget.onEmailPressed,
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                    Expanded(
-                      child: RefreshIndicator(
-                        onRefresh: () =>
-                            context.read<ColltactsCubit>().reloadColltacts(),
-                        child: _DestinationsList(
-                          colltact: colltact,
-                          onPhoneNumberPressed: widget.onPhoneNumberPressed,
-                          onEmailPressed: widget.onEmailPressed,
                         ),
-                      ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
+              );
+            },
           );
         },
       ),

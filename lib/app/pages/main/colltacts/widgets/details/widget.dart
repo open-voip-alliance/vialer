@@ -12,6 +12,7 @@ import '../../../widgets/caller.dart';
 import '../../../widgets/colltact_list/cubit.dart';
 import '../../../widgets/colltact_list/details/cubit.dart';
 import '../../../widgets/colltact_list/details/widget.dart';
+import '../../colleagues/cubit.dart';
 
 class ColltactPageDetails extends StatefulWidget {
   final Colltact colltact;
@@ -53,25 +54,42 @@ class _ColltactPageDetailsState extends State<ColltactPageDetails>
     }
   }
 
-  void _onStateChanged(BuildContext context, ColltactsState state) {
-    if (state is ColltactsLoaded) {
-      final colltactId = widget.colltact.when(
-        colleague: (colleague) => colleague.id,
-        contact: (contact) => contact.identifier,
-      );
+  void _onContactStateChanged(BuildContext context, ContactState state) {
+    if (state is ContactsLoaded) {
+      final List<Colltact> colltacts =
+          state.contacts.map(ColltactContact.new).toList();
 
-      final colltact = state.colltacts.firstWhereOrNull(
-        (colltact) => colltact.when(
-          contact: (contact) => contact.identifier == colltactId,
-          colleague: (colleague) => colleague.id == colltactId,
-        ),
-      );
+      _onColltactStateChanged(context, colltacts);
+    }
+  }
 
-      if (colltact == null && _madeEdit) {
-        // Colltact doesn't exist anymore after returning back to the app,
-        // it's probably deleted, so close this detail screen.
-        Navigator.pop(context, true);
-      }
+  void _onColleagueStateChanged(BuildContext context, ColleagueState state) {
+    if (state is Loaded) {
+      final List<Colltact> colltacts =
+          state.colleagues.map(ColltactColleague.new).toList();
+
+      _onColltactStateChanged(context, colltacts);
+    }
+  }
+
+  //wip will be? Think about method name
+  void _onColltactStateChanged(BuildContext context, List<Colltact> colltacts) {
+    final colltactId = widget.colltact.when(
+      colleague: (colleague) => colleague.id,
+      contact: (contact) => contact.identifier,
+    );
+
+    final colltact = colltacts.firstWhereOrNull(
+      (colltact) => colltact.when(
+        contact: (contact) => contact.identifier == colltactId,
+        colleague: (colleague) => colleague.id == colltactId,
+      ),
+    );
+
+    if (colltact == null && _madeEdit) {
+      // Colltact doesn't exist anymore after returning back to the app,
+      // it's probably deleted, so close this detail screen.
+      Navigator.pop(context, true);
     }
   }
 
@@ -79,51 +97,56 @@ class _ColltactPageDetailsState extends State<ColltactPageDetails>
   Widget build(BuildContext context) {
     return BlocListener<CallerCubit, CallerState>(
       listener: _onCallerStateChanged,
-      child: BlocProvider<ColltactDetailsCubit>(
-        create: (_) => ColltactDetailsCubit(context.read<CallerCubit>()),
-        child: BlocConsumer<ColltactsCubit, ColltactsState>(
-          listener: _onStateChanged,
-          builder: (context, state) {
-            return BlocProvider<ColltactDetailsCubit>(
-              create: (_) => ColltactDetailsCubit(context.watch<CallerCubit>()),
-              child: Builder(
-                builder: (context) {
-                  final cubit = context.read<ColltactDetailsCubit>();
+      //wip if this works maybe use a MultiBlocListener here
+      child: BlocListener<ColleagueCubit, ColleagueState>(
+        listener: _onColleagueStateChanged,
+        child: BlocProvider<ColltactDetailsCubit>(
+          create: (_) => ColltactDetailsCubit(context.read<CallerCubit>()),
+          child: BlocConsumer<ContactsCubit, ContactState>(
+            listener: _onContactStateChanged,
+            builder: (context, state) {
+              return BlocProvider<ColltactDetailsCubit>(
+                create: (_) =>
+                    ColltactDetailsCubit(context.watch<CallerCubit>()),
+                child: Builder(
+                  builder: (context) {
+                    final cubit = context.read<ColltactDetailsCubit>();
 
-                  return ColltactDetails(
-                    colltact: widget.colltact,
-                    onPhoneNumberPressed: (destination) => cubit.call(
-                      destination,
-                      origin: widget.colltact.map(
-                        colleague: (_) => CallOrigin.colleagues,
-                        contact: (_) => CallOrigin.contacts,
-                      ),
-                    ),
-                    onEmailPressed: cubit.mail,
-                    actions: [
-                      Padding(
-                        padding: const EdgeInsets.only(right: 20),
-                        child: GestureDetector(
-                          onTap: () => cubit.edit(widget.colltact),
-                          child: context.isIOS
-                              ? Padding(
-                                  padding: const EdgeInsets.only(top: 24),
-                                  child: Text(
-                                    context.msg.main.contacts.edit,
-                                    style: TextStyle(
-                                      color: Theme.of(context).primaryColor,
-                                    ),
-                                  ),
-                                )
-                              : const FaIcon(FontAwesomeIcons.pen),
+                    return ColltactDetails(
+                      colltact: widget.colltact,
+                      onPhoneNumberPressed: (destination) => cubit.call(
+                        destination,
+                        origin: widget.colltact.map(
+                          colleague: (_) => CallOrigin.colleagues,
+                          contact: (_) => CallOrigin.contacts,
                         ),
                       ),
-                    ],
-                  );
-                },
-              ),
-            );
-          },
+                      onEmailPressed: cubit.mail,
+                      actions: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 20),
+                          child: GestureDetector(
+                            onTap: () => cubit.edit(widget.colltact),
+                            child: context.isIOS
+                                ? Padding(
+                                    padding: const EdgeInsets.only(top: 24),
+                                    child: Text(
+                                      context.msg.main.contacts.edit,
+                                      style: TextStyle(
+                                        color: Theme.of(context).primaryColor,
+                                      ),
+                                    ),
+                                  )
+                                : const FaIcon(FontAwesomeIcons.pen),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              );
+            },
+          ),
         ),
       ),
     );
