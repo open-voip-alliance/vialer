@@ -11,7 +11,7 @@ abstract class BusinessAvailabilityService extends ChopperService {
   static BusinessAvailabilityService create() {
     final _getBrand = GetBrand();
     final _businessAvailabilityBaseUrl =
-        _getBrand.call().businessAvailabilityUrl.toString();
+        _getBrand().businessAvailabilityUrl.toString();
 
     return _$BusinessAvailabilityService(
       ChopperClient(
