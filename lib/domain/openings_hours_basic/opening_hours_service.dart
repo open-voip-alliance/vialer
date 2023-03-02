@@ -9,8 +9,7 @@ part 'opening_hours_service.chopper.dart';
 abstract class OpeningHoursService extends ChopperService {
   static OpeningHoursService create() {
     final _getBrand = GetBrand();
-    final _openingHoursBasicUrl =
-        _getBrand.call().openingHoursBasicUrl.toString();
+    final _openingHoursBasicUrl = _getBrand().openingHoursBasicUrl.toString();
 
     return _$OpeningHoursService(
       ChopperClient(
