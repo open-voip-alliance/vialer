@@ -26,7 +26,7 @@ dependencies:
   font_awesome_flutter:
     git:
       url: git@gitlab.wearespindle.com:vialer/mobile/font-awesome.git
-      ref: c44f11fb144e1424582c395352b583a103a709f4
+      ref: f5ad8977b0cf6a75e9cd38750c322216415e3920
 
   flutter_bloc: ^7.0.0
   pedantic: ^1.9.0
