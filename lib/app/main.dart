@@ -112,9 +112,6 @@ class _AppState extends State<App> {
               (child) => Builder(builder: (context) {
                     return BlocProvider<ColleagueCubit>(
                       create: (_) => ColleagueCubit(
-                        //wip Could not find the correct Provider<CallerCubit>
-                        // above this Builder Widget
-                        //wrapping BlocProvider in a builder solved it
                         context.watch<CallerCubit>(),
                       ),
                       child: child,

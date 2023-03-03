@@ -47,7 +47,7 @@ class ColleagueCubit extends Cubit<ColleagueState> {
   bool get shouldShowColleagues =>
       _shouldShowColleagues() &&
       (_colleagues.isNotEmpty ||
-          state is Loading ||
+          state is LoadingColleagues ||
           state is WebSocketUnreachable);
 
   bool get canViewColleagues => _getUser().permissions.canViewColleagues;
@@ -103,15 +103,17 @@ class ColleagueCubit extends Cubit<ColleagueState> {
   }
 
   Future<void> loadColleagues() async {
-    final state = this.state;
+    // final state = this.state;
+    //
+    // if (state is! ColleaguesLoaded) {
+    //   emit(const ColleagueState.loading());
+    // }
+    //
+    // emit(
+    //   ColleagueState.loaded(_filteredColleagues),
+    // );
 
-    if (state is! Loaded) {
-      emit(const ColleagueState.loading());
-    }
-
-    emit(
-      ColleagueState.loaded(_filteredColleagues),
-    );
+    connectToWebSocket(); //wip
   }
 
   Future<void> connectToWebSocket({bool fullRefresh = false}) async {

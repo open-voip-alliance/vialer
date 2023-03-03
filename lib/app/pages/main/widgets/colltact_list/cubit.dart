@@ -69,13 +69,3 @@ class ContactsCubit extends Cubit<ContactState> {
     await _openAppSettings();
   }
 }
-
-//wip
-// extension on Iterable<Colltact> {
-//   List<Colltact> mergeColltacts(Iterable<Contact> contacts) =>
-//       toList()..addAll(contacts.map(Colltact.contact));
-// }
-//
-// extension on Iterable<Colltact> {
-//   Iterable<ColltactContact> get contacts => whereType<ColltactContact>();
-// }

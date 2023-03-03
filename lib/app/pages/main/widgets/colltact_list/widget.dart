@@ -120,7 +120,7 @@ class _ColltactPageState extends State<_ColltactList>
     super.didChangeAppLifecycleState(state);
 
     if (state == AppLifecycleState.resumed) {
-      context.read<ColleagueCubit>().loadColleagues();
+      context.read<ColleagueCubit>().loadColleagues(); //wip
       context.read<ContactsCubit>().reloadContacts();
     }
   }
@@ -155,7 +155,7 @@ class _ColltactPageState extends State<_ColltactList>
         builder: (context, contactState) {
           return BlocBuilder<ColleagueCubit, ColleagueState>(
             builder: (context, colleagueState) {
-              final contactsCubit = context.watch<ContactsCubit>(); //wip
+              final contactsCubit = context.watch<ContactsCubit>();
               final colleagueCubit = context.watch<ColleagueCubit>();
 
               return DefaultTabController(
@@ -253,7 +253,6 @@ class _ColltactPageState extends State<_ColltactList>
   }
 
   List<Widget> _mapAndFilterToWidgets(
-    ColltactKind kind, //wip wont be needed anymore
     Iterable<Colltact> colltacts,
     ContactSort contactSort,
   ) {
@@ -266,15 +265,7 @@ class _ColltactPageState extends State<_ColltactList>
 
     final searchTerm = _searchTerm?.toLowerCase();
 
-    final contactsOnly =
-        kind == ColltactKind.contact; //wip wont be needed anymore
-
     for (var colltact in colltacts) {
-      if ((!contactsOnly && colltact is ColltactContact) ||
-          (contactsOnly && colltact is ColltactColleague)) {
-        continue;
-      } //wip wont be needed anymore
-
       if (searchTerm != null && !colltact.matchesSearchTerm(searchTerm)) {
         continue;
       }
@@ -376,7 +367,7 @@ class _ColltactPageState extends State<_ColltactList>
 
         return null;
       case ColltactKind.colleague:
-        if (colleagueState is Loading) {
+        if (colleagueState is LoadingColleagues) {
           return NoResultsType.colleaguesLoading;
         } else if (colleagueState is WebSocketUnreachable) {
           return NoResultsType.noColleagueConnectivity;
@@ -408,15 +399,15 @@ class _ColltactPageState extends State<_ColltactList>
         colltacts.add(Colltact.contact(contact));
       }
     } else {
-      final colleagues =
-          colleagueState is Loaded ? colleagueState.colleagues : <Colleague>[];
+      final colleagues = colleagueState is ColleaguesLoaded
+          ? colleagueState.colleagues
+          : <Colleague>[];
       for (var colleague in colleagues) {
         colltacts.add(Colltact.colleague(colleague));
       }
     }
 
     final records = _mapAndFilterToWidgets(
-      colltactKind,
       colltacts,
       contactState is ContactsLoaded
           ? contactState.contactSort

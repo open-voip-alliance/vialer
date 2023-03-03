@@ -6,8 +6,8 @@ part 'state.freezed.dart';
 
 @freezed
 class ColleagueState with _$ColleagueState {
-  //wip Change to ColleaguesLoaded + LoadingColleagues to be consistent with ContactState?
-  const factory ColleagueState.loading() = Loading;
+  const factory ColleagueState.loading() = LoadingColleagues;
   const factory ColleagueState.unreachable() = WebSocketUnreachable;
-  const factory ColleagueState.loaded(List<Colleague> colleagues) = Loaded;
+  const factory ColleagueState.loaded(List<Colleague> colleagues) =
+      ColleaguesLoaded;
 }

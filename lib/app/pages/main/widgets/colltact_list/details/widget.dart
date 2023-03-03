@@ -39,7 +39,6 @@ class _ColltactDetailsState extends State<ColltactDetails> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<ColltactDetailsCubit>(
-      //wip is ColltactDetailsCubit needed here?
       create: (_) => ColltactDetailsCubit(context.read<CallerCubit>()),
       child: BlocBuilder<ColleagueCubit, ColleagueState>(
         builder: (context, colleagueState) {
@@ -59,7 +58,8 @@ class _ColltactDetailsState extends State<ColltactDetails> {
                 }
               }
 
-              if (colleagueState is Loaded && colltact is ColltactColleague) {
+              if (colleagueState is ColleaguesLoaded &&
+                  colltact is ColltactColleague) {
                 final colleague = colleagueState.colleagues.firstWhereOrNull(
                   (colleague) =>
                       colleague.id ==
@@ -131,7 +131,7 @@ class _ColltactDetailsState extends State<ColltactDetails> {
                                 ? context.read<ContactsCubit>().reloadContacts()
                                 : context
                                     .read<ColleagueCubit>()
-                                    .loadColleagues(), //wip is loadColleagues needed?
+                                    .loadColleagues(), //wip is it needed?
                             child: _DestinationsList(
                               colltact: colltact,
                               onPhoneNumberPressed: widget.onPhoneNumberPressed,

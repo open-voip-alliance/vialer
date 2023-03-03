@@ -64,7 +64,7 @@ class _ColltactPageDetailsState extends State<ColltactPageDetails>
   }
 
   void _onColleagueStateChanged(BuildContext context, ColleagueState state) {
-    if (state is Loaded) {
+    if (state is ColleaguesLoaded) {
       final List<Colltact> colltacts =
           state.colleagues.map(ColltactColleague.new).toList();
 
@@ -72,7 +72,6 @@ class _ColltactPageDetailsState extends State<ColltactPageDetails>
     }
   }
 
-  //wip will be? Think about method name
   void _onColltactStateChanged(BuildContext context, List<Colltact> colltacts) {
     final colltactId = widget.colltact.when(
       colleague: (colleague) => colleague.id,
