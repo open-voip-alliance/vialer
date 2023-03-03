@@ -1,16 +1,16 @@
 import 'package:dartx/dartx.dart';
 
+import '../onboarding/is_onboarded.dart';
 import '../use_case.dart';
-import 'is_authenticated.dart';
 import 'logout.dart';
 import 'unauthorized_api_response.dart';
 
 class LogoutOnUnauthorizedResponse extends UseCase {
-  final _logout = LogoutUseCase();
-  final _isAuthenticated = IsAuthenticated();
+  final _logout = Logout();
+  final _isOnboarded = IsOnboarded();
 
   Future<void> call(UnauthorizedApiResponseEvent event) async {
-    if (!_isAuthenticated()) return;
+    if (!_isOnboarded()) return;
 
     if (!isUrlThatShouldTriggerLogout(event.url)) return;
 

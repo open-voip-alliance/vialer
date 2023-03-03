@@ -10,7 +10,7 @@ import '../user/get_logged_in_user.dart';
 import '../user/settings/app_setting.dart';
 import 'user_was_logged_out.dart';
 
-class LogoutUseCase extends UseCase {
+class Logout extends UseCase {
   final _storageRepository = dependencyLocator<StorageRepository>();
   final _eventBus = dependencyLocator<EventBus>();
 
