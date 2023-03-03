@@ -7,6 +7,7 @@ import '../../resources/theme.dart';
 import '../../routes.dart';
 import '../../widgets/app_update_checker/widget.dart';
 import '../../widgets/nested_children.dart';
+import '../../widgets/rate_limit_warning/widget.dart';
 import '../../widgets/transparent_status_bar.dart';
 import 'call/widgets/call_button.dart';
 import 'colltacts/colleagues/widget.dart';
@@ -155,11 +156,13 @@ class MainPageState extends State<MainPage> {
           brightness: Brightness.dark,
           child: UserDataRefresher(
             child: ConnectivityAlert(
-              child: SafeArea(
-                child: Notice(
-                  child: _AnimatedIndexedStack(
-                    index: _currentIndex!,
-                    children: _pages!,
+              child: RateLimitWarning.create(
+                child: SafeArea(
+                  child: Notice(
+                    child: _AnimatedIndexedStack(
+                      index: _currentIndex!,
+                      children: _pages!,
+                    ),
                   ),
                 ),
               ),

@@ -116,6 +116,7 @@ class RateLimitReachedInterceptor extends chopper.ResponseInterceptor {
     if (_isRateLimited(statusCode)) {
       _eventBus.broadcast(RateLimitReachedEvent(
         url: response.base.request?.url.toString() ?? '',
+        hitLimitAt: DateTime.now(),
       ));
     }
 

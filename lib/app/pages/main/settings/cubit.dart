@@ -80,13 +80,8 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
 
     emit(state.withChanged(newSettings));
 
-    final result = await _changeSettings(newSettings);
-
-    // If the setting didn't change, it means we have to revert our previous
-    // state change.
-    if (!result.changed.contains(key)) {
-      await _emitUpdatedState();
-    }
+    await _changeSettings(newSettings);
+    await _emitUpdatedState();
   }
 
   Future<void> refreshAvailability() async {

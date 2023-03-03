@@ -12,6 +12,10 @@ abstract class SettingChangeListener<T extends Object> {
   /// Which key to listen to.
   SettingKey<T> get key;
 
+  /// Allows for listening of multiple keys, provided they share the same type
+  /// as [key].
+  List<SettingKey<T>> get otherKeys => [];
+
   Future<SettingChangeListenResult> changeRemoteValue(
     Future<bool> Function() action, {
     bool log = true,
@@ -32,6 +36,9 @@ abstract class SettingChangeListener<T extends Object> {
   /// After the settings are stored.
   FutureOr<SettingChangeListenResult> postStore(User user, T value) =>
       successResult;
+
+  bool shouldHandle(SettingKey key) =>
+      key == this.key || otherKeys.contains(key);
 }
 
 @immutable
