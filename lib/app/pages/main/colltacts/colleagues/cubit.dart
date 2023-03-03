@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:dartx/dartx.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -34,15 +33,11 @@ class ColleagueCubit extends Cubit<ColleagueState> {
 
   StreamSubscription? _subscription;
 
-  List<Colleague> get _colleagues => state.when(
-        loading: () => [],
-        unreachable: () => [],
-        loaded: (colleagues) => colleagues,
+  List<Colleague> get _colleagues => state.map(
+        loading: (_) => [],
+        unreachable: (_) => [],
+        loaded: (state) => state.colleagues,
       );
-
-  List<Colleague> get _filteredColleagues => showOnlineColleaguesOnly
-      ? _colleagues.filter((colleague) => colleague.isOnline).toList()
-      : _colleagues;
 
   bool get shouldShowColleagues =>
       _shouldShowColleagues() &&
@@ -56,70 +51,32 @@ class ColleagueCubit extends Cubit<ColleagueState> {
   /// changing the value.
   bool? _transientShowOnlineColleaguesOnly;
 
-  bool get showOnlineColleaguesOnly =>
+  bool get _showOnlineColleaguesOnly =>
       _transientShowOnlineColleaguesOnly ??
       _getUser().settings.get(AppSetting.showOnlineColleaguesOnly);
 
-  set showOnlineColleaguesOnly(bool value) {
+  set _showOnlineColleaguesOnly(bool value) {
     _transientShowOnlineColleaguesOnly = value;
-    loadColleagues();
+    emit(state.copyWith(showOnlineColleaguesOnly: value));
     _changeSetting(AppSetting.showOnlineColleaguesOnly, value);
   }
 
-  ColleagueCubit(this._caller) : super(const ColleagueState.loading()) {
+  ColleagueCubit(this._caller)
+      : super(const ColleagueState.loading(
+          showOnlineColleaguesOnly: false,
+        )) {
     _eventBus.on<UserWasLoggedOutEvent>((event) {
       disconnectFromWebSocket(purgeCache: true);
     });
-
-    //wip
-    // // Check the initial state as there may already be some colleagues loaded. //wip
-    // state.when(
-    //   loading: () => null,
-    //   unreachable: () => null,
-    //   loaded:
-    //       _handleColleaguesUpdate,
-    // );
-
-    stream.listen(
-      (event) => event.when(
-        loading: () => null,
-        unreachable: () => null,
-        loaded:
-            _handleColleaguesUpdate, //wip just emit here and remove the method
-      ),
-    );
-  }
-
-  //wip do we even need this function?
-  void _handleColleaguesUpdate(List<Colleague> colleagues) {
-    // final state = this.state;
-
-    // We want to replace all the colleagues
-    // final colltacts = _filteredColleagues.map(Colltact.colleague).toList()
-    //   ..addAll(state.colltacts.contacts);
-
-    // emit(state.copyWith(colltacts: colltacts)); //wip
-    emit(ColleagueState.loaded(_filteredColleagues));
-  }
-
-  Future<void> loadColleagues() async {
-    // final state = this.state;
-    //
-    // if (state is! ColleaguesLoaded) {
-    //   emit(const ColleagueState.loading());
-    // }
-    //
-    // emit(
-    //   ColleagueState.loaded(_filteredColleagues),
-    // );
-
-    connectToWebSocket(); //wip
   }
 
   Future<void> connectToWebSocket({bool fullRefresh = false}) async {
     if (!_shouldShowColleagues() || _subscription != null) return;
 
-    emit(const ColleagueState.loading());
+    emit(
+      ColleagueState.loading(
+          showOnlineColleaguesOnly: _showOnlineColleaguesOnly),
+    );
 
     final stream = await _receiveColleagueAvailability(
       forceFullAvailabilityRefresh: fullRefresh,
@@ -129,13 +86,22 @@ class ColleagueCubit extends Cubit<ColleagueState> {
         stream.debounceTime(const Duration(milliseconds: 250)).listen(
       (colleagues) {
         // Emitting loading initially to ensure listeners receive the new state.
-        emit(const ColleagueState.loading());
-        emit(ColleagueState.loaded(colleagues));
+        emit(
+          ColleagueState.loading(
+            showOnlineColleaguesOnly: _showOnlineColleaguesOnly,
+          ),
+        );
+        emit(ColleagueState.loaded(
+          colleagues,
+          showOnlineColleaguesOnly: _showOnlineColleaguesOnly,
+        ));
       },
       onDone: () {
         _subscription?.cancel();
         _subscription = null;
-        emit(const ColleagueState.unreachable());
+        emit(ColleagueState.unreachable(
+          showOnlineColleaguesOnly: _showOnlineColleaguesOnly,
+        ));
       },
     );
   }
@@ -160,4 +126,8 @@ class ColleagueCubit extends Cubit<ColleagueState> {
 
   Future<void> call(String destination) =>
       _caller.call(destination, origin: CallOrigin.colleagues);
+
+  void setShowOnlineColleaguesOnly(bool enabled) {
+    _showOnlineColleaguesOnly = enabled;
+  }
 }

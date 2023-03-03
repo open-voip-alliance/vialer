@@ -46,19 +46,8 @@ class ColltactList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider<ContactsCubit>(
-          create: (_) => ContactsCubit(
-            context.watch<CallerCubit>(),
-          ),
-        ),
-        BlocProvider<ColleagueCubit>(
-          create: (_) => ColleagueCubit(
-            context.watch<CallerCubit>(),
-          ),
-        ),
-      ],
+    return BlocProvider<ContactsCubit>(
+      create: (_) => ContactsCubit(context.watch<CallerCubit>()),
       child: NestedNavigator(
         navigatorKey: navigatorKey,
         routes: {
@@ -120,7 +109,7 @@ class _ColltactPageState extends State<_ColltactList>
     super.didChangeAppLifecycleState(state);
 
     if (state == AppLifecycleState.resumed) {
-      context.read<ColleagueCubit>().loadColleagues(); //wip
+      //context.read<ColleagueCubit>().loadColleagues(); //wip
       context.read<ContactsCubit>().reloadContacts();
     }
   }
@@ -223,12 +212,10 @@ class _ColltactPageState extends State<_ColltactList>
                                     ),
                                     BottomToggle(
                                       name: context.msg.main.colleagues.toggle,
-                                      initialValue: colleagueCubit
+                                      initialValue: colleagueState
                                           .showOnlineColleaguesOnly,
-                                      onChanged: (enabled) {
-                                        colleagueCubit
-                                            .showOnlineColleaguesOnly = enabled;
-                                      },
+                                      onChanged: colleagueCubit
+                                          .setShowOnlineColleaguesOnly,
                                     ),
                                   ],
                                 ),
@@ -371,7 +358,7 @@ class _ColltactPageState extends State<_ColltactList>
           return NoResultsType.colleaguesLoading;
         } else if (colleagueState is WebSocketUnreachable) {
           return NoResultsType.noColleagueConnectivity;
-        } else if (colleagueCubit.showOnlineColleaguesOnly &&
+        } else if (colleagueState.showOnlineColleaguesOnly &&
             !hasSearchQuery &&
             records.isEmpty) {
           return NoResultsType.noOnlineColleagues;
@@ -400,7 +387,7 @@ class _ColltactPageState extends State<_ColltactList>
       }
     } else {
       final colleagues = colleagueState is ColleaguesLoaded
-          ? colleagueState.colleagues
+          ? colleagueState.filteredColleagues
           : <Colleague>[];
       for (var colleague in colleagues) {
         colltacts.add(Colltact.colleague(colleague));
@@ -439,7 +426,7 @@ class _ColltactPageState extends State<_ColltactList>
           bottomLettersPadding: widget.bottomLettersPadding,
           children: records,
           onRefresh: () async {
-            await colleagueCubit.loadColleagues();
+            //await colleagueCubit.loadColleagues();
             await contactsCubit.reloadContacts();
           },
         ),

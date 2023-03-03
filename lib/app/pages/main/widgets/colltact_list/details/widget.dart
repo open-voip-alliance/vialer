@@ -127,11 +127,9 @@ class _ColltactDetailsState extends State<ColltactDetails> {
                         const SizedBox(height: 24),
                         Expanded(
                           child: RefreshIndicator(
-                            onRefresh: () => colltact is ColltactContact
+                            onRefresh: () async => colltact is ColltactContact
                                 ? context.read<ContactsCubit>().reloadContacts()
-                                : context
-                                    .read<ColleagueCubit>()
-                                    .loadColleagues(), //wip is it needed?
+                                : null, //wip is it needed?
                             child: _DestinationsList(
                               colltact: colltact,
                               onPhoneNumberPressed: widget.onPhoneNumberPressed,
