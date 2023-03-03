@@ -8,6 +8,8 @@ import '../metrics/identify_for_tracking.dart';
 import '../use_case.dart';
 import '../user/settings/app_setting.dart';
 import '../user/settings/setting_changed.dart';
+import '../voipgrid/rate_limit_reached_event.dart';
+import '../voipgrid/track_rate_limited_api_calls.dart';
 import 'event_bus.dart';
 
 /// Register any domain-level event listeners, this is separate to the app-level
@@ -18,9 +20,13 @@ class RegisterDomainEventListenersUseCase extends UseCase with Loggable {
   final _purgeLocalCallRecords = PurgeLocalCallRecordsUseCase();
   final _identifyForTracking = IdentifyForTrackingUseCase();
   final _logoutOnUnauthorizedResponse = LogoutOnUnauthorizedResponse();
+  final _trackRateLimitedApiCalls = TrackRateLimitedApiCalls();
 
   void call() {
     _eventBus.on<UnauthorizedApiResponseEvent>(_logoutOnUnauthorizedResponse);
+    _eventBus.on<RateLimitReachedEvent>(
+      (event) => _trackRateLimitedApiCalls(event.url),
+    );
 
     _eventBus.onSettingChange<bool>(
       AppSetting.showClientCalls,
