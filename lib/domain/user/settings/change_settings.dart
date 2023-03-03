@@ -105,7 +105,7 @@ class ChangeSettingsUseCase extends UseCase with Loggable {
       // copy them into the settings result.
       if (needSync.isNotEmpty) {
         final freshUser = await _refreshUser(
-          synchronized: true,
+          synchronized: false,
           tasksToRun: [
             UserRefreshTask.remoteSettings,
             UserRefreshTask.availability,

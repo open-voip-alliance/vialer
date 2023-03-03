@@ -189,7 +189,10 @@ class RefreshUser extends UseCase with Loggable {
     if (destination is Unknown) return user;
 
     return user.copyWith(
-      settings: user.settings.copyWith(CallSetting.destination, destination),
+      settings: user.settings.copyWith(
+        CallSetting.destination,
+        destination,
+      ),
     );
   }
 
@@ -197,12 +200,12 @@ class RefreshUser extends UseCase with Loggable {
     final useMobileNumberAsFallback =
         await _authRepository.isUserUsingMobileNumberAsFallback(user);
 
-    final settings = user.settings.copyWith(
-      CallSetting.useMobileNumberAsFallback,
-      useMobileNumberAsFallback,
+    return user.copyWith(
+      settings: user.settings.copyWith(
+        CallSetting.useMobileNumberAsFallback,
+        useMobileNumberAsFallback,
+      ),
     );
-
-    return user.copyWith(settings: settings);
   }
 
   /// Retrieving permissions and handling its possible side effects.
