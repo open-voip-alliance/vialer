@@ -188,9 +188,10 @@ class RefreshUser extends UseCase with Loggable {
 
     if (destination is Unknown) return user;
 
-    return user.copyWith(
-      settings: user.settings.copyWith(CallSetting.destination, destination),
-    );
+    final settings =
+        user.settings.copyWithAll({CallSetting.destination: destination});
+
+    return user.copyWith(settings: settings);
   }
 
   Future<User> _getRemoteSettings(User user) async {
