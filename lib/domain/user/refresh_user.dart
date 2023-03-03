@@ -73,7 +73,7 @@ class RefreshUser extends UseCase with Loggable {
       );
 
       // If we're retrieving the user for the first time (logging in),
-      // we store  the user already, so that the AuthorizationInterceptor
+      // we store the user already, so that the AuthorizationInterceptor
       // can use it.
       if (storedUser == null) {
         _storageRepository.user = user;

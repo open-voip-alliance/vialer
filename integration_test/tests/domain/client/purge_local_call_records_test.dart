@@ -14,7 +14,7 @@ void main() => runTest(
         const sourceNumber = '123';
         const destinationNumber = '543';
 
-        final logout = LogoutUseCase();
+        final logout = Logout();
 
         final localClientCalls =
             dependencyLocator<LocalClientCallsRepository>();

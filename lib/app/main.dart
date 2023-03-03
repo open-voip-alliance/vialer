@@ -7,7 +7,6 @@ import 'package:timezone/data/latest.dart';
 
 import '../dependency_locator.dart';
 import '../domain/authentication/automatically_login_legacy_user.dart';
-import '../domain/authentication/is_authenticated.dart';
 import '../domain/authentication/user_was_logged_out.dart';
 import '../domain/env.dart';
 import '../domain/error_tracking/error_tracking_repository.dart';
@@ -15,6 +14,7 @@ import '../domain/event/event_bus.dart';
 import '../domain/event/register_event_listeners.dart';
 import '../domain/metrics/initialize_metric_collection.dart';
 import '../domain/metrics/periodically_identify_for_tracking.dart';
+import '../domain/onboarding/should_onboard.dart';
 import '../domain/remote_logging/enable_console_logging.dart';
 import '../domain/remote_logging/enable_remote_logging_if_needed.dart';
 import '../domain/user/get_stored_user.dart';
@@ -78,12 +78,12 @@ class _AppState extends State<App> {
 
   final EventBusObserver _eventBus = dependencyLocator<EventBusObserver>();
 
-  late final bool _isAuthenticatedAtAppStart;
+  late final bool _shouldOnboard;
 
   @override
   void initState() {
     super.initState();
-    _isAuthenticatedAtAppStart = IsAuthenticated()();
+    _shouldOnboard = ShouldOnboard()();
     _listenForEvents();
   }
 
@@ -117,8 +117,7 @@ class _AppState extends State<App> {
               navigatorKey: _navigatorKey,
               title: context.brand.appName,
               theme: context.brand.theme.themeData,
-              initialRoute:
-                  _isAuthenticatedAtAppStart ? Routes.main : Routes.onboarding,
+              initialRoute: _shouldOnboard ? Routes.onboarding : Routes.main,
               routes: Routes.mapped,
               localizationsDelegates: [
                 VialerLocalizations.delegate,
@@ -151,6 +150,19 @@ class _AppState extends State<App> {
         final context = _navigatorKey.currentContext;
 
         if (context == null) return;
+
+        late Route currentRoute;
+
+        Navigator.popUntil(context, (route) {
+          currentRoute = route;
+          return route.settings.name == Routes.onboarding;
+        });
+
+        // We check if we're already at the onboarding page, otherwise
+        // a GlobalKey is used twice. It's possible to be logged out
+        // while we're still onboarding. This will happen if the user starts
+        // the app but didn't finish onboarding last time.
+        if (currentRoute.settings.name == Routes.onboarding) return;
 
         Navigator.pushNamedAndRemoveUntil(
           context,

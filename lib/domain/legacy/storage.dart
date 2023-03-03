@@ -97,7 +97,6 @@ class StorageRepository {
   set logs(String? value) => _preferences.setOrRemoveString(_logsKey, value);
 
   Future<void> appendLogs(String value) async {
-    await reload();
     _preferences.setString(_logsKey, '$logs\n$value');
   }
 
@@ -269,6 +268,14 @@ class StorageRepository {
       );
 
   Future<void> clear() => _preferences.clear();
+
+  static const _hasCompletedOnboarding = 'has_completed_onboarding';
+
+  bool get hasCompletedOnboarding =>
+      _preferences.getBool(_hasCompletedOnboarding) ?? false;
+
+  set hasCompletedOnboarding(bool value) =>
+      _preferences.setBool(_hasCompletedOnboarding, value);
 
   Future<void> reload() => _preferences.reload();
 
