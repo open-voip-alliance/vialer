@@ -52,7 +52,7 @@
         <activity
             android:name=".IncomingCallActivity"
             android:exported="true"
-            android:label="Incoming"
+            android:label="@string/main_call_incoming_subtitle"
             android:noHistory="true"
             android:showOnLockScreen="true"
             android:showWhenLocked="true"
