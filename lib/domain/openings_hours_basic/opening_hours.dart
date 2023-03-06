@@ -9,7 +9,7 @@ part 'opening_hours.freezed.dart';
 @freezed
 class OpeningHours with _$OpeningHours {
   const factory OpeningHours({
-    String? id,
+    required String id,
     required String name,
     @JsonKey(name: 'work_hours') @Default([]) List<WorkingHours> workingHours,
     @Default([]) List<Holiday> holidays,
