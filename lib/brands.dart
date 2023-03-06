@@ -38,7 +38,7 @@ const brands = '''
     "identifier": "vialerStaging",
     "appId": "com.voipgrid.vialer",
     "appName": "Vialer Staging",
-    "url": "https://partner.voipgrid.nl",
+    "url": "https://staging.voipgrid.nl",
     "middlewareUrl": "https://vialerpush-staging.voipgrid.nl",
     "voipgridUrl": "https://staging.voipgrid.nl",
     "encryptedSipUrl": "staging.encryptedsip.com",
