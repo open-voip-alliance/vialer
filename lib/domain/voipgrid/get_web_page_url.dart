@@ -1,3 +1,5 @@
+import 'package:dartx/dartx.dart';
+
 import '../../dependency_locator.dart';
 import '../authentication/authentication_repository.dart';
 import '../use_case.dart';
@@ -20,7 +22,10 @@ class GetWebPageUrlUseCase extends UseCase {
     WebPage.stats: '/stats/dashboard/',
     WebPage.passwordReset: '/user/password_reset/',
     WebPage.addDestination: '/fixeddestination/add/',
-    WebPage.calls: '/client/{client}/call/',
+    WebPage.calls: '/client/{clientId}/call/',
+    WebPage.openingHoursBasicList: '/client/{clientUuid}/',
+    WebPage.openingHoursBasicEdit:
+        '/client/{clientUuid}/openinghoursbasic/{openingHoursUuid}/change/',
   };
 
   final _unauthenticatedPages = [WebPage.passwordReset];
@@ -63,14 +68,16 @@ class GetWebPageUrlUseCase extends UseCase {
     // All the values from the url within curly brackets will be replaced
     // with the corresponding user information.
     final placeholders = {
-      'client': user.client.id.toString(),
+      'clientId': user.client.id.toString(),
+      'clientUuid': user.client.uuid.toString(),
+      'openingHoursUuid': user.client.openingHours!.first.id,
     };
 
     for (final placeholder in placeholders.entries) {
       final target = placeholder.key;
       final replacement = placeholder.value;
 
-      if (replacement.isEmpty) continue;
+      if (replacement.isNullOrEmpty) continue;
 
       url = url?.replaceAll('{$target}', replacement);
     }

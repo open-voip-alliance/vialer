@@ -4,4 +4,6 @@ enum WebPage {
   passwordReset,
   addDestination,
   calls,
+  openingHoursBasicEdit,
+  openingHoursBasicList,
 }
