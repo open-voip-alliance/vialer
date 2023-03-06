@@ -169,12 +169,13 @@ class _SettingsPageState extends State<SettingsPage> {
                                 TemporaryRedirectSettingTile(),
                               ],
                             ),
-                          const PortalLinksCategory(
+                          PortalLinksCategory(
                             children: [
-                              CallsLinkTile(),
-                              DialPlanLinkTile(),
-                              OpeningHoursLinkTile(),
-                              StatsLinkTile(),
+                              const CallsLinkTile(),
+                              const DialPlanLinkTile(),
+                              if (user.client.openingHours.isNotEmpty)
+                                OpeningHoursLinkTile(user),
+                              const StatsLinkTile(),
                             ],
                           ),
                           DebugCategory(

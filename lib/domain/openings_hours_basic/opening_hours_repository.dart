@@ -8,7 +8,7 @@ class OpeningHoursRepository with Loggable {
 
   OpeningHoursRepository(this._service);
 
-  Future<List<OpeningHours>?> getOpeningHours({
+  Future<List<OpeningHours>> getOpeningHours({
     required User user,
   }) async {
     final response = await _service.getOpeningHours(
@@ -17,11 +17,11 @@ class OpeningHoursRepository with Loggable {
 
     if (!response.isSuccessful) {
       logFailedResponse(response, name: 'Get opening hours basic');
-      return null;
+      return [];
     }
 
     if (response.body['count'] == 0) {
-      return null;
+      return [];
     }
 
     return _openingHoursFromJson(response.body['items'] as List<dynamic>);

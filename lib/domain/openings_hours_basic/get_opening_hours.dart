@@ -8,7 +8,7 @@ class GetOpeningHours extends UseCase {
   late final _getUser = GetLoggedInUserUseCase();
   late final _openingHours = dependencyLocator<OpeningHoursRepository>();
 
-  Future<List<OpeningHours>?> call() async {
+  Future<List<OpeningHours>> call() async {
     final user = _getUser();
 
     return await _openingHours.getOpeningHours(
