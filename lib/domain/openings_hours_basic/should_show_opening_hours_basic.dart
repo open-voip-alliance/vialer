@@ -6,10 +6,5 @@ import '../use_case.dart';
 class ShouldShowOpeningHoursBasic extends UseCase {
   late final _hasFeature = HasFeature();
 
-  // bool call() => _hasFeature(Feature.openingHoursBasic);
-
-  bool call() {
-    final b = _hasFeature(Feature.openingHoursBasic);
-    return b;
-  }
+  bool call() => _hasFeature(Feature.openingHoursBasic);
 }
