@@ -9,12 +9,15 @@ import '../../../../domain/feedback/send_saved_logs_to_remote.dart';
 import '../../../../domain/legacy/storage.dart';
 import '../../../../domain/onboarding/request_permission.dart';
 import '../../../../domain/openings_hours_basic/should_show_opening_hours_basic.dart';
+import '../../../../domain/user/connectivity/connectivity_type.dart';
+import '../../../../domain/user/connectivity/get_current_connectivity_status.dart';
 import '../../../../domain/user/get_build_info.dart';
 import '../../../../domain/user/get_logged_in_user.dart';
 import '../../../../domain/user/get_permission_status.dart';
 import '../../../../domain/user/permissions/permission.dart';
 import '../../../../domain/user/permissions/permission_status.dart';
 import '../../../../domain/user/refresh_user.dart';
+import '../../../../domain/user/settings/call_setting.dart';
 import '../../../../domain/user/settings/change_settings.dart';
 import '../../../../domain/user/settings/settings.dart';
 import '../../../../domain/voipgrid/user_voip_config.dart';
@@ -37,6 +40,7 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
   final _shouldShowOpeningHoursBasic = ShouldShowOpeningHoursBasic();
 
   final _refreshUser = RefreshUser();
+  final _getConnectivity = GetCurrentConnectivityTypeUseCase();
 
   final _storageRepository = dependencyLocator<StorageRepository>();
 
@@ -72,6 +76,20 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
       ),
     );
   }
+
+  static const _remoteSettings = [
+    CallSetting.destination,
+    CallSetting.mobileNumber,
+    CallSetting.outgoingNumber,
+    CallSetting.useMobileNumberAsFallback,
+  ];
+
+  /// Returns `true` if [key] refers to a remote setting and we have an
+  /// internet connection, or if [key] does not refer to a remote setting.
+  Future<bool> canChangeRemoteSetting<T extends Object>(
+    SettingKey<T> key,
+  ) async => !_remoteSettings.contains(key) ||
+      await _getConnectivity().then((c) => c.isConnected);
 
   Future<void> changeSetting<T extends Object>(
     SettingKey<T> key,

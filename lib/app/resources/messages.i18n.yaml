@@ -23,7 +23,7 @@ buildError:
 
 connectivity:
   noConnection:
-    title: "No internet connection"
+    title: &noConnectionTitle "No internet connection"
     message: >-
       You don't seem to be connected to the internet. Please check your WiFi or mobile data connection and try again.
 
@@ -395,7 +395,10 @@ main:
       buttons:
         send: "Send feedback"
     privacyPolicy: "Privacy Policy"
-    signUp(String appName): "New to $appName? Sign up here."
+    noConnectionDialog:
+      title: *noConnectionTitle
+      message: >-
+        This setting cannot be changed while you are not connected to the internet. Please check your WiFi or mobile data connection and try again.
 
   notice:
     microphone:
@@ -498,6 +501,7 @@ onboarding:
     button:
       loggingIn: "Logging in"
       forgotPassword: "Forgot password?"
+      signUp(String appName): "New to $appName? Sign up here."
     error:
       wrongCombination:
         title: "Incorrect credentials"

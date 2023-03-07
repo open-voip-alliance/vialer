@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../../../domain/user/settings/settings.dart';
 import '../../../../../widgets/stylized_dropdown.dart';
 import '../../../../onboarding/widgets/stylized_text_field.dart';
+import '../../cubit.dart';
 import 'value.dart';
 
 class EditableSettingField extends StatefulWidget {
@@ -80,10 +82,17 @@ class _StringEditSettingValueState extends State<StringEditSettingValue> {
     _toggleEditing();
   }
 
-  void _toggleEditing() {
-    setState(() {
-      _editing = !_editing;
-    });
+  Future<void> _toggleEditing() async {
+    void toggle() => setState(() => _editing = !_editing);
+
+    // We always cancel editing, even if we're not connected to the
+    // internet.
+    if (_editing) {
+      toggle();
+      return;
+    }
+
+    await runIfSettingCanBeChanged(context, widget.setting, toggle);
   }
 
   @override
