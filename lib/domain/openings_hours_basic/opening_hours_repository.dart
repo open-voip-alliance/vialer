@@ -17,11 +17,11 @@ class OpeningHoursRepository with Loggable {
 
     if (!response.isSuccessful) {
       logFailedResponse(response, name: 'Get opening hours basic');
-      return [];
+      return const [];
     }
 
     if (response.body['count'] == 0) {
-      return [];
+      return const [];
     }
 
     return _openingHoursFromJson(response.body['items'] as List<dynamic>);
