@@ -88,7 +88,8 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
   /// internet connection, or if [key] does not refer to a remote setting.
   Future<bool> canChangeRemoteSetting<T extends Object>(
     SettingKey<T> key,
-  ) async => !_remoteSettings.contains(key) ||
+  ) async =>
+      !_remoteSettings.contains(key) ||
       await _getConnectivity().then((c) => c.isConnected);
 
   Future<void> changeSetting<T extends Object>(
