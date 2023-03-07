@@ -155,14 +155,14 @@ class MainPageState extends State<MainPage> {
           brightness: Brightness.dark,
           child: UserDataRefresher(
             child: ConnectivityAlert(
-                child: SafeArea(
-                  child: Notice(
-                    child: _AnimatedIndexedStack(
-                      index: _currentIndex!,
-                      children: _pages!,
-                    ),
+              child: SafeArea(
+                child: Notice(
+                  child: _AnimatedIndexedStack(
+                    index: _currentIndex!,
+                    children: _pages!,
                   ),
                 ),
+              ),
             ),
           ),
         ),
