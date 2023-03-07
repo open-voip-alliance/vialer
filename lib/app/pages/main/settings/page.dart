@@ -28,6 +28,7 @@ import 'widgets/tile/dnd.dart';
 import 'widgets/tile/ignore_battery_optimizations.dart';
 import 'widgets/tile/link/calls.dart';
 import 'widgets/tile/link/dial_plan.dart';
+import 'widgets/tile/link/opening_hours.dart';
 import 'widgets/tile/link/stats.dart';
 import 'widgets/tile/link/troubleshooting.dart';
 import 'widgets/tile/mobile_number.dart';
@@ -168,11 +169,14 @@ class _SettingsPageState extends State<SettingsPage> {
                                 TemporaryRedirectSettingTile(),
                               ],
                             ),
-                          const PortalLinksCategory(
+                          PortalLinksCategory(
                             children: [
-                              CallsLinkTile(),
-                              DialPlanLinkTile(),
-                              StatsLinkTile(),
+                              const CallsLinkTile(),
+                              const DialPlanLinkTile(),
+                              if (cubit.shouldShowOpeningHoursBasic &&
+                                  user.client.openingHours.isNotEmpty)
+                                OpeningHoursLinkTile(user),
+                              const StatsLinkTile(),
                             ],
                           ),
                           DebugCategory(

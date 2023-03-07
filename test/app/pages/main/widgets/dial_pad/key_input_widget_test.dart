@@ -29,6 +29,8 @@ void main() {
           unencryptedSipUrl: Uri.parse('sipproxy.voipgrid.nl'),
           businessAvailabilityUrl: Uri.parse(
               'https://api.eu-prod.holodeck.wearespindle.com/business-availability/clients/'),
+          openingHoursBasicUrl: Uri.parse(
+              'https://api.eu-prod.holodeck.wearespindle.com/openinghours/client/'),
           userAvailabilityWsUrl: Uri.parse('ws'),
           privacyPolicyUrl: Uri.parse('dummypolicy.com'),
           signUpUrl: null,

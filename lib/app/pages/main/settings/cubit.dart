@@ -8,6 +8,7 @@ import '../../../../domain/calling/voip/perform_echo_cancellation_calibration.da
 import '../../../../domain/feedback/send_saved_logs_to_remote.dart';
 import '../../../../domain/legacy/storage.dart';
 import '../../../../domain/onboarding/request_permission.dart';
+import '../../../../domain/openings_hours_basic/should_show_opening_hours_basic.dart';
 import '../../../../domain/user/get_build_info.dart';
 import '../../../../domain/user/get_logged_in_user.dart';
 import '../../../../domain/user/get_permission_status.dart';
@@ -33,6 +34,8 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
   final _performEchoCancellationCalibration =
       PerformEchoCancellationCalibrationUseCase();
   final _getUser = GetLoggedInUserUseCase();
+  final _shouldShowOpeningHoursBasic = ShouldShowOpeningHoursBasic();
+
   final _refreshUser = RefreshUser();
 
   final _storageRepository = dependencyLocator<StorageRepository>();
@@ -104,6 +107,8 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
   Future<void> sendSavedLogsToRemote() => _sendSavedLogsToRemote();
 
   Future<void> refresh() => _emitUpdatedState();
+
+  bool get shouldShowOpeningHoursBasic => _shouldShowOpeningHoursBasic();
 
   Future<void> logout() async {
     logger.info('Logging out');
