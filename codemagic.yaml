@@ -86,6 +86,7 @@ custom: # Custom properties to make workflows cleaner
         sed -i -e "s|SEGMENT_ANDROID_KEY=|SEGMENT_ANDROID_KEY=${SEGMENT_ANDROID_WRITE_KEY}|g" .env
         sed -i -e "s|SEGMENT_IOS_KEY=|SEGMENT_IOS_KEY=${SEGMENT_IOS_WRITE_KEY}|g" .env
         sed -i -e "s|FEATURE_COLLEAGUE_LIST=|FEATURE_COLLEAGUE_LIST=${FEATURE_COLLEAGUE_LIST}|g" .env
+        sed -i -e "s|FEATURE_OPENING_HOURS_BASIC=|FEATURE_OPENING_HOURS_BASIC=${FEATURE_OPENING_HOURS_BASIC}|g" .env
     - &prepare_release_notes_from_files
       name: Preparing the release notes from the release notes on the file system
       script: dart utils/ci/codemagic/prepare_release_notes.dart

@@ -173,7 +173,8 @@ class _SettingsPageState extends State<SettingsPage> {
                             children: [
                               const CallsLinkTile(),
                               const DialPlanLinkTile(),
-                              if (user.client.openingHours.isNotEmpty)
+                              if (cubit.shouldShowOpeningHoursBasic() &&
+                                  user.client.openingHours.isNotEmpty)
                                 OpeningHoursLinkTile(user),
                               const StatsLinkTile(),
                             ],
