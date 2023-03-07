@@ -13,10 +13,10 @@ class RefreshVoipPreferences extends SettingChangeListener<bool> with Loggable {
   final _voipRepository = dependencyLocator<VoipRepository>();
 
   @override
-  SettingKey<bool> get key => CallSetting.usePhoneRingtone;
+  final SettingKey<bool> key = CallSetting.usePhoneRingtone;
 
   @override
-  final otherKeys = [AppSetting.showCallsInNativeRecents];
+  final otherKeys = const [AppSetting.showCallsInNativeRecents];
 
   @override
   FutureOr<SettingChangeListenResult> postStore(

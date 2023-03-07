@@ -14,7 +14,7 @@ abstract class SettingChangeListener<T extends Object> {
 
   /// Allows for listening of multiple keys, provided they share the same type
   /// as [key].
-  List<SettingKey<T>> get otherKeys => [];
+  final List<SettingKey<T>> otherKeys => const [];
 
   Future<SettingChangeListenResult> changeRemoteValue(
     Future<bool> Function() action, {
