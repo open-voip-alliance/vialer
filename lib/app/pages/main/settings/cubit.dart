@@ -108,7 +108,7 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
 
   Future<void> refresh() => _emitUpdatedState();
 
-  bool shouldShowOpeningHoursBasic() => _shouldShowOpeningHoursBasic();
+  bool get shouldShowOpeningHoursBasic => _shouldShowOpeningHoursBasic();
 
   Future<void> logout() async {
     logger.info('Logging out');
