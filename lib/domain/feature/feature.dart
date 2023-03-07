@@ -20,4 +20,5 @@
 /// an enum always needs at least one constant.
 enum Feature {
   colleagueList,
+  openingHoursBasic,
 }
