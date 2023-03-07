@@ -171,8 +171,9 @@ class ChangeSettingsUseCase extends UseCase with Loggable {
 
       for (final listener in _listeners) {
         // TODO: This will result in a single listener being called multiple
-        // times if this UseCase is called with multiple values from the same
-        // listener. Not an issue currently but an improvement for the future.
+        // times if this UseCase is called with multiple keys that exist as
+        // [otherKeys] in a single listener. Not an issue currently but an
+        // improvement for the future.
         if (!listener.shouldHandle(key)) continue;
 
         final futureOrResult = before
