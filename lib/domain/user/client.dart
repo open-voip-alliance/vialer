@@ -33,7 +33,7 @@ class Client extends Equatable {
 
   final TemporaryRedirect? currentTemporaryRedirect;
 
-  final List<OpeningHours>? openingHours;
+  final List<OpeningHours> openingHours;
 
   const Client({
     required this.id,
@@ -44,7 +44,7 @@ class Client extends Equatable {
     this.outgoingNumbers = const [],
     this.voicemailAccounts = const [],
     this.currentTemporaryRedirect,
-    this.openingHours,
+    this.openingHours = const [],
   });
 
   @override

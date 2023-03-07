@@ -23,7 +23,7 @@ class GetWebPageUrlUseCase extends UseCase {
     WebPage.passwordReset: '/user/password_reset/',
     WebPage.addDestination: '/fixeddestination/add/',
     WebPage.calls: '/client/{clientId}/call/',
-    WebPage.openingHoursBasicList: '/client/{clientUuid}/',
+    WebPage.openingHoursBasicList: '/client/{clientUuid}/openinghoursbasic/',
     WebPage.openingHoursBasicEdit:
         '/client/{clientUuid}/openinghoursbasic/{openingHoursUuid}/change/',
   };
@@ -70,7 +70,7 @@ class GetWebPageUrlUseCase extends UseCase {
     final placeholders = {
       'clientId': user.client.id.toString(),
       'clientUuid': user.client.uuid.toString(),
-      'openingHoursUuid': user.client.openingHours!.first.id,
+      'openingHoursUuid': user.client.openingHours.first.id,
     };
 
     for (final placeholder in placeholders.entries) {
