@@ -16,6 +16,7 @@ import '../metrics/metrics.dart';
 import '../onboarding/exceptions.dart';
 import '../onboarding/login_credentials.dart';
 import '../openings_hours_basic/get_opening_hours.dart';
+import '../openings_hours_basic/should_show_opening_hours_basic.dart';
 import '../use_case.dart';
 import '../voicemail/voicemail_account_repository.dart';
 import '../voipgrid/user_permissions.dart';
@@ -43,6 +44,7 @@ class RefreshUser extends UseCase with Loggable {
   final _metricsRepository = dependencyLocator<MetricsRepository>();
 
   final _purgeLocalCallRecords = PurgeLocalCallRecordsUseCase();
+  final _shouldShowOpeningHoursBasic = ShouldShowOpeningHoursBasic();
 
   Future<User?> call({
     LoginCredentials? credentials,
@@ -88,7 +90,8 @@ class RefreshUser extends UseCase with Loggable {
       user = await _getUserVoipConfig(user);
       user = await _getClientVoipConfig(user);
       user = await _getCurrentTemporaryRedirect(user);
-      user = await _getOpeningHours(user);
+
+      if (_shouldShowOpeningHoursBasic()) user = await _getOpeningHours(user);
 
       // User should have a value for all settings.
       assert(
