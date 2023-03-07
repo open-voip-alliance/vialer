@@ -292,6 +292,7 @@ class _SystemUserResponse {
           name: clientName,
           url: clientUrl,
           voip: ClientVoipConfig.fallback(),
+          openingHours: const [],
         ),
         settings: Settings({
           CallSetting.mobileNumber: mobileNumber ?? '',
