@@ -88,6 +88,7 @@ class _NoticeState extends State<_Notice>
     if (state is TemporaryRedirectNotice) {
       return TemporaryRedirectExplanation(
         currentDestination: state.temporaryRedirect.destination,
+        endsAt: state.temporaryRedirect.endsAt,
       );
     }
 

@@ -447,7 +447,7 @@ main:
     title: "Tijdelijke omleiding"
     explanation:
       start: "Alle inkomende oproepen naar alle nummers gaan rechtstreeks naar voicemail"
-      end: "tot het einde van de dag (23:59)."
+      end(String date): "tot $date."
       selectVoicemail: "[kies voicemail hieronder]"
     dropdown:
       title: "Kies voicemail"
