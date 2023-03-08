@@ -82,6 +82,9 @@ class _TemporaryRedirectPickerState extends State<TemporaryRedirectPicker> {
         children: [
           TemporaryRedirectExplanation(
             currentDestination: _selectedDestination,
+            // TODO: This should be updated when the other ticket work is done
+            // for this epic.
+            endsAt: DateTime.now(),
           ),
           const SizedBox(height: 16),
           Text(

@@ -444,7 +444,7 @@ main:
     title: "Temporary redirect"
     explanation:
       start: "All incoming calls to all numbers go straight to voicemail"
-      end: "until the end of the day (23:59)."
+      end(String date): "until $date."
       selectVoicemail: "[select voicemail below]"
     dropdown:
       title: "Choose voicemail"
