@@ -45,5 +45,6 @@ class TemporaryRedirectExplanation extends StatelessWidget {
 }
 
 extension on DateTime {
-  String toTemporaryRedirectFormat() => DateFormat('E d-M-y H:m').format(this);
+  String toTemporaryRedirectFormat() =>
+      DateFormat('E d-M-y H:m').format(toLocal());
 }

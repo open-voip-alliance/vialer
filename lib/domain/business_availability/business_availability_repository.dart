@@ -36,7 +36,7 @@ class BusinessAvailabilityRepository with Loggable {
 
     return TemporaryRedirect(
       id: temporaryRedirectResponse.id,
-      endsAt: temporaryRedirectResponse.end.toLocal(),
+      endsAt: temporaryRedirectResponse.end,
       destination: voicemail != null
           ? TemporaryRedirectDestination.voicemail(voicemail)
           : const TemporaryRedirectDestination.unknown(),
