@@ -6,7 +6,7 @@ import '../../../../resources/localizations.dart';
 
 class TemporaryRedirectExplanation extends StatelessWidget {
   final TemporaryRedirectDestination? currentDestination;
-  final DateTime? endsAt;
+  final DateTime endsAt;
 
   const TemporaryRedirectExplanation({
     super.key,
@@ -35,8 +35,9 @@ class TemporaryRedirectExplanation extends StatelessWidget {
             ),
           if (currentDestination is Unknown) const TextSpan(text: ' '),
           TextSpan(
-            text: '${context.msg.main.temporaryRedirect.explanation.end} '
-                '${endsAt?.toTemporaryRedirectFormat()}.',
+            text: context.msg.main.temporaryRedirect.explanation.end(
+              endsAt.toTemporaryRedirectFormat(),
+            ),
           ),
         ],
       ),
