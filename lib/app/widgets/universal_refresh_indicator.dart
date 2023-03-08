@@ -25,7 +25,11 @@ class UniversalRefreshIndicator extends StatelessWidget {
           ListView(
             padding: EdgeInsets.zero,
             shrinkWrap: true,
-            children: [SizedBox(height: MediaQuery.of(context).size.height,),],
+            children: [
+              SizedBox(
+                height: MediaQuery.of(context).size.height,
+              ),
+            ],
           ),
         ],
       ),
