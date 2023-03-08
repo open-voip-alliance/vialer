@@ -14,6 +14,7 @@ import '../domain/event/event_bus.dart';
 import '../domain/event/register_event_listeners.dart';
 import '../domain/metrics/initialize_metric_collection.dart';
 import '../domain/metrics/periodically_identify_for_tracking.dart';
+import '../domain/onboarding/apply_onboarding_migration.dart';
 import '../domain/onboarding/should_onboard.dart';
 import '../domain/remote_logging/enable_console_logging.dart';
 import '../domain/remote_logging/enable_remote_logging_if_needed.dart';
@@ -39,6 +40,7 @@ Future<void> main() async {
 
   await initializeDependencies();
 
+  ApplyOnboardingMigration()();
   InitializeMetricCollection()();
   RegisterDomainEventListenersUseCase()();
   EnableConsoleLoggingUseCase()();
