@@ -128,7 +128,9 @@ class NoResultsPlaceholder extends StatelessWidget {
               children: [
                 AnimatedSwitcher(
                   duration: const Duration(milliseconds: 100),
-                  child: !isKeyboardVisible ? _CircularGraphic(type!) : null,
+                  child: !isKeyboardVisible
+                      ? Flexible(child: _CircularGraphic(type!))
+                      : null,
                 ),
                 const SizedBox(height: 40),
                 Text(
