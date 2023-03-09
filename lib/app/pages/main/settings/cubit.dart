@@ -52,7 +52,12 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
     );
   }
 
-  Future<void> _emitUpdatedState() async {
+  Future<void> _emitUpdatedState({bool? isUpdatingRemote}) async {
+    // We don't want to emit any refresh changes while we're in the progress
+    // of changing remote settings.
+    if (state.isUpdatingRemote && isUpdatingRemote == null) {
+      return;
+    }
     final user = _getUser();
     emit(
       SettingsState(
@@ -66,6 +71,7 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
         ),
         userNumber: _storageRepository.userNumber,
         availableDestinations: _storageRepository.availableDestinations,
+        isUpdatingRemote: isUpdatingRemote ?? state.isUpdatingRemote,
       ),
     );
   }
@@ -78,22 +84,17 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
     // smoothness.
     final newSettings = Settings({key: value});
 
-    emit(state.withChanged(newSettings));
-
-    final result = await _changeSettings(newSettings);
-
-    // If the setting didn't change, it means we have to revert our previous
-    // state change.
-    if (!result.changed.contains(key)) {
-      await _emitUpdatedState();
-    }
+    // If this is going to be used for UI purposes we need to be able to work
+    // out if the changed settings required a remote sync, but for how it is
+    // used currently it's not important.
+    emit(state.withChanged(newSettings, isUpdatingRemote: true));
+    await _changeSettings(newSettings);
+    await _emitUpdatedState(isUpdatingRemote: false);
   }
 
   Future<void> refreshAvailability() async {
     logger.info('Refreshing availability');
-
-    // TODO: Add ability to refresh a user partially?
-    await _refreshUser();
+    await _refreshUser(tasksToRun: [UserRefreshTask.availability]);
     await _emitUpdatedState();
   }
 
