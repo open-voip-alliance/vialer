@@ -372,7 +372,7 @@ main:
         calls:
           title: "Gesprekken"
         openingHours:
-          title: "Openingstijden | Basis"
+          title: "Openingstijden wijzigen"
 
     troubleshootingProgressPopUp(int remainingTaps): >-
       Nog $remainingTaps keer tikken en de geavanceerde instellingen worden beschikbaar.
