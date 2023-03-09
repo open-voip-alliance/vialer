@@ -1,0 +1,3 @@
+- Opening Hours | Basic: You can now set up a timetable with the days and hours when your organization is reachable by phone. In the dial plan you determine which steps someone goes through when calling the phone number during opening hours, public holidays, and outside opening hours.
+- iOS: A bug where there was too much space between a contact's first and last name has been fixed
+- A bug where highlighting a number in the dialer would cause visual errors has been fixed
