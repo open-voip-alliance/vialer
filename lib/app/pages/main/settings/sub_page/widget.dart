@@ -41,7 +41,7 @@ class SettingsSubPage extends StatelessWidget {
 class SettingsSubPageHelp extends StatelessWidget {
   final String text;
 
-  SettingsSubPageHelp(this.text);
+  const SettingsSubPageHelp(this.text);
 
   @override
   Widget build(BuildContext context) {

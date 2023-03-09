@@ -82,6 +82,6 @@ class PhonePreferencesSubPage extends StatelessWidget {
           ];
         },
       );
-    });
+    },);
   }
 }

@@ -46,6 +46,6 @@ class ClientSubPage extends StatelessWidget {
           ];
         },
       );
-    });
+    },);
   }
 }

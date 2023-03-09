@@ -9,7 +9,7 @@ class SubPageLinkTile extends StatelessWidget {
   final String title;
   final IconData icon;
   final SettingsCubit cubit;
-  final Widget child;
+  final WidgetBuilder pageBuilder;
 
   const SubPageLinkTile({
     super.key,
