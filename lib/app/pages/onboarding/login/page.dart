@@ -260,7 +260,7 @@ class _LoginPageState extends State<LoginPage>
                               TextButton(
                                 onPressed: () => LaunchSignUp()(),
                                 child: Text(
-                                  context.msg.main.settings
+                                  context.msg.onboarding.login.button
                                       .signUp(context.brand.appName)
                                       .toUpperCaseIfAndroid(context),
                                   style: const TextStyle(color: Colors.white),
