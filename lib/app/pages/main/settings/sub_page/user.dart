@@ -10,6 +10,8 @@ import '../widgets/tile/username.dart';
 import 'widget.dart';
 
 class UserSubPage extends StatelessWidget {
+  const UserSubPage();
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<SettingsCubit, SettingsState>(

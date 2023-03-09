@@ -107,14 +107,15 @@ class _SettingsPageState extends State<SettingsPage> {
                                       .phonePreferences.title,
                                   icon: FontAwesomeIcons.solidMobileNotch,
                                   cubit: cubit,
-                                  child: PhonePreferencesSubPage(),
+                                  pageBuilder: (_) =>
+                                      const PhonePreferencesSubPage(),
                                 ),
                                 SubPageLinkTile(
                                   title: context.msg.main.settings.subPage.user
                                       .title(user.fullName),
                                   icon: FontAwesomeIcons.circleUser,
                                   cubit: cubit,
-                                  child: UserSubPage(),
+                                  pageBuilder: (_) => const UserSubPage(),
                                 ),
                                 SubPageLinkTile(
                                   title: context
@@ -122,7 +123,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                       .title(user.client.name),
                                   icon: FontAwesomeIcons.building,
                                   cubit: cubit,
-                                  child: ClientSubPage(),
+                                  pageBuilder: (_) => const ClientSubPage(),
                                 ),
                               ],
                             ),

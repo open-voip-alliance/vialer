@@ -21,6 +21,8 @@ import '../widgets/tile/use_voip.dart';
 import 'widget.dart';
 
 class PhonePreferencesSubPage extends StatelessWidget {
+  const PhonePreferencesSubPage();
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<SettingsCubit, SettingsState>(builder: (context, state) {

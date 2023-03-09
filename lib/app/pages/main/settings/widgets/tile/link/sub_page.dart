@@ -16,7 +16,7 @@ class SubPageLinkTile extends StatelessWidget {
     required this.title,
     required this.icon,
     required this.cubit,
-    required this.child,
+    required this.pageBuilder,
   });
 
   @override
@@ -29,7 +29,7 @@ class SubPageLinkTile extends StatelessWidget {
           MaterialPageRoute(
             builder: (_) => BlocProvider.value(
               value: cubit,
-              child: child,
+              child: pageBuilder(context),
             ),
           ),
         ),

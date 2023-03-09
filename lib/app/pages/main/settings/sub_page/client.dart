@@ -13,6 +13,8 @@ import '../widgets/tile/link/stats.dart';
 import 'widget.dart';
 
 class ClientSubPage extends StatelessWidget {
+  const ClientSubPage();
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<SettingsCubit, SettingsState>(builder: (context, state) {
