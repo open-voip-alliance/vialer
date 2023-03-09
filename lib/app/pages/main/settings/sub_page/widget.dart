@@ -10,14 +10,12 @@ typedef MultiChildStateBuilder = List<Widget> Function(SettingsState state);
 class SettingsSubPage extends StatelessWidget {
   final SettingsCubit cubit;
   final Widget title;
-  final Widget? help;
   final MultiChildStateBuilder children;
 
   const SettingsSubPage({
     Key? key,
     required this.cubit,
     required this.title,
-    this.help,
     required this.children,
   }) : super(key: key);
 
