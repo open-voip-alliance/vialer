@@ -46,7 +46,7 @@ class SubPageLinkTile extends StatelessWidget {
                     width: 36,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: context.brand.theme.colors.grey7,
+                      color: context.brand.theme.colors.grey3,
                     ),
                     child: FaIcon(
                       icon,

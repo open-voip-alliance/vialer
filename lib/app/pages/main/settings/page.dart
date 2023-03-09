@@ -105,14 +105,14 @@ class _SettingsPageState extends State<SettingsPage> {
                                 SubPageLinkTile(
                                   title: context.msg.main.settings.subPage
                                       .phonePreferences.title,
-                                  icon: FontAwesomeIcons.mobile,
+                                  icon: FontAwesomeIcons.solidMobileNotch,
                                   cubit: cubit,
                                   child: PhonePreferencesSubPage(),
                                 ),
                                 SubPageLinkTile(
                                   title: context.msg.main.settings.subPage.user
                                       .title(user.fullName),
-                                  icon: FontAwesomeIcons.user,
+                                  icon: FontAwesomeIcons.circleUser,
                                   cubit: cubit,
                                   child: UserSubPage(),
                                 ),
