@@ -25,65 +25,67 @@ class PhonePreferencesSubPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SettingsCubit, SettingsState>(builder: (context, state) {
-      final user = state.user;
-      final useVoip = user.settings.get(CallSetting.useVoip);
-      final canViewMobileFallback =
-          user.permissions.canViewMobileNumberFallbackStatus;
-      final hasIgnoreOptimizationsPermission =
-          state.hasIgnoreBatteryOptimizationsPermission;
-      final isVoipAllowed = state.isVoipAllowed;
-      final showTroubleshooting = state.showTroubleshooting;
-      final cubit = context.watch<SettingsCubit>();
+    return BlocBuilder<SettingsCubit, SettingsState>(
+      builder: (context, state) {
+        final user = state.user;
+        final useVoip = user.settings.get(CallSetting.useVoip);
+        final canViewMobileFallback =
+            user.permissions.canViewMobileNumberFallbackStatus;
+        final hasIgnoreOptimizationsPermission =
+            state.hasIgnoreBatteryOptimizationsPermission;
+        final isVoipAllowed = state.isVoipAllowed;
+        final showTroubleshooting = state.showTroubleshooting;
+        final cubit = context.watch<SettingsCubit>();
 
-      return SettingsSubPage(
-        cubit: cubit,
-        title: Text(context.msg.main.settings.subPage.phonePreferences.title),
-        children: (state) {
-          return [
-            SettingsSubPageHelp(
-              context.msg.main.settings.subPage.phonePreferences.help,
-            ),
-            CallingCategory(
-              children: [
-                if (isVoipAllowed) UseVoipTile(user),
-                if (useVoip && canViewMobileFallback && isVoipAllowed)
-                  UseMobileNumberAsFallbackTile(user),
-                if (context.isIOS && isVoipAllowed)
-                  ShowCallsInNativeRecentsTile(user),
-                if (context.isAndroid)
-                  IgnoreBatteryOptimizationsTile(
-                    hasIgnoreBatteryOptimizationsPermission:
-                        hasIgnoreOptimizationsPermission,
-                    onChanged: (enabled) => cubit.requestBatteryPermission(),
-                  ),
-              ],
-            ),
-            RecentsCategory(
-              children: [
-                ShowClientCallsTile(user),
-              ],
-            ),
-            if (state.isVoipAllowed)
-              AudioCategory(
+        return SettingsSubPage(
+          cubit: cubit,
+          title: Text(context.msg.main.settings.subPage.phonePreferences.title),
+          children: (state) {
+            return [
+              SettingsSubPageHelp(
+                context.msg.main.settings.subPage.phonePreferences.help,
+              ),
+              CallingCategory(
                 children: [
-                  UsePhoneRingtoneTile(user),
+                  if (isVoipAllowed) UseVoipTile(user),
+                  if (useVoip && canViewMobileFallback && isVoipAllowed)
+                    UseMobileNumberAsFallbackTile(user),
+                  if (context.isIOS && isVoipAllowed)
+                    ShowCallsInNativeRecentsTile(user),
+                  if (context.isAndroid)
+                    IgnoreBatteryOptimizationsTile(
+                      hasIgnoreBatteryOptimizationsPermission:
+                          hasIgnoreOptimizationsPermission,
+                      onChanged: (enabled) => cubit.requestBatteryPermission(),
+                    ),
                 ],
               ),
-            DebugCategory(
-              children: [
-                RemoteLoggingTile(user),
-              ],
-            ), // Show advanced settings only if allowed.
-            if (isVoipAllowed && showTroubleshooting)
-              const AdvancedSettingsCategory(
+              RecentsCategory(
                 children: [
-                  TroubleshootingLinkTile(),
+                  ShowClientCallsTile(user),
                 ],
               ),
-          ];
-        },
-      );
-    },);
+              if (state.isVoipAllowed)
+                AudioCategory(
+                  children: [
+                    UsePhoneRingtoneTile(user),
+                  ],
+                ),
+              DebugCategory(
+                children: [
+                  RemoteLoggingTile(user),
+                ],
+              ), // Show advanced settings only if allowed.
+              if (isVoipAllowed && showTroubleshooting)
+                const AdvancedSettingsCategory(
+                  children: [
+                    TroubleshootingLinkTile(),
+                  ],
+                ),
+            ];
+          },
+        );
+      },
+    );
   }
 }

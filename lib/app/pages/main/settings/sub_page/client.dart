@@ -17,37 +17,40 @@ class ClientSubPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SettingsCubit, SettingsState>(builder: (context, state) {
-      final user = state.user;
-      final cubit = context.watch<SettingsCubit>();
+    return BlocBuilder<SettingsCubit, SettingsState>(
+      builder: (context, state) {
+        final user = state.user;
+        final cubit = context.watch<SettingsCubit>();
 
-      return SettingsSubPage(
-        cubit: cubit,
-        title: Text(
-          context.msg.main.settings.subPage.client.title(user.client.name),
-        ),
-        children: (state) {
-          return [
-            SettingsSubPageHelp(context.msg.main.settings.subPage.client.help),
-            if (user.permissions.canChangeTemporaryRedirect)
-              const TemporaryRedirectCategory(
+        return SettingsSubPage(
+          cubit: cubit,
+          title: Text(
+            context.msg.main.settings.subPage.client.title(user.client.name),
+          ),
+          children: (state) {
+            return [
+              SettingsSubPageHelp(
+                  context.msg.main.settings.subPage.client.help),
+              if (user.permissions.canChangeTemporaryRedirect)
+                const TemporaryRedirectCategory(
+                  children: [
+                    TemporaryRedirectSettingTile(),
+                  ],
+                ),
+              PortalLinksCategory(
                 children: [
-                  TemporaryRedirectSettingTile(),
+                  const CallsLinkTile(),
+                  const DialPlanLinkTile(),
+                  if (cubit.shouldShowOpeningHoursBasic &&
+                      user.client.openingHours.isNotEmpty)
+                    OpeningHoursLinkTile(user),
+                  const StatsLinkTile(),
                 ],
               ),
-            PortalLinksCategory(
-              children: [
-                const CallsLinkTile(),
-                const DialPlanLinkTile(),
-                if (cubit.shouldShowOpeningHoursBasic &&
-                    user.client.openingHours.isNotEmpty)
-                  OpeningHoursLinkTile(user),
-                const StatsLinkTile(),
-              ],
-            ),
-          ];
-        },
-      );
-    },);
+            ];
+          },
+        );
+      },
+    );
   }
 }

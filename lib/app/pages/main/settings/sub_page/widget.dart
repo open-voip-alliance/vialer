@@ -55,7 +55,7 @@ class SettingsSubPageHelp extends StatelessWidget {
           borderRadius: BorderRadius.circular(8),
           color: context.brand.theme.colors.grey3,
         ),
-        padding:  const EdgeInsets.symmetric(
+        padding: const EdgeInsets.symmetric(
           horizontal: 12,
           vertical: 16,
         ),
