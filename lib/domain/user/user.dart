@@ -20,6 +20,8 @@ class User extends Equatable {
   final String firstName;
   final String lastName;
 
+  String get fullName => '$firstName $lastName';
+
   final String? token;
 
   final Uri? appAccountUrl;

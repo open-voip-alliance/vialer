@@ -261,6 +261,16 @@ main:
     title: &settingsTitle "Instellingen"
     menu:
       title: *settingsTitle
+    subPage:
+      phonePreferences:
+        title: "Phone preferences"
+        help: "Settings on this page only concern your mobile device."
+      user:
+        title(String user): "$user"
+        help: "Settings on this page only concern your user account."
+      client:
+        title(String client): "$client"
+        help: "Settings on this page concern your entire VoIP client."
     list:
       debug:
         title: "Foutopsporing"
