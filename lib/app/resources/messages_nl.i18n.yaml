@@ -322,6 +322,8 @@ main:
           description(String appName): >-
             De beltoon van je telefoon wordt afgespeeld in plaats van
             de beltoon van de app als iemand je belt.
+      recents:
+        title: "Recents"
       calling:
         title: "Bellen"
         availability:

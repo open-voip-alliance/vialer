@@ -9,6 +9,7 @@ import '../widgets/tile/category/advanced_settings.dart';
 import '../widgets/tile/category/audio.dart';
 import '../widgets/tile/category/calling.dart';
 import '../widgets/tile/category/debug.dart';
+import '../widgets/tile/category/recents.dart';
 import '../widgets/tile/ignore_battery_optimizations.dart';
 import '../widgets/tile/link/troubleshooting.dart';
 import '../widgets/tile/remote_logging.dart';
@@ -54,6 +55,10 @@ class PhonePreferencesSubPage extends StatelessWidget {
                         hasIgnoreOptimizationsPermission,
                     onChanged: (enabled) => cubit.requestBatteryPermission(),
                   ),
+              ],
+            ),
+            RecentsCategory(
+              children: [
                 ShowClientCallsTile(user),
               ],
             ),

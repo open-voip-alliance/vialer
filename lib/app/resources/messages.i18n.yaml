@@ -320,6 +320,8 @@ main:
           description(String appName): >-
             Your phone's ringtone plays instead of the app
             when receiving a call.
+      recents:
+        title: "Recents"
       calling:
         title: "Calling"
         availability:
