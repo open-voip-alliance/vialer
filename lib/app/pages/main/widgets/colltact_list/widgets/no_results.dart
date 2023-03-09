@@ -121,37 +121,40 @@ class NoResultsPlaceholder extends StatelessWidget {
         builder: (context, isKeyboardVisible) {
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 60),
-            child: Column(
-              mainAxisAlignment: isKeyboardVisible
-                  ? MainAxisAlignment.start
-                  : MainAxisAlignment.center,
-              children: [
-                AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 100),
-                  child: !isKeyboardVisible
-                      ? Flexible(child: _CircularGraphic(type!))
-                      : null,
-                ),
-                const SizedBox(height: 40),
-                Text(
-                  _title(context),
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: isKeyboardVisible
+                    ? MainAxisAlignment.start
+                    : MainAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 30),
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 100),
+                    child: !isKeyboardVisible
+                        ? _CircularGraphic(type!)
+                        : null,
                   ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  _subtitle(context),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 40),
-                AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 200),
-                  child: _button(context),
-                ),
-              ],
+                  const SizedBox(height: 40),
+                  Text(
+                    _title(context),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    _subtitle(context),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 40),
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 200),
+                    child: _button(context),
+                  ),
+                ],
+              ),
             ),
           );
         },
