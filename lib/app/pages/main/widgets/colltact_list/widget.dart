@@ -387,6 +387,11 @@ class _ColltactPageState extends State<_ColltactList>
       state is ColltactsLoaded ? state.contactSort : defaultContactSort,
     );
 
+    onRefresh() async {
+      await cubit.refreshColleagues();
+      await cubit.reloadColltacts();
+    }
+
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 200),
       switchInCurve: Curves.decelerate,
@@ -407,6 +412,7 @@ class _ColltactPageState extends State<_ColltactList>
               ? CallOrigin.contacts
               : CallOrigin.colleagues,
         ),
+        onRefresh: onRefresh,
         dontAskForContactsPermissionAgain:
             state is ColltactsLoaded ? state.dontAskAgain : false,
         cubit: cubit,
@@ -414,10 +420,7 @@ class _ColltactPageState extends State<_ColltactList>
           key: ValueKey(_searchTerm),
           bottomLettersPadding: widget.bottomLettersPadding,
           children: records,
-          onRefresh: () async {
-            await cubit.refreshColleagues();
-            await cubit.reloadColltacts();
-          },
+          onRefresh: onRefresh,
         ),
       ),
     );

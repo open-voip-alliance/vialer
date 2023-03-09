@@ -6,6 +6,7 @@ import '../../../../../resources/localizations.dart';
 import '../../../../../resources/theme.dart';
 import '../../../../../util/conditional_capitalization.dart';
 import '../../../../../widgets/stylized_button.dart';
+import '../../../../../widgets/universal_refresh_indicator.dart';
 import '../../conditional_placeholder.dart';
 import '../cubit.dart';
 import '../widget.dart';
@@ -17,6 +18,7 @@ class NoResultsPlaceholder extends StatelessWidget {
   final String searchTerm;
   final ColltactKind kind;
   final Function(String number) onCall;
+  final Future<void> Function() onRefresh;
   final bool dontAskForContactsPermissionAgain;
   final ColltactsCubit cubit;
   final Widget child;
@@ -26,6 +28,7 @@ class NoResultsPlaceholder extends StatelessWidget {
     required this.searchTerm,
     required this.kind,
     required this.onCall,
+    required this.onRefresh,
     required this.dontAskForContactsPermissionAgain,
     required this.cubit,
     required this.child,
@@ -112,44 +115,48 @@ class NoResultsPlaceholder extends StatelessWidget {
       );
     }
 
-    return KeyboardVisibilityBuilder(
-      builder: (context, isKeyboardVisible) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 60),
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: isKeyboardVisible
-                  ? MainAxisAlignment.start
-                  : MainAxisAlignment.center,
-              children: [
-                AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 100),
-                  child: !isKeyboardVisible ? _CircularGraphic(type!) : null,
-                ),
-                const SizedBox(height: 40),
-                Text(
-                  _title(context),
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
+    return UniversalRefreshIndicator(
+      onRefresh: onRefresh,
+      child: KeyboardVisibilityBuilder(
+        builder: (context, isKeyboardVisible) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 60),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: isKeyboardVisible
+                    ? MainAxisAlignment.start
+                    : MainAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 30),
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 100),
+                    child: !isKeyboardVisible ? _CircularGraphic(type!) : null,
                   ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  _subtitle(context),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 40),
-                AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 200),
-                  child: _button(context),
-                ),
-              ],
+                  const SizedBox(height: 40),
+                  Text(
+                    _title(context),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    _subtitle(context),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 40),
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 200),
+                    child: _button(context),
+                  ),
+                ],
+              ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }
