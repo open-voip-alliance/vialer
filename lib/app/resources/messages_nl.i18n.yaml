@@ -19,7 +19,7 @@ buildError:
 
 connectivity:
   noConnection:
-    title: "Geen internetverbinding"
+    title: &noConnectionTitle "Geen internetverbinding"
     message: >-
       Het lijkt erop dat je geen verbinding hebt met internet. Controleer je wifi- of mobiele dataverbinding en probeer het opnieuw.
 
@@ -372,7 +372,7 @@ main:
         calls:
           title: "Gesprekken"
         openingHours:
-          title: "Openingstijden | Basis"
+          title: "Openingstijden wijzigen"
 
     troubleshootingProgressPopUp(int remainingTaps): >-
       Nog $remainingTaps keer tikken en de geavanceerde instellingen worden beschikbaar.
@@ -398,7 +398,10 @@ main:
       buttons:
         send: "Feedback sturen"
     privacyPolicy: "Privacybeleid"
-    signUp(String appName): "Nieuw bij $appName? Meld je hier aan."
+    noConnectionDialog:
+      title: *noConnectionTitle
+      message: >-
+        Je hebt een internetverbinding nodig om deze instelling aan te passen. Controleer je wifi- of mobiele dataverbinding en probeer het opnieuw.
 
   notice:
     microphone:
@@ -502,6 +505,7 @@ onboarding:
     button:
       loggingIn: "Bezig met inloggen"
       forgotPassword: "Wachtwoord vergeten?"
+      signUp(String appName): "Nieuw bij $appName? Meld je hier aan."
     error:
       wrongCombination:
         title: "Onjuiste inloggegevens"

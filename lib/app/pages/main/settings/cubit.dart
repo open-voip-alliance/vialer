@@ -9,12 +9,15 @@ import '../../../../domain/feedback/send_saved_logs_to_remote.dart';
 import '../../../../domain/legacy/storage.dart';
 import '../../../../domain/onboarding/request_permission.dart';
 import '../../../../domain/openings_hours_basic/should_show_opening_hours_basic.dart';
+import '../../../../domain/user/connectivity/connectivity_type.dart';
+import '../../../../domain/user/connectivity/get_current_connectivity_status.dart';
 import '../../../../domain/user/get_build_info.dart';
 import '../../../../domain/user/get_logged_in_user.dart';
 import '../../../../domain/user/get_permission_status.dart';
 import '../../../../domain/user/permissions/permission.dart';
 import '../../../../domain/user/permissions/permission_status.dart';
 import '../../../../domain/user/refresh_user.dart';
+import '../../../../domain/user/settings/call_setting.dart';
 import '../../../../domain/user/settings/change_settings.dart';
 import '../../../../domain/user/settings/settings.dart';
 import '../../../../domain/voipgrid/user_voip_config.dart';
@@ -37,6 +40,7 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
   final _shouldShowOpeningHoursBasic = ShouldShowOpeningHoursBasic();
 
   final _refreshUser = RefreshUser();
+  final _getConnectivity = GetCurrentConnectivityTypeUseCase();
 
   final _storageRepository = dependencyLocator<StorageRepository>();
 
@@ -55,7 +59,12 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
     );
   }
 
-  Future<void> _emitUpdatedState() async {
+  Future<void> _emitUpdatedState({bool? isUpdatingRemote}) async {
+    // We don't want to emit any refresh changes while we're in the progress
+    // of changing remote settings.
+    if (state.isUpdatingRemote && isUpdatingRemote == null) {
+      return;
+    }
     final user = _getUser();
     emit(
       SettingsState(
@@ -69,9 +78,25 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
         ),
         userNumber: _storageRepository.userNumber,
         availableDestinations: _storageRepository.availableDestinations,
+        isUpdatingRemote: isUpdatingRemote ?? state.isUpdatingRemote,
       ),
     );
   }
+
+  static const _remoteSettings = [
+    CallSetting.destination,
+    CallSetting.mobileNumber,
+    CallSetting.outgoingNumber,
+    CallSetting.useMobileNumberAsFallback,
+  ];
+
+  /// Returns `true` if [key] refers to a remote setting and we have an
+  /// internet connection, or if [key] does not refer to a remote setting.
+  Future<bool> canChangeRemoteSetting<T extends Object>(
+    SettingKey<T> key,
+  ) async =>
+      !_remoteSettings.contains(key) ||
+      await _getConnectivity().then((c) => c.isConnected);
 
   Future<void> changeSetting<T extends Object>(
     SettingKey<T> key,
@@ -81,22 +106,17 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
     // smoothness.
     final newSettings = Settings({key: value});
 
-    emit(state.withChanged(newSettings));
-
-    final result = await _changeSettings(newSettings);
-
-    // If the setting didn't change, it means we have to revert our previous
-    // state change.
-    if (!result.changed.contains(key)) {
-      await _emitUpdatedState();
-    }
+    // If this is going to be used for UI purposes we need to be able to work
+    // out if the changed settings required a remote sync, but for how it is
+    // used currently it's not important.
+    emit(state.withChanged(newSettings, isUpdatingRemote: true));
+    await _changeSettings(newSettings);
+    await _emitUpdatedState(isUpdatingRemote: false);
   }
 
   Future<void> refreshAvailability() async {
     logger.info('Refreshing availability');
-
-    // TODO: Add ability to refresh a user partially?
-    await _refreshUser();
+    await _refreshUser(tasksToRun: [UserRefreshTask.availability]);
     await _emitUpdatedState();
   }
 

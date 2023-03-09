@@ -271,8 +271,10 @@ class StorageRepository {
 
   static const _hasCompletedOnboarding = 'has_completed_onboarding';
 
-  bool get hasCompletedOnboarding =>
-      _preferences.getBool(_hasCompletedOnboarding) ?? false;
+  bool? get hasCompletedOnboardingOrNull =>
+      _preferences.getBool(_hasCompletedOnboarding);
+
+  bool get hasCompletedOnboarding => hasCompletedOnboardingOrNull ?? false;
 
   set hasCompletedOnboarding(bool value) =>
       _preferences.setBool(_hasCompletedOnboarding, value);
