@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:collection/collection.dart';
 import 'package:dartx/dartx.dart';
+import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:meta/meta.dart';
 
 import 'app_setting.dart';
 import 'call_setting.dart';
@@ -58,7 +58,12 @@ class Settings {
   Settings copyWith<T extends Object>(SettingKey<T> key, T value) {
     // If <T> is omitted, Dart does not infer that `value` must be the same type
     // as the specified <T> of `key`.
-    assert(value.runtimeType == key.valueType);
+    if (value.runtimeType != key.valueType) {
+      debugPrint(
+        'value.runtimeType [${value.runtimeType}] does '
+        'not match key.valueType [${key.valueType}]',
+      );
+    }
     return Settings({
       ..._map,
       key: value,

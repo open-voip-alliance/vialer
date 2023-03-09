@@ -1,4 +1,4 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../../domain/calling/voip/destination.dart';
 import '../../../../domain/user/info/build_info.dart';
@@ -7,51 +7,34 @@ import '../../../../domain/user/settings/call_setting.dart';
 import '../../../../domain/user/settings/settings.dart';
 import '../../../../domain/user/user.dart';
 
-class SettingsState extends Equatable {
-  final User user;
-  final BuildInfo? buildInfo;
-  final bool isVoipAllowed;
-  final bool showTroubleshooting;
-  final bool showDnd;
-  final bool hasIgnoreBatteryOptimizationsPermission;
-  final bool hasTemporaryRedirect;
-  final int? userNumber;
-  final List<Destination> availableDestinations;
+part 'state.freezed.dart';
 
-  SettingsState({
-    this.buildInfo,
-    this.isVoipAllowed = true,
-    required this.user,
-    this.hasIgnoreBatteryOptimizationsPermission = false,
-    this.hasTemporaryRedirect = false,
-    this.userNumber,
-    this.availableDestinations = const [Destination.notAvailable()],
-  })  : showTroubleshooting = user.settings.get(AppSetting.showTroubleshooting),
-        showDnd = isVoipAllowed && (user.settings.get(CallSetting.useVoip));
+@freezed
+class SettingsState with _$SettingsState {
+  const SettingsState._();
 
-  SettingsState withChanged(Settings settings) {
-    return SettingsState(
-      user: user.copyWith(settings: user.settings.copyFrom(settings)),
-      buildInfo: buildInfo,
-      isVoipAllowed: isVoipAllowed,
-      hasIgnoreBatteryOptimizationsPermission:
-          hasIgnoreBatteryOptimizationsPermission,
-      hasTemporaryRedirect: hasTemporaryRedirect,
-      userNumber: userNumber,
-      availableDestinations: availableDestinations,
-    );
-  }
+  const factory SettingsState({
+    required User user,
+    BuildInfo? buildInfo,
+    @Default(true) bool isVoipAllowed,
+    @Default(false) bool hasIgnoreBatteryOptimizationsPermission,
+    @Default(false) bool hasTemporaryRedirect,
+    int? userNumber,
+    @Default([Destination.notAvailable()])
+        List<Destination> availableDestinations,
+    @Default(false) bool isUpdatingRemote,
+  }) = _SettingsState;
 
-  @override
-  List<Object?> get props => [
-        user,
-        buildInfo,
-        isVoipAllowed,
-        showTroubleshooting,
-        showDnd,
-        hasIgnoreBatteryOptimizationsPermission,
-        hasTemporaryRedirect,
-        userNumber,
-        availableDestinations,
-      ];
+  bool get showTroubleshooting =>
+      user.settings.get(AppSetting.showTroubleshooting);
+  bool get showDnd => isVoipAllowed && user.settings.get(CallSetting.useVoip);
+
+  SettingsState withChanged(
+    Settings settings, {
+    bool isUpdatingRemote = false,
+  }) =>
+      copyWith(
+        user: user.copyWith(settings: user.settings.copyFrom(settings)),
+        isUpdatingRemote: isUpdatingRemote,
+      );
 }
