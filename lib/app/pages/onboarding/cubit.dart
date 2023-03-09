@@ -1,5 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../dependency_locator.dart';
+import '../../../domain/legacy/storage.dart';
 import '../../../domain/onboarding/get_steps.dart';
 import '../../../domain/onboarding/step.dart';
 import '../../../domain/user/get_logged_in_user.dart';
@@ -11,6 +13,8 @@ import 'state.dart';
 export 'state.dart';
 
 class OnboardingCubit extends Cubit<OnboardingState> with Loggable {
+  final _storage = dependencyLocator<StorageRepository>();
+
   final _getSteps = GetOnboardingStepsUseCase();
   final _getUser = GetLoggedInUserUseCase();
 
@@ -54,6 +58,8 @@ class OnboardingCubit extends Cubit<OnboardingState> with Loggable {
 
     if (indexOfCurrent + 1 >= allSteps.length) {
       logger.info('Onboarding complete');
+
+      _storage.hasCompletedOnboarding = true;
 
       _caller.initialize();
       emit(state.copyWith(completed: true));

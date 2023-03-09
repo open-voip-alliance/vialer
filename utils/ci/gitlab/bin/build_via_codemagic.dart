@@ -303,6 +303,8 @@ extension on String {
         return _CodemagicBuildStatus.complete;
       case 'failed':
       case 'canceled':
+      case 'timeout':
+      case 'skipped':
         return _CodemagicBuildStatus.failed;
       default:
         return _CodemagicBuildStatus.pending;

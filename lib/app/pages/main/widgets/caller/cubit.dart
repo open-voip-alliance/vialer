@@ -8,7 +8,6 @@ import 'package:flutter_phone_lib/flutter_phone_lib.dart' hide Reason;
 import 'package:flutter_phone_lib/flutter_phone_lib.dart' as fpl;
 
 import '../../../../../dependency_locator.dart';
-import '../../../../../domain/authentication/is_authenticated.dart';
 import '../../../../../domain/calling/call.dart';
 import '../../../../../domain/calling/call_failure_reason.dart';
 import '../../../../../domain/calling/call_through/call_through_exception.dart';
@@ -38,6 +37,7 @@ import '../../../../../domain/metrics/track_call_through_call.dart';
 import '../../../../../domain/metrics/track_outbound_call_failed.dart';
 import '../../../../../domain/metrics/track_user_initiated_outbound_call.dart';
 import '../../../../../domain/metrics/track_voip_call.dart';
+import '../../../../../domain/onboarding/is_onboarded.dart';
 import '../../../../../domain/onboarding/request_permission.dart';
 import '../../../../../domain/user/connectivity/connectivity_type.dart';
 import '../../../../../domain/user/connectivity/get_current_connectivity_status.dart';
@@ -53,7 +53,7 @@ import 'state.dart' hide AttendedTransferStarted;
 export 'state.dart';
 
 class CallerCubit extends Cubit<CallerState> with Loggable {
-  final _isAuthenticated = IsAuthenticated();
+  final _isOnboarded = IsOnboarded();
   final _getConnectivityType = GetCurrentConnectivityTypeUseCase();
 
   final _getUser = GetLoggedInUserUseCase();
@@ -99,7 +99,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
   StreamSubscription? _voipCallEventSubscription;
 
   CallerCubit() : super(const CanCall()) {
-    if (_isAuthenticated()) {
+    if (_isOnboarded() && _storageRepository.hasCompletedOnboarding) {
       initialize();
     }
 

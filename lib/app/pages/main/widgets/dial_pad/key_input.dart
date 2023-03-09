@@ -57,6 +57,7 @@ class _KeyInputState extends State<KeyInput> {
       focusNode: _NeverFocusNode(),
       inputFormatters: [_KeyInputFormatter()],
       showCursor: true,
+      magnifierConfiguration: TextMagnifierConfiguration.disabled,
       decoration: InputDecoration(
         border: InputBorder.none,
         filled: true,
