@@ -29,6 +29,12 @@ class UserPermissions extends Equatable {
   @JsonKey(defaultValue: false)
   final bool canViewVoipAccounts;
 
+  @JsonKey(defaultValue: false)
+  final bool canViewDialPlans;
+
+  @JsonKey(defaultValue: false)
+  final bool canViewStats;
+
   const UserPermissions({
     required this.canSeeClientCalls,
     required this.canChangeMobileNumberFallback,
@@ -38,6 +44,8 @@ class UserPermissions extends Equatable {
     required this.canChangeOutgoingNumber,
     required this.canViewColleagues,
     required this.canViewVoipAccounts,
+    required this.canViewDialPlans,
+    required this.canViewStats,
   });
 
   const UserPermissions.defaults()
@@ -50,6 +58,8 @@ class UserPermissions extends Equatable {
           canChangeOutgoingNumber: false,
           canViewColleagues: false,
           canViewVoipAccounts: false,
+          canViewDialPlans: false,
+          canViewStats: false,
         );
 
   static UserPermissions fromJson(Map<String, dynamic> json) =>

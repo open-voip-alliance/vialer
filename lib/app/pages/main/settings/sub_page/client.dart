@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../domain/user/user.dart';
 import '../../../../resources/localizations.dart';
 import '../../business_availability/temporary_redirect/setting_tile.dart';
 import '../cubit.dart';
@@ -30,7 +31,8 @@ class ClientSubPage extends StatelessWidget {
           children: (state) {
             return [
               SettingsSubPageHelp(
-                  context.msg.main.settings.subPage.client.help),
+                context.msg.main.settings.subPage.client.help,
+              ),
               if (user.permissions.canChangeTemporaryRedirect)
                 const TemporaryRedirectCategory(
                   children: [
@@ -39,12 +41,13 @@ class ClientSubPage extends StatelessWidget {
                 ),
               PortalLinksCategory(
                 children: [
-                  const CallsLinkTile(),
-                  const DialPlanLinkTile(),
+                  if (user.permissions.canSeeClientCalls) const CallsLinkTile(),
+                  if (user.permissions.canViewDialPlans)
+                    const DialPlanLinkTile(),
                   if (cubit.shouldShowOpeningHoursBasic &&
                       user.client.openingHours.isNotEmpty)
                     OpeningHoursLinkTile(user),
-                  const StatsLinkTile(),
+                  if (user.permissions.canViewStats) const StatsLinkTile(),
                 ],
               ),
             ];
@@ -53,4 +56,14 @@ class ClientSubPage extends StatelessWidget {
       },
     );
   }
+}
+
+extension UserPermissions on User {
+  bool get canViewClientSubPage => [
+        permissions.canChangeTemporaryRedirect,
+        client.openingHours.isNotEmpty,
+        permissions.canSeeClientCalls,
+        permissions.canViewDialPlans,
+        permissions.canViewStats,
+      ].any((element) => true);
 }
