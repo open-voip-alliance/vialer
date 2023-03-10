@@ -353,6 +353,8 @@ class StorageRepository {
             canChangeOutgoingNumber: false,
             canViewColleagues: false,
             canViewVoipAccounts: false,
+            canViewStats: false,
+            canViewDialPlans: false,
           );
           break;
       }
