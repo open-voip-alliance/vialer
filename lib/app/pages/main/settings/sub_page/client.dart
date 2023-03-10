@@ -39,17 +39,19 @@ class ClientSubPage extends StatelessWidget {
                     TemporaryRedirectSettingTile(),
                   ],
                 ),
-              PortalLinksCategory(
-                children: [
-                  if (user.permissions.canSeeClientCalls) const CallsLinkTile(),
-                  if (user.permissions.canViewDialPlans)
-                    const DialPlanLinkTile(),
-                  if (cubit.shouldShowOpeningHoursBasic &&
-                      user.client.openingHours.isNotEmpty)
-                    OpeningHoursLinkTile(user),
-                  if (user.permissions.canViewStats) const StatsLinkTile(),
-                ],
-              ),
+              if (user.canViewAtLeastOneWebView)
+                PortalLinksCategory(
+                  children: [
+                    if (user.permissions.canSeeClientCalls)
+                      const CallsLinkTile(),
+                    if (user.permissions.canViewDialPlans)
+                      const DialPlanLinkTile(),
+                    if (cubit.shouldShowOpeningHoursBasic &&
+                        user.client.openingHours.isNotEmpty)
+                      OpeningHoursLinkTile(user),
+                    if (user.permissions.canViewStats) const StatsLinkTile(),
+                  ],
+                ),
             ];
           },
         );
@@ -65,5 +67,16 @@ extension UserPermissions on User {
         permissions.canSeeClientCalls,
         permissions.canViewDialPlans,
         permissions.canViewStats,
-      ].any((element) => true);
+      ].hasAtLeastOne;
+
+  bool get canViewAtLeastOneWebView => [
+    client.openingHours.isNotEmpty,
+    permissions.canSeeClientCalls,
+    permissions.canViewDialPlans,
+    permissions.canViewStats,
+  ].hasAtLeastOne;
+}
+
+extension on Iterable<bool> {
+  bool get hasAtLeastOne => any((element) => element);
 }
