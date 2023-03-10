@@ -382,7 +382,7 @@ main:
         calls:
           title: "Calls"
         openingHours:
-          title: "Opening hours | Basic"
+          title: "Edit opening hours"
 
     troubleshootingProgressPopUp(int remainingTaps): >-
       You can access troubleshooting settings after $remainingTaps more taps on your screen.

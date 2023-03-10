@@ -3,7 +3,6 @@ import 'dart:async';
 import '../../../app/util/loggable.dart';
 import '../../../app/util/synchronized_task.dart';
 import '../../../dependency_locator.dart';
-import '../../calling/voip/voip.dart';
 import '../../event/event_bus.dart';
 import '../../feedback/increment_app_rating_survey_action_count.dart';
 import '../../legacy/storage.dart';
@@ -12,9 +11,8 @@ import '../../use_case.dart';
 import '../../user/get_logged_in_user.dart';
 import '../refresh_user.dart';
 import '../user.dart';
-import 'app_setting.dart';
-import 'call_setting.dart';
 import 'listeners/change_registration_on_dnd_change.dart';
+import 'listeners/refresh_voip_preferences.dart';
 import 'listeners/setting_change_listener.dart';
 import 'listeners/start_voip_on_use_voip_enabled.dart';
 import 'listeners/update_availability.dart';
@@ -28,7 +26,6 @@ import 'settings.dart';
 class ChangeSettingsUseCase extends UseCase with Loggable {
   final _storageRepository = dependencyLocator<StorageRepository>();
   final _metricsRepository = dependencyLocator<MetricsRepository>();
-  final _voipRepository = dependencyLocator<VoipRepository>();
 
   final _eventBus = dependencyLocator<EventBus>();
 
@@ -45,6 +42,7 @@ class ChangeSettingsUseCase extends UseCase with Loggable {
     UpdateUseMobileNumberAsFallbackListener(),
     StartVoipOnUseVoipEnabledListener(),
     ChangeRegistrationOnDndChange(),
+    RefreshVoipPreferences(),
   ];
 
   // The function is split into two [EditUser] tasks, because in between
@@ -104,7 +102,13 @@ class ChangeSettingsUseCase extends UseCase with Loggable {
       // Retrieve the latest user with latest remote setting values, and
       // copy them into the settings result.
       if (needSync.isNotEmpty) {
-        final freshUser = await _refreshUser(synchronized: false);
+        final freshUser = await _refreshUser(
+          synchronized: false,
+          tasksToRun: [
+            UserRefreshTask.remoteSettings,
+            UserRefreshTask.availability,
+          ],
+        );
 
         // Technically freshUser should never be null, but doing a check
         // to avoid a rare exception.
@@ -120,7 +124,6 @@ class ChangeSettingsUseCase extends UseCase with Loggable {
 
       _storageRepository.user = user;
 
-      // We do this after storing the settings so setting checks work.
       await _notifyListeners(
         user,
         skipLogging,
@@ -129,13 +132,6 @@ class ChangeSettingsUseCase extends UseCase with Loggable {
         getChanged().entries,
         before: false,
       );
-
-      if (diff.hasAnyKeyOf([
-        CallSetting.usePhoneRingtone,
-        AppSetting.showCallsInNativeRecents,
-      ])) {
-        await _voipRepository.refreshPreferences(user);
-      }
 
       for (final entry in getChanged().entries) {
         final key = entry.key;
@@ -174,7 +170,11 @@ class ChangeSettingsUseCase extends UseCase with Loggable {
       final value = entry.value;
 
       for (final listener in _listeners) {
-        if (listener.key != key) continue;
+        // TODO: This will result in a single listener being called multiple
+        // times if this UseCase is called with multiple keys that exist as
+        // [otherKeys] in a single listener. Not an issue currently but an
+        // improvement for the future.
+        if (!listener.shouldHandle(key)) continue;
 
         final futureOrResult = before
             ? listener.preStore(user, value)
