@@ -25,6 +25,8 @@ class UserPermissionsRepository with Loggable {
     'phoneaccount.list_api_voipaccount_basic_info':
         UserPermission.listVoipAccounts,
     'permission.list_api_user_basic_info': UserPermission.listUsers,
+    'routing.view_routing': UserPermission.viewRouting,
+    'stats.view_stats': UserPermission.viewStats,
   };
 
   Future<List<UserPermission>> getGrantedPermissions({
@@ -64,6 +66,8 @@ enum UserPermission {
   viewUser,
   listVoipAccounts,
   listUsers,
+  viewStats,
+  viewRouting,
 }
 
 class UnableToRetrievePermissionsException extends VialerException {}

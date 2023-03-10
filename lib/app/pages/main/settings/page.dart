@@ -117,14 +117,15 @@ class _SettingsPageState extends State<SettingsPage> {
                                   cubit: cubit,
                                   pageBuilder: (_) => const UserSubPage(),
                                 ),
-                                SubPageLinkTile(
-                                  title: context
-                                      .msg.main.settings.subPage.client
-                                      .title(user.client.name),
-                                  icon: FontAwesomeIcons.building,
-                                  cubit: cubit,
-                                  pageBuilder: (_) => const ClientSubPage(),
-                                ),
+                                if (user.canViewClientSubPage)
+                                  SubPageLinkTile(
+                                    title: context
+                                        .msg.main.settings.subPage.client
+                                        .title(user.client.name),
+                                    icon: FontAwesomeIcons.building,
+                                    cubit: cubit,
+                                    pageBuilder: (_) => const ClientSubPage(),
+                                  ),
                               ],
                             ),
                           ),
