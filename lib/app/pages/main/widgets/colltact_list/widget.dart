@@ -402,7 +402,7 @@ class _ColltactPageState extends State<_ColltactList>
     );
 
     onRefresh() async {
-      await colleagueCubit.loadColleagues();
+      await colleaguesCubit.refresh();
       await contactsCubit.reloadContacts();
     }
 
@@ -427,6 +427,7 @@ class _ColltactPageState extends State<_ColltactList>
             ? contactsState.dontAskAgain
             : false,
         contactsCubit: contactsCubit,
+        onRefresh: onRefresh,
         child: AlphabetListView(
           key: ValueKey(_searchTerm),
           bottomLettersPadding: widget.bottomLettersPadding,
