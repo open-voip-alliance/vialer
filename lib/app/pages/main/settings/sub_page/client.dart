@@ -70,11 +70,11 @@ extension UserPermissions on User {
       ].hasAtLeastOne;
 
   bool get canViewAtLeastOneWebView => [
-    client.openingHours.isNotEmpty,
-    permissions.canSeeClientCalls,
-    permissions.canViewDialPlans,
-    permissions.canViewStats,
-  ].hasAtLeastOne;
+        client.openingHours.isNotEmpty,
+        permissions.canSeeClientCalls,
+        permissions.canViewDialPlans,
+        permissions.canViewStats,
+      ].hasAtLeastOne;
 }
 
 extension on Iterable<bool> {
