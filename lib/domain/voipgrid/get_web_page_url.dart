@@ -70,7 +70,7 @@ class GetWebPageUrlUseCase extends UseCase {
     final placeholders = {
       'clientId': user.client.id.toString(),
       'clientUuid': user.client.uuid.toString(),
-      'openingHoursUuid': user.client.openingHours.first.id,
+      'openingHoursUuid': user.client.openingHours.firstOrNull?.id,
     };
 
     for (final placeholder in placeholders.entries) {
@@ -79,7 +79,7 @@ class GetWebPageUrlUseCase extends UseCase {
 
       if (replacement.isNullOrEmpty) continue;
 
-      url = url?.replaceAll('{$target}', replacement);
+      url = url?.replaceAll('{$target}', replacement!);
     }
 
     return url;

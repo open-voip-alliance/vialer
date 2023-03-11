@@ -1,0 +1,1 @@
+- On the contacts page you can now find the colleagues tab. Here you can find all your colleagues, see if they are online or not and call them.

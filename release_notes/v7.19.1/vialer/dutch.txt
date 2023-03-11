@@ -1,0 +1,1 @@
+- In de contacten-pagina kun je nu een tabblad voor collega's vinden. In deze tab zie je al je collega's terug en kun je zien of ze online zijn en bellen.
