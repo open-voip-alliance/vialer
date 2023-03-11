@@ -1,0 +1,3 @@
+- Openingstijden | Basis: Je kan nu een tijdschema opstellen met de dagen en uren waarop jouw organisatie telefonisch bereikbaar is. In het belplan bepaal je welke stappen iemand doorloopt bij het bellen naar het nummer tijdens openingstijden, feestdagen en buiten openingstijden.
+- iOS: Een probleem waarbij er teveel ruimte tussen de voornaam en achternaam van een contact zat, is opgelost
+- Een probleem waarbij het selecteren van een nummer in de dialer visuele errors veroorzaakte, is opgelost
