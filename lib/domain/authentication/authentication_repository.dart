@@ -1,3 +1,4 @@
+import 'package:chopper/chopper.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../../app/util/automatic_retry.dart';
@@ -143,7 +144,10 @@ class AuthRepository with Loggable {
 
         if (!response.isSuccessful) {
           logFailedResponse(response);
-          return AutomaticRetryTaskOutput.fail(response);
+
+          return response.shouldRetry
+              ? AutomaticRetryTaskOutput.fail(response)
+              : AutomaticRetryTaskOutput.failDoNotRetry(response);
         }
 
         return AutomaticRetryTaskOutput.success(response);
@@ -301,4 +305,10 @@ class _SystemUserResponse {
           ),
         }),
       );
+}
+
+extension on Response {
+  /// If we get a response that the request was bad, we likely don't want to
+  /// retry it because future requests won't change anything.
+  bool get shouldRetry => statusCode != 400;
 }

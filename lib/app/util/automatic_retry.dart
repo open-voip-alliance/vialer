@@ -51,7 +51,8 @@ class AutomaticRetry with Loggable {
         return output.data as T;
       }
 
-      if (schedule.isEmpty) {
+      if (schedule.isEmpty ||
+          output.result == AutomaticRetryTaskResult.failDoNotRetry) {
         _logTaskAsFailed(runImmediately: runImmediately);
         throw AutomaticRetryMaximumAttemptsReached();
       }
@@ -140,9 +141,19 @@ class AutomaticRetryTaskOutput<T> with _$AutomaticRetryTaskOutput {
         data: data,
         result: AutomaticRetryTaskResult.fail,
       );
+
+  factory AutomaticRetryTaskOutput.failDoNotRetry(T data) =>
+      AutomaticRetryTaskOutput(
+        data: data,
+        result: AutomaticRetryTaskResult.failDoNotRetry,
+      );
 }
 
 enum AutomaticRetryTaskResult {
   success,
   fail,
+
+  /// Indicates that the task failed, but that the task should not be attempted
+  /// again.
+  failDoNotRetry,
 }

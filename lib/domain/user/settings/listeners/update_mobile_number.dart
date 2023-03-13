@@ -22,8 +22,8 @@ class UpdateMobileNumberListener extends SettingChangeListener<String>
         final success = await _authRepository.changeMobileNumber(number);
         if (success) {
           _metricsRepository.track('change-mobile-number');
+          logger.info('Updating of mobile number succeeded: $success');
         }
-        logger.info('Updating of mobile number succeeded: $success');
         return success;
       });
 }

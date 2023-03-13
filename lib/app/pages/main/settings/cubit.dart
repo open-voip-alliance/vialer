@@ -59,12 +59,21 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
     );
   }
 
-  Future<void> _emitUpdatedState({bool? isUpdatingRemote}) async {
+  Future<void> _emitUpdatedState({
+    bool? isUpdatingRemote,
+    List<SettingKey>? failed,
+    bool refreshUserFirst = false,
+  }) async {
     // We don't want to emit any refresh changes while we're in the progress
     // of changing remote settings.
     if (state.isUpdatingRemote && isUpdatingRemote == null) {
       return;
     }
+
+    if (refreshUserFirst) {
+      await _refreshUser(tasksToRun: [UserRefreshTask.remoteSettings]);
+    }
+
     final user = _getUser();
     emit(
       SettingsState(
@@ -79,6 +88,7 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
         userNumber: _storageRepository.userNumber,
         availableDestinations: _storageRepository.availableDestinations,
         isUpdatingRemote: isUpdatingRemote ?? state.isUpdatingRemote,
+        failedSettingChanges: failed ?? state.failedSettingChanges,
       ),
     );
   }
@@ -110,8 +120,16 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
     // out if the changed settings required a remote sync, but for how it is
     // used currently it's not important.
     emit(state.withChanged(newSettings, isUpdatingRemote: true));
-    await _changeSettings(newSettings);
-    await _emitUpdatedState(isUpdatingRemote: false);
+
+    final result = await _changeSettings(newSettings);
+
+    await _emitUpdatedState(
+      isUpdatingRemote: false,
+      failed: result.failed.toList(),
+      // If we have failed results, we're going to refresh the user first so
+      // we revert what is shown back to the original.
+      refreshUserFirst: result.failed.isNotEmpty,
+    );
   }
 
   Future<void> refreshAvailability() async {

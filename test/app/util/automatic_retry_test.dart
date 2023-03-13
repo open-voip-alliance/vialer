@@ -115,6 +115,24 @@ void main() {
     verifyNever(failingMock.getResult());
     verify(successMock.getResult()).called(1);
   });
+
+  test('It is possible to stop retries with doNotRetry', () async {
+    final automaticRetry = AutomaticRetry(schedule: const [
+      Duration(milliseconds: 10),
+      Duration(milliseconds: 20),
+      Duration(milliseconds: 20),
+    ]);
+    final doNotRetryMock = MockDummyClass()..thenReturnFailNoRetry();
+
+    automaticRetry.run(
+      () async => doNotRetryMock.getResult(),
+      runImmediately: false,
+    );
+
+    await _expectMaximumAttemptsReached(automaticRetry, doNotRetryMock);
+
+    verify(doNotRetryMock.getResult()).called(1);
+  });
 }
 
 extension on MockDummyClass {
@@ -129,6 +147,14 @@ extension on MockDummyClass {
         AutomaticRetryTaskOutput(
           data: value,
           result: AutomaticRetryTaskResult.fail,
+        ),
+      );
+
+  void thenReturnFailNoRetry({String value = ''}) =>
+      when(getResult()).thenReturn(
+        AutomaticRetryTaskOutput(
+          data: value,
+          result: AutomaticRetryTaskResult.failDoNotRetry,
         ),
       );
 }

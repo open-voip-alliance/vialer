@@ -23,11 +23,14 @@ class SettingsState with _$SettingsState {
     @Default([Destination.notAvailable()])
         List<Destination> availableDestinations,
     @Default(false) bool isUpdatingRemote,
+    @Default([]) List<SettingKey> failedSettingChanges,
   }) = _SettingsState;
 
   bool get showTroubleshooting =>
       user.settings.get(AppSetting.showTroubleshooting);
   bool get showDnd => isVoipAllowed && user.settings.get(CallSetting.useVoip);
+
+  bool didFail(SettingKey key) => failedSettingChanges.contains(key);
 
   SettingsState withChanged(
     Settings settings, {
@@ -36,5 +39,6 @@ class SettingsState with _$SettingsState {
       copyWith(
         user: user.copyWith(settings: user.settings.copyFrom(settings)),
         isUpdatingRemote: isUpdatingRemote,
+        failedSettingChanges: [],
       );
 }

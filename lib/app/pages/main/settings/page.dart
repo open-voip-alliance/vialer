@@ -133,7 +133,11 @@ class _SettingsPageState extends State<SettingsPage> {
                           ),
                           AccountInfoCategory(
                             children: [
-                              MobileNumberTile(user),
+                              MobileNumberTile(
+                                user,
+                                showError:
+                                    state.didFail(CallSetting.mobileNumber),
+                              ),
                               OutgoingNumberTile(user),
                               UsernameTile(user),
                             ],

@@ -3,15 +3,18 @@ import 'package:flutter/widgets.dart';
 import '../../../../../../domain/user/settings/call_setting.dart';
 import '../../../../../../domain/user/user.dart';
 import '../../../../../resources/localizations.dart';
+import '../settings_error.dart';
 import 'editable_value.dart';
 import 'widget.dart';
 
 class MobileNumberTile extends StatelessWidget {
   final User user;
+  final bool showError;
 
   const MobileNumberTile(
     this.user, {
     super.key,
+    this.showError = false,
   });
 
   @override
@@ -23,7 +26,15 @@ class MobileNumberTile extends StatelessWidget {
         context.msg.main.settings.list.accountInfo.mobileNumber.description,
       ),
       childFillWidth: true,
-      child: StringEditSettingValue(user.settings, key),
+      child: Column(
+        children: [
+          SettingsError(
+            visible: showError,
+            message: context.msg.onboarding.mobileNumber.error,
+          ),
+          StringEditSettingValue(user.settings, key),
+        ],
+      ),
     );
   }
 }
