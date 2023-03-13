@@ -8,8 +8,6 @@ class UserVoipConfig with _$UserVoipConfig {
   const factory UserVoipConfig({
     /// Must include a default while there are existing users with cached
     /// VoipConfig, can be removed at a later date.
-    @JsonKey(name: 'allow_appaccount_voip_calling', defaultValue: true)
-        required bool isAllowedCalling,
     @JsonKey(name: 'appaccount_account_id', fromJson: _sipUserIdFromJson)
         required String sipUserId,
     @JsonKey(name: 'appaccount_password') required String password,
@@ -30,21 +28,12 @@ class UserVoipConfig with _$UserVoipConfig {
 
   static Map<String, dynamic>? serializeToJson(UserVoipConfig? config) =>
       config != null ? config.toJson() : null;
-
-  @override
-  String toString() => '$runtimeType('
-      'isAllowedCalling: $isAllowedCalling, '
-      'sipUserId: $sipUserId, '
-      'useEncryption: $useEncryption, '
-      'useOpus: $useOpus)';
 }
 
 String _sipUserIdFromJson(dynamic json) =>
     json is String ? json : json?.toString() ?? '';
 
 extension NullableUserVoipConfig on UserVoipConfig? {
-  bool get isAllowedCalling => this?.isAllowedCalling == true;
-
   String get sipUserId => this?.sipUserId ?? '';
 
   String get password => this?.password ?? '';

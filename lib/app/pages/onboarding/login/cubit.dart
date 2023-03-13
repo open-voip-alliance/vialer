@@ -72,7 +72,7 @@ class LoginCubit extends Cubit<LoginState> with Loggable {
     }
 
     if (loginSuccessful) {
-      await _onboarding.addStepsBasedOnUserType();
+      await _onboarding.addMobileNumberStep();
 
       // We call this again so we're now logging with the user ID, if
       // remote logging was still enabled from a previous session.

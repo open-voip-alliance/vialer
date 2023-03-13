@@ -61,7 +61,7 @@ class TwoFactorAuthenticationCubit extends Cubit<TwoFactorState> with Loggable {
 
     logger.info('Two-factor code accepted, logging user in.');
 
-    await _onboarding.addStepsBasedOnUserType();
+    await _onboarding.addMobileNumberStep();
 
     emit(const CodeAccepted());
   }

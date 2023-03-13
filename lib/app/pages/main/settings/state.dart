@@ -16,7 +16,6 @@ class SettingsState with _$SettingsState {
   const factory SettingsState({
     required User user,
     BuildInfo? buildInfo,
-    @Default(true) bool isVoipAllowed,
     @Default(false) bool hasIgnoreBatteryOptimizationsPermission,
     @Default(false) bool hasTemporaryRedirect,
     int? userNumber,
@@ -28,6 +27,9 @@ class SettingsState with _$SettingsState {
   bool get showTroubleshooting =>
       user.settings.get(AppSetting.showTroubleshooting);
   bool get showDnd => isVoipAllowed && user.settings.get(CallSetting.useVoip);
+
+  // TODO: Remove this when merged with setting revamp.
+  bool get isVoipAllowed => true;
 
   SettingsState withChanged(
     Settings settings, {
