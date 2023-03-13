@@ -81,7 +81,7 @@ class RefreshUser extends UseCase with Loggable {
       var user = storedUser?.copyFrom(latestUser) ?? latestUser;
 
       user = user.copyWith(
-        settings: const Settings.defaults().copyFrom(user.settings),
+        settings: Settings.defaults().copyFrom(user.settings),
         permissions: storedUser?.permissions,
         client: storedUser?.client,
         voip: storedUser?.voip,
