@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../data/models/colltact.dart';
+import '../../../../../domain/colltacts/contact.dart';
 import '../../../../../domain/colltacts/get_contact_sort.dart';
+import '../../../../../domain/user_availability/colleagues/colleague.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
 import '../../../../util/contact.dart';
@@ -44,11 +46,8 @@ class ColltactList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<ColltactsCubit>(
-      create: (_) => ColltactsCubit(
-        context.watch<ColleagueCubit>(),
-        context.watch<CallerCubit>(),
-      ),
+    return BlocProvider<ContactsCubit>(
+      create: (_) => ContactsCubit(context.watch<CallerCubit>()),
       child: NestedNavigator(
         navigatorKey: navigatorKey,
         routes: {
@@ -88,7 +87,7 @@ class _ColltactPageState extends State<_ColltactList>
   @override
   void initState() {
     super.initState();
-    if (context.read<ColltactsCubit>().canViewColleagues) {
+    if (context.read<ColleaguesCubit>().canViewColleagues) {
       _createTabController();
     }
   }
@@ -110,7 +109,7 @@ class _ColltactPageState extends State<_ColltactList>
     super.didChangeAppLifecycleState(state);
 
     if (state == AppLifecycleState.resumed) {
-      context.read<ColltactsCubit>().reloadColltacts();
+      context.read<ContactsCubit>().reloadContacts();
     }
   }
 
@@ -125,7 +124,7 @@ class _ColltactPageState extends State<_ColltactList>
       () {
         if (!tabController.indexIsChanging) {
           if (tabController.index == 1) {
-            context.read<ColltactsCubit>().trackColleaguesTabSelected();
+            context.read<ColleaguesCubit>().trackColleaguesTabSelected();
           }
         }
       },
@@ -140,11 +139,12 @@ class _ColltactPageState extends State<_ColltactList>
       padding: const EdgeInsets.only(
         top: 16,
       ),
-      child: BlocBuilder<ColltactsCubit, ColltactsState>(
-        builder: (context, state) {
-          return BlocBuilder<ColleagueCubit, ColleagueState>(
-            builder: (context, colleagueState) {
-              final cubit = context.watch<ColltactsCubit>();
+      child: BlocBuilder<ContactsCubit, ContactsState>(
+        builder: (context, contactsState) {
+          return BlocBuilder<ColleaguesCubit, ColleaguesState>(
+            builder: (context, colleaguesState) {
+              final contactsCubit = context.watch<ContactsCubit>();
+              final colleaguesCubit = context.watch<ColleaguesCubit>();
 
               return DefaultTabController(
                 length: 2,
@@ -161,7 +161,7 @@ class _ColltactPageState extends State<_ColltactList>
                         onChanged: _onSearchTermChanged,
                       ),
                     ),
-                    if (cubit.shouldShowColleagues)
+                    if (colleaguesCubit.shouldShowColleagues)
                       TabBar(
                         controller: tabController,
                         labelStyle: const TextStyle(
@@ -187,34 +187,34 @@ class _ColltactPageState extends State<_ColltactList>
                         ],
                       ),
                     Expanded(
-                      child: cubit.shouldShowColleagues
+                      child: colleaguesCubit.shouldShowColleagues
                           ? TabBarView(
                               controller: tabController,
                               children: [
                                 _animatedSwitcher(
                                   ColltactKind.contact,
-                                  state,
-                                  cubit,
-                                  colleagueState,
+                                  contactsState,
+                                  contactsCubit,
+                                  colleaguesState,
+                                  colleaguesCubit,
                                 ),
                                 Column(
                                   children: [
                                     Expanded(
                                       child: _animatedSwitcher(
                                         ColltactKind.colleague,
-                                        state,
-                                        cubit,
-                                        colleagueState,
+                                        contactsState,
+                                        contactsCubit,
+                                        colleaguesState,
+                                        colleaguesCubit,
                                       ),
                                     ),
                                     BottomToggle(
                                       name: context.msg.main.colleagues.toggle,
-                                      initialValue:
-                                          cubit.showOnlineColleaguesOnly,
-                                      onChanged: (enabled) {
-                                        cubit.showOnlineColleaguesOnly =
-                                            enabled;
-                                      },
+                                      initialValue: colleaguesCubit
+                                          .showOnlineColleaguesOnly,
+                                      onChanged: (value) => colleaguesCubit
+                                          .showOnlineColleaguesOnly = value,
                                     ),
                                   ],
                                 ),
@@ -222,9 +222,10 @@ class _ColltactPageState extends State<_ColltactList>
                             )
                           : _animatedSwitcher(
                               ColltactKind.contact,
-                              state,
-                              cubit,
-                              colleagueState,
+                              contactsState,
+                              contactsCubit,
+                              colleaguesState,
+                              colleaguesCubit,
                             ),
                     ),
                   ],
@@ -238,7 +239,6 @@ class _ColltactPageState extends State<_ColltactList>
   }
 
   List<Widget> _mapAndFilterToWidgets(
-    ColltactKind kind,
     Iterable<Colltact> colltacts,
     ContactSort contactSort,
   ) {
@@ -251,14 +251,7 @@ class _ColltactPageState extends State<_ColltactList>
 
     final searchTerm = _searchTerm?.toLowerCase();
 
-    final contactsOnly = kind == ColltactKind.contact;
-
     for (var colltact in colltacts) {
-      if ((!contactsOnly && colltact is ColltactContact) ||
-          (contactsOnly && colltact is ColltactColleague)) {
-        continue;
-      }
-
       if (searchTerm != null && !colltact.matchesSearchTerm(searchTerm)) {
         continue;
       }
@@ -338,18 +331,19 @@ class _ColltactPageState extends State<_ColltactList>
   /// [NoResultsPlaceholder] to render something useful for the user.
   NoResultsType? _noResultsType(
     List<Widget> records,
-    ColltactsCubit cubit,
-    ColltactsState state,
-    ColleagueState colleagueState,
+    ContactsState contactsState,
+    ColleaguesState colleaguesState,
+    ColleaguesCubit colleaguesCubit,
     ColltactKind colltactKind,
   ) {
     final hasSearchQuery = _searchTerm?.isNotEmpty == true;
 
     switch (colltactKind) {
       case ColltactKind.contact:
-        if (state is LoadingColltacts) {
+        if (contactsState is LoadingContacts) {
           return NoResultsType.contactsLoading;
-        } else if (state is ColltactsLoaded && state.noContactPermission) {
+        } else if (contactsState is ContactsLoaded &&
+            contactsState.noContactPermission) {
           return NoResultsType.noContactsPermission;
         } else if (records.isEmpty) {
           return hasSearchQuery
@@ -359,11 +353,11 @@ class _ColltactPageState extends State<_ColltactList>
 
         return null;
       case ColltactKind.colleague:
-        if (colleagueState is Loading) {
+        if (colleaguesState is LoadingColleagues) {
           return NoResultsType.colleaguesLoading;
-        } else if (colleagueState is WebSocketUnreachable) {
+        } else if (colleaguesState is WebSocketUnreachable) {
           return NoResultsType.noColleagueConnectivity;
-        } else if (cubit.showOnlineColleaguesOnly &&
+        } else if (colleaguesState.showOnlineColleaguesOnly &&
             !hasSearchQuery &&
             records.isEmpty) {
           return NoResultsType.noOnlineColleagues;
@@ -377,19 +371,39 @@ class _ColltactPageState extends State<_ColltactList>
 
   AnimatedSwitcher _animatedSwitcher(
     ColltactKind colltactKind,
-    ColltactsState state,
-    ColltactsCubit cubit,
-    ColleagueState colleagueState,
+    ContactsState contactsState,
+    ContactsCubit contactsCubit,
+    ColleaguesState colleaguesState,
+    ColleaguesCubit colleaguesCubit,
   ) {
+    var colltacts = <Colltact>[];
+
+    if (colltactKind == ColltactKind.contact) {
+      final contacts = contactsState is ContactsLoaded
+          ? contactsState.contacts
+          : <Contact>[];
+      for (var contact in contacts) {
+        colltacts.add(Colltact.contact(contact));
+      }
+    } else {
+      final colleagues = colleaguesState is ColleaguesLoaded
+          ? colleaguesState.filteredColleagues
+          : <Colleague>[];
+      for (var colleague in colleagues) {
+        colltacts.add(Colltact.colleague(colleague));
+      }
+    }
+
     final records = _mapAndFilterToWidgets(
-      colltactKind,
-      state.colltacts,
-      state is ColltactsLoaded ? state.contactSort : defaultContactSort,
+      colltacts,
+      contactsState is ContactsLoaded
+          ? contactsState.contactSort
+          : defaultContactSort,
     );
 
     onRefresh() async {
-      await cubit.refreshColleagues();
-      await cubit.reloadColltacts();
+      await colleaguesCubit.refresh();
+      await contactsCubit.reloadContacts();
     }
 
     return AnimatedSwitcher(
@@ -399,23 +413,21 @@ class _ColltactPageState extends State<_ColltactList>
       child: NoResultsPlaceholder(
         type: _noResultsType(
           records,
-          cubit,
-          state,
-          colleagueState,
+          contactsState,
+          colleaguesState,
+          colleaguesCubit,
           colltactKind,
         ),
         kind: colltactKind,
         searchTerm: _searchTerm ?? '',
-        onCall: (number) => cubit.call(
-          number,
-          origin: colltactKind == ColltactKind.contact
-              ? CallOrigin.contacts
-              : CallOrigin.colleagues,
-        ),
+        onCall: (number) => colltactKind == ColltactKind.contact
+            ? contactsCubit.call(number)
+            : colleaguesCubit.call(number),
+        dontAskForContactsPermissionAgain: contactsState is ContactsLoaded
+            ? contactsState.dontAskAgain
+            : false,
+        contactsCubit: contactsCubit,
         onRefresh: onRefresh,
-        dontAskForContactsPermissionAgain:
-            state is ColltactsLoaded ? state.dontAskAgain : false,
-        cubit: cubit,
         child: AlphabetListView(
           key: ValueKey(_searchTerm),
           bottomLettersPadding: widget.bottomLettersPadding,

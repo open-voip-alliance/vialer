@@ -20,7 +20,7 @@ class NoResultsPlaceholder extends StatelessWidget {
   final Function(String number) onCall;
   final Future<void> Function() onRefresh;
   final bool dontAskForContactsPermissionAgain;
-  final ColltactsCubit cubit;
+  final ContactsCubit contactsCubit;
   final Widget child;
 
   const NoResultsPlaceholder({
@@ -30,7 +30,7 @@ class NoResultsPlaceholder extends StatelessWidget {
     required this.onCall,
     required this.onRefresh,
     required this.dontAskForContactsPermissionAgain,
-    required this.cubit,
+    required this.contactsCubit,
     required this.child,
   });
 
@@ -92,7 +92,7 @@ class NoResultsPlaceholder extends StatelessWidget {
     if (type == NoResultsType.noContactsPermission) {
       return _ContactsPermissionButton(
         dontAskAgain: dontAskForContactsPermissionAgain,
-        cubit: cubit,
+        cubit: contactsCubit,
       );
     }
 
@@ -227,7 +227,7 @@ enum NoResultsType {
 
 class _ContactsPermissionButton extends StatelessWidget {
   final bool dontAskAgain;
-  final ColltactsCubit cubit;
+  final ContactsCubit cubit;
 
   _ContactsPermissionButton({
     required this.dontAskAgain,

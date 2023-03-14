@@ -12,6 +12,7 @@ import '../../../widgets/caller.dart';
 import '../../../widgets/colltact_list/cubit.dart';
 import '../../../widgets/colltact_list/details/cubit.dart';
 import '../../../widgets/colltact_list/details/widget.dart';
+import '../../colleagues/cubit.dart';
 
 class ColltactPageDetails extends StatefulWidget {
   final Colltact colltact;
@@ -53,36 +54,59 @@ class _ColltactPageDetailsState extends State<ColltactPageDetails>
     }
   }
 
-  void _onStateChanged(BuildContext context, ColltactsState state) {
-    if (state is ColltactsLoaded) {
-      final colltactId = widget.colltact.when(
-        colleague: (colleague) => colleague.id,
-        contact: (contact) => contact.identifier,
-      );
+  void _onContactsStateChanged(BuildContext context, ContactsState state) {
+    if (state is ContactsLoaded) {
+      final List<Colltact> colltacts =
+          state.contacts.map(ColltactContact.new).toList();
 
-      final colltact = state.colltacts.firstWhereOrNull(
-        (colltact) => colltact.when(
-          contact: (contact) => contact.identifier == colltactId,
-          colleague: (colleague) => colleague.id == colltactId,
-        ),
-      );
+      _onColltactStateChanged(context, colltacts);
+    }
+  }
 
-      if (colltact == null && _madeEdit) {
-        // Colltact doesn't exist anymore after returning back to the app,
-        // it's probably deleted, so close this detail screen.
-        Navigator.pop(context, true);
-      }
+  void _onColleaguesStateChanged(BuildContext context, ColleaguesState state) {
+    if (state is ColleaguesLoaded) {
+      final List<Colltact> colltacts =
+          state.colleagues.map(ColltactColleague.new).toList();
+
+      _onColltactStateChanged(context, colltacts);
+    }
+  }
+
+  void _onColltactStateChanged(BuildContext context, List<Colltact> colltacts) {
+    final colltactId = widget.colltact.when(
+      colleague: (colleague) => colleague.id,
+      contact: (contact) => contact.identifier,
+    );
+
+    final colltact = colltacts.firstWhereOrNull(
+      (colltact) => colltact.when(
+        contact: (contact) => contact.identifier == colltactId,
+        colleague: (colleague) => colleague.id == colltactId,
+      ),
+    );
+
+    if (colltact == null && _madeEdit) {
+      // Colltact doesn't exist anymore after returning back to the app,
+      // it's probably deleted, so close this detail screen.
+      Navigator.pop(context, true);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<CallerCubit, CallerState>(
-      listener: _onCallerStateChanged,
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<CallerCubit, CallerState>(
+          listener: _onCallerStateChanged,
+        ),
+        BlocListener<ColleaguesCubit, ColleaguesState>(
+          listener: _onColleaguesStateChanged,
+        ),
+      ],
       child: BlocProvider<ColltactDetailsCubit>(
         create: (_) => ColltactDetailsCubit(context.read<CallerCubit>()),
-        child: BlocConsumer<ColltactsCubit, ColltactsState>(
-          listener: _onStateChanged,
+        child: BlocConsumer<ContactsCubit, ContactsState>(
+          listener: _onContactsStateChanged,
           builder: (context, state) {
             return BlocProvider<ColltactDetailsCubit>(
               create: (_) => ColltactDetailsCubit(context.watch<CallerCubit>()),
