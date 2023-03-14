@@ -24,7 +24,7 @@ class _ColleagueWebSocketState extends State<ColleagueWebSocket>
   @override
   void initState() {
     super.initState();
-    context.read<ColleagueCubit>().connectToWebSocket();
+    context.read<ColleaguesCubit>().connectToWebSocket();
   }
 
   @override
@@ -32,7 +32,7 @@ class _ColleagueWebSocketState extends State<ColleagueWebSocket>
     super.didChangeAppLifecycleState(state);
 
     if (state == AppLifecycleState.resumed) {
-      context.read<ColleagueCubit>().connectToWebSocket();
+      context.read<ColleaguesCubit>().connectToWebSocket();
     }
   }
 
@@ -40,7 +40,7 @@ class _ColleagueWebSocketState extends State<ColleagueWebSocket>
     BuildContext context,
     ConnectivityState state,
   ) {
-    final cubit = context.read<ColleagueCubit>();
+    final cubit = context.read<ColleaguesCubit>();
 
     state.map(
       connected: (_) => cubit.connectToWebSocket(),
