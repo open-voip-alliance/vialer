@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:timezone/timezone.dart';
 
 import '../../app/util/loggable.dart';
 import '../user/client.dart';
@@ -10,6 +11,7 @@ import 'temporary_redirect/temporary_redirect.dart';
 import 'temporary_redirect/temporary_redirect_exception.dart';
 
 part 'business_availability_repository.freezed.dart';
+
 part 'business_availability_repository.g.dart';
 
 class BusinessAvailabilityRepository with Loggable {
@@ -119,7 +121,10 @@ extension on _TemporaryRedirectResponse {
 
 extension on TemporaryRedirect {
   Map<String, dynamic> asRequestData() => {
-        'end': endsAt.toString(),
+        // Has to be UTC, because we need a time-zone aware string,
+        // and `toIso8601String` only adds time-zone information
+        // with UTC DateTimes.
+        'end': endsAt.toUtc().toIso8601String(),
         'destination': {
           'type': 'VOICEMAIL',
           'id': destination.map(
