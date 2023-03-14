@@ -23,7 +23,6 @@ class UserSubPage extends StatelessWidget {
           ),
           children: (state) {
             return [
-              SettingsSubPageHelp(context.msg.main.settings.subPage.user.help),
               AccountInfoCategory(
                 children: [
                   MobileNumberTile(state.user),

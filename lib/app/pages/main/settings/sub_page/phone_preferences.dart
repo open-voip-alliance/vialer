@@ -42,9 +42,6 @@ class PhonePreferencesSubPage extends StatelessWidget {
           title: Text(context.msg.main.settings.subPage.phonePreferences.title),
           children: (state) {
             return [
-              SettingsSubPageHelp(
-                context.msg.main.settings.subPage.phonePreferences.help,
-              ),
               CallingCategory(
                 children: [
                   if (isVoipAllowed) UseVoipTile(user),
