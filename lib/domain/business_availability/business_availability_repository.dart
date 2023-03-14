@@ -1,6 +1,5 @@
 import 'package:collection/collection.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:timezone/timezone.dart';
 
 import '../../app/util/loggable.dart';
 import '../user/client.dart';
