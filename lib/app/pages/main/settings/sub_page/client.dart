@@ -30,9 +30,6 @@ class ClientSubPage extends StatelessWidget {
           ),
           children: (state) {
             return [
-              SettingsSubPageHelp(
-                context.msg.main.settings.subPage.client.help,
-              ),
               if (user.permissions.canChangeTemporaryRedirect)
                 const TemporaryRedirectCategory(
                   children: [
