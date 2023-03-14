@@ -52,12 +52,7 @@ class SettingTile extends StatelessWidget {
       children: <Widget>[
         Container(
           decoration: _shouldRenderBorder(context)
-              ? BoxDecoration(
-                  border: Border.all(
-                    color: context.brand.theme.colors.grey2,
-                  ),
-                  borderRadius: BorderRadius.circular(8),
-                )
+              ? context.brand.theme.fieldBoxDecoration
               : null,
           padding: padding,
           child: Column(

@@ -218,8 +218,9 @@ class _FeedbackFormHeader extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-            color: context.brand.theme.colors.grey5.withOpacity(0.15)),
+          borderRadius: BorderRadius.circular(8),
+          color: context.brand.theme.colors.grey5.withOpacity(0.15),
+        ),
         child: Column(
           children: [
             Row(

@@ -6,7 +6,7 @@ import '../../../../resources/localizations.dart';
 
 class TemporaryRedirectExplanation extends StatelessWidget {
   final TemporaryRedirectDestination? currentDestination;
-  final DateTime endsAt;
+  final DateTime? endsAt;
 
   const TemporaryRedirectExplanation({
     super.key,
@@ -45,7 +45,8 @@ class TemporaryRedirectExplanation extends StatelessWidget {
   }
 }
 
-extension on DateTime {
-  String toTemporaryRedirectFormat() =>
-      DateFormat('E d-M-y H:m').format(toLocal());
+extension on DateTime? {
+  String toTemporaryRedirectFormat() => this != null
+      ? DateFormat('E. d-M-y HH:mm').format(this!.toLocal())
+      : '??';
 }
