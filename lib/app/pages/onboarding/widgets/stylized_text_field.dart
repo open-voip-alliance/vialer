@@ -26,9 +26,10 @@ class StylizedTextField extends StatelessWidget {
   final Function(String)? onSubmitted;
   final bool enabled;
   final double elevation;
+  final bool bordered;
 
   StylizedTextField({
-    Key? key,
+    super.key,
     this.labelText,
     this.hintText,
     this.prefixIcon,
@@ -53,12 +54,22 @@ class StylizedTextField extends StatelessWidget {
     this.onSubmitted,
     this.enabled = true,
     this.elevation = 4,
-  }) : super(key: key);
+    this.bordered = false,
+  });
 
   static const color = Colors.grey;
 
   @override
   Widget build(BuildContext context) {
+    final inputBorder = !bordered
+        ? noInputBorder
+        : OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide(
+              color: context.brand.theme.colors.grey2,
+            ),
+          );
+
     return Material(
       color: Colors.transparent,
       elevation: elevation,
@@ -112,7 +123,7 @@ class StylizedTextField extends StatelessWidget {
     );
   }
 
-  final InputBorder inputBorder = OutlineInputBorder(
+  final InputBorder noInputBorder = OutlineInputBorder(
     borderRadius: BorderRadius.circular(4),
     borderSide: const BorderSide(
       style: BorderStyle.none,
