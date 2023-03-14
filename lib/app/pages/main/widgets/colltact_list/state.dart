@@ -1,20 +1,18 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../../../../app/util/pigeon.dart';
-import '../../../../../data/models/colltact.dart';
+import '../../../../../domain/colltacts/contact.dart';
 
 part 'state.freezed.dart';
 
 @freezed
-class ColltactsState with _$ColltactsState {
-  const factory ColltactsState.loading({
-    @Default([]) Iterable<Colltact> colltacts,
-  }) = LoadingColltacts;
+class ContactsState with _$ContactsState {
+  const factory ContactsState.loading() = LoadingContacts;
 
-  const factory ColltactsState.loaded({
-    required Iterable<Colltact> colltacts,
+  const factory ContactsState.loaded({
+    required Iterable<Contact> contacts,
     required ContactSort contactSort,
     required bool noContactPermission,
     required bool dontAskAgain,
-  }) = ColltactsLoaded;
+  }) = ContactsLoaded;
 }
