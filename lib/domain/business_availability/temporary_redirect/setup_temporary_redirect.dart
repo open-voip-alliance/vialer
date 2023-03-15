@@ -1,5 +1,3 @@
-import 'package:dartx/dartx.dart';
-
 import '../../../../dependency_locator.dart';
 import '../../use_case.dart';
 import '../../user/get_logged_in_user.dart';
@@ -16,9 +14,8 @@ class StartTemporaryRedirect extends UseCase
 
   Future<void> call({
     required VoicemailAccount voicemailAccount,
+    required DateTime endingAt,
   }) async {
-    final endingAt = _endingAt;
-
     await _businessAvailability.createTemporaryRedirect(
       user: _getUser(),
       temporaryRedirect: TemporaryRedirect(
@@ -27,10 +24,7 @@ class StartTemporaryRedirect extends UseCase
       ),
     );
 
-    track({'ending-at': _endingAt.toIso8601String()});
+    track({'ending-at': endingAt.toIso8601String()});
     broadcast();
   }
-
-  DateTime get _endingAt =>
-      DateTime.now().copyWith(hour: 23, minute: 59, second: 59).toUtc();
 }

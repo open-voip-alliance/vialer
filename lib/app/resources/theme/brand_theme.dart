@@ -7,69 +7,76 @@ import 'colors.dart';
 
 @immutable
 class BrandTheme {
-  const BrandTheme(this.colors, this.logo);
+  BrandTheme(this.colors, this.logo);
 
   final Colors colors;
   final IconData logo;
 
-  LinearGradient get splashScreenGradient => LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        colors: [
-          colors.splashScreen,
-          colors.splashScreen,
-        ],
-      );
+  late final splashScreenGradient = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [
+      colors.splashScreen,
+      colors.splashScreen,
+    ],
+  );
 
-  LinearGradient get onboardingGradient => LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        colors: [
-          colors.onboardingGradientStart,
-          colors.onboardingGradientEnd,
-        ],
-      );
+  late final onboardingGradient = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [
+      colors.onboardingGradientStart,
+      colors.onboardingGradientEnd,
+    ],
+  );
 
-  LinearGradient get onboardingGradientReversed => LinearGradient(
-        colors: onboardingGradient.colors,
-        begin: onboardingGradient.end,
-        end: onboardingGradient.begin,
-      );
+  late final onboardingGradientReversed = LinearGradient(
+    colors: onboardingGradient.colors,
+    begin: onboardingGradient.end,
+    end: onboardingGradient.begin,
+  );
 
-  LinearGradient get primaryGradient => LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        colors: [
-          colors.primaryGradientStart,
-          colors.primaryGradientEnd,
-        ],
-      );
+  late final primaryGradient = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [
+      colors.primaryGradientStart,
+      colors.primaryGradientEnd,
+    ],
+  );
 
-  ThemeData get themeData {
-    return ThemeData(
-      primaryColor: colors.primary,
-      primaryColorDark: colors.primaryDark,
-      primaryColorLight: colors.primaryLight,
-      appBarTheme: AppBarTheme(
-        color: colors.appBarBackground,
-        titleTextStyle: TextStyle(
-          color: colors.appBarForeground,
-          fontSize: 24,
-          fontWeight: FontWeight.bold,
-        ),
-        iconTheme: IconThemeData(
-          color: colors.appBarForeground,
+  late final fieldBorderRadius = BorderRadius.circular(8);
+
+  late final fieldBoxDecoration = BoxDecoration(
+    border: Border.all(
+      color: colors.grey2,
+    ),
+    borderRadius: fieldBorderRadius,
+  );
+
+  late final themeData = ThemeData(
+    primaryColor: colors.primary,
+    primaryColorDark: colors.primaryDark,
+    primaryColorLight: colors.primaryLight,
+    appBarTheme: AppBarTheme(
+      color: colors.appBarBackground,
+      titleTextStyle: TextStyle(
+        color: colors.appBarForeground,
+        fontSize: 24,
+        fontWeight: FontWeight.bold,
+      ),
+      iconTheme: IconThemeData(
+        color: colors.appBarForeground,
+      ),
+    ),
+    textButtonTheme: TextButtonThemeData(
+      style: ButtonStyle(
+        foregroundColor: MaterialStateProperty.all(
+          colors.textButtonForeground,
         ),
       ),
-      textButtonTheme: TextButtonThemeData(
-        style: ButtonStyle(
-          foregroundColor: MaterialStateProperty.all(
-            colors.textButtonForeground,
-          ),
-        ),
-      ),
-    );
-  }
+    ),
+  );
 }
 
 extension ThemeOfBrand on Brand {
