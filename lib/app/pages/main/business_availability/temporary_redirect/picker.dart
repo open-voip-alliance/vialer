@@ -1,4 +1,4 @@
-import 'package:collection/collection.dart';
+import 'package:dartx/dartx.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -10,12 +10,14 @@ import '../../../../util/brand.dart';
 import '../../../../util/conditional_capitalization.dart';
 import '../../../../widgets/stylized_button.dart';
 import '../../../../widgets/stylized_dropdown.dart';
+import 'date_field.dart';
 import 'explanation.dart';
+import 'field.dart';
 
 class TemporaryRedirectPicker extends StatefulWidget {
   final TemporaryRedirect? activeRedirect;
   final Iterable<TemporaryRedirectDestination> availableDestinations;
-  final Future<void> Function(TemporaryRedirectDestination) onStart;
+  final Future<void> Function(TemporaryRedirectDestination, DateTime) onStart;
   final Future<void> Function()? onStop;
   final VoidCallback? onCancel;
 
@@ -38,14 +40,26 @@ class _TemporaryRedirectPickerState extends State<TemporaryRedirectPicker> {
 
   bool get _hasAvailableDestinations => widget.availableDestinations.isNotEmpty;
 
+  late final _untilDateNotifier = ValueNotifier<DateTime?>(null);
+
+  bool _hasCorrectUntilDate = true;
+  bool _actionable = true;
+
   @override
   void initState() {
     super.initState();
     _selectedDestination = widget.activeRedirect?.destination ??
         widget.availableDestinations.firstOrNull;
+
+    _untilDateNotifier.addListener(_onUntilDateChange);
   }
 
-  bool _actionable = true;
+  void _onUntilDateChange() {
+    // Side effect: Explanation will be updated with correct date.
+    setState(() {
+      _hasCorrectUntilDate = _untilDateNotifier.value != null;
+    });
+  }
 
   Future<void> _handleAction(Future<void> Function() action) async {
     // ignore: avoid_positional_boolean_parameters
@@ -73,6 +87,14 @@ class _TemporaryRedirectPickerState extends State<TemporaryRedirectPicker> {
   // TODO?: Can be in-app webview
   void _openPortal() => launchUrl(context.brand.url);
 
+  String get _mainActionText {
+    final text = widget.activeRedirect != null
+        ? context.msg.main.temporaryRedirect.actions.changeRedirect.label
+        : context.msg.main.temporaryRedirect.actions.startRedirect.label;
+
+    return text.toUpperCaseIfAndroid(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -82,9 +104,10 @@ class _TemporaryRedirectPickerState extends State<TemporaryRedirectPicker> {
         children: [
           TemporaryRedirectExplanation(
             currentDestination: _selectedDestination,
+            endsAt: _untilDateNotifier.value,
           ),
           const SizedBox(height: 16),
-          Text(
+          FieldHeader(
             context.msg.main.temporaryRedirect.dropdown.title,
           ),
           const SizedBox(height: 8),
@@ -146,21 +169,27 @@ class _TemporaryRedirectPickerState extends State<TemporaryRedirectPicker> {
             ),
           ],
           const SizedBox(height: 16),
+          FieldHeader(context.msg.main.temporaryRedirect.until.title),
+          const SizedBox(height: 8),
+          Flexible(
+            child: DateField(
+              notifier: _untilDateNotifier,
+            ),
+          ),
+          const SizedBox(height: 16),
           StylizedButton.raised(
             colored: true,
-            onPressed: _actionable && _selectedDestination != null
+            onPressed: _actionable &&
+                    _hasCorrectUntilDate &&
+                    _selectedDestination != null
                 ? () => _handleAction(
-                      () => widget.onStart(_selectedDestination!),
+                      () => widget.onStart(
+                        _selectedDestination!,
+                        _untilDateNotifier.value!,
+                      ),
                     )
                 : null,
-            child: Text(
-              (widget.activeRedirect != null
-                      ? context.msg.main.temporaryRedirect.actions
-                          .changeRedirect.label
-                      : context.msg.main.temporaryRedirect.actions.startRedirect
-                          .label)
-                  .toUpperCaseIfAndroid(context),
-            ),
+            child: Text(_mainActionText),
           ),
           if (widget.onCancel != null) ...[
             const SizedBox(height: 12),
