@@ -459,16 +459,20 @@ main:
     title: "Tijdelijke omleiding"
     explanation:
       start: "Alle inkomende oproepen naar alle nummers gaan rechtstreeks naar voicemail"
-      end: "tot het einde van de dag (23:59)."
+      end(String date): "tot $date."
       selectVoicemail: "[kies voicemail hieronder]"
     dropdown:
-      title: "Kies voicemail"
+      title: "Voicemail"
       noVoicemails:
         item: "Geen voicemail beschikbaar"
         hint:
           start: "Geen voicemail gevonden, voeg deze toe in "
           link: "het platform"
           end: "."
+    until:
+      title: "Tot"
+      error:
+        timeInPast: "Gekozen tijd is in het verleden. Graag een toekomstige eindtijd kiezen."
     actions:
       title: "Tijdelijke omleiding"
       setupRedirect:

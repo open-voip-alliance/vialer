@@ -20,8 +20,8 @@ class TemporaryRedirectPickerPage extends StatelessWidget {
           body: TemporaryRedirectPicker(
             activeRedirect: state is Active ? state.redirect : null,
             availableDestinations: state.availableRedirectDestinations,
-            onStart: (destination) => context.popAfter(
-              cubit.startOrUpdateCurrentTemporaryRedirect(destination),
+            onStart: (destination, until) => context.popAfter(
+              cubit.startOrUpdateCurrentTemporaryRedirect(destination, until),
             ),
             onStop: state is Active
                 ? () => context.popAfter(cubit.stopTemporaryRedirect())

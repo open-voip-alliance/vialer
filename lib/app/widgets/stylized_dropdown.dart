@@ -18,12 +18,12 @@ class StylizedDropdown<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final fieldBoxDecoration = context.brand.theme.fieldBoxDecoration;
+
     return Container(
       decoration: BoxDecoration(
-        border: context.isAndroid
-            ? Border.all(color: context.brand.theme.colors.grey1)
-            : null,
-        borderRadius: BorderRadius.circular(8),
+        border: context.isAndroid ? fieldBoxDecoration.border : null,
+        borderRadius: fieldBoxDecoration.borderRadius,
       ),
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       child: DropdownButtonHideUnderline(
