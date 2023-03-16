@@ -245,6 +245,8 @@ class RefreshUser extends UseCase with Loggable {
       canViewVoipAccounts: granted.contains(UserPermission.listVoipAccounts),
       canViewDialPlans: granted.contains(UserPermission.viewRouting),
       canViewStats: granted.contains(UserPermission.viewStats),
+      canChangeOpeningHours:
+          granted.contains(UserPermission.changeOpeningHours),
     );
 
     if (!permissions.canSeeClientCalls) {
