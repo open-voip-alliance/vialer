@@ -25,6 +25,6 @@ class UserPermissions with _$UserPermissions {
   factory UserPermissions.fromJson(Map<String, dynamic> json) =>
       _$UserPermissionsFromJson(json);
 
-  static Map<String, dynamic>? serializeToJson(UserPermissions? config) =>
-      config != null ? config.toJson() : null;
+  static Map<String, dynamic>? serializeToJson(UserPermissions? permissions) =>
+      permissions != null ? permissions.toJson() : null;
 }
