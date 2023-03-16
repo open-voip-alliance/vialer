@@ -48,7 +48,7 @@ class User extends Equatable {
   )
   final UserPermissions permissions;
 
-  User({
+  const User({
     required this.uuid,
     required this.email,
     required this.firstName,
