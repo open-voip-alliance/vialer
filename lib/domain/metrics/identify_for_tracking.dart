@@ -66,8 +66,8 @@ extension on List<Colleague> {
         partition((colleague) => colleague is UnconnectedVoipAccount);
 
     return {
-      'number_of_colleagues': result[0].length,
-      'number_of_unconnected_voip_accounts': result[1].length,
+      'number_of_colleagues': result[1].length,
+      'number_of_unconnected_voip_accounts': result[0].length,
     };
   }
 }
