@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:dartx/dartx.dart';
 import 'package:recase/recase.dart';
 
 import '../../../dependency_locator.dart';
@@ -60,12 +61,15 @@ extension on List<String> {
 }
 
 extension on List<Colleague> {
-  Map<String, dynamic> toIdentifyProperties() => {
-        'number_of_colleagues':
-            where((colleague) => colleague is! UnconnectedVoipAccount).length,
-        'number_of_unconnected_voip_accounts':
-            where((colleague) => colleague is UnconnectedVoipAccount).length,
-      };
+  Map<String, dynamic> toIdentifyProperties() {
+    final result =
+        partition((colleague) => colleague is UnconnectedVoipAccount);
+
+    return {
+      'number_of_colleagues': result[0].length,
+      'number_of_unconnected_voip_accounts': result[1].length,
+    };
+  }
 }
 
 extension on SettingKey {
