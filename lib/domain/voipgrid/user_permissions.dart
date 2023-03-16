@@ -27,6 +27,7 @@ class UserPermissionsRepository with Loggable {
     'permission.list_api_user_basic_info': UserPermission.listUsers,
     'routing.view_routing': UserPermission.viewRouting,
     'stats.view_stats': UserPermission.viewStats,
+    'openinghours.change_openinghoursgroup': UserPermission.changeOpeningHours,
   };
 
   Future<List<UserPermission>> getGrantedPermissions({
@@ -68,6 +69,7 @@ enum UserPermission {
   listUsers,
   viewStats,
   viewRouting,
+  changeOpeningHours,
 }
 
 class UnableToRetrievePermissionsException extends VialerException {}

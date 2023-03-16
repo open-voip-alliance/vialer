@@ -42,10 +42,13 @@ class User extends Equatable {
   @JsonKey(toJson: Settings.toJson, fromJson: Settings.fromJson)
   final Settings settings;
 
-  @JsonKey(toJson: UserPermissions.toJson, fromJson: UserPermissions.fromJson)
+  @JsonKey(
+    toJson: UserPermissions.serializeToJson,
+    fromJson: UserPermissions.fromJson,
+  )
   final UserPermissions permissions;
 
-  const User({
+  User({
     required this.uuid,
     required this.email,
     required this.firstName,
@@ -55,7 +58,7 @@ class User extends Equatable {
     required this.client,
     this.voip,
     required this.settings,
-    this.permissions = const UserPermissions.defaults(),
+    this.permissions = const UserPermissions(),
   });
 
   User copyWith({

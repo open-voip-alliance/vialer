@@ -1,82 +1,30 @@
-import 'package:equatable/equatable.dart';
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'user_permissions.g.dart';
 
-@JsonSerializable()
-class UserPermissions extends Equatable {
-  @JsonKey(defaultValue: false)
-  final bool canSeeClientCalls;
+part 'user_permissions.freezed.dart';
 
-  @JsonKey(defaultValue: false)
-  final bool canChangeMobileNumberFallback;
+@freezed
+class UserPermissions with _$UserPermissions {
+  const UserPermissions._();
 
-  @JsonKey(defaultValue: false)
-  final bool canViewMobileNumberFallbackStatus;
+  const factory UserPermissions({
+    @Default(false) bool canSeeClientCalls,
+    @Default(false) bool canChangeMobileNumberFallback,
+    @Default(false) bool canViewMobileNumberFallbackStatus,
+    @Default(false) bool canChangeTemporaryRedirect,
+    @Default(false) bool canViewVoicemailAccounts,
+    @Default(false) bool canChangeOutgoingNumber,
+    @Default(false) bool canViewColleagues,
+    @Default(false) bool canViewVoipAccounts,
+    @Default(false) bool canViewDialPlans,
+    @Default(false) bool canViewStats,
+    @Default(false) bool canChangeOpeningHours,
+  }) = _UserPermissions;
 
-  @JsonKey(defaultValue: false)
-  final bool canChangeTemporaryRedirect;
-
-  @JsonKey(defaultValue: false)
-  final bool canViewVoicemailAccounts;
-
-  @JsonKey(defaultValue: false)
-  final bool canChangeOutgoingNumber;
-
-  @JsonKey(defaultValue: false)
-  final bool canViewColleagues;
-
-  @JsonKey(defaultValue: false)
-  final bool canViewVoipAccounts;
-
-  @JsonKey(defaultValue: false)
-  final bool canViewDialPlans;
-
-  @JsonKey(defaultValue: false)
-  final bool canViewStats;
-
-  const UserPermissions({
-    required this.canSeeClientCalls,
-    required this.canChangeMobileNumberFallback,
-    required this.canViewMobileNumberFallbackStatus,
-    required this.canChangeTemporaryRedirect,
-    required this.canViewVoicemailAccounts,
-    required this.canChangeOutgoingNumber,
-    required this.canViewColleagues,
-    required this.canViewVoipAccounts,
-    required this.canViewDialPlans,
-    required this.canViewStats,
-  });
-
-  const UserPermissions.defaults()
-      : this(
-          canSeeClientCalls: false,
-          canChangeMobileNumberFallback: false,
-          canViewMobileNumberFallbackStatus: false,
-          canChangeTemporaryRedirect: false,
-          canViewVoicemailAccounts: false,
-          canChangeOutgoingNumber: false,
-          canViewColleagues: false,
-          canViewVoipAccounts: false,
-          canViewDialPlans: false,
-          canViewStats: false,
-        );
-
-  static UserPermissions fromJson(Map<String, dynamic> json) =>
+  factory UserPermissions.fromJson(Map<String, dynamic> json) =>
       _$UserPermissionsFromJson(json);
 
-  static Map<String, dynamic> toJson(UserPermissions value) =>
-      _$UserPermissionsToJson(value);
-
-  @override
-  List<Object?> get props => [
-        canSeeClientCalls,
-        canChangeMobileNumberFallback,
-        canViewMobileNumberFallbackStatus,
-        canChangeTemporaryRedirect,
-        canViewVoicemailAccounts,
-        canChangeOutgoingNumber,
-        canViewColleagues,
-        canViewVoipAccounts,
-      ];
+  static Map<String, dynamic>? serializeToJson(UserPermissions? config) =>
+      config != null ? config.toJson() : null;
 }

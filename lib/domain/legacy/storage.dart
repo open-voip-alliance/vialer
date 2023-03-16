@@ -344,18 +344,7 @@ class StorageRepository {
           clientOutgoingNumbers = (value['numbers'] as List<dynamic>).cast();
           break;
         case 'VoipgridPermissionsSetting':
-          permissions = const UserPermissions(
-            canSeeClientCalls: false,
-            canChangeMobileNumberFallback: false,
-            canChangeTemporaryRedirect: false,
-            canViewMobileNumberFallbackStatus: false,
-            canViewVoicemailAccounts: false,
-            canChangeOutgoingNumber: false,
-            canViewColleagues: false,
-            canViewVoipAccounts: false,
-            canViewStats: false,
-            canViewDialPlans: false,
-          );
+          permissions = const UserPermissions();
           break;
       }
     }
@@ -384,7 +373,7 @@ class StorageRepository {
             clientOutgoingNumbers?.map(OutgoingNumber.new) ?? const [],
       ),
       settings: const Settings.defaults().copyWithAll(settings),
-      permissions: permissions ?? const UserPermissions.defaults(),
+      permissions: permissions ?? const UserPermissions(),
     );
   }
 }
