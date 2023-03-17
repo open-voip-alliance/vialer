@@ -5,41 +5,20 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../../../domain/user/info/build_info.dart';
 import '../../../../domain/user/launch_privacy_policy.dart';
 import '../../../../domain/user/settings/app_setting.dart';
-import '../../../../domain/user/settings/call_setting.dart';
 import '../../../resources/localizations.dart';
-import '../../../resources/theme.dart';
 import '../../../routes.dart';
 import '../../../util/conditional_capitalization.dart';
 import '../../../widgets/stylized_button.dart';
-import '../business_availability/temporary_redirect/setting_tile.dart';
 import '../util/stylized_snack_bar.dart';
 import '../widgets/header.dart';
 import '../widgets/user_data_refresher/cubit.dart';
 import 'cubit.dart';
+import 'sub_page/client.dart';
+import 'sub_page/phone_preferences.dart';
+import 'sub_page/user.dart';
 import 'widgets/tile/availability.dart';
-import 'widgets/tile/category/account_info.dart';
-import 'widgets/tile/category/advanced_settings.dart';
-import 'widgets/tile/category/audio.dart';
-import 'widgets/tile/category/calling.dart';
-import 'widgets/tile/category/debug.dart';
-import 'widgets/tile/category/portal_links.dart';
-import 'widgets/tile/category/temporary_redirect.dart';
 import 'widgets/tile/dnd.dart';
-import 'widgets/tile/ignore_battery_optimizations.dart';
-import 'widgets/tile/link/calls.dart';
-import 'widgets/tile/link/dial_plan.dart';
-import 'widgets/tile/link/opening_hours.dart';
-import 'widgets/tile/link/stats.dart';
-import 'widgets/tile/link/troubleshooting.dart';
-import 'widgets/tile/mobile_number.dart';
-import 'widgets/tile/outgoing_number.dart';
-import 'widgets/tile/remote_logging.dart';
-import 'widgets/tile/show_calls_in_native_recents.dart';
-import 'widgets/tile/show_client_calls.dart';
-import 'widgets/tile/use_mobile_number_as_fallback.dart';
-import 'widgets/tile/use_phone_ringtone.dart';
-import 'widgets/tile/use_voip.dart';
-import 'widgets/tile/username.dart';
+import 'widgets/tile/link/sub_page.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -51,8 +30,6 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  final _scrollController = ScrollController();
-
   Future<void> _goToFeedbackPage(BuildContext context) async {
     final sent = await Navigator.pushNamed(
           context,
@@ -107,128 +84,95 @@ class _SettingsPageState extends State<SettingsPage> {
                   listener: _onStateChanged,
                   builder: (context, state) {
                     final user = state.user;
-                    final isVoipAllowed = state.isVoipAllowed;
-                    final showTroubleshooting = state.showTroubleshooting;
                     final showDnd = state.showDnd;
-                    final hasIgnoreOptimizationsPermission =
-                        state.hasIgnoreBatteryOptimizationsPermission;
                     final userNumber = state.userNumber;
                     final destinations = state.availableDestinations;
                     final cubit = context.watch<SettingsCubit>();
 
-                    final useVoip = user.settings.get(CallSetting.useVoip);
-                    final canViewMobileFallback =
-                        user.permissions.canViewMobileNumberFallbackStatus;
-
                     return Expanded(
-                      child: ListView(
-                        controller: _scrollController,
-                        padding: const EdgeInsets.only(top: 8),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          if (showDnd) DndTile(user),
-                          AvailabilityTile(
-                            user: user,
-                            userNumber: userNumber,
-                            destinations: destinations,
-                          ),
-                          AccountInfoCategory(
-                            children: [
-                              MobileNumberTile(user),
-                              OutgoingNumberTile(user),
-                              UsernameTile(user),
-                            ],
-                          ),
-                          if (isVoipAllowed)
-                            AudioCategory(
-                              children: [
-                                UsePhoneRingtoneTile(user),
-                              ],
-                            ),
-                          CallingCategory(
-                            children: [
-                              if (isVoipAllowed) UseVoipTile(user),
-                              if (useVoip &&
-                                  canViewMobileFallback &&
-                                  isVoipAllowed)
-                                UseMobileNumberAsFallbackTile(user),
-                              if (context.isIOS && isVoipAllowed)
-                                ShowCallsInNativeRecentsTile(user),
-                              if (context.isAndroid)
-                                IgnoreBatteryOptimizationsTile(
-                                  hasIgnoreBatteryOptimizationsPermission:
-                                      hasIgnoreOptimizationsPermission,
-                                  onChanged: (enabled) =>
-                                      cubit.requestBatteryPermission(),
-                                ),
-                              ShowClientCallsTile(user),
-                            ],
-                          ),
-                          if (user.permissions.canChangeTemporaryRedirect)
-                            const TemporaryRedirectCategory(
-                              children: [
-                                TemporaryRedirectSettingTile(),
-                              ],
-                            ),
-                          PortalLinksCategory(
-                            children: [
-                              const CallsLinkTile(),
-                              const DialPlanLinkTile(),
-                              if (cubit.shouldShowOpeningHoursBasic &&
-                                  user.client.openingHours.isNotEmpty)
-                                OpeningHoursLinkTile(user),
-                              const StatsLinkTile(),
-                            ],
-                          ),
-                          DebugCategory(
-                            children: [
-                              RemoteLoggingTile(user),
-                            ],
-                          ),
-                          // Show advanced settings only if allowed.
-                          if (isVoipAllowed && showTroubleshooting)
-                            const AdvancedSettingsCategory(
-                              children: [
-                                TroubleshootingLinkTile(),
-                              ],
-                            ),
-                          if (state.buildInfo != null)
-                            _BuildInfo(state.buildInfo!),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 48,
-                            ),
+                          SingleChildScrollView(
                             child: Column(
-                              children: <Widget>[
-                                SizedBox(
-                                  width: double.infinity,
-                                  child: StylizedButton.raised(
-                                    colored: true,
-                                    onPressed: () => _goToFeedbackPage(context),
-                                    child: Text(
-                                      sendFeedbackButtonText,
-                                    ),
+                              children: [
+                                if (showDnd) DndTile(user),
+                                AvailabilityTile(
+                                  user: user,
+                                  userNumber: userNumber,
+                                  destinations: destinations,
+                                ),
+                                SubPageLinkTile(
+                                  title: context.msg.main.settings.subPage
+                                      .phonePreferences.title,
+                                  icon: FontAwesomeIcons.solidMobileNotch,
+                                  cubit: cubit,
+                                  pageBuilder: (_) =>
+                                      const PhonePreferencesSubPage(),
+                                ),
+                                SubPageLinkTile(
+                                  title: context.msg.main.settings.subPage.user
+                                      .title(user.fullName),
+                                  icon: FontAwesomeIcons.circleUser,
+                                  cubit: cubit,
+                                  pageBuilder: (_) => const UserSubPage(),
+                                ),
+                                if (user.canViewClientSubPage)
+                                  SubPageLinkTile(
+                                    title: context
+                                        .msg.main.settings.subPage.client
+                                        .title(user.client.name),
+                                    icon: FontAwesomeIcons.building,
+                                    cubit: cubit,
+                                    pageBuilder: (_) => const ClientSubPage(),
                                   ),
-                                ),
-                                const SizedBox(height: 16),
-                                SizedBox(
-                                  width: double.infinity,
-                                  child: StylizedButton.outline(
-                                    colored: true,
-                                    onPressed:
-                                        context.watch<SettingsCubit>().logout,
-                                    child: Text(
-                                      logoutButtonText,
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(height: 16),
-                                TextButton(
-                                  onPressed: () => LaunchPrivacyPolicy()(),
-                                  child: Text(privacyPolicyText),
-                                ),
-                                const SizedBox(height: 16),
                               ],
                             ),
+                          ),
+                          Column(
+                            children: [
+                              if (state.buildInfo != null)
+                                _BuildInfo(state.buildInfo!),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 48,
+                                ),
+                                child: Column(
+                                  children: <Widget>[
+                                    SizedBox(
+                                      width: double.infinity,
+                                      child: StylizedButton.raised(
+                                        colored: true,
+                                        onPressed: () =>
+                                            _goToFeedbackPage(context),
+                                        child: Text(
+                                          sendFeedbackButtonText,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 16),
+                                    SizedBox(
+                                      width: double.infinity,
+                                      child: StylizedButton.outline(
+                                        colored: true,
+                                        onPressed: context
+                                            .watch<SettingsCubit>()
+                                            .logout,
+                                        child: Text(
+                                          logoutButtonText,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    TextButton(
+                                      onPressed: () => LaunchPrivacyPolicy()(),
+                                      child: Text(privacyPolicyText),
+                                    ),
+                                    const SizedBox(height: 4),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),

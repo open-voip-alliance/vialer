@@ -80,6 +80,8 @@ class RefreshUser extends UseCase with Loggable {
       user = user.copyWith(
         settings: const Settings.defaults().copyFrom(user.settings),
         permissions: storedUser?.permissions,
+        client: storedUser?.client,
+        voip: storedUser?.voip,
       );
 
       // If we're retrieving the user for the first time (logging in),
@@ -244,6 +246,10 @@ class RefreshUser extends UseCase with Loggable {
           granted.contains(UserPermission.changeVoipAccount),
       canViewColleagues: granted.contains(UserPermission.listUsers),
       canViewVoipAccounts: granted.contains(UserPermission.listVoipAccounts),
+      canViewDialPlans: granted.contains(UserPermission.viewRouting),
+      canViewStats: granted.contains(UserPermission.viewStats),
+      canChangeOpeningHours:
+          granted.contains(UserPermission.changeOpeningHours),
     );
 
     if (!permissions.canSeeClientCalls) {

@@ -261,6 +261,13 @@ main:
     title: &settingsTitle "Instellingen"
     menu:
       title: *settingsTitle
+    subPage:
+      phonePreferences:
+        title: "Phone preferences"
+      user:
+        title(String user): "$user"
+      client:
+        title(String client): "$client"
     list:
       debug:
         title: "Foutopsporing"
@@ -312,6 +319,8 @@ main:
           description(String appName): >-
             De beltoon van je telefoon wordt afgespeeld in plaats van
             de beltoon van de app als iemand je belt.
+      recents:
+        title: "Recents"
       calling:
         title: "Bellen"
         availability:

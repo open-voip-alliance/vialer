@@ -24,6 +24,7 @@ class Colors {
         grey4 = v.grey4.color,
         grey5 = v.grey5.color,
         grey6 = v.grey6.color,
+        grey7 = v.grey7.color,
         settingsBackgroundHighlight = v.settingsBackgroundHighlight.color,
         green1 = v.green1.color,
         green2 = v.green2.color,
@@ -78,6 +79,7 @@ class Colors {
   final Color grey4;
   final Color grey5;
   final Color grey6;
+  final Color grey7;
 
   final Color settingsBackgroundHighlight;
 
