@@ -30,6 +30,7 @@ class ColorValues {
     this.grey4 = 0xFF8F8F8F,
     this.grey5 = 0xFF8B95A3,
     this.grey6 = 0xFF666666,
+    this.grey7 = 0xFFF6F6F6,
     this.settingsBackgroundHighlight = 0xFFEFF0F8,
     this.green1 = 0xFF28CA42,
     this.green2 = 0xFFACF5A6,
@@ -89,6 +90,7 @@ class ColorValues {
   final int grey4;
   final int grey5;
   final int grey6;
+  final int grey7;
 
   final int settingsBackgroundHighlight;
 

@@ -4,10 +4,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../../../../../resources/localizations.dart';
 import 'widget.dart';
 
-class AudioCategory extends StatelessWidget {
+class RecentsCategory extends StatelessWidget {
   final List<Widget> children;
 
-  const AudioCategory({
+  const RecentsCategory({
     super.key,
     required this.children,
   });
@@ -15,8 +15,8 @@ class AudioCategory extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SettingTileCategory(
-      icon: FontAwesomeIcons.volumeHigh,
-      title: context.msg.main.settings.list.audio.title,
+      icon: FontAwesomeIcons.clockRotateLeft,
+      title: context.msg.main.settings.list.recents.title,
       children: children,
     );
   }
