@@ -22,7 +22,7 @@ class User extends Equatable {
   final String lastName;
 
   String get fullName => [firstName, preposition, lastName]
-      .where((part) => part.isNotNullOrBlank)
+      .where((part) => part.isNotBlank)
       .join(' ');
 
   final String? token;
