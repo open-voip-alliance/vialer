@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:dartx/dartx.dart';
 import 'package:recase/recase.dart';
 
 import '../../../dependency_locator.dart';
@@ -9,6 +10,7 @@ import '../user/get_brand.dart';
 import '../user/get_logged_in_user.dart';
 import '../user/settings/settings.dart';
 import '../user/user.dart';
+import '../user_availability/colleagues/colleague.dart';
 import 'metrics.dart';
 
 class IdentifyForTrackingUseCase extends UseCase {
@@ -30,6 +32,7 @@ class IdentifyForTrackingUseCase extends UseCase {
         'brand': _getBrand().identifier,
         ...user.toIdentifyProperties(),
         ..._storageRepository.grantedVoipgridPermissions.toIdentifyProperties(),
+        ..._storageRepository.colleagues.toIdentifyProperties(),
       },
     ).then((_) => Future.delayed(_artificialDelay));
   }
@@ -55,6 +58,18 @@ extension on List<String> {
   Map<String, dynamic> toIdentifyProperties() => {
         'granted-voipgrid-permissions': this,
       };
+}
+
+extension on List<Colleague> {
+  Map<String, dynamic> toIdentifyProperties() {
+    final result =
+        partition((colleague) => colleague is UnconnectedVoipAccount);
+
+    return {
+      'number_of_colleagues': result[1].length,
+      'number_of_unconnected_voip_accounts': result[0].length,
+    };
+  }
 }
 
 extension on SettingKey {
