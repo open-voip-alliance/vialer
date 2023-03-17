@@ -18,9 +18,12 @@ class User extends Equatable {
   final String email;
 
   final String firstName;
+  final String preposition;
   final String lastName;
 
-  String get fullName => '$firstName $lastName';
+  String get fullName => [firstName, preposition, lastName]
+      .where((part) => part.isNotBlank)
+      .join(' ');
 
   final String? token;
 
@@ -52,6 +55,7 @@ class User extends Equatable {
     required this.uuid,
     required this.email,
     required this.firstName,
+    this.preposition = '',
     required this.lastName,
     this.token,
     this.appAccountUrl,
@@ -65,6 +69,7 @@ class User extends Equatable {
     String? uuid,
     String? email,
     String? firstName,
+    String? preposition,
     String? lastName,
     String? token,
     Uri? appAccountUrl,
@@ -77,6 +82,7 @@ class User extends Equatable {
       uuid: uuid ?? this.uuid,
       email: email ?? this.email,
       firstName: firstName ?? this.firstName,
+      preposition: preposition ?? this.preposition,
       lastName: lastName ?? this.lastName,
       token: token ?? this.token,
       appAccountUrl: appAccountUrl ?? this.appAccountUrl,
@@ -92,6 +98,7 @@ class User extends Equatable {
       uuid: user.uuid,
       email: user.email,
       firstName: user.firstName,
+      preposition: user.preposition,
       lastName: user.lastName,
       token: user.token,
       appAccountUrl: user.appAccountUrl,
@@ -107,6 +114,7 @@ class User extends Equatable {
         uuid,
         email,
         firstName,
+        preposition,
         lastName,
         token,
         appAccountUrl,

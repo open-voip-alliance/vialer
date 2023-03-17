@@ -249,6 +249,7 @@ class _SystemUserResponse {
   final String? mobileNumber;
 
   final String firstName;
+  final String preposition;
   final String lastName;
 
   @JsonKey(name: 'app_account')
@@ -268,6 +269,7 @@ class _SystemUserResponse {
     required this.email,
     this.mobileNumber,
     required this.firstName,
+    required this.preposition,
     required this.lastName,
     this.appAccountUrl,
     this.outgoingCli,
@@ -284,6 +286,7 @@ class _SystemUserResponse {
         uuid: uuid,
         email: email,
         firstName: firstName,
+        preposition: preposition,
         lastName: lastName,
         appAccountUrl: appAccountUrl,
         client: Client(
