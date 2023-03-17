@@ -79,6 +79,7 @@ class RefreshUser extends UseCase with Loggable {
 
       user = user.copyWith(
         settings: const Settings.defaults().copyFrom(user.settings),
+        permissions: storedUser?.permissions,
       );
 
       // If we're retrieving the user for the first time (logging in),
