@@ -254,7 +254,7 @@ custom: # Custom properties to make workflows cleaner
         curl "https://hooks.zapier.com/hooks/catch/1394555/blav33z?build_id=${CM_BUILD_ID}"
   config: &config # Default configuration that can be applied to all normal workflows
     max_build_duration: 90
-    instance_type: mac_pro
+    instance_type: mac_mini_m1
     environment: &config_environment
       flutter: 3.7.6
       xcode: latest
@@ -434,6 +434,7 @@ workflows:
   gitlab-ci-merge-train:
     name: Gitlab CI Merge Train
     <<: *main_workflow
+    instance_type: mac_pro
     scripts:
       - *use_workflow_build_number
       - *set_up_env_file
@@ -480,6 +481,7 @@ workflows:
   run-integration-tests:
     name: Run Integration Tests
     <<: *main_workflow
+    instance_type: mac_pro
     scripts:
       - *use_workflow_build_number
       - *set_up_env_file
