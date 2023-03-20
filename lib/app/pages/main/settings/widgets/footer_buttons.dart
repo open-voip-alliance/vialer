@@ -6,7 +6,6 @@ import '../../../../../domain/user/launch_privacy_policy.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
 import '../../../../routes.dart';
-import '../../../../widgets/stylized_button.dart';
 import '../../util/stylized_snack_bar.dart';
 import '../cubit.dart';
 
@@ -82,10 +81,9 @@ class _FooterButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textColor =
-        solid ? Colors.white : context.brand.theme.colors.primaryDark;
+    final textColor = solid ? Colors.white : context.brand.theme.colors.primary;
     final backgroundColor =
-        solid ? context.brand.theme.colors.primaryDark : Colors.transparent;
+        solid ? context.brand.theme.colors.primary : Colors.transparent;
     return OutlinedButton(
       style: OutlinedButton.styleFrom(
         backgroundColor: backgroundColor,
@@ -95,16 +93,18 @@ class _FooterButton extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          FaIcon(icon, color: textColor, size: 16,),
+          FaIcon(
+            icon,
+            color: textColor,
+            size: 16,
+          ),
           const SizedBox(width: 10),
           Flexible(
             child: Text(
               text,
               maxLines: 1,
               style: TextStyle(
-                color: solid
-                    ? Colors.white
-                    : context.brand.theme.colors.primaryDark,
+                color: solid ? Colors.white : textColor,
                 overflow: TextOverflow.ellipsis,
               ),
             ),

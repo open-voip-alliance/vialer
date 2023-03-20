@@ -1,22 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:vialer/app/pages/main/settings/widgets/footer_buttons.dart';
 
 import '../../../../domain/user/info/build_info.dart';
-import '../../../../domain/user/launch_privacy_policy.dart';
 import '../../../../domain/user/settings/app_setting.dart';
 import '../../../resources/localizations.dart';
-import '../../../routes.dart';
-import '../../../util/conditional_capitalization.dart';
-import '../../../widgets/stylized_button.dart';
-import '../util/stylized_snack_bar.dart';
-import '../widgets/header.dart';
 import '../widgets/user_data_refresher/cubit.dart';
 import 'cubit.dart';
 import 'sub_page/client.dart';
 import 'sub_page/phone_preferences.dart';
 import 'sub_page/user.dart';
+import 'widgets/footer_buttons.dart';
 import 'widgets/tile/availability.dart';
 import 'widgets/tile/dnd.dart';
 import 'widgets/tile/link/sub_page.dart';
@@ -31,7 +25,6 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-
   void _onStateChanged(BuildContext context, SettingsState state) {
     FocusScope.of(context).unfocus();
   }

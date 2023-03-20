@@ -14,7 +14,6 @@ import '../../../resources/theme.dart';
 import '../util/stylized_snack_bar.dart';
 import '../widgets/bottom_toggle.dart';
 import '../widgets/caller/cubit.dart';
-import '../widgets/header.dart';
 import 'cubit.dart';
 import 'widgets/list.dart';
 

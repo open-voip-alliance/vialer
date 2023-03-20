@@ -110,8 +110,7 @@ class AvailabilityTile extends StatelessWidget {
                 top: 8,
               ),
               child: StyledText(
-                context
-                    .msg.main.settings.list.calling.availability.noAppAccount
+                context.msg.main.settings.list.calling.availability.noAppAccount
                     .description(context.brand.appName),
                 style: TextStyle(
                   color: context.brand.theme.colors.red1,
@@ -152,7 +151,9 @@ class AvailabilityTile extends StatelessWidget {
             padding: const EdgeInsets.only(top: 4),
             child: Text(
               context.msg.main.settings.list.calling.availability.description,
-              style: TextStyle(fontSize: helpTextSize,),
+              style: TextStyle(
+                fontSize: helpTextSize,
+              ),
             ),
           ),
         ],
