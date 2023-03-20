@@ -153,10 +153,6 @@ class _ColltactPageState extends State<_ColltactList>
                   children: <Widget>[
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Header(context.msg.main.contacts.title),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: SearchTextField(
                         onChanged: _onSearchTermChanged,
                       ),

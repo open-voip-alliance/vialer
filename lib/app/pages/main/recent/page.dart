@@ -188,13 +188,11 @@ class _ContentState extends State<_Content> with TickerProviderStateMixin {
 
     final content = BlocProvider<RecentCallsCubit>(
       create: (context) => RecentCallsCubit(context.read<CallerCubit>()),
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          bottom: widget.showClientCalls
-              ? TabBar(
+      child: SafeArea(
+          child: Column(
+            children: [
+              if (widget.showClientCalls)
+                TabBar(
                   controller: tabController,
                   labelStyle: const TextStyle(
                     fontWeight: FontWeight.bold,
@@ -213,17 +211,7 @@ class _ContentState extends State<_Content> with TickerProviderStateMixin {
                     ),
                     Text(context.msg.main.recent.tabs.all.toUpperCase()),
                   ],
-                )
-              : null,
-          centerTitle: false,
-          title: Header(
-            context.msg.main.recent.title,
-            padding: const EdgeInsets.only(top: 8),
-          ),
-        ),
-        body: SafeArea(
-          child: Column(
-            children: [
+                ),
               Expanded(
                 child: widget.showClientCalls
                     ? TabBarView(
@@ -247,7 +235,6 @@ class _ContentState extends State<_Content> with TickerProviderStateMixin {
             ],
           ),
         ),
-      ),
     );
 
     return widget.showClientCalls

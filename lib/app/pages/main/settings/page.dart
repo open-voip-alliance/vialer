@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:vialer/app/pages/main/settings/widgets/footer_buttons.dart';
 
 import '../../../../domain/user/info/build_info.dart';
 import '../../../../domain/user/launch_privacy_policy.dart';
@@ -30,23 +31,6 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  Future<void> _goToFeedbackPage(BuildContext context) async {
-    final sent = await Navigator.pushNamed(
-          context,
-          Routes.feedback,
-        ) as bool? ??
-        false;
-
-    if (sent) {
-      showSnackBar(
-        context,
-        icon: const FaIcon(FontAwesomeIcons.check),
-        label: Text(context.msg.main.settings.feedback.snackBar),
-      );
-    }
-
-    context.read<SettingsCubit>().refresh();
-  }
 
   void _onStateChanged(BuildContext context, SettingsState state) {
     FocusScope.of(context).unfocus();
@@ -54,14 +38,6 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final sendFeedbackButtonText = context
-        .msg.main.settings.buttons.sendFeedback
-        .toUpperCaseIfAndroid(context);
-    final logoutButtonText =
-        context.msg.main.settings.buttons.logout.toUpperCaseIfAndroid(context);
-    final privacyPolicyText =
-        context.msg.main.settings.privacyPolicy.toUpperCaseIfAndroid(context);
-
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: SafeArea(
@@ -72,10 +48,6 @@ class _SettingsPageState extends State<SettingsPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Header(context.msg.main.settings.title),
-              ),
               BlocProvider<SettingsCubit>(
                 create: (_) => SettingsCubit(
                   context.read<UserDataRefresherCubit>(),
@@ -93,86 +65,55 @@ class _SettingsPageState extends State<SettingsPage> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          SingleChildScrollView(
-                            child: Column(
-                              children: [
-                                if (showDnd) DndTile(user),
-                                AvailabilityTile(
-                                  user: user,
-                                  userNumber: userNumber,
-                                  destinations: destinations,
-                                ),
-                                SubPageLinkTile(
-                                  title: context.msg.main.settings.subPage
-                                      .phonePreferences.title,
-                                  icon: FontAwesomeIcons.solidMobileNotch,
-                                  cubit: cubit,
-                                  pageBuilder: (_) =>
-                                      const PhonePreferencesSubPage(),
-                                ),
-                                SubPageLinkTile(
-                                  title: context.msg.main.settings.subPage.user
-                                      .title(user.fullName),
-                                  icon: FontAwesomeIcons.circleUser,
-                                  cubit: cubit,
-                                  pageBuilder: (_) => const UserSubPage(),
-                                ),
-                                if (user.canViewClientSubPage)
+                          Expanded(
+                            child: SingleChildScrollView(
+                              child: Column(
+                                children: [
+                                  if (showDnd) DndTile(user),
+                                  AvailabilityTile(
+                                    user: user,
+                                    userNumber: userNumber,
+                                    destinations: destinations,
+                                  ),
+                                  SubPageLinkTile(
+                                    title: context.msg.main.settings.subPage
+                                        .phonePreferences.title,
+                                    icon: FontAwesomeIcons.solidMobileNotch,
+                                    cubit: cubit,
+                                    pageBuilder: (_) =>
+                                        const PhonePreferencesSubPage(),
+                                  ),
                                   SubPageLinkTile(
                                     title: context
-                                        .msg.main.settings.subPage.client
-                                        .title(user.client.name),
-                                    icon: FontAwesomeIcons.building,
+                                        .msg.main.settings.subPage.user
+                                        .title(user.fullName),
+                                    icon: FontAwesomeIcons.circleUser,
                                     cubit: cubit,
-                                    pageBuilder: (_) => const ClientSubPage(),
+                                    pageBuilder: (_) => const UserSubPage(),
                                   ),
-                              ],
+                                  if (user.canViewClientSubPage)
+                                    SubPageLinkTile(
+                                      title: context
+                                          .msg.main.settings.subPage.client
+                                          .title(user.client.name),
+                                      icon: FontAwesomeIcons.building,
+                                      cubit: cubit,
+                                      pageBuilder: (_) => const ClientSubPage(),
+                                    ),
+                                ],
+                              ),
                             ),
                           ),
-                          Column(
-                            children: [
-                              if (state.buildInfo != null)
-                                _BuildInfo(state.buildInfo!),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 48,
-                                ),
-                                child: Column(
-                                  children: <Widget>[
-                                    SizedBox(
-                                      width: double.infinity,
-                                      child: StylizedButton.raised(
-                                        colored: true,
-                                        onPressed: () =>
-                                            _goToFeedbackPage(context),
-                                        child: Text(
-                                          sendFeedbackButtonText,
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(height: 16),
-                                    SizedBox(
-                                      width: double.infinity,
-                                      child: StylizedButton.outline(
-                                        colored: true,
-                                        onPressed: context
-                                            .watch<SettingsCubit>()
-                                            .logout,
-                                        child: Text(
-                                          logoutButtonText,
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    TextButton(
-                                      onPressed: () => LaunchPrivacyPolicy()(),
-                                      child: Text(privacyPolicyText),
-                                    ),
-                                    const SizedBox(height: 4),
-                                  ],
-                                ),
-                              ),
-                            ],
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 30)
+                                .copyWith(bottom: 10),
+                            child: Column(
+                              children: [
+                                FooterButtons(),
+                                if (state.buildInfo != null)
+                                  _BuildInfo(state.buildInfo!),
+                              ],
+                            ),
                           ),
                         ],
                       ),
