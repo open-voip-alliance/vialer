@@ -105,7 +105,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 30)
+                            padding: const EdgeInsets.symmetric(horizontal: 14)
                                 .copyWith(bottom: 10),
                             child: Column(
                               children: [
