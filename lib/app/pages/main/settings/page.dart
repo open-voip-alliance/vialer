@@ -31,6 +31,7 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
+
   void _onStateChanged(BuildContext context, SettingsState state) {
     FocusScope.of(context).unfocus();
   }
@@ -108,9 +109,9 @@ class _SettingsPageState extends State<SettingsPage> {
                                 .copyWith(bottom: 10),
                             child: Column(
                               children: [
-                                FooterButtons(),
                                 if (state.buildInfo != null)
                                   _BuildInfo(state.buildInfo!),
+                                FooterButtons(),
                               ],
                             ),
                           ),

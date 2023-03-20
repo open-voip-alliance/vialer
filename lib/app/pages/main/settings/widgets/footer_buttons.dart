@@ -31,7 +31,7 @@ class FooterButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         _FooterButton(
@@ -39,16 +39,29 @@ class FooterButtons extends StatelessWidget {
           icon: FontAwesomeIcons.messages,
           onPressed: () => _goToFeedbackPage(context),
         ),
-        _FooterButton(
-          text: context.msg.main.settings.privacyPolicy,
-          icon: FontAwesomeIcons.bookCircleArrowRight,
-          onPressed: () => LaunchPrivacyPolicy()(),
-        ),
-        _FooterButton(
-          text: context.msg.main.settings.buttons.logout,
-          icon: FontAwesomeIcons.rightFromBracket,
-          onPressed: () => context.read<SettingsCubit>().logout(),
-        ),
+        const SizedBox(height: 10),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: _FooterButton(
+                text: context.msg.main.settings.privacyPolicy,
+                icon: FontAwesomeIcons.bookCircleArrowRight,
+                onPressed: () => LaunchPrivacyPolicy()(),
+                solid: false,
+              ),
+            ),
+            const SizedBox(width: 20),
+            Expanded(
+              child: _FooterButton(
+                text: context.msg.main.settings.buttons.logout,
+                icon: FontAwesomeIcons.rightFromBracket,
+                onPressed: () => context.read<SettingsCubit>().logout(),
+                solid: false,
+              ),
+            ),
+          ],
+        )
       ],
     );
   }
@@ -58,33 +71,46 @@ class _FooterButton extends StatelessWidget {
   final String text;
   final IconData icon;
   final VoidCallback onPressed;
+  final bool solid;
 
   const _FooterButton({
     required this.text,
     required this.icon,
     required this.onPressed,
+    this.solid = true,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        IconButton(
-          onPressed: onPressed,
-          tooltip: text,
-          icon: FaIcon(
-            icon,
-            color: context.brand.theme.colors.grey4,
+    final textColor =
+        solid ? Colors.white : context.brand.theme.colors.primaryDark;
+    final backgroundColor =
+        solid ? context.brand.theme.colors.primaryDark : Colors.transparent;
+    return OutlinedButton(
+      style: OutlinedButton.styleFrom(
+        backgroundColor: backgroundColor,
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+      ),
+      onPressed: onPressed,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          FaIcon(icon, color: textColor, size: 16,),
+          const SizedBox(width: 10),
+          Flexible(
+            child: Text(
+              text,
+              maxLines: 1,
+              style: TextStyle(
+                color: solid
+                    ? Colors.white
+                    : context.brand.theme.colors.primaryDark,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
           ),
-        ),
-        Text(
-          text,
-          style: TextStyle(
-            color: context.brand.theme.colors.grey6,
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

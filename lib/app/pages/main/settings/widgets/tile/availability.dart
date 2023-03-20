@@ -98,6 +98,8 @@ class AvailabilityTile extends StatelessWidget {
   Widget build(BuildContext context) {
     const key = CallSetting.destination;
 
+    final helpTextSize = 13.5;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: SettingTile(
@@ -115,6 +117,7 @@ class AvailabilityTile extends StatelessWidget {
                       .description(context.brand.appName),
                   style: TextStyle(
                     color: context.brand.theme.colors.red1,
+                    fontSize: helpTextSize,
                   ),
                 ),
               ),
@@ -128,6 +131,7 @@ class AvailabilityTile extends StatelessWidget {
                   _text(context),
                   style: TextStyle(
                     color: _userAvailabilityType.asColor(context),
+                    fontSize: helpTextSize,
                   ),
                 ),
               ),
@@ -141,14 +145,16 @@ class AvailabilityTile extends StatelessWidget {
                   ),
                   style: TextStyle(
                     color: _userAvailabilityType.asColor(context),
+                    fontSize: 13,
                   ),
                 ),
               ),
             ],
             Padding(
-              padding: const EdgeInsets.only(top: 8),
+              padding: const EdgeInsets.only(top: 4),
               child: Text(
                 context.msg.main.settings.list.calling.availability.description,
+                style: TextStyle(fontSize: helpTextSize,),
               ),
             ),
           ],
