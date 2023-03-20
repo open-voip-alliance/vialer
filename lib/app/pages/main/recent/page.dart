@@ -189,52 +189,52 @@ class _ContentState extends State<_Content> with TickerProviderStateMixin {
     final content = BlocProvider<RecentCallsCubit>(
       create: (context) => RecentCallsCubit(context.read<CallerCubit>()),
       child: SafeArea(
-          child: Column(
-            children: [
-              if (widget.showClientCalls)
-                TabBar(
-                  controller: tabController,
-                  labelStyle: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                  labelPadding: const EdgeInsets.only(
-                    top: 18,
-                    bottom: 8,
-                  ),
-                  labelColor: Theme.of(context).primaryColor,
-                  unselectedLabelColor: context.brand.theme.colors.grey1,
-                  indicatorColor: Theme.of(context).primaryColor,
-                  indicatorSize: TabBarIndicatorSize.label,
-                  tabs: [
-                    Text(
-                      context.msg.main.recent.tabs.personal.toUpperCase(),
-                    ),
-                    Text(context.msg.main.recent.tabs.all.toUpperCase()),
-                  ],
+        child: Column(
+          children: [
+            if (widget.showClientCalls)
+              TabBar(
+                controller: tabController,
+                labelStyle: const TextStyle(
+                  fontWeight: FontWeight.bold,
                 ),
-              Expanded(
-                child: widget.showClientCalls
-                    ? TabBarView(
-                        controller: tabController,
-                        children: [
-                          personalCalls,
-                          _Calls<ClientCallsCubit>(
-                            listPadding: widget.listPadding,
-                            snackBarPadding: widget.snackBarPadding,
-                            manualRefresher: widget.clientManualRefresher,
-                          ),
-                        ],
-                      )
-                    : personalCalls,
+                labelPadding: const EdgeInsets.only(
+                  top: 18,
+                  bottom: 8,
+                ),
+                labelColor: Theme.of(context).primaryColor,
+                unselectedLabelColor: context.brand.theme.colors.grey1,
+                indicatorColor: Theme.of(context).primaryColor,
+                indicatorSize: TabBarIndicatorSize.label,
+                tabs: [
+                  Text(
+                    context.msg.main.recent.tabs.personal.toUpperCase(),
+                  ),
+                  Text(context.msg.main.recent.tabs.all.toUpperCase()),
+                ],
               ),
-              _MissedCallsToggle(
-                showClientCalls: widget.showClientCalls,
-                manualRefresher: widget.manualRefresher,
-                clientManualRefresher: widget.clientManualRefresher,
-              ),
-            ],
-          ),
+            Expanded(
+              child: widget.showClientCalls
+                  ? TabBarView(
+                      controller: tabController,
+                      children: [
+                        personalCalls,
+                        _Calls<ClientCallsCubit>(
+                          listPadding: widget.listPadding,
+                          snackBarPadding: widget.snackBarPadding,
+                          manualRefresher: widget.clientManualRefresher,
+                        ),
+                      ],
+                    )
+                  : personalCalls,
+            ),
+            _MissedCallsToggle(
+              showClientCalls: widget.showClientCalls,
+              manualRefresher: widget.manualRefresher,
+              clientManualRefresher: widget.clientManualRefresher,
+            ),
+          ],
         ),
+      ),
     );
 
     return widget.showClientCalls
