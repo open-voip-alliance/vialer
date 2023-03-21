@@ -384,8 +384,8 @@ workflows:
     cache:
       cache_paths:
         - $FLUTTER_ROOT/.pub-cache
-        - $HOME/.gradle/caches
-        - $HOME/Library/Caches/CocoaPods
+        - ~/.gradle/caches
+        - ~/Library/Caches/CocoaPods
     environment:
       groups:
         - configuration
@@ -739,3 +739,10 @@ workflows:
       #- *update_ios_signing_for_current_brand
       #- *build_ipa
     publishing: { }
+
+
+cache:
+  cache_paths:
+    - $FLUTTER_ROOT/.pub-cache
+    - ~/.gradle/caches
+    - ~/Library/Caches/CocoaPods
