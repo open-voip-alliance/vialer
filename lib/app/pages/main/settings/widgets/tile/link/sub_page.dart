@@ -21,53 +21,50 @@ class SubPageLinkTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10),
-      child: InkWell(
-        onTap: () => Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => BlocProvider.value(
-              value: cubit,
-              child: pageBuilder(context),
-            ),
+    return InkWell(
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => BlocProvider.value(
+            value: cubit,
+            child: pageBuilder(context),
           ),
         ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 26),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Container(
-                    height: 36,
-                    width: 36,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: context.brand.theme.colors.grey3,
-                    ),
-                    child: FaIcon(
-                      icon,
-                      size: 16,
-                      color: context.brand.theme.colors.grey6,
-                    ),
-                    alignment: Alignment.center,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Container(
+                  height: 36,
+                  width: 36,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: context.brand.theme.colors.grey3,
                   ),
-                  const SizedBox(width: 10),
-                  Text(
-                    title,
-                    style: const TextStyle(fontSize: 16),
+                  child: FaIcon(
+                    icon,
+                    size: 16,
+                    color: context.brand.theme.colors.grey6,
                   ),
-                ],
-              ),
-              FaIcon(
-                FontAwesomeIcons.angleRight,
-                color: context.brand.theme.colors.grey4,
-              ),
-            ],
-          ),
+                  alignment: Alignment.center,
+                ),
+                const SizedBox(width: 10),
+                Text(
+                  title,
+                  style: const TextStyle(fontSize: 16),
+                ),
+              ],
+            ),
+            FaIcon(
+              FontAwesomeIcons.angleRight,
+              color: context.brand.theme.colors.grey4,
+            ),
+          ],
         ),
       ),
     );

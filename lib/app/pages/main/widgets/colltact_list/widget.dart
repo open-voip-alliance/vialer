@@ -16,7 +16,6 @@ import '../../../../util/widgets_binding_observer_registrar.dart';
 import '../../colltacts/colleagues/cubit.dart';
 import '../bottom_toggle.dart';
 import '../caller.dart';
-import '../header.dart';
 import '../nested_navigator.dart';
 import 'cubit.dart';
 import 'widgets/alphabet_list.dart';
@@ -151,10 +150,6 @@ class _ColltactPageState extends State<_ColltactList>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Header(context.msg.main.contacts.title),
-                    ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: SearchTextField(

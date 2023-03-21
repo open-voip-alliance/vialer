@@ -25,7 +25,7 @@ class StylizedDropdown<T> extends StatelessWidget {
         border: context.isAndroid ? fieldBoxDecoration.border : null,
         borderRadius: fieldBoxDecoration.borderRadius,
       ),
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<T>(
           value: value,
