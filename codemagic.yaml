@@ -259,11 +259,6 @@ custom: # Custom properties to make workflows cleaner
       flutter: 3.7.6
       xcode: latest
       cocoapods: 1.11.3
-    cache:
-      cache_paths:
-        - $FLUTTER_ROOT/.pub-cache
-        - $HOME/.gradle/caches
-        - $HOME/Library/Caches/CocoaPods
   brand_config: # Specific configuration that should be applied to a workflow when building for this brand
     vialer_env_vars: &brand_config_vialer_env_vars
       BRAND: vialer
@@ -739,3 +734,9 @@ workflows:
       #- *update_ios_signing_for_current_brand
       #- *build_ipa
     publishing: { }
+
+cache:
+  cache_paths:
+    - $FLUTTER_ROOT/.pub-cache
+    - $HOME/.gradle/caches
+    - $HOME/Library/Caches/CocoaPods
