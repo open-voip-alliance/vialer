@@ -98,96 +98,100 @@ class AvailabilityTile extends StatelessWidget {
   Widget build(BuildContext context) {
     const key = CallSetting.destination;
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      child: SettingTile(
-        description: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (_shouldDisplayNoAppAccountWarning) ...{
-              Padding(
-                padding: const EdgeInsets.only(
-                  top: 8,
-                ),
-                child: StyledText(
-                  context
-                      .msg.main.settings.list.calling.availability.noAppAccount
-                      .description(context.brand.appName),
-                  style: TextStyle(
-                    color: context.brand.theme.colors.red1,
-                  ),
+    final helpTextSize = 13.5;
+
+    return SettingTile(
+      description: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (_shouldDisplayNoAppAccountWarning) ...{
+            Padding(
+              padding: const EdgeInsets.only(
+                top: 8,
+              ),
+              child: StyledText(
+                context.msg.main.settings.list.calling.availability.noAppAccount
+                    .description(context.brand.appName),
+                style: TextStyle(
+                  color: context.brand.theme.colors.red1,
+                  fontSize: helpTextSize,
                 ),
               ),
-            } else if (_shouldDisplayAvailabilityInfo) ...[
-              Padding(
-                padding: const EdgeInsets.only(
-                  top: 8,
-                  bottom: 8,
-                ),
-                child: StyledText(
-                  _text(context),
-                  style: TextStyle(
-                    color: _userAvailabilityType.asColor(context),
-                  ),
+            ),
+          } else if (_shouldDisplayAvailabilityInfo) ...[
+            Padding(
+              padding: const EdgeInsets.only(
+                top: 8,
+                bottom: 8,
+              ),
+              child: StyledText(
+                _text(context),
+                style: TextStyle(
+                  color: _userAvailabilityType.asColor(context),
+                  fontSize: helpTextSize,
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(
-                  bottom: 4,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                bottom: 4,
+              ),
+              child: StyledText(
+                _sharedText(
+                  context,
                 ),
-                child: StyledText(
-                  _sharedText(
-                    context,
-                  ),
-                  style: TextStyle(
-                    color: _userAvailabilityType.asColor(context),
-                  ),
+                style: TextStyle(
+                  color: _userAvailabilityType.asColor(context),
+                  fontSize: 13,
                 ),
+              ),
+            ),
+          ],
+          Padding(
+            padding: const EdgeInsets.only(top: 4),
+            child: Text(
+              context.msg.main.settings.list.calling.availability.description,
+              style: TextStyle(
+                fontSize: helpTextSize,
+              ),
+            ),
+          ),
+        ],
+      ),
+      childFillWidth: true,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          MultipleChoiceSettingValue<Destination?>(
+            value: user.settings.getOrNull(CallSetting.destination),
+            items: [
+              ...destinations.map(
+                (destination) => DropdownMenuItem<Destination>(
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(destination.dropdownValue(context)),
+                  ),
+                  value: destination,
+                ),
+              ),
+              DropdownMenuItem<Destination>(
+                child: Text(
+                  context.msg.main.settings.list.calling.addAvailability,
+                ),
+                value: null,
+                onTap: () => _openAddAvailabilityWebView(context),
               ),
             ],
-            Padding(
-              padding: const EdgeInsets.only(top: 8),
-              child: Text(
-                context.msg.main.settings.list.calling.availability.description,
-              ),
-            ),
-          ],
-        ),
-        childFillWidth: true,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            MultipleChoiceSettingValue<Destination?>(
-              value: user.settings.getOrNull(CallSetting.destination),
-              items: [
-                ...destinations.map(
-                  (destination) => DropdownMenuItem<Destination>(
-                    child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Text(destination.dropdownValue(context)),
-                    ),
-                    value: destination,
-                  ),
-                ),
-                DropdownMenuItem<Destination>(
-                  child: Text(
-                    context.msg.main.settings.list.calling.addAvailability,
-                  ),
-                  value: null,
-                  onTap: () => _openAddAvailabilityWebView(context),
-                ),
-              ],
-              onChanged: (destination) => destination != null
-                  ? defaultOnChanged(
-                      context,
-                      key,
-                      destination,
-                    )
-                  : () {},
-              isExpanded: true,
-            ),
-          ],
-        ),
+            onChanged: (destination) => destination != null
+                ? defaultOnChanged(
+                    context,
+                    key,
+                    destination,
+                  )
+                : () {},
+            isExpanded: true,
+          ),
+        ],
       ),
     );
   }
