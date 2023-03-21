@@ -381,7 +381,6 @@ workflows:
   main: &main_workflow
     name: main
     <<: *config
-    instance_type: mac_pro
     environment:
       groups:
         - configuration
