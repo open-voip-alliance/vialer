@@ -91,7 +91,8 @@ class _SettingsPageState extends State<SettingsPage> {
                                             .title(user.client.name),
                                         icon: FontAwesomeIcons.building,
                                         cubit: cubit,
-                                        pageBuilder: (_) => const ClientSubPage(),
+                                        pageBuilder: (_) =>
+                                            const ClientSubPage(),
                                       ),
                                   ],
                                 ),
