@@ -7,7 +7,7 @@ import 'package:dartx/dartx.dart';
 import '../../../app/util/loggable.dart';
 import '../../event/event_bus.dart';
 import '../../user/brand.dart';
-import '../../user/events/logged_in_user_data_is_stale_event.dart';
+import '../../user/events/logged_in_user_availability_changed.dart';
 import '../../user/user.dart';
 import '../../voipgrid/voipgrid_api_resource_collector.dart';
 import '../../voipgrid/voipgrid_service.dart';
@@ -82,7 +82,22 @@ class ColleaguesRepository with Loggable {
         // We are going to hijack this WebSocket and emit an event when we
         // know our user has changed on the server.
         if (userUuid == user.uuid) {
-          _eventBus.broadcast(LoggedInUserDataIsStaleEvent());
+          _eventBus.broadcast(
+            LoggedInUserAvailabilityChanged(
+              availabilityStatus: ColleagueAvailabilityStatus.fromServerValue(
+                payload['availability'] as String?,
+              ),
+              context: (payload['context'] as List<dynamic>)
+                  .buildUserAvailabilityContext(),
+              internalNumber: payload['internal_number'].toString(),
+              destination: ColleagueDestination(
+                number: payload['internal_number'].toString(),
+                type: ColleagueDestinationType.fromServerValue(
+                  payload['destination_type'] as String?,
+                ),
+              ),
+            ),
+          );
         }
 
         // If no colleague is found, we can't update the availability of it.

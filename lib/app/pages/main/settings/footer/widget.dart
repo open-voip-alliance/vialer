@@ -12,7 +12,7 @@ class Footer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 14).copyWith(bottom: 10),
+      padding: const EdgeInsets.only(bottom: 10),
       child: Column(
         children: [
           if (buildInfo != null) BuildInfoPill(buildInfo!),

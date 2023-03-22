@@ -20,7 +20,6 @@ class DndTile extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(
         vertical: 10,
-        horizontal: 20,
       ).copyWith(
         top: 0,
       ),
@@ -70,11 +69,11 @@ class _DndToggle extends StatelessWidget {
   }
 
   Color _color(BuildContext context) => _value == true
-      ? context.brand.theme.colors.dnd
+      ? context.brand.theme.colors.userAvailabilityUnavailableAccent
       : _userAvailabilityType.asColor(context);
 
   Color _accentColor(BuildContext context) => _value == true
-      ? context.brand.theme.colors.dndAccent
+      ? context.brand.theme.colors.userAvailabilityUnavailable
       : _userAvailabilityType.asAccentColor(context);
 
   String _prepareVoiceOverForAccessibility(
@@ -179,7 +178,6 @@ class _DndToggle extends StatelessWidget {
                   ),
                   height: 32,
                   width: 70,
-                  padding: 4,
                   activeColor: _accentColor(context),
                   inactiveColor: _accentColor(context),
                   activeToggleColor: _color(context),
