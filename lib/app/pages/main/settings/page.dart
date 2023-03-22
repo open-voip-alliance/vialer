@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../resources/localizations.dart';
-import '../widgets/user_data_refresher/cubit.dart';
 import 'cubit.dart';
 import 'footer/widget.dart';
 import 'sub_page/client.dart';
@@ -40,9 +39,7 @@ class _SettingsPageState extends State<SettingsPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               BlocProvider<SettingsCubit>(
-                create: (_) => SettingsCubit(
-                  context.read<UserDataRefresherCubit>(),
-                ),
+                create: (_) => SettingsCubit(),
                 child: BlocConsumer<SettingsCubit, SettingsState>(
                   listener: _onStateChanged,
                   builder: (context, state) {
@@ -65,6 +62,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                     user: user,
                                     userNumber: userNumber,
                                     destinations: destinations,
+                                    enabled: !state.isUpdatingRemote,
                                   ),
                                   SubPageLinkTile(
                                     title: context.msg.main.settings.subPage

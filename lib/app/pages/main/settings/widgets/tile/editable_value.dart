@@ -130,7 +130,7 @@ class MultipleChoiceSettingValue<T> extends StatelessWidget {
   final T value;
   final List<DropdownMenuItem<T>> items;
   final bool isExpanded;
-  final ValueChanged<T> onChanged;
+  final ValueChanged<T>? onChanged;
   final EdgeInsets padding;
 
   const MultipleChoiceSettingValue({
@@ -138,7 +138,7 @@ class MultipleChoiceSettingValue<T> extends StatelessWidget {
     required this.value,
     required this.items,
     this.isExpanded = false,
-    required this.onChanged,
+    this.onChanged,
     EdgeInsets? padding,
   }) : padding = padding ?? const EdgeInsets.only(right: 16);
 
@@ -150,7 +150,7 @@ class MultipleChoiceSettingValue<T> extends StatelessWidget {
         value: items.map((item) => item.value).contains(value) ? value : null,
         items: items,
         isExpanded: isExpanded,
-        onChanged: (value) => onChanged(value!),
+        onChanged: onChanged != null ? (value) => onChanged!(value!) : null,
       ),
     );
   }

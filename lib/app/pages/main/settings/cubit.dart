@@ -5,12 +5,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../dependency_locator.dart';
 import '../../../../domain/authentication/logout.dart';
 import '../../../../domain/calling/voip/perform_echo_cancellation_calibration.dart';
+import '../../../../domain/event/event_bus.dart';
 import '../../../../domain/feedback/send_saved_logs_to_remote.dart';
 import '../../../../domain/legacy/storage.dart';
 import '../../../../domain/onboarding/request_permission.dart';
 import '../../../../domain/openings_hours_basic/should_show_opening_hours_basic.dart';
 import '../../../../domain/user/connectivity/connectivity_type.dart';
 import '../../../../domain/user/connectivity/get_current_connectivity_status.dart';
+import '../../../../domain/user/events/logged_in_user_was_refreshed.dart';
 import '../../../../domain/user/get_build_info.dart';
 import '../../../../domain/user/get_logged_in_user.dart';
 import '../../../../domain/user/get_permission_status.dart';
@@ -20,9 +22,9 @@ import '../../../../domain/user/refresh_user.dart';
 import '../../../../domain/user/settings/call_setting.dart';
 import '../../../../domain/user/settings/change_settings.dart';
 import '../../../../domain/user/settings/settings.dart';
+import '../../../../domain/user/user.dart';
 import '../../../../domain/voipgrid/user_voip_config.dart';
 import '../../../util/loggable.dart';
-import '../widgets/user_data_refresher/cubit.dart';
 import 'state.dart';
 
 export 'state.dart';
@@ -43,29 +45,27 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
   final _getConnectivity = GetCurrentConnectivityTypeUseCase();
 
   final _storageRepository = dependencyLocator<StorageRepository>();
+  final _eventBus = dependencyLocator<EventBusObserver>();
 
-  late StreamSubscription _userRefresherSubscription;
-
-  SettingsCubit(
-    UserDataRefresherCubit userDataRefresher,
-  ) : super(SettingsState(user: GetLoggedInUserUseCase()())) {
+  SettingsCubit() : super(SettingsState(user: GetLoggedInUserUseCase()())) {
     _emitUpdatedState();
-    _userRefresherSubscription = userDataRefresher.stream.listen(
-      (state) {
-        if (state is NotRefreshing) {
-          _emitUpdatedState();
-        }
-      },
+    _eventBus.on<LoggedInUserWasRefreshed>(
+      (event) => _emitUpdatedState(user: event.user),
     );
   }
 
-  Future<void> _emitUpdatedState({bool? isUpdatingRemote}) async {
+  Future<void> _emitUpdatedState({
+    bool? isUpdatingRemote,
+    User? user,
+  }) async {
     // We don't want to emit any refresh changes while we're in the progress
     // of changing remote settings.
     if (state.isUpdatingRemote && isUpdatingRemote == null) {
       return;
     }
-    final user = _getUser();
+
+    user = user ?? _getUser();
+
     emit(
       SettingsState(
         user: user,
@@ -111,7 +111,7 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
     // used currently it's not important.
     emit(state.withChanged(newSettings, isUpdatingRemote: true));
     await _changeSettings(newSettings);
-    await _emitUpdatedState(isUpdatingRemote: false);
+    _emitUpdatedState(isUpdatingRemote: false);
   }
 
   Future<void> refreshAvailability() async {
@@ -134,12 +134,6 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
     logger.info('Logging out');
     await _logout();
     logger.info('Logged out');
-  }
-
-  @override
-  Future<void> close() async {
-    await _userRefresherSubscription.cancel();
-    await super.close();
   }
 
   Future<void> performEchoCancellationCalibration() =>

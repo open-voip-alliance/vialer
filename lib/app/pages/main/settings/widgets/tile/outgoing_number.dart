@@ -11,8 +11,13 @@ class OutgoingNumberTile extends StatelessWidget {
   final User user;
 
   final OutgoingNumber _value;
+  final bool enabled;
 
-  OutgoingNumberTile(this.user, {super.key}) : _value = user.settings.get(_key);
+  OutgoingNumberTile(
+    this.user, {
+    super.key,
+    this.enabled = true,
+  }) : _value = user.settings.get(_key);
 
   static const _key = CallSetting.outgoingNumber;
 
@@ -41,7 +46,9 @@ class OutgoingNumberTile extends StatelessWidget {
               bottom: 8,
               right: 8,
             ),
-            onChanged: (number) => defaultOnChanged(context, _key, number),
+            onChanged: enabled
+                ? (number) => defaultOnChanged(context, _key, number)
+                : null,
             isExpanded: false,
             items: [
               DropdownMenuItem<OutgoingNumber>(
