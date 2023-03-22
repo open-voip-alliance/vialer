@@ -6,6 +6,7 @@ import '../../../resources/localizations.dart';
 import '../widgets/user_data_refresher/cubit.dart';
 import 'cubit.dart';
 import 'footer/widget.dart';
+import 'header/widget.dart';
 import 'sub_page/client.dart';
 import 'sub_page/phone_preferences.dart';
 import 'sub_page/user.dart';
@@ -60,6 +61,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             child: SingleChildScrollView(
                               child: Column(
                                 children: [
+                                  Header(user: state.user),
                                   if (showDnd) DndTile(user),
                                   AvailabilityTile(
                                     user: user,
