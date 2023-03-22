@@ -19,6 +19,7 @@ class AvailabilityTile extends StatelessWidget {
   final User user;
   final int? userNumber;
   final List<Destination> destinations;
+  final bool enabled;
 
   final UserAvailabilityType _userAvailabilityType;
 
@@ -26,6 +27,7 @@ class AvailabilityTile extends StatelessWidget {
     required this.user,
     this.userNumber,
     required this.destinations,
+    this.enabled = true,
     super.key,
   }) : _userAvailabilityType = user.availabilityType;
 
@@ -182,13 +184,15 @@ class AvailabilityTile extends StatelessWidget {
                 onTap: () => _openAddAvailabilityWebView(context),
               ),
             ],
-            onChanged: (destination) => destination != null
-                ? defaultOnChanged(
-                    context,
-                    key,
-                    destination,
-                  )
-                : () {},
+            onChanged: enabled
+                ? (destination) => destination != null
+                    ? defaultOnChanged(
+                        context,
+                        key,
+                        destination,
+                      )
+                    : () {}
+                : null,
             isExpanded: true,
           ),
         ],

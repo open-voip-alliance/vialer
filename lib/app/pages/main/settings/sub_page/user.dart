@@ -26,7 +26,10 @@ class UserSubPage extends StatelessWidget {
               AccountInfoCategory(
                 children: [
                   MobileNumberTile(state.user),
-                  OutgoingNumberTile(state.user),
+                  OutgoingNumberTile(
+                    state.user,
+                    enabled: !state.isUpdatingRemote,
+                  ),
                   UsernameTile(state.user),
                 ],
               ),

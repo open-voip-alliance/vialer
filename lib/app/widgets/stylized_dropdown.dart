@@ -6,14 +6,14 @@ class StylizedDropdown<T> extends StatelessWidget {
   final T? value;
   final List<DropdownMenuItem<T>> items;
   final bool isExpanded;
-  final ValueChanged<T?> onChanged;
+  final ValueChanged<T?>? onChanged;
 
   const StylizedDropdown({
     super.key,
     required this.value,
     required this.items,
     this.isExpanded = false,
-    required this.onChanged,
+    this.onChanged,
   });
 
   @override
