@@ -2,8 +2,8 @@
 
 if [[ "$CI" == "true" ]]; then
   echo "Building debug version of app for testing in CI mode"
-  flutter build apk --debug --target=lib/app/main.dart
-  flutter install --debug
+#  flutter build apk --debug --target=lib/app/main.dart
+#  flutter install --debug
 else
   flutter install
 fi
