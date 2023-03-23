@@ -9,9 +9,9 @@ else
 fi
 
 echo "Granting permissions"
-adb shell pm grant com.voipgrid.vialer android.permission.CALL_PHONE
-adb shell pm grant com.voipgrid.vialer android.permission.READ_CONTACTS
-adb shell pm grant com.voipgrid.vialer android.permission.RECORD_AUDIO
+#adb shell pm grant com.voipgrid.vialer android.permission.CALL_PHONE
+#adb shell pm grant com.voipgrid.vialer android.permission.READ_CONTACTS
+#adb shell pm grant com.voipgrid.vialer android.permission.RECORD_AUDIO
 applesimutils --booted --bundle com.voipgrid.vialer --setPermissions contacts=YES,microphone=YES,notifications=YES
 
 # With IN_TEST=true, the permission screens are shown but not requested during onboarding. Otherwise
