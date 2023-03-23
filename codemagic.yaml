@@ -236,6 +236,7 @@ custom: # Custom properties to make workflows cleaner
         xcrun simctl shutdown all
         TEST_DEVICE=$(xcrun simctl create test-device com.apple.CoreSimulator.SimDeviceType.iPhone-14-Pro com.apple.CoreSimulator.SimRuntime.iOS-16-2)
         xcrun simctl boot $TEST_DEVICE
+        flutter -d $TEST_DEVICE install --debug
         applesimutils --booted --bundle com.voipgrid.vialer --setPermissions contacts=YES,microphone=YES,notifications=YES
         flutter -d $TEST_DEVICE test integration_test
     - &update_gitlab_merge_request_with_build_url
