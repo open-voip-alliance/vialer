@@ -20,7 +20,7 @@ flutter build ipa --debug \
 --export-options-plist=/Users/builder/export_options.plist \
 --build-number=$BUILD_NR \
 --dart-define BRAND=$BRAND \
---dart-define SEGMENT_IOS_KEY=$SEGMENT_IOS_WRITE_KEY \
+--dart-define SEGMENT_IOS_KEY=$SEGMENT_IOS_WRITE_KEY
 for filename in integration_test/tests/**/*.dart; do
   flutter -d $TEST_DEVICE install --debug --verbose
   applesimutils --booted --bundle com.voipgrid.vialer --setPermissions contacts=YES,microphone=YES,notifications=YES
