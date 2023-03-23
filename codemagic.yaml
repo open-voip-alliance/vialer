@@ -234,7 +234,6 @@ custom: # Custom properties to make workflows cleaner
         xcrun simctl shutdown all
         TEST_DEVICE=$(xcrun simctl create test-device com.apple.CoreSimulator.SimDeviceType.iPhone-11 com.apple.CoreSimulator.SimRuntime.iOS-15-0)
         xcrun simctl boot $TEST_DEVICE
-        flutter emulators --launch emulator &
         . utils/test/run.sh
     - &update_gitlab_merge_request_with_build_url
       name: Updating the Merge Request in Gitlab with a link to this build
