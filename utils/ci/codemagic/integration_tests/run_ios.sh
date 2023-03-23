@@ -9,5 +9,5 @@ flutter build ios --debug --target=lib/app/main.dart
 for filename in integration_test/tests/**/*.dart; do
   flutter -d $TEST_DEVICE install --debug --verbose
   applesimutils --booted --bundle com.voipgrid.vialer --setPermissions contacts=YES,microphone=YES,notifications=YES
-  flutter test $filename -d $TEST_DEVICE
+  flutter drive -t "$filename" --driver test_driver/integration_test.dart --debug
 done
