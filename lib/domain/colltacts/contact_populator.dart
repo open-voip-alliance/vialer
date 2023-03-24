@@ -1,5 +1,4 @@
 import '../call_records/call_record.dart';
-import '../call_records/call_record_with_contact.dart';
 import 'contact.dart';
 import 'contact_repository.dart';
 

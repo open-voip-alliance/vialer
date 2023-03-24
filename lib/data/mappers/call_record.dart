@@ -3,10 +3,10 @@ import '../models/voipgrid_call_record.dart';
 
 extension FromVoipgridCallRecord on VoipgridCallRecord {
   CallRecord toCallRecord() {
-    return CallRecord(
+    return CallRecordWithoutContact(
       id: id,
       callType: _mapCallType(type),
-      direction: _mapDirection(direction),
+      callDirection: _mapDirection(direction),
       answered: answered,
       answeredElsewhere: isAnsweredElsewhere,
       duration: Duration(seconds: durationInSeconds),
