@@ -262,8 +262,8 @@ main:
     menu:
       title: *settingsTitle
     subPage:
-      phonePreferences:
-        title: "Phone preferences"
+      appPreferences:
+        title: "App voorkeuren"
       user:
         title(String user): "$user"
       client:
