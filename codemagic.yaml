@@ -199,7 +199,7 @@ custom: # Custom properties to make workflows cleaner
         --dart-define BRAND=$BRAND \
         --dart-define SEGMENT_IOS_KEY=$SEGMENT_IOS_WRITE_KEY \
     - &prepare_environment_for_integration_testing
-      name: Prepares the environment variables required for integration testing
+      name: Preparing environment for integration testing
       script: |
         sed -i -e "s/IN_TEST\=*/IN_TEST\=true/g" .env
         sed -i -e "s/TEST_USER_1_EMAIL\=*/TEST_USER_1_EMAIL\=$TEST_USER_1_EMAIL/g" .env
