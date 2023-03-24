@@ -1,8 +1,12 @@
 import 'package:package_info/package_info.dart';
 
+import '../../../dependency_locator.dart';
+import '../../env.dart';
 import 'build_info.dart';
 
 class BuildInfoRepository {
+  late final _envRepository = dependencyLocator<EnvRepository>();
+
   Future<BuildInfo> getBuildInfo({
     String? mergeRequestNumber,
     String? branch,
@@ -23,6 +27,7 @@ class BuildInfoRepository {
       branchName: branch?.isNotEmpty == true ? branch : null,
       tag: tag?.isNotEmpty == true ? tag : null,
       packageName: info.packageName,
+      isProduction: _envRepository.isProduction,
     );
   }
 }

@@ -1,17 +1,16 @@
-class BuildInfo {
-  final String version;
-  final String? buildNumber;
-  final String? mergeRequestNumber;
-  final String? branchName;
-  final String? tag;
-  final String packageName;
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  const BuildInfo({
-    required this.version,
-    this.buildNumber,
-    this.mergeRequestNumber,
-    this.branchName,
-    this.tag,
-    required this.packageName,
-  });
+part 'build_info.freezed.dart';
+
+@freezed
+class BuildInfo with _$BuildInfo {
+  const factory BuildInfo({
+    required String version,
+    String? buildNumber,
+    String? mergeRequestNumber,
+    String? branchName,
+    String? tag,
+    required String packageName,
+    required bool isProduction,
+  }) = _BuildInfo;
 }
