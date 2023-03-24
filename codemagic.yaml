@@ -506,6 +506,8 @@ workflows:
       - *flutter_pub_get
       #- *analyze
       #- *flutter_test
+      - *update_ios_signing_for_current_brand
+      - *build_ipa
       - *run_integration_tests_ios
     triggering:
       events: [ ]
