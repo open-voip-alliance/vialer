@@ -276,7 +276,9 @@ custom: # Custom properties to make workflows cleaner
       cocoapods: 1.11.3
     cache:
       cache_paths:
-        - $HOME/Library/Caches/CocoaPods
+        - ~/Library/Caches/CocoaPods
+        - ios/Pods
+        - ~/.cocoapods
   brand_config: # Specific configuration that should be applied to a workflow when building for this brand
     vialer_env_vars: &brand_config_vialer_env_vars
       BRAND: vialer
