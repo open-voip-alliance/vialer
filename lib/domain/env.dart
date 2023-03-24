@@ -29,6 +29,8 @@ class EnvRepository {
   bool get sandbox => get('SANDBOX').toBool();
 
   bool get inTest => get('IN_TEST').toBool();
+
+  bool get isProduction => get('IS_PRODUCTION').toBool();
 }
 
 extension on String {
