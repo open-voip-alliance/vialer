@@ -446,7 +446,6 @@ workflows:
   gitlab-ci-merge-train:
     name: Gitlab CI Merge Train
     <<: *main_workflow
-    instance_type: mac_pro
     scripts:
       - *use_workflow_build_number
       - *set_up_env_file
@@ -494,7 +493,6 @@ workflows:
   run-integration-tests:
     name: Run Integration Tests
     <<: *main_workflow
-    instance_type: mac_pro
     scripts:
       - *use_workflow_build_number
       - *set_up_env_file
