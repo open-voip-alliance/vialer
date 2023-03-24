@@ -212,6 +212,7 @@ custom: # Custom properties to make workflows cleaner
       name: Run integration tests on iOS emulator
       script: |
         #!/usr/bin/env zsh
+        set -e # Ensures the script exits if any commands fail to execute
         if [ ! -f "build/ios/ipa/Vialer.ipa" ]; then
             echo "Error: You must run the build_ipa script before running iOS integration tests"
             exit 1
