@@ -58,84 +58,19 @@ class _BuildInfoState extends State<BuildInfoPill> {
           AppSetting.showTroubleshooting,
         );
 
-        const emphasisStyle = TextStyle(fontWeight: FontWeight.bold);
-
-        final showDetails = buildInfo.mergeRequestNumber != null ||
-            buildInfo.branchName != null ||
-            buildInfo.tag != null;
-
         return GestureDetector(
           onTap: !hasAccessToTroubleshooting ? _onTap : null,
           behavior: HitTestBehavior.opaque,
           child: Center(
             child: Padding(
-              padding: EdgeInsets.only(
-                top: 8,
-                bottom: showDetails ? 16 : 8,
-              ),
+              padding: const EdgeInsets.symmetric(vertical: 8),
               child: Column(
                 children: [
                   Chip(
-                    label: Text(
-                      '${context.msg.main.settings.list.version} '
-                      '${widget.buildInfo.version}',
-                    ),
+                    label: buildInfo.showDetailed
+                        ? _DetailedBuildInfo(buildInfo)
+                        : _SimpleBuildInfo(buildInfo),
                   ),
-                  if (showDetails)
-                    Text.rich(
-                      TextSpan(
-                        children: [
-                          // These don't have to be translated,
-                          // for developers only.
-                          TextSpan(
-                            children: [
-                              const TextSpan(text: 'Build: '),
-                              TextSpan(
-                                text: buildInfo.buildNumber,
-                                style: emphasisStyle,
-                              ),
-                            ],
-                          ),
-                          if (buildInfo.mergeRequestNumber != null)
-                            TextSpan(
-                              children: [
-                                const TextSpan(text: ' — MR: '),
-                                TextSpan(
-                                  text: '!${buildInfo.mergeRequestNumber}',
-                                  style: emphasisStyle,
-                                ),
-                              ],
-                            ),
-                          if (buildInfo.branchName != null)
-                            TextSpan(
-                              children: [
-                                const TextSpan(text: ' — Branch: '),
-                                TextSpan(
-                                  text: buildInfo.branchName,
-                                  style: emphasisStyle.copyWith(
-                                    fontFamily: 'monospace',
-                                    fontSize: 13,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          if (buildInfo.tag != null)
-                            TextSpan(
-                              children: [
-                                const TextSpan(text: ' — Tag: '),
-                                TextSpan(
-                                  text: buildInfo.tag,
-                                  style: emphasisStyle.copyWith(
-                                    fontFamily: 'monospace',
-                                    fontSize: 13,
-                                  ),
-                                ),
-                              ],
-                            ),
-                        ],
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
                 ],
               ),
             ),
@@ -144,4 +79,93 @@ class _BuildInfoState extends State<BuildInfoPill> {
       },
     );
   }
+}
+
+class _SimpleBuildInfo extends StatelessWidget {
+  final BuildInfo buildInfo;
+
+  const _SimpleBuildInfo(this.buildInfo);
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      '${context.msg.main.settings.list.version} '
+      '${buildInfo.version}',
+    );
+  }
+}
+
+class _DetailedBuildInfo extends StatelessWidget {
+  final BuildInfo buildInfo;
+
+  const _DetailedBuildInfo(this.buildInfo);
+
+  @override
+  Widget build(BuildContext context) {
+    const emphasisStyle = TextStyle(fontWeight: FontWeight.bold);
+
+    return FittedBox(
+      fit: BoxFit.scaleDown,
+      child: Text.rich(
+        TextSpan(
+          children: [
+            // These don't have to be translated,
+            // for developers only.
+            TextSpan(
+              children: [
+                const TextSpan(text: 'Build: '),
+                TextSpan(
+                  text: buildInfo.buildNumber,
+                  style: emphasisStyle,
+                ),
+              ],
+            ),
+            if (buildInfo.mergeRequestNumber != null)
+              TextSpan(
+                children: [
+                  const TextSpan(text: ' — MR: '),
+                  TextSpan(
+                    text: '!${buildInfo.mergeRequestNumber}',
+                    style: emphasisStyle,
+                  ),
+                ],
+              ),
+            if (buildInfo.branchName != null)
+              TextSpan(
+                children: [
+                  const TextSpan(text: ' — Branch: '),
+                  TextSpan(
+                    text: buildInfo.branchName,
+                    style: emphasisStyle.copyWith(
+                      fontFamily: 'monospace',
+                      fontSize: 13,
+                    ),
+                  ),
+                ],
+              ),
+            if (buildInfo.tag != null)
+              TextSpan(
+                children: [
+                  const TextSpan(text: ' — Tag: '),
+                  TextSpan(
+                    text: buildInfo.tag,
+                    style: emphasisStyle.copyWith(
+                      fontFamily: 'monospace',
+                      fontSize: 13,
+                    ),
+                  ),
+                ],
+              ),
+          ],
+        ),
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
+}
+
+extension on BuildInfo {
+  bool get showDetailed =>
+      !isProduction &&
+      (mergeRequestNumber != null || branchName != null || tag != null);
 }
