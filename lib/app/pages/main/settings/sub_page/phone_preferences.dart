@@ -20,8 +20,8 @@ import '../widgets/tile/use_phone_ringtone.dart';
 import '../widgets/tile/use_voip.dart';
 import 'widget.dart';
 
-class PhonePreferencesSubPage extends StatelessWidget {
-  const PhonePreferencesSubPage();
+class AppPreferencesSubPage extends StatelessWidget {
+  const AppPreferencesSubPage();
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +39,7 @@ class PhonePreferencesSubPage extends StatelessWidget {
 
         return SettingsSubPage(
           cubit: cubit,
-          title: Text(context.msg.main.settings.subPage.phonePreferences.title),
+          title: Text(context.msg.main.settings.subPage.appPreferences.title),
           children: (state) {
             return [
               CallingCategory(
