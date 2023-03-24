@@ -1,5 +1,9 @@
 #!/usr/bin/env zsh
 
+if [ ! -f "build/ios/ipa/Vialer.ipa" ]; then
+    echo "Error: You must run the build_ipa script before running iOS integration tests"
+    exit 1
+fi
 brew tap wix/brew
 brew install applesimutils
 xcrun simctl shutdown all
