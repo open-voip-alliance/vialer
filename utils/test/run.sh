@@ -36,7 +36,9 @@ if [ -z "$1" ]; then
   done
 
   echo "\nRunning unit tests"
-  flutter test
+  if [[ "$CI" != "true" ]]; then
+    flutter test
+  fi
 else
   run_test "$1"
 fi

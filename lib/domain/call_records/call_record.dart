@@ -1,34 +1,60 @@
-import 'package:equatable/equatable.dart';
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
+import '../colltacts/contact.dart';
+
+part 'call_record.freezed.dart';
 part 'call_record.g.dart';
 
-class CallRecord extends Equatable {
-  final String id;
-  final CallType callType;
-  final Direction _direction;
-  final bool answered;
-  final bool answeredElsewhere;
-  final Duration duration;
-  final DateTime date;
-  final CallParty caller;
-  final CallParty destination;
+@freezed
+class CallRecord with _$CallRecord {
+  const CallRecord._();
 
-  const CallRecord({
-    required this.id,
-    required this.callType,
-    required Direction direction,
-    required this.answered,
-    required this.answeredElsewhere,
-    required this.duration,
-    required this.date,
-    required this.caller,
-    required this.destination,
-  }) : _direction = direction;
+  const factory CallRecord.withoutContact({
+    required String id,
+    required CallType callType,
+    required Direction callDirection,
+    required bool answered,
+    required bool answeredElsewhere,
+    required Duration duration,
+    required DateTime date,
+    required CallParty caller,
+    required CallParty destination,
+  }) = CallRecordWithoutContact;
+
+  /// CallRecord with a contact that relates to the [destinationNumber].
+  const factory CallRecord.withContact({
+    required String id,
+    required CallType callType,
+    required Direction callDirection,
+    required bool answered,
+    required bool answeredElsewhere,
+    required Duration duration,
+    required DateTime date,
+    required CallParty caller,
+    required CallParty destination,
+    Contact? contact,
+  }) = CallRecordWithContact;
+
+  const factory CallRecord.client({
+    required String id,
+    required CallType callType,
+    required Direction callDirection,
+    required bool answered,
+    required bool answeredElsewhere,
+    required Duration duration,
+    required DateTime date,
+    required CallParty caller,
+    required CallParty destination,
+    required bool didTargetColleague,
+    required bool didTargetLoggedInUser,
+    required bool wasInitiatedByColleague,
+    required bool wasInitiatedByLoggedInUser,
+  }) = ClientCallRecord;
 
   bool get wasMissed => !answered;
 
-  Direction get direction => _isInboundForApp ? Direction.inbound : _direction;
+  Direction get direction =>
+      _isInboundForApp ? Direction.inbound : callDirection;
 
   bool get isInbound => direction == Direction.inbound;
 
@@ -42,7 +68,7 @@ class CallRecord extends Equatable {
   // personalized API can't determine the direction of the call and it always
   // returns outbound. So override this specific case.
   bool get _isInboundForApp =>
-      _direction == Direction.outbound &&
+      callDirection == Direction.outbound &&
       _isColleagueCall &&
       destination.type == CallerType.app;
 
@@ -52,33 +78,23 @@ class CallRecord extends Equatable {
 
   @override
   String toString() => '$id: ${destination.number}';
+}
 
-  CallRecord copyWith({
-    String? id,
-    CallType? callType,
-    Direction? direction,
-    bool? answered,
-    bool? answeredElsewhere,
-    Duration? duration,
-    DateTime? date,
-    CallParty? caller,
-    CallParty? destination,
-  }) {
-    return CallRecord(
-      id: id ?? this.id,
-      callType: callType ?? this.callType,
-      direction: direction ?? _direction,
-      answered: answered ?? this.answered,
-      answeredElsewhere: answeredElsewhere ?? this.answeredElsewhere,
-      duration: duration ?? this.duration,
-      date: date ?? this.date,
-      caller: caller ?? this.caller,
-      destination: destination ?? this.destination,
+extension WithContact on CallRecord {
+  CallRecordWithContact withContact(Contact? contact) {
+    return CallRecordWithContact(
+      id: id,
+      callType: callType,
+      callDirection: callDirection,
+      answered: answered,
+      answeredElsewhere: answeredElsewhere,
+      duration: duration,
+      date: date,
+      caller: caller,
+      destination: destination,
+      contact: contact,
     );
   }
-
-  @override
-  List<Object> get props => [id];
 }
 
 enum Direction {
@@ -98,27 +114,20 @@ enum CallerType {
   other,
 }
 
-@JsonSerializable()
-class CallParty extends Equatable {
-  final String? name;
-  final String number;
-  final CallerType type;
+@freezed
+class CallParty with _$CallParty {
+  const CallParty._();
 
-  const CallParty({
-    this.name,
-    required this.number,
-    required this.type,
-  });
-
-  String get label => hasName ? name! : number;
+  const factory CallParty({
+    String? name,
+    required String number,
+    required CallerType type,
+  }) = _CallParty;
 
   bool get hasName => name?.isNotEmpty == true;
 
-  @override
-  List<Object?> get props => [name, number, type];
+  String get label => hasName ? name! : number;
 
   factory CallParty.fromJson(Map<String, dynamic> json) =>
       _$CallPartyFromJson(json);
-
-  Map<String, dynamic> toJson() => _$CallPartyToJson(this);
 }

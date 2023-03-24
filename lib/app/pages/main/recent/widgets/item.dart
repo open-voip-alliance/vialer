@@ -7,8 +7,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../../domain/call_records/call_record.dart';
-import '../../../../../domain/call_records/call_record_with_contact.dart';
-import '../../../../../domain/call_records/client/client_call_record.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
 import '../../../../util/contact.dart';
@@ -394,12 +392,14 @@ extension CallDestinationLabel on CallRecord {
   String get displayLabel {
     final callRecord = this;
 
-    if (callRecord is CallRecordWithContact) {
-      final contact = callRecord.contact;
+    final contact = callRecord.map(
+      withoutContact: (_) => null,
+      withContact: (callRecord) => callRecord.contact,
+      client: (_) => null,
+    );
 
-      // We always want to prioritize a local contact in the user's phone.
-      if (contact != null) return contact.displayName;
-    }
+    // We always want to prioritize a local contact in the user's phone.
+    if (contact != null) return contact.displayName;
 
     // When a colleague is calling, they may have a display name setup so
     // we will use that. We don't want to use the display name for other calls
@@ -506,11 +506,11 @@ extension RenderType on CallRecord {
   CallRecordRenderType get renderType {
     final callRecord = this;
 
-    if (callRecord is ClientCallRecord) {
-      return callRecord.renderType;
-    }
-
-    return CallRecordRenderType.other;
+    return callRecord.map(
+      withoutContact: (_) => CallRecordRenderType.other,
+      withContact: (_) => CallRecordRenderType.other,
+      client: (callRecord) => callRecord.renderType,
+    );
   }
 }
 
