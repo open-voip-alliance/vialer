@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../../user_availability/colleagues/colleague.dart';
+import '../../user_availability/colleagues/availbility_update.dart';
 
 part 'logged_in_user_availability_changed.freezed.dart';
 
@@ -8,9 +8,6 @@ part 'logged_in_user_availability_changed.freezed.dart';
 @freezed
 class LoggedInUserAvailabilityChanged with _$LoggedInUserAvailabilityChanged {
   const factory LoggedInUserAvailabilityChanged({
-    required ColleagueAvailabilityStatus availabilityStatus,
-    required List<ColleagueContext> context,
-    required String internalNumber,
-    required ColleagueDestination destination,
+    required AvailabilityUpdate availability,
   }) = _LoggedInUserAvailabilityChanged;
 }

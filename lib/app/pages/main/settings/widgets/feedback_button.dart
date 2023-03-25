@@ -11,9 +11,9 @@ import '../cubit.dart';
 class FeedbackButton extends StatelessWidget {
   Future<void> _goToFeedbackPage(BuildContext context) async {
     final sent = await Navigator.pushNamed(
-      context,
-      Routes.feedback,
-    ) as bool? ??
+          context,
+          Routes.feedback,
+        ) as bool? ??
         false;
 
     if (sent) {
@@ -39,5 +39,3 @@ class FeedbackButton extends StatelessWidget {
     );
   }
 }
-
-

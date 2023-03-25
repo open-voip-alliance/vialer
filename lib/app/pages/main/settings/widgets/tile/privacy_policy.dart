@@ -6,7 +6,6 @@ import '../../../../../resources/localizations.dart';
 import 'category/widget.dart';
 
 class PrivacyPolicyTile extends StatelessWidget {
-
   const PrivacyPolicyTile({
     super.key,
   });

@@ -20,7 +20,7 @@ class SettingsButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final textColor = solid ? Colors.white : context.brand.theme.colors.primary;
     final backgroundColor =
-    solid ? context.brand.theme.colors.primary : Colors.transparent;
+        solid ? context.brand.theme.colors.primary : Colors.transparent;
     return OutlinedButton(
       style: OutlinedButton.styleFrom(
         backgroundColor: backgroundColor,

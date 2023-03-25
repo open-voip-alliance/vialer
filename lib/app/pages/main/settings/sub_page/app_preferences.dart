@@ -88,8 +88,7 @@ class AppPreferencesSubPage extends StatelessWidget {
                   FeedbackButton(),
                 ],
               ),
-              if (state.buildInfo != null)
-                BuildInfoTile(state.buildInfo!),
+              if (state.buildInfo != null) BuildInfoTile(state.buildInfo!),
               const PrivacyPolicyTile(),
             ];
           },
