@@ -12,8 +12,13 @@ import 'value.dart';
 
 class DndTile extends StatelessWidget {
   final User user;
+  final bool enabled;
 
-  const DndTile(this.user, {super.key});
+  const DndTile(
+    this.user, {
+    this.enabled = true,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +31,10 @@ class DndTile extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-            child: _DndToggle(user),
+            child: _DndToggle(
+              user,
+              enabled: enabled,
+            ),
           ),
         ],
       ),
@@ -41,11 +49,14 @@ class _DndToggle extends StatelessWidget {
 
   final UserAvailabilityType _userAvailabilityType;
   final bool _value;
+  final bool enabled;
 
   static const _key = CallSetting.dnd;
 
-  _DndToggle(this.user)
-      : _value = user.settings.get(_key),
+  _DndToggle(
+    this.user, {
+    this.enabled = true,
+  })  : _value = user.settings.get(_key),
         _userAvailabilityType = user.availabilityType;
 
   String _text(BuildContext context, {bool? settingValue}) {
@@ -152,6 +163,7 @@ class _DndToggle extends StatelessWidget {
                 ),
                 child: FlutterSwitch(
                   value: _value,
+                  disabled: !enabled,
                   inactiveIcon: SizedBox(
                     width: 28,
                     height: 28,

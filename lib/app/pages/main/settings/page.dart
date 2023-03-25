@@ -60,7 +60,11 @@ class _SettingsPageState extends State<SettingsPage> {
                                 child: Column(
                                   children: [
                                     Header(user: state.user),
-                                    if (showDnd) DndTile(user),
+                                    if (showDnd)
+                                      DndTile(
+                                        user,
+                                        enabled: !state.isUpdatingRemote,
+                                      ),
                                     AvailabilityTile(
                                       user: user,
                                       userNumber: userNumber,
