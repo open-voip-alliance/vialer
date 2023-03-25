@@ -49,7 +49,7 @@ class BrandTheme {
 
   late final fieldBoxDecoration = BoxDecoration(
     border: Border.all(
-      color: colors.grey2,
+      color: colors.grey3,
     ),
     borderRadius: fieldBorderRadius,
   );

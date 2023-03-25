@@ -29,10 +29,13 @@ class FeedbackButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SettingsButton(
-      text: context.msg.main.settings.buttons.sendFeedback,
-      icon: FontAwesomeIcons.messages,
-      onPressed: () => _goToFeedbackPage(context),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 12),
+      child: SettingsButton(
+        text: context.msg.main.settings.buttons.sendFeedbackButton,
+        icon: FontAwesomeIcons.messages,
+        onPressed: () => _goToFeedbackPage(context),
+      ),
     );
   }
 }

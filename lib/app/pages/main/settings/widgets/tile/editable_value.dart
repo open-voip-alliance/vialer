@@ -163,7 +163,7 @@ class _EditIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return const FaIcon(
       FontAwesomeIcons.pen,
-      size: 22,
+      size: 18,
     );
   }
 }

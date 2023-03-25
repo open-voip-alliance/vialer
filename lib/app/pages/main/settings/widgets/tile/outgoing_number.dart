@@ -40,37 +40,40 @@ class OutgoingNumberTile extends StatelessWidget {
       childFillWidth: true,
       child: EditableSettingField(
         unlocked: Expanded(
-          child: MultipleChoiceSettingValue<OutgoingNumber>(
-            value: _value,
-            padding: const EdgeInsets.only(
-              bottom: 8,
-              right: 8,
-            ),
-            onChanged: enabled
-                ? (number) => defaultOnChanged(context, _key, number)
-                : null,
-            isExpanded: false,
-            items: [
-              DropdownMenuItem<OutgoingNumber>(
-                child: FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Text(
-                    context.msg.main.settings.list.accountInfo.businessNumber
-                        .suppressed,
-                  ),
-                ),
-                value: const OutgoingNumber.suppressed(),
+          child: Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: MultipleChoiceSettingValue<OutgoingNumber>(
+              value: _value,
+              padding: const EdgeInsets.only(
+                bottom: 8,
+                right: 8,
               ),
-              ...user.client.outgoingNumbers.map(
-                (number) => DropdownMenuItem<OutgoingNumber>(
+              onChanged: enabled
+                  ? (number) => defaultOnChanged(context, _key, number)
+                  : null,
+              isExpanded: false,
+              items: [
+                DropdownMenuItem<OutgoingNumber>(
                   child: FittedBox(
                     fit: BoxFit.scaleDown,
-                    child: Text(number.toString()),
+                    child: Text(
+                      context.msg.main.settings.list.accountInfo.businessNumber
+                          .suppressed,
+                    ),
                   ),
-                  value: number,
+                  value: const OutgoingNumber.suppressed(),
                 ),
-              ),
-            ],
+                ...user.client.outgoingNumbers.map(
+                  (number) => DropdownMenuItem<OutgoingNumber>(
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(number.toString()),
+                    ),
+                    value: number,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
         locked: unlockedWidget,

@@ -6,14 +6,16 @@ import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
 import '../cubit.dart';
 import '../widgets/feedback_button.dart';
+import '../widgets/tile/build_info.dart';
 import '../widgets/tile/category/advanced_settings.dart';
 import '../widgets/tile/category/audio.dart';
 import '../widgets/tile/category/calling.dart';
 import '../widgets/tile/category/debug.dart';
-import '../widgets/tile/category/feedback.dart';
 import '../widgets/tile/category/recents.dart';
+import '../widgets/tile/feedback.dart';
 import '../widgets/tile/ignore_battery_optimizations.dart';
 import '../widgets/tile/link/troubleshooting.dart';
+import '../widgets/tile/privacy_policy.dart';
 import '../widgets/tile/remote_logging.dart';
 import '../widgets/tile/show_calls_in_native_recents.dart';
 import '../widgets/tile/show_client_calls.dart';
@@ -85,7 +87,10 @@ class AppPreferencesSubPage extends StatelessWidget {
                 children: [
                   FeedbackButton(),
                 ],
-              )
+              ),
+              if (state.buildInfo != null)
+                BuildInfoTile(state.buildInfo!),
+              const PrivacyPolicyTile(),
             ];
           },
         );

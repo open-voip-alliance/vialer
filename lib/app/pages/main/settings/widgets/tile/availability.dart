@@ -103,6 +103,7 @@ class AvailabilityTile extends StatelessWidget {
     final helpTextSize = 13.5;
 
     return SettingTile(
+      bordered: false,
       description: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

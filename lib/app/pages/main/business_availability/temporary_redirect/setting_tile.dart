@@ -19,6 +19,7 @@ class TemporaryRedirectSettingTile extends StatelessWidget {
         final hasTemporaryRedirect = state is Active;
 
         return SettingTile(
+          bordered: false,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

@@ -4,7 +4,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../resources/localizations.dart';
 import 'cubit.dart';
-import 'footer/widget.dart';
 import 'header/widget.dart';
 import 'sub_page/app_preferences.dart';
 import 'sub_page/client.dart';
@@ -98,7 +97,6 @@ class _SettingsPageState extends State<SettingsPage> {
                                 ),
                               ),
                             ),
-                            Footer(buildInfo: state.buildInfo),
                           ],
                         ),
                       ),

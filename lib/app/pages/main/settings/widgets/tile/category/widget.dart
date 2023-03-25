@@ -10,22 +10,33 @@ class SettingTileCategory extends StatelessWidget {
 
   // String instead of Widget, because we need to call .toUppercaseOnAndroid
   // every time.
-  final String title;
+  final String? title;
+
+  final Widget? titleWidget;
 
   final bool highlight;
   final List<Widget> children;
+  final bool padBottom;
 
   const SettingTileCategory({
     Key? key,
     required this.icon,
-    required this.title,
+    this.title,
+    this.titleWidget,
     this.highlight = false,
     this.children = const [],
+    this.padBottom = false,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    const dividerHeight = 1.0;
+    assert(
+      (titleWidget != null && title == null) ||
+          (titleWidget == null && title != null),
+      'You must provide either a title or a titleWidget, not both.',
+    );
+
+    const dividerHeight = 2.0;
     // Default divider height halved, minus 1 for the thickness (actual height
     // in our case).
     const dividerPadding = 16 / 2 - dividerHeight;
@@ -49,39 +60,40 @@ class SettingTileCategory extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16).copyWith(
               top: 8 + dividerPadding,
-              bottom: dividerPadding,
+              bottom: (padBottom ? 8 : 0) + dividerPadding,
             ),
             child: Column(
-              children: <Widget>[
+              children: [
                 Row(
-                  children: <Widget>[
+                  children: [
                     FaIcon(
                       icon,
-                      color: context.brand.theme.colors.grey1,
-                      size: !context.isIOS ? 16 : null,
+                      color: context.brand.theme.colors.grey6,
+                      size: 14,
                     ),
-                    const SizedBox(width: 8),
-                    Text(
-                      title.toUpperCaseIfAndroid(context),
-                      style: TextStyle(
-                        color: !context.isIOS
-                            ? Theme.of(context).primaryColor
-                            : null,
-                        fontSize: context.isIOS ? 18 : 14,
-                        fontWeight: context.isIOS ? null : FontWeight.bold,
+                    const SizedBox(width: 16),
+                    if (titleWidget != null) titleWidget!,
+                    if (title != null)
+                      Text(
+                        title!.toUpperCaseIfAndroid(context),
+                        style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
                   ],
                 ),
-                SizedBox(height: context.isIOS ? 16 : 8),
+                const SizedBox(height: 8),
                 ...children,
               ],
             ),
           ),
         ),
-        // We don't use the default height so the highlight background color
-        // ends exactly at the divider.
-        if (!context.isIOS) const Divider(height: dividerHeight),
+        Divider(
+          height: dividerHeight,
+          color: context.brand.theme.colors.grey6,
+        ),
       ],
     );
   }

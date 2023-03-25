@@ -19,10 +19,7 @@ class UsernameTile extends StatelessWidget {
         context.msg.main.settings.list.accountInfo.username.description,
       ),
       child: Padding(
-        padding: EdgeInsets.only(
-          bottom: context.isIOS ? 8 : 4,
-          top: context.isIOS ? 8 : 10,
-        ),
+        padding: const EdgeInsets.only(bottom: 8, top: 10),
         child: StringValue(user.email),
       ),
     );

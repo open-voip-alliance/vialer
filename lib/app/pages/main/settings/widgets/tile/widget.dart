@@ -23,7 +23,7 @@ class SettingTile extends StatelessWidget {
 
   /// Specify if a border should be shown, if null, platform defaults
   /// will be used.
-  final bool? bordered;
+  final bool bordered;
 
   SettingTile({
     super.key,
@@ -32,16 +32,9 @@ class SettingTile extends StatelessWidget {
     required this.child,
     this.childFillWidth = false,
     this.center = false,
-    EdgeInsetsGeometry? padding,
-    this.bordered,
-  }) : padding = padding ??
-            EdgeInsets.only(
-              top: Platform.isIOS ? 8 : 0,
-              bottom: Platform.isIOS ? 8 : 0,
-            );
-
-  bool _shouldRenderBorder(BuildContext context) =>
-      bordered != null ? bordered! : context.isIOS;
+    this.bordered = true,
+    this.padding = const EdgeInsets.symmetric(horizontal: 8),
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -49,9 +42,7 @@ class SettingTile extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Container(
-          decoration: _shouldRenderBorder(context)
-              ? context.brand.theme.fieldBoxDecoration
-              : null,
+          decoration: bordered ? context.brand.theme.fieldBoxDecoration : null,
           padding: padding,
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -69,10 +60,7 @@ class SettingTile extends StatelessWidget {
                         : MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       DefaultTextStyle.merge(
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: !context.isIOS ? FontWeight.bold : null,
-                        ),
+                        style: const TextStyle(fontSize: 15),
                         child: center
                             ? label!
                             : Expanded(
@@ -89,13 +77,11 @@ class SettingTile extends StatelessWidget {
         ),
         if (description != null)
           Padding(
-            padding: EdgeInsets.only(
-              top: context.isIOS ? 8 : 0,
-              bottom: 16,
-            ),
+            padding: const EdgeInsets.only(top: 8, bottom: 16),
             child: DefaultTextStyle.merge(
               style: TextStyle(
                 color: context.brand.theme.colors.grey4,
+                fontSize: 12,
               ),
               child: description!,
             ),

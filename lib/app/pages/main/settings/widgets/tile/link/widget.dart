@@ -13,7 +13,7 @@ class SettingLinkTile extends StatelessWidget {
   final bool center;
 
   /// See [SettingTile.bordered] for more information.
-  final bool? bordered;
+  final bool bordered;
 
   /// When TRUE will show a right-arrow indicating to the user that pressing
   /// this navigates to another page.
@@ -25,7 +25,7 @@ class SettingLinkTile extends StatelessWidget {
     this.description,
     this.onTap,
     this.center = false,
-    this.bordered,
+    this.bordered = true,
     this.showNavigationIndicator = true,
   });
 

@@ -39,14 +39,23 @@ class ClientSubPage extends StatelessWidget {
               if (user.canViewAtLeastOneWebView)
                 PortalLinksCategory(
                   children: [
-                    if (user.permissions.canSeeClientCalls)
+                    if (user.permissions.canSeeClientCalls) ...[
                       const CallsLinkTile(),
-                    if (user.permissions.canViewDialPlans)
+                      const SizedBox(height: 10),
+                    ],
+                    if (user.permissions.canViewDialPlans) ...[
                       const DialPlanLinkTile(),
+                      const SizedBox(height: 10),
+                    ],
                     if (cubit.shouldShowOpeningHoursBasic &&
-                        user.client.openingHours.isNotEmpty)
+                        user.client.openingHours.isNotEmpty) ...[
                       OpeningHoursLinkTile(user),
-                    if (user.permissions.canViewStats) const StatsLinkTile(),
+                      const SizedBox(height: 10),
+                    ],
+                    if (user.permissions.canViewStats) ...[
+                      const StatsLinkTile(),
+                      const SizedBox(height: 10),
+                    ],
                   ],
                 ),
             ];
