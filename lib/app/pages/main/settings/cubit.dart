@@ -47,6 +47,8 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
   final _storageRepository = dependencyLocator<StorageRepository>();
   final _eventBus = dependencyLocator<EventBusObserver>();
 
+  final List<_SettingChangeRequest> _changesBeingProcessed = [];
+
   SettingsCubit() : super(SettingsState(user: GetLoggedInUserUseCase()())) {
     _emitUpdatedState();
     _eventBus.on<LoggedInUserWasRefreshed>(
@@ -54,15 +56,27 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
     );
   }
 
+  bool get _isUpdatingRemote {
+    if (_changesBeingProcessed.isEmpty) return false;
+
+    final timeout = const Duration(minutes: 2);
+
+    // We only care if any of the changes being processed are within the last
+    // [timeout].
+    return _changesBeingProcessed
+        .where(
+          (request) => request.time
+              .isAfter(DateTime.now().subtract(timeout)),
+        )
+        .isNotEmpty;
+  }
+
   Future<void> _emitUpdatedState({
-    bool? isUpdatingRemote,
     User? user,
   }) async {
     // We don't want to emit any refresh changes while we're in the progress
     // of changing remote settings.
-    if (state.isUpdatingRemote && isUpdatingRemote == null) {
-      return;
-    }
+    if (_isUpdatingRemote) return;
 
     user = user ?? _getUser();
 
@@ -78,7 +92,7 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
         ),
         userNumber: _storageRepository.userNumber,
         availableDestinations: _storageRepository.availableDestinations,
-        isUpdatingRemote: isUpdatingRemote ?? state.isUpdatingRemote,
+        isUpdatingRemote: _isUpdatingRemote,
       ),
     );
   }
@@ -106,12 +120,15 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
     // smoothness.
     final newSettings = Settings({key: value});
 
-    // If this is going to be used for UI purposes we need to be able to work
-    // out if the changed settings required a remote sync, but for how it is
-    // used currently it's not important.
+    // We're going to track any requests to update remote and then make sure
+    // we don't update the settings page while that's happening. This also
+    // allows us to prevent input until changes have finished.
+    final _changeRequest = _SettingChangeRequest();
+    _changesBeingProcessed.add(_changeRequest);
     emit(state.withChanged(newSettings, isUpdatingRemote: true));
     await _changeSettings(newSettings);
-    _emitUpdatedState(isUpdatingRemote: false);
+    _changesBeingProcessed.remove(_changeRequest);
+    _emitUpdatedState();
   }
 
   Future<void> refreshAvailability() async {
@@ -138,4 +155,8 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
 
   Future<void> performEchoCancellationCalibration() =>
       _performEchoCancellationCalibration();
+}
+
+class _SettingChangeRequest {
+  final DateTime time = DateTime.now();
 }
