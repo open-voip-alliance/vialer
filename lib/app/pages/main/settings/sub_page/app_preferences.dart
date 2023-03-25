@@ -5,10 +5,12 @@ import '../../../../../domain/user/settings/call_setting.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
 import '../cubit.dart';
+import '../widgets/feedback_button.dart';
 import '../widgets/tile/category/advanced_settings.dart';
 import '../widgets/tile/category/audio.dart';
 import '../widgets/tile/category/calling.dart';
 import '../widgets/tile/category/debug.dart';
+import '../widgets/tile/category/feedback.dart';
 import '../widgets/tile/category/recents.dart';
 import '../widgets/tile/ignore_battery_optimizations.dart';
 import '../widgets/tile/link/troubleshooting.dart';
@@ -79,6 +81,11 @@ class AppPreferencesSubPage extends StatelessWidget {
                     TroubleshootingLinkTile(),
                   ],
                 ),
+              FeedbackCategory(
+                children: [
+                  FeedbackButton(),
+                ],
+              )
             ];
           },
         );

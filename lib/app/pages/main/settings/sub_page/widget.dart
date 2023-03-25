@@ -26,9 +26,12 @@ class SettingsSubPage extends StatelessWidget {
         value: cubit,
         child: BlocBuilder<SettingsCubit, SettingsState>(
           builder: (context, state) {
-            return ListView(
-              padding: const EdgeInsets.only(top: 8),
-              children: children(state),
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: ListView(
+                padding: const EdgeInsets.only(top: 8),
+                children: children(state),
+              ),
             );
           },
         ),

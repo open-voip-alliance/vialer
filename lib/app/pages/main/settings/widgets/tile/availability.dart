@@ -162,10 +162,10 @@ class AvailabilityTile extends StatelessWidget {
       ),
       childFillWidth: true,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           MultipleChoiceSettingValue<Destination?>(
             value: user.settings.getOrNull(CallSetting.destination),
+            padding: EdgeInsets.zero,
             items: [
               ...destinations.map(
                 (destination) => DropdownMenuItem<Destination>(
@@ -230,7 +230,7 @@ extension Display on UserAvailabilityType {
     } else if (this == UserAvailabilityType.notAvailable) {
       return context.brand.theme.colors.notAvailable;
     } else {
-      return context.brand.theme.colors.available;
+      return context.brand.theme.colors.userAvailabilityAvailableAccent;
     }
   }
 
@@ -240,7 +240,7 @@ extension Display on UserAvailabilityType {
     } else if (this == UserAvailabilityType.notAvailable) {
       return context.brand.theme.colors.notAvailableAccent;
     } else {
-      return context.brand.theme.colors.availableAccent;
+      return context.brand.theme.colors.userAvailabilityAvailable;
     }
   }
 }

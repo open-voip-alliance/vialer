@@ -78,7 +78,7 @@ class ColleaguesCubit extends Cubit<ColleaguesState> {
     );
 
     _subscription =
-        stream.debounceTime(const Duration(milliseconds: 250)).listen(
+        stream.debounceTime(const Duration(milliseconds: 50)).listen(
       (colleagues) {
         // Emitting loading initially to ensure listeners receive the new state.
         emit(

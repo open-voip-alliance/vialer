@@ -37,8 +37,6 @@ class SettingTile extends StatelessWidget {
   }) : padding = padding ??
             EdgeInsets.only(
               top: Platform.isIOS ? 8 : 0,
-              left: Platform.isIOS ? 16 : 24,
-              right: 8,
               bottom: Platform.isIOS ? 8 : 0,
             );
 
@@ -92,8 +90,6 @@ class SettingTile extends StatelessWidget {
         if (description != null)
           Padding(
             padding: EdgeInsets.only(
-              left: context.isIOS ? 8 : 24,
-              right: 8,
               top: context.isIOS ? 8 : 0,
               bottom: 16,
             ),
