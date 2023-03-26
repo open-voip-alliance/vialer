@@ -56,20 +56,11 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
     );
   }
 
-  bool get _isUpdatingRemote {
-    if (_changesBeingProcessed.isEmpty) return false;
-
-    final timeout = const Duration(minutes: 2);
-
-    // We only care if any of the changes being processed are within the last
-    // [timeout].
-    return _changesBeingProcessed
-        .where(
-          (request) => request.time
-              .isAfter(DateTime.now().subtract(timeout)),
-        )
-        .isNotEmpty;
-  }
+  bool get _isUpdatingRemote => _changesBeingProcessed.isNotEmpty
+      ? _changesBeingProcessed
+          .where((request) => !request.hasTimedOut)
+          .isNotEmpty
+      : false;
 
   Future<void> _emitUpdatedState({
     User? user,
@@ -159,4 +150,10 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
 
 class _SettingChangeRequest {
   final DateTime time = DateTime.now();
+
+  /// An arbitrary time before we determine that our setting change request
+  /// has timed out. Note that this does not indicate a timeout of the HTTP
+  /// request which will still count as completed.
+  bool get hasTimedOut =>
+      time.isBefore(DateTime.now().subtract(const Duration(minutes: 2)));
 }

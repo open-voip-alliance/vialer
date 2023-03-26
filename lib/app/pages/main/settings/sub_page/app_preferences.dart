@@ -5,7 +5,6 @@ import '../../../../../domain/user/settings/call_setting.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
 import '../cubit.dart';
-import '../widgets/feedback_button.dart';
 import '../widgets/tile/build_info.dart';
 import '../widgets/tile/category/advanced_settings.dart';
 import '../widgets/tile/category/audio.dart';
@@ -83,11 +82,7 @@ class AppPreferencesSubPage extends StatelessWidget {
                     TroubleshootingLinkTile(),
                   ],
                 ),
-              FeedbackCategory(
-                children: [
-                  FeedbackButton(),
-                ],
-              ),
+              const FeedbackTile(),
               if (state.buildInfo != null) BuildInfoTile(state.buildInfo!),
               const PrivacyPolicyTile(),
             ];

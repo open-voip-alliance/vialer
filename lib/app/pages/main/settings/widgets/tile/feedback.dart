@@ -2,14 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../../resources/localizations.dart';
+import '../buttons/feedback_button.dart';
 import 'category/widget.dart';
 
-class FeedbackCategory extends StatelessWidget {
-  final List<Widget> children;
-
-  const FeedbackCategory({
+class FeedbackTile extends StatelessWidget {
+  const FeedbackTile({
     super.key,
-    required this.children,
   });
 
   @override
@@ -17,7 +15,9 @@ class FeedbackCategory extends StatelessWidget {
     return SettingTileCategory(
       icon: FontAwesomeIcons.messages,
       title: context.msg.main.settings.buttons.sendFeedback,
-      children: children,
+      children: [
+        FeedbackButton(),
+      ],
     );
   }
 }

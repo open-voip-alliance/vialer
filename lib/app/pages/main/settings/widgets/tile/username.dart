@@ -2,7 +2,6 @@ import 'package:flutter/widgets.dart';
 
 import '../../../../../../domain/user/user.dart';
 import '../../../../../resources/localizations.dart';
-import '../../../../../resources/theme.dart';
 import 'value.dart';
 import 'widget.dart';
 

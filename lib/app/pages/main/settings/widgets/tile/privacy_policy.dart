@@ -17,7 +17,6 @@ class PrivacyPolicyTile extends StatelessWidget {
       child: SettingTileCategory(
         icon: FontAwesomeIcons.bookCircleArrowRight,
         title: context.msg.main.settings.privacyPolicy,
-        children: [],
         padBottom: true,
       ),
     );
