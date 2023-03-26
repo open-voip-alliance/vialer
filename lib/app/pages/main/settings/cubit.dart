@@ -155,5 +155,5 @@ class _SettingChangeRequest {
   /// has timed out. Note that this does not indicate a timeout of the HTTP
   /// request which will still count as completed.
   bool get hasTimedOut =>
-      time.isBefore(DateTime.now().subtract(const Duration(minutes: 2)));
+      time.isBefore(DateTime.now().subtract(const Duration(seconds: 15)));
 }
