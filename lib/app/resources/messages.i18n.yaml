@@ -292,7 +292,7 @@ main:
           description: >-
               Your mobile phone number. It is not visible to others.
         username:
-          title: "User's email"
+          title: "Your email address"
           description: >-
             Email address of your user account with which you logged in.
       advancedSettings:

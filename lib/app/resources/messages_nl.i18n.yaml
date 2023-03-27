@@ -294,7 +294,7 @@ main:
           description: >-
               Je mobiele telefoonnummer. Deze is niet zichtbaar voor anderen.
         username:
-          title: "User's email" #TODO: Translate
+          title: "Jouw e-mailadres" #TODO: Translate
           description: >-
             E-mailadres van je gebruikersaccount waarmee je bent ingelogd.
       advancedSettings:
