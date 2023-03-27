@@ -38,7 +38,6 @@ class SettingLinkTile extends StatelessWidget {
         label: title,
         description: description,
         center: center,
-        bordered: bordered,
         child: showNavigationIndicator
             ? FaIcon(
                 FontAwesomeIcons.angleRight,

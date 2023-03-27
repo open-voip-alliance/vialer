@@ -5,13 +5,13 @@ import '../../../../../resources/theme.dart';
 
 class SettingsButton extends StatelessWidget {
   final String text;
-  final IconData icon;
+  final IconData? icon;
   final VoidCallback onPressed;
   final bool solid;
 
   const SettingsButton({
     required this.text,
-    required this.icon,
+    this.icon,
     required this.onPressed,
     this.solid = true,
   });
@@ -30,12 +30,14 @@ class SettingsButton extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          FaIcon(
-            icon,
-            color: textColor,
-            size: 16,
-          ),
-          const SizedBox(width: 10),
+          if (icon != null) ...[
+            FaIcon(
+              icon,
+              color: textColor,
+              size: 16,
+            ),
+            const SizedBox(width: 10),
+          ],
           Flexible(
             child: Text(
               text,

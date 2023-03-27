@@ -294,6 +294,7 @@ main:
           description: >-
               Je mobiele telefoonnummer. Deze is niet zichtbaar voor anderen.
         username:
+          title: "User's email" #TODO: Translate
           description: >-
             E-mailadres van je gebruikersaccount waarmee je bent ingelogd.
       advancedSettings:
@@ -373,7 +374,7 @@ main:
             Als deze optie aan staat, dan verlopen gesprekken via je mobiele nummer ($mobileNumber) als het niet lukt om verbinding te maken met je VoIP-account. Deze instelling brengt extra kosten met zich mee.
       version: "Versie"
       portalLinks:
-        title: "VoIP-platform"
+        title: "Admin" #TODO: Translate
         dialplan:
           title: "Belplan"
         stats:

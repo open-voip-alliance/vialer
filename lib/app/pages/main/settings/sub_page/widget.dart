@@ -8,7 +8,7 @@ typedef MultiChildStateBuilder = List<Widget> Function(SettingsState state);
 
 class SettingsSubPage extends StatelessWidget {
   final SettingsCubit cubit;
-  final Widget title;
+  final String title;
   final MultiChildStateBuilder children;
 
   const SettingsSubPage({

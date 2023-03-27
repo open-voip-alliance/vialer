@@ -25,9 +25,8 @@ class ClientSubPage extends StatelessWidget {
 
         return SettingsSubPage(
           cubit: cubit,
-          title: Text(
-            context.msg.main.settings.subPage.client.title(user.client.name),
-          ),
+          title:
+              context.msg.main.settings.subPage.client.title(user.client.name),
           children: (state) {
             return [
               if (user.permissions.canChangeTemporaryRedirect)

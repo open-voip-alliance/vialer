@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../../../domain/user/settings/call_setting.dart';
 import '../../../../../../domain/user/user.dart';
 import '../../../../../resources/localizations.dart';
+import 'category/widget.dart';
 import 'editable_value.dart';
 import 'value.dart';
 import 'widget.dart';
@@ -33,51 +35,59 @@ class OutgoingNumberTile extends StatelessWidget {
       bold: false,
     );
 
-    return SettingTile(
-      description: Text(
-        context.msg.main.settings.list.accountInfo.businessNumber.description,
-      ),
-      childFillWidth: true,
-      child: EditableSettingField(
-        unlocked: Expanded(
-          child: Padding(
-            padding: const EdgeInsets.only(top: 8.0),
-            child: MultipleChoiceSettingValue<OutgoingNumber>(
-              value: _value,
-              padding: const EdgeInsets.only(
-                bottom: 8,
-                right: 8,
+    return SettingTileCategory(
+      icon: FontAwesomeIcons.phoneArrowRight,
+      title: context.msg.main.settings.list.accountInfo.businessNumber.title,
+      bottomBorder: false,
+      children: [
+        SettingTile(
+          description: Text(
+            context
+                .msg.main.settings.list.accountInfo.businessNumber.description,
+          ),
+          childFillWidth: true,
+          child: EditableSettingField(
+            unlocked: Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: MultipleChoiceSettingValue<OutgoingNumber>(
+                  value: _value,
+                  padding: const EdgeInsets.only(
+                    bottom: 8,
+                    right: 8,
+                  ),
+                  onChanged: enabled
+                      ? (number) => defaultOnChanged(context, _key, number)
+                      : null,
+                  isExpanded: false,
+                  items: [
+                    DropdownMenuItem<OutgoingNumber>(
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          context.msg.main.settings.list.accountInfo
+                              .businessNumber.suppressed,
+                        ),
+                      ),
+                      value: const OutgoingNumber.suppressed(),
+                    ),
+                    ...user.client.outgoingNumbers.map(
+                      (number) => DropdownMenuItem<OutgoingNumber>(
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(number.toString()),
+                        ),
+                        value: number,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              onChanged: enabled
-                  ? (number) => defaultOnChanged(context, _key, number)
-                  : null,
-              isExpanded: false,
-              items: [
-                DropdownMenuItem<OutgoingNumber>(
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Text(
-                      context.msg.main.settings.list.accountInfo.businessNumber
-                          .suppressed,
-                    ),
-                  ),
-                  value: const OutgoingNumber.suppressed(),
-                ),
-                ...user.client.outgoingNumbers.map(
-                  (number) => DropdownMenuItem<OutgoingNumber>(
-                    child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Text(number.toString()),
-                    ),
-                    value: number,
-                  ),
-                ),
-              ],
             ),
+            locked: unlockedWidget,
           ),
         ),
-        locked: unlockedWidget,
-      ),
+      ],
     );
   }
 }

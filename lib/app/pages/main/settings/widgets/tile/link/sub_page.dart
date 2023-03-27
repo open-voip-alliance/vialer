@@ -22,17 +22,26 @@ class SubPageLinkTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => BlocProvider.value(
+      onTap: () => Navigator.of(context).push(
+        // Slide the page out from the right of the screen.
+        PageRouteBuilder(
+          transitionDuration: const Duration(milliseconds: 600),
+          pageBuilder: (_, __, ___) => BlocProvider.value(
             value: cubit,
             child: pageBuilder(context),
+          ),
+          transitionsBuilder: (_, animation, __, child) => SlideTransition(
+            position: animation.drive(
+              Tween(begin: const Offset(1.0, 0.0), end: Offset.zero).chain(
+                CurveTween(curve: Curves.easeOutQuart),
+              ),
+            ),
+            child: child,
           ),
         ),
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10),
+        padding: const EdgeInsets.symmetric(vertical: 20),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../resources/localizations.dart';
 import '../../../../util/conditional_capitalization.dart';
-import '../../../../widgets/stylized_button.dart';
+import '../../settings/widgets/buttons/settings_button.dart';
 import '../../settings/widgets/tile/widget.dart';
 import 'cubit.dart';
 import 'page.dart';
@@ -19,21 +19,16 @@ class TemporaryRedirectSettingTile extends StatelessWidget {
         final hasTemporaryRedirect = state is Active;
 
         return SettingTile(
-          bordered: false,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 4),
               if (hasTemporaryRedirect) ...[
-                StylizedButton.raised(
+                SettingsButton(
                   onPressed: cubit.stopTemporaryRedirect,
-                  colored: true,
-                  margin: EdgeInsets.zero,
-                  child: Text(
-                    context
-                        .msg.main.temporaryRedirect.actions.stopRedirect.label
-                        .toUpperCaseIfAndroid(context),
-                  ),
+                  text: context
+                      .msg.main.temporaryRedirect.actions.stopRedirect.label
+                      .toUpperCaseIfAndroid(context),
                 ),
                 const SizedBox(height: 8),
                 Text(
@@ -42,24 +37,17 @@ class TemporaryRedirectSettingTile extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
               ],
-              StylizedButton(
-                type: hasTemporaryRedirect
-                    ? StylizedButtonType.outline
-                    : StylizedButtonType.raised,
+              SettingsButton(
                 onPressed: () => Navigator.push(
                   context,
                   TemporaryRedirectPickerPage.route(),
                 ),
-                colored: true,
-                margin: EdgeInsets.zero,
-                child: Text(
-                  (hasTemporaryRedirect
-                          ? context.msg.main.temporaryRedirect.actions
-                              .changeRedirect.label
-                          : context.msg.main.temporaryRedirect.actions
-                              .setupRedirect.label)
-                      .toUpperCaseIfAndroid(context),
-                ),
+                text: (hasTemporaryRedirect
+                        ? context.msg.main.temporaryRedirect.actions
+                            .changeRedirect.label
+                        : context.msg.main.temporaryRedirect.actions
+                            .setupRedirect.label)
+                    .toUpperCaseIfAndroid(context),
               ),
               const SizedBox(height: 8),
               Text(

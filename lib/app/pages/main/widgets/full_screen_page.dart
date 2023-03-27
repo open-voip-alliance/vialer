@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'header.dart';
 
 /// Page designed for being full screen.
 class FullScreenPage extends StatelessWidget {
-  final Widget title;
+  final String title;
   final Widget body;
 
   const FullScreenPage({
@@ -15,8 +16,13 @@ class FullScreenPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: title,
-        centerTitle: true,
+        title: Header(title),
+        centerTitle: false,
+        iconTheme: IconThemeData(
+          color: Theme.of(context).primaryColor,
+        ),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
       ),
       body: body,
     );

@@ -42,7 +42,7 @@ class AppPreferencesSubPage extends StatelessWidget {
 
         return SettingsSubPage(
           cubit: cubit,
-          title: Text(context.msg.main.settings.subPage.appPreferences.title),
+          title: context.msg.main.settings.subPage.appPreferences.title,
           children: (state) {
             return [
               CallingCategory(

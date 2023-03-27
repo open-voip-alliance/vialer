@@ -1,8 +1,10 @@
 import 'package:flutter/widgets.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../../../domain/user/settings/call_setting.dart';
 import '../../../../../../domain/user/user.dart';
 import '../../../../../resources/localizations.dart';
+import 'category/widget.dart';
 import 'editable_value.dart';
 import 'widget.dart';
 
@@ -18,12 +20,19 @@ class MobileNumberTile extends StatelessWidget {
   Widget build(BuildContext context) {
     const key = CallSetting.mobileNumber;
 
-    return SettingTile(
-      description: Text(
-        context.msg.main.settings.list.accountInfo.mobileNumber.description,
-      ),
-      childFillWidth: true,
-      child: StringEditSettingValue(user.settings, key),
+    return SettingTileCategory(
+      icon: FontAwesomeIcons.idCard,
+      title: context.msg.main.settings.list.accountInfo.mobileNumber.title,
+      bottomBorder: false,
+      children: [
+        SettingTile(
+          description: Text(
+            context.msg.main.settings.list.accountInfo.mobileNumber.description,
+          ),
+          childFillWidth: true,
+          child: StringEditSettingValue(user.settings, key),
+        ),
+      ],
     );
   }
 }

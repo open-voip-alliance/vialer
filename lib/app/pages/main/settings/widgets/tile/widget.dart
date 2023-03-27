@@ -17,22 +17,16 @@ class SettingTile extends StatelessWidget {
   /// If this is true, the widget will be centered.
   final bool center;
 
-  final EdgeInsetsGeometry? padding;
+  final EdgeInsets padding;
 
-  /// Specify if a border should be shown, if null, platform defaults
-  /// will be used.
-  final bool bordered;
-
-  SettingTile({
-    super.key,
-    this.label,
-    this.description,
-    required this.child,
-    this.childFillWidth = false,
-    this.center = false,
-    this.bordered = true,
-    this.padding = const EdgeInsets.symmetric(horizontal: 8),
-  });
+  SettingTile(
+      {super.key,
+      this.label,
+      this.description,
+      required this.child,
+      this.childFillWidth = false,
+      this.center = false,
+      this.padding = const EdgeInsets.symmetric(horizontal: 8)});
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +34,6 @@ class SettingTile extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Container(
-          decoration: bordered ? context.brand.theme.fieldBoxDecoration : null,
           padding: padding,
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -75,7 +68,7 @@ class SettingTile extends StatelessWidget {
         ),
         if (description != null)
           Padding(
-            padding: const EdgeInsets.only(top: 8, bottom: 16),
+            padding: padding.copyWith(top: 8, bottom: 16),
             child: DefaultTextStyle.merge(
               style: TextStyle(
                 color: context.brand.theme.colors.grey4,
