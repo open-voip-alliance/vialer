@@ -43,49 +43,52 @@ class AppPreferencesSubPage extends StatelessWidget {
         return SettingsSubPage(
           cubit: cubit,
           title: context.msg.main.settings.subPage.appPreferences.title,
-          children: (state) {
-            return [
-              CallingCategory(
-                children: [
-                  if (isVoipAllowed) UseVoipTile(user),
-                  if (useVoip && canViewMobileFallback && isVoipAllowed)
-                    UseMobileNumberAsFallbackTile(user),
-                  if (context.isIOS && isVoipAllowed)
-                    ShowCallsInNativeRecentsTile(user),
-                  if (context.isAndroid)
-                    IgnoreBatteryOptimizationsTile(
-                      hasIgnoreBatteryOptimizationsPermission:
-                          hasIgnoreOptimizationsPermission,
-                      onChanged: (enabled) => cubit.requestBatteryPermission(),
-                    ),
-                ],
-              ),
-              RecentsCategory(
-                children: [
-                  ShowClientCallsTile(user),
-                ],
-              ),
-              if (state.isVoipAllowed)
-                AudioCategory(
+          child: (state) {
+            return ListView(
+              children: [
+                CallingCategory(
                   children: [
-                    UsePhoneRingtoneTile(user),
+                    if (isVoipAllowed) UseVoipTile(user),
+                    if (useVoip && canViewMobileFallback && isVoipAllowed)
+                      UseMobileNumberAsFallbackTile(user),
+                    if (context.isIOS && isVoipAllowed)
+                      ShowCallsInNativeRecentsTile(user),
+                    if (context.isAndroid)
+                      IgnoreBatteryOptimizationsTile(
+                        hasIgnoreBatteryOptimizationsPermission:
+                            hasIgnoreOptimizationsPermission,
+                        onChanged: (enabled) =>
+                            cubit.requestBatteryPermission(),
+                      ),
                   ],
                 ),
-              DebugCategory(
-                children: [
-                  RemoteLoggingTile(user),
-                ],
-              ), // Show advanced settings only if allowed.
-              if (isVoipAllowed && showTroubleshooting)
-                const AdvancedSettingsCategory(
+                RecentsCategory(
                   children: [
-                    TroubleshootingLinkTile(),
+                    ShowClientCallsTile(user),
                   ],
                 ),
-              const FeedbackTile(),
-              if (state.buildInfo != null) BuildInfoTile(state.buildInfo!),
-              const PrivacyPolicyTile(),
-            ];
+                if (state.isVoipAllowed)
+                  AudioCategory(
+                    children: [
+                      UsePhoneRingtoneTile(user),
+                    ],
+                  ),
+                DebugCategory(
+                  children: [
+                    RemoteLoggingTile(user),
+                  ],
+                ), // Show advanced settings only if allowed.
+                if (isVoipAllowed && showTroubleshooting)
+                  const AdvancedSettingsCategory(
+                    children: [
+                      TroubleshootingLinkTile(),
+                    ],
+                  ),
+                const FeedbackTile(),
+                if (state.buildInfo != null) BuildInfoTile(state.buildInfo!),
+                const PrivacyPolicyTile(),
+              ],
+            );
           },
         );
       },

@@ -18,15 +18,17 @@ class TroubleshootingSubPage extends StatelessWidget {
       cubit: cubit,
       title:
           context.msg.main.settings.list.advancedSettings.troubleshooting.title,
-      children: (state) {
-        return [
-          TroubleshootingAudioCategory(
-            children: [
-              if (state.user.settings.get(CallSetting.useVoip) == true)
-                const EchoCancellationCalibrationTile(),
-            ],
-          ),
-        ];
+      child: (state) {
+        return ListView(
+          children: [
+            TroubleshootingAudioCategory(
+              children: [
+                if (state.user.settings.get(CallSetting.useVoip) == true)
+                  const EchoCancellationCalibrationTile(),
+              ],
+            ),
+          ],
+        );
       },
     );
   }

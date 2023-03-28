@@ -4,18 +4,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../widgets/full_screen_page.dart';
 import '../cubit.dart';
 
-typedef MultiChildStateBuilder = List<Widget> Function(SettingsState state);
+typedef ChildStateBuilder = Widget Function(SettingsState state);
 
 class SettingsSubPage extends StatelessWidget {
   final SettingsCubit cubit;
   final String title;
-  final MultiChildStateBuilder children;
+  final ChildStateBuilder child;
 
   const SettingsSubPage({
     Key? key,
     required this.cubit,
     required this.title,
-    required this.children,
+    required this.child,
   }) : super(key: key);
 
   @override
@@ -28,10 +28,7 @@ class SettingsSubPage extends StatelessWidget {
           builder: (context, state) {
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 2.0),
-              child: ListView(
-                padding: const EdgeInsets.only(top: 8),
-                children: children(state),
-              ),
+              child: child(state),
             );
           },
         ),
