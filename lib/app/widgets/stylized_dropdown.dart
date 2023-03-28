@@ -22,7 +22,7 @@ class StylizedDropdown<T> extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        border: context.isAndroid ? fieldBoxDecoration.border : null,
+        border: fieldBoxDecoration.border,
         borderRadius: fieldBoxDecoration.borderRadius,
       ),
       padding: const EdgeInsets.symmetric(horizontal: 16),
