@@ -17,6 +17,7 @@ class FullScreenPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Header(title),
+        titleSpacing: 0,
         centerTitle: false,
         iconTheme: IconThemeData(
           color: Theme.of(context).primaryColor,
