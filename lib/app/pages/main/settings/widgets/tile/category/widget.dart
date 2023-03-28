@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../../../resources/theme.dart';
-import '../../../../../../util/conditional_capitalization.dart';
 
 class SettingTileCategory extends StatelessWidget {
   // Not a Widget to keep it in line with the title, also no real need for it.
