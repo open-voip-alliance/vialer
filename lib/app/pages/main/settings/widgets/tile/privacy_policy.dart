@@ -16,7 +16,7 @@ class PrivacyPolicyTile extends StatelessWidget {
       onTap: () => LaunchPrivacyPolicy()(),
       child: SettingTileCategory(
         icon: FontAwesomeIcons.bookCircleArrowRight,
-        title: context.msg.main.settings.privacyPolicy,
+        titleText: context.msg.main.settings.privacyPolicy,
         padBottom: true,
       ),
     );

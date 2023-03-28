@@ -16,7 +16,7 @@ class CallingCategory extends StatelessWidget {
   Widget build(BuildContext context) {
     return SettingTileCategory(
       icon: FontAwesomeIcons.phone,
-      title: context.msg.main.settings.list.calling.title,
+      titleText: context.msg.main.settings.list.calling.title,
       children: children,
     );
   }

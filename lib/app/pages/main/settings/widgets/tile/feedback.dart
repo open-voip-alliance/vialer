@@ -14,7 +14,7 @@ class FeedbackTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return SettingTileCategory(
       icon: FontAwesomeIcons.messages,
-      title: context.msg.main.settings.buttons.sendFeedback,
+      titleText: context.msg.main.settings.buttons.sendFeedback,
       children: [
         FeedbackButton(),
       ],

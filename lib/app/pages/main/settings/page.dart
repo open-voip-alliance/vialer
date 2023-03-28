@@ -63,13 +63,13 @@ class _SettingsPageState extends State<SettingsPage> {
                                     if (showDnd)
                                       DndTile(
                                         user,
-                                        enabled: !state.isUpdatingRemote,
+                                        enabled: !state.isApplyingChanges,
                                       ),
                                     AvailabilityTile(
                                       user: user,
                                       userNumber: userNumber,
                                       destinations: destinations,
-                                      enabled: !state.isUpdatingRemote,
+                                      enabled: !state.isApplyingChanges,
                                     ),
                                     SubPageLinkTile(
                                       title: context.msg.main.settings.subPage

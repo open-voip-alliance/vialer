@@ -67,11 +67,11 @@ class _BuildInfoTileState extends State<BuildInfoTile> {
             behavior: HitTestBehavior.opaque,
             child: SettingTileCategory(
               icon: FontAwesomeIcons.circleInfo,
-              title: !buildInfo.showDetailed
+              titleText: !buildInfo.showDetailed
                   ? '${context.msg.main.settings.list.version} '
                       '${buildInfo.version}'
                   : null,
-              titleWidget:
+              title:
                   buildInfo.showDetailed ? _DetailedBuildInfo(buildInfo) : null,
               children: [],
               padBottom: true,

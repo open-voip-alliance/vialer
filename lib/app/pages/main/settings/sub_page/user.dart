@@ -30,7 +30,7 @@ class UserSubPage extends StatelessWidget {
                       MobileNumberTile(state.user),
                       OutgoingNumberTile(
                         state.user,
-                        enabled: !state.isUpdatingRemote,
+                        enabled: !state.isApplyingChanges,
                       ),
                       UsernameTile(state.user),
                       const SizedBox(height: 20),

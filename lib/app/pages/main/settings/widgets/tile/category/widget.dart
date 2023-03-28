@@ -9,9 +9,9 @@ class SettingTileCategory extends StatelessWidget {
 
   // String instead of Widget, because we need to call .toUppercaseOnAndroid
   // every time.
-  final String? title;
+  final String? titleText;
 
-  final Widget? titleWidget;
+  final Widget? title;
 
   final bool highlight;
   final List<Widget> children;
@@ -21,8 +21,8 @@ class SettingTileCategory extends StatelessWidget {
   const SettingTileCategory({
     Key? key,
     required this.icon,
+    this.titleText,
     this.title,
-    this.titleWidget,
     this.highlight = false,
     this.children = const [],
     this.padBottom = false,
@@ -32,8 +32,8 @@ class SettingTileCategory extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     assert(
-      (titleWidget != null && title == null) ||
-          (titleWidget == null && title != null),
+      (title != null && titleText == null) ||
+          (title == null && titleText != null),
       'You must provide either a title or a titleWidget, not both.',
     );
 
@@ -87,10 +87,10 @@ class SettingTileCategory extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 8),
-                    if (titleWidget != null) titleWidget!,
-                    if (title != null)
+                    if (title != null) title!,
+                    if (titleText != null)
                       Text(
-                        title!.toUpperCase(),
+                        titleText!.toUpperCase(),
                         style: TextStyle(
                           color: Theme.of(context).primaryColor,
                           fontSize: 14,

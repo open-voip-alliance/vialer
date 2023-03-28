@@ -37,7 +37,8 @@ class OutgoingNumberTile extends StatelessWidget {
 
     return SettingTileCategory(
       icon: FontAwesomeIcons.phoneArrowRight,
-      title: context.msg.main.settings.list.accountInfo.businessNumber.title,
+      titleText:
+          context.msg.main.settings.list.accountInfo.businessNumber.title,
       bottomBorder: false,
       children: [
         SettingTile(

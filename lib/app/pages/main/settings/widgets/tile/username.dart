@@ -16,7 +16,7 @@ class UsernameTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return SettingTileCategory(
       icon: FontAwesomeIcons.at,
-      title: context.msg.main.settings.list.accountInfo.username.title,
+      titleText: context.msg.main.settings.list.accountInfo.username.title,
       bottomBorder: false,
       children: [
         SettingTile(

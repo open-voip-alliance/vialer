@@ -27,7 +27,7 @@ class SettingsSubPage extends StatelessWidget {
         child: BlocBuilder<SettingsCubit, SettingsState>(
           builder: (context, state) {
             return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 2.0),
+              padding: const EdgeInsets.symmetric(horizontal: 2),
               child: child(state),
             );
           },

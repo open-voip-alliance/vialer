@@ -56,11 +56,9 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
     );
   }
 
-  bool get _isUpdatingRemote => _changesBeingProcessed.isNotEmpty
-      ? _changesBeingProcessed
-          .where((request) => !request.hasTimedOut)
-          .isNotEmpty
-      : false;
+  bool get _isUpdatingRemote => _changesBeingProcessed
+      .where((request) => !request.hasTimedOut)
+      .isNotEmpty;
 
   Future<void> _emitUpdatedState({
     User? user,
@@ -83,7 +81,7 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
         ),
         userNumber: _storageRepository.userNumber,
         availableDestinations: _storageRepository.availableDestinations,
-        isUpdatingRemote: _isUpdatingRemote,
+        isApplyingChanges: _isUpdatingRemote,
       ),
     );
   }
@@ -116,7 +114,7 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
     // allows us to prevent input until changes have finished.
     final _changeRequest = _SettingChangeRequest();
     _changesBeingProcessed.add(_changeRequest);
-    emit(state.withChanged(newSettings, isUpdatingRemote: true));
+    emit(state.withChanged(newSettings, isApplyingChanges: true));
     await _changeSettings(newSettings);
     _changesBeingProcessed.remove(_changeRequest);
     _emitUpdatedState();

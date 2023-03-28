@@ -22,7 +22,7 @@ class MobileNumberTile extends StatelessWidget {
 
     return SettingTileCategory(
       icon: FontAwesomeIcons.idCard,
-      title: context.msg.main.settings.list.accountInfo.mobileNumber.title,
+      titleText: context.msg.main.settings.list.accountInfo.mobileNumber.title,
       bottomBorder: false,
       children: [
         SettingTile(

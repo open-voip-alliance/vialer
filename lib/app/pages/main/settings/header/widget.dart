@@ -37,7 +37,7 @@ class _HeaderState extends State<Header> {
     });
   }
 
-  String _subheading() => _internalNumber.isNotNullOrBlank
+  String get _subheading => _internalNumber.isNotNullOrBlank
       ? '$_internalNumber - ${widget.user.email}'
       : widget.user.email;
 
@@ -62,11 +62,7 @@ class _HeaderState extends State<Header> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        vertical: 4,
-      ).copyWith(
-        bottom: 16,
-      ),
+      padding: const EdgeInsets.only(top: 4, bottom: 16),
       child: Row(
         children: [
           UserAvatar(
@@ -90,7 +86,7 @@ class _HeaderState extends State<Header> {
                   ),
                 ),
                 Text(
-                  _subheading(),
+                  _subheading,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
