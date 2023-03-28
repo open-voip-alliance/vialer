@@ -19,14 +19,15 @@ class SettingTile extends StatelessWidget {
 
   final EdgeInsets padding;
 
-  SettingTile(
-      {super.key,
-      this.label,
-      this.description,
-      required this.child,
-      this.childFillWidth = false,
-      this.center = false,
-      this.padding = const EdgeInsets.symmetric(horizontal: 8)});
+  SettingTile({
+    super.key,
+    this.label,
+    this.description,
+    required this.child,
+    this.childFillWidth = false,
+    this.center = false,
+    this.padding = const EdgeInsets.symmetric(horizontal: 8),
+  });
 
   @override
   Widget build(BuildContext context) {
