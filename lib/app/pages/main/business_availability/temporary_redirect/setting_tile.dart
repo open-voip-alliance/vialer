@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../resources/localizations.dart';
+import '../../../../resources/theme.dart';
 import '../../../../util/conditional_capitalization.dart';
 import '../../settings/widgets/buttons/settings_button.dart';
 import '../../settings/widgets/tile/widget.dart';
@@ -56,6 +57,9 @@ class TemporaryRedirectSettingTile extends StatelessWidget {
                         .description
                     : context.msg.main.temporaryRedirect.actions.setupRedirect
                         .description,
+                style: TextStyle(
+                  color: context.brand.theme.colors.grey4,
+                ),
               ),
               const SizedBox(height: 8),
             ],

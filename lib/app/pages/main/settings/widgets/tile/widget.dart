@@ -73,7 +73,7 @@ class SettingTile extends StatelessWidget {
             child: DefaultTextStyle.merge(
               style: TextStyle(
                 color: context.brand.theme.colors.grey4,
-                fontSize: 12,
+                fontSize: 14,
               ),
               child: description!,
             ),
