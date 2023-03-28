@@ -91,7 +91,7 @@ class SettingTileCategory extends StatelessWidget {
                     if (titleWidget != null) titleWidget!,
                     if (title != null)
                       Text(
-                        title!.toUpperCaseIfAndroid(context),
+                        title!.toUpperCase(),
                         style: TextStyle(
                           color: Theme.of(context).primaryColor,
                           fontSize: 14,
