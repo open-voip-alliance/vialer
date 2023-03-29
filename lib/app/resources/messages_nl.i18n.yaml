@@ -374,7 +374,7 @@ main:
             Als deze optie aan staat, dan verlopen gesprekken via je mobiele nummer ($mobileNumber) als het niet lukt om verbinding te maken met je VoIP-account. Deze instelling brengt extra kosten met zich mee.
       version: "Versie"
       portalLinks:
-        title: "Admin" #TODO: Translate
+        title: "Beheer"
         dialplan:
           title: "Belplan"
         stats:
