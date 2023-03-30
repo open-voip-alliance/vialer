@@ -590,15 +590,6 @@ onboarding:
 
         You will always be notified of incoming calls even without this permission.
 
-  voicemail:
-    title: "Voicemail"
-    description: >-
-      Please be aware that if you have not set up your voicemail, 
-      your mobile phone number may be mentioned in the default voicemail message.
-
-      This will be shared with people reaching you through your business number
-      when you are not available.
-
   mobileNumber:
     title: "Mobile number"
     hint: "+31xxx"

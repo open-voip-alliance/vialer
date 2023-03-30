@@ -23,7 +23,6 @@ import '../../../../domain/user/settings/call_setting.dart';
 import '../../../../domain/user/settings/change_settings.dart';
 import '../../../../domain/user/settings/settings.dart';
 import '../../../../domain/user/user.dart';
-import '../../../../domain/voipgrid/user_voip_config.dart';
 import '../../../util/loggable.dart';
 import 'state.dart';
 
@@ -73,7 +72,6 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
       SettingsState(
         user: user,
         buildInfo: await _getBuildInfo(),
-        isVoipAllowed: user.voip.isAllowedCalling,
         hasIgnoreBatteryOptimizationsPermission: await _getPermissionStatus(
           permission: Permission.ignoreBatteryOptimizations,
         ).then(

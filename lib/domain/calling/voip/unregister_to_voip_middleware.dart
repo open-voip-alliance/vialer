@@ -1,7 +1,6 @@
 import '../../../dependency_locator.dart';
 import '../../use_case.dart';
 import '../../user/get_logged_in_user.dart';
-import '../../voipgrid/user_voip_config.dart';
 import 'voip.dart';
 
 class UnregisterToVoipMiddlewareUseCase extends UseCase {
@@ -12,8 +11,6 @@ class UnregisterToVoipMiddlewareUseCase extends UseCase {
     final user = _getUser();
     // We only check if we're _allowed_ to use VoIP, not whether it's enabled,
     // because we unregister when VoIP is disabled.
-    if (user.voip.isAllowedCalling) {
-      await _voipRepository.unregister(user.voip);
-    }
+    await _voipRepository.unregister(user.voip);
   }
 }

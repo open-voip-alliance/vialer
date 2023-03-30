@@ -36,7 +36,6 @@ class AppPreferencesSubPage extends StatelessWidget {
             user.permissions.canViewMobileNumberFallbackStatus;
         final hasIgnoreOptimizationsPermission =
             state.hasIgnoreBatteryOptimizationsPermission;
-        final isVoipAllowed = state.isVoipAllowed;
         final showTroubleshooting = state.showTroubleshooting;
         final cubit = context.watch<SettingsCubit>();
 
@@ -48,11 +47,10 @@ class AppPreferencesSubPage extends StatelessWidget {
               children: [
                 CallingCategory(
                   children: [
-                    if (isVoipAllowed) UseVoipTile(user),
-                    if (useVoip && canViewMobileFallback && isVoipAllowed)
+                    UseVoipTile(user),
+                    if (useVoip && canViewMobileFallback)
                       UseMobileNumberAsFallbackTile(user),
-                    if (context.isIOS && isVoipAllowed)
-                      ShowCallsInNativeRecentsTile(user),
+                    if (context.isIOS) ShowCallsInNativeRecentsTile(user),
                     if (context.isAndroid)
                       IgnoreBatteryOptimizationsTile(
                         hasIgnoreBatteryOptimizationsPermission:
@@ -67,18 +65,17 @@ class AppPreferencesSubPage extends StatelessWidget {
                     ShowClientCallsTile(user),
                   ],
                 ),
-                if (state.isVoipAllowed)
-                  AudioCategory(
-                    children: [
-                      UsePhoneRingtoneTile(user),
-                    ],
-                  ),
+                AudioCategory(
+                  children: [
+                    UsePhoneRingtoneTile(user),
+                  ],
+                ),
                 DebugCategory(
                   children: [
                     RemoteLoggingTile(user),
                   ],
                 ), // Show advanced settings only if allowed.
-                if (isVoipAllowed && showTroubleshooting)
+                if (showTroubleshooting)
                   const AdvancedSettingsCategory(
                     children: [
                       TroubleshootingLinkTile(),
