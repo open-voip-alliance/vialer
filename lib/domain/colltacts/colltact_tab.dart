@@ -1,0 +1,4 @@
+enum ColltactTab {
+  contacts,
+  colleagues
+}
