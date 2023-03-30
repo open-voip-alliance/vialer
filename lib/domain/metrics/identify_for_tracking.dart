@@ -4,6 +4,7 @@ import 'package:dartx/dartx.dart';
 import 'package:recase/recase.dart';
 
 import '../../../dependency_locator.dart';
+import '../colltacts/colltact_tab.dart';
 import '../legacy/storage.dart';
 import '../use_case.dart';
 import '../user/get_brand.dart';
@@ -33,6 +34,7 @@ class IdentifyForTrackingUseCase extends UseCase {
         ...user.toIdentifyProperties(),
         ..._storageRepository.grantedVoipgridPermissions.toIdentifyProperties(),
         ..._storageRepository.colleagues.toIdentifyProperties(),
+        ..._storageRepository.currentColltactTab.toIdentifyProperties(),
       },
     ).then((_) => Future.delayed(_artificialDelay));
   }
@@ -70,6 +72,12 @@ extension on List<Colleague> {
       'number_of_unconnected_voip_accounts': result[0].length,
     };
   }
+}
+
+extension on ColltactTab? {
+  Map<String, dynamic> toIdentifyProperties() => this != null ? {
+    'colltact-tab': this!.name,
+  } : const {};
 }
 
 extension on SettingKey {
