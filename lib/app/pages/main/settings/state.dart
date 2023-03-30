@@ -22,7 +22,10 @@ class SettingsState with _$SettingsState {
     int? userNumber,
     @Default([Destination.notAvailable()])
         List<Destination> availableDestinations,
-    @Default(false) bool isUpdatingRemote,
+
+    /// If we are currently in the process of applying changes, this is usually
+    /// when updating a remote setting, so waiting for an API response.
+    @Default(false) bool isApplyingChanges,
   }) = _SettingsState;
 
   bool get showTroubleshooting =>
@@ -31,10 +34,10 @@ class SettingsState with _$SettingsState {
 
   SettingsState withChanged(
     Settings settings, {
-    bool isUpdatingRemote = false,
+    bool isApplyingChanges = false,
   }) =>
       copyWith(
         user: user.copyWith(settings: user.settings.copyFrom(settings)),
-        isUpdatingRemote: isUpdatingRemote,
+        isApplyingChanges: isApplyingChanges,
       );
 }

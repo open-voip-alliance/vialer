@@ -19,6 +19,7 @@ class AvailabilityTile extends StatelessWidget {
   final User user;
   final int? userNumber;
   final List<Destination> destinations;
+  final bool enabled;
 
   final UserAvailabilityType _userAvailabilityType;
 
@@ -26,6 +27,7 @@ class AvailabilityTile extends StatelessWidget {
     required this.user,
     this.userNumber,
     required this.destinations,
+    this.enabled = true,
     super.key,
   }) : _userAvailabilityType = user.availabilityType;
 
@@ -160,10 +162,10 @@ class AvailabilityTile extends StatelessWidget {
       ),
       childFillWidth: true,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           MultipleChoiceSettingValue<Destination?>(
             value: user.settings.getOrNull(CallSetting.destination),
+            padding: EdgeInsets.zero,
             items: [
               ...destinations.map(
                 (destination) => DropdownMenuItem<Destination>(
@@ -182,13 +184,15 @@ class AvailabilityTile extends StatelessWidget {
                 onTap: () => _openAddAvailabilityWebView(context),
               ),
             ],
-            onChanged: (destination) => destination != null
-                ? defaultOnChanged(
-                    context,
-                    key,
-                    destination,
-                  )
-                : () {},
+            onChanged: enabled
+                ? (destination) => destination != null
+                    ? defaultOnChanged(
+                        context,
+                        key,
+                        destination,
+                      )
+                    : () {}
+                : null,
             isExpanded: true,
           ),
         ],
@@ -226,7 +230,7 @@ extension Display on UserAvailabilityType {
     } else if (this == UserAvailabilityType.notAvailable) {
       return context.brand.theme.colors.notAvailable;
     } else {
-      return context.brand.theme.colors.available;
+      return context.brand.theme.colors.userAvailabilityAvailableAccent;
     }
   }
 
@@ -236,7 +240,7 @@ extension Display on UserAvailabilityType {
     } else if (this == UserAvailabilityType.notAvailable) {
       return context.brand.theme.colors.notAvailableAccent;
     } else {
-      return context.brand.theme.colors.availableAccent;
+      return context.brand.theme.colors.userAvailabilityAvailable;
     }
   }
 }

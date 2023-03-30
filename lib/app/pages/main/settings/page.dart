@@ -3,11 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../resources/localizations.dart';
-import '../widgets/user_data_refresher/cubit.dart';
 import 'cubit.dart';
-import 'footer/widget.dart';
+import 'header/widget.dart';
+import 'sub_page/app_preferences.dart';
 import 'sub_page/client.dart';
-import 'sub_page/phone_preferences.dart';
 import 'sub_page/user.dart';
 import 'widgets/tile/availability.dart';
 import 'widgets/tile/dnd.dart';
@@ -40,9 +39,7 @@ class _SettingsPageState extends State<SettingsPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               BlocProvider<SettingsCubit>(
-                create: (_) => SettingsCubit(
-                  context.read<UserDataRefresherCubit>(),
-                ),
+                create: (_) => SettingsCubit(),
                 child: BlocConsumer<SettingsCubit, SettingsState>(
                   listener: _onStateChanged,
                   builder: (context, state) {
@@ -53,50 +50,59 @@ class _SettingsPageState extends State<SettingsPage> {
                     final cubit = context.watch<SettingsCubit>();
 
                     return Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: SingleChildScrollView(
-                              child: Column(
-                                children: [
-                                  if (showDnd) DndTile(user),
-                                  AvailabilityTile(
-                                    user: user,
-                                    userNumber: userNumber,
-                                    destinations: destinations,
-                                  ),
-                                  SubPageLinkTile(
-                                    title: context.msg.main.settings.subPage
-                                        .appPreferences.title,
-                                    icon: FontAwesomeIcons.solidMobileNotch,
-                                    cubit: cubit,
-                                    pageBuilder: (_) =>
-                                        const AppPreferencesSubPage(),
-                                  ),
-                                  SubPageLinkTile(
-                                    title: context
-                                        .msg.main.settings.subPage.user
-                                        .title(user.fullName),
-                                    icon: FontAwesomeIcons.circleUser,
-                                    cubit: cubit,
-                                    pageBuilder: (_) => const UserSubPage(),
-                                  ),
-                                  if (user.canViewClientSubPage)
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  children: [
+                                    Header(user: state.user),
+                                    if (showDnd)
+                                      DndTile(
+                                        user,
+                                        enabled: !state.isApplyingChanges,
+                                      ),
+                                    AvailabilityTile(
+                                      user: user,
+                                      userNumber: userNumber,
+                                      destinations: destinations,
+                                      enabled: !state.isApplyingChanges,
+                                    ),
+                                    SubPageLinkTile(
+                                      title: context.msg.main.settings.subPage
+                                          .appPreferences.title,
+                                      icon: FontAwesomeIcons.solidMobileNotch,
+                                      cubit: cubit,
+                                      pageBuilder: (_) =>
+                                          const AppPreferencesSubPage(),
+                                    ),
                                     SubPageLinkTile(
                                       title: context
-                                          .msg.main.settings.subPage.client
-                                          .title(user.client.name),
-                                      icon: FontAwesomeIcons.building,
+                                          .msg.main.settings.subPage.user
+                                          .title(user.fullName),
+                                      icon: FontAwesomeIcons.circleUser,
                                       cubit: cubit,
-                                      pageBuilder: (_) => const ClientSubPage(),
+                                      pageBuilder: (_) => const UserSubPage(),
                                     ),
-                                ],
+                                    if (user.canViewClientSubPage)
+                                      SubPageLinkTile(
+                                        title: context
+                                            .msg.main.settings.subPage.client
+                                            .title(user.client.name),
+                                        icon: FontAwesomeIcons.building,
+                                        cubit: cubit,
+                                        pageBuilder: (_) =>
+                                            const ClientSubPage(),
+                                      ),
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                          Footer(buildInfo: state.buildInfo),
-                        ],
+                          ],
+                        ),
                       ),
                     );
                   },

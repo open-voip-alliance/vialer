@@ -377,7 +377,7 @@ custom: # Custom properties to make workflows cleaner
         track: beta
         in_app_update_priority: 3
 
-    publish_for_internal_alpha: &publish_for_internal_preview
+    publish_for_internal_preview: &publish_for_internal_preview
       app_store_connect:
         api_key: $APP_STORE_CONNECT_PRIVATE_KEY
         key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER

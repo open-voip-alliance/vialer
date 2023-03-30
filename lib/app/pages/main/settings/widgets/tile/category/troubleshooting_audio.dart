@@ -16,7 +16,7 @@ class TroubleshootingAudioCategory extends StatelessWidget {
   Widget build(BuildContext context) {
     return SettingTileCategory(
       icon: FontAwesomeIcons.volume,
-      title: context.msg.main.settings.list.advancedSettings.troubleshooting
+      titleText: context.msg.main.settings.list.advancedSettings.troubleshooting
           .list.audio.title,
       children: children,
     );

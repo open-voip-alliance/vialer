@@ -7,7 +7,7 @@ class Header extends StatelessWidget {
   const Header(
     this.data, {
     Key? key,
-    this.padding = const EdgeInsets.only(bottom: 8),
+    this.padding = EdgeInsets.zero,
   }) : super(key: key);
 
   @override
@@ -29,7 +29,7 @@ class Header extends StatelessWidget {
             color: Theme.of(context).primaryColor,
             fontSize: mediaQuery.size.width.clamp(0, maxWidth) /
                 (maxWidth * 1.04) *
-                38, // Original font size
+                28, // Original font size
             fontWeight: FontWeight.bold,
           ),
         ),

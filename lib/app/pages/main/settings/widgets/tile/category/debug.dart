@@ -16,7 +16,7 @@ class DebugCategory extends StatelessWidget {
   Widget build(BuildContext context) {
     return SettingTileCategory(
       icon: FontAwesomeIcons.bug,
-      title: context.msg.main.settings.list.debug.title,
+      titleText: context.msg.main.settings.list.debug.title,
       children: children,
     );
   }

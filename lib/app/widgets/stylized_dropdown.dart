@@ -6,14 +6,14 @@ class StylizedDropdown<T> extends StatelessWidget {
   final T? value;
   final List<DropdownMenuItem<T>> items;
   final bool isExpanded;
-  final ValueChanged<T?> onChanged;
+  final ValueChanged<T?>? onChanged;
 
   const StylizedDropdown({
     super.key,
     required this.value,
     required this.items,
     this.isExpanded = false,
-    required this.onChanged,
+    this.onChanged,
   });
 
   @override
@@ -22,7 +22,7 @@ class StylizedDropdown<T> extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        border: context.isAndroid ? fieldBoxDecoration.border : null,
+        border: fieldBoxDecoration.border,
         borderRadius: fieldBoxDecoration.borderRadius,
       ),
       padding: const EdgeInsets.symmetric(horizontal: 16),

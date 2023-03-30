@@ -16,7 +16,7 @@ class RecentsCategory extends StatelessWidget {
   Widget build(BuildContext context) {
     return SettingTileCategory(
       icon: FontAwesomeIcons.clockRotateLeft,
-      title: context.msg.main.settings.list.recents.title,
+      titleText: context.msg.main.settings.list.recents.title,
       children: children,
     );
   }

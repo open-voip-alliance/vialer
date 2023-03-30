@@ -14,13 +14,13 @@ class ChangeRegistrationOnDndChange extends SettingChangeListener<bool>
   final key = CallSetting.dnd;
 
   @override
-  FutureOr<SettingChangeListenResult> postStore(User user, bool dndEnabled) {
-    // This will happen in the background because we do not need to rely
-    // on this to have happened when the user changes the setting.
-    //
+  FutureOr<SettingChangeListenResult> postStore(
+    User user,
+    bool dndEnabled,
+  ) async {
     // The correct value for DND will be automatically submitted when refreshing
     // our registration.
-    _registerToVoipMiddleware();
+    await _registerToVoipMiddleware();
 
     return successResult;
   }
