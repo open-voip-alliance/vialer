@@ -1,0 +1,4 @@
+- The Settings page has been redesigned; settings are organized into categories and have an updated look & feel.
+- You can now specify an end-time and date when setting up a temporary redirect
+- It's now always possible to "pull to refresh" contacts & colleagues
+- Fixed settings sometimes showing out-of-date values
