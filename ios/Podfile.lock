@@ -33,28 +33,14 @@ PODS:
   - integration_test (0.0.1):
     - Flutter
   - iOSPhoneLib (0.1.1):
-    - linphone-sdk-novideo (= 5.1.73)
+    - linphone-sdk-novideo (= 5.2.43)
     - Swinject (~> 2.8.2)
   - le (1.2)
   - libphonenumber (0.0.1):
     - Flutter
     - libPhoneNumber-iOS
   - libPhoneNumber-iOS (0.9.15)
-  - linphone-sdk-novideo (5.1.73):
-    - linphone-sdk-novideo/all-frameworks (= 5.1.73)
-    - linphone-sdk-novideo/app-extension (= 5.1.73)
-    - linphone-sdk-novideo/app-extension-swift (= 5.1.73)
-    - linphone-sdk-novideo/basic-frameworks (= 5.1.73)
-    - linphone-sdk-novideo/swift (= 5.1.73)
-  - linphone-sdk-novideo/all-frameworks (5.1.73)
-  - linphone-sdk-novideo/app-extension (5.1.73)
-  - linphone-sdk-novideo/app-extension-swift (5.1.73):
-    - linphone-sdk-novideo/app-extension
-  - linphone-sdk-novideo/basic-frameworks (5.1.73):
-    - linphone-sdk-novideo/app-extension
-  - linphone-sdk-novideo/swift (5.1.73):
-    - linphone-sdk-novideo/app-extension-swift
-    - linphone-sdk-novideo/basic-frameworks
+  - linphone-sdk-novideo (5.2.43)
   - native_shared_preferences (1.0.0):
     - Flutter
   - package_info (0.0.1):
@@ -201,7 +187,7 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   iOSPhoneLib:
-    :commit: 323cbd1956425fae202c83320519a900bd7959cf
+    :commit: e14939e15a3994cf5fb87e44c1c6f17c8128fa33
     :git: https://github.com/open-voip-alliance/iOS-Phone-Lib.git
   le:
     :commit: ce8800f6d3290e182d48082680679d64a05ca778
@@ -223,11 +209,11 @@ SPEC CHECKSUMS:
   flutter_segment: 367b7d9f7d74b3875198524ff4d24c381d93e317
   in_app_review: 318597b3a06c22bb46dc454d56828c85f444f99d
   integration_test: a1e7d09bd98eca2fc37aefd79d4f41ad37bdbbe5
-  iOSPhoneLib: 38c4362a3169562a559af28b4e2fb197bccb779e
+  iOSPhoneLib: ad94a603386a8cae7d02b33d5fd419240bbc5b7c
   le: 6854003e293bf5b3cb822ef06971f1cc23a77eb9
   libphonenumber: bd14d5abfc5939ab0b0767234e2d8e2593af258e
   libPhoneNumber-iOS: 0a32a9525cf8744fe02c5206eb30d571e38f7d75
-  linphone-sdk-novideo: 357f9f8835371f2bf9ab1aa519ceb6856a7c1070
+  linphone-sdk-novideo: c628bfbaf8327a06f91a1a657f9e354e303ac6d1
   native_shared_preferences: 21a805f6149643c25a20a4f534692131faebadfe
   package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
   package_info_plus: 6c92f08e1f853dc01228d6f553146438dafcd14e
@@ -248,4 +234,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: df5689a3bcea3ea40b740bdf6675c7c9be441b4a
 
-COCOAPODS: 1.11.3
+COCOAPODS: 1.12.0
