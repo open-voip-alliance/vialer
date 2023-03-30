@@ -16,7 +16,7 @@ class TemporaryRedirectCategory extends StatelessWidget {
   Widget build(BuildContext context) {
     return SettingTileCategory(
       icon: FontAwesomeIcons.listTree,
-      title: context.msg.main.temporaryRedirect.title,
+      titleText: context.msg.main.temporaryRedirect.title,
       children: children,
     );
   }

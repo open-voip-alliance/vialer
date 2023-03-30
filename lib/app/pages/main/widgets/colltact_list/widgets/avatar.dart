@@ -56,7 +56,40 @@ class ContactAvatar extends StatelessWidget {
 
 class ColleagueAvatar extends StatelessWidget {
   final Colleague colleague;
-  final double size;
+
+  const ColleagueAvatar(
+    this.colleague, {
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return UserAvatar(
+      status: colleague.map(
+        (colleague) => colleague.isAvailableOnMobileAppOrFixedDestination
+            ? ColleagueAvailabilityStatus.available
+            : colleague.status,
+        unconnectedVoipAccount: (_) => ColleagueAvailabilityStatus.unknown,
+      ),
+      relevantContext: colleague.map(
+        (colleague) => colleague.mostRelevantContext,
+        unconnectedVoipAccount: (_) => null,
+      ),
+    );
+  }
+}
+
+@freezed
+class _AvatarColor with _$_AvatarColor {
+  const factory _AvatarColor({
+    required Color foreground,
+    required Color background,
+  }) = __AvatarColor;
+}
+
+class UserAvatar extends StatelessWidget {
+  final ColleagueContext? relevantContext;
+  final ColleagueAvailabilityStatus? status;
 
   static const _availableIcon = FontAwesomeIcons.user;
   static const _unavailableIcon = FontAwesomeIcons.userSlash;
@@ -65,15 +98,16 @@ class ColleagueAvatar extends StatelessWidget {
   static const _dndIcon = FontAwesomeIcons.bellSlash;
   static const _voipAccountIcon = FontAwesomeIcons.phoneOffice;
 
-  const ColleagueAvatar(
-    this.colleague, {
-    Key? key,
+  final double size;
+
+  const UserAvatar({
+    this.relevantContext,
+    this.status,
     this.size = ColltactAvatar.defaultSize,
-  }) : super(key: key);
+  });
 
   _AvatarColor _color(BuildContext context) {
     final colors = context.brand.theme.colors;
-    final relevantContext = colleague.mostRelevantContext;
 
     final busy = _AvatarColor(
       foreground: colors.userAvailabilityBusyAccent,
@@ -93,33 +127,28 @@ class ColleagueAvatar extends StatelessWidget {
     );
 
     if (relevantContext != null) {
-      return relevantContext.when(
+      return relevantContext!.when(
         ringing: () => busy,
         inCall: () => busy,
       );
     }
 
-    return colleague.map(
-      (colleague) {
-        switch (colleague.status) {
-          case ColleagueAvailabilityStatus.available:
-            return available;
-          case ColleagueAvailabilityStatus.doNotDisturb:
-            return unavailable;
-          case ColleagueAvailabilityStatus.busy:
-            return busy;
-          default:
-            return colleague.isAvailableOnMobileAppOrFixedDestination
-                ? available
-                : unknown;
-        }
-      },
-      unconnectedVoipAccount: (_) => unknown,
-    );
+    switch (status) {
+      case ColleagueAvailabilityStatus.available:
+        return available;
+      case ColleagueAvailabilityStatus.doNotDisturb:
+        return unavailable;
+      case ColleagueAvailabilityStatus.busy:
+        return busy;
+      case ColleagueAvailabilityStatus.unknown:
+        return unknown;
+      default:
+        return unknown;
+    }
   }
 
   IconData _icon() {
-    final context = colleague.mostRelevantContext;
+    final context = relevantContext;
 
     if (context != null) {
       return context.when(
@@ -128,27 +157,20 @@ class ColleagueAvatar extends StatelessWidget {
       );
     }
 
-    return colleague.map(
-      (colleague) {
-        switch (colleague.status) {
-          case ColleagueAvailabilityStatus.available:
-            return _availableIcon;
-          case ColleagueAvailabilityStatus.doNotDisturb:
-            return _dndIcon;
-          case ColleagueAvailabilityStatus.busy:
-            return _inCallIcon;
-          case ColleagueAvailabilityStatus.unknown:
-            return colleague.isAvailableOnMobileAppOrFixedDestination
-                ? _availableIcon
-                : _unavailableIcon;
-          case ColleagueAvailabilityStatus.offline:
-            return _unavailableIcon;
-          default:
-            return _voipAccountIcon;
-        }
-      },
-      unconnectedVoipAccount: (_) => _voipAccountIcon,
-    );
+    switch (status) {
+      case ColleagueAvailabilityStatus.available:
+        return _availableIcon;
+      case ColleagueAvailabilityStatus.doNotDisturb:
+        return _dndIcon;
+      case ColleagueAvailabilityStatus.busy:
+        return _inCallIcon;
+      case ColleagueAvailabilityStatus.unknown:
+        return _voipAccountIcon;
+      case ColleagueAvailabilityStatus.offline:
+        return _unavailableIcon;
+      default:
+        return _voipAccountIcon;
+    }
   }
 
   @override
@@ -168,12 +190,4 @@ class ColleagueAvatar extends StatelessWidget {
       ),
     );
   }
-}
-
-@freezed
-class _AvatarColor with _$_AvatarColor {
-  const factory _AvatarColor({
-    required Color foreground,
-    required Color background,
-  }) = __AvatarColor;
 }

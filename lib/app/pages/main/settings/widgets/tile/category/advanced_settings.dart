@@ -16,7 +16,7 @@ class AdvancedSettingsCategory extends StatelessWidget {
   Widget build(BuildContext context) {
     return SettingTileCategory(
       icon: FontAwesomeIcons.bug,
-      title: context.msg.main.settings.list.advancedSettings.title,
+      titleText: context.msg.main.settings.list.advancedSettings.title,
       children: children,
     );
   }

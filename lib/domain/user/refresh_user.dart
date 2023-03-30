@@ -11,6 +11,7 @@ import '../calling/voip/client_voip_config_repository.dart';
 import '../calling/voip/destination.dart';
 import '../calling/voip/destination_repository.dart';
 import '../calling/voip/user_voip_config_repository.dart';
+import '../event/event_bus.dart';
 import '../legacy/storage.dart';
 import '../metrics/metrics.dart';
 import '../onboarding/exceptions.dart';
@@ -20,6 +21,7 @@ import '../openings_hours_basic/should_show_opening_hours_basic.dart';
 import '../use_case.dart';
 import '../voicemail/voicemail_account_repository.dart';
 import '../voipgrid/user_permissions.dart';
+import 'events/logged_in_user_was_refreshed.dart';
 import 'permissions/user_permissions.dart';
 import 'settings/app_setting.dart';
 import 'settings/call_setting.dart';
@@ -42,6 +44,7 @@ class RefreshUser extends UseCase with Loggable {
   final _clientVoipConfigRepository =
       dependencyLocator<ClientVoipConfigRepository>();
   final _metricsRepository = dependencyLocator<MetricsRepository>();
+  final _eventBus = dependencyLocator<EventBus>();
 
   final _purgeLocalCallRecords = PurgeLocalCallRecordsUseCase();
   final _shouldShowOpeningHoursBasic = ShouldShowOpeningHoursBasic();
@@ -157,6 +160,8 @@ class RefreshUser extends UseCase with Loggable {
       );
 
       _storageRepository.user = user;
+
+      _eventBus.broadcast(LoggedInUserWasRefreshed(user));
 
       return user;
     }

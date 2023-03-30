@@ -16,7 +16,7 @@ class AudioCategory extends StatelessWidget {
   Widget build(BuildContext context) {
     return SettingTileCategory(
       icon: FontAwesomeIcons.volumeHigh,
-      title: context.msg.main.settings.list.audio.title,
+      titleText: context.msg.main.settings.list.audio.title,
       children: children,
     );
   }

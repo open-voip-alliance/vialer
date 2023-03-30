@@ -25,31 +25,32 @@ class ClientSubPage extends StatelessWidget {
 
         return SettingsSubPage(
           cubit: cubit,
-          title: Text(
-            context.msg.main.settings.subPage.client.title(user.client.name),
-          ),
-          children: (state) {
-            return [
-              if (user.permissions.canChangeTemporaryRedirect)
-                const TemporaryRedirectCategory(
-                  children: [
-                    TemporaryRedirectSettingTile(),
-                  ],
-                ),
-              if (user.canViewAtLeastOneWebView)
-                PortalLinksCategory(
-                  children: [
-                    if (user.permissions.canSeeClientCalls)
-                      const CallsLinkTile(),
-                    if (user.permissions.canViewDialPlans)
-                      const DialPlanLinkTile(),
-                    if (cubit.shouldShowOpeningHoursBasic &&
-                        user.client.openingHours.isNotEmpty)
-                      OpeningHoursLinkTile(user),
-                    if (user.permissions.canViewStats) const StatsLinkTile(),
-                  ],
-                ),
-            ];
+          title:
+              context.msg.main.settings.subPage.client.title(user.client.name),
+          child: (state) {
+            return ListView(
+              children: [
+                if (user.permissions.canChangeTemporaryRedirect)
+                  const TemporaryRedirectCategory(
+                    children: [
+                      TemporaryRedirectSettingTile(),
+                    ],
+                  ),
+                if (user.canViewAtLeastOneWebView)
+                  PortalLinksCategory(
+                    children: [
+                      if (user.permissions.canSeeClientCalls)
+                        const CallsLinkTile(),
+                      if (user.permissions.canViewDialPlans)
+                        const DialPlanLinkTile(),
+                      if (cubit.shouldShowOpeningHoursBasic &&
+                          user.client.openingHours.isNotEmpty)
+                        OpeningHoursLinkTile(user),
+                      if (user.permissions.canViewStats) const StatsLinkTile(),
+                    ],
+                  ),
+              ],
+            );
           },
         );
       },

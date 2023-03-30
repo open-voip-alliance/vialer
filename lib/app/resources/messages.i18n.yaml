@@ -292,6 +292,7 @@ main:
           description: >-
               Your mobile phone number. It is not visible to others.
         username:
+          title: "Your email address"
           description: >-
             Email address of your user account with which you logged in.
       advancedSettings:
@@ -371,7 +372,7 @@ main:
             When enabled, your mobile number ($mobileNumber) and network will be used when an incoming VoIP call is not possible. This will incur additional costs at your expense.
       version: "Version"
       portalLinks:
-        title: "VoIP platform"
+        title: "Admin"
         dialplan:
           title: "Dial plan"
         stats:

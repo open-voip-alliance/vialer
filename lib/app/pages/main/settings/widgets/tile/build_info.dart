@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../../../../../domain/user/info/build_info.dart';
-import '../../../../../../domain/user/settings/app_setting.dart';
-import '../../../../resources/localizations.dart';
-import '../cubit.dart';
+import '../../../../../../../domain/user/info/build_info.dart';
+import '../../../../../../../domain/user/settings/app_setting.dart';
+import '../../../../../resources/localizations.dart';
+import '../../cubit.dart';
+import 'category/widget.dart';
 
-class BuildInfoPill extends StatefulWidget {
+class BuildInfoTile extends StatefulWidget {
   final BuildInfo buildInfo;
 
-  const BuildInfoPill(this.buildInfo, {Key? key}) : super(key: key);
+  const BuildInfoTile(this.buildInfo, {Key? key}) : super(key: key);
 
   @override
-  _BuildInfoState createState() => _BuildInfoState();
+  _BuildInfoTileState createState() => _BuildInfoTileState();
 }
 
-class _BuildInfoState extends State<BuildInfoPill> {
+class _BuildInfoTileState extends State<BuildInfoTile> {
   static const _tapCountToShowHiddenSettings = 10;
 
   int _tapCount = 0;
@@ -58,39 +60,25 @@ class _BuildInfoState extends State<BuildInfoPill> {
           AppSetting.showTroubleshooting,
         );
 
-        return GestureDetector(
-          onTap: !hasAccessToTroubleshooting ? _onTap : null,
-          behavior: HitTestBehavior.opaque,
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              child: Column(
-                children: [
-                  Chip(
-                    label: buildInfo.showDetailed
-                        ? _DetailedBuildInfo(buildInfo)
-                        : _SimpleBuildInfo(buildInfo),
-                  ),
-                ],
-              ),
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          child: GestureDetector(
+            onTap: !hasAccessToTroubleshooting ? _onTap : null,
+            behavior: HitTestBehavior.opaque,
+            child: SettingTileCategory(
+              icon: FontAwesomeIcons.circleInfo,
+              titleText: !buildInfo.showDetailed
+                  ? '${context.msg.main.settings.list.version} '
+                      '${buildInfo.version}'
+                  : null,
+              title:
+                  buildInfo.showDetailed ? _DetailedBuildInfo(buildInfo) : null,
+              children: [],
+              padBottom: true,
             ),
           ),
         );
       },
-    );
-  }
-}
-
-class _SimpleBuildInfo extends StatelessWidget {
-  final BuildInfo buildInfo;
-
-  const _SimpleBuildInfo(this.buildInfo);
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      '${context.msg.main.settings.list.version} '
-      '${buildInfo.version}',
     );
   }
 }

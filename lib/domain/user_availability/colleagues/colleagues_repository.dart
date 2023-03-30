@@ -7,10 +7,11 @@ import 'package:dartx/dartx.dart';
 import '../../../app/util/loggable.dart';
 import '../../event/event_bus.dart';
 import '../../user/brand.dart';
-import '../../user/events/logged_in_user_data_is_stale_event.dart';
+import '../../user/events/logged_in_user_availability_changed.dart';
 import '../../user/user.dart';
 import '../../voipgrid/voipgrid_api_resource_collector.dart';
 import '../../voipgrid/voipgrid_service.dart';
+import 'availbility_update.dart';
 import 'colleague.dart';
 
 class ColleaguesRepository with Loggable {
@@ -79,10 +80,14 @@ class ColleaguesRepository with Loggable {
 
         final colleague = colleagues.findByUserUuid(userUuid);
 
+        final availability = payload.toAvailabilityUpdate();
+
         // We are going to hijack this WebSocket and emit an event when we
         // know our user has changed on the server.
         if (userUuid == user.uuid) {
-          _eventBus.broadcast(LoggedInUserDataIsStaleEvent());
+          _eventBus.broadcast(
+            LoggedInUserAvailabilityChanged(availability: availability),
+          );
         }
 
         // If no colleague is found, we can't update the availability of it.
@@ -98,7 +103,7 @@ class ColleaguesRepository with Loggable {
 
         colleagues.replace(
           original: colleague,
-          replacement: colleague.populateWithAvailability(payload),
+          replacement: colleague.populateWithAvailability(availability),
         );
 
         controller.add(colleagues);
@@ -206,21 +211,13 @@ extension on List<Colleague> {
 
 extension on Colleague {
   Colleague populateWithAvailability(
-    Map<String, dynamic> payload,
+    AvailabilityUpdate availability,
   ) =>
       map(
         (colleague) => colleague.copyWith(
-          status: ColleagueAvailabilityStatus.fromServerValue(
-            payload['availability'] as String?,
-          ),
-          destination: ColleagueDestination(
-            number: payload['internal_number'].toString(),
-            type: ColleagueDestinationType.fromServerValue(
-              payload['destination_type'] as String?,
-            ),
-          ),
-          context: (payload['context'] as List<dynamic>)
-              .buildUserAvailabilityContext(),
+          status: availability.availabilityStatus,
+          destination: availability.destination,
+          context: availability.context,
         ),
         // We don't get availability updates for voip accounts so we will
         // just leave them as is.
@@ -234,4 +231,21 @@ extension on List<dynamic> {
           (e as Map<String, dynamic>)['type'] as String,
         ),
       ).filterNotNull().toList();
+}
+
+extension on Map<String, dynamic> {
+  AvailabilityUpdate toAvailabilityUpdate() => AvailabilityUpdate(
+        availabilityStatus: ColleagueAvailabilityStatus.fromServerValue(
+          this['availability'] as String?,
+        ),
+        context:
+            (this['context'] as List<dynamic>).buildUserAvailabilityContext(),
+        internalNumber: this['internal_number'].toString(),
+        destination: ColleagueDestination(
+          number: this['internal_number'].toString(),
+          type: ColleagueDestinationType.fromServerValue(
+            this['destination_type'] as String?,
+          ),
+        ),
+      );
 }
