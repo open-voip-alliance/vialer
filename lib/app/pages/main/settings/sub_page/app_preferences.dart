@@ -74,7 +74,7 @@ class AppPreferencesSubPage extends StatelessWidget {
                   children: [
                     RemoteLoggingTile(user),
                   ],
-                ), // Show advanced settings only if allowed.
+                ),
                 if (showTroubleshooting)
                   const AdvancedSettingsCategory(
                     children: [

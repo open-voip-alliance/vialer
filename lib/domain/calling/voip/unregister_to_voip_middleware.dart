@@ -9,8 +9,6 @@ class UnregisterToVoipMiddlewareUseCase extends UseCase {
 
   Future<void> call() async {
     final user = _getUser();
-    // We only check if we're _allowed_ to use VoIP, not whether it's enabled,
-    // because we unregister when VoIP is disabled.
     await _voipRepository.unregister(user.voip);
   }
 }
