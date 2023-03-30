@@ -457,7 +457,7 @@ workflows:
       - *update_ios_signing_for_current_brand
       - *prepare_environment_for_integration_testing
       - *build_ipa
-#      - *run_integration_tests_ios
+      - *run_integration_tests_ios
       - *build_aab
       - *build_universal_apk_from_aab
       - *release_to_sentry
