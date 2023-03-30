@@ -86,10 +86,10 @@ _expectContactMatching(
 }
 
 List<CallRecord> _generateDummyCallRecordsForNumber(String number) => [
-      CallRecord(
+      CallRecordWithoutContact(
         id: 'dummyId',
         callType: CallType.colleague,
-        direction: Direction.inbound,
+        callDirection: Direction.inbound,
         answered: true,
         answeredElsewhere: false,
         duration: const Duration(seconds: 5),

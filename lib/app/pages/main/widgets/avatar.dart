@@ -4,7 +4,7 @@ import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
 
 /// Avatar used in Contacts and Recents.
-class Avatar extends StatelessWidget {
+class Avatar extends StatefulWidget {
   static const defaultSize = 36.0;
 
   final String? name;
@@ -22,7 +22,7 @@ class Avatar extends StatelessWidget {
   final Widget? fallback;
 
   const Avatar({
-    Key? key,
+    super.key,
     this.name,
     this.image,
     this.size = defaultSize,
@@ -30,10 +30,17 @@ class Avatar extends StatelessWidget {
     this.backgroundColor,
     this.showFallback,
     this.fallback,
-  }) : super(key: key);
+  });
 
-  String get _letters {
-    final letters = name!
+  @override
+  State<Avatar> createState() => _AvatarState();
+}
+
+class _AvatarState extends State<Avatar> {
+  late final String _letters = _initLetters();
+
+  String _initLetters() {
+    final letters = widget.name!
         .split(' ')
         .map((word) => word.characters.firstOrDefault('').toUpperCase());
 
@@ -44,35 +51,46 @@ class Avatar extends StatelessWidget {
     }
   }
 
-  Future<bool> get hasImage async =>
-      image != null && image?.existsSync() == true;
+  File? _existingImage;
+
+  @override
+  void initState() {
+    super.initState();
+
+    widget.image?.exists().then((exists) {
+      if (exists) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          setState(() {
+            _existingImage = widget.image;
+          });
+        });
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<bool>(
-      future: hasImage,
-      builder: (context, snapshot) {
-        final hasImage = snapshot.data ?? false;
-        final showFallback = this.showFallback ?? name == null && !hasImage;
+    final existingImage = _existingImage;
+    final hasImage = existingImage != null;
+    final showFallback =
+        widget.showFallback ?? widget.name == null && !hasImage;
 
-        return Container(
-          width: size,
-          alignment: Alignment.center,
-          child: AspectRatio(
-            aspectRatio: 1 / 1,
-            child: CircleAvatar(
-              foregroundColor: foregroundColor,
-              backgroundColor: backgroundColor,
-              backgroundImage: hasImage ? FileImage(image!) : null,
-              child: showFallback
-                  ? _withStyle(fallback)
-                  : name != null && !hasImage
-                      ? _withStyle(Text(_letters))
-                      : null, //  We show the avatar.
-            ),
-          ),
-        );
-      },
+    return Container(
+      width: widget.size,
+      alignment: Alignment.center,
+      child: AspectRatio(
+        aspectRatio: 1 / 1,
+        child: CircleAvatar(
+          foregroundColor: widget.foregroundColor,
+          backgroundColor: widget.backgroundColor,
+          backgroundImage: hasImage ? FileImage(existingImage) : null,
+          child: showFallback
+              ? _withStyle(widget.fallback)
+              : widget.name != null && !hasImage
+                  ? _withStyle(Text(_letters))
+                  : null, //  We show the avatar.
+        ),
+      ),
     );
   }
 
@@ -82,7 +100,7 @@ class Avatar extends StatelessWidget {
     return DefaultTextStyle.merge(
       style: TextStyle(
         fontWeight: FontWeight.bold,
-        fontSize: 20 * (size / defaultSize),
+        fontSize: 20 * (widget.size / Avatar.defaultSize),
       ),
       child: child,
     );

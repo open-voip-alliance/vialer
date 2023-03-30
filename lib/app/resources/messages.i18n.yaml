@@ -23,7 +23,7 @@ buildError:
 
 connectivity:
   noConnection:
-    title: "No internet connection"
+    title: &noConnectionTitle "No internet connection"
     message: >-
       You don't seem to be connected to the internet. Please check your WiFi or mobile data connection and try again.
 
@@ -259,6 +259,13 @@ main:
     title: &settingsTitle "Settings"
     menu:
       title: *settingsTitle
+    subPage:
+      appPreferences:
+        title: "App preferences"
+      user:
+        title(String user): "$user"
+      client:
+        title(String client): "$client"
     list:
       debug:
         title: "Debugging"
@@ -285,6 +292,7 @@ main:
           description: >-
               Your mobile phone number. It is not visible to others.
         username:
+          title: "Your email address"
           description: >-
             Email address of your user account with which you logged in.
       advancedSettings:
@@ -310,6 +318,8 @@ main:
           description(String appName): >-
             Your phone's ringtone plays instead of the app
             when receiving a call.
+      recents:
+        title: "Recents"
       calling:
         title: "Calling"
         availability:
@@ -362,7 +372,7 @@ main:
             When enabled, your mobile number ($mobileNumber) and network will be used when an incoming VoIP call is not possible. This will incur additional costs at your expense.
       version: "Version"
       portalLinks:
-        title: "VoIP platform"
+        title: "Admin"
         dialplan:
           title: "Dial plan"
         stats:
@@ -370,7 +380,7 @@ main:
         calls:
           title: "Calls"
         openingHours:
-          title: "Opening hours | Basic"
+          title: "Edit opening hours"
 
     troubleshootingProgressPopUp(int remainingTaps): >-
       You can access troubleshooting settings after $remainingTaps more taps on your screen.
@@ -395,7 +405,10 @@ main:
       buttons:
         send: "Send feedback"
     privacyPolicy: "Privacy Policy"
-    signUp(String appName): "New to $appName? Sign up here."
+    noConnectionDialog:
+      title: *noConnectionTitle
+      message: >-
+        This setting cannot be changed while you are not connected to the internet. Please check your WiFi or mobile data connection and try again.
 
   notice:
     microphone:
@@ -444,16 +457,20 @@ main:
     title: "Temporary redirect"
     explanation:
       start: "All incoming calls to all numbers go straight to voicemail"
-      end: "until the end of the day (23:59)."
+      end(String date): "until $date."
       selectVoicemail: "[select voicemail below]"
     dropdown:
-      title: "Choose voicemail"
+      title: "Voicemail"
       noVoicemails:
         item: "No voicemail available"
         hint:
           start: "No voicemail found, please add it in "
           link: "the platform"
           end: "."
+    until:
+      title: "Until"
+      error:
+        timeInPast: "Chosen time is in the past. Please choose a future end time."
     actions:
       setupRedirect:
         label: "Set up redirect"
@@ -498,6 +515,7 @@ onboarding:
     button:
       loggingIn: "Logging in"
       forgotPassword: "Forgot password?"
+      signUp(String appName): "New to $appName? Sign up here."
     error:
       wrongCombination:
         title: "Incorrect credentials"

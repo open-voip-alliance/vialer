@@ -9,6 +9,7 @@ import 'authentication/unauthorized_api_response.dart';
 import 'event/event_bus.dart';
 import 'user/get_stored_user.dart';
 import 'user/user.dart';
+import 'voipgrid/rate_limit_reached_event.dart';
 
 class AuthorizationInterceptor implements chopper.RequestInterceptor {
   /// Paths that force the use of the legacy
@@ -103,6 +104,26 @@ class UnauthorizedResponseInterceptor extends chopper.ResponseInterceptor {
 
   bool _isUnauthorized(int statusCode) =>
       unauthorizedStatusCodes.contains(statusCode);
+}
+
+class RateLimitReachedInterceptor extends chopper.ResponseInterceptor {
+  final _eventBus = dependencyLocator<EventBus>();
+
+  @override
+  FutureOr<chopper.Response> onResponse(Response<dynamic> response) {
+    final statusCode = response.statusCode;
+
+    if (_isRateLimited(statusCode)) {
+      _eventBus.broadcast(RateLimitReachedEvent(
+        url: response.base.request?.url.toString() ?? '',
+        hitLimitAt: DateTime.now(),
+      ));
+    }
+
+    return response;
+  }
+
+  bool _isRateLimited(int statusCode) => statusCode == 429;
 }
 
 class JsonConverter extends chopper.JsonConverter {

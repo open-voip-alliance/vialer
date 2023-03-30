@@ -12,22 +12,29 @@ import 'value.dart';
 
 class DndTile extends StatelessWidget {
   final User user;
+  final bool enabled;
 
-  const DndTile(this.user, {super.key});
+  const DndTile(
+    this.user, {
+    this.enabled = true,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(
-        vertical: 20,
-        horizontal: 20,
+        vertical: 10,
       ).copyWith(
         top: 0,
       ),
       child: Row(
         children: [
           Expanded(
-            child: _DndToggle(user),
+            child: _DndToggle(
+              user,
+              enabled: enabled,
+            ),
           ),
         ],
       ),
@@ -42,11 +49,14 @@ class _DndToggle extends StatelessWidget {
 
   final UserAvailabilityType _userAvailabilityType;
   final bool _value;
+  final bool enabled;
 
   static const _key = CallSetting.dnd;
 
-  _DndToggle(this.user)
-      : _value = user.settings.get(_key),
+  _DndToggle(
+    this.user, {
+    this.enabled = true,
+  })  : _value = user.settings.get(_key),
         _userAvailabilityType = user.availabilityType;
 
   String _text(BuildContext context, {bool? settingValue}) {
@@ -70,11 +80,11 @@ class _DndToggle extends StatelessWidget {
   }
 
   Color _color(BuildContext context) => _value == true
-      ? context.brand.theme.colors.dnd
+      ? context.brand.theme.colors.userAvailabilityUnavailableAccent
       : _userAvailabilityType.asColor(context);
 
   Color _accentColor(BuildContext context) => _value == true
-      ? context.brand.theme.colors.dndAccent
+      ? context.brand.theme.colors.userAvailabilityUnavailable
       : _userAvailabilityType.asAccentColor(context);
 
   String _prepareVoiceOverForAccessibility(
@@ -153,6 +163,7 @@ class _DndToggle extends StatelessWidget {
                 ),
                 child: FlutterSwitch(
                   value: _value,
+                  disabled: !enabled,
                   inactiveIcon: SizedBox(
                     width: 28,
                     height: 28,
@@ -179,7 +190,6 @@ class _DndToggle extends StatelessWidget {
                   ),
                   height: 32,
                   width: 70,
-                  padding: 4,
                   activeColor: _accentColor(context),
                   inactiveColor: _accentColor(context),
                   activeToggleColor: _color(context),

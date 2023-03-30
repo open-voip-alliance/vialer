@@ -4,10 +4,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../../../../../resources/localizations.dart';
 import 'widget.dart';
 
-class AccountInfoCategory extends StatelessWidget {
+class RecentsCategory extends StatelessWidget {
   final List<Widget> children;
 
-  const AccountInfoCategory({
+  const RecentsCategory({
     super.key,
     required this.children,
   });
@@ -15,9 +15,8 @@ class AccountInfoCategory extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SettingTileCategory(
-      highlight: true,
-      icon: FontAwesomeIcons.user,
-      title: context.msg.main.settings.list.accountInfo.title,
+      icon: FontAwesomeIcons.clockRotateLeft,
+      titleText: context.msg.main.settings.list.recents.title,
       children: children,
     );
   }

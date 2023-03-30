@@ -1,9 +1,9 @@
 PODS:
   - Alamofire (5.6.4)
-  - Amplitude (8.14.0):
+  - Amplitude (8.15.2):
     - AnalyticsConnector (~> 1.0.0)
   - Analytics (4.1.6)
-  - AnalyticsConnector (1.0.0)
+  - AnalyticsConnector (1.0.1)
   - AppsFlyerFramework (6.8.1):
     - AppsFlyerFramework/Main (= 6.8.1)
   - AppsFlyerFramework/Main (6.8.1)
@@ -34,7 +34,7 @@ PODS:
     - Flutter
   - iOSPhoneLib (0.1.1):
     - linphone-sdk-novideo (= 5.1.73)
-    - Swinject (~> 2.7.1)
+    - Swinject (~> 2.8.2)
   - le (1.2)
   - libphonenumber (0.0.1):
     - Flutter
@@ -100,7 +100,7 @@ PODS:
     - sqlite3/fts5
     - sqlite3/perf-threadsafe
     - sqlite3/rtree
-  - Swinject (2.7.1)
+  - Swinject (2.8.3)
   - url_launcher_ios (0.0.1):
     - Flutter
   - webview_flutter_wkwebview (0.0.1):
@@ -201,7 +201,7 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   iOSPhoneLib:
-    :commit: 8c4fe5eb8619acf65ccabc1107441bbf61f351a4
+    :commit: 323cbd1956425fae202c83320519a900bd7959cf
     :git: https://github.com/open-voip-alliance/iOS-Phone-Lib.git
   le:
     :commit: ce8800f6d3290e182d48082680679d64a05ca778
@@ -209,9 +209,9 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   Alamofire: 4e95d97098eacb88856099c4fc79b526a299e48c
-  Amplitude: bff4ceaad2a79e908682134d75dc862960594ea6
+  Amplitude: c4f497ba1eb34e06cdaa727c56ebca5b8e894be8
   Analytics: eefe524436f904b8bb3f8c8c3425280e43b34efc
-  AnalyticsConnector: 4c386d5972ac9da86e22d668564dbbac97558754
+  AnalyticsConnector: eccd7e1cd3dd18e6bd09ac2506e37d4ed43ba3f4
   AppsFlyerFramework: a664325124485223296354b4eec335f5340a6df8
   connectivity_plus: 413a8857dd5d9f1c399a39130850d02fe0feaf7e
   contacts_service: 849e1f84281804c8bfbec1b4c3eedcb23c5d3eca
@@ -223,7 +223,7 @@ SPEC CHECKSUMS:
   flutter_segment: 367b7d9f7d74b3875198524ff4d24c381d93e317
   in_app_review: 318597b3a06c22bb46dc454d56828c85f444f99d
   integration_test: a1e7d09bd98eca2fc37aefd79d4f41ad37bdbbe5
-  iOSPhoneLib: 02e9c1edbeb6267b0653f76c4c5476912e5c3754
+  iOSPhoneLib: 38c4362a3169562a559af28b4e2fb197bccb779e
   le: 6854003e293bf5b3cb822ef06971f1cc23a77eb9
   libphonenumber: bd14d5abfc5939ab0b0767234e2d8e2593af258e
   libPhoneNumber-iOS: 0a32a9525cf8744fe02c5206eb30d571e38f7d75
@@ -238,14 +238,14 @@ SPEC CHECKSUMS:
   Segment-Amplitude: 6c1e59c8c278a21029ba7a6a788fcb31b9233a2c
   segment-appsflyer-ios: 9b84c1b7f94bb7a3c5826c9214cd0630b831e208
   Sentry: 4c9babff9034785067c896fd580b1f7de44da020
-  sentry_flutter: b10ae7a5ddcbc7f04648eeb2672b5747230172f1
+  sentry_flutter: 1346a880b24c0240807b53b10cf50ddad40f504e
   shared_preferences_foundation: 297b3ebca31b34ec92be11acd7fb0ba932c822ca
   sqlite3: 88dd99ef4ac3945f5a15facdd752933c52fd93bf
   sqlite3_flutter_libs: c00751e981228acb63595236703da79d31282b63
-  Swinject: ddf78b8486dd9b71a667b852cad919ab4484478e
+  Swinject: 893c9a543000ac2f10ee4cbaf0933c6992c935d5
   url_launcher_ios: ae1517e5e344f5544fb090b079e11f399dfbe4d2
   webview_flutter_wkwebview: b7e70ef1ddded7e69c796c7390ee74180182971f
 
-PODFILE CHECKSUM: 79548a32624e155c7e01b4523617109de6480dd5
+PODFILE CHECKSUM: df5689a3bcea3ea40b740bdf6675c7c9be441b4a
 
 COCOAPODS: 1.11.3

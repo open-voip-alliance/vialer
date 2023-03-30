@@ -7,7 +7,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../dependency_locator.dart';
 import '../../../../domain/call_records/call_record.dart';
-import '../../../../domain/call_records/client/client_call_record.dart';
 import '../../../../domain/call_records/client/get_recent_client_calls.dart';
 import '../../../../domain/call_records/client/import_new_client_calls.dart';
 import '../../../../domain/call_records/client/local_client_calls.dart';

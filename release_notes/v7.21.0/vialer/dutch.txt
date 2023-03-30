@@ -1,0 +1,4 @@
+- De Instellingen-pagina heeft een nieuw design; instellingen zijn nu opgedeeld in categorieën, en hebben een nieuwe look & feel.
+- Je kan nu een eindtijd en datum kiezen wanneer je een tijdelijke omleiding opzet
+- Het is nu altijd mogelijk om via "pull to refresh" de contacten en collega's te verversen
+- Een probleem waarbij instellingen soms oude waardes toonden, is opgelost

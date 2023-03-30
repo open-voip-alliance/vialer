@@ -16,12 +16,12 @@ class TemporaryRedirectPickerPage extends StatelessWidget {
         final cubit = context.watch<TemporaryRedirectCubit>();
 
         return FullScreenPage(
-          title: Text(context.msg.main.temporaryRedirect.title),
+          title: context.msg.main.temporaryRedirect.title,
           body: TemporaryRedirectPicker(
             activeRedirect: state is Active ? state.redirect : null,
             availableDestinations: state.availableRedirectDestinations,
-            onStart: (destination) => context.popAfter(
-              cubit.startOrUpdateCurrentTemporaryRedirect(destination),
+            onStart: (destination, until) => context.popAfter(
+              cubit.startOrUpdateCurrentTemporaryRedirect(destination, until),
             ),
             onStop: state is Active
                 ? () => context.popAfter(cubit.stopTemporaryRedirect())

@@ -18,7 +18,7 @@ class PortalLinksCategory extends StatelessWidget {
   Widget build(BuildContext context) {
     return SettingTileCategory(
       icon: FontAwesomeIcons.browsers,
-      title: context.msg.main.settings.list.portalLinks.title,
+      titleText: context.msg.main.settings.list.portalLinks.title,
       children: context.isIOS
           ? children
               .mapIndexed(

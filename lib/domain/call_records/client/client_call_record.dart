@@ -8,29 +8,6 @@ import '../call_record.dart';
 import 'database/client_calls.dart';
 import 'remote_client_calls.dart';
 
-class ClientCallRecord extends CallRecord {
-  final bool didTargetColleague;
-  final bool didTargetLoggedInUser;
-  final bool wasInitiatedByColleague;
-  final bool wasInitiatedByLoggedInUser;
-
-  const ClientCallRecord({
-    required super.id,
-    required super.callType,
-    required super.direction,
-    required super.answered,
-    required super.answeredElsewhere,
-    required super.duration,
-    required super.date,
-    required super.caller,
-    required super.destination,
-    required this.didTargetColleague,
-    required this.didTargetLoggedInUser,
-    required this.wasInitiatedByColleague,
-    required this.wasInitiatedByLoggedInUser,
-  });
-}
-
 extension FromDatabaseCallRecord on ClientCallDatabaseRecord {
   ClientCallRecord toCallRecord(
     ColleaguePhoneAccount? destinationAccount,
@@ -39,7 +16,7 @@ extension FromDatabaseCallRecord on ClientCallDatabaseRecord {
       ClientCallRecord(
         id: id.toString(),
         callType: callType,
-        direction: direction,
+        callDirection: direction,
         answered: answered,
         answeredElsewhere: direction == CallDirection.inbound &&
             destinationAccountId != null &&

@@ -80,10 +80,17 @@ class _StringEditSettingValueState extends State<StringEditSettingValue> {
     _toggleEditing();
   }
 
-  void _toggleEditing() {
-    setState(() {
-      _editing = !_editing;
-    });
+  Future<void> _toggleEditing() async {
+    void toggle() => setState(() => _editing = !_editing);
+
+    // We always cancel editing, even if we're not connected to the
+    // internet.
+    if (_editing) {
+      toggle();
+      return;
+    }
+
+    await runIfSettingCanBeChanged(context, widget.setting, toggle);
   }
 
   @override
@@ -123,7 +130,7 @@ class MultipleChoiceSettingValue<T> extends StatelessWidget {
   final T value;
   final List<DropdownMenuItem<T>> items;
   final bool isExpanded;
-  final ValueChanged<T> onChanged;
+  final ValueChanged<T>? onChanged;
   final EdgeInsets padding;
 
   const MultipleChoiceSettingValue({
@@ -131,7 +138,7 @@ class MultipleChoiceSettingValue<T> extends StatelessWidget {
     required this.value,
     required this.items,
     this.isExpanded = false,
-    required this.onChanged,
+    this.onChanged,
     EdgeInsets? padding,
   }) : padding = padding ?? const EdgeInsets.only(right: 16);
 
@@ -143,7 +150,7 @@ class MultipleChoiceSettingValue<T> extends StatelessWidget {
         value: items.map((item) => item.value).contains(value) ? value : null,
         items: items,
         isExpanded: isExpanded,
-        onChanged: (value) => onChanged(value!),
+        onChanged: onChanged != null ? (value) => onChanged!(value!) : null,
       ),
     );
   }
@@ -156,7 +163,7 @@ class _EditIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return const FaIcon(
       FontAwesomeIcons.pen,
-      size: 22,
+      size: 18,
     );
   }
 }

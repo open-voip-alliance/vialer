@@ -19,7 +19,7 @@ buildError:
 
 connectivity:
   noConnection:
-    title: "Geen internetverbinding"
+    title: &noConnectionTitle "Geen internetverbinding"
     message: >-
       Het lijkt erop dat je geen verbinding hebt met internet. Controleer je wifi- of mobiele dataverbinding en probeer het opnieuw.
 
@@ -261,6 +261,13 @@ main:
     title: &settingsTitle "Instellingen"
     menu:
       title: *settingsTitle
+    subPage:
+      appPreferences:
+        title: "App voorkeuren"
+      user:
+        title(String user): "$user"
+      client:
+        title(String client): "$client"
     list:
       debug:
         title: "Foutopsporing"
@@ -287,6 +294,7 @@ main:
           description: >-
               Je mobiele telefoonnummer. Deze is niet zichtbaar voor anderen.
         username:
+          title: "Jouw e-mailadres" #TODO: Translate
           description: >-
             E-mailadres van je gebruikersaccount waarmee je bent ingelogd.
       advancedSettings:
@@ -312,6 +320,8 @@ main:
           description(String appName): >-
             De beltoon van je telefoon wordt afgespeeld in plaats van
             de beltoon van de app als iemand je belt.
+      recents:
+        title: "Recents"
       calling:
         title: "Bellen"
         availability:
@@ -364,7 +374,7 @@ main:
             Als deze optie aan staat, dan verlopen gesprekken via je mobiele nummer ($mobileNumber) als het niet lukt om verbinding te maken met je VoIP-account. Deze instelling brengt extra kosten met zich mee.
       version: "Versie"
       portalLinks:
-        title: "VoIP-platform"
+        title: "Beheer"
         dialplan:
           title: "Belplan"
         stats:
@@ -372,7 +382,7 @@ main:
         calls:
           title: "Gesprekken"
         openingHours:
-          title: "Openingstijden | Basis"
+          title: "Openingstijden wijzigen"
 
     troubleshootingProgressPopUp(int remainingTaps): >-
       Nog $remainingTaps keer tikken en de geavanceerde instellingen worden beschikbaar.
@@ -398,7 +408,10 @@ main:
       buttons:
         send: "Feedback sturen"
     privacyPolicy: "Privacybeleid"
-    signUp(String appName): "Nieuw bij $appName? Meld je hier aan."
+    noConnectionDialog:
+      title: *noConnectionTitle
+      message: >-
+        Je hebt een internetverbinding nodig om deze instelling aan te passen. Controleer je wifi- of mobiele dataverbinding en probeer het opnieuw.
 
   notice:
     microphone:
@@ -447,16 +460,20 @@ main:
     title: "Tijdelijke omleiding"
     explanation:
       start: "Alle inkomende oproepen naar alle nummers gaan rechtstreeks naar voicemail"
-      end: "tot het einde van de dag (23:59)."
+      end(String date): "tot $date."
       selectVoicemail: "[kies voicemail hieronder]"
     dropdown:
-      title: "Kies voicemail"
+      title: "Voicemail"
       noVoicemails:
         item: "Geen voicemail beschikbaar"
         hint:
           start: "Geen voicemail gevonden, voeg deze toe in "
           link: "het platform"
           end: "."
+    until:
+      title: "Tot"
+      error:
+        timeInPast: "Gekozen tijd is in het verleden. Graag een toekomstige eindtijd kiezen."
     actions:
       title: "Tijdelijke omleiding"
       setupRedirect:
@@ -502,6 +519,7 @@ onboarding:
     button:
       loggingIn: "Bezig met inloggen"
       forgotPassword: "Wachtwoord vergeten?"
+      signUp(String appName): "Nieuw bij $appName? Meld je hier aan."
     error:
       wrongCombination:
         title: "Onjuiste inloggegevens"
