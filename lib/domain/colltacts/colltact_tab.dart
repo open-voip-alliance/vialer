@@ -2,5 +2,5 @@
 // explicitly use the old name in IdentifyForTracking use case.
 enum ColltactTab {
   contacts,
-  colleagues
+  colleagues,
 }

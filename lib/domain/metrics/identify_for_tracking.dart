@@ -75,9 +75,11 @@ extension on List<Colleague> {
 }
 
 extension on ColltactTab? {
-  Map<String, dynamic> toIdentifyProperties() => this != null ? {
-    'colltact-tab': this!.name,
-  } : const {};
+  Map<String, dynamic> toIdentifyProperties() => this != null
+      ? {
+          'colltact-tab': this!.name,
+        }
+      : const {};
 }
 
 extension on SettingKey {
