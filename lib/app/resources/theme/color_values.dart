@@ -191,9 +191,9 @@ class ColorValues {
 
   /// Defaults should be left as-is.
   const ColorValues.verbonden({
-    int primary = 0xFF003A63,
-    int primaryDark = 0xFF01243C,
-    int primaryLight = 0xFF70D8FF,
+    int primary = 0xFF3336AD,
+    int primaryDark = 0xFF20238B,
+    int primaryLight = 0xFF484BD2,
   }) : this(
           primary: primary,
           primaryDark: primaryDark,
