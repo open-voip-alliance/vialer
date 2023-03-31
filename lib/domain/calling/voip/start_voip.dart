@@ -4,10 +4,8 @@ import '../../use_case.dart';
 import '../../user/get_brand.dart';
 import '../../user/get_build_info.dart';
 import '../../user/get_logged_in_user.dart';
-import '../../voipgrid/user_voip_config.dart';
 import 'register_to_voip_middleware.dart';
 import 'voip.dart';
-import 'voip_not_allowed.dart';
 
 class StartVoipUseCase extends UseCase {
   final _voipRepository = dependencyLocator<VoipRepository>();
@@ -20,10 +18,6 @@ class StartVoipUseCase extends UseCase {
 
   Future<void> call() async {
     final user = _getUser();
-
-    if (!user.voip.isAllowedCalling) {
-      throw VoipNotAllowedException();
-    }
 
     await _updateRemoteVoipConfiguration();
 
