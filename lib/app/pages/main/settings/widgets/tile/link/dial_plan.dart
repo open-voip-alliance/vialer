@@ -14,13 +14,7 @@ class DialPlanLinkTile extends StatelessWidget {
       title: Text(
         context.msg.main.settings.list.portalLinks.dialplan.title,
       ),
-      onTap: () {
-        Navigator.of(context, rootNavigator: true).push(
-          MaterialPageRoute(
-            builder: (context) => WebViewPage(WebPage.dialPlan),
-          ),
-        );
-      },
+      onTap: () => WebViewPage.open(context, to: WebPage.dialPlan),
     );
   }
 }
