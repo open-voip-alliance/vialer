@@ -14,7 +14,7 @@ class StatsLinkTile extends StatelessWidget {
       title: Text(
         context.msg.main.settings.list.portalLinks.stats.title,
       ),
-      onTap: () => WebViewPage.route(context, to: WebPage.stats),
+      onTap: () => WebViewPage.open(context, to: WebPage.stats),
     );
   }
 }

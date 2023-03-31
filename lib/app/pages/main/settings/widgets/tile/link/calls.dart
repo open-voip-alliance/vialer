@@ -14,7 +14,7 @@ class CallsLinkTile extends StatelessWidget {
       title: Text(
         context.msg.main.settings.list.portalLinks.calls.title,
       ),
-      onTap: () => WebViewPage.route(context, to: WebPage.calls),
+      onTap: () => WebViewPage.open(context, to: WebPage.calls),
     );
   }
 }

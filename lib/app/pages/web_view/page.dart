@@ -19,12 +19,12 @@ class WebViewPage extends StatefulWidget {
 
   WebViewPage(this.page);
 
-  static Future route(BuildContext context, {required WebPage to}) =>
-      Navigator.of(context, rootNavigator: true).push(
-        MaterialPageRoute(
-          builder: (context) => WebViewPage(to),
-        ),
+  static MaterialPageRoute route(WebPage page) => MaterialPageRoute(
+        builder: (context) => WebViewPage(page),
       );
+
+  static Future open(BuildContext context, {required WebPage to}) =>
+      Navigator.of(context, rootNavigator: true).push(route(to));
 
   @override
   _WebViewPageState createState() => _WebViewPageState();

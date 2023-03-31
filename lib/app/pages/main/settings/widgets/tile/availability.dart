@@ -83,7 +83,7 @@ class AvailabilityTile extends StatelessWidget {
 
   void _openAddAvailabilityWebView(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await WebViewPage.route(context, to: WebPage.addDestination);
+      await WebViewPage.open(context, to: WebPage.addDestination);
 
       context.read<SettingsCubit>().refreshAvailability();
     });

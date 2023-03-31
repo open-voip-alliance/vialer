@@ -17,7 +17,7 @@ class OpeningHoursLinkTile extends StatelessWidget {
       title: Text(
         context.msg.main.settings.list.portalLinks.openingHours.title,
       ),
-      onTap: () => WebViewPage.route(
+      onTap: () => WebViewPage.open(
         context,
         to: user.client.openingHours.length == 1
             ? WebPage.openingHoursBasicEdit
