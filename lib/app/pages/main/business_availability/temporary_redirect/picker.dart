@@ -85,11 +85,7 @@ class _TemporaryRedirectPickerState extends State<TemporaryRedirectPicker> {
     });
   }
 
-  void _openPortal() => Navigator.of(context, rootNavigator: true).push(
-        MaterialPageRoute(
-          builder: (context) => WebViewPage(WebPage.addVoicemail),
-        ),
-      );
+  void _openPortal() => WebViewPage.route(context, to: WebPage.addVoicemail);
 
   String get _mainActionText {
     final text = widget.activeRedirect != null
