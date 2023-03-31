@@ -593,15 +593,6 @@ onboarding:
 
         Zonder deze toestemming word je nog wel op de hoogte gebracht van inkomende oproepen.
 
-  voicemail:
-    title: "Voicemail"
-    description: >-
-      Houd er rekening mee dat als je jouw voicemail niet hebt ingesteld, het kan zijn dat jouw mobiele nummer
-      wordt genoemd in de standaard voicemailmelding.
-
-      Deze wordt afgespeeld wanneer je op jouw zakelijke nummer wordt gebeld
-      en niet bereikbaar bent.
-
   mobileNumber:
     title: "Mobiele nummer"
     hint: "+31xxx"
