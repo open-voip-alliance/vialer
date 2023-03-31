@@ -19,7 +19,7 @@ class MobileNumberTile extends StatelessWidget {
   });
 
   bool _validateMobileNumber(String number) =>
-      number.startsWith('+') && number.length == 12;
+      number.startsWith('+')  && !number.startsWith('+0') && number.length == 12;
 
   String _formatMobileNumberDuringEditing(String number) =>
       number.startsWith('+') ? number : '+$number';
