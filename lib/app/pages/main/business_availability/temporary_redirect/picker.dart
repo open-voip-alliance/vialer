@@ -1,15 +1,16 @@
 import 'package:dartx/dartx.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../../domain/business_availability/temporary_redirect/temporary_redirect.dart';
+import '../../../../../domain/voipgrid/web_page.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme/brand_theme.dart';
 import '../../../../util/brand.dart';
 import '../../../../util/conditional_capitalization.dart';
 import '../../../../widgets/stylized_button.dart';
 import '../../../../widgets/stylized_dropdown.dart';
+import '../../../web_view/page.dart';
 import 'date_field.dart';
 import 'explanation.dart';
 import 'field.dart';
@@ -84,8 +85,11 @@ class _TemporaryRedirectPickerState extends State<TemporaryRedirectPicker> {
     });
   }
 
-  // TODO?: Can be in-app webview
-  void _openPortal() => launchUrl(context.brand.url);
+  void _openPortal() => Navigator.of(context, rootNavigator: true).push(
+        MaterialPageRoute(
+          builder: (context) => WebViewPage(WebPage.addVoicemail),
+        ),
+      );
 
   String get _mainActionText {
     final text = widget.activeRedirect != null
