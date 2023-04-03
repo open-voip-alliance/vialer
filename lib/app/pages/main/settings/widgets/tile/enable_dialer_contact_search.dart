@@ -18,9 +18,6 @@ class EnableDialerContactSearch extends StatelessWidget {
       label: Text(
         context.msg.main.settings.list.calling.enableDialerContactSearch.title,
       ),
-      // description: Text(
-      //   context.msg.main.settings.list.calling.enableDialerContactSearch.description,
-      // ),
       child: BoolSettingValue(
         user.settings,
         AppSetting.enableDialerContactSearch,

@@ -371,7 +371,7 @@ main:
           description(String mobileNumber): >-
             When enabled, your mobile number ($mobileNumber) and network will be used when an incoming VoIP call is not possible. This will incur additional costs at your expense.
         enableDialerContactSearch:
-          title: "Enable dialer contact search"
+          title: "Show search results on Dialer page"
       version: "Version"
       portalLinks:
         title: "Admin"
