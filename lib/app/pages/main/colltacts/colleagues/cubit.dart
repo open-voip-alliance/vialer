@@ -5,7 +5,9 @@ import 'package:rxdart/rxdart.dart';
 
 import '../../../../../dependency_locator.dart';
 import '../../../../../domain/authentication/user_was_logged_out.dart';
+import '../../../../../domain/colltacts/colltact_tab.dart';
 import '../../../../../domain/event/event_bus.dart';
+import '../../../../../domain/legacy/storage.dart';
 import '../../../../../domain/metrics/track_colleague_tab_selected.dart';
 import '../../../../../domain/user/get_logged_in_user.dart';
 import '../../../../../domain/user/settings/app_setting.dart';
@@ -20,6 +22,8 @@ import 'state.dart';
 export 'state.dart';
 
 class ColleaguesCubit extends Cubit<ColleaguesState> {
+  final _storageRepository = dependencyLocator<StorageRepository>();
+
   late final _shouldShowColleagues = ShouldShowColleagues();
   late final _receiveColleagueAvailability = ReceiveColleagueAvailability();
   late final _stopReceivingColleagueAvailability =
@@ -121,4 +125,12 @@ class ColleaguesCubit extends Cubit<ColleaguesState> {
 
   Future<void> call(String destination) =>
       _caller.call(destination, origin: CallOrigin.colleagues);
+
+  ColltactTab getStoredTab() =>
+      _storageRepository.currentColltactTab ?? ColltactTab.contacts;
+
+  // ignore: use_setters_to_change_properties
+  void storeCurrentTab(ColltactTab tab) {
+    _storageRepository.currentColltactTab = tab;
+  }
 }
