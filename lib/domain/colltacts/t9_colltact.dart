@@ -15,6 +15,7 @@ class T9Colltact with _$T9Colltact {
 
 extension T9Search on T9Colltact {
   String get nameForT9Search => colltact.name.replaceAll(
+        // Removing any of the characters a user can't input into the dialer.
         RegExp('[^a-zA-Z0-9#+*]'),
         '',
       );
