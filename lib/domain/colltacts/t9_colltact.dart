@@ -12,3 +12,10 @@ class T9Colltact with _$T9Colltact {
     required Item relevantPhoneNumber,
   }) = _T9Colltact;
 }
+
+extension T9Search on T9Colltact {
+  String get nameForT9Search => colltact.name.replaceAll(
+        RegExp('[^a-zA-Z0-9#+*]'),
+        '',
+      );
+}

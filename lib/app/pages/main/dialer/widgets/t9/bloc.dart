@@ -192,7 +192,7 @@ Future<List<T9Colltact>> _filterColltactsByRegularExpression(
       // Only keep those whose name or number matches the regex.
       .where(
         (t9) =>
-            removeDiacritics(t9.colltact.name).contains(request.regex) ||
+            removeDiacritics(t9.nameForT9Search).contains(request.regex) ||
             t9.relevantPhoneNumber.value.contains(request.regex),
       )
       .distinct()
