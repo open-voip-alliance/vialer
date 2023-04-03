@@ -208,3 +208,12 @@ class _FilterByRegularExpressionRequest {
     required this.regex,
   });
 }
+
+extension on T9Colltact {
+  String get nameForT9Search => colltact.name.replaceAll(
+    // Removing any of the characters a user can't input into the dialer or
+    // that doesn't have a valid T9 mapping.
+    RegExp('[^a-zA-Z0-9#+*]'),
+    '',
+  );
+}
