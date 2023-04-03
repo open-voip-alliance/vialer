@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../data/models/colltact.dart';
+import '../../../../../domain/colltacts/colltact_tab.dart';
 import '../../../../../domain/colltacts/contact.dart';
 import '../../../../../domain/colltacts/get_contact_sort.dart';
 import '../../../../../domain/user_availability/colleagues/colleague.dart';
@@ -113,8 +114,10 @@ class _ColltactPageState extends State<_ColltactList>
   }
 
   void _createTabController() {
+    final cubit = context.read<ColleaguesCubit>();
+
     final tabController = TabController(
-      initialIndex: 0,
+      initialIndex: cubit.getStoredTab() == ColltactTab.contacts ? 0 : 1,
       length: 2,
       vsync: this,
     );
@@ -122,8 +125,18 @@ class _ColltactPageState extends State<_ColltactList>
     tabController.addListener(
       () {
         if (!tabController.indexIsChanging) {
-          if (tabController.index == 1) {
-            context.read<ColleaguesCubit>().trackColleaguesTabSelected();
+          final cubit = context.read<ColleaguesCubit>();
+
+          final colleagueTabSelected = tabController.index == 1;
+
+          cubit.storeCurrentTab(
+            colleagueTabSelected
+                ? ColltactTab.colleagues
+                : ColltactTab.contacts,
+          );
+
+          if (colleagueTabSelected) {
+            cubit.trackColleaguesTabSelected();
           }
         }
       },
