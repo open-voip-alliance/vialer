@@ -25,7 +25,7 @@ class SubPageLinkTile extends StatelessWidget {
       onTap: () => Navigator.of(context).push(
         // Slide the page out from the right of the screen.
         PageRouteBuilder(
-          transitionDuration: const Duration(milliseconds: 600),
+          transitionDuration: const Duration(milliseconds: 400),
           pageBuilder: (_, __, ___) => BlocProvider.value(
             value: cubit,
             child: pageBuilder(context),
