@@ -291,6 +291,7 @@ main:
           title: "Your mobile number"
           description: >-
               Your mobile phone number. It is not visible to others.
+          help: Please use the following format +31611112222
         username:
           title: "Your email address"
           description: >-
