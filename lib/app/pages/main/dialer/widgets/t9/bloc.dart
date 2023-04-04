@@ -192,7 +192,7 @@ Future<List<T9Colltact>> _filterColltactsByRegularExpression(
       // Only keep those whose name or number matches the regex.
       .where(
         (t9) =>
-            removeDiacritics(t9.colltact.name).contains(request.regex) ||
+            t9.nameForT9Search.contains(request.regex) ||
             t9.relevantPhoneNumber.value.contains(request.regex),
       )
       .distinct()
@@ -207,4 +207,13 @@ class _FilterByRegularExpressionRequest {
     required this.colltacts,
     required this.regex,
   });
+}
+
+extension on T9Colltact {
+  String get nameForT9Search => removeDiacritics(colltact.name).replaceAll(
+        // Removing any of the characters a user can't input into the dialer or
+        // that doesn't have a valid T9 mapping.
+        RegExp('[^a-zA-Z0-9#+*]'),
+        '',
+      );
 }
