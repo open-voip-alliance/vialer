@@ -367,9 +367,6 @@ class StorageRepository {
             canViewVoipAccounts: false,
           );
           break;
-        case 'EnableDialerContactSearchSetting':
-          settings[AppSetting.enableDialerContactSearch] = value as bool;
-          break;
       }
     }
 
@@ -396,7 +393,7 @@ class StorageRepository {
         outgoingNumbers:
             clientOutgoingNumbers?.map(OutgoingNumber.new) ?? const [],
       ),
-      settings: Settings.defaults().copyWithAll(settings),
+      settings: Settings.defaults.copyWithAll(settings),
       permissions: permissions ?? const UserPermissions(),
     );
   }
