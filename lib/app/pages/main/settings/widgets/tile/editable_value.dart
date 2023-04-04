@@ -48,13 +48,34 @@ class StringEditSettingValue extends StatefulWidget {
   final SettingKey<String> setting;
   final ValueChangedWithContext<String> onChanged;
 
+  /// A callback to validate the input, should return TRUE if the provided
+  /// string is valid input.
+  final bool Function(String)? validate;
+
+  /// A help widget that will be displayed above the input field if [validate]
+  /// fails. This will have no effect if [validate] is [null].
+  final Widget? help;
+
+  /// Allows for formatting of the value while the user is editing, this can
+  /// be used to add a prefix or suffix to make it clear what the user
+  /// should be inputting.
+  final String Function(String)? editingFormatter;
+
+  /// If set to true, will show an icon on invalid input that allows resetting
+  /// the field back to the original value.
+  final bool isResettable;
+
   final String value;
 
   StringEditSettingValue(
     this.settings,
     this.setting, {
     // ignore: unused_element
+    this.validate,
+    this.help,
+    this.editingFormatter,
     this.onChanged = defaultOnChanged,
+    this.isResettable = false,
   }) : value = settings.get(setting);
 
   @override
@@ -64,15 +85,23 @@ class StringEditSettingValue extends StatefulWidget {
 class _StringEditSettingValueState extends State<StringEditSettingValue> {
   final _textEditingController = TextEditingController();
   bool _editing = false;
+  bool _isValid = false;
 
   @override
   void initState() {
     super.initState();
+    _initializeWithWidgetValue();
+  }
+
+  void _initializeWithWidgetValue() {
+    _editing = false;
 
     _textEditingController.value = TextEditingValue(
       text: widget.value,
       selection: TextSelection.collapsed(offset: widget.value.length),
     );
+
+    _validate();
   }
 
   void _onPressed(BuildContext context) {
@@ -93,18 +122,58 @@ class _StringEditSettingValueState extends State<StringEditSettingValue> {
     await runIfSettingCanBeChanged(context, widget.setting, toggle);
   }
 
+  void _applyEditingFormatter() {
+    setState(() {
+      final formatter = widget.editingFormatter;
+
+      if (formatter != null) {
+        final value = formatter(_textEditingController.text);
+
+        _textEditingController.value = TextEditingValue(
+          text: value,
+          selection: TextSelection.collapsed(offset: value.length),
+        );
+      }
+    });
+  }
+
+  void _validate() {
+    setState(() {
+      final validate = widget.validate;
+      _isValid =
+          validate != null ? validate(_textEditingController.text) : true;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_editing) {
-      return StylizedTextField(
-        controller: _textEditingController,
-        keyboardType: TextInputType.phone,
-        autoCorrect: false,
-        suffix: IconButton(
-          onPressed: () => _onPressed(context),
-          icon: const FaIcon(FontAwesomeIcons.check),
-        ),
-        elevation: 0,
+      return Column(
+        children: [
+          if (!_isValid && widget.help != null) widget.help!,
+          StylizedTextField(
+            controller: _textEditingController,
+            keyboardType: TextInputType.phone,
+            autoCorrect: false,
+            hasError: !_isValid,
+            suffix: _isValid
+                ? IconButton(
+                    onPressed: () => _onPressed(context),
+                    icon: const FaIcon(FontAwesomeIcons.check),
+                  )
+                : (widget.isResettable
+                    ? IconButton(
+                        onPressed: _initializeWithWidgetValue,
+                        icon: const FaIcon(FontAwesomeIcons.xmark),
+                      )
+                    : null),
+            elevation: 0,
+            onChanged: (text) {
+              _applyEditingFormatter();
+              _validate();
+            },
+          ),
+        ],
       );
     } else {
       return Row(
