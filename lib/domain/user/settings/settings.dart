@@ -24,7 +24,7 @@ class Settings {
   const Settings(Map<SettingKey, Object> map) : _map = map;
 
   const Settings.empty() : this(const {});
-  
+
   static final Settings defaults = Settings({
     ...AppSetting.defaultValues,
     ...CallSetting.defaultValues,

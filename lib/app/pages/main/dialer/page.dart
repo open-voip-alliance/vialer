@@ -42,27 +42,27 @@ class _DialerPageState extends State<DialerPage>
 
   final _getLatestUser = GetLoggedInUserUseCase();
 
-  bool _enableDialerContactSearch = false;
+  bool _enableT9ContactSearch = false;
 
   @override
   void initState() {
     super.initState();
 
-    _updateEnableDialerContactSearch();
+    _updateEnableT9ContactSearch();
 
     _eventBusSubscription = _eventBus.onSettingChange<bool>(
-      AppSetting.enableDialerContactSearch,
+      AppSetting.enableT9ContactSearch,
       (_, newValue) {
-        _updateEnableDialerContactSearch(settingValue: newValue);
+        _updateEnableT9ContactSearch(settingValue: newValue);
       },
     );
   }
 
-  Future<void> _updateEnableDialerContactSearch({bool? settingValue}) async {
+  Future<void> _updateEnableT9ContactSearch({bool? settingValue}) async {
     final user = await _getLatestUser();
 
     setState(() {
-      _enableDialerContactSearch =
+      _enableT9ContactSearch =
           settingValue ?? user.settings.get(AppSetting.showClientCalls);
     });
   }
@@ -163,7 +163,7 @@ class _DialerPageState extends State<DialerPage>
                       : null,
                   controller: _dialPadController,
                   onDeleteAll: dialerCubit.clearLastCalledDestination,
-                  isDialerContactSearchEnabled: _enableDialerContactSearch,
+                  isT9ContactSearchEnabled: _enableT9ContactSearch,
                 ),
               ),
             );

@@ -10,7 +10,7 @@ enum AppSetting<T extends Object> with SettingKey<T> {
   showTroubleshooting<bool>(),
   showClientCalls<bool>(),
   showOnlineColleaguesOnly<bool>(),
-  enableDialerContactSearch<bool>(); // On Android known as T9 search.
+  enableT9ContactSearch<bool>();
 
   static Map<AppSetting, bool> defaultValues = {
     AppSetting.remoteLogging: false,
@@ -20,6 +20,6 @@ enum AppSetting<T extends Object> with SettingKey<T> {
     AppSetting.showTroubleshooting: false,
     AppSetting.showClientCalls: false,
     AppSetting.showOnlineColleaguesOnly: true,
-    AppSetting.enableDialerContactSearch: Platform.isAndroid,
+    AppSetting.enableT9ContactSearch: Platform.isAndroid,
   };
 }

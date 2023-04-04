@@ -59,7 +59,7 @@ class AppPreferencesSubPage extends StatelessWidget {
                         onChanged: (enabled) =>
                             cubit.requestBatteryPermission(),
                       ),
-                    if (context.isIOS) EnableDialerContactSearch(user),
+                    if (context.isIOS) EnableT9ContactSearch(user),
                   ],
                 ),
                 RecentsCategory(

@@ -7,20 +7,20 @@ import '../../../../../resources/localizations.dart';
 import 'value.dart';
 import 'widget.dart';
 
-class EnableDialerContactSearch extends StatelessWidget {
+class EnableT9ContactSearch extends StatelessWidget {
   final User user;
 
-  const EnableDialerContactSearch(this.user, {super.key});
+  const EnableT9ContactSearch(this.user, {super.key});
 
   @override
   Widget build(BuildContext context) {
     return SettingTile(
       label: Text(
-        context.msg.main.settings.list.calling.enableDialerContactSearch.title,
+        context.msg.main.settings.list.calling.enableT9ContactSearch.title,
       ),
       child: BoolSettingValue(
         user.settings,
-        AppSetting.enableDialerContactSearch,
+        AppSetting.enableT9ContactSearch,
       ),
     );
   }
