@@ -1,1 +1,1 @@
-- Android: Fixed a bug that caused no audio for certain incoming calls
+Android: Een audio probleem verholpen bij bepaalde inkomende gesprekken
