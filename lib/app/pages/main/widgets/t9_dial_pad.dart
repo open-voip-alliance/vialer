@@ -19,6 +19,8 @@ class T9DialPad extends StatefulWidget {
   final Widget? bottomLeftButton;
   final Widget? bottomRightButton;
 
+  final bool isT9ContactSearchEnabled;
+
   const T9DialPad({
     required this.onCallButtonPressed,
     required this.callButtonIcon,
@@ -28,6 +30,7 @@ class T9DialPad extends StatefulWidget {
     this.onDeleteAll,
     this.bottomLeftButton,
     this.bottomRightButton,
+    this.isT9ContactSearchEnabled = true,
   });
 
   @override
@@ -60,13 +63,13 @@ class _T9DialPadState extends State<T9DialPad> {
       child: SafeArea(
         child: Column(
           children: <Widget>[
-            if (context.isAndroid) ...[
+            if (widget.isT9ContactSearchEnabled) ...[
               T9ColltactsListView(controller: controller),
               const Divider(
                 height: 1,
                 thickness: 1,
               ),
-            ] else if (context.isIOS)
+            ] else
               const SafeArea(
                 child: SizedBox(
                   height: 48,
