@@ -25,19 +25,16 @@ class Settings {
 
   const Settings.empty() : this(const {});
 
-  const Settings.defaults()
-      : this(
-          const {
-            ...AppSetting.defaultValues,
-            ...CallSetting.defaultValues,
-          },
-        );
+  static final Settings defaults = Settings({
+    ...AppSetting.defaultValues,
+    ...CallSetting.defaultValues,
+  });
 
   T? getOrNull<T extends Object>(SettingKey<T> key) =>
       (_map[key] as T?) ??
       // Only retrieve from defaults if this instance itself is not .defaults()
-      (!identical(this, const Settings.defaults())
-          ? const Settings.defaults().getOrNull(key)
+      (!identical(this, Settings.defaults)
+          ? Settings.defaults.getOrNull(key)
           : null);
 
   T get<T extends Object>(SettingKey<T> key) => getOrNull(key)!;
