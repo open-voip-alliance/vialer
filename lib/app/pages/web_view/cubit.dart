@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:webview_flutter/platform_interface.dart';
 
 import '../../../domain/metrics/track_web_view.dart';
 import '../../../domain/onboarding/auto_login.dart';
@@ -28,10 +27,10 @@ class WebViewCubit extends Cubit<WebViewState> with Loggable {
     emit(LoadedWebView(url: url));
   }
 
-  void notifyWebViewHadError(WebResourceError error) {
-    logger.info('Error loading url, ${error.errorCode}: ${error.description}');
+  void notifyWebViewHadError(int code, String message) {
+    logger.info('Error loading url, $code: $message');
 
-    emit(LoadWebViewError(description: error.description));
+    emit(LoadWebViewError(description: message));
   }
 
   void _loadUrl() async {
