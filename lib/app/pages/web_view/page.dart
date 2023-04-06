@@ -57,8 +57,10 @@ class _WebViewPageState extends State<WebViewPage> {
     });
   }
 
-  void _onPageFinishedLoading(BuildContext context, String url) {
-    context.read<WebViewCubit>().notifyWebViewLoaded(url);
+  void _onProgressChanged(BuildContext context, int progress, String url) {
+    if (progress == 100) {
+      context.read<WebViewCubit>().notifyWebViewLoaded(url);
+    }
   }
 
   void _onPageLoadError(BuildContext context, int code, String message) {
@@ -103,21 +105,10 @@ class _WebViewPageState extends State<WebViewPage> {
                     initialUrlRequest: URLRequest(url: Uri.parse(state.url)),
                     initialOptions: _options,
                     onWebViewCreated: _onWebViewCreated,
-                    androidOnPermissionRequest:
-                        (controller, origin, resources) async {
-                      return PermissionRequestResponse(
-                        resources: resources,
-                        action: PermissionRequestResponseAction.GRANT,
-                      );
-                    },
-                    onLoadError: (controller, url, code, message) {
-                      _onPageLoadError(context, code, message);
-                    },
-                    onProgressChanged: (controller, progress) {
-                      if (progress == 100) {
-                        _onPageFinishedLoading(context, state.url);
-                      }
-                    },
+                    onLoadError: (_, __, code, message) =>
+                        _onPageLoadError(context, code, message),
+                    onProgressChanged: (_, progress) =>
+                        _onProgressChanged(context, progress, state.url),
                   ),
                   if (state is! LoadedWebView)
                     const Center(
