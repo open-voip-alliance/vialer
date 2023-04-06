@@ -266,7 +266,7 @@ custom: # Custom properties to make workflows cleaner
     max_build_duration: 90
     instance_type: mac_mini_m1
     environment: &config_environment
-      flutter: 3.7.8
+      flutter: 3.7.10
       xcode: latest
       cocoapods: 1.11.3
     cache:
