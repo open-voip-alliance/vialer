@@ -6,7 +6,17 @@ import 'package:vialer/domain/onboarding/step.dart';
 
 import '../../../util.dart';
 
-void main() =>
+void main() => performLoginTestWith(
+      username: () => testUser1.email,
+      password: () => testUser1.password,
+    );
+
+// This needs to accept a callback to provide the login credentials otherwise
+// dotenv is not yet configured.
+void performLoginTestWith({
+  required String Function() username,
+  required String Function() password,
+}) =>
     runTest(['Onboarding', 'Login', 'Successful login'], (tester) async {
       await tester.waitForOnboardingIntroAnimation();
 
@@ -14,12 +24,12 @@ void main() =>
 
       await tester.enterText(
         find.byKey(LoginPage.keys.emailField),
-        testUser1.email,
+        username(),
       );
 
       await tester.enterText(
         find.byKey(LoginPage.keys.passwordField),
-        testUser1.password,
+        password(),
       );
 
       await tester.tap(find.byKey(LoginPage.keys.loginButton));

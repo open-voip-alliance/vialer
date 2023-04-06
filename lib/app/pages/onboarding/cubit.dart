@@ -4,8 +4,6 @@ import '../../../dependency_locator.dart';
 import '../../../domain/legacy/storage.dart';
 import '../../../domain/onboarding/get_steps.dart';
 import '../../../domain/onboarding/step.dart';
-import '../../../domain/user/get_logged_in_user.dart';
-import '../../../domain/voipgrid/user_voip_config.dart';
 import '../../util/loggable.dart';
 import '../main/widgets/caller.dart';
 import 'state.dart';
@@ -16,7 +14,6 @@ class OnboardingCubit extends Cubit<OnboardingState> with Loggable {
   final _storage = dependencyLocator<StorageRepository>();
 
   final _getSteps = GetOnboardingStepsUseCase();
-  final _getUser = GetLoggedInUserUseCase();
 
   final CallerCubit _caller;
 
@@ -95,10 +92,9 @@ class OnboardingCubit extends Cubit<OnboardingState> with Loggable {
   ///
   /// User will be logged in at this stage.
   Future<void> addStepsBasedOnUserType() async {
-    if (!_getUser().voip.isAllowedCalling) {
-      addStep(OnboardingStep.voicemail);
-    } else {
-      addStep(OnboardingStep.mobileNumber);
-    }
+    // The mobile number step assumes it is being added after the user already
+    // exists, so even though there is only a single possible step, it still
+    // must be added here rather than up-front.
+    addStep(OnboardingStep.mobileNumber);
   }
 }

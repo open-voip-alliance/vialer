@@ -16,7 +16,6 @@ import 'permission/microphone/page.dart';
 import 'permission/notifications/page.dart';
 import 'permission/phone/page.dart';
 import 'two_factor_authentication/page.dart';
-import 'voicemail/page.dart';
 import 'welcome/page.dart';
 import 'widgets/background.dart';
 
@@ -62,7 +61,6 @@ class OnboardingPageState extends State<OnboardingPage> {
           const IgnoreBatteryOptimizationsPermissionPage(),
       OnboardingStep.notificationPermission: (_) =>
           const NotificationsPermissionPage(),
-      OnboardingStep.voicemail: (_) => const VoicemailPage(),
       OnboardingStep.welcome: (_) => const WelcomePage(),
     };
 

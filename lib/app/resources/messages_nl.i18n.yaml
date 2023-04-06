@@ -293,6 +293,7 @@ main:
           title: "Jouw mobiele nummer"
           description: >-
               Je mobiele telefoonnummer. Deze is niet zichtbaar voor anderen.
+          help: Gebruik de volgende notatie +31611112222
         username:
           title: "Jouw e-mailadres" #TODO: Translate
           description: >-
@@ -372,6 +373,8 @@ main:
           title: "Gebruik mobiele nummer wanneer er geen VoIP-gesprek opgezet kan worden"
           description(String mobileNumber): >-
             Als deze optie aan staat, dan verlopen gesprekken via je mobiele nummer ($mobileNumber) als het niet lukt om verbinding te maken met je VoIP-account. Deze instelling brengt extra kosten met zich mee.
+        enableT9ContactSearch:
+          title: "Zoekresultaten tonen op Toetsen-pagina"
       version: "Versie"
       portalLinks:
         title: "Beheer"
@@ -592,15 +595,6 @@ onboarding:
         $appName maakt voor gemiste oproepen gebruik van notificaties.
 
         Zonder deze toestemming word je nog wel op de hoogte gebracht van inkomende oproepen.
-
-  voicemail:
-    title: "Voicemail"
-    description: >-
-      Houd er rekening mee dat als je jouw voicemail niet hebt ingesteld, het kan zijn dat jouw mobiele nummer
-      wordt genoemd in de standaard voicemailmelding.
-
-      Deze wordt afgespeeld wanneer je op jouw zakelijke nummer wordt gebeld
-      en niet bereikbaar bent.
 
   mobileNumber:
     title: "Mobiele nummer"
