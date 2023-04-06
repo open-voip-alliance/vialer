@@ -26,6 +26,7 @@ class GetWebPageUrlUseCase extends UseCase {
     WebPage.openingHoursBasicList: '/client/{clientUuid}/openinghoursbasic/',
     WebPage.openingHoursBasicEdit:
         '/client/{clientUuid}/openinghoursbasic/{openingHoursUuid}/change/',
+    WebPage.addVoicemail: '/client/{clientId}/voicemail/add/',
   };
 
   final _unauthenticatedPages = [WebPage.passwordReset];

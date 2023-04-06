@@ -1,0 +1,4 @@
+- iOS: You can now enable T9 search for the dial pad in Settings.
+- When using T9 search on the dial pad, letters and symbols that cannot be entered using the dial pad will be ignored while searching. For example, you can search for a full name (first & last name) because of this.
+- Fixed an issue where after tapping "Add a voicemail" when setting up a temporary redirect, the wrong page was shown.
+- The "Colleagues" or "Contacts" tab that was last selected is now remembered.

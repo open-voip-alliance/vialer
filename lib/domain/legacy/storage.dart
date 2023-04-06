@@ -5,6 +5,7 @@ import 'package:dartx/dartx.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../calling/voip/destination.dart';
+import '../colltacts/colltact_tab.dart';
 import '../user/client.dart';
 import '../user/permissions/user_permissions.dart';
 import '../user/settings/app_setting.dart';
@@ -279,6 +280,17 @@ class StorageRepository {
   set hasCompletedOnboarding(bool value) =>
       _preferences.setBool(_hasCompletedOnboarding, value);
 
+  static const _currentColltactTabKey = 'current_colltact_tab';
+
+  ColltactTab? get currentColltactTab {
+    final name = _preferences.getString(_currentColltactTabKey);
+    if (name == null) return null;
+    return ColltactTab.values.firstOrNullWhere((t) => t.name == name);
+  }
+
+  set currentColltactTab(ColltactTab? value) =>
+      _preferences.setOrRemoveString(_currentColltactTabKey, value?.name);
+
   Future<void> reload() => _preferences.reload();
 
   User? _legacyUserFromJson(
@@ -344,7 +356,16 @@ class StorageRepository {
           clientOutgoingNumbers = (value['numbers'] as List<dynamic>).cast();
           break;
         case 'VoipgridPermissionsSetting':
-          permissions = const UserPermissions();
+          permissions = const UserPermissions(
+            canSeeClientCalls: false,
+            canChangeMobileNumberFallback: false,
+            canChangeTemporaryRedirect: false,
+            canViewMobileNumberFallbackStatus: false,
+            canViewVoicemailAccounts: false,
+            canChangeOutgoingNumber: false,
+            canViewColleagues: false,
+            canViewVoipAccounts: false,
+          );
           break;
       }
     }
@@ -372,7 +393,7 @@ class StorageRepository {
         outgoingNumbers:
             clientOutgoingNumbers?.map(OutgoingNumber.new) ?? const [],
       ),
-      settings: const Settings.defaults().copyWithAll(settings),
+      settings: Settings.defaults.copyWithAll(settings),
       permissions: permissions ?? const UserPermissions(),
     );
   }

@@ -1,0 +1,4 @@
+- iOS: Je hebt nu de optie om via T9 te zoeken wanneer je een nummer intikt. Dit kan aangezet worden in Instellingen.
+- Wanneer je zoekt via T9, worden letters en symbolen die niet ingetoetst kunnen worden via de nummer toetsten genegeerd. Je kan nu bijvoorbeeld naar voor & achternaam zoeken.
+- Een probleem waarbij na het klikken op "Voicemail toevoegen" de verkeerde pagina werd getoond, is opgelost.
+- De "Collega's" of "Contacten" tab die als laatst geselecteerd was, wordt nu opgeslagen.
