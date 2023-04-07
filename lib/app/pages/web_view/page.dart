@@ -1,9 +1,7 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 
 import './cubit.dart';
 import './state.dart';
@@ -31,13 +29,19 @@ class WebViewPage extends StatefulWidget {
 }
 
 class _WebViewPageState extends State<WebViewPage> {
-  WebViewController? _controller;
+  final InAppWebViewGroupOptions _options = InAppWebViewGroupOptions(
+    crossPlatform: InAppWebViewOptions(
+      clearCache: true,
+      useOnDownloadStart: true,
+      transparentBackground: true,
+    ),
+    android: AndroidInAppWebViewOptions(
+      useHybridComposition: true,
+      geolocationEnabled: false,
+    ),
+  );
 
-  @override
-  void initState() {
-    super.initState();
-    if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
-  }
+  InAppWebViewController? _controller;
 
   void _onTryAgainButtonPressed(BuildContext context) {
     setState(() {
@@ -47,18 +51,20 @@ class _WebViewPageState extends State<WebViewPage> {
     context.read<WebViewCubit>().reload();
   }
 
-  void _onWebViewCreated(WebViewController controller) {
+  void _onWebViewCreated(InAppWebViewController controller) {
     setState(() {
       _controller = controller;
     });
   }
 
-  void _onPageFinishedLoading(BuildContext context, String url) {
-    context.read<WebViewCubit>().notifyWebViewLoaded(url);
+  void _onProgressChanged(BuildContext context, int progress, String url) {
+    if (progress == 100) {
+      context.read<WebViewCubit>().notifyWebViewLoaded(url);
+    }
   }
 
-  void _onPageLoadError(BuildContext context, WebResourceError error) {
-    context.read<WebViewCubit>().notifyWebViewHadError(error);
+  void _onPageLoadError(BuildContext context, int code, String message) {
+    context.read<WebViewCubit>().notifyWebViewHadError(code, message);
   }
 
   @override
@@ -94,17 +100,15 @@ class _WebViewPageState extends State<WebViewPage> {
             if (state is LoadedUrl) {
               return Stack(
                 children: [
-                  WebView(
-                    initialUrl: state.url,
-                    javascriptMode: JavascriptMode.unrestricted,
+                  InAppWebView(
+                    key: Key(state.url),
+                    initialUrlRequest: URLRequest(url: Uri.parse(state.url)),
+                    initialOptions: _options,
                     onWebViewCreated: _onWebViewCreated,
-                    onPageFinished: (_) => _onPageFinishedLoading(
-                      context,
-                      state.url,
-                    ),
-                    onWebResourceError: (error) =>
-                        _onPageLoadError(context, error),
-                    gestureNavigationEnabled: true,
+                    onLoadError: (_, __, code, message) =>
+                        _onPageLoadError(context, code, message),
+                    onProgressChanged: (_, progress) =>
+                        _onProgressChanged(context, progress, state.url),
                   ),
                   if (state is! LoadedWebView)
                     const Center(
