@@ -58,7 +58,7 @@ dependencies:
   get_it: ^7.0.0
   dartx: ^1.0.0
   connectivity_plus: ^2.1.0
-  webview_flutter: ^3.0.0
+  flutter_inappwebview: ^5.7.2+3
   json_annotation: ^4.7.0
   flutter_rating_bar: ^4.0.0
   flutter_libphonenumber: ^1.0.3

@@ -152,6 +152,9 @@ dependencies {
     implementation 'io.coil-kt:coil-compose:1.4.0'
     implementation 'com.github.vestrel00.contacts-android:core:0.2.4'
     implementation 'com.google.code.gson:gson:2.9.1'
+    def lifecycle_version = "2.5.1"
+    implementation "androidx.lifecycle:lifecycle-viewmodel:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
 }
 
 apply plugin: 'com.google.gms.google-services'
