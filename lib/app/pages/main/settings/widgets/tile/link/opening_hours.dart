@@ -19,7 +19,7 @@ class OpeningHoursLinkTile extends StatelessWidget {
       ),
       onTap: () => WebViewPage.open(
         context,
-        to: user.client.openingHours.length == 1
+        to: user.client.openingHoursModules.length == 1
             ? WebPage.openingHoursBasicEdit
             : WebPage.openingHoursBasicList,
       ),

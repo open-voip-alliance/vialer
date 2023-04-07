@@ -4,14 +4,14 @@ import '../user/get_logged_in_user.dart';
 import 'opening_hours.dart';
 import 'opening_hours_repository.dart';
 
-class GetOpeningHours extends UseCase {
+class GetOpeningHoursModules extends UseCase {
   late final _getUser = GetLoggedInUserUseCase();
   late final _openingHours = dependencyLocator<OpeningHoursRepository>();
 
-  Future<List<OpeningHours>> call() async {
+  Future<List<OpeningHoursModule>> call() async {
     final user = _getUser();
 
-    return await _openingHours.getOpeningHours(
+    return await _openingHours.getModules(
       user: user,
     );
   }

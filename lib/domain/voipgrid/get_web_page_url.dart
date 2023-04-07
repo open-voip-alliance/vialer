@@ -71,7 +71,7 @@ class GetWebPageUrlUseCase extends UseCase {
     final placeholders = {
       'clientId': user.client.id.toString(),
       'clientUuid': user.client.uuid.toString(),
-      'openingHoursUuid': user.client.openingHours.firstOrNull?.id,
+      'openingHoursUuid': user.client.openingHoursModules.firstOrNull?.id,
     };
 
     for (final placeholder in placeholders.entries) {
