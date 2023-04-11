@@ -253,7 +253,8 @@ extension on Destination {
   }
 }
 
-extension on List<Destination> {
+// TODO: This is temporary
+extension Something on List<Destination> {
   List<PhoneAccount> get phoneAccounts {
     final destinations = this;
     return destinations.whereType<PhoneAccount>().toList();
