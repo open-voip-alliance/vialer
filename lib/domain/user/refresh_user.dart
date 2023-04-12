@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import '../../app/pages/main/settings/widgets/tile/availability.dart';
 import '../../app/util/loggable.dart';
 import '../../app/util/synchronized_task.dart';
 import '../../dependency_locator.dart';
@@ -99,6 +100,17 @@ class RefreshUser extends UseCase with Loggable {
       }
 
       user = _getPreviousSessionSettings(user);
+
+      final hasAppAccount = _storageRepository.availableDestinations
+              .findAppAccountFor(user: user) !=
+          null;
+
+      // Users without an app account should have VoIP disabled.
+      if (!hasAppAccount) {
+        user = user.copyWith(
+          settings: user.settings.copyWith(CallSetting.useVoip, false),
+        );
+      }
 
       user = await tasksToRun.runOr(
         UserRefreshTask.remotePermissions,
