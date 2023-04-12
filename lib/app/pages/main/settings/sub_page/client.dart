@@ -44,7 +44,7 @@ class ClientSubPage extends StatelessWidget {
                       if (user.permissions.canViewDialPlans)
                         const DialPlanLinkTile(),
                       if (cubit.shouldShowOpeningHoursBasic &&
-                          user.client.openingHours.isNotEmpty)
+                          user.client.openingHoursModules.isNotEmpty)
                         OpeningHoursLinkTile(user),
                       if (user.permissions.canViewStats) const StatsLinkTile(),
                     ],
@@ -61,14 +61,14 @@ class ClientSubPage extends StatelessWidget {
 extension UserPermissions on User {
   bool get canViewClientSubPage => [
         permissions.canChangeTemporaryRedirect,
-        client.openingHours.isNotEmpty,
+        client.openingHoursModules.isNotEmpty,
         permissions.canSeeClientCalls,
         permissions.canViewDialPlans,
         permissions.canViewStats,
       ].hasAtLeastOne;
 
   bool get canViewAtLeastOneWebView => [
-        client.openingHours.isNotEmpty,
+        client.openingHoursModules.isNotEmpty,
         permissions.canSeeClientCalls,
         permissions.canViewDialPlans,
         permissions.canViewStats,

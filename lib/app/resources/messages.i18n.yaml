@@ -437,8 +437,13 @@ main:
       title: "No Notifications permission"
       content: >-
         Without notifications permission, you might miss important information such as missed or incoming calls.
+    noAppAccount:
+      title: "Unable to receive calls"
+      content(String appName): >-
+        Please select an app account to receive calls in $appName.
     actions:
       givePermission: "Give permission"
+      selectAccount: "Select account"
 
   survey:
     helpUs:

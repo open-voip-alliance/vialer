@@ -6,8 +6,8 @@ description: >-
 version: 7.0.0
 
 environment:
-  sdk: ">=2.17.0 <3.0.0"
-  flutter: 3.7.8
+  sdk: ">=2.19.0 <3.0.0"
+  flutter: 3.7.10
 
 dependencies:
   flutter:
@@ -19,7 +19,7 @@ dependencies:
   flutter_phone_lib:
     git:
       url: https://github.com/open-voip-alliance/flutter-phone-lib
-      ref: a092a5725e4d6adfc66d24fe12749965da4bc2c6
+      ref: 0bf0f99905e872e5e61811a0b5b7f20532e5bc20
 
   # We use our own fork, this is required when using Font Awesome Pro.
   # See: https://pub.dev/packages/font_awesome_flutter#enable-pro-icons
@@ -58,7 +58,7 @@ dependencies:
   get_it: ^7.0.0
   dartx: ^1.0.0
   connectivity_plus: ^2.1.0
-  webview_flutter: ^3.0.0
+  flutter_inappwebview: ^5.7.2+3
   json_annotation: ^4.7.0
   flutter_rating_bar: ^4.0.0
   flutter_libphonenumber: ^1.0.3
@@ -78,6 +78,7 @@ dependencies:
   freezed_annotation: ^2.1.0
   collection: ^1.16.0
   mockito: ^5.3.2
+  flutter_platform_widgets: ^3.2.0
 
 dev_dependencies:
   test: ^1.20.0

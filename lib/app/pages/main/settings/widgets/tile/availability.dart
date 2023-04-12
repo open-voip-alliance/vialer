@@ -1,4 +1,3 @@
-import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -32,7 +31,7 @@ class AvailabilityTile extends StatelessWidget {
   }) : _userAvailabilityType = user.availabilityType;
 
   late final bool _shouldDisplayNoAppAccountWarning =
-      destinations.findAppAccountFor(user: user) == null;
+      !user.isAllowedVoipCalling;
 
   late final bool _shouldDisplayAvailabilityInfo =
       (_userAvailabilityType == UserAvailabilityType.elsewhere ||
@@ -249,22 +248,6 @@ extension on Destination {
           phoneNumber == null ? '$description' : '$phoneNumber / $description',
       phoneAccount: (_, description, __, internalNumber) =>
           '$internalNumber / $description',
-    );
-  }
-}
-
-// TODO: This is temporary
-extension Something on List<Destination> {
-  List<PhoneAccount> get phoneAccounts {
-    final destinations = this;
-    return destinations.whereType<PhoneAccount>().toList();
-  }
-
-  PhoneAccount? findAppAccountFor({required User user}) {
-    final destinations = this;
-
-    return destinations.phoneAccounts.firstOrNullWhere(
-      (phoneAccount) => user.appAccountId == phoneAccount.id.toString(),
     );
   }
 }

@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import '../../app/pages/main/settings/widgets/tile/availability.dart';
 import '../../app/util/loggable.dart';
 import '../../app/util/synchronized_task.dart';
 import '../../dependency_locator.dart';
@@ -17,7 +16,7 @@ import '../legacy/storage.dart';
 import '../metrics/metrics.dart';
 import '../onboarding/exceptions.dart';
 import '../onboarding/login_credentials.dart';
-import '../openings_hours_basic/get_opening_hours.dart';
+import '../openings_hours_basic/get_opening_hours_modules.dart';
 import '../openings_hours_basic/opening_hours.dart';
 import '../openings_hours_basic/should_show_opening_hours_basic.dart';
 import '../use_case.dart';
@@ -101,17 +100,6 @@ class RefreshUser extends UseCase with Loggable {
 
       user = _getPreviousSessionSettings(user);
 
-      final hasAppAccount = _storageRepository.availableDestinations
-              .findAppAccountFor(user: user) !=
-          null;
-
-      // Users without an app account should have VoIP disabled.
-      if (!hasAppAccount) {
-        user = user.copyWith(
-          settings: user.settings.copyWith(CallSetting.useVoip, false),
-        );
-      }
-
       user = await tasksToRun.runOr(
         UserRefreshTask.remotePermissions,
         fallback: user,
@@ -157,12 +145,12 @@ class RefreshUser extends UseCase with Loggable {
         () => _getAvailability(user),
       );
 
-      final openingHours = _shouldShowOpeningHoursBasic()
+      final openingHourModules = _shouldShowOpeningHoursBasic()
           ? tasksToRun.run(
               UserRefreshTask.clientVoipConfig,
               () => _getOpeningHours(user),
             )
-          : Future.value(const []);
+          : Future.value(const <OpeningHoursModule>[]);
 
       await Future.wait([
         clientOutgoingNumbers,
@@ -172,7 +160,7 @@ class RefreshUser extends UseCase with Loggable {
         userVoipConfig,
         remoteSettings,
         availability,
-        openingHours,
+        openingHourModules,
       ]);
 
       // All the 'await's are a formality here, the futures have been completed.
@@ -182,12 +170,17 @@ class RefreshUser extends UseCase with Loggable {
           voicemailAccounts: await clientVoicemailAccounts,
           voip: await clientVoipConfig,
           currentTemporaryRedirect: await currentTemporaryRedirect,
+          openingHoursModules: await openingHourModules,
         ),
         voip: await userVoipConfig,
         settings: user.settings.copyWithAll({
           ...(await availability),
           ...(await remoteSettings),
         }),
+        // We only want to set the voip config to null if we've actually fetched
+        // it. This would only happen if the user has removed their app account.
+        allowNullVoipConfig:
+            tasksToRun.contains(UserRefreshTask.userVoipConfig),
       );
 
       // User should have a value for all settings.
@@ -368,7 +361,8 @@ class RefreshUser extends UseCase with Loggable {
   Future<TemporaryRedirect?> _getCurrentTemporaryRedirect(User user) =>
       GetCurrentTemporaryRedirect()();
 
-  Future<List<OpeningHours>> _getOpeningHours(User user) => GetOpeningHours()();
+  Future<List<OpeningHoursModule>> _getOpeningHours(User user) =>
+      GetOpeningHoursModules()();
 }
 
 enum UserRefreshTask {

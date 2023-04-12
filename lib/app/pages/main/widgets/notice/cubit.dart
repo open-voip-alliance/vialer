@@ -23,8 +23,8 @@ class NoticeCubit extends Cubit<NoticeState> with Loggable {
   late final _getPermissionStatus = GetPermissionStatusUseCase();
   late final _requestPermission = RequestPermissionUseCase();
   late final _openAppSettings = OpenSettingsAppUseCase();
-  late final _eventBus = dependencyLocator<EventBusObserver>();
   late final _getUser = GetLoggedInUserUseCase();
+  late final _eventBus = dependencyLocator<EventBusObserver>();
 
   final CallerCubit _caller;
 
@@ -67,6 +67,8 @@ class NoticeCubit extends Cubit<NoticeState> with Loggable {
           )
         : PermissionStatus.granted;
 
+    final user = _getUser();
+
     if (phoneStatus != PermissionStatus.granted &&
         microphoneStatus != PermissionStatus.granted) {
       emit(const PhoneAndMicrophonePermissionDeniedNotice());
@@ -78,8 +80,9 @@ class NoticeCubit extends Cubit<NoticeState> with Loggable {
       emit(const BluetoothConnectPermissionDeniedNotice());
     } else if (notificationsStatus != PermissionStatus.granted) {
       emit(const NotificationsPermissionDeniedNotice());
+    } else if (!user.isAllowedVoipCalling) {
+      emit(const NoAppAccountNotice());
     } else if (currentRedirect != null) {
-      final user = _getUser();
       emit(TemporaryRedirectNotice(
         temporaryRedirect: currentRedirect,
         canChangeTemporaryRedirect: user.permissions.canChangeTemporaryRedirect,
