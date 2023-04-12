@@ -29,7 +29,8 @@ class SettingsState with _$SettingsState {
 
   bool get showTroubleshooting =>
       user.settings.get(AppSetting.showTroubleshooting);
-  bool get showDnd => user.settings.get(CallSetting.useVoip);
+  bool get showDnd =>
+      user.isAllowedVoipCalling && user.settings.get(CallSetting.useVoip);
 
   SettingsState withChanged(
     Settings settings, {

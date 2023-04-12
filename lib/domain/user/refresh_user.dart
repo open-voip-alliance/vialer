@@ -9,7 +9,6 @@ import '../business_availability/temporary_redirect/temporary_redirect.dart';
 import '../call_records/client/purge_local_call_records.dart';
 import '../calling/outgoing_number/outgoing_numbers.dart';
 import '../calling/voip/client_voip_config_repository.dart';
-import '../calling/voip/destination.dart';
 import '../calling/voip/destination_repository.dart';
 import '../calling/voip/user_voip_config_repository.dart';
 import '../event/event_bus.dart';
@@ -101,17 +100,6 @@ class RefreshUser extends UseCase with Loggable {
 
       user = _getPreviousSessionSettings(user);
 
-      final hasAppAccount = _storageRepository.availableDestinations
-              .findAppAccountFor(user: user) !=
-          null;
-
-      // Users without an app account should have VoIP disabled.
-      if (!hasAppAccount) {
-        user = user.copyWith(
-          settings: user.settings.copyWith(CallSetting.useVoip, false),
-        );
-      }
-
       user = await tasksToRun.runOr(
         UserRefreshTask.remotePermissions,
         fallback: user,
@@ -189,6 +177,10 @@ class RefreshUser extends UseCase with Loggable {
           ...(await availability),
           ...(await remoteSettings),
         }),
+        // We only want to set the voip config to null if we've actually fetched
+        // it. This would only happen if the user has removed their app account.
+        allowNullVoipConfig:
+            tasksToRun.contains(UserRefreshTask.userVoipConfig),
       );
 
       // User should have a value for all settings.
