@@ -33,7 +33,7 @@ class _ConnectivityAlertState extends State<ConnectivityAlert> {
     if (state is Disconnected) {
       showSnackBar(
         context,
-        // Hacky way off showing the snack bar 'forever'
+        // Hacky way of showing the snack bar 'forever'
         duration: const Duration(days: 365),
         icon: const FaIcon(FontAwesomeIcons.exclamation),
         label: Text(context.msg.connectivity.noConnection.message),
@@ -48,7 +48,7 @@ class _ConnectivityAlertState extends State<ConnectivityAlert> {
   @override
   Widget build(BuildContext context) {
     return BlocListener<ConnectivityCheckerCubit, ConnectivityState>(
-      // Make sure we only display a snackbar on the first disconnected state
+      // Make sure we only display a snack bar on the first disconnected state
       // that we receive.
       listenWhen: (previous, current) =>
           (previous is! Disconnected && current is Disconnected) ||

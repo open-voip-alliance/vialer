@@ -1,4 +1,7 @@
+import 'package:dartx/dartx.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+
+import '../../user/user.dart';
 
 part 'destination.freezed.dart';
 part 'destination.g.dart';
@@ -28,4 +31,19 @@ class Destination with _$Destination {
 
   static Map<String, dynamic> serializeToJson(Destination destination) =>
       destination.toJson();
+}
+
+extension DestinationsList on List<Destination> {
+  List<PhoneAccount> get phoneAccounts {
+    final destinations = this;
+    return destinations.whereType<PhoneAccount>().toList();
+  }
+
+  PhoneAccount? findAppAccountFor({required User user}) {
+    final destinations = this;
+
+    return destinations.phoneAccounts.firstOrNullWhere(
+      (phoneAccount) => user.appAccountId == phoneAccount.id.toString(),
+    );
+  }
 }
