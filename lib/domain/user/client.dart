@@ -33,7 +33,8 @@ class Client extends Equatable {
 
   final TemporaryRedirect? currentTemporaryRedirect;
 
-  final List<OpeningHours> openingHours;
+  @JsonKey(name: 'openingHours')
+  final List<OpeningHoursModule> openingHoursModules;
 
   const Client({
     required this.id,
@@ -44,7 +45,7 @@ class Client extends Equatable {
     this.outgoingNumbers = const [],
     this.voicemailAccounts = const [],
     this.currentTemporaryRedirect,
-    this.openingHours = const [],
+    this.openingHoursModules = const [],
   });
 
   @override
@@ -67,7 +68,7 @@ class Client extends Equatable {
     Iterable<OutgoingNumber>? outgoingNumbers,
     Iterable<VoicemailAccount>? voicemailAccounts,
     TemporaryRedirect? currentTemporaryRedirect,
-    List<OpeningHours>? openingHours,
+    List<OpeningHoursModule>? openingHoursModules,
   }) {
     return Client(
       id: id ?? this.id,
@@ -79,7 +80,7 @@ class Client extends Equatable {
       voicemailAccounts: voicemailAccounts ?? this.voicemailAccounts,
       currentTemporaryRedirect:
           currentTemporaryRedirect ?? this.currentTemporaryRedirect,
-      openingHours: openingHours ?? this.openingHours,
+      openingHoursModules: openingHoursModules ?? this.openingHoursModules,
     );
   }
 
