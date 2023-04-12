@@ -48,10 +48,11 @@ class AppPreferencesSubPage extends StatelessWidget {
               children: [
                 CallingCategory(
                   children: [
-                    UseVoipTile(user),
+                    if (user.isAllowedVoipCalling) UseVoipTile(user),
                     if (useVoip && canViewMobileFallback)
                       UseMobileNumberAsFallbackTile(user),
-                    if (context.isIOS) ShowCallsInNativeRecentsTile(user),
+                    if (context.isIOS && user.isAllowedVoipCalling)
+                      ShowCallsInNativeRecentsTile(user),
                     if (context.isAndroid)
                       IgnoreBatteryOptimizationsTile(
                         hasIgnoreBatteryOptimizationsPermission:
@@ -67,17 +68,18 @@ class AppPreferencesSubPage extends StatelessWidget {
                     ShowClientCallsTile(user),
                   ],
                 ),
-                AudioCategory(
-                  children: [
-                    UsePhoneRingtoneTile(user),
-                  ],
-                ),
+                if (user.isAllowedVoipCalling)
+                  AudioCategory(
+                    children: [
+                      UsePhoneRingtoneTile(user),
+                    ],
+                  ),
                 DebugCategory(
                   children: [
                     RemoteLoggingTile(user),
                   ],
                 ),
-                if (showTroubleshooting)
+                if (user.isAllowedVoipCalling && showTroubleshooting)
                   const AdvancedSettingsCategory(
                     children: [
                       TroubleshootingLinkTile(),

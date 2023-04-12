@@ -51,6 +51,11 @@ class User extends Equatable {
   )
   final UserPermissions permissions;
 
+  // A user must have voip config to be able to call, if they don't then this
+  // suggests that there is no app account configured.
+  bool get isAllowedVoipCalling =>
+      voip != null && voip.sipUserId.isNotNullOrBlank;
+
   const User({
     required this.uuid,
     required this.email,
@@ -77,6 +82,9 @@ class User extends Equatable {
     UserVoipConfig? voip,
     Settings? settings,
     UserPermissions? permissions,
+    // If set to true, will allow the passing of a null voip config which will
+    // replace the existing one. Otherwise a null config would be ignored.
+    bool allowNullVoipConfig = false,
   }) {
     return User(
       uuid: uuid ?? this.uuid,
@@ -87,7 +95,7 @@ class User extends Equatable {
       token: token ?? this.token,
       appAccountUrl: appAccountUrl ?? this.appAccountUrl,
       client: client ?? this.client,
-      voip: voip ?? this.voip,
+      voip: allowNullVoipConfig ? voip : (voip ?? this.voip),
       settings: settings ?? this.settings,
       permissions: permissions ?? this.permissions,
     );
