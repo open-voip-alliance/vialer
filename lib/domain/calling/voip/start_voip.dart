@@ -1,3 +1,4 @@
+import '../../../app/util/loggable.dart';
 import '../../../dependency_locator.dart';
 import '../../authentication/authentication_repository.dart';
 import '../../use_case.dart';
@@ -6,8 +7,9 @@ import '../../user/get_build_info.dart';
 import '../../user/get_logged_in_user.dart';
 import 'register_to_voip_middleware.dart';
 import 'voip.dart';
+import 'voip_not_allowed.dart';
 
-class StartVoipUseCase extends UseCase {
+class StartVoipUseCase extends UseCase with Loggable {
   final _voipRepository = dependencyLocator<VoipRepository>();
   final _authRepository = dependencyLocator<AuthRepository>();
 
@@ -18,6 +20,14 @@ class StartVoipUseCase extends UseCase {
 
   Future<void> call() async {
     final user = _getUser();
+
+    if (!user.isAllowedVoipCalling) {
+      logger.warning(
+        'Attempting to start a voip call while the user does is '
+        'not allowed. This likely means they have no app account configured.',
+      );
+      throw VoipNotAllowedException();
+    }
 
     await _updateRemoteVoipConfiguration();
 

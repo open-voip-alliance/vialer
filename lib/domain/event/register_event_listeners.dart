@@ -45,7 +45,10 @@ class RegisterDomainEventListenersUseCase extends UseCase with Loggable {
     _eventBus.on<SettingChanged>((_) => _identifyForTracking());
     _eventBus.on<LoggedInUserAvailabilityChanged>(
       (_) => _refreshUser(
-        tasksToRun: [UserRefreshTask.availability],
+        tasksToRun: [
+          UserRefreshTask.availability,
+          UserRefreshTask.clientVoipConfig,
+        ],
         synchronized: false,
       ),
     );

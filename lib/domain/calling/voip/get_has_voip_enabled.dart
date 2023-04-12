@@ -5,5 +5,9 @@ import '../../user/settings/call_setting.dart';
 class GetHasVoipEnabledUseCase extends UseCase {
   final _getUser = GetLoggedInUserUseCase();
 
-  bool call() => _getUser().settings.get(CallSetting.useVoip);
+  bool call() {
+    final user = _getUser();
+
+    return user.settings.get(CallSetting.useVoip) && user.isAllowedVoipCalling;
+  }
 }

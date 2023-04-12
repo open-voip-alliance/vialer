@@ -31,7 +31,7 @@ class AvailabilityTile extends StatelessWidget {
   }) : _userAvailabilityType = user.availabilityType;
 
   late final bool _shouldDisplayNoAppAccountWarning =
-      destinations.findAppAccountFor(user: user) == null;
+      !user.isAllowedVoipCalling;
 
   late final bool _shouldDisplayAvailabilityInfo =
       (_userAvailabilityType == UserAvailabilityType.elsewhere ||
