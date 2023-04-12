@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import '../../app/pages/main/settings/widgets/tile/availability.dart';
 import '../../app/util/loggable.dart';
 import '../../app/util/synchronized_task.dart';
 import '../../dependency_locator.dart';
@@ -10,6 +9,7 @@ import '../business_availability/temporary_redirect/temporary_redirect.dart';
 import '../call_records/client/purge_local_call_records.dart';
 import '../calling/outgoing_number/outgoing_numbers.dart';
 import '../calling/voip/client_voip_config_repository.dart';
+import '../calling/voip/destination.dart';
 import '../calling/voip/destination_repository.dart';
 import '../calling/voip/user_voip_config_repository.dart';
 import '../event/event_bus.dart';
