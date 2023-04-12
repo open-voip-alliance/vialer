@@ -1,0 +1,5 @@
+- A problem where you had no app account and couldn't call has been fixed.
+- You will now see a notice at the top when you don't have an app account.
+- The bottom navigation bar will now also show while navigating through Settings.
+- Android: You can now receive Vialer calls while on a GSM call
+- Android: A problem where the screen would turn off if you come close to it as if you were in a call, after a call, has been fixed.

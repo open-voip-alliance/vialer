@@ -1,0 +1,5 @@
+- Een probleem wanneer je geen app account hebt en niet kon bellen is opgelost.
+- Je ziet nu een bericht boven in de app wanneer je geen app account hebt.
+- Het navigatiemenu onderin blijft nu staan wanneer je door Settings navigeert.
+- Android: Je kan nu Vialer oproepen ontvangen terwijl je in een GSM gesprek zit.
+- Android: Een probleem waarbij het scherm uitging wanneer je te dichtbij het scherm komt (alsof je in een gesprek zit), na een gesprek, is opgelost.
