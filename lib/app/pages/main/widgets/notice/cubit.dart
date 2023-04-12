@@ -6,9 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../dependency_locator.dart';
 import '../../../../../domain/business_availability/temporary_redirect/temporary_redirect.dart';
 import '../../../../../domain/business_availability/temporary_redirect/temporary_redirect_did_change_event.dart';
-import '../../../../../domain/calling/voip/destination.dart';
 import '../../../../../domain/event/event_bus.dart';
-import '../../../../../domain/legacy/storage.dart';
 import '../../../../../domain/onboarding/request_permission.dart';
 import '../../../../../domain/user/get_logged_in_user.dart';
 import '../../../../../domain/user/get_permission_status.dart';
@@ -27,7 +25,6 @@ class NoticeCubit extends Cubit<NoticeState> with Loggable {
   late final _openAppSettings = OpenSettingsAppUseCase();
   late final _getUser = GetLoggedInUserUseCase();
   late final _eventBus = dependencyLocator<EventBusObserver>();
-  late final _storageRepository = dependencyLocator<StorageRepository>();
 
   final CallerCubit _caller;
 
@@ -71,7 +68,6 @@ class NoticeCubit extends Cubit<NoticeState> with Loggable {
         : PermissionStatus.granted;
 
     final user = _getUser();
-    final destinations = _storageRepository.availableDestinations;
 
     if (phoneStatus != PermissionStatus.granted &&
         microphoneStatus != PermissionStatus.granted) {
@@ -84,7 +80,7 @@ class NoticeCubit extends Cubit<NoticeState> with Loggable {
       emit(const BluetoothConnectPermissionDeniedNotice());
     } else if (notificationsStatus != PermissionStatus.granted) {
       emit(const NotificationsPermissionDeniedNotice());
-    } else if (destinations.findAppAccountFor(user: user) == null) {
+    } else if (!user.isAllowedVoipCalling) {
       emit(const NoAppAccountNotice());
     } else if (currentRedirect != null) {
       emit(TemporaryRedirectNotice(
