@@ -25,6 +25,9 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
+  // We want to be able to show snackbars on only the settings page, so we're
+  // going to create a [ScaffoldMessenger] with this key, then show snackbars
+  // based on it.
   final _scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 
   void _onStateChanged(BuildContext context, SettingsState state) {
