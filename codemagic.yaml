@@ -440,9 +440,10 @@ workflows:
         - pattern: "release/v*(0|1|2|3|4|5|6|7|8|9|.)"
     when:
       changeset:
-        excludes:
-          - "release_notes/**"
-          - "codemagic.yaml"
+        includes:
+          - 'lib/**'
+          - 'android/**'
+          - 'ios/**'
     publishing:
       slack:
         channel: '#vialer_mobile_release_candidates'
