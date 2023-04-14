@@ -6,7 +6,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:timezone/data/latest.dart';
 
 import '../dependency_locator.dart';
-import '../domain/authentication/automatically_login_legacy_user.dart';
 import '../domain/authentication/user_was_logged_out.dart';
 import '../domain/env.dart';
 import '../domain/error_tracking/error_tracking_repository.dart';
@@ -46,12 +45,6 @@ Future<void> main() async {
   RegisterDomainEventListenersUseCase()();
   EnableConsoleLoggingUseCase()();
   EnableRemoteLoggingIfNeededUseCase()();
-
-  // Check to see if there are user credentials stored from the legacy app,
-  // and if there are, automatically import them. This is temporary
-  // functionality to allow legacy users to seamlessly switch to this
-  // app.
-  await AutomaticallyLoginLegacyUser()();
 
   final errorTrackingRepository = dependencyLocator<ErrorTrackingRepository>();
   final dsn = dependencyLocator<EnvRepository>().errorTrackingDsn;
