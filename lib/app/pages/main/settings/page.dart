@@ -29,7 +29,10 @@ class _SettingsPageState extends State<SettingsPage> {
 
   void _onStateChanged(BuildContext context, SettingsState state) {
     FocusScope.of(context).unfocus();
+    _showSnackbarWhenRateLimited(state);
+  }
 
+  void _showSnackbarWhenRateLimited(SettingsState state) {
     if (!state.isRateLimited || _scaffoldMessengerKey.currentState == null) {
       return;
     }
