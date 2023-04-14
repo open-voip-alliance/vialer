@@ -532,8 +532,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "0bf0f99905e872e5e61811a0b5b7f20532e5bc20"
-      resolved-ref: "0bf0f99905e872e5e61811a0b5b7f20532e5bc20"
+      ref: "9bfbd24b889eace4d84e185808beaab9eeac9d05"
+      resolved-ref: "9bfbd24b889eace4d84e185808beaab9eeac9d05"
       url: "https://github.com/open-voip-alliance/flutter-phone-lib"
     source: git
     version: "0.0.1"
@@ -806,14 +806,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.3.2"
-  native_shared_preferences:
-    dependency: "direct main"
-    description:
-      name: native_shared_preferences
-      sha256: f4f793c4e9bd2a763bd76e3cbbb5ac2d8370019238adc2fba112e35104f1f90b
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.6"
   nested:
     dependency: transitive
     description:
@@ -1158,14 +1150,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.3"
-  shared_preferences_macos:
-    dependency: transitive
-    description:
-      name: shared_preferences_macos
-      sha256: "81b6a60b2d27020eb0fc41f4cebc91353047309967901a79ee8203e40c42ed46"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.5"
   shared_preferences_platform_interface:
     dependency: transitive
     description:
