@@ -118,12 +118,12 @@ class _PaginatedVoipgridApiResponse with _$_PaginatedVoipgridApiResponse {
     required List<dynamic> items,
     required bool hasMore,
   }) =>
-      _PaginatedVoipgridApiResponse(next: hasMore ? ' ' : null, items: items);
+      _PaginatedVoipgridApiResponse(next: hasMore ? '' : null, items: items);
 
   factory _PaginatedVoipgridApiResponse.ambiguous({
     required List<dynamic> items,
   }) =>
-      _PaginatedVoipgridApiResponse(next: ' ', items: items);
+      _PaginatedVoipgridApiResponse(next: '', items: items);
 
   bool get hasMore => next != null;
 }
