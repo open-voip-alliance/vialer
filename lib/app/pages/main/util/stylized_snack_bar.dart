@@ -13,41 +13,40 @@ void showSnackBar(
   final backgroundColor = context.brand.theme.colors.buttonBackground;
   final contentColor = context.brand.theme.colors.raisedColoredButtonText;
 
-  final snackbar = SnackBar(
-    duration: duration,
-    behavior: SnackBarBehavior.fixed,
-    backgroundColor: backgroundColor,
-    content: Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 16,
-      ),
-      child: Row(
-        children: <Widget>[
-          IconTheme.merge(
-            data: IconThemeData(
-              color: contentColor,
-              size: 16,
+  (state != null ? state : ScaffoldMessenger.of(context)).showSnackBar(
+    SnackBar(
+      duration: duration,
+      behavior: SnackBarBehavior.fixed,
+      backgroundColor: backgroundColor,
+      content: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 16,
+        ),
+        child: Row(
+          children: <Widget>[
+            IconTheme.merge(
+              data: IconThemeData(
+                color: contentColor,
+                size: 16,
+              ),
+              child: icon,
             ),
-            child: icon,
-          ),
-          const SizedBox(width: 24),
-          Expanded(
-            child: Padding(
-              padding: padding,
-              child: DefaultTextStyle.merge(
-                style: TextStyle(
-                  color: contentColor,
-                  fontSize: 16,
+            const SizedBox(width: 24),
+            Expanded(
+              child: Padding(
+                padding: padding,
+                child: DefaultTextStyle.merge(
+                  style: TextStyle(
+                    color: contentColor,
+                    fontSize: 16,
+                  ),
+                  child: label,
                 ),
-                child: label,
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     ),
   );
-
-  (state != null ? state : ScaffoldMessenger.of(context))
-      .showSnackBar(snackbar);
 }
