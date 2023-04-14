@@ -437,12 +437,16 @@ workflows:
       events:
         - push
       branch_patterns:
+        # Only matching actual release tags, not internal preview tags.
         - pattern: "release/v*(0|1|2|3|4|5|6|7|8|9|.)"
     when:
       changeset:
-        excludes:
-          - "release_notes/**"
-          - "codemagic.yaml"
+        # So we avoid triggering new RCs when release notes are added
+        includes:
+          - 'lib/**'
+          - 'android/**'
+          - 'ios/**'
+          - 'pubspec.yaml'
     publishing:
       slack:
         channel: '#vialer_mobile_release_candidates'
