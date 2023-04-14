@@ -44,7 +44,7 @@ class _SettingsPageState extends State<SettingsPage> {
           SettingsCubit.rateLimitDuration.inSeconds.toString(),
         ),
       ),
-      state: _scaffoldMessengerKey.currentState,
+      scaffoldMessengerState: _scaffoldMessengerKey.currentState,
     );
   }
 
