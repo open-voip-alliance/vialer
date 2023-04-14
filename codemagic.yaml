@@ -434,7 +434,15 @@ workflows:
     name: Release Candidate
     <<: *main_workflow
     triggering:
-      events: []
+      events:
+        - push
+      branch_patterns:
+        - pattern: "release/v*"
+    when:
+      changeset:
+        excludes:
+          - "release_notes/**"
+          - "codemagic.yaml"
     publishing:
       slack:
         channel: '#vialer_mobile_release_candidates'
