@@ -17,6 +17,11 @@ generic:
 buildError:
   anErrorOccurred: "Er is een renderfout opgetreden!"
 
+rateLimiting:
+  snackbar:
+    message(String appName, String seconds): >-
+      $appName could not save the setting. Sorry, please try again in $seconds seconds.
+
 connectivity:
   noConnection:
     title: &noConnectionTitle "Geen internetverbinding"

@@ -8,44 +8,46 @@ void showSnackBar(
   required Widget label,
   EdgeInsets padding = EdgeInsets.zero,
   Duration duration = const Duration(seconds: 4),
+  ScaffoldMessengerState? state,
 }) {
   final backgroundColor = context.brand.theme.colors.buttonBackground;
   final contentColor = context.brand.theme.colors.raisedColoredButtonText;
 
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-      duration: duration,
-      behavior: SnackBarBehavior.fixed,
-      backgroundColor: backgroundColor,
-      content: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 16,
-        ),
-        child: Row(
-          children: <Widget>[
-            IconTheme.merge(
-              data: IconThemeData(
-                color: contentColor,
-                size: 16,
-              ),
-              child: icon,
+  final snackbar = SnackBar(
+    duration: duration,
+    behavior: SnackBarBehavior.fixed,
+    backgroundColor: backgroundColor,
+    content: Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 16,
+      ),
+      child: Row(
+        children: <Widget>[
+          IconTheme.merge(
+            data: IconThemeData(
+              color: contentColor,
+              size: 16,
             ),
-            const SizedBox(width: 24),
-            Expanded(
-              child: Padding(
-                padding: padding,
-                child: DefaultTextStyle.merge(
-                  style: TextStyle(
-                    color: contentColor,
-                    fontSize: 16,
-                  ),
-                  child: label,
+            child: icon,
+          ),
+          const SizedBox(width: 24),
+          Expanded(
+            child: Padding(
+              padding: padding,
+              child: DefaultTextStyle.merge(
+                style: TextStyle(
+                  color: contentColor,
+                  fontSize: 16,
                 ),
+                child: label,
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     ),
   );
+
+  (state != null ? state : ScaffoldMessenger.of(context))
+      .showSnackBar(snackbar);
 }
