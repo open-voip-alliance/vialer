@@ -20,7 +20,7 @@ buildError:
 rateLimiting:
   snackbar:
     message(String appName, String seconds): >-
-      $appName could not save the setting. Sorry, please try again in $seconds seconds.
+      $appName kon de instelling niet opslaan. Sorry, probeer het nog eens over $seconds seconden.
 
 connectivity:
   noConnection:
