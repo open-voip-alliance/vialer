@@ -48,6 +48,44 @@ class UpdateDestinationListener extends SettingChangeListener<Destination>
     final success = await _destinationRepository.setDestination(
       destination: newDestination,
     );
+    _destinationRepository.setDestination(destination: newDestination);
+    _destinationRepository.setDestination(destination: newDestination);
+    _destinationRepository.setDestination(destination: newDestination);
+    _destinationRepository.setDestination(destination: newDestination);
+    _destinationRepository.setDestination(destination: newDestination);
+    _destinationRepository.setDestination(destination: newDestination);
+    _destinationRepository.setDestination(destination: newDestination);
+    _destinationRepository.setDestination(destination: newDestination);
+    _destinationRepository.setDestination(destination: newDestination);
+    _destinationRepository.setDestination(destination: newDestination);
+    _destinationRepository.setDestination(destination: newDestination);
+    _destinationRepository.setDestination(destination: newDestination);
+    _destinationRepository.setDestination(destination: newDestination);
+    _destinationRepository.setDestination(destination: newDestination);
+    _destinationRepository.setDestination(destination: newDestination);
+    _destinationRepository.setDestination(destination: newDestination);
+    _destinationRepository.setDestination(destination: newDestination);
+    _destinationRepository.setDestination(destination: newDestination);
+    _destinationRepository.setDestination(destination: newDestination);
+    _destinationRepository.setDestination(destination: newDestination);
+    _destinationRepository.setDestination(destination: newDestination);
+    _destinationRepository.setDestination(destination: newDestination);
+    _destinationRepository.setDestination(destination: newDestination);
+    _destinationRepository.setDestination(destination: newDestination);
+    _destinationRepository.setDestination(destination: newDestination);
+    _destinationRepository.setDestination(destination: newDestination);
+    _destinationRepository.setDestination(destination: newDestination);
+    _destinationRepository.setDestination(destination: newDestination);
+    _destinationRepository.setDestination(destination: newDestination);
+    _destinationRepository.setDestination(destination: newDestination);
+    _destinationRepository.setDestination(destination: newDestination);
+    _destinationRepository.setDestination(destination: newDestination);
+    _destinationRepository.setDestination(destination: newDestination);
+    _destinationRepository.setDestination(destination: newDestination);
+    _destinationRepository.setDestination(destination: newDestination);
+    _destinationRepository.setDestination(destination: newDestination);
+    _destinationRepository.setDestination(destination: newDestination);
+    _destinationRepository.setDestination(destination: newDestination);
 
     if (success) {
       _metricsRepository.track('destination-changed', {
