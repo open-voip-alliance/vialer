@@ -1,7 +1,13 @@
+import 'dart:io';
+
+import 'package:background_downloader/background_downloader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import './cubit.dart';
 import './state.dart';
@@ -67,6 +73,38 @@ class _WebViewPageState extends State<WebViewPage> {
     context.read<WebViewCubit>().notifyWebViewHadError(code, message);
   }
 
+  void _onDownloadStartRequest(
+    InAppWebViewController _,
+    DownloadStartRequest request,
+  ) async {
+    final directory = await getApplicationDocumentsDirectory();
+
+    final task = DownloadTask(
+      url: request.url.toString(),
+      filename: request.suggestedFilename,
+      baseDirectory: BaseDirectory.applicationDocuments,
+      directory: 'call_recordings',
+    );
+
+    final result = await FileDownloader()
+        .configureNotification(
+          running: TaskNotification('Downloading', 'file: {filename}',),
+          complete:
+              TaskNotification('Download {filename}', 'Download complete',),
+          error: TaskNotification('Download {filename}', 'Download failed',),
+          progressBar: true,
+        )
+        .download(
+          task,
+          onProgress: (a) => print('Progress: $a'),
+          onStatus: (status) => print('Status: $status'),
+        );
+
+    await FileDownloader().moveToSharedStorage(task, SharedStorage.downloads);
+
+    print(result);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -109,6 +147,7 @@ class _WebViewPageState extends State<WebViewPage> {
                         _onPageLoadError(context, code, message),
                     onProgressChanged: (_, progress) =>
                         _onProgressChanged(context, progress, state.url),
+                    onDownloadStartRequest: _onDownloadStartRequest,
                   ),
                   if (state is! LoadedWebView)
                     const Center(

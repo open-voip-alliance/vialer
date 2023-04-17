@@ -57,6 +57,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.10.0"
+  background_downloader:
+    dependency: "direct main"
+    description:
+      name: background_downloader
+      sha256: "3f452ea7e8357f5a63498e9d95c5c8ef43bc3d1442d9d73048dc9c07b0c76030"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.4.5"
   basic_utils:
     dependency: "direct dev"
     description:
@@ -532,8 +540,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "0bf0f99905e872e5e61811a0b5b7f20532e5bc20"
-      resolved-ref: "0bf0f99905e872e5e61811a0b5b7f20532e5bc20"
+      ref: e239ec323ede02cec5fd793a70f90e3c254f35c9
+      resolved-ref: e239ec323ede02cec5fd793a70f90e3c254f35c9
       url: "https://github.com/open-voip-alliance/flutter-phone-lib"
     source: git
     version: "0.0.1"
@@ -758,6 +766,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.2"
+  localstore:
+    dependency: transitive
+    description:
+      name: localstore
+      sha256: "42a0afb7696cfab1b4bd7d08355b4ee01f975fd364553b28d51496eccaf11cce"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.3.5"
   logging:
     dependency: "direct main"
     description:
