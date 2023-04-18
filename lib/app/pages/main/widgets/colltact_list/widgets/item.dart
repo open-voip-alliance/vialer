@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:search_highlight_text/search_highlight_text.dart';
 
 import '../../../../../../data/models/colltact.dart';
 import '../../../../../../domain/colltacts/contact.dart';
@@ -54,7 +55,7 @@ class _ContactItem extends StatelessWidget {
         ColltactsPageRoutes.details,
         arguments: colltact,
       ),
-      title: Text(
+      title: SearchHighlightText(
         colltact.name,
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
@@ -74,7 +75,7 @@ class _ColleagueItem extends StatelessWidget {
     final colltact = Colltact.colleague(colleague);
 
     return ColltactItem._(
-      title: Text(colleague.name),
+      title: SearchHighlightText(colleague.name),
       subtitle: ColltactSubtitle(colltact),
       onTap: () => Navigator.pushNamed(
         context,

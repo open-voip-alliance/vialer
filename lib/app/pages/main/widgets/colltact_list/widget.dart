@@ -2,6 +2,7 @@ import 'package:dartx/dartx.dart';
 import 'package:diacritic/diacritic.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:search_highlight_text/search_highlight_text.dart';
 
 import '../../../../../data/models/colltact.dart';
 import '../../../../../domain/colltacts/colltact_tab.dart';
@@ -194,47 +195,56 @@ class _ColltactPageState extends State<_ColltactList>
                           ),
                         ],
                       ),
-                    Expanded(
-                      child: colleaguesCubit.shouldShowColleagues
-                          ? TabBarView(
-                              controller: tabController,
-                              children: [
-                                _animatedSwitcher(
-                                  ColltactKind.contact,
-                                  contactsState,
-                                  contactsCubit,
-                                  colleaguesState,
-                                  colleaguesCubit,
-                                ),
-                                Column(
-                                  children: [
-                                    Expanded(
-                                      child: _animatedSwitcher(
-                                        ColltactKind.colleague,
-                                        contactsState,
-                                        contactsCubit,
-                                        colleaguesState,
-                                        colleaguesCubit,
+                    SearchTextInheritedWidget(
+                      searchText: _searchTerm ?? '',
+                      highlightStyle: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                        fontSize: 17,
+                      ),
+                      child: Expanded(
+                        child: colleaguesCubit.shouldShowColleagues
+                            ? TabBarView(
+                                controller: tabController,
+                                children: [
+                                  _animatedSwitcher(
+                                    ColltactKind.contact,
+                                    contactsState,
+                                    contactsCubit,
+                                    colleaguesState,
+                                    colleaguesCubit,
+                                  ),
+                                  Column(
+                                    children: [
+                                      Expanded(
+                                        child: _animatedSwitcher(
+                                          ColltactKind.colleague,
+                                          contactsState,
+                                          contactsCubit,
+                                          colleaguesState,
+                                          colleaguesCubit,
+                                        ),
                                       ),
-                                    ),
-                                    BottomToggle(
-                                      name: context.msg.main.colleagues.toggle,
-                                      initialValue: colleaguesCubit
-                                          .showOnlineColleaguesOnly,
-                                      onChanged: (value) => colleaguesCubit
-                                          .showOnlineColleaguesOnly = value,
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            )
-                          : _animatedSwitcher(
-                              ColltactKind.contact,
-                              contactsState,
-                              contactsCubit,
-                              colleaguesState,
-                              colleaguesCubit,
-                            ),
+                                      BottomToggle(
+                                        name:
+                                            context.msg.main.colleagues.toggle,
+                                        initialValue: colleaguesCubit
+                                            .showOnlineColleaguesOnly,
+                                        onChanged: (value) => colleaguesCubit
+                                            .showOnlineColleaguesOnly = value,
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              )
+                            : _animatedSwitcher(
+                                ColltactKind.contact,
+                                contactsState,
+                                contactsCubit,
+                                colleaguesState,
+                                colleaguesCubit,
+                              ),
+                      ),
                     ),
                   ],
                 ),
