@@ -1,5 +1,9 @@
 import 'dart:io';
 
+const codemagicYaml = 'codemagic.yaml';
+const pubspecYaml = 'pubspec.yaml';
+const pubspecLock = 'pubspec.lock';
+
 /// Upgrades Flutter to a specified version, updates the 'codemagic.yaml' and
 /// 'pubspec.yaml' files with the new Flutter version, creates a new git branch
 /// with the specified name, commits the changes, and pushes the branch to the
@@ -24,6 +28,8 @@ Future<void> main(List<String> arguments) async {
     );
   }
 
+  await _checkInCorrectDirectory();
+
   final versionNumber = arguments[0];
   final ticketId = arguments[1];
 
@@ -42,16 +48,16 @@ Future<void> main(List<String> arguments) async {
   final newBranchName = '$ticketId-upgrade-flutter-$versionNumber';
   await _runProcess('git', ['checkout', '-b', newBranchName]);
 
-  await _updateYaml('codemagic.yaml', versionNumber);
-  await _updateYaml('pubspec.yaml', versionNumber);
+  await _updateYaml(codemagicYaml, versionNumber);
+  await _updateYaml(pubspecYaml, versionNumber);
 
   await _runProcess('flutter', ['pub', 'get']);
 
   await _runProcess('git', [
     'add',
-    'pubspec.lock',
-    'pubspec.yaml',
-    'codemagic.yaml',
+    pubspecYaml,
+    pubspecLock,
+    codemagicYaml,
   ]);
 
   await _runProcess(
@@ -89,6 +95,20 @@ Future<void> _runProcess(String executable, List<String> arguments) async {
       'Exit code: ${result.exitCode}\n'
       'Stderr: ${result.stderr}\n'
       'Stdout: ${result.stdout}\n',
+    );
+  }
+}
+
+Future<void> _checkInCorrectDirectory() async {
+  final missingFiles = [
+    pubspecYaml,
+    pubspecLock,
+    codemagicYaml,
+  ].where((fileName) => !File(fileName).existsSync()).toList();
+
+  if (missingFiles.isNotEmpty) {
+    throw Exception(
+      'This script must be run in the root of the project.',
     );
   }
 }
