@@ -62,14 +62,12 @@ Future<bool> _hasChanges() async {
   final result = await Process.run('git', ['status', '--porcelain']);
   final output = result.stdout as String;
   final lines = output.trim().split('\n');
-
   for (final line in lines) {
-    final status = line.substring(0, 2);
-    if (status != '  ') {
+    final status = line.substring(0, 2).trim();
+    if (status.isNotEmpty) {
       return true;
     }
   }
-
   return false;
 }
 
