@@ -1,9 +1,5 @@
 import 'dart:io';
 
-/// Upgrades Flutter to a specified version, updates the 'codemagic.yaml' and
-/// 'pubspec.yaml' files with the new Flutter version, creates a new git branch
-/// with the specified name, commits the changes, and pushes the branch to the
-/// remote repository.
 Future<void> main(List<String> arguments) async {
   if (arguments.length != 2) {
     throw Exception(
@@ -14,24 +10,38 @@ Future<void> main(List<String> arguments) async {
   final versionNumber = arguments[0];
   final ticketId = arguments[1];
 
-  await Process.run('flutter', ['upgrade']);
+  if (await _hasChanges()) {
+    throw Exception(
+      'There are uncommitted or staged changes. '
+      'Please commit or discard them before running this script.',
+    );
+  }
 
-  await Process.run('git', ['checkout', 'develop']);
-  await Process.run('git', ['pull', 'origin', 'develop']);
+  await _runProcess('flutter', ['upgrade']);
+
+  await _runProcess('git', ['checkout', 'develop']);
+  await _runProcess('git', ['pull', 'origin', 'develop']);
 
   final newBranchName = '$ticketId-upgrade-flutter-$versionNumber';
-  await Process.run('git', ['checkout', '-b', newBranchName]);
+  await _runProcess('git', ['checkout', '-b', newBranchName]);
 
-  await updateYaml('codemagic.yaml', versionNumber);
-  await updateYaml('pubspec.yaml', versionNumber);
+  await _updateYaml('codemagic.yaml', versionNumber);
+  await _updateYaml('pubspec.yaml', versionNumber);
 
-  await Process.run('flutter', ['pub', 'get']);
-  await Process.run('git', ['add', '.']);
-  await Process.run(
+  await _runProcess('flutter', ['pub', 'get']);
+
+  await _runProcess('git', [
+    'add',
+    'pubspec.lock',
+    'pubspec.yaml',
+    'codemagic.yaml',
+  ]);
+
+  await _runProcess(
     'git',
     ['commit', '-m', 'Upgrade Flutter to version $versionNumber'],
   );
-  await Process.run('git', ['push', 'origin', newBranchName]);
+  await _runProcess('git', ['push', 'origin', newBranchName]);
 }
 
 Future<void> _updateYaml(String filePath, String value) async {
@@ -46,4 +56,24 @@ Future<void> _updateYaml(String filePath, String value) async {
   final pattern = RegExp('$key\\s*:\\s*\\d+\\.\\d+\\.\\d+');
   final newContents = contents.replaceAll(pattern, '$key: $value');
   await file.writeAsString(newContents);
+}
+
+Future<bool> _hasChanges() async {
+  final result = await Process.run('git', ['status', '--porcelain']);
+  final output = result.stdout as String;
+  final lines = output.trim().split('\n');
+  return lines.isNotEmpty;
+}
+
+Future<void> _runProcess(String executable, List<String> arguments) async {
+  final result = await Process.run(executable, arguments);
+
+  if (result.exitCode != 0) {
+    throw Exception(
+      'Error running process: $executable ${arguments.join(' ')}\n'
+      'Exit code: ${result.exitCode}\n'
+      'Stderr: ${result.stderr}\n'
+      'Stdout: ${result.stdout}\n',
+    );
+  }
 }
