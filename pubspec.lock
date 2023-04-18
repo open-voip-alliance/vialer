@@ -297,6 +297,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.2"
+  cupertino_icons:
+    dependency: transitive
+    description:
+      name: cupertino_icons
+      sha256: e35129dc44c9118cee2a5603506d823bab99c68393879edb440e0090d07586be
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.5"
   dart_style:
     dependency: transitive
     description:
@@ -443,6 +451,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_inappwebview:
+    dependency: "direct main"
+    description:
+      name: flutter_inappwebview
+      sha256: f73505c792cf083d5566e1a94002311be497d984b5607f25be36d685cf6361cf
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.7.2+3"
   flutter_keyboard_visibility:
     dependency: "direct main"
     description:
@@ -516,11 +532,19 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "4b7ee7d380a7059379b849b8bbc20ce6730c4bf8"
-      resolved-ref: "4b7ee7d380a7059379b849b8bbc20ce6730c4bf8"
+      ref: "0bf0f99905e872e5e61811a0b5b7f20532e5bc20"
+      resolved-ref: "0bf0f99905e872e5e61811a0b5b7f20532e5bc20"
       url: "https://github.com/open-voip-alliance/flutter-phone-lib"
     source: git
     version: "0.0.1"
+  flutter_platform_widgets:
+    dependency: "direct main"
+    description:
+      name: flutter_platform_widgets
+      sha256: b787f001d659ce1fb601332e908efdf44dbedab832387b33162abeed60c1eca2
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.2.0"
   flutter_rating_bar:
     dependency: "direct main"
     description:
@@ -1086,6 +1110,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.3.5"
+  search_highlight_text:
+    dependency: "direct main"
+    description:
+      name: search_highlight_text
+      sha256: "72f0784dad9c9328980a382f1c3bf9518366a444d2061ed92c6f5f482dbb21f2"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0+2"
   sentry:
     dependency: transitive
     description:
@@ -1507,38 +1539,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.0"
-  webview_flutter:
-    dependency: "direct main"
-    description:
-      name: webview_flutter
-      sha256: "392c1d83b70fe2495de3ea2c84531268d5b8de2de3f01086a53334d8b6030a88"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.0.4"
-  webview_flutter_android:
-    dependency: transitive
-    description:
-      name: webview_flutter_android
-      sha256: "8b3b2450e98876c70bfcead876d9390573b34b9418c19e28168b74f6cb252dbd"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.10.4"
-  webview_flutter_platform_interface:
-    dependency: transitive
-    description:
-      name: webview_flutter_platform_interface
-      sha256: "812165e4e34ca677bdfbfa58c01e33b27fd03ab5fa75b70832d4b7d4ca1fa8cf"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.9.5"
-  webview_flutter_wkwebview:
-    dependency: transitive
-    description:
-      name: webview_flutter_wkwebview
-      sha256: a5364369c758892aa487cbf59ea41d9edd10f9d9baf06a94e80f1bd1b4c7bbc0
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.9.5"
   win32:
     dependency: transitive
     description:
@@ -1588,5 +1588,5 @@ packages:
     source: hosted
     version: "2.0.3"
 sdks:
-  dart: ">=2.18.0 <3.0.0"
-  flutter: ">=3.7.8"
+  dart: ">=2.19.0 <3.0.0"
+  flutter: ">=3.7.10"

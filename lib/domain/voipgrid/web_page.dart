@@ -6,4 +6,6 @@ enum WebPage {
   calls,
   openingHoursBasicEdit,
   openingHoursBasicList,
+  addVoicemail,
+  telephonySettings,
 }

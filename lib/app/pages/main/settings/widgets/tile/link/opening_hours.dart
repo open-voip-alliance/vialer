@@ -17,17 +17,12 @@ class OpeningHoursLinkTile extends StatelessWidget {
       title: Text(
         context.msg.main.settings.list.portalLinks.openingHours.title,
       ),
-      onTap: () {
-        Navigator.of(context, rootNavigator: true).push(
-          MaterialPageRoute(
-            builder: (context) => WebViewPage(
-              user.client.openingHours.length == 1
-                  ? WebPage.openingHoursBasicEdit
-                  : WebPage.openingHoursBasicList,
-            ),
-          ),
-        );
-      },
+      onTap: () => WebViewPage.open(
+        context,
+        to: user.client.openingHoursModules.length == 1
+            ? WebPage.openingHoursBasicEdit
+            : WebPage.openingHoursBasicList,
+      ),
     );
   }
 }

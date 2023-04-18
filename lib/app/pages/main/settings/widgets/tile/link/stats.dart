@@ -14,13 +14,7 @@ class StatsLinkTile extends StatelessWidget {
       title: Text(
         context.msg.main.settings.list.portalLinks.stats.title,
       ),
-      onTap: () {
-        Navigator.of(context, rootNavigator: true).push(
-          MaterialPageRoute(
-            builder: (context) => WebViewPage(WebPage.stats),
-          ),
-        );
-      },
+      onTap: () => WebViewPage.open(context, to: WebPage.stats),
     );
   }
 }

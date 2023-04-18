@@ -7,29 +7,29 @@ part 'opening_hours.g.dart';
 part 'opening_hours.freezed.dart';
 
 @freezed
-class OpeningHours with _$OpeningHours {
-  const factory OpeningHours({
+class OpeningHoursModule with _$OpeningHoursModule {
+  const factory OpeningHoursModule({
     required String id,
     required String name,
-    @JsonKey(name: 'work_hours') @Default([]) List<WorkingHours> workingHours,
+    @JsonKey(name: 'work_hours') @Default([]) List<OpeningHours> openingHours,
     @Default([]) List<Holiday> holidays,
+  }) = _OpeningHoursModule;
+
+  factory OpeningHoursModule.fromJson(Map<String, dynamic> json) =>
+      _$OpeningHoursModuleFromJson(json);
+}
+
+@freezed
+class OpeningHours with _$OpeningHours {
+  @JsonSerializable(fieldRename: FieldRename.snake)
+  const factory OpeningHours({
+    required int dayOfWeek,
+    @JsonKey(fromJson: _timeFromJson, toJson: _timeToJson) TimeOfDay? timeStart,
+    @JsonKey(fromJson: _timeFromJson, toJson: _timeToJson) TimeOfDay? timeEnd,
   }) = _OpeningHours;
 
   factory OpeningHours.fromJson(Map<String, dynamic> json) =>
       _$OpeningHoursFromJson(json);
-}
-
-@freezed
-class WorkingHours with _$WorkingHours {
-  @JsonSerializable(fieldRename: FieldRename.snake)
-  const factory WorkingHours({
-    required int dayOfWeek,
-    @JsonKey(fromJson: _timeFromJson, toJson: _timeToJson) TimeOfDay? timeStart,
-    @JsonKey(fromJson: _timeFromJson, toJson: _timeToJson) TimeOfDay? timeEnd,
-  }) = _WorkingHours;
-
-  factory WorkingHours.fromJson(Map<String, dynamic> json) =>
-      _$WorkingHoursFromJson(json);
 }
 
 TimeOfDay? _timeFromJson(String? time) => time != null

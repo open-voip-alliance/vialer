@@ -11,6 +11,7 @@ import '../widgets/tile/category/audio.dart';
 import '../widgets/tile/category/calling.dart';
 import '../widgets/tile/category/debug.dart';
 import '../widgets/tile/category/recents.dart';
+import '../widgets/tile/enable_dialer_contact_search.dart';
 import '../widgets/tile/feedback.dart';
 import '../widgets/tile/ignore_battery_optimizations.dart';
 import '../widgets/tile/link/troubleshooting.dart';
@@ -36,7 +37,6 @@ class AppPreferencesSubPage extends StatelessWidget {
             user.permissions.canViewMobileNumberFallbackStatus;
         final hasIgnoreOptimizationsPermission =
             state.hasIgnoreBatteryOptimizationsPermission;
-        final isVoipAllowed = state.isVoipAllowed;
         final showTroubleshooting = state.showTroubleshooting;
         final cubit = context.watch<SettingsCubit>();
 
@@ -48,10 +48,10 @@ class AppPreferencesSubPage extends StatelessWidget {
               children: [
                 CallingCategory(
                   children: [
-                    if (isVoipAllowed) UseVoipTile(user),
-                    if (useVoip && canViewMobileFallback && isVoipAllowed)
+                    if (user.isAllowedVoipCalling) UseVoipTile(user),
+                    if (useVoip && canViewMobileFallback)
                       UseMobileNumberAsFallbackTile(user),
-                    if (context.isIOS && isVoipAllowed)
+                    if (context.isIOS && user.isAllowedVoipCalling)
                       ShowCallsInNativeRecentsTile(user),
                     if (context.isAndroid)
                       IgnoreBatteryOptimizationsTile(
@@ -60,6 +60,7 @@ class AppPreferencesSubPage extends StatelessWidget {
                         onChanged: (enabled) =>
                             cubit.requestBatteryPermission(),
                       ),
+                    if (context.isIOS) EnableT9ContactSearch(user),
                   ],
                 ),
                 RecentsCategory(
@@ -67,7 +68,7 @@ class AppPreferencesSubPage extends StatelessWidget {
                     ShowClientCallsTile(user),
                   ],
                 ),
-                if (state.isVoipAllowed)
+                if (user.isAllowedVoipCalling)
                   AudioCategory(
                     children: [
                       UsePhoneRingtoneTile(user),
@@ -77,8 +78,8 @@ class AppPreferencesSubPage extends StatelessWidget {
                   children: [
                     RemoteLoggingTile(user),
                   ],
-                ), // Show advanced settings only if allowed.
-                if (isVoipAllowed && showTroubleshooting)
+                ),
+                if (user.isAllowedVoipCalling && showTroubleshooting)
                   const AdvancedSettingsCategory(
                     children: [
                       TroubleshootingLinkTile(),

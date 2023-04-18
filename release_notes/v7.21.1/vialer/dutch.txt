@@ -1,0 +1,1 @@
+- Android: Een probleem verholpen waarbij bepaalde inkomende gesprekken geen audio had

@@ -52,3 +52,7 @@ class TemporaryRedirectNotice extends NoticeState {
         canChangeTemporaryRedirect,
       ];
 }
+
+class NoAppAccountNotice extends NoticeState {
+  const NoAppAccountNotice();
+}

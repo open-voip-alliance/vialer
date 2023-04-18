@@ -26,6 +26,9 @@ class GetWebPageUrlUseCase extends UseCase {
     WebPage.openingHoursBasicList: '/client/{clientUuid}/openinghoursbasic/',
     WebPage.openingHoursBasicEdit:
         '/client/{clientUuid}/openinghoursbasic/{openingHoursUuid}/change/',
+    WebPage.addVoicemail: '/client/{clientId}/voicemail/add/',
+    WebPage.telephonySettings:
+        '/client/{clientId}/user/{userId}/change/#tc0=user-tab-2',
   };
 
   final _unauthenticatedPages = [WebPage.passwordReset];
@@ -70,7 +73,8 @@ class GetWebPageUrlUseCase extends UseCase {
     final placeholders = {
       'clientId': user.client.id.toString(),
       'clientUuid': user.client.uuid.toString(),
-      'openingHoursUuid': user.client.openingHours.firstOrNull?.id,
+      'openingHoursUuid': user.client.openingHoursModules.firstOrNull?.id,
+      'userId': user.uuid.toString(),
     };
 
     for (final placeholder in placeholders.entries) {

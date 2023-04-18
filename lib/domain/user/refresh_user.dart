@@ -5,10 +5,10 @@ import '../../app/util/synchronized_task.dart';
 import '../../dependency_locator.dart';
 import '../authentication/authentication_repository.dart';
 import '../business_availability/temporary_redirect/get_current_temporary_redirect.dart';
+import '../business_availability/temporary_redirect/temporary_redirect.dart';
 import '../call_records/client/purge_local_call_records.dart';
 import '../calling/outgoing_number/outgoing_numbers.dart';
 import '../calling/voip/client_voip_config_repository.dart';
-import '../calling/voip/destination.dart';
 import '../calling/voip/destination_repository.dart';
 import '../calling/voip/user_voip_config_repository.dart';
 import '../event/event_bus.dart';
@@ -16,11 +16,15 @@ import '../legacy/storage.dart';
 import '../metrics/metrics.dart';
 import '../onboarding/exceptions.dart';
 import '../onboarding/login_credentials.dart';
-import '../openings_hours_basic/get_opening_hours.dart';
+import '../openings_hours_basic/get_opening_hours_modules.dart';
+import '../openings_hours_basic/opening_hours.dart';
 import '../openings_hours_basic/should_show_opening_hours_basic.dart';
 import '../use_case.dart';
+import '../voicemail/voicemail_account.dart';
 import '../voicemail/voicemail_account_repository.dart';
+import '../voipgrid/client_voip_config.dart';
 import '../voipgrid/user_permissions.dart';
+import '../voipgrid/user_voip_config.dart';
 import 'events/logged_in_user_was_refreshed.dart';
 import 'permissions/user_permissions.dart';
 import 'settings/app_setting.dart';
@@ -81,7 +85,7 @@ class RefreshUser extends UseCase with Loggable {
       var user = storedUser?.copyFrom(latestUser) ?? latestUser;
 
       user = user.copyWith(
-        settings: const Settings.defaults().copyFrom(user.settings),
+        settings: Settings.defaults.copyFrom(user.settings),
         permissions: storedUser?.permissions,
         client: storedUser?.client,
         voip: storedUser?.voip,
@@ -96,57 +100,88 @@ class RefreshUser extends UseCase with Loggable {
 
       user = _getPreviousSessionSettings(user);
 
-      user = await tasksToRun.run(
+      user = await tasksToRun.runOr(
         UserRefreshTask.remotePermissions,
-        user,
+        fallback: user,
         () => _getRemotePermissions(user),
       );
 
-      user = await tasksToRun.run(
+      final clientOutgoingNumbers = tasksToRun.run(
         UserRefreshTask.remoteClientOutgoingNumbers,
-        user,
         () => _getRemoteClientOutgoingNumbers(user),
       );
 
-      user = await tasksToRun.run(
+      final clientVoicemailAccounts = tasksToRun.run(
         UserRefreshTask.remoteClientVoicemailAccounts,
-        user,
         () => _getClientVoicemailAccounts(user),
       );
 
-      user = await tasksToRun.run(
-        UserRefreshTask.userVoipConfig,
-        user,
-        () => _getUserVoipConfig(user),
-      );
-
-      user = await tasksToRun.run(
+      final clientVoipConfig = tasksToRun.run(
         UserRefreshTask.clientVoipConfig,
-        user,
         () => _getClientVoipConfig(user),
       );
 
-      user = await tasksToRun.run(
+      final currentTemporaryRedirect = tasksToRun.run(
         UserRefreshTask.currentTemporaryRedirect,
-        user,
         () => _getCurrentTemporaryRedirect(user),
+      );
+
+      final userVoipConfig = tasksToRun.run(
+        UserRefreshTask.userVoipConfig,
+        () => _getUserVoipConfig(user),
       );
 
       // These will be executed last, as these are the most important settings
       // to have as fresh as possible for the best user experience.
-      user = await tasksToRun.run(
+      final remoteSettings = tasksToRun.runOr(
         UserRefreshTask.remoteSettings,
-        user,
+        fallback: const <SettingKey, Object>{},
         () => _getRemoteSettings(user),
       );
 
-      user = await tasksToRun.run(
+      final availability = tasksToRun.runOr(
         UserRefreshTask.availability,
-        user,
+        fallback: const <SettingKey, Object>{},
         () => _getAvailability(user),
       );
 
-      if (_shouldShowOpeningHoursBasic()) user = await _getOpeningHours(user);
+      final openingHourModules = _shouldShowOpeningHoursBasic()
+          ? tasksToRun.run(
+              UserRefreshTask.clientVoipConfig,
+              () => _getOpeningHours(user),
+            )
+          : Future.value(const <OpeningHoursModule>[]);
+
+      await Future.wait([
+        clientOutgoingNumbers,
+        clientVoicemailAccounts,
+        clientVoipConfig,
+        currentTemporaryRedirect,
+        userVoipConfig,
+        remoteSettings,
+        availability,
+        openingHourModules,
+      ]);
+
+      // All the 'await's are a formality here, the futures have been completed.
+      user = user.copyWith(
+        client: user.client.copyWith(
+          outgoingNumbers: await clientOutgoingNumbers,
+          voicemailAccounts: await clientVoicemailAccounts,
+          voip: await clientVoipConfig,
+          currentTemporaryRedirect: await currentTemporaryRedirect,
+          openingHoursModules: await openingHourModules,
+        ),
+        voip: await userVoipConfig,
+        settings: user.settings.copyWithAll({
+          ...(await availability),
+          ...(await remoteSettings),
+        }),
+        // We only want to set the voip config to null if we've actually fetched
+        // it. This would only happen if the user has removed their app account.
+        allowNullVoipConfig:
+            tasksToRun.contains(UserRefreshTask.userVoipConfig),
+      );
 
       // User should have a value for all settings.
       assert(
@@ -196,29 +231,24 @@ class RefreshUser extends UseCase with Loggable {
     }
   }
 
-  Future<User> _getAvailability(User user) async {
+  Future<Map<SettingKey, Object>> _getAvailability(
+    User user,
+  ) async {
     final destination = await _destinationRepository.getActiveDestination();
 
-    if (destination is Unknown) return user;
-
-    return user.copyWith(
-      settings: user.settings.copyWith(
-        CallSetting.destination,
-        destination,
-      ),
+    return destination.maybeWhen(
+      unknown: () => const {},
+      orElse: () => {CallSetting.destination: destination},
     );
   }
 
-  Future<User> _getRemoteSettings(User user) async {
+  Future<Map<SettingKey, Object>> _getRemoteSettings(User user) async {
     final useMobileNumberAsFallback =
         await _authRepository.isUserUsingMobileNumberAsFallback(user);
 
-    return user.copyWith(
-      settings: user.settings.copyWith(
-        CallSetting.useMobileNumberAsFallback,
-        useMobileNumberAsFallback,
-      ),
-    );
+    return {
+      CallSetting.useMobileNumberAsFallback: useMobileNumberAsFallback,
+    };
   }
 
   /// Retrieving permissions and handling its possible side effects.
@@ -277,40 +307,20 @@ class RefreshUser extends UseCase with Loggable {
   }
 
   /// Retrieving client outgoing numbers and handling its possible side effects.
-  Future<User> _getRemoteClientOutgoingNumbers(User user) async =>
-      user.copyWith(
-        client: user.client.copyWith(
-          outgoingNumbers: await _outgoingNumbersRepository
-              .getOutgoingNumbersAvailableToClient(user: user),
-        ),
-      );
+  Future<Iterable<OutgoingNumber>> _getRemoteClientOutgoingNumbers(User user) =>
+      _outgoingNumbersRepository.getOutgoingNumbersAvailableToClient(
+          user: user);
 
   /// Retrieving client outgoing numbers and handling its possible side effects.
-  Future<User> _getClientVoicemailAccounts(User user) async {
-    return user.copyWith(
-      client: user.client.copyWith(
-        voicemailAccounts: await _voicemailRepository.getVoicemailAccounts(
-          user: user,
-        ),
-      ),
-    );
-  }
+  Future<List<VoicemailAccount>> _getClientVoicemailAccounts(User user) =>
+      _voicemailRepository.getVoicemailAccounts(user: user);
 
   /// Retrieving user voip config and handling its possible side effects.
-  Future<User> _getUserVoipConfig(User user) async {
-    final latestVoipConfig = await _userVoipConfigRepository.get();
-
-    if (latestVoipConfig != null) {
-      return user.copyWith(
-        voip: latestVoipConfig,
-      );
-    }
-
-    return user;
-  }
+  Future<UserVoipConfig?> _getUserVoipConfig(User user) =>
+      _userVoipConfigRepository.get();
 
   /// Retrieving user voip config and handling its possible side effects.
-  Future<User> _getClientVoipConfig(User user) async {
+  Future<ClientVoipConfig?> _getClientVoipConfig(User user) async {
     final current = user.client.voip;
     final latest = await _clientVoipConfigRepository.get();
 
@@ -328,14 +338,10 @@ class RefreshUser extends UseCase with Loggable {
         );
       }
 
-      return user.copyWith(
-        client: user.client.copyWith(
-          voip: latest,
-        ),
-      );
+      return latest;
     }
 
-    return user;
+    return null;
   }
 
   User _getPreviousSessionSettings(User user) {
@@ -352,17 +358,11 @@ class RefreshUser extends UseCase with Loggable {
     return user;
   }
 
-  Future<User> _getCurrentTemporaryRedirect(User user) async => user.copyWith(
-        client: user.client.copyWith(
-          currentTemporaryRedirect: await GetCurrentTemporaryRedirect()(),
-        ),
-      );
+  Future<TemporaryRedirect?> _getCurrentTemporaryRedirect(User user) =>
+      GetCurrentTemporaryRedirect()();
 
-  Future<User> _getOpeningHours(User user) async => user.copyWith(
-        client: user.client.copyWith(
-          openingHours: await GetOpeningHours()(),
-        ),
-      );
+  Future<List<OpeningHoursModule>> _getOpeningHours(User user) =>
+      GetOpeningHoursModules()();
 }
 
 enum UserRefreshTask {
@@ -379,12 +379,20 @@ enum UserRefreshTask {
 extension on List<UserRefreshTask> {
   /// Conditionally run the refresh task if it appears in our list of
   /// tasks to complete.
-  Future<User> run(
+  Future<T?> run<T>(
     UserRefreshTask task,
-    User user,
-    Future<User> Function() callback,
+    Future<T> Function() callback,
   ) async =>
-      contains(task) ? await callback() : user;
+      contains(task) ? await callback() : null;
+
+  /// Conditionally run the refresh task if it appears in our list of
+  /// tasks to complete, or returns [fallback] if it doesn't.
+  Future<T> runOr<T>(
+    UserRefreshTask task,
+    Future<T> Function() callback, {
+    required T fallback,
+  }) async =>
+      contains(task) ? await callback() : fallback;
 
   bool get shouldSkipSynchronization => length <= 2;
 }

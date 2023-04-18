@@ -2,8 +2,10 @@ import 'package:dartx/dartx.dart';
 import 'package:diacritic/diacritic.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:search_highlight_text/search_highlight_text.dart';
 
 import '../../../../../data/models/colltact.dart';
+import '../../../../../domain/colltacts/colltact_tab.dart';
 import '../../../../../domain/colltacts/contact.dart';
 import '../../../../../domain/colltacts/get_contact_sort.dart';
 import '../../../../../domain/user_availability/colleagues/colleague.dart';
@@ -113,8 +115,10 @@ class _ColltactPageState extends State<_ColltactList>
   }
 
   void _createTabController() {
+    final cubit = context.read<ColleaguesCubit>();
+
     final tabController = TabController(
-      initialIndex: 0,
+      initialIndex: cubit.getStoredTab() == ColltactTab.contacts ? 0 : 1,
       length: 2,
       vsync: this,
     );
@@ -122,8 +126,18 @@ class _ColltactPageState extends State<_ColltactList>
     tabController.addListener(
       () {
         if (!tabController.indexIsChanging) {
-          if (tabController.index == 1) {
-            context.read<ColleaguesCubit>().trackColleaguesTabSelected();
+          final cubit = context.read<ColleaguesCubit>();
+
+          final colleagueTabSelected = tabController.index == 1;
+
+          cubit.storeCurrentTab(
+            colleagueTabSelected
+                ? ColltactTab.colleagues
+                : ColltactTab.contacts,
+          );
+
+          if (colleagueTabSelected) {
+            cubit.trackColleaguesTabSelected();
           }
         }
       },
@@ -181,47 +195,56 @@ class _ColltactPageState extends State<_ColltactList>
                           ),
                         ],
                       ),
-                    Expanded(
-                      child: colleaguesCubit.shouldShowColleagues
-                          ? TabBarView(
-                              controller: tabController,
-                              children: [
-                                _animatedSwitcher(
-                                  ColltactKind.contact,
-                                  contactsState,
-                                  contactsCubit,
-                                  colleaguesState,
-                                  colleaguesCubit,
-                                ),
-                                Column(
-                                  children: [
-                                    Expanded(
-                                      child: _animatedSwitcher(
-                                        ColltactKind.colleague,
-                                        contactsState,
-                                        contactsCubit,
-                                        colleaguesState,
-                                        colleaguesCubit,
+                    SearchTextInheritedWidget(
+                      searchText: _searchTerm ?? '',
+                      highlightStyle: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                        fontSize: 17,
+                      ),
+                      child: Expanded(
+                        child: colleaguesCubit.shouldShowColleagues
+                            ? TabBarView(
+                                controller: tabController,
+                                children: [
+                                  _animatedSwitcher(
+                                    ColltactKind.contact,
+                                    contactsState,
+                                    contactsCubit,
+                                    colleaguesState,
+                                    colleaguesCubit,
+                                  ),
+                                  Column(
+                                    children: [
+                                      Expanded(
+                                        child: _animatedSwitcher(
+                                          ColltactKind.colleague,
+                                          contactsState,
+                                          contactsCubit,
+                                          colleaguesState,
+                                          colleaguesCubit,
+                                        ),
                                       ),
-                                    ),
-                                    BottomToggle(
-                                      name: context.msg.main.colleagues.toggle,
-                                      initialValue: colleaguesCubit
-                                          .showOnlineColleaguesOnly,
-                                      onChanged: (value) => colleaguesCubit
-                                          .showOnlineColleaguesOnly = value,
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            )
-                          : _animatedSwitcher(
-                              ColltactKind.contact,
-                              contactsState,
-                              contactsCubit,
-                              colleaguesState,
-                              colleaguesCubit,
-                            ),
+                                      BottomToggle(
+                                        name:
+                                            context.msg.main.colleagues.toggle,
+                                        initialValue: colleaguesCubit
+                                            .showOnlineColleaguesOnly,
+                                        onChanged: (value) => colleaguesCubit
+                                            .showOnlineColleaguesOnly = value,
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              )
+                            : _animatedSwitcher(
+                                ColltactKind.contact,
+                                contactsState,
+                                contactsCubit,
+                                colleaguesState,
+                                colleaguesCubit,
+                              ),
+                      ),
                     ),
                   ],
                 ),

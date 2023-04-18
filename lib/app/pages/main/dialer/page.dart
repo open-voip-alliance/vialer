@@ -1,9 +1,15 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../../../dependency_locator.dart';
+import '../../../../domain/event/event_bus.dart';
+import '../../../../domain/user/get_logged_in_user.dart';
+import '../../../../domain/user/settings/app_setting.dart';
+import '../../../../domain/user/settings/setting_changed.dart';
 import '../../../resources/localizations.dart';
 import '../../../resources/theme.dart';
 import '../../../routes.dart';
@@ -31,6 +37,35 @@ class DialerPage extends StatefulWidget {
 class _DialerPageState extends State<DialerPage>
     with WidgetsBindingObserver, WidgetsBindingObserverRegistrar {
   final _dialPadController = TextEditingController();
+  final _eventBus = dependencyLocator<EventBusObserver>();
+  StreamSubscription? _eventBusSubscription;
+
+  final _getLatestUser = GetLoggedInUserUseCase();
+
+  bool _enableT9ContactSearch = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _updateEnableT9ContactSearch();
+
+    _eventBusSubscription = _eventBus.onSettingChange<bool>(
+      AppSetting.enableT9ContactSearch,
+      (_, newValue) {
+        _updateEnableT9ContactSearch(settingValue: newValue);
+      },
+    );
+  }
+
+  Future<void> _updateEnableT9ContactSearch({bool? settingValue}) async {
+    final user = await _getLatestUser();
+
+    setState(() {
+      _enableT9ContactSearch =
+          settingValue ?? user.settings.get(AppSetting.showClientCalls);
+    });
+  }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
@@ -61,6 +96,13 @@ class _DialerPageState extends State<DialerPage>
 
   void _onCallButtonPressed(BuildContext context, String number) =>
       context.read<DialerCubit>().call(number);
+
+  @override
+  void dispose() {
+    _eventBusSubscription?.cancel();
+
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -121,6 +163,7 @@ class _DialerPageState extends State<DialerPage>
                       : null,
                   controller: _dialPadController,
                   onDeleteAll: dialerCubit.clearLastCalledDestination,
+                  isT9ContactSearchEnabled: _enableT9ContactSearch,
                 ),
               ),
             );
