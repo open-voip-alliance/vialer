@@ -60,15 +60,7 @@ Future<void> _updateYaml(String filePath, String value) async {
 
 Future<bool> _hasChanges() async {
   final result = await Process.run('git', ['status', '--porcelain']);
-  final output = result.stdout as String;
-  final lines = output.trim().split('\n');
-  for (final line in lines) {
-    final status = line.substring(0, 2).trim();
-    if (status.isNotEmpty) {
-      return true;
-    }
-  }
-  return false;
+  return result.stdout.toString().trim().isNotEmpty;
 }
 
 Future<void> _runProcess(String executable, List<String> arguments) async {
