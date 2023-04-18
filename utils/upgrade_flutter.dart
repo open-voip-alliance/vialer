@@ -34,7 +34,7 @@ Future<void> main(List<String> arguments) async {
   await Process.run('git', ['push', 'origin', newBranchName]);
 }
 
-Future<void> updateYaml(String filePath, String value) async {
+Future<void> _updateYaml(String filePath, String value) async {
   final file = File(filePath);
   final key = 'flutter';
 
