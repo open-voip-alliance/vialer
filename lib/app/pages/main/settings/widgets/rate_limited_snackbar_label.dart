@@ -15,16 +15,16 @@ class RateLimitedSnackbarLabel extends StatefulWidget {
 
 class _RateLimitedSnackbarLabelState extends State<RateLimitedSnackbarLabel> {
   late Timer _timer;
-  late int remainingSeconds;
+  late int _remainingSeconds;
 
   @override
   void initState() {
     super.initState();
 
-    updateRemainingSeconds() {
+    void updateRemainingSeconds() {
       setState(() {
         final remaining = widget.expiresAt.difference(DateTime.now()).inSeconds;
-        remainingSeconds = remaining > 0 ? remaining : 0;
+        _remainingSeconds = remaining > 0 ? remaining : 0;
       });
     }
 
@@ -41,7 +41,7 @@ class _RateLimitedSnackbarLabelState extends State<RateLimitedSnackbarLabel> {
     return Text(
       context.msg.rateLimiting.snackbar.message(
         context.brand.appName,
-        remainingSeconds.toString(),
+        _remainingSeconds.toString(),
       ),
     );
   }
