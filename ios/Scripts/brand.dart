@@ -1,34 +1,26 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:path/path.dart';
+import 'package:vialer/domain/user/get_brand.dart';
 
-// ignore: avoid_relative_lib_imports
-import '../../lib/brands.dart';
 import 'util.dart';
 
 Future<void> main(List<String> arguments) async {
-  final dartDefines = parseDartDefinesFromArguments(arguments);
-
-  final brandId = dartDefines['BRAND'] ?? 'vialer';
-  final data = json.decode(brands) as List<dynamic>;
-
-  final brand = data.singleWhere(
-    (dynamic b) => (b as Map<String, dynamic>)['identifier'] == brandId,
-  ) as Map<String, dynamic>;
+  final brand = GetBrand()();
 
   await writeXconfigFile(
     name: 'Brand',
     values: {
-      'BUNDLE_NAME': brand['appName'] as String,
-      'BUNDLE_ID': brand['appId'] as String,
-      'MIDDLEWARE_URL': Uri.encodeComponent(brand['middlewareUrl'] as String),
+      'BUNDLE_NAME': brand.appName,
+      'BUNDLE_ID': brand.appId,
+      'MIDDLEWARE_URL': Uri.encodeComponent(brand.middlewareUrl.toString()),
     },
   );
 
   // Set the correct icons.
   final assets = Directory('${root.path}/Runner/Assets.xcassets');
   final defaultIconSet = Directory('${assets.path}/AppIcon.appiconset');
-  final brandIconSet = Directory('${assets.path}/AppIcon-$brandId.appiconset');
+  final brandIconSet =
+      Directory('${assets.path}/AppIcon-${brand.identifier}.appiconset');
 
   await defaultIconSet
       .list()

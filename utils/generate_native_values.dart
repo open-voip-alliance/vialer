@@ -1,11 +1,12 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:basic_utils/basic_utils.dart';
+import 'package:collection/collection.dart';
 import 'package:package_config/package_config.dart';
 import 'package:vialer/app/resources/theme/brand_icon_code_points.dart';
 import 'package:vialer/app/resources/theme/color_values.dart';
 import 'package:vialer/domain/user/brand.dart';
-import 'package:vialer/domain/user/brand_repository.dart';
 import 'package:xml/xml.dart';
 import 'package:yaml/yaml.dart';
 
@@ -14,16 +15,22 @@ import 'env_utils.dart';
 /// Generates useful brand and other app values to natively used files.
 ///
 /// Currently Android only.
-Future<void> main() async {
-  final brands = BrandRepository().getBrands();
+Future<void> main(List<String> args) async {
+  final brandIdentifier = args.elementAtOrNull(0);
+
+  if (brandIdentifier == null) {
+    throw ArgumentError('No brand identifier passed to script.');
+  }
+
+  final jsonString = File('brands/$brandIdentifier.json').readAsStringSync();
+  final json = const JsonDecoder().convert(jsonString) as Map<String, dynamic>;
+  final brand = Brand.fromJson(json);
 
   await Future.wait([
     writeEnvValues(),
-    for (final brand in brands) ...[
-      writeBrandValues(brand),
-      writeColorValues(brand),
-      writeLanguageValues(brand),
-    ],
+    writeBrandValues(brand),
+    writeColorValues(brand),
+    writeLanguageValues(brand),
     copyBrandIcons(),
     copyFontAwesome(),
   ]);
