@@ -220,7 +220,7 @@ custom: # Custom properties to make workflows cleaner
         brew tap wix/brew
         brew install applesimutils
         xcrun simctl shutdown all
-        TEST_DEVICE=$(xcrun simctl create test-device com.apple.CoreSimulator.SimDeviceType.iPhone-14-Pro com.apple.CoreSimulator.SimRuntime.iOS-16-2)
+        TEST_DEVICE=$(xcrun simctl create test-device com.apple.CoreSimulator.SimDeviceType.iPhone-14-Pro com.apple.CoreSimulator.SimRuntime.iOS-16-4)
         xcrun simctl boot $TEST_DEVICE
         for filename in integration_test/tests/**/*.dart; do
           flutter install --use-application-binary=build/ios/ipa/Vialer.ipa -d $TEST_DEVICE
