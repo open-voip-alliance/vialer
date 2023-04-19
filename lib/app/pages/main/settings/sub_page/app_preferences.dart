@@ -50,7 +50,10 @@ class AppPreferencesSubPage extends StatelessWidget {
                   children: [
                     if (user.isAllowedVoipCalling) UseVoipTile(user),
                     if (useVoip && canViewMobileFallback)
-                      UseMobileNumberAsFallbackTile(user),
+                      UseMobileNumberAsFallbackTile(
+                        user,
+                        enabled: state.shouldAllowRemoteSettings,
+                      ),
                     if (context.isIOS && user.isAllowedVoipCalling)
                       ShowCallsInNativeRecentsTile(user),
                     if (context.isAndroid)

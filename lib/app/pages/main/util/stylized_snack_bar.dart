@@ -8,11 +8,12 @@ void showSnackBar(
   required Widget label,
   EdgeInsets padding = EdgeInsets.zero,
   Duration duration = const Duration(seconds: 4),
+  ScaffoldMessengerState? scaffoldMessengerState,
 }) {
   final backgroundColor = context.brand.theme.colors.buttonBackground;
   final contentColor = context.brand.theme.colors.raisedColoredButtonText;
 
-  ScaffoldMessenger.of(context).showSnackBar(
+  (scaffoldMessengerState ?? ScaffoldMessenger.of(context)).showSnackBar(
     SnackBar(
       duration: duration,
       behavior: SnackBarBehavior.fixed,

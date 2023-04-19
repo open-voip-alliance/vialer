@@ -419,7 +419,7 @@ class _ColltactPageState extends State<_ColltactList>
           : defaultContactSort,
     );
 
-    onRefresh() async {
+    Future<void> onRefresh() async {
       await colleaguesCubit.refresh();
       await contactsCubit.reloadContacts();
     }
