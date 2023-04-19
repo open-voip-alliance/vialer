@@ -21,6 +21,11 @@ generic:
 buildError:
   anErrorOccurred: "A rendering error occurred!"
 
+rateLimiting:
+  snackbar:
+    message(String appName, String seconds): >-
+      $appName could not save the setting. Sorry, please try again in $seconds seconds.
+
 connectivity:
   noConnection:
     title: &noConnectionTitle "No internet connection"
