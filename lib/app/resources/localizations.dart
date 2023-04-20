@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import 'messages.i18n.dart';
+import 'messages_de.i18n.dart';
 import 'messages_nl.i18n.dart';
 
 class VialerLocalizations {
@@ -16,6 +17,8 @@ class VialerLocalizations {
   }
 
   static const delegate = _VialerLocalizationsDelegate();
+
+  static const locales = ['en', 'nl', 'de'];
 }
 
 extension LocalizationsContext on BuildContext {
@@ -25,6 +28,8 @@ extension LocalizationsContext on BuildContext {
       VialerLocalizations.of(this).locale.languageCode == 'en';
 
   bool get isDutch => VialerLocalizations.of(this).locale.languageCode == 'nl';
+
+  bool get isGerman => VialerLocalizations.of(this).locale.languageCode == 'de';
 }
 
 class _VialerLocalizationsDelegate
@@ -32,7 +37,8 @@ class _VialerLocalizationsDelegate
   const _VialerLocalizationsDelegate();
 
   @override
-  bool isSupported(Locale locale) => ['en', 'nl'].contains(locale.languageCode);
+  bool isSupported(Locale locale) =>
+      VialerLocalizations.locales.contains(locale.languageCode);
 
   @override
   Future<VialerLocalizations> load(Locale locale) {
@@ -49,6 +55,8 @@ Messages _messagesFromLocale(Locale locale) {
       return const Messages();
     case 'nl':
       return const MessagesNl();
+    case 'de':
+      return const MessagesDe();
     default:
       throw UnsupportedError('Unsupported locale');
   }
