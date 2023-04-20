@@ -23,6 +23,7 @@ import '../../../../domain/user/settings/call_setting.dart';
 import '../../../../domain/user/settings/change_settings.dart';
 import '../../../../domain/user/settings/settings.dart';
 import '../../../../domain/user/user.dart';
+import '../../../../domain/voipgrid/rate_limit_reached_event.dart';
 import '../../../util/loggable.dart';
 import 'state.dart';
 
@@ -48,11 +49,24 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
 
   final List<_SettingChangeRequest> _changesBeingProcessed = [];
 
+  bool _isRateLimited = false;
+  static const rateLimitDuration = Duration(seconds: 60);
+
   SettingsCubit() : super(SettingsState(user: GetLoggedInUserUseCase()())) {
     _emitUpdatedState();
     _eventBus.on<LoggedInUserWasRefreshed>(
       (event) => _emitUpdatedState(user: event.user),
     );
+
+    _eventBus.on<RateLimitReachedEvent>((event) {
+      _isRateLimited = true;
+      _emitUpdatedState();
+
+      Timer(rateLimitDuration, () {
+        _isRateLimited = false;
+        _emitUpdatedState();
+      });
+    });
   }
 
   bool get _isUpdatingRemote => _changesBeingProcessed
@@ -64,7 +78,7 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
   }) async {
     // We don't want to emit any refresh changes while we're in the progress
     // of changing remote settings.
-    if (_isUpdatingRemote) return;
+    if (_isUpdatingRemote && !_isRateLimited) return;
 
     user = user ?? _getUser();
 
@@ -80,6 +94,7 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
         userNumber: _storageRepository.userNumber,
         availableDestinations: _storageRepository.availableDestinations,
         isApplyingChanges: _isUpdatingRemote,
+        isRateLimited: _isRateLimited,
       ),
     );
   }

@@ -1,0 +1,4 @@
+- A problem where you could not send feedback, has been fixed.
+- When you search for a contact or colleague, the part you searched for is now highlighted.
+- Some performance improvements.
+- Android: Various problems where you would hear nothing or only one side of a call has been fixed.

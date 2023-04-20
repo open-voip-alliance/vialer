@@ -125,7 +125,7 @@ class _CallPageState extends State<_CallPage>
   /// Optionally provide an [after] duration for this to be
   /// performed after a delay.
   void _dismissCallPage(BuildContext context, {Duration? after}) {
-    dismiss() {
+    void dismiss() {
       if (mounted) {
         Navigator.of(context, rootNavigator: true)
             .popUntil((route) => route.isFirst);

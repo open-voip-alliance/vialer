@@ -45,7 +45,7 @@ void main() {
   });
 }
 
-_expectsToMatchContact({
+void _expectsToMatchContact({
   required String numberInCallRecord,
   required List<String> numbersInContacts,
 }) =>
@@ -55,7 +55,7 @@ _expectsToMatchContact({
       shouldMatch: true,
     );
 
-_expectsNotToMatchContact({
+void _expectsNotToMatchContact({
   required String numberInCallRecord,
   required List<String> numbersInContacts,
 }) =>
@@ -65,7 +65,7 @@ _expectsNotToMatchContact({
       shouldMatch: false,
     );
 
-_expectContactMatching(
+void _expectContactMatching(
   String numberInCallRecord,
   List<String> numbersInContacts, {
   required bool shouldMatch,
