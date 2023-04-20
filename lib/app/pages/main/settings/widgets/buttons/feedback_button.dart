@@ -10,8 +10,7 @@ import 'settings_button.dart';
 
 class FeedbackButton extends StatelessWidget {
   Future<void> _goToFeedbackPage(BuildContext context) async {
-    final sent = await Navigator.pushNamed(
-          context,
+    final sent = await Navigator.of(context, rootNavigator: true).pushNamed(
           Routes.feedback,
         ) as bool? ??
         false;

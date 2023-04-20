@@ -7,6 +7,7 @@ import '../../../dependency_locator.dart';
 import '../colltacts/colltact_tab.dart';
 import '../legacy/storage.dart';
 import '../use_case.dart';
+import '../user/client.dart';
 import '../user/get_brand.dart';
 import '../user/get_logged_in_user.dart';
 import '../user/settings/settings.dart';
@@ -32,6 +33,7 @@ class IdentifyForTrackingUseCase extends UseCase {
       {
         'brand': _getBrand().identifier,
         ...user.toIdentifyProperties(),
+        ...user.client.toIdentifyProperties(),
         ..._storageRepository.grantedVoipgridPermissions.toIdentifyProperties(),
         ..._storageRepository.colleagues.toIdentifyProperties(),
         ..._storageRepository.currentColltactTab.toIdentifyProperties(),
@@ -89,4 +91,10 @@ extension on SettingKey {
 
     return '$type-$name'.paramCase;
   }
+}
+
+extension on Client {
+  Map<String, dynamic> toIdentifyProperties() => {
+        'outgoing-numbers-amount': outgoingNumbers.length,
+      };
 }
