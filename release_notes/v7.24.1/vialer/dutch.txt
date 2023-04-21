@@ -1,0 +1,4 @@
+- Een probleem waardoor je geen feedback kon versturen, is opgelost.
+- Wanneer je zoekt naar een een contact of collega, wordt nu het gedeelte wat je hebt getypt gehighlight.
+- Wat performance verbeteringen.
+- Android: Meerdere problemen waardoor je niks kon horen, of maar 1 kant tijdens een gesprek, is opgelost.
