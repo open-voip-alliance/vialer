@@ -4,7 +4,7 @@ import 'dart:io';
 /// The new values must be provided as command-line arguments.
 ///
 /// Usage: dart update_ios_signing_for_brand.dart <iosTeamId> <iosBundleId>
-void main(List<String> arguments) {
+void main(List<String> arguments) async {
   if (arguments.length < 2) {
     throw ArgumentError(
       'Usage: dart replace_ios_teamid_bundleid.dart'
@@ -27,7 +27,7 @@ void main(List<String> arguments) {
   };
 
   var file = File(filePath);
-  var contents = file.readAsStringSync();
+  var contents = await file.readAsString();
 
   for (var replacement in replacements.entries) {
     for (var candidate in replacement.value) {
@@ -38,5 +38,5 @@ void main(List<String> arguments) {
     }
   }
 
-  file.writeAsStringSync(contents);
+  await file.writeAsString(contents);
 }
