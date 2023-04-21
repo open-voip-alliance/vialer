@@ -19,7 +19,7 @@ dependencies:
   flutter_phone_lib:
     git:
       url: https://github.com/open-voip-alliance/flutter-phone-lib
-      ref: 9bfbd24b889eace4d84e185808beaab9eeac9d05
+      ref: ac5ce63cdae417665dacaca46b1e64c1e6d94469
 
   # We use our own fork, this is required when using Font Awesome Pro.
   # See: https://pub.dev/packages/font_awesome_flutter#enable-pro-icons
