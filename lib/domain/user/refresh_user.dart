@@ -322,8 +322,22 @@ class RefreshUser extends UseCase with Loggable {
       _voicemailRepository.getVoicemailAccounts(user: user);
 
   /// Retrieving user voip config and handling its possible side effects.
-  Future<UserVoipConfig?> _getUserVoipConfig(User user) =>
-      _userVoipConfigRepository.get();
+  Future<UserVoipConfig?> _getUserVoipConfig(User user) async {
+    final config = await _userVoipConfigRepository.get();
+
+    if (config == null) return null;
+
+    if (!config.useEncryption || !config.useOpus) {
+      // These values are required for the app to function, so we always want to
+      // make sure they are set to [true].
+      _authRepository.updateAppAccount(
+        useEncryption: true,
+        useOpus: true,
+      );
+    }
+
+    return config;
+  }
 
   /// Retrieving user voip config and handling its possible side effects.
   Future<ClientVoipConfig?> _getClientVoipConfig(User user) async {
