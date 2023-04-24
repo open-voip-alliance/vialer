@@ -46,24 +46,45 @@ void main(List<String> arguments) async {
     'Private-Token': gitlabApiToken.toString(),
   };
 
-  final template = '[Codemagic: Latest Build ($buildNumber)]'
-      '(https://codemagic.io/app/$projectId/build/$buildId)';
-  final message = template
-      .replaceAll('$buildNumber', '\\d+')
-      .replaceAll('$projectId', '[^)]+')
-      .replaceAll('$buildId', '[^)]+');
+  final buildInformation = '''
+[Codemagic: Latest Build ($buildNumber)](https://codemagic.io/app/$projectId/build/$buildId)
+''';
 
-  final currentDescription = (await http.get(url, headers: headers)).body;
+  final response = await http.get(url, headers: headers);
 
-  final regex = RegExp(message, multiLine: true);
-  final newDescription = regex.hasMatch(currentDescription)
-      ? currentDescription.replaceAll(regex, template)
-      : '$currentDescription\n\n$template';
-  await http.put(
-    url,
-    headers: headers,
-    body: json.encode({
-      'description': newDescription,
-    }),
-  );
+  if (response.statusCode != 200) return;
+
+  final currentDescription = jsonDecode(response.body)['description'] as String;
+
+  final newDescription = currentDescription.containsBuildInformationAlready
+      ? currentDescription.replaceExistingBuildInformation(buildInformation)
+      : currentDescription.appendBuildInformation(buildInformation);
+
+  await updateWithNewDescription(url, headers, newDescription);
 }
+
+extension on String {
+  bool get containsBuildInformationAlready => contains('[Codemagic:');
+
+  String replaceExistingBuildInformation(String buildInformation) =>
+      replaceAllMapped(
+        RegExp(r'^\[Codemagic\:.+$', multiLine: true),
+        (match) => '$buildInformation',
+      );
+
+  String appendBuildInformation(String buildInformation) =>
+      '$this\n\n$buildInformation';
+}
+
+Future<http.Response> updateWithNewDescription(
+  Uri url,
+  Map<String, String> headers,
+  String newDescription,
+) =>
+    http.put(
+      url,
+      headers: headers,
+      body: json.encode({
+        'description': newDescription,
+      }),
+    );
