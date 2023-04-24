@@ -18,8 +18,8 @@ const localizationMap = {
 
 /// The messages files that should be updated with the release notes.
 const messagesLocalizationMap = {
-  'english.txt': 'messages.i18n',
-  'dutch.txt': 'messages_nl.i18n',
+  'english.txt': ['messages.i18n', 'messages_de.i18n'],
+  'dutch.txt': ['messages_nl.i18n'],
 };
 
 /// The path to where the messages.yaml files are stored.
@@ -107,20 +107,22 @@ Future<void> buildMessageFiles() async => Process.run('flutter', [
 /// after this has been run.
 Future<void> updateMessagesFilesWithLatestReleaseNotes(File file) async {
   final fileName = basename(file.path);
-  final mapping = messagesLocalizationMap[fileName];
+  final mappings = messagesLocalizationMap[fileName] ?? [];
 
-  final messagesFile = File('$messagesFileDirectory$mapping.yaml');
+  for (final mapping in mappings) {
+    final messagesFile = File('$messagesFileDirectory$mapping.yaml');
 
-  if (!await messagesFile.exists()) {
-    throw Exception('${messagesFile.path} does not exist.');
+    if (!await messagesFile.exists()) {
+      throw Exception('${messagesFile.path} does not exist.');
+    }
+
+    final yamlEditor = YamlEditor(await messagesFile.readAsString());
+    yamlEditor.update(
+      ['main', 'update', 'releaseNotes', 'notes'],
+      await file.readAsString(),
+    );
+    messagesFile.writeAsString(yamlEditor.toString());
   }
-
-  final yamlEditor = YamlEditor(await messagesFile.readAsString());
-  yamlEditor.update(
-    ['main', 'update', 'releaseNotes', 'notes'],
-    await file.readAsString(),
-  );
-  messagesFile.writeAsString(yamlEditor.toString());
 }
 
 /// Finds the mappings and generates the relevant files for each language.

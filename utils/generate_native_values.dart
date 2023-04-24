@@ -118,12 +118,12 @@ Future<void> writeColorValues(Brand brand) async {
 }
 
 Future<void> writeLanguageValues(Brand brand) async {
-  Future<void> write({required bool dutch}) async {
+  Future<void> write({required String? locale}) async {
     final builder = createXmlBuilder();
 
-    final nlOrEmpty = dutch ? '_nl' : '';
+    final localeOrEmpty = locale != null ? '_$locale' : '';
     final languageStrings = loadYaml(
-      await File('lib/app/resources/messages$nlOrEmpty.i18n.yaml')
+      await File('lib/app/resources/messages$localeOrEmpty.i18n.yaml')
           .readAsString(),
     ) as YamlMap;
 
@@ -238,11 +238,15 @@ Future<void> writeLanguageValues(Brand brand) async {
     await builder.buildDocument().writeToAndroidResource(
           'strings.xml',
           brand: brand,
-          dutch: dutch,
+          locale: locale,
         );
   }
 
-  await Future.wait([write(dutch: false), write(dutch: true)]);
+  await Future.wait([
+    write(locale: null),
+    write(locale: 'nl'),
+    write(locale: 'de'),
+  ]);
 }
 
 Future<void> copyBrandIcons() async {
@@ -286,11 +290,11 @@ extension on XmlDocument {
   Future<void> writeToAndroidResource(
     String path, {
     Brand? brand,
-    bool dutch = false,
+    String? locale,
   }) async {
     final rootPath = brand?.identifier ?? 'main';
-    final nlOrEmpty = dutch ? '-nl' : '';
-    await File('android/app/src/$rootPath/res/values$nlOrEmpty/$path')
+    final localeOrEmpty = locale != null ? '-$locale' : '';
+    await File('android/app/src/$rootPath/res/values$localeOrEmpty/$path')
         .create(recursive: true)
         .then((f) => f.writeAsString(toXmlString(pretty: true)));
   }
