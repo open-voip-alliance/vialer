@@ -9,7 +9,8 @@ import '../../../../../domain/calling/voip/register_to_voip_middleware.dart';
 import '../../../../../domain/legacy/storage.dart';
 import '../../../../../domain/onboarding/is_onboarded.dart';
 import '../../../../../domain/user/get_logged_in_user.dart';
-import '../../../../../domain/user/refresh_user.dart';
+import '../../../../../domain/user/refresh/refresh_user.dart';
+import '../../../../../domain/user/refresh/user_refresh_task.dart';
 import '../../../../util/loggable.dart';
 import 'state.dart';
 
@@ -46,7 +47,7 @@ class UserDataRefresherCubit extends Cubit<UserDataRefresherState>
 
     _storageRepository.lastUserRefreshedTime = DateTime.now();
 
-    final newUser = await _refreshUser();
+    final newUser = await _refreshUser(tasksToPerform: UserRefreshTask.all);
 
     await _registerToVoipMiddleware();
 
@@ -60,7 +61,7 @@ class UserDataRefresherCubit extends Cubit<UserDataRefresherState>
 
 extension on DateTime? {
   /// The minimum duration between which a user refresh can happen.
-  static const _minInterval = Duration(minutes: 1);
+  static const _minInterval = Duration(seconds: 60);
 
   bool get isReadyForRefresh =>
       this?.isBefore(DateTime.now().subtract(_minInterval)) ?? true;
