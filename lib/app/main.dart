@@ -129,10 +129,7 @@ class _AppState extends State<App> {
                 GlobalWidgetsLocalizations.delegate,
                 GlobalCupertinoLocalizations.delegate,
               ],
-              supportedLocales: [
-                const Locale('en'),
-                const Locale('nl'),
-              ],
+              supportedLocales: VialerLocalizations.locales.map(Locale.new),
               builder: (context, child) {
                 if (!inDebugMode) {
                   ErrorWidget.builder = (_) => const BuildError();

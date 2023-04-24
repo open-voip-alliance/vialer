@@ -13,6 +13,7 @@ linter:
     use_function_type_syntax_for_parameters: true
     prefer_const_constructors: true
     avoid_print: true
+    always_declare_return_types: true
 
 analyzer:
   errors:

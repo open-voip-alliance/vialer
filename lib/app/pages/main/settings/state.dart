@@ -25,12 +25,14 @@ class SettingsState with _$SettingsState {
     /// If we are currently in the process of applying changes, this is usually
     /// when updating a remote setting, so waiting for an API response.
     @Default(false) bool isApplyingChanges,
+    @Default(false) bool isRateLimited,
   }) = _SettingsState;
 
   bool get showTroubleshooting =>
       user.settings.get(AppSetting.showTroubleshooting);
   bool get showDnd =>
       user.isAllowedVoipCalling && user.settings.get(CallSetting.useVoip);
+  bool get shouldAllowRemoteSettings => !isApplyingChanges && !isRateLimited;
 
   SettingsState withChanged(
     Settings settings, {

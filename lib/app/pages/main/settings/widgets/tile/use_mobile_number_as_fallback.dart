@@ -11,9 +11,12 @@ class UseMobileNumberAsFallbackTile extends StatelessWidget {
   final User user;
 
   final String _mobileNumber;
+  final bool enabled;
 
-  UseMobileNumberAsFallbackTile(this.user, {super.key})
-      : _mobileNumber = user.settings.get(CallSetting.mobileNumber);
+  UseMobileNumberAsFallbackTile(
+    this.user, {
+    this.enabled = true,
+  }) : _mobileNumber = user.settings.get(CallSetting.mobileNumber);
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +31,7 @@ class UseMobileNumberAsFallbackTile extends StatelessWidget {
       child: BoolSettingValue(
         user.settings,
         CallSetting.useMobileNumberAsFallback,
-        onChanged: user.permissions.canChangeMobileNumberFallback
+        onChanged: user.permissions.canChangeMobileNumberFallback && enabled
             ? defaultOnChanged
             : null,
       ),

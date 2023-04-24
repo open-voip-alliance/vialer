@@ -75,6 +75,11 @@ class VoipgridApiResourceCollector with Loggable {
       paginatedResponse = _PaginatedVoipgridApiResponse.fromJson(
         response.body as Map<String, dynamic>,
       );
+    } else if (response.hasLinkHeader) {
+      paginatedResponse = _PaginatedVoipgridApiResponse.known(
+        items: response.body as List<dynamic>,
+        hasMore: response.hasMoreInLinkHeader,
+      );
     } else {
       // This will handle APIs that allow for this type of pagination, but
       // don't return an explicit next field. We have to query the next page
@@ -89,7 +94,7 @@ class VoipgridApiResourceCollector with Loggable {
     }
 
     if (paginatedResponse.hasMore) {
-      _makeRequest(
+      yield* _makeRequest(
         requester,
         page: ++page,
       );
@@ -109,10 +114,25 @@ class _PaginatedVoipgridApiResponse with _$_PaginatedVoipgridApiResponse {
   factory _PaginatedVoipgridApiResponse.fromJson(Map<String, dynamic> json) =>
       _$_PaginatedVoipgridApiResponseFromJson(json);
 
+  factory _PaginatedVoipgridApiResponse.known({
+    required List<dynamic> items,
+    required bool hasMore,
+  }) =>
+      _PaginatedVoipgridApiResponse(next: hasMore ? '' : null, items: items);
+
   factory _PaginatedVoipgridApiResponse.ambiguous({
     required List<dynamic> items,
   }) =>
-      _PaginatedVoipgridApiResponse(next: ' ', items: items);
+      _PaginatedVoipgridApiResponse(next: '', items: items);
 
   bool get hasMore => next != null;
+}
+
+extension on Response {
+  static const _linkHeader = 'link';
+
+  bool get hasLinkHeader => headers.containsKey(_linkHeader);
+
+  bool get hasMoreInLinkHeader =>
+      headers[_linkHeader]?.contains('next') == true;
 }

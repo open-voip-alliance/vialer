@@ -209,7 +209,7 @@ custom: # Custom properties to make workflows cleaner
         sed -i -e "s/TEST_USER_WITHOUT_APP_ACCOUNT_EMAIL\=*/TEST_USER_WITHOUT_APP_ACCOUNT_EMAIL\=$TEST_USER_WITHOUT_APP_ACCOUNT_EMAIL/g" .env
         sed -i -e "s/TEST_USER_WITHOUT_APP_ACCOUNT_PASSWORD\=*/TEST_USER_WITHOUT_APP_ACCOUNT_PASSWORD\=$TEST_USER_WITHOUT_APP_ACCOUNT_PASSWORD/g" .env
     - &run_integration_tests_ios
-      name: Run integration tests on iOS emulator
+      name: Running integration tests on iOS emulator
       script: |
         #!/usr/bin/env zsh
         set -e # Ensures the script exits if any commands fail to execute
@@ -217,15 +217,15 @@ custom: # Custom properties to make workflows cleaner
             echo "Error: You must run the build_ipa script before running iOS integration tests"
             exit 1
         fi
-        brew tap wix/brew
-        brew install applesimutils
+        brew tap wix/brew && brew install applesimutils
         xcrun simctl shutdown all
-        TEST_DEVICE=$(xcrun simctl create test-device com.apple.CoreSimulator.SimDeviceType.iPhone-14-Pro com.apple.CoreSimulator.SimRuntime.iOS-16-2)
-        xcrun simctl boot $TEST_DEVICE
+        latestRuntime="$(xcrun simctl list runtimes | grep -o -E 'iOS [0-9.]*' | sort -r | head -n1 | tr -d '[:space:]')"
+        testDevice=$(xcrun simctl create integration-test-simulator com.apple.CoreSimulator.SimDeviceType.iPhone-14-Pro $latestRuntime)
+        xcrun simctl boot $testDevice
         for filename in integration_test/tests/**/*.dart; do
-          flutter install --use-application-binary=build/ios/ipa/Vialer.ipa -d $TEST_DEVICE
+          flutter install --use-application-binary=build/ios/ipa/Vialer.ipa -d $testDevice
           applesimutils --booted --bundle com.voipgrid.vialer --setPermissions contacts=YES,microphone=YES,notifications=YES
-          flutter drive -t "$filename" --driver test_driver/integration_test.dart -d $TEST_DEVICE
+          flutter drive -t "$filename" --driver test_driver/integration_test.dart -d $testDevice
         done
     - &update_gitlab_merge_request_with_build_url
       name: Updating the Merge Request in Gitlab with a link to this build
@@ -266,8 +266,10 @@ custom: # Custom properties to make workflows cleaner
     max_build_duration: 90
     instance_type: mac_mini_m1
     environment: &config_environment
-      flutter: 3.7.10
-      xcode: latest
+      flutter: 3.7.12
+      # This has to be 14.2 for our integration tests to work, it should be changed to latest
+      # when the tooling supports xCode 14.3.
+      xcode: 14.2
       cocoapods: 1.11.3
     cache:
       cache_paths:
@@ -361,7 +363,7 @@ custom: # Custom properties to make workflows cleaner
       google_play:
         credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
         track: production
-        in_app_update_priority: 0
+        in_app_update_priority: 1
 
     publish_for_beta: &publish_for_beta
       app_store_connect:
@@ -375,7 +377,7 @@ custom: # Custom properties to make workflows cleaner
       google_play:
         credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
         track: beta
-        in_app_update_priority: 3
+        in_app_update_priority: 5
 
     publish_for_internal_preview: &publish_for_internal_preview
       app_store_connect:
@@ -469,7 +471,7 @@ workflows:
       - *update_ios_signing_for_current_brand
       - *prepare_environment_for_integration_testing
       - *build_ipa
-#      - *run_integration_tests_ios
+      - *run_integration_tests_ios
       - *build_aab
       - *build_universal_apk_from_aab
       - *release_to_sentry
