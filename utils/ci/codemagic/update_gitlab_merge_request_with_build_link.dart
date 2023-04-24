@@ -6,17 +6,10 @@ import 'package:http/http.dart' as http;
 
 /// This script updates the description of a GitLab merge request with a
 /// Codemagic build status link.
-///
-/// Arguments:
-/// --merge-request-id: the ID of the merge request to update (required)
-/// --gitlab-api-token: the GitLab API token (required)
-/// --build-number: the Codemagic build number (required)
-/// --project-id: the Codemagic project ID (required)
-/// --build-id: the Codemagic build ID (required))
 void main(List<String> arguments) async {
   final argParser = ArgParser()
-    ..addOption('merge-request-id', help: 'Merge request ID')
-    ..addOption('gitlab-api-token', help: 'GitLab API token')
+    ..addOption('merge-request-id', help: 'The merge request id from gitlab')
+    ..addOption('gitlab-api-token', help: 'An api token for Gitlab')
     ..addOption('build-number', help: 'Codemagic build number')
     ..addOption('project-id', help: 'Codemagic project ID')
     ..addOption('build-id', help: 'Codemagic build ID');
@@ -37,15 +30,17 @@ void main(List<String> arguments) async {
   final projectId = args['project-id']!;
   final buildId = args['build-id']!;
 
-  final url = Uri.parse(
-    'https://gitlab.wearespindle.com/'
-    'api/v4/projects/105/merge_requests/$mergeRequestId',
-  );
+  final url = Uri.parse('''
+https://gitlab.wearespindle.com/api/v4/projects/105/merge_requests/$mergeRequestId
+''');
+
   final headers = {
     HttpHeaders.contentTypeHeader: 'application/json',
     'Private-Token': gitlabApiToken.toString(),
   };
 
+  // Using a multi-line string as it is easier to read what is being produced,
+  // rather than splitting it.
   final buildInformation = '''
 [Codemagic: Latest Build ($buildNumber)](https://codemagic.io/app/$projectId/build/$buildId)
 ''';
@@ -60,7 +55,7 @@ void main(List<String> arguments) async {
       ? currentDescription.replaceExistingBuildInformation(buildInformation)
       : currentDescription.appendBuildInformation(buildInformation);
 
-  await updateWithNewDescription(url, headers, newDescription);
+  await _updateWithNewDescription(url, headers, newDescription);
 }
 
 extension on String {
@@ -76,7 +71,7 @@ extension on String {
       '$this\n\n$buildInformation';
 }
 
-Future<http.Response> updateWithNewDescription(
+Future<http.Response> _updateWithNewDescription(
   Uri url,
   Map<String, String> headers,
   String newDescription,
@@ -84,7 +79,9 @@ Future<http.Response> updateWithNewDescription(
     http.put(
       url,
       headers: headers,
-      body: json.encode({
-        'description': newDescription,
-      }),
+      body: json.encode(
+        {
+          'description': newDescription,
+        },
+      ),
     );
