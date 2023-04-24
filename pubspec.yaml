@@ -67,9 +67,6 @@ dependencies:
   in_app_review: ^2.0.4
   synchronized: ^3.0.0+3
 
-  # This exists temporarily to import credentials from the legacy app and can be totally removed
-  # when all users have been moved over.
-  native_shared_preferences: ^2.0.4
   duration: ^3.0.6
   flutter_keyboard_visibility: ^5.3.0
   drift: ^1.7.1
