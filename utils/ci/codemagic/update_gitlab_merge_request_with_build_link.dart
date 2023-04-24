@@ -31,7 +31,6 @@ void main(List<String> arguments) async {
     throw Exception(argParser.usage);
   }
 
-  // Get environment variables from command line arguments
   final mergeRequestId = args['merge-request-id']!;
   final gitlabApiToken = args['gitlab-api-token']!;
   final buildNumber = args['build-number']!;
