@@ -37,7 +37,6 @@ class Caller extends StatefulWidget {
 class _CallerState extends State<Caller>
     with WidgetsBindingObserver, WidgetsBindingObserverRegistrar {
   bool _resumedOnceDuringCalling = false;
-  // bool _isRinging = false; //wip
 
   NavigatorState get _navigatorState => widget.navigatorKey.currentState!;
 
@@ -64,53 +63,9 @@ class _CallerState extends State<Caller>
     }
   }
 
-  // static const _ringingRouteName = 'ringing'; //wip
-
-  /// Launch the appropriate call screen depending on the platform,
-  /// for iOS we will use the Flutter call screen and for Android we will
-  /// use a native implementation.
-  // Future<void> launchIncomingCallScreen(Ringing state) async {
-  //   //wip
-  //   final call = state.voipCall;
-  //
-  //   if (call == null) return;
-  //   //wip android
-  //   if (context.isAndroid) {
-  //     NativeIncomingCallScreen().launch(
-  //       call.remotePartyHeading,
-  //       call.remotePartySubheading,
-  //       call.contact?.imageUri?.toString() ?? '',
-  //     );
-  //     return;
-  //   }
-  //   //wip ios
-  //   // await _navigatorState.push(
-  //   //   MaterialPageRoute(
-  //   //     settings: const RouteSettings(
-  //   //       name: _ringingRouteName,
-  //   //     ),
-  //   //     builder: (_) => const IncomingCallPage(),
-  //   //   ),
-  //   // );
-  // }
-
   // NOTE: Only called when the state type changes, not when the same state
   // with a different `voipCall` is emitted.
   Future<void> _onStateChanged(BuildContext context, CallerState state) async {
-    // if (state is Ringing) {
-    //   _isRinging = true;
-    //   // launchIncomingCallScreen(state); //wip
-    // } else {
-    //   // Last state was ringing, remove the incoming call page.
-    //   // if (_isRinging) {
-    //   //   _navigatorState.popUntil(
-    //   //     (route) => route.settings.name != _ringingRouteName, //wip
-    //   //   );
-    //   // }
-    //
-    //   _isRinging = false;
-    // }
-
     if (state is StartingCall && state.isVoip ||
         (state is Calling &&
             state.isVoip &&
