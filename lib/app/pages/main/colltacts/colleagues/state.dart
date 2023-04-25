@@ -10,12 +10,10 @@ class ColleaguesState with _$ColleaguesState {
   const factory ColleaguesState.loading({
     required bool showOnlineColleaguesOnly,
   }) = LoadingColleagues;
-  const factory ColleaguesState.unreachable({
-    required bool showOnlineColleaguesOnly,
-  }) = WebSocketUnreachable;
   const factory ColleaguesState.loaded(
     List<Colleague> colleagues, {
     required bool showOnlineColleaguesOnly,
+    @Default(true) bool upToDate,
   }) = ColleaguesLoaded;
 }
 

@@ -2,6 +2,7 @@ import 'package:dartx/dartx.dart';
 import 'package:diacritic/diacritic.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:search_highlight_text/search_highlight_text.dart';
 
 import '../../../../../data/models/colltact.dart';
@@ -15,10 +16,12 @@ import '../../../../util/contact.dart';
 import '../../../../util/extensions.dart';
 import '../../../../util/pigeon.dart';
 import '../../../../util/widgets_binding_observer_registrar.dart';
+import '../../../../widgets/animated_visibility.dart';
 import '../../colltacts/colleagues/cubit.dart';
 import '../bottom_toggle.dart';
 import '../caller.dart';
 import '../nested_navigator.dart';
+import '../notice/widgets/banner.dart';
 import 'cubit.dart';
 import 'widgets/alphabet_list.dart';
 import 'widgets/group_header.dart';
@@ -159,11 +162,34 @@ class _ColltactPageState extends State<_ColltactList>
               final contactsCubit = context.watch<ContactsCubit>();
               final colleaguesCubit = context.watch<ColleaguesCubit>();
 
+              final showWebsocketUnreachableNotice =
+                  colleaguesCubit.shouldShowColleagues &&
+                      colleaguesState is ColleaguesLoaded &&
+                      !colleaguesState.upToDate;
+
               return DefaultTabController(
                 length: 2,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: AnimatedVisibility(
+                        visible: showWebsocketUnreachableNotice,
+                        child: NoticeBanner(
+                          icon: const FaIcon(FontAwesomeIcons.question),
+                          title: Text(
+                            context.msg.main.colleagues
+                                .websocketUnreachableNotice.title,
+                          ),
+                          content: Text(
+                            context
+                                .msg.main.colleagues.websocketUnreachableNotice
+                                .content(context.brand.appName),
+                          ),
+                        ),
+                      ),
+                    ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: SearchTextField(
@@ -259,6 +285,7 @@ class _ColltactPageState extends State<_ColltactList>
   List<Widget> _mapAndFilterToWidgets(
     Iterable<Colltact> colltacts,
     ContactSort contactSort,
+    bool colleaguesUpToDate,
   ) {
     final groupedColltacts = <String, List<Colltact>>{};
 
@@ -289,7 +316,11 @@ class _ColltactPageState extends State<_ColltactList>
       }
     }
 
-    return _createSortedColltactList(groupedColltacts, contactSort);
+    return _createSortedColltactList(
+      groupedColltacts,
+      contactSort,
+      colleaguesUpToDate,
+    );
   }
 
   String? _firstCharacterForSorting(
@@ -323,6 +354,7 @@ class _ColltactPageState extends State<_ColltactList>
   List<Widget> _createSortedColltactList(
     Map<String, List<Colltact>> colltacts,
     ContactSort contactSort,
+    bool colleaguesUpToDate,
   ) {
     return [
       // Sort all colltacts with a letter alphabetically.
@@ -337,7 +369,10 @@ class _ColltactPageState extends State<_ColltactList>
             GroupHeader(group: e.key),
             ...e.value
                 .sortedBy((colltact) => colltact.getSortKey(contactSort))
-                .map(ColltactItem.from)
+                .map((colltact) => ColltactItem.from(
+                      colltact,
+                      colleaguesUpToDate: colleaguesUpToDate,
+                    ))
           ],
         )
         .flatten()
@@ -373,8 +408,6 @@ class _ColltactPageState extends State<_ColltactList>
       case ColltactKind.colleague:
         if (colleaguesState is LoadingColleagues) {
           return NoResultsType.colleaguesLoading;
-        } else if (colleaguesState is WebSocketUnreachable) {
-          return NoResultsType.noColleagueConnectivity;
         } else if (colleaguesState.showOnlineColleaguesOnly &&
             !hasSearchQuery &&
             records.isEmpty) {
@@ -412,11 +445,16 @@ class _ColltactPageState extends State<_ColltactList>
       }
     }
 
+    final colleaguesUpToDate = colltactKind == ColltactKind.colleague &&
+        colleaguesState is ColleaguesLoaded &&
+        colleaguesState.upToDate;
+
     final records = _mapAndFilterToWidgets(
       colltacts,
       contactsState is ContactsLoaded
           ? contactsState.contactSort
           : defaultContactSort,
+      colleaguesUpToDate,
     );
 
     Future<void> onRefresh() async {
