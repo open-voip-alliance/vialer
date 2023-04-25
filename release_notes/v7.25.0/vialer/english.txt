@@ -1,0 +1,3 @@
+- The app is now also available in German
+- Several improvements regarding colleague online status
+- Android: A bug where sometimes the screen would not turn off after declining an incoming call has been fixed (Android 13)
