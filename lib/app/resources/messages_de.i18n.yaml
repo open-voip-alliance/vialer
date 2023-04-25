@@ -108,6 +108,12 @@ main:
       doNotDisturb: Bitte nicht stören
       offline: Offline
       unknown: Unbekannt
+      notUpToDate: 'Retrieving status'
+    websocketUnreachableNotice:
+      title: 'Cannot retrieve statuses'
+      content(String appName): >-
+        $appName is trying to retrieve your colleagues statuses. Please refresh this page in a bit.
+        It is still possible to make a call.
     toggle: Nur Online-Kollegen
   colltacts:
     noOnline:
@@ -118,9 +124,6 @@ main:
       colleagues(String number): Es wurden keine Kollegen für "$number" gefunden.
       contacts(String number): Es wurden keine Kontakte für "$number" gefunden.
       title: Keine Treffer gefunden
-    userAvailabilityWebSocketUnreachable:
-      subtitle: "Die Kollegenliste ist derzeit nicht erreichbar, bitte versuche es später noch einmal."
-      title: Es können keine Kollegen angezeigt werden
   contacts:
     edit: Ändern
     list:
