@@ -141,44 +141,7 @@ custom: # Custom properties to make workflows cleaner
         --key-pass $FCI_KEY_PASSWORD
     - &update_ios_signing_for_current_brand
       name: Updating iOS project files to use the appropriate signing information for the current brand
-      script: |
-        #!/usr/bin/env python3
-        import os
-        import re
-
-        iosTeamId = os.getenv('IOS_TEAM_ID')
-        iosBundleId = os.getenv('BUNDLE_ID')
-
-        if not isinstance(iosTeamId, str) or not isinstance(iosBundleId, str):
-          raise Exception("IOS_TEAM_ID and BUNDLE_ID environment variables must be set")
-
-        FILE_PATH = "ios/Runner.xcodeproj/project.pbxproj"
-        REPLACEMENTS = {
-            iosTeamId: [
-                "(DevelopmentTeam = )([A-Z0-9]+)(;)",
-                "(DEVELOPMENT_TEAM = )([A-Z0-9]+)(;)",
-            ],
-            iosBundleId: [
-                "(PRODUCT_BUNDLE_IDENTIFIER = )(.+)(;)",
-            ]
-        }
-
-        pbxprojFile = open(FILE_PATH, "r")
-        contents = "".join(pbxprojFile.readlines())
-        pbxprojFile.close
-
-        for replacement, candidates in REPLACEMENTS.items():
-            for candidate in candidates:
-                contents = re.sub(
-                    r'' + candidate,
-                    r'\1' + replacement + r'\3',
-                    contents
-                )
-
-
-        pbxprojFile = open(FILE_PATH, "w")
-        pbxprojFile.write("".join(contents))
-        pbxprojFile.close
+      script: dart utils/ci/codemagic/update_ios_signing_for_brand.dart $IOS_TEAM_ID $BUNDLE_ID
     - &build_ipa
       name: Building application (.ipa) for iOS
       script: |
