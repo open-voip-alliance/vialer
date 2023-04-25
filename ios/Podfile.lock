@@ -48,8 +48,6 @@ PODS:
     - libPhoneNumber-iOS
   - libPhoneNumber-iOS (0.9.15)
   - linphone-sdk-novideo (5.2.43)
-  - native_shared_preferences (1.0.0):
-    - Flutter
   - OrderedSet (5.0.0)
   - package_info (0.0.1):
     - Flutter
@@ -115,7 +113,6 @@ DEPENDENCIES:
   - iOSPhoneLib (from `https://github.com/open-voip-alliance/iOS-Phone-Lib.git`)
   - le (from `https://github.com/LogentriesCommunity/le_ios.git`)
   - libphonenumber (from `.symlinks/plugins/libphonenumber/ios`)
-  - native_shared_preferences (from `.symlinks/plugins/native_shared_preferences/ios`)
   - package_info (from `.symlinks/plugins/package_info/ios`)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/ios`)
@@ -173,8 +170,6 @@ EXTERNAL SOURCES:
     :git: https://github.com/LogentriesCommunity/le_ios.git
   libphonenumber:
     :path: ".symlinks/plugins/libphonenumber/ios"
-  native_shared_preferences:
-    :path: ".symlinks/plugins/native_shared_preferences/ios"
   package_info:
     :path: ".symlinks/plugins/package_info/ios"
   package_info_plus:
@@ -222,7 +217,6 @@ SPEC CHECKSUMS:
   libphonenumber: bd14d5abfc5939ab0b0767234e2d8e2593af258e
   libPhoneNumber-iOS: 0a32a9525cf8744fe02c5206eb30d571e38f7d75
   linphone-sdk-novideo: c628bfbaf8327a06f91a1a657f9e354e303ac6d1
-  native_shared_preferences: 21a805f6149643c25a20a4f534692131faebadfe
   OrderedSet: aaeb196f7fef5a9edf55d89760da9176ad40b93c
   package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
   package_info_plus: 6c92f08e1f853dc01228d6f553146438dafcd14e

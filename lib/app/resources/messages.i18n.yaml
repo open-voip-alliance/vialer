@@ -207,9 +207,6 @@ main:
         There were no colleagues found for "$number".
       contacts(String number): >-
         There were no contacts found for "$number".
-    userAvailabilityWebSocketUnreachable:
-      title: "Unable to display colleagues"
-      subtitle: "The colleague list is currently unavailable, please try again later."
 
   colleagues:
     toggle: 'Online colleagues only'
@@ -219,6 +216,13 @@ main:
       offline: 'Offline'
       unknown: 'Unknown'
       busy: 'Busy'
+      notUpToDate: 'Retrieving status'
+    websocketUnreachableNotice:
+      title: 'Cannot retrieve statuses'
+      content(String appName): >-
+        $appName is trying to retrieve your colleagues statuses. Please refresh this page in a bit.
+        It is still possible to make a call.
+
     context:
       ringing: 'Being called'
       inCall: 'Busy'

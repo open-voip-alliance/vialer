@@ -51,7 +51,6 @@ class RefreshUser extends UseCase with Loggable {
   final _eventBus = dependencyLocator<EventBus>();
 
   final _purgeLocalCallRecords = PurgeLocalCallRecordsUseCase();
-  final _shouldShowOpeningHoursBasic = ShouldShowOpeningHoursBasic();
 
   Future<User?> call({
     LoginCredentials? credentials,
@@ -102,32 +101,38 @@ class RefreshUser extends UseCase with Loggable {
 
       user = await tasksToRun.runOr(
         UserRefreshTask.remotePermissions,
+        user,
         fallback: user,
         () => _getRemotePermissions(user),
       );
 
       final clientOutgoingNumbers = tasksToRun.run(
         UserRefreshTask.remoteClientOutgoingNumbers,
+        user,
         () => _getRemoteClientOutgoingNumbers(user),
       );
 
       final clientVoicemailAccounts = tasksToRun.run(
         UserRefreshTask.remoteClientVoicemailAccounts,
+        user,
         () => _getClientVoicemailAccounts(user),
       );
 
       final clientVoipConfig = tasksToRun.run(
         UserRefreshTask.clientVoipConfig,
+        user,
         () => _getClientVoipConfig(user),
       );
 
       final currentTemporaryRedirect = tasksToRun.run(
         UserRefreshTask.currentTemporaryRedirect,
+        user,
         () => _getCurrentTemporaryRedirect(user),
       );
 
       final userVoipConfig = tasksToRun.run(
         UserRefreshTask.userVoipConfig,
+        user,
         () => _getUserVoipConfig(user),
       );
 
@@ -135,22 +140,23 @@ class RefreshUser extends UseCase with Loggable {
       // to have as fresh as possible for the best user experience.
       final remoteSettings = tasksToRun.runOr(
         UserRefreshTask.remoteSettings,
+        user,
         fallback: const <SettingKey, Object>{},
         () => _getRemoteSettings(user),
       );
 
       final availability = tasksToRun.runOr(
         UserRefreshTask.availability,
+        user,
         fallback: const <SettingKey, Object>{},
         () => _getAvailability(user),
       );
 
-      final openingHourModules = _shouldShowOpeningHoursBasic()
-          ? tasksToRun.run(
-              UserRefreshTask.clientVoipConfig,
-              () => _getOpeningHours(user),
-            )
-          : Future.value(const <OpeningHoursModule>[]);
+      final openingHoursModules = tasksToRun.run(
+        UserRefreshTask.openingHours,
+        user,
+        () => _getOpeningHours(user),
+      );
 
       await Future.wait([
         clientOutgoingNumbers,
@@ -160,7 +166,7 @@ class RefreshUser extends UseCase with Loggable {
         userVoipConfig,
         remoteSettings,
         availability,
-        openingHourModules,
+        openingHoursModules,
       ]);
 
       // All the 'await's are a formality here, the futures have been completed.
@@ -170,7 +176,7 @@ class RefreshUser extends UseCase with Loggable {
           voicemailAccounts: await clientVoicemailAccounts,
           voip: await clientVoipConfig,
           currentTemporaryRedirect: await currentTemporaryRedirect,
-          openingHoursModules: await openingHourModules,
+          openingHoursModules: await openingHoursModules,
         ),
         voip: await userVoipConfig,
         settings: user.settings.copyWithAll({
@@ -316,8 +322,22 @@ class RefreshUser extends UseCase with Loggable {
       _voicemailRepository.getVoicemailAccounts(user: user);
 
   /// Retrieving user voip config and handling its possible side effects.
-  Future<UserVoipConfig?> _getUserVoipConfig(User user) =>
-      _userVoipConfigRepository.get();
+  Future<UserVoipConfig?> _getUserVoipConfig(User user) async {
+    final config = await _userVoipConfigRepository.get();
+
+    if (config == null) return null;
+
+    if (!config.useEncryption || !config.useOpus) {
+      // These values are required for the app to function, so we always want to
+      // make sure they are set to [true].
+      _authRepository.updateAppAccount(
+        useEncryption: true,
+        useOpus: true,
+      );
+    }
+
+    return config;
+  }
 
   /// Retrieving user voip config and handling its possible side effects.
   Future<ClientVoipConfig?> _getClientVoipConfig(User user) async {
@@ -374,6 +394,7 @@ enum UserRefreshTask {
   currentTemporaryRedirect,
   availability,
   remoteSettings,
+  openingHours,
 }
 
 extension on List<UserRefreshTask> {
@@ -381,18 +402,39 @@ extension on List<UserRefreshTask> {
   /// tasks to complete.
   Future<T?> run<T>(
     UserRefreshTask task,
+    User user,
     Future<T> Function() callback,
   ) async =>
-      contains(task) ? await callback() : null;
+      contains(task) && user.hasPermissionFor(task) ? await callback() : null;
 
   /// Conditionally run the refresh task if it appears in our list of
   /// tasks to complete, or returns [fallback] if it doesn't.
   Future<T> runOr<T>(
     UserRefreshTask task,
+    User user,
     Future<T> Function() callback, {
     required T fallback,
   }) async =>
-      contains(task) ? await callback() : fallback;
+      contains(task) && user.hasPermissionFor(task)
+          ? await callback()
+          : fallback;
 
   bool get shouldSkipSynchronization => length <= 2;
+}
+
+extension on User {
+  bool hasPermissionFor(UserRefreshTask task) {
+    switch (task) {
+      case UserRefreshTask.remoteClientVoicemailAccounts:
+        return permissions.canViewVoipAccounts;
+      case UserRefreshTask.currentTemporaryRedirect:
+        return permissions.canChangeTemporaryRedirect;
+      case UserRefreshTask.remoteSettings:
+        return permissions.canViewMobileNumberFallbackStatus;
+      case UserRefreshTask.openingHours:
+        return ShouldShowOpeningHoursBasic()();
+      default:
+        return true;
+    }
+  }
 }

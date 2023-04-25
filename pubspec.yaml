@@ -7,7 +7,7 @@ version: 7.0.0
 
 environment:
   sdk: ">=2.19.0 <3.0.0"
-  flutter: 3.7.11
+  flutter: 3.7.12
 
 dependencies:
   flutter:
@@ -19,7 +19,7 @@ dependencies:
   flutter_phone_lib:
     git:
       url: https://github.com/open-voip-alliance/flutter-phone-lib
-      ref: ac5ce63cdae417665dacaca46b1e64c1e6d94469
+      ref: de0452f4a5cbb3a32a9863a23c1a14c48e8862d5
 
   # We use our own fork, this is required when using Font Awesome Pro.
   # See: https://pub.dev/packages/font_awesome_flutter#enable-pro-icons
@@ -67,9 +67,6 @@ dependencies:
   in_app_review: ^2.0.4
   synchronized: ^3.0.0+3
 
-  # This exists temporarily to import credentials from the legacy app and can be totally removed
-  # when all users have been moved over.
-  native_shared_preferences: ^2.0.4
   duration: ^3.0.6
   flutter_keyboard_visibility: ^5.3.0
   drift: ^1.7.1

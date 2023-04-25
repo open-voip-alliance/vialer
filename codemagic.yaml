@@ -141,44 +141,7 @@ custom: # Custom properties to make workflows cleaner
         --key-pass $FCI_KEY_PASSWORD
     - &update_ios_signing_for_current_brand
       name: Updating iOS project files to use the appropriate signing information for the current brand
-      script: |
-        #!/usr/bin/env python3
-        import os
-        import re
-
-        iosTeamId = os.getenv('IOS_TEAM_ID')
-        iosBundleId = os.getenv('BUNDLE_ID')
-
-        if not isinstance(iosTeamId, str) or not isinstance(iosBundleId, str):
-          raise Exception("IOS_TEAM_ID and BUNDLE_ID environment variables must be set")
-
-        FILE_PATH = "ios/Runner.xcodeproj/project.pbxproj"
-        REPLACEMENTS = {
-            iosTeamId: [
-                "(DevelopmentTeam = )([A-Z0-9]+)(;)",
-                "(DEVELOPMENT_TEAM = )([A-Z0-9]+)(;)",
-            ],
-            iosBundleId: [
-                "(PRODUCT_BUNDLE_IDENTIFIER = )(.+)(;)",
-            ]
-        }
-
-        pbxprojFile = open(FILE_PATH, "r")
-        contents = "".join(pbxprojFile.readlines())
-        pbxprojFile.close
-
-        for replacement, candidates in REPLACEMENTS.items():
-            for candidate in candidates:
-                contents = re.sub(
-                    r'' + candidate,
-                    r'\1' + replacement + r'\3',
-                    contents
-                )
-
-
-        pbxprojFile = open(FILE_PATH, "w")
-        pbxprojFile.write("".join(contents))
-        pbxprojFile.close
+      script: dart utils/ci/codemagic/update_ios_signing_for_brand.dart $IOS_TEAM_ID $BUNDLE_ID
     - &build_ipa
       name: Building application (.ipa) for iOS
       script: |
@@ -230,29 +193,12 @@ custom: # Custom properties to make workflows cleaner
     - &update_gitlab_merge_request_with_build_url
       name: Updating the Merge Request in Gitlab with a link to this build
       script: |
-        #!/usr/bin/env python3
-        import os
-        import requests
-        import re
-
-        MERGE_REQUEST_ID = os.getenv('GITLAB_MERGE_REQUEST_IID')
-        GITLAB_API_TOKEN = os.getenv('GITLAB_API_TOKEN')
-        BUILD_NUMBER = os.getenv('PROJECT_BUILD_NUMBER')
-        PROJECT_ID = os.getenv('FCI_PROJECT_ID')
-        BUILD_ID = os.getenv('FCI_BUILD_ID')
-        URL = "https://gitlab.wearespindle.com/api/v4/projects/105/merge_requests/{mergeRequestId}".format(mergeRequestId=MERGE_REQUEST_ID)
-        TEMPLATE = "[Codemagic: Latest Build ({buildNumber})](https://codemagic.io/app/{projectId}/build/{buildId})"
-        HEADERS = {'Content-Type': 'application/json','Private-Token': GITLAB_API_TOKEN}
-
-        if MERGE_REQUEST_ID is not None:
-          message = TEMPLATE.format(buildNumber=BUILD_NUMBER, projectId=PROJECT_ID, buildId=BUILD_ID)
-          regex = re.escape(message).replace(BUILD_NUMBER, '\d+').replace(PROJECT_ID, '[^)]+').replace(BUILD_ID, '[^)]+')
-          currentDescription = requests.get(URL, headers=HEADERS).json()['description']
-          newDescription = re.sub(regex, message, currentDescription)
-
-          requests.put(URL, headers=HEADERS, json={
-              'description': newDescription if currentDescription != newDescription else currentDescription + "\r\n\r\n" + message
-          })
+        dart utils/ci/codemagic/update_gitlab_merge_request_with_build_link.dart \
+        --merge-request-id=$GITLAB_MERGE_REQUEST_IID \
+        --gitlab-api-token=$GITLAB_API_TOKEN \
+        --build-number=$PROJECT_BUILD_NUMBER \
+        --project-id=$FCI_PROJECT_ID \
+        --build-id=$FCI_BUILD_ID
     - &set_testflight_release_notes_for_main
       name: Preparing "What to test" for TestFlight
       script: |
@@ -266,7 +212,7 @@ custom: # Custom properties to make workflows cleaner
     max_build_duration: 90
     instance_type: mac_mini_m1
     environment: &config_environment
-      flutter: 3.7.11
+      flutter: 3.7.12
       # This has to be 14.2 for our integration tests to work, it should be changed to latest
       # when the tooling supports xCode 14.3.
       xcode: 14.2

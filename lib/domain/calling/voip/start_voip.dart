@@ -1,6 +1,5 @@
 import '../../../app/util/loggable.dart';
 import '../../../dependency_locator.dart';
-import '../../authentication/authentication_repository.dart';
 import '../../use_case.dart';
 import '../../user/get_brand.dart';
 import '../../user/get_build_info.dart';
@@ -11,7 +10,6 @@ import 'voip_not_allowed.dart';
 
 class StartVoipUseCase extends UseCase with Loggable {
   final _voipRepository = dependencyLocator<VoipRepository>();
-  final _authRepository = dependencyLocator<AuthRepository>();
 
   final _getUser = GetLoggedInUserUseCase();
   final _registerToMiddleware = RegisterToVoipMiddlewareUseCase();
@@ -29,8 +27,6 @@ class StartVoipUseCase extends UseCase with Loggable {
       throw VoipNotAllowedException();
     }
 
-    await _updateRemoteVoipConfiguration();
-
     await _voipRepository.initializeAndStart(
       user: user,
       clientConfig: user.client.voip,
@@ -40,11 +36,4 @@ class StartVoipUseCase extends UseCase with Loggable {
 
     await _registerToMiddleware();
   }
-
-  /// Ensures the voip account on the server is configured as we expect.
-  Future<void> _updateRemoteVoipConfiguration() =>
-      _authRepository.updateAppAccount(
-        useEncryption: true,
-        useOpus: true,
-      );
 }

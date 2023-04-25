@@ -15,9 +15,13 @@ class ColltactItem extends StatelessWidget {
   final Widget avatar;
   final VoidCallback onTap;
 
-  static Widget from(Colltact colltact) => colltact.when(
+  static Widget from(Colltact colltact, {bool colleaguesUpToDate = true}) =>
+      colltact.when(
         contact: _ContactItem.new,
-        colleague: _ColleagueItem.new,
+        colleague: (colleague) => _ColleagueItem(
+          colleague,
+          colleaguesUpToDate: colleaguesUpToDate,
+        ),
       );
 
   ColltactItem._({
@@ -67,8 +71,9 @@ class _ContactItem extends StatelessWidget {
 
 class _ColleagueItem extends StatelessWidget {
   final Colleague colleague;
+  final bool colleaguesUpToDate;
 
-  _ColleagueItem(this.colleague);
+  _ColleagueItem(this.colleague, {this.colleaguesUpToDate = true});
 
   @override
   Widget build(BuildContext context) {
@@ -76,13 +81,19 @@ class _ColleagueItem extends StatelessWidget {
 
     return ColltactItem._(
       title: SearchHighlightText(colleague.name),
-      subtitle: ColltactSubtitle(colltact),
+      subtitle: ColltactSubtitle(
+        colltact,
+        colleaguesUpToDate: colleaguesUpToDate,
+      ),
       onTap: () => Navigator.pushNamed(
         context,
         ColltactsPageRoutes.details,
         arguments: colltact,
       ),
-      avatar: ColltactAvatar(colltact),
+      avatar: ColltactAvatar(
+        colltact,
+        colleaguesUpToDate: colleaguesUpToDate,
+      ),
     );
   }
 }

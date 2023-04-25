@@ -23,7 +23,6 @@ import 'domain/env.dart';
 import 'domain/error_tracking/error_tracking_repository.dart';
 import 'domain/event/event_bus.dart';
 import 'domain/feedback/feedback.dart';
-import 'domain/legacy/legacy_storage_repository.dart';
 import 'domain/legacy/memory_storage_repository.dart';
 import 'domain/legacy/storage.dart';
 import 'domain/metrics/metrics.dart';
@@ -59,11 +58,6 @@ Future<void> initializeDependencies({bool ui = true}) async {
       final storageRepository = StorageRepository();
       await storageRepository.load();
       return storageRepository;
-    })
-    ..registerSingletonAsync<LegacyStorageRepository>(() async {
-      final legacyStorageRepository = LegacyStorageRepository();
-      await legacyStorageRepository.load();
-      return legacyStorageRepository;
     })
     ..registerSingletonWithDependencies<ClientVoipConfigRepository>(
       () => ClientVoipConfigRepository(
