@@ -9,17 +9,15 @@ import '../../user.dart';
 import '../user_refresh_task_performer.dart';
 
 class RefreshVoipgridUserPermissions extends UserRefreshTaskPerformer {
-  late final _userPermissionsRepository =
-      dependencyLocator<UserPermissionsRepository>();
-
-  late final _purgeLocalCallRecords = PurgeLocalCallRecordsUseCase();
+  const RefreshVoipgridUserPermissions();
 
   @override
   Future<UserMutator> performUserRefreshTask(User user) async {
     late final List<UserPermission> granted;
 
     try {
-      granted = await _userPermissionsRepository.getGrantedPermissions(
+      granted = await dependencyLocator<UserPermissionsRepository>()
+          .getGrantedPermissions(
         user: user,
       );
     } on UnableToRetrievePermissionsException {
@@ -40,7 +38,7 @@ class RefreshVoipgridUserPermissions extends UserRefreshTaskPerformer {
   ) {
     if (permissions.canSeeClientCalls) return user;
 
-    _purgeLocalCallRecords(reason: PurgeReason.permissionFailed);
+    PurgeLocalCallRecordsUseCase()(reason: PurgeReason.permissionFailed);
 
     // If client calls are enabled, we're going to disable it as the user
     // no longer has permission for it.

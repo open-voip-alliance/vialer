@@ -11,12 +11,12 @@ import '../user_refresh_task_performer.dart';
 /// Refreshes settings stored against the logged-in VoIPGRID user, these are the
 /// type of settings that would be visible in the portal.
 class RefreshVoipgridUserSettings extends SettingsRefreshTaskPerformer {
-  late final _authRepository = dependencyLocator<AuthRepository>();
+  const RefreshVoipgridUserSettings();
 
   @override
   Future<SettingsMutator> performSettingsRefreshTask(User user) async {
-    final useMobileNumberAsFallback =
-        await _authRepository.isUserUsingMobileNumberAsFallback(user);
+    final useMobileNumberAsFallback = await dependencyLocator<AuthRepository>()
+        .isUserUsingMobileNumberAsFallback(user);
 
     return (Settings settings) => settings.copyWith(
           CallSetting.useMobileNumberAsFallback,

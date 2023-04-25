@@ -6,12 +6,11 @@ import '../../client.dart';
 import '../user_refresh_task_performer.dart';
 
 class RefreshClientAvailableOutgoingNumbers extends ClientRefreshTaskPerformer {
-  late final _outgoingNumbersRepository =
-      dependencyLocator<OutgoingNumbersRepository>();
+  const RefreshClientAvailableOutgoingNumbers();
 
   @override
   Future<ClientMutator> performClientRefreshTask(Client client) async {
-    final outgoingNumbers = await _outgoingNumbersRepository
+    final outgoingNumbers = await dependencyLocator<OutgoingNumbersRepository>()
         .getOutgoingNumbersAvailableToClient(client);
 
     return (Client client) => client.copyWith(

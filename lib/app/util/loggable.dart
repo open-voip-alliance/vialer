@@ -3,8 +3,6 @@ import 'package:dartx/dartx.dart';
 import 'package:logging/logging.dart';
 
 mixin Loggable {
-  late final Logger logger = Logger('@$runtimeType');
-
   /// A general use method to log something useful when a response is failed,
   /// nothing will be logged for a successful response.
   ///
@@ -32,4 +30,8 @@ mixin Loggable {
 
     logger.warning(message);
   }
+}
+
+extension GetLogger on Object {
+  Logger get logger => Logger('@$runtimeType');
 }

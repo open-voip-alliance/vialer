@@ -6,11 +6,11 @@ import '../../permissions/user_permissions.dart';
 import '../user_refresh_task_performer.dart';
 
 class RefreshClientTemporaryRedirect extends ClientRefreshTaskPerformer {
-  late final _getCurrentTemporaryRedirect = GetCurrentTemporaryRedirect();
+  const RefreshClientTemporaryRedirect();
 
   @override
   Future<ClientMutator> performClientRefreshTask(Client client) async {
-    final temporaryRedirect = await _getCurrentTemporaryRedirect();
+    final temporaryRedirect = await GetCurrentTemporaryRedirect()();
 
     return (Client client) => client.copyWith(
           currentTemporaryRedirect: () => temporaryRedirect,

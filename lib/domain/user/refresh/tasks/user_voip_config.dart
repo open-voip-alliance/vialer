@@ -8,13 +8,11 @@ import '../../user.dart';
 import '../user_refresh_task_performer.dart';
 
 class RefreshUserVoipConfig extends UserRefreshTaskPerformer {
-  late final _userVoipConfigRepository =
-      dependencyLocator<UserVoipConfigRepository>();
-  late final _authRepository = dependencyLocator<AuthRepository>();
+  const RefreshUserVoipConfig();
 
   @override
   Future<UserMutator> performUserRefreshTask(User user) async {
-    final config = await _userVoipConfigRepository.get();
+    final config = await dependencyLocator<UserVoipConfigRepository>().get();
 
     _ensureAppAccountIsConfiguredCorrectly(config);
 
@@ -27,7 +25,7 @@ class RefreshUserVoipConfig extends UserRefreshTaskPerformer {
     if (!config.useEncryption || !config.useOpus) {
       // These values are required for the app to function, so we always want to
       // make sure they are set to [true].
-      _authRepository.updateAppAccount(
+      dependencyLocator<AuthRepository>().updateAppAccount(
         useEncryption: true,
         useOpus: true,
       );

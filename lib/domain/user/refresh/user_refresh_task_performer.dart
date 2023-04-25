@@ -16,6 +16,8 @@ User unmutatedUser(User user) => user;
 /// A [UserRefreshTaskPerformer] is a task that will "refresh" the logged-in
 /// user with new data provided by the server.
 abstract class UserRefreshTaskPerformer {
+  const UserRefreshTaskPerformer();
+
   /// Perform this [UserRefreshTaskPerformer], will automatically be skipped if
   /// the User is not permitted.
   Future<UserMutator> call(User user) async {
@@ -63,6 +65,8 @@ abstract class UserRefreshTaskPerformer {
 /// This is still a [UserRefreshTask] and will behave exactly like any other,
 /// these are only to make the code more readable.
 abstract class ClientRefreshTaskPerformer extends UserRefreshTaskPerformer {
+  const ClientRefreshTaskPerformer();
+
   @override
   Future<UserMutator> performUserRefreshTask(User user) async {
     final mutator = await performClientRefreshTask(user.client);
@@ -76,6 +80,8 @@ abstract class ClientRefreshTaskPerformer extends UserRefreshTaskPerformer {
 /// See [ClientRefreshTaskPerformer] for more information, this applies in
 /// exactly the same way but to [Settings] rather than [Client].
 abstract class SettingsRefreshTaskPerformer extends UserRefreshTaskPerformer {
+  const SettingsRefreshTaskPerformer();
+
   @override
   Future<UserMutator> performUserRefreshTask(User user) async {
     final mutator = await performSettingsRefreshTask(user);

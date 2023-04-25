@@ -10,7 +10,10 @@ import '../user_refresh_task_performer.dart';
 /// a user logs out). The main example is maintaining the user's remote logging
 /// choice, so we can continue to get remote logs when they log back in.
 class RefreshPreviousSessionSettings extends SettingsRefreshTaskPerformer {
-  late final _storageRepository = dependencyLocator<StorageRepository>();
+  StorageRepository get _storageRepository =>
+      dependencyLocator<StorageRepository>();
+
+  const RefreshPreviousSessionSettings();
 
   @override
   Future<SettingsMutator> performSettingsRefreshTask(User _) async {

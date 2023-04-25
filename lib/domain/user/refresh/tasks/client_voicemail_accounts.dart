@@ -7,11 +7,13 @@ import '../../permissions/user_permissions.dart';
 import '../user_refresh_task_performer.dart';
 
 class RefreshClientVoicemailAccounts extends ClientRefreshTaskPerformer {
-  late final _voicemails = dependencyLocator<VoicemailAccountsRepository>();
+  const RefreshClientVoicemailAccounts();
 
   @override
   Future<ClientMutator> performClientRefreshTask(Client client) async {
-    final voicemailAccounts = await _voicemails.getVoicemailAccounts(client);
+    final voicemailAccounts =
+        await dependencyLocator<VoicemailAccountsRepository>()
+            .getVoicemailAccounts(client);
 
     return (Client client) => client.copyWith(
           voicemailAccounts: () => voicemailAccounts,

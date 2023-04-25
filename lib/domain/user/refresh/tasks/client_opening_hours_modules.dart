@@ -6,11 +6,11 @@ import '../../permissions/user_permissions.dart';
 import '../user_refresh_task_performer.dart';
 
 class RefreshClientOpeningHoursModules extends ClientRefreshTaskPerformer {
-  late final _getOpeningHoursModules = GetOpeningHoursModules();
+  const RefreshClientOpeningHoursModules();
 
   @override
   Future<ClientMutator> performClientRefreshTask(Client client) async {
-    final openingHours = await _getOpeningHoursModules();
+    final openingHours = await GetOpeningHoursModules()();
 
     return (Client client) => client.copyWith(
           openingHoursModules: () => openingHours,

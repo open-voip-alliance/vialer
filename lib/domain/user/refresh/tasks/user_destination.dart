@@ -8,12 +8,12 @@ import '../../user.dart';
 import '../user_refresh_task_performer.dart';
 
 class RefreshUserDestination extends SettingsRefreshTaskPerformer {
-  late final _destinationRepository =
-      dependencyLocator<DestinationRepository>();
+  const RefreshUserDestination();
 
   @override
   Future<SettingsMutator> performSettingsRefreshTask(User _) async {
-    final destination = await _destinationRepository.getActiveDestination();
+    final destination =
+        await dependencyLocator<DestinationRepository>().getActiveDestination();
 
     return (Settings settings) => settings.copyWithAll(
           destination.maybeWhen(

@@ -11,44 +11,22 @@ import 'tasks/voipgrid_user_settings.dart';
 import 'user_refresh_task_performer.dart';
 
 enum UserRefreshTask {
-  previousSessionSettings,
-  userVoipConfig,
-  userDestination,
-  voipgridUserSettings,
-  voipgridUserPermissions,
-  clientOutgoingNumbers,
-  clientVoicemailAccounts,
-  clientVoipConfig,
-  clientTemporaryRedirect,
-  clientOpeningHoursModules;
+  previousSessionSettings(RefreshPreviousSessionSettings()),
+  userVoipConfig(RefreshUserVoipConfig()),
+  userDestination(RefreshUserDestination()),
+  voipgridUserSettings(RefreshVoipgridUserSettings()),
+  voipgridUserPermissions(RefreshVoipgridUserPermissions()),
+  clientOutgoingNumbers(RefreshClientAvailableOutgoingNumbers()),
+  clientVoicemailAccounts(RefreshClientVoicemailAccounts()),
+  clientVoipConfig(RefreshClientVoipConfig()),
+  clientTemporaryRedirect(RefreshClientTemporaryRedirect()),
+  clientOpeningHoursModules(RefreshClientOpeningHoursModules());
+
+  final UserRefreshTaskPerformer performer;
+
+  const UserRefreshTask(this.performer);
 
   // Makes more semantic sense when calling for the purpose of including all
   // tasks rather than calling .values.
   static List<UserRefreshTask> get all => UserRefreshTask.values;
-
-  UserRefreshTaskPerformer get performer {
-    // Implemented as a switch rather than map to ensure compile-time safety.
-    switch (this) {
-      case UserRefreshTask.previousSessionSettings:
-        return RefreshPreviousSessionSettings();
-      case UserRefreshTask.voipgridUserPermissions:
-        return RefreshVoipgridUserPermissions();
-      case UserRefreshTask.clientOutgoingNumbers:
-        return RefreshClientAvailableOutgoingNumbers();
-      case UserRefreshTask.clientVoicemailAccounts:
-        return RefreshClientVoicemailAccounts();
-      case UserRefreshTask.userVoipConfig:
-        return RefreshUserVoipConfig();
-      case UserRefreshTask.clientVoipConfig:
-        return RefreshClientVoipConfig();
-      case UserRefreshTask.clientTemporaryRedirect:
-        return RefreshClientTemporaryRedirect();
-      case UserRefreshTask.userDestination:
-        return RefreshUserDestination();
-      case UserRefreshTask.voipgridUserSettings:
-        return RefreshVoipgridUserSettings();
-      case UserRefreshTask.clientOpeningHoursModules:
-        return RefreshClientOpeningHoursModules();
-    }
-  }
 }

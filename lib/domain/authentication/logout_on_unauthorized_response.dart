@@ -1,5 +1,6 @@
 import 'package:dartx/dartx.dart';
 
+import '../../app/util/loggable.dart';
 import '../onboarding/is_onboarded.dart';
 import '../use_case.dart';
 import 'logout.dart';

@@ -8,15 +8,13 @@ import '../../../voipgrid/client_voip_config.dart';
 import '../../client.dart';
 import '../user_refresh_task_performer.dart';
 
-class RefreshClientVoipConfig extends ClientRefreshTaskPerformer with Loggable {
-  late final _clientVoipConfigRepository =
-      dependencyLocator<ClientVoipConfigRepository>();
-  late final _metricsRepository = dependencyLocator<MetricsRepository>();
+class RefreshClientVoipConfig extends ClientRefreshTaskPerformer {
+  const RefreshClientVoipConfig();
 
   @override
   Future<ClientMutator> performClientRefreshTask(Client client) async {
     final current = client.voip;
-    final latest = await _clientVoipConfigRepository.get();
+    final latest = await dependencyLocator<ClientVoipConfigRepository>().get();
 
     if (current != latest) {
       _trackAndLogNewClientVoipConfig(current, latest);
@@ -34,7 +32,7 @@ class RefreshClientVoipConfig extends ClientRefreshTaskPerformer with Loggable {
       return;
     }
 
-    _metricsRepository.track('server-config-changed', {
+    dependencyLocator<MetricsRepository>().track('server-config-changed', {
       'from': current,
       'to': latest,
     });
