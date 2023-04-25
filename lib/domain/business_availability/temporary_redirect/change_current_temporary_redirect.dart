@@ -1,5 +1,4 @@
 import '../../../../dependency_locator.dart';
-import '../../../app/util/loggable.dart';
 import '../../use_case.dart';
 import '../../user/get_logged_in_user.dart';
 import '../business_availability_repository.dart';
