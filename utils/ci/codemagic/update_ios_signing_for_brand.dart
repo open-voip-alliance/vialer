@@ -6,7 +6,7 @@ import 'dart:io';
 /// Usage: dart update_ios_signing_for_brand.dart <iosTeamId> <iosBundleId>
 void main(List<String> arguments) async {
   if (arguments.length < 2) {
-    throw ArgumentError(
+    throw Exception(
       'Usage: dart replace_ios_teamid_bundleid.dart'
       ' <iosTeamId> <iosBundleId>',
     );
@@ -27,7 +27,7 @@ void main(List<String> arguments) async {
   };
 
   final file = File(filePath);
-  final contents = await file.readAsString();
+  var contents = await file.readAsString();
 
   for (final replacement in replacements.entries) {
     for (final candidate in replacement.value) {
