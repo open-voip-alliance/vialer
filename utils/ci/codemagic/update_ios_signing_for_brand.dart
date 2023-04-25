@@ -26,11 +26,11 @@ void main(List<String> arguments) async {
     ]
   };
 
-  var file = File(filePath);
-  var contents = await file.readAsString();
+  final file = File(filePath);
+  final contents = await file.readAsString();
 
-  for (var replacement in replacements.entries) {
-    for (var candidate in replacement.value) {
+  for (final replacement in replacements.entries) {
+    for (final candidate in replacement.value) {
       contents = contents.replaceAllMapped(
         candidate,
         (match) => '${replacement.key}',
