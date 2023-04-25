@@ -89,12 +89,15 @@ class SettingTileCategory extends StatelessWidget {
                     const SizedBox(width: 8),
                     if (title != null) title!,
                     if (titleText != null)
-                      Text(
-                        titleText!.toUpperCase(),
-                        style: TextStyle(
-                          color: Theme.of(context).primaryColor,
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
+                      Semantics(
+                        header: true,
+                        child: Text(
+                          titleText!.toUpperCase(),
+                          style: TextStyle(
+                            color: Theme.of(context).primaryColor,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                   ],
