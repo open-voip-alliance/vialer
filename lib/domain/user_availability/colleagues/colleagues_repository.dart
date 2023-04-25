@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:dartx/dartx.dart';
 
 import '../../../app/util/loggable.dart';
+import '../../../app/util/reconnection_strategy.dart';
 import '../../event/event_bus.dart';
 import '../../user/brand.dart';
 import '../../user/events/logged_in_user_availability_changed.dart';
@@ -26,6 +27,16 @@ class ColleaguesRepository with Loggable {
   Stream<List<Colleague>>? broadcastStream;
 
   bool get isWebSocketConnected => _socket != null;
+
+  Timer? _reconnectTimer;
+
+  final _reconnectionStrategy = ReconnectionStrategy(
+    const RetryPattern(
+      initialDelay: Duration(seconds: 10),
+      maxBackOff: 10,
+      jitter: true,
+    ),
+  );
 
   /// This is the base list of colleagues that we use to update with changes
   /// from the WebSocket. The WebSocket does *not* provide enough data by
@@ -57,7 +68,17 @@ class ColleaguesRepository with Loggable {
 
     if (_socket != null) return broadcastStream!;
 
-    final socket = await _connectToWebSocketServer(user, brand);
+    Future<void> attemptReconnect(String log) async {
+      logger.warning(log);
+      await stopListeningForAvailability(
+        reason: AvailabilityCloseReason.remote,
+      );
+      await _attemptReconnect(
+        user: user,
+        brand: brand,
+        initialColleagues: initialColleagues,
+      );
+    }
 
     if (_controller == null || _controller?.isClosed == true) {
       _controller = StreamController<List<Colleague>>();
@@ -65,8 +86,21 @@ class ColleaguesRepository with Loggable {
 
     final controller = _controller!;
 
+    late WebSocket socket;
+
+    try {
+      socket = await _connectToWebSocketServer(user, brand);
+    } on Exception catch (e) {
+      attemptReconnect('Failed to start websocket: $e');
+      return broadcastStream = controller.stream.asBroadcastStream();
+    }
+
     socket.listen(
       (eventString) {
+        // If we are receiving events, we will make sure to cancel any queued
+        // reconnect timer as we are obviously connected.
+        _cancelQueuedReconnect(resetAttempts: true);
+
         final event = jsonDecode(eventString as String);
 
         // We only care about this type of event for now (and that's all there
@@ -108,12 +142,8 @@ class ColleaguesRepository with Loggable {
 
         controller.add(colleagues);
       },
-      onDone: () => stopListeningForAvailability().then(
-        (_) => logger.warning('UA WS has closed'),
-      ),
-      onError: (e) => stopListeningForAvailability().then(
-        (_) => logger.warning('UA WS error: $e'),
-      ),
+      onDone: () => attemptReconnect('UA WS has closed'),
+      onError: (e) => attemptReconnect('UA WS error: $e'),
     );
 
     return broadcastStream = controller.stream.asBroadcastStream();
@@ -136,12 +166,48 @@ class ColleaguesRepository with Loggable {
     );
   }
 
-  Future<void> stopListeningForAvailability() async {
+  Future<void> stopListeningForAvailability({
+    AvailabilityCloseReason reason = AvailabilityCloseReason.local,
+  }) async {
     logger.info('Disconnecting from UA WebSocket');
     await _socket?.close;
-    _controller?.close();
+    _controller?.addError(reason);
     _socket = null;
     broadcastStream = null;
+  }
+
+  Future<void> _attemptReconnect({
+    required User user,
+    required Brand brand,
+    required List<Colleague> initialColleagues,
+  }) async {
+    if (_reconnectTimer != null) return;
+
+    final reconnectWaitTime = _reconnectionStrategy.delayFor();
+
+    _reconnectionStrategy.increment();
+
+    logger.info(
+      'Attempting reconnect in ${reconnectWaitTime.inMilliseconds} ms',
+    );
+
+    _reconnectTimer = Timer(reconnectWaitTime, () async {
+      logger.info('Attempting websocket reconnect');
+      _cancelQueuedReconnect();
+      await startListeningForAvailability(
+        user: user,
+        brand: brand,
+        initialColleagues: initialColleagues,
+      );
+    });
+  }
+
+  void _cancelQueuedReconnect({bool resetAttempts = false}) {
+    _reconnectTimer?.cancel();
+    _reconnectTimer = null;
+    if (resetAttempts) {
+      _reconnectionStrategy.reset();
+    }
   }
 
   /// This only provides the most basic information about colleagues,
@@ -248,4 +314,13 @@ extension on Map<String, dynamic> {
           ),
         ),
       );
+}
+
+/// Indicates the reason why the [_controller] has been closed.
+enum AvailabilityCloseReason {
+  /// We closed the socket, likely to refresh it.
+  local,
+
+  /// The remote server closed the socket, this indicates an error.
+  remote,
 }
