@@ -17,17 +17,22 @@ class ColltactAvatar extends StatelessWidget {
 
   final Colltact colltact;
   final double size;
+  final bool colleaguesUpToDate;
 
   const ColltactAvatar(
     this.colltact, {
     Key? key,
     this.size = defaultSize,
+    this.colleaguesUpToDate = true,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return colltact.when(
-      colleague: ColleagueAvatar.new,
+      colleague: (colleague) => ColleagueAvatar(
+        colleague,
+        colleaguesUpToDate: colleaguesUpToDate,
+      ),
       contact: ContactAvatar.new,
     );
   }
@@ -56,10 +61,12 @@ class ContactAvatar extends StatelessWidget {
 
 class ColleagueAvatar extends StatelessWidget {
   final Colleague colleague;
+  final bool colleaguesUpToDate;
 
   const ColleagueAvatar(
     this.colleague, {
     Key? key,
+    this.colleaguesUpToDate = true,
   }) : super(key: key);
 
   @override

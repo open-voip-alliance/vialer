@@ -48,9 +48,6 @@ class NoResultsPlaceholder extends StatelessWidget {
         return context.msg.main.colltacts.noOnline.title;
       case NoResultsType.noSearchResults:
         return context.msg.main.colltacts.noResults.title;
-      case NoResultsType.noColleagueConnectivity:
-        return context
-            .msg.main.colltacts.userAvailabilityWebSocketUnreachable.title;
       case NoResultsType.colleaguesLoading:
         return context.msg.main.contacts.list.loadingColleagues.title;
       case NoResultsType.contactsLoading:
@@ -71,9 +68,6 @@ class NoResultsPlaceholder extends StatelessWidget {
         return kind == ColltactKind.contact
             ? context.msg.main.colltacts.noResults.contacts(searchTerm)
             : context.msg.main.colltacts.noResults.colleagues(searchTerm);
-      case NoResultsType.noColleagueConnectivity:
-        return context
-            .msg.main.colltacts.userAvailabilityWebSocketUnreachable.subtitle;
       case NoResultsType.colleaguesLoading:
         return context.msg.main.contacts.list.loadingColleagues.description;
       case NoResultsType.contactsLoading:
@@ -172,8 +166,6 @@ class _CircularGraphic extends StatelessWidget {
         return FontAwesomeIcons.usersSlash;
       case NoResultsType.noSearchResults:
         return FontAwesomeIcons.magnifyingGlass;
-      case NoResultsType.noColleagueConnectivity:
-        return FontAwesomeIcons.circleExclamation;
       case NoResultsType.colleaguesLoading:
       case NoResultsType.contactsLoading:
         return FontAwesomeIcons.abacus;
@@ -218,7 +210,6 @@ class _CircularGraphic extends StatelessWidget {
 enum NoResultsType {
   noOnlineColleagues,
   noSearchResults,
-  noColleagueConnectivity,
   colleaguesLoading,
   contactsLoading,
   noContactsExist,

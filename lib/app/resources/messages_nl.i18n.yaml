@@ -203,9 +203,6 @@ main:
         Er waren geen collega's gevonden voor "$number".
       contacts(String number): >-
         Er waren geen contacten gevonden voor "$number".
-    userAvailabilityWebSocketUnreachable:
-      title: "Tonen van collega's mislukt"
-      subtitle: "Het overzicht met collega's is op dit moment niet beschikbaar, probeer het later nog eens."
 
   colleagues:
     toggle: "Alleen online collega's"
@@ -215,6 +212,13 @@ main:
       offline: 'Offline'
       unknown: 'Onbekend'
       busy: 'Bezet'
+      notUpToDate: 'Ophalen status'
+    websocketUnreachableNotice:
+      title: 'Ophalen statussen mislukt'
+      content(String appName): >-
+        $appName probeert de statussen van je collega's op te halen. Ververs deze pagina op een
+        later moment. Het is nog wel mogelijk om een gesprek te starten.
+
     context:
       ringing: 'Wordt gebeld'
       inCall: 'In gesprek'
