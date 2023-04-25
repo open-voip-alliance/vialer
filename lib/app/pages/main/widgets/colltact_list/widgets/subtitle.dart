@@ -9,13 +9,22 @@ import '../../../../../resources/theme.dart';
 
 class ColltactSubtitle extends StatelessWidget {
   final Colltact colltact;
+  final bool colleaguesUpToDate;
 
-  const ColltactSubtitle(this.colltact, {Key? key}) : super(key: key);
+  const ColltactSubtitle(
+    this.colltact, {
+    Key? key,
+    this.colleaguesUpToDate = true,
+  }) : super(key: key);
 
   String _text(BuildContext context) {
     return colltact.when(
       contact: (contact) => _textForContact(context, contact),
-      colleague: (colleague) => _textForColleague(context, colleague),
+      colleague: (colleague) => _textForColleague(
+        context,
+        colleague,
+        colleaguesUpToDate,
+      ),
     );
   }
 
@@ -53,9 +62,12 @@ class ColltactSubtitle extends StatelessWidget {
     }
   }
 
-  String _textForColleague(BuildContext context, Colleague colleague) {
-    final recentStatus = colleague.mostRelevantContextText(context) ??
-        colleague.availabilityText(context);
+  String _textForColleague(
+      BuildContext context, Colleague colleague, bool colleaguesUpToDate) {
+    final recentStatus = colleaguesUpToDate
+        ? colleague.mostRelevantContextText(context) ??
+            colleague.availabilityText(context)
+        : context.msg.main.colleagues.status.notUpToDate;
 
     if (recentStatus == null && colleague.number != null) {
       return colleague.number!;
