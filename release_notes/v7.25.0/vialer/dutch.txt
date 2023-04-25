@@ -1,0 +1,3 @@
+- De app is nu beschikbaar in het Duits
+- Meerdere verbeteringen i.v.m collega online status
+- Android: Een probleem waardoor het scherm aanbleef na het weigeren van een oproep is opgelost (Android 13)
