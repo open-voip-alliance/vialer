@@ -12,7 +12,6 @@ import '../../../widgets/caller.dart';
 import '../../../widgets/colltact_list/cubit.dart';
 import '../../../widgets/colltact_list/details/cubit.dart';
 import '../../../widgets/colltact_list/details/widget.dart';
-import '../../colleagues/cubit.dart';
 
 class ColltactPageDetails extends StatefulWidget {
   final Colltact colltact;
@@ -28,17 +27,6 @@ class ColltactPageDetails extends StatefulWidget {
 
 class _ColltactPageDetailsState extends State<ColltactPageDetails>
     with WidgetsBindingObserver, WidgetsBindingObserverRegistrar {
-  bool _madeEdit = false;
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    super.didChangeAppLifecycleState(state);
-
-    if (state == AppLifecycleState.inactive) {
-      _madeEdit = true;
-    }
-  }
-
   void _showSnackBar(BuildContext context) {
     showSnackBar(
       context,
@@ -54,59 +42,42 @@ class _ColltactPageDetailsState extends State<ColltactPageDetails>
     }
   }
 
-  void _onContactsStateChanged(BuildContext context, ContactsState state) {
-    if (state is ContactsLoaded) {
-      final List<Colltact> colltacts =
-          state.contacts.map(ColltactContact.new).toList();
+  /// If the user has deleted the contact that relates to this details page,
+  /// we want to close it rather than showing outdated information.
+  ///
+  /// Because of the way we import contacts in the background, this will
+  /// likely not trigger immediately, especially for users with a lot of
+  /// contacts.
+  void _automaticallyCloseIfContactNoLongerExists(
+    BuildContext context,
+    ContactsState state,
+  ) {
+    if (state is! ContactsLoaded || state.contacts.isEmpty) return;
 
-      _onColltactStateChanged(context, colltacts);
-    }
-  }
-
-  void _onColleaguesStateChanged(BuildContext context, ColleaguesState state) {
-    if (state is ColleaguesLoaded) {
-      final List<Colltact> colltacts =
-          state.colleagues.map(ColltactColleague.new).toList();
-
-      _onColltactStateChanged(context, colltacts);
-    }
-  }
-
-  void _onColltactStateChanged(BuildContext context, List<Colltact> colltacts) {
-    final colltactId = widget.colltact.when(
-      colleague: (colleague) => colleague.id,
+    final contactId = widget.colltact.when(
+      colleague: (colleague) => null,
       contact: (contact) => contact.identifier,
     );
 
-    final colltact = colltacts.firstWhereOrNull(
-      (colltact) => colltact.when(
-        contact: (contact) => contact.identifier == colltactId,
-        colleague: (colleague) => colleague.id == colltactId,
-      ),
+    if (contactId == null) return;
+
+    final contact = state.contacts.firstWhereOrNull(
+      (contact) => contact.identifier == contactId,
     );
 
-    if (colltact == null && _madeEdit) {
-      // Colltact doesn't exist anymore after returning back to the app,
-      // it's probably deleted, so close this detail screen.
+    if (contact == null) {
       Navigator.pop(context, true);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<CallerCubit, CallerState>(
-          listener: _onCallerStateChanged,
-        ),
-        BlocListener<ColleaguesCubit, ColleaguesState>(
-          listener: _onColleaguesStateChanged,
-        ),
-      ],
+    return BlocListener<CallerCubit, CallerState>(
+      listener: _onCallerStateChanged,
       child: BlocProvider<ColltactDetailsCubit>(
         create: (_) => ColltactDetailsCubit(context.read<CallerCubit>()),
         child: BlocConsumer<ContactsCubit, ContactsState>(
-          listener: _onContactsStateChanged,
+          listener: _automaticallyCloseIfContactNoLongerExists,
           builder: (context, state) {
             return BlocProvider<ColltactDetailsCubit>(
               create: (_) => ColltactDetailsCubit(context.watch<CallerCubit>()),
