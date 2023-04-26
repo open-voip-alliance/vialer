@@ -25,7 +25,7 @@ class OutgoingNumberTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final unlockedWidget = StringSettingValue(
+    final locked = StringSettingValue(
       user.settings,
       _key,
       value: (number) => number is UnsuppressedOutgoingNumber
@@ -87,9 +87,9 @@ class OutgoingNumberTile extends StatelessWidget {
                       ),
                     ),
                   ),
-                  locked: unlockedWidget,
+                  locked: locked,
                 )
-              : unlockedWidget,
+              : locked,
         ),
       ],
     );
