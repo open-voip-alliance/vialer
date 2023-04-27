@@ -66,7 +66,7 @@ class DestinationRepository with Loggable {
         () async {
           final response = await _service.setAvailability(
             selectedUserDestinationId.toString(),
-            <String, dynamic>{
+            {
               'phoneaccount': destination is PhoneAccount
                   ? destination.id.toString()
                   : null,

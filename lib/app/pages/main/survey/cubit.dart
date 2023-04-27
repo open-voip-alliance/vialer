@@ -148,12 +148,12 @@ class SurveyCubit extends Cubit<SurveyState> with Loggable {
       // Required for type promotion.
       final answer = state.answer;
 
-      return <String, dynamic>{
+      return {
         'rating': _getRatingFromAnswer(answer),
       };
     }
 
-    return <String, dynamic>{
+    return {
       'language': survey.language,
       'trigger': survey.trigger.toJson(),
       'questions': [

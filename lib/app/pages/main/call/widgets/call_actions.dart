@@ -399,7 +399,7 @@ class _AudioRouteButton extends StatelessWidget {
       ),
     );
 
-    final dynamic selectedRoute = await showDialog<dynamic>(
+    final selectedRoute = await showDialog<dynamic>(
       context: context,
       builder: (context) {
         return AudioRoutePicker(

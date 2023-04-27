@@ -110,7 +110,7 @@ class SegmentMetricsRepository extends MetricsRepository {
     );
 
     unawaited(
-      Segment.setContext(<String, dynamic>{
+      Segment.setContext({
         'ip': '0.0.0.0',
         'device': {
           'id': '',

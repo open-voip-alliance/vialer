@@ -159,7 +159,7 @@ class ColleaguesRepository with Loggable {
 
     return _socket = await WebSocket.connect(
       url,
-      headers: <String, dynamic>{
+      headers: {
         'Authorization': 'Bearer ${user.token}',
       },
     );

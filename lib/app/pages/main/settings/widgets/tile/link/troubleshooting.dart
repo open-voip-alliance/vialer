@@ -13,9 +13,9 @@ class TroubleshootingLinkTile extends StatelessWidget {
 
   void _showTroubleshootingPage(BuildContext context) {
     unawaited(
-      Navigator.push<dynamic>(
+      Navigator.push(
         context,
-        MaterialPageRoute<dynamic>(
+        MaterialPageRoute(
           builder: (_) {
             return TroubleshootingSubPage(
               cubit: context.read<SettingsCubit>(),

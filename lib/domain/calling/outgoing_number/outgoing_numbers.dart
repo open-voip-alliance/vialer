@@ -28,7 +28,7 @@ class OutgoingNumbersRepository with Loggable {
         final response = await _service.updateVoipAccount(
           user.client.id.toString(),
           user.appAccountId!,
-          <String, dynamic>{
+          {
             'outgoing_caller_identification': {
               'phone_number': number,
             },

@@ -26,8 +26,8 @@ class SubPageLinkTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () => unawaited(
-        Navigator.of(context).push<dynamic>(
-          platformPageRoute<dynamic>(
+        Navigator.of(context).push(
+          platformPageRoute(
             context: context,
             builder: (_) => BlocProvider.value(
               value: cubit,

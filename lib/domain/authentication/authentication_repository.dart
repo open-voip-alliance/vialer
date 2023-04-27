@@ -136,7 +136,7 @@ class AuthRepository with Loggable {
     required String currentPassword,
     required String newPassword,
   }) async {
-    final response = await _service.password(<String, dynamic>{
+    final response = await _service.password({
       'email_address': email,
       'current_password': currentPassword,
       'new_password': newPassword,
@@ -164,7 +164,7 @@ class AuthRepository with Loggable {
     try {
       await mobileNumberRetry.run(() async {
         final response = await _service
-            .changeMobileNumber(<String, dynamic>{'mobile_nr': mobileNumber});
+            .changeMobileNumber({'mobile_nr': mobileNumber});
 
         if (!response.isSuccessful) {
           logFailedResponse(response);
@@ -184,7 +184,7 @@ class AuthRepository with Loggable {
     required bool useOpus,
     required bool useEncryption,
   }) async {
-    final response = await _service.updateMobileProfile(<String, dynamic>{
+    final response = await _service.updateMobileProfile({
       'appaccount_use_opus': useOpus,
       'appaccount_use_encryption': useEncryption,
     });
@@ -241,11 +241,11 @@ class AuthRepository with Loggable {
         final response = await _service.updateUserSettings(
           clientId: user.client.id.toString(),
           userId: user.uuid,
-          body: <String, dynamic>{
-            'app': <String, dynamic>{
+          body: {
+            'app': {
               'mobile_number': app['mobile_number'],
               'use_mobile_number_as_fallback': enable,
-              'voip_account': <String, dynamic>{
+              'voip_account': {
                 'id': (app['voip_account'] as Map<String, dynamic>)['id'],
               }
             }
