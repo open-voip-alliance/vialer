@@ -53,15 +53,33 @@ class ConsoleLoggingMetricsRepository extends MetricsRepository {
   Future<void> identify(
     User user, [
     Map<String, dynamic>? properties,
-  ]) =>
-      _log('Identified [${user.uuid}]: $properties');
+  ]) {
+    _assertPropertiesDoNotExceed1000Characters(properties ?? {});
+    return _log('Identified [${user.uuid}]: $properties');
+  }
 
   @override
   Future<void> track(
     String eventName, [
     Map<String, dynamic>? properties,
-  ]) =>
-      _log('[$eventName]: $properties');
+  ]) {
+    _assertPropertiesDoNotExceed1000Characters(properties ?? {});
+    return _log('[$eventName]: $properties');
+  }
+
+  /// Our metrics provider truncates any properties with more than 1000
+  /// characters, we'll add some asserts here so we know that we aren't having
+  /// properties unknowingly truncated.
+  void _assertPropertiesDoNotExceed1000Characters(
+    Map<String, dynamic> properties,
+  ) =>
+      properties.forEach((key, property) {
+        assert(
+          property.toString().length <= 1000,
+          'Metrics property [$key] is greater than'
+          ' 1000 characters and will therefore be truncated.',
+        );
+      });
 
   Future<void> _log(String message, {Level? level}) async {
     // Using log() rather than Logger as this provides nice formatting
