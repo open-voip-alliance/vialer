@@ -3,16 +3,16 @@ import 'package:flutter/material.dart';
 /// Will show the [placeholder] if [showPlaceholder] is true,
 /// else it will show the [child].
 class ConditionalPlaceholder extends StatelessWidget {
-  final bool showPlaceholder;
-  final Widget placeholder;
-  final Widget child;
-
   const ConditionalPlaceholder({
-    Key? key,
     required this.showPlaceholder,
     required this.placeholder,
     required this.child,
-  }) : super(key: key);
+    super.key,
+  });
+
+  final bool showPlaceholder;
+  final Widget placeholder;
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
@@ -21,18 +21,18 @@ class ConditionalPlaceholder extends StatelessWidget {
 }
 
 class Warning extends StatelessWidget {
-  final Widget icon;
-  final Widget title;
-  final Widget description;
-  final List<Widget> children;
-
   const Warning({
-    Key? key,
     required this.icon,
     required this.title,
     required this.description,
     this.children = const [],
-  }) : super(key: key);
+    super.key,
+  });
+
+  final Widget icon;
+  final Widget title;
+  final Widget description;
+  final List<Widget> children;
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +46,6 @@ class Warning extends StatelessWidget {
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             _Illustration(
               child: icon,
@@ -77,14 +76,14 @@ class Warning extends StatelessWidget {
 }
 
 class LoadingIndicator extends StatelessWidget {
-  final Widget title;
-  final Widget description;
-
   const LoadingIndicator({
-    Key? key,
     required this.title,
     required this.description,
-  }) : super(key: key);
+    super.key,
+  });
+
+  final Widget title;
+  final Widget description;
 
   @override
   Widget build(BuildContext context) {
@@ -106,9 +105,9 @@ class LoadingIndicator extends StatelessWidget {
 }
 
 class _Illustration extends StatelessWidget {
-  final Widget child;
+  const _Illustration({required this.child});
 
-  const _Illustration({Key? key, required this.child}) : super(key: key);
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
@@ -133,11 +132,12 @@ class _Illustration extends StatelessWidget {
         ),
         alignment: Alignment.center,
         child: IconTheme(
-            data: IconTheme.of(context).copyWith(
-              color: Theme.of(context).primaryColor,
-              size: 42,
-            ),
-            child: child),
+          data: IconTheme.of(context).copyWith(
+            color: Theme.of(context).primaryColor,
+            size: 42,
+          ),
+          child: child,
+        ),
       ),
     );
   }

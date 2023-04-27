@@ -20,6 +20,6 @@ class RequestPermissionUseCase extends UseCase {
       return PermissionStatus.granted;
     }
 
-    return await _permissionRepository.requestPermission(permission);
+    return _permissionRepository.requestPermission(permission);
   }
 }

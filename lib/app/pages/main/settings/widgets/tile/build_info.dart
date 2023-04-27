@@ -9,12 +9,12 @@ import '../../cubit.dart';
 import 'category/widget.dart';
 
 class BuildInfoTile extends StatefulWidget {
+  const BuildInfoTile(this.buildInfo, {super.key});
+
   final BuildInfo buildInfo;
 
-  const BuildInfoTile(this.buildInfo, {Key? key}) : super(key: key);
-
   @override
-  _BuildInfoTileState createState() => _BuildInfoTileState();
+  State<BuildInfoTile> createState() => _BuildInfoTileState();
 }
 
 class _BuildInfoTileState extends State<BuildInfoTile> {
@@ -73,7 +73,6 @@ class _BuildInfoTileState extends State<BuildInfoTile> {
                   : null,
               title:
                   buildInfo.showDetailed ? _DetailedBuildInfo(buildInfo) : null,
-              children: [],
               padBottom: true,
             ),
           ),
@@ -84,9 +83,9 @@ class _BuildInfoTileState extends State<BuildInfoTile> {
 }
 
 class _DetailedBuildInfo extends StatelessWidget {
-  final BuildInfo buildInfo;
-
   const _DetailedBuildInfo(this.buildInfo);
+
+  final BuildInfo buildInfo;
 
   @override
   Widget build(BuildContext context) {

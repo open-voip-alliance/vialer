@@ -1,9 +1,9 @@
 import 'package:equatable/equatable.dart';
 
 class DialerState extends Equatable {
-  final String? lastCalledDestination;
+  const DialerState({this.lastCalledDestination});
 
-  DialerState({this.lastCalledDestination});
+  final String? lastCalledDestination;
 
   @override
   List<Object?> get props => [lastCalledDestination];

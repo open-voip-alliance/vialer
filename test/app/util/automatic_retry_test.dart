@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
@@ -93,14 +95,18 @@ void main() {
   });
 
   test('Running a task again will cancel all existing retries', () async {
-    final automaticRetry = AutomaticRetry(schedule: const [
-      Duration(milliseconds: 10),
-    ]);
+    final automaticRetry = AutomaticRetry(
+      schedule: const [
+        Duration(milliseconds: 10),
+      ],
+    );
     final failingMock = MockDummyClass()..thenReturnFail();
 
-    automaticRetry.run(
-      () async => failingMock.getResult(),
-      runImmediately: false,
+    unawaited(
+      automaticRetry.run(
+        () async => failingMock.getResult(),
+        runImmediately: false,
+      ),
     );
 
     final successMock = MockDummyClass()..thenReturnSuccess();
@@ -109,7 +115,7 @@ void main() {
 
     // Adding a delay that must be longer than the duration defined at the top
     // of the test to make sure it is never called.
-    await Future.delayed(const Duration(milliseconds: 100));
+    await Future<void>.delayed(const Duration(milliseconds: 100));
 
     // The first mock should never get called as [runImmediately] is false.
     verifyNever(failingMock.getResult());

@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
 class Header extends StatelessWidget {
-  final String data;
-  final EdgeInsets padding;
-
   const Header(
     this.data, {
-    Key? key,
     this.padding = EdgeInsets.zero,
-  }) : super(key: key);
+    super.key,
+  });
+
+  final String data;
+  final EdgeInsets padding;
 
   @override
   Widget build(BuildContext context) {

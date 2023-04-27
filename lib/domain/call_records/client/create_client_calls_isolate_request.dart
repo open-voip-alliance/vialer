@@ -30,21 +30,15 @@ class CreateClientCallsIsolateRequestUseCase extends UseCase {
   }) async {
     return ClientCallsIsolateRequest(
       user: _getUser(),
-      voipgridApiBaseUrl: await _getBaseUrl(),
+      voipgridApiBaseUrl: _getBaseUrl(),
       databasePath: (await ClientCallsDatabase.databaseFile).path,
       dateRangesToQuery: dateRangesToQuery,
-      userPhoneAccountIds: await _usersPhoneAccounts,
+      userPhoneAccountIds: _usersPhoneAccounts,
     );
   }
 }
 
 class ClientCallsIsolateRequest {
-  final User user;
-  final String voipgridApiBaseUrl;
-  final String databasePath;
-  final Map<DateTime, DateTime> dateRangesToQuery;
-  final List<int> userPhoneAccountIds;
-
   const ClientCallsIsolateRequest({
     required this.user,
     required this.voipgridApiBaseUrl,
@@ -52,4 +46,10 @@ class ClientCallsIsolateRequest {
     required this.dateRangesToQuery,
     required this.userPhoneAccountIds,
   });
+
+  final User user;
+  final String voipgridApiBaseUrl;
+  final String databasePath;
+  final Map<DateTime, DateTime> dateRangesToQuery;
+  final List<int> userPhoneAccountIds;
 }

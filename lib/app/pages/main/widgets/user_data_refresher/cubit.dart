@@ -18,6 +18,7 @@ export 'state.dart';
 
 class UserDataRefresherCubit extends Cubit<UserDataRefresherState>
     with Loggable {
+  UserDataRefresherCubit() : super(const NotRefreshing());
   final _isOnboarded = IsOnboarded();
   late final _storageRepository = dependencyLocator<StorageRepository>();
   final _getLoggedInUser = GetLoggedInUserUseCase();
@@ -25,8 +26,6 @@ class UserDataRefresherCubit extends Cubit<UserDataRefresherState>
   final _registerToVoipMiddleware = RegisterToVoipMiddlewareUseCase();
   final _isLoggedInSomewhereElse = GetIsLoggedInSomewhereElseUseCase();
   final _logout = Logout();
-
-  UserDataRefresherCubit() : super(const NotRefreshing());
 
   Future<void> refreshIfReady() async {
     if (!_isOnboarded()) return;

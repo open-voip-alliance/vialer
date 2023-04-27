@@ -7,7 +7,7 @@ import '../../../../util/brand.dart';
 import '../abstract/page.dart';
 
 class IgnoreBatteryOptimizationsPermissionPage extends StatelessWidget {
-  const IgnoreBatteryOptimizationsPermissionPage({Key? key}) : super(key: key);
+  const IgnoreBatteryOptimizationsPermissionPage({super.key});
 
   @override
   Widget build(BuildContext context) {

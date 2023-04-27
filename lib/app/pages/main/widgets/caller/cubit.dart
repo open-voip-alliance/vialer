@@ -53,6 +53,21 @@ import 'state.dart' hide AttendedTransferStarted;
 export 'state.dart';
 
 class CallerCubit extends Cubit<CallerState> with Loggable {
+  CallerCubit() : super(const CanCall()) {
+    if (_isOnboarded() && _storageRepository.hasCompletedOnboarding) {
+      initialize();
+    }
+
+    _hasVoipStarted().then(
+      (_) {
+        // We can still do these things, even if VoIP failed to start.
+        checkPhonePermission();
+        _voipCallEventSubscription ??=
+            _getVoipCallEventStream().listen(_onVoipCallEvent);
+      },
+    );
+  }
+
   final _isOnboarded = IsOnboarded();
   final _getConnectivityType = GetCurrentConnectivityTypeUseCase();
 
@@ -96,22 +111,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
       _PreservedCallSessionState();
 
   // For VoIP.
-  StreamSubscription? _voipCallEventSubscription;
-
-  CallerCubit() : super(const CanCall()) {
-    if (_isOnboarded() && _storageRepository.hasCompletedOnboarding) {
-      initialize();
-    }
-
-    _hasVoipStarted().then(
-      (_) {
-        // We can still do these things, even if VoIP failed to start.
-        checkPhonePermission();
-        _voipCallEventSubscription ??=
-            _getVoipCallEventStream().listen(_onVoipCallEvent);
-      },
-    );
-  }
+  StreamSubscription<Event>? _voipCallEventSubscription;
 
   void initialize() {
     checkPhonePermission();
@@ -119,7 +119,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
   }
 
   Future<void> _startVoipIfNecessary() async {
-    if (!(await _getHasVoipEnabled())) return;
+    if (!_getHasVoipEnabled()) return;
 
     try {
       await _startVoip();
@@ -135,15 +135,19 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
         if (activeCall.state == CallState.initializing) {
           emit(Ringing(voip: voip));
         } else {
-          _trackVoipCallStarted(
-            via: CallOrigin.incoming.toTrackString(),
-            direction: CallDirection.inbound,
+          unawaited(
+            _trackVoipCallStarted(
+              via: CallOrigin.incoming.toTrackString(),
+              direction: CallDirection.inbound,
+            ),
           );
 
           emit(Calling(origin: CallOrigin.incoming, voip: voip));
         }
       }
-    } on VoipNotAllowedException {}
+    } on VoipNotAllowedException {
+      // TODO?: Handle this
+    }
   }
 
   Future<void> call(
@@ -158,10 +162,12 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
       logger.severe(
         'Unable to place outgoing call, call state: ${state.runtimeType}',
       );
-      _trackOutboundCallFailed(
-        reason: CallFailureReason.invalidCallState,
-        message: state.runtimeType.toString(),
-        isVoip: callViaVoip,
+      unawaited(
+        _trackOutboundCallFailed(
+          reason: CallFailureReason.invalidCallState,
+          message: state.runtimeType.toString(),
+          isVoip: callViaVoip,
+        ),
       );
       return;
     }
@@ -170,10 +176,12 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
     logger.info('Preparing ${callViaVoip ? 'VoIP' : 'call-through'} call');
 
     if (callViaVoip) {
-      _trackUserInitiatedOutboundCall(
-        via: origin.toTrackString(),
-        isVoip: callViaVoip,
-        type: destination == '*8' ? CallType.pickupGroup : CallType.standard,
+      unawaited(
+        _trackUserInitiatedOutboundCall(
+          via: origin.toTrackString(),
+          isVoip: callViaVoip,
+          type: destination == '*8' ? CallType.pickupGroup : CallType.standard,
+        ),
       );
     }
 
@@ -211,8 +219,8 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
   Future<void> rateVoipCall({
     required CallFeedbackResult result,
     required Call call,
-  }) async =>
-      await _rateVoipCall(
+  }) =>
+      _rateVoipCall(
         feedback: result,
         usedRoutes: _preservedCallSessionState.usedAudioRoutes,
         mos: _preservedCallSessionState.mos,
@@ -252,9 +260,11 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
       );
     } else {
       try {
-        _trackCallThroughCall(
-          via: origin.toTrackString(),
-          direction: CallDirection.outbound,
+        unawaited(
+          _trackCallThroughCall(
+            via: origin.toTrackString(),
+            direction: CallDirection.outbound,
+          ),
         );
 
         emit(StartingCall(origin: origin));
@@ -272,8 +282,10 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
     required CallOrigin origin,
   }) async {
     if (!await _hasMicPermission()) {
-      _trackOutboundCallFailed(
-        reason: CallFailureReason.noMicrophonePermission,
+      unawaited(
+        _trackOutboundCallFailed(
+          reason: CallFailureReason.noMicrophonePermission,
+        ),
       );
       logger.warning(
         'Outbound VoIP call failed: No mic permission',
@@ -283,7 +295,9 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
     }
 
     if (await _getConnectivityType() == ConnectivityType.none) {
-      _trackOutboundCallFailed(reason: CallFailureReason.noConnectivity);
+      unawaited(
+        _trackOutboundCallFailed(reason: CallFailureReason.noConnectivity),
+      );
       logger.warning(
         'Outbound VoIP call failed: No internet connection',
       );
@@ -293,9 +307,11 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
 
     logger.info('Starting VoIP call');
     try {
-      _trackVoipCallStarted(
-        via: origin.toTrackString(),
-        direction: CallDirection.outbound,
+      unawaited(
+        _trackVoipCallStarted(
+          via: origin.toTrackString(),
+          direction: CallDirection.outbound,
+        ),
       );
 
       emit(CallOriginDetermined(origin));
@@ -306,9 +322,11 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
 
       // TODO: on VoipException
     } on CallThroughException catch (e) {
-      _trackOutboundCallFailed(
-        reason: CallFailureReason.unknown,
-        message: e.runtimeType.toString(),
+      unawaited(
+        _trackOutboundCallFailed(
+          reason: CallFailureReason.unknown,
+          message: e.runtimeType.toString(),
+        ),
       );
       emit(processState.failed(e));
     }
@@ -382,7 +400,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
 
       if (!isVoip) {
         logger.info(
-          'Ignoring VoIP event because we\'re in a call-through call',
+          "Ignoring VoIP event because we're in a call-through call",
         );
         return false;
       }
@@ -504,7 +522,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
   void _preserve(CallSessionState callSessionState) =>
       _preservedCallSessionState.preserve(callSessionState);
 
-  Future<void> toggleMute() async => await _toggleMuteVoipCall();
+  Future<void> toggleMute() => _toggleMuteVoipCall();
 
   Future<void> beginTransfer(String number) => _beginTransfer(number: number);
 
@@ -585,9 +603,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
     }
   }
 
-  void openAppSettings() async {
-    await _openAppSettings();
-  }
+  Future<void> openAppSettings() => _openAppSettings();
 
   /// The minimum duration after a call rating has been submitted before we
   /// request another.

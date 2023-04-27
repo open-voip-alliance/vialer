@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 
 class AnimatedVisibility extends StatefulWidget {
+  const AnimatedVisibility({
+    required this.visible,
+    required this.child,
+    this.duration = const Duration(milliseconds: 200),
+    this.curve = Curves.decelerate,
+    super.key,
+  });
+
   final bool visible;
   final Duration duration;
   final Curve curve;
   final Widget child;
 
-  const AnimatedVisibility({
-    Key? key,
-    required this.visible,
-    this.duration = const Duration(milliseconds: 200),
-    this.curve = Curves.decelerate,
-    required this.child,
-  }) : super(key: key);
-
   @override
-  _AnimatedVisibilityState createState() => _AnimatedVisibilityState();
+  State<AnimatedVisibility> createState() => _AnimatedVisibilityState();
 }
 
 class _AnimatedVisibilityState extends State<AnimatedVisibility> {

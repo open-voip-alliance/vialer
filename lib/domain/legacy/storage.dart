@@ -29,22 +29,25 @@ class StorageRepository {
   User? get user {
     final userJson = _preferences.getJson(
           _userKey,
-          (j) => j as Map<String, dynamic>,
+          (j) => j! as Map<String, dynamic>,
         ) ??
-        const {};
+        const <String, dynamic>{};
 
     User? user;
 
     // TODO: Remove legacy User deserialization eventually.
     // If the user has a 'settings' key, we know it's not a legacy user.
     if (userJson.containsKey('settings')) {
-      user = _preferences.getJson(_userKey, User.fromJson);
+      user = _preferences.getJson<User, Map<String, dynamic>>(
+        _userKey,
+        User.fromJson,
+      );
     } else {
       final legacyUser = _preferences.getJson(
         _legacySettingsKey,
         (settingsJson) => _legacyUserFromJson(
           userJson,
-          settingsJson as List<dynamic>,
+          settingsJson! as List<dynamic>,
         ),
       );
 
@@ -97,9 +100,8 @@ class StorageRepository {
 
   set logs(String? value) => _preferences.setOrRemoveString(_logsKey, value);
 
-  Future<void> appendLogs(String value) async {
-    _preferences.setString(_logsKey, '$logs\n$value');
-  }
+  Future<void> appendLogs(String value) =>
+      _preferences.setString(_logsKey, '$logs\n$value');
 
   static const _lastDialedNumberKey = 'last_dialed_number';
 
@@ -206,7 +208,7 @@ class StorageRepository {
 
     try {
       return (jsonDecode(jsonString!) as List<dynamic>)
-          .map((e) => Colleague.fromJson(e as Map<String, dynamic>))
+          .map((dynamic e) => Colleague.fromJson(e as Map<String, dynamic>))
           .toList();
     } on Exception {
       return const [];
@@ -221,9 +223,9 @@ class StorageRepository {
   static const _grantedVoipgridPermissionsKey = 'granted_voipgrid_permissions';
 
   List<String> get grantedVoipgridPermissions => (jsonDecode(
-              _preferences.getString(_grantedVoipgridPermissionsKey) ?? '[]')
-          as List<dynamic>)
-      .toRawPermissionsList();
+        _preferences.getString(_grantedVoipgridPermissionsKey) ?? '[]',
+      ) as List<dynamic>)
+          .toRawPermissionsList();
 
   set grantedVoipgridPermissions(List<String> value) => _preferences
       .setOrRemoveString(_grantedVoipgridPermissionsKey, jsonEncode(value));
@@ -305,11 +307,12 @@ class StorageRepository {
     UserPermissions? permissions;
 
     for (final j in settingsJson) {
-      final type = j['type'];
-      final value = j['value'];
+      final jObj = j as Map<String, dynamic>;
+      final dynamic type = jObj['type'];
+      final dynamic value = jObj['value'];
 
-      assert(type != null);
-      assert(value != null);
+      assert(type != null, 'type must not be null');
+      assert(value != null, 'value must not be null');
 
       // Make sure to add an explicit type cast if using `value` directly.
       switch (type) {
@@ -353,7 +356,9 @@ class StorageRepository {
           settings[CallSetting.useMobileNumberAsFallback] = value as bool;
           break;
         case 'ClientOutgoingNumbersSetting':
-          clientOutgoingNumbers = (value['numbers'] as List<dynamic>).cast();
+          clientOutgoingNumbers =
+              ((value as Map<String, dynamic>)['numbers'] as List<dynamic>)
+                  .cast();
           break;
         case 'VoipgridPermissionsSetting':
           permissions = const UserPermissions(

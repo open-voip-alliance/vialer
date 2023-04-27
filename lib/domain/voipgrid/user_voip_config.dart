@@ -25,13 +25,7 @@ class UserVoipConfig with _$UserVoipConfig {
   }
 
   static Map<String, dynamic>? serializeToJson(UserVoipConfig? config) =>
-      config != null ? config.toJson() : null;
-
-  @override
-  String toString() => '$runtimeType('
-      'sipUserId: $sipUserId, '
-      'useEncryption: $useEncryption, '
-      'useOpus: $useOpus)';
+      config?.toJson();
 }
 
 String _sipUserIdFromJson(dynamic json) =>
@@ -42,7 +36,7 @@ extension NullableUserVoipConfig on UserVoipConfig? {
 
   String get password => this?.password ?? '';
 
-  bool get useEncryption => this?.useEncryption == true;
+  bool get useEncryption => this?.useEncryption ?? false;
 
-  bool get useOpus => this?.useOpus == true;
+  bool get useOpus => this?.useOpus ?? false;
 }

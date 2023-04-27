@@ -10,16 +10,16 @@ import '../../../../util/conditional_capitalization.dart';
 import '../cubit.dart';
 
 class QuestionScreen extends StatelessWidget {
-  final Question question;
-  final Survey survey;
-  final int? answer;
-
   const QuestionScreen({
-    Key? key,
     required this.question,
     required this.survey,
     this.answer,
-  }) : super(key: key);
+    super.key,
+  });
+
+  final Question question;
+  final Survey survey;
+  final int? answer;
 
   void _changeAnswer(BuildContext context, int index) {
     context.read<SurveyCubit>().answerQuestion(index);
@@ -109,14 +109,13 @@ class QuestionScreen extends StatelessWidget {
 }
 
 class _QuestionHeader extends StatelessWidget {
-  final int index;
-  final int total;
-
   const _QuestionHeader({
-    Key? key,
     required this.index,
     required this.total,
-  }) : super(key: key);
+  });
+
+  final int index;
+  final int total;
 
   @override
   Widget build(BuildContext context) {
@@ -142,6 +141,16 @@ class _QuestionHeader extends StatelessWidget {
 }
 
 class _Choice extends StatelessWidget {
+  const _Choice({
+    required this.selected,
+    required this.beforeSelected,
+    required this.extreme,
+    required this.hasSelection,
+    required this.onPressed,
+    required this.value,
+    required this.label,
+  });
+
   final bool selected;
   final bool beforeSelected;
   final bool extreme;
@@ -151,17 +160,6 @@ class _Choice extends StatelessWidget {
 
   final Widget value;
   final Widget label;
-
-  const _Choice({
-    Key? key,
-    required this.selected,
-    required this.beforeSelected,
-    required this.extreme,
-    required this.hasSelection,
-    required this.onPressed,
-    required this.value,
-    required this.label,
-  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

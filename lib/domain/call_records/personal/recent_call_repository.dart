@@ -8,11 +8,11 @@ import '../../voipgrid/voipgrid_service.dart';
 import '../call_record.dart';
 
 class RecentCallRepository with Loggable {
-  final VoipgridService _service;
-
   RecentCallRepository(
     this._service,
   );
+
+  final VoipgridService _service;
 
   /// [page] starts at 1.
   Future<List<CallRecord>> getRecentCalls({
@@ -20,7 +20,7 @@ class RecentCallRepository with Loggable {
     bool onlyMissedCalls = false,
     Iterable<domain.Contact> contacts = const [],
   }) async {
-    assert(page > 0);
+    assert(page > 0, 'page starts at 1');
     logger.info(
       'Fetching recent ${onlyMissedCalls ? 'missed' : 'all'} calls page: $page',
     );
@@ -30,13 +30,13 @@ class RecentCallRepository with Loggable {
       answered: onlyMissedCalls ? false : null,
     );
 
-    final objects = response.body as List<dynamic>? ?? [];
+    final objects = response.body ?? const <dynamic>[];
 
     if (objects.isEmpty) {
       return <CallRecord>[];
     } else {
       var callRecords = objects.map(
-        (jsonObject) => VoipgridCallRecord.fromJson(
+        (dynamic jsonObject) => VoipgridCallRecord.fromJson(
           jsonObject as Map<String, dynamic>,
         ).toCallRecord(),
       );

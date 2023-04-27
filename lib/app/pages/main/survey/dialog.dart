@@ -9,6 +9,11 @@ import 'screen/question.dart';
 import 'screen/thank_you.dart';
 
 class SurveyDialog extends StatelessWidget {
+  const SurveyDialog._({
+    required this.surveyId,
+    required this.trigger,
+  });
+
   final SurveyId surveyId;
   final SurveyTrigger trigger;
 
@@ -17,19 +22,13 @@ class SurveyDialog extends StatelessWidget {
     SurveyId surveyId, {
     required SurveyTrigger trigger,
   }) async {
-    await showDialog(
+    await showDialog<void>(
       context: context,
       builder: (context) {
         return SurveyDialog._(surveyId: surveyId, trigger: trigger);
       },
     );
   }
-
-  SurveyDialog._({
-    Key? key,
-    required this.surveyId,
-    required this.trigger,
-  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

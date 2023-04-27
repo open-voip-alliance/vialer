@@ -14,15 +14,15 @@ import '../../../widgets/colltact_list/details/cubit.dart';
 import '../../../widgets/colltact_list/details/widget.dart';
 
 class ColltactPageDetails extends StatefulWidget {
+  const ColltactPageDetails({
+    required this.colltact,
+    super.key,
+  });
+
   final Colltact colltact;
 
-  const ColltactPageDetails({
-    Key? key,
-    required this.colltact,
-  }) : super(key: key);
-
   @override
-  _ColltactPageDetailsState createState() => _ColltactPageDetailsState();
+  State<ColltactPageDetails> createState() => _ColltactPageDetailsState();
 }
 
 class _ColltactPageDetailsState extends State<ColltactPageDetails>

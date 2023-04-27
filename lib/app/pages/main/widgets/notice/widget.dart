@@ -16,12 +16,12 @@ import 'cubit.dart';
 import 'widgets/banner.dart';
 
 class Notice extends StatelessWidget {
-  final Widget child;
-
   const Notice({
-    Key? key,
     required this.child,
-  }) : super(key: key);
+    super.key,
+  });
+
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
@@ -35,9 +35,9 @@ class Notice extends StatelessWidget {
 
 /// Private widget with a context that has access to [NoticeCubit].
 class _Notice extends StatefulWidget {
-  final Widget child;
+  const _Notice(this.child);
 
-  _Notice(this.child);
+  final Widget child;
 
   @override
   _NoticeState createState() => _NoticeState();
@@ -160,8 +160,10 @@ class _NoticeState extends State<_Notice>
                     ),
                     if (state is NoAppAccountNotice) ...[
                       TextButton(
-                        onPressed: () => WebViewPage.open(context,
-                            to: WebPage.telephonySettings),
+                        onPressed: () => WebViewPage.open(
+                          context,
+                          to: WebPage.telephonySettings,
+                        ),
                         child: Text(
                           context.msg.main.notice.actions.selectAccount
                               .toUpperCaseIfAndroid(context),

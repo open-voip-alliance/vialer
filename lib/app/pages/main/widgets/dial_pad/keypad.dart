@@ -9,6 +9,16 @@ import '../../../../resources/theme.dart';
 import '../../../../util/pigeon.dart';
 
 class Keypad extends StatelessWidget {
+  const Keypad({
+    required this.controller,
+    required this.cursorShownNotifier,
+    required this.bottomCenterButton,
+    this.bottomLeftButton,
+    this.bottomRightButton,
+    this.constraints,
+    super.key,
+  });
+
   final TextEditingController controller;
   final ValueNotifier<bool> cursorShownNotifier;
   final BoxConstraints? constraints;
@@ -21,16 +31,6 @@ class Keypad extends StatelessWidget {
 
   /// The button on the button right.
   final Widget? bottomRightButton;
-
-  const Keypad({
-    Key? key,
-    required this.controller,
-    required this.cursorShownNotifier,
-    this.constraints,
-    this.bottomLeftButton,
-    required this.bottomCenterButton,
-    this.bottomRightButton,
-  }) : super(key: key);
 
   static const _buttonValues = {
     '1': null,
@@ -94,18 +94,18 @@ class Keypad extends StatelessWidget {
 }
 
 class _KeypadGridDelegate extends SliverGridDelegate {
+  _KeypadGridDelegate({
+    this.constraints,
+    this.bottomPadding = 0,
+    this.slim = false,
+  });
+
   final BoxConstraints? constraints;
   final double bottomPadding;
 
   /// Whether the keypad should be slimmed down, meaning it will be less
   /// wide.
   final bool slim;
-
-  _KeypadGridDelegate({
-    this.constraints,
-    this.bottomPadding = 0,
-    this.slim = false,
-  });
 
   @override
   SliverGridLayout getLayout(SliverConstraints constraints) {
@@ -154,7 +154,6 @@ class _KeypadGridDelegate extends SliverGridDelegate {
       crossAxisCount: itemsPerRow,
       crossAxisStride: crossAxisStride,
       mainAxisStride: mainAxisStride,
-      reverseCrossAxis: false,
     );
   }
 
@@ -166,24 +165,16 @@ class _KeypadGridDelegate extends SliverGridDelegate {
 }
 
 class _CenteredSliverGridRegularTileLayout extends SliverGridRegularTileLayout {
-  final SliverConstraints constraints;
-
   const _CenteredSliverGridRegularTileLayout({
     required this.constraints,
-    required int crossAxisCount,
-    required double mainAxisStride,
-    required double crossAxisStride,
-    required double childMainAxisExtent,
-    required double childCrossAxisExtent,
-    bool reverseCrossAxis = false,
-  }) : super(
-          crossAxisCount: crossAxisCount,
-          mainAxisStride: mainAxisStride,
-          crossAxisStride: crossAxisStride,
-          childMainAxisExtent: childMainAxisExtent,
-          childCrossAxisExtent: childCrossAxisExtent,
-          reverseCrossAxis: reverseCrossAxis,
-        );
+    required super.crossAxisCount,
+    required super.mainAxisStride,
+    required super.crossAxisStride,
+    required super.childMainAxisExtent,
+    required super.childCrossAxisExtent,
+  }) : super(reverseCrossAxis: false);
+
+  final SliverConstraints constraints;
 
   @override
   SliverGridGeometry getGeometryForChildIndex(int index) {
@@ -204,15 +195,15 @@ class _CenteredSliverGridRegularTileLayout extends SliverGridRegularTileLayout {
 }
 
 class KeypadButton extends StatelessWidget {
+  const KeypadButton({
+    required this.child,
+    this.borderOnIos = true,
+    super.key,
+  });
+
   final bool borderOnIos;
 
   final Widget child;
-
-  const KeypadButton({
-    Key? key,
-    this.borderOnIos = true,
-    required this.child,
-  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -239,6 +230,20 @@ class KeypadButton extends StatelessWidget {
 }
 
 class KeypadValueButton extends StatefulWidget {
+  const KeypadValueButton._({
+    required this.controller,
+    required this.cursorShownNotifier,
+    required this.primaryValue,
+    this.secondaryValue,
+    this.separateSecondaryValueLettersForSemantics = true,
+    this.replaceWithSecondaryValueOnLongPress = false,
+    // ignore: unused_element
+    this.playTone = true,
+  }) : assert(
+          !replaceWithSecondaryValueOnLongPress || secondaryValue != null,
+          'secondaryValue must not be null if it should be used for replacing'
+          ' on long press',
+        );
   static const maxSize = 80.0;
 
   final String primaryValue;
@@ -262,21 +267,6 @@ class KeypadValueButton extends StatefulWidget {
   /// When enabled will play the relevant audio tone when the keypad button
   /// is pressed.
   final bool playTone;
-
-  const KeypadValueButton._({
-    Key? key,
-    required this.primaryValue,
-    this.secondaryValue,
-    this.separateSecondaryValueLettersForSemantics = true,
-    this.replaceWithSecondaryValueOnLongPress = false,
-    required this.controller,
-    required this.cursorShownNotifier,
-    // ignore: unused_element
-    this.playTone = true,
-  })  : assert(
-          !replaceWithSecondaryValueOnLongPress || secondaryValue != null,
-        ),
-        super(key: key);
 
   @override
   State<StatefulWidget> createState() => _KeypadValueButtonState();
@@ -385,7 +375,6 @@ class _KeypadValueButtonState extends State<KeypadValueButton> {
                 child: _InkWellOrResponse(
                   response: !context.isIOS,
                   customBorder: const CircleBorder(),
-                  enableFeedback: true,
                   onTapDown: _enterValue,
                   onLongPress: widget.replaceWithSecondaryValueOnLongPress
                       ? _replaceWithSecondaryValue
@@ -431,31 +420,28 @@ class _KeypadValueButtonState extends State<KeypadValueButton> {
 }
 
 class _InkWellOrResponse extends StatelessWidget {
-  final Widget? child;
-  final VoidCallback onTapDown;
-  final VoidCallback? onLongPress;
-  final bool enableFeedback;
-  final ShapeBorder? customBorder;
-  final bool response;
-
   /// Note that the [InkResponse] or [InkWell] and all its children are
   /// excluded from semantics. Only [onTapDown] and [onLongPress] are set for
   /// semantics.
   const _InkWellOrResponse({
-    Key? key,
     required this.onTapDown,
     this.onLongPress,
     this.response = false,
     this.customBorder,
-    this.enableFeedback = true,
     this.child,
-  }) : super(key: key);
+  });
+
+  final Widget? child;
+  final VoidCallback onTapDown;
+  final VoidCallback? onLongPress;
+  final ShapeBorder? customBorder;
+  final bool response;
 
   @override
   Widget build(BuildContext context) {
     // onTap needs to be defined for onTapDown to work.
     void onTap() {}
-    void onTapDownWithDetails(_) => onTapDown();
+    void onTapDownWithDetails(dynamic _) => onTapDown();
     const excludeFromSemantics = true;
 
     return Semantics(
@@ -465,7 +451,6 @@ class _InkWellOrResponse extends StatelessWidget {
         child: response
             ? InkResponse(
                 excludeFromSemantics: excludeFromSemantics,
-                enableFeedback: enableFeedback,
                 onTap: onTap,
                 onTapDown: onTapDownWithDetails,
                 onLongPress: onLongPress,
@@ -474,7 +459,6 @@ class _InkWellOrResponse extends StatelessWidget {
               )
             : InkWell(
                 excludeFromSemantics: excludeFromSemantics,
-                enableFeedback: enableFeedback,
                 onTap: onTap,
                 onTapDown: onTapDownWithDetails,
                 onLongPress: onLongPress,

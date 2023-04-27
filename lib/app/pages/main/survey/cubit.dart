@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:in_app_review/in_app_review.dart';
 
@@ -14,12 +16,6 @@ import 'state.dart';
 export 'state.dart';
 
 class SurveyCubit extends Cubit<SurveyState> with Loggable {
-  final _getSurvey = GetSurveyUseCase();
-  final _sendSurveyResults = SendSurveyResultsUseCase();
-
-  final _getUser = GetLoggedInUserUseCase();
-  final _changeSetting = ChangeSettingUseCase();
-
   SurveyCubit({
     required String language,
     required SurveyId id,
@@ -51,6 +47,11 @@ class SurveyCubit extends Cubit<SurveyState> with Loggable {
       }
     });
   }
+  final _getSurvey = GetSurveyUseCase();
+  final _sendSurveyResults = SendSurveyResultsUseCase();
+
+  final _getUser = GetLoggedInUserUseCase();
+  final _changeSetting = ChangeSettingUseCase();
 
 // ignore: avoid_positional_boolean_parameters
   Future<void> setDontShowThisAgain(bool value) async {
@@ -104,7 +105,7 @@ class SurveyCubit extends Cubit<SurveyState> with Loggable {
       final inAppReview = InAppReview.instance;
 
       if (await inAppReview.isAvailable()) {
-        inAppReview.requestReview();
+        unawaited(inAppReview.requestReview());
       }
     }
   }
@@ -144,12 +145,12 @@ class SurveyCubit extends Cubit<SurveyState> with Loggable {
       // Required for type promotion.
       final answer = state.answer;
 
-      return {
+      return <String, dynamic>{
         'rating': _getRatingFromAnswer(answer),
       };
     }
 
-    return {
+    return <String, dynamic>{
       'language': survey.language,
       'trigger': survey.trigger.toJson(),
       'questions': [

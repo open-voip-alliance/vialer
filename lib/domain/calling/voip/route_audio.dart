@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_phone_lib/flutter_phone_lib.dart';
 
 import '../../../../dependency_locator.dart';
@@ -10,7 +12,7 @@ class RouteAudioUseCase extends UseCase {
   final _trackRouteAudio = TrackRouteAudioUseCase();
 
   Future<void> call({required AudioRoute route}) async {
-    _trackRouteAudio(route: route);
+    unawaited(_trackRouteAudio(route: route));
     await _voipRepository.routeAudio(route);
   }
 }

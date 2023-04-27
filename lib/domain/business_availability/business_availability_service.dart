@@ -9,16 +9,16 @@ part 'business_availability_service.chopper.dart';
 @ChopperApi()
 abstract class BusinessAvailabilityService extends ChopperService {
   static BusinessAvailabilityService create() {
-    final _getBrand = GetBrand();
-    final _businessAvailabilityBaseUrl =
-        _getBrand().businessAvailabilityUrl.toString();
+    final getBrand = GetBrand();
+    final businessAvailabilityBaseUrl =
+        getBrand().businessAvailabilityUrl.toString();
 
     return _$BusinessAvailabilityService(
       ChopperClient(
-        baseUrl: _businessAvailabilityBaseUrl,
+        baseUrl: businessAvailabilityBaseUrl,
         converter: JsonConverter(),
-        interceptors: [
-          const AuthorizationInterceptor(
+        interceptors: const <RequestInterceptor>[
+          AuthorizationInterceptor(
             onlyModernAuth: true,
           ),
         ],
@@ -34,7 +34,7 @@ abstract class BusinessAvailabilityService extends ChopperService {
       ChopperClient(
         baseUrl: baseUrl,
         converter: JsonConverter(),
-        interceptors: [
+        interceptors: <RequestInterceptor>[
           AuthorizationInterceptor(user: user),
         ],
       ),
@@ -42,25 +42,25 @@ abstract class BusinessAvailabilityService extends ChopperService {
   }
 
   @Get(path: '{clientUuid}/temporary-redirect')
-  Future<Response> getTemporaryRedirect({
+  Future<Response<Map<String, dynamic>>> getTemporaryRedirect({
     @Path() required String clientUuid,
   });
 
   @Post(path: '{clientUuid}/temporary-redirect')
-  Future<Response> setTemporaryRedirect(
+  Future<Response<Map<String, dynamic>>> setTemporaryRedirect(
     @Path() String clientUuid,
     @Body() Map<String, dynamic> body,
   );
 
   @Put(path: '{clientUuid}/temporary-redirect/{temporaryRedirectId}')
-  Future<Response> updateTemporaryRedirect(
+  Future<Response<Map<String, dynamic>>> updateTemporaryRedirect(
     @Path() String clientUuid,
     @Path() String temporaryRedirectId,
     @Body() Map<String, dynamic> body,
   );
 
   @Delete(path: '{clientUuid}/temporary-redirect/{temporaryRedirectId}')
-  Future<Response> deleteTemporaryRedirect(
+  Future<Response<Map<String, dynamic>>> deleteTemporaryRedirect(
     @Path() String clientUuid,
     @Path() String temporaryRedirectId,
   );

@@ -12,17 +12,18 @@ import 'call_header_container.dart';
 import 'call_transfer_bar.dart';
 
 class CallTransfer extends StatefulWidget {
-  final Call activeCall;
-  final void Function(String) onTransferTargetSelected;
-  final void Function() onContactsButtonPressed;
-  final void Function() onCloseButtonPressed;
-
   const CallTransfer({
     required this.activeCall,
     required this.onTransferTargetSelected,
     required this.onContactsButtonPressed,
     required this.onCloseButtonPressed,
+    super.key,
   });
+
+  final Call activeCall;
+  final void Function(String) onTransferTargetSelected;
+  final void Function() onContactsButtonPressed;
+  final void Function() onCloseButtonPressed;
 
   @override
   State<CallTransfer> createState() => _CallTransferState();
@@ -40,7 +41,7 @@ class _CallTransferState extends State<CallTransfer> {
 
   Future<void> _onContactsButtonPressed(BuildContext context) async {
     final number =
-        await Navigator.pushNamed(context, _colltactsRoute) as String;
+        (await Navigator.pushNamed(context, _colltactsRoute))! as String;
     widget.onTransferTargetSelected(number);
   }
 
@@ -78,7 +79,7 @@ class _CallTransferState extends State<CallTransfer> {
                   children: [
                     TextSpan(text: transferToStart),
                     TextSpan(
-                      text: '${widget.activeCall.remotePartyHeading}',
+                      text: widget.activeCall.remotePartyHeading,
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     TextSpan(
@@ -115,46 +116,48 @@ class _CallTransferState extends State<CallTransfer> {
               },
               _colltactsRoute: (routeContext, _) {
                 return Material(
-                  child: Column(children: [
-                    Expanded(
-                      child: ColltactList(
-                        detailsBuilder: (context, colltact) {
-                          return ColltactDetails(
-                            colltact: colltact,
-                            onPhoneNumberPressed: (number) =>
-                                _onColltactPhoneNumberPressed(
-                              routeContext,
-                              number,
-                            ),
-                            onEmailPressed: (_) {},
-                          );
-                        },
-                      ),
-                    ),
-                    Material(
-                      elevation: 8,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 32,
-                          vertical: 16,
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            closeButton,
-                            IconButton(
-                              icon: Icon(
-                                Icons.dialpad,
-                                color: bottomIconColor,
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: ColltactList(
+                          detailsBuilder: (context, colltact) {
+                            return ColltactDetails(
+                              colltact: colltact,
+                              onPhoneNumberPressed: (number) =>
+                                  _onColltactPhoneNumberPressed(
+                                routeContext,
+                                number,
                               ),
-                              iconSize: bottomIconSize,
-                              onPressed: () => Navigator.pop(routeContext),
-                            ),
-                          ],
+                              onEmailPressed: (_) {},
+                            );
+                          },
                         ),
                       ),
-                    ),
-                  ]),
+                      Material(
+                        elevation: 8,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 32,
+                            vertical: 16,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              closeButton,
+                              IconButton(
+                                icon: Icon(
+                                  Icons.dialpad,
+                                  color: bottomIconColor,
+                                ),
+                                iconSize: bottomIconSize,
+                                onPressed: () => Navigator.pop(routeContext),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 );
               }
             },

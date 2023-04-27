@@ -18,21 +18,21 @@ const _horizontalPadding = 24.0;
 const _leadingSize = 48.0;
 
 class ColltactDetails extends StatefulWidget {
+  const ColltactDetails({
+    required this.colltact,
+    required this.onPhoneNumberPressed,
+    required this.onEmailPressed,
+    this.actions = const [],
+    super.key,
+  });
+
   final Colltact colltact;
   final void Function(String) onPhoneNumberPressed;
   final void Function(String) onEmailPressed;
   final List<Widget> actions;
 
-  const ColltactDetails({
-    Key? key,
-    required this.colltact,
-    required this.onPhoneNumberPressed,
-    required this.onEmailPressed,
-    this.actions = const [],
-  }) : super(key: key);
-
   @override
-  _ColltactDetailsState createState() => _ColltactDetailsState();
+  State<ColltactDetails> createState() => _ColltactDetailsState();
 }
 
 class _ColltactDetailsState extends State<ColltactDetails> {
@@ -151,17 +151,16 @@ class _ColltactDetailsState extends State<ColltactDetails> {
 }
 
 class _DestinationsList extends StatelessWidget {
+  const _DestinationsList({
+    required this.colltact,
+    required this.onPhoneNumberPressed,
+    required this.onEmailPressed,
+  });
+
   final Colltact colltact;
 
   final void Function(String) onPhoneNumberPressed;
   final void Function(String) onEmailPressed;
-
-  const _DestinationsList({
-    Key? key,
-    required this.colltact,
-    required this.onPhoneNumberPressed,
-    required this.onEmailPressed,
-  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -201,20 +200,19 @@ class _DestinationsList extends StatelessWidget {
 }
 
 class _Item extends StatelessWidget {
+  const _Item({
+    required this.value,
+    required this.isEmail,
+    this.label,
+    this.onTap,
+  });
+
   final String value;
   final String? label;
 
   final bool isEmail;
 
   final VoidCallback? onTap;
-
-  const _Item({
-    Key? key,
-    required this.value,
-    this.label,
-    required this.isEmail,
-    this.onTap,
-  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

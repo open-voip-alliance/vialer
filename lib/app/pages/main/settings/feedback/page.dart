@@ -10,10 +10,10 @@ import '../../../../widgets/transparent_status_bar.dart';
 import 'cubit.dart';
 
 class FeedbackPage extends StatefulWidget {
-  const FeedbackPage({Key? key}) : super(key: key);
+  const FeedbackPage({super.key});
 
   @override
-  _FeedbackPageState createState() => _FeedbackPageState();
+  State<FeedbackPage> createState() => _FeedbackPageState();
 }
 
 class _FeedbackPageState extends State<FeedbackPage> {
@@ -44,7 +44,10 @@ class _FeedbackPageState extends State<FeedbackPage> {
     );
   }
 
-  void _onSendFeedbackPressed(BuildContext buildContext, String text) async {
+  Future<void> _onSendFeedbackPressed(
+    BuildContext buildContext,
+    String text,
+  ) async {
     return showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
@@ -156,9 +159,9 @@ class _FeedbackPageState extends State<FeedbackPage> {
 }
 
 class _FeedbackInput extends StatelessWidget {
-  final TextEditingController controller;
-
   const _FeedbackInput({required this.controller});
+
+  final TextEditingController controller;
 
   @override
   Widget build(BuildContext context) {
@@ -203,12 +206,11 @@ class _FeedbackInput extends StatelessWidget {
 }
 
 class _FeedbackFormHeader extends StatelessWidget {
-  final bool visible;
-
   const _FeedbackFormHeader({
-    Key? key,
     required this.visible,
-  }) : super(key: key);
+  });
+
+  final bool visible;
 
   @override
   Widget build(BuildContext context) {
@@ -224,7 +226,6 @@ class _FeedbackFormHeader extends StatelessWidget {
         child: Column(
           children: [
             Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 FaIcon(
                   FontAwesomeIcons.comments,

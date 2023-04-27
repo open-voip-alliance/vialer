@@ -1,3 +1,5 @@
+// ignore_for_file: always_put_required_named_parameters_first
+
 import 'package:dartx/dartx.dart';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -14,6 +16,20 @@ part 'user.g.dart';
 @immutable
 @JsonSerializable()
 class User extends Equatable {
+  const User({
+    required this.uuid,
+    required this.email,
+    required this.firstName,
+    this.preposition = '',
+    required this.lastName,
+    this.token,
+    this.appAccountUrl,
+    required this.client,
+    this.voip,
+    required this.settings,
+    this.permissions = const UserPermissions(),
+  });
+
   final String uuid;
 
   final String email;
@@ -56,20 +72,6 @@ class User extends Equatable {
   // suggests that there is no app account configured.
   bool get isAllowedVoipCalling =>
       voip != null && voip.sipUserId.isNotNullOrBlank;
-
-  const User({
-    required this.uuid,
-    required this.email,
-    required this.firstName,
-    this.preposition = '',
-    required this.lastName,
-    this.token,
-    this.appAccountUrl,
-    required this.client,
-    this.voip,
-    required this.settings,
-    this.permissions = const UserPermissions(),
-  });
 
   User copyWith({
     String? uuid,

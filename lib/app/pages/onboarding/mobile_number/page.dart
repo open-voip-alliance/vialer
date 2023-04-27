@@ -14,7 +14,7 @@ import 'cubit.dart';
 import 'widgets/country_field/widget.dart';
 
 class MobileNumberPage extends StatefulWidget {
-  const MobileNumberPage();
+  const MobileNumberPage({super.key});
 
   static const keys = _Keys();
 
@@ -162,6 +162,6 @@ class _MobileNumberPageState extends State<MobileNumberPage> {
 class _Keys {
   const _Keys();
 
-  final field = const Key('mobileNumberField');
-  final continueButton = const Key('continueButton');
+  Key get field => const Key('mobileNumberField');
+  Key get continueButton => const Key('continueButton');
 }

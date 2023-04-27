@@ -11,12 +11,12 @@ import 'editable_value.dart';
 import 'widget.dart';
 
 class MobileNumberTile extends StatelessWidget {
-  final User user;
-
   const MobileNumberTile(
     this.user, {
     super.key,
   });
+
+  final User user;
 
   bool _validateMobileNumber(String number) =>
       number.startsWith('+') && !number.startsWith('+0') && number.length == 12;
@@ -57,7 +57,7 @@ class _MobileNumberTileHelp extends StatelessWidget {
   Widget build(BuildContext context) {
     final helpColor = context.brand.theme.colors.red1;
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

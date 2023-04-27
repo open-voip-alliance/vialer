@@ -3,6 +3,7 @@ import 'dart:core';
 import '../../../dependency_locator.dart';
 import '../../use_case.dart';
 import '../call_record.dart';
+import '../personal/get_recent_calls.dart';
 import 'local_client_calls.dart';
 
 class GetRecentClientCallsUseCase extends UseCase {
@@ -10,12 +11,12 @@ class GetRecentClientCallsUseCase extends UseCase {
 
   static const _perPage = 50;
 
-  /// [page] starts at 1 to maintain consistency with [GetRecentCalls].
+  /// [page] starts at 1 to maintain consistency with [GetRecentCallsUseCase].
   Future<List<ClientCallRecord>> call({
     int page = 1,
     bool onlyMissedCalls = false,
-  }) async =>
-      await _clientCalls.getCalls(
+  }) =>
+      _clientCalls.getCalls(
         page: page,
         perPage: _perPage,
         onlyMissedCalls: onlyMissedCalls,

@@ -7,16 +7,15 @@ import 'state.dart';
 export 'state.dart';
 
 class DialerCubit extends Cubit<DialerState> {
-  final _getLatestDialedNumber = GetLatestDialedNumberUseCase();
-
-  final CallerCubit _caller;
-
   DialerCubit(this._caller)
       : super(
           DialerState(
             lastCalledDestination: GetLatestDialedNumberUseCase()(),
           ),
         );
+  final _getLatestDialedNumber = GetLatestDialedNumberUseCase();
+
+  final CallerCubit _caller;
 
   Future<void> call(String destination) async {
     if (destination.isEmpty) {
@@ -30,6 +29,6 @@ class DialerCubit extends Cubit<DialerState> {
   }
 
   void clearLastCalledDestination() {
-    emit(DialerState());
+    emit(const DialerState());
   }
 }

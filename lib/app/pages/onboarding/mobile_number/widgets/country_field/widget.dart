@@ -7,14 +7,13 @@ import '../../../../../resources/localizations.dart';
 import '../country_field/cubit.dart';
 
 class CountryFlagField extends StatefulWidget {
-  final TextEditingController controller;
-  final FocusNode focusNode;
-
   const CountryFlagField._({
-    Key? key,
     required this.controller,
     required this.focusNode,
-  }) : super(key: key);
+  });
+
+  final TextEditingController controller;
+  final FocusNode focusNode;
 
   static Widget create({
     required TextEditingController controller,
@@ -30,7 +29,7 @@ class CountryFlagField extends StatefulWidget {
   }
 
   @override
-  _CountryFlagFieldState createState() => _CountryFlagFieldState();
+  State<CountryFlagField> createState() => _CountryFlagFieldState();
 }
 
 class _CountryFlagFieldState extends State<CountryFlagField> {
@@ -84,7 +83,8 @@ class _CountryFlagFieldState extends State<CountryFlagField> {
   void _onFlagPressed() {
     final cubit = context.read<CountryFieldCubit>();
     final state = cubit.state;
-    final countries = state is CountriesLoaded ? state.countries.toList() : [];
+    final countries =
+        state is CountriesLoaded ? state.countries.toList() : const <Country>[];
 
     // The country field widget is used as a prefix icon for the mobile
     // number text field. Clicking the flag icon will show a
@@ -106,8 +106,8 @@ class _CountryFlagFieldState extends State<CountryFlagField> {
     });
   }
 
-  Future _showCountryBottomSheet(
-    List countries,
+  Future<void> _showCountryBottomSheet(
+    List<Country> countries,
     CountryFieldCubit cubit,
   ) {
     return showModalBottomSheet(
@@ -122,13 +122,13 @@ class _CountryFlagFieldState extends State<CountryFlagField> {
             ),
             Expanded(
               child: DraggableScrollableSheet(
-                initialChildSize: 1.0,
+                initialChildSize: 1,
                 builder: (context, scrollController) {
                   return ListView.builder(
                     controller: scrollController,
                     itemCount: countries.length,
                     itemBuilder: (context, index) {
-                      final country = countries[index] as Country;
+                      final country = countries[index];
 
                       return ListTile(
                         minLeadingWidth: 10,
@@ -137,7 +137,6 @@ class _CountryFlagFieldState extends State<CountryFlagField> {
                         leading: Padding(
                           padding: const EdgeInsets.only(
                             top: 2,
-                            right: 0,
                           ),
                           child: Text(
                             country.flag,
@@ -174,7 +173,7 @@ class _CountryFlagFieldState extends State<CountryFlagField> {
           if (state is CountriesLoaded) {
             return MaterialButton(
               minWidth: 0,
-              padding: const EdgeInsets.all(0),
+              padding: EdgeInsets.zero,
               onPressed: _onFlagPressed,
               child: Text(
                 state.currentCountry.flag,

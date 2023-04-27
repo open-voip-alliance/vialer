@@ -24,13 +24,13 @@ class LoginRequiresTwoFactorCode extends LoginState {
 }
 
 class LoginNotSubmitted extends LoginState {
-  final bool hasValidEmailFormat;
-  final bool hasValidPasswordFormat;
-
-  LoginNotSubmitted({
+  const LoginNotSubmitted({
     required this.hasValidEmailFormat,
     required this.hasValidPasswordFormat,
   });
+
+  final bool hasValidEmailFormat;
+  final bool hasValidPasswordFormat;
 
   @override
   List<Object?> get props => [hasValidEmailFormat, hasValidPasswordFormat];

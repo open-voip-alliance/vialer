@@ -6,9 +6,9 @@ import '../../../../widgets/connectivity_checker/cubit.dart';
 import 'cubit.dart';
 
 class ColleagueWebSocket extends StatefulWidget {
-  final Widget child;
+  const ColleagueWebSocket._(this.child);
 
-  ColleagueWebSocket._(this.child);
+  final Widget child;
 
   static Widget connect({
     required Widget child,

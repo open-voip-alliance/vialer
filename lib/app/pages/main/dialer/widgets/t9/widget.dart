@@ -10,12 +10,12 @@ import '../../../widgets/colltact_list/widgets/avatar.dart';
 import 'bloc.dart';
 
 class T9ColltactsListView extends StatelessWidget {
-  final TextEditingController controller;
-
   const T9ColltactsListView({
-    Key? key,
     required this.controller,
-  }) : super(key: key);
+    super.key,
+  });
+
+  final TextEditingController controller;
 
   @override
   Widget build(BuildContext context) {
@@ -29,10 +29,9 @@ class T9ColltactsListView extends StatelessWidget {
 }
 
 class _T9ColltactsList extends StatefulWidget {
-  final TextEditingController controller;
+  const _T9ColltactsList({required this.controller});
 
-  const _T9ColltactsList({Key? key, required this.controller})
-      : super(key: key);
+  final TextEditingController controller;
 
   @override
   _T9ColltactsListState createState() => _T9ColltactsListState();
@@ -54,7 +53,7 @@ class _T9ColltactsListState extends State<_T9ColltactsList> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final renderBox =
-          _listKey.currentContext!.findRenderObject() as RenderBox;
+          _listKey.currentContext!.findRenderObject()! as RenderBox;
 
       setState(() {
         // Height of the list will be 2 items.

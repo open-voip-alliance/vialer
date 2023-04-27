@@ -43,6 +43,12 @@ abstract class SettingChangeListener<T extends Object> {
 
 @immutable
 class SettingChangeListenResult {
+  const SettingChangeListenResult({
+    this.log = true,
+    this.sync = false,
+    this.failed = false,
+  });
+
   /// Whether to log the setting change. Set to `false`
   /// if the listener logs it themselves.
   final bool log;
@@ -53,12 +59,6 @@ class SettingChangeListenResult {
 
   /// Whether the change failed.
   final bool failed;
-
-  const SettingChangeListenResult({
-    this.log = true,
-    this.sync = false,
-    this.failed = false,
-  });
 }
 
 const successResult = SettingChangeListenResult();

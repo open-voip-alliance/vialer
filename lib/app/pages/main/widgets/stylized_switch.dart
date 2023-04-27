@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 import '../../../resources/theme.dart';
 
 class StylizedSwitch extends StatelessWidget {
-  final bool value;
-  final ValueChanged<bool>? onChanged;
-
   const StylizedSwitch({
-    Key? key,
     required this.value,
     required this.onChanged,
-  }) : super(key: key);
+    super.key,
+  });
+
+  final bool value;
+  final ValueChanged<bool>? onChanged;
 
   @override
   Widget build(BuildContext context) {

@@ -11,10 +11,17 @@ import 'select_call_problem.dart';
 import 'written_feedback.dart';
 
 class CallFeedback extends StatefulWidget {
+  const CallFeedback({
+    required this.onFeedbackReady,
+    required this.onUserFinishedFeedbackProcess,
+    this.positiveRatingThreshold = 4,
+    super.key,
+  });
+
   /// All the feedback items have been collected and we can process the given
   /// feedback. This does not mean the user is done and so this should not
   /// be dismissed yet.
-  final Function(CallFeedbackResult result) onFeedbackReady;
+  final void Function(CallFeedbackResult result) onFeedbackReady;
 
   /// The user has finished the whole feedback process, so the widget can be
   /// dismissed.
@@ -25,19 +32,13 @@ class CallFeedback extends StatefulWidget {
   /// 5 are counted as positive ratings.
   final int positiveRatingThreshold;
 
-  const CallFeedback({
-    required this.onFeedbackReady,
-    required this.onUserFinishedFeedbackProcess,
-    this.positiveRatingThreshold = 4,
-  });
-
   @override
   State<StatefulWidget> createState() => _CallFeedbackState();
 }
 
 class _CallFeedbackState extends State<CallFeedback> {
   /// This is the end result of the user feedback and should be submitted
-  /// when it has been completed via the [onFeedbackReady]
+  /// when it has been completed via the [CallFeedback.onFeedbackReady]
   /// callback.
   var _result = CallFeedbackResult.fresh();
 
@@ -147,17 +148,18 @@ class _CallFeedbackState extends State<CallFeedback> {
 }
 
 class CallFeedbackAlertDialog extends StatelessWidget {
+  const CallFeedbackAlertDialog({
+    required this.content,
+    this.title,
+    this.actions,
+    this.titleAlign,
+    super.key,
+  });
+
   final String? title;
   final Widget content;
   final List<Widget>? actions;
   final TextAlign? titleAlign;
-
-  const CallFeedbackAlertDialog({
-    this.title,
-    required this.content,
-    this.actions,
-    this.titleAlign,
-  });
 
   @override
   Widget build(BuildContext context) {
@@ -167,7 +169,7 @@ class CallFeedbackAlertDialog extends StatelessWidget {
       title: title != null
           ? Text(
               title!,
-              textAlign: titleAlign != null ? titleAlign : TextAlign.left,
+              textAlign: titleAlign ?? TextAlign.left,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 color: context.brand.theme.colors.grey6,

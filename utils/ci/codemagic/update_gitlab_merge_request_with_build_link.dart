@@ -24,11 +24,11 @@ void main(List<String> arguments) async {
     throw Exception(argParser.usage);
   }
 
-  final mergeRequestId = args['merge-request-id']!;
-  final gitlabApiToken = args['gitlab-api-token']!;
-  final buildNumber = args['build-number']!;
-  final projectId = args['project-id']!;
-  final buildId = args['build-id']!;
+  final mergeRequestId = args['merge-request-id'] as String;
+  final gitlabApiToken = args['gitlab-api-token'] as String;
+  final buildNumber = args['build-number'] as String;
+  final projectId = args['project-id'] as String;
+  final buildId = args['build-id'] as String;
 
   final url = Uri.parse('''
 https://gitlab.wearespindle.com/api/v4/projects/105/merge_requests/$mergeRequestId
@@ -36,7 +36,7 @@ https://gitlab.wearespindle.com/api/v4/projects/105/merge_requests/$mergeRequest
 
   final headers = {
     HttpHeaders.contentTypeHeader: 'application/json',
-    'Private-Token': gitlabApiToken.toString(),
+    'Private-Token': gitlabApiToken,
   };
 
   // Using a multi-line string as it is easier to read what is being produced,
@@ -49,7 +49,8 @@ https://gitlab.wearespindle.com/api/v4/projects/105/merge_requests/$mergeRequest
 
   if (response.statusCode != 200) return;
 
-  final currentDescription = jsonDecode(response.body)['description'] as String;
+  final currentDescription = (jsonDecode(response.body)
+      as Map<String, dynamic>)['description'] as String;
 
   final newDescription = currentDescription.containsBuildInformationAlready
       ? currentDescription.replaceExistingBuildInformation(buildInformation)
@@ -64,7 +65,7 @@ extension on String {
   String replaceExistingBuildInformation(String buildInformation) =>
       replaceAllMapped(
         RegExp(r'^\[Codemagic\:.+$', multiLine: true),
-        (match) => '$buildInformation',
+        (match) => buildInformation,
       );
 
   String appendBuildInformation(String buildInformation) =>

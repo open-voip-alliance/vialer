@@ -13,7 +13,7 @@ import '../../widgets/caller.dart';
 import '../widgets/call_button.dart';
 
 class IncomingCallPage extends StatefulWidget {
-  const IncomingCallPage();
+  const IncomingCallPage({super.key});
 
   @override
   State<StatefulWidget> createState() => _IncomingCallPageState();
@@ -33,7 +33,7 @@ class _IncomingCallPageState extends State<IncomingCallPage>
   Widget build(BuildContext context) {
     final outerCircleColor =
         context.brand.theme.colors.primaryLight.withOpacity(0.4);
-    final outerCirclePadding = const EdgeInsets.all(32);
+    const outerCirclePadding = EdgeInsets.all(32);
 
     return WillPopScope(
       // Incoming call page can never be popped by the user.
@@ -47,7 +47,7 @@ class _IncomingCallPageState extends State<IncomingCallPage>
                   radius: 0.9,
                   colors: [
                     context.brand.theme.colors.primary,
-                    context.brand.theme.colors.primary.withOpacity(0.0),
+                    context.brand.theme.colors.primary.withOpacity(0),
                   ],
                 ),
               ),
@@ -151,12 +151,11 @@ class _IncomingCallPageState extends State<IncomingCallPage>
 }
 
 class _Info extends StatelessWidget {
-  final Call call;
-
   const _Info({
-    Key? key,
     required this.call,
-  }) : super(key: key);
+  });
+
+  final Call call;
 
   @override
   Widget build(BuildContext context) {
@@ -176,7 +175,6 @@ class _Info extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Material(
               shape: const CircleBorder(),
@@ -237,14 +235,13 @@ class _Info extends StatelessWidget {
 }
 
 class _ActionButton extends StatelessWidget {
-  final Widget label;
-  final Widget child;
-
   const _ActionButton({
-    Key? key,
     required this.label,
     required this.child,
-  }) : super(key: key);
+  });
+
+  final Widget label;
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {

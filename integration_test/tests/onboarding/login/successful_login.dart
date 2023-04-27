@@ -6,14 +6,14 @@ import 'package:vialer/domain/onboarding/step.dart';
 
 import '../../../util.dart';
 
-void main() => performLoginTestWith(
+Future<void> main() => performLoginTestWith(
       username: () => testUser1.email,
       password: () => testUser1.password,
     );
 
 // This needs to accept a callback to provide the login credentials otherwise
 // dotenv is not yet configured.
-void performLoginTestWith({
+Future<void> performLoginTestWith({
   required String Function() username,
   required String Function() password,
 }) =>

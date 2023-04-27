@@ -8,12 +8,12 @@ import '../util/stylized_snack_bar.dart';
 
 /// Requires a [Scaffold] ancestor.
 class ConnectivityAlert extends StatefulWidget {
+  const ConnectivityAlert({required this.child, super.key});
+
   final Widget child;
 
-  const ConnectivityAlert({Key? key, required this.child}) : super(key: key);
-
   @override
-  _ConnectivityAlertState createState() => _ConnectivityAlertState();
+  State<ConnectivityAlert> createState() => _ConnectivityAlertState();
 }
 
 class _ConnectivityAlertState extends State<ConnectivityAlert> {

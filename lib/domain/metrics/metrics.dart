@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter_segment/flutter_segment.dart';
@@ -39,12 +40,14 @@ abstract class MetricsRepository {
 class ConsoleLoggingMetricsRepository extends MetricsRepository {
   @override
   Future<void> initialize(String? key) async {
-    _log('Console logging metrics have been initialized');
+    unawaited(_log('Console logging metrics have been initialized'));
 
     if (key != null && key.isNotEmpty) {
-      _log(
-        'Key provided but will be ignored as events are only console logged.',
-        level: Level.WARNING,
+      unawaited(
+        _log(
+          'Key provided but will be ignored as events are only console logged.',
+          level: Level.WARNING,
+        ),
       );
     }
   }
@@ -100,29 +103,32 @@ class SegmentMetricsRepository extends MetricsRepository {
       'Unable to initialize Segment without a valid key.',
     );
 
-    Segment.config(
-      options: SegmentConfig(
-        writeKey: key ?? '',
-        trackApplicationLifecycleEvents: false,
+    unawaited(
+      Segment.config(
+        options: SegmentConfig(
+          writeKey: key ?? '',
+        ),
       ),
     );
 
-    Segment.setContext({
-      'ip': '0.0.0.0',
-      'device': {
-        'id': '',
-        'advertisingId': '',
-        'token': '',
-      },
-    });
+    unawaited(
+      Segment.setContext(<String, dynamic>{
+        'ip': '0.0.0.0',
+        'device': {
+          'id': '',
+          'advertisingId': '',
+          'token': '',
+        },
+      }),
+    );
   }
 
   @override
   Future<void> identify(
     User user, [
     Map<String, dynamic>? properties,
-  ]) async =>
-      await Segment.identify(
+  ]) =>
+      Segment.identify(
         userId: user.uuid,
         traits: properties,
       );
@@ -142,11 +148,13 @@ extension _SettingMetrics<T extends Object> on SettingKey<T> {
   ///
   /// Setting this to `true` still results in an event to be tracked but not the
   /// data stored within.
-  bool get isPii => const [
+  bool get isPii =>
+      this is CallSetting<T> &&
+      const [
         CallSetting.outgoingNumber,
         CallSetting.mobileNumber,
         CallSetting.destination,
-      ].contains(this);
+      ].contains(this as CallSetting<T>);
 
   /// Whether changing this setting should result in an event being sent
   /// to metrics.
@@ -154,7 +162,9 @@ extension _SettingMetrics<T extends Object> on SettingKey<T> {
   /// This should usually only be set
   /// to `false` if it is being tracked elsewhere.
   // Put keys in the array that should NOT be tracked.
-  bool get shouldTrack => !const [CallSetting.destination].contains(this);
+  bool get shouldTrack =>
+      this is! CallSetting<T> ||
+      !const [CallSetting.destination].contains(this as CallSetting<T>);
 
   String toMetricKey() => ReCase(name).snakeCase;
 

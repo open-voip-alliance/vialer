@@ -13,9 +13,10 @@ class SurveyTrigger {
   /// `'after-an-amount-of-actions-on-app-launch'`.
   String toJson() {
     final camelCaseSplit = runtimeType
+        // ignore: no_runtimetype_tostring
         .toString()
         .replaceAll('Trigger', '')
-        .split(RegExp(r'(?<=[a-z])(?=[A-Z])'));
+        .split(RegExp('(?<=[a-z])(?=[A-Z])'));
 
     return camelCaseSplit
         .mapIndexed(
@@ -29,6 +30,8 @@ class SurveyTrigger {
 // WARNING: Do not change the name of this or any other subclasses of
 // SurveyTrigger, because the name of the class is used for JSON serialization.
 class AfterAnAmountOfActionsOnAppLaunchTrigger extends SurveyTrigger {
+  const AfterAnAmountOfActionsOnAppLaunchTrigger();
+
   /// Actions are calls or setting changes.
   static const actionsCount = 20;
 
@@ -36,8 +39,6 @@ class AfterAnAmountOfActionsOnAppLaunchTrigger extends SurveyTrigger {
   static const timePassedSinceLastSurvey = Duration(days: 28);
 
   static const percentChanceIfConditionsMet = 50;
-
-  const AfterAnAmountOfActionsOnAppLaunchTrigger();
 
   static bool isTriggered({
     required Settings settings,

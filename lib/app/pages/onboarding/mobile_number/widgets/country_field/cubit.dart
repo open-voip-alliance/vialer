@@ -10,13 +10,13 @@ import 'state.dart';
 export 'state.dart';
 
 class CountryFieldCubit extends Cubit<CountryFieldState> {
-  final _getCountries = GetCountriesUseCase();
-
   CountryFieldCubit() : super(const LoadingCountries()) {
     _loadCountries();
   }
 
-  void _loadCountries() async {
+  final _getCountries = GetCountriesUseCase();
+
+  Future<void> _loadCountries() async {
     final countries = await _getCountries();
 
     final mainCountries = countries.where(
@@ -34,10 +34,12 @@ class CountryFieldCubit extends Cubit<CountryFieldState> {
   Future<void> pickCountryByMobileNumber(String mobileNumber) async {
     final state = this.state;
     if (state is CountriesLoaded) {
-      Map? parsedNumber;
+      Map<String, dynamic>? parsedNumber;
       try {
         parsedNumber = await FlutterLibphonenumber().parse(mobileNumber);
-      } on PlatformException {}
+      } on PlatformException {
+        // Parsing failed and parsedNumber stays null.
+      }
 
       final countries = state.countries;
       final country = parsedNumber != null
@@ -49,7 +51,7 @@ class CountryFieldCubit extends Cubit<CountryFieldState> {
       emit(
         CountriesLoaded(
           countries: countries,
-          currentCountry: country == null ? countries.first : country,
+          currentCountry: country ?? countries.first,
         ),
       );
     }

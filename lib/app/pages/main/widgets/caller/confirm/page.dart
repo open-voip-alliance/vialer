@@ -15,10 +15,10 @@ import '../../../widgets/caller.dart';
 import 'cubit.dart';
 
 class ConfirmPage extends StatefulWidget {
+  const ConfirmPage.__({required this.destination, required this.origin});
+
   final String destination;
   final CallOrigin origin;
-
-  ConfirmPage.__({required this.destination, required this.origin});
 
   static Widget _({
     required String destination,
@@ -138,7 +138,6 @@ class ConfirmPageState extends State<ConfirmPage>
     return WillPopScope(
       onWillPop: _onWillPop,
       child: TransparentStatusBar(
-        brightness: Brightness.dark,
         child: Padding(
           padding: const EdgeInsets.only(
             top: 64,
@@ -232,20 +231,19 @@ class ConfirmPageState extends State<ConfirmPage>
 }
 
 class _AndroidInputs extends StatelessWidget {
-  final bool checkboxValue;
-  final ValueChanged<bool> onCheckboxValueChanged;
-  final VoidCallback onCallButtonPressed;
-  final String destination;
-  final VoidCallback onCancelButtonPressed;
-
   const _AndroidInputs({
-    Key? key,
     required this.checkboxValue,
     required this.onCheckboxValueChanged,
     required this.onCallButtonPressed,
     required this.destination,
     required this.onCancelButtonPressed,
-  }) : super(key: key);
+  });
+
+  final bool checkboxValue;
+  final ValueChanged<bool> onCheckboxValueChanged;
+  final VoidCallback onCallButtonPressed;
+  final String destination;
+  final VoidCallback onCancelButtonPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -326,17 +324,17 @@ class _AndroidInputs extends StatelessWidget {
   }
 }
 
-class ConfirmPageRoute extends PageRoute {
+class ConfirmPageRoute extends PageRoute<dynamic> {
+  ConfirmPageRoute({
+    required this.destination,
+    required this.origin,
+  });
+
   static const _curve = Curves.decelerate;
   static final _barrierColor = Colors.black.withOpacity(0.8);
 
   final String destination;
   final CallOrigin origin;
-
-  ConfirmPageRoute({
-    required this.destination,
-    required this.origin,
-  });
 
   @override
   bool get opaque => false;
@@ -373,7 +371,7 @@ class ConfirmPageRoute extends PageRoute {
       decoration: curved.drive(
         DecorationTween(
           begin: BoxDecoration(
-            color: _barrierColor.withOpacity(0.0),
+            color: _barrierColor.withOpacity(0),
           ),
           end: BoxDecoration(
             color: _barrierColor,
@@ -384,7 +382,7 @@ class ConfirmPageRoute extends PageRoute {
         position: curved.drive(
           Tween<Offset>(
             begin: const Offset(0, 0.25),
-            end: const Offset(0, 0),
+            end: Offset.zero,
           ),
         ),
         child: FadeTransition(

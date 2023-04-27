@@ -6,9 +6,9 @@ import '../caller.dart';
 import 'cubit.dart';
 
 class SurveyTriggerer extends StatelessWidget {
-  final Widget child;
+  const SurveyTriggerer({required this.child, super.key});
 
-  const SurveyTriggerer({Key? key, required this.child}) : super(key: key);
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
@@ -22,9 +22,9 @@ class SurveyTriggerer extends StatelessWidget {
 
 /// Private widget with a context that has access to [SurveyTriggererCubit].
 class _SurveyTriggerer extends StatefulWidget {
-  final Widget child;
-
   const _SurveyTriggerer(this.child);
+
+  final Widget child;
 
   @override
   _SurveyTriggererState createState() => _SurveyTriggererState();

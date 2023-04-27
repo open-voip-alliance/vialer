@@ -6,11 +6,11 @@ part 'build_info.freezed.dart';
 class BuildInfo with _$BuildInfo {
   const factory BuildInfo({
     required String version,
+    required String packageName,
+    required bool isProduction,
     String? buildNumber,
     String? mergeRequestNumber,
     String? branchName,
     String? tag,
-    required String packageName,
-    required bool isProduction,
   }) = _BuildInfo;
 }

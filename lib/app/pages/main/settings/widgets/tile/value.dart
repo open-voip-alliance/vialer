@@ -20,23 +20,31 @@ Future<void> runIfSettingCanBeChanged<T extends Object>(
   SettingKey<T> key,
   FutureOr<void> Function() block,
 ) async {
-  if (await context.read<SettingsCubit>().canChangeRemoteSetting(key)) {
+  final settings = context.read<SettingsCubit>();
+
+  if (await settings.canChangeRemoteSetting(key)) {
     await block.call();
   } else {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text(context.msg.main.settings.noConnectionDialog.title),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text(context.msg.generic.button.close),
-            )
-          ],
-          content: Text(context.msg.main.settings.noConnectionDialog.message),
-        );
-      },
+    // Linter is wrong here.
+    // ignore: use_build_context_synchronously
+    if (!context.mounted) return;
+
+    unawaited(
+      showDialog<void>(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(context.msg.main.settings.noConnectionDialog.title),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text(context.msg.generic.button.close),
+              )
+            ],
+            content: Text(context.msg.main.settings.noConnectionDialog.message),
+          );
+        },
+      ),
     );
   }
 }
@@ -54,15 +62,16 @@ Future<void> defaultOnChanged<T extends Object>(
 }
 
 class BoolSettingValue extends StatelessWidget {
-  final Settings settings;
-  final SettingKey<bool> settingKey;
-  final ValueChangedWithContext<bool>? onChanged;
-
   const BoolSettingValue(
     this.settings,
     this.settingKey, {
     this.onChanged = defaultOnChanged,
+    super.key,
   });
+
+  final Settings settings;
+  final SettingKey<bool> settingKey;
+  final ValueChangedWithContext<bool>? onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -76,15 +85,13 @@ class BoolSettingValue extends StatelessWidget {
 }
 
 class StringValue extends StatelessWidget {
-  final String value;
-  final bool bold;
-
   const StringValue(
     this.value, {
     bool? bold,
-    Key? key,
-  })  : bold = bold ?? true,
-        super(key: key);
+    super.key,
+  }) : bold = bold ?? true;
+  final String value;
+  final bool bold;
 
   @override
   Widget build(BuildContext context) {
@@ -101,14 +108,6 @@ class StringValue extends StatelessWidget {
 typedef GetStringValue<T> = String Function(T);
 
 class StringSettingValue<T extends Object> extends StatelessWidget {
-  final Settings settings;
-  final SettingKey<T> settingKey;
-
-  /// If [T] is not [String], use this function to retrieve the
-  /// desired string value of [T].
-  final GetStringValue<T> value;
-  final bool? bold;
-
   StringSettingValue(
     this.settings,
     this.settingKey, {
@@ -116,7 +115,17 @@ class StringSettingValue<T extends Object> extends StatelessWidget {
     this.bold,
     super.key,
   })  : value = value ?? ((obj) => obj.toString()),
-        assert(T == String || value != null);
+        assert(
+          T == String || value != null,
+          'settingKey must be SettingKey<String> or value must be set',
+        );
+  final Settings settings;
+  final SettingKey<T> settingKey;
+
+  /// If [T] is not [String], use this function to retrieve the
+  /// desired string value of [T].
+  final GetStringValue<T> value;
+  final bool? bold;
 
   @override
   Widget build(BuildContext context) {

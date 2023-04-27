@@ -8,11 +8,12 @@ import '../../../../routes.dart';
 import 'call_feedback.dart';
 
 class WrittenFeedback extends StatefulWidget {
-  final VoidCallback onComplete;
-
   const WrittenFeedback({
     required this.onComplete,
+    super.key,
   });
+
+  final VoidCallback onComplete;
 
   @override
   State<StatefulWidget> createState() => _WrittenFeedbackState();
@@ -43,22 +44,22 @@ class _WrittenFeedbackState extends State<WrittenFeedback> {
         if (!_submitted) ...[
           TextButton(
             onPressed: !_submitted ? widget.onComplete : null,
-            child: Text(
-              context.msg.main.call.feedback.written.dismiss.toUpperCase(),
-            ),
             style: TextButton.styleFrom(
               foregroundColor:
                   context.brand.theme.colors.raisedColoredButtonText,
+            ),
+            child: Text(
+              context.msg.main.call.feedback.written.dismiss.toUpperCase(),
             ),
           ),
           TextButton(
             onPressed: () => _feedback(context),
-            child: Text(
-              context.msg.main.call.feedback.written.button.toUpperCase(),
-            ),
             style: TextButton.styleFrom(
               foregroundColor:
                   context.brand.theme.colors.raisedColoredButtonText,
+            ),
+            child: Text(
+              context.msg.main.call.feedback.written.button.toUpperCase(),
             ),
           ),
         ],
@@ -66,7 +67,6 @@ class _WrittenFeedbackState extends State<WrittenFeedback> {
       titleAlign: TextAlign.center,
       content: Column(
         mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
             _submitted

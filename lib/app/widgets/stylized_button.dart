@@ -3,33 +3,21 @@ import 'package:flutter/material.dart';
 import '../resources/theme.dart';
 
 class StylizedButton extends StatelessWidget {
-  static const _duration = Duration(milliseconds: 300);
-  static const _curve = Curves.decelerate;
-
-  static const _borderWidth = 1.0;
-  static const _bottomBorderWidth = 2.0;
-
-  final StylizedButtonType type;
-  final bool colored;
-  final VoidCallback? onPressed;
-  final EdgeInsets? margin;
-  final Widget child;
-
-  StylizedButton({
+  const StylizedButton({
     required this.type,
-    Key? key,
+    required this.child,
     this.colored = false,
     this.margin,
     this.onPressed,
-    required this.child,
-  }) : super(key: key);
+    super.key,
+  });
 
   factory StylizedButton.raised({
+    required Widget child,
     Key? key,
     bool colored = false,
     EdgeInsets? margin,
     VoidCallback? onPressed,
-    required Widget child,
   }) {
     return StylizedButton(
       type: StylizedButtonType.raised,
@@ -42,11 +30,11 @@ class StylizedButton extends StatelessWidget {
   }
 
   factory StylizedButton.outline({
+    required Widget child,
     Key? key,
     bool colored = false,
     EdgeInsets? margin,
     VoidCallback? onPressed,
-    required Widget child,
   }) {
     return StylizedButton(
       type: StylizedButtonType.outline,
@@ -59,11 +47,11 @@ class StylizedButton extends StatelessWidget {
   }
 
   factory StylizedButton.flat({
+    required Widget child,
     Key? key,
     bool colored = false,
     EdgeInsets? margin,
     VoidCallback? onPressed,
-    required Widget child,
   }) {
     return StylizedButton(
       type: StylizedButtonType.flat,
@@ -74,6 +62,18 @@ class StylizedButton extends StatelessWidget {
       child: child,
     );
   }
+
+  static const _duration = Duration(milliseconds: 300);
+  static const _curve = Curves.decelerate;
+
+  static const _borderWidth = 1.0;
+  static const _bottomBorderWidth = 2.0;
+
+  final StylizedButtonType type;
+  final bool colored;
+  final VoidCallback? onPressed;
+  final EdgeInsets? margin;
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
@@ -133,6 +133,8 @@ class StylizedButton extends StatelessWidget {
                           : colored
                               ? color
                               : Colors.white,
+                      // Kept, in case the border width changes.
+                      // ignore: avoid_redundant_argument_values
                       width: _borderWidth,
                     )
                   : null,
@@ -202,15 +204,15 @@ enum StylizedButtonType {
 }
 
 class _BottomBorderPainter extends CustomPainter {
+  _BottomBorderPainter({
+    required this.color,
+    required this.thickness,
+    this.enabled = true,
+  });
+
   final bool enabled;
   final Color color;
   final double thickness;
-
-  _BottomBorderPainter({
-    this.enabled = true,
-    required this.color,
-    required this.thickness,
-  });
 
   @override
   void paint(Canvas canvas, Size size) {

@@ -9,16 +9,16 @@ import '../../../../../util/brand.dart';
 import 'group_header.dart';
 
 class AlphabetListView extends StatefulWidget {
-  final double bottomLettersPadding;
-  final List<Widget> children;
-  final Future<void> Function() onRefresh;
-
   const AlphabetListView({
-    Key? key,
     required this.bottomLettersPadding,
     required this.children,
     required this.onRefresh,
-  }) : super(key: key);
+    super.key,
+  });
+
+  final double bottomLettersPadding;
+  final List<Widget> children;
+  final Future<void> Function() onRefresh;
 
   @override
   State<StatefulWidget> createState() => _AlphabetListViewState();
@@ -173,16 +173,15 @@ class _AlphabetListViewState extends State<AlphabetListView> {
 }
 
 class _SideLetter extends StatelessWidget {
+  const _SideLetter(
+    this.letter, {
+    required this.size,
+  });
+
   static const fontSize = 10.0;
 
   final String letter;
   final Size size;
-
-  const _SideLetter(
-    this.letter, {
-    Key? key,
-    required this.size,
-  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

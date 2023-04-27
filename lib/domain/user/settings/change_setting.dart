@@ -14,7 +14,10 @@ class ChangeSettingUseCase extends UseCase {
     // Because this is often called with <T> being omitted, in which case Dart
     // does not infer T based on the given key, we assert  whether the type
     // matches with what we'd expect from the key.
-    assert(value.runtimeType == key.valueType);
+    assert(
+      value.runtimeType == key.valueType,
+      "value doesn't have expected value type of key",
+    );
     return _changeSettings(Settings({key: value})).then((r) {
       if (r.failed.contains(key)) return SettingChangeResult.failed;
       if (r.changed.contains(key)) return SettingChangeResult.changed;

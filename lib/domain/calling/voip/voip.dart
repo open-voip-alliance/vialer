@@ -75,7 +75,7 @@ class VoipRepository with Loggable {
   // We pass through events so app level subscribers don't have to resubscribe
   // if we stop and start the PhoneLib.
   final _eventsController = StreamController<Event>.broadcast();
-  StreamSubscription? _eventsSubscription;
+  StreamSubscription<Event>? _eventsSubscription;
 
   // Start-up values.
   User? _startUpUser;
@@ -112,7 +112,7 @@ class VoipRepository with Loggable {
 
     final userConfig = user.voip!;
 
-    final preferences = await _createPreferences(user);
+    final preferences = _createPreferences(user);
 
     /// Returns true if successfully initialized, false otherwise.
     Future<bool> initialize({bool firstTry = true}) async {
@@ -150,7 +150,7 @@ class VoipRepository with Loggable {
             'PhoneLib did not initialize, trying again. Reason: $e',
           );
 
-          return await initialize(firstTry: false);
+          return initialize(firstTry: false);
         }
       }
 
@@ -163,7 +163,7 @@ class VoipRepository with Loggable {
     Future<bool> start({bool firstTry = true}) async {
       try {
         await __phoneLib!.start(
-          await _createPreferences(user),
+          _createPreferences(user),
           await _createAuth(userConfig, clientConfig),
         );
       } on Exception catch (e) {
@@ -179,7 +179,7 @@ class VoipRepository with Loggable {
             'PhoneLib did not start, trying again. Reason: $e',
           );
 
-          return await start(firstTry: false);
+          return start(firstTry: false);
         }
       }
 
@@ -207,7 +207,7 @@ class VoipRepository with Loggable {
     final unencryptedSipUrl = clientConfig.unencryptedSipUrl.toString();
 
     return Auth(
-      username: userConfig.sipUserId.toString(),
+      username: userConfig.sipUserId,
       password: userConfig.password,
       domain: userConfig.useEncryption ? encryptedSipUrl : unencryptedSipUrl,
       port: userConfig.useEncryption ? 5061 : 5060,
@@ -216,7 +216,7 @@ class VoipRepository with Loggable {
   }
 
   Preferences _createPreferences(User user) => Preferences(
-        codecs: [Codec.opus],
+        codecs: const [Codec.opus],
         useApplicationProvidedRingtone: !user.settings.get(
           CallSetting.usePhoneRingtone,
         ),
@@ -232,6 +232,7 @@ class VoipRepository with Loggable {
   // and close it if it's initialized, otherwise we do nothing.
   Future<void> close() async {
     await _eventsSubscription?.cancel();
+    await _eventsController.close();
     await __phoneLib?.close();
     __phoneLib = null;
     _hasStartedCompleter = Completer<bool>();
@@ -242,13 +243,13 @@ class VoipRepository with Loggable {
 
   Future<void> stop() async {
     if (_hasStartedCompleter.isCompleted && await hasStarted) {
-      (await _phoneLib).stop();
+      await (await _phoneLib).stop();
     }
   }
 
   Future<void> register(UserVoipConfig? voipConfig) async {
     if (await _isLoggedInSomewhereElse()) {
-      unregister(voipConfig);
+      unawaited(unregister(voipConfig));
       logger.info('Registration cancelled: User has logged in elsewhere');
       return;
     }
@@ -323,7 +324,7 @@ class VoipRepository with Loggable {
   }
 
   Future<void> unregister(UserVoipConfig? voipConfig) async {
-    assert(voipConfig?.sipUserId != null);
+    assert(voipConfig?.sipUserId != null, 'No sipUserId present');
 
     logger.info('Unregistering..');
 
@@ -367,7 +368,7 @@ class VoipRepository with Loggable {
 
   Future<void> refreshPreferences(User user) async =>
       (await _phoneLib).updatePreferences(
-        await _createPreferences(user),
+        _createPreferences(user),
       );
 
   Future<Call?> get activeCall async => (await _phoneLib).calls.active;

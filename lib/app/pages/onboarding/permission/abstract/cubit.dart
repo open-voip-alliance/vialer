@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../domain/metrics/track_permission.dart';
@@ -10,12 +12,11 @@ import 'state.dart';
 export 'state.dart';
 
 class PermissionCubit extends Cubit<PermissionState> with Loggable {
+  PermissionCubit(this.permission) : super(PermissionNotRequested());
   final _requestPermission = RequestPermissionUseCase();
   final _trackPermission = TrackPermissionUseCase();
 
   final Permission permission;
-
-  PermissionCubit(this.permission) : super(PermissionNotRequested());
 
   Future<void> request() async {
     logger.info('Asking permission for "${permission.toShortString()}"');
@@ -30,9 +31,11 @@ class PermissionCubit extends Cubit<PermissionState> with Loggable {
       emit(PermissionDenied());
     }
 
-    _trackPermission(
-      type: permission.toShortString(),
-      granted: status == PermissionStatus.granted,
+    unawaited(
+      _trackPermission(
+        type: permission.toShortString(),
+        granted: status == PermissionStatus.granted,
+      ),
     );
   }
 }

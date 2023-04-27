@@ -14,6 +14,10 @@ import 'state.dart';
 export 'state.dart';
 
 class AppUpdateCheckerCubit extends Cubit<AppUpdateState> {
+  AppUpdateCheckerCubit(this.caller) : super(const AppWasNotUpdated()) {
+    check();
+  }
+
   final CallerCubit caller;
 
   final _hasVoipEnabled = GetHasVoipEnabledUseCase();
@@ -25,17 +29,13 @@ class AppUpdateCheckerCubit extends Cubit<AppUpdateState> {
 
   bool _checking = false;
 
-  AppUpdateCheckerCubit(this.caller) : super(const AppWasNotUpdated()) {
-    check();
-  }
-
   Future<void> check() async {
     // If VoIP is enabled, we'll wait until VoIP has started before checking
     // whether we're in a call.
-    if (await _hasVoipEnabled() && await _hasVoipStarted()) {
+    if (_hasVoipEnabled() && await _hasVoipStarted()) {
       // We wait some extra time, because even after VoIP started, the state
       // is only updated a bit later.
-      await Future.delayed(const Duration(milliseconds: 1500));
+      await Future<void>.delayed(const Duration(milliseconds: 1500));
     }
 
     // We won't check if we're already checking, if an update is ready to

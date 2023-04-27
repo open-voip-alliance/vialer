@@ -6,14 +6,14 @@ import '../../../widgets/stylized_switch.dart';
 import 'widget.dart';
 
 class IgnoreBatteryOptimizationsTile extends StatelessWidget {
-  final bool hasIgnoreBatteryOptimizationsPermission;
-  final Function(bool) onChanged;
-
   const IgnoreBatteryOptimizationsTile({
-    super.key,
     required this.hasIgnoreBatteryOptimizationsPermission,
     required this.onChanged,
+    super.key,
   });
+
+  final bool hasIgnoreBatteryOptimizationsPermission;
+  final void Function(bool) onChanged;
 
   @override
   Widget build(BuildContext context) {

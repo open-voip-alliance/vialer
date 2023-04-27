@@ -2,15 +2,16 @@ import 'package:flutter/material.dart';
 import 'stylized_switch.dart';
 
 class BottomToggle extends StatefulWidget {
-  final String name;
-  final bool initialValue;
-  final ValueChanged<bool> onChanged;
-
   const BottomToggle({
     required this.name,
     required this.initialValue,
     required this.onChanged,
+    super.key,
   });
+
+  final String name;
+  final bool initialValue;
+  final ValueChanged<bool> onChanged;
 
   @override
   BottomToggleState createState() => BottomToggleState();

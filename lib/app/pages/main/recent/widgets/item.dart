@@ -15,17 +15,17 @@ import '../../widgets/avatar.dart';
 import 'popup_menu.dart';
 
 class RecentCallItem extends StatelessWidget {
+  const RecentCallItem({
+    required this.callRecord,
+    required this.onCopyPressed,
+    required this.onCallPressed,
+    super.key,
+  });
+
   final CallRecord callRecord;
 
   final VoidCallback onCallPressed;
   final VoidCallback onCopyPressed;
-
-  const RecentCallItem({
-    Key? key,
-    required this.callRecord,
-    required this.onCopyPressed,
-    required this.onCallPressed,
-  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -42,9 +42,9 @@ class RecentCallItem extends StatelessWidget {
 }
 
 class _RecentCallItemTitle extends StatelessWidget {
-  final CallRecord callRecord;
-
   const _RecentCallItemTitle(this.callRecord);
+
+  final CallRecord callRecord;
 
   @override
   Widget build(BuildContext context) {
@@ -64,13 +64,13 @@ class _RecentCallItemTitle extends StatelessWidget {
 }
 
 class _WidthAdjustedText extends StatelessWidget {
-  final String text;
-  final TextStyle? style;
-
   const _WidthAdjustedText(
     this.text, {
     this.style,
   });
+
+  final String text;
+  final TextStyle? style;
 
   @override
   Widget build(BuildContext context) {
@@ -85,18 +85,17 @@ class _WidthAdjustedText extends StatelessWidget {
 }
 
 class _RecentCallItemBody extends StatelessWidget {
-  final Widget title;
-  final Widget subtitle;
-
   const _RecentCallItemBody({
     required this.title,
     required this.subtitle,
   });
 
+  final Widget title;
+  final Widget subtitle;
+
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         title,
@@ -108,13 +107,6 @@ class _RecentCallItemBody extends StatelessWidget {
 }
 
 class _RecentCallItemContainer extends StatelessWidget {
-  final CallRecord callRecord;
-
-  final VoidCallback onCallPressed;
-  final VoidCallback onCopyPressed;
-
-  final Widget child;
-
   const _RecentCallItemContainer({
     required this.callRecord,
     required this.onCopyPressed,
@@ -122,8 +114,15 @@ class _RecentCallItemContainer extends StatelessWidget {
     required this.child,
   });
 
-  void _onPopupMenuItemPress(RecentCallMenuAction _action) {
-    switch (_action) {
+  final CallRecord callRecord;
+
+  final VoidCallback onCallPressed;
+  final VoidCallback onCopyPressed;
+
+  final Widget child;
+
+  void _onPopupMenuItemPress(RecentCallMenuAction action) {
+    switch (action) {
       case RecentCallMenuAction.copy:
         onCopyPressed();
         break;
@@ -134,6 +133,8 @@ class _RecentCallItemContainer extends StatelessWidget {
         return;
     }
   }
+
+  static void _emptyOnTapToKeepSplash() {}
 
   @override
   Widget build(BuildContext context) {
@@ -146,12 +147,9 @@ class _RecentCallItemContainer extends StatelessWidget {
                 context,
                 callRecord.thirdPartyNumber,
               ),
-              showFallback: callRecord is CallRecordWithContact
-                  ? (callRecord as CallRecordWithContact)
-                          .contact
-                          ?.displayName ==
-                      null
-                  : false,
+              showFallback: callRecord is CallRecordWithContact &&
+                  (callRecord as CallRecordWithContact).contact?.displayName ==
+                      null,
               image: callRecord is CallRecordWithContact
                   ? (callRecord as CallRecordWithContact).contact?.avatar
                   : null,
@@ -163,8 +161,7 @@ class _RecentCallItemContainer extends StatelessWidget {
         onTap: onCallPressed,
         child: child,
       ),
-      // Empty onTap so we still keep the splash behavior
-      onTap: () => {},
+      onTap: _emptyOnTapToKeepSplash,
       trailing: RecentItemPopupMenu(
         callRecord: callRecord,
         onPopupMenuItemPress: _onPopupMenuItemPress,
@@ -174,9 +171,9 @@ class _RecentCallItemContainer extends StatelessWidget {
 }
 
 class _RecentItemSubtitle extends StatelessWidget {
-  final CallRecord callRecord;
+  const _RecentItemSubtitle(this.callRecord);
 
-  const _RecentItemSubtitle(this.callRecord, {Key? key}) : super(key: key);
+  final CallRecord callRecord;
 
   IconData _icon(BuildContext context) {
     if (callRecord.renderType == CallRecordRenderType.internalCall) {
@@ -225,7 +222,7 @@ class _RecentItemSubtitle extends StatelessWidget {
         Row(
           children: <Widget>[
             if (callRecord.isIncomingAndAnsweredElsewhere)
-              Mirrored(
+              _Mirrored(
                 child: icon,
               )
             else
@@ -240,9 +237,9 @@ class _RecentItemSubtitle extends StatelessWidget {
 }
 
 class _RecentItemSubtitleText extends StatelessWidget {
-  final CallRecord callRecord;
+  const _RecentItemSubtitleText(this.callRecord);
 
-  const _RecentItemSubtitleText(this.callRecord, {Key? key}) : super(key: key);
+  final CallRecord callRecord;
 
   String get _time => DateFormat.Hm().format(callRecord.date.toLocal());
 
@@ -257,9 +254,9 @@ class _RecentItemSubtitleText extends StatelessWidget {
     if (party.name == null ||
         party.name!.isEmpty ||
         party.name == party.number) {
-      return '${party.number}';
+      return party.number;
     } else {
-      return '${party.name}';
+      return party.name!;
     }
   }
 
@@ -279,7 +276,8 @@ class _RecentItemSubtitleText extends StatelessWidget {
       case CallRecordRenderType.incomingMissedLoggedInUserCall:
       case CallRecordRenderType.outgoingLoggedInUserCall:
         return context.msg.main.recent.list.item.client.currentUser;
-      default:
+      case CallRecordRenderType.internalCall:
+      case CallRecordRenderType.other:
         return null;
     }
   }
@@ -311,7 +309,7 @@ class _RecentItemSubtitleText extends StatelessWidget {
           _time,
           _duration,
         );
-      default:
+      case CallRecordRenderType.other:
         return '';
     }
   }
@@ -414,15 +412,16 @@ extension CallDestinationLabel on CallRecord {
 }
 
 class RecentCallHeader extends StatelessWidget {
-  final DateTime date;
-  final bool isFirst;
-  final Widget child;
-
   const RecentCallHeader({
     required this.date,
     required this.child,
     this.isFirst = false,
+    super.key,
   });
+
+  final DateTime date;
+  final bool isFirst;
+  final Widget child;
 
   String _text(
     BuildContext context, {
@@ -454,7 +453,6 @@ class RecentCallHeader extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 divider,
                 Padding(
@@ -483,8 +481,6 @@ class RecentCallHeader extends StatelessWidget {
 ///
 /// Any thing that doesn't require specific render should be
 /// [CallRecordRenderType.other].
-///
-/// See [CallRecord.renderType]
 enum CallRecordRenderType {
   incomingMissedNoColleagueCall,
   incomingMissedColleagueCall,
@@ -554,10 +550,10 @@ extension ClientRenderType on ClientCallRecord {
   }
 }
 
-class Mirrored extends StatelessWidget {
-  final Widget child;
+class _Mirrored extends StatelessWidget {
+  const _Mirrored({required this.child});
 
-  const Mirrored({required this.child});
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {

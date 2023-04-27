@@ -10,6 +10,13 @@ import 'avatar.dart';
 import 'subtitle.dart';
 
 class ColltactItem extends StatelessWidget {
+  const ColltactItem._({
+    required this.title,
+    required this.subtitle,
+    required this.onTap,
+    required this.avatar,
+  });
+
   final Widget title;
   final Widget subtitle;
   final Widget avatar;
@@ -24,13 +31,6 @@ class ColltactItem extends StatelessWidget {
         ),
       );
 
-  ColltactItem._({
-    required this.title,
-    required this.subtitle,
-    required this.onTap,
-    required this.avatar,
-  });
-
   @override
   Widget build(BuildContext context) {
     return ListTile(
@@ -44,9 +44,9 @@ class ColltactItem extends StatelessWidget {
 }
 
 class _ContactItem extends StatelessWidget {
-  final Contact contact;
+  const _ContactItem(this.contact);
 
-  _ContactItem(this.contact);
+  final Contact contact;
 
   @override
   Widget build(BuildContext context) {
@@ -70,10 +70,10 @@ class _ContactItem extends StatelessWidget {
 }
 
 class _ColleagueItem extends StatelessWidget {
+  const _ColleagueItem(this.colleague, {this.colleaguesUpToDate = true});
+
   final Colleague colleague;
   final bool colleaguesUpToDate;
-
-  _ColleagueItem(this.colleague, {this.colleaguesUpToDate = true});
 
   @override
   Widget build(BuildContext context) {

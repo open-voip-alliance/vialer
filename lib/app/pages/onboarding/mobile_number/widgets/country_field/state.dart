@@ -3,10 +3,10 @@ import 'package:equatable/equatable.dart';
 import '../../../../../../domain/onboarding/country.dart';
 
 abstract class CountryFieldState extends Equatable {
+  const CountryFieldState();
+
   @override
   List<Object?> get props => [];
-
-  const CountryFieldState();
 }
 
 class LoadingCountries extends CountryFieldState {
@@ -14,13 +14,13 @@ class LoadingCountries extends CountryFieldState {
 }
 
 class CountriesLoaded extends CountryFieldState {
-  final Iterable<Country> countries;
-  final Country currentCountry;
-
   const CountriesLoaded({
     required this.countries,
     required this.currentCountry,
   });
+
+  final Iterable<Country> countries;
+  final Country currentCountry;
 
   @override
   List<Object?> get props => [countries, currentCountry];

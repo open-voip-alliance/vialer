@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -8,14 +10,23 @@ import '../../../util/stylized_snack_bar.dart';
 import '../../cubit.dart';
 import 'settings_button.dart';
 
-class FeedbackButton extends StatelessWidget {
-  Future<void> _goToFeedbackPage(BuildContext context) async {
+class FeedbackButton extends StatefulWidget {
+  const FeedbackButton({super.key});
+
+  @override
+  State<FeedbackButton> createState() => _FeedbackButtonState();
+}
+
+class _FeedbackButtonState extends State<FeedbackButton> {
+  Future<void> _goToFeedbackPage() async {
     final sent = await Navigator.of(context, rootNavigator: true).pushNamed(
           Routes.feedback,
         ) as bool? ??
         false;
 
     if (sent) {
+      if (!mounted) return;
+
       showSnackBar(
         context,
         icon: const FaIcon(FontAwesomeIcons.check),
@@ -23,7 +34,9 @@ class FeedbackButton extends StatelessWidget {
       );
     }
 
-    context.read<SettingsCubit>().refresh();
+    if (!mounted) return;
+
+    unawaited(context.read<SettingsCubit>().refresh());
   }
 
   @override
@@ -33,7 +46,7 @@ class FeedbackButton extends StatelessWidget {
       child: SettingsButton(
         text: context.msg.main.settings.buttons.sendFeedbackButton,
         icon: FontAwesomeIcons.messages,
-        onPressed: () => _goToFeedbackPage(context),
+        onPressed: _goToFeedbackPage,
       ),
     );
   }

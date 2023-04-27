@@ -16,28 +16,28 @@ void main() {
   const externalNumber = '+31640366644';
   const internalNumber = '241';
 
-  test('External number matches contact number exactly', () async {
+  test('External number matches contact number exactly', () {
     _expectsToMatchContact(
       numberInCallRecord: externalNumber,
       numbersInContacts: [externalNumber],
     );
   });
 
-  test('Internal number matches contact number exactly', () async {
+  test('Internal number matches contact number exactly', () {
     _expectsToMatchContact(
       numberInCallRecord: internalNumber,
       numbersInContacts: [internalNumber],
     );
   });
 
-  test('External number matches contact without country code', () async {
+  test('External number matches contact without country code', () {
     _expectsToMatchContact(
       numberInCallRecord: externalNumber,
       numbersInContacts: ['0640366644'],
     );
   });
 
-  test('Internal number does not match with country code', () async {
+  test('Internal number does not match with country code', () {
     _expectsNotToMatchContact(
       numberInCallRecord: internalNumber,
       numbersInContacts: ['+31241'],
@@ -65,7 +65,7 @@ void _expectsNotToMatchContact({
       shouldMatch: false,
     );
 
-void _expectContactMatching(
+Future<void> _expectContactMatching(
   String numberInCallRecord,
   List<String> numbersInContacts, {
   required bool shouldMatch,

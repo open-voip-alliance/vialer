@@ -12,6 +12,12 @@ import 'user/user.dart';
 import 'voipgrid/rate_limit_reached_event.dart';
 
 class AuthorizationInterceptor implements chopper.RequestInterceptor {
+  const AuthorizationInterceptor({
+    this.forcedLegacyAuthPaths = const [],
+    this.user,
+    this.onlyModernAuth = false,
+  });
+
   /// Paths that force the use of the legacy
   /// `Token <email>:<token>` method of authorization.
   ///
@@ -36,12 +42,6 @@ class AuthorizationInterceptor implements chopper.RequestInterceptor {
   /// on any URLs for the service and the service does not use the standard
   /// `v2` url scheme.
   final bool onlyModernAuth;
-
-  const AuthorizationInterceptor({
-    this.forcedLegacyAuthPaths = const [],
-    this.user,
-    this.onlyModernAuth = false,
-  });
 
   @override
   FutureOr<chopper.Request> onRequest(chopper.Request request) {
@@ -81,22 +81,24 @@ class AuthorizationInterceptor implements chopper.RequestInterceptor {
 /// suggests that we do not have a valid token, this will fire the appropriate
 /// event so action can be taken.
 class UnauthorizedResponseInterceptor extends chopper.ResponseInterceptor {
-  final List<int> unauthorizedStatusCodes;
-  final _eventBus = dependencyLocator<EventBus>();
-
   UnauthorizedResponseInterceptor({
     this.unauthorizedStatusCodes = const [401],
   });
 
+  final List<int> unauthorizedStatusCodes;
+  final _eventBus = dependencyLocator<EventBus>();
+
   @override
-  FutureOr<chopper.Response> onResponse(Response<dynamic> response) {
+  FutureOr<chopper.Response<dynamic>> onResponse(Response<dynamic> response) {
     final statusCode = response.statusCode;
 
     if (_isUnauthorized(statusCode)) {
-      _eventBus.broadcast(UnauthorizedApiResponseEvent(
-        url: response.base.request?.url.toString() ?? '',
-        statusCode: statusCode,
-      ));
+      _eventBus.broadcast(
+        UnauthorizedApiResponseEvent(
+          url: response.base.request?.url.toString() ?? '',
+          statusCode: statusCode,
+        ),
+      );
     }
 
     return response;
@@ -110,14 +112,16 @@ class RateLimitReachedInterceptor extends chopper.ResponseInterceptor {
   final _eventBus = dependencyLocator<EventBus>();
 
   @override
-  FutureOr<chopper.Response> onResponse(Response<dynamic> response) {
+  FutureOr<chopper.Response<dynamic>> onResponse(Response<dynamic> response) {
     final statusCode = response.statusCode;
 
     if (_isRateLimited(statusCode)) {
-      _eventBus.broadcast(RateLimitReachedEvent(
-        url: response.base.request?.url.toString() ?? '',
-        hitLimitAt: DateTime.now(),
-      ));
+      _eventBus.broadcast(
+        RateLimitReachedEvent(
+          url: response.base.request?.url.toString() ?? '',
+          hitLimitAt: DateTime.now(),
+        ),
+      );
     }
 
     return response;
@@ -128,13 +132,15 @@ class RateLimitReachedInterceptor extends chopper.ResponseInterceptor {
 
 class JsonConverter extends chopper.JsonConverter {
   @override
-  chopper.Response decodeJson<BodyType, InnerType>(chopper.Response response) {
+  chopper.Response<dynamic> decodeJson<BodyType, InnerType>(
+    chopper.Response<dynamic> response,
+  ) {
     if (response.body == '') {
-      return response.copyWith(
+      return response.copyWith<Map<String, dynamic>>(
         body: <String, dynamic>{},
       );
     }
 
-    return super.decodeJson(response);
+    return super.decodeJson<BodyType, InnerType>(response);
   }
 }

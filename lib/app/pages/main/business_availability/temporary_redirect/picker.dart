@@ -16,20 +16,20 @@ import 'explanation.dart';
 import 'field.dart';
 
 class TemporaryRedirectPicker extends StatefulWidget {
-  final TemporaryRedirect? activeRedirect;
-  final Iterable<TemporaryRedirectDestination> availableDestinations;
-  final Future<void> Function(TemporaryRedirectDestination, DateTime) onStart;
-  final Future<void> Function()? onStop;
-  final VoidCallback? onCancel;
-
   const TemporaryRedirectPicker({
-    super.key,
     required this.activeRedirect,
     required this.availableDestinations,
     required this.onStart,
     this.onStop,
     this.onCancel,
+    super.key,
   });
+
+  final TemporaryRedirect? activeRedirect;
+  final Iterable<TemporaryRedirectDestination> availableDestinations;
+  final Future<void> Function(TemporaryRedirectDestination, DateTime) onStart;
+  final Future<void> Function()? onStop;
+  final VoidCallback? onCancel;
 
   @override
   State<TemporaryRedirectPicker> createState() =>
@@ -98,7 +98,7 @@ class _TemporaryRedirectPickerState extends State<TemporaryRedirectPicker> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(32.0),
+      padding: const EdgeInsets.all(32),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -128,7 +128,6 @@ class _TemporaryRedirectPickerState extends State<TemporaryRedirectPicker> {
                   ).toList()
                 : [
                     DropdownMenuItem<TemporaryRedirectDestination>(
-                      value: null,
                       child: Text(
                         context.msg.main.temporaryRedirect.dropdown.noVoicemails
                             .item,

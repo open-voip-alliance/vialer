@@ -7,13 +7,14 @@ import '../../../../resources/theme.dart';
 import 'item.dart';
 
 class RecentItemPopupMenu extends StatelessWidget {
-  final CallRecord callRecord;
-  final Function(RecentCallMenuAction action) onPopupMenuItemPress;
-
   const RecentItemPopupMenu({
     required this.callRecord,
     required this.onPopupMenuItemPress,
+    super.key,
   });
+
+  final CallRecord callRecord;
+  final void Function(RecentCallMenuAction action) onPopupMenuItemPress;
 
   List<PopupMenuEntry<RecentCallMenuAction>> _createInformationItem({
     required String title,
@@ -104,15 +105,15 @@ class RecentItemPopupMenu extends StatelessWidget {
 }
 
 class _CallParties extends StatelessWidget {
-  final String title;
-  final List<CallParty> callParties;
-
-  static const _callFromFontSize = 14.0;
-
   const _CallParties({
     required this.title,
     required this.callParties,
   });
+
+  final String title;
+  final List<CallParty> callParties;
+
+  static const _callFromFontSize = 14.0;
 
   String _text(CallParty callParty, BuildContext context) {
     if (!callParty.hasName) {

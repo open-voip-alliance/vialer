@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import '../../../../dependency_locator.dart';
 import '../../metrics/track_toggle_hold.dart';
 import '../../use_case.dart';
@@ -8,7 +10,7 @@ class ToggleHoldVoipCallUseCase extends UseCase {
   final _trackToggleHold = TrackToggleHoldUseCase();
 
   Future<void> call() async {
-    _trackToggleHold();
+    unawaited(_trackToggleHold());
     await _voipRepository.toggleHold();
   }
 }

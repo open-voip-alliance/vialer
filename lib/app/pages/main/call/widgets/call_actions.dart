@@ -18,20 +18,20 @@ import 'audio_route_picker.dart';
 import 'call_process_state_builder.dart';
 
 class CallActions extends StatefulWidget {
+  const CallActions({
+    required this.onTransferButtonPressed,
+    this.navigatorKey,
+    super.key,
+  });
+
   /// Invoked when the transfer button is pressed. The call will always be
   /// put on hold.
   final VoidCallback onTransferButtonPressed;
 
   final GlobalKey<NavigatorState>? navigatorKey;
 
-  const CallActions({
-    Key? key,
-    this.navigatorKey,
-    required this.onTransferButtonPressed,
-  }) : super(key: key);
-
   @override
-  _CallActionsState createState() => _CallActionsState();
+  State<CallActions> createState() => _CallActionsState();
 }
 
 class _CallActionsState extends State<CallActions> {
@@ -89,14 +89,13 @@ class _CallActionsState extends State<CallActions> {
 }
 
 class _CallActionButtons extends StatelessWidget {
-  final VoidCallback onHangUpButtonPressed;
-  final VoidCallback onTransferButtonPressed;
-
   const _CallActionButtons({
-    Key? key,
     required this.onHangUpButtonPressed,
     required this.onTransferButtonPressed,
-  }) : super(key: key);
+  });
+
+  final VoidCallback onHangUpButtonPressed;
+  final VoidCallback onTransferButtonPressed;
 
   void _toggleMute(BuildContext context) =>
       context.read<CallerCubit>().toggleMute();
@@ -226,6 +225,15 @@ class _CallActionButtons extends StatelessWidget {
 }
 
 class _ActionButton extends StatefulWidget {
+  const _ActionButton({
+    required this.icon,
+    required this.label,
+    String? semanticLabel,
+    this.active = false,
+    this.includeActiveStatusInSemanticLabel = false,
+    this.onPressedTogglesActiveStatus = false,
+    this.onPressed,
+  }) : semanticLabel = semanticLabel ?? label;
   final Widget icon;
   final String label;
   final String semanticLabel;
@@ -244,18 +252,6 @@ class _ActionButton extends StatefulWidget {
   /// An active button is one that is currently in-use, so for example the
   /// hold button would be active if the call is current on-hold.
   final bool active;
-
-  const _ActionButton({
-    Key? key,
-    required this.icon,
-    required this.label,
-    String? semanticLabel,
-    this.active = false,
-    this.includeActiveStatusInSemanticLabel = false,
-    this.onPressedTogglesActiveStatus = false,
-    this.onPressed,
-  })  : semanticLabel = semanticLabel ?? label,
-        super(key: key);
 
   @override
   State<_ActionButton> createState() => _ActionButtonState();
@@ -375,27 +371,31 @@ class _ActionButtonState extends State<_ActionButton> {
 }
 
 class _AudioRouteButton extends StatelessWidget {
-  final bool enabled;
-
   const _AudioRouteButton({
     this.enabled = true,
   });
+
+  final bool enabled;
 
   Future<void> _showAudioPopupMenu(
     BuildContext context,
     AudioState? audioState,
   ) async {
+    final caller = context.read<CallerCubit>();
+
     if (Platform.isIOS) {
-      context.read<CallerCubit>().launchIOSAudioRoutePicker();
+      await caller.launchIOSAudioRoutePicker();
       return;
     }
 
-    SemanticsService.announce(
-      context.msg.main.call.ongoing.actions.audioRoute.semanticPostPress,
-      Directionality.of(context),
+    unawaited(
+      SemanticsService.announce(
+        context.msg.main.call.ongoing.actions.audioRoute.semanticPostPress,
+        Directionality.of(context),
+      ),
     );
 
-    final selectedRoute = await showDialog<dynamic>(
+    final dynamic selectedRoute = await showDialog<dynamic>(
       context: context,
       builder: (context) {
         return AudioRoutePicker(
@@ -405,9 +405,9 @@ class _AudioRouteButton extends StatelessWidget {
     );
 
     if (selectedRoute is AudioRoute) {
-      context.read<CallerCubit>().routeAudio(selectedRoute);
+      await caller.routeAudio(selectedRoute);
     } else if (selectedRoute is BluetoothAudioRoute) {
-      context.read<CallerCubit>().routeAudioToBluetoothDevice(selectedRoute);
+      await caller.routeAudioToBluetoothDevice(selectedRoute);
     }
   }
 
@@ -509,16 +509,15 @@ class _AudioRouteButton extends StatelessWidget {
 }
 
 class _DialPad extends StatelessWidget {
-  final TextEditingController dialPadController;
-  final VoidCallback onHangUpButtonPressed;
-  final VoidCallback onCancelButtonPressed;
-
   const _DialPad({
-    Key? key,
     required this.dialPadController,
     required this.onHangUpButtonPressed,
     required this.onCancelButtonPressed,
-  }) : super(key: key);
+  });
+
+  final TextEditingController dialPadController;
+  final VoidCallback onHangUpButtonPressed;
+  final VoidCallback onCancelButtonPressed;
 
   @override
   Widget build(BuildContext context) {

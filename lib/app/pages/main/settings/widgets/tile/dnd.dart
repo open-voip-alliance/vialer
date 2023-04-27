@@ -11,14 +11,14 @@ import 'availability.dart';
 import 'value.dart';
 
 class DndTile extends StatelessWidget {
-  final User user;
-  final bool enabled;
-
   const DndTile(
     this.user, {
     this.enabled = true,
     super.key,
   });
+
+  final User user;
+  final bool enabled;
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +45,11 @@ class DndTile extends StatelessWidget {
 /// Responsible for rendering the dnd toggle but also the current state of the
 /// user's availability by updating the text/color.
 class _DndToggle extends StatelessWidget {
+  _DndToggle(
+    this.user, {
+    this.enabled = true,
+  })  : _value = user.settings.get(_key),
+        _userAvailabilityType = user.availabilityType;
   final User user;
 
   final UserAvailabilityType _userAvailabilityType;
@@ -52,12 +57,6 @@ class _DndToggle extends StatelessWidget {
   final bool enabled;
 
   static const _key = CallSetting.dnd;
-
-  _DndToggle(
-    this.user, {
-    this.enabled = true,
-  })  : _value = user.settings.get(_key),
-        _userAvailabilityType = user.availabilityType;
 
   String _text(BuildContext context, {bool? settingValue}) {
     settingValue ??= _value;
@@ -130,7 +129,13 @@ class _DndToggle extends StatelessWidget {
         ),
       ),
       child: ExcludeSemantics(
-        child: Container(
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: _accentColor(context),
+            borderRadius: const BorderRadius.all(
+              Radius.circular(40),
+            ),
+          ),
           child: Row(
             children: [
               Expanded(
@@ -186,10 +191,8 @@ class _DndToggle extends StatelessWidget {
                   ),
                   switchBorder: Border.all(
                     color: _color(context),
-                    width: 2.0,
                   ),
                   height: 32,
-                  width: 70,
                   activeColor: _accentColor(context),
                   inactiveColor: _accentColor(context),
                   activeToggleColor: _color(context),
@@ -198,12 +201,6 @@ class _DndToggle extends StatelessWidget {
                 ),
               )
             ],
-          ),
-          decoration: BoxDecoration(
-            color: _accentColor(context),
-            borderRadius: const BorderRadius.all(
-              Radius.circular(40),
-            ),
           ),
         ),
       ),

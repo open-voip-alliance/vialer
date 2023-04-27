@@ -17,12 +17,12 @@ class UpdateUseMobileNumberAsFallbackListener
   @override
   FutureOr<SettingChangeListenResult> preStore(
     User user,
-    bool enabled,
+    bool value,
   ) =>
       changeRemoteValue(
         () => _authRepository.setUseMobileNumberAsFallback(
           user,
-          enable: enabled,
+          enable: value,
         ),
       );
 }

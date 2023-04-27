@@ -34,7 +34,7 @@ class GetWebPageUrlUseCase extends UseCase {
   final _unauthenticatedPages = [WebPage.passwordReset];
 
   Future<String> call({required WebPage page}) async {
-    final brand = await _getBrand();
+    final brand = _getBrand();
 
     // Unauthenticated portal page.
     if (_unauthenticatedPages.contains(page)) {
@@ -72,9 +72,9 @@ class GetWebPageUrlUseCase extends UseCase {
     // with the corresponding user information.
     final placeholders = {
       'clientId': user.client.id.toString(),
-      'clientUuid': user.client.uuid.toString(),
+      'clientUuid': user.client.uuid,
       'openingHoursUuid': user.client.openingHoursModules.firstOrNull?.id,
-      'userId': user.uuid.toString(),
+      'userId': user.uuid,
     };
 
     for (final placeholder in placeholders.entries) {

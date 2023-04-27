@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:test/test.dart';
 import 'package:vialer/app/util/synchronized_task.dart';
 
@@ -5,22 +7,30 @@ void main() {
   test('A task only executes the first future if already running', () async {
     var testValue = 0;
 
-    final expectedRun = SynchronizedTask.named('Testing').run(() async {
-      testValue = 1;
-      Future.delayed(const Duration(seconds: 1));
-    });
+    final expectedRun = SynchronizedTask<void>.named('Testing').run(
+      () async {
+        testValue = 1;
+        await Future<void>.delayed(const Duration(seconds: 1));
+      },
+    );
 
-    final unexpectedRun1 = SynchronizedTask.named('Testing').run(() async {
-      testValue = 2;
-    });
+    final unexpectedRun1 = SynchronizedTask<void>.named('Testing').run(
+      () async {
+        testValue = 2;
+      },
+    );
 
-    final unexpectedRun2 = SynchronizedTask.named('Testing').run(() async {
-      testValue = 2;
-    });
+    final unexpectedRun2 = SynchronizedTask<void>.named('Testing').run(
+      () async {
+        testValue = 2;
+      },
+    );
 
-    final unexpectedRun3 = SynchronizedTask.named('Testing').run(() async {
-      testValue = 2;
-    });
+    final unexpectedRun3 = SynchronizedTask<void>.named('Testing').run(
+      () async {
+        testValue = 2;
+      },
+    );
 
     await Future.wait([
       expectedRun,
@@ -33,10 +43,10 @@ void main() {
   });
 
   test('Get the result of an executed task', () async {
-    final expected = 'expected return value';
+    const expected = 'expected return value';
 
     final value = await SynchronizedTask<String>.named('Testing').run(() async {
-      Future.delayed(const Duration(seconds: 1));
+      await Future<void>.delayed(const Duration(seconds: 1));
       return expected;
     });
 
@@ -44,12 +54,14 @@ void main() {
   });
 
   test('Get result when in-progress task completes', () async {
-    final expected = 'expected return value';
+    const expected = 'expected return value';
 
-    SynchronizedTask<String>.named('Testing').run(() async {
-      Future.delayed(const Duration(seconds: 1));
-      return expected;
-    });
+    unawaited(
+      SynchronizedTask<String>.named('Testing').run(() async {
+        await Future<void>.delayed(const Duration(seconds: 1));
+        return expected;
+      }),
+    );
 
     final value = await SynchronizedTask<String>.named('Testing').run(
       () async => 'should not be returned',
@@ -59,12 +71,14 @@ void main() {
   });
 
   test('Get result when in-progress task completes', () async {
-    final expected = 'expected return value';
+    const expected = 'expected return value';
 
-    SynchronizedTask<String>.named('Testing').run(() async {
-      Future.delayed(const Duration(seconds: 1));
-      return expected;
-    });
+    unawaited(
+      SynchronizedTask<String>.named('Testing').run(() async {
+        await Future<void>.delayed(const Duration(seconds: 1));
+        return expected;
+      }),
+    );
 
     final value = await SynchronizedTask<String>.named('Testing').run(
       () async => 'should not be returned',
@@ -76,11 +90,11 @@ void main() {
   test('Create a task based on object alone', () async {
     final object = _DummyClass();
 
-    final task1 = SynchronizedTask.of(object);
+    final task1 = SynchronizedTask<_DummyClass>.of(object);
 
     expect(task1.name, '_DummyClass');
 
-    final task2 = SynchronizedTask.of(object);
+    final task2 = SynchronizedTask<_DummyClass>.of(object);
 
     expect(task1.name, task2.name);
   });
@@ -89,12 +103,14 @@ void main() {
     var testValue = 0;
 
     try {
-      await SynchronizedTask.named('Testing').run(() async {
+      await SynchronizedTask<void>.named('Testing').run(() async {
         throw Exception('Testing exceptions');
       });
-    } on Exception {}
+    } on Exception {
+      // Catch.
+    }
 
-    await SynchronizedTask.named('Testing').run(() async {
+    await SynchronizedTask<void>.named('Testing').run(() async {
       testValue = 1;
     });
 
@@ -106,20 +122,20 @@ void main() {
     // A string is used to test the order as well.
     var testValue = '0';
 
-    final run1 = SynchronizedTask.named('Testing', mode).run(() async {
+    final run1 = SynchronizedTask<void>.named('Testing', mode).run(() async {
       testValue += '1';
-      Future.delayed(const Duration(seconds: 1));
+      await Future<void>.delayed(const Duration(seconds: 1));
     });
 
-    final run2 = SynchronizedTask.named('Testing', mode).run(() async {
+    final run2 = SynchronizedTask<void>.named('Testing', mode).run(() async {
       testValue += '2';
     });
 
-    final run3 = SynchronizedTask.named('Testing', mode).run(() async {
+    final run3 = SynchronizedTask<void>.named('Testing', mode).run(() async {
       testValue += '3';
     });
 
-    final run4 = SynchronizedTask.named('Testing', mode).run(() async {
+    final run4 = SynchronizedTask<void>.named('Testing', mode).run(() async {
       testValue += '4';
     });
 

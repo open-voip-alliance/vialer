@@ -6,6 +6,8 @@ import '../../user/user.dart';
 import '../../voipgrid/voipgrid_service.dart';
 
 class OutgoingNumbersRepository with Loggable {
+  OutgoingNumbersRepository(this._service);
+
   final VoipgridService _service;
   final outgoingNumberRetry = AutomaticRetry.http('Change Outgoing Number');
 
@@ -26,7 +28,7 @@ class OutgoingNumbersRepository with Loggable {
         final response = await _service.updateVoipAccount(
           user.client.id.toString(),
           user.appAccountId!,
-          {
+          <String, dynamic>{
             'outgoing_caller_identification': {
               'phone_number': number,
             },
@@ -73,9 +75,9 @@ class OutgoingNumbersRepository with Loggable {
       return;
     }
 
-    final body = response.body;
+    final body = response.body!;
 
-    for (final number in (body['items'] as List<dynamic>)) {
+    for (final number in body['items'] as List<dynamic>) {
       yield OutgoingNumber(number as String);
     }
 

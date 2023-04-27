@@ -22,11 +22,11 @@ import 'widgets/call_transfer_bar.dart';
 
 class CallPage extends StatefulWidget {
   const CallPage({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
-  _CallOrTransferPageState createState() => _CallOrTransferPageState();
+  State<CallPage> createState() => _CallOrTransferPageState();
 }
 
 const _callRoute = 'call';
@@ -60,7 +60,7 @@ class _CallOrTransferPageState extends State<CallPage> {
                       Navigator.pushNamed(context, _contactsRoute).then(
                         (number) => context
                             .read<CallerCubit>()
-                            .beginTransfer(number as String),
+                            .beginTransfer(number! as String),
                       );
                     },
                   );
@@ -76,9 +76,7 @@ class _CallOrTransferPageState extends State<CallPage> {
 
 /// The actual call page.
 class _CallPage extends StatefulWidget {
-  const _CallPage({
-    Key? key,
-  }) : super(key: key);
+  const _CallPage();
 
   @override
   _CallPageState createState() => _CallPageState();
@@ -264,13 +262,13 @@ class _CallPageState extends State<_CallPage>
 }
 
 class _CallHeader extends StatelessWidget {
-  final Call call;
-  final CallerState state;
-
   const _CallHeader({
     required this.call,
     required this.state,
   });
+
+  final Call call;
+  final CallerState state;
 
   @override
   Widget build(BuildContext context) {

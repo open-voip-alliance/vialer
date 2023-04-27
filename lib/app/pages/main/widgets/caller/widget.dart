@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,10 +18,10 @@ import 'confirm/page.dart';
 import 'cubit.dart';
 
 class Caller extends StatefulWidget {
+  const Caller._(this.navigatorKey, this.child);
+
   final GlobalKey<NavigatorState> navigatorKey;
   final Widget child;
-
-  Caller._(this.navigatorKey, this.child);
 
   static Widget create({
     required GlobalKey<NavigatorState> navigatorKey,
@@ -32,7 +34,7 @@ class Caller extends StatefulWidget {
   }
 
   @override
-  _CallerState createState() => _CallerState();
+  State<Caller> createState() => _CallerState();
 }
 
 class _CallerState extends State<Caller>
@@ -76,7 +78,7 @@ class _CallerState extends State<Caller>
     if (call == null) return;
 
     if (context.isAndroid) {
-      NativeIncomingCallScreen().launch(
+      await NativeIncomingCallScreen().launch(
         call.remotePartyHeading,
         call.remotePartySubheading,
         call.contact?.imageUri?.toString() ?? '',
@@ -84,7 +86,7 @@ class _CallerState extends State<Caller>
       return;
     }
 
-    await _navigatorState.push(
+    await _navigatorState.push<void>(
       MaterialPageRoute(
         settings: const RouteSettings(
           name: _ringingRouteName,
@@ -96,10 +98,10 @@ class _CallerState extends State<Caller>
 
   // NOTE: Only called when the state type changes, not when the same state
   // with a different `voipCall` is emitted.
-  Future<void> _onStateChanged(BuildContext context, CallerState state) async {
+  void _onStateChanged(BuildContext context, CallerState state) {
     if (state is Ringing) {
       _isRinging = true;
-      launchIncomingCallScreen(state);
+      unawaited(launchIncomingCallScreen(state));
     } else {
       // Last state was ringing, remove the incoming call page.
       if (_isRinging) {
@@ -115,7 +117,7 @@ class _CallerState extends State<Caller>
         (state is Calling &&
             state.isVoip &&
             state.voipCall!.direction.isInbound)) {
-      await _navigatorState.pushAndRemoveUntil(
+      _navigatorState.pushAndRemoveUntil<void>(
         MaterialPageRoute(
           builder: (_) => const CallPage(),
         ),
@@ -126,7 +128,7 @@ class _CallerState extends State<Caller>
     }
 
     if (state is ShowCallThroughConfirmPage) {
-      await _navigatorState.push(
+      _navigatorState.push<void>(
         ConfirmPageRoute(
           destination: state.destination,
           origin: state.origin,
@@ -137,18 +139,18 @@ class _CallerState extends State<Caller>
     if (state is StartingCallFailed) {
       if (state is StartingCallFailedWithException) {
         if (state.isVoip) {
-          await _showCallThroughErrorDialog(
+          _showCallThroughErrorDialog(
             _navigatorContext,
             state.exception as CallThroughException,
           );
         } else {
-          await _showInitiatingCallFailedDialogWithException(
+          _showInitiatingCallFailedDialogWithException(
             context,
             state.exception,
           );
         }
       } else if (state is StartingCallFailedWithReason) {
-        await _showInitiatingCallFailedDialog(_navigatorContext, state.reason);
+        _showInitiatingCallFailedDialog(_navigatorContext, state.reason);
       }
     }
   }
@@ -254,14 +256,13 @@ Future<void> _showInitiatingCallFailedDialogWithException(
 }
 
 class _AlertDialog extends StatelessWidget {
-  final Widget title;
-  final Widget content;
-
   const _AlertDialog({
-    Key? key,
     required this.title,
     required this.content,
-  }) : super(key: key);
+  });
+
+  final Widget title;
+  final Widget content;
 
   static Future<void> show(
     BuildContext context, {
@@ -270,7 +271,6 @@ class _AlertDialog extends StatelessWidget {
   }) {
     return showDialog<void>(
       context: context,
-      barrierDismissible: true,
       builder: (context) {
         return _AlertDialog(
           title: title,

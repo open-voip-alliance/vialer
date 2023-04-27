@@ -5,12 +5,12 @@ import '../../../../../../resources/localizations.dart';
 import 'widget.dart';
 
 class AudioCategory extends StatelessWidget {
-  final List<Widget> children;
-
   const AudioCategory({
-    super.key,
     required this.children,
+    super.key,
   });
+
+  final List<Widget> children;
 
   @override
   Widget build(BuildContext context) {

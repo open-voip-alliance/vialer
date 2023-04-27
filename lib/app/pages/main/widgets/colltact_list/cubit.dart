@@ -17,6 +17,10 @@ import 'state.dart';
 export 'state.dart';
 
 class ContactsCubit extends Cubit<ContactsState> {
+  ContactsCubit(this._caller) : super(const LoadingContacts()) {
+    _checkContactsPermission();
+  }
+
   final _getContacts = GetContactsUseCase();
   final _getPermissionStatus = GetPermissionStatusUseCase();
   final _requestPermission = RequestPermissionUseCase();
@@ -24,10 +28,6 @@ class ContactsCubit extends Cubit<ContactsState> {
   final _getContactSort = GetContactSortUseCase();
 
   final CallerCubit _caller;
-
-  ContactsCubit(this._caller) : super(const LoadingContacts()) {
-    _checkContactsPermission();
-  }
 
   Future<void> call(String destination) =>
       _caller.call(destination, origin: CallOrigin.contacts);
@@ -65,7 +65,5 @@ class ContactsCubit extends Cubit<ContactsState> {
     await _loadContacts(status);
   }
 
-  void openAppSettings() async {
-    await _openAppSettings();
-  }
+  void openAppSettings() => _openAppSettings();
 }
