@@ -12,7 +12,7 @@ import 'state.dart';
 
 class WebViewCubit extends Cubit<WebViewState> with Loggable {
   WebViewCubit(this._page) : super(LoadingUrl()) {
-    _loadUrl();
+    unawaited(_loadUrl());
   }
 
   final _getWebViewUrl = GetWebPageUrlUseCase();
@@ -22,7 +22,7 @@ class WebViewCubit extends Cubit<WebViewState> with Loggable {
 
   void reload() {
     emit(LoadingUrl());
-    _loadUrl();
+    unawaited(_loadUrl());
   }
 
   void notifyWebViewLoaded(String url) {

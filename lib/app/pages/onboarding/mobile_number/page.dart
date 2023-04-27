@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
@@ -51,9 +53,11 @@ class _MobileNumberPageState extends State<MobileNumberPage> {
   }
 
   void _onContinueButtonPressed(BuildContext context) {
-    context
-        .read<MobileNumberCubit>()
-        .changeMobileNumber(_mobileNumberController.text);
+    unawaited(
+      context
+          .read<MobileNumberCubit>()
+          .changeMobileNumber(_mobileNumberController.text),
+    );
   }
 
   @override
@@ -163,5 +167,6 @@ class _Keys {
   const _Keys();
 
   Key get field => const Key('mobileNumberField');
+
   Key get continueButton => const Key('continueButton');
 }

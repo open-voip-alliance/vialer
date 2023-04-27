@@ -89,10 +89,12 @@ class _TwoFactorAuthenticationPageState
                 ),
                 _TwoFactorCodeField(
                   key: _codeFieldKey,
-                  onCodeSubmitted: (code) => _loginWithTwoFactorCode(
-                    context: context,
-                    code: code,
-                    state: state,
+                  onCodeSubmitted: (code) => unawaited(
+                    _loginWithTwoFactorCode(
+                      context: context,
+                      code: code,
+                      state: state,
+                    ),
                   ),
                 ),
                 if (state is CodeAccepted)

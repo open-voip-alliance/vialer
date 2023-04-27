@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,7 +13,7 @@ export 'state.dart';
 
 class CountryFieldCubit extends Cubit<CountryFieldState> {
   CountryFieldCubit() : super(const LoadingCountries()) {
-    _loadCountries();
+    unawaited(_loadCountries());
   }
 
   final _getCountries = GetCountriesUseCase();

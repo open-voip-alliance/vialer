@@ -53,7 +53,7 @@ class _WrittenFeedbackState extends State<WrittenFeedback> {
             ),
           ),
           TextButton(
-            onPressed: () => _feedback(context),
+            onPressed: () => unawaited(_feedback(context)),
             style: TextButton.styleFrom(
               foregroundColor:
                   context.brand.theme.colors.raisedColoredButtonText,

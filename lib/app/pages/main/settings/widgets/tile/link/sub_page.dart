@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
@@ -23,12 +25,14 @@ class SubPageLinkTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => Navigator.of(context).push<dynamic>(
-        platformPageRoute<dynamic>(
-          context: context,
-          builder: (_) => BlocProvider.value(
-            value: cubit,
-            child: pageBuilder(context),
+      onTap: () => unawaited(
+        Navigator.of(context).push<dynamic>(
+          platformPageRoute<dynamic>(
+            context: context,
+            builder: (_) => BlocProvider.value(
+              value: cubit,
+              child: pageBuilder(context),
+            ),
           ),
         ),
       ),

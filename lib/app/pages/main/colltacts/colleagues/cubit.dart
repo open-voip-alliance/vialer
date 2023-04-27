@@ -29,7 +29,7 @@ class ColleaguesCubit extends Cubit<ColleaguesState> {
           ),
         ) {
     _eventBus.on<UserWasLoggedOutEvent>((event) {
-      disconnectFromWebSocket(purgeCache: true);
+      unawaited(disconnectFromWebSocket(purgeCache: true));
     });
   }
 
@@ -64,7 +64,7 @@ class ColleaguesCubit extends Cubit<ColleaguesState> {
 
   set showOnlineColleaguesOnly(bool value) {
     emit(state.copyWith(showOnlineColleaguesOnly: value));
-    _changeSetting(AppSetting.showOnlineColleaguesOnly, value);
+    unawaited(_changeSetting(AppSetting.showOnlineColleaguesOnly, value));
   }
 
   Future<void> connectToWebSocket({bool fullRefresh = false}) async {

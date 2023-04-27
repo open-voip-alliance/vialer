@@ -58,13 +58,15 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
       initialize();
     }
 
-    _hasVoipStarted().then(
-      (_) {
-        // We can still do these things, even if VoIP failed to start.
-        checkPhonePermission();
-        _voipCallEventSubscription ??=
-            _getVoipCallEventStream().listen(_onVoipCallEvent);
-      },
+    unawaited(
+      _hasVoipStarted().then(
+        (_) {
+          // We can still do these things, even if VoIP failed to start.
+          checkPhonePermission();
+          _voipCallEventSubscription ??=
+              _getVoipCallEventStream().listen(_onVoipCallEvent);
+        },
+      ),
     );
   }
 
@@ -114,8 +116,8 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
   StreamSubscription<Event>? _voipCallEventSubscription;
 
   void initialize() {
-    checkPhonePermission();
-    _startVoipIfNecessary();
+    unawaited(checkPhonePermission());
+    unawaited(_startVoipIfNecessary());
   }
 
   Future<void> _startVoipIfNecessary() async {
@@ -135,11 +137,9 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
         if (activeCall.state == CallState.initializing) {
           emit(Ringing(voip: voip));
         } else {
-          unawaited(
-            _trackVoipCallStarted(
-              via: CallOrigin.incoming.toTrackString(),
-              direction: CallDirection.inbound,
-            ),
+          _trackVoipCallStarted(
+            via: CallOrigin.incoming.toTrackString(),
+            direction: CallDirection.inbound,
           );
 
           emit(Calling(origin: CallOrigin.incoming, voip: voip));
@@ -300,11 +300,9 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
 
     logger.info('Starting VoIP call');
     try {
-      unawaited(
-        _trackVoipCallStarted(
-          via: origin.toTrackString(),
-          direction: CallDirection.outbound,
-        ),
+      _trackVoipCallStarted(
+        via: origin.toTrackString(),
+        direction: CallDirection.outbound,
       );
 
       emit(CallOriginDetermined(origin));
@@ -549,7 +547,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
     } else if (state is! NoPermission) {
       emit(const CanCall());
     } else {
-      checkPhonePermission();
+      unawaited(checkPhonePermission());
     }
   }
 

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:dartx/dartx.dart';
@@ -15,6 +16,7 @@ class Avatar extends StatefulWidget {
     this.showFallback,
     this.fallback,
   });
+
   static const defaultSize = 36.0;
 
   final String? name;
@@ -56,15 +58,17 @@ class _AvatarState extends State<Avatar> {
   void initState() {
     super.initState();
 
-    widget.image?.exists().then((exists) {
-      if (exists) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          setState(() {
-            _existingImage = widget.image;
+    unawaited(
+      widget.image?.exists().then((exists) {
+        if (exists) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            setState(() {
+              _existingImage = widget.image;
+            });
           });
-        });
-      }
-    });
+        }
+      }),
+    );
   }
 
   @override

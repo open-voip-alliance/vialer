@@ -68,7 +68,7 @@ class _RecentCallsListState extends State<RecentCallsList>
     super.didChangeAppLifecycleState(state);
 
     if (state == AppLifecycleState.resumed) {
-      widget.manualRefresher.refresh();
+      unawaited(widget.manualRefresher.refresh());
       widget.performBackgroundImport();
     }
   }

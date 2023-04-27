@@ -72,21 +72,25 @@ class _CallerState extends State<Caller>
         (state is Calling &&
             state.isVoip &&
             state.voipCall!.direction.isInbound)) {
-      _navigatorState.pushAndRemoveUntil<void>(
-        MaterialPageRoute(
-          builder: (_) => const CallPage(),
+      unawaited(
+        _navigatorState.pushAndRemoveUntil<void>(
+          MaterialPageRoute(
+            builder: (_) => const CallPage(),
+          ),
+          // We want to go back to the main screen after a call
+          // (not the dialer or possibly ringing screen).
+          (route) => route.settings.name == Routes.main,
         ),
-        // We want to go back to the main screen after a call
-        // (not the dialer or possibly ringing screen).
-        (route) => route.settings.name == Routes.main,
       );
     }
 
     if (state is ShowCallThroughConfirmPage) {
-      _navigatorState.push<void>(
-        ConfirmPageRoute(
-          destination: state.destination,
-          origin: state.origin,
+      unawaited(
+        _navigatorState.push<void>(
+          ConfirmPageRoute(
+            destination: state.destination,
+            origin: state.origin,
+          ),
         ),
       );
     }
@@ -94,18 +98,24 @@ class _CallerState extends State<Caller>
     if (state is StartingCallFailed) {
       if (state is StartingCallFailedWithException) {
         if (state.isVoip) {
-          _showCallThroughErrorDialog(
-            _navigatorContext,
-            state.exception as CallThroughException,
+          unawaited(
+            _showCallThroughErrorDialog(
+              _navigatorContext,
+              state.exception as CallThroughException,
+            ),
           );
         } else {
-          _showInitiatingCallFailedDialogWithException(
-            context,
-            state.exception,
+          unawaited(
+            _showInitiatingCallFailedDialogWithException(
+              context,
+              state.exception,
+            ),
           );
         }
       } else if (state is StartingCallFailedWithReason) {
-        _showInitiatingCallFailedDialog(_navigatorContext, state.reason);
+        unawaited(
+          _showInitiatingCallFailedDialog(_navigatorContext, state.reason),
+        );
       }
     }
   }
@@ -289,5 +299,5 @@ extension on CallScreenBehavior {
   // Pigeon doesn't support named parameters so using an extension method to
   // make this a little cleaner.
   void configure({required bool showWhenLocked}) =>
-      showWhenLocked ? enable() : disable();
+      showWhenLocked ? unawaited(enable()) : unawaited(disable());
 }

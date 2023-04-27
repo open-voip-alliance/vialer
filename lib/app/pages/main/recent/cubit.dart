@@ -19,7 +19,7 @@ export 'state.dart';
 
 class RecentCallsCubit extends Cubit<RecentCallsState> {
   RecentCallsCubit(this._caller) : super(const LoadingInitialRecentCalls()) {
-    _loadRecentCalls(page: 1);
+    unawaited(_loadRecentCalls(page: 1));
   }
 
   @protected
@@ -39,7 +39,7 @@ class RecentCallsCubit extends Cubit<RecentCallsState> {
   void copyNumber(String number) {
     _trackCopyNumber();
 
-    Clipboard.setData(ClipboardData(text: number));
+    unawaited(Clipboard.setData(ClipboardData(text: number)));
   }
 
   bool onlyMissedCalls = false;
@@ -93,13 +93,15 @@ class RecentCallsCubit extends Cubit<RecentCallsState> {
 
 class ClientCallsCubit extends RecentCallsCubit {
   ClientCallsCubit(super.caller) {
-    _localClientCalls.watch().then(
-          (value) => value.listen(
-            (event) {
-              refreshRecentCalls();
-            },
+    unawaited(
+      _localClientCalls.watch().then(
+            (value) => value.listen(
+              (event) {
+                refreshRecentCalls();
+              },
+            ),
           ),
-        );
+    );
   }
 
   final _getRecentClientCalls = GetRecentClientCallsUseCase();

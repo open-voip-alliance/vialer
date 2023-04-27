@@ -18,7 +18,7 @@ export 'state.dart';
 
 class ContactsCubit extends Cubit<ContactsState> {
   ContactsCubit(this._caller) : super(const LoadingContacts()) {
-    _checkContactsPermission();
+    unawaited(_checkContactsPermission());
   }
 
   final _getContacts = GetContactsUseCase();
@@ -65,5 +65,5 @@ class ContactsCubit extends Cubit<ContactsState> {
     await _loadContacts(status);
   }
 
-  void openAppSettings() => _openAppSettings();
+  void openAppSettings() => unawaited(_openAppSettings());
 }

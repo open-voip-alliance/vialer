@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter/services.dart';
@@ -37,10 +39,12 @@ class _KeyInputState extends State<KeyInput> {
   void _onInputChanged() {
     // Scroll to the end when a character is inserted.
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _scrollController.animateTo(
-        _scrollController.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 200),
-        curve: Curves.ease,
+      unawaited(
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.ease,
+        ),
       );
     });
   }
@@ -204,12 +208,14 @@ class _DeleteButtonState extends State<_DeleteButton> {
         ),
       );
 
-      SemanticsService.announce(
-        context.msg.main.dialer.button.delete.deletedHint(
-          deleted,
-          deleted.characters.length,
+      unawaited(
+        SemanticsService.announce(
+          context.msg.main.dialer.button.delete.deletedHint(
+            deleted,
+            deleted.characters.length,
+          ),
+          Directionality.of(context),
         ),
-        Directionality.of(context),
       );
     }
   }
@@ -231,14 +237,18 @@ class _DeleteButtonState extends State<_DeleteButton> {
     // We say the digit out loud when deleting a single digit, to mimic
     // the native dialer.
     if (deletedSingleDigit) {
-      SemanticsService.announce(
-        context.msg.main.dialer.button.delete.deletedHint(digits, digitCount),
-        Directionality.of(context),
+      unawaited(
+        SemanticsService.announce(
+          context.msg.main.dialer.button.delete.deletedHint(digits, digitCount),
+          Directionality.of(context),
+        ),
       );
     } else {
-      SemanticsService.announce(
-        context.msg.main.dialer.button.delete.deletedAllHint,
-        Directionality.of(context),
+      unawaited(
+        SemanticsService.announce(
+          context.msg.main.dialer.button.delete.deletedAllHint,
+          Directionality.of(context),
+        ),
       );
     }
   }

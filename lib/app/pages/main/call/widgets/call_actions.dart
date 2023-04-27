@@ -42,7 +42,7 @@ class _CallActionsState extends State<CallActions> {
   var _latestDialPadValue = '';
 
   void _hangUp() {
-    context.read<CallerCubit>().endVoipCall();
+    unawaited(context.read<CallerCubit>().endVoipCall());
   }
 
   @override
@@ -53,9 +53,11 @@ class _CallActionsState extends State<CallActions> {
       final currentDialPadValue = _dialPadController.value.text;
 
       if (currentDialPadValue != _latestDialPadValue) {
-        context
-            .read<CallerCubit>()
-            .sendVoipDtmf(currentDialPadValue.characters.last);
+        unawaited(
+          context
+              .read<CallerCubit>()
+              .sendVoipDtmf(currentDialPadValue.characters.last),
+        );
         _latestDialPadValue = currentDialPadValue;
       }
     });
@@ -98,17 +100,17 @@ class _CallActionButtons extends StatelessWidget {
   final VoidCallback onTransferButtonPressed;
 
   void _toggleMute(BuildContext context) =>
-      context.read<CallerCubit>().toggleMute();
+      unawaited(context.read<CallerCubit>().toggleMute());
 
   void _toggleDialPad(BuildContext context) {
-    Future.delayed(const Duration(seconds: 1), () {
-      SemanticsService.announce(
+    Future.delayed(const Duration(seconds: 1), () async {
+      await SemanticsService.announce(
         context.msg.main.call.ongoing.actions.keypad.semanticPostPress,
         Directionality.of(context),
       );
     });
 
-    Navigator.pushNamed(context, 'dial-pad');
+    unawaited(Navigator.pushNamed(context, 'dial-pad'));
   }
 
   void _transfer(BuildContext context) {
@@ -124,13 +126,13 @@ class _CallActionButtons extends StatelessWidget {
   }
 
   void _merge(BuildContext context) =>
-      context.read<CallerCubit>().mergeTransfer();
+      unawaited(context.read<CallerCubit>().mergeTransfer());
 
   void _toggleHold(BuildContext context) =>
-      context.read<CallerCubit>().toggleHoldVoipCall();
+      unawaited(context.read<CallerCubit>().toggleHoldVoipCall());
 
   void _hold(BuildContext context) =>
-      context.read<CallerCubit>().holdVoipCall();
+      unawaited(context.read<CallerCubit>().holdVoipCall());
 
   @override
   Widget build(BuildContext context) {
@@ -299,7 +301,9 @@ class _ActionButtonState extends State<_ActionButton> {
       // On iOS, the state is already correctly announced after press.
       // On Android we have to do it manually.
       if (context.isAndroid) {
-        SemanticsService.announce(_semanticLabel, Directionality.of(context));
+        unawaited(
+          SemanticsService.announce(_semanticLabel, Directionality.of(context)),
+        );
       }
     }
 
@@ -492,13 +496,15 @@ class _AudioRouteButton extends StatelessWidget {
           onPressed: enabled
               ? () {
                   if (state.audioState != null && hasBluetooth) {
-                    _showAudioPopupMenu(context, state.audioState);
+                    unawaited(_showAudioPopupMenu(context, state.audioState));
                   } else {
-                    context.read<CallerCubit>().routeAudio(
-                          currentRoute == AudioRoute.phone
-                              ? AudioRoute.speaker
-                              : AudioRoute.phone,
-                        );
+                    unawaited(
+                      context.read<CallerCubit>().routeAudio(
+                            currentRoute == AudioRoute.phone
+                                ? AudioRoute.speaker
+                                : AudioRoute.phone,
+                          ),
+                    );
                   }
                 }
               : null,

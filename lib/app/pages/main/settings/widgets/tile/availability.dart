@@ -179,10 +179,12 @@ class AvailabilityTile extends StatelessWidget {
             ],
             onChanged: enabled
                 ? (destination) => destination != null
-                    ? defaultOnChanged(
-                        context,
-                        key,
-                        destination,
+                    ? unawaited(
+                        defaultOnChanged(
+                          context,
+                          key,
+                          destination,
+                        ),
                       )
                     : () {}
                 : null,

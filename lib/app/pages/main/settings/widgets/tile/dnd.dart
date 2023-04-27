@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/semantics.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_switch/flutter_switch.dart';
@@ -122,10 +124,12 @@ class _DndToggle extends StatelessWidget {
       label: _prepareVoiceOverForAccessibility(context, _value),
       enabled: true,
       container: true,
-      onTap: () => _toggleDndSetting(context).then(
-        (dnd) => SemanticsService.announce(
-          _prepareVoiceOverForAccessibility(context, dnd),
-          Directionality.of(context),
+      onTap: () => unawaited(
+        _toggleDndSetting(context).then(
+          (dnd) => SemanticsService.announce(
+            _prepareVoiceOverForAccessibility(context, dnd),
+            Directionality.of(context),
+          ),
         ),
       ),
       child: ExcludeSemantics(
@@ -197,7 +201,7 @@ class _DndToggle extends StatelessWidget {
                   inactiveColor: _accentColor(context),
                   activeToggleColor: _color(context),
                   inactiveToggleColor: _color(context),
-                  onToggle: (_) => _toggleDndSetting(context),
+                  onToggle: (_) => unawaited(_toggleDndSetting(context)),
                 ),
               )
             ],

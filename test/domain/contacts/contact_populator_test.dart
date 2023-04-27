@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
@@ -49,20 +51,24 @@ void _expectsToMatchContact({
   required String numberInCallRecord,
   required List<String> numbersInContacts,
 }) =>
-    _expectContactMatching(
-      numberInCallRecord,
-      numbersInContacts,
-      shouldMatch: true,
+    unawaited(
+      _expectContactMatching(
+        numberInCallRecord,
+        numbersInContacts,
+        shouldMatch: true,
+      ),
     );
 
 void _expectsNotToMatchContact({
   required String numberInCallRecord,
   required List<String> numbersInContacts,
 }) =>
-    _expectContactMatching(
-      numberInCallRecord,
-      numbersInContacts,
-      shouldMatch: false,
+    unawaited(
+      _expectContactMatching(
+        numberInCallRecord,
+        numbersInContacts,
+        shouldMatch: false,
+      ),
     );
 
 Future<void> _expectContactMatching(
@@ -110,7 +116,7 @@ List<CallRecord> _generateDummyCallRecordsForNumber(String number) => [
 MockContactRepository _createMockWithStoredNumbers(List<String> numbers) {
   final contactRepositoryMock = MockContactRepository();
 
-  when(contactRepositoryMock.getContacts()).thenAnswer(
+  when(unawaited(contactRepositoryMock.getContacts())).thenAnswer(
     (_) async => numbers.map(_generateDummyContact).toList(),
   );
 

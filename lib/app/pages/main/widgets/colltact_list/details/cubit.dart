@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:android_intent/android_intent.dart';
@@ -25,7 +26,7 @@ class ColltactDetailsCubit extends Cubit<ColltactDetailsState> {
       _caller.call(destination, origin: origin);
 
   void mail(String destination) {
-    launchUrlString('mailto:$destination');
+    unawaited(launchUrlString('mailto:$destination'));
   }
 
   Future<void> edit(Colltact colltact) async {

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -29,7 +31,7 @@ class _ConnectivityCheckerState extends State<ConnectivityChecker>
     super.didChangeAppLifecycleState(state);
 
     if (state == AppLifecycleState.resumed) {
-      context.read<ConnectivityCheckerCubit>().check();
+      unawaited(context.read<ConnectivityCheckerCubit>().check());
     }
   }
 

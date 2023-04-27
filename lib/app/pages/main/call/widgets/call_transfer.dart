@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_phone_lib/flutter_phone_lib.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -110,7 +112,9 @@ class _CallTransferState extends State<CallTransfer> {
                       color: bottomIconColor,
                     ),
                     iconSize: bottomIconSize,
-                    onPressed: () => _onContactsButtonPressed(context),
+                    onPressed: () => unawaited(
+                      _onContactsButtonPressed(context),
+                    ),
                   ),
                 );
               },

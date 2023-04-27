@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -106,7 +108,7 @@ class _StringEditSettingValueState extends State<StringEditSettingValue> {
 
   void _onPressed(BuildContext context) {
     widget.onChanged(context, widget.setting, _textEditingController.text);
-    _toggleEditing();
+    unawaited(_toggleEditing());
   }
 
   Future<void> _toggleEditing() async {

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -42,14 +44,14 @@ class _SurveyTriggererState extends State<_SurveyTriggerer> {
     if (!_checked) {
       _checked = true;
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        cubit.check();
+        unawaited(cubit.check());
       });
     }
   }
 
   void _onStateChanged(BuildContext context, SurveyTriggererState state) {
     if (state is SurveyTriggered) {
-      SurveyDialog.show(context, state.id, trigger: state.trigger);
+      unawaited(SurveyDialog.show(context, state.id, trigger: state.trigger));
     }
   }
 

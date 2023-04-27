@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,6 +15,7 @@ import 'widget.dart';
 
 class RemoteLoggingTile extends StatelessWidget {
   const RemoteLoggingTile(this.user, {super.key});
+
   final User user;
 
   @override
@@ -29,14 +32,16 @@ class RemoteLoggingTile extends StatelessWidget {
           // Show a popup, asking if the user wants to send their locally
           // saved logs to the remote.
           if (value == true) {
-            showDialog<void>(
-              context: context,
-              builder: (_) => _RemoteLoggingSendLogsDialog(
-                cubit: context.read<SettingsCubit>(),
+            unawaited(
+              showDialog<void>(
+                context: context,
+                builder: (_) => _RemoteLoggingSendLogsDialog(
+                  cubit: context.read<SettingsCubit>(),
+                ),
               ),
             );
           }
-          defaultOnChanged(context, key, value);
+          unawaited(defaultOnChanged(context, key, value));
         },
       ),
     );
@@ -45,6 +50,7 @@ class RemoteLoggingTile extends StatelessWidget {
 
 class _RemoteLoggingSendLogsDialog extends StatelessWidget {
   const _RemoteLoggingSendLogsDialog({required this.cubit});
+
   final SettingsCubit cubit;
 
   @override
@@ -69,7 +75,7 @@ class _RemoteLoggingSendLogsDialog extends StatelessWidget {
 
     void onDenyPressed() => Navigator.pop(context);
     void onConfirmPressed() {
-      cubit.sendSavedLogsToRemote();
+      unawaited(cubit.sendSavedLogsToRemote());
       Navigator.pop(context);
     }
 

@@ -21,32 +21,35 @@ class SurveyCubit extends Cubit<SurveyState> with Loggable {
     required SurveyId id,
     required SurveyTrigger trigger,
   }) : super(const LoadingSurvey()) {
-    _getSurvey(id, language: language, trigger: trigger).then((survey) {
-      final user = _getUser();
-      // Necessary for auto cast.
-      final state = this.state;
+    unawaited(
+      _getSurvey(id, language: language, trigger: trigger).then((survey) {
+        final user = _getUser();
+        // Necessary for auto cast.
+        final state = this.state;
 
-      if (state is LoadingSurvey) {
-        if (survey.skipIntro) {
-          emit(
-            ShowQuestion(
-              survey.questions.first,
-              survey: survey,
-            ),
-          );
-        } else {
-          emit(
-            ShowHelpUsPrompt(
-              survey: survey,
-              dontShowThisAgain: !user.settings.get(
-                AppSetting.showSurveys,
+        if (state is LoadingSurvey) {
+          if (survey.skipIntro) {
+            emit(
+              ShowQuestion(
+                survey.questions.first,
+                survey: survey,
               ),
-            ),
-          );
+            );
+          } else {
+            emit(
+              ShowHelpUsPrompt(
+                survey: survey,
+                dontShowThisAgain: !user.settings.get(
+                  AppSetting.showSurveys,
+                ),
+              ),
+            );
+          }
         }
-      }
-    });
+      }),
+    );
   }
+
   final _getSurvey = GetSurveyUseCase();
   final _sendSurveyResults = SendSurveyResultsUseCase();
 
@@ -75,7 +78,7 @@ class SurveyCubit extends Cubit<SurveyState> with Loggable {
     if (state is ShowHelpUsPrompt) {
       emit(ShowQuestion(state.survey!.questions.first, survey: state.survey));
     } else if (state is ShowQuestion) {
-      _appStoreRatingCheck();
+      unawaited(_appStoreRatingCheck());
       _progressToNextQuestion();
     }
   }

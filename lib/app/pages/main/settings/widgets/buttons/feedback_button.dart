@@ -36,7 +36,7 @@ class _FeedbackButtonState extends State<FeedbackButton> {
 
     if (!mounted) return;
 
-    unawaited(context.read<SettingsCubit>().refresh());
+    context.read<SettingsCubit>().refresh();
   }
 
   @override

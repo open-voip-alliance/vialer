@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../domain/onboarding/exceptions.dart';
@@ -16,7 +18,7 @@ export 'state.dart';
 
 class LoginCubit extends Cubit<LoginState> with Loggable {
   LoginCubit(this._onboarding) : super(const NotLoggedIn()) {
-    _enableRemoteLoggingIfNeeded();
+    unawaited(_enableRemoteLoggingIfNeeded());
   }
 
   final OnboardingCubit _onboarding;

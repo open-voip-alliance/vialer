@@ -12,16 +12,18 @@ class TrackVoipCallStartedUseCase extends UseCase {
   final _metricsRepository = dependencyLocator<MetricsRepository>();
   final _connectivityRepository = dependencyLocator<ConnectivityRepository>();
 
-  Future<void> call({
+  void call({
     required String via,
     required CallDirection direction,
-  }) async {
-    final connectivityType = await _connectivityRepository.currentType;
-
-    _metricsRepository.track('voip-call-started', <String, dynamic>{
-      'via': via,
-      'direction': direction.toTrackString(),
-      'connection': connectivityType.toString(),
-    });
+  }) {
+    unawaited(
+      _connectivityRepository.currentType.then((connectivityType) {
+        _metricsRepository.track('voip-call-started', <String, dynamic>{
+          'via': via,
+          'direction': direction.toTrackString(),
+          'connection': connectivityType.toString(),
+        });
+      }),
+    );
   }
 }
