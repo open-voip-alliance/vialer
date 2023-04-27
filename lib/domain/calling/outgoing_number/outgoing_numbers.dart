@@ -1,5 +1,6 @@
 import '../../../app/util/automatic_retry.dart';
 import '../../../app/util/loggable.dart';
+import '../../user/client.dart';
 import '../../user/settings/call_setting.dart';
 import '../../user/user.dart';
 import '../../voipgrid/voipgrid_service.dart';
@@ -10,11 +11,10 @@ class OutgoingNumbersRepository with Loggable {
 
   OutgoingNumbersRepository(this._service);
 
-  Future<Iterable<OutgoingNumber>> getOutgoingNumbersAvailableToClient({
-    required User user,
-  }) =>
+  Future<Iterable<OutgoingNumber>> getOutgoingNumbersAvailableToClient(
+          Client client) =>
       _fetchAllAvailableNumbers(
-        clientUuid: user.client.uuid,
+        clientUuid: client.uuid,
       ).distinct().toList();
 
   Future<bool> changeOutgoingNumber({
