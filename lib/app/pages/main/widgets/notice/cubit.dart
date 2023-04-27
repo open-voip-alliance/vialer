@@ -25,9 +25,10 @@ export 'state.dart';
 
 class NoticeCubit extends Cubit<NoticeState> with Loggable {
   NoticeCubit(this._caller) : super(const NoNotice()) {
-    check();
-    _eventBus.on<TemporaryRedirectDidChangeEvent>((_) => check());
-    _eventBus.on<LoggedInUserWasRefreshed>((_) => check());
+    unawaited(check());
+    _eventBus
+      ..on<TemporaryRedirectDidChangeEvent>((_) => unawaited(check()))
+      ..on<LoggedInUserWasRefreshed>((_) => unawaited(check()));
   }
 
   late final _getPermissionStatus = GetPermissionStatusUseCase();
@@ -84,10 +85,13 @@ class NoticeCubit extends Cubit<NoticeState> with Loggable {
     } else if (!user.isAllowedVoipCalling) {
       emit(const NoAppAccountNotice());
     } else if (user.client.currentTemporaryRedirect != null) {
-      emit(TemporaryRedirectNotice(
-        temporaryRedirect: user.client.currentTemporaryRedirect!,
-        canChangeTemporaryRedirect: user.permissions.canChangeTemporaryRedirect,
-      ));
+      emit(
+        TemporaryRedirectNotice(
+          temporaryRedirect: user.client.currentTemporaryRedirect!,
+          canChangeTemporaryRedirect:
+              user.permissions.canChangeTemporaryRedirect,
+        ),
+      );
     } else {
       emit(const NoNotice());
     }

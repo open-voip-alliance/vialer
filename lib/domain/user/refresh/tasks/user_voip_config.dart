@@ -1,5 +1,7 @@
 // ignore_for_file: avoid_types_on_closure_parameters
 
+import 'dart:async';
+
 import '../../../../dependency_locator.dart';
 import '../../../authentication/authentication_repository.dart';
 import '../../../calling/voip/user_voip_config_repository.dart';
@@ -25,9 +27,11 @@ class RefreshUserVoipConfig extends UserRefreshTaskPerformer {
     if (!config.useEncryption || !config.useOpus) {
       // These values are required for the app to function, so we always want to
       // make sure they are set to [true].
-      dependencyLocator<AuthRepository>().updateAppAccount(
-        useEncryption: true,
-        useOpus: true,
+      unawaited(
+        dependencyLocator<AuthRepository>().updateAppAccount(
+          useEncryption: true,
+          useOpus: true,
+        ),
       );
     }
   }

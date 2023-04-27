@@ -20,9 +20,9 @@ class RefreshUser extends UseCase with Loggable {
   final _eventBus = dependencyLocator<EventBus>();
 
   Future<User?> call({
+    required List<UserRefreshTask> tasksToPerform,
     LoginCredentials? credentials,
     bool synchronized = true,
-    required List<UserRefreshTask> tasksToPerform,
   }) {
     Future<User?> refreshUser() => _refreshUser(credentials, tasksToPerform);
 

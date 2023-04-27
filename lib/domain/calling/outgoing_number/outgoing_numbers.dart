@@ -11,10 +11,9 @@ class OutgoingNumbersRepository with Loggable {
   final VoipgridService _service;
   final outgoingNumberRetry = AutomaticRetry.http('Change Outgoing Number');
 
-  OutgoingNumbersRepository(this._service);
-
   Future<Iterable<OutgoingNumber>> getOutgoingNumbersAvailableToClient(
-          Client client) =>
+    Client client,
+  ) =>
       _fetchAllAvailableNumbers(
         clientUuid: client.uuid,
       ).distinct().toList();

@@ -6,6 +6,7 @@ import '../client.dart';
 import '../permissions/user_permissions.dart';
 import '../settings/settings.dart';
 import '../user.dart';
+import 'user_refresh_task.dart';
 
 typedef UserMutator = User Function(User);
 typedef ClientMutator = Client Function(Client);
@@ -91,8 +92,7 @@ abstract class SettingsRefreshTaskPerformer extends UserRefreshTaskPerformer {
   @protected
   Future<SettingsMutator> performSettingsRefreshTask(
     // The [User] is passed to this because it would probably be required for
-    // API requests. It's highly recommended you name this parameter _ if it's
-    // not necessary.
+    // API requests.
     User user,
   );
 }

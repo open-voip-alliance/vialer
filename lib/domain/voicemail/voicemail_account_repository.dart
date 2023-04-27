@@ -11,8 +11,6 @@ class VoicemailAccountsRepository with Loggable {
   final VoipgridApiResourceCollector apiResourceCollector =
       VoipgridApiResourceCollector();
 
-  VoicemailAccountsRepository(this._service);
-
   Future<List<VoicemailAccount>> getVoicemailAccounts(Client client) async =>
       apiResourceCollector.collect(
         requester: (page) => _service.getVoicemailAccounts(
