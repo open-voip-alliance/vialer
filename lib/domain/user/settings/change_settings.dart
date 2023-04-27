@@ -116,7 +116,9 @@ class ChangeSettingsUseCase extends UseCase with Loggable {
         // to avoid a rare exception.
         if (freshUser != null) {
           user = freshUser;
-          givenSettings = givenSettings.copyFrom(user.settings.getAll(needSync));
+          givenSettings = givenSettings.copyFrom(
+            user.settings.getAll(needSync),
+          );
         }
       }
 

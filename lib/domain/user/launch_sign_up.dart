@@ -21,6 +21,6 @@ class LaunchSignUp extends UseCase with Loggable {
       ),
     );
 
-    track(<String, dynamic>{'url': brand.signUpUrl});
+    track({'url': brand.signUpUrl});
   }
 }

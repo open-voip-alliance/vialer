@@ -119,7 +119,7 @@ extension on _TemporaryRedirectResponse {
 }
 
 extension on TemporaryRedirect {
-  Map<String, dynamic> asRequestData() => <String, dynamic>{
+  Map<String, dynamic> asRequestData() => {
         // Has to be UTC, because we need a time-zone aware string,
         // and `toIso8601String` only adds time-zone information
         // with UTC DateTimes.

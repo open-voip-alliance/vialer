@@ -22,7 +22,7 @@ analyzer:
   errors:
     invalid_annotation_target: ignore
   strong-mode:
-    implicit-casts: false
+    implicit-dynamic: true
   exclude:
     - lib/**.i18n.dart
     - lib/**.chopper.dart

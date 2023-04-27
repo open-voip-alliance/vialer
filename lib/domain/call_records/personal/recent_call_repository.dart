@@ -30,7 +30,7 @@ class RecentCallRepository with Loggable {
       answered: onlyMissedCalls ? false : null,
     );
 
-    final objects = response.body ?? const <dynamic>[];
+    final objects = response.body ?? const [];
 
     if (objects.isEmpty) {
       return <CallRecord>[];

@@ -17,7 +17,7 @@ abstract class VoipgridService extends ChopperService {
       ChopperClient(
         baseUrl: getVoipgridBaseUrl(),
         converter: JsonConverter(),
-        interceptors: <dynamic>[
+        interceptors: [
           const AuthorizationInterceptor(
             forcedLegacyAuthPaths: [
               'v2/password',

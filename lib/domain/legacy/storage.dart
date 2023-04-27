@@ -31,7 +31,7 @@ class StorageRepository {
           _userKey,
           (j) => j! as Map<String, dynamic>,
         ) ??
-        const <String, dynamic>{};
+        const {};
 
     User? user;
 

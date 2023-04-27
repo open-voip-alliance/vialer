@@ -19,7 +19,7 @@ class TrackVoipCallUseCase extends UseCase {
   }) {
     final connectivityType = _connectivityRepository.currentType;
 
-    _metricsRepository.track('voip-call', <String, dynamic>{
+    _metricsRepository.track('voip-call', {
       'direction': direction.toTrackString(),
       'bluetooth-used': usedRoutes.contains(AudioRoute.bluetooth),
       'phone-used': usedRoutes.contains(AudioRoute.phone),

@@ -11,7 +11,7 @@ class TrackOutboundCallFailedUseCase extends UseCase {
     bool isVoip = true,
     String? message,
   }) =>
-      _metricsRepository.track('outbound-call-failed', <String, dynamic>{
+      _metricsRepository.track('outbound-call-failed', {
         'reason': reason.name,
         'voip': isVoip,
         'message': message,

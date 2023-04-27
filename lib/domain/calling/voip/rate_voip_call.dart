@@ -22,7 +22,7 @@ class RateVoipCallUseCase extends UseCase {
     final connectivityType = await _connectivityRepository.currentType;
     final audioProblems = feedback.audioProblems ?? [];
 
-    _metricsRepository.track('call-rating', <String, dynamic>{
+    _metricsRepository.track('call-rating', {
       'rating': feedback.rating,
       'mos': mos,
       'duration': call.duration,

@@ -137,7 +137,7 @@ class JsonConverter extends chopper.JsonConverter {
   ) {
     if (response.body == '') {
       return response.copyWith<Map<String, dynamic>>(
-        body: <String, dynamic>{},
+        body: {},
       );
     }
 

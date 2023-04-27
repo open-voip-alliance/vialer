@@ -18,7 +18,7 @@ class TrackCallThroughCallUseCase extends UseCase {
   }) async {
     final connectivityType = await _connectivityRepository.currentType;
 
-    _metricsRepository.track('call-through-call', <String, dynamic>{
+    _metricsRepository.track('call-through-call', {
       'via': via,
       'voip': false,
       'direction': direction.toTrackString(),
