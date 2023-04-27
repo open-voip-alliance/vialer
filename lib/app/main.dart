@@ -41,16 +41,16 @@ Future<void> main() async {
   await initializeDependencies();
 
   ApplyOnboardingMigration()();
-  InitializeMetricCollection()();
+  unawaited(InitializeMetricCollection()());
   RegisterDomainEventListenersUseCase()();
-  EnableConsoleLoggingUseCase()();
-  EnableRemoteLoggingIfNeededUseCase()();
+  unawaited(EnableConsoleLoggingUseCase()());
+  unawaited(EnableRemoteLoggingIfNeededUseCase()());
 
   final errorTrackingRepository = dependencyLocator<ErrorTrackingRepository>();
   final dsn = dependencyLocator<EnvRepository>().errorTrackingDsn;
-  final user = await GetStoredUserUseCase()();
+  final user = GetStoredUserUseCase()();
 
-  PeriodicallyIdentifyForTracking()();
+  unawaited(PeriodicallyIdentifyForTracking()());
 
   if (dsn.isEmpty) {
     runApp(const App());
@@ -60,7 +60,7 @@ Future<void> main() async {
 }
 
 class App extends StatefulWidget {
-  const App();
+  const App({super.key});
 
   static void navigateTo(MainPageTab tab) =>
       MainPage.keys.page.currentState!.navigateTo(tab);
@@ -108,14 +108,16 @@ class _AppState extends State<App> {
               /// Using a Builder because the MultiWidgetParent stacks
               /// its children from top to bottom, so the below Provider
               /// can have the needed context with the CallerCubit.
-              (child) => Builder(builder: (context) {
-                    return BlocProvider<ColleaguesCubit>(
-                      create: (_) => ColleaguesCubit(
-                        context.watch<CallerCubit>(),
-                      ),
-                      child: child,
-                    );
-                  }),
+              (child) => Builder(
+                    builder: (context) {
+                      return BlocProvider<ColleaguesCubit>(
+                        create: (_) => ColleaguesCubit(
+                          context.watch<CallerCubit>(),
+                        ),
+                        child: child,
+                      );
+                    },
+                  ),
             ],
             MaterialApp(
               navigatorKey: _navigatorKey,
@@ -123,7 +125,7 @@ class _AppState extends State<App> {
               theme: context.brand.theme.themeData,
               initialRoute: _shouldOnboard ? Routes.onboarding : Routes.main,
               routes: Routes.mapped,
-              localizationsDelegates: [
+              localizationsDelegates: const [
                 VialerLocalizations.delegate,
                 GlobalMaterialLocalizations.delegate,
                 GlobalWidgetsLocalizations.delegate,
@@ -152,7 +154,7 @@ class _AppState extends State<App> {
 
         if (context == null) return;
 
-        late Route currentRoute;
+        late Route<dynamic> currentRoute;
 
         Navigator.popUntil(context, (route) {
           currentRoute = route;

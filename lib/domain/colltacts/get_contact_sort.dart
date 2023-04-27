@@ -10,7 +10,7 @@ final ContactSort defaultContactSort = ContactSort()
 class GetContactSortUseCase extends UseCase {
   Future<ContactSort> call() async {
     if (Platform.isIOS) {
-      return await ContactSortHostApi().getSorting();
+      return ContactSortHostApi().getSorting();
     } else {
       return defaultContactSort;
     }

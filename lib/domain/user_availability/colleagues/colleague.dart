@@ -2,10 +2,44 @@ import 'package:collection/collection.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'colleague.freezed.dart';
+
 part 'colleague.g.dart';
 
 @freezed
 class Colleague with _$Colleague {
+  /// A Voipgrid user which we fully support, including their current
+  /// availability and context.
+  const factory Colleague({
+    required String id,
+    required String name,
+
+    /// A list of [ColleagueContext] events that are relevant to this colleague.
+    ///
+    /// These are sorted in order of priority with the first in the list
+    /// representing the most recent/relevant.
+    required List<ColleagueContext> context,
+    ColleagueAvailabilityStatus? status,
+
+    /// The most relevant/recent context event. For example, if the user is
+    /// in a meeting (NYI) but also in a call, then this would show them as
+    /// being in a call even if the meeting is more recent.
+    ColleagueDestination? destination,
+  }) = _Colleague;
+
+  const Colleague._();
+
+  /// A voip account that is not connected to any user, we do not get
+  /// information about their current availability, they only exist for the
+  /// user to be able to see and call them.
+  const factory Colleague.unconnectedVoipAccount({
+    required String id,
+    required String name,
+    required String number,
+  }) = UnconnectedVoipAccount;
+
+  factory Colleague.fromJson(Map<String, dynamic> json) =>
+      _$ColleagueFromJson(json);
+
   String? get number => map(
         (colleague) => colleague.destination?.number,
         unconnectedVoipAccount: (voipAccount) => voipAccount.number,
@@ -36,39 +70,6 @@ class Colleague with _$Colleague {
             isAvailableOnMobileAppOrFixedDestination,
         unconnectedVoipAccount: (_) => false,
       );
-
-  const Colleague._();
-
-  /// A Voipgrid user which we fully support, including their current
-  /// availability and context.
-  const factory Colleague({
-    required String id,
-    required String name,
-
-    /// A list of [ColleagueContext] events that are relevant to this colleague.
-    ///
-    /// These are sorted in order of priority with the first in the list
-    /// representing the most recent/relevant.
-    required List<ColleagueContext> context,
-    ColleagueAvailabilityStatus? status,
-
-    /// The most relevant/recent context event. For example, if the user is
-    /// in a meeting (NYI) but also in a call, then this would show them as
-    /// being in a call even if the meeting is more recent.
-    ColleagueDestination? destination,
-  }) = _Colleague;
-
-  /// A voip account that is not connected to any user, we do not get
-  /// information about their current availability, they only exist for the
-  /// user to be able to see and call them.
-  const factory Colleague.unconnectedVoipAccount({
-    required String id,
-    required String name,
-    required String number,
-  }) = UnconnectedVoipAccount;
-
-  factory Colleague.fromJson(Map<String, dynamic> json) =>
-      _$ColleagueFromJson(json);
 }
 
 /// A single status that represents the availability of the colleague.
@@ -140,7 +141,10 @@ enum ColleagueDestinationType {
 /// associated relevant data (e.g. the number that is calling them).
 @freezed
 class ColleagueContext with _$ColleagueContext {
+  const ColleagueContext._();
+
   const factory ColleagueContext.ringing() = Ringing;
+
   const factory ColleagueContext.inCall() = InCall;
 
   factory ColleagueContext.fromJson(Map<String, dynamic> json) =>
@@ -156,6 +160,4 @@ class ColleagueContext with _$ColleagueContext {
         return null;
     }
   }
-
-  const ColleagueContext._();
 }

@@ -1,3 +1,6 @@
+// We can safely ignore this, because we use Equatable.
+// ignore_for_file: avoid_implementing_value_types
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter_phone_lib/flutter_phone_lib.dart';
 
@@ -14,9 +17,9 @@ abstract class CallerState extends Equatable {
 }
 
 class NoPermission extends CallerState {
-  final bool dontAskAgain;
-
   const NoPermission({required this.dontAskAgain});
+
+  final bool dontAskAgain;
 
   @override
   List<Object?> get props => [dontAskAgain];
@@ -32,11 +35,11 @@ class CanCall extends CallerState {
 
 /// Used only to pass the [origin] to future states.
 class CallOriginDetermined extends CallerState {
+  const CallOriginDetermined(this.origin);
+
   /// Where the call started in the UI: dialer, recents, contacts, etc.
   /// Can be null if it's an incoming call.
   final CallOrigin origin;
-
-  const CallOriginDetermined(this.origin);
 
   @override
   List<Object?> get props => [...super.props, origin];
@@ -45,6 +48,10 @@ class CallOriginDetermined extends CallerState {
 /// Any state that is part of the actual call process:
 /// start, during, end, etc.
 abstract class CallProcessState extends CallOriginDetermined {
+  const CallProcessState({
+    required CallOrigin origin,
+    required this.voip,
+  }) : super(origin);
   final CallSessionState? voip;
 
   Call? get voipCall => voip?.activeCall;
@@ -78,11 +85,6 @@ abstract class CallProcessState extends CallOriginDetermined {
       isInTransfer && voipCall!.isOnHold ||
       voipCall?.state == CallState.connected;
 
-  const CallProcessState({
-    required CallOrigin origin,
-    required this.voip,
-  }) : super(origin);
-
   @override
   List<Object?> get props => [
         ...super.props,
@@ -97,7 +99,7 @@ abstract class CallProcessState extends CallOriginDetermined {
   });
 
   StartingCallFailed failed(CallThroughException exception) {
-    assert(this is StartingCall);
+    assert(this is StartingCall, 'current state must be StartingCall');
 
     return StartingCallFailed.withException(
       exception,
@@ -131,12 +133,11 @@ abstract class CallProcessState extends CallOriginDetermined {
 
 class ShowCallThroughConfirmPage extends CallOriginDetermined
     implements CanCall {
-  final String destination;
-
   const ShowCallThroughConfirmPage({
     required this.destination,
     required CallOrigin origin,
   }) : super(origin);
+  final String destination;
 
   @override
   List<Object?> get props => [...super.props, destination];
@@ -168,12 +169,9 @@ class Ringing extends CallProcessState {
 
 class StartingCall extends CallProcessState {
   const StartingCall({
-    required CallOrigin origin,
-    CallSessionState? voip,
-  }) : super(
-          origin: origin,
-          voip: voip,
-        );
+    required super.origin,
+    super.voip,
+  });
 
   @override
   StartingCall copyWith({
@@ -188,9 +186,9 @@ class StartingCall extends CallProcessState {
 
 abstract class StartingCallFailed extends CallProcessState implements CanCall {
   const StartingCallFailed._({
-    required CallOrigin origin,
-    required CallSessionState? voip,
-  }) : super(origin: origin, voip: voip);
+    required super.origin,
+    required super.voip,
+  });
 
   factory StartingCallFailed.withException(
     Exception exception, {
@@ -214,13 +212,12 @@ abstract class StartingCallFailed extends CallProcessState implements CanCall {
 }
 
 class StartingCallFailedWithException extends StartingCallFailed {
-  final Exception exception;
-
   const StartingCallFailedWithException(
     this.exception, {
-    required CallOrigin origin,
-    required CallSessionState? voip,
-  }) : super._(origin: origin, voip: voip);
+    required super.origin,
+    required super.voip,
+  }) : super._();
+  final Exception exception;
 
   @override
   List<Object?> get props => [...super.props, exception];
@@ -239,21 +236,20 @@ class StartingCallFailedWithException extends StartingCallFailed {
 }
 
 class StartingCallFailedWithReason extends StartingCallFailed {
+  const StartingCallFailedWithReason(
+    this.reason, {
+    required super.origin,
+    super.voip,
+    bool isVoip = false,
+  })  : assert(reason != CallFailureReason.unknown, 'reason must be known'),
+        _isVoip = voip != null || isVoip,
+        super._();
   final CallFailureReason reason;
 
   final bool _isVoip;
 
   @override
   bool get isVoip => _isVoip;
-
-  const StartingCallFailedWithReason(
-    this.reason, {
-    required CallOrigin origin,
-    CallSessionState? voip,
-    bool isVoip = false,
-  })  : assert(reason != CallFailureReason.unknown),
-        _isVoip = voip != null || isVoip,
-        super._(origin: origin, voip: voip);
 
   @override
   List<Object?> get props => [...super.props, reason, _isVoip];
@@ -273,12 +269,9 @@ class StartingCallFailedWithReason extends StartingCallFailed {
 
 class Calling extends CallProcessState {
   const Calling({
-    required CallOrigin origin,
-    required CallSessionState? voip,
-  }) : super(
-          origin: origin,
-          voip: voip,
-        );
+    required super.origin,
+    required super.voip,
+  });
 
   @override
   Calling copyWith({
@@ -293,12 +286,9 @@ class Calling extends CallProcessState {
 
 class AttendedTransferStarted extends CallProcessState {
   const AttendedTransferStarted({
-    required CallOrigin origin,
-    required CallSessionState? voip,
-  }) : super(
-          origin: origin,
-          voip: voip,
-        );
+    required super.origin,
+    required super.voip,
+  });
 
   @override
   AttendedTransferStarted copyWith({
@@ -313,12 +303,9 @@ class AttendedTransferStarted extends CallProcessState {
 
 class FinishedCalling extends CallProcessState implements CanCall {
   const FinishedCalling({
-    required CallOrigin origin,
-    CallSessionState? voip,
-  }) : super(
-          origin: origin,
-          voip: voip,
-        );
+    required super.origin,
+    super.voip,
+  });
 
   @override
   FinishedCalling copyWith({
@@ -333,12 +320,9 @@ class FinishedCalling extends CallProcessState implements CanCall {
 
 class AttendedTransferComplete extends FinishedCalling {
   const AttendedTransferComplete({
-    required CallOrigin origin,
-    CallSessionState? voip,
-  }) : super(
-          origin: origin,
-          voip: voip,
-        );
+    required super.origin,
+    super.voip,
+  });
 
   @override
   AttendedTransferComplete copyWith({

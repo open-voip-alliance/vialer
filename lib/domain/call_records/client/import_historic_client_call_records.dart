@@ -8,7 +8,7 @@ class ImportHistoricClientCallRecordsUseCase extends UseCase with Loggable {
   /// The number of days of historic call records that we will import.
   static const _daysToImport = Duration(days: 90);
 
-  Future<void> call() async => _importClientCalls(
+  Future<void> call() => _importClientCalls(
         from: DateTime.now().subtract(_daysToImport),
         to: DateTime.now().add(const Duration(days: 1)),
       );

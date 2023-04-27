@@ -7,12 +7,12 @@ import '../cubit.dart';
 import '../widgets/big_header.dart';
 
 class HelpUsScreen extends StatelessWidget {
-  final bool dontShowThisAgain;
-
   const HelpUsScreen({
-    Key? key,
     required this.dontShowThisAgain,
-  }) : super(key: key);
+    super.key,
+  });
+
+  final bool dontShowThisAgain;
 
   void _onDontShowThisAgainChanged(BuildContext context, bool value) {
     context.read<SurveyCubit>().setDontShowThisAgain(value);

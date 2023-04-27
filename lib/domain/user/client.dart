@@ -14,6 +14,18 @@ part 'client.g.dart';
 @immutable
 @JsonSerializable()
 class Client extends Equatable {
+  const Client({
+    required this.id,
+    required this.uuid,
+    required this.name,
+    required this.url,
+    required this.voip,
+    this.outgoingNumbers = const [],
+    this.voicemailAccounts = const [],
+    this.currentTemporaryRedirect,
+    this.openingHoursModules = const [],
+  });
+
   final int id;
   final String uuid;
   final String name;
@@ -36,18 +48,6 @@ class Client extends Equatable {
 
   @JsonKey(name: 'openingHours')
   final Iterable<OpeningHoursModule> openingHoursModules;
-
-  const Client({
-    required this.id,
-    required this.uuid,
-    required this.name,
-    required this.url,
-    required this.voip,
-    this.outgoingNumbers = const [],
-    this.voicemailAccounts = const [],
-    this.currentTemporaryRedirect,
-    this.openingHoursModules = const [],
-  });
 
   @override
   List<Object?> get props => [

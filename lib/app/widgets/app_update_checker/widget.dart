@@ -9,9 +9,9 @@ import 'cubit.dart';
 import 'release_notes_dialog.dart';
 
 class AppUpdateChecker extends StatefulWidget {
-  final Widget child;
+  const AppUpdateChecker._(this.child);
 
-  AppUpdateChecker._(this.child);
+  final Widget child;
 
   static Widget create({
     required Widget child,
@@ -41,7 +41,7 @@ class _AppUpdateCheckerState extends State<AppUpdateChecker>
     final cubit = context.read<AppUpdateCheckerCubit>();
 
     if (state is NewUpdateWasInstalled) {
-      showDialog(
+      showDialog<void>(
         context: context,
         builder: (context) {
           return ReleaseNotesDialog(
@@ -51,7 +51,7 @@ class _AppUpdateCheckerState extends State<AppUpdateChecker>
         },
       );
     } else if (state is UpdateReadyToInstall) {
-      showDialog(
+      showDialog<void>(
         context: context,
         builder: (context) {
           return AlertDialog(

@@ -6,8 +6,6 @@ part 'user_permissions.freezed.dart';
 
 @freezed
 class UserPermissions with _$UserPermissions {
-  const UserPermissions._();
-
   const factory UserPermissions({
     @Default(false) bool canSeeClientCalls,
     @Default(false) bool canChangeMobileNumberFallback,
@@ -22,9 +20,11 @@ class UserPermissions with _$UserPermissions {
     @Default(false) bool canChangeOpeningHours,
   }) = _UserPermissions;
 
+  const UserPermissions._();
+
   factory UserPermissions.fromJson(Map<String, dynamic> json) =>
       _$UserPermissionsFromJson(json);
 
   static Map<String, dynamic>? serializeToJson(UserPermissions? permissions) =>
-      permissions != null ? permissions.toJson() : null;
+      permissions?.toJson();
 }

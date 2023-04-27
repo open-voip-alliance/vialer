@@ -5,20 +5,20 @@ import '../../../util/conditional_capitalization.dart';
 import '../../../widgets/stylized_button.dart';
 
 class InfoPage extends StatelessWidget {
+  const InfoPage({
+    required this.icon,
+    required this.title,
+    required this.description,
+    required this.onPressed,
+    super.key,
+  });
+
   static const keys = _Keys();
 
   final Widget icon;
   final Widget title;
   final Widget description;
   final VoidCallback onPressed;
-
-  InfoPage({
-    Key? key,
-    required this.icon,
-    required this.title,
-    required this.description,
-    required this.onPressed,
-  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -118,5 +118,5 @@ extension on BuildContext {
 class _Keys {
   const _Keys();
 
-  final continueButton = const Key('continueButton');
+  Key get continueButton => const Key('continueButton');
 }

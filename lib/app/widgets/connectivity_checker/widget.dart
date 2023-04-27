@@ -5,9 +5,9 @@ import '../../util/widgets_binding_observer_registrar.dart';
 import 'cubit.dart';
 
 class ConnectivityChecker extends StatefulWidget {
-  final Widget child;
+  const ConnectivityChecker._(this.child);
 
-  ConnectivityChecker._(this.child);
+  final Widget child;
 
   static Widget create({
     required Widget child,

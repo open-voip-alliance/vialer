@@ -7,6 +7,12 @@ import 'loggable.dart';
 part 'automatic_retry.freezed.dart';
 
 class AutomaticRetry with Loggable {
+  AutomaticRetry({required this.schedule, this.name});
+
+  factory AutomaticRetry.http(String name) => AutomaticRetry(
+        schedule: RetrySchedule.http,
+        name: name,
+      );
   final _timers = <Timer>[];
 
   /// The [schedule] provided is relative to the first time it is run, not the
@@ -16,20 +22,13 @@ class AutomaticRetry with Loggable {
   /// If a name is provided, logging will be performed when the task fails.
   final String? name;
 
-  AutomaticRetry({required this.schedule, this.name});
-
-  factory AutomaticRetry.http(String name) => AutomaticRetry(
-        schedule: RetrySchedule.http,
-        name: name,
-      );
-
   /// Will automatically retry the provided task, according to the given
   /// schedule.
   ///
   /// If every run in the schedule fails, [AutomaticRetryMaximumAttemptsReached]
   /// will be thrown.
   ///
-  /// Set [runImmediately] to [false] for the first attempt to occur at the
+  /// Set [runImmediately] to `false` for the first attempt to occur at the
   /// first entry in the schedule, rather than immediately.
   Future<T> run<T>(
     Future<AutomaticRetryTaskOutput<T>> Function() task, {
@@ -48,7 +47,7 @@ class AutomaticRetry with Loggable {
       final output = await task();
 
       if (output.result == AutomaticRetryTaskResult.success) {
-        return output.data as T;
+        return output.data;
       }
 
       if (schedule.isEmpty) {
@@ -65,11 +64,11 @@ class AutomaticRetry with Loggable {
   }
 
   void _scheduleTimers<T>(
-    Future<dynamic> Function() task,
+    Future<AutomaticRetryTaskOutput<dynamic>> Function() task,
     Completer<dynamic> completer, {
     required bool runImmediately,
   }) {
-    for (var duration in schedule) {
+    for (final duration in schedule) {
       final timer = Timer(duration, () async {
         final output = await task();
         if (output.result == AutomaticRetryTaskResult.success) {
@@ -125,7 +124,7 @@ class RetrySchedule {
 /// Contains the result of an individual task, the task must provide both the
 /// [AutomaticRetryTaskResult] and the data that it should output.
 @freezed
-class AutomaticRetryTaskOutput<T> with _$AutomaticRetryTaskOutput {
+class AutomaticRetryTaskOutput<T> with _$AutomaticRetryTaskOutput<T> {
   const factory AutomaticRetryTaskOutput({
     required T data,
     required AutomaticRetryTaskResult result,

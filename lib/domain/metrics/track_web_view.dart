@@ -9,6 +9,6 @@ class TrackWebViewUseCase extends UseCase {
 
   Future<void> call({required String page}) => _metricsRepository.track(
         'web-view',
-        {'page': page},
+        <String, dynamic>{'page': page},
       );
 }

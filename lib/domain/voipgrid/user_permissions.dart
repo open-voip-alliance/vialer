@@ -7,10 +7,10 @@ import '../vialer.dart';
 import 'voipgrid_service.dart';
 
 class UserPermissionsRepository with Loggable {
+  UserPermissionsRepository(this._service, this._storage);
+
   final VoipgridService _service;
   final StorageRepository _storage;
-
-  UserPermissionsRepository(this._service, this._storage);
 
   static const _permissionsMapping = {
     'cdr.view_record': UserPermission.clientCalls,
@@ -40,7 +40,9 @@ class UserPermissionsRepository with Loggable {
       throw UnableToRetrievePermissionsException();
     }
 
-    final grantedPermissions = response.body['permissions'] as List<dynamic>;
+    final body = response.body!;
+
+    final grantedPermissions = body['permissions'] as List<dynamic>;
 
     // Storing the raw permissions so we can submit these to metrics later.
     _storage.grantedVoipgridPermissions =
@@ -48,7 +50,7 @@ class UserPermissionsRepository with Loggable {
 
     return grantedPermissions
         .map(
-          (permission) => _permissionsMapping.containsKey(permission)
+          (dynamic permission) => _permissionsMapping.containsKey(permission)
               ? _permissionsMapping[permission]
               : null,
         )

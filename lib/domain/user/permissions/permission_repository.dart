@@ -47,11 +47,6 @@ extension PermissionMapper on domain.Permission {
 
       case domain.Permission.notifications:
         return permission_handler.Permission.notification;
-
-      default:
-        throw UnsupportedError(
-          'Domain Permission has no equivalent package Permission: $this',
-        );
     }
   }
 }
@@ -71,7 +66,7 @@ extension PermissionStatusMapper on permission_handler.PermissionStatus {
       case permission_handler.PermissionStatus.restricted:
         return domain.PermissionStatus.restricted;
 
-      default:
+      case permission_handler.PermissionStatus.limited:
         return domain.PermissionStatus.undetermined;
     }
   }

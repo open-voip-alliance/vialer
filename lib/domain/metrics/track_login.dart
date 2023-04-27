@@ -15,7 +15,7 @@ class TrackLoginUseCase extends UseCase {
     required bool usedTwoFactor,
     required bool isLoginFromLegacyApp,
   }) async =>
-      _metricsRepository.track('login', {
+      _metricsRepository.track('login', <String, dynamic>{
         'two-factor': usedTwoFactor,
         'is-login-from-legacy-app': isLoginFromLegacyApp,
         'is_ignoring_battery_optimizations': await _getPermissionStatus(

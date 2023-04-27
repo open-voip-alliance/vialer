@@ -13,11 +13,10 @@ import '../../../widgets/caller.dart';
 import 'state.dart';
 
 class ColltactDetailsCubit extends Cubit<ColltactDetailsState> {
+  ColltactDetailsCubit(this._caller) : super(const ColltactDetailsState());
   final _requestPermission = RequestPermissionUseCase();
 
   final CallerCubit _caller;
-
-  ColltactDetailsCubit(this._caller) : super(const ColltactDetailsState());
 
   Future<void> call(
     String destination, {
@@ -46,9 +45,12 @@ class ColltactDetailsCubit extends Cubit<ColltactDetailsState> {
           await intent.launch();
         } else {
           try {
-            final _contact = Contact()..identifier = contact.identifier;
-            await ContactsService.openExistingContact(_contact);
-          } on FormOperationException {} // Thrown when native edit is cancelled
+            await ContactsService.openExistingContact(
+              Contact()..identifier = contact.identifier,
+            );
+          } on FormOperationException {
+            // Thrown when native edit is cancelled
+          }
         }
       }
     }

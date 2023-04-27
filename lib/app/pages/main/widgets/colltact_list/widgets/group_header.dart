@@ -3,11 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../../resources/theme.dart';
 
 class GroupHeader extends StatelessWidget {
-  final String group;
-  final EdgeInsets padding;
-
   const GroupHeader({
-    Key? key,
     required this.group,
     this.padding = const EdgeInsets.only(
       top: 16,
@@ -15,7 +11,11 @@ class GroupHeader extends StatelessWidget {
       left: 16,
       right: 16,
     ),
-  }) : super(key: key);
+    super.key,
+  });
+
+  final String group;
+  final EdgeInsets padding;
 
   @override
   Widget build(BuildContext context) {

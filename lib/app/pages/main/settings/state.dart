@@ -11,8 +11,6 @@ part 'state.freezed.dart';
 
 @freezed
 class SettingsState with _$SettingsState {
-  const SettingsState._();
-
   const factory SettingsState({
     required User user,
     BuildInfo? buildInfo,
@@ -28,8 +26,11 @@ class SettingsState with _$SettingsState {
     @Default(false) bool isRateLimited,
   }) = _SettingsState;
 
+  const SettingsState._();
+
   bool get showTroubleshooting =>
       user.settings.get(AppSetting.showTroubleshooting);
+
   bool get showDnd =>
       user.isAllowedVoipCalling && user.settings.get(CallSetting.useVoip);
   bool get shouldAllowRemoteSettings => !isApplyingChanges && !isRateLimited;

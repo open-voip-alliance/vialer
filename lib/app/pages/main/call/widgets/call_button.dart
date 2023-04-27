@@ -5,6 +5,16 @@ import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
 
 class CallButton extends StatelessWidget {
+  const CallButton({
+    required this.onPressed,
+    required this.backgroundColor,
+    required this.icon,
+    required this.semanticsHint,
+    this.heroTag = defaultHeroTag,
+    this.constraints = defaultConstraints,
+    super.key,
+  });
+
   final VoidCallback? onPressed;
   final Color backgroundColor;
   final IconData icon;
@@ -17,16 +27,6 @@ class CallButton extends StatelessWidget {
     width: 64,
     height: 64,
   );
-
-  const CallButton({
-    Key? key,
-    required this.onPressed,
-    required this.backgroundColor,
-    required this.icon,
-    this.heroTag = defaultHeroTag,
-    this.constraints = defaultConstraints,
-    required this.semanticsHint,
-  }) : super(key: key);
 
   static Widget answer({
     Key? key,
@@ -78,15 +78,17 @@ class CallButton extends StatelessWidget {
     BoxConstraints constraints = defaultConstraints,
     String? semanticsHint,
   }) {
-    return Builder(builder: (context) {
-      return answer(
-        key: key,
-        onPressed: onPressed,
-        heroTag: heroTag,
-        constraints: constraints,
-        semanticsHint: semanticsHint ?? context.msg.generic.button.call,
-      );
-    });
+    return Builder(
+      builder: (context) {
+        return answer(
+          key: key,
+          onPressed: onPressed,
+          heroTag: heroTag,
+          constraints: constraints,
+          semanticsHint: semanticsHint ?? context.msg.generic.button.call,
+        );
+      },
+    );
   }
 
   static Widget hangUp({

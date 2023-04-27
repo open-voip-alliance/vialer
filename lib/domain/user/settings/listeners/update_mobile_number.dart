@@ -17,11 +17,11 @@ class UpdateMobileNumberListener extends SettingChangeListener<String>
   final key = CallSetting.mobileNumber;
 
   @override
-  FutureOr<SettingChangeListenResult> preStore(User user, String number) =>
+  FutureOr<SettingChangeListenResult> preStore(User user, String value) =>
       changeRemoteValue(() async {
-        final success = await _authRepository.changeMobileNumber(number);
+        final success = await _authRepository.changeMobileNumber(value);
         if (success) {
-          _metricsRepository.track('change-mobile-number');
+          unawaited(_metricsRepository.track('change-mobile-number'));
         }
         logger.info('Updating of mobile number succeeded: $success');
         return success;

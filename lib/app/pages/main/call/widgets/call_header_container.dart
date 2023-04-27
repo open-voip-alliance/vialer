@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import '../../../../resources/theme.dart';
 
 class CallHeaderContainer extends StatelessWidget {
-  final Widget child;
-
   const CallHeaderContainer({
-    Key? key,
     required this.child,
-  }) : super(key: key);
+    super.key,
+  });
+
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,7 @@ class CallHeaderContainer extends StatelessWidget {
           child: toHeroContext.widget,
         );
       },
-      child: Container(
+      child: DecoratedBox(
         decoration: BoxDecoration(
           gradient: context.brand.theme.primaryGradient,
         ),

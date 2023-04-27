@@ -5,14 +5,14 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'reconnection_strategy.freezed.dart';
 
 class ReconnectionStrategy {
+  ReconnectionStrategy(this.params) {
+    _createSchedule();
+  }
+
   int attempts = 0;
   late final List<Duration> schedule;
 
   final RetryPattern params;
-
-  ReconnectionStrategy(this.params) {
-    _createSchedule();
-  }
 
   void increment({int amount = 1}) => attempts += amount;
 
@@ -43,8 +43,6 @@ class ReconnectionStrategy {
 
 @freezed
 class RetryPattern with _$RetryPattern {
-  const RetryPattern._();
-
   const factory RetryPattern({
     /// The initial delay, before this no retry attempts are made
     /// and future attempts are based on mutating this value.
@@ -55,7 +53,7 @@ class RetryPattern with _$RetryPattern {
     /// retry delay.
     ///
     /// So the first retry will be [initialDelay], the second retry will be
-    /// first retry * [backoff], the third retry will be second retry *
+    /// first retry * [backOff], the third retry will be second retry *
     /// [backOff].
     @Default(1.25) double backOff,
 
@@ -73,4 +71,6 @@ class RetryPattern with _$RetryPattern {
     /// If [jitter] is false, this has no effect.
     @Default(30) int jitterMaxPercent,
   }) = _RetryPattern;
+
+  const RetryPattern._();
 }

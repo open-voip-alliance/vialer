@@ -5,6 +5,16 @@ import 'package:flutter/material.dart';
 
 /// Avatar used in Contacts and Recents.
 class Avatar extends StatefulWidget {
+  const Avatar({
+    super.key,
+    this.name,
+    this.image,
+    this.size = defaultSize,
+    this.foregroundColor = Colors.white,
+    this.backgroundColor,
+    this.showFallback,
+    this.fallback,
+  });
   static const defaultSize = 36.0;
 
   final String? name;
@@ -20,17 +30,6 @@ class Avatar extends StatefulWidget {
 
   /// Fallback shown [showFallback] is true.
   final Widget? fallback;
-
-  const Avatar({
-    super.key,
-    this.name,
-    this.image,
-    this.size = defaultSize,
-    this.foregroundColor = Colors.white,
-    this.backgroundColor,
-    this.showFallback,
-    this.fallback,
-  });
 
   @override
   State<Avatar> createState() => _AvatarState();

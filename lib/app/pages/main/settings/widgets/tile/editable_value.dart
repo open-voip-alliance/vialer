@@ -7,16 +7,17 @@ import '../../../../onboarding/widgets/stylized_text_field.dart';
 import 'value.dart';
 
 class EditableSettingField extends StatefulWidget {
-  final Widget unlocked;
-  final Widget locked;
-
   const EditableSettingField({
     required this.unlocked,
     required this.locked,
-  }) : super();
+    super.key,
+  });
+
+  final Widget unlocked;
+  final Widget locked;
 
   @override
-  _EditableSettingFieldState createState() => _EditableSettingFieldState();
+  State<EditableSettingField> createState() => _EditableSettingFieldState();
 }
 
 class _EditableSettingFieldState extends State<EditableSettingField> {
@@ -33,7 +34,7 @@ class _EditableSettingFieldState extends State<EditableSettingField> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        _editing ? widget.unlocked : widget.locked,
+        if (_editing) widget.unlocked else widget.locked,
         IconButton(
           onPressed: _toggleEditing,
           icon: const _EditIcon(),
@@ -44,6 +45,16 @@ class _EditableSettingFieldState extends State<EditableSettingField> {
 }
 
 class StringEditSettingValue extends StatefulWidget {
+  StringEditSettingValue(
+    this.settings,
+    this.setting, {
+    this.validate,
+    this.help,
+    this.editingFormatter,
+    this.onChanged = defaultOnChanged,
+    this.isResettable = false,
+    super.key,
+  }) : value = settings.get(setting);
   final Settings settings;
   final SettingKey<String> setting;
   final ValueChangedWithContext<String> onChanged;
@@ -53,7 +64,7 @@ class StringEditSettingValue extends StatefulWidget {
   final bool Function(String)? validate;
 
   /// A help widget that will be displayed above the input field if [validate]
-  /// fails. This will have no effect if [validate] is [null].
+  /// fails. This will have no effect if [validate] is `null`.
   final Widget? help;
 
   /// Allows for formatting of the value while the user is editing, this can
@@ -67,19 +78,8 @@ class StringEditSettingValue extends StatefulWidget {
 
   final String value;
 
-  StringEditSettingValue(
-    this.settings,
-    this.setting, {
-    // ignore: unused_element
-    this.validate,
-    this.help,
-    this.editingFormatter,
-    this.onChanged = defaultOnChanged,
-    this.isResettable = false,
-  }) : value = settings.get(setting);
-
   @override
-  _StringEditSettingValueState createState() => _StringEditSettingValueState();
+  State<StringEditSettingValue> createState() => _StringEditSettingValueState();
 }
 
 class _StringEditSettingValueState extends State<StringEditSettingValue> {
@@ -140,8 +140,7 @@ class _StringEditSettingValueState extends State<StringEditSettingValue> {
   void _validate() {
     setState(() {
       final validate = widget.validate;
-      _isValid =
-          validate != null ? validate(_textEditingController.text) : true;
+      _isValid = validate?.call(_textEditingController.text) ?? true;
     });
   }
 
@@ -196,20 +195,19 @@ class _StringEditSettingValueState extends State<StringEditSettingValue> {
 }
 
 class MultipleChoiceSettingValue<T> extends StatelessWidget {
-  final T value;
-  final List<DropdownMenuItem<T>> items;
-  final bool isExpanded;
-  final ValueChanged<T>? onChanged;
-  final EdgeInsets padding;
-
   const MultipleChoiceSettingValue({
-    super.key,
     required this.value,
     required this.items,
     this.isExpanded = false,
     this.onChanged,
     EdgeInsets? padding,
+    super.key,
   }) : padding = padding ?? const EdgeInsets.only(right: 16);
+  final T value;
+  final List<DropdownMenuItem<T>> items;
+  final bool isExpanded;
+  final ValueChanged<T>? onChanged;
+  final EdgeInsets padding;
 
   @override
   Widget build(BuildContext context) {
@@ -219,14 +217,14 @@ class MultipleChoiceSettingValue<T> extends StatelessWidget {
         value: items.map((item) => item.value).contains(value) ? value : null,
         items: items,
         isExpanded: isExpanded,
-        onChanged: onChanged != null ? (value) => onChanged!(value!) : null,
+        onChanged: onChanged != null ? (value) => onChanged!(value as T) : null,
       ),
     );
   }
 }
 
 class _EditIcon extends StatelessWidget {
-  const _EditIcon({Key? key}) : super(key: key);
+  const _EditIcon();
 
   @override
   Widget build(BuildContext context) {

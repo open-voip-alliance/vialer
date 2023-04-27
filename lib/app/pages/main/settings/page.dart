@@ -16,7 +16,7 @@ import 'widgets/tile/dnd.dart';
 import 'widgets/tile/link/sub_page.dart';
 
 class SettingsPage extends StatefulWidget {
-  const SettingsPage({Key? key}) : super(key: key);
+  const SettingsPage({super.key});
 
   @override
   State<StatefulWidget> createState() => _SettingsPageState();
@@ -164,5 +164,5 @@ class _SettingsPageState extends State<SettingsPage> {
 class _Keys {
   const _Keys();
 
-  final mobileNumber = const Key('mobileNumberSetting');
+  Key get mobileNumber => const Key('mobileNumberSetting');
 }

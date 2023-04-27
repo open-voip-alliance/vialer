@@ -14,7 +14,7 @@ import '../widgets/tile/link/stats.dart';
 import 'widget.dart';
 
 class ClientSubPage extends StatelessWidget {
-  const ClientSubPage();
+  const ClientSubPage({super.key});
 
   @override
   Widget build(BuildContext context) {

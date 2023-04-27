@@ -5,9 +5,8 @@ import '../../voipgrid/user_voip_config.dart';
 import '../../voipgrid/voipgrid_service.dart';
 
 class UserVoipConfigRepository with Loggable {
-  final VoipgridService _service;
-
   UserVoipConfigRepository(this._service);
+  final VoipgridService _service;
 
   Future<UserVoipConfig?> get() async {
     final response = await _service.getMobileProfile();
@@ -17,7 +16,7 @@ class UserVoipConfigRepository with Loggable {
       return null;
     }
 
-    final body = response.body as Map<String, dynamic>;
+    final body = response.body!;
 
     if (!body.hasVoipConfig) {
       logger.info('This user does not have an app account configured.');

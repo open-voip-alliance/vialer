@@ -7,20 +7,20 @@ import '../../info/page.dart';
 import 'cubit.dart';
 
 class PermissionPage extends StatelessWidget {
-  final Widget icon;
-  final Widget title;
-  final Widget description;
-  final Permission permission;
-  final VoidCallback? onPermissionGranted;
-
-  PermissionPage({
-    Key? key,
+  const PermissionPage({
     required this.icon,
     required this.title,
     required this.description,
     required this.permission,
     this.onPermissionGranted,
-  }) : super(key: key);
+    super.key,
+  });
+
+  final Widget icon;
+  final Widget title;
+  final Widget description;
+  final Permission permission;
+  final VoidCallback? onPermissionGranted;
 
   void _onStateChanged(BuildContext context, PermissionState state) {
     if (state is PermissionGranted || state is PermissionDenied) {

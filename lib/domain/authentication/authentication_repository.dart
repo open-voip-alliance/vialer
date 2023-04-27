@@ -16,13 +16,13 @@ import '../voipgrid/voipgrid_service.dart';
 part 'authentication_repository.g.dart';
 
 class AuthRepository with Loggable {
+  AuthRepository(this._service);
+
   final VoipgridService _service;
   final mobileNumberRetry = AutomaticRetry.http('Change Mobile Number');
   final useMobileNumberAsFallbackRetry = AutomaticRetry.http(
     'Use Mobile Number As Fallback',
   );
-
-  AuthRepository(this._service);
 
   static const _emailKey = 'email';
   static const _passwordKey = 'password';
@@ -67,6 +67,7 @@ class AuthRepository with Loggable {
   Future<User> _getUser({String? email, String? token}) async {
     assert(
       (email == null && token == null) || (email != null && token != null),
+      'Either email or token must be passed',
     );
 
     final response = await _service.getSystemUser(
@@ -86,7 +87,7 @@ class AuthRepository with Loggable {
     }
 
     return _SystemUserResponse.fromJson(
-      response.body as Map<String, dynamic>,
+      response.body!,
     ).toUser();
   }
 
@@ -108,7 +109,7 @@ class AuthRepository with Loggable {
 
     final tokenResponse = await _service.getToken(requestData);
 
-    final body = tokenResponse.body as Map<String, dynamic>?;
+    final body = tokenResponse.body;
 
     if (twoFactorCode == null &&
         tokenResponse.error.toString().contains('two_factor_token')) {
@@ -135,7 +136,7 @@ class AuthRepository with Loggable {
     required String currentPassword,
     required String newPassword,
   }) async {
-    final response = await _service.password({
+    final response = await _service.password(<String, dynamic>{
       'email_address': email,
       'current_password': currentPassword,
       'new_password': newPassword,
@@ -155,15 +156,15 @@ class AuthRepository with Loggable {
     if (!response.isSuccessful) {
       throw AutoLoginException();
     }
-    final body = response.body as Map<String, dynamic>;
+    final body = response.body!;
     return body['token'] as String;
   }
 
   Future<bool> changeMobileNumber(String mobileNumber) async {
     try {
       await mobileNumberRetry.run(() async {
-        final response =
-            await _service.changeMobileNumber({'mobile_nr': mobileNumber});
+        final response = await _service
+            .changeMobileNumber(<String, dynamic>{'mobile_nr': mobileNumber});
 
         if (!response.isSuccessful) {
           logFailedResponse(response);
@@ -180,10 +181,10 @@ class AuthRepository with Loggable {
   }
 
   Future<bool> updateAppAccount({
-    bool useOpus = true,
-    bool useEncryption = true,
+    required bool useOpus,
+    required bool useEncryption,
   }) async {
-    final response = await _service.updateMobileProfile({
+    final response = await _service.updateMobileProfile(<String, dynamic>{
       'appaccount_use_opus': useOpus,
       'appaccount_use_encryption': useEncryption,
     });
@@ -207,7 +208,10 @@ class AuthRepository with Loggable {
       return false;
     }
 
-    return response.body['app']['use_mobile_number_as_fallback'] as bool;
+    final body = response.body!;
+    final app = body['app'] as Map<String, dynamic>;
+
+    return app['use_mobile_number_as_fallback'] as bool;
   }
 
   Future<bool> setUseMobileNumberAsFallback(
@@ -229,7 +233,7 @@ class AuthRepository with Loggable {
           return AutomaticRetryTaskOutput.fail(settingsResponse);
         }
 
-        final app = (settingsResponse.body as Map<String, dynamic>)['app'];
+        final app = settingsResponse.body!['app'] as Map<String, dynamic>;
 
         // This API requires us to provide all the content, rather than being
         // able to patch the nested objects. This is why we must perform the
@@ -237,12 +241,12 @@ class AuthRepository with Loggable {
         final response = await _service.updateUserSettings(
           clientId: user.client.id.toString(),
           userId: user.uuid,
-          body: {
-            'app': {
+          body: <String, dynamic>{
+            'app': <String, dynamic>{
               'mobile_number': app['mobile_number'],
               'use_mobile_number_as_fallback': enable,
-              'voip_account': {
-                'id': app['voip_account']['id'],
+              'voip_account': <String, dynamic>{
+                'id': (app['voip_account'] as Map<String, dynamic>)['id'],
               }
             }
           },
@@ -265,6 +269,23 @@ class AuthRepository with Loggable {
 
 @JsonSerializable(fieldRename: FieldRename.snake)
 class _SystemUserResponse {
+  const _SystemUserResponse({
+    required this.firstName,
+    required this.preposition,
+    required this.lastName,
+    required this.clientId,
+    required this.clientUuid,
+    required this.clientName,
+    required this.clientUrl,
+    required this.uuid,
+    required this.email,
+    this.mobileNumber,
+    this.appAccountUrl,
+    this.outgoingCli,
+  });
+
+  factory _SystemUserResponse.fromJson(Map<String, dynamic> json) =>
+      _$SystemUserResponseFromJson(json);
   final String uuid;
 
   final String email;
@@ -288,24 +309,6 @@ class _SystemUserResponse {
   @JsonKey(name: 'client')
   final Uri clientUrl;
 
-  const _SystemUserResponse({
-    required this.uuid,
-    required this.email,
-    this.mobileNumber,
-    required this.firstName,
-    required this.preposition,
-    required this.lastName,
-    this.appAccountUrl,
-    this.outgoingCli,
-    required this.clientId,
-    required this.clientUuid,
-    required this.clientName,
-    required this.clientUrl,
-  });
-
-  factory _SystemUserResponse.fromJson(Map<String, dynamic> json) =>
-      _$SystemUserResponseFromJson(json);
-
   User toUser() => User(
         uuid: uuid,
         email: email,
@@ -319,7 +322,6 @@ class _SystemUserResponse {
           name: clientName,
           url: clientUrl,
           voip: ClientVoipConfig.fallback(),
-          openingHoursModules: const [],
         ),
         settings: Settings({
           CallSetting.mobileNumber: mobileNumber ?? '',

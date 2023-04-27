@@ -12,17 +12,6 @@ import '../cubit.dart';
 import '../widget.dart';
 
 class NoResultsPlaceholder extends StatelessWidget {
-  /// The type of NoResults page to display, if set to [null] then none will be
-  /// displayed.
-  final NoResultsType? type;
-  final String searchTerm;
-  final ColltactKind kind;
-  final Function(String number) onCall;
-  final Future<void> Function() onRefresh;
-  final bool dontAskForContactsPermissionAgain;
-  final ContactsCubit contactsCubit;
-  final Widget child;
-
   const NoResultsPlaceholder({
     required this.type,
     required this.searchTerm,
@@ -32,7 +21,19 @@ class NoResultsPlaceholder extends StatelessWidget {
     required this.dontAskForContactsPermissionAgain,
     required this.contactsCubit,
     required this.child,
+    super.key,
   });
+
+  /// The type of NoResults page to display, if set to `null` then none will be
+  /// displayed.
+  final NoResultsType? type;
+  final String searchTerm;
+  final ColltactKind kind;
+  final void Function(String number) onCall;
+  final Future<void> Function() onRefresh;
+  final bool dontAskForContactsPermissionAgain;
+  final ContactsCubit contactsCubit;
+  final Widget child;
 
   /// The call button should only be shown when the text field looks like a
   /// valid number.
@@ -40,7 +41,7 @@ class NoResultsPlaceholder extends StatelessWidget {
       type == NoResultsType.noSearchResults &&
       searchTerm.isNotEmpty &&
       searchTerm.length <= 13 &&
-      !RegExp(r'[^0-9+ ]').hasMatch(searchTerm);
+      !RegExp('[^0-9+ ]').hasMatch(searchTerm);
 
   String _title(BuildContext context) {
     switch (type!) {
@@ -156,9 +157,9 @@ class NoResultsPlaceholder extends StatelessWidget {
 }
 
 class _CircularGraphic extends StatelessWidget {
-  final NoResultsType type;
-
   const _CircularGraphic(this.type);
+
+  final NoResultsType type;
 
   IconData _icon() {
     switch (type) {
@@ -186,7 +187,7 @@ class _CircularGraphic extends StatelessWidget {
         shape: const CircleBorder(),
         color: outerCircleColor,
         elevation: 2,
-        shadowColor: context.brand.theme.colors.primary.withOpacity(0.0),
+        shadowColor: context.brand.theme.colors.primary.withOpacity(0),
         child: Padding(
           padding: const EdgeInsets.all(32),
           child: Material(
@@ -217,13 +218,13 @@ enum NoResultsType {
 }
 
 class _ContactsPermissionButton extends StatelessWidget {
-  final bool dontAskAgain;
-  final ContactsCubit cubit;
-
-  _ContactsPermissionButton({
+  const _ContactsPermissionButton({
     required this.dontAskAgain,
     required this.cubit,
   });
+
+  final bool dontAskAgain;
+  final ContactsCubit cubit;
 
   @override
   Widget build(BuildContext context) {
@@ -244,13 +245,13 @@ class _ContactsPermissionButton extends StatelessWidget {
 }
 
 class _CallButton extends StatelessWidget {
-  final String searchTerm;
-  final Function(String number) onCall;
-
-  _CallButton({
+  const _CallButton({
     required this.searchTerm,
     required this.onCall,
   });
+
+  final String searchTerm;
+  final void Function(String number) onCall;
 
   @override
   Widget build(BuildContext context) {

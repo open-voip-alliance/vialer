@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:core';
 
 import 'package:flutter_phone_lib/flutter_phone_lib.dart';
@@ -22,19 +23,21 @@ class RateVoipCallUseCase extends UseCase {
     final connectivityType = await _connectivityRepository.currentType;
     final audioProblems = feedback.audioProblems ?? [];
 
-    _metricsRepository.track('call-rating', {
-      'rating': feedback.rating,
-      'mos': mos,
-      'duration': call.duration,
-      'direction': call.direction.toTrackString(),
-      'bluetooth-used': usedRoutes.contains(AudioRoute.bluetooth),
-      'phone-used': usedRoutes.contains(AudioRoute.phone),
-      'speaker-used': usedRoutes.contains(AudioRoute.speaker),
-      'audio-routes': _createAudioRouteString(usedRoutes),
-      'connection': connectivityType.toString(),
-      'problem': feedback.problem?.toShortString() ?? false,
-      ...audioProblems.toShortStringMap(),
-    });
+    unawaited(
+      _metricsRepository.track('call-rating', <String, dynamic>{
+        'rating': feedback.rating,
+        'mos': mos,
+        'duration': call.duration,
+        'direction': call.direction.toTrackString(),
+        'bluetooth-used': usedRoutes.contains(AudioRoute.bluetooth),
+        'phone-used': usedRoutes.contains(AudioRoute.phone),
+        'speaker-used': usedRoutes.contains(AudioRoute.speaker),
+        'audio-routes': _createAudioRouteString(usedRoutes),
+        'connection': connectivityType.toString(),
+        'problem': feedback.problem?.toShortString() ?? false,
+        ...audioProblems.toShortStringMap(),
+      }),
+    );
   }
 
   /// Create a string such as phone|bluetooth that will include
@@ -53,11 +56,9 @@ extension Mapping on List<CallAudioProblem> {
   Map<CallAudioProblem, bool> toBoolMap({
     bool defaultValue = false,
   }) =>
-      Map<CallAudioProblem, bool>.fromIterable(
-        CallAudioProblem.values,
-        key: (e) => e as CallAudioProblem,
-        value: (e) => defaultValue,
-      );
+      {
+        for (final e in CallAudioProblem.values) e: defaultValue,
+      };
 
   /// Convert to a map with the key as the short string of
   /// [CallAudioProblem] and the given boolean value.

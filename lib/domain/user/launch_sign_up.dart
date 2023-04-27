@@ -7,8 +7,8 @@ import 'get_brand.dart';
 class LaunchSignUp extends UseCase with Loggable {
   late final _getBrand = GetBrand();
 
-  Future<void> call() async {
-    final brand = await _getBrand();
+  void call() {
+    final brand = _getBrand();
 
     // Opening this in an external application because it is a multi-stage
     // process that will be inconvenient to use in an in-app WebView.
@@ -17,6 +17,6 @@ class LaunchSignUp extends UseCase with Loggable {
       mode: LaunchMode.externalApplication,
     );
 
-    track({'url': brand.signUpUrl});
+    track(<String, dynamic>{'url': brand.signUpUrl});
   }
 }

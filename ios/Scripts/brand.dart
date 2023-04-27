@@ -13,7 +13,7 @@ Future<void> main(List<String> arguments) async {
   final data = json.decode(brands) as List<dynamic>;
 
   final brand = data.singleWhere(
-    (b) => (b as Map<String, dynamic>)['identifier'] == brandId,
+    (dynamic b) => (b as Map<String, dynamic>)['identifier'] == brandId,
   ) as Map<String, dynamic>;
 
   await writeXconfigFile(

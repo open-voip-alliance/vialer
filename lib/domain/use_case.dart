@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:recase/recase.dart';
 
 import '../app/util/loggable.dart';
@@ -19,9 +21,9 @@ abstract class UseCase with Loggable {
   Future<void> track([Map<String, dynamic>? properties]) async {
     final name = runtimeType.toString().replaceAll('UseCase', '').paramCase;
 
-    _metrics.track(name, properties);
+    unawaited(_metrics.track(name, properties));
 
-    if (properties?.isNotEmpty == true) {
+    if (properties?.isNotEmpty ?? false) {
       logger.info('[$name] executed with [$properties].');
     } else {
       logger.info('[$name] executed.');

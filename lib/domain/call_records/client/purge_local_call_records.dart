@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import '../../../../app/util/loggable.dart';
 import '../../../../dependency_locator.dart';
 import '../../metrics/metrics.dart';
@@ -23,10 +25,12 @@ class PurgeLocalCallRecordsUseCase extends UseCase with Loggable {
       'Removed $amountDeleted local client calls because ${reason.name}',
     );
 
-    _metricsRepository.track('client-calls-purged', {
-      'amount': amountDeleted,
-      'reason': reason.name,
-    });
+    unawaited(
+      _metricsRepository.track('client-calls-purged', <String, dynamic>{
+        'amount': amountDeleted,
+        'reason': reason.name,
+      }),
+    );
   }
 }
 

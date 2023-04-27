@@ -23,13 +23,13 @@ export 'event.dart';
 export 'state.dart';
 
 class T9ColltactsBloc extends Bloc<T9ColltactsEvent, T9ColltactsState> {
-  final _getContacts = GetContactsUseCase();
-  final _getColleagues = GetColleagues();
-  final _getPermissionStatus = GetPermissionStatusUseCase();
-
   T9ColltactsBloc() : super(const LoadingColltacts()) {
     add(LoadColltacts());
   }
+
+  final _getContacts = GetContactsUseCase();
+  final _getColleagues = GetColleagues();
+  final _getPermissionStatus = GetPermissionStatusUseCase();
 
   @override
   Stream<T9ColltactsState> mapEventToState(T9ColltactsEvent event) async* {
@@ -144,17 +144,17 @@ class T9ColltactsBloc extends Bloc<T9ColltactsEvent, T9ColltactsState> {
     // codes.
     final inputPhoneNumber = input
         .formatForPhoneNumberQuery()
-        .replaceAll(RegExp(r'[^0-9]'), '')
-        .replaceAllMapped(RegExp(r'.'), (m) => '${m[0]}[^0-9]*');
+        .replaceAll(RegExp('[^0-9]'), '')
+        .replaceAllMapped(RegExp('.'), (m) => '${m[0]}[^0-9]*');
 
     // Ignore 0 and 1 for the name matching, they don't map to a character.
-    var inputName = input.replaceAll(RegExp(r'[^2-9]'), '');
+    var inputName = input.replaceAll(RegExp('[^2-9]'), '');
     if (inputName.isEmpty) {
-      return RegExp('$inputPhoneNumber', caseSensitive: false);
+      return RegExp(inputPhoneNumber, caseSensitive: false);
     }
 
     inputName =
-        inputName.replaceAllMapped(RegExp(r'.'), (m) => '[${keyMap[m[0]]}]');
+        inputName.replaceAllMapped(RegExp('.'), (m) => '[${keyMap[m[0]]}]');
 
     return RegExp('(\\b$inputName|$inputPhoneNumber)', caseSensitive: false);
   }
@@ -200,13 +200,13 @@ Future<List<T9Colltact>> _filterColltactsByRegularExpression(
 }
 
 class _FilterByRegularExpressionRequest {
-  final List<Colltact> colltacts;
-  final RegExp regex;
-
   const _FilterByRegularExpressionRequest({
     required this.colltacts,
     required this.regex,
   });
+
+  final List<Colltact> colltacts;
+  final RegExp regex;
 }
 
 extension on T9Colltact {

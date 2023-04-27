@@ -1,3 +1,5 @@
+// ignore_for_file: cascade_invocations
+
 import 'dart:io';
 
 import 'package:dartx/dartx.dart';
@@ -72,11 +74,11 @@ Future<void> main(List<String> args) async {
 
   final files = await directory.list().toList();
 
-  if (files.length <= 0) {
+  if (files.isEmpty) {
     throw Exception('There are no files in the release notes directory');
   }
 
-  for (var file in files) {
+  for (final file in files) {
     if (file is File) {
       await generateReleaseNotesForCodemagic(file);
       await updateMessagesFilesWithLatestReleaseNotes(file);
@@ -86,7 +88,7 @@ Future<void> main(List<String> args) async {
   }
 
   await buildMessageFiles();
-  verifyAllReleaseNotesFilesWereGenerated();
+  await verifyAllReleaseNotesFilesWereGenerated();
 }
 
 /// The message files now need to be rebuilt as we have updated the .yaml
@@ -121,7 +123,7 @@ Future<void> updateMessagesFilesWithLatestReleaseNotes(File file) async {
       ['main', 'update', 'releaseNotes', 'notes'],
       await file.readAsString(),
     );
-    messagesFile.writeAsString(yamlEditor.toString());
+    await messagesFile.writeAsString(yamlEditor.toString());
   }
 }
 
@@ -153,7 +155,7 @@ Future<void> generateReleaseNotesForCodemagic(File file) async {
     throw Exception('Unable to publish these notes as $fileName is empty.');
   }
 
-  for (var generatedFilePath in mapping) {
+  for (final generatedFilePath in mapping) {
     await file
         .copy(createCodemagicReleaseNotesFileName(generatedFilePath))
         .then(removeReleaseNotesContainingBlocklistedTerm);
@@ -193,10 +195,10 @@ Future<Directory> findReleaseNotesDirectory({
 Future<void> verifyAllReleaseNotesFilesWereGenerated() async {
   final expectedFiles = localizationMap.values.expand((element) => element);
 
-  for (var expectedFile in expectedFiles) {
+  for (final expectedFile in expectedFiles) {
     final expectedFilePath = createCodemagicReleaseNotesFileName(expectedFile);
 
-    final file = await File(expectedFilePath);
+    final file = File(expectedFilePath);
 
     if (!await file.exists()) {
       throw Exception(
@@ -224,7 +226,7 @@ Future<void> removeReleaseNotesContainingBlocklistedTerm(File file) => file
     .then(
       (notes) => notes.where(
         (note) {
-          for (var term in releaseNotesPublishingBlocklist) {
+          for (final term in releaseNotesPublishingBlocklist) {
             if (note.toLowerCase().contains(term.toLowerCase())) {
               return false;
             }

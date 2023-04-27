@@ -6,20 +6,20 @@ import '../../event/event_bus.dart';
 import 'settings.dart';
 
 @immutable
-class SettingChanged<T extends Object> {
-  final SettingKey<T> key;
-  final T oldValue;
-  final T newValue;
-
-  const SettingChanged(
+class SettingChangedEvent<T extends Object> implements EventBusEvent {
+  const SettingChangedEvent(
     this.key,
     this.oldValue,
     this.newValue,
   );
+
+  final SettingKey<T> key;
+  final T oldValue;
+  final T newValue;
 }
 
-extension ObservingSettingChange on Stream {
-  StreamSubscription<SettingChanged> onSettingChange<T extends Object>(
+extension ObservingSettingChange on EventBusObserver {
+  StreamSubscription<SettingChangedEvent> onSettingChange<T extends Object>(
     SettingKey<T> key,
     void Function(T oldValue, T value)? onData, {
     Function? onError,
@@ -28,7 +28,7 @@ extension ObservingSettingChange on Stream {
   }) =>
       // We cannot check for SettingChange<T>, because they are broadcast
       // as SettingChange<dynamic>.
-      on<SettingChanged>(
+      on<SettingChangedEvent>(
         (event) {
           if (event.key != key) return;
           onData?.call(event.oldValue as T, event.newValue as T);

@@ -10,9 +10,12 @@ import '../../../../resources/theme.dart';
 import '../../widgets/colltact_list/widgets/avatar.dart';
 
 class Header extends StatefulWidget {
-  final User user;
+  const Header({
+    required this.user,
+    super.key,
+  });
 
-  const Header({required this.user});
+  final User user;
 
   @override
   State<StatefulWidget> createState() => _HeaderState();

@@ -3,14 +3,14 @@ import 'header.dart';
 
 /// Page designed for being full screen.
 class FullScreenPage extends StatelessWidget {
-  final String title;
-  final Widget body;
-
   const FullScreenPage({
-    super.key,
     required this.title,
     required this.body,
+    super.key,
   });
+
+  final String title;
+  final Widget body;
 
   @override
   Widget build(BuildContext context) {

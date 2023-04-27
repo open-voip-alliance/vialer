@@ -4,14 +4,14 @@ import '../widgets/colltact_list/widget.dart';
 import 'widgets/details/widget.dart';
 
 class ColltactsPage extends StatelessWidget {
-  final double bottomLettersPadding;
-  final GlobalKey<NavigatorState>? navigatorKey;
-
   const ColltactsPage({
-    Key? key,
     this.navigatorKey,
     this.bottomLettersPadding = 0,
-  }) : super(key: key);
+    super.key,
+  });
+
+  final double bottomLettersPadding;
+  final GlobalKey<NavigatorState>? navigatorKey;
 
   @override
   Widget build(BuildContext context) {

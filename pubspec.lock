@@ -57,6 +57,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.10.0"
+  austerity:
+    dependency: "direct main"
+    description:
+      name: austerity
+      sha256: "752608b94a84d1765e8eafa877463b6823da08c3e65477b965429fee2aca79d1"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0"
   basic_utils:
     dependency: "direct dev"
     description:
@@ -377,14 +385,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.12"
-  effective_dart:
-    dependency: "direct dev"
-    description:
-      name: effective_dart
-      sha256: "6a69783c808344084b65667e87ff600823531e95810a8a15882cb542fe22de80"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.3.2"
   equatable:
     dependency: "direct main"
     description:
@@ -935,7 +935,7 @@ packages:
     source: hosted
     version: "2.1.3"
   pedantic:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: pedantic
       sha256: "67fc27ed9639506c856c840ccce7594d0bdcd91bc8d53d6e52359449a1d50602"

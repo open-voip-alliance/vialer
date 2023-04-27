@@ -10,7 +10,7 @@ import '../widgets/tile/username.dart';
 import 'widget.dart';
 
 class UserSubPage extends StatelessWidget {
-  const UserSubPage();
+  const UserSubPage({super.key});
 
   @override
   Widget build(BuildContext context) {

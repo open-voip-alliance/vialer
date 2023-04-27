@@ -7,18 +7,18 @@ import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
 
 class KeyInput extends StatefulWidget {
-  final TextEditingController controller;
-  final ValueNotifier<bool> cursorShownNotifier;
-  final bool canDelete;
-  final VoidCallback? onDeleteAll;
-
   const KeyInput({
-    Key? key,
     required this.controller,
     required this.cursorShownNotifier,
     this.canDelete = true,
     this.onDeleteAll,
-  }) : super(key: key);
+    super.key,
+  });
+
+  final TextEditingController controller;
+  final ValueNotifier<bool> cursorShownNotifier;
+  final bool canDelete;
+  final VoidCallback? onDeleteAll;
 
   @override
   State<KeyInput> createState() => _KeyInputState();
@@ -105,26 +105,25 @@ class _KeyInputFormatter extends TextInputFormatter {
     TextEditingValue newValue,
   ) {
     return newValue.copyWith(
-      text: newValue.text.replaceAll(RegExp(r'[^0-9^+^,^;^(^)^.^-]'), ''),
+      text: newValue.text.replaceAll(RegExp('[^0-9^+^,^;^(^)^.^-]'), ''),
     );
   }
 }
 
 class _DeleteButton extends StatefulWidget {
+  const _DeleteButton({
+    required this.controller,
+    required this.cursorShownNotifier,
+    this.canDelete = true,
+    this.onDeleteAll,
+  });
+
   final TextEditingController controller;
   final ValueNotifier<bool> cursorShownNotifier;
   final bool canDelete;
   final VoidCallback? onDeleteAll;
 
   static const double size = 32;
-
-  const _DeleteButton({
-    Key? key,
-    required this.controller,
-    required this.cursorShownNotifier,
-    this.canDelete = true,
-    this.onDeleteAll,
-  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _DeleteButtonState();

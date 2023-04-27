@@ -7,9 +7,9 @@ import '../../../../../web_view/page.dart';
 import 'widget.dart';
 
 class OpeningHoursLinkTile extends StatelessWidget {
-  final User user;
-
   const OpeningHoursLinkTile(this.user, {super.key});
+
+  final User user;
 
   @override
   Widget build(BuildContext context) {

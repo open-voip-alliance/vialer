@@ -5,14 +5,13 @@ import '../../../../../domain/business_availability/temporary_redirect/temporary
 import '../../../../resources/localizations.dart';
 
 class TemporaryRedirectExplanation extends StatelessWidget {
-  final TemporaryRedirectDestination? currentDestination;
-  final DateTime? endsAt;
-
   const TemporaryRedirectExplanation({
-    super.key,
     required this.currentDestination,
     required this.endsAt,
+    super.key,
   });
+  final TemporaryRedirectDestination? currentDestination;
+  final DateTime? endsAt;
 
   String _voicemailText(BuildContext context) =>
       currentDestination?.displayName ??

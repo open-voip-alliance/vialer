@@ -10,7 +10,7 @@ void main() {
   final controller = TextEditingController();
   final testWidget = MaterialApp(
     locale: const Locale('en'),
-    localizationsDelegates: [
+    localizationsDelegates: const [
       VialerLocalizations.delegate,
       GlobalMaterialLocalizations.delegate,
       GlobalWidgetsLocalizations.delegate,
@@ -28,9 +28,11 @@ void main() {
           encryptedSipUrl: Uri.parse('sip.encryptedsip.com'),
           unencryptedSipUrl: Uri.parse('sipproxy.voipgrid.nl'),
           businessAvailabilityUrl: Uri.parse(
-              'https://api.eu-prod.holodeck.wearespindle.com/business-availability/clients/'),
+            'https://api.eu-prod.holodeck.wearespindle.com/business-availability/clients/',
+          ),
           openingHoursBasicUrl: Uri.parse(
-              'https://api.eu-prod.holodeck.wearespindle.com/openinghours/client/'),
+            'https://api.eu-prod.holodeck.wearespindle.com/openinghours/client/',
+          ),
           userAvailabilityWsUrl: Uri.parse('ws'),
           privacyPolicyUrl: Uri.parse('dummypolicy.com'),
           signUpUrl: null,
@@ -53,7 +55,7 @@ void main() {
     'Keyinput takes input via controller and updates properly',
     (tester) async {
       await tester.pumpWidget(testWidget);
-      final testString = '+31612345678';
+      const testString = '+31612345678';
       controller.text = testString;
       await tester.pump();
 

@@ -24,9 +24,9 @@ typedef IsUserPhoneAccountLookup = bool Function(int);
 ///
 /// Use [LocalClientCallsRepository] instead.
 class RemoteClientCallsRepository with Loggable {
-  final VoipgridService _service;
-
   RemoteClientCallsRepository(this._service);
+
+  final VoipgridService _service;
 
   /// The amount of records that we will be querying from the VoIPGRID API in
   /// each request.
@@ -53,7 +53,9 @@ class RemoteClientCallsRepository with Loggable {
     bool retry = true,
   }) async* {
     if (!from.isAtSameMonthAs(to)) {
-      throw 'It is only possible to fetch within the same month.';
+      throw ArgumentError(
+        'It is only possible to fetch within the same month.',
+      );
     }
 
     logger.info('Fetching client call records between $from and $to');
@@ -85,15 +87,17 @@ class RemoteClientCallsRepository with Loggable {
       return;
     }
 
-    final objects = await response.body['objects'] as List<dynamic>;
+    final objects = await response.body!['objects'] as List<dynamic>;
 
     logger.info('Fetched ${objects.length} call records from the api');
 
     yield objects
-        .map((item) => toClientCallDatabaseRecord(
-              item,
-              isUserPhoneAccount: isUserPhoneAccount,
-            ))
+        .map(
+          (dynamic item) => toClientCallDatabaseRecord(
+            item as Map<String, dynamic>,
+            isUserPhoneAccount: isUserPhoneAccount,
+          ),
+        )
         .toList();
 
     if (response.hasMoreRecords) {
@@ -117,7 +121,7 @@ class RemoteClientCallsRepository with Loggable {
       return null;
     }
 
-    final object = response.body;
+    final object = response.body!;
 
     return ColleaguePhoneAccountsCompanion.insert(
       id: Value(id),
@@ -131,10 +135,13 @@ class RemoteClientCallsRepository with Loggable {
   }
 }
 
-extension on Response {
-  bool get hasMoreRecords => this.body['meta']['next'] != null
-      ? (this.body['meta']['next'] as String).isNotEmpty
-      : false;
+extension on Response<Map<String, dynamic>> {
+  bool get hasMoreRecords {
+    final next =
+        (this.body?['meta'] as Map<String, dynamic>)['next'] as String?;
+
+    return next != null && next.isNotEmpty;
+  }
 
   bool get wasForbidden => statusCode == 403;
 
@@ -145,9 +152,8 @@ class UserLacksCallRecordsPermission implements Exception {}
 
 class UserWasUnauthorized implements Exception {}
 
-CallerType _findPhoneAccountType(dynamic object) {
+CallerType _findPhoneAccountType(Map<String, dynamic> object) {
   if (object['is_app_account'] as bool) return CallerType.app;
-
   if (object['is_desktop_account'] as bool) return CallerType.webphone;
 
   return CallerType.other;

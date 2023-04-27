@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import '../../../../dependency_locator.dart';
 import '../../use_case.dart';
 import '../../user/get_logged_in_user.dart';
@@ -27,11 +29,13 @@ class ChangeCurrentTemporaryRedirect extends UseCase
       return;
     }
 
-    track({
-      'ending-at': temporaryRedirect.endsAt.toIso8601String(),
-      'id': temporaryRedirect.id,
-    });
+    unawaited(
+      track(<String, dynamic>{
+        'ending-at': temporaryRedirect.endsAt.toIso8601String(),
+        'id': temporaryRedirect.id,
+      }),
+    );
 
-    broadcast();
+    unawaited(broadcast());
   }
 }

@@ -21,7 +21,7 @@ class GetContactsUseCase extends UseCase {
     );
 
     if (status != PermissionStatus.granted) {
-      _contactsRepository.cleanUp();
+      unawaited(_contactsRepository.cleanUp());
       throw NoPermissionException();
     }
 

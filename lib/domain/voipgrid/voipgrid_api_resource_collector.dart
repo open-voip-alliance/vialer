@@ -4,9 +4,10 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import '../../app/util/loggable.dart';
 
 part 'voipgrid_api_resource_collector.freezed.dart';
+
 part 'voipgrid_api_resource_collector.g.dart';
 
-typedef Requester = Future<Response> Function(int page);
+typedef Requester = Future<Response<dynamic>> Function(int page);
 typedef Deserializer<T> = T Function(Map<String, dynamic> json);
 
 /// Allows for easy access to an entire resource, when this resource is
@@ -15,9 +16,13 @@ typedef Deserializer<T> = T Function(Map<String, dynamic> json);
 /// This should only be used with APIs that return responses compatible with
 /// [_PaginatedVoipgridApiResponse], this should be all APIs 2022-onwards.
 class VoipgridApiResourceCollector with Loggable {
+  VoipgridApiResourceCollector({
+    this.safe = true,
+  });
+
   /// This is to prevent situations where a developer is requesting a huge
   /// number of items causing a vast number of requests. This should only
-  /// ever be set to [false] in specific situations where this is known
+  /// ever be set to `false` in specific situations where this is known
   /// and handled.
   final bool safe;
 
@@ -27,10 +32,6 @@ class VoipgridApiResourceCollector with Loggable {
   /// See [safe] for more information.
   static const _maxPagesToSafelyFetch = 20;
 
-  VoipgridApiResourceCollector({
-    this.safe = true,
-  });
-
   /// Collect all items from a given resource on the VoIPGRID API. This will
   /// continually create more requests and return the resulting number
   /// of items.
@@ -38,8 +39,8 @@ class VoipgridApiResourceCollector with Loggable {
     required Requester requester,
     required Deserializer<T> deserializer,
   }) async =>
-      (await _makeRequest(requester))
-          .map((item) => (item as Map<String, dynamic>))
+      _makeRequest(requester)
+          .map((dynamic item) => item as Map<String, dynamic>)
           .map(deserializer)
           .toList();
 
@@ -96,6 +97,7 @@ class VoipgridApiResourceCollector with Loggable {
     if (paginatedResponse.hasMore) {
       yield* _makeRequest(
         requester,
+        // ignore: parameter_assignments
         page: ++page,
       );
     }
@@ -104,12 +106,12 @@ class VoipgridApiResourceCollector with Loggable {
 
 @freezed
 class _PaginatedVoipgridApiResponse with _$_PaginatedVoipgridApiResponse {
-  const _PaginatedVoipgridApiResponse._();
-
   const factory _PaginatedVoipgridApiResponse({
     required String? next,
     required List<dynamic> items,
   }) = __PaginatedVoipgridApiResponse;
+
+  const _PaginatedVoipgridApiResponse._();
 
   factory _PaginatedVoipgridApiResponse.fromJson(Map<String, dynamic> json) =>
       _$_PaginatedVoipgridApiResponseFromJson(json);
@@ -128,11 +130,11 @@ class _PaginatedVoipgridApiResponse with _$_PaginatedVoipgridApiResponse {
   bool get hasMore => next != null;
 }
 
-extension on Response {
+extension on Response<dynamic> {
   static const _linkHeader = 'link';
 
   bool get hasLinkHeader => headers.containsKey(_linkHeader);
 
   bool get hasMoreInLinkHeader =>
-      headers[_linkHeader]?.contains('next') == true;
+      headers[_linkHeader]?.contains('next') ?? false;
 }

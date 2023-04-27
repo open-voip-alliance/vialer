@@ -10,13 +10,14 @@ import '../../util/conditional_capitalization.dart';
 import '../stylized_dialog.dart';
 
 class ReleaseNotesDialog extends StatelessWidget {
-  final String releaseNotes;
-  final String version;
-
   const ReleaseNotesDialog({
     required this.releaseNotes,
     required this.version,
+    super.key,
   });
+
+  final String releaseNotes;
+  final String version;
 
   @override
   Widget build(BuildContext context) {

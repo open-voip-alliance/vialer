@@ -15,24 +15,24 @@ import 'state.dart';
 export 'state.dart';
 
 class LoginCubit extends Cubit<LoginState> with Loggable {
+  LoginCubit(this._onboarding) : super(const NotLoggedIn()) {
+    _enableRemoteLoggingIfNeeded();
+  }
+
   final OnboardingCubit _onboarding;
 
   final _enableRemoteLoggingIfNeeded = EnableRemoteLoggingIfNeededUseCase();
   final _login = LoginUseCase();
   final _getBrand = GetBrand();
 
-  LoginCubit(this._onboarding) : super(const NotLoggedIn()) {
-    _enableRemoteLoggingIfNeeded();
-  }
-
   Future<void> login(String email, String password) async {
     logger.info('Logging in');
 
     emit(const LoggingIn());
 
-    final local = r"[a-z0-9.!#$%&'*+/=?^_`{|}~-]+";
-    final domain = '[a-z0-9](?:[a-z0-9-]{0,253}[a-z0-9])?';
-    final tld = '(?:\.[a-z0-9](?:[a-z0-9-]{0,253}[a-z0-9])?)+';
+    const local = r"[a-z0-9.!#$%&'*+/=?^_`{|}~-]+";
+    const domain = '[a-z0-9](?:[a-z0-9-]{0,253}[a-z0-9])?';
+    const tld = r'(?:\.[a-z0-9](?:[a-z0-9-]{0,253}[a-z0-9])?)+';
     final hasValidEmailFormat = RegExp(
       '^$local@$domain$tld\$',
       caseSensitive: false,

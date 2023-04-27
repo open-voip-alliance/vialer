@@ -38,7 +38,7 @@ class FeedbackRepository {
       );
     }
 
-    await service.feedback({
+    await service.feedback(<String, dynamic>{
       'message': '$title\n\n$text',
       'user': {
         'id': user.uuid,

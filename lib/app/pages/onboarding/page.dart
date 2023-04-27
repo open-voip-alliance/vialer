@@ -120,6 +120,7 @@ class OnboardingPageState extends State<OnboardingPage> {
                     data: const IconThemeData(color: Colors.white),
                     child: PageView(
                       controller: pageController,
+                      physics: const NeverScrollableScrollPhysics(),
                       children: currentPages.entries.map((entry) {
                         final page = entry.value;
                         return SafeArea(
@@ -132,7 +133,6 @@ class OnboardingPageState extends State<OnboardingPage> {
                           ),
                         );
                       }).toList(),
-                      physics: const NeverScrollableScrollPhysics(),
                     ),
                   ),
                 ),

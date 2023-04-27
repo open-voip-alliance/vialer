@@ -3,7 +3,7 @@ import 'package:vialer/app/pages/main/settings/page.dart';
 
 import '../../../util.dart';
 
-void main() => runTest(
+Future<void> main() => runTest(
       ['Main', 'Settings', 'Has mobile number'],
       (tester) async {
         await tester.completeOnboarding();

@@ -9,17 +9,17 @@ export 'state.dart';
 
 class MissedCallNotificationPressedListenerCubit
     extends Cubit<MissedCallNotificationPressedListenerState> {
-  final _getMissedCallNotificationPressedStream =
-      GetMissedCallNotificationPressedStream();
-
-  late StreamSubscription _subscription;
-
   MissedCallNotificationPressedListenerCubit()
       : super(const MissedCallNotificationNotPressed()) {
     _subscription = _getMissedCallNotificationPressedStream().listen((_) {
       emit(MissedCallNotificationPressed());
     });
   }
+
+  final _getMissedCallNotificationPressedStream =
+      GetMissedCallNotificationPressedStream();
+
+  late StreamSubscription<bool> _subscription;
 
   @override
   Future<void> close() async {

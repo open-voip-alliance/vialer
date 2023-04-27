@@ -23,24 +23,24 @@ import '../widgets/t9_dial_pad.dart';
 import 'cubit.dart';
 
 class DialerPage extends StatefulWidget {
+  const DialerPage({
+    required this.isInBottomNavBar,
+    super.key,
+  });
+
   final bool isInBottomNavBar;
 
-  const DialerPage({
-    Key? key,
-    required this.isInBottomNavBar,
-  }) : super(key: key);
-
   @override
-  _DialerPageState createState() => _DialerPageState();
+  State<DialerPage> createState() => _DialerPageState();
 }
 
 class _DialerPageState extends State<DialerPage>
     with WidgetsBindingObserver, WidgetsBindingObserverRegistrar {
   final _dialPadController = TextEditingController();
   final _eventBus = dependencyLocator<EventBusObserver>();
-  StreamSubscription? _eventBusSubscription;
+  StreamSubscription<SettingChangedEvent<Object>>? _eventBusSubscription;
 
-  final _getLatestUser = GetLoggedInUserUseCase();
+  final _getUser = GetLoggedInUserUseCase();
 
   bool _enableT9ContactSearch = false;
 
@@ -59,7 +59,7 @@ class _DialerPageState extends State<DialerPage>
   }
 
   Future<void> _updateEnableT9ContactSearch({bool? settingValue}) async {
-    final user = await _getLatestUser();
+    final user = _getUser();
 
     setState(() {
       _enableT9ContactSearch =

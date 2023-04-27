@@ -13,7 +13,7 @@ import '../widgets/stylized_text_field.dart';
 import 'cubit.dart';
 
 class PasswordPage extends StatefulWidget {
-  const PasswordPage({Key? key}) : super(key: key);
+  const PasswordPage({super.key});
 
   @override
   State<StatefulWidget> createState() => _PasswordPageState();
@@ -58,75 +58,76 @@ class _PasswordPageState extends State<PasswordPage>
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: Provider.of<EdgeInsets>(context).copyWith(top: 32),
-        child: BlocProvider<PasswordCubit>(
-          create: (context) => PasswordCubit(context.read<OnboardingCubit>()),
-          child: BlocConsumer<PasswordCubit, PasswordState>(
-            listener: _onStateChanged,
-            builder: (context, state) {
-              return Column(
-                children: <Widget>[
-                  Text(
-                    context.msg.onboarding.password.title,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 26,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
+      padding: Provider.of<EdgeInsets>(context).copyWith(top: 32),
+      child: BlocProvider<PasswordCubit>(
+        create: (context) => PasswordCubit(context.read<OnboardingCubit>()),
+        child: BlocConsumer<PasswordCubit, PasswordState>(
+          listener: _onStateChanged,
+          builder: (context, state) {
+            return Column(
+              children: <Widget>[
+                Text(
+                  context.msg.onboarding.password.title,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 26,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
                   ),
-                  const SizedBox(height: 16),
-                  ErrorAlert(
-                    visible: state is PasswordNotAllowed,
-                    inline: false,
-                    title: context.msg.onboarding.password.error.title,
-                    message: context.msg.onboarding.password.error.message,
-                  ),
-                  StylizedTextField(
-                    controller: _passwordController,
-                    prefixIcon: FontAwesomeIcons.lock,
-                    obscureText: _hidePassword,
-                    hasError: state is PasswordNotAllowed,
-                    suffix: AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 200),
-                      switchInCurve: Curves.decelerate,
-                      switchOutCurve: Curves.decelerate.flipped,
-                      child: IconButton(
-                        key: ValueKey(_hidePassword),
-                        icon: Icon(
-                          _hidePassword
-                              ? FontAwesomeIcons.eyeSlash
-                              : FontAwesomeIcons.eye,
-                        ),
-                        onPressed: _toggleHidePassword,
+                ),
+                const SizedBox(height: 16),
+                ErrorAlert(
+                  visible: state is PasswordNotAllowed,
+                  inline: false,
+                  title: context.msg.onboarding.password.error.title,
+                  message: context.msg.onboarding.password.error.message,
+                ),
+                StylizedTextField(
+                  controller: _passwordController,
+                  prefixIcon: FontAwesomeIcons.lock,
+                  obscureText: _hidePassword,
+                  hasError: state is PasswordNotAllowed,
+                  suffix: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 200),
+                    switchInCurve: Curves.decelerate,
+                    switchOutCurve: Curves.decelerate.flipped,
+                    child: IconButton(
+                      key: ValueKey(_hidePassword),
+                      icon: Icon(
+                        _hidePassword
+                            ? FontAwesomeIcons.eyeSlash
+                            : FontAwesomeIcons.eye,
                       ),
+                      onPressed: _toggleHidePassword,
                     ),
                   ),
-                  const SizedBox(height: 16),
-                  Text(
-                    context.msg.onboarding.password.requirements,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  context.msg.onboarding.password.requirements,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 24),
+                SizedBox(
+                  width: double.infinity,
+                  child: StylizedButton.raised(
+                    onPressed: () => _onChangePasswordButtonPressed(context),
+                    child: Text(
+                      context.msg.onboarding.password.button
+                          .toUpperCaseIfAndroid(context),
                     ),
                   ),
-                  const SizedBox(height: 24),
-                  SizedBox(
-                    width: double.infinity,
-                    child: StylizedButton.raised(
-                      onPressed: () => _onChangePasswordButtonPressed(context),
-                      child: Text(
-                        context.msg.onboarding.password.button
-                            .toUpperCaseIfAndroid(context),
-                      ),
-                    ),
-                  ),
-                ],
-              );
-            },
-          ),
-        ));
+                ),
+              ],
+            );
+          },
+        ),
+      ),
+    );
   }
 }

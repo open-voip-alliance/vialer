@@ -115,6 +115,7 @@ class ChangeSettingsUseCase extends UseCase with Loggable {
         // to avoid a rare exception.
         if (freshUser != null) {
           user = freshUser;
+          // ignore: parameter_assignments
           settings = settings.copyFrom(user.settings.getAll(needSync));
         }
       }
@@ -143,10 +144,10 @@ class ChangeSettingsUseCase extends UseCase with Loggable {
           logger.info('Set $key to $value');
         }
 
-        _metricsRepository.trackSettingChange(key, value);
+        unawaited(_metricsRepository.trackSettingChange(key, value));
 
         _eventBus.broadcast(
-          SettingChanged(key, oldValue, value),
+          SettingChangedEvent(key, oldValue, value),
         );
       }
 
@@ -205,12 +206,12 @@ class ChangeSettingsUseCase extends UseCase with Loggable {
 }
 
 class ChangeSettingsResult {
+  const ChangeSettingsResult({this.changed = const [], this.failed = const []});
+
   final Iterable<SettingKey> changed;
 
   /// Settings whose changes were rejected.
   final Iterable<SettingKey> failed;
-
-  const ChangeSettingsResult({this.changed = const [], this.failed = const []});
 }
 
 extension FutureChangeSettingsResult on Future<ChangeSettingsResult> {

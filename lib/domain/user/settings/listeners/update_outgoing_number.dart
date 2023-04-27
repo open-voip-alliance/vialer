@@ -20,24 +20,24 @@ class UpdateOutgoingNumberListener extends SettingChangeListener<OutgoingNumber>
   @override
   FutureOr<SettingChangeListenResult> preStore(
     User user,
-    OutgoingNumber number,
+    OutgoingNumber value,
   ) =>
       changeRemoteValue(() async {
-        if (number is SuppressedOutgoingNumber) {
-          logger.info('Attempting to suppress the user\'s outgoing number');
+        if (value is SuppressedOutgoingNumber) {
+          logger.info("Attempting to suppress the user's outgoing number");
 
-          _metricsRepository.track('suppress-outgoing-number');
+          unawaited(_metricsRepository.track('suppress-outgoing-number'));
 
           return _outgoingNumbersRepository.suppressOutgoingNumber(user: user);
         }
 
-        logger.info('Changing the user\'s outgoing number');
+        logger.info("Changing the user's outgoing number");
 
-        _metricsRepository.track('change-outgoing-number');
+        unawaited(_metricsRepository.track('change-outgoing-number'));
 
         return _outgoingNumbersRepository.changeOutgoingNumber(
           user: user,
-          number: (number as UnsuppressedOutgoingNumber).value,
+          number: (value as UnsuppressedOutgoingNumber).value,
         );
       });
 }

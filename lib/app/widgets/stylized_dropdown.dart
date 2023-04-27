@@ -3,18 +3,18 @@ import 'package:flutter/material.dart';
 import '../resources/theme.dart';
 
 class StylizedDropdown<T> extends StatelessWidget {
-  final T? value;
-  final List<DropdownMenuItem<T>> items;
-  final bool isExpanded;
-  final ValueChanged<T?>? onChanged;
-
   const StylizedDropdown({
-    super.key,
     required this.value,
     required this.items,
     this.isExpanded = false,
     this.onChanged,
+    super.key,
   });
+
+  final T? value;
+  final List<DropdownMenuItem<T>> items;
+  final bool isExpanded;
+  final ValueChanged<T?>? onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +31,6 @@ class StylizedDropdown<T> extends StatelessWidget {
           value: value,
           items: items,
           isExpanded: isExpanded,
-          isDense: false,
           borderRadius: BorderRadius.circular(4),
           onChanged: onChanged,
         ),

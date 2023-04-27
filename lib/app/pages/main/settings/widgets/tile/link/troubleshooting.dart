@@ -10,13 +10,15 @@ class TroubleshootingLinkTile extends StatelessWidget {
   const TroubleshootingLinkTile({super.key});
 
   void _showTroubleshootingPage(BuildContext context) {
-    Navigator.push(
+    Navigator.push<dynamic>(
       context,
-      MaterialPageRoute(builder: (_) {
-        return TroubleshootingSubPage(
-          cubit: context.read<SettingsCubit>(),
-        );
-      }),
+      MaterialPageRoute<dynamic>(
+        builder: (_) {
+          return TroubleshootingSubPage(
+            cubit: context.read<SettingsCubit>(),
+          );
+        },
+      ),
     );
   }
 

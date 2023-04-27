@@ -5,12 +5,12 @@ import '../../../../../../resources/localizations.dart';
 import 'widget.dart';
 
 class TemporaryRedirectCategory extends StatelessWidget {
-  final List<Widget> children;
-
   const TemporaryRedirectCategory({
-    super.key,
     required this.children,
+    super.key,
   });
+
+  final List<Widget> children;
 
   @override
   Widget build(BuildContext context) {

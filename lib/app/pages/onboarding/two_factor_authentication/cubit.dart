@@ -11,12 +11,12 @@ import 'state.dart';
 export 'state.dart';
 
 class TwoFactorAuthenticationCubit extends Cubit<TwoFactorState> with Loggable {
+  TwoFactorAuthenticationCubit(this._onboarding)
+      : super(const CodeNotSubmitted());
+
   final OnboardingCubit _onboarding;
 
   final _login = LoginUseCase();
-
-  TwoFactorAuthenticationCubit(this._onboarding)
-      : super(const CodeNotSubmitted());
 
   Future<void> attemptLoginWithTwoFactorCode(String code) async {
     emit(const AwaitingServerResponse());

@@ -20,8 +20,8 @@ import 'cubit.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   State<StatefulWidget> createState() => _LoginPageState();
@@ -124,7 +124,6 @@ class _LoginPageState extends State<LoginPage>
                           key: LoginPage.keys.emailField,
                           controller: _emailController,
                           autoCorrect: false,
-                          textCapitalization: TextCapitalization.none,
                           prefixIcon: FontAwesomeIcons.user,
                           labelText:
                               context.msg.onboarding.login.placeholder.email,
@@ -132,12 +131,12 @@ class _LoginPageState extends State<LoginPage>
                           hasError: loginState is LoginFailed ||
                               (loginState is LoginNotSubmitted &&
                                   !loginState.hasValidEmailFormat),
-                          autofillHints: [AutofillHints.email],
+                          autofillHints: const [AutofillHints.email],
                         ),
                         ErrorAlert(
                           key: LoginPage.keys.wrongEmailFormatError,
-                          visible: (loginState is LoginNotSubmitted &&
-                              !loginState.hasValidEmailFormat),
+                          visible: loginState is LoginNotSubmitted &&
+                              !loginState.hasValidEmailFormat,
                           inline: true,
                           message: context
                               .msg.onboarding.login.error.wrongEmailFormat,
@@ -170,12 +169,12 @@ class _LoginPageState extends State<LoginPage>
                           hasError: loginState is LoginFailed ||
                               (loginState is LoginNotSubmitted &&
                                   !loginState.hasValidPasswordFormat),
-                          autofillHints: [AutofillHints.password],
+                          autofillHints: const [AutofillHints.password],
                         ),
                         ErrorAlert(
                           key: LoginPage.keys.wrongPasswordFormatError,
-                          visible: (loginState is LoginNotSubmitted &&
-                              !loginState.hasValidPasswordFormat),
+                          visible: loginState is LoginNotSubmitted &&
+                              !loginState.hasValidPasswordFormat,
                           inline: true,
                           message: context
                               .msg.onboarding.login.error.wrongPasswordFormat,
@@ -208,7 +207,8 @@ class _LoginPageState extends State<LoginPage>
                                               context
                                                   .msg.onboarding.button.login
                                                   .toUpperCaseIfAndroid(
-                                                      context),
+                                                context,
+                                              ),
                                             )
                                           : Row(
                                               mainAxisAlignment:
@@ -233,7 +233,8 @@ class _LoginPageState extends State<LoginPage>
                                                     context.msg.onboarding.login
                                                         .button.loggingIn
                                                         .toUpperCaseIfAndroid(
-                                                            context),
+                                                      context,
+                                                    ),
                                                   ),
                                                 ),
                                               ],
@@ -292,10 +293,10 @@ class _LoginPageState extends State<LoginPage>
 class _Keys {
   const _Keys();
 
-  final loginButton = const Key('loginButton');
-  final emailField = const Key('emailField');
-  final passwordField = const Key('passwordField');
-  final showPasswordButton = const Key('showPasswordButton');
-  final wrongEmailFormatError = const Key('wrongEmailFormatError');
-  final wrongPasswordFormatError = const Key('wrongPasswordFormatError');
+  Key get loginButton => const Key('loginButton');
+  Key get emailField => const Key('emailField');
+  Key get passwordField => const Key('passwordField');
+  Key get showPasswordButton => const Key('showPasswordButton');
+  Key get wrongEmailFormatError => const Key('wrongEmailFormatError');
+  Key get wrongPasswordFormatError => const Key('wrongPasswordFormatError');
 }
