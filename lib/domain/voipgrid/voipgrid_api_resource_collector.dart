@@ -97,8 +97,7 @@ class VoipgridApiResourceCollector with Loggable {
     if (paginatedResponse.hasMore) {
       yield* _makeRequest(
         requester,
-        // ignore: parameter_assignments
-        page: ++page,
+        page: page + 1,
       );
     }
   }
