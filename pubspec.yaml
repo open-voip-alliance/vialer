@@ -76,7 +76,7 @@ dependencies:
   mockito: ^5.3.2
   flutter_platform_widgets: ^3.2.0
   search_highlight_text: ^1.0.0+2
-  austerity: ^1.0.0
+  austerity: 1.0.0
 
 dev_dependencies:
   test: ^1.20.0
