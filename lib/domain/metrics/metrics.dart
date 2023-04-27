@@ -54,7 +54,7 @@ class ConsoleLoggingMetricsRepository extends MetricsRepository {
     User user, [
     Map<String, dynamic>? properties,
   ]) {
-    _assertPropertiesDoNotExceed1000Characters(properties);
+    _assertPropertiesDoNotExceed1000Characters(properties ?? {});
     return _log('Identified [${user.uuid}]: $properties');
   }
 
@@ -63,7 +63,7 @@ class ConsoleLoggingMetricsRepository extends MetricsRepository {
     String eventName, [
     Map<String, dynamic>? properties,
   ]) {
-    _assertPropertiesDoNotExceed1000Characters(properties);
+    _assertPropertiesDoNotExceed1000Characters(properties ?? {});
     return _log('[$eventName]: $properties');
   }
 
@@ -71,13 +71,11 @@ class ConsoleLoggingMetricsRepository extends MetricsRepository {
   /// characters, we'll add some asserts here so we know that we aren't having
   /// properties unknowingly truncated.
   void _assertPropertiesDoNotExceed1000Characters(
-    Map<String, dynamic>? properties,
+    Map<String, dynamic> properties,
   ) =>
-      properties?.forEach((key, value) {
-        final property = value is String ? value : value.toString();
-
+      properties.forEach((key, property) {
         assert(
-          property.length <= 1000,
+          property.toString().length <= 1000,
           'Metrics property [$key] is greater than'
           ' 1000 characters and will therefore be truncated.',
         );
