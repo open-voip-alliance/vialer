@@ -29,31 +29,32 @@ class RegisterDomainEventListenersUseCase extends UseCase with Loggable {
   final _refreshUser = RefreshUser();
 
   void call() {
-    _eventBus.on<UnauthorizedApiResponseEvent>(_logoutOnUnauthorizedResponse);
-    _eventBus.on<RateLimitReachedEvent>(
-      (event) => _trackRateLimitedApiCalls(event.url),
-    );
-
-    _eventBus.onSettingChange<bool>(
-      AppSetting.showClientCalls,
-      (oldValue, newValue) {
-        if (newValue == true) {
-          _importHistoricClientCalls();
-        } else {
-          _purgeLocalCallRecords(reason: PurgeReason.disabled);
-        }
-      },
-    );
-
-    _eventBus.on<SettingChanged>((_) => _identifyForTracking());
-    _eventBus.on<LoggedInUserAvailabilityChanged>(
-      (_) => _refreshUser(
-        tasksToPerform: [
-          UserRefreshTask.userDestination,
-          UserRefreshTask.userVoipConfig,
-        ],
-        synchronized: false,
-      ),
-    );
+    _eventBus
+      ..on<UnauthorizedApiResponseEvent>(_logoutOnUnauthorizedResponse)
+      ..on<RateLimitReachedEvent>(
+        (event) => _trackRateLimitedApiCalls(event.url),
+      )
+      ..onSettingChange<bool>(
+        AppSetting.showClientCalls,
+        (oldValue, newValue) {
+          if (newValue == true) {
+            unawaited(_importHistoricClientCalls());
+          } else {
+            unawaited(_purgeLocalCallRecords(reason: PurgeReason.disabled));
+          }
+        },
+      )
+      ..on<SettingChangedEvent>((_) => unawaited(_identifyForTracking()))
+      ..on<LoggedInUserAvailabilityChanged>(
+        (_) => unawaited(
+          _refreshUser(
+            tasksToPerform: [
+              UserRefreshTask.userDestination,
+              UserRefreshTask.userVoipConfig,
+            ],
+            synchronized: false,
+          ),
+        ),
+      );
   }
 }

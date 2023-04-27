@@ -141,7 +141,7 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
   Future<void> refreshAvailability() async {
     logger.info('Refreshing availability');
     await _refreshUser(tasksToPerform: [UserRefreshTask.userDestination]);
-    await _emitUpdatedState();
+    _emitUpdatedState();
   }
 
   void requestBatteryPermission() => unawaited(

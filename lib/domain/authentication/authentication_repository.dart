@@ -163,8 +163,8 @@ class AuthRepository with Loggable {
   Future<bool> changeMobileNumber(String mobileNumber) async {
     try {
       await mobileNumberRetry.run(() async {
-        final response = await _service
-            .changeMobileNumber({'mobile_nr': mobileNumber});
+        final response =
+            await _service.changeMobileNumber({'mobile_nr': mobileNumber});
 
         if (!response.isSuccessful) {
           logFailedResponse(response);

@@ -54,9 +54,9 @@ class ConsoleLoggingMetricsRepository extends MetricsRepository {
   Future<void> identify(
     User user, [
     Map<String, dynamic>? properties,
-  ]) {
+  ]) async {
     _assertPropertiesDoNotExceed1000Characters(properties ?? {});
-    return _log('Identified [${user.uuid}]: $properties');
+    _log('Identified [${user.uuid}]: $properties');
   }
 
   @override

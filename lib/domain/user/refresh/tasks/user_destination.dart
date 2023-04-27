@@ -11,7 +11,7 @@ class RefreshUserDestination extends SettingsRefreshTaskPerformer {
   const RefreshUserDestination();
 
   @override
-  Future<SettingsMutator> performSettingsRefreshTask(User _) async {
+  Future<SettingsMutator> performSettingsRefreshTask(User user) async {
     final destination =
         await dependencyLocator<DestinationRepository>().getActiveDestination();
 
