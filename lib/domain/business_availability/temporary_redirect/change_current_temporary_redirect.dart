@@ -29,12 +29,10 @@ class ChangeCurrentTemporaryRedirect extends UseCase
       return;
     }
 
-    unawaited(
-      track(<String, dynamic>{
-        'ending-at': temporaryRedirect.endsAt.toIso8601String(),
-        'id': temporaryRedirect.id,
-      }),
-    );
+    track(<String, dynamic>{
+      'ending-at': temporaryRedirect.endsAt.toIso8601String(),
+      'id': temporaryRedirect.id,
+    });
 
     unawaited(broadcast());
   }

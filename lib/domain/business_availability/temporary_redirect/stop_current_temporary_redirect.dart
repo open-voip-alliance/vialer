@@ -28,7 +28,7 @@ class StopCurrentTemporaryRedirect extends UseCase
       temporaryRedirect: current,
     );
 
-    unawaited(track());
+    track();
     unawaited(broadcast());
   }
 }

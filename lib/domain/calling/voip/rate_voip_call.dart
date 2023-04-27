@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:core';
 
 import 'package:flutter_phone_lib/flutter_phone_lib.dart';
@@ -23,21 +22,19 @@ class RateVoipCallUseCase extends UseCase {
     final connectivityType = await _connectivityRepository.currentType;
     final audioProblems = feedback.audioProblems ?? [];
 
-    unawaited(
-      _metricsRepository.track('call-rating', <String, dynamic>{
-        'rating': feedback.rating,
-        'mos': mos,
-        'duration': call.duration,
-        'direction': call.direction.toTrackString(),
-        'bluetooth-used': usedRoutes.contains(AudioRoute.bluetooth),
-        'phone-used': usedRoutes.contains(AudioRoute.phone),
-        'speaker-used': usedRoutes.contains(AudioRoute.speaker),
-        'audio-routes': _createAudioRouteString(usedRoutes),
-        'connection': connectivityType.toString(),
-        'problem': feedback.problem?.toShortString() ?? false,
-        ...audioProblems.toShortStringMap(),
-      }),
-    );
+    _metricsRepository.track('call-rating', <String, dynamic>{
+      'rating': feedback.rating,
+      'mos': mos,
+      'duration': call.duration,
+      'direction': call.direction.toTrackString(),
+      'bluetooth-used': usedRoutes.contains(AudioRoute.bluetooth),
+      'phone-used': usedRoutes.contains(AudioRoute.phone),
+      'speaker-used': usedRoutes.contains(AudioRoute.speaker),
+      'audio-routes': _createAudioRouteString(usedRoutes),
+      'connection': connectivityType.toString(),
+      'problem': feedback.problem?.toShortString() ?? false,
+      ...audioProblems.toShortStringMap(),
+    });
   }
 
   /// Create a string such as phone|bluetooth that will include

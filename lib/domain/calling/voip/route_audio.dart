@@ -12,7 +12,7 @@ class RouteAudioUseCase extends UseCase {
   final _trackRouteAudio = TrackRouteAudioUseCase();
 
   Future<void> call({required AudioRoute route}) async {
-    unawaited(_trackRouteAudio(route: route));
+    _trackRouteAudio(route: route);
     await _voipRepository.routeAudio(route);
   }
 }

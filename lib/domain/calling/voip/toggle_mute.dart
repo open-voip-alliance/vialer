@@ -10,7 +10,7 @@ class ToggleMuteVoipCallUseCase extends UseCase {
   final _trackToggleMute = TrackToggleMuteUseCase();
 
   Future<void> call() async {
-    unawaited(_trackToggleMute());
+    _trackToggleMute();
     await _voipRepository.toggleMute();
   }
 }

@@ -39,7 +39,7 @@ class WebViewCubit extends Cubit<WebViewState> with Loggable {
     try {
       final url = await _getWebViewUrl(page: _page);
 
-      unawaited(_trackWebView(page: describeEnum(_page)));
+      _trackWebView(page: describeEnum(_page));
 
       emit(LoadedUrl(url: url));
     } on AutoLoginException {

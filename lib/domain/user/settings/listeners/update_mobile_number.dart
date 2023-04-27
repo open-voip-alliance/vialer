@@ -21,7 +21,7 @@ class UpdateMobileNumberListener extends SettingChangeListener<String>
       changeRemoteValue(() async {
         final success = await _authRepository.changeMobileNumber(value);
         if (success) {
-          unawaited(_metricsRepository.track('change-mobile-number'));
+          _metricsRepository.track('change-mobile-number');
         }
         logger.info('Updating of mobile number succeeded: $success');
         return success;

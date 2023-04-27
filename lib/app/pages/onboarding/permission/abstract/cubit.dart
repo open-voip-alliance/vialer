@@ -31,11 +31,9 @@ class PermissionCubit extends Cubit<PermissionState> with Loggable {
       emit(PermissionDenied());
     }
 
-    unawaited(
-      _trackPermission(
-        type: permission.toShortString(),
-        granted: status == PermissionStatus.granted,
-      ),
+    _trackPermission(
+      type: permission.toShortString(),
+      granted: status == PermissionStatus.granted,
     );
   }
 }
