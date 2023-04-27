@@ -3,7 +3,7 @@ import 'package:dartx/dartx.dart';
 import 'package:logging/logging.dart';
 
 mixin Loggable {
-  late final Logger logger = Logger('@$runtimeType');
+  late final Logger logger = _create(this);
 
   /// A general use method to log something useful when a response is failed,
   /// nothing will be logged for a successful response.
@@ -33,3 +33,11 @@ mixin Loggable {
     logger.warning(message);
   }
 }
+
+extension GetLogger on Object {
+  /// This should only be used if the [Loggable] mixin is not available, such
+  /// as in an extension or in class that needs a const constructor.
+  Logger get logger => _create(this);
+}
+
+Logger _create(Object object) => Logger('@${object.runtimeType}');

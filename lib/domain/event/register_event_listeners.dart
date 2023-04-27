@@ -7,7 +7,8 @@ import '../call_records/client/purge_local_call_records.dart';
 import '../metrics/identify_for_tracking.dart';
 import '../use_case.dart';
 import '../user/events/logged_in_user_availability_changed.dart';
-import '../user/refresh_user.dart';
+import '../user/refresh/refresh_user.dart';
+import '../user/refresh/user_refresh_task.dart';
 import '../user/settings/app_setting.dart';
 import '../user/settings/setting_changed.dart';
 import '../voipgrid/rate_limit_reached_event.dart';
@@ -45,9 +46,9 @@ class RegisterDomainEventListenersUseCase extends UseCase with Loggable {
     _eventBus.on<SettingChanged>((_) => _identifyForTracking());
     _eventBus.on<LoggedInUserAvailabilityChanged>(
       (_) => _refreshUser(
-        tasksToRun: [
-          UserRefreshTask.availability,
-          UserRefreshTask.clientVoipConfig,
+        tasksToPerform: [
+          UserRefreshTask.userDestination,
+          UserRefreshTask.userVoipConfig,
         ],
         synchronized: false,
       ),

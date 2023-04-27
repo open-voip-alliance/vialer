@@ -3,7 +3,8 @@ import 'dart:async';
 import '../metrics/identify_for_tracking.dart';
 import '../metrics/track_login.dart';
 import '../use_case.dart';
-import '../user/refresh_user.dart';
+import '../user/refresh/refresh_user.dart';
+import '../user/refresh/user_refresh_task.dart';
 import 'login_credentials.dart';
 import 'mark_now_as_login_time.dart';
 
@@ -16,7 +17,10 @@ class LoginUseCase extends UseCase {
   Future<bool> call({
     required LoginCredentials credentials,
   }) async {
-    final user = await _refreshUser(credentials: credentials);
+    final user = await _refreshUser(
+      credentials: credentials,
+      tasksToPerform: UserRefreshTask.all,
+    );
 
     if (user == null) {
       return false;

@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 
+import '../../app/util/nullable_copy_with_argument.dart';
 import '../voipgrid/user_voip_config.dart';
 import 'client.dart';
 import 'permissions/user_permissions.dart';
@@ -79,12 +80,9 @@ class User extends Equatable {
     String? token,
     Uri? appAccountUrl,
     Client? client,
-    UserVoipConfig? voip,
+    NullableCopyWithArgument<UserVoipConfig> voip,
     Settings? settings,
     UserPermissions? permissions,
-    // If set to true, will allow the passing of a null voip config which will
-    // replace the existing one. Otherwise a null config would be ignored.
-    bool allowNullVoipConfig = false,
   }) {
     return User(
       uuid: uuid ?? this.uuid,
@@ -95,7 +93,7 @@ class User extends Equatable {
       token: token ?? this.token,
       appAccountUrl: appAccountUrl ?? this.appAccountUrl,
       client: client ?? this.client,
-      voip: allowNullVoipConfig ? voip : (voip ?? this.voip),
+      voip: voip.valueOrNull(unmodified: this.voip),
       settings: settings ?? this.settings,
       permissions: permissions ?? this.permissions,
     );
@@ -111,7 +109,7 @@ class User extends Equatable {
       token: user.token,
       appAccountUrl: user.appAccountUrl,
       client: user.client,
-      voip: user.voip,
+      voip: () => user.voip,
       settings: settings.copyFrom(user.settings),
       permissions: user.permissions,
     );
