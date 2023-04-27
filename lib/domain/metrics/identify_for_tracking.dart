@@ -59,9 +59,11 @@ extension on User {
 }
 
 extension on List<String> {
-  Map<String, dynamic> toIdentifyProperties() => {
-        'granted-voipgrid-permissions': this,
-      };
+  Map<String, dynamic> toIdentifyProperties() => Map.fromIterable(
+        this,
+        key: (permission) => 'voipgrid-permission-$permission',
+        value: (_) => true,
+      );
 }
 
 extension on List<Colleague> {
