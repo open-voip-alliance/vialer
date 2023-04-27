@@ -50,12 +50,13 @@ class UpdateDestinationListener extends SettingChangeListener<Destination>
     );
 
     if (success) {
-      unawaited(
-        _metricsRepository.track('destination-changed', <String, dynamic>{
+      _metricsRepository.track(
+        'destination-changed',
+        <String, dynamic>{
           'has-app-account': user.appAccountUrl != null,
           'to-fixed-destination': value is PhoneNumber,
           'to-phone-account': value is PhoneAccount,
-        }),
+        },
       );
     }
 

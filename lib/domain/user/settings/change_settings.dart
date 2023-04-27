@@ -144,7 +144,7 @@ class ChangeSettingsUseCase extends UseCase with Loggable {
           logger.info('Set $key to $value');
         }
 
-        unawaited(_metricsRepository.trackSettingChange(key, value));
+        _metricsRepository.trackSettingChange(key, value);
 
         _eventBus.broadcast(
           SettingChangedEvent(key, oldValue, value),

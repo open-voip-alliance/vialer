@@ -26,9 +26,7 @@ class StartTemporaryRedirect extends UseCase
       ),
     );
 
-    unawaited(
-      track(<String, dynamic>{'ending-at': endingAt.toIso8601String()}),
-    );
+    track(<String, dynamic>{'ending-at': endingAt.toIso8601String()});
     unawaited(broadcast());
   }
 }

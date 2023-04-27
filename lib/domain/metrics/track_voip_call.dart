@@ -21,20 +21,18 @@ class TrackVoipCallUseCase extends UseCase {
   }) async {
     final connectivityType = await _connectivityRepository.currentType;
 
-    unawaited(
-      _metricsRepository.track('voip-call', <String, dynamic>{
-        'direction': direction.toTrackString(),
-        'bluetooth-used': usedRoutes.contains(AudioRoute.bluetooth),
-        'phone-used': usedRoutes.contains(AudioRoute.phone),
-        'speaker-used': usedRoutes.contains(AudioRoute.speaker),
-        'connection': connectivityType.toString(),
-        'bluetooth-device-last': usedBluetoothDevices.lastOrNull,
-        'bluetooth-device-count': usedBluetoothDevices.length,
-        'bluetooth-device-list': usedBluetoothDevices.join(','),
-        'reason': reason,
-        'mos': mos,
-      }),
-    );
+    _metricsRepository.track('voip-call', <String, dynamic>{
+      'direction': direction.toTrackString(),
+      'bluetooth-used': usedRoutes.contains(AudioRoute.bluetooth),
+      'phone-used': usedRoutes.contains(AudioRoute.phone),
+      'speaker-used': usedRoutes.contains(AudioRoute.speaker),
+      'connection': connectivityType.toString(),
+      'bluetooth-device-last': usedBluetoothDevices.lastOrNull,
+      'bluetooth-device-count': usedBluetoothDevices.length,
+      'bluetooth-device-list': usedBluetoothDevices.join(','),
+      'reason': reason,
+      'mos': mos,
+    });
   }
 }
 

@@ -162,12 +162,11 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
       logger.severe(
         'Unable to place outgoing call, call state: ${state.runtimeType}',
       );
-      unawaited(
-        _trackOutboundCallFailed(
-          reason: CallFailureReason.invalidCallState,
-          message: state.runtimeType.toString(),
-          isVoip: callViaVoip,
-        ),
+
+      _trackOutboundCallFailed(
+        reason: CallFailureReason.invalidCallState,
+        message: state.runtimeType.toString(),
+        isVoip: callViaVoip,
       );
       return;
     }
@@ -176,12 +175,10 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
     logger.info('Preparing ${callViaVoip ? 'VoIP' : 'call-through'} call');
 
     if (callViaVoip) {
-      unawaited(
-        _trackUserInitiatedOutboundCall(
-          via: origin.toTrackString(),
-          isVoip: callViaVoip,
-          type: destination == '*8' ? CallType.pickupGroup : CallType.standard,
-        ),
+      _trackUserInitiatedOutboundCall(
+        via: origin.toTrackString(),
+        isVoip: callViaVoip,
+        type: destination == '*8' ? CallType.pickupGroup : CallType.standard,
       );
     }
 
@@ -282,10 +279,8 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
     required CallOrigin origin,
   }) async {
     if (!await _hasMicPermission()) {
-      unawaited(
-        _trackOutboundCallFailed(
-          reason: CallFailureReason.noMicrophonePermission,
-        ),
+      _trackOutboundCallFailed(
+        reason: CallFailureReason.noMicrophonePermission,
       );
       logger.warning(
         'Outbound VoIP call failed: No mic permission',
@@ -295,9 +290,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
     }
 
     if (await _getConnectivityType() == ConnectivityType.none) {
-      unawaited(
-        _trackOutboundCallFailed(reason: CallFailureReason.noConnectivity),
-      );
+      _trackOutboundCallFailed(reason: CallFailureReason.noConnectivity);
       logger.warning(
         'Outbound VoIP call failed: No internet connection',
       );
@@ -322,11 +315,9 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
 
       // TODO: on VoipException
     } on CallThroughException catch (e) {
-      unawaited(
-        _trackOutboundCallFailed(
-          reason: CallFailureReason.unknown,
-          message: e.runtimeType.toString(),
-        ),
+      _trackOutboundCallFailed(
+        reason: CallFailureReason.unknown,
+        message: e.runtimeType.toString(),
       );
       emit(processState.failed(e));
     }

@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import '../../../dependency_locator.dart';
 import '../use_case.dart';
 import 'metrics.dart';
@@ -7,7 +5,7 @@ import 'metrics.dart';
 class TrackUserInitiatedOutboundCall extends UseCase {
   final _metricsRepository = dependencyLocator<MetricsRepository>();
 
-  Future<void> call({
+  void call({
     required String via,
     required bool isVoip,
     required CallType type,

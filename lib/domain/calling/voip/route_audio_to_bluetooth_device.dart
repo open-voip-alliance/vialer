@@ -12,11 +12,9 @@ class RouteAudioToBluetoothDeviceUseCase extends UseCase {
   final _trackRouteAudio = TrackRouteAudioUseCase();
 
   Future<void> call({required BluetoothAudioRoute route}) async {
-    unawaited(
-      _trackRouteAudio(
-        route: AudioRoute.bluetooth,
-        bluetoothDevice: route.identifier,
-      ),
+    _trackRouteAudio(
+      route: AudioRoute.bluetooth,
+      bluetoothDevice: route.identifier,
     );
 
     await _voipRepository.routeAudioToBluetoothDevice(route);

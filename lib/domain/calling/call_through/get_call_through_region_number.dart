@@ -27,13 +27,11 @@ class GetCallThroughRegionNumberUseCase extends UseCase {
           user: _getUser(),
         );
       } on CallThroughException catch (e) {
-        unawaited(
-          _metricsRepository.track(
-            'call-through-region-number-failed',
-            <String, dynamic>{
-              'error': e.runtimeType.toString(),
-            },
-          ),
+        _metricsRepository.track(
+          'call-through-region-number-failed',
+          <String, dynamic>{
+            'error': e.runtimeType.toString(),
+          },
         );
         rethrow;
       }

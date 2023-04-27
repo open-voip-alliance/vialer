@@ -25,12 +25,10 @@ class PurgeLocalCallRecordsUseCase extends UseCase with Loggable {
       'Removed $amountDeleted local client calls because ${reason.name}',
     );
 
-    unawaited(
-      _metricsRepository.track('client-calls-purged', <String, dynamic>{
-        'amount': amountDeleted,
-        'reason': reason.name,
-      }),
-    );
+    _metricsRepository.track('client-calls-purged', <String, dynamic>{
+      'amount': amountDeleted,
+      'reason': reason.name,
+    });
   }
 }
 

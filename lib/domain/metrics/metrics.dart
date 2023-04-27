@@ -17,18 +17,18 @@ abstract class MetricsRepository {
     Map<String, dynamic>? properties,
   ]);
 
-  Future<void> track(
+  void track(
     String eventName, [
     Map<String, dynamic>? properties,
   ]);
 
-  Future<void> trackSettingChange<T extends Object>(
+  void trackSettingChange<T extends Object>(
     SettingKey<T> key,
     T value,
-  ) async {
+  ) {
     if (!key.shouldTrack) return;
 
-    await track(
+    track(
       key.toMetricKey(),
       key.toMetricProperties(value),
     );
@@ -40,14 +40,12 @@ abstract class MetricsRepository {
 class ConsoleLoggingMetricsRepository extends MetricsRepository {
   @override
   Future<void> initialize(String? key) async {
-    unawaited(_log('Console logging metrics have been initialized'));
+    _log('Console logging metrics have been initialized');
 
     if (key != null && key.isNotEmpty) {
-      unawaited(
-        _log(
-          'Key provided but will be ignored as events are only console logged.',
-          level: Level.WARNING,
-        ),
+      _log(
+        'Key provided but will be ignored as events are only console logged.',
+        level: Level.WARNING,
       );
     }
   }
@@ -62,7 +60,7 @@ class ConsoleLoggingMetricsRepository extends MetricsRepository {
   }
 
   @override
-  Future<void> track(
+  void track(
     String eventName, [
     Map<String, dynamic>? properties,
   ]) {
@@ -84,7 +82,7 @@ class ConsoleLoggingMetricsRepository extends MetricsRepository {
         );
       });
 
-  Future<void> _log(String message, {Level? level}) async {
+  void _log(String message, {Level? level}) {
     // Using log() rather than Logger as this provides nice formatting
     // for the console.
     log(

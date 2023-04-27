@@ -10,7 +10,7 @@ class ToggleHoldVoipCallUseCase extends UseCase {
   final _trackToggleHold = TrackToggleHoldUseCase();
 
   Future<void> call() async {
-    unawaited(_trackToggleHold());
+    _trackToggleHold();
     await _voipRepository.toggleHold();
   }
 }
