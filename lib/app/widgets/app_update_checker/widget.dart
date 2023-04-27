@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -33,7 +35,7 @@ class _AppUpdateCheckerState extends State<AppUpdateChecker>
     super.didChangeAppLifecycleState(state);
 
     if (state == AppLifecycleState.resumed) {
-      context.read<AppUpdateCheckerCubit>().check();
+      unawaited(context.read<AppUpdateCheckerCubit>().check());
     }
   }
 
@@ -41,40 +43,44 @@ class _AppUpdateCheckerState extends State<AppUpdateChecker>
     final cubit = context.read<AppUpdateCheckerCubit>();
 
     if (state is NewUpdateWasInstalled) {
-      showDialog<void>(
-        context: context,
-        builder: (context) {
-          return ReleaseNotesDialog(
-            releaseNotes: context.msg.main.update.releaseNotes.notes,
-            version: state.version,
-          );
-        },
+      unawaited(
+        showDialog<void>(
+          context: context,
+          builder: (context) {
+            return ReleaseNotesDialog(
+              releaseNotes: context.msg.main.update.releaseNotes.notes,
+              version: state.version,
+            );
+          },
+        ),
       );
     } else if (state is UpdateReadyToInstall) {
-      showDialog<void>(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text(context.msg.main.update.readyToInstall.title),
-            content: Text(context.msg.main.update.readyToInstall.content),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text(
-                  context.msg.main.update.readyToInstall.actions.notNow
-                      .toUpperCaseIfAndroid(context),
+      unawaited(
+        showDialog<void>(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text(context.msg.main.update.readyToInstall.title),
+              content: Text(context.msg.main.update.readyToInstall.content),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text(
+                    context.msg.main.update.readyToInstall.actions.notNow
+                        .toUpperCaseIfAndroid(context),
+                  ),
                 ),
-              ),
-              TextButton(
-                onPressed: cubit.completeFlexibleUpdate,
-                child: Text(
-                  context.msg.main.update.readyToInstall.actions.install
-                      .toUpperCaseIfAndroid(context),
+                TextButton(
+                  onPressed: cubit.completeFlexibleUpdate,
+                  child: Text(
+                    context.msg.main.update.readyToInstall.actions.install
+                        .toUpperCaseIfAndroid(context),
+                  ),
                 ),
-              ),
-            ],
-          );
-        },
+              ],
+            );
+          },
+        ),
       );
     }
   }

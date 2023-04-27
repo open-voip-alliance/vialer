@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -33,57 +35,62 @@ class _FeedbackPageState extends State<FeedbackPage> {
     final feedback = context.read<FeedbackCubit>();
 
     if (withLogs) {
-      feedback.enableThenSendLogsToRemote();
+      unawaited(feedback.enableThenSendLogsToRemote());
     }
 
     Navigator.pop(context);
 
-    feedback.sendFeedback(
-      title: 'Feedback',
-      text: text,
+    unawaited(
+      feedback.sendFeedback(
+        title: 'Feedback',
+        text: text,
+      ),
     );
   }
 
-  Future<void> _onSendFeedbackPressed(
+  void _onSendFeedbackPressed(
     BuildContext buildContext,
     String text,
-  ) async {
-    return showDialog<void>(
-      context: context,
-      builder: (context) => AlertDialog(
-        content: Text(
-          context.msg.main.settings.feedback.logs(
-            context.brand.appName,
+  ) {
+    unawaited(
+      showDialog<void>(
+        context: context,
+        builder: (context) => AlertDialog(
+          content: Text(
+            context.msg.main.settings.feedback.logs(
+              context.brand.appName,
+            ),
           ),
+          actions: [
+            TextButton(
+              style: TextButton.styleFrom(
+                foregroundColor: context.brand.theme.colors.primary,
+              ),
+              onPressed: () => _sendFeedback(
+                buildContext,
+                text: text,
+                withLogs: false,
+              ),
+              child: Text(
+                context.msg.generic.button.noThanks
+                    .toUpperCaseIfAndroid(context),
+              ),
+            ),
+            TextButton(
+              style: TextButton.styleFrom(
+                foregroundColor: context.brand.theme.colors.primary,
+              ),
+              onPressed: () => _sendFeedback(
+                buildContext,
+                text: text,
+                withLogs: true,
+              ),
+              child: Text(
+                context.msg.generic.button.yes.toUpperCaseIfAndroid(context),
+              ),
+            ),
+          ],
         ),
-        actions: [
-          TextButton(
-            style: TextButton.styleFrom(
-              foregroundColor: context.brand.theme.colors.primary,
-            ),
-            onPressed: () => _sendFeedback(
-              buildContext,
-              text: text,
-              withLogs: false,
-            ),
-            child: Text(
-              context.msg.generic.button.noThanks.toUpperCaseIfAndroid(context),
-            ),
-          ),
-          TextButton(
-            style: TextButton.styleFrom(
-              foregroundColor: context.brand.theme.colors.primary,
-            ),
-            onPressed: () => _sendFeedback(
-              buildContext,
-              text: text,
-              withLogs: true,
-            ),
-            child: Text(
-              context.msg.generic.button.yes.toUpperCaseIfAndroid(context),
-            ),
-          ),
-        ],
       ),
     );
   }

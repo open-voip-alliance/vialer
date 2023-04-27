@@ -15,7 +15,7 @@ export 'state.dart';
 
 class AppUpdateCheckerCubit extends Cubit<AppUpdateState> {
   AppUpdateCheckerCubit(this.caller) : super(const AppWasNotUpdated()) {
-    check();
+    unawaited(check());
   }
 
   final CallerCubit caller;
@@ -58,7 +58,7 @@ class AppUpdateCheckerCubit extends Cubit<AppUpdateState> {
     _checking = false;
   }
 
-  void completeFlexibleUpdate() => _completeFlexibleUpdate();
+  void completeFlexibleUpdate() => unawaited(_completeFlexibleUpdate());
 
   Future<void> _emitBasedOnRelease(bool hasNewRelease) async => emit(
         hasNewRelease

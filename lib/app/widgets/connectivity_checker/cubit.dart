@@ -11,7 +11,7 @@ export 'state.dart';
 
 class ConnectivityCheckerCubit extends Cubit<ConnectivityState> {
   ConnectivityCheckerCubit() : super(const Connected()) {
-    check();
+    unawaited(check());
     _subscription = _getConnectivityTypeStream().listen(
       _emitBasedOnConnectivityType,
     );

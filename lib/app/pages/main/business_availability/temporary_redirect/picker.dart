@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dartx/dartx.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -85,7 +87,9 @@ class _TemporaryRedirectPickerState extends State<TemporaryRedirectPicker> {
     });
   }
 
-  void _openPortal() => WebViewPage.open(context, to: WebPage.addVoicemail);
+  void _openPortal() => unawaited(
+        WebViewPage.open(context, to: WebPage.addVoicemail),
+      );
 
   String get _mainActionText {
     final text = widget.activeRedirect != null
@@ -181,7 +185,7 @@ class _TemporaryRedirectPickerState extends State<TemporaryRedirectPicker> {
             onPressed: _actionable &&
                     _hasCorrectUntilDate &&
                     _selectedDestination != null
-                ? () => _handleAction(
+                ? () async => _handleAction(
                       () => widget.onStart(
                         _selectedDestination!,
                         _untilDateNotifier.value!,
@@ -205,8 +209,9 @@ class _TemporaryRedirectPickerState extends State<TemporaryRedirectPicker> {
             const SizedBox(height: 48),
             StylizedButton.outline(
               colored: true,
-              onPressed:
-                  _actionable ? () => _handleAction(widget.onStop!) : null,
+              onPressed: _actionable
+                  ? () => unawaited(_handleAction(widget.onStop!))
+                  : null,
               child: Text(
                 context.msg.main.temporaryRedirect.actions.stopRedirect
                     .labelOngoing

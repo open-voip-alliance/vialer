@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:dartx/dartx.dart';
@@ -315,14 +316,16 @@ class _KeypadValueButtonState extends State<KeypadValueButton> {
 
     if (context.isAndroid ||
         (context.isIOS && widget.replaceWithSecondaryValueOnLongPress)) {
-      SemanticsService.announce(
-        widget.primaryValue,
-        Directionality.of(context),
+      unawaited(
+        SemanticsService.announce(
+          widget.primaryValue,
+          Directionality.of(context),
+        ),
       );
     }
 
     if (widget.playTone) {
-      tones.playForDigit(widget.primaryValue);
+      unawaited(tones.playForDigit(widget.primaryValue));
     }
   }
 
@@ -340,10 +343,12 @@ class _KeypadValueButtonState extends State<KeypadValueButton> {
       text: start + widget.secondaryValue! + end,
     );
 
-    SemanticsService.announce(
-      context.msg.main.dialer.button.value
-          .replacedWithHint(widget.secondaryValue!),
-      Directionality.of(context),
+    unawaited(
+      SemanticsService.announce(
+        context.msg.main.dialer.button.value
+            .replacedWithHint(widget.secondaryValue!),
+        Directionality.of(context),
+      ),
     );
   }
 

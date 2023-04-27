@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:search_highlight_text/search_highlight_text.dart';
@@ -54,10 +56,12 @@ class _ContactItem extends StatelessWidget {
 
     return ColltactItem._(
       subtitle: ColltactSubtitle(colltact),
-      onTap: () => Navigator.pushNamed(
-        context,
-        ColltactsPageRoutes.details,
-        arguments: colltact,
+      onTap: () => unawaited(
+        Navigator.pushNamed(
+          context,
+          ColltactsPageRoutes.details,
+          arguments: colltact,
+        ),
       ),
       title: SearchHighlightText(
         colltact.name,
@@ -85,10 +89,12 @@ class _ColleagueItem extends StatelessWidget {
         colltact,
         colleaguesUpToDate: colleaguesUpToDate,
       ),
-      onTap: () => Navigator.pushNamed(
-        context,
-        ColltactsPageRoutes.details,
-        arguments: colltact,
+      onTap: () => unawaited(
+        Navigator.pushNamed(
+          context,
+          ColltactsPageRoutes.details,
+          arguments: colltact,
+        ),
       ),
       avatar: ColltactAvatar(
         colltact,

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import '../../dependency_locator.dart';
 import '../authentication/is_authenticated.dart';
 import '../authentication/logout.dart';
@@ -18,7 +20,7 @@ class ShouldOnboard extends UseCase {
     if (!_isAuthenticated()) return true;
 
     if (!_storageRepository.hasCompletedOnboarding) {
-      _logout();
+      unawaited(_logout());
       return true;
     }
 

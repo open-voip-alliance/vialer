@@ -74,29 +74,33 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
       .where((request) => !request.hasTimedOut)
       .isNotEmpty;
 
-  Future<void> _emitUpdatedState({
+  void _emitUpdatedState({
     User? user,
-  }) async {
-    // We don't want to emit any refresh changes while we're in the progress
-    // of changing remote settings.
-    if (_isUpdatingRemote && !_isRateLimited) return;
+  }) {
+    unawaited(
+      () async {
+        // We don't want to emit any refresh changes while we're in the progress
+        // of changing remote settings.
+        if (_isUpdatingRemote && !_isRateLimited) return;
 
-    user = user ?? _getUser();
+        user = user ?? _getUser();
 
-    emit(
-      SettingsState(
-        user: user,
-        buildInfo: await _getBuildInfo(),
-        hasIgnoreBatteryOptimizationsPermission: await _getPermissionStatus(
-          permission: Permission.ignoreBatteryOptimizations,
-        ).then(
-          (status) => status == PermissionStatus.granted,
-        ),
-        userNumber: _storageRepository.userNumber,
-        availableDestinations: _storageRepository.availableDestinations,
-        isApplyingChanges: _isUpdatingRemote,
-        isRateLimited: _isRateLimited,
-      ),
+        emit(
+          SettingsState(
+            user: user!,
+            buildInfo: await _getBuildInfo(),
+            hasIgnoreBatteryOptimizationsPermission: await _getPermissionStatus(
+              permission: Permission.ignoreBatteryOptimizations,
+            ).then(
+              (status) => status == PermissionStatus.granted,
+            ),
+            userNumber: _storageRepository.userNumber,
+            availableDestinations: _storageRepository.availableDestinations,
+            isApplyingChanges: _isUpdatingRemote,
+            isRateLimited: _isRateLimited,
+          ),
+        );
+      }(),
     );
   }
 
@@ -131,7 +135,7 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
     emit(state.withChanged(newSettings, isApplyingChanges: true));
     await _changeSettings(newSettings);
     _changesBeingProcessed.remove(changeRequest);
-    unawaited(_emitUpdatedState());
+    _emitUpdatedState();
   }
 
   Future<void> refreshAvailability() async {
@@ -140,13 +144,15 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
     await _emitUpdatedState();
   }
 
-  Future<void> requestBatteryPermission() => _requestPermission(
-        permission: Permission.ignoreBatteryOptimizations,
+  void requestBatteryPermission() => unawaited(
+        _requestPermission(
+          permission: Permission.ignoreBatteryOptimizations,
+        ),
       );
 
   Future<void> sendSavedLogsToRemote() => _sendSavedLogsToRemote();
 
-  Future<void> refresh() => _emitUpdatedState();
+  void refresh() => _emitUpdatedState();
 
   bool get shouldShowOpeningHoursBasic => _shouldShowOpeningHoursBasic();
 

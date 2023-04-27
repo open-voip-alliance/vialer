@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import '../../app/util/loggable.dart';
 import '../../dependency_locator.dart';
 import '../authentication/logout_on_unauthorized_response.dart';

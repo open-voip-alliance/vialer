@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,8 +22,9 @@ class EchoCancellationCalibrationTile extends StatelessWidget {
         context.msg.main.settings.list.advancedSettings.troubleshooting.list
             .audio.echoCancellationCalibration.description,
       ),
-      onTap: () =>
-          context.read<SettingsCubit>().performEchoCancellationCalibration(),
+      onTap: () => unawaited(
+        context.read<SettingsCubit>().performEchoCancellationCalibration(),
+      ),
       showNavigationIndicator: false,
     );
   }

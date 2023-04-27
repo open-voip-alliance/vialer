@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../../../../../../../domain/user/user.dart';
@@ -17,11 +19,13 @@ class OpeningHoursLinkTile extends StatelessWidget {
       title: Text(
         context.msg.main.settings.list.portalLinks.openingHours.title,
       ),
-      onTap: () => WebViewPage.open(
-        context,
-        to: user.client.openingHoursModules.length == 1
-            ? WebPage.openingHoursBasicEdit
-            : WebPage.openingHoursBasicList,
+      onTap: () => unawaited(
+        WebViewPage.open(
+          context,
+          to: user.client.openingHoursModules.length == 1
+              ? WebPage.openingHoursBasicEdit
+              : WebPage.openingHoursBasicList,
+        ),
       ),
     );
   }

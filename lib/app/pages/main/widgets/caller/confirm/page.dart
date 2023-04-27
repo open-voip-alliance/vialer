@@ -55,7 +55,7 @@ class ConfirmPageState extends State<ConfirmPage>
     final cubit = context.read<ConfirmCubit>();
 
     if (Platform.isIOS && !_madeCall) {
-      cubit.call(origin: widget.origin);
+      unawaited(cubit.call(origin: widget.origin));
     }
   }
 
@@ -209,9 +209,9 @@ class ConfirmPageState extends State<ConfirmPage>
                         _AndroidInputs(
                           checkboxValue: !state.showConfirmPage,
                           onCheckboxValueChanged: (v) =>
-                              cubit.updateShowPopupSetting(!v),
+                              unawaited(cubit.updateShowPopupSetting(!v)),
                           onCallButtonPressed: () =>
-                              cubit.call(origin: widget.origin),
+                              unawaited(cubit.call(origin: widget.origin)),
                           onCancelButtonPressed: () =>
                               _onCancelButtonPressed(cubit),
                           destination: context.msg.main.dialer.confirm.button

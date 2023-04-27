@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dartx/dartx.dart';
 import 'package:diacritic/diacritic.dart';
 import 'package:flutter/material.dart';
@@ -112,7 +114,7 @@ class _ColltactPageState extends State<_ColltactList>
     super.didChangeAppLifecycleState(state);
 
     if (state == AppLifecycleState.resumed) {
-      context.read<ContactsCubit>().reloadContacts();
+      unawaited(context.read<ContactsCubit>().reloadContacts());
     }
   }
 
@@ -477,9 +479,11 @@ class _ColltactPageState extends State<_ColltactList>
         ),
         kind: colltactKind,
         searchTerm: _searchTerm ?? '',
-        onCall: (number) => colltactKind == ColltactKind.contact
-            ? contactsCubit.call(number)
-            : colleaguesCubit.call(number),
+        onCall: (number) => unawaited(
+          colltactKind == ColltactKind.contact
+              ? contactsCubit.call(number)
+              : colleaguesCubit.call(number),
+        ),
         dontAskForContactsPermissionAgain:
             contactsState is ContactsLoaded && contactsState.dontAskAgain,
         contactsCubit: contactsCubit,

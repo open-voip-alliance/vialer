@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -45,7 +47,9 @@ class _PasswordPageState extends State<PasswordPage>
 
   void _onChangePasswordButtonPressed(BuildContext context) {
     if (_canSubmit) {
-      context.read<PasswordCubit>().changePassword(_passwordController.text);
+      unawaited(
+        context.read<PasswordCubit>().changePassword(_passwordController.text),
+      );
     }
   }
 

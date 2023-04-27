@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -43,7 +45,7 @@ class MainPageState extends State<MainPage> {
   ];
 
   void navigateTo(MainPageTab tab) =>
-      _navigateTo(_dialerIsPage ? tab.index : tab.index - 1);
+      unawaited(_navigateTo(_dialerIsPage ? tab.index : tab.index - 1));
 
   Future<void> _navigateTo(int? index) async {
     if (index == null) return;
@@ -91,7 +93,7 @@ class MainPageState extends State<MainPage> {
     if (context.isIOS &&
         state is FinishedCalling &&
         state.origin == CallOrigin.dialer) {
-      _navigateTo(_previousIndex);
+      unawaited(_navigateTo(_previousIndex));
     }
   }
 
@@ -129,8 +131,9 @@ class MainPageState extends State<MainPage> {
                         // transition between the dialer and call button.
                         heroTag: CallButton.defaultHeroTag,
                         backgroundColor: context.brand.theme.colors.green1,
-                        onPressed: () =>
-                            Navigator.pushNamed(context, Routes.dialer),
+                        onPressed: () => unawaited(
+                          Navigator.pushNamed(context, Routes.dialer),
+                        ),
                         child: const Icon(
                           Icons.dialpad,
                           size: 31,

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
@@ -43,8 +45,10 @@ class _LoginPageState extends State<LoginPage>
   bool _hidePassword = true;
 
   void _goToPasswordReset() {
-    launchUrlString(
-      context.brand.url.resolve('/user/password_reset/').toString(),
+    unawaited(
+      launchUrlString(
+        context.brand.url.resolve('/user/password_reset/').toString(),
+      ),
     );
   }
 
@@ -191,11 +195,12 @@ class _LoginPageState extends State<LoginPage>
                                     key: LoginPage.keys.loginButton,
                                     onPressed: loginState is! LoggingIn &&
                                             connectivityState is! Disconnected
-                                        ? () =>
-                                            context.read<LoginCubit>().login(
-                                                  _emailController.text,
-                                                  _passwordController.text,
-                                                )
+                                        ? () => unawaited(
+                                              context.read<LoginCubit>().login(
+                                                    _emailController.text,
+                                                    _passwordController.text,
+                                                  ),
+                                            )
                                         : null,
                                     child: AnimatedSwitcher(
                                       switchInCurve: Curves.decelerate,
@@ -294,9 +299,14 @@ class _Keys {
   const _Keys();
 
   Key get loginButton => const Key('loginButton');
+
   Key get emailField => const Key('emailField');
+
   Key get passwordField => const Key('passwordField');
+
   Key get showPasswordButton => const Key('showPasswordButton');
+
   Key get wrongEmailFormatError => const Key('wrongEmailFormatError');
+
   Key get wrongPasswordFormatError => const Key('wrongPasswordFormatError');
 }

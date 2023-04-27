@@ -47,12 +47,12 @@ class _RecentCallsPageState extends State<RecentCallsPage> {
   void initState() {
     super.initState();
 
-    _updateShowClientCalls();
+    unawaited(_updateShowClientCalls());
 
     _eventBusSubscription = _eventBus.onSettingChange<bool>(
       AppSetting.showClientCalls,
       (oldValue, newValue) {
-        _updateShowClientCalls(settingValue: newValue);
+        unawaited(_updateShowClientCalls(settingValue: newValue));
       },
     );
   }
@@ -96,7 +96,7 @@ class _RecentCallsPageState extends State<RecentCallsPage> {
 
   @override
   void dispose() {
-    _eventBusSubscription?.cancel();
+    unawaited(_eventBusSubscription?.cancel());
 
     super.dispose();
   }
@@ -165,9 +165,9 @@ class _ContentState extends State<_Content> with TickerProviderStateMixin {
       () {
         if (!tabController.indexIsChanging) {
           if (tabController.index == 0) {
-            widget.manualRefresher.refresh();
+            unawaited(widget.manualRefresher.refresh());
           } else if (tabController.index == 1) {
-            widget.clientManualRefresher.refresh();
+            unawaited(widget.clientManualRefresher.refresh());
           }
         }
       },
@@ -277,7 +277,7 @@ class _Calls<C extends RecentCallsCubit> extends StatelessWidget {
           snackBarPadding: snackBarPadding,
           isLoadingInitial: state is LoadingInitialRecentCalls,
           callRecords: recentCalls,
-          onRefresh: () => _refreshCalls(context),
+          onRefresh: () async => _refreshCalls(context),
           onCallPressed: cubit.call,
           onCopyPressed: cubit.copyNumber,
           loadMoreCalls: cubit.loadMoreRecentCalls,
@@ -315,9 +315,9 @@ class _MissedCallsToggle extends StatelessWidget {
     if (showClientCalls) {
       context.read<ClientCallsCubit>().onlyMissedCalls = value;
 
-      clientManualRefresher.refresh();
+      unawaited(clientManualRefresher.refresh());
     }
 
-    manualRefresher.refresh();
+    unawaited(manualRefresher.refresh());
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -15,7 +17,7 @@ class HelpUsScreen extends StatelessWidget {
   final bool dontShowThisAgain;
 
   void _onDontShowThisAgainChanged(BuildContext context, bool value) {
-    context.read<SurveyCubit>().setDontShowThisAgain(value);
+    unawaited(context.read<SurveyCubit>().setDontShowThisAgain(value));
   }
 
   void _dismiss(BuildContext context) {

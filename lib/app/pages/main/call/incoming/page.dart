@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dartx/dartx.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -22,11 +24,11 @@ class IncomingCallPage extends StatefulWidget {
 class _IncomingCallPageState extends State<IncomingCallPage>
     with TickerProviderStateMixin {
   void _onDeclineButtonPressed() {
-    context.read<CallerCubit>().endVoipCall();
+    unawaited(context.read<CallerCubit>().endVoipCall());
   }
 
   void _onAnswerButtonPressed() {
-    context.read<CallerCubit>().answerVoipCall();
+    unawaited(context.read<CallerCubit>().answerVoipCall());
   }
 
   @override

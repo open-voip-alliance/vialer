@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -146,7 +147,7 @@ class _T9ColltactsListState extends State<_T9ColltactsList> {
                   ),
                   subtitle: Text(t9Colltact.relevantPhoneNumber.value),
                   onTap: () {
-                    TrackT9Usage()(t9Colltact.colltact);
+                    unawaited(TrackT9Usage()(t9Colltact.colltact));
                     widget.controller.text =
                         t9Colltact.relevantPhoneNumber.value;
                   },

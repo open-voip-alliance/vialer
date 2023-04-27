@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -31,9 +33,11 @@ class _BuildInfoTileState extends State<BuildInfoTile> {
       final gainedAccess = _tapCount == _tapCountToShowHiddenSettings;
 
       if (gainedAccess) {
-        context
-            .read<SettingsCubit>()
-            .changeSetting(AppSetting.showTroubleshooting, true);
+        unawaited(
+          context
+              .read<SettingsCubit>()
+              .changeSetting(AppSetting.showTroubleshooting, true),
+        );
       }
 
       ScaffoldMessenger.of(context).showSnackBar(

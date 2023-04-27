@@ -167,10 +167,12 @@ class _AppState extends State<App> {
         // the app but didn't finish onboarding last time.
         if (currentRoute.settings.name == Routes.onboarding) return;
 
-        Navigator.pushNamedAndRemoveUntil(
-          context,
-          Routes.onboarding,
-          (r) => false,
+        unawaited(
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            Routes.onboarding,
+            (r) => false,
+          ),
         );
       });
 }

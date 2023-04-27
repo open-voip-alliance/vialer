@@ -280,7 +280,7 @@ class StorageRepository {
   bool get hasCompletedOnboarding => hasCompletedOnboardingOrNull ?? false;
 
   set hasCompletedOnboarding(bool value) =>
-      _preferences.setBool(_hasCompletedOnboarding, value);
+      unawaited(_preferences.setBool(_hasCompletedOnboarding, value));
 
   static const _currentColltactTabKey = 'current_colltact_tab';
 
@@ -413,36 +413,39 @@ extension on SharedPreferences {
     return DateTime.parse(isoDate);
   }
 
-  Future<bool> setOrRemoveDateTime(String key, DateTime? value) {
-    return setOrRemoveString(
+  void setOrRemoveDateTime(String key, DateTime? value) {
+    setOrRemoveString(
       key,
       value?.toUtc().toIso8601String(),
     );
   }
 
-  Future<bool> setOrRemoveString(String key, String? value) {
+  void setOrRemoveString(String key, String? value) {
     if (value == null) {
-      return remove(key);
+      unawaited(remove(key));
+      return;
     }
 
-    return setString(key, value);
+    unawaited(setString(key, value));
   }
 
-  Future<bool> setOrRemoveInt(String key, int? value) {
+  void setOrRemoveInt(String key, int? value) {
     if (value == null) {
-      return remove(key);
+      unawaited(remove(key));
+      return;
     }
 
-    return setInt(key, value);
+    unawaited(setInt(key, value));
   }
 
   // ignore: avoid_positional_boolean_parameters
-  Future<bool> setOrRemoveBool(String key, bool? value) {
+  void setOrRemoveBool(String key, bool? value) {
     if (value == null) {
-      return remove(key);
+      unawaited(remove(key));
+      return;
     }
 
-    return setBool(key, value);
+    unawaited(setBool(key, value));
   }
 
   T? getJson<T, J>(
@@ -456,12 +459,12 @@ extension on SharedPreferences {
     return fromJson(json.decode(preference) as J);
   }
 
-  Future<bool> setOrRemoveJson<T>(
+  void setOrRemoveJson<T>(
     String key,
     T? value,
     dynamic Function(T) toJson,
   ) {
-    return setOrRemoveString(
+    setOrRemoveString(
       key,
       value != null ? json.encode(toJson(value)) : null,
     );

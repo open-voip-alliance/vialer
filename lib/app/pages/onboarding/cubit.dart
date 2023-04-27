@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../dependency_locator.dart';
@@ -18,11 +20,13 @@ class OnboardingCubit extends Cubit<OnboardingState> with Loggable {
             allSteps: [OnboardingStep.login],
           ),
         ) {
-    _getSteps().then((steps) {
-      emit(
-        state.copyWith(allSteps: steps),
-      );
-    });
+    unawaited(
+      _getSteps().then((steps) {
+        emit(
+          state.copyWith(allSteps: steps),
+        );
+      }),
+    );
   }
 
   final _storage = dependencyLocator<StorageRepository>();

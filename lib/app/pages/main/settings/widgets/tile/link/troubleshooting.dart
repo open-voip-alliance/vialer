@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -10,14 +12,16 @@ class TroubleshootingLinkTile extends StatelessWidget {
   const TroubleshootingLinkTile({super.key});
 
   void _showTroubleshootingPage(BuildContext context) {
-    Navigator.push<dynamic>(
-      context,
-      MaterialPageRoute<dynamic>(
-        builder: (_) {
-          return TroubleshootingSubPage(
-            cubit: context.read<SettingsCubit>(),
-          );
-        },
+    unawaited(
+      Navigator.push<dynamic>(
+        context,
+        MaterialPageRoute<dynamic>(
+          builder: (_) {
+            return TroubleshootingSubPage(
+              cubit: context.read<SettingsCubit>(),
+            );
+          },
+        ),
       ),
     );
   }

@@ -165,13 +165,13 @@ class _DateFieldState extends State<DateField> {
     } else {
       switch (mode) {
         case CupertinoDatePickerMode.time:
-          unawaited(_showMaterialTimePicker());
+          await _showMaterialTimePicker();
           break;
         case CupertinoDatePickerMode.date:
-          unawaited(_showMaterialDatePicker());
+          await _showMaterialDatePicker();
           break;
         case CupertinoDatePickerMode.dateAndTime:
-          unawaited(_showMaterialDateTimePicker());
+          await _showMaterialDateTimePicker();
           break;
       }
     }
@@ -194,7 +194,7 @@ class _DateFieldState extends State<DateField> {
                 icon: FontAwesomeIcons.calendar,
                 text: _dateFormat.format(_date),
                 hasError: _hasError,
-                onTap: () => _showPicker(time: false),
+                onTap: () => unawaited(_showPicker(time: false)),
               ),
             ),
             const SizedBox(width: 8),
@@ -203,7 +203,7 @@ class _DateFieldState extends State<DateField> {
                 icon: FontAwesomeIcons.clock,
                 text: _timeFormat.format(_date),
                 hasError: _hasError,
-                onTap: () => _showPicker(time: true),
+                onTap: () => unawaited(_showPicker(time: true)),
               ),
             ),
           ],

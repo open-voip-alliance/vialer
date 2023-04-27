@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../../domain/calling/call_through/get_call_through_region_number.dart';
@@ -21,7 +23,7 @@ class ConfirmCubit extends Cubit<ConfirmState> with Loggable {
                 .get(CallSetting.outgoingNumber),
           ),
         ) {
-    _emitInitialState();
+    unawaited(_emitInitialState());
   }
 
   final _changeSetting = ChangeSettingUseCase();

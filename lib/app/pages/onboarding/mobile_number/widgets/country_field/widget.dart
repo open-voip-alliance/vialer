@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -39,9 +41,11 @@ class _CountryFlagFieldState extends State<CountryFlagField> {
     if (widget.controller.value.text.length > 4) {
       _mobileNumber = widget.controller.value.text;
 
-      context
-          .read<CountryFieldCubit>()
-          .pickCountryByMobileNumber(_mobileNumber);
+      unawaited(
+        context
+            .read<CountryFieldCubit>()
+            .pickCountryByMobileNumber(_mobileNumber),
+      );
 
       // Remove listener, so we effectively only listen once when the mobile
       // number from the VG api returns.
@@ -61,9 +65,11 @@ class _CountryFlagFieldState extends State<CountryFlagField> {
       if (_mobileNumber == '') {
         widget.controller.text = '+${state.currentCountry.callingCode}';
       } else {
-        context
-            .read<CountryFieldCubit>()
-            .pickCountryByMobileNumber(_mobileNumber);
+        unawaited(
+          context
+              .read<CountryFieldCubit>()
+              .pickCountryByMobileNumber(_mobileNumber),
+        );
       }
     }
   }
@@ -98,7 +104,7 @@ class _CountryFlagFieldState extends State<CountryFlagField> {
     widget.focusNode.unfocus();
     widget.focusNode.canRequestFocus = false;
 
-    _showCountryBottomSheet(countries, cubit);
+    unawaited(_showCountryBottomSheet(countries, cubit));
 
     // Restore the focus.
     Future.delayed(const Duration(milliseconds: 100), () {

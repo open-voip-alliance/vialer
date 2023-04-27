@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -58,8 +60,9 @@ class OutgoingNumberTile extends StatelessWidget {
                           right: 8,
                         ),
                         onChanged: enabled
-                            ? (number) =>
-                                defaultOnChanged(context, _key, number)
+                            ? (number) => unawaited(
+                                  defaultOnChanged(context, _key, number),
+                                )
                             : null,
                         items: [
                           DropdownMenuItem<OutgoingNumber>(

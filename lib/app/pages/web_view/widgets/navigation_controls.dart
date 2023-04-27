@@ -24,7 +24,7 @@ class NavigationControls extends StatelessWidget {
   }
 
   void _onReloadButtonPressed() {
-    _webViewController!.reload();
+    unawaited(_webViewController!.reload());
   }
 
   @override

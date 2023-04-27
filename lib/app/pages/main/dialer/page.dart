@@ -48,12 +48,12 @@ class _DialerPageState extends State<DialerPage>
   void initState() {
     super.initState();
 
-    _updateEnableT9ContactSearch();
+    unawaited(_updateEnableT9ContactSearch());
 
     _eventBusSubscription = _eventBus.onSettingChange<bool>(
       AppSetting.enableT9ContactSearch,
       (_, newValue) {
-        _updateEnableT9ContactSearch(settingValue: newValue);
+        unawaited(_updateEnableT9ContactSearch(settingValue: newValue));
       },
     );
   }
@@ -83,7 +83,7 @@ class _DialerPageState extends State<DialerPage>
         );
       }
     } else if (state == AppLifecycleState.resumed) {
-      context.read<CallerCubit>().checkPhonePermission();
+      unawaited(context.read<CallerCubit>().checkPhonePermission());
     }
   }
 
@@ -95,11 +95,11 @@ class _DialerPageState extends State<DialerPage>
   }
 
   void _onCallButtonPressed(BuildContext context, String number) =>
-      context.read<DialerCubit>().call(number);
+      unawaited(context.read<DialerCubit>().call(number));
 
   @override
   void dispose() {
-    _eventBusSubscription?.cancel();
+    unawaited(_eventBusSubscription?.cancel());
 
     super.dispose();
   }

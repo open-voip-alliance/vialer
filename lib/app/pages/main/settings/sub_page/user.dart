@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -45,7 +47,9 @@ class UserSubPage extends StatelessWidget {
                   child: SettingsButton(
                     text: context.msg.main.settings.buttons.logout,
                     solid: false,
-                    onPressed: () => context.read<SettingsCubit>().logout(),
+                    onPressed: () => unawaited(
+                      context.read<SettingsCubit>().logout(),
+                    ),
                   ),
                 ),
               ],
