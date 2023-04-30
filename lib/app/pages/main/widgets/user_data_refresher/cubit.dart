@@ -61,7 +61,7 @@ class UserDataRefresherCubit extends Cubit<UserDataRefresherState>
 
 extension on DateTime? {
   /// The minimum duration between which a user refresh can happen.
-  static const _minInterval = Duration(seconds: 60);
+  static const _minInterval = Duration(seconds: 15);
 
   bool get isReadyForRefresh =>
       this?.isBefore(DateTime.now().subtract(_minInterval)) ?? true;

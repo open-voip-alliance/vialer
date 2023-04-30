@@ -333,6 +333,11 @@ class VoipRepository with Loggable {
       return;
     }
 
+    if (voipConfig?.sipUserId == null) {
+      logger.warning('Unable to unregister without a [sipUserId]');
+      return;
+    }
+
     final token = _token!;
     final sipUserId = voipConfig!.sipUserId;
     final app = await _getBuildInfo().then((i) => i.packageName);
