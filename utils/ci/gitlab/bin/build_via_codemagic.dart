@@ -150,17 +150,19 @@ Future<_CodemagicBuild> _fetchCodemagicBuild({
 
   final buildStatus = status.toCodemagicBuildStatus();
 
-  final buildActions = build['buildActions'] as List<Map<String, dynamic>>;
+  final buildActions = build['buildActions'] as List<dynamic>;
 
   // Attempts to find the "action" we are currently on (i.e. the build stage)
   // so this information can be printed.
   if (buildActions.isNotEmpty) {
     // To find the current action we want to filter the build actions
     // to those that haven't been started or skipped.
-    final currentActions = buildActions.where(
-      (action) =>
-          action['startedAt'] != null && action['startedAt'] != 'skipped',
-    );
+    final currentActions = buildActions
+        .map((e) => e as Map<String, dynamic>)
+        .where(
+          (action) =>
+              action['startedAt'] != null && action['startedAt'] != 'skipped',
+        );
 
     if (currentActions.isNotEmpty) {
       return _CodemagicBuild(
@@ -175,9 +177,9 @@ Future<_CodemagicBuild> _fetchCodemagicBuild({
 
 class _CodemagicBuild {
   const _CodemagicBuild(
-      this.status, {
-        String? currentAction,
-      }) : currentStage = currentAction ?? 'unknown';
+    this.status, {
+    String? currentAction,
+  }) : currentStage = currentAction ?? 'unknown';
 
   final _CodemagicBuildStatus status;
   final String currentStage;
