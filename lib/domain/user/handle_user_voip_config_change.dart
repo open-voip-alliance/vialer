@@ -7,10 +7,11 @@ import '../metrics/metrics.dart';
 import '../use_case.dart';
 import '../voipgrid/user_voip_config.dart';
 
-class HandleAppAccountChange extends UseCase with Loggable {
+class HandleUserVoipConfigChange extends UseCase with Loggable {
   late final metrics = dependencyLocator<MetricsRepository>();
   late final _stopVoip = StopVoipUseCase();
   late final _startVoip = StartVoipUseCase();
+  late final _unregisterFromMiddleware = UnregisterToVoipMiddlewareUseCase();
 
   Future<void> call({
     required UserVoipConfig? previous,
@@ -49,10 +50,9 @@ class HandleAppAccountChange extends UseCase with Loggable {
     UserVoipConfig previous,
     UserVoipConfig current,
   ) async {
-    // We don't care if only server-side settings have been changed for the app
-    // account, such as changing codecs as the app will fix these automatically.
-    if (previous.sipUserId == current.sipUserId &&
-        previous.password == current.password) {
+    // We don't care if only basic parameters have been changed for the app
+    // account (such as codecs) as the app will fix these automatically.
+    if (!current.haveVoipCredentialsChanged(previous)) {
       return;
     }
 
@@ -78,6 +78,11 @@ class HandleAppAccountChange extends UseCase with Loggable {
     required UserVoipConfig appAccount,
   }) async {
     await _stopVoip();
-    await UnregisterToVoipMiddlewareUseCase()(appAccount: appAccount);
+    return _unregisterFromMiddleware(userVoipConfig: appAccount);
   }
+}
+
+extension on UserVoipConfig {
+  bool haveVoipCredentialsChanged(UserVoipConfig other) =>
+      sipUserId != other.sipUserId || password != other.password;
 }

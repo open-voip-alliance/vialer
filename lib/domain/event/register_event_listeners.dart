@@ -8,7 +8,7 @@ import '../metrics/identify_for_tracking.dart';
 import '../use_case.dart';
 import '../user/events/logged_in_user_availability_changed.dart';
 import '../user/events/logged_in_user_was_refreshed.dart';
-import '../user/handle_app_account_change.dart';
+import '../user/handle_user_voip_config_change.dart';
 import '../user/refresh/refresh_user.dart';
 import '../user/refresh/user_refresh_task.dart';
 import '../user/settings/app_setting.dart';
@@ -27,7 +27,7 @@ class RegisterDomainEventListenersUseCase extends UseCase with Loggable {
   final _logoutOnUnauthorizedResponse = LogoutOnUnauthorizedResponse();
   final _trackRateLimitedApiCalls = TrackRateLimitedApiCalls();
   final _refreshUser = RefreshUser();
-  final _changeAppAccount = HandleAppAccountChange();
+  final _handleUserVoipConfigChange = HandleUserVoipConfigChange();
 
   void call() {
     _eventBus.on<UnauthorizedApiResponseEvent>(_logoutOnUnauthorizedResponse);
@@ -59,7 +59,7 @@ class RegisterDomainEventListenersUseCase extends UseCase with Loggable {
     _eventBus.on<LoggedInUserWasRefreshed>(
       (event) {
         if (!event.isFirstTime) {
-          _changeAppAccount(
+          _handleUserVoipConfigChange(
             previous: event.previous.voip,
             current: event.current.voip,
           );
