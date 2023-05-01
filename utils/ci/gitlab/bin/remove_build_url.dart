@@ -38,8 +38,8 @@ Future<void> main(List<String> args) async {
     exit(1);
   }
 
-  final description =
-      jsonDecode(await readResponse(response))['description'] as String;
+  final body = jsonDecode(await readResponse(response)) as Map<String, dynamic>;
+  final description = body['description'] as String;
 
   final match = regex.firstMatch(description);
   if (match != null) {

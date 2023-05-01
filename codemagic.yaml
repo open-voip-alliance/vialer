@@ -433,7 +433,7 @@ workflows:
       - *set_up_env_file
       - *set_version_string_for_merge_request
       - *flutter_pub_get
-#      - *analyze
+      - *analyze
       - *flutter_test
       - *build_aab
       - *build_universal_apk_from_aab
