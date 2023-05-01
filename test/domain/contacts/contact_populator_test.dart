@@ -78,7 +78,7 @@ Future<void> _expectContactMatching(
 }) async {
   final records = _generateDummyCallRecordsForNumber(numberInCallRecord);
   final result = await CallRecordContactPopulator(
-    _createMockWithStoredNumbers(numbersInContacts),
+    await _createMockWithStoredNumbers(numbersInContacts),
   ).populate(records);
   expect(
     result.first.contact,
@@ -113,10 +113,12 @@ List<CallRecord> _generateDummyCallRecordsForNumber(String number) => [
       ),
     ];
 
-MockContactRepository _createMockWithStoredNumbers(List<String> numbers) {
+Future<MockContactRepository> _createMockWithStoredNumbers(
+  List<String> numbers,
+) async {
   final contactRepositoryMock = MockContactRepository();
 
-  when(unawaited(contactRepositoryMock.getContacts())).thenAnswer(
+  when(contactRepositoryMock.getContacts()).thenAnswer(
     (_) async => numbers.map(_generateDummyContact).toList(),
   );
 
