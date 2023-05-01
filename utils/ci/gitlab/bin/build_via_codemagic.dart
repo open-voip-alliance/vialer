@@ -112,6 +112,7 @@ Future<String> _startCodemagicBuild({
         )
         .then(readResponse)
         .then(jsonDecode)
+        .then((value) => value as Map<String, dynamic>)
         .then((response) => response['buildId'] as String);
 
 Future<_CodemagicBuild> _fetchCodemagicBuild({
@@ -127,6 +128,7 @@ Future<_CodemagicBuild> _fetchCodemagicBuild({
       })
       .then(readResponse)
       .then(jsonDecode)
+      .then((value) => value as Map<String, dynamic>)
       .then((response) => response['build']);
 
   final status = build['status'] as String?;
@@ -148,7 +150,7 @@ Future<_CodemagicBuild> _fetchCodemagicBuild({
 
   final buildStatus = status.toCodemagicBuildStatus();
 
-  final buildActions = build['buildActions'] as List<dynamic>;
+  final buildActions = build['buildActions'] as List<Map<String, dynamic>>;
 
   // Attempts to find the "action" we are currently on (i.e. the build stage)
   // so this information can be printed.
