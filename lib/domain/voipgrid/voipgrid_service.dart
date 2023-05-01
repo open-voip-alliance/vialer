@@ -152,14 +152,14 @@ abstract class VoipgridService extends ChopperService {
   Future<Response<Map<String, dynamic>>> getVoipgridPermissions();
 
   @Get(path: 'v2/clients/{clientId}/users')
-  Future<Response<Map<String, dynamic>>> getUsers(
+  Future<Response<List<dynamic>>> getUsers(
     @Path() String clientId, {
     @Query() int page = 1,
     @Query('per_page') int perPage = 500,
   });
 
   @Get(path: 'v2/clients/{clientId}/voip_accounts')
-  Future<Response<Map<String, dynamic>>> getUnconnectedVoipAccounts(
+  Future<Response<List<dynamic>>> getUnconnectedVoipAccounts(
     @Path() String clientId, {
     @Query() int page = 1,
     @Query('per_page') int perPage = 500,
