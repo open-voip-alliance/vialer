@@ -8,7 +8,7 @@ import '../use_case.dart';
 import '../voipgrid/user_voip_config.dart';
 
 class HandleUserVoipConfigChange extends UseCase with Loggable {
-  late final metrics = dependencyLocator<MetricsRepository>();
+  late final _metrics = dependencyLocator<MetricsRepository>();
   late final _stopVoip = StopVoipUseCase();
   late final _startVoip = StartVoipUseCase();
   late final _unregisterFromMiddleware = UnregisterToVoipMiddlewareUseCase();
