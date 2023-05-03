@@ -1,0 +1,5 @@
+- Incoming calls will no longer take over the entire screen while the app is open
+- An issue where you couldn't log out without an app account has been fixed
+- Multiple issues where certain settings wouldn't change properly have been fixed
+- Android: An issue where you'd sometimes get a "rendering error" after ending a call has been fixed
+- Multiple improvements for screen readers while navigating Settings have been made
