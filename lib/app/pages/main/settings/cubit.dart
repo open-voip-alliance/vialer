@@ -35,7 +35,7 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
     _emitUpdatedState();
     _eventBus
       ..on<LoggedInUserWasRefreshed>(
-        (event) => _emitUpdatedState(user: event.user),
+        (event) => _emitUpdatedState(user: event.current),
       )
       ..on<RateLimitReachedEvent>((event) {
         _isRateLimited = true;
