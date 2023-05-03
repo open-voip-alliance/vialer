@@ -64,7 +64,8 @@ class Colors {
         userAvailabilityUnavailableAccent =
             v.userAvailabilityUnavailableAccent.color,
         userAvailabilityUnknown = v.userAvailabilityUnknown.color,
-        userAvailabilityUnknownAccent = v.userAvailabilityUnknownAccent.color;
+        userAvailabilityUnknownAccent = v.userAvailabilityUnknownAccent.color,
+        availabilityHeader = v.availabilityHeader.color;
 
   final Color primary;
   final Color primaryDark;
@@ -136,6 +137,8 @@ class Colors {
   final Color userAvailabilityUnavailableAccent;
   final Color userAvailabilityUnknown;
   final Color userAvailabilityUnknownAccent;
+
+  final Color availabilityHeader;
 }
 
 extension on int {

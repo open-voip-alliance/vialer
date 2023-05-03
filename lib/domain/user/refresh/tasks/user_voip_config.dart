@@ -12,13 +12,20 @@ import '../user_refresh_task_performer.dart';
 class RefreshUserVoipConfig extends UserRefreshTaskPerformer {
   const RefreshUserVoipConfig();
 
+  UserVoipConfigRepository get _repository =>
+      dependencyLocator<UserVoipConfigRepository>();
+
   @override
   Future<UserMutator> performUserRefreshTask(User user) async {
-    final config = await dependencyLocator<UserVoipConfigRepository>().get();
+    final config = await _repository.get();
+    final webphoneAccountId = await _repository.getSelectedWebphoneAccountId();
 
     _ensureAppAccountIsConfiguredCorrectly(config);
 
-    return (User user) => user.copyWith(voip: () => config);
+    return (User user) => user.copyWith(
+          voip: () => config,
+          webphoneAccountId: () => webphoneAccountId,
+        );
   }
 
   void _ensureAppAccountIsConfiguredCorrectly(UserVoipConfig? config) {

@@ -81,7 +81,9 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
       () async {
         // We don't want to emit any refresh changes while we're in the progress
         // of changing remote settings.
-        if (_isUpdatingRemote && !_isRateLimited) return;
+        if (_isUpdatingRemote && !_isRateLimited) {
+          return;
+        }
 
         user = user ?? _getUser();
 
@@ -122,10 +124,13 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
   Future<void> changeSetting<T extends Object>(
     SettingKey<T> key,
     T value,
-  ) async {
+  ) =>
+      changeSettings({key: value});
+
+  Future<void> changeSettings(Map<SettingKey, Object> settings) async {
     // Immediately emit a copy of the state with the changed setting for extra
     // smoothness.
-    final newSettings = Settings({key: value});
+    final newSettings = Settings(settings);
 
     // We're going to track any requests to update remote and then make sure
     // we don't update the settings page while that's happening. This also

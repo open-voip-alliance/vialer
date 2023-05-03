@@ -13,7 +13,7 @@ class UserVoipConfigRepository with Loggable {
 
     if (!response.isSuccessful) {
       logFailedResponse(response, name: 'Fetch VoipConfig');
-      return null;
+      throw RequestException(response.statusCode);
     }
 
     final body = response.body!;
@@ -25,8 +25,28 @@ class UserVoipConfigRepository with Loggable {
 
     return UserVoipConfig.serializeFromJson(body);
   }
+
+  Future<String?> getSelectedWebphoneAccountId() async {
+    final response = await _service.getWebphoneSelectedAccount();
+
+    if (!response.isSuccessful) {
+      logFailedResponse(response, name: 'Selected Webphone Account Id');
+      throw RequestException(response.statusCode);
+    }
+
+    return response.body!['id'].toString();
+  }
 }
 
 extension on Map<String, dynamic> {
   bool get hasVoipConfig => this['appaccount_account_id'] != null;
+}
+
+class RequestException implements Exception {
+  const RequestException(this.code);
+
+  final int code;
+
+  @override
+  String toString() => 'Request failed with code: [$code]';
 }

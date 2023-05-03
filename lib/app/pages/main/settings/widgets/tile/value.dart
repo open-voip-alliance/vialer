@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -17,12 +18,19 @@ typedef ValueChangedWithContext<T extends Object> = void Function(
 /// If the setting cannot be changed, a dialog is shown.
 Future<void> runIfSettingCanBeChanged<T extends Object>(
   BuildContext context,
-  SettingKey<T> key,
+  Iterable<SettingKey> keys,
   FutureOr<void> Function() block,
 ) async {
   final settings = context.read<SettingsCubit>();
 
-  if (await settings.canChangeRemoteSetting(key)) {
+  // Check that we can change all the keys in the request.
+  final canChangeRemoteSetting = await Future.wait(
+    keys.map((key) async => settings.canChangeRemoteSetting(key)),
+  ).then(
+    (value) => value.all((canChange) => canChange),
+  );
+
+  if (canChangeRemoteSetting) {
     await block.call();
   } else {
     // Linter is wrong here.
@@ -49,23 +57,32 @@ Future<void> runIfSettingCanBeChanged<T extends Object>(
   }
 }
 
-Future<void> defaultOnChanged<T extends Object>(
+Future<void> defaultOnSettingChanged<T extends Object>(
   BuildContext context,
   SettingKey<T> key,
   T value,
-) async {
-  await runIfSettingCanBeChanged(
-    context,
-    key,
-    () => context.read<SettingsCubit>().changeSetting(key, value),
-  );
-}
+) =>
+    runIfSettingCanBeChanged(
+      context,
+      [key],
+      () => context.read<SettingsCubit>().changeSetting(key, value),
+    );
+
+Future<void> defaultOnSettingsChanged<T extends Object>(
+  BuildContext context,
+  Map<SettingKey, Object> settings,
+) =>
+    runIfSettingCanBeChanged(
+      context,
+      settings.keys,
+      () => context.read<SettingsCubit>().changeSettings(settings),
+    );
 
 class BoolSettingValue extends StatelessWidget {
   const BoolSettingValue(
     this.settings,
     this.settingKey, {
-    this.onChanged = defaultOnChanged,
+    this.onChanged = defaultOnSettingChanged,
     super.key,
   });
 

@@ -39,11 +39,19 @@ extension DestinationsList on List<Destination> {
     return destinations.whereType<PhoneAccount>().toList();
   }
 
-  PhoneAccount? findAppAccountFor({required User user}) {
+  PhoneAccount? findAppAccountFor({required User user}) =>
+      findPhoneAccountById(user.appAccountId);
+
+  PhoneAccount? findWebphoneAccountFor({required User user}) =>
+      findPhoneAccountById(user.webphoneAccountId);
+
+  PhoneAccount? findPhoneAccountById(String? id) {
+    if (id == null) return null;
+
     final destinations = this;
 
     return destinations.phoneAccounts.firstOrNullWhere(
-      (phoneAccount) => user.appAccountId == phoneAccount.id.toString(),
+      (phoneAccount) => id == phoneAccount.id.toString(),
     );
   }
 }
