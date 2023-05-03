@@ -8,15 +8,16 @@ import 'value.dart';
 import 'widget.dart';
 
 class UseMobileNumberAsFallbackTile extends StatelessWidget {
+  UseMobileNumberAsFallbackTile(
+    this.user, {
+    super.key,
+    this.enabled = true,
+  }) : _mobileNumber = user.settings.get(CallSetting.mobileNumber);
+
   final User user;
 
   final String _mobileNumber;
   final bool enabled;
-
-  UseMobileNumberAsFallbackTile(
-    this.user, {
-    this.enabled = true,
-  }) : _mobileNumber = user.settings.get(CallSetting.mobileNumber);
 
   @override
   Widget build(BuildContext context) {

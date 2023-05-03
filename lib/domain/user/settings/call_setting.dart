@@ -26,10 +26,10 @@ enum CallSetting<T extends Object> with SettingKey<T> {
   /// fallback to their configured mobile number, via a GSM call.
   useMobileNumberAsFallback<bool>();
 
+  const CallSetting([this.valueJsonConverter]);
+
   @override
   final SettingValueJsonConverter<T>? valueJsonConverter;
-
-  const CallSetting([this.valueJsonConverter]);
 
   static const Map<CallSetting, bool> defaultValues = {
     CallSetting.useVoip: true,
@@ -41,15 +41,14 @@ enum CallSetting<T extends Object> with SettingKey<T> {
 
 @immutable
 abstract class OutgoingNumber {
-  static const _suppressed = 'suppressed';
+  const factory OutgoingNumber(String value) = UnsuppressedOutgoingNumber;
 
   const factory OutgoingNumber.suppressed() = SuppressedOutgoingNumber;
-
-  const factory OutgoingNumber(String value) = UnsuppressedOutgoingNumber;
 
   factory OutgoingNumber.fromJson(dynamic json) => json == _suppressed
       ? const SuppressedOutgoingNumber()
       : OutgoingNumber(json as String);
+  static const _suppressed = 'suppressed';
 
   static String toJson(OutgoingNumber number) =>
       number is SuppressedOutgoingNumber
@@ -71,9 +70,9 @@ class SuppressedOutgoingNumber implements OutgoingNumber {
 }
 
 class UnsuppressedOutgoingNumber extends Equatable implements OutgoingNumber {
-  final String value;
-
   const UnsuppressedOutgoingNumber(this.value);
+
+  final String value;
 
   @override
   String toString() => value;

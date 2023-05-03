@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/services.dart';
@@ -12,9 +13,9 @@ import '../../voipgrid/voipgrid_service.dart';
 import 'call_through_exception.dart';
 
 class CallThroughRepository with Loggable {
-  final VoipgridService _service;
-
   CallThroughRepository(this._service);
+
+  final VoipgridService _service;
 
   Future<void> call(
     String destination,
@@ -26,7 +27,7 @@ class CallThroughRepository with Loggable {
     }
 
     if (Platform.isAndroid) {
-      native.CallThrough().startCall(regionNumber);
+      unawaited(native.CallThrough().startCall(regionNumber));
     } else {
       await launchUrlString('tel:$regionNumber');
     }
@@ -43,8 +44,10 @@ class CallThroughRepository with Loggable {
       throw NoMobileNumberException();
     }
 
+    final String normalizedDestination;
+
     try {
-      destination = await _normalizePhoneNumber(
+      normalizedDestination = await _normalizePhoneNumber(
         number: destination,
         user: user,
       );
@@ -57,15 +60,17 @@ class CallThroughRepository with Loggable {
     }
 
     // Get real number to call.
-    final response = await _service.callthrough(destination: destination);
+    final response = await _service.callthrough(
+      destination: normalizedDestination,
+    );
 
     if (response.isSuccessful) {
-      return destination = response.body['phonenumber'] as String;
+      return response.body!['phonenumber'] as String;
     } else {
       logFailedResponse(response, name: 'Retrieve Region Number');
     }
 
-    final error = response.error as String;
+    final error = response.error! as String;
 
     // A mapping of all the possible error codes we might expect in the response
     // and the exceptions that should be thrown if they are found.

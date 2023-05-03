@@ -23,24 +23,24 @@ import '../widgets/t9_dial_pad.dart';
 import 'cubit.dart';
 
 class DialerPage extends StatefulWidget {
+  const DialerPage({
+    required this.isInBottomNavBar,
+    super.key,
+  });
+
   final bool isInBottomNavBar;
 
-  const DialerPage({
-    Key? key,
-    required this.isInBottomNavBar,
-  }) : super(key: key);
-
   @override
-  _DialerPageState createState() => _DialerPageState();
+  State<DialerPage> createState() => _DialerPageState();
 }
 
 class _DialerPageState extends State<DialerPage>
     with WidgetsBindingObserver, WidgetsBindingObserverRegistrar {
   final _dialPadController = TextEditingController();
   final _eventBus = dependencyLocator<EventBusObserver>();
-  StreamSubscription? _eventBusSubscription;
+  StreamSubscription<SettingChangedEvent<Object>>? _eventBusSubscription;
 
-  final _getLatestUser = GetLoggedInUserUseCase();
+  final _getUser = GetLoggedInUserUseCase();
 
   bool _enableT9ContactSearch = false;
 
@@ -48,18 +48,18 @@ class _DialerPageState extends State<DialerPage>
   void initState() {
     super.initState();
 
-    _updateEnableT9ContactSearch();
+    unawaited(_updateEnableT9ContactSearch());
 
     _eventBusSubscription = _eventBus.onSettingChange<bool>(
       AppSetting.enableT9ContactSearch,
       (_, newValue) {
-        _updateEnableT9ContactSearch(settingValue: newValue);
+        unawaited(_updateEnableT9ContactSearch(settingValue: newValue));
       },
     );
   }
 
   Future<void> _updateEnableT9ContactSearch({bool? settingValue}) async {
-    final user = await _getLatestUser();
+    final user = _getUser();
 
     setState(() {
       _enableT9ContactSearch =
@@ -83,7 +83,7 @@ class _DialerPageState extends State<DialerPage>
         );
       }
     } else if (state == AppLifecycleState.resumed) {
-      context.read<CallerCubit>().checkPhonePermission();
+      unawaited(context.read<CallerCubit>().checkPhonePermission());
     }
   }
 
@@ -95,11 +95,11 @@ class _DialerPageState extends State<DialerPage>
   }
 
   void _onCallButtonPressed(BuildContext context, String number) =>
-      context.read<DialerCubit>().call(number);
+      unawaited(context.read<DialerCubit>().call(number));
 
   @override
   void dispose() {
-    _eventBusSubscription?.cancel();
+    unawaited(_eventBusSubscription?.cancel());
 
     super.dispose();
   }

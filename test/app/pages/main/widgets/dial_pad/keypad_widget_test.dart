@@ -11,7 +11,7 @@ void main() {
   final textController = TextEditingController();
   final keypad = Localizations(
     locale: const Locale('en'),
-    delegates: [
+    delegates: const [
       VialerLocalizations.delegate,
       GlobalMaterialLocalizations.delegate,
       GlobalWidgetsLocalizations.delegate,
@@ -91,11 +91,12 @@ void main() {
       await tester.pumpWidget(testWidget);
 
       expect(
-          find.descendant(
-            of: find.byType(KeypadValueButton).at(2),
-            matching: find.text('3'),
-          ),
-          findsOneWidget);
+        find.descendant(
+          of: find.byType(KeypadValueButton).at(2),
+          matching: find.text('3'),
+        ),
+        findsOneWidget,
+      );
       expect(
         find.descendant(
           of: find.byType(KeypadValueButton).at(2),
@@ -427,9 +428,12 @@ void initiateFakeCall({required TextEditingController controller}) {
 }
 
 class TestApp extends StatelessWidget {
-  final Widget child;
+  const TestApp({
+    required this.child,
+    super.key,
+  });
 
-  TestApp({required this.child});
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
@@ -444,22 +448,26 @@ class TestApp extends StatelessWidget {
         encryptedSipUrl: Uri.parse('sip.encryptedsip.com'),
         unencryptedSipUrl: Uri.parse('sipproxy.voipgrid.nl'),
         businessAvailabilityUrl: Uri.parse(
-            'https://api.eu-prod.holodeck.wearespindle.com/business-availability/clients/'),
+          'https://api.eu-prod.holodeck.wearespindle.com/business-availability/clients/',
+        ),
         openingHoursBasicUrl: Uri.parse(
-            'https://api.eu-prod.holodeck.wearespindle.com/openinghours/client/'),
+          'https://api.eu-prod.holodeck.wearespindle.com/openinghours/client/',
+        ),
         userAvailabilityWsUrl: Uri.parse('ws'),
         privacyPolicyUrl: Uri.parse('dummypolicy.com'),
         signUpUrl: null,
       ),
-      child: Builder(builder: (context) {
-        return MaterialApp(
-          title: context.brand.appName,
-          theme: context.brand.theme.themeData,
-          home: Scaffold(
-            body: child,
-          ),
-        );
-      }),
+      child: Builder(
+        builder: (context) {
+          return MaterialApp(
+            title: context.brand.appName,
+            theme: context.brand.theme.themeData,
+            home: Scaffold(
+              body: child,
+            ),
+          );
+        },
+      ),
     );
   }
 }

@@ -6,9 +6,9 @@ import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
 
 class CallTransferBar extends StatelessWidget {
-  final Widget text;
+  const CallTransferBar({required this.text, super.key});
 
-  const CallTransferBar({required this.text});
+  final Widget text;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +23,6 @@ class CallTransferBar extends StatelessWidget {
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   text,
                 ],
@@ -37,9 +36,9 @@ class CallTransferBar extends StatelessWidget {
 }
 
 class CallTransferInProgressBar extends StatelessWidget {
-  final Call inactiveCall;
+  const CallTransferInProgressBar({required this.inactiveCall, super.key});
 
-  const CallTransferInProgressBar({required this.inactiveCall});
+  final Call inactiveCall;
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +47,7 @@ class CallTransferInProgressBar extends StatelessWidget {
         text: TextSpan(
           children: [
             TextSpan(
-              text: '${inactiveCall.remotePartyHeading}',
+              text: inactiveCall.remotePartyHeading,
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             TextSpan(text: ' - ${inactiveCall.prettyDuration} - '),

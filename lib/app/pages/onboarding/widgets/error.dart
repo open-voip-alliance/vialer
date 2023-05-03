@@ -5,6 +5,15 @@ import '../../../resources/theme.dart';
 import '../../../widgets/animated_visibility.dart';
 
 class ErrorAlert extends StatelessWidget {
+  const ErrorAlert({
+    required this.visible,
+    required this.inline,
+    required this.message,
+    this.title,
+    this.padding = const EdgeInsets.all(4),
+    super.key,
+  });
+
   /// Whether the error box is visible.
   final bool visible;
 
@@ -15,23 +24,12 @@ class ErrorAlert extends StatelessWidget {
   final String? title;
   final String message;
 
-  const ErrorAlert({
-    Key? key,
-    required this.visible,
-    required this.inline,
-    this.padding = const EdgeInsets.all(4),
-    required this.message,
-    this.title,
-  }) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return AnimatedVisibility(
       visible: visible,
       child: Padding(
-        padding: inline
-            ? const EdgeInsets.all(0)
-            : const EdgeInsets.only(bottom: 16),
+        padding: inline ? EdgeInsets.zero : const EdgeInsets.only(bottom: 16),
         child: Column(
           children: <Widget>[
             const SizedBox(height: 5),
@@ -50,7 +48,7 @@ class ErrorAlert extends StatelessWidget {
                   border: Border(
                     top: BorderSide(
                       color: context.brand.theme.colors.errorContent,
-                      width: 3.0,
+                      width: 3,
                     ),
                   ),
                 ),
@@ -73,13 +71,13 @@ class ErrorAlert extends StatelessWidget {
                     Expanded(
                       child: DefaultTextStyle.merge(
                         child: Padding(
-                          padding: const EdgeInsets.only(top: 6.0, bottom: 6.0),
+                          padding: const EdgeInsets.only(top: 6, bottom: 6),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               if (title != null)
                                 Padding(
-                                  padding: const EdgeInsets.only(bottom: 4.0),
+                                  padding: const EdgeInsets.only(bottom: 4),
                                   child: Text(
                                     title!,
                                     style: const TextStyle(

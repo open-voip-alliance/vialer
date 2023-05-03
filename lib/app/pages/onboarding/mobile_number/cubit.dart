@@ -8,16 +8,15 @@ import 'state.dart';
 export 'state.dart';
 
 class MobileNumberCubit extends Cubit<MobileNumberState> {
-  final _changeSetting = ChangeSettingUseCase();
-
   MobileNumberCubit()
       : super(
           MobileNumberState(
             GetLoggedInUserUseCase()().settings.get(CallSetting.mobileNumber),
           ),
         );
+  final _changeSetting = ChangeSettingUseCase();
 
-  void changeMobileNumber(String mobileNumber) async {
+  Future<void> changeMobileNumber(String mobileNumber) async {
     final accepted = mobileNumber == '' ||
         await _changeSetting(CallSetting.mobileNumber, mobileNumber) !=
             SettingChangeResult.failed;

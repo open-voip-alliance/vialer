@@ -22,9 +22,9 @@ enum UserRefreshTask {
   clientTemporaryRedirect(RefreshClientTemporaryRedirect()),
   clientOpeningHoursModules(RefreshClientOpeningHoursModules());
 
-  final UserRefreshTaskPerformer performer;
-
   const UserRefreshTask(this.performer);
+
+  final UserRefreshTaskPerformer performer;
 
   // Makes more semantic sense when calling for the purpose of including all
   // tasks rather than calling .values.

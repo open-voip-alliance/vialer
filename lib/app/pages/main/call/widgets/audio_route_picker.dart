@@ -7,11 +7,12 @@ import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
 
 class AudioRoutePicker extends StatelessWidget {
-  final AudioState audioState;
-
   const AudioRoutePicker({
     required this.audioState,
+    super.key,
   });
+
+  final AudioState audioState;
 
   @override
   Widget build(BuildContext context) {
@@ -88,20 +89,23 @@ class AudioRoutePicker extends StatelessWidget {
 }
 
 class _AudioRouteDialogOption extends StatelessWidget {
-  final Object route;
-  final Object currentRoute;
-  final Widget icon;
-  final String label;
-
   const _AudioRouteDialogOption({
     required this.route,
     required this.currentRoute,
     required this.icon,
     required this.label,
-  })  : assert(route is AudioRoute || route is BluetoothAudioRoute),
+  })  : assert(
+          route is AudioRoute || route is BluetoothAudioRoute,
+          'route must be eiter AudioRoute or BluetoothAudioRoute',
+        ),
         assert(
           currentRoute is AudioRoute || currentRoute is BluetoothAudioRoute,
+          'currentRoute must be eiter AudioRoute or BluetoothAudioRoute',
         );
+  final Object route;
+  final Object currentRoute;
+  final Widget icon;
+  final String label;
 
   @override
   Widget build(BuildContext context) {

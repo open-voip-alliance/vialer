@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dartx/dartx.dart';
 import 'package:diacritic/diacritic.dart';
 import 'package:flutter/material.dart';
@@ -37,16 +39,16 @@ abstract class ColltactsPageRoutes {
 typedef WidgetWithColltactBuilder = Widget Function(BuildContext, Colltact);
 
 class ColltactList extends StatelessWidget {
+  const ColltactList({
+    required this.detailsBuilder,
+    this.bottomLettersPadding = 0,
+    this.navigatorKey,
+    super.key,
+  });
+
   final GlobalKey<NavigatorState>? navigatorKey;
   final WidgetWithColltactBuilder detailsBuilder;
   final double bottomLettersPadding;
-
-  const ColltactList({
-    Key? key,
-    this.navigatorKey,
-    required this.detailsBuilder,
-    this.bottomLettersPadding = 0,
-  });
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +59,7 @@ class ColltactList extends StatelessWidget {
         routes: {
           ColltactsPageRoutes.root: (_, __) => const _ColltactList(),
           ColltactsPageRoutes.details: (context, colltact) =>
-              detailsBuilder(context, colltact as Colltact),
+              detailsBuilder(context, colltact! as Colltact),
         },
       ),
     );
@@ -65,13 +67,12 @@ class ColltactList extends StatelessWidget {
 }
 
 class _ColltactList extends StatefulWidget {
-  final double bottomLettersPadding;
-
   const _ColltactList({
-    Key? key,
     // ignore: unused_element
     this.bottomLettersPadding = 0,
-  }) : super(key: key);
+  });
+
+  final double bottomLettersPadding;
 
   @override
   _ColltactPageState createState() => _ColltactPageState();
@@ -113,7 +114,7 @@ class _ColltactPageState extends State<_ColltactList>
     super.didChangeAppLifecycleState(state);
 
     if (state == AppLifecycleState.resumed) {
-      context.read<ContactsCubit>().reloadContacts();
+      unawaited(context.read<ContactsCubit>().reloadContacts());
     }
   }
 
@@ -292,11 +293,11 @@ class _ColltactPageState extends State<_ColltactList>
     /// Whether the [char] is part of the *letter group*, which consists of
     /// any letter in any language (including non-latin alphabets)
     bool isInLetterGroup(String? char) =>
-        char != null ? RegExp(r'\p{L}', unicode: true).hasMatch(char) : false;
+        char != null && RegExp(r'\p{L}', unicode: true).hasMatch(char);
 
     final searchTerm = _searchTerm?.toLowerCase();
 
-    for (var colltact in colltacts) {
+    for (final colltact in colltacts) {
       if (searchTerm != null && !colltact.matchesSearchTerm(searchTerm)) {
         continue;
       }
@@ -362,17 +363,19 @@ class _ColltactPageState extends State<_ColltactList>
           .filter((e) => e.key != nonLetterKey)
           .sortedBy((e) => e.key),
       // Place all colltacts that belong to the non-letter group at the bottom.
-      ...colltacts.entries.filter((e) => e.key == nonLetterKey).toList(),
+      ...colltacts.entries.filter((e) => e.key == nonLetterKey),
     ]
         .map(
           (e) => [
             GroupHeader(group: e.key),
             ...e.value
                 .sortedBy((colltact) => colltact.getSortKey(contactSort))
-                .map((colltact) => ColltactItem.from(
-                      colltact,
-                      colleaguesUpToDate: colleaguesUpToDate,
-                    ))
+                .map(
+                  (colltact) => ColltactItem.from(
+                    colltact,
+                    colleaguesUpToDate: colleaguesUpToDate,
+                  ),
+                )
           ],
         )
         .flatten()
@@ -389,7 +392,7 @@ class _ColltactPageState extends State<_ColltactList>
     ColleaguesCubit colleaguesCubit,
     ColltactKind colltactKind,
   ) {
-    final hasSearchQuery = _searchTerm?.isNotEmpty == true;
+    final hasSearchQuery = _searchTerm?.isNotEmpty ?? false;
 
     switch (colltactKind) {
       case ColltactKind.contact:
@@ -427,20 +430,20 @@ class _ColltactPageState extends State<_ColltactList>
     ColleaguesState colleaguesState,
     ColleaguesCubit colleaguesCubit,
   ) {
-    var colltacts = <Colltact>[];
+    final colltacts = <Colltact>[];
 
     if (colltactKind == ColltactKind.contact) {
       final contacts = contactsState is ContactsLoaded
           ? contactsState.contacts
           : <Contact>[];
-      for (var contact in contacts) {
+      for (final contact in contacts) {
         colltacts.add(Colltact.contact(contact));
       }
     } else {
       final colleagues = colleaguesState is ColleaguesLoaded
           ? colleaguesState.filteredColleagues
           : <Colleague>[];
-      for (var colleague in colleagues) {
+      for (final colleague in colleagues) {
         colltacts.add(Colltact.colleague(colleague));
       }
     }
@@ -476,19 +479,20 @@ class _ColltactPageState extends State<_ColltactList>
         ),
         kind: colltactKind,
         searchTerm: _searchTerm ?? '',
-        onCall: (number) => colltactKind == ColltactKind.contact
-            ? contactsCubit.call(number)
-            : colleaguesCubit.call(number),
-        dontAskForContactsPermissionAgain: contactsState is ContactsLoaded
-            ? contactsState.dontAskAgain
-            : false,
+        onCall: (number) => unawaited(
+          colltactKind == ColltactKind.contact
+              ? contactsCubit.call(number)
+              : colleaguesCubit.call(number),
+        ),
+        dontAskForContactsPermissionAgain:
+            contactsState is ContactsLoaded && contactsState.dontAskAgain,
         contactsCubit: contactsCubit,
         onRefresh: onRefresh,
         child: AlphabetListView(
           key: ValueKey(_searchTerm),
           bottomLettersPadding: widget.bottomLettersPadding,
-          children: records,
           onRefresh: onRefresh,
+          children: records,
         ),
       ),
     );
@@ -514,8 +518,7 @@ extension on Colltact {
       },
       contact: (contact) {
         if (contact.displayName.toLowerCase().contains(term)) return true;
-
-        if (contact.company?.toLowerCase().contains(term) == true) return true;
+        if (contact.company?.toLowerCase().contains(term) ?? false) return true;
 
         if (contact.emails.any(
           (email) => email.value.toLowerCase().contains(term),

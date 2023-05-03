@@ -4,7 +4,7 @@ import '../resources/localizations.dart';
 import '../resources/theme.dart';
 
 class BuildError extends StatelessWidget {
-  const BuildError({Key? key}) : super(key: key);
+  const BuildError({super.key});
 
   @override
   Widget build(BuildContext context) {

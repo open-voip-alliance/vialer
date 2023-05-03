@@ -66,7 +66,7 @@ Future<void> initializeDependencies({bool ui = true}) async {
       dependsOn: [StorageRepository],
     )
     ..registerSingletonAsync<MiddlewareService>(
-      () async => await MiddlewareService.create(),
+      MiddlewareService.create,
       dependsOn: [StorageRepository, ClientVoipConfigRepository],
     )
     ..registerFactory<VoipgridApiResourceCollector>(

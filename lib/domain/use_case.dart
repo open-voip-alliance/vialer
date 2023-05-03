@@ -16,12 +16,12 @@ abstract class UseCase with Loggable {
   ///
   /// @param properties Any properties that should be included when tracking
   /// this Use Case. If not provided, no properties will be tracked.
-  Future<void> track([Map<String, dynamic>? properties]) async {
+  void track([Map<String, dynamic>? properties]) {
     final name = runtimeType.toString().replaceAll('UseCase', '').paramCase;
 
     _metrics.track(name, properties);
 
-    if (properties?.isNotEmpty == true) {
+    if (properties?.isNotEmpty ?? false) {
       logger.info('[$name] executed with [$properties].');
     } else {
       logger.info('[$name] executed.');

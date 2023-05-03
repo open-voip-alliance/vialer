@@ -3,9 +3,9 @@ import 'contact.dart';
 import 'contact_repository.dart';
 
 class CallRecordContactPopulator {
-  final ContactRepository _contactsRepository;
-
   const CallRecordContactPopulator(this._contactsRepository);
+
+  final ContactRepository _contactsRepository;
 
   Future<List<CallRecordWithContact>> populate(
     List<CallRecord> callRecords,

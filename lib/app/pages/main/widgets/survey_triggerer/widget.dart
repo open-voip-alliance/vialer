@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -6,9 +8,9 @@ import '../caller.dart';
 import 'cubit.dart';
 
 class SurveyTriggerer extends StatelessWidget {
-  final Widget child;
+  const SurveyTriggerer({required this.child, super.key});
 
-  const SurveyTriggerer({Key? key, required this.child}) : super(key: key);
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
@@ -22,9 +24,9 @@ class SurveyTriggerer extends StatelessWidget {
 
 /// Private widget with a context that has access to [SurveyTriggererCubit].
 class _SurveyTriggerer extends StatefulWidget {
-  final Widget child;
-
   const _SurveyTriggerer(this.child);
+
+  final Widget child;
 
   @override
   _SurveyTriggererState createState() => _SurveyTriggererState();
@@ -42,14 +44,14 @@ class _SurveyTriggererState extends State<_SurveyTriggerer> {
     if (!_checked) {
       _checked = true;
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        cubit.check();
+        unawaited(cubit.check());
       });
     }
   }
 
   void _onStateChanged(BuildContext context, SurveyTriggererState state) {
     if (state is SurveyTriggered) {
-      SurveyDialog.show(context, state.id, trigger: state.trigger);
+      unawaited(SurveyDialog.show(context, state.id, trigger: state.trigger));
     }
   }
 

@@ -16,6 +16,8 @@ import 'voipgrid_phone_account.dart';
 part 'destination_repository.g.dart';
 
 class DestinationRepository with Loggable {
+  DestinationRepository(this._service);
+
   final _storageRepository = dependencyLocator<StorageRepository>();
 
   final VoipgridService _service;
@@ -23,30 +25,33 @@ class DestinationRepository with Loggable {
 
   late int selectedUserDestinationId;
 
-  DestinationRepository(this._service);
-
   Future<Destination> getActiveDestination() async {
     final response = await _service.getAvailability();
 
     if (!response.isSuccessful) {
-      logFailedResponse(response,
-          name: 'Get active and available destinations');
+      logFailedResponse(
+        response,
+        name: 'Get active and available destinations',
+      );
       return const Destination.unknown();
     }
 
-    final objects = response.body['objects'] as List<dynamic>? ?? [];
+    final objects = response.body?['objects'] as List<dynamic>? ?? <dynamic>[];
 
     if (objects.isEmpty) return const Destination.unknown();
 
     final destinations = objects
         .map(
-          (obj) => _AvailabilityResponse.fromJson(obj as Map<String, dynamic>),
+          (dynamic obj) => _AvailabilityResponse.fromJson(
+            obj as Map<String, dynamic>,
+          ),
         )
         .toList()
         .first;
 
-    _storageRepository.userNumber = destinations.userNumber;
-    _storageRepository.availableDestinations = destinations.available;
+    _storageRepository
+      ..userNumber = destinations.userNumber
+      ..availableDestinations = destinations.available;
 
     selectedUserDestinationId = destinations.selectedDestinationId;
 
@@ -59,13 +64,16 @@ class DestinationRepository with Loggable {
     try {
       await automaticRetry.run(
         () async {
-          final response = await _service
-              .setAvailability(selectedUserDestinationId.toString(), {
-            'phoneaccount':
-                destination is PhoneAccount ? destination.id.toString() : null,
-            'fixeddestination':
-                destination is PhoneNumber ? destination.id.toString() : null,
-          });
+          final response = await _service.setAvailability(
+            selectedUserDestinationId.toString(),
+            {
+              'phoneaccount': destination is PhoneAccount
+                  ? destination.id.toString()
+                  : null,
+              'fixeddestination':
+                  destination is PhoneNumber ? destination.id.toString() : null,
+            },
+          );
 
           if (!response.isSuccessful) {
             logFailedResponse(response, name: 'Set destination');
@@ -85,6 +93,16 @@ class DestinationRepository with Loggable {
 
 @JsonSerializable(fieldRename: FieldRename.snake)
 class _AvailabilityResponse {
+  const _AvailabilityResponse({
+    required this.id,
+    required this.fixedDestinations,
+    required this.phoneAccounts,
+    required this.selectedDestinationInfo,
+    required this.userNumber,
+  });
+
+  factory _AvailabilityResponse.fromJson(dynamic json) =>
+      _$AvailabilityResponseFromJson(json as Map<String, dynamic>);
   @JsonIdConverter()
   final int? id;
 
@@ -123,14 +141,6 @@ class _AvailabilityResponse {
     ];
   }
 
-  const _AvailabilityResponse({
-    required this.id,
-    required this.fixedDestinations,
-    required this.phoneAccounts,
-    required this.selectedDestinationInfo,
-    required this.userNumber,
-  });
-
   Destination get active => _activeDestination != null
       ? _activeDestination!.toDestination()
       : const Destination.notAvailable();
@@ -141,7 +151,4 @@ class _AvailabilityResponse {
       .toList();
 
   int get selectedDestinationId => selectedDestinationInfo!.id;
-
-  factory _AvailabilityResponse.fromJson(dynamic json) =>
-      _$AvailabilityResponseFromJson(json as Map<String, dynamic>);
 }

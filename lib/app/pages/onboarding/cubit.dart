@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../dependency_locator.dart';
@@ -11,12 +13,6 @@ import 'state.dart';
 export 'state.dart';
 
 class OnboardingCubit extends Cubit<OnboardingState> with Loggable {
-  final _storage = dependencyLocator<StorageRepository>();
-
-  final _getSteps = GetOnboardingStepsUseCase();
-
-  final CallerCubit _caller;
-
   OnboardingCubit(this._caller)
       : super(
           const OnboardingState(
@@ -24,12 +20,20 @@ class OnboardingCubit extends Cubit<OnboardingState> with Loggable {
             allSteps: [OnboardingStep.login],
           ),
         ) {
-    _getSteps().then((steps) {
-      emit(
-        state.copyWith(allSteps: steps),
-      );
-    });
+    unawaited(
+      _getSteps().then((steps) {
+        emit(
+          state.copyWith(allSteps: steps),
+        );
+      }),
+    );
   }
+
+  final _storage = dependencyLocator<StorageRepository>();
+
+  final _getSteps = GetOnboardingStepsUseCase();
+
+  final CallerCubit _caller;
 
   /// Add a new next step.
   void addStep(OnboardingStep step) {

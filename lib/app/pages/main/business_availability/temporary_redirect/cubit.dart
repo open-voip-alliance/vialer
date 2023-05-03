@@ -14,11 +14,6 @@ import 'state.dart';
 export 'state.dart';
 
 class TemporaryRedirectCubit extends Cubit<TemporaryRedirectState> {
-  late final _eventBus = dependencyLocator<EventBusObserver>();
-  late final _startTemporaryRedirect = StartTemporaryRedirect();
-  late final _changeCurrentTemporaryRedirect = ChangeCurrentTemporaryRedirect();
-  late final _getUser = GetLoggedInUserUseCase();
-
   TemporaryRedirectCubit() : super(const TemporaryRedirectState.none([])) {
     _emitInitialState();
 
@@ -26,6 +21,10 @@ class TemporaryRedirectCubit extends Cubit<TemporaryRedirectState> {
       _emitInitialState(event.current);
     });
   }
+  late final _eventBus = dependencyLocator<EventBusObserver>();
+  late final _startTemporaryRedirect = StartTemporaryRedirect();
+  late final _changeCurrentTemporaryRedirect = ChangeCurrentTemporaryRedirect();
+  late final _getUser = GetLoggedInUserUseCase();
 
   void _emitInitialState([TemporaryRedirect? temporaryRedirect]) {
     final availableDestinations = _getUser()

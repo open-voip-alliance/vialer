@@ -34,17 +34,20 @@ Future<void> writeEnvValues() async {
 
   final env = await readEnv('.env');
 
-  builder.element('resources', nest: () {
-    for (final entry in env.entries) {
-      builder.element(
-        'string',
-        attributes: {
-          'name': entry.key.toLowerCase(),
-        },
-        nest: entry.value,
-      );
-    }
-  });
+  builder.element(
+    'resources',
+    nest: () {
+      for (final entry in env.entries) {
+        builder.element(
+          'string',
+          attributes: {
+            'name': entry.key.toLowerCase(),
+          },
+          nest: entry.value,
+        );
+      }
+    },
+  );
 
   await builder.buildDocument().writeToAndroidResource('env.xml');
 }
@@ -52,38 +55,41 @@ Future<void> writeEnvValues() async {
 Future<void> writeBrandValues(Brand brand) async {
   final builder = createXmlBuilder();
 
-  builder.element('resources', nest: () {
-    final entries = brand.toJson().entries.followedBy([
-      // Related to migrating users from the old app.
-      MapEntry(
-        'flutter_shared_pref_name',
-        '${brand.appId}_preferences',
-      )
-    ]);
+  builder.element(
+    'resources',
+    nest: () {
+      final entries = brand.toJson().entries.followedBy([
+        // Related to migrating users from the old app.
+        MapEntry<String, dynamic>(
+          'flutter_shared_pref_name',
+          '${brand.appId}_preferences',
+        )
+      ]);
 
-    for (final entry in entries) {
-      final name = StringUtils.camelCaseToLowerUnderscore(entry.key);
-      final value = entry.value;
+      for (final entry in entries) {
+        final name = StringUtils.camelCaseToLowerUnderscore(entry.key);
+        final dynamic value = entry.value;
+
+        builder.element(
+          'string',
+          attributes: {
+            'name': name,
+          },
+          nest: value,
+        );
+      }
 
       builder.element(
-        'string',
+        'integer',
         attributes: {
-          'name': name,
+          'name': 'brand_icon',
         },
-        nest: value,
+        // Not necessary to put in hex but makes more sense since it's referring
+        // to a code point in Vialer Sans.
+        nest: '0x${brand.iconCodePoint.toRadixString(16).toUpperCase()}',
       );
-    }
-
-    builder.element(
-      'integer',
-      attributes: {
-        'name': 'brand_icon',
-      },
-      // Not necessary to put in hex but makes more sense since it's referring
-      // to a code point in Vialer Sans.
-      nest: '0x${brand.iconCodePoint.toRadixString(16).toUpperCase()}',
-    );
-  });
+    },
+  );
 
   await builder.buildDocument().writeToAndroidResource(
         'brand.xml',
@@ -96,20 +102,23 @@ Future<void> writeColorValues(Brand brand) async {
 
   final colors = brand.colorValues.toJson();
 
-  builder.element('resources', nest: () {
-    for (final entry in colors.entries) {
-      final name = StringUtils.camelCaseToLowerUnderscore(entry.key);
-      final value = (entry.value as int).toRadixString(16).toUpperCase();
+  builder.element(
+    'resources',
+    nest: () {
+      for (final entry in colors.entries) {
+        final name = StringUtils.camelCaseToLowerUnderscore(entry.key);
+        final value = (entry.value as int).toRadixString(16).toUpperCase();
 
-      builder.element(
-        'color',
-        attributes: {
-          'name': name,
-        },
-        nest: '#$value',
-      );
-    }
-  });
+        builder.element(
+          'color',
+          attributes: {
+            'name': name,
+          },
+          nest: '#$value',
+        );
+      }
+    },
+  );
 
   await builder.buildDocument().writeToAndroidResource(
         'colors.xml',
@@ -131,6 +140,7 @@ Future<void> writeLanguageValues(Brand brand) async {
       YamlMap strings, {
       String prefix = '',
     }) {
+      // ignore: parameter_assignments
       prefix = prefix.isNotEmpty ? '${prefix}_' : '';
 
       for (final entry in strings.entries) {
@@ -143,7 +153,7 @@ Future<void> writeLanguageValues(Brand brand) async {
         final name = StringUtils.camelCaseToLowerUnderscore(
           '$prefix$sanitizedKey',
         );
-        final value = entry.value;
+        final dynamic value = entry.value;
 
         if (value is YamlMap) {
           buildElementsRecursively(value, prefix: name);
@@ -165,7 +175,7 @@ Future<void> writeLanguageValues(Brand brand) async {
                 () => '%${parameters.length + 1}\$s',
               );
             },
-          ).replaceAll('\'', '\\\'');
+          ).replaceAll("'", r"\'");
         }
 
         final sanitizedValue = sanitize(value);
@@ -231,9 +241,12 @@ Future<void> writeLanguageValues(Brand brand) async {
       }
     }
 
-    builder.element('resources', nest: () {
-      buildElementsRecursively(languageStrings);
-    });
+    builder.element(
+      'resources',
+      nest: () {
+        buildElementsRecursively(languageStrings);
+      },
+    );
 
     await builder.buildDocument().writeToAndroidResource(
           'strings.xml',
@@ -268,10 +281,12 @@ Future<void> copyFontAwesome() async {
   ];
 
   for (final fontFileName in fontFileNames) {
-    final fontFile = File.fromUri(packageConfig.packages
-        .firstWhere((p) => p.name == 'font_awesome_flutter')
-        .root
-        .resolve('lib/fonts/$fontFileName'));
+    final fontFile = File.fromUri(
+      packageConfig.packages
+          .firstWhere((p) => p.name == 'font_awesome_flutter')
+          .root
+          .resolve('lib/fonts/$fontFileName'),
+    );
 
     final newFontFileName = fontFileName.replaceAll('-', '_');
 

@@ -15,10 +15,10 @@ class SurveyNotTriggered extends SurveyTriggererState {
 }
 
 class SurveyTriggered extends SurveyTriggererState {
+  const SurveyTriggered(this.id, this.trigger);
+
   final SurveyId id;
   final SurveyTrigger trigger;
-
-  const SurveyTriggered(this.id, this.trigger);
 
   @override
   List<Object?> get props => [id, trigger];

@@ -28,9 +28,9 @@ class IdentifyForTrackingUseCase extends UseCase {
   Future<void> call() async {
     final user = _getUser();
 
-    return await _metricsRepository.identify(
+    return _metricsRepository.identify(
       user,
-      {
+      <String, dynamic>{
         'brand': _getBrand().identifier,
         ...user.toIdentifyProperties(),
         ...user.client.toIdentifyProperties(),
@@ -59,11 +59,9 @@ extension on User {
 }
 
 extension on List<String> {
-  Map<String, dynamic> toIdentifyProperties() => Map.fromIterable(
-        this,
-        key: (permission) => 'voipgrid-permission-$permission',
-        value: (_) => true,
-      );
+  Map<String, dynamic> toIdentifyProperties() => {
+        for (final permission in this) 'voipgrid-permission-$permission': true,
+      };
 }
 
 extension on List<Colleague> {
@@ -71,7 +69,7 @@ extension on List<Colleague> {
     final result =
         partition((colleague) => colleague is UnconnectedVoipAccount);
 
-    return {
+    return <String, dynamic>{
       'number_of_colleagues': result[1].length,
       'number_of_unconnected_voip_accounts': result[0].length,
     };
@@ -80,23 +78,23 @@ extension on List<Colleague> {
 
 extension on ColltactTab? {
   Map<String, dynamic> toIdentifyProperties() => this != null
-      ? {
+      ? <String, dynamic>{
           'colltact-tab': this!.name,
         }
-      : const {};
+      : const <String, dynamic>{};
 }
 
 extension on SettingKey {
   String get asPropertyKey {
     // We don't care about the generic argument, just the base type.
-    final type = runtimeType.toString().replaceAll(RegExp(r'<.+>'), '');
+    final type = runtimeType.toString().replaceAll(RegExp('<.+>'), '');
 
     return '$type-$name'.paramCase;
   }
 }
 
 extension on Client {
-  Map<String, dynamic> toIdentifyProperties() => {
+  Map<String, dynamic> toIdentifyProperties() => <String, dynamic>{
         'outgoing-numbers-amount': outgoingNumbers.length,
       };
 }

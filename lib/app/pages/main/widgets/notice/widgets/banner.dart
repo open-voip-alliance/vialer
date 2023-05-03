@@ -3,18 +3,18 @@ import 'package:flutter/material.dart';
 import '../../../../../resources/theme.dart';
 
 class NoticeBanner extends StatelessWidget {
-  final Widget icon;
-  final Widget title;
-  final Widget content;
-  final List<Widget> actions;
-
   const NoticeBanner({
-    Key? key,
     required this.icon,
     required this.title,
     required this.content,
     this.actions = const [],
-  }) : super(key: key);
+    super.key,
+  });
+
+  final Widget icon;
+  final Widget title;
+  final Widget content;
+  final List<Widget> actions;
 
   @override
   Widget build(BuildContext context) {
@@ -60,11 +60,12 @@ class NoticeBanner extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
                 DefaultTextStyle.merge(
-                    style: TextStyle(
-                      color: context.brand.theme.colors.onPrimaryGradient,
-                      fontSize: 16,
-                    ),
-                    child: content),
+                  style: TextStyle(
+                    color: context.brand.theme.colors.onPrimaryGradient,
+                    fontSize: 16,
+                  ),
+                  child: content,
+                ),
                 const SizedBox(height: 6),
                 Theme(
                   data: theme.copyWith(

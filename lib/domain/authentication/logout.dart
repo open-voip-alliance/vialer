@@ -35,9 +35,10 @@ class Logout extends UseCase {
 
     await _storageRepository.clear();
 
-    _storageRepository.pushToken = pushToken;
-    _storageRepository.remoteNotificationToken = remoteNotificationToken;
-    _storageRepository.previousSessionSettings = crossSessionSettings;
+    _storageRepository
+      ..pushToken = pushToken
+      ..remoteNotificationToken = remoteNotificationToken
+      ..previousSessionSettings = crossSessionSettings;
 
     await _purgeClientCalls(reason: PurgeReason.logout);
 

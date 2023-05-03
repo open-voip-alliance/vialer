@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:dartx/dartx.dart';
 import 'package:flutter_phone_lib/flutter_phone_lib.dart';
 
@@ -12,14 +10,14 @@ class TrackVoipCallUseCase extends UseCase {
   final _metricsRepository = dependencyLocator<MetricsRepository>();
   final _connectivityRepository = dependencyLocator<ConnectivityRepository>();
 
-  Future<void> call({
+  void call({
     required CallDirection direction,
     required Set<AudioRoute> usedRoutes,
     required Set<String> usedBluetoothDevices,
     required double mos,
     String? reason,
-  }) async {
-    final connectivityType = await _connectivityRepository.currentType;
+  }) {
+    final connectivityType = _connectivityRepository.currentType;
 
     _metricsRepository.track('voip-call', {
       'direction': direction.toTrackString(),

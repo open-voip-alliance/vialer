@@ -8,14 +8,14 @@ import '../../../../../resources/localizations.dart';
 import '../../../../../resources/theme.dart';
 
 class ColltactSubtitle extends StatelessWidget {
-  final Colltact colltact;
-  final bool colleaguesUpToDate;
-
   const ColltactSubtitle(
     this.colltact, {
-    Key? key,
+    super.key,
     this.colleaguesUpToDate = true,
-  }) : super(key: key);
+  });
+
+  final Colltact colltact;
+  final bool colleaguesUpToDate;
 
   String _text(BuildContext context) {
     return colltact.when(
@@ -63,7 +63,10 @@ class ColltactSubtitle extends StatelessWidget {
   }
 
   String _textForColleague(
-      BuildContext context, Colleague colleague, bool colleaguesUpToDate) {
+    BuildContext context,
+    Colleague colleague,
+    bool colleaguesUpToDate,
+  ) {
     final recentStatus = colleaguesUpToDate
         ? colleague.mostRelevantContextText(context) ??
             colleague.availabilityText(context)
@@ -74,7 +77,7 @@ class ColltactSubtitle extends StatelessWidget {
     } else if (recentStatus != null && colleague.number != null) {
       return '${colleague.number} - $recentStatus';
     } else if (recentStatus != null && colleague.number == null) {
-      return '$recentStatus';
+      return recentStatus;
     } else {
       return '';
     }
@@ -122,7 +125,7 @@ extension on ColleagueAvailabilityStatus {
         return context.msg.main.colleagues.status.available;
       case ColleagueAvailabilityStatus.busy:
         return context.msg.main.colleagues.status.busy;
-      default:
+      case ColleagueAvailabilityStatus.unknown:
         return context.msg.main.colleagues.status.unknown;
     }
   }

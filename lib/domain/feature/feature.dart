@@ -1,3 +1,5 @@
+import 'has_feature.dart';
+
 /// Enumeration of feature flags. To test whether a certain feature
 /// is enabled, use the [HasFeature] use case:
 /// ```dart

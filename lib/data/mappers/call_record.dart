@@ -28,10 +28,10 @@ CallParty _mapCaller(CallRecordFromDetail fromDetail) {
   late String number;
 
   if (fromDetail.voipAccount != null) {
-    name = fromDetail.voipAccount!.description!;
+    name = fromDetail.voipAccount!.description;
     number = fromDetail.voipAccount!.internalNumber;
-  } else if (fromDetail.callerName?.isNotEmpty == true) {
-    name = fromDetail.callerName!;
+  } else if (fromDetail.callerName?.isNotEmpty ?? false) {
+    name = fromDetail.callerName;
     number = fromDetail.phoneNumber;
   } else {
     number = fromDetail.phoneNumber;
@@ -49,10 +49,10 @@ CallParty _mapDestination(CallRecordToDetail toDetail) {
   late String number;
 
   if (toDetail.voipAccount != null) {
-    name = toDetail.voipAccount!.description!;
+    name = toDetail.voipAccount!.description;
     number = toDetail.voipAccount!.internalNumber;
   } else if (toDetail.fixedDestination != null) {
-    name = toDetail.fixedDestination!.description!;
+    name = toDetail.fixedDestination!.description;
     number = toDetail.fixedDestination!.phoneNumber;
   } else {
     number = toDetail.phoneNumber;

@@ -22,6 +22,17 @@ import 'state.dart';
 export 'state.dart';
 
 class ColleaguesCubit extends Cubit<ColleaguesState> {
+  ColleaguesCubit(this._caller)
+      : super(
+          const ColleaguesState.loading(
+            showOnlineColleaguesOnly: false,
+          ),
+        ) {
+    _eventBus.on<UserWasLoggedOutEvent>((event) {
+      unawaited(disconnectFromWebSocket(purgeCache: true));
+    });
+  }
+
   final _storageRepository = dependencyLocator<StorageRepository>();
 
   late final _shouldShowColleagues = ShouldShowColleagues();
@@ -35,7 +46,7 @@ class ColleaguesCubit extends Cubit<ColleaguesState> {
 
   final CallerCubit _caller;
 
-  StreamSubscription? _subscription;
+  StreamSubscription<List<Colleague>>? _subscription;
 
   List<Colleague> get _colleagues => state.map(
         loading: (_) => [],
@@ -53,16 +64,7 @@ class ColleaguesCubit extends Cubit<ColleaguesState> {
 
   set showOnlineColleaguesOnly(bool value) {
     emit(state.copyWith(showOnlineColleaguesOnly: value));
-    _changeSetting(AppSetting.showOnlineColleaguesOnly, value);
-  }
-
-  ColleaguesCubit(this._caller)
-      : super(const ColleaguesState.loading(
-          showOnlineColleaguesOnly: false,
-        )) {
-    _eventBus.on<UserWasLoggedOutEvent>((event) {
-      disconnectFromWebSocket(purgeCache: true);
-    });
+    unawaited(_changeSetting(AppSetting.showOnlineColleaguesOnly, value));
   }
 
   Future<void> connectToWebSocket({bool fullRefresh = false}) async {
@@ -76,7 +78,7 @@ class ColleaguesCubit extends Cubit<ColleaguesState> {
       ),
     );
 
-    final stream = await _receiveColleagueAvailability(
+    final stream = _receiveColleagueAvailability(
       forceFullAvailabilityRefresh: fullRefresh,
     );
 
@@ -99,18 +101,19 @@ class ColleaguesCubit extends Cubit<ColleaguesState> {
               },
               cancelOnError: false,
               onDone: () {
-                emit(ColleaguesState.loaded(
-                  lastKnownCollegues,
-                  showOnlineColleaguesOnly: showOnlineColleaguesOnly,
-                  upToDate: false,
-                ));
+                emit(
+                  ColleaguesState.loaded(
+                    lastKnownCollegues,
+                    showOnlineColleaguesOnly: showOnlineColleaguesOnly,
+                    upToDate: false,
+                  ),
+                );
               },
             );
   }
 
-  Future<void> disconnectFromWebSocket({bool purgeCache = false}) async {
-    _stopReceivingColleagueAvailability(purgeCache: purgeCache);
-  }
+  Future<void> disconnectFromWebSocket({bool purgeCache = false}) =>
+      _stopReceivingColleagueAvailability(purgeCache: purgeCache);
 
   /// Refresh the WebSocket, disconnecting and reconnecting to load all
   /// new data.
@@ -119,7 +122,7 @@ class ColleaguesCubit extends Cubit<ColleaguesState> {
   /// amount of overhead.
   Future<void> refresh() async {
     await disconnectFromWebSocket();
-    connectToWebSocket(fullRefresh: true);
+    await connectToWebSocket(fullRefresh: true);
   }
 
   void trackColleaguesTabSelected() => _trackColleagueTabSelected();
@@ -133,5 +136,11 @@ class ColleaguesCubit extends Cubit<ColleaguesState> {
   // ignore: use_setters_to_change_properties
   void storeCurrentTab(ColltactTab tab) {
     _storageRepository.currentColltactTab = tab;
+  }
+
+  @override
+  Future<void> close() async {
+    await _subscription?.cancel();
+    await super.close();
   }
 }

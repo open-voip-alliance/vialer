@@ -25,14 +25,14 @@ class GetOnboardingStepsUseCase extends UseCase {
 
   Future<List<OnboardingStep>> call() async => [
         OnboardingStep.login,
-        ...(await _generatePermissionSteps()),
+        ...await _generatePermissionSteps(),
         OnboardingStep.welcome,
       ];
 
   Future<List<OnboardingStep>> _generatePermissionSteps() async {
     final steps = <OnboardingStep>[];
 
-    for (var entry in _permissionSteps.entries) {
+    for (final entry in _permissionSteps.entries) {
       final permission = entry.value;
 
       if (await _isPermissionNotGranted(permission)) {

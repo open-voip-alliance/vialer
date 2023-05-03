@@ -13,12 +13,11 @@ import 'state.dart';
 export 'state.dart';
 
 class PasswordCubit extends Cubit<PasswordState> with Loggable {
+  PasswordCubit(this._onboarding) : super(PasswordNotChanged());
   final OnboardingCubit _onboarding;
 
   final _changePassword = ChangePasswordUseCase();
   final _login = LoginUseCase();
-
-  PasswordCubit(this._onboarding) : super(PasswordNotChanged());
 
   Future<void> changePassword(String password) async {
     logger.info('Changing password');

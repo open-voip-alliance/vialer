@@ -31,6 +31,23 @@ import 'state.dart';
 export 'state.dart';
 
 class SettingsCubit extends Cubit<SettingsState> with Loggable {
+  SettingsCubit() : super(SettingsState(user: GetLoggedInUserUseCase()())) {
+    _emitUpdatedState();
+    _eventBus
+      ..on<LoggedInUserWasRefreshed>(
+        (event) => _emitUpdatedState(user: event.user),
+      )
+      ..on<RateLimitReachedEvent>((event) {
+        _isRateLimited = true;
+        _emitUpdatedState();
+
+        Timer(rateLimitDuration, () {
+          _isRateLimited = false;
+          _emitUpdatedState();
+        });
+      });
+  }
+
   final _changeSettings = ChangeSettingsUseCase();
   final _getBuildInfo = GetBuildInfoUseCase();
   final _sendSavedLogsToRemote = SendSavedLogsToRemoteUseCase();
@@ -53,50 +70,37 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
   bool _isRateLimited = false;
   static const rateLimitDuration = Duration(seconds: 60);
 
-  SettingsCubit() : super(SettingsState(user: GetLoggedInUserUseCase()())) {
-    _emitUpdatedState();
-    _eventBus.on<LoggedInUserWasRefreshed>(
-      (event) => _emitUpdatedState(user: event.user),
-    );
-
-    _eventBus.on<RateLimitReachedEvent>((event) {
-      _isRateLimited = true;
-      _emitUpdatedState();
-
-      Timer(rateLimitDuration, () {
-        _isRateLimited = false;
-        _emitUpdatedState();
-      });
-    });
-  }
-
   bool get _isUpdatingRemote => _changesBeingProcessed
       .where((request) => !request.hasTimedOut)
       .isNotEmpty;
 
-  Future<void> _emitUpdatedState({
+  void _emitUpdatedState({
     User? user,
-  }) async {
-    // We don't want to emit any refresh changes while we're in the progress
-    // of changing remote settings.
-    if (_isUpdatingRemote && !_isRateLimited) return;
+  }) {
+    unawaited(
+      () async {
+        // We don't want to emit any refresh changes while we're in the progress
+        // of changing remote settings.
+        if (_isUpdatingRemote && !_isRateLimited) return;
 
-    user = user ?? _getUser();
+        user = user ?? _getUser();
 
-    emit(
-      SettingsState(
-        user: user,
-        buildInfo: await _getBuildInfo(),
-        hasIgnoreBatteryOptimizationsPermission: await _getPermissionStatus(
-          permission: Permission.ignoreBatteryOptimizations,
-        ).then(
-          (status) => status == PermissionStatus.granted,
-        ),
-        userNumber: _storageRepository.userNumber,
-        availableDestinations: _storageRepository.availableDestinations,
-        isApplyingChanges: _isUpdatingRemote,
-        isRateLimited: _isRateLimited,
-      ),
+        emit(
+          SettingsState(
+            user: user!,
+            buildInfo: await _getBuildInfo(),
+            hasIgnoreBatteryOptimizationsPermission: await _getPermissionStatus(
+              permission: Permission.ignoreBatteryOptimizations,
+            ).then(
+              (status) => status == PermissionStatus.granted,
+            ),
+            userNumber: _storageRepository.userNumber,
+            availableDestinations: _storageRepository.availableDestinations,
+            isApplyingChanges: _isUpdatingRemote,
+            isRateLimited: _isRateLimited,
+          ),
+        );
+      }(),
     );
   }
 
@@ -112,7 +116,7 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
   Future<bool> canChangeRemoteSetting<T extends Object>(
     SettingKey<T> key,
   ) async =>
-      !_remoteSettings.contains(key) ||
+      (key is CallSetting<T> && !_remoteSettings.contains(key)) ||
       await _getConnectivity().then((c) => c.isConnected);
 
   Future<void> changeSetting<T extends Object>(
@@ -126,27 +130,29 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
     // We're going to track any requests to update remote and then make sure
     // we don't update the settings page while that's happening. This also
     // allows us to prevent input until changes have finished.
-    final _changeRequest = _SettingChangeRequest();
-    _changesBeingProcessed.add(_changeRequest);
+    final changeRequest = _SettingChangeRequest();
+    _changesBeingProcessed.add(changeRequest);
     emit(state.withChanged(newSettings, isApplyingChanges: true));
     await _changeSettings(newSettings);
-    _changesBeingProcessed.remove(_changeRequest);
+    _changesBeingProcessed.remove(changeRequest);
     _emitUpdatedState();
   }
 
   Future<void> refreshAvailability() async {
     logger.info('Refreshing availability');
     await _refreshUser(tasksToPerform: [UserRefreshTask.userDestination]);
-    await _emitUpdatedState();
+    _emitUpdatedState();
   }
 
-  Future<void> requestBatteryPermission() => _requestPermission(
-        permission: Permission.ignoreBatteryOptimizations,
+  void requestBatteryPermission() => unawaited(
+        _requestPermission(
+          permission: Permission.ignoreBatteryOptimizations,
+        ),
       );
 
   Future<void> sendSavedLogsToRemote() => _sendSavedLogsToRemote();
 
-  Future<void> refresh() => _emitUpdatedState();
+  void refresh() => _emitUpdatedState();
 
   bool get shouldShowOpeningHoursBasic => _shouldShowOpeningHoursBasic();
 

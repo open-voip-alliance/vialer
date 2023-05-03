@@ -1,13 +1,14 @@
 import 'dart:async';
 
 bool get inDebugMode {
-  var _debug = false;
+  var debug = false;
 
   // Asserts are only run in debug mode, so only then will _debug be true.
-  assert(_debug = true);
+  // ignore: prefer_asserts_with_message
+  assert(debug = true);
 
-  return _debug;
+  return debug;
 }
 
-Future<void> doIfNotDebug(FutureOr Function() f) async =>
+Future<void> doIfNotDebug(FutureOr<void> Function() f) async =>
     !inDebugMode ? f() : null;

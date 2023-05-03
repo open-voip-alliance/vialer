@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:dartx/dartx.dart';
 
 import '../../dependency_locator.dart';
@@ -12,7 +10,7 @@ class SendSurveyResultsUseCase extends UseCase {
   final _metricsRepository = dependencyLocator<MetricsRepository>();
 
   // TODO: Use proper type for data.
-  Future<void> call(SurveyId id, {required Map<String, dynamic> data}) =>
+  void call(SurveyId id, {required Map<String, dynamic> data}) =>
       _metricsRepository.track('${id.eventName}-survey', data);
 }
 

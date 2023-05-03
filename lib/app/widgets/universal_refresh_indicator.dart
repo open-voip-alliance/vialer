@@ -4,13 +4,14 @@ import 'package:flutter/material.dart';
 /// this will wrap the provided [child] so it can also have drag-to-refresh
 /// functionality.
 class UniversalRefreshIndicator extends StatelessWidget {
-  final Future<void> Function() onRefresh;
-  final Widget child;
-
-  UniversalRefreshIndicator({
+  const UniversalRefreshIndicator({
     required this.onRefresh,
     required this.child,
+    super.key,
   });
+
+  final Future<void> Function() onRefresh;
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {

@@ -13,19 +13,19 @@ import '../../util/conditional_capitalization.dart';
 import '../../widgets/stylized_button.dart';
 
 class WebViewPage extends StatefulWidget {
+  const WebViewPage(this.page, {super.key});
+
   final WebPage page;
 
-  WebViewPage(this.page);
-
-  static MaterialPageRoute route(WebPage page) => MaterialPageRoute(
+  static MaterialPageRoute<void> route(WebPage page) => MaterialPageRoute(
         builder: (context) => WebViewPage(page),
       );
 
-  static Future open(BuildContext context, {required WebPage to}) =>
+  static Future<void> open(BuildContext context, {required WebPage to}) =>
       Navigator.of(context, rootNavigator: true).push(route(to));
 
   @override
-  _WebViewPageState createState() => _WebViewPageState();
+  State<WebViewPage> createState() => _WebViewPageState();
 }
 
 class _WebViewPageState extends State<WebViewPage> {

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -5,9 +7,9 @@ import '../../util/widgets_binding_observer_registrar.dart';
 import 'cubit.dart';
 
 class ConnectivityChecker extends StatefulWidget {
-  final Widget child;
+  const ConnectivityChecker._(this.child);
 
-  ConnectivityChecker._(this.child);
+  final Widget child;
 
   static Widget create({
     required Widget child,
@@ -29,7 +31,7 @@ class _ConnectivityCheckerState extends State<ConnectivityChecker>
     super.didChangeAppLifecycleState(state);
 
     if (state == AppLifecycleState.resumed) {
-      context.read<ConnectivityCheckerCubit>().check();
+      unawaited(context.read<ConnectivityCheckerCubit>().check());
     }
   }
 

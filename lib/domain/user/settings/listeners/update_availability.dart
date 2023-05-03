@@ -27,17 +27,17 @@ class UpdateDestinationListener extends SettingChangeListener<Destination>
   @override
   FutureOr<SettingChangeListenResult> preStore(
     User user,
-    Destination newDestination,
+    Destination value,
   ) async {
     final currentDestination =
         await _destinationRepository.getActiveDestination();
 
     var log = true;
 
-    if (currentDestination != newDestination) {
-      newDestination.when(
-        unknown: () => logger.info('Set $key to $newDestination'),
-        notAvailable: () => logger.info('Set $key to $newDestination'),
+    if (currentDestination != value) {
+      value.when(
+        unknown: () => logger.info('Set $key to $value'),
+        notAvailable: () => logger.info('Set $key to $value'),
         phoneNumber: (id, _, __) => logger.info('Set $key to $id'),
         phoneAccount: (id, _, __, ___) => logger.info('Set $key to $id'),
       );
@@ -46,15 +46,18 @@ class UpdateDestinationListener extends SettingChangeListener<Destination>
     }
 
     final success = await _destinationRepository.setDestination(
-      destination: newDestination,
+      destination: value,
     );
 
     if (success) {
-      _metricsRepository.track('destination-changed', {
-        'has-app-account': user.appAccountUrl != null,
-        'to-fixed-destination': newDestination is PhoneNumber,
-        'to-phone-account': newDestination is PhoneAccount,
-      });
+      _metricsRepository.track(
+        'destination-changed',
+        {
+          'has-app-account': user.appAccountUrl != null,
+          'to-fixed-destination': value is PhoneNumber,
+          'to-phone-account': value is PhoneAccount,
+        },
+      );
     }
 
     return SettingChangeListenResult(log: log, sync: _shouldSyncUser);

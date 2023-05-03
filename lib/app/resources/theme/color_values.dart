@@ -23,6 +23,11 @@ class ColorValues {
     required this.primary,
     required this.primaryDark,
     required this.primaryLight,
+    required this.splashScreen,
+    required this.onboardingGradientStart,
+    required this.onboardingGradientEnd,
+    required this.primaryGradientStart,
+    required this.primaryGradientEnd,
     this.onPrimary = 0xFFFFFFFF,
     this.grey1 = 0xFFCCCCCC,
     this.grey2 = 0xFFD8D8D8,
@@ -45,11 +50,6 @@ class ColorValues {
     this.dndAccent = 0xFFFFC999,
     this.available = 0xFF075B15,
     this.availableAccent = 0xFFA2F39C,
-    required this.splashScreen,
-    required this.onboardingGradientStart,
-    required this.onboardingGradientEnd,
-    required this.primaryGradientStart,
-    required this.primaryGradientEnd,
     int? onPrimaryGradient,
     this.errorBorder = 0x57DA534F,
     this.errorContent = 0xFFDA534F,
@@ -76,78 +76,6 @@ class ColorValues {
         buttonShade = buttonShade ?? primary,
         appBarBackground = appBarBackground ?? primary,
         notificationBackground = notificationBackground ?? primary;
-
-  final int primary;
-  final int primaryDark;
-  final int primaryLight;
-
-  /// Color for use when the [primary] color is the background.
-  final int onPrimary;
-
-  final int grey1;
-  final int grey2;
-  final int grey3;
-  final int grey4;
-  final int grey5;
-  final int grey6;
-  final int grey7;
-
-  final int settingsBackgroundHighlight;
-
-  final int green1;
-  final int green2;
-  final int green3;
-
-  final int red1;
-
-  final int answeredElsewhere;
-
-  final int notAvailable;
-  final int notAvailableAccent;
-
-  final int availableElsewhere;
-  final int availableElsewhereAccent;
-
-  final int dnd;
-  final int dndAccent;
-
-  final int available;
-  final int availableAccent;
-
-  final int splashScreen;
-
-  final int onboardingGradientStart;
-  final int onboardingGradientEnd;
-
-  final int primaryGradientStart;
-  final int primaryGradientEnd;
-
-  final int onPrimaryGradient;
-
-  final int errorBorder;
-  final int errorContent;
-  final int errorBackground;
-
-  final int textButtonForeground;
-  final int buttonBackground;
-  final int buttonShade;
-  final int raisedColoredButtonText;
-
-  final int appBarForeground;
-  final int appBarBackground;
-
-  /// Name should not be changed, this color is expected by
-  /// the Android Phone Lib.
-  final int notificationBackground;
-
-  final int userAvailabilityAvailable;
-  final int userAvailabilityAvailableAccent;
-  final int userAvailabilityBusy;
-  final int userAvailabilityBusyAccent;
-  final int userAvailabilityUnavailable;
-  final int userAvailabilityUnavailableAccent;
-  final int userAvailabilityUnknown;
-  final int userAvailabilityUnknownAccent;
 
   /// Defaults should be left as-is.
   const ColorValues.vialer({
@@ -226,6 +154,78 @@ class ColorValues {
           buttonShade: primaryDark,
           buttonRaisedColorText: 0xFFFFFFFF,
         );
+
+  final int primary;
+  final int primaryDark;
+  final int primaryLight;
+
+  /// Color for use when the [primary] color is the background.
+  final int onPrimary;
+
+  final int grey1;
+  final int grey2;
+  final int grey3;
+  final int grey4;
+  final int grey5;
+  final int grey6;
+  final int grey7;
+
+  final int settingsBackgroundHighlight;
+
+  final int green1;
+  final int green2;
+  final int green3;
+
+  final int red1;
+
+  final int answeredElsewhere;
+
+  final int notAvailable;
+  final int notAvailableAccent;
+
+  final int availableElsewhere;
+  final int availableElsewhereAccent;
+
+  final int dnd;
+  final int dndAccent;
+
+  final int available;
+  final int availableAccent;
+
+  final int splashScreen;
+
+  final int onboardingGradientStart;
+  final int onboardingGradientEnd;
+
+  final int primaryGradientStart;
+  final int primaryGradientEnd;
+
+  final int onPrimaryGradient;
+
+  final int errorBorder;
+  final int errorContent;
+  final int errorBackground;
+
+  final int textButtonForeground;
+  final int buttonBackground;
+  final int buttonShade;
+  final int raisedColoredButtonText;
+
+  final int appBarForeground;
+  final int appBarBackground;
+
+  /// Name should not be changed, this color is expected by
+  /// the Android Phone Lib.
+  final int notificationBackground;
+
+  final int userAvailabilityAvailable;
+  final int userAvailabilityAvailableAccent;
+  final int userAvailabilityBusy;
+  final int userAvailabilityBusyAccent;
+  final int userAvailabilityUnavailable;
+  final int userAvailabilityUnavailableAccent;
+  final int userAvailabilityUnknown;
+  final int userAvailabilityUnknownAccent;
 
   Map<String, dynamic> toJson() => _$ColorValuesToJson(this);
 }

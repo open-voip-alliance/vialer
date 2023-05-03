@@ -177,13 +177,15 @@ Future<void> _runGenerationIfNeeded(
       return;
     }
   } else {
-    final hasGenerationChanges = files.any((s) =>
-        s.endsWith('i18n.yaml') ||
-        s.endsWith('lib/domain/repositories/db/database.dart') ||
-        s.endsWith('pigeon/scheme.dart') ||
-        s.contains(
-          RegExp(r'lib\/domain\/repositories\/services\/[A-z]+.dart'),
-        ));
+    final hasGenerationChanges = files.any(
+      (s) =>
+          s.endsWith('i18n.yaml') ||
+          s.endsWith('lib/domain/repositories/db/database.dart') ||
+          s.endsWith('pigeon/scheme.dart') ||
+          s.contains(
+            RegExp(r'lib\/domain\/repositories\/services\/[A-z]+.dart'),
+          ),
+    );
 
     if (!hasGenerationChanges) {
       return;

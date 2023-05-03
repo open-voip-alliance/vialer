@@ -8,9 +8,9 @@ import 'value.dart';
 import 'widget.dart';
 
 class EnableT9ContactSearch extends StatelessWidget {
-  final User user;
-
   const EnableT9ContactSearch(this.user, {super.key});
+
+  final User user;
 
   @override
   Widget build(BuildContext context) {

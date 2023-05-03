@@ -21,9 +21,12 @@ extension ConnectivityTypeMapper on ConnectivityResult {
     switch (this) {
       case ConnectivityResult.mobile:
         return ConnectivityType.mobile;
+      case ConnectivityResult.vpn:
+      case ConnectivityResult.ethernet:
       case ConnectivityResult.wifi:
         return ConnectivityType.wifi;
-      default:
+      case ConnectivityResult.bluetooth:
+      case ConnectivityResult.none:
         return ConnectivityType.none;
     }
   }

@@ -8,9 +8,9 @@ import '../../../widgets/splash_screen.dart';
 import '../../../widgets/transparent_status_bar.dart';
 
 class Background extends StatefulWidget {
-  final Widget child;
+  const Background({required this.child, super.key});
 
-  const Background({Key? key, required this.child}) : super(key: key);
+  final Widget child;
 
   @override
   State<StatefulWidget> createState() => _BackgroundState();
@@ -19,15 +19,9 @@ class Background extends StatefulWidget {
 class _BackgroundState extends State<Background> with TickerProviderStateMixin {
   static const _splashScreenTime = Duration(seconds: 3);
 
-  AnimationController? __controller;
-  Animation<LinearGradient>? __gradientAnimation;
-  Animation<Color?>? __iconColorAnimation;
-
-  AnimationController get _controller => __controller!;
-
-  Animation<LinearGradient> get _gradientAnimation => __gradientAnimation!;
-
-  Animation<Color?> get _iconColorAnimation => __iconColorAnimation!;
+  late AnimationController _controller;
+  late Animation<LinearGradient> _gradientAnimation;
+  late Animation<Color?> _iconColorAnimation;
 
   List<Animation<double>> _cloudAnimations = [];
 
@@ -47,7 +41,7 @@ class _BackgroundState extends State<Background> with TickerProviderStateMixin {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    __controller = AnimationController(
+    _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1500),
     );
@@ -76,12 +70,12 @@ class _BackgroundState extends State<Background> with TickerProviderStateMixin {
       );
     });
 
-    __gradientAnimation = _LinearGradientTween(
+    _gradientAnimation = _LinearGradientTween(
       begin: context.brand.theme.splashScreenGradient,
       end: context.brand.theme.onboardingGradient,
     ).animate(_controller);
 
-    __iconColorAnimation = ColorTween(
+    _iconColorAnimation = ColorTween(
       begin: Colors.white,
       end: Colors.white.withOpacity(0),
     ).animate(
@@ -92,14 +86,14 @@ class _BackgroundState extends State<Background> with TickerProviderStateMixin {
     );
 
     _controller.addListener(() {
-      if (__controller?.isCompleted == true) {
+      if (_controller.isCompleted) {
         setState(() => _showForm = true);
       }
     });
 
     Future.delayed(_splashScreenTime, () {
       if (mounted) {
-        __controller?.forward();
+        _controller.forward();
       }
     });
   }
@@ -133,7 +127,7 @@ class _BackgroundState extends State<Background> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    __controller?.dispose();
+    _controller.dispose();
     super.dispose();
   }
 }

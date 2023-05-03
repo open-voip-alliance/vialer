@@ -16,6 +16,8 @@ import 'state.dart';
 export 'state.dart';
 
 class SurveyTriggererCubit extends Cubit<SurveyTriggererState> with Loggable {
+  SurveyTriggererCubit(this.caller) : super(const SurveyNotTriggered());
+
   final _getUser = GetLoggedInUserUseCase();
   final _getAppRatingLastShownTime = GetAppRatingSurveyLastShownTimeUseCase();
   final _getAppRatingActionCount = GetAppRatingSurveyActionCountUseCase();
@@ -23,8 +25,6 @@ class SurveyTriggererCubit extends Cubit<SurveyTriggererState> with Loggable {
   final _resetAppRatingActionCount = ResetAppRatingSurveyActionCountUseCase();
 
   final CallerCubit caller;
-
-  SurveyTriggererCubit(this.caller) : super(const SurveyNotTriggered());
 
   Future<void> check() async {
     if (caller.state.isInCall) return;

@@ -8,9 +8,9 @@ abstract class AppUpdateState extends Equatable {
 }
 
 class NewUpdateWasInstalled extends AppUpdateState {
-  final String version;
-
   const NewUpdateWasInstalled(this.version);
+
+  final String version;
 }
 
 class UpdateReadyToInstall extends AppUpdateState {

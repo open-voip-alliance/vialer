@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:in_app_review/in_app_review.dart';
 
@@ -14,43 +16,45 @@ import 'state.dart';
 export 'state.dart';
 
 class SurveyCubit extends Cubit<SurveyState> with Loggable {
-  final _getSurvey = GetSurveyUseCase();
-  final _sendSurveyResults = SendSurveyResultsUseCase();
-
-  final _getUser = GetLoggedInUserUseCase();
-  final _changeSetting = ChangeSettingUseCase();
-
   SurveyCubit({
     required String language,
     required SurveyId id,
     required SurveyTrigger trigger,
   }) : super(const LoadingSurvey()) {
-    _getSurvey(id, language: language, trigger: trigger).then((survey) {
-      final user = _getUser();
-      // Necessary for auto cast.
-      final state = this.state;
+    unawaited(
+      _getSurvey(id, language: language, trigger: trigger).then((survey) {
+        final user = _getUser();
+        // Necessary for auto cast.
+        final state = this.state;
 
-      if (state is LoadingSurvey) {
-        if (survey.skipIntro) {
-          emit(
-            ShowQuestion(
-              survey.questions.first,
-              survey: survey,
-            ),
-          );
-        } else {
-          emit(
-            ShowHelpUsPrompt(
-              survey: survey,
-              dontShowThisAgain: !user.settings.get(
-                AppSetting.showSurveys,
+        if (state is LoadingSurvey) {
+          if (survey.skipIntro) {
+            emit(
+              ShowQuestion(
+                survey.questions.first,
+                survey: survey,
               ),
-            ),
-          );
+            );
+          } else {
+            emit(
+              ShowHelpUsPrompt(
+                survey: survey,
+                dontShowThisAgain: !user.settings.get(
+                  AppSetting.showSurveys,
+                ),
+              ),
+            );
+          }
         }
-      }
-    });
+      }),
+    );
   }
+
+  final _getSurvey = GetSurveyUseCase();
+  final _sendSurveyResults = SendSurveyResultsUseCase();
+
+  final _getUser = GetLoggedInUserUseCase();
+  final _changeSetting = ChangeSettingUseCase();
 
 // ignore: avoid_positional_boolean_parameters
   Future<void> setDontShowThisAgain(bool value) async {
@@ -74,7 +78,7 @@ class SurveyCubit extends Cubit<SurveyState> with Loggable {
     if (state is ShowHelpUsPrompt) {
       emit(ShowQuestion(state.survey!.questions.first, survey: state.survey));
     } else if (state is ShowQuestion) {
-      _appStoreRatingCheck();
+      unawaited(_appStoreRatingCheck());
       _progressToNextQuestion();
     }
   }
@@ -104,7 +108,7 @@ class SurveyCubit extends Cubit<SurveyState> with Loggable {
       final inAppReview = InAppReview.instance;
 
       if (await inAppReview.isAvailable()) {
-        inAppReview.requestReview();
+        unawaited(inAppReview.requestReview());
       }
     }
   }

@@ -3,6 +3,14 @@ import 'package:equatable/equatable.dart';
 import '../../../domain/onboarding/step.dart';
 
 class OnboardingState extends Equatable {
+  const OnboardingState({
+    required this.allSteps,
+    required this.currentStep,
+    this.password,
+    this.email,
+    this.completed = false,
+  });
+
   /// All steps to go through in the onboarding process. Steps may be
   /// added later on during the onboarding process.
   ///
@@ -18,14 +26,6 @@ class OnboardingState extends Equatable {
   final String? password;
 
   final bool completed;
-
-  const OnboardingState({
-    required this.allSteps,
-    required this.currentStep,
-    this.password,
-    this.email,
-    this.completed = false,
-  });
 
   @override
   List<Object?> get props => [allSteps, currentStep, password, completed];

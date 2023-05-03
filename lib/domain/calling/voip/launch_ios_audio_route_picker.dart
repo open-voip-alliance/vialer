@@ -8,7 +8,7 @@ class LaunchIOSAudioRoutePickerUseCase extends UseCase {
   final _voipRepository = dependencyLocator<VoipRepository>();
 
   Future<void> call() async {
-    assert(Platform.isIOS);
+    assert(Platform.isIOS, 'iOS audio route picker only works on iOS');
     await _voipRepository.launchAudioRoutePicker();
   }
 }
