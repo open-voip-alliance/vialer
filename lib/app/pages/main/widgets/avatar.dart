@@ -62,6 +62,8 @@ class _AvatarState extends State<Avatar> {
       widget.image?.exists().then((exists) {
         if (exists) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!mounted) return;
+
             setState(() {
               _existingImage = widget.image;
             });
