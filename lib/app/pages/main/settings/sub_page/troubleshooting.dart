@@ -8,9 +8,12 @@ import '../widgets/tile/echo_cancellation_calibration.dart';
 import 'widget.dart';
 
 class TroubleshootingSubPage extends StatelessWidget {
-  final SettingsCubit cubit;
+  const TroubleshootingSubPage({
+    required this.cubit,
+    super.key,
+  });
 
-  const TroubleshootingSubPage({super.key, required this.cubit});
+  final SettingsCubit cubit;
 
   @override
   Widget build(BuildContext context) {

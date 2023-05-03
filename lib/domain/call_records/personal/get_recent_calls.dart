@@ -16,7 +16,7 @@ class GetRecentCallsUseCase extends UseCase {
     required int page,
     bool onlyMissedCalls = false,
   }) async {
-    assert(page > 0);
+    assert(page > 0, 'page starts at 1');
 
     final callRecords = await _recentCallRepository.getRecentCalls(
       page: page,

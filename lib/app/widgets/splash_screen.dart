@@ -3,18 +3,18 @@ import 'package:flutter/material.dart';
 import '../resources/theme.dart';
 
 class SplashScreen extends StatelessWidget {
+  const SplashScreen({
+    this.iconColor = Colors.white,
+    this.gradient,
+    super.key,
+  });
+
   final Color iconColor;
   final Gradient? gradient;
 
-  const SplashScreen({
-    Key? key,
-    this.iconColor = Colors.white,
-    this.gradient,
-  }) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return DecoratedBox(
       decoration: BoxDecoration(
         gradient: gradient ?? context.brand.theme.splashScreenGradient,
       ),

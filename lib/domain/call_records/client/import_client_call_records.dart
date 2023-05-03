@@ -57,7 +57,7 @@ class ImportClientCallsUseCase with Loggable {
 
     _isIsolateRunning = true;
 
-    compute(
+    await compute(
       _performImport,
       request,
     ).onError((error, stackTrace) {

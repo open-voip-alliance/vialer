@@ -14,7 +14,7 @@ import '../widgets/stylized_text_field.dart';
 import 'cubit.dart';
 
 class TwoFactorAuthenticationPage extends StatefulWidget {
-  const TwoFactorAuthenticationPage({Key? key}) : super(key: key);
+  const TwoFactorAuthenticationPage({super.key});
 
   @override
   State<StatefulWidget> createState() => _TwoFactorAuthenticationPageState();
@@ -43,7 +43,7 @@ class _TwoFactorAuthenticationPageState
 
   /// Attempts to login using the two-factor code, assuming the state is
   /// appropriate.
-  void _loginWithTwoFactorCode({
+  Future<void> _loginWithTwoFactorCode({
     required BuildContext context,
     required TwoFactorState state,
     required String code,
@@ -89,10 +89,12 @@ class _TwoFactorAuthenticationPageState
                 ),
                 _TwoFactorCodeField(
                   key: _codeFieldKey,
-                  onCodeSubmitted: (code) => _loginWithTwoFactorCode(
-                    context: context,
-                    code: code,
-                    state: state,
+                  onCodeSubmitted: (code) => unawaited(
+                    _loginWithTwoFactorCode(
+                      context: context,
+                      code: code,
+                      state: state,
+                    ),
                   ),
                 ),
                 if (state is CodeAccepted)
@@ -113,12 +115,11 @@ class _TwoFactorAuthenticationPageState
                   Expanded(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const SizedBox(
+                      children: const [
+                        SizedBox(
                           width: 60,
                           height: 60,
                           child: CircularProgressIndicator(
-                            strokeWidth: 4,
                             valueColor: AlwaysStoppedAnimation(Colors.white),
                           ),
                         ),
@@ -135,12 +136,11 @@ class _TwoFactorAuthenticationPageState
 }
 
 class _TwoFactorCodeField extends StatefulWidget {
-  final void Function(String code) onCodeSubmitted;
-
   const _TwoFactorCodeField({
     required GlobalKey key,
     required this.onCodeSubmitted,
   }) : super(key: key);
+  final void Function(String code) onCodeSubmitted;
 
   @override
   _TwoFactorCodeFieldState createState() => _TwoFactorCodeFieldState();
@@ -167,7 +167,7 @@ class _TwoFactorCodeFieldState extends State<_TwoFactorCodeField>
   void initState() {
     _focusScope = FocusScopeNode();
 
-    for (var controller in _textEditingControllers) {
+    for (final controller in _textEditingControllers) {
       controller.addListener(_handleTextInputChanged);
     }
 
@@ -178,7 +178,7 @@ class _TwoFactorCodeFieldState extends State<_TwoFactorCodeField>
   void clear() {
     _lastCodeSubmitted = '';
 
-    for (var controller in _textEditingControllers) {
+    for (final controller in _textEditingControllers) {
       controller.text = '';
     }
   }
@@ -245,7 +245,7 @@ class _TwoFactorCodeFieldState extends State<_TwoFactorCodeField>
 
   @override
   void dispose() {
-    for (var controller in _textEditingControllers) {
+    for (final controller in _textEditingControllers) {
       controller.dispose();
     }
 
@@ -254,13 +254,13 @@ class _TwoFactorCodeFieldState extends State<_TwoFactorCodeField>
 }
 
 class _TwoFactorDigitField extends StatelessWidget {
-  final TextEditingController controller;
-  final FocusScopeNode focusScope;
-
   const _TwoFactorDigitField({
     required this.controller,
     required this.focusScope,
   });
+
+  final TextEditingController controller;
+  final FocusScopeNode focusScope;
 
   @override
   Widget build(BuildContext context) {

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter_segment/flutter_segment.dart';
@@ -16,18 +17,18 @@ abstract class MetricsRepository {
     Map<String, dynamic>? properties,
   ]);
 
-  Future<void> track(
+  void track(
     String eventName, [
     Map<String, dynamic>? properties,
   ]);
 
-  Future<void> trackSettingChange<T extends Object>(
+  void trackSettingChange<T extends Object>(
     SettingKey<T> key,
     T value,
-  ) async {
+  ) {
     if (!key.shouldTrack) return;
 
-    await track(
+    track(
       key.toMetricKey(),
       key.toMetricProperties(value),
     );
@@ -53,13 +54,13 @@ class ConsoleLoggingMetricsRepository extends MetricsRepository {
   Future<void> identify(
     User user, [
     Map<String, dynamic>? properties,
-  ]) {
+  ]) async {
     _assertPropertiesDoNotExceed1000Characters(properties ?? {});
-    return _log('Identified [${user.uuid}]: $properties');
+    _log('Identified [${user.uuid}]: $properties');
   }
 
   @override
-  Future<void> track(
+  void track(
     String eventName, [
     Map<String, dynamic>? properties,
   ]) {
@@ -81,7 +82,7 @@ class ConsoleLoggingMetricsRepository extends MetricsRepository {
         );
       });
 
-  Future<void> _log(String message, {Level? level}) async {
+  void _log(String message, {Level? level}) {
     // Using log() rather than Logger as this provides nice formatting
     // for the console.
     log(
@@ -100,29 +101,32 @@ class SegmentMetricsRepository extends MetricsRepository {
       'Unable to initialize Segment without a valid key.',
     );
 
-    Segment.config(
-      options: SegmentConfig(
-        writeKey: key ?? '',
-        trackApplicationLifecycleEvents: false,
+    unawaited(
+      Segment.config(
+        options: SegmentConfig(
+          writeKey: key ?? '',
+        ),
       ),
     );
 
-    Segment.setContext({
-      'ip': '0.0.0.0',
-      'device': {
-        'id': '',
-        'advertisingId': '',
-        'token': '',
-      },
-    });
+    unawaited(
+      Segment.setContext({
+        'ip': '0.0.0.0',
+        'device': {
+          'id': '',
+          'advertisingId': '',
+          'token': '',
+        },
+      }),
+    );
   }
 
   @override
   Future<void> identify(
     User user, [
     Map<String, dynamic>? properties,
-  ]) async =>
-      await Segment.identify(
+  ]) =>
+      Segment.identify(
         userId: user.uuid,
         traits: properties,
       );
@@ -142,11 +146,13 @@ extension _SettingMetrics<T extends Object> on SettingKey<T> {
   ///
   /// Setting this to `true` still results in an event to be tracked but not the
   /// data stored within.
-  bool get isPii => const [
+  bool get isPii =>
+      this is CallSetting<T> &&
+      const [
         CallSetting.outgoingNumber,
         CallSetting.mobileNumber,
         CallSetting.destination,
-      ].contains(this);
+      ].contains(this as CallSetting<T>);
 
   /// Whether changing this setting should result in an event being sent
   /// to metrics.
@@ -154,7 +160,9 @@ extension _SettingMetrics<T extends Object> on SettingKey<T> {
   /// This should usually only be set
   /// to `false` if it is being tracked elsewhere.
   // Put keys in the array that should NOT be tracked.
-  bool get shouldTrack => !const [CallSetting.destination].contains(this);
+  bool get shouldTrack =>
+      this is! CallSetting<T> ||
+      !const [CallSetting.destination].contains(this as CallSetting<T>);
 
   String toMetricKey() => ReCase(name).snakeCase;
 

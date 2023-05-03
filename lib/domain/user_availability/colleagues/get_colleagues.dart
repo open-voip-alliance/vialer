@@ -2,6 +2,7 @@ import '../../../dependency_locator.dart';
 import '../../use_case.dart';
 import 'colleague.dart';
 import 'colleagues_repository.dart';
+import 'receive_colleague_availability.dart';
 
 /// This only fetches the most up-to-date list of colleagues that we have
 /// mutated based on data from the WebSocket. It does not provide constant

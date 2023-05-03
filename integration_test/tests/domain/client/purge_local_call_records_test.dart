@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:drift/drift.dart';
 import 'package:test/test.dart';
 import 'package:vialer/dependency_locator.dart';
@@ -8,7 +10,7 @@ import 'package:vialer/domain/call_records/client/local_client_calls.dart';
 
 import '../../../../integration_test/util.dart';
 
-void main() => runTest(
+Future<void> main() => runTest(
       ['Domain', 'Call records', 'Call records purged on logout'],
       (tester) async {
         const sourceNumber = '123';
@@ -27,7 +29,7 @@ void main() => runTest(
           sourceNumber,
           destinationNumber,
         );
-        localClientCalls.storeCallRecords(callCompanionRecords);
+        unawaited(localClientCalls.storeCallRecords(callCompanionRecords));
 
         await logout();
 

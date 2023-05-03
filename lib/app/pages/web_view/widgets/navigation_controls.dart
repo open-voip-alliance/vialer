@@ -1,28 +1,30 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class NavigationControls extends StatelessWidget {
-  final InAppWebViewController? _webViewController;
+  const NavigationControls(this._webViewController, {super.key});
 
-  const NavigationControls(this._webViewController);
+  final InAppWebViewController? _webViewController;
 
   bool get _webviewIsReady => _webViewController != null;
 
-  void _onBackButtonPressed() async {
+  Future<void> _onBackButtonPressed() async {
     if (await _webViewController!.canGoBack()) {
-      _webViewController!.goBack();
+      unawaited(_webViewController!.goBack());
     }
   }
 
-  void _onForwardButtonPressed() async {
+  Future<void> _onForwardButtonPressed() async {
     if (await _webViewController!.canGoForward()) {
-      _webViewController!.goForward();
+      unawaited(_webViewController!.goForward());
     }
   }
 
   void _onReloadButtonPressed() {
-    _webViewController!.reload();
+    unawaited(_webViewController!.reload());
   }
 
   @override

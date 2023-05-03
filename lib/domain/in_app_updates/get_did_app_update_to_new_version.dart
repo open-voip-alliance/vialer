@@ -12,7 +12,7 @@ class GetDidAppUpdateToNewVersionUseCase extends UseCase {
   Future<bool> call() async {
     final packageInfo = await PackageInfo.fromPlatform();
     final currentVersion = packageInfo.version;
-    final lastInstalledVersion = await _storageRepository.lastInstalledVersion;
+    final lastInstalledVersion = _storageRepository.lastInstalledVersion;
 
     _storageRepository.lastInstalledVersion = currentVersion;
 

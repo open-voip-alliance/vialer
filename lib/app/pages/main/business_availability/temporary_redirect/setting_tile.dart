@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -39,9 +41,11 @@ class TemporaryRedirectSettingTile extends StatelessWidget {
                 const SizedBox(height: 16),
               ],
               SettingsButton(
-                onPressed: () => Navigator.push(
-                  context,
-                  TemporaryRedirectPickerPage.route(),
+                onPressed: () => unawaited(
+                  Navigator.push(
+                    context,
+                    TemporaryRedirectPickerPage.route(),
+                  ),
                 ),
                 text: (hasTemporaryRedirect
                         ? context.msg.main.temporaryRedirect.actions

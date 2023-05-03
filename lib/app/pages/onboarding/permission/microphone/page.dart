@@ -7,7 +7,7 @@ import '../../../../resources/theme.dart';
 import '../abstract/page.dart';
 
 class MicrophonePermissionPage extends StatelessWidget {
-  const MicrophonePermissionPage({Key? key}) : super(key: key);
+  const MicrophonePermissionPage({super.key});
 
   @override
   Widget build(BuildContext context) {

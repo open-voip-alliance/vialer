@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -6,9 +8,9 @@ import '../../../../widgets/connectivity_checker/cubit.dart';
 import 'cubit.dart';
 
 class ColleagueWebSocket extends StatefulWidget {
-  final Widget child;
+  const ColleagueWebSocket._(this.child);
 
-  ColleagueWebSocket._(this.child);
+  final Widget child;
 
   static Widget connect({
     required Widget child,
@@ -24,7 +26,7 @@ class _ColleagueWebSocketState extends State<ColleagueWebSocket>
   @override
   void initState() {
     super.initState();
-    context.read<ColleaguesCubit>().connectToWebSocket();
+    unawaited(context.read<ColleaguesCubit>().connectToWebSocket());
   }
 
   @override
@@ -32,7 +34,7 @@ class _ColleagueWebSocketState extends State<ColleagueWebSocket>
     super.didChangeAppLifecycleState(state);
 
     if (state == AppLifecycleState.resumed) {
-      context.read<ColleaguesCubit>().connectToWebSocket();
+      unawaited(context.read<ColleaguesCubit>().connectToWebSocket());
     }
   }
 
@@ -42,9 +44,11 @@ class _ColleagueWebSocketState extends State<ColleagueWebSocket>
   ) {
     final cubit = context.read<ColleaguesCubit>();
 
-    state.map(
-      connected: (_) => cubit.connectToWebSocket(),
-      disconnected: (_) => cubit.disconnectFromWebSocket(),
+    unawaited(
+      state.map(
+        connected: (_) => cubit.connectToWebSocket(),
+        disconnected: (_) => cubit.disconnectFromWebSocket(),
+      ),
     );
   }
 

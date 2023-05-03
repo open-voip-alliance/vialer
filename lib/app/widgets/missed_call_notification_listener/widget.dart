@@ -4,14 +4,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'cubit.dart';
 
 class MissedCallNotificationPressedListener extends StatelessWidget {
-  final VoidCallback onMissedCallNotificationPressed;
-  final Widget? child;
-
   const MissedCallNotificationPressedListener({
-    Key? key,
     required this.onMissedCallNotificationPressed,
     this.child,
-  }) : super(key: key);
+    super.key,
+  });
+
+  final VoidCallback onMissedCallNotificationPressed;
+  final Widget? child;
 
   void _onStateChanged(
     BuildContext context,

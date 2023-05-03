@@ -54,6 +54,7 @@ class ChangeSettingsUseCase extends UseCase with Loggable {
   // launches an [EditUser] task while calling this use case (most likely
   // the culprit is calling RefreshUser).
   Future<ChangeSettingsResult> call(Settings settings) {
+    var givenSettings = settings;
     // These variables have to be defined outside of the tasks, to share
     // state between tasks.
     late User user;
@@ -71,7 +72,7 @@ class ChangeSettingsUseCase extends UseCase with Loggable {
 
     // Settings whose changes should not be logged. If a setting
     // should have a custom log message, or if the change shouldn't
-    // be logged at all,add it to this list.
+    // be logged at all, add it to this list.
     // If you want a custom log message, log it manually.
     final skipLogging = <SettingKey>{};
 
@@ -86,7 +87,7 @@ class ChangeSettingsUseCase extends UseCase with Loggable {
       user = _getCurrentUser();
       currentSettings = user.settings;
 
-      diff = currentSettings.diff(settings);
+      diff = currentSettings.diff(givenSettings);
 
       // Nothing has changed, return.
       if (diff.isEmpty) return const ChangeSettingsResult();
@@ -115,12 +116,14 @@ class ChangeSettingsUseCase extends UseCase with Loggable {
         // to avoid a rare exception.
         if (freshUser != null) {
           user = freshUser;
-          settings = settings.copyFrom(user.settings.getAll(needSync));
+          givenSettings = givenSettings.copyFrom(
+            user.settings.getAll(needSync),
+          );
         }
       }
 
       user = user.copyWith(
-        settings: user.settings.copyFrom(settings),
+        settings: user.settings.copyFrom(givenSettings),
       );
 
       _storageRepository.user = user;
@@ -146,7 +149,7 @@ class ChangeSettingsUseCase extends UseCase with Loggable {
         _metricsRepository.trackSettingChange(key, value);
 
         _eventBus.broadcast(
-          SettingChanged(key, oldValue, value),
+          SettingChangedEvent(key, oldValue, value),
         );
       }
 
@@ -205,12 +208,12 @@ class ChangeSettingsUseCase extends UseCase with Loggable {
 }
 
 class ChangeSettingsResult {
+  const ChangeSettingsResult({this.changed = const [], this.failed = const []});
+
   final Iterable<SettingKey> changed;
 
   /// Settings whose changes were rejected.
   final Iterable<SettingKey> failed;
-
-  const ChangeSettingsResult({this.changed = const [], this.failed = const []});
 }
 
 extension FutureChangeSettingsResult on Future<ChangeSettingsResult> {

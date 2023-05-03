@@ -6,12 +6,12 @@ import '../../widgets/caller/cubit.dart';
 
 /// Only builds when the [CallerCubit]'s state is a [CallProcessState].
 class CallProcessStateBuilder extends StatelessWidget with Loggable {
-  final BlocWidgetBuilder<CallProcessState> builder;
-
   CallProcessStateBuilder({
     required this.builder,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
+
+  final BlocWidgetBuilder<CallProcessState> builder;
 
   @override
   Widget build(BuildContext context) {

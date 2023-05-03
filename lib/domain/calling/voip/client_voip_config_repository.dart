@@ -6,11 +6,11 @@ import '../../voipgrid/client_voip_config.dart';
 import '../../voipgrid/voipgrid_service.dart';
 
 class ClientVoipConfigRepository with Loggable {
+  ClientVoipConfigRepository(this._service);
+
   final VoipgridService _service;
 
   final _isOnboarded = IsOnboarded();
-
-  ClientVoipConfigRepository(this._service);
 
   late final _fallbackServerConfig = ClientVoipConfig.fallback();
 
@@ -29,8 +29,6 @@ class ClientVoipConfigRepository with Loggable {
       return _fallbackServerConfig;
     }
 
-    return ClientVoipConfig.fromJson(
-      response.body as Map<String, dynamic>,
-    );
+    return ClientVoipConfig.fromJson(response.body!);
   }
 }

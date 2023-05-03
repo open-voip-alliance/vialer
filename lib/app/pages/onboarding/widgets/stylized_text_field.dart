@@ -4,30 +4,6 @@ import 'package:flutter/services.dart';
 import '../../../resources/theme.dart';
 
 class StylizedTextField extends StatelessWidget {
-  final TextEditingController? controller;
-  final FocusNode? focusNode;
-  final bool obscureText;
-  final TextInputType? keyboardType;
-  final IconData? prefixIcon;
-  final Widget? prefixWidget;
-  final Widget? suffix;
-  final String? labelText;
-  final String? hintText;
-  final bool hasError;
-  final bool autoCorrect;
-  final TextCapitalization textCapitalization;
-  final List<String>? autofillHints;
-  final List<TextInputFormatter> inputFormatters;
-  final TextAlign textAlign;
-  final TextStyle textStyle;
-  final VoidCallback? onEditingComplete;
-  final ValueChanged<String>? onChanged;
-  final GestureTapCallback? onTap;
-  final Function(String)? onSubmitted;
-  final bool enabled;
-  final double elevation;
-  final bool bordered;
-
   StylizedTextField({
     super.key,
     this.labelText,
@@ -56,6 +32,30 @@ class StylizedTextField extends StatelessWidget {
     this.elevation = 4,
     this.bordered = false,
   });
+
+  final TextEditingController? controller;
+  final FocusNode? focusNode;
+  final bool obscureText;
+  final TextInputType? keyboardType;
+  final IconData? prefixIcon;
+  final Widget? prefixWidget;
+  final Widget? suffix;
+  final String? labelText;
+  final String? hintText;
+  final bool hasError;
+  final bool autoCorrect;
+  final TextCapitalization textCapitalization;
+  final List<String>? autofillHints;
+  final List<TextInputFormatter> inputFormatters;
+  final TextAlign textAlign;
+  final TextStyle textStyle;
+  final VoidCallback? onEditingComplete;
+  final ValueChanged<String>? onChanged;
+  final GestureTapCallback? onTap;
+  final void Function(String)? onSubmitted;
+  final bool enabled;
+  final double elevation;
+  final bool bordered;
 
   static const color = Colors.grey;
 
@@ -92,9 +92,7 @@ class StylizedTextField extends StatelessWidget {
                       : color,
                   size: 16,
                 )
-              : prefixWidget != null
-                  ? prefixWidget
-                  : null,
+              : prefixWidget,
           suffixIcon: suffix,
           labelText: labelText,
           border: inputBorder,
@@ -125,9 +123,6 @@ class StylizedTextField extends StatelessWidget {
 
   final InputBorder noInputBorder = OutlineInputBorder(
     borderRadius: BorderRadius.circular(4),
-    borderSide: const BorderSide(
-      style: BorderStyle.none,
-      width: 0,
-    ),
+    borderSide: BorderSide.none,
   );
 }

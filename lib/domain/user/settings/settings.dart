@@ -17,13 +17,28 @@ typedef ValueFromJson<T> = T Function(dynamic json);
 /// Values cannot be null.
 @immutable
 class Settings {
+  const Settings(Map<SettingKey, Object> map) : _map = map;
+
+  factory Settings.fromJson(Map<String, dynamic> json) {
+    return Settings(
+      Map.fromEntries(
+        json.entries
+            .where((e) => SettingKey.fromJson(e.key, possibleKeys) != null)
+            .map((e) {
+          final key = SettingKey.fromJson(e.key, possibleKeys);
+          final value = key!.valueFromJson(e.value);
+
+          return MapEntry(key, value);
+        }),
+      ),
+    );
+  }
+
+  const Settings.empty() : this(const {});
+
   final Map<SettingKey, Object> _map;
 
   Iterable<MapEntry<SettingKey, Object>> get entries => _map.entries;
-
-  const Settings(Map<SettingKey, Object> map) : _map = map;
-
-  const Settings.empty() : this(const {});
 
   static final Settings defaults = Settings({
     ...AppSetting.defaultValues,
@@ -78,10 +93,10 @@ class Settings {
   /// Returns the keys and values of the settings that are different between
   /// `this` and [other].
   ///
-  /// Key-value pairs that are in [other] but no in [this] are considered
+  /// Key-value pairs that are in [other] but no in `this` are considered
   /// changed.
   ///
-  /// If a value is different in [other] compared to [this], it's
+  /// If a value is different in [other] compared to `this`, it's
   /// considered changed.
   Settings diff(Settings other) {
     final thisKeys = keys;
@@ -137,7 +152,8 @@ class Settings {
   bool operator ==(Object other) {
     if (other is! Settings) return false;
 
-    return const MapEquality().equals(_map, other._map);
+    return const MapEquality<SettingKey<Object>, Object>()
+        .equals(_map, other._map);
   }
 
   @override
@@ -146,29 +162,14 @@ class Settings {
   @override
   String toString() => 'Settings($_map)';
 
-  static dynamic toJson(Settings value) => Map.fromEntries(
+  static dynamic toJson(Settings value) => Map<String, dynamic>.fromEntries(
         value._map.entries.map(
-          (e) => MapEntry(
+          (e) => MapEntry<String, dynamic>(
             e.key.toJson(),
             e.key.valueToJson(e.value),
           ),
         ),
       );
-
-  static Settings fromJson(Map<String, dynamic> json) {
-    return Settings(
-      Map.fromEntries(
-        json.entries
-            .where((e) => SettingKey.fromJson(e.key, possibleKeys) != null)
-            .map((e) {
-          final key = SettingKey.fromJson(e.key, possibleKeys);
-          final value = key!.valueFromJson(e.value);
-
-          return MapEntry(key, value);
-        }),
-      ),
-    );
-  }
 }
 
 mixin SettingKey<T extends Object> on Enum {
@@ -213,10 +214,10 @@ mixin SettingKey<T extends Object> on Enum {
 }
 
 class SettingValueJsonConverter<T> extends JsonConverter<T, dynamic> {
+  const SettingValueJsonConverter(this._toJson, this._fromJson);
+
   final ValueToJson<T> _toJson;
   final ValueFromJson<T> _fromJson;
-
-  const SettingValueJsonConverter(this._toJson, this._fromJson);
 
   @override
   dynamic toJson(T object) => _toJson(object);

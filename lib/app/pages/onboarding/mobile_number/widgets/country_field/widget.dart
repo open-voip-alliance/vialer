@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -7,14 +9,13 @@ import '../../../../../resources/localizations.dart';
 import '../country_field/cubit.dart';
 
 class CountryFlagField extends StatefulWidget {
-  final TextEditingController controller;
-  final FocusNode focusNode;
-
   const CountryFlagField._({
-    Key? key,
     required this.controller,
     required this.focusNode,
-  }) : super(key: key);
+  });
+
+  final TextEditingController controller;
+  final FocusNode focusNode;
 
   static Widget create({
     required TextEditingController controller,
@@ -30,7 +31,7 @@ class CountryFlagField extends StatefulWidget {
   }
 
   @override
-  _CountryFlagFieldState createState() => _CountryFlagFieldState();
+  State<CountryFlagField> createState() => _CountryFlagFieldState();
 }
 
 class _CountryFlagFieldState extends State<CountryFlagField> {
@@ -40,9 +41,11 @@ class _CountryFlagFieldState extends State<CountryFlagField> {
     if (widget.controller.value.text.length > 4) {
       _mobileNumber = widget.controller.value.text;
 
-      context
-          .read<CountryFieldCubit>()
-          .pickCountryByMobileNumber(_mobileNumber);
+      unawaited(
+        context
+            .read<CountryFieldCubit>()
+            .pickCountryByMobileNumber(_mobileNumber),
+      );
 
       // Remove listener, so we effectively only listen once when the mobile
       // number from the VG api returns.
@@ -62,9 +65,11 @@ class _CountryFlagFieldState extends State<CountryFlagField> {
       if (_mobileNumber == '') {
         widget.controller.text = '+${state.currentCountry.callingCode}';
       } else {
-        context
-            .read<CountryFieldCubit>()
-            .pickCountryByMobileNumber(_mobileNumber);
+        unawaited(
+          context
+              .read<CountryFieldCubit>()
+              .pickCountryByMobileNumber(_mobileNumber),
+        );
       }
     }
   }
@@ -84,7 +89,8 @@ class _CountryFlagFieldState extends State<CountryFlagField> {
   void _onFlagPressed() {
     final cubit = context.read<CountryFieldCubit>();
     final state = cubit.state;
-    final countries = state is CountriesLoaded ? state.countries.toList() : [];
+    final countries =
+        state is CountriesLoaded ? state.countries.toList() : const <Country>[];
 
     // The country field widget is used as a prefix icon for the mobile
     // number text field. Clicking the flag icon will show a
@@ -98,7 +104,7 @@ class _CountryFlagFieldState extends State<CountryFlagField> {
     widget.focusNode.unfocus();
     widget.focusNode.canRequestFocus = false;
 
-    _showCountryBottomSheet(countries, cubit);
+    unawaited(_showCountryBottomSheet(countries, cubit));
 
     // Restore the focus.
     Future.delayed(const Duration(milliseconds: 100), () {
@@ -106,8 +112,8 @@ class _CountryFlagFieldState extends State<CountryFlagField> {
     });
   }
 
-  Future _showCountryBottomSheet(
-    List countries,
+  Future<void> _showCountryBottomSheet(
+    List<Country> countries,
     CountryFieldCubit cubit,
   ) {
     return showModalBottomSheet(
@@ -122,13 +128,13 @@ class _CountryFlagFieldState extends State<CountryFlagField> {
             ),
             Expanded(
               child: DraggableScrollableSheet(
-                initialChildSize: 1.0,
+                initialChildSize: 1,
                 builder: (context, scrollController) {
                   return ListView.builder(
                     controller: scrollController,
                     itemCount: countries.length,
                     itemBuilder: (context, index) {
-                      final country = countries[index] as Country;
+                      final country = countries[index];
 
                       return ListTile(
                         minLeadingWidth: 10,
@@ -137,7 +143,6 @@ class _CountryFlagFieldState extends State<CountryFlagField> {
                         leading: Padding(
                           padding: const EdgeInsets.only(
                             top: 2,
-                            right: 0,
                           ),
                           child: Text(
                             country.flag,
@@ -174,7 +179,7 @@ class _CountryFlagFieldState extends State<CountryFlagField> {
           if (state is CountriesLoaded) {
             return MaterialButton(
               minWidth: 0,
-              padding: const EdgeInsets.all(0),
+              padding: EdgeInsets.zero,
               onPressed: _onFlagPressed,
               child: Text(
                 state.currentCountry.flag,

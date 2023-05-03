@@ -20,7 +20,7 @@ class GetPermissionStatusUseCase extends UseCase {
     // cache is properly cleaned up.
     if (permission == Permission.contacts &&
         status != PermissionStatus.granted) {
-      _contactRepository.cleanUp();
+      unawaited(_contactRepository.cleanUp());
     }
 
     return status;

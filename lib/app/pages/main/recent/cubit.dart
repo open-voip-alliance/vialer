@@ -18,6 +18,10 @@ import 'state.dart';
 export 'state.dart';
 
 class RecentCallsCubit extends Cubit<RecentCallsState> {
+  RecentCallsCubit(this._caller) : super(const LoadingInitialRecentCalls()) {
+    unawaited(_loadRecentCalls(page: 1));
+  }
+
   @protected
   final getRecentCalls = GetRecentCallsUseCase();
 
@@ -25,22 +29,17 @@ class RecentCallsCubit extends Cubit<RecentCallsState> {
 
   final CallerCubit _caller;
 
-  RecentCallsCubit(this._caller) : super(const LoadingInitialRecentCalls()) {
-    _loadRecentCalls(page: 1);
-  }
-
   Future<void> requestPermission() async {
     await _caller.requestPermission();
   }
 
-  Future<void> call(String destination) async {
-    _caller.call(destination, origin: CallOrigin.recents);
-  }
+  Future<void> call(String destination) =>
+      _caller.call(destination, origin: CallOrigin.recents);
 
   void copyNumber(String number) {
     _trackCopyNumber();
 
-    Clipboard.setData(ClipboardData(text: number));
+    unawaited(Clipboard.setData(ClipboardData(text: number)));
   }
 
   bool onlyMissedCalls = false;
@@ -88,33 +87,37 @@ class RecentCallsCubit extends Cubit<RecentCallsState> {
     emit(RecentCallsLoaded(calls, page));
   }
 
-  Future<List<CallRecord>> _fetch({required int page}) async =>
-      await getRecentCalls(page: page, onlyMissedCalls: onlyMissedCalls);
+  Future<List<CallRecord>> _fetch({required int page}) =>
+      getRecentCalls(page: page, onlyMissedCalls: onlyMissedCalls);
 }
 
 class ClientCallsCubit extends RecentCallsCubit {
+  ClientCallsCubit(super.caller) {
+    unawaited(
+      _localClientCalls.watch().then(
+            (value) => value.listen(
+              (event) {
+                refreshRecentCalls();
+              },
+            ),
+          ),
+    );
+  }
+
   final _getRecentClientCalls = GetRecentClientCallsUseCase();
   final _importNewClientCalls = ImportNewClientCallRecordsUseCase();
   final _localClientCalls = dependencyLocator<LocalClientCallsRepository>();
 
-  ClientCallsCubit(CallerCubit caller) : super(caller) {
-    _localClientCalls.watch().then((value) => value.listen((event) {
-          refreshRecentCalls();
-        }));
-  }
-
   @override
   Future<List<ClientCallRecord>> _fetch({required int page}) async {
-    return await _getRecentClientCalls(
+    return _getRecentClientCalls(
       page: page,
       onlyMissedCalls: onlyMissedCalls,
     );
   }
 
   @override
-  Future<void> performBackgroundImport() async {
-    _importNewClientCalls();
-  }
+  Future<void> performBackgroundImport() => _importNewClientCalls();
 
   @override
   Future<void> refreshRecentCalls() async {

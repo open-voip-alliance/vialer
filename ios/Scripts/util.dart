@@ -4,9 +4,8 @@ import 'dart:io';
 final root = Directory(Platform.environment['SRCROOT']!);
 
 /// Assumes the `dart-define`s string is the first argument.
-Map<String, String> parseDartDefinesFromArguments(Iterable<String> arguments) {
-  return parseDartDefines(arguments.isNotEmpty ? arguments.first : null);
-}
+Map<String, String> parseDartDefinesFromArguments(Iterable<String> arguments) =>
+    parseDartDefines(arguments.isNotEmpty ? arguments.first : null);
 
 Map<String, String> parseDartDefines(String? input) {
   if (input == null || input.isEmpty) {

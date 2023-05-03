@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dartx/dartx.dart';
 import 'package:flutter_libphonenumber/flutter_libphonenumber.dart';
 
@@ -5,7 +7,7 @@ import 'country.dart';
 
 class CountryRepository {
   CountryRepository() {
-    FlutterLibphonenumber().init();
+    unawaited(FlutterLibphonenumber().init());
   }
 
   Future<Iterable<Country>> getCountries() async {

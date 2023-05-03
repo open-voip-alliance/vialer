@@ -5,12 +5,11 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import '../call_records/item.dart';
 
 part 'contact.freezed.dart';
+
 part 'contact.g.dart';
 
 @freezed
 class Contact with _$Contact {
-  const Contact._();
-
   const factory Contact({
     required String? givenName,
     required String? middleName,
@@ -23,8 +22,10 @@ class Contact with _$Contact {
     required String? company,
   }) = _Contact;
 
-  File? get avatar => avatarPath != null ? File(avatarPath!) : null;
-
   factory Contact.fromJson(Map<String, dynamic> json) =>
       _$ContactFromJson(json);
+
+  const Contact._();
+
+  File? get avatar => avatarPath != null ? File(avatarPath!) : null;
 }

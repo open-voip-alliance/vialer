@@ -17,7 +17,7 @@ class CheckAppUpdatesUseCase extends UseCase {
         ),
       );
 
-      AppUpdates().check();
+      unawaited(AppUpdates().check());
 
       final isFlexible = await onUpdateTypeKnownCompleter.future;
 
@@ -32,14 +32,14 @@ class CheckAppUpdatesUseCase extends UseCase {
 }
 
 class _AndroidFlexibleUpdateHandler implements AndroidFlexibleUpdateHandler {
-  final void Function(bool) _onUpdateTypeKnown;
-  final void Function() _onDownloaded;
-
   const _AndroidFlexibleUpdateHandler({
     required void Function(bool) onUpdateTypeKnown,
     required void Function() onDownloaded,
   })  : _onUpdateTypeKnown = onUpdateTypeKnown,
         _onDownloaded = onDownloaded;
+
+  final void Function(bool) _onUpdateTypeKnown;
+  final void Function() _onDownloaded;
 
   @override
   void onUpdateTypeKnown(bool isFlexible) => _onUpdateTypeKnown(isFlexible);

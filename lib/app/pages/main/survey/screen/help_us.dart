@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -7,15 +9,15 @@ import '../cubit.dart';
 import '../widgets/big_header.dart';
 
 class HelpUsScreen extends StatelessWidget {
+  const HelpUsScreen({
+    required this.dontShowThisAgain,
+    super.key,
+  });
+
   final bool dontShowThisAgain;
 
-  const HelpUsScreen({
-    Key? key,
-    required this.dontShowThisAgain,
-  }) : super(key: key);
-
   void _onDontShowThisAgainChanged(BuildContext context, bool value) {
-    context.read<SurveyCubit>().setDontShowThisAgain(value);
+    unawaited(context.read<SurveyCubit>().setDontShowThisAgain(value));
   }
 
   void _dismiss(BuildContext context) {

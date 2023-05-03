@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
@@ -7,28 +9,30 @@ import '../../../../../../resources/theme.dart';
 import '../../../cubit.dart';
 
 class SubPageLinkTile extends StatelessWidget {
+  const SubPageLinkTile({
+    required this.title,
+    required this.icon,
+    required this.cubit,
+    required this.pageBuilder,
+    super.key,
+  });
+
   final String title;
   final IconData icon;
   final SettingsCubit cubit;
   final WidgetBuilder pageBuilder;
 
-  const SubPageLinkTile({
-    super.key,
-    required this.title,
-    required this.icon,
-    required this.cubit,
-    required this.pageBuilder,
-  });
-
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => Navigator.of(context).push(
-        platformPageRoute(
-          context: context,
-          builder: (_) => BlocProvider.value(
-            value: cubit,
-            child: pageBuilder(context),
+      onTap: () => unawaited(
+        Navigator.of(context).push(
+          platformPageRoute(
+            context: context,
+            builder: (_) => BlocProvider.value(
+              value: cubit,
+              child: pageBuilder(context),
+            ),
           ),
         ),
       ),
@@ -38,7 +42,6 @@ class SubPageLinkTile extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Row(
-              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Container(
                   height: 36,
@@ -47,12 +50,12 @@ class SubPageLinkTile extends StatelessWidget {
                     shape: BoxShape.circle,
                     color: context.brand.theme.colors.grey3,
                   ),
+                  alignment: Alignment.center,
                   child: FaIcon(
                     icon,
                     size: 16,
                     color: context.brand.theme.colors.grey6,
                   ),
-                  alignment: Alignment.center,
                 ),
                 const SizedBox(width: 10),
                 Text(

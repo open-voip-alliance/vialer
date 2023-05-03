@@ -25,7 +25,7 @@ import '../widgets/tile/use_voip.dart';
 import 'widget.dart';
 
 class AppPreferencesSubPage extends StatelessWidget {
-  const AppPreferencesSubPage();
+  const AppPreferencesSubPage({super.key});
 
   @override
   Widget build(BuildContext context) {

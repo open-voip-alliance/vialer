@@ -8,9 +8,8 @@ import 'value.dart';
 import 'widget.dart';
 
 class ShowClientCallsTile extends StatelessWidget {
-  final User user;
-
   const ShowClientCallsTile(this.user, {super.key});
+  final User user;
 
   @override
   Widget build(BuildContext context) {

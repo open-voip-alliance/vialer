@@ -9,9 +9,8 @@ import 'value.dart';
 import 'widget.dart';
 
 class UsePhoneRingtoneTile extends StatelessWidget {
-  final User user;
-
   const UsePhoneRingtoneTile(this.user, {super.key});
+  final User user;
 
   @override
   Widget build(BuildContext context) {

@@ -9,7 +9,7 @@ import '../../../main/widgets/caller.dart';
 import '../abstract/page.dart';
 
 class PhonePermissionPage extends StatelessWidget {
-  const PhonePermissionPage({Key? key}) : super(key: key);
+  const PhonePermissionPage({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -10,16 +12,15 @@ import 'value.dart';
 import 'widget.dart';
 
 class OutgoingNumberTile extends StatelessWidget {
-  final User user;
-
-  final OutgoingNumber _value;
-  final bool enabled;
-
   OutgoingNumberTile(
     this.user, {
     super.key,
     this.enabled = true,
   }) : _value = user.settings.get(_key);
+  final User user;
+
+  final OutgoingNumber _value;
+  final bool enabled;
 
   static const _key = CallSetting.outgoingNumber;
 
@@ -51,7 +52,7 @@ class OutgoingNumberTile extends StatelessWidget {
               ? EditableSettingField(
                   unlocked: Expanded(
                     child: Padding(
-                      padding: const EdgeInsets.only(top: 8.0),
+                      padding: const EdgeInsets.only(top: 8),
                       child: MultipleChoiceSettingValue<OutgoingNumber>(
                         value: _value,
                         padding: const EdgeInsets.only(
@@ -59,12 +60,13 @@ class OutgoingNumberTile extends StatelessWidget {
                           right: 8,
                         ),
                         onChanged: enabled
-                            ? (number) =>
-                                defaultOnChanged(context, _key, number)
+                            ? (number) => unawaited(
+                                  defaultOnChanged(context, _key, number),
+                                )
                             : null,
-                        isExpanded: false,
                         items: [
                           DropdownMenuItem<OutgoingNumber>(
+                            value: const OutgoingNumber.suppressed(),
                             child: FittedBox(
                               fit: BoxFit.scaleDown,
                               child: Text(
@@ -72,15 +74,14 @@ class OutgoingNumberTile extends StatelessWidget {
                                     .businessNumber.suppressed,
                               ),
                             ),
-                            value: const OutgoingNumber.suppressed(),
                           ),
                           ...user.client.outgoingNumbers.map(
                             (number) => DropdownMenuItem<OutgoingNumber>(
+                              value: number,
                               child: FittedBox(
                                 fit: BoxFit.scaleDown,
                                 child: Text(number.toString()),
                               ),
-                              value: number,
                             ),
                           ),
                         ],

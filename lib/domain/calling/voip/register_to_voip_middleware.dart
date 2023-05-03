@@ -11,7 +11,7 @@ class RegisterToVoipMiddlewareUseCase extends UseCase {
   final _getUser = GetLoggedInUserUseCase();
 
   Future<void> call() async {
-    if (await _getHasVoipEnabled()) {
+    if (_getHasVoipEnabled()) {
       await _voipRepository.register(_getUser().voip);
     }
   }

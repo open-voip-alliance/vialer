@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -12,15 +14,15 @@ import 'package:vialer/app/pages/onboarding/mobile_number/page.dart';
 import 'package:vialer/app/pages/onboarding/page.dart';
 import 'package:vialer/domain/onboarding/step.dart';
 
-void runTest(
+Future<void> runTest(
   List<String> name,
   WidgetTesterCallback test,
 ) async {
-  assert(name.isNotEmpty);
+  assert(name.isNotEmpty, 'name must not be empty');
 
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  app.main();
+  unawaited(app.main());
 
   final fullName = name
       .mapIndexed((index, part) => index != name.lastIndex ? '$part: ' : part)
@@ -33,19 +35,18 @@ class _IsInflatedMatcher extends Matcher {
   const _IsInflatedMatcher();
 
   @override
-  Description describe(Description description) {
-    return description.add('the widget(s) found are inflated');
-  }
+  Description describe(Description description) =>
+      description.add('the widget(s) found are inflated');
 
   @override
   Description describeMismatch(
     covariant Finder item,
     Description mismatchDescription,
-    Map matchState,
+    Map<dynamic, dynamic> matchState,
     bool verbose,
   ) {
     var newDescription = mismatchDescription;
-    for (var e in item.evaluate()) {
+    for (final e in item.evaluate()) {
       if (e.size == Size.zero) {
         newDescription = newDescription.add('$e is not inflated');
       }
@@ -55,9 +56,8 @@ class _IsInflatedMatcher extends Matcher {
   }
 
   @override
-  bool matches(covariant Finder item, Map<dynamic, dynamic> matchState) {
-    return item.evaluate().every((e) => e.size != Size.zero);
-  }
+  bool matches(covariant Finder item, Map<dynamic, dynamic> matchState) =>
+      item.evaluate().every((e) => e.size != Size.zero);
 }
 
 /// Asserts that the widget(s) found are inflated.
@@ -68,10 +68,10 @@ const Matcher isInflated = _IsInflatedMatcher();
 
 @immutable
 class TestUser {
+  const TestUser(this.email, this.password);
+
   final String email;
   final String password;
-
-  const TestUser(this.email, this.password);
 }
 
 TestUser? _tester1;

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import '../../../../dependency_locator.dart';
 import '../../use_case.dart';
 import '../../user/get_logged_in_user.dart';
@@ -27,6 +29,6 @@ class StopCurrentTemporaryRedirect extends UseCase
     );
 
     track();
-    broadcast();
+    unawaited(broadcast());
   }
 }

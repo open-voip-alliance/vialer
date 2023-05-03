@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -10,10 +12,10 @@ import '../../../../widgets/transparent_status_bar.dart';
 import 'cubit.dart';
 
 class FeedbackPage extends StatefulWidget {
-  const FeedbackPage({Key? key}) : super(key: key);
+  const FeedbackPage({super.key});
 
   @override
-  _FeedbackPageState createState() => _FeedbackPageState();
+  State<FeedbackPage> createState() => _FeedbackPageState();
 }
 
 class _FeedbackPageState extends State<FeedbackPage> {
@@ -33,54 +35,62 @@ class _FeedbackPageState extends State<FeedbackPage> {
     final feedback = context.read<FeedbackCubit>();
 
     if (withLogs) {
-      feedback.enableThenSendLogsToRemote();
+      unawaited(feedback.enableThenSendLogsToRemote());
     }
 
     Navigator.pop(context);
 
-    feedback.sendFeedback(
-      title: 'Feedback',
-      text: text,
+    unawaited(
+      feedback.sendFeedback(
+        title: 'Feedback',
+        text: text,
+      ),
     );
   }
 
-  void _onSendFeedbackPressed(BuildContext buildContext, String text) async {
-    return showDialog<void>(
-      context: context,
-      builder: (context) => AlertDialog(
-        content: Text(
-          context.msg.main.settings.feedback.logs(
-            context.brand.appName,
+  void _onSendFeedbackPressed(
+    BuildContext buildContext,
+    String text,
+  ) {
+    unawaited(
+      showDialog<void>(
+        context: context,
+        builder: (context) => AlertDialog(
+          content: Text(
+            context.msg.main.settings.feedback.logs(
+              context.brand.appName,
+            ),
           ),
+          actions: [
+            TextButton(
+              style: TextButton.styleFrom(
+                foregroundColor: context.brand.theme.colors.primary,
+              ),
+              onPressed: () => _sendFeedback(
+                buildContext,
+                text: text,
+                withLogs: false,
+              ),
+              child: Text(
+                context.msg.generic.button.noThanks
+                    .toUpperCaseIfAndroid(context),
+              ),
+            ),
+            TextButton(
+              style: TextButton.styleFrom(
+                foregroundColor: context.brand.theme.colors.primary,
+              ),
+              onPressed: () => _sendFeedback(
+                buildContext,
+                text: text,
+                withLogs: true,
+              ),
+              child: Text(
+                context.msg.generic.button.yes.toUpperCaseIfAndroid(context),
+              ),
+            ),
+          ],
         ),
-        actions: [
-          TextButton(
-            style: TextButton.styleFrom(
-              foregroundColor: context.brand.theme.colors.primary,
-            ),
-            onPressed: () => _sendFeedback(
-              buildContext,
-              text: text,
-              withLogs: false,
-            ),
-            child: Text(
-              context.msg.generic.button.noThanks.toUpperCaseIfAndroid(context),
-            ),
-          ),
-          TextButton(
-            style: TextButton.styleFrom(
-              foregroundColor: context.brand.theme.colors.primary,
-            ),
-            onPressed: () => _sendFeedback(
-              buildContext,
-              text: text,
-              withLogs: true,
-            ),
-            child: Text(
-              context.msg.generic.button.yes.toUpperCaseIfAndroid(context),
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -156,9 +166,9 @@ class _FeedbackPageState extends State<FeedbackPage> {
 }
 
 class _FeedbackInput extends StatelessWidget {
-  final TextEditingController controller;
-
   const _FeedbackInput({required this.controller});
+
+  final TextEditingController controller;
 
   @override
   Widget build(BuildContext context) {
@@ -203,12 +213,11 @@ class _FeedbackInput extends StatelessWidget {
 }
 
 class _FeedbackFormHeader extends StatelessWidget {
-  final bool visible;
-
   const _FeedbackFormHeader({
-    Key? key,
     required this.visible,
-  }) : super(key: key);
+  });
+
+  final bool visible;
 
   @override
   Widget build(BuildContext context) {
@@ -224,7 +233,6 @@ class _FeedbackFormHeader extends StatelessWidget {
         child: Column(
           children: [
             Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 FaIcon(
                   FontAwesomeIcons.comments,

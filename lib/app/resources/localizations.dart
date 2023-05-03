@@ -6,9 +6,8 @@ import 'messages_de.i18n.dart';
 import 'messages_nl.i18n.dart';
 
 class VialerLocalizations {
-  final Messages msg;
-
   VialerLocalizations(this.locale) : msg = _messagesFromLocale(locale);
+  final Messages msg;
 
   final Locale locale;
 

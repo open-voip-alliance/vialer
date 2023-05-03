@@ -7,9 +7,9 @@ import '../../../../util/widgets_binding_observer_registrar.dart';
 import 'cubit.dart';
 
 class UserDataRefresher extends StatelessWidget {
-  final Widget child;
+  const UserDataRefresher({required this.child, super.key});
 
-  const UserDataRefresher({Key? key, required this.child}) : super(key: key);
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
@@ -23,9 +23,9 @@ class UserDataRefresher extends StatelessWidget {
 
 /// Private widget with a context that has access to [UserDataRefresherCubit].
 class _UserDataRefresher extends StatefulWidget {
-  final Widget child;
-
   const _UserDataRefresher(this.child);
+
+  final Widget child;
 
   @override
   _UserDataRefresherState createState() => _UserDataRefresherState();
@@ -42,10 +42,10 @@ class _UserDataRefresherState extends State<_UserDataRefresher>
     super.didChangeDependencies();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      cubit.refreshIfReady();
+      unawaited(cubit.refreshIfReady());
 
       _refreshTimer ??= Timer.periodic(const Duration(seconds: 10), (_) {
-        cubit.refreshIfReady();
+        unawaited(cubit.refreshIfReady());
       });
     });
   }
@@ -55,7 +55,7 @@ class _UserDataRefresherState extends State<_UserDataRefresher>
     super.didChangeAppLifecycleState(state);
 
     if (state == AppLifecycleState.resumed) {
-      context.read<UserDataRefresherCubit>().refreshIfReady();
+      unawaited(context.read<UserDataRefresherCubit>().refreshIfReady());
     }
   }
 

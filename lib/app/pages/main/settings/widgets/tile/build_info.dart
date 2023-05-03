@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -9,12 +11,12 @@ import '../../cubit.dart';
 import 'category/widget.dart';
 
 class BuildInfoTile extends StatefulWidget {
+  const BuildInfoTile(this.buildInfo, {super.key});
+
   final BuildInfo buildInfo;
 
-  const BuildInfoTile(this.buildInfo, {Key? key}) : super(key: key);
-
   @override
-  _BuildInfoTileState createState() => _BuildInfoTileState();
+  State<BuildInfoTile> createState() => _BuildInfoTileState();
 }
 
 class _BuildInfoTileState extends State<BuildInfoTile> {
@@ -31,9 +33,11 @@ class _BuildInfoTileState extends State<BuildInfoTile> {
       final gainedAccess = _tapCount == _tapCountToShowHiddenSettings;
 
       if (gainedAccess) {
-        context
-            .read<SettingsCubit>()
-            .changeSetting(AppSetting.showTroubleshooting, true);
+        unawaited(
+          context
+              .read<SettingsCubit>()
+              .changeSetting(AppSetting.showTroubleshooting, true),
+        );
       }
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -73,7 +77,6 @@ class _BuildInfoTileState extends State<BuildInfoTile> {
                   : null,
               title:
                   buildInfo.showDetailed ? _DetailedBuildInfo(buildInfo) : null,
-              children: [],
               padBottom: true,
             ),
           ),
@@ -84,9 +87,9 @@ class _BuildInfoTileState extends State<BuildInfoTile> {
 }
 
 class _DetailedBuildInfo extends StatelessWidget {
-  final BuildInfo buildInfo;
-
   const _DetailedBuildInfo(this.buildInfo);
+
+  final BuildInfo buildInfo;
 
   @override
   Widget build(BuildContext context) {

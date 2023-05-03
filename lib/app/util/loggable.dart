@@ -14,7 +14,7 @@ mixin Loggable {
   ///
   /// You can provide a [name] that you wish to give to this response to make
   /// logging clearer.
-  void logFailedResponse(Response response, {String? name}) {
+  void logFailedResponse(Response<dynamic> response, {String? name}) {
     if (response.isSuccessful) return;
 
     final url = response.base.request?.url.toString() ?? 'UNKNOWN-URL';
@@ -25,7 +25,7 @@ mixin Loggable {
 
     message = '$message to [$url] failed, with status code [$statusCode].';
 
-    if (errorMessage?.isNotNullOrBlank == true) {
+    if (errorMessage.isNotNullOrBlank) {
       message =
           '$message The response contained an error message [$errorMessage].';
     }

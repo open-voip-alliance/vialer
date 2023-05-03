@@ -11,6 +11,8 @@ class BrandRepository {
   Iterable<Brand> getBrands() {
     final data = json.decode(brands) as List<dynamic>;
 
-    return data.map((obj) => Brand.fromJson(obj as Map<String, dynamic>));
+    return data.map(
+      (dynamic obj) => Brand.fromJson(obj as Map<String, dynamic>),
+    );
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import '../../dependency_locator.dart';
 import '../feedback/clear_saved_logs_on_new_day.dart';
 import '../legacy/storage.dart';
@@ -13,16 +15,16 @@ class EnableConsoleLoggingUseCase extends UseCase {
   final _clearSavedLogs = ClearSavedLogsOnNewDayUseCase();
 
   Future<void> call() async {
-    _clearSavedLogs();
-    final user = await _getUser();
+    unawaited(_clearSavedLogs());
+    final user = _getUser();
 
-    _loggingRepository.enableNativeConsoleLogging();
+    unawaited(_loggingRepository.enableNativeConsoleLogging());
 
     await _loggingRepository.enableConsoleLogging(
       userIdentifier: user?.loggingIdentifier ?? '',
       onLog: (log) async {
         if (_getUser() != null) {
-          _storageRepository.appendLogs(log);
+          unawaited(_storageRepository.appendLogs(log));
         }
       },
     );

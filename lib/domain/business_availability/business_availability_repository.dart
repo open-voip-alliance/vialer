@@ -14,9 +14,9 @@ part 'business_availability_repository.freezed.dart';
 part 'business_availability_repository.g.dart';
 
 class BusinessAvailabilityRepository with Loggable {
-  final BusinessAvailabilityService _service;
-
   BusinessAvailabilityRepository(this._service);
+
+  final BusinessAvailabilityService _service;
 
   Future<TemporaryRedirect?> getCurrentTemporaryRedirect({
     required User user,
@@ -25,12 +25,12 @@ class BusinessAvailabilityRepository with Loggable {
       clientUuid: user.client.uuid,
     );
 
-    if (!response.isSuccessful || response.body['id'] == null) {
+    if (!response.isSuccessful || response.body!['id'] == null) {
       return null;
     }
 
     final temporaryRedirectResponse = _TemporaryRedirectResponse.fromJson(
-      response.body as Map<String, dynamic>,
+      response.body!,
     );
 
     final voicemail = temporaryRedirectResponse.voicemailAccount(user.client);

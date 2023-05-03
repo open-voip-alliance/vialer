@@ -10,17 +10,17 @@ import 'state.dart';
 export 'state.dart';
 
 class ConnectivityCheckerCubit extends Cubit<ConnectivityState> {
-  final _getConnectivityTypeStream = GetConnectivityTypeStreamUseCase();
-  final _getCurrentConnectivityType = GetCurrentConnectivityTypeUseCase();
-
-  late StreamSubscription _subscription;
-
   ConnectivityCheckerCubit() : super(const Connected()) {
-    check();
+    unawaited(check());
     _subscription = _getConnectivityTypeStream().listen(
       _emitBasedOnConnectivityType,
     );
   }
+
+  final _getConnectivityTypeStream = GetConnectivityTypeStreamUseCase();
+  final _getCurrentConnectivityType = GetCurrentConnectivityTypeUseCase();
+
+  late StreamSubscription<ConnectivityType> _subscription;
 
   Future<void> check() async =>
       _emitBasedOnConnectivityType(await _getCurrentConnectivityType());

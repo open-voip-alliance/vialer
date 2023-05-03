@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -15,20 +17,19 @@ import 'value.dart';
 import 'widget.dart';
 
 class AvailabilityTile extends StatelessWidget {
+  AvailabilityTile({
+    required this.user,
+    required this.destinations,
+    this.userNumber,
+    this.enabled = true,
+    super.key,
+  }) : _userAvailabilityType = user.availabilityType;
   final User user;
   final int? userNumber;
   final List<Destination> destinations;
   final bool enabled;
 
   final UserAvailabilityType _userAvailabilityType;
-
-  AvailabilityTile({
-    required this.user,
-    this.userNumber,
-    required this.destinations,
-    this.enabled = true,
-    super.key,
-  }) : _userAvailabilityType = user.availabilityType;
 
   late final bool _shouldDisplayNoAppAccountWarning =
       !user.isAllowedVoipCalling;
@@ -81,10 +82,11 @@ class AvailabilityTile extends StatelessWidget {
       items.map((e) => e.trim()).join(separator);
 
   void _openAddAvailabilityWebView(BuildContext context) {
+    final settings = context.read<SettingsCubit>();
+
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await WebViewPage.open(context, to: WebPage.addDestination);
-
-      context.read<SettingsCubit>().refreshAvailability();
+      unawaited(settings.refreshAvailability());
     });
   }
 
@@ -92,7 +94,7 @@ class AvailabilityTile extends StatelessWidget {
   Widget build(BuildContext context) {
     const key = CallSetting.destination;
 
-    final helpTextSize = 13.5;
+    const helpTextSize = 13.5;
 
     return SettingTile(
       description: Column(
@@ -145,7 +147,7 @@ class AvailabilityTile extends StatelessWidget {
             padding: const EdgeInsets.only(top: 4),
             child: Text(
               context.msg.main.settings.list.calling.availability.description,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: helpTextSize,
               ),
             ),
@@ -161,27 +163,28 @@ class AvailabilityTile extends StatelessWidget {
             items: [
               ...destinations.map(
                 (destination) => DropdownMenuItem<Destination>(
+                  value: destination,
                   child: FittedBox(
                     fit: BoxFit.scaleDown,
                     child: Text(destination.dropdownValue(context)),
                   ),
-                  value: destination,
                 ),
               ),
               DropdownMenuItem<Destination>(
+                onTap: () => _openAddAvailabilityWebView(context),
                 child: Text(
                   context.msg.main.settings.list.calling.addAvailability,
                 ),
-                value: null,
-                onTap: () => _openAddAvailabilityWebView(context),
               ),
             ],
             onChanged: enabled
                 ? (destination) => destination != null
-                    ? defaultOnChanged(
-                        context,
-                        key,
-                        destination,
+                    ? unawaited(
+                        defaultOnChanged(
+                          context,
+                          key,
+                          destination,
+                        ),
                       )
                     : () {}
                 : null,

@@ -6,23 +6,6 @@ import 'loggable.dart';
 
 /// Wraps a task that should only be executed one at a time.
 class SynchronizedTask<T> with Loggable {
-  /// A unique identifier for this task, a matching task is what defines
-  /// if it is running.
-  final String name;
-
-  final SynchronizedTaskMode mode;
-
-  /// The map of running single ([SynchronizedTaskMode.single]) tasks,
-  /// if the name of this task is in this map it means it is running.
-  ///
-  /// The name maps to a [Completer] which will be notified when the logic
-  /// has completed.
-  static final _runningSingleTasks = <String, Completer>{};
-
-  /// The map of locks associated by [name]. The lock is used while running
-  /// a task, making sure they are properly queued.
-  static final _queueTaskLocks = <String, Lock>{};
-
   SynchronizedTask._(this.name, this.mode);
 
   factory SynchronizedTask.named(
@@ -34,11 +17,25 @@ class SynchronizedTask<T> with Loggable {
   /// Generate a named task based on the name of the class being passed into,
   /// this makes it cleaner to generate a [SynchronizedTask] that matches
   /// the class you are currently working in.
-  factory SynchronizedTask.of(
-    dynamic name, [
-    SynchronizedTaskMode mode = SynchronizedTaskMode.single,
-  ]) =>
+  factory SynchronizedTask.of(dynamic name) =>
       SynchronizedTask.named(name.runtimeType.toString());
+
+  /// A unique identifier for this task, a matching task is what defines
+  /// if it is running.
+  final String name;
+
+  final SynchronizedTaskMode mode;
+
+  /// The map of running single ([SynchronizedTaskMode.single]) tasks,
+  /// if the name of this task is in this map it means it is running.
+  ///
+  /// The name maps to a [Completer] which will be notified when the logic
+  /// has completed.
+  static final _runningSingleTasks = <String, Completer<void>>{};
+
+  /// The map of locks associated by [name]. The lock is used while running
+  /// a task, making sure they are properly queued.
+  static final _queueTaskLocks = <String, Lock>{};
 
   Future<T> run(Future<T> Function() task) async {
     switch (mode) {

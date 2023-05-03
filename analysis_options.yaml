@@ -1,4 +1,4 @@
-include: package:effective_dart/analysis_options.1.2.0.yaml
+include: package:austerity/analysis_options.yaml
 
 linter:
   rules:
@@ -6,21 +6,23 @@ linter:
     avoid_classes_with_only_static_members: false
     type_annotate_public_apis: false
     prefer_mixin: false
-
-    annotate_overrides: true
-    omit_local_variable_types: true
-    prefer_single_quotes: true
-    use_function_type_syntax_for_parameters: true
-    prefer_const_constructors: true
-    avoid_print: true
-    always_declare_return_types: true
+    always_use_package_imports: false
+    prefer_expression_function_bodies: false
+    diagnostic_describe_all_properties: false
+    avoid_annotating_with_dynamic: false
+    # With Flutter, this can cause some dropped frames (although rarely).
+    # See the following links:
+    # - https://github.com/dart-lang/sdk/issues/36269
+    # - https://gist.github.com/lukepighetti/921f347d94c889bc7febf59971892f10
+    avoid_slow_async_io: false
+    do_not_use_environment: false
+    sort_pub_dependencies: false
 
 analyzer:
   errors:
-    missing_required_param: error
     invalid_annotation_target: ignore
   strong-mode:
-    implicit-casts: false
+    implicit-dynamic: true
   exclude:
     - lib/**.i18n.dart
     - lib/**.chopper.dart

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,15 +16,15 @@ import '../../../widgets/colltact_list/details/cubit.dart';
 import '../../../widgets/colltact_list/details/widget.dart';
 
 class ColltactPageDetails extends StatefulWidget {
+  const ColltactPageDetails({
+    required this.colltact,
+    super.key,
+  });
+
   final Colltact colltact;
 
-  const ColltactPageDetails({
-    Key? key,
-    required this.colltact,
-  }) : super(key: key);
-
   @override
-  _ColltactPageDetailsState createState() => _ColltactPageDetailsState();
+  State<ColltactPageDetails> createState() => _ColltactPageDetailsState();
 }
 
 class _ColltactPageDetailsState extends State<ColltactPageDetails>
@@ -87,11 +89,13 @@ class _ColltactPageDetailsState extends State<ColltactPageDetails>
 
                   return ColltactDetails(
                     colltact: widget.colltact,
-                    onPhoneNumberPressed: (destination) => cubit.call(
-                      destination,
-                      origin: widget.colltact.map(
-                        colleague: (_) => CallOrigin.colleagues,
-                        contact: (_) => CallOrigin.contacts,
+                    onPhoneNumberPressed: (destination) => unawaited(
+                      cubit.call(
+                        destination,
+                        origin: widget.colltact.map(
+                          colleague: (_) => CallOrigin.colleagues,
+                          contact: (_) => CallOrigin.contacts,
+                        ),
                       ),
                     ),
                     onEmailPressed: cubit.mail,
@@ -99,7 +103,7 @@ class _ColltactPageDetailsState extends State<ColltactPageDetails>
                       Padding(
                         padding: const EdgeInsets.only(right: 20),
                         child: GestureDetector(
-                          onTap: () => cubit.edit(widget.colltact),
+                          onTap: () => unawaited(cubit.edit(widget.colltact)),
                           child: context.isIOS
                               ? Padding(
                                   padding: const EdgeInsets.only(top: 24),

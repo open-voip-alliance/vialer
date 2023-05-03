@@ -7,16 +7,16 @@ import '../cubit.dart';
 typedef ChildStateBuilder = Widget Function(SettingsState state);
 
 class SettingsSubPage extends StatelessWidget {
-  final SettingsCubit cubit;
-  final String title;
-  final ChildStateBuilder child;
-
   const SettingsSubPage({
-    Key? key,
     required this.cubit,
     required this.title,
     required this.child,
-  }) : super(key: key);
+    super.key,
+  });
+
+  final SettingsCubit cubit;
+  final String title;
+  final ChildStateBuilder child;
 
   @override
   Widget build(BuildContext context) {

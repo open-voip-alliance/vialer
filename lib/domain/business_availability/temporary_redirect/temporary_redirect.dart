@@ -9,9 +9,9 @@ part 'temporary_redirect.g.dart';
 @freezed
 class TemporaryRedirect with _$TemporaryRedirect {
   const factory TemporaryRedirect({
-    String? id,
     required DateTime endsAt,
     required TemporaryRedirectDestination destination,
+    String? id,
   }) = _TemporaryRedirect;
 
   factory TemporaryRedirect.fromJson(Map<String, dynamic> json) =>

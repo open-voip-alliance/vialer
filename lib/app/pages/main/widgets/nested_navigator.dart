@@ -5,6 +5,22 @@ import 'package:provider/provider.dart';
 typedef WidgetWithArgumentsBuilder = Widget Function(BuildContext, Object?);
 
 class NestedNavigator extends StatefulWidget {
+  /// Sibling [NestedNavigator]s are not supported. It's always assumed that
+  /// a [NestedNavigator] that's added to the widget tree is a descendant of
+  /// the already existing [NestedNavigator]s.
+  NestedNavigator({
+    required this.routes,
+    this.navigatorKey,
+
+    /// If kept `null`, the first entry in [routes] is used.
+    String? initialRoute,
+    Future<bool> Function()? onWillPop,
+    this.observers = const [],
+    this.fullscreenDialog = false,
+    super.key,
+  })  : initialRoute = initialRoute ?? routes.keys.first,
+        onWillPop = onWillPop ?? (() => SynchronousFuture(true));
+
   /// Can be used to manipulate the [Navigator] directly.
   final GlobalKey<NavigatorState>? navigatorKey;
 
@@ -20,25 +36,8 @@ class NestedNavigator extends StatefulWidget {
   /// Passed to [MaterialPageRoute.fullscreenDialog]. Applies to all routes.
   final bool fullscreenDialog;
 
-  /// Sibling [NestedNavigator]s are not supported. It's always assumed that
-  /// a [NestedNavigator] that's added to the widget tree is a descendant of
-  /// the already existing [NestedNavigator]s.
-  NestedNavigator({
-    Key? key,
-    this.navigatorKey,
-
-    /// If kept `null`, the first entry in [routes] is used.
-    String? initialRoute,
-    required this.routes,
-    Future<bool> Function()? onWillPop,
-    this.observers = const [],
-    this.fullscreenDialog = false,
-  })  : initialRoute = initialRoute ?? routes.keys.first,
-        onWillPop = onWillPop ?? (() => SynchronousFuture(true)),
-        super(key: key);
-
   @override
-  _NestedNavigatorState createState() => _NestedNavigatorState();
+  State<NestedNavigator> createState() => _NestedNavigatorState();
 }
 
 class _NestedNavigatorState extends State<NestedNavigator> {
@@ -102,7 +101,7 @@ class _NestedNavigatorState extends State<NestedNavigator> {
         initialRoute: widget.initialRoute,
         observers: widget.observers,
         onGenerateRoute: (settings) {
-          return MaterialPageRoute(
+          return MaterialPageRoute<void>(
             settings: settings,
             fullscreenDialog: widget.fullscreenDialog,
             builder: (context) {

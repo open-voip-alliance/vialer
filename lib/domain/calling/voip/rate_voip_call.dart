@@ -53,11 +53,9 @@ extension Mapping on List<CallAudioProblem> {
   Map<CallAudioProblem, bool> toBoolMap({
     bool defaultValue = false,
   }) =>
-      Map<CallAudioProblem, bool>.fromIterable(
-        CallAudioProblem.values,
-        key: (e) => e as CallAudioProblem,
-        value: (e) => defaultValue,
-      );
+      {
+        for (final e in CallAudioProblem.values) e: defaultValue,
+      };
 
   /// Convert to a map with the key as the short string of
   /// [CallAudioProblem] and the given boolean value.

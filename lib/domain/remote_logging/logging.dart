@@ -25,7 +25,7 @@ class LoggingRepository {
         '[REDACTED PHONE NUMBER]',
 
     // Source: https://emailregex.com/
-    '(?:[a-z0-9!#\$%&\'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#\$%&\'*+/=?^_`{|}~-]+)*|'
+    r"(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"
         r'"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b'
         r'\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9]'
         r'(?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)'
@@ -33,6 +33,7 @@ class LoggingRepository {
         r'[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b'
         r'\x0c\x0e-\x7f])+)\])': '[REDACTED EMAIL]',
 
+    // ignore: unnecessary_string_escapes
     'sip:\+?\d+': 'sip:[REDACTED]',
     'To:(.+?)>': 'To: [REDACTED]',
     'From:(.+?)>': 'From: [REDACTED]',
@@ -45,7 +46,7 @@ class LoggingRepository {
 
   SecureSocket? _remoteLoggingSocket;
 
-  StreamSubscription? _remoteLogSubscription;
+  StreamSubscription<LogRecord>? _remoteLogSubscription;
 
   bool get isLoggingToRemote => _remoteLogSubscription != null;
 
@@ -86,8 +87,8 @@ class LoggingRepository {
   }
 
   Future<void> enableRemoteLogging({
-    String userIdentifier = '',
     required String token,
+    String userIdentifier = '',
   }) async {
     Future<void> startConnection() async {
       try {
@@ -96,14 +97,16 @@ class LoggingRepository {
           443,
         );
 
-        _remoteLoggingSocket!.done.onError(
-          (error, stackTrace) {
-            // Keep track if we need to restart remote logging if we got
-            // disconnected.
-            if (error is SocketException) {
-              _connectedToRemote = false;
-            }
-          },
+        unawaited(
+          _remoteLoggingSocket!.done.onError(
+            (error, stackTrace) {
+              // Keep track if we need to restart remote logging if we got
+              // disconnected.
+              if (error is SocketException) {
+                _connectedToRemote = false;
+              }
+            },
+          ),
         );
 
         _restartRemoteConnectionCount = 0;
@@ -145,7 +148,7 @@ class LoggingRepository {
     String logs, {
     required String token,
   }) async {
-    assert(_remoteLoggingSocket != null);
+    assert(_remoteLoggingSocket != null, 'remoteLoggingSocket is null');
 
     final savedLogs = logs.split('\n');
 
@@ -157,6 +160,8 @@ class LoggingRepository {
   Future<void> disableRemoteLogging() async {
     await _remoteLogSubscription?.cancel();
     _remoteLogSubscription = null;
+    await _remoteLoggingSocket?.close();
+    _remoteLoggingSocket = null;
   }
 
   Future<void> enableNativeRemoteLogging({

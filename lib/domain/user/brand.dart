@@ -1,12 +1,11 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'brand.freezed.dart';
+
 part 'brand.g.dart';
 
 @freezed
 class Brand with _$Brand {
-  const Brand._();
-
   const factory Brand({
     required String identifier,
     required String appId,
@@ -22,6 +21,8 @@ class Brand with _$Brand {
     required Uri? signUpUrl,
     required Uri userAvailabilityWsUrl,
   }) = _Brand;
+
+  const Brand._();
 
   factory Brand.fromJson(Map<String, dynamic> json) => _$BrandFromJson(json);
 

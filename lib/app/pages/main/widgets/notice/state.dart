@@ -38,13 +38,13 @@ class NotificationsPermissionDeniedNotice extends NoticeState {
 }
 
 class TemporaryRedirectNotice extends NoticeState {
-  final TemporaryRedirect temporaryRedirect;
-  final bool canChangeTemporaryRedirect;
-
   const TemporaryRedirectNotice({
     required this.temporaryRedirect,
     required this.canChangeTemporaryRedirect,
   });
+
+  final TemporaryRedirect temporaryRedirect;
+  final bool canChangeTemporaryRedirect;
 
   @override
   List<Object> get props => [
