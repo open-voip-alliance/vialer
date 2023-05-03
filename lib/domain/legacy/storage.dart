@@ -60,7 +60,7 @@ class StorageRepository {
 
     if (_preferences.containsKey(_legacyVoipConfigKey)) {
       user = user?.copyWith(
-        voip: _preferences.getJson<UserVoipConfig?, Map<String, dynamic>>(
+        voip: () => _preferences.getJson<UserVoipConfig?, Map<String, dynamic>>(
           _legacyVoipConfigKey,
           UserVoipConfig.serializeFromJson,
         ),

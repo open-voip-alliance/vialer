@@ -18,7 +18,8 @@ import '../../../../domain/user/get_logged_in_user.dart';
 import '../../../../domain/user/get_permission_status.dart';
 import '../../../../domain/user/permissions/permission.dart';
 import '../../../../domain/user/permissions/permission_status.dart';
-import '../../../../domain/user/refresh_user.dart';
+import '../../../../domain/user/refresh/refresh_user.dart';
+import '../../../../domain/user/refresh/user_refresh_task.dart';
 import '../../../../domain/user/settings/call_setting.dart';
 import '../../../../domain/user/settings/change_settings.dart';
 import '../../../../domain/user/settings/settings.dart';
@@ -135,7 +136,7 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
 
   Future<void> refreshAvailability() async {
     logger.info('Refreshing availability');
-    await _refreshUser(tasksToRun: [UserRefreshTask.availability]);
+    await _refreshUser(tasksToPerform: [UserRefreshTask.userDestination]);
     await _emitUpdatedState();
   }
 

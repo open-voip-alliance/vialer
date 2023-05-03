@@ -4,10 +4,10 @@ import 'dart:io';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../dependency_locator.dart';
-import '../../../../../domain/business_availability/temporary_redirect/temporary_redirect.dart';
 import '../../../../../domain/business_availability/temporary_redirect/temporary_redirect_did_change_event.dart';
 import '../../../../../domain/event/event_bus.dart';
 import '../../../../../domain/onboarding/request_permission.dart';
+import '../../../../../domain/user/events/logged_in_user_was_refreshed.dart';
 import '../../../../../domain/user/get_logged_in_user.dart';
 import '../../../../../domain/user/get_permission_status.dart';
 import '../../../../../domain/user/permissions/permission.dart';
@@ -30,10 +30,8 @@ class NoticeCubit extends Cubit<NoticeState> with Loggable {
 
   NoticeCubit(this._caller) : super(const NoNotice()) {
     check();
-
-    _eventBus.on<TemporaryRedirectDidChangeEvent>((event) {
-      check(currentRedirect: event.current);
-    });
+    _eventBus.on<TemporaryRedirectDidChangeEvent>((_) => check());
+    _eventBus.on<LoggedInUserWasRefreshed>((_) => check());
   }
 
   Future<void> check({
@@ -41,7 +39,6 @@ class NoticeCubit extends Cubit<NoticeState> with Loggable {
     PermissionStatus? phoneStatus,
     PermissionStatus? bluetoothStatus,
     PermissionStatus? notificationsStatus,
-    TemporaryRedirect? currentRedirect,
   }) async {
     if (state is NoticeDismissed) return;
 
@@ -82,9 +79,9 @@ class NoticeCubit extends Cubit<NoticeState> with Loggable {
       emit(const NotificationsPermissionDeniedNotice());
     } else if (!user.isAllowedVoipCalling) {
       emit(const NoAppAccountNotice());
-    } else if (currentRedirect != null) {
+    } else if (user.client.currentTemporaryRedirect != null) {
       emit(TemporaryRedirectNotice(
-        temporaryRedirect: currentRedirect,
+        temporaryRedirect: user.client.currentTemporaryRedirect!,
         canChangeTemporaryRedirect: user.permissions.canChangeTemporaryRedirect,
       ));
     } else {

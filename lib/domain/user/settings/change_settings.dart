@@ -9,7 +9,8 @@ import '../../legacy/storage.dart';
 import '../../metrics/metrics.dart';
 import '../../use_case.dart';
 import '../../user/get_logged_in_user.dart';
-import '../refresh_user.dart';
+import '../refresh/refresh_user.dart';
+import '../refresh/user_refresh_task.dart';
 import '../user.dart';
 import 'listeners/change_registration_on_dnd_change.dart';
 import 'listeners/refresh_voip_preferences.dart';
@@ -104,9 +105,9 @@ class ChangeSettingsUseCase extends UseCase with Loggable {
       if (needSync.isNotEmpty) {
         final freshUser = await _refreshUser(
           synchronized: false,
-          tasksToRun: [
-            UserRefreshTask.remoteSettings,
-            UserRefreshTask.availability,
+          tasksToPerform: [
+            UserRefreshTask.voipgridUserSettings,
+            UserRefreshTask.userDestination,
           ],
         );
 

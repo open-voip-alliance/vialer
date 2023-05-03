@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 
+import '../../app/util/nullable_copy_with_argument.dart';
 import '../business_availability/temporary_redirect/temporary_redirect.dart';
 import '../openings_hours_basic/opening_hours.dart';
 import '../voicemail/voicemail_account.dart';
@@ -34,7 +35,7 @@ class Client extends Equatable {
   final TemporaryRedirect? currentTemporaryRedirect;
 
   @JsonKey(name: 'openingHours')
-  final List<OpeningHoursModule> openingHoursModules;
+  final Iterable<OpeningHoursModule> openingHoursModules;
 
   const Client({
     required this.id,
@@ -57,6 +58,8 @@ class Client extends Equatable {
         voip,
         outgoingNumbers,
         voicemailAccounts,
+        currentTemporaryRedirect,
+        openingHoursModules,
       ];
 
   Client copyWith({
@@ -65,10 +68,10 @@ class Client extends Equatable {
     String? name,
     Uri? url,
     ClientVoipConfig? voip,
-    Iterable<OutgoingNumber>? outgoingNumbers,
-    Iterable<VoicemailAccount>? voicemailAccounts,
-    TemporaryRedirect? currentTemporaryRedirect,
-    List<OpeningHoursModule>? openingHoursModules,
+    NullableCopyWithArgument<Iterable<OutgoingNumber>> outgoingNumbers,
+    NullableCopyWithArgument<Iterable<VoicemailAccount>> voicemailAccounts,
+    NullableCopyWithArgument<TemporaryRedirect> currentTemporaryRedirect,
+    NullableCopyWithArgument<Iterable<OpeningHoursModule>> openingHoursModules,
   }) {
     return Client(
       id: id ?? this.id,
@@ -76,11 +79,21 @@ class Client extends Equatable {
       name: name ?? this.name,
       url: url ?? this.url,
       voip: voip ?? this.voip,
-      outgoingNumbers: outgoingNumbers ?? this.outgoingNumbers,
-      voicemailAccounts: voicemailAccounts ?? this.voicemailAccounts,
-      currentTemporaryRedirect:
-          currentTemporaryRedirect ?? this.currentTemporaryRedirect,
-      openingHoursModules: openingHoursModules ?? this.openingHoursModules,
+      outgoingNumbers: outgoingNumbers.valueOrFallback(
+        unmodified: this.outgoingNumbers,
+        fallback: [],
+      ),
+      voicemailAccounts: voicemailAccounts.valueOrFallback(
+        unmodified: this.voicemailAccounts,
+        fallback: [],
+      ),
+      currentTemporaryRedirect: currentTemporaryRedirect.valueOrNull(
+        unmodified: this.currentTemporaryRedirect,
+      ),
+      openingHoursModules: openingHoursModules.valueOrFallback(
+        unmodified: this.openingHoursModules,
+        fallback: [],
+      ),
     );
   }
 

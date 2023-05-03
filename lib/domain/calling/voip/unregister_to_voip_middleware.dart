@@ -9,6 +9,9 @@ class UnregisterToVoipMiddlewareUseCase extends UseCase {
 
   Future<void> call() async {
     final user = _getUser();
-    await _voipRepository.unregister(user.voip);
+
+    if (user.isAllowedVoipCalling) {
+      await _voipRepository.unregister(user.voip);
+    }
   }
 }

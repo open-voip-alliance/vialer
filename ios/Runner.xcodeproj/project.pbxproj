@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
 		1E9B8E747C971D8E4B430369 /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6EB23F89556167BCE9E83FA0 /* Pods_Runner.framework */; };
-		3B3967161E833CAA004F5970 /* BuildFile in Resources */ = {isa = PBXBuildFile; };
+		3B3967161E833CAA004F5970 /* (null) in Resources */ = {isa = PBXBuildFile; };
 		5C12BB9C28F45B4F00053E2F /* ringback.wav in Resources */ = {isa = PBXBuildFile; fileRef = 5C12BB9B28F45B4F00053E2F /* ringback.wav */; };
 		5C1A6765272441C70079B4D1 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1A6764272441C70079B4D1 /* Logger.swift */; };
 		5C5B39A22823B94D0052D50F /* SystemTones.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C5B39A12823B94D0052D50F /* SystemTones.swift */; };
@@ -310,9 +310,7 @@
 				TargetAttributes = {
 					97C146ED1CF9000F007C117D = {
 						CreatedOnToolsVersion = 7.3.1;
-						DevelopmentTeam = E2Q9UE8HM6;
 						LastSwiftMigration = 1100;
-						ProvisioningStyle = Automatic;
 					};
 					DEEAB7CB2706025D0005EFE9 = {
 						CreatedOnToolsVersion = 12.5.1;
@@ -349,7 +347,7 @@
 			files = (
 				97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */,
 				5CF09A4B280EEBF9009B3C9C /* ringtone.wav in Resources */,
-				3B3967161E833CAA004F5970 /* BuildFile in Resources */,
+				3B3967161E833CAA004F5970 /* (null) in Resources */,
 				5C12BB9C28F45B4F00053E2F /* ringback.wav in Resources */,
 				97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */,
 				97C146FC1CF9000F007C117D /* Main.storyboard in Resources */,

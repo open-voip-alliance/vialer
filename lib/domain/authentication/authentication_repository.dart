@@ -4,6 +4,7 @@ import '../../app/util/automatic_retry.dart';
 import '../../app/util/loggable.dart';
 import '../onboarding/auto_login.dart';
 import '../onboarding/exceptions.dart';
+import '../onboarding/login_credentials.dart';
 import '../onboarding/two_factor_authentication_required.dart';
 import '../user/client.dart';
 import '../user/settings/call_setting.dart';
@@ -28,10 +29,33 @@ class AuthRepository with Loggable {
   static const _apiTokenKey = 'api_token';
   static const _twoFactorKey = 'two_factor_token';
 
-  /// Returns the latest user from the portal.
-  Future<User> getUserUsingStoredCredentials() => _getUser();
+  Future<User?> getUserFromCredentials(LoginCredentials? credentials) async {
+    if (credentials is UserProvidedCredentials) {
+      return _authenticate(
+        credentials.email,
+        credentials.password,
+        twoFactorCode: credentials.twoFactorCode,
+      );
+    }
 
-  Future<User> getUserUsingProvidedCredentials({
+    if (credentials is ImportedLegacyAppCredentials) {
+      return _getUserUsingProvidedCredentials(
+        email: credentials.email,
+        token: credentials.token,
+      );
+    }
+
+    try {
+      return _getUserUsingStoredCredentials();
+    } on FailedToRetrieveUserException {
+      return null;
+    }
+  }
+
+  /// Returns the latest user from the portal.
+  Future<User> _getUserUsingStoredCredentials() => _getUser();
+
+  Future<User> _getUserUsingProvidedCredentials({
     required String email,
     required String token,
   }) =>
@@ -67,7 +91,7 @@ class AuthRepository with Loggable {
   }
 
   /// If null is returned, authentication failed.
-  Future<User?> authenticate(
+  Future<User?> _authenticate(
     String email,
     String password, {
     bool cachePassword = true,
@@ -118,7 +142,7 @@ class AuthRepository with Loggable {
     });
 
     if (response.isSuccessful) {
-      await authenticate(email, newPassword, cachePassword: false);
+      await _authenticate(email, newPassword, cachePassword: false);
 
       return true;
     } else {

@@ -1,5 +1,5 @@
 import '../../app/util/loggable.dart';
-import '../user/user.dart';
+import '../user/client.dart';
 import '../voipgrid/voipgrid_api_resource_collector.dart';
 import '../voipgrid/voipgrid_service.dart';
 import 'voicemail_account.dart';
@@ -11,17 +11,12 @@ class VoicemailAccountsRepository with Loggable {
 
   VoicemailAccountsRepository(this._service);
 
-  Future<List<VoicemailAccount>> getVoicemailAccounts({
-    required User user,
-  }) async {
-    final client = user.client;
-
-    return apiResourceCollector.collect(
-      requester: (page) => _service.getVoicemailAccounts(
-        client.id.toString(),
-        page: page,
-      ),
-      deserializer: VoicemailAccount.fromJson,
-    );
-  }
+  Future<List<VoicemailAccount>> getVoicemailAccounts(Client client) async =>
+      apiResourceCollector.collect(
+        requester: (page) => _service.getVoicemailAccounts(
+          client.id.toString(),
+          page: page,
+        ),
+        deserializer: VoicemailAccount.fromJson,
+      );
 }
