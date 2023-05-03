@@ -33,7 +33,7 @@ class HandleUserVoipConfigChange extends UseCase with Loggable {
       'App account [${current.sipUserId}] has been added to this user and they '
       'will now be able to make calls',
     );
-    metrics.track('app-account-added');
+    _metrics.track('app-account-added');
     return _startVoip();
   }
 
@@ -42,7 +42,7 @@ class HandleUserVoipConfigChange extends UseCase with Loggable {
       'App account [${previous.sipUserId}] has been removed from this user and '
       'they will no longer be able to make calls',
     );
-    metrics.track('app-account-removed');
+    _metrics.track('app-account-removed');
     return _stopVoipAndUnregister(appAccount: previous);
   }
 
@@ -61,10 +61,10 @@ class HandleUserVoipConfigChange extends UseCase with Loggable {
         'App account has been changed from '
         '[${previous.sipUserId}] to [${current.sipUserId}]',
       );
-      metrics.track('app-account-changed');
+      _metrics.track('app-account-changed');
     } else {
       logger.info('App account password has been changed');
-      metrics.track('app-account-password-changed');
+      _metrics.track('app-account-password-changed');
     }
 
     await _stopVoipAndUnregister(appAccount: previous);
