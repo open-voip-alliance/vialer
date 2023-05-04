@@ -1,18 +1,18 @@
 import 'dart:io';
 import 'package:path/path.dart';
-import 'package:vialer/domain/user/get_brand.dart';
 
+import '../../utils/env_utils.dart';
 import 'util.dart';
 
 Future<void> main(List<String> arguments) async {
-  final brand = GetBrand()();
+  final defines = await readEnv('${root.path}/Flutter/Generated.xcconfig');
 
   await writeXconfigFile(
     name: 'Brand',
     values: {
-      'BUNDLE_NAME': brand.appName,
-      'BUNDLE_ID': brand.appId,
-      'MIDDLEWARE_URL': Uri.encodeComponent(brand.middlewareUrl.toString()),
+      'BUNDLE_NAME': defines['appName']!,
+      'BUNDLE_ID': defines['appId']!,
+      'MIDDLEWARE_URL': Uri.encodeComponent(defines['middlewareUrl']!),
     },
   );
 
@@ -20,7 +20,7 @@ Future<void> main(List<String> arguments) async {
   final assets = Directory('${root.path}/Runner/Assets.xcassets');
   final defaultIconSet = Directory('${assets.path}/AppIcon.appiconset');
   final brandIconSet =
-      Directory('${assets.path}/AppIcon-${brand.identifier}.appiconset');
+      Directory('${assets.path}/AppIcon-${defines['identifier']!}.appiconset');
 
   await defaultIconSet
       .list()
