@@ -10,13 +10,17 @@ part 'logged_in_user_was_refreshed.freezed.dart';
 class LoggedInUserWasRefreshed
     with _$LoggedInUserWasRefreshed
     implements EventBusEvent {
-  const factory LoggedInUserWasRefreshed(
-    User user,
+  const factory LoggedInUserWasRefreshed({
+    required User current,
+    required User previous,
 
     /// The [UserRefreshTask]s that were actually run when the logged-in user
     /// was refreshed.
-    List<UserRefreshTask> tasksPerformed,
-  ) = _LoggedInUserWasRefreshed;
+    required List<UserRefreshTask> tasksPerformed,
+
+    /// Whether this was the first time we fetched the user or not.
+    required bool isFirstTime,
+  }) = _LoggedInUserWasRefreshed;
 
   const LoggedInUserWasRefreshed._();
 
