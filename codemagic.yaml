@@ -8,15 +8,17 @@ custom: # Custom properties to make workflows cleaner
       name: Use workflow build number
       script: |
         echo "BUILD_NR=$BUILD_NUMBER" >> $CM_ENV
-    - &analyze
-      name: Analyzing the codebase
+    - &format
+      name: Formatting the codebase
       script: |
-        ln -s "${FLUTTER_ROOT}/bin/dart" /usr/local/bin/dart
         dart format --fix --set-exit-if-changed $(find lib -name "*.dart" -not \( -name "pigeon.dart" \) )
         if [ $? -eq 1 ]
         then
             exit 1
         fi
+    - &analyze
+      name: Analyzing the codebase
+      script: |
         dart analyze . --fatal-infos --fatal-warnings
     - &set_version_string
       name: Updating versioning information for this build
@@ -368,6 +370,7 @@ workflows:
       - *set_up_env_file
       - *set_version_string_to_most_recent_tag
       - *flutter_pub_get
+      - *format
       - *analyze
       - *flutter_test
       - *build_aab
@@ -412,6 +415,7 @@ workflows:
       - *set_up_env_file
       - *set_version_string_for_merge_request
       - *flutter_pub_get
+      - *format
       - *analyze
       - *flutter_test
       - *update_ios_signing_for_current_brand
@@ -433,6 +437,7 @@ workflows:
       - *set_up_env_file
       - *set_version_string_for_merge_request
       - *flutter_pub_get
+      - *format
       - *analyze
       - *flutter_test
       - *build_aab
@@ -459,6 +464,7 @@ workflows:
       - *set_up_env_file
       - *set_version_string_for_merge_request
       - *flutter_pub_get
+      - *format
       - *analyze
       - *flutter_test
       - *update_ios_signing_for_current_brand
@@ -514,6 +520,7 @@ workflows:
       - *set_up_env_file
       - *set_version_string
       - *flutter_pub_get
+      - *format
       - *analyze
       - *prepare_release_notes_from_files
       - *flutter_test
@@ -598,6 +605,7 @@ workflows:
       - *set_up_env_file
       - *set_version_string
       - *flutter_pub_get
+      - *format
       - *analyze
       - *prepare_release_notes_from_files
       - *flutter_test
@@ -681,6 +689,7 @@ workflows:
       - *set_up_env_file
       - *set_version_string
       - *flutter_pub_get
+      - *format
       - *analyze
       - *build_aab
       - *update_ios_signing_for_current_brand
@@ -710,6 +719,7 @@ workflows:
       - *set_up_env_file
       - *set_version_string
       - *flutter_pub_get
+      - *format
       - *analyze
       - *flutter_test
       - *build_aab
@@ -739,6 +749,7 @@ workflows:
       - *set_up_env_file
       - *set_version_string_to_most_recent_tag
       - *flutter_pub_get
+      - *format
       - *analyze
       - *flutter_test
       - *build_aab
