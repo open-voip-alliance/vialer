@@ -9,6 +9,8 @@ import '../call_records/client/purge_local_call_records.dart';
 import '../metrics/identify_for_tracking.dart';
 import '../use_case.dart';
 import '../user/events/logged_in_user_availability_changed.dart';
+import '../user/events/logged_in_user_was_refreshed.dart';
+import '../user/handle_user_voip_config_change.dart';
 import '../user/refresh/refresh_user.dart';
 import '../user/refresh/user_refresh_task.dart';
 import '../user/settings/app_setting.dart';
@@ -27,6 +29,7 @@ class RegisterDomainEventListenersUseCase extends UseCase with Loggable {
   final _logoutOnUnauthorizedResponse = LogoutOnUnauthorizedResponse();
   final _trackRateLimitedApiCalls = TrackRateLimitedApiCalls();
   final _refreshUser = RefreshUser();
+  final _handleUserVoipConfigChange = HandleUserVoipConfigChange();
 
   void call() {
     _eventBus
@@ -55,6 +58,18 @@ class RegisterDomainEventListenersUseCase extends UseCase with Loggable {
             synchronized: false,
           ),
         ),
+      )
+      ..on<LoggedInUserWasRefreshed>(
+        (event) {
+          if (!event.isFirstTime) {
+            unawaited(
+              _handleUserVoipConfigChange(
+                previous: event.previous.voip,
+                current: event.current.voip,
+              ),
+            );
+          }
+        },
       );
   }
 }
