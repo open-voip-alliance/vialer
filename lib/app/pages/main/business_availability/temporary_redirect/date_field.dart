@@ -37,12 +37,16 @@ class _DateFieldState extends State<DateField> {
   void initState() {
     super.initState();
 
-    // This has to be done post-frame because the temporary redirect picker
-    // updates its state if the value changes. Changing state not allowed
-    // when the widget is still setting up.
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      widget.notifier.value = _date;
-    });
+    if (widget.notifier.value == null) {
+      // This has to be done post-frame because the temporary redirect picker
+      // updates its state if the value changes. Changing state is not allowed
+      // when the widget is still setting up.
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        widget.notifier.value = _date;
+      });
+    } else {
+      _date = widget.notifier.value!.toLocal();
+    }
   }
 
   void _updateNotifierAndError() {
