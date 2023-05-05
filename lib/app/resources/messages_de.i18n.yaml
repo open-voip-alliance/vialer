@@ -296,7 +296,6 @@ main:
           description(String appName): "Es wird der Klingelton deines Telefons anstelle der App abgespielt, wenn du einen Anruf erhältst."
           title: Klingelton des Telefons verwenden
       calling:
-        userAvailability:
         addAvailability: Erreichbarkeit hinzufügen
         availability:
           available:

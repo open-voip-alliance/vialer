@@ -369,8 +369,6 @@ main:
         unknown: "Onbekend"
         notAvailable: "Niet beschikbaar"
         addAvailability: "Bereikbaarheid toevoegen"
-        userAvailability:
-
         useVoip:
           title: "Gebruik VoIP"
           description: >-
