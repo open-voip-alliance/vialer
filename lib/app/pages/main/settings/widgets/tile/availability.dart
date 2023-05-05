@@ -240,7 +240,7 @@ extension Display on UserAvailabilityType {
   }
 }
 
-extension on Destination {
+extension DestinationDropdown on Destination {
   String dropdownValue(BuildContext context) {
     final destination = this;
 

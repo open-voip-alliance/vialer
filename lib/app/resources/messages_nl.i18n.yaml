@@ -204,6 +204,16 @@ main:
       contacts(String number): >-
         Er waren geen contacten gevonden voor "$number".
 
+  userAvailability:
+    availabilityStatus:
+      title: "Set your status"
+    ringingDevice:
+      title: "Select your ringing device"
+      webphone: "Webphone"
+      deskPhone: "Desk phone"
+      mobile: "Mobile"
+      fixedDestination: "Fixed destination"
+
   colleagues:
     toggle: "Alleen online collega's"
     status:
@@ -359,6 +369,8 @@ main:
         unknown: "Onbekend"
         notAvailable: "Niet beschikbaar"
         addAvailability: "Bereikbaarheid toevoegen"
+        userAvailability:
+
         useVoip:
           title: "Gebruik VoIP"
           description: >-

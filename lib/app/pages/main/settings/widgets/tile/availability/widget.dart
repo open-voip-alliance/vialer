@@ -2,8 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:vialer/app/pages/main/settings/widgets/tile/availability/ringing_device.dart';
-import 'package:vialer/app/pages/main/settings/widgets/tile/availability/status.dart';
+import 'package:vialer/app/pages/main/settings/widgets/tile/availability/ringing_device/widget.dart';
 
 import '../../../../../../../dependency_locator.dart';
 import '../../../../../../../domain/calling/voip/destination.dart';
@@ -16,11 +15,10 @@ import '../../../cubit.dart';
 import '../../../header/widget.dart';
 import '../value.dart';
 import '../widget.dart';
+import 'availability_status/widget.dart';
 
 class AvailabilitySwitcher extends StatefulWidget {
-  const AvailabilitySwitcher({
-    super.key,
-  });
+  const AvailabilitySwitcher({super.key});
 
   @override
   State<AvailabilitySwitcher> createState() => _AvailabilitySwitcherState();
@@ -28,7 +26,8 @@ class AvailabilitySwitcher extends StatefulWidget {
 
 class _AvailabilitySwitcherState extends State<AvailabilitySwitcher> {
   final _eventBus = dependencyLocator<EventBusObserver>();
-  var _userAvailabilityStatus = ColleagueAvailabilityStatus.available;
+  ColleagueAvailabilityStatus? _userAvailabilityStatus;
+  var isProcessingChanges = false;
 
   @override
   void initState() {
@@ -49,26 +48,35 @@ class _AvailabilitySwitcherState extends State<AvailabilitySwitcher> {
   ) async {
     final appAccount = destinations.findAppAccountFor(user: user);
 
+    if (isProcessingChanges) return;
+
     setState(() {
       _userAvailabilityStatus = requestedStatus;
     });
 
+    isProcessingChanges = true;
+
+    late Future<void> future;
+
     switch (requestedStatus) {
       case ColleagueAvailabilityStatus.available:
-        return defaultOnSettingsChanged(context, {
+        future = defaultOnSettingsChanged(context, {
           CallSetting.dnd: false,
-          CallSetting.destination: appAccount!,
+          if (appAccount != null) CallSetting.destination: appAccount,
         });
+        break;
       case ColleagueAvailabilityStatus.doNotDisturb:
-        return defaultOnSettingsChanged(context, {
+        future = defaultOnSettingsChanged(context, {
           CallSetting.dnd: true,
-          CallSetting.destination: appAccount!,
+          if (appAccount != null) CallSetting.destination: appAccount,
         });
+        break;
       case ColleagueAvailabilityStatus.offline:
-        return defaultOnSettingsChanged(context, {
+        future = defaultOnSettingsChanged(context, {
           CallSetting.dnd: false,
           CallSetting.destination: const Destination.notAvailable(),
         });
+        break;
       case ColleagueAvailabilityStatus.busy:
       case ColleagueAvailabilityStatus.unknown:
         throw ArgumentError(
@@ -76,17 +84,33 @@ class _AvailabilitySwitcherState extends State<AvailabilitySwitcher> {
           'are valid options for setting user status.',
         );
     }
+
+    await future;
+    isProcessingChanges = false;
+  }
+
+  /// We get the [ColleagueAvailabilityStatus] from a websocket, if this
+  /// websocket is down or not available we'll use this fallback instead at the
+  /// expense of accuracy.
+  ColleagueAvailabilityStatus _fallbackAvailabilityStatus(User user) {
+    if (user.settings.getOrNull(CallSetting.dnd) ?? false) {
+      return ColleagueAvailabilityStatus.doNotDisturb;
+    }
+
+    final destination = user.settings.getOrNull(CallSetting.destination);
+
+    return destination is NotAvailable
+        ? ColleagueAvailabilityStatus.offline
+        : ColleagueAvailabilityStatus.available;
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<SettingsCubit, SettingsState>(
+      buildWhen: (_, __) => !isProcessingChanges,
       builder: (context, state) {
-        final user = state.user;
-        final showDnd = state.showDnd;
-        final userNumber = state.userNumber;
-        final destinations = state.availableDestinations;
-        final cubit = context.watch<SettingsCubit>();
+        final availabilityStatus =
+            _userAvailabilityStatus ?? _fallbackAvailabilityStatus(state.user);
 
         return SettingTile(
           padding: EdgeInsets.zero,
@@ -98,19 +122,19 @@ class _AvailabilitySwitcherState extends State<AvailabilitySwitcher> {
                 child: AvailabilityStatusPicker(
                   onStatusChanged: (status) async =>
                       _onAvailabilityStatusChange(
-                    user,
-                    destinations,
+                    state.user,
+                    state.availableDestinations,
                     context,
                     status,
                   ),
-                  user: user,
+                  user: state.user,
                   enabled: state.shouldAllowRemoteSettings,
-                  userAvailabilityStatus: _userAvailabilityStatus,
+                  userAvailabilityStatus: availabilityStatus,
                 ),
               ),
               RingingDevice(
-                user: user,
-                destinations: destinations,
+                user: state.user,
+                destinations: state.availableDestinations,
                 onDestinationChanged: (destination) async =>
                     defaultOnSettingChanged(
                   context,
@@ -118,6 +142,7 @@ class _AvailabilitySwitcherState extends State<AvailabilitySwitcher> {
                   destination,
                 ),
                 enabled: state.shouldAllowRemoteSettings,
+                userAvailabilityStatus: availabilityStatus,
               ),
             ],
           ),

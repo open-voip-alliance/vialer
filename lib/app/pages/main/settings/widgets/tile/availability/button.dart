@@ -9,6 +9,8 @@ class AvailabilityButton extends StatelessWidget {
     this.trailingIcon,
     this.onPressed,
     this.isActive = true,
+    this.backgroundColor,
+    this.foregroundColor,
     super.key,
   });
 
@@ -17,6 +19,14 @@ class AvailabilityButton extends StatelessWidget {
   final IconData? leadingIcon;
   final IconData? trailingIcon;
   final String text;
+  final Color? backgroundColor;
+  final Color? foregroundColor;
+
+  Color _backgroundColor(BuildContext context) =>
+      backgroundColor ?? context.brand.theme.colors.userAvailabilityAvailable;
+  Color _foregroundColor(BuildContext context) =>
+      foregroundColor ??
+      context.brand.theme.colors.userAvailabilityAvailableAccent;
 
   @override
   Widget build(BuildContext context) {
@@ -24,16 +34,16 @@ class AvailabilityButton extends StatelessWidget {
       onPressed: onPressed,
       style: FilledButton.styleFrom(
         backgroundColor: isActive
-            ? context.brand.theme.colors.userAvailabilityAvailable
+            ? _backgroundColor(context)
             : context.brand.theme.colors.userAvailabilityUnknown,
         foregroundColor: isActive
-            ? context.brand.theme.colors.userAvailabilityAvailableAccent
+            ? _foregroundColor(context)
             : context.brand.theme.colors.userAvailabilityUnknownAccent,
         disabledBackgroundColor: isActive
-            ? context.brand.theme.colors.userAvailabilityAvailable
+            ? _backgroundColor(context)
             : context.brand.theme.colors.userAvailabilityUnknown,
         disabledForegroundColor: isActive
-            ? context.brand.theme.colors.userAvailabilityAvailableAccent
+            ? _foregroundColor(context)
             : context.brand.theme.colors.userAvailabilityUnknownAccent,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
@@ -64,7 +74,7 @@ class AvailabilityButton extends StatelessWidget {
                       text.toUpperCase(),
                       style: const TextStyle(
                         fontSize: 12,
-                        overflow: TextOverflow.ellipsis,
+                        overflow: TextOverflow.clip,
                       ),
                       maxLines: 1,
                     ),

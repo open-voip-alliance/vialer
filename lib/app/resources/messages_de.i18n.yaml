@@ -124,6 +124,15 @@ main:
       colleagues(String number): Es wurden keine Kollegen für "$number" gefunden.
       contacts(String number): Es wurden keine Kontakte für "$number" gefunden.
       title: Keine Treffer gefunden
+  userAvailability:
+    availabilityStatus:
+      title: "Set your status"
+    ringingDevice:
+      title: "Select your ringing device"
+      webphone: "Webphone"
+      deskPhone: "Desk phone"
+      mobile: "Mobile"
+      fixedDestination: "Fixed destination"
   contacts:
     edit: Ändern
     list:
@@ -287,6 +296,7 @@ main:
           description(String appName): "Es wird der Klingelton deines Telefons anstelle der App abgespielt, wenn du einen Anruf erhältst."
           title: Klingelton des Telefons verwenden
       calling:
+        userAvailability:
         addAvailability: Erreichbarkeit hinzufügen
         availability:
           available:

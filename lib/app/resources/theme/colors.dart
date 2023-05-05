@@ -65,7 +65,9 @@ class Colors {
             v.userAvailabilityUnavailableAccent.color,
         userAvailabilityUnknown = v.userAvailabilityUnknown.color,
         userAvailabilityUnknownAccent = v.userAvailabilityUnknownAccent.color,
-        availabilityHeader = v.availabilityHeader.color;
+        availabilityHeader = v.availabilityHeader.color,
+        userAvailabilityOffline = v.userAvailabilityOffline.color,
+        userAvailabilityOfflineAccent = v.userAvailabilityOfflineAccent.color;
 
   final Color primary;
   final Color primaryDark;
@@ -137,6 +139,8 @@ class Colors {
   final Color userAvailabilityUnavailableAccent;
   final Color userAvailabilityUnknown;
   final Color userAvailabilityUnknownAccent;
+  final Color userAvailabilityOffline;
+  final Color userAvailabilityOfflineAccent;
 
   final Color availabilityHeader;
 }

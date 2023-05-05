@@ -39,6 +39,18 @@ extension DestinationsList on List<Destination> {
     return destinations.whereType<PhoneAccount>().toList();
   }
 
+  List<Destination> withoutAccountsFor(User user) => (toList(
+        growable: true,
+      )
+        ..remove(findAppAccountFor(user: user))
+        ..remove(findWebphoneAccountFor(user: user)));
+
+  List<PhoneAccount> deskPhonesFor({required User user}) =>
+      withoutAccountsFor(user).whereType<PhoneAccount>().toList();
+
+  List<PhoneNumber> fixedDestinationsFor({required User user}) =>
+      withoutAccountsFor(user).whereType<PhoneNumber>().toList();
+
   PhoneAccount? findAppAccountFor({required User user}) =>
       findPhoneAccountById(user.appAccountId);
 

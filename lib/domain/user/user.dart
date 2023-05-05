@@ -4,10 +4,8 @@ import 'package:dartx/dartx.dart';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
-import 'package:vialer/domain/user/settings/call_setting.dart';
 
 import '../../app/util/nullable_copy_with_argument.dart';
-import '../calling/voip/destination.dart';
 import '../voipgrid/user_voip_config.dart';
 import 'client.dart';
 import 'permissions/user_permissions.dart';

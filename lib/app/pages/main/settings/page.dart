@@ -2,13 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:vialer/app/pages/main/settings/widgets/tile/availability/widget.dart';
-import 'package:vialer/app/pages/main/settings/widgets/tile/value.dart';
 
-import '../../../../domain/calling/voip/destination.dart';
 import '../../../../domain/feature/feature.dart';
 import '../../../../domain/feature/has_feature.dart';
-import '../../../../domain/user/settings/call_setting.dart';
-import '../../../../domain/user/user.dart';
 import '../../../resources/localizations.dart';
 import '../util/stylized_snack_bar.dart';
 import 'cubit.dart';
@@ -93,7 +89,8 @@ class _SettingsPageState extends State<SettingsPage> {
                           // a feature flag so we can easily switch back if
                           // necessary after release.
                           if (_showNewAvailability) ...[
-                            AvailabilitySwitcher(),
+                            const AvailabilitySwitcher(),
+                            const Divider(),
                           ] else ...[
                             if (showDnd)
                               DndTile(
