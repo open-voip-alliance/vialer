@@ -57,6 +57,7 @@ class RingingDevice extends StatelessWidget {
             childAspectRatio: 3.5,
             crossAxisSpacing: 6,
             mainAxisSpacing: 6,
+            physics: const NeverScrollableScrollPhysics(),
             children: [
               if (webphoneAccount != null)
                 RingingDeviceButton(
