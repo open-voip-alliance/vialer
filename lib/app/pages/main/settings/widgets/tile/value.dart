@@ -16,7 +16,7 @@ typedef ValueChangedWithContext<T extends Object> = void Function(
 );
 
 /// If the setting cannot be changed, a dialog is shown.
-Future<void> runIfSettingCanBeChanged<T extends Object>(
+Future<void> runIfSettingCanBeChanged(
   BuildContext context,
   Iterable<SettingKey> keys,
   FutureOr<void> Function() block,

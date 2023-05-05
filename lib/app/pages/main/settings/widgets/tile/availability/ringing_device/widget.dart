@@ -28,7 +28,7 @@ class RingingDevice extends StatelessWidget {
   final bool enabled;
 
   bool get _shouldShowDestinationSelector =>
-      [
+      const [
         RingingDeviceType.fixed,
         RingingDeviceType.deskPhone,
       ].contains(user.ringingDevice) &&

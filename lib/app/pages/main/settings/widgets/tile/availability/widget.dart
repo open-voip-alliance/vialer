@@ -27,7 +27,7 @@ class AvailabilitySwitcher extends StatefulWidget {
 class _AvailabilitySwitcherState extends State<AvailabilitySwitcher> {
   final _eventBus = dependencyLocator<EventBusObserver>();
   ColleagueAvailabilityStatus? _userAvailabilityStatus;
-  var isProcessingChanges = false;
+  var _isProcessingChanges = false;
 
   @override
   void initState() {

@@ -96,7 +96,7 @@ extension UserAvailabilityStatus on AvailabilityUpdate {
 
     // We only want to show a couple of statuses because we know this user
     // is online if they have the app open, no matter what the WebSocket says.
-    return [
+    return const [
       ColleagueAvailabilityStatus.available,
       ColleagueAvailabilityStatus.doNotDisturb,
       ColleagueAvailabilityStatus.busy,
