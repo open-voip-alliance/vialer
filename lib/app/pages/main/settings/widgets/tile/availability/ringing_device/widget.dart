@@ -35,7 +35,8 @@ class RingingDevice extends StatelessWidget {
       destinations.isNotEmpty;
 
   bool get shouldEntireWidgetBeDisabled =>
-      userAvailabilityStatus == ColleagueAvailabilityStatus.offline;
+      userAvailabilityStatus == ColleagueAvailabilityStatus.offline ||
+      userAvailabilityStatus == ColleagueAvailabilityStatus.doNotDisturb;
 
   @override
   Widget build(BuildContext context) {
