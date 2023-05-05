@@ -48,13 +48,13 @@ class _AvailabilitySwitcherState extends State<AvailabilitySwitcher> {
   ) async {
     final appAccount = destinations.findAppAccountFor(user: user);
 
-    if (isProcessingChanges) return;
+    if (_isProcessingChanges) return;
 
     setState(() {
       _userAvailabilityStatus = requestedStatus;
     });
 
-    isProcessingChanges = true;
+    _isProcessingChanges = true;
 
     late Future<void> future;
 
@@ -86,7 +86,7 @@ class _AvailabilitySwitcherState extends State<AvailabilitySwitcher> {
     }
 
     await future;
-    isProcessingChanges = false;
+    _isProcessingChanges = false;
   }
 
   /// We get the [ColleagueAvailabilityStatus] from a websocket, if this
@@ -107,7 +107,7 @@ class _AvailabilitySwitcherState extends State<AvailabilitySwitcher> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<SettingsCubit, SettingsState>(
-      buildWhen: (_, __) => !isProcessingChanges,
+      buildWhen: (_, __) => !_isProcessingChanges,
       builder: (context, state) {
         final availabilityStatus =
             _userAvailabilityStatus ?? _fallbackAvailabilityStatus(state.user);
