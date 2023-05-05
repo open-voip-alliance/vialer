@@ -44,7 +44,7 @@ class RingingDevice extends StatelessWidget {
     final enableButtons = !shouldEntireWidgetBeDisabled && enabled;
 
     return Opacity(
-      opacity: shouldEntireWidgetBeDisabled ? 0.4 : 1,
+      opacity: shouldEntireWidgetBeDisabled ? 0.5 : 1,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
