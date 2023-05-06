@@ -28,6 +28,7 @@ class AvailabilitySwitcher extends StatefulWidget {
 class _AvailabilitySwitcherState extends State<AvailabilitySwitcher> {
   final _eventBus = dependencyLocator<EventBusObserver>();
   ColleagueAvailabilityStatus? _userAvailabilityStatus;
+  var isProcessingChanges = false;
 
   @override
   void initState() {
@@ -52,10 +53,12 @@ class _AvailabilitySwitcherState extends State<AvailabilitySwitcher> {
       _userAvailabilityStatus = requestedStatus;
     });
 
-    return defaultOnSettingsChanged(
+    isProcessingChanges = true;
+    await defaultOnSettingsChanged(
       context,
       _determineSettingsToModify(user, destinations, context, requestedStatus),
     );
+    isProcessingChanges = false;
   }
 
   Map<SettingKey, Object> _determineSettingsToModify(
@@ -109,6 +112,7 @@ class _AvailabilitySwitcherState extends State<AvailabilitySwitcher> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<SettingsCubit, SettingsState>(
+      buildWhen: (_, __) => !isProcessingChanges,
       builder: (context, state) {
         final availabilityStatus =
             _userAvailabilityStatus ?? _fallbackAvailabilityStatus(state.user);
