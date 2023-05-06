@@ -16,9 +16,7 @@ extension Observing on EventBusObserver {
     void Function()? onDone,
     bool? cancelOnError,
   }) =>
-      where((dynamic event) => event is T)
-          .cast<T>()
-          .listen(
+      where((dynamic event) => event is T).cast<T>().listen(
             onData,
             onError: onError,
             onDone: onDone,
