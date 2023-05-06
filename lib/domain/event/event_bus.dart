@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:rxdart/rxdart.dart';
 
 abstract class EventBusEvent {}
 
@@ -16,11 +15,9 @@ extension Observing on EventBusObserver {
     Function? onError,
     void Function()? onDone,
     bool? cancelOnError,
-    Duration debounceTime = Duration.zero,
   }) =>
       where((dynamic event) => event is T)
           .cast<T>()
-          .debounceTime(debounceTime)
           .listen(
             onData,
             onError: onError,

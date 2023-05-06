@@ -33,14 +33,6 @@ class _AvailabilitySwitcherState extends State<AvailabilitySwitcher> {
   void initState() {
     super.initState();
     _eventBus.on<LoggedInUserAvailabilityChanged>(
-      // We apply a fairly long debounce time here because we need to make two
-      // api requests when changing availability. This will mean we get a
-      // [LoggedInUserAvailabilityChanged] event for both of them and users
-      // would see their status switch briefly.
-      //
-      // This can be removed when do-not-disturb becomes user-based and so we
-      // don't need to update the destination at the same time.
-      debounceTime: const Duration(milliseconds: 3000),
       (event) {
         setState(() {
           _userAvailabilityStatus =
