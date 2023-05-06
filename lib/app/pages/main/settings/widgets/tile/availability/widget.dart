@@ -9,6 +9,7 @@ import '../../../../../../../domain/calling/voip/destination.dart';
 import '../../../../../../../domain/event/event_bus.dart';
 import '../../../../../../../domain/user/events/logged_in_user_availability_changed.dart';
 import '../../../../../../../domain/user/settings/call_setting.dart';
+import '../../../../../../../domain/user/settings/settings.dart';
 import '../../../../../../../domain/user/user.dart';
 import '../../../../../../../domain/user_availability/colleagues/colleague.dart';
 import '../../../cubit.dart';
@@ -27,17 +28,26 @@ class AvailabilitySwitcher extends StatefulWidget {
 class _AvailabilitySwitcherState extends State<AvailabilitySwitcher> {
   final _eventBus = dependencyLocator<EventBusObserver>();
   ColleagueAvailabilityStatus? _userAvailabilityStatus;
-  var _isProcessingChanges = false;
 
   @override
   void initState() {
     super.initState();
-    _eventBus.on<LoggedInUserAvailabilityChanged>((event) {
-      setState(() {
-        _userAvailabilityStatus =
-            event.availability.asLoggedInUserDisplayStatus();
-      });
-    });
+    _eventBus.on<LoggedInUserAvailabilityChanged>(
+      // We apply a fairly long debounce time here because we need to make two
+      // api requests when changing availability. This will mean we get a
+      // [LoggedInUserAvailabilityChanged] event for both of them and users
+      // would see their status switch briefly.
+      //
+      // This can be removed when do-not-disturb becomes user-based and so we
+      // don't need to update the destination at the same time.
+      debounceTime: const Duration(milliseconds: 3000),
+      (event) {
+        setState(() {
+          _userAvailabilityStatus =
+              event.availability.asLoggedInUserDisplayStatus();
+        });
+      },
+    );
   }
 
   Future<void> _onAvailabilityStatusChange(
@@ -46,37 +56,40 @@ class _AvailabilitySwitcherState extends State<AvailabilitySwitcher> {
     BuildContext context,
     ColleagueAvailabilityStatus requestedStatus,
   ) async {
-    final appAccount = destinations.findAppAccountFor(user: user);
-
-    if (_isProcessingChanges) return;
-
     setState(() {
       _userAvailabilityStatus = requestedStatus;
     });
 
-    _isProcessingChanges = true;
+    return defaultOnSettingsChanged(
+      context,
+      _determineSettingsToModify(user, destinations, context, requestedStatus),
+    );
+  }
 
-    late Future<void> future;
+  Map<SettingKey, Object> _determineSettingsToModify(
+    User user,
+    List<Destination> destinations,
+    BuildContext context,
+    ColleagueAvailabilityStatus requestedStatus,
+  ) {
+    final appAccount = destinations.findAppAccountFor(user: user);
 
     switch (requestedStatus) {
       case ColleagueAvailabilityStatus.available:
-        future = defaultOnSettingsChanged(context, {
+        return {
           CallSetting.dnd: false,
           if (appAccount != null) CallSetting.destination: appAccount,
-        });
-        break;
+        };
       case ColleagueAvailabilityStatus.doNotDisturb:
-        future = defaultOnSettingsChanged(context, {
+        return {
           CallSetting.dnd: true,
           if (appAccount != null) CallSetting.destination: appAccount,
-        });
-        break;
+        };
       case ColleagueAvailabilityStatus.offline:
-        future = defaultOnSettingsChanged(context, {
+        return {
           CallSetting.dnd: false,
           CallSetting.destination: const Destination.notAvailable(),
-        });
-        break;
+        };
       case ColleagueAvailabilityStatus.busy:
       case ColleagueAvailabilityStatus.unknown:
         throw ArgumentError(
@@ -84,9 +97,6 @@ class _AvailabilitySwitcherState extends State<AvailabilitySwitcher> {
           'are valid options for setting user status.',
         );
     }
-
-    await future;
-    _isProcessingChanges = false;
   }
 
   /// We get the [ColleagueAvailabilityStatus] from a websocket, if this
@@ -107,7 +117,6 @@ class _AvailabilitySwitcherState extends State<AvailabilitySwitcher> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<SettingsCubit, SettingsState>(
-      buildWhen: (_, __) => !_isProcessingChanges,
       builder: (context, state) {
         final availabilityStatus =
             _userAvailabilityStatus ?? _fallbackAvailabilityStatus(state.user);
