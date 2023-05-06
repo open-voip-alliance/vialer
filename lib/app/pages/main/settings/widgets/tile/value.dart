@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -23,38 +22,31 @@ Future<void> runIfSettingCanBeChanged(
 ) async {
   final settings = context.read<SettingsCubit>();
 
-  // Check that we can change all the keys in the request.
-  final canChangeRemoteSetting = await Future.wait(
-    keys.map((key) async => settings.canChangeRemoteSetting(key)),
-  ).then(
-    (value) => value.all((canChange) => canChange),
-  );
-
-  if (canChangeRemoteSetting) {
-    await block.call();
-  } else {
-    // Linter is wrong here.
-    // ignore: use_build_context_synchronously
-    if (!context.mounted) return;
-
-    unawaited(
-      showDialog<void>(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text(context.msg.main.settings.noConnectionDialog.title),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text(context.msg.generic.button.close),
-              )
-            ],
-            content: Text(context.msg.main.settings.noConnectionDialog.message),
-          );
-        },
-      ),
-    );
+  if (await settings.canChangeRemoteSettings(keys)) {
+    return block.call();
   }
+
+  // Linter is wrong here.
+  // ignore: use_build_context_synchronously
+  if (!context.mounted) return;
+
+  unawaited(
+    showDialog<void>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(context.msg.main.settings.noConnectionDialog.title),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(context.msg.generic.button.close),
+            )
+          ],
+          content: Text(context.msg.main.settings.noConnectionDialog.message),
+        );
+      },
+    ),
+  );
 }
 
 Future<void> defaultOnSettingChanged<T extends Object>(

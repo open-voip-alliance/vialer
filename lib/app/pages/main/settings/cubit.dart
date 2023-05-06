@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:dartx/dartx.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../dependency_locator.dart';
@@ -107,6 +108,7 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
   }
 
   static const _remoteSettings = [
+    CallSetting.dnd,
     CallSetting.destination,
     CallSetting.mobileNumber,
     CallSetting.outgoingNumber,
@@ -120,6 +122,12 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
   ) async =>
       (key is CallSetting<T> && !_remoteSettings.contains(key)) ||
       await _getConnectivity().then((c) => c.isConnected);
+
+  /// Checks if any of the settings in the current request can be changed by
+  /// calling [canChangeRemoteSetting] on each one.
+  Future<bool> canChangeRemoteSettings(Iterable<SettingKey> keys) =>
+      Future.wait(keys.map((key) async => canChangeRemoteSetting(key)))
+          .then((value) => value.all((canChange) => canChange));
 
   Future<void> changeSetting<T extends Object>(
     SettingKey<T> key,
