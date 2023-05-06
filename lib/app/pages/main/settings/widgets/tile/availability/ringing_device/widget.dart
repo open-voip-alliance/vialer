@@ -42,6 +42,8 @@ class RingingDevice extends StatelessWidget {
   Widget build(BuildContext context) {
     final appAccount = destinations.findAppAccountFor(user: user);
     final webphoneAccount = destinations.findWebphoneAccountFor(user: user);
+    final fixedDestinations = destinations.fixedDestinationsFor(user: user);
+    final deskPhones = destinations.deskPhonesFor(user: user);
     final enableButtons = !shouldEntireWidgetBeDisabled && enabled;
 
     return Opacity(
@@ -69,14 +71,15 @@ class RingingDevice extends StatelessWidget {
                   onDestinationChanged: onDestinationChanged,
                   parentWidgetIsEnabled: !shouldEntireWidgetBeDisabled,
                 ),
-              RingingDeviceButton(
-                RingingDeviceType.deskPhone,
-                user: user,
-                enabled: enableButtons,
-                destinations: destinations,
-                onDestinationChanged: onDestinationChanged,
-                parentWidgetIsEnabled: !shouldEntireWidgetBeDisabled,
-              ),
+              if (deskPhones.isNotEmpty)
+                RingingDeviceButton(
+                  RingingDeviceType.deskPhone,
+                  user: user,
+                  enabled: enableButtons,
+                  destinations: destinations,
+                  onDestinationChanged: onDestinationChanged,
+                  parentWidgetIsEnabled: !shouldEntireWidgetBeDisabled,
+                ),
               if (appAccount != null)
                 RingingDeviceButton(
                   RingingDeviceType.mobile,
@@ -86,14 +89,15 @@ class RingingDevice extends StatelessWidget {
                   onDestinationChanged: onDestinationChanged,
                   parentWidgetIsEnabled: !shouldEntireWidgetBeDisabled,
                 ),
-              RingingDeviceButton(
-                RingingDeviceType.fixed,
-                user: user,
-                enabled: enableButtons,
-                destinations: destinations,
-                onDestinationChanged: onDestinationChanged,
-                parentWidgetIsEnabled: !shouldEntireWidgetBeDisabled,
-              ),
+              if (fixedDestinations.isNotEmpty)
+                RingingDeviceButton(
+                  RingingDeviceType.fixed,
+                  user: user,
+                  enabled: enableButtons,
+                  destinations: destinations,
+                  onDestinationChanged: onDestinationChanged,
+                  parentWidgetIsEnabled: !shouldEntireWidgetBeDisabled,
+                ),
             ],
           ),
           if (_shouldShowDestinationSelector)
