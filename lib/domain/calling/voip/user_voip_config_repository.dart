@@ -11,6 +11,10 @@ class UserVoipConfigRepository with Loggable {
   Future<UserVoipConfig?> get() async {
     final response = await _service.getMobileProfile();
 
+    // If we get a 404, there is no app account so we should return null
+    // rather than throwing an exception.
+    if (response.statusCode == 404) return null;
+
     if (!response.isSuccessful) {
       logFailedResponse(response, name: 'Fetch VoipConfig');
       throw RequestException(response.statusCode);
@@ -28,6 +32,10 @@ class UserVoipConfigRepository with Loggable {
 
   Future<String?> getSelectedWebphoneAccountId() async {
     final response = await _service.getWebphoneSelectedAccount();
+
+    // If we get a 404, there is no webphone account so we should return null
+    // rather than throwing an exception.
+    if (response.statusCode == 404) return null;
 
     if (!response.isSuccessful) {
       logFailedResponse(response, name: 'Selected Webphone Account Id');
