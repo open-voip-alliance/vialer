@@ -67,6 +67,7 @@ class RingingDevice extends StatelessWidget {
                   enabled: enableButtons,
                   destinations: destinations,
                   onDestinationChanged: onDestinationChanged,
+                  parentWidgetIsEnabled: !shouldEntireWidgetBeDisabled,
                 ),
               RingingDeviceButton(
                 RingingDeviceType.deskPhone,
@@ -74,6 +75,7 @@ class RingingDevice extends StatelessWidget {
                 enabled: enableButtons,
                 destinations: destinations,
                 onDestinationChanged: onDestinationChanged,
+                parentWidgetIsEnabled: !shouldEntireWidgetBeDisabled,
               ),
               if (appAccount != null)
                 RingingDeviceButton(
@@ -82,6 +84,7 @@ class RingingDevice extends StatelessWidget {
                   enabled: enableButtons,
                   destinations: destinations,
                   onDestinationChanged: onDestinationChanged,
+                  parentWidgetIsEnabled: !shouldEntireWidgetBeDisabled,
                 ),
               RingingDeviceButton(
                 RingingDeviceType.fixed,
@@ -89,6 +92,7 @@ class RingingDevice extends StatelessWidget {
                 enabled: enableButtons,
                 destinations: destinations,
                 onDestinationChanged: onDestinationChanged,
+                parentWidgetIsEnabled: !shouldEntireWidgetBeDisabled,
               ),
             ],
           ),

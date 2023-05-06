@@ -14,6 +14,7 @@ class RingingDeviceButton extends StatelessWidget {
     required this.enabled,
     required this.destinations,
     required this.onDestinationChanged,
+    this.parentWidgetIsEnabled = true,
     super.key,
   });
 
@@ -22,6 +23,7 @@ class RingingDeviceButton extends StatelessWidget {
   final DestinationChangedCallback onDestinationChanged;
   final List<Destination> destinations;
   final User user;
+  final bool parentWidgetIsEnabled;
 
   String _text(BuildContext context) {
     switch (type) {
@@ -72,7 +74,7 @@ class RingingDeviceButton extends StatelessWidget {
       leadingIcon: _icon,
       trailingIcon:
           user.ringingDevice == type ? FontAwesomeIcons.solidBellOn : null,
-      isActive: user.ringingDevice == type,
+      isActive: parentWidgetIsEnabled && user.ringingDevice == type,
       onPressed: enabled
           ? () =>
               _destination != null ? onDestinationChanged(_destination!) : {}
