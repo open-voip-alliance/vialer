@@ -132,18 +132,19 @@ class _AvailabilitySwitcherState extends State<AvailabilitySwitcher> {
                   userAvailabilityStatus: availabilityStatus,
                 ),
               ),
-              RingingDevice(
-                user: state.user,
-                destinations: state.availableDestinations,
-                onDestinationChanged: (destination) async =>
-                    defaultOnSettingChanged(
-                  context,
-                  CallSetting.destination,
-                  destination,
+              if (state.availableDestinations.length >= 2)
+                RingingDevice(
+                  user: state.user,
+                  destinations: state.availableDestinations,
+                  onDestinationChanged: (destination) async =>
+                      defaultOnSettingChanged(
+                    context,
+                    CallSetting.destination,
+                    destination,
+                  ),
+                  enabled: state.shouldAllowRemoteSettings,
+                  userAvailabilityStatus: availabilityStatus,
                 ),
-                enabled: state.shouldAllowRemoteSettings,
-                userAvailabilityStatus: availabilityStatus,
-              ),
             ],
           ),
         );
