@@ -28,16 +28,29 @@ class AvailabilitySwitcher extends StatefulWidget {
 class _AvailabilitySwitcherState extends State<AvailabilitySwitcher> {
   final _eventBus = dependencyLocator<EventBusObserver>();
   ColleagueAvailabilityStatus? _userAvailabilityStatus;
-  var isProcessingChanges = false;
+  var _isProcessingChanges = false;
 
   @override
   void initState() {
     super.initState();
     _eventBus.on<LoggedInUserAvailabilityChanged>(
       (event) {
-        setState(() {
-          _userAvailabilityStatus =
-              event.availability.asLoggedInUserDisplayStatus();
+        if (!_isProcessingChanges) {
+          setState(() {
+            _userAvailabilityStatus =
+                event.availability.asLoggedInUserDisplayStatus();
+          });
+          return;
+        }
+
+        // This is a hacky solution to make it so the user's availability
+        // does not switch back while we're in the process of updating it. This
+        // can be removed when DND is user-based in the near future.
+        _userAvailabilityStatus =
+            event.availability.asLoggedInUserDisplayStatus();
+
+        Timer(const Duration(seconds: 3), () {
+          setState(() {});
         });
       },
     );
@@ -53,12 +66,12 @@ class _AvailabilitySwitcherState extends State<AvailabilitySwitcher> {
       _userAvailabilityStatus = requestedStatus;
     });
 
-    isProcessingChanges = true;
+    _isProcessingChanges = true;
     await defaultOnSettingsChanged(
       context,
       _determineSettingsToModify(user, destinations, context, requestedStatus),
     );
-    isProcessingChanges = false;
+    _isProcessingChanges = false;
   }
 
   Map<SettingKey, Object> _determineSettingsToModify(
@@ -112,7 +125,7 @@ class _AvailabilitySwitcherState extends State<AvailabilitySwitcher> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<SettingsCubit, SettingsState>(
-      buildWhen: (_, __) => !isProcessingChanges,
+      buildWhen: (_, __) => !_isProcessingChanges,
       builder: (context, state) {
         final availabilityStatus =
             _userAvailabilityStatus ?? _fallbackAvailabilityStatus(state.user);

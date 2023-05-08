@@ -21,10 +21,22 @@ class MultipleRingingDeviceDropdown extends StatelessWidget {
   final DestinationChangedCallback onDestinationChanged;
 
   /// Only destinations that match the [User]'s ringingDevice.
-  List<Destination> get _relevantDestinations =>
-      user.ringingDevice == RingingDeviceType.fixed
-          ? destinations.fixedDestinationsFor(user: user)
-          : destinations.deskPhonesFor(user: user);
+  List<Destination> get _relevantDestinations {
+    final webphone = destinations.findWebphoneAccountFor(user: user);
+    final appAccount = destinations.findAppAccountFor(user: user);
+
+    switch(user.ringingDevice) {
+      case RingingDeviceType.webphone:
+        return webphone != null ? [webphone] : [];
+      case RingingDeviceType.deskPhone:
+        return destinations.deskPhonesFor(user: user);
+      case RingingDeviceType.mobile:
+        return appAccount != null ? [appAccount] : [];
+      case RingingDeviceType.unknown:
+      case RingingDeviceType.fixed:
+        return destinations.fixedDestinationsFor(user: user);
+    }
+  }
 
   /// Currently we support a [NotAvailable] destination which won't appear in
   /// this list, so we only want to use the current destination if it is a
@@ -37,11 +49,13 @@ class MultipleRingingDeviceDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final relevantDestinations = _relevantDestinations;
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 12),
       child: StylizedDropdown<Destination>(
-        value: _currentDestination ?? _relevantDestinations.firstOrNull,
-        items: _relevantDestinations
+        value: _currentDestination ?? relevantDestinations.firstOrNull,
+        items: relevantDestinations
             .map(
               (destination) => DropdownMenuItem<Destination>(
                 value: destination,
@@ -53,6 +67,7 @@ class MultipleRingingDeviceDropdown extends StatelessWidget {
             )
             .toList(),
         isExpanded: true,
+        showIcon: relevantDestinations.length >= 2,
         onChanged: enabled
             ? (destination) =>
                 destination != null ? onDestinationChanged(destination) : () {}

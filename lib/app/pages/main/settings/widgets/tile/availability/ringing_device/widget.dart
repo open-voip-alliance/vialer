@@ -27,13 +27,6 @@ class RingingDevice extends StatelessWidget {
   final ColleagueAvailabilityStatus userAvailabilityStatus;
   final bool enabled;
 
-  bool get _shouldShowDestinationSelector =>
-      const [
-        RingingDeviceType.fixed,
-        RingingDeviceType.deskPhone,
-      ].contains(user.ringingDevice) &&
-      destinations.isNotEmpty;
-
   bool get shouldEntireWidgetBeDisabled =>
       userAvailabilityStatus == ColleagueAvailabilityStatus.offline ||
       userAvailabilityStatus == ColleagueAvailabilityStatus.doNotDisturb;
@@ -100,13 +93,12 @@ class RingingDevice extends StatelessWidget {
                 ),
             ],
           ),
-          if (_shouldShowDestinationSelector)
-            MultipleRingingDeviceDropdown(
-              user: user,
-              destinations: destinations,
-              enabled: enableButtons,
-              onDestinationChanged: onDestinationChanged,
-            ),
+          MultipleRingingDeviceDropdown(
+            user: user,
+            destinations: destinations,
+            enabled: enableButtons,
+            onDestinationChanged: onDestinationChanged,
+          ),
         ],
       ),
     );
