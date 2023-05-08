@@ -25,7 +25,7 @@ class MultipleRingingDeviceDropdown extends StatelessWidget {
     final webphone = destinations.findWebphoneAccountFor(user: user);
     final appAccount = destinations.findAppAccountFor(user: user);
 
-    switch(user.ringingDevice) {
+    switch (user.ringingDevice) {
       case RingingDeviceType.webphone:
         return webphone != null ? [webphone] : [];
       case RingingDeviceType.deskPhone:
