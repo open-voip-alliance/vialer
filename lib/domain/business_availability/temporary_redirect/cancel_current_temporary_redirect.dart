@@ -7,7 +7,7 @@ import '../../user/get_logged_in_user.dart';
 import '../business_availability_repository.dart';
 import 'get_current_temporary_redirect.dart';
 
-class StopCurrentTemporaryRedirect extends UseCase
+class CancelCurrentTemporaryRedirect extends UseCase
     with TemporaryRedirectEventBroadcaster {
   late final _getCurrentRedirect = GetCurrentTemporaryRedirect();
   late final _getUser = GetLoggedInUserUseCase();
