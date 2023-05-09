@@ -90,7 +90,7 @@ class MainActivity : FlutterActivity(), Pigeon.CallScreenBehavior {
     }
 
     private fun call(number: String) {
-        App.segment.track("call-initiated-from-os", mapOf())
+        App.segment.track("call-from-os-initiated", mapOf())
 
         val normalizedNumber = number.replace(Regex("[^0-9\\+]"), "")
         if (normalizedNumber.isNotEmpty()) {

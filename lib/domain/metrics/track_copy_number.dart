@@ -5,5 +5,5 @@ import 'metrics.dart';
 class TrackCopyNumberUseCase extends UseCase {
   final _metricsRepository = dependencyLocator<MetricsRepository>();
 
-  void call() => _metricsRepository.track('copy-number');
+  void call() => _metricsRepository.track('number-copied');
 }

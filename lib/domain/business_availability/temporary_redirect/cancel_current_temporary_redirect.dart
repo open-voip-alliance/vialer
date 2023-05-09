@@ -1,17 +1,19 @@
 import 'dart:async';
 
 import '../../../../dependency_locator.dart';
+import '../../metrics/metrics.dart';
 import '../../use_case.dart';
 import '../../user/get_logged_in_user.dart';
 import '../business_availability_repository.dart';
 import 'get_current_temporary_redirect.dart';
 
-class StopCurrentTemporaryRedirect extends UseCase
+class CancelCurrentTemporaryRedirect extends UseCase
     with TemporaryRedirectEventBroadcaster {
   late final _getCurrentRedirect = GetCurrentTemporaryRedirect();
   late final _getUser = GetLoggedInUserUseCase();
   late final _businessAvailability =
       dependencyLocator<BusinessAvailabilityRepository>();
+  late final _metricsRepository = dependencyLocator<MetricsRepository>();
 
   Future<void> call() async {
     final current = await _getCurrentRedirect();
@@ -28,7 +30,7 @@ class StopCurrentTemporaryRedirect extends UseCase
       temporaryRedirect: current,
     );
 
-    track();
+    _metricsRepository.track('temporary-redirect-cancelled');
     unawaited(broadcast());
   }
 }

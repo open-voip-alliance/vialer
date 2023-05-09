@@ -36,6 +36,9 @@ class Segment {
     }
 
     func track(event: String, properties: [String : Any]) {
+        let regex = try! NSRegularExpression(pattern: "[a-z]+(-[a-z]+)*")
+        assert(regex.firstMatch(in: event, range: NSRange(location: 0, length: event.count)) != nil, "Event name not in param-casing.")
+
         initialize()
         
         logger.writeLog("Native Segment Event: \(event) with properties: \(properties)")

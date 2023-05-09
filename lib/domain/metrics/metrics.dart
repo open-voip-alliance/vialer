@@ -64,7 +64,9 @@ class ConsoleLoggingMetricsRepository extends MetricsRepository {
     String eventName, [
     Map<String, dynamic>? properties,
   ]) {
+    assert(eventName == eventName.paramCase, 'Event name not in param-casing.');
     _assertPropertiesDoNotExceed1000Characters(properties ?? {});
+
     return _log('[$eventName]: $properties');
   }
 
@@ -135,8 +137,11 @@ class SegmentMetricsRepository extends MetricsRepository {
   Future<void> track(
     String eventName, [
     Map<String, dynamic>? properties,
-  ]) =>
-      Segment.track(eventName: eventName, properties: properties);
+  ]) async {
+    assert(eventName == eventName.paramCase, 'Event name not in param-casing.');
+
+    unawaited(Segment.track(eventName: eventName, properties: properties));
+  }
 }
 
 extension _SettingMetrics<T extends Object> on SettingKey<T> {
