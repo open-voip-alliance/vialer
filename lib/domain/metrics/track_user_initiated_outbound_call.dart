@@ -10,7 +10,7 @@ class TrackUserInitiatedOutboundCall extends UseCase {
     required bool isVoip,
     required CallType type,
   }) =>
-      _metricsRepository.track('call-initiated-by-user', {
+      _metricsRepository.track('call-outbound-by-user-initiated', {
         'via': via,
         'voip': isVoip,
         'type': type.toString(),

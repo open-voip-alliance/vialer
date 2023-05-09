@@ -3,11 +3,14 @@ import 'dart:async';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../app/util/loggable.dart';
+import '../../dependency_locator.dart';
+import '../metrics/metrics.dart';
 import '../use_case.dart';
 import 'get_brand.dart';
 
 class LaunchSignUp extends UseCase with Loggable {
   late final _getBrand = GetBrand();
+  late final _metricsRepository = dependencyLocator<MetricsRepository>();
 
   void call() {
     final brand = _getBrand();
@@ -21,6 +24,6 @@ class LaunchSignUp extends UseCase with Loggable {
       ),
     );
 
-    track({'url': brand.signUpUrl});
+    _metricsRepository.track('url-sign-up-launched', {'url': brand.signUpUrl});
   }
 }

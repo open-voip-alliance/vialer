@@ -198,7 +198,7 @@ class Middleware(
 
         return true.also {
             segment.track(
-                "notification-received", remoteMessage.trackingProperties + mapOf(
+                "middleware-notification-received", remoteMessage.trackingProperties + mapOf(
                     "seconds_from_call_to_received" to remoteMessage.secondsSincePushWasSent.toString(),
                     "is_ignoring_battery_optimizations" to context.isIgnoringBatteryOptimizations.toString(),
                     "middleware_url" to baseUrl,
@@ -215,7 +215,7 @@ class Middleware(
         responseTime: Long,
     ) =
         segment.track(
-            "notification-result", remoteMessage.trackingProperties + mapOf(
+            "middleware-responded", remoteMessage.trackingProperties + mapOf(
                 "middleware_response" to middlewareResponse,
                 "available" to available.toString(),
                 "unavailable_reason" to (reason?.name ?: ""),
