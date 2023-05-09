@@ -46,7 +46,7 @@ class CallThrough(
     }
 
     private fun track(foundPhone: Boolean) = segment.track(
-        "call-through-intent",
+        "call-through-intent-received",
         mapOf("found-native-package" to foundPhone.toString())
     )
 

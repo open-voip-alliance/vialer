@@ -6,7 +6,7 @@ class TrackWebViewUseCase extends UseCase {
   final _metricsRepository = dependencyLocator<MetricsRepository>();
 
   void call({required String page}) => _metricsRepository.track(
-        'web-view',
+        'web-view-opened',
         {'page': page},
       );
 }

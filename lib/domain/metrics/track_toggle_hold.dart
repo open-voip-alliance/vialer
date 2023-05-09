@@ -5,5 +5,5 @@ import 'metrics.dart';
 class TrackToggleHoldUseCase extends UseCase {
   final _metricsRepository = dependencyLocator<MetricsRepository>();
 
-  void call() => _metricsRepository.track('toggle-hold');
+  void call() => _metricsRepository.track('call-ongoing-hold-toggled');
 }

@@ -17,5 +17,5 @@ class PerformEchoCancellationCalibrationUseCase extends UseCase with Loggable {
   }
 
   void _track() =>
-      _metricsRepository.track('performed-echo-cancellation-calibration');
+      _metricsRepository.track('echo-cancellation-calibration-performed');
 }

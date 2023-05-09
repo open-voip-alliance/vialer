@@ -5,5 +5,5 @@ import 'metrics.dart';
 class TrackToggleMuteUseCase extends UseCase {
   final _metricsRepository = dependencyLocator<MetricsRepository>();
 
-  void call() => _metricsRepository.track('toggle-mute');
+  void call() => _metricsRepository.track('call-ongoing-mute-toggled');
 }

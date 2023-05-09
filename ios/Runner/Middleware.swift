@@ -161,7 +161,7 @@ public class Middleware: NativeMiddleware {
             return
         }
 
-        segment.track(event: "notification-received", properties: payload.withTrackingProperties(properties: [
+        segment.track(event: "middleware-notification-received", properties: payload.withTrackingProperties(properties: [
             "seconds_from_call_to_received" : String(payload.secondsSincePushWasSent),
             "middleware_url" : baseUrl,
         ]))
@@ -175,7 +175,7 @@ public class Middleware: NativeMiddleware {
     }
 
     private func trackNotificationResult(payload: PKPushPayload, middlewareResponse: String, available: Bool, reason: String, responseTime: Int) {
-        segment.track(event: "notification-result", properties: payload.withTrackingProperties(properties: [
+        segment.track(event: "middleware-responded", properties: payload.withTrackingProperties(properties: [
             "middleware_response" : middlewareResponse,
             "available" : String(available),
             "unavailable_reason" : reason,
