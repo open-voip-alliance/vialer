@@ -8,18 +8,9 @@ custom: # Custom properties to make workflows cleaner
       name: Use workflow build number
       script: |
         echo "BUILD_NR=$BUILD_NUMBER" >> $CM_ENV
-    - &format
-      name: Formatting the codebase
-      script: |
-        dart format --fix --set-exit-if-changed $(find lib -name "*.dart" -not \( -name "pigeon.dart" \) )
-        if [ $? -eq 1 ]
-        then
-            exit 1
-        fi
-    - &analyze
-      name: Analyzing the codebase
-      script: |
-        dart analyze . --fatal-infos --fatal-warnings
+    - &verify_codebase_complies_with_analysis_rules
+      name: Verifying the codebase complies with analyzation rules
+      script: dart analyze . --fatal-infos --fatal-warnings
     - &set_version_string
       name: Updating versioning information for this build
       script: |
@@ -74,124 +65,39 @@ custom: # Custom properties to make workflows cleaner
         # Fix CFBundleVersion for iOS
         version_tag=$(echo $version_tag | cut -f1 -d "-")
         sed -i -e "s/<string>\$(FLUTTER_BUILD_NAME)<\/string>/<string>${version_tag}<\/string>/g" ios/Runner/Info-Release.plist
-    - &set_up_env_file
-      name: Configuring .env file
-      script: |
-        #!/bin/sh
-        set -e # exit on first failed command set
-        cp .env.example .env
-        sed -i -e "s/LOGENTRIES_ANDROID_TOKEN=/LOGENTRIES_ANDROID_TOKEN=${LOGENTRIES_ANDROID_TOKEN}/g" .env
-        sed -i -e "s/LOGENTRIES_IOS_TOKEN=/LOGENTRIES_IOS_TOKEN=${LOGENTRIES_IOS_TOKEN}/g" .env
-        sed -i -e "s/COMMIT_HASH=/COMMIT_HASH=${FCI_COMMIT}/g" .env
-        sed -i -e "s|SENTRY_DSN=|SENTRY_DSN=${SENTRY_DSN}|g" .env
-        sed -i -e "s|SANDBOX=|SANDBOX=${ENABLE_IOS_SANDBOX_PUSH_NOTIFICATIONS}|g" .env
-        sed -i -e "s|SEGMENT_ANDROID_KEY=|SEGMENT_ANDROID_KEY=${SEGMENT_ANDROID_WRITE_KEY}|g" .env
-        sed -i -e "s|SEGMENT_IOS_KEY=|SEGMENT_IOS_KEY=${SEGMENT_IOS_WRITE_KEY}|g" .env
-        sed -i -e "s|FEATURE_COLLEAGUE_LIST=|FEATURE_COLLEAGUE_LIST=${FEATURE_COLLEAGUE_LIST}|g" .env
-        sed -i -e "s|FEATURE_OPENING_HOURS_BASIC=|FEATURE_OPENING_HOURS_BASIC=${FEATURE_OPENING_HOURS_BASIC}|g" .env
+    - &prepare_environment_file
+      name: Preparing .env file
+      script: . utils/ci/codemagic/bin/prepare_environment_file.sh
     - &prepare_release_notes_from_files
       name: Preparing the release notes from the release notes on the file system
       script: dart utils/ci/codemagic/prepare_release_notes.dart
     - &track_new_version
       name: Track the release of a new version
       script: dart utils/ci/codemagic/track_new_version.dart
-    - &flutter_pub_get
-      name: Installing flutter dependencies and generate code
-      script: |
-        eval `ssh-agent -s`
-        echo "$FONT_AWESOME_KEY" | tr -d '\r' | ssh-add -
-        flutter packages pub get
-        flutter pub run build_runner build
-        flutter pub run pigeon --input utils/pigeon/scheme.dart --dart_out lib/app/util/pigeon.dart --objc_header_out ios/Runner/pigeon.h --objc_source_out ios/Runner/pigeon.m --java_out android/app/src/main/java/com/voipgrid/vialer/Pigeon.java --java_package com.voipgrid.vialer
+    - &run_code_generators
+      name: Installing flutter dependencies and generating code
+      script: . utils/ci/codemagic/bin/run_code_generators.sh
     - &release_to_sentry
-      name: Create a new release in Sentry
-      script: |
-        # Extract the Sentry version from file
-        sentry_version=$(cat SENTRY_VERSION)
-        if [ -z "$sentry_version" ]; then
-          # Use Sentrys proposed version name as a fallback
-          proposed_version=$(sentry-cli releases propose-version)
-          sentry_version=$proposed_version
-        fi
-
-        # Report the new version to Sentry, include git commits and possibly finalize the release.
-        # By finalizing the release Sentry issues marked as 'Resolved in next release' mean this
-        # release.
-        sentry-cli releases new "$sentry_version"
-        sentry-cli releases set-commits "$sentry_version" --auto --ignore-missing
-        if [ $FINALIZE_SENTRY_RELEASE = true ] ; then
-          sentry-cli releases finalize "$sentry_version"
-        fi
+      name: Creating a new release in Sentry
+      script: . utils/ci/codemagic/bin/release_to_sentry.sh
     - &flutter_test
-      name: Running tests
-      script: |
-        flutter test
-    - &build_aab
-      name: Building app bundle (.aab) for Android
-      script: |
-        echo "flutter.sdk=$HOME/programs/flutter" > "$FCI_BUILD_DIR/android/local.properties"
-        echo $ANDROID_FIREBASE_SECRET | base64 --decode > $FCI_BUILD_DIR/android/app/google-services.json
-        echo $FCI_KEYSTORE | base64 --decode > $FCI_KEYSTORE_PATH
-        flutter build appbundle --release --target=lib/app/main.dart --build-number=$BUILD_NR -v --dart-define BRAND=$BRAND --dart-define SEGMENT_ANDROID_KEY=$SEGMENT_ANDROID_WRITE_KEY
-    - &build_universal_apk_from_aab
-      name: Building "Universal APK" (.apk) for Android
-      script: |
-        android-app-bundle build-universal-apk \
-        --ks $FCI_KEYSTORE_PATH \
-        --ks-pass $FCI_KEYSTORE_PASSWORD \
-        --ks-key-alias $FCI_KEY_ALIAS \
-        --key-pass $FCI_KEY_PASSWORD
+      name: Running unit tests
+      script: flutter test
+    - &build_for_android
+      name: Building app bundle (.aab) and .apk for Android
+      script: . utils/ci/codemagic/bin/build_for_android.sh
     - &update_ios_signing_for_current_brand
       name: Updating iOS project files to use the appropriate signing information for the current brand
       script: dart utils/ci/codemagic/update_ios_signing_for_brand.dart $IOS_TEAM_ID $BUNDLE_ID
-    - &build_ipa
+    - &build_for_ios
       name: Building application (.ipa) for iOS
-      script: |
-        flutter pub get
-        pod repo update
-        export PATH="$PATH:/Users/builder/programs/flutter/bin/cache/dart-sdk/bin"
-        cd ios/ && pod install && cd ..
-        keychain initialize
-        app-store-connect fetch-signing-files $BUNDLE_ID \
-        --type $IOS_SIGNING_TYPE \
-        --create
-        keychain add-certificates
-        xcode-project use-profiles
-        flutter build ipa --release \
-        --target=lib/app/main.dart \
-        --export-options-plist=/Users/builder/export_options.plist \
-        --build-number=$BUILD_NR \
-        --dart-define BRAND=$BRAND \
-        --dart-define SEGMENT_IOS_KEY=$SEGMENT_IOS_WRITE_KEY \
+      script: . utils/ci/codemagic/bin/build_for_ios.sh
     - &prepare_environment_for_integration_testing
       name: Preparing environment for integration testing
-      script: |
-        sed -i -e "s/IN_TEST\=*/IN_TEST\=true/g" .env
-        sed -i -e "s/TEST_USER_1_EMAIL\=*/TEST_USER_1_EMAIL\=$TEST_USER_1_EMAIL/g" .env
-        sed -i -e "s/TEST_USER_1_PASSWORD\=*/TEST_USER_1_PASSWORD\=$TEST_USER_1_PASSWORD/g" .env
-        sed -i -e "s/TEST_USER_2_EMAIL\=*/TEST_USER_2_EMAIL\=$TEST_USER_2_EMAIL/g" .env
-        sed -i -e "s/TEST_USER_2_PASSWORD\=*/TEST_USER_2_PASSWORD\=$TEST_USER_2_PASSWORD/g" .env
-        sed -i -e "s/TEST_USER_WITHOUT_APP_ACCOUNT_EMAIL\=*/TEST_USER_WITHOUT_APP_ACCOUNT_EMAIL\=$TEST_USER_WITHOUT_APP_ACCOUNT_EMAIL/g" .env
-        sed -i -e "s/TEST_USER_WITHOUT_APP_ACCOUNT_PASSWORD\=*/TEST_USER_WITHOUT_APP_ACCOUNT_PASSWORD\=$TEST_USER_WITHOUT_APP_ACCOUNT_PASSWORD/g" .env
+      script: . utils/ci/codemagic/bin/prepare_environment_for_integration_testing.sh
     - &run_integration_tests_ios
       name: Running integration tests on iOS emulator
-      script: |
-        #!/usr/bin/env zsh
-        set -e # Ensures the script exits if any commands fail to execute
-        if [ ! -f "build/ios/ipa/Vialer.ipa" ]; then
-            echo "Error: You must run the build_ipa script before running iOS integration tests"
-            exit 1
-        fi
-        brew tap wix/brew && brew install applesimutils
-        xcrun simctl shutdown all
-        latestRuntime="$(xcrun simctl list runtimes | grep -o -E 'iOS [0-9.]*' | sort -r | head -n1 | tr -d '[:space:]')"
-        testDevice=$(xcrun simctl create integration-test-simulator com.apple.CoreSimulator.SimDeviceType.iPhone-14-Pro $latestRuntime)
-        xcrun simctl boot $testDevice
-        for filename in integration_test/tests/**/*.dart; do
-          flutter install --use-application-binary=build/ios/ipa/Vialer.ipa -d $testDevice
-          applesimutils --booted --bundle com.voipgrid.vialer --setPermissions contacts=YES,microphone=YES,notifications=YES
-          flutter drive -t "$filename" --driver test_driver/integration_test.dart -d $testDevice
-        done
+      script: . utils/ci/codemagic/bin/run_integration_tests_ios.sh
     - &update_gitlab_merge_request_with_build_url
       name: Updating the Merge Request in Gitlab with a link to this build
       script: |
@@ -203,13 +109,11 @@ custom: # Custom properties to make workflows cleaner
         --build-id=$FCI_BUILD_ID
     - &set_testflight_release_notes_for_main
       name: Preparing "What to test" for TestFlight
-      script: |
-        echo '[{"language":"en-US","text":"Main"},{"language":"nl-NL","text":"Main"}]' > release_notes.json
+      script: echo '[{"language":"en-US","text":"Main"},{"language":"nl-NL","text":"Main"}]' > release_notes.json
     - &call_zapier_production_build_webhook
       name: Calling our Zapier webhook to inform of a new production build
       ignore_failure: true
-      script: |
-        curl "https://hooks.zapier.com/hooks/catch/1394555/blav33z?build_id=${CM_BUILD_ID}"
+      script: curl "https://hooks.zapier.com/hooks/catch/1394555/blav33z?build_id=${CM_BUILD_ID}"
   config: &config # Default configuration that can be applied to all normal workflows
     max_build_duration: 90
     instance_type: mac_mini_m1
@@ -367,16 +271,14 @@ workflows:
           include: true
     scripts:
       - *use_workflow_build_number
-      - *set_up_env_file
+      - *prepare_environment_file
       - *set_version_string_to_most_recent_tag
-      - *flutter_pub_get
-      - *format
-      - *analyze
+      - *run_code_generators
+      - *verify_codebase_complies_with_analysis_rules
       - *flutter_test
-      - *build_aab
-      - *build_universal_apk_from_aab
+      - *build_for_android
       - *update_ios_signing_for_current_brand
-      - *build_ipa
+      - *build_for_ios
       - *set_testflight_release_notes_for_main
       - *release_to_sentry
     artifacts: *defaults_artifacts
@@ -412,18 +314,16 @@ workflows:
     <<: *main_workflow
     scripts:
       - *use_workflow_build_number
-      - *set_up_env_file
+      - *prepare_environment_file
       - *set_version_string_for_merge_request
-      - *flutter_pub_get
-      - *format
-      - *analyze
+      - *run_code_generators
+      - *verify_codebase_complies_with_analysis_rules
       - *flutter_test
       - *update_ios_signing_for_current_brand
       - *prepare_environment_for_integration_testing
-      - *build_ipa
+      - *build_for_ios
       - *run_integration_tests_ios
-      - *build_aab
-      - *build_universal_apk_from_aab
+      - *build_for_android
       - *release_to_sentry
     triggering:
       events: [ ]
@@ -434,16 +334,14 @@ workflows:
     <<: *main_workflow
     scripts:
       - *use_workflow_build_number
-      - *set_up_env_file
+      - *prepare_environment_file
       - *set_version_string_for_merge_request
-      - *flutter_pub_get
-      - *format
-      - *analyze
+      - *run_code_generators
+      - *verify_codebase_complies_with_analysis_rules
       - *flutter_test
-      - *build_aab
-      - *build_universal_apk_from_aab
+      - *build_for_android
       - *update_ios_signing_for_current_brand
-      - *build_ipa
+      - *build_for_ios
       - *update_gitlab_merge_request_with_build_url
       - *release_to_sentry
     triggering:
@@ -461,15 +359,14 @@ workflows:
     <<: *main_workflow
     scripts:
       - *use_workflow_build_number
-      - *set_up_env_file
+      - *prepare_environment_file
       - *set_version_string_for_merge_request
-      - *flutter_pub_get
-      - *format
-      - *analyze
+      - *run_code_generators
+      - *verify_codebase_complies_with_analysis_rules
       - *flutter_test
       - *update_ios_signing_for_current_brand
       - *prepare_environment_for_integration_testing
-      - *build_ipa
+      - *build_for_ios
       - *run_integration_tests_ios
     triggering:
       events: [ ]
@@ -517,17 +414,15 @@ workflows:
     artifacts: *defaults_artifacts
     scripts:
       - *use_project_build_number
-      - *set_up_env_file
+      - *prepare_environment_file
       - *set_version_string
-      - *flutter_pub_get
-      - *format
-      - *analyze
+      - *run_code_generators
+      - *verify_codebase_complies_with_analysis_rules
       - *prepare_release_notes_from_files
       - *flutter_test
-      - *build_aab
-      - *build_universal_apk_from_aab
+      - *build_for_android
       - *update_ios_signing_for_current_brand
-      - *build_ipa
+      - *build_for_ios
       - *release_to_sentry
       - *track_new_version
       - *call_zapier_production_build_webhook
@@ -602,16 +497,15 @@ workflows:
     triggering: *beta_was_tagged
     scripts:
       - *use_project_build_number
-      - *set_up_env_file
+      - *prepare_environment_file
       - *set_version_string
-      - *flutter_pub_get
-      - *format
-      - *analyze
+      - *run_code_generators
+      - *verify_codebase_complies_with_analysis_rules
       - *prepare_release_notes_from_files
       - *flutter_test
-      - *build_aab
+      - *build_for_android
       - *update_ios_signing_for_current_brand
-      - *build_ipa
+      - *build_for_ios
       - *release_to_sentry
     publishing: *publish_for_beta
 
@@ -686,14 +580,13 @@ workflows:
     triggering: *internal_preview_was_tagged
     scripts:
       - *use_project_build_number
-      - *set_up_env_file
+      - *prepare_environment_file
       - *set_version_string
-      - *flutter_pub_get
-      - *format
-      - *analyze
-      - *build_aab
+      - *run_code_generators
+      - *verify_codebase_complies_with_analysis_rules
+      - *build_for_android
       - *update_ios_signing_for_current_brand
-      - *build_ipa
+      - *build_for_ios
       - *release_to_sentry
     publishing: *publish_for_internal_preview
 
@@ -716,13 +609,12 @@ workflows:
     artifacts: *defaults_artifacts
     scripts:
       - *use_project_build_number
-      - *set_up_env_file
+      - *prepare_environment_file
       - *set_version_string
-      - *flutter_pub_get
-      - *format
-      - *analyze
+      - *run_code_generators
+      - *verify_codebase_complies_with_analysis_rules
       - *flutter_test
-      - *build_aab
+      - *build_for_android
       #- *update_ios_signing_for_current_brand
       #- *build_ipa
     publishing: { }
@@ -746,16 +638,14 @@ workflows:
         FINALIZE_SENTRY_RELEASE: "false"
     scripts:
       - *use_workflow_build_number
-      - *set_up_env_file
+      - *prepare_environment_file
       - *set_version_string_to_most_recent_tag
-      - *flutter_pub_get
-      - *format
-      - *analyze
+      - *run_code_generators
+      - *verify_codebase_complies_with_analysis_rules
       - *flutter_test
-      - *build_aab
-      - *build_universal_apk_from_aab
+      - *build_for_android
       - *update_ios_signing_for_current_brand
-      - *build_ipa
+      - *build_for_ios
       - *set_testflight_release_notes_for_main
       - *release_to_sentry
     artifacts: *defaults_artifacts
