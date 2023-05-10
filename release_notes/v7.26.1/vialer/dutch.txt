@@ -1,0 +1,5 @@
+- Inkomende oproepen nemen niet meer het hele scherm over wanneer de app open is
+- Een probleem waarbij je niet kon uitloggen zonder app account is opgelost
+- Meerdere problemen waarbij sommige settings niet veranderden zijn opgelost
+- Android: Een probleem waardoor je soms een "rendering error" kreeg na een gesprek is opgelost
+- Meerdere verbeteringen voor het navigeren door Instellingen met een schermlezer
