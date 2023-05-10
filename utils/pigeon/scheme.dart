@@ -36,6 +36,16 @@ abstract class NativeLogging {
 
 @HostApi()
 // ignore:one_member_abstracts
+abstract class NativeIncomingCallScreen {
+  void launch(
+    String remotePartyHeading,
+    String remotePartySubheading,
+    String imageUri,
+  );
+}
+
+@HostApi()
+// ignore:one_member_abstracts
 abstract class NativeMetrics {
   void initialize();
 }

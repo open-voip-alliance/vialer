@@ -39,6 +39,7 @@ class Caller extends StatefulWidget {
 class _CallerState extends State<Caller>
     with WidgetsBindingObserver, WidgetsBindingObserverRegistrar {
   bool _resumedOnceDuringCalling = false;
+  bool _isRinging = false;
 
   NavigatorState get _navigatorState => widget.navigatorKey.currentState!;
 
@@ -65,9 +66,43 @@ class _CallerState extends State<Caller>
     }
   }
 
+  static const _ringingRouteName = 'ringing';
+
+  /// Launch the appropriate call screen depending on the platform,
+  /// for iOS we will use the Flutter call screen and for Android we will
+  /// use a native implementation.
+  Future<void> launchIncomingCallScreen(Ringing state) async {
+    final call = state.voipCall;
+
+    if (call == null) return;
+
+    if (context.isAndroid) {
+      NativeIncomingCallScreen().launch(
+        call.remotePartyHeading,
+        call.remotePartySubheading,
+        call.contact?.imageUri?.toString() ?? '',
+      );
+      return;
+    }
+  }
+
   // NOTE: Only called when the state type changes, not when the same state
   // with a different `voipCall` is emitted.
   Future<void> _onStateChanged(BuildContext context, CallerState state) async {
+    if (state is Ringing) {
+      _isRinging = true;
+      launchIncomingCallScreen(state);
+    } else {
+      // Last state was ringing, remove the incoming call page.
+      if (_isRinging) {
+        _navigatorState.popUntil(
+          (route) => route.settings.name != _ringingRouteName,
+        );
+      }
+
+      _isRinging = false;
+    }
+
     if (state is StartingCall && state.isVoip ||
         (state is Calling &&
             state.isVoip &&
