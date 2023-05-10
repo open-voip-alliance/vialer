@@ -12,5 +12,5 @@ xcrun simctl boot "$testDevice"
 for filename in $(find "integration_test/tests" -name "*.dart"); do
   flutter install --use-application-binary=build/ios/ipa/Vialer.ipa -d "$testDevice"
   applesimutils --booted --bundle com.voipgrid.vialer --setPermissions contacts=YES,microphone=YES,notifications=YES
-  flutter drive -t "$filename" --driver test_driver/integration_test.dart -d "$testDevice"
+  flutter drive -t "$filename" --driver test_driver/integration_test.dart -d "$testDevice" --dart-define-from-file="brands/$BRAND.json"
 done
