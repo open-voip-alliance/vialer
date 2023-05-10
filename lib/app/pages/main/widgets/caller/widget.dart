@@ -10,7 +10,6 @@ import '../../../../routes.dart';
 import '../../../../util/conditional_capitalization.dart';
 import '../../../../util/pigeon.dart';
 import '../../../../util/widgets_binding_observer_registrar.dart';
-import '../../call/incoming/page.dart';
 import '../../call/page.dart';
 import 'confirm/page.dart';
 import 'cubit.dart';
@@ -83,15 +82,6 @@ class _CallerState extends State<Caller>
       );
       return;
     }
-
-    await _navigatorState.push(
-      MaterialPageRoute(
-        settings: const RouteSettings(
-          name: _ringingRouteName,
-        ),
-        builder: (_) => const IncomingCallPage(),
-      ),
-    );
   }
 
   // NOTE: Only called when the state type changes, not when the same state
