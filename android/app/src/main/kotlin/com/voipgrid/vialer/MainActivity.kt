@@ -23,6 +23,15 @@ class MainActivity : FlutterActivity(), Pigeon.CallScreenBehavior {
             ContactSort().apply { orderBy = Pigeon.OrderBy.familyName }
         }
 
+        Pigeon.NativeIncomingCallScreen.setup(binaryMessenger) { remotePartyHeading, remotePartySubheading, imageUri ->
+            this.launchIncomingCallScreen(
+                remotePartyHeading, remotePartySubheading, when {
+                    imageUri.isNullOrBlank() -> null
+                    else -> imageUri
+                }
+            )
+        }
+
         Pigeon.Tones.setup(
             binaryMessenger,
             SystemTones(this, App.logger)
