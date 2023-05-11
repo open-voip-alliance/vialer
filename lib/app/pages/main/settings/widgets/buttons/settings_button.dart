@@ -14,7 +14,7 @@ class SettingsButton extends StatelessWidget {
 
   final String text;
   final IconData? icon;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final bool solid;
 
   @override
