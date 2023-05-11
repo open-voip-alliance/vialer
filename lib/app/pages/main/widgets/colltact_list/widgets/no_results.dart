@@ -7,6 +7,7 @@ import '../../../../../resources/theme.dart';
 import '../../../../../util/conditional_capitalization.dart';
 import '../../../../../widgets/stylized_button.dart';
 import '../../../../../widgets/universal_refresh_indicator.dart';
+import '../../../settings/widgets/buttons/settings_button.dart';
 import '../../conditional_placeholder.dart';
 import '../cubit.dart';
 import '../widget.dart';
@@ -228,18 +229,13 @@ class _ContactsPermissionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StylizedButton.raised(
-      colored: true,
+    return SettingsButton(
       onPressed: dontAskAgain ? cubit.requestPermission : cubit.openAppSettings,
-      child: !dontAskAgain
-          ? Text(
-              context.msg.main.contacts.list.noPermission.buttonPermission
-                  .toUpperCaseIfAndroid(context),
-            )
-          : Text(
-              context.msg.main.contacts.list.noPermission.buttonOpenSettings
-                  .toUpperCaseIfAndroid(context),
-            ),
+      text: !dontAskAgain
+          ? context.msg.main.contacts.list.noPermission.buttonPermission
+              .toUpperCaseIfAndroid(context)
+          : context.msg.main.contacts.list.noPermission.buttonOpenSettings
+              .toUpperCaseIfAndroid(context),
     );
   }
 }
