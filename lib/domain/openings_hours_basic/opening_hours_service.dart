@@ -13,7 +13,7 @@ abstract class OpeningHoursService extends ChopperService {
 
     return _$OpeningHoursService(
       ChopperClient(
-        baseUrl: openingHoursBasicUrl,
+        baseUrl: Uri.parse(openingHoursBasicUrl),
         converter: JsonConverter(),
         interceptors: <RequestInterceptor>[
           const AuthorizationInterceptor(

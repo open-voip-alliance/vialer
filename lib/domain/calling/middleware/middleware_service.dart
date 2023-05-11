@@ -16,7 +16,7 @@ abstract class MiddlewareService extends ChopperService {
 
     return _$MiddlewareService(
       ChopperClient(
-        baseUrl: voipConfig.middlewareUrl.toString(),
+        baseUrl: Uri.parse(voipConfig.middlewareUrl.toString()),
         converter: JsonConverter(),
         interceptors: [
           const AuthorizationInterceptor(),

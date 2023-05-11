@@ -15,7 +15,7 @@ abstract class VoipgridService extends ChopperService {
 
     return _$VoipgridService(
       ChopperClient(
-        baseUrl: getVoipgridBaseUrl(),
+        baseUrl: Uri.parse(getVoipgridBaseUrl()),
         converter: JsonConverter(),
         interceptors: [
           const AuthorizationInterceptor(
@@ -36,7 +36,7 @@ abstract class VoipgridService extends ChopperService {
   }) {
     return _$VoipgridService(
       ChopperClient(
-        baseUrl: baseUrl,
+        baseUrl: Uri.parse(baseUrl),
         converter: JsonConverter(),
         interceptors: <RequestInterceptor>[
           AuthorizationInterceptor(user: user),
