@@ -46,23 +46,6 @@ class StylizedButton extends StatelessWidget {
     );
   }
 
-  factory StylizedButton.flat({
-    required Widget child,
-    Key? key,
-    bool colored = false,
-    EdgeInsets? margin,
-    VoidCallback? onPressed,
-  }) {
-    return StylizedButton(
-      type: StylizedButtonType.flat,
-      key: key,
-      colored: colored,
-      margin: margin,
-      onPressed: onPressed,
-      child: child,
-    );
-  }
-
   static const _duration = Duration(milliseconds: 300);
   static const _curve = Curves.decelerate;
 
