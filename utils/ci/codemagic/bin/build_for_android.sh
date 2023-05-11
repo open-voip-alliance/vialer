@@ -5,7 +5,7 @@ echo "$FCI_KEYSTORE" | base64 --decode > "$FCI_KEYSTORE_PATH"
 flutter build appbundle -v --release \
  --target=lib/app/main.dart \
  --build-number="$BUILD_NR"  \
- --dart-define BRAND="$BRAND" \
+ --dart-define-from-file="brands/$BRAND.json" \
  --dart-define SEGMENT_ANDROID_KEY="$SEGMENT_ANDROID_WRITE_KEY"
 android-app-bundle build-universal-apk \
   --ks "$FCI_KEYSTORE_PATH" \
