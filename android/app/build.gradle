@@ -23,32 +23,15 @@ if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
 
-def dartEnv = project.findProperty('dart-defines')
-        ?.split(',')
-        ?.collectEntries { entry ->
-            def pair = new String(entry.decodeBase64(), 'UTF-8').split('=')
-            [(pair.first()): pair.last()]
-        } ?: [:]
-
-def getBrand = {
-    // Read brands from file.
-    def brandsFile = file('../../lib/brands.dart')
-    // Remove the first four and last two lines to make it valid JSON.
-    def content = brandsFile.readLines().drop(4).dropRight(1).join()
-
-    String brandId
-    if (dartEnv == null || !dartEnv.containsKey('BRAND')) {
-        brandId = 'vialer'
-    } else {
-        brandId = dartEnv['BRAND']
-    }
-
-    def brands = new JsonSlurper().parseText(content)
-
-    return brands.find { it.identifier == brandId }
+def hasBrandId = project.hasProperty('identifier')
+if (!hasBrandId) {
+    throw new GradleException("Brand identifier missing, probably --dart-define-from-file isn't set.")
 }
 
-def brand = getBrand()
+def brand = [
+    identifier: project.getProperty('identifier'),
+    appId: project.getProperty('appId')
+];
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
@@ -121,7 +104,7 @@ task generateNativeValues(type:Exec) {
     workingDir '../..'
 
     println 'Generating native values..'
-    commandLine 'sh', '-c', 'dart utils/generate_native_values.dart'
+    commandLine 'sh', '-c', "dart utils/generate_native_values.dart ${brand.identifier}"
     println 'Done.'
 }
 

@@ -1,17 +1,36 @@
-import '../../dependency_locator.dart';
 import '../use_case.dart';
 import 'brand.dart';
-import 'brand_repository.dart';
 
 class GetBrand extends UseCase {
-  final _brandRepository = dependencyLocator<BrandRepository>();
-
   Brand call() {
-    final brandId = _brandRepository.currentBrandIdentifier ?? 'vialer';
-    final brands = _brandRepository.getBrands();
+    const signUpUrl = String.fromEnvironment('signUpUrl');
 
-    return brands.singleWhere(
-      (b) => b.identifier == brandId,
+    return Brand(
+      identifier: const String.fromEnvironment('identifier'),
+      appId: const String.fromEnvironment('appId'),
+      appName: const String.fromEnvironment('appName'),
+      url: Uri.parse(const String.fromEnvironment('url')),
+      middlewareUrl: Uri.parse(const String.fromEnvironment('middlewareUrl')),
+      voipgridUrl: Uri.parse(const String.fromEnvironment('voipgridUrl')),
+      encryptedSipUrl: Uri.parse(
+        const String.fromEnvironment('encryptedSipUrl'),
+      ),
+      unencryptedSipUrl: Uri.parse(
+        const String.fromEnvironment('unencryptedSipUrl'),
+      ),
+      businessAvailabilityUrl: Uri.parse(
+        const String.fromEnvironment('businessAvailabilityUrl'),
+      ),
+      openingHoursBasicUrl: Uri.parse(
+        const String.fromEnvironment('openingHoursBasicUrl'),
+      ),
+      privacyPolicyUrl: Uri.parse(
+        const String.fromEnvironment('privacyPolicyUrl'),
+      ),
+      signUpUrl: signUpUrl.isNotEmpty ? Uri.parse(signUpUrl) : null,
+      userAvailabilityWsUrl: Uri.parse(
+        const String.fromEnvironment('userAvailabilityWsUrl'),
+      ),
     );
   }
 }
