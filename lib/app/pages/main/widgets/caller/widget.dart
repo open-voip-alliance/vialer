@@ -77,10 +77,12 @@ class _CallerState extends State<Caller>
     if (call == null) return;
 
     if (context.isAndroid) {
-      NativeIncomingCallScreen().launch(
-        call.remotePartyHeading,
-        call.remotePartySubheading,
-        call.contact?.imageUri?.toString() ?? '',
+      unawaited(
+        NativeIncomingCallScreen().launch(
+          call.remotePartyHeading,
+          call.remotePartySubheading,
+          call.contact?.imageUri?.toString() ?? '',
+        ),
       );
       return;
     }
@@ -91,7 +93,7 @@ class _CallerState extends State<Caller>
   Future<void> _onStateChanged(BuildContext context, CallerState state) async {
     if (state is Ringing) {
       _isRinging = true;
-      launchIncomingCallScreen(state);
+      unawaited(launchIncomingCallScreen(state));
     } else {
       // Last state was ringing, remove the incoming call page.
       if (_isRinging) {
