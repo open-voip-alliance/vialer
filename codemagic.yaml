@@ -16,10 +16,10 @@ custom: # Custom properties to make workflows cleaner
       script: dart utils/ci/codemagic/set_version_information.dart --type appStore
     - &set_version_for_merge_request
       name: Updating version for merge requests
-      script: dart utils/ci/codemagic/set_version_information.dart --type appStore
+      script: dart utils/ci/codemagic/set_version_information.dart --type mergeRequest
     - &set_version_for_other
       name: Updating version
-      script: dart utils/ci/codemagic/set_version_information.dart --type appStore
+      script: dart utils/ci/codemagic/set_version_information.dart --type other
     - &prepare_environment_file
       name: Preparing .env file
       script: . utils/ci/codemagic/bin/prepare_environment_file.sh
