@@ -5,6 +5,7 @@ import '../../../../../dependency_locator.dart';
 import '../../../../../domain/event/event_bus.dart';
 import '../../../../../domain/user/events/logged_in_user_availability_changed.dart';
 import '../../../../../domain/user/user.dart';
+import '../../../../../domain/user_availability/colleagues/availbility_update.dart';
 import '../../../../../domain/user_availability/colleagues/colleague.dart';
 import '../../../../resources/theme.dart';
 import '../../widgets/colltact_list/widgets/avatar.dart';
@@ -23,19 +24,18 @@ class Header extends StatefulWidget {
 
 class _HeaderState extends State<Header> {
   final _eventBus = dependencyLocator<EventBusObserver>();
-  var _availabilityStatus = ColleagueAvailabilityStatus.available;
+  var _userAvailabilityStatus = ColleagueAvailabilityStatus.available;
   String? _internalNumber;
   ColleagueContext? _colleagueContext;
-  ColleagueDestination? _destination;
 
   @override
   void initState() {
     super.initState();
     _eventBus.on<LoggedInUserAvailabilityChanged>((event) {
       setState(() {
-        _availabilityStatus = event.availability.availabilityStatus;
         _internalNumber = event.availability.internalNumber;
-        _destination = event.availability.destination;
+        _userAvailabilityStatus =
+            event.availability.asLoggedInUserDisplayStatus();
       });
     });
   }
@@ -43,24 +43,6 @@ class _HeaderState extends State<Header> {
   String get _subheading => _internalNumber.isNotNullOrBlank
       ? '$_internalNumber - ${widget.user.email}'
       : widget.user.email;
-
-  ColleagueAvailabilityStatus get _cleanedStatus {
-    final validStatuses = [
-      ColleagueAvailabilityStatus.available,
-      ColleagueAvailabilityStatus.doNotDisturb,
-      ColleagueAvailabilityStatus.busy,
-    ];
-
-    if (_destination?.type == ColleagueDestinationType.none) {
-      return ColleagueAvailabilityStatus.offline;
-    }
-
-    // We only want to show a couple of statuses because we know this user
-    // is online if they have the app open, no matter what the WebSocket says.
-    return validStatuses.contains(_availabilityStatus)
-        ? _availabilityStatus
-        : ColleagueAvailabilityStatus.available;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +52,7 @@ class _HeaderState extends State<Header> {
         children: [
           UserAvatar(
             relevantContext: _colleagueContext,
-            status: _cleanedStatus,
+            status: _userAvailabilityStatus,
           ),
           const SizedBox(width: 12),
           Flexible(
@@ -103,5 +85,23 @@ class _HeaderState extends State<Header> {
         ],
       ),
     );
+  }
+}
+
+extension UserAvailabilityStatus on AvailabilityUpdate {
+  ColleagueAvailabilityStatus asLoggedInUserDisplayStatus() {
+    if (destination.type == ColleagueDestinationType.none) {
+      return ColleagueAvailabilityStatus.offline;
+    }
+
+    // We only want to show a couple of statuses because we know this user
+    // is online if they have the app open, no matter what the WebSocket says.
+    return const [
+      ColleagueAvailabilityStatus.available,
+      ColleagueAvailabilityStatus.doNotDisturb,
+      ColleagueAvailabilityStatus.busy,
+    ].contains(availabilityStatus)
+        ? availabilityStatus
+        : ColleagueAvailabilityStatus.available;
   }
 }
