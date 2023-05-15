@@ -31,7 +31,7 @@ void main(List<String> arguments) async {
   await _updateEnvironmentFile({
     'TAG': version,
     if (type == Type.mergeRequest) 'MERGE_REQUEST': _mergeRequestId,
-    if ([
+    if (const [
       Type.other,
       Type.mergeRequest,
     ].contains(type))
