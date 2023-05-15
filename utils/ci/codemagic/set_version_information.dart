@@ -19,6 +19,10 @@ void main(List<String> arguments) async {
 
   if (args['type'] == null) throw Exception(argParser.usage);
 
+  if (!(await _isInCorrectDirectory())) {
+    throw Exception('This must be run in the root project directory.');
+  }
+
   final type = Type.fromString(args['type'] as String);
   final version = await _getMostRecentGitTag();
 
@@ -45,6 +49,8 @@ String get _escapedBranch =>
 String get _buildNumber => Platform.environment['BUILD_NR']!;
 
 String get _bundleId => Platform.environment['BUNDLE_ID']!;
+
+Future<bool> _isInCorrectDirectory() => File(envPath).exists();
 
 Future<void> _createFileContainingSentryVersion(
   Type type,
