@@ -39,7 +39,7 @@ abstract class MiddlewareService extends ChopperService {
   });
 
   @Delete(path: 'android-device/')
-  Future<Response<Map<String, dynamic>>> deleteAndroidDevice({
+  Future<Response<String>> deleteAndroidDevice({
     @Field() required String token,
     @Field('sip_user_id') required String sipUserId,
     @Field() required String app,
@@ -61,7 +61,7 @@ abstract class MiddlewareService extends ChopperService {
   });
 
   @Delete(path: 'apns-device/')
-  Future<Response<Map<String, dynamic>>> deleteAppleDevice({
+  Future<Response<String>> deleteAppleDevice({
     @Field() required String token,
     @Field('sip_user_id') required String sipUserId,
     @Field() required String app,

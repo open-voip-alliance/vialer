@@ -32,11 +32,13 @@ class _HeaderState extends State<Header> {
   void initState() {
     super.initState();
     _eventBus.on<LoggedInUserAvailabilityChanged>((event) {
-      setState(() {
-        _availabilityStatus = event.availability.availabilityStatus;
-        _internalNumber = event.availability.internalNumber;
-        _destination = event.availability.destination;
-      });
+      if (mounted) {
+        setState(() {
+          _availabilityStatus = event.availability.availabilityStatus;
+          _internalNumber = event.availability.internalNumber;
+          _destination = event.availability.destination;
+        });
+      }
     });
   }
 
