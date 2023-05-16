@@ -10,9 +10,9 @@ import '../../../../resources/localizations.dart';
 import '../../../../resources/theme/brand_theme.dart';
 import '../../../../util/brand.dart';
 import '../../../../util/conditional_capitalization.dart';
-import '../../../../widgets/stylized_button.dart';
 import '../../../../widgets/stylized_dropdown.dart';
 import '../../../web_view/page.dart';
+import '../../settings/widgets/buttons/settings_button.dart';
 import 'date_field.dart';
 import 'explanation.dart';
 import 'field.dart';
@@ -180,8 +180,8 @@ class _TemporaryRedirectPickerState extends State<TemporaryRedirectPicker> {
             ),
           ),
           const SizedBox(height: 16),
-          StylizedButton.raised(
-            colored: true,
+          SettingsButton(
+            text: _mainActionText,
             onPressed: _actionable &&
                     _hasCorrectUntilDate &&
                     _selectedDestination != null
@@ -192,31 +192,27 @@ class _TemporaryRedirectPickerState extends State<TemporaryRedirectPicker> {
                       ),
                     )
                 : null,
-            child: Text(_mainActionText),
           ),
           if (widget.onCancel != null) ...[
             const SizedBox(height: 12),
-            StylizedButton.outline(
-              colored: true,
+            SettingsButton(
               onPressed: widget.onCancel,
-              child: Text(
-                context.msg.generic.button.cancel.toUpperCaseIfAndroid(context),
-              ),
+              text: context.msg.generic.button.cancel
+                  .toUpperCaseIfAndroid(context),
+              solid: false,
             ),
           ],
           if (widget.onStop != null) ...[
             const Spacer(),
             const SizedBox(height: 48),
-            StylizedButton.outline(
-              colored: true,
+            SettingsButton(
               onPressed: _actionable
                   ? () => unawaited(_handleAction(widget.onStop!))
                   : null,
-              child: Text(
-                context.msg.main.temporaryRedirect.actions.stopRedirect
-                    .labelOngoing
-                    .toUpperCaseIfAndroid(context),
-              ),
+              text: context
+                  .msg.main.temporaryRedirect.actions.stopRedirect.labelOngoing
+                  .toUpperCaseIfAndroid(context),
+              solid: false,
             ),
           ]
         ],
