@@ -50,12 +50,12 @@ extension DestinationsList on List<Destination> {
       withoutAccountsFor(user).whereType<PhoneNumber>().toList();
 
   PhoneAccount? findAppAccountFor({required User user}) =>
-      findPhoneAccountById(user.appAccountId);
+      _findPhoneAccountById(user.appAccountId);
 
   PhoneAccount? findWebphoneAccountFor({required User user}) =>
-      findPhoneAccountById(user.webphoneAccountId);
+      _findPhoneAccountById(user.webphoneAccountId);
 
-  PhoneAccount? findPhoneAccountById(String? id) {
+  PhoneAccount? _findPhoneAccountById(String? id) {
     if (id == null) return null;
 
     final destinations = this;

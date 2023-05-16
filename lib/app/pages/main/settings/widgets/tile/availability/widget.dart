@@ -35,7 +35,7 @@ class _AvailabilitySwitcherState extends State<AvailabilitySwitcher> {
     super.initState();
     _eventBus.on<LoggedInUserAvailabilityChanged>(
       (event) {
-        if (!_isProcessingChanges) {
+        if (!_isProcessingChanges && mounted) {
           setState(() {
             _userAvailabilityStatus =
                 event.availability.asLoggedInUserDisplayStatus();
