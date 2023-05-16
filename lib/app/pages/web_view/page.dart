@@ -10,7 +10,7 @@ import '../../../domain/voipgrid/web_page.dart';
 import '../../pages/main/widgets/conditional_placeholder.dart';
 import '../../resources/localizations.dart';
 import '../../util/conditional_capitalization.dart';
-import '../../widgets/stylized_button.dart';
+import '../main/settings/widgets/buttons/settings_button.dart';
 
 class WebViewPage extends StatefulWidget {
   const WebViewPage(this.page, {super.key});
@@ -86,13 +86,10 @@ class _WebViewPageState extends State<WebViewPage> {
                 title: Text(context.msg.webview.error.title),
                 children: [
                   const SizedBox(height: 16),
-                  StylizedButton.raised(
-                    colored: true,
+                  SettingsButton(
                     onPressed: () => _onTryAgainButtonPressed(context),
-                    child: Text(
-                      context.msg.generic.button.tryAgain
-                          .toUpperCaseIfAndroid(context),
-                    ),
+                    text: context.msg.generic.button.tryAgain
+                        .toUpperCaseIfAndroid(context),
                   ),
                 ],
               );

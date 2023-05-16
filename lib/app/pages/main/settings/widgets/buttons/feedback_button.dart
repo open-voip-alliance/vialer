@@ -6,6 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../../resources/localizations.dart';
 import '../../../../../routes.dart';
+import '../../../../../util/conditional_capitalization.dart';
 import '../../../util/stylized_snack_bar.dart';
 import '../../cubit.dart';
 import 'settings_button.dart';
@@ -44,7 +45,8 @@ class _FeedbackButtonState extends State<FeedbackButton> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 12),
       child: SettingsButton(
-        text: context.msg.main.settings.buttons.sendFeedbackButton,
+        text: context.msg.main.settings.buttons.sendFeedbackButton
+            .toUpperCaseIfAndroid(context),
         icon: FontAwesomeIcons.messages,
         onPressed: _goToFeedbackPage,
       ),

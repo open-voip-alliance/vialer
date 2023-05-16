@@ -40,18 +40,15 @@ class UserSubPage extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 40,
-                    vertical: 20,
-                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: SettingsButton(
                     text: context.msg.main.settings.buttons.logout,
-                    solid: false,
                     onPressed: () => unawaited(
                       context.read<SettingsCubit>().logout(),
                     ),
                   ),
                 ),
+                const SizedBox(height: 20),
               ],
             );
           },

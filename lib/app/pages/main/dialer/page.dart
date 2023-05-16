@@ -15,7 +15,7 @@ import '../../../resources/theme.dart';
 import '../../../routes.dart';
 import '../../../util/conditional_capitalization.dart';
 import '../../../util/widgets_binding_observer_registrar.dart';
-import '../../../widgets/stylized_button.dart';
+import '../settings/widgets/buttons/settings_button.dart';
 import '../widgets/caller.dart';
 import '../widgets/conditional_placeholder.dart';
 import '../widgets/connectivity_alert.dart';
@@ -135,22 +135,17 @@ class _DialerPageState extends State<DialerPage>
                   icon: const FaIcon(FontAwesomeIcons.phoneXmark),
                   children: <Widget>[
                     const SizedBox(height: 40),
-                    StylizedButton.raised(
-                      colored: true,
+                    SettingsButton(
                       onPressed: state is NoPermission && !state.dontAskAgain
                           ? callerCubit.requestPermission
                           : callerCubit.openAppSettings,
-                      child: state is NoPermission && !state.dontAskAgain
-                          ? Text(
-                              context
-                                  .msg.main.dialer.noPermission.buttonPermission
-                                  .toUpperCaseIfAndroid(context),
-                            )
-                          : Text(
-                              context.msg.main.dialer.noPermission
-                                  .buttonOpenSettings
-                                  .toUpperCaseIfAndroid(context),
-                            ),
+                      text: state is NoPermission && !state.dontAskAgain
+                          ? context
+                              .msg.main.dialer.noPermission.buttonPermission
+                              .toUpperCaseIfAndroid(context)
+                          : context
+                              .msg.main.dialer.noPermission.buttonOpenSettings
+                              .toUpperCaseIfAndroid(context),
                     ),
                   ],
                 ),

@@ -7,8 +7,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
 import '../../../../util/conditional_capitalization.dart';
-import '../../../../widgets/stylized_button.dart';
 import '../../../../widgets/transparent_status_bar.dart';
+import '../widgets/buttons/settings_button.dart';
 import 'cubit.dart';
 
 class FeedbackPage extends StatefulWidget {
@@ -86,7 +86,9 @@ class _FeedbackPageState extends State<FeedbackPage> {
                 withLogs: true,
               ),
               child: Text(
-                context.msg.generic.button.yes.toUpperCaseIfAndroid(context),
+                context.msg.generic.button.yes.toUpperCaseIfAndroid(
+                  context,
+                ),
               ),
             ),
           ],
@@ -132,25 +134,16 @@ class _FeedbackPageState extends State<FeedbackPage> {
                       Expanded(
                         child: _FeedbackInput(controller: _textController),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 24,
-                        ),
-                        child: SizedBox(
-                          width: double.infinity,
-                          child: StylizedButton.raised(
-                            colored: true,
-                            onPressed: state is FeedbackNotSent
-                                ? () => _onSendFeedbackPressed(
-                                      context,
-                                      _textController.text,
-                                    )
-                                : null,
-                            child: Text(
-                              sendFeedbackButtonText
-                                  .toUpperCaseIfAndroid(context),
-                            ),
-                          ),
+                      SizedBox(
+                        width: double.infinity,
+                        child: SettingsButton(
+                          onPressed: state is FeedbackNotSent
+                              ? () => _onSendFeedbackPressed(
+                                    context,
+                                    _textController.text,
+                                  )
+                              : null,
+                          text: sendFeedbackButtonText,
                         ),
                       ),
                     ],
