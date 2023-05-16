@@ -69,6 +69,9 @@ class ColorValues {
     this.userAvailabilityUnavailableAccent = 0xFFD45400,
     this.userAvailabilityUnknown = 0xFFF5F5F5,
     this.userAvailabilityUnknownAccent = 0xFF666666,
+    this.userAvailabilityOffline = 0xFF2A3041,
+    this.userAvailabilityOfflineAccent = 0xFFFFFFFF,
+    this.availabilityHeader = 0xFF2A3041,
   })  : onPrimaryGradient = onPrimaryGradient ?? onPrimary,
         textButtonForeground = textButtonForeground ?? primary,
         buttonBackground = buttonBackground ?? primaryLight,
@@ -226,6 +229,10 @@ class ColorValues {
   final int userAvailabilityUnavailableAccent;
   final int userAvailabilityUnknown;
   final int userAvailabilityUnknownAccent;
+  final int userAvailabilityOffline;
+  final int userAvailabilityOfflineAccent;
+
+  final int availabilityHeader;
 
   Map<String, dynamic> toJson() => _$ColorValuesToJson(this);
 }

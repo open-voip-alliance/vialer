@@ -28,6 +28,7 @@ class User extends Equatable {
     this.voip,
     required this.settings,
     this.permissions = const UserPermissions(),
+    this.webphoneAccountId,
   });
 
   final String uuid;
@@ -49,6 +50,8 @@ class User extends Equatable {
   String? get appAccountId => appAccountUrl?.pathSegments.lastOrNullWhere(
         (p) => p.isNotEmpty,
       );
+
+  final String? webphoneAccountId;
 
   @JsonKey(toJson: Client.toJson, fromJson: Client.fromJson)
   final Client client;
@@ -85,6 +88,7 @@ class User extends Equatable {
     NullableCopyWithArgument<UserVoipConfig> voip,
     Settings? settings,
     UserPermissions? permissions,
+    NullableCopyWithArgument<String> webphoneAccountId,
   }) {
     return User(
       uuid: uuid ?? this.uuid,
@@ -98,6 +102,9 @@ class User extends Equatable {
       voip: voip.valueOrNull(unmodified: this.voip),
       settings: settings ?? this.settings,
       permissions: permissions ?? this.permissions,
+      webphoneAccountId: webphoneAccountId.valueOrNull(
+        unmodified: this.webphoneAccountId,
+      ),
     );
   }
 
@@ -130,6 +137,7 @@ class User extends Equatable {
         voip,
         settings,
         permissions,
+        webphoneAccountId,
       ];
 
   static User fromJson(dynamic json) =>
