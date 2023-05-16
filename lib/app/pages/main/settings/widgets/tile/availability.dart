@@ -180,7 +180,7 @@ class AvailabilityTile extends StatelessWidget {
             onChanged: enabled
                 ? (destination) => destination != null
                     ? unawaited(
-                        defaultOnChanged(
+                        defaultOnSettingChanged(
                           context,
                           key,
                           destination,
@@ -240,7 +240,7 @@ extension Display on UserAvailabilityType {
   }
 }
 
-extension on Destination {
+extension DestinationDropdown on Destination {
   String dropdownValue(BuildContext context) {
     final destination = this;
 

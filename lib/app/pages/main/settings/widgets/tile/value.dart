@@ -15,57 +15,66 @@ typedef ValueChangedWithContext<T extends Object> = void Function(
 );
 
 /// If the setting cannot be changed, a dialog is shown.
-Future<void> runIfSettingCanBeChanged<T extends Object>(
+Future<void> runIfSettingCanBeChanged(
   BuildContext context,
-  SettingKey<T> key,
+  Iterable<SettingKey> keys,
   FutureOr<void> Function() block,
 ) async {
   final settings = context.read<SettingsCubit>();
 
-  if (await settings.canChangeRemoteSetting(key)) {
-    await block.call();
-  } else {
-    // Linter is wrong here.
-    // ignore: use_build_context_synchronously
-    if (!context.mounted) return;
-
-    unawaited(
-      showDialog<void>(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text(context.msg.main.settings.noConnectionDialog.title),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text(context.msg.generic.button.close),
-              )
-            ],
-            content: Text(context.msg.main.settings.noConnectionDialog.message),
-          );
-        },
-      ),
-    );
+  if (await settings.canChangeRemoteSettings(keys)) {
+    return block.call();
   }
+
+  // Linter is wrong here.
+  // ignore: use_build_context_synchronously
+  if (!context.mounted) return;
+
+  unawaited(
+    showDialog<void>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(context.msg.main.settings.noConnectionDialog.title),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(context.msg.generic.button.close),
+            )
+          ],
+          content: Text(context.msg.main.settings.noConnectionDialog.message),
+        );
+      },
+    ),
+  );
 }
 
-Future<void> defaultOnChanged<T extends Object>(
+Future<void> defaultOnSettingChanged<T extends Object>(
   BuildContext context,
   SettingKey<T> key,
   T value,
-) async {
-  await runIfSettingCanBeChanged(
-    context,
-    key,
-    () => context.read<SettingsCubit>().changeSetting(key, value),
-  );
-}
+) =>
+    runIfSettingCanBeChanged(
+      context,
+      [key],
+      () => context.read<SettingsCubit>().changeSetting(key, value),
+    );
+
+Future<void> defaultOnSettingsChanged<T extends Object>(
+  BuildContext context,
+  Map<SettingKey, Object> settings,
+) =>
+    runIfSettingCanBeChanged(
+      context,
+      settings.keys,
+      () => context.read<SettingsCubit>().changeSettings(settings),
+    );
 
 class BoolSettingValue extends StatelessWidget {
   const BoolSettingValue(
     this.settings,
     this.settingKey, {
-    this.onChanged = defaultOnChanged,
+    this.onChanged = defaultOnSettingChanged,
     super.key,
   });
 

@@ -53,7 +53,7 @@ class StringEditSettingValue extends StatefulWidget {
     this.validate,
     this.help,
     this.editingFormatter,
-    this.onChanged = defaultOnChanged,
+    this.onChanged = defaultOnSettingChanged,
     this.isResettable = false,
     super.key,
   }) : value = settings.get(setting);
@@ -121,7 +121,7 @@ class _StringEditSettingValueState extends State<StringEditSettingValue> {
       return;
     }
 
-    await runIfSettingCanBeChanged(context, widget.setting, toggle);
+    await runIfSettingCanBeChanged(context, [widget.setting], toggle);
   }
 
   void _applyEditingFormatter() {

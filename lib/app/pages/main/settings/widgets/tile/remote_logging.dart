@@ -41,7 +41,7 @@ class RemoteLoggingTile extends StatelessWidget {
               ),
             );
           }
-          unawaited(defaultOnChanged(context, key, value));
+          unawaited(defaultOnSettingChanged(context, key, value));
         },
       ),
     );

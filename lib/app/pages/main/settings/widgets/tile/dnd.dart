@@ -115,7 +115,9 @@ class _DndToggle extends StatelessWidget {
   Future<bool> _toggleDndSetting(BuildContext context) async {
     final newValue = !_value;
 
-    return defaultOnChanged(context, _key, newValue).then((_) => newValue);
+    return defaultOnSettingChanged(context, _key, newValue).then(
+      (_) => newValue,
+    );
   }
 
   @override

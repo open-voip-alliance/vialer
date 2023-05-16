@@ -8,6 +8,7 @@ class StylizedDropdown<T> extends StatelessWidget {
     required this.items,
     this.isExpanded = false,
     this.onChanged,
+    this.showIcon = true,
     super.key,
   });
 
@@ -15,6 +16,7 @@ class StylizedDropdown<T> extends StatelessWidget {
   final List<DropdownMenuItem<T>> items;
   final bool isExpanded;
   final ValueChanged<T?>? onChanged;
+  final bool showIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +35,10 @@ class StylizedDropdown<T> extends StatelessWidget {
           isExpanded: isExpanded,
           borderRadius: BorderRadius.circular(4),
           onChanged: onChanged,
+          icon: Visibility(
+            visible: showIcon,
+            child: const Icon(Icons.arrow_drop_down),
+          ),
         ),
       ),
     );

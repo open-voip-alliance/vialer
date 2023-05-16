@@ -61,7 +61,11 @@ class OutgoingNumberTile extends StatelessWidget {
                         ),
                         onChanged: enabled
                             ? (number) => unawaited(
-                                  defaultOnChanged(context, _key, number),
+                                  defaultOnSettingChanged(
+                                    context,
+                                    _key,
+                                    number,
+                                  ),
                                 )
                             : null,
                         items: [

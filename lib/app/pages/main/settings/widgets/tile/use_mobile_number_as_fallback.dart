@@ -33,7 +33,7 @@ class UseMobileNumberAsFallbackTile extends StatelessWidget {
         user.settings,
         CallSetting.useMobileNumberAsFallback,
         onChanged: user.permissions.canChangeMobileNumberFallback && enabled
-            ? defaultOnChanged
+            ? defaultOnSettingChanged
             : null,
       ),
     );

@@ -26,7 +26,8 @@ class ShowClientCallsTile extends StatelessWidget {
       child: BoolSettingValue(
         user.settings,
         AppSetting.showClientCalls,
-        onChanged: user.permissions.canSeeClientCalls ? defaultOnChanged : null,
+        onChanged:
+            user.permissions.canSeeClientCalls ? defaultOnSettingChanged : null,
       ),
     );
   }

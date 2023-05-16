@@ -133,6 +133,10 @@ class UserAvatar extends StatelessWidget {
       foreground: colors.userAvailabilityUnknownAccent,
       background: colors.userAvailabilityUnknown,
     );
+    final offline = _AvatarColor(
+      foreground: colors.userAvailabilityOfflineAccent,
+      background: colors.userAvailabilityOffline,
+    );
 
     if (relevantContext != null) {
       return relevantContext!.when(
@@ -149,6 +153,7 @@ class UserAvatar extends StatelessWidget {
       case ColleagueAvailabilityStatus.busy:
         return busy;
       case ColleagueAvailabilityStatus.offline:
+        return offline;
       case ColleagueAvailabilityStatus.unknown:
       case null:
         return unknown;

@@ -23,4 +23,5 @@ import 'has_feature.dart';
 enum Feature {
   colleagueList,
   openingHoursBasic,
+  ringingDevice,
 }
