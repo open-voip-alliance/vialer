@@ -51,11 +51,11 @@ class AuthorizationInterceptor implements chopper.RequestInterceptor {
       bool useLegacyAuth;
 
       if (!onlyModernAuth) {
-        if (forcedLegacyAuthPaths.any(request.url.contains)) {
+        if (forcedLegacyAuthPaths.any(request.url.toString().contains)) {
           useLegacyAuth = true;
         } else {
           final pathSegments =
-              Uri.parse(request.url).pathSegments.where((s) => s.isNotBlank);
+              request.uri.pathSegments.where((s) => s.isNotBlank);
 
           useLegacyAuth = !pathSegments.any((s) => s == 'v2');
         }
@@ -132,9 +132,9 @@ class RateLimitReachedInterceptor extends chopper.ResponseInterceptor {
 
 class JsonConverter extends chopper.JsonConverter {
   @override
-  chopper.Response<dynamic> decodeJson<BodyType, InnerType>(
+  FutureOr<chopper.Response<dynamic>> decodeJson<BodyType, InnerType>(
     chopper.Response<dynamic> response,
-  ) {
+  ) async {
     if (response.body == '') {
       return response.copyWith<Map<String, dynamic>>(
         body: {},

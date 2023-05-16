@@ -38,11 +38,18 @@ class UserDataRefresherCubit extends Cubit<UserDataRefresherState>
       logger.info('Logging out because user is logged in somewhere else');
       await _logout();
       logger.info('Logged out');
+
+      emit(const NotRefreshing());
+
       return;
     }
 
     // If we have refreshed too recently we don't want to do anything.
-    if (!_storageRepository.lastUserRefreshedTime.isReadyForRefresh) return;
+    if (!_storageRepository.lastUserRefreshedTime.isReadyForRefresh) {
+      emit(const NotRefreshing());
+
+      return;
+    }
 
     _storageRepository.lastUserRefreshedTime = DateTime.now();
 
