@@ -64,7 +64,10 @@ class ConsoleLoggingMetricsRepository extends MetricsRepository {
     String eventName, [
     Map<String, dynamic>? properties,
   ]) {
-    assert(eventName == eventName.paramCase, 'Event name not in param-casing.');
+    assert(
+      eventName == eventName.paramCase,
+      'Event name $eventName not in param-casing.',
+    );
     _assertPropertiesDoNotExceed1000Characters(properties ?? {});
 
     return _log('[$eventName]: $properties');
@@ -169,7 +172,7 @@ extension _SettingMetrics<T extends Object> on SettingKey<T> {
       this is! CallSetting<T> ||
       !const [CallSetting.destination].contains(this as CallSetting<T>);
 
-  String toMetricKey() => ReCase(name).snakeCase;
+  String toMetricKey() => ReCase(name).paramCase;
 
   /// The setting formatted as properties to submit to metrics.
   Map<String, T> toMetricProperties(T value) {
