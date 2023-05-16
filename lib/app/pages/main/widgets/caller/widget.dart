@@ -210,34 +210,22 @@ Future<void> _showInitiatingCallFailedDialog(
   CallFailureReason reason,
 ) {
   String message, title = context.msg.main.call.error.title;
-  switch (reason) {
-    case CallFailureReason.invalidCallState:
-      message = context.msg.main.call.error.voip.invalidCallState;
-      break;
-    case CallFailureReason.noMicrophonePermission:
-      message = context.msg.main.call.error.voip
-          .noMicrophonePermission(context.brand.appName);
-      break;
-    case CallFailureReason.noConnectivity:
-      message = context.msg.main.call.error.voip.noConnectivity;
-      break;
-    case CallFailureReason.inCall:
-      message = context.msg.main.call.error.voip.inCall;
-      break;
-    case CallFailureReason.rejectedByAndroidTelecomFramework:
-      message =
-          context.msg.main.call.error.voip.rejectedByAndroidTelecomFramework;
-      break;
-    case CallFailureReason.rejectedByCallKit:
-      message = context.msg.main.call.error.voip.rejectedByCallKit;
-      break;
-    case CallFailureReason.unableToRegister:
-      message = context.msg.main.call.error.voip.unableToRegister;
-      break;
-    case CallFailureReason.unknown:
-      message = context.msg.main.call.error.unknown;
-      break;
-  }
+  message = switch (reason) {
+    CallFailureReason.invalidCallState =>
+      context.msg.main.call.error.voip.invalidCallState,
+    CallFailureReason.noMicrophonePermission => context.msg.main.call.error.voip
+        .noMicrophonePermission(context.brand.appName),
+    CallFailureReason.noConnectivity =>
+      context.msg.main.call.error.voip.noConnectivity,
+    CallFailureReason.inCall => context.msg.main.call.error.voip.inCall,
+    CallFailureReason.rejectedByAndroidTelecomFramework =>
+      context.msg.main.call.error.voip.rejectedByAndroidTelecomFramework,
+    CallFailureReason.rejectedByCallKit =>
+      context.msg.main.call.error.voip.rejectedByCallKit,
+    CallFailureReason.unableToRegister =>
+      context.msg.main.call.error.voip.unableToRegister,
+    CallFailureReason.unknown => context.msg.main.call.error.unknown
+  };
 
   return _AlertDialog.show(
     context,

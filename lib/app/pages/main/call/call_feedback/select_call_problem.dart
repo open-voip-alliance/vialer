@@ -46,18 +46,13 @@ class _CallProblemButton extends StatelessWidget {
   String _text(BuildContext context) {
     final strings = context.msg.main.call.feedback.problem;
 
-    switch (problem) {
-      case CallProblem.oneWayAudio:
-        return strings.oneWayAudio;
-      case CallProblem.noAudio:
-        return strings.noAudio;
-      case CallProblem.audioProblem:
-        return strings.audioProblem;
-      case CallProblem.endedUnexpectedly:
-        return strings.endedUnexpectedly;
-      case CallProblem.somethingElse:
-        return strings.somethingElse;
-    }
+    return switch (problem) {
+      CallProblem.oneWayAudio => strings.oneWayAudio,
+      CallProblem.noAudio => strings.noAudio,
+      CallProblem.audioProblem => strings.audioProblem,
+      CallProblem.endedUnexpectedly => strings.endedUnexpectedly,
+      CallProblem.somethingElse => strings.somethingElse
+    };
   }
 
   @override

@@ -14,16 +14,20 @@ class SettingsState with _$SettingsState {
   const factory SettingsState({
     required User user,
     BuildInfo? buildInfo,
-    @Default(false) bool hasIgnoreBatteryOptimizationsPermission,
-    @Default(false) bool hasTemporaryRedirect,
+    @Default(false)
+        bool hasIgnoreBatteryOptimizationsPermission,
+    @Default(false)
+        bool hasTemporaryRedirect,
     int? userNumber,
     @Default([Destination.notAvailable()])
         List<Destination> availableDestinations,
 
     /// If we are currently in the process of applying changes, this is usually
     /// when updating a remote setting, so waiting for an API response.
-    @Default(false) bool isApplyingChanges,
-    @Default(false) bool isRateLimited,
+    @Default(false)
+        bool isApplyingChanges,
+    @Default(false)
+        bool isRateLimited,
   }) = _SettingsState;
 
   const SettingsState._();

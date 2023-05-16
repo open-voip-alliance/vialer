@@ -8,9 +8,12 @@ class UserVoipConfig with _$UserVoipConfig {
   const factory UserVoipConfig({
     @JsonKey(name: 'appaccount_account_id', fromJson: _sipUserIdFromJson)
         required String sipUserId,
-    @JsonKey(name: 'appaccount_password') required String password,
-    @JsonKey(name: 'appaccount_use_encryption') required bool useEncryption,
-    @JsonKey(name: 'appaccount_use_opus') required bool useOpus,
+    @JsonKey(name: 'appaccount_password')
+        required String password,
+    @JsonKey(name: 'appaccount_use_encryption')
+        required bool useEncryption,
+    @JsonKey(name: 'appaccount_use_opus')
+        required bool useOpus,
   }) = _UserVoipConfig;
 
   factory UserVoipConfig.fromJson(Map<String, dynamic> json) =>

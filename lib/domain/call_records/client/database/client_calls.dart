@@ -44,7 +44,7 @@ class ClientCalls extends Table {
   BoolColumn get isDestinationAccountLoggedInUser => boolean()();
 
   @override
-  Set<Column<dynamic>> get primaryKey => {id};
+  Set<Column> get primaryKey => {id};
 }
 
 class ColleaguePhoneAccounts extends Table {
@@ -63,7 +63,7 @@ class ColleaguePhoneAccounts extends Table {
   IntColumn get type => intEnum<CallerType>()();
 
   @override
-  Set<Column<dynamic>> get primaryKey => {id};
+  Set<Column> get primaryKey => {id};
 }
 
 class ClientCallWithColleaguePhoneAccount {

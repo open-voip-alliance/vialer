@@ -112,10 +112,10 @@ class _TwoFactorAuthenticationPageState
                     ),
                   ),
                 if (state is AwaitingServerResponse)
-                  Expanded(
+                  const Expanded(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
+                      children: [
                         SizedBox(
                           width: 60,
                           height: 60,

@@ -88,20 +88,14 @@ enum ColleagueAvailabilityStatus {
   /// linked to their user AND they are not SIP registered anywhere.
   offline;
 
-  static ColleagueAvailabilityStatus fromServerValue(String? value) {
-    switch (value) {
-      case 'do_not_disturb':
-        return ColleagueAvailabilityStatus.doNotDisturb;
-      case 'offline':
-        return ColleagueAvailabilityStatus.offline;
-      case 'available':
-        return ColleagueAvailabilityStatus.available;
-      case 'busy':
-        return ColleagueAvailabilityStatus.busy;
-      default:
-        return ColleagueAvailabilityStatus.unknown;
-    }
-  }
+  static ColleagueAvailabilityStatus fromServerValue(String? value) =>
+      switch (value) {
+        'do_not_disturb' => ColleagueAvailabilityStatus.doNotDisturb,
+        'offline' => ColleagueAvailabilityStatus.offline,
+        'available' => ColleagueAvailabilityStatus.available,
+        'busy' => ColleagueAvailabilityStatus.busy,
+        _ => ColleagueAvailabilityStatus.unknown
+      };
 }
 
 /// The destination that we can call to reach the given colleague.
@@ -122,18 +116,13 @@ enum ColleagueDestinationType {
   fixed,
   none;
 
-  static ColleagueDestinationType fromServerValue(String? value) {
-    switch (value) {
-      case 'app_account':
-        return ColleagueDestinationType.app;
-      case 'voip_account':
-        return ColleagueDestinationType.voipAccount;
-      case 'fixeddestination':
-        return ColleagueDestinationType.fixed;
-      default:
-        return ColleagueDestinationType.none;
-    }
-  }
+  static ColleagueDestinationType fromServerValue(String? value) =>
+      switch (value) {
+        'app_account' => ColleagueDestinationType.app,
+        'voip_account' => ColleagueDestinationType.voipAccount,
+        'fixeddestination' => ColleagueDestinationType.fixed,
+        _ => ColleagueDestinationType.none
+      };
 }
 
 /// Represents a possible event that the colleague has currently performed,
@@ -150,14 +139,9 @@ class ColleagueContext with _$ColleagueContext {
   factory ColleagueContext.fromJson(Map<String, dynamic> json) =>
       _$ColleagueContextFromJson(json);
 
-  static ColleagueContext? fromServerValue(String? value) {
-    switch (value) {
-      case 'in_call':
-        return const ColleagueContext.inCall();
-      case 'ringing':
-        return const ColleagueContext.ringing();
-      default:
-        return null;
-    }
-  }
+  static ColleagueContext? fromServerValue(String? value) => switch (value) {
+        'in_call' => const ColleagueContext.inCall(),
+        'ringing' => const ColleagueContext.ringing(),
+        _ => null
+      };
 }

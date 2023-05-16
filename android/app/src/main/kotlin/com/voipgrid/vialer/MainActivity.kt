@@ -20,7 +20,7 @@ class MainActivity : FlutterActivity(), Pigeon.CallScreenBehavior {
 
         Pigeon.NativeLogging.setup(binaryMessenger, App.logger)
         Pigeon.ContactSortHostApi.setup(binaryMessenger) {
-            ContactSort().apply { orderBy = Pigeon.OrderBy.familyName }
+            ContactSort().apply { orderBy = Pigeon.OrderBy.FAMILY_NAME }
         }
 
         Pigeon.NativeIncomingCallScreen.setup(binaryMessenger) { remotePartyHeading, remotePartySubheading, imageUri ->
