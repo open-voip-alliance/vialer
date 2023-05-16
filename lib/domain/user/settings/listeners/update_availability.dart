@@ -29,22 +29,6 @@ class UpdateDestinationListener extends SettingChangeListener<Destination>
     User user,
     Destination value,
   ) async {
-    final currentDestination =
-        await _destinationRepository.getActiveDestination();
-
-    var log = true;
-
-    if (currentDestination != value) {
-      value.when(
-        unknown: () => logger.info('Set $key to $value'),
-        notAvailable: () => logger.info('Set $key to $value'),
-        phoneNumber: (id, _, __) => logger.info('Set $key to $id'),
-        phoneAccount: (id, _, __, ___) => logger.info('Set $key to $id'),
-      );
-
-      log = false;
-    }
-
     final success = await _destinationRepository.setDestination(
       destination: value,
     );
@@ -60,6 +44,6 @@ class UpdateDestinationListener extends SettingChangeListener<Destination>
       );
     }
 
-    return SettingChangeListenResult(log: log, sync: _shouldSyncUser);
+    return SettingChangeListenResult(sync: _shouldSyncUser);
   }
 }
