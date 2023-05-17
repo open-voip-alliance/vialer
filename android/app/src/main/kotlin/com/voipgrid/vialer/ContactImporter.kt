@@ -24,10 +24,7 @@ class ContactImporter(context: Context) : Pigeon.Contacts {
         contacts = Contacts(context)
     }
 
-    override fun importContacts(
-        cacheFilePath: String,
-        result: Pigeon.Result<Void>?,
-    ) {
+    override fun importContacts(cacheFilePath: String, result: Pigeon.Result<Void>) {
         CoroutineScope(Dispatchers.IO).launch {
             val results = contacts
                 .broadQuery()
@@ -48,11 +45,11 @@ class ContactImporter(context: Context) : Pigeon.Contacts {
             if (results.isNotEmpty()) {
                 File(cacheFilePath).writeText(gson.toJson(results))
             }
-            result?.success(null)
+            result.success(null)
         }
     }
 
-    override fun importContactAvatars(avatarDirectoryPath: String, result: Pigeon.Result<Void>?) {
+    override fun importContactAvatars(avatarDirectoryPath: String, result: Pigeon.Result<Void>) {
         CoroutineScope(Dispatchers.IO).launch {
             val results = contacts
                 .query()
@@ -73,7 +70,7 @@ class ContactImporter(context: Context) : Pigeon.Contacts {
                 )
             }
 
-            result?.success(null)
+            result.success(null)
         }
     }
 

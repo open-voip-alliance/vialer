@@ -14,7 +14,8 @@ class OpeningHoursModule with _$OpeningHoursModule {
     @JsonKey(name: 'work_hours')
     @Default(<OpeningHours>[])
         List<OpeningHours> openingHours,
-    @Default(<Holiday>[]) List<Holiday> holidays,
+    @Default(<Holiday>[])
+        List<Holiday> holidays,
   }) = _OpeningHoursModule;
 
   factory OpeningHoursModule.fromJson(Map<String, dynamic> json) =>

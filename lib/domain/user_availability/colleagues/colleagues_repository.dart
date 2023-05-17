@@ -39,7 +39,6 @@ class ColleaguesRepository with Loggable {
   final _reconnectionStrategy = ReconnectionStrategy(
     const RetryPattern(
       initialDelay: Duration(seconds: 10),
-      maxBackOff: 10,
       jitter: true,
     ),
   );

@@ -10,7 +10,8 @@ custom: # Custom properties to make workflows cleaner
         echo "BUILD_NR=$BUILD_NUMBER" >> $CM_ENV
     - &verify_codebase_complies_with_analysis_rules
       name: Verifying the codebase complies with analyzation rules
-      script: dart analyze . --fatal-infos --fatal-warnings
+      # Temporarily removing --fatal-warning until Austerity is updated for Flutter 3.10.0
+      script: dart analyze . --no-fatal-warnings
     - &set_version_for_app_store
       name: Updating version for the app store
       script: dart utils/ci/codemagic/set_version_information.dart --type appStore
@@ -73,7 +74,7 @@ custom: # Custom properties to make workflows cleaner
     max_build_duration: 90
     instance_type: mac_mini_m1
     environment: &config_environment
-      flutter: 3.7.12
+      flutter: 3.10.0
       # This has to be 14.2 for our integration tests to work, it should be changed to latest
       # when the tooling supports xCode 14.3.
       xcode: 14.2

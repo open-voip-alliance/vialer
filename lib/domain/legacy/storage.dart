@@ -361,16 +361,7 @@ class StorageRepository {
                   .cast();
           break;
         case 'VoipgridPermissionsSetting':
-          permissions = const UserPermissions(
-            canSeeClientCalls: false,
-            canChangeMobileNumberFallback: false,
-            canChangeTemporaryRedirect: false,
-            canViewMobileNumberFallbackStatus: false,
-            canViewVoicemailAccounts: false,
-            canChangeOutgoingNumber: false,
-            canViewColleagues: false,
-            canViewVoipAccounts: false,
-          );
+          permissions = const UserPermissions();
           break;
       }
     }
