@@ -66,11 +66,7 @@ void main() {
   });
 }
 
-const defaultPattern = RetryPattern(
-  initialDelay: Duration(seconds: 10),
-  maxBackOff: 10,
-  jitter: false,
-);
+const defaultPattern = RetryPattern(initialDelay: Duration(seconds: 10));
 
 Duration _fromSeconds(double seconds) =>
     Duration(milliseconds: (seconds * 1000).toInt());

@@ -114,7 +114,7 @@ class LocalClientCallsRepository with Loggable {
         ..where(db.clientCalls.answered.equals(false))
         ..where(
           db.clientCalls.direction.equals(
-            db.clientCalls.direction.converter.mapToSql(Direction.inbound),
+            db.clientCalls.direction.converter.toSql(Direction.inbound)!,
           ),
         );
     }

@@ -44,45 +44,40 @@ class NoResultsPlaceholder extends StatelessWidget {
       searchTerm.length <= 13 &&
       !RegExp('[^0-9+ ]').hasMatch(searchTerm);
 
-  String _title(BuildContext context) {
-    switch (type!) {
-      case NoResultsType.noOnlineColleagues:
-        return context.msg.main.colltacts.noOnline.title;
-      case NoResultsType.noSearchResults:
-        return context.msg.main.colltacts.noResults.title;
-      case NoResultsType.colleaguesLoading:
-        return context.msg.main.contacts.list.loadingColleagues.title;
-      case NoResultsType.contactsLoading:
-        return context.msg.main.contacts.list.loadingContacts.title;
-      case NoResultsType.noContactsExist:
-        return context.msg.main.contacts.list.empty.title;
-      case NoResultsType.noContactsPermission:
-        return context.msg.main.contacts.list.noPermission
-            .description(context.brand.appName);
-    }
-  }
+  String _title(BuildContext context) => switch (type!) {
+        NoResultsType.noOnlineColleagues =>
+          context.msg.main.colltacts.noOnline.title,
+        NoResultsType.noSearchResults =>
+          context.msg.main.colltacts.noResults.title,
+        NoResultsType.colleaguesLoading =>
+          context.msg.main.contacts.list.loadingColleagues.title,
+        NoResultsType.contactsLoading =>
+          context.msg.main.contacts.list.loadingContacts.title,
+        NoResultsType.noContactsExist =>
+          context.msg.main.contacts.list.empty.title,
+        NoResultsType.noContactsPermission => context
+            .msg.main.contacts.list.noPermission
+            .description(context.brand.appName)
+      };
 
-  String _subtitle(BuildContext context) {
-    switch (type!) {
-      case NoResultsType.noOnlineColleagues:
-        return context.msg.main.colltacts.noOnline.subtitle;
-      case NoResultsType.noSearchResults:
-        return kind == ColltactKind.contact
+  String _subtitle(BuildContext context) => switch (type!) {
+        NoResultsType.noOnlineColleagues =>
+          context.msg.main.colltacts.noOnline.subtitle,
+        NoResultsType.noSearchResults => kind == ColltactKind.contact
             ? context.msg.main.colltacts.noResults.contacts(searchTerm)
-            : context.msg.main.colltacts.noResults.colleagues(searchTerm);
-      case NoResultsType.colleaguesLoading:
-        return context.msg.main.contacts.list.loadingColleagues.description;
-      case NoResultsType.contactsLoading:
-        return context.msg.main.contacts.list.loadingContacts.description;
-      case NoResultsType.noContactsExist:
-        return context.msg.main.contacts.list.empty.description(
-          context.brand.appName,
-        );
-      case NoResultsType.noContactsPermission:
-        return context.msg.main.contacts.list.noPermission
-            .permanentDescription(context.brand.appName);
-    }
-  }
+            : context.msg.main.colltacts.noResults.colleagues(searchTerm),
+        NoResultsType.colleaguesLoading =>
+          context.msg.main.contacts.list.loadingColleagues.description,
+        NoResultsType.contactsLoading =>
+          context.msg.main.contacts.list.loadingContacts.description,
+        NoResultsType.noContactsExist =>
+          context.msg.main.contacts.list.empty.description(
+            context.brand.appName,
+          ),
+        NoResultsType.noContactsPermission => context
+            .msg.main.contacts.list.noPermission
+            .permanentDescription(context.brand.appName)
+      };
 
   Widget? _button(BuildContext context) {
     if (type == NoResultsType.noContactsPermission) {

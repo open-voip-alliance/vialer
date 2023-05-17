@@ -24,6 +24,7 @@ extension ConnectivityTypeMapper on ConnectivityResult {
       case ConnectivityResult.vpn:
       case ConnectivityResult.ethernet:
       case ConnectivityResult.wifi:
+      case ConnectivityResult.other:
         return ConnectivityType.wifi;
       case ConnectivityResult.bluetooth:
       case ConnectivityResult.none:
