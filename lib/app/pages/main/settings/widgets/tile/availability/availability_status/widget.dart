@@ -27,9 +27,7 @@ class AvailabilityStatusPicker extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        AvailabilityHeader(
-          context.msg.main.userAvailability.availabilityStatus.title,
-        ),
+        AvailabilityHeader(context.msg.main.ua.statusLabel),
         AvailabilityStatusButton(
           ColleagueAvailabilityStatus.available,
           current: userAvailabilityStatus,
