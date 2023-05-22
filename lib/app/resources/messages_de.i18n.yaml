@@ -128,13 +128,13 @@ main:
   ua:
     mobile:
       ringingDevice:
-        label: "Selecteer uw beltoon"
-    statusLabel: "Stel uw status in"
+        label: "Wählen Sie Ihr klingelndes Gerät aus"
+    statusLabel: "Legen Sie Ihren Status fest"
     devices:
-      fixedDestination: "Eindbestemming"
+      fixedDestination: "Festes Ziel"
       webphone: "Webphone"
-      deskphone: "Bureautelefoon"
-      mobile: "Mobiel"
+      deskphone: "Tischtelefon"
+      mobile: "Mobil"
 
   contacts:
     edit: Ändern
