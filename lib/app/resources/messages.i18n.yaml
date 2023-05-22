@@ -208,15 +208,16 @@ main:
       contacts(String number): >-
         There were no contacts found for "$number".
 
-  userAvailability:
-    availabilityStatus:
-      title: "Set your status"
-    ringingDevice:
-      title: "Select your ringing device"
-      webphone: "Webphone"
-      deskPhone: "Desk phone"
-      mobile: "Mobile"
+  ua:
+    mobile:
+      ringingDevice:
+        label: "Select your ringing device"
+    statusLabel: "Set your status"
+    devices:
       fixedDestination: "Fixed destination"
+      webphone: "Webphone"
+      deskphone: "Desk phone"
+      mobile: "Mobile"
 
   colleagues:
     toggle: 'Online colleagues only'

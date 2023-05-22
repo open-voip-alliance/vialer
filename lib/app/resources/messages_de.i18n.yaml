@@ -124,15 +124,18 @@ main:
       colleagues(String number): Es wurden keine Kollegen für "$number" gefunden.
       contacts(String number): Es wurden keine Kontakte für "$number" gefunden.
       title: Keine Treffer gefunden
-  userAvailability:
-    availabilityStatus:
-      title: "Set your status"
-    ringingDevice:
-      title: "Select your ringing device"
+
+  ua:
+    mobile:
+      ringingDevice:
+        label: "Selecteer uw beltoon"
+    statusLabel: "Stel uw status in"
+    devices:
+      fixedDestination: "Eindbestemming"
       webphone: "Webphone"
-      deskPhone: "Desk phone"
-      mobile: "Mobile"
-      fixedDestination: "Fixed destination"
+      deskphone: "Bureautelefoon"
+      mobile: "Mobiel"
+
   contacts:
     edit: Ändern
     list:

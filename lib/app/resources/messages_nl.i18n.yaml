@@ -204,15 +204,17 @@ main:
       contacts(String number): >-
         Er waren geen contacten gevonden voor "$number".
 
-  userAvailability:
-    availabilityStatus:
-      title: "Set your status"
-    ringingDevice:
-      title: "Select your ringing device"
+
+  ua:
+    mobile:
+      ringingDevice:
+        label: "Wählen Sie Ihr klingelndes Gerät aus"
+    statusLabel: "Legen Sie Ihren Status fest"
+    devices:
+      fixedDestination: "Festes Ziel"
       webphone: "Webphone"
-      deskPhone: "Desk phone"
-      mobile: "Mobile"
-      fixedDestination: "Fixed destination"
+      deskphone: "Tischtelefon"
+      mobile: "Mobil"
 
   colleagues:
     toggle: "Alleen online collega's"

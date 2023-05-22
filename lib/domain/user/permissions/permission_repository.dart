@@ -44,15 +44,15 @@ extension PermissionMapper on domain.Permission {
 
 extension PermissionStatusMapper on permission_handler.PermissionStatus {
   domain.PermissionStatus toDomainEntity() => switch (this) {
-      permission_handler.PermissionStatus.granted =>
-        domain.PermissionStatus.granted,
-      permission_handler.PermissionStatus.denied =>
-        domain.PermissionStatus.denied,
-      permission_handler.PermissionStatus.permanentlyDenied =>
-        domain.PermissionStatus.permanentlyDenied,
-      permission_handler.PermissionStatus.restricted =>
-        domain.PermissionStatus.restricted,
-      permission_handler.PermissionStatus.limited =>
-        domain.PermissionStatus.undetermined
-    };
+        permission_handler.PermissionStatus.granted =>
+          domain.PermissionStatus.granted,
+        permission_handler.PermissionStatus.denied =>
+          domain.PermissionStatus.denied,
+        permission_handler.PermissionStatus.permanentlyDenied =>
+          domain.PermissionStatus.permanentlyDenied,
+        permission_handler.PermissionStatus.restricted =>
+          domain.PermissionStatus.restricted,
+        permission_handler.PermissionStatus.limited =>
+          domain.PermissionStatus.undetermined
+      };
 }

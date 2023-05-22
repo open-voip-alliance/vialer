@@ -68,7 +68,7 @@ class MultipleRingingDeviceDropdown extends StatelessWidget {
             .toList(),
         isExpanded: true,
         showIcon: relevantDestinations.length >= 2,
-        onChanged: enabled
+        onChanged: enabled && _relevantDestinations.length >= 2
             ? (destination) =>
                 destination != null ? onDestinationChanged(destination) : () {}
             : null,
