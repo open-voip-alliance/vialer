@@ -204,17 +204,16 @@ main:
       contacts(String number): >-
         Er waren geen contacten gevonden voor "$number".
 
-
   ua:
     mobile:
       ringingDevice:
-        label: "Wählen Sie Ihr klingelndes Gerät aus"
-    statusLabel: "Legen Sie Ihren Status fest"
+        label: "Selecteer uw beltoon"
+    statusLabel: "Stel uw status in"
     devices:
-      fixedDestination: "Festes Ziel"
+      fixedDestination: "Eindbestemming"
       webphone: "Webphone"
-      deskphone: "Tischtelefon"
-      mobile: "Mobil"
+      deskphone: "Bureautelefoon"
+      mobile: "Mobiel"
 
   colleagues:
     toggle: "Alleen online collega's"
