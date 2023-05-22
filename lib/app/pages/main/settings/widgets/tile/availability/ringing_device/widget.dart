@@ -53,9 +53,9 @@ class RingingDevice extends StatelessWidget {
             mainAxisSpacing: 6,
             physics: const NeverScrollableScrollPhysics(),
             children: [
-              if (webphoneAccount != null)
+              if (appAccount != null)
                 RingingDeviceButton(
-                  RingingDeviceType.webphone,
+                  RingingDeviceType.mobile,
                   user: user,
                   enabled: enableButtons,
                   destinations: destinations,
@@ -71,9 +71,9 @@ class RingingDevice extends StatelessWidget {
                   onDestinationChanged: onDestinationChanged,
                   parentWidgetIsEnabled: !shouldEntireWidgetBeDisabled,
                 ),
-              if (appAccount != null)
+              if (webphoneAccount != null)
                 RingingDeviceButton(
-                  RingingDeviceType.mobile,
+                  RingingDeviceType.webphone,
                   user: user,
                   enabled: enableButtons,
                   destinations: destinations,
