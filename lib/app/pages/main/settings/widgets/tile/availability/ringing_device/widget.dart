@@ -44,9 +44,7 @@ class RingingDevice extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          AvailabilityHeader(
-            context.msg.main.userAvailability.ringingDevice.title,
-          ),
+          AvailabilityHeader(context.msg.main.ua.mobile.ringingDevice.label),
           GridView.count(
             crossAxisCount: 2,
             shrinkWrap: true,

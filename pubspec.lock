@@ -61,10 +61,10 @@ packages:
     dependency: "direct main"
     description:
       name: austerity
-      sha256: "752608b94a84d1765e8eafa877463b6823da08c3e65477b965429fee2aca79d1"
+      sha256: "6d0a2889af71dadbd7582983f1ce0d1ef9f9589a531b8da9353097e3a7e965ab"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.0"
+    version: "1.1.0"
   basic_utils:
     dependency: "direct dev"
     description:
