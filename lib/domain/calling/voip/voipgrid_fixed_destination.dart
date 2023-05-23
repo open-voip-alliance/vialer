@@ -12,13 +12,10 @@ part 'voipgrid_fixed_destination.g.dart';
 class VoipgridFixedDestination extends VoipgridDestination
     with _$VoipgridFixedDestination {
   const factory VoipgridFixedDestination({
-    @override
-    @JsonIdConverter()
-        int? id,
+    @override @JsonIdConverter() int? id,
     @JsonKey(name: 'phonenumber', fromJson: _normalizedPhoneNumber)
-        String? phoneNumber,
-    @override
-        String? description,
+    String? phoneNumber,
+    @override String? description,
   }) = _VoipgridFixedDestination;
 
   const VoipgridFixedDestination._();

@@ -1,0 +1,18 @@
+phrase:
+  project_id: 32969223b3aa8d2c99ba865c611a15e5
+  pull:
+    targets:
+    - file: ./lib/app/resources/messages.i18n.yaml
+      params:
+        locale_id: en-US
+        file_format: yml_symfony2
+        format_options:
+          boolean_key: false
+    - file: ./lib/app/resources/messages_nl.i18n.yaml
+      params:
+        locale_id: nl-NL
+        file_format: yml_symfony2
+    - file: ./lib/app/resources/messages_de.i18n.yaml
+      params:
+        locale_id: de-DE
+        file_format: yml_symfony2
