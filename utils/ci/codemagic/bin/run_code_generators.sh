@@ -9,3 +9,4 @@ flutter pub run pigeon --input utils/pigeon/scheme.dart \
   --objc_source_out ios/Runner/pigeon.m \
   --java_out android/app/src/main/java/com/voipgrid/vialer/Pigeon.java \
   --java_package com.voipgrid.vialer
+. "$CM_BUILD_DIR"/utils/bin/strings.sh
