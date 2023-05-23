@@ -34,16 +34,31 @@ class UpdateDestinationListener extends SettingChangeListener<Destination>
     );
 
     if (success) {
-      _metricsRepository.track(
-        'destination-changed',
-        {
-          'has-app-account': user.appAccountUrl != null,
-          'to-fixed-destination': value is PhoneNumber,
-          'to-phone-account': value is PhoneAccount,
-        },
-      );
+      _track(user, value);
     }
 
     return SettingChangeListenResult(sync: _shouldSyncUser);
+  }
+
+  Future<void> _track(User user, Destination destination) async {
+    final destinationId =
+        destination is PhoneAccount ? destination.id.toString() : null;
+
+    final isMobile =
+        destinationId != null && destinationId == user.appAccountId;
+    final isWebphone =
+        destinationId != null && destinationId == user.webphoneAccountId;
+
+    _metricsRepository.track(
+      'destination-changed',
+      {
+        'has-app-account': user.appAccountUrl != null,
+        'to-phone-account': destination is PhoneAccount,
+        'to-fixed-destination': destination is PhoneNumber,
+        'to-mobile': isMobile,
+        'to-webphone': isWebphone,
+        'to-desk-phone': !isMobile && !isWebphone,
+      },
+    );
   }
 }
