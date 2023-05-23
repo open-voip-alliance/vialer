@@ -49,7 +49,7 @@ class UpdateDestinationListener extends SettingChangeListener<Destination>
     final isWebphone =
         destinationId != null && destinationId == user.webphoneAccountId;
 
-    _metricsRepository.track(
+    return _metricsRepository.track(
       'destination-changed',
       {
         'has-app-account': user.appAccountUrl != null,
