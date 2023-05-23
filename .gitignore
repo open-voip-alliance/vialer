@@ -70,4 +70,4 @@ android/app/src/**/res/values*/
 android/app/src/**/res/font/
 
 # Ignoring generated language files
-*.i8n.yaml
+*.i18n.yaml
