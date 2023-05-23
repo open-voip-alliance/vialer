@@ -44,6 +44,7 @@ class UpdateDestinationListener extends SettingChangeListener<Destination>
     final destinationId =
         destination is PhoneAccount ? destination.id.toString() : null;
 
+    final isFixedDestination = destination is PhoneNumber;
     final isMobile =
         destinationId != null && destinationId == user.appAccountId;
     final isWebphone =
@@ -54,10 +55,10 @@ class UpdateDestinationListener extends SettingChangeListener<Destination>
       {
         'has-app-account': user.appAccountUrl != null,
         'to-phone-account': destination is PhoneAccount,
-        'to-fixed-destination': destination is PhoneNumber,
+        'to-fixed-destination': isFixedDestination,
         'to-mobile': isMobile,
         'to-webphone': isWebphone,
-        'to-desk-phone': !isMobile && !isWebphone,
+        'to-desk-phone': !isFixedDestination && !isMobile && !isWebphone,
       },
     );
   }
