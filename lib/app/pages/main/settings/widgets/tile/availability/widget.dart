@@ -80,7 +80,8 @@ class _AvailabilitySwitcherState extends State<AvailabilitySwitcher> {
     BuildContext context,
     ColleagueAvailabilityStatus requestedStatus,
   ) {
-    final destination = destinations.findHighestPriorityAccountFor(user: user);
+    final destination =
+        destinations.findHighestPriorityDestinationFor(user: user);
 
     switch (requestedStatus) {
       case ColleagueAvailabilityStatus.available:

@@ -55,7 +55,7 @@ extension DestinationsList on List<Destination> {
   PhoneAccount? findWebphoneAccountFor({required User user}) =>
       _findPhoneAccountById(user.webphoneAccountId);
 
-  Destination? findHighestPriorityAccountFor({required User user}) {
+  Destination? findHighestPriorityDestinationFor({required User user}) {
     final appAccount = findAppAccountFor(user: user);
     if (appAccount != null) return appAccount;
 
