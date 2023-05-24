@@ -51,6 +51,8 @@ class User extends Equatable {
         (p) => p.isNotEmpty,
       );
 
+  bool get hasAppAccount => appAccountId != null;
+
   final String? webphoneAccountId;
 
   @JsonKey(toJson: Client.toJson, fromJson: Client.fromJson)
