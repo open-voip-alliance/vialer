@@ -65,7 +65,6 @@ dependencies:
   flutter_switch: ^0.3.2
   in_app_review: ^2.0.4
   synchronized: ^3.0.0+3
-
   duration: ^3.0.6
   flutter_keyboard_visibility: ^5.3.0
   drift: ^2.8.0

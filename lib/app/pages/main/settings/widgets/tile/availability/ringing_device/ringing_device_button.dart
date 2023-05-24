@@ -28,14 +28,14 @@ class RingingDeviceButton extends StatelessWidget {
   String _text(BuildContext context) {
     switch (type) {
       case RingingDeviceType.webphone:
-        return context.msg.main.ua.devices.webphone;
+        return context.msg.ua.mobile.devices.webphone;
       case RingingDeviceType.deskPhone:
-        return context.msg.main.ua.devices.deskphone;
+        return context.msg.ua.mobile.devices.deskphone;
       case RingingDeviceType.mobile:
-        return context.msg.main.ua.devices.mobile;
+        return context.msg.ua.mobile.devices.mobile;
       case RingingDeviceType.unknown:
       case RingingDeviceType.fixed:
-        return context.msg.main.ua.devices.fixedDestination;
+        return context.msg.ua.mobile.devices.fixedDestination;
     }
   }
 
