@@ -44,6 +44,7 @@ class UpdateDestinationListener extends SettingChangeListener<Destination>
     final destinationId =
         destination is PhoneAccount ? destination.id.toString() : null;
 
+    final isOffline = destination is NotAvailable;
     final isFixedDestination = destination is PhoneNumber;
     final isMobile =
         destinationId != null && destinationId == user.appAccountId;
@@ -58,7 +59,9 @@ class UpdateDestinationListener extends SettingChangeListener<Destination>
         'to-fixed-destination': isFixedDestination,
         'to-mobile': isMobile,
         'to-webphone': isWebphone,
-        'to-desk-phone': !isFixedDestination && !isMobile && !isWebphone,
+        'to-desk-phone':
+            !isOffline && !isFixedDestination && !isMobile && !isWebphone,
+        'to-offline': isOffline,
       },
     );
   }
