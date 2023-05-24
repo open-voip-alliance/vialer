@@ -10,11 +10,9 @@ part 'client_voip_config.g.dart';
 class ClientVoipConfig with _$ClientVoipConfig {
   const factory ClientVoipConfig({
     @JsonKey(name: 'MIDDLEWARE', fromJson: _middlewareUrlFromJson)
-        required Uri middlewareUrl,
-    @JsonKey(name: 'SIP_UDP')
-        required Uri unencryptedSipUrl,
-    @JsonKey(name: 'SIP_TLS')
-        required Uri encryptedSipUrl,
+    required Uri middlewareUrl,
+    @JsonKey(name: 'SIP_UDP') required Uri unencryptedSipUrl,
+    @JsonKey(name: 'SIP_TLS') required Uri encryptedSipUrl,
   }) = _ClientVoipConfig;
 
   factory ClientVoipConfig.fromJson(Map<String, dynamic> json) =>

@@ -68,3 +68,6 @@ release_notes_*.txt
 # Android resources
 android/app/src/**/res/values*/
 android/app/src/**/res/font/
+
+# Ignoring generated language files
+*.i18n.yaml
