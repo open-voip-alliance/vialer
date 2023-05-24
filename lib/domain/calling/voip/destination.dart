@@ -55,6 +55,22 @@ extension DestinationsList on List<Destination> {
   PhoneAccount? findWebphoneAccountFor({required User user}) =>
       _findPhoneAccountById(user.webphoneAccountId);
 
+  Destination? findHighestPriorityDestinationFor({required User user}) {
+    final appAccount = findAppAccountFor(user: user);
+    if (appAccount != null) return appAccount;
+
+    final webphoneAccount = findWebphoneAccountFor(user: user);
+    if (webphoneAccount != null) return webphoneAccount;
+
+    final deskPhoneAccount = deskPhonesFor(user: user).firstOrNull;
+    if (deskPhoneAccount != null) return deskPhoneAccount;
+
+    final fixedDestination = fixedDestinationsFor(user: user).firstOrNull;
+    if (fixedDestination != null) return fixedDestination;
+
+    return null;
+  }
+
   PhoneAccount? _findPhoneAccountById(String? id) {
     if (id == null) return null;
 

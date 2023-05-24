@@ -51,27 +51,31 @@ class MultipleRingingDeviceDropdown extends StatelessWidget {
   Widget build(BuildContext context) {
     final relevantDestinations = _relevantDestinations;
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12),
-      child: StylizedDropdown<Destination>(
-        value: _currentDestination ?? relevantDestinations.firstOrNull,
-        items: relevantDestinations
-            .map(
-              (destination) => DropdownMenuItem<Destination>(
-                value: destination,
-                child: FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Text(destination.dropdownValue(context)),
+    return Visibility(
+      visible: relevantDestinations.isNotEmpty,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        child: StylizedDropdown<Destination>(
+          value: _currentDestination ?? relevantDestinations.firstOrNull,
+          items: relevantDestinations
+              .map(
+                (destination) => DropdownMenuItem<Destination>(
+                  value: destination,
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(destination.dropdownValue(context)),
+                  ),
                 ),
-              ),
-            )
-            .toList(),
-        isExpanded: true,
-        showIcon: relevantDestinations.length >= 2,
-        onChanged: enabled && _relevantDestinations.length >= 2
-            ? (destination) =>
-                destination != null ? onDestinationChanged(destination) : () {}
-            : null,
+              )
+              .toList(),
+          isExpanded: true,
+          showIcon: relevantDestinations.length >= 2,
+          onChanged: enabled && _relevantDestinations.length >= 2
+              ? (destination) => destination != null
+                  ? onDestinationChanged(destination)
+                  : () {}
+              : null,
+        ),
       ),
     );
   }
