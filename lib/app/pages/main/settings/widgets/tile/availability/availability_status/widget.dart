@@ -34,12 +34,13 @@ class AvailabilityStatusPicker extends StatelessWidget {
           enabled: enabled,
           onStatusChanged: onStatusChanged,
         ),
-        AvailabilityStatusButton(
-          ColleagueAvailabilityStatus.doNotDisturb,
-          current: userAvailabilityStatus,
-          enabled: enabled,
-          onStatusChanged: onStatusChanged,
-        ),
+        if (user.hasAppAccount)
+          AvailabilityStatusButton(
+            ColleagueAvailabilityStatus.doNotDisturb,
+            current: userAvailabilityStatus,
+            enabled: enabled,
+            onStatusChanged: onStatusChanged,
+          ),
         AvailabilityStatusButton(
           ColleagueAvailabilityStatus.offline,
           current: userAvailabilityStatus,

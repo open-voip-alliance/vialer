@@ -80,18 +80,18 @@ class _AvailabilitySwitcherState extends State<AvailabilitySwitcher> {
     BuildContext context,
     ColleagueAvailabilityStatus requestedStatus,
   ) {
-    final appAccount = destinations.findAppAccountFor(user: user);
+    final destination = destinations.findHighestPriorityAccountFor(user: user);
 
     switch (requestedStatus) {
       case ColleagueAvailabilityStatus.available:
         return {
           CallSetting.dnd: false,
-          if (appAccount != null) CallSetting.destination: appAccount,
+          if (destination != null) CallSetting.destination: destination,
         };
       case ColleagueAvailabilityStatus.doNotDisturb:
         return {
           CallSetting.dnd: true,
-          if (appAccount != null) CallSetting.destination: appAccount,
+          if (destination != null) CallSetting.destination: destination,
         };
       case ColleagueAvailabilityStatus.offline:
         return {
