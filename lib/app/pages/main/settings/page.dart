@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:vialer/app/pages/main/settings/sub_page/about_the_app.dart';
 import 'package:vialer/app/pages/main/settings/widgets/tile/availability/widget.dart';
 
 import '../../../../domain/feature/feature.dart';
@@ -126,6 +127,13 @@ class _SettingsPageState extends State<SettingsPage> {
                               cubit: cubit,
                               pageBuilder: (_) => const ClientSubPage(),
                             ),
+                          SubPageLinkTile(
+                            title: context
+                                .msg.main.settings.subPage.aboutTheApp.title,
+                            icon: FontAwesomeIcons.solidMobileNotch,
+                            cubit: cubit,
+                            pageBuilder: (_) => const AboutTheAppSubPage(),
+                          ),
                         ],
                       ),
                     ),
