@@ -223,9 +223,9 @@ class _BottomNavigationBar extends StatelessWidget {
             label: context.msg.main.recent.menu.title,
           ),
           BottomNavigationBarItem(
-            icon: const _BottomNavigationBarIcon(FontAwesomeIcons.gear),
+            icon: const _BottomNavigationBarIcon(FontAwesomeIcons.circleUser),
             activeIcon: const _BottomNavigationBarIcon(
-              FontAwesomeIcons.solidGear,
+              FontAwesomeIcons.solidCircleUser,
             ),
             label: context.msg.main.settings.menu.title,
           ),
