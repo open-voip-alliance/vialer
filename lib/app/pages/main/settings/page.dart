@@ -130,7 +130,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           SubPageLinkTile(
                             title: context
                                 .msg.main.settings.subPage.aboutTheApp.title,
-                            icon: FontAwesomeIcons.solidMobileNotch,
+                            icon: FontAwesomeIcons.circleInfo,
                             cubit: cubit,
                             pageBuilder: (_) => const AboutTheAppSubPage(),
                           ),
