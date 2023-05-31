@@ -16,7 +16,7 @@ abstract class FeedbackService extends ChopperService {
   }
 
   @Post(path: 'v2/feedback/app')
-  Future<Response<Map<String, dynamic>>> feedback(
+  Future<Response<String>> feedback(
     @Body() Map<String, dynamic> body,
   );
 }
