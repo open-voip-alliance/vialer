@@ -25,7 +25,8 @@ class _DateFieldState extends State<DateField> {
   );
   late final _timeFormat = DateFormat.Hm(context.msg.languageCode);
 
-  late DateTime _date = DateTime.now().add(const Duration(hours: 1));
+  late DateTime _date = widget.notifier.value?.toLocal() ??
+      DateTime.now().add(const Duration(hours: 1));
 
   bool _firstEdit = true;
   bool _hasError = false;
@@ -44,8 +45,6 @@ class _DateFieldState extends State<DateField> {
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         widget.notifier.value = _date;
       });
-    } else {
-      _date = widget.notifier.value!.toLocal();
     }
   }
 
