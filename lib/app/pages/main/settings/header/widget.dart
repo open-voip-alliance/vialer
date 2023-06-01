@@ -1,5 +1,6 @@
 import 'package:dartx/dartx.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../../dependency_locator.dart';
 import '../../../../../domain/event/event_bus.dart';
@@ -55,6 +56,7 @@ class _HeaderState extends State<Header> {
           UserAvatar(
             relevantContext: _colleagueContext,
             status: _userAvailabilityStatus,
+            icon: FontAwesomeIcons.solidCircleUser,
           ),
           const SizedBox(width: 12),
           Flexible(
