@@ -49,8 +49,8 @@ class RingingDevice extends StatelessWidget {
             crossAxisCount: 2,
             shrinkWrap: true,
             childAspectRatio: 3.5,
-            crossAxisSpacing: 6,
-            mainAxisSpacing: 6,
+            crossAxisSpacing: 2,
+            mainAxisSpacing: 2,
             physics: const NeverScrollableScrollPhysics(),
             children: [
               if (appAccount != null)

@@ -99,13 +99,22 @@ class UserAvatar extends StatelessWidget {
     this.relevantContext,
     this.status,
     this.size = ColltactAvatar.defaultSize,
+    this.icon,
     super.key,
   });
 
   final ColleagueContext? relevantContext;
   final ColleagueAvailabilityStatus? status;
 
+  static const _availableIcon = FontAwesomeIcons.user;
+  static const _unavailableIcon = FontAwesomeIcons.userSlash;
+  static const _ringingIcon = FontAwesomeIcons.bellOn;
+  static const _inCallIcon = FontAwesomeIcons.phoneVolume;
+  static const _dndIcon = FontAwesomeIcons.bellSlash;
+  static const _voipAccountIcon = FontAwesomeIcons.phoneOffice;
+
   final double size;
+  final IconData? icon;
 
   _AvatarColor _color(BuildContext context) {
     final colors = context.brand.theme.colors;
@@ -153,6 +162,31 @@ class UserAvatar extends StatelessWidget {
     }
   }
 
+  IconData _icon() {
+    final context = relevantContext;
+
+    if (context != null) {
+      return context.when(
+        ringing: () => _ringingIcon,
+        inCall: () => _inCallIcon,
+      );
+    }
+
+    switch (status) {
+      case ColleagueAvailabilityStatus.available:
+        return _availableIcon;
+      case ColleagueAvailabilityStatus.doNotDisturb:
+        return _dndIcon;
+      case ColleagueAvailabilityStatus.busy:
+        return _inCallIcon;
+      case ColleagueAvailabilityStatus.offline:
+        return _unavailableIcon;
+      case ColleagueAvailabilityStatus.unknown:
+      case null:
+        return _voipAccountIcon;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final color = _color(context);
@@ -165,7 +199,9 @@ class UserAvatar extends StatelessWidget {
         child: CircleAvatar(
           backgroundColor: color.background,
           foregroundColor: color.foreground,
-          child: FaIcon(FontAwesomeIcons.solidCircleUser, size: size / 1.5),
+          child: icon != null
+              ? FaIcon(icon, size: size / 1.5)
+              : FaIcon(_icon(), size: size / 2.5),
         ),
       ),
     );
