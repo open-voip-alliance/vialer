@@ -77,6 +77,7 @@ class AvailabilityButton extends StatelessWidget {
                         overflow: TextOverflow.clip,
                       ),
                       maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ],
