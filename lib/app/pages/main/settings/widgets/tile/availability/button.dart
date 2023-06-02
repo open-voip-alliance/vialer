@@ -33,6 +33,7 @@ class AvailabilityButton extends StatelessWidget {
     return FilledButton(
       onPressed: onPressed,
       style: FilledButton.styleFrom(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
         backgroundColor: isActive
             ? _backgroundColor(context)
             : context.brand.theme.colors.userAvailabilityUnknown,
@@ -50,7 +51,7 @@ class AvailabilityButton extends StatelessWidget {
         ),
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 14),
+        padding: const EdgeInsets.symmetric(vertical: 16),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -77,6 +78,7 @@ class AvailabilityButton extends StatelessWidget {
                         overflow: TextOverflow.clip,
                       ),
                       maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ],

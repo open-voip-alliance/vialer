@@ -99,6 +99,7 @@ class UserAvatar extends StatelessWidget {
     this.relevantContext,
     this.status,
     this.size = ColltactAvatar.defaultSize,
+    this.icon,
     super.key,
   });
 
@@ -113,6 +114,7 @@ class UserAvatar extends StatelessWidget {
   static const _voipAccountIcon = FontAwesomeIcons.phoneOffice;
 
   final double size;
+  final IconData? icon;
 
   _AvatarColor _color(BuildContext context) {
     final colors = context.brand.theme.colors;
@@ -197,7 +199,9 @@ class UserAvatar extends StatelessWidget {
         child: CircleAvatar(
           backgroundColor: color.background,
           foregroundColor: color.foreground,
-          child: FaIcon(_icon(), size: size / 2.5),
+          child: icon != null
+              ? FaIcon(icon, size: size / 1.5)
+              : FaIcon(_icon(), size: size / 2.5),
         ),
       ),
     );

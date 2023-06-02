@@ -1,0 +1,7 @@
+- Verbeteringen doorgevoerd aan de interface waarmee je bepaalt waarop je gebeld wordt
+- Verbetering doorgevoerd aan de instellingen wanneer de gebruiker geen app account heeft
+- Flutter en Dart updates toegepast
+- Verschillende knoppen in de instellingen dezelfde stijl gegeven
+- Een probleem met het uitloggen opgelost
+- Android: We gebruiken een nieuwe notificatiestijl die beter integreert met Android
+- iOS: We gebruiken de nieuwe render engine voor verbeterde animaties en algemene ervaring
