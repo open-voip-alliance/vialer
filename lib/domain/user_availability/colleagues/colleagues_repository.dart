@@ -16,6 +16,12 @@ import 'availbility_update.dart';
 import 'colleague.dart';
 
 class ColleaguesRepository with Loggable {
+  ColleaguesRepository(
+    this._service,
+    this._apiResourceCollector,
+    this._eventBus,
+  );
+
   final VoipgridService _service;
   final VoipgridApiResourceCollector _apiResourceCollector;
   final EventBus _eventBus;
@@ -33,7 +39,6 @@ class ColleaguesRepository with Loggable {
   final _reconnectionStrategy = ReconnectionStrategy(
     const RetryPattern(
       initialDelay: Duration(seconds: 10),
-      maxBackOff: 10,
       jitter: true,
     ),
   );
@@ -45,12 +50,6 @@ class ColleaguesRepository with Loggable {
   ///
   /// When there is new API data, this should be updated.
   List<Colleague> colleagues = [];
-
-  ColleaguesRepository(
-    this._service,
-    this._apiResourceCollector,
-    this._eventBus,
-  );
 
   /// Listens to a WebSocket for availability updates, and will then update
   /// the provided list of colleagues with the new status and broadcast it
@@ -80,28 +79,27 @@ class ColleaguesRepository with Loggable {
       );
     }
 
-    if (_controller == null || _controller?.isClosed == true) {
+    if (_controller == null || (_controller?.isClosed ?? false)) {
       _controller = StreamController<List<Colleague>>();
     }
 
+    // ignore: close_sinks
     final controller = _controller!;
 
-    late WebSocket socket;
-
     try {
-      socket = await _connectToWebSocketServer(user, brand);
+      await _connectToWebSocketServer(user, brand);
     } on Exception catch (e) {
-      attemptReconnect('Failed to start websocket: $e');
+      unawaited(attemptReconnect('Failed to start websocket: $e'));
       return broadcastStream = controller.stream.asBroadcastStream();
     }
 
-    socket.listen(
-      (eventString) {
+    _socket!.listen(
+      (dynamic eventString) {
         // If we are receiving events, we will make sure to cancel any queued
         // reconnect timer as we are obviously connected.
         _cancelQueuedReconnect(resetAttempts: true);
 
-        final event = jsonDecode(eventString as String);
+        final event = jsonDecode(eventString as String) as Map<String, dynamic>;
 
         // We only care about this type of event for now (and that's all there
         // is currently) so if it's anything aside from this we just ignore
@@ -143,7 +141,7 @@ class ColleaguesRepository with Loggable {
         controller.add(colleagues);
       },
       onDone: () => attemptReconnect('UA WS has closed'),
-      onError: (e) => attemptReconnect('UA WS error: $e'),
+      onError: (dynamic e) => attemptReconnect('UA WS error: $e'),
     );
 
     return broadcastStream = controller.stream.asBroadcastStream();
@@ -153,7 +151,7 @@ class ColleaguesRepository with Loggable {
     User user,
     Brand brand,
   ) async {
-    _socket?.close();
+    await _socket?.close();
     final url = '${brand.userAvailabilityWsUrl}/${user.client.uuid}';
 
     logger.info('Attempting connection to UA WebSocket at: $url');
@@ -170,7 +168,7 @@ class ColleaguesRepository with Loggable {
     AvailabilityCloseReason reason = AvailabilityCloseReason.local,
   }) async {
     logger.info('Disconnecting from UA WebSocket');
-    await _socket?.close;
+    await _socket?.close();
     _controller?.addError(reason);
     _socket = null;
     broadcastStream = null;
@@ -224,7 +222,7 @@ class ColleaguesRepository with Loggable {
             ),
             deserializer: (json) => json,
           )
-        : [];
+        : const <Map<String, dynamic>>[];
 
     final voipAccounts = user.permissions.canViewVoipAccounts
         ? await _apiResourceCollector.collect(
@@ -234,7 +232,7 @@ class ColleaguesRepository with Loggable {
             ),
             deserializer: (json) => json,
           )
-        : [];
+        : const <Map<String, dynamic>>[];
 
     return [
       ...users.map(
@@ -293,7 +291,7 @@ extension on Colleague {
 
 extension on List<dynamic> {
   List<ColleagueContext> buildUserAvailabilityContext() => map(
-        (e) => ColleagueContext.fromServerValue(
+        (dynamic e) => ColleagueContext.fromServerValue(
           (e as Map<String, dynamic>)['type'] as String,
         ),
       ).filterNotNull().toList();
@@ -316,7 +314,7 @@ extension on Map<String, dynamic> {
       );
 }
 
-/// Indicates the reason why the [_controller] has been closed.
+/// Indicates the reason why the `_controller` has been closed.
 enum AvailabilityCloseReason {
   /// We closed the socket, likely to refresh it.
   local,

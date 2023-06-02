@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
@@ -76,16 +78,21 @@ class OnboardingPageState extends State<OnboardingPage> {
     }
 
     if (state.completed) {
-      Navigator.of(context).pushNamedAndRemoveUntil(Routes.main, (_) => false);
+      unawaited(
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil(Routes.main, (_) => false),
+      );
       return;
     }
 
     final newIndex = currentPages.keys.toList().indexOf(state.currentStep);
 
-    pageController.animateToPage(
-      newIndex,
-      duration: _duration,
-      curve: _curve,
+    unawaited(
+      pageController.animateToPage(
+        newIndex,
+        duration: _duration,
+        curve: _curve,
+      ),
     );
   }
 
@@ -113,13 +120,14 @@ class OnboardingPageState extends State<OnboardingPage> {
             listener: _onStateChange,
             builder: (context, state) {
               return WillPopScope(
-                onWillPop: () => _backward(context),
+                onWillPop: () async => _backward(context),
                 child: DefaultTextStyle(
                   style: const TextStyle(color: Colors.white),
                   child: IconTheme(
                     data: const IconThemeData(color: Colors.white),
                     child: PageView(
                       controller: pageController,
+                      physics: const NeverScrollableScrollPhysics(),
                       children: currentPages.entries.map((entry) {
                         final page = entry.value;
                         return SafeArea(
@@ -132,7 +140,6 @@ class OnboardingPageState extends State<OnboardingPage> {
                           ),
                         );
                       }).toList(),
-                      physics: const NeverScrollableScrollPhysics(),
                     ),
                   ),
                 ),

@@ -10,7 +10,7 @@ void main() {
       expect(
         schedule,
         [
-          _fromSeconds(10.0),
+          _fromSeconds(10),
           _fromSeconds(12.5),
           _fromSeconds(15.625),
           _fromSeconds(19.53125),
@@ -51,7 +51,7 @@ void main() {
 
     final schedules = <Duration>[];
 
-    final generateAmount = 500;
+    const generateAmount = 500;
 
     for (var i = 0; i < generateAmount; i++) {
       schedules.add(ReconnectionStrategy(pattern).schedule.first);
@@ -66,11 +66,7 @@ void main() {
   });
 }
 
-const defaultPattern = RetryPattern(
-  initialDelay: Duration(seconds: 10),
-  maxBackOff: 10,
-  jitter: false,
-);
+const defaultPattern = RetryPattern(initialDelay: Duration(seconds: 10));
 
 Duration _fromSeconds(double seconds) =>
     Duration(milliseconds: (seconds * 1000).toInt());

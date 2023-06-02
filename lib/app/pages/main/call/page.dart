@@ -22,11 +22,11 @@ import 'widgets/call_transfer_bar.dart';
 
 class CallPage extends StatefulWidget {
   const CallPage({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
-  _CallOrTransferPageState createState() => _CallOrTransferPageState();
+  State<CallPage> createState() => _CallOrTransferPageState();
 }
 
 const _callRoute = 'call';
@@ -51,16 +51,20 @@ class _CallOrTransferPageState extends State<CallPage> {
                   return CallTransfer(
                     activeCall: state.voipCall!,
                     onTransferTargetSelected: (number) {
-                      context.read<CallerCubit>().beginTransfer(number);
+                      unawaited(
+                        context.read<CallerCubit>().beginTransfer(number),
+                      );
                       Navigator.of(context).pop();
                     },
                     onCloseButtonPressed: () =>
                         Navigator.of(context, rootNavigator: true).pop(),
                     onContactsButtonPressed: () {
-                      Navigator.pushNamed(context, _contactsRoute).then(
-                        (number) => context
-                            .read<CallerCubit>()
-                            .beginTransfer(number as String),
+                      unawaited(
+                        Navigator.pushNamed(context, _contactsRoute).then(
+                          (number) => context
+                              .read<CallerCubit>()
+                              .beginTransfer(number! as String),
+                        ),
                       );
                     },
                   );
@@ -76,9 +80,7 @@ class _CallOrTransferPageState extends State<CallPage> {
 
 /// The actual call page.
 class _CallPage extends StatefulWidget {
-  const _CallPage({
-    Key? key,
-  }) : super(key: key);
+  const _CallPage();
 
   @override
   _CallPageState createState() => _CallPageState();
@@ -187,10 +189,12 @@ class _CallPageState extends State<_CallPage>
     CallFeedbackResult result,
     FinishedCalling state,
   ) =>
-      context.read<CallerCubit>().rateVoipCall(
-            result: result,
-            call: state.voipCall!,
-          );
+      unawaited(
+        context.read<CallerCubit>().rateVoipCall(
+              result: result,
+              call: state.voipCall!,
+            ),
+      );
 
   void _transfer() {
     final callerName = context
@@ -202,8 +206,8 @@ class _CallPageState extends State<_CallPage>
         '';
 
     // TODO: Use correct phone number pronunciation.
-    Future.delayed(const Duration(seconds: 1), () {
-      SemanticsService.announce(
+    Future.delayed(const Duration(seconds: 1), () async {
+      await SemanticsService.announce(
         context.msg.main.call.ongoing.actions.transfer
             .semanticPostPress(callerName),
         Directionality.of(context),
@@ -211,7 +215,7 @@ class _CallPageState extends State<_CallPage>
     });
 
     // We want to use the closest navigator here, not the root navigator.
-    Navigator.pushNamed(context, _transferRoute);
+    unawaited(Navigator.pushNamed(context, _transferRoute));
   }
 
   @override
@@ -264,13 +268,13 @@ class _CallPageState extends State<_CallPage>
 }
 
 class _CallHeader extends StatelessWidget {
-  final Call call;
-  final CallerState state;
-
   const _CallHeader({
     required this.call,
     required this.state,
   });
+
+  final Call call;
+  final CallerState state;
 
   @override
   Widget build(BuildContext context) {

@@ -9,9 +9,8 @@ import 'value.dart';
 import 'widget.dart';
 
 class ShowCallsInNativeRecentsTile extends StatelessWidget {
-  final User user;
-
   const ShowCallsInNativeRecentsTile(this.user, {super.key});
+  final User user;
 
   @override
   Widget build(BuildContext context) {

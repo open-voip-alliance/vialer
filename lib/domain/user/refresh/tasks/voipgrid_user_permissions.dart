@@ -1,5 +1,7 @@
 // ignore_for_file: avoid_types_on_closure_parameters
 
+import 'dart:async';
+
 import '../../../../dependency_locator.dart';
 import '../../../call_records/client/purge_local_call_records.dart';
 import '../../../voipgrid/user_permissions.dart';
@@ -38,12 +40,16 @@ class RefreshVoipgridUserPermissions extends UserRefreshTaskPerformer {
   ) {
     if (permissions.canSeeClientCalls) return user;
 
-    PurgeLocalCallRecordsUseCase()(reason: PurgeReason.permissionFailed);
+    unawaited(
+      PurgeLocalCallRecordsUseCase()(reason: PurgeReason.permissionFailed),
+    );
+
+    var newUser = user;
 
     // If client calls are enabled, we're going to disable it as the user
     // no longer has permission for it.
     if (user.settings.get(AppSetting.showClientCalls)) {
-      user = user.copyWith(
+      newUser = user.copyWith(
         settings: user.settings.copyWith(
           AppSetting.showClientCalls,
           false,
@@ -51,7 +57,7 @@ class RefreshVoipgridUserPermissions extends UserRefreshTaskPerformer {
       );
     }
 
-    return user;
+    return newUser;
   }
 }
 

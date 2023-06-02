@@ -4,10 +4,20 @@ import 'package:flutter/material.dart';
 import '../../../../../resources/theme.dart';
 
 class SettingTile extends StatelessWidget {
+  const SettingTile({
+    required this.child,
+    this.label,
+    this.description,
+    this.childFillWidth = false,
+    this.center = false,
+    this.padding = const EdgeInsets.symmetric(horizontal: 8),
+    super.key,
+  });
+
   final Widget? label;
   final Widget? description;
 
-  /// The widget that presents the [setting]s value.
+  /// The widget that presents the setting's value.
   final Widget child;
 
   /// If this is true, the [child] will be the maximum width and on the
@@ -18,16 +28,6 @@ class SettingTile extends StatelessWidget {
   final bool center;
 
   final EdgeInsets padding;
-
-  SettingTile({
-    super.key,
-    this.label,
-    this.description,
-    required this.child,
-    this.childFillWidth = false,
-    this.center = false,
-    this.padding = const EdgeInsets.symmetric(horizontal: 8),
-  });
 
   @override
   Widget build(BuildContext context) {

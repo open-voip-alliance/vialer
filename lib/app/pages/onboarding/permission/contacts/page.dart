@@ -7,7 +7,7 @@ import '../../../../resources/theme.dart';
 import '../abstract/page.dart';
 
 class ContactsPermissionPage extends StatelessWidget {
-  const ContactsPermissionPage({Key? key}) : super(key: key);
+  const ContactsPermissionPage({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -15,7 +15,7 @@ void main(List<String> arguments) async {
   final iosTeamId = arguments[0];
   final iosBundleId = arguments[1];
 
-  final filePath = 'ios/Runner.xcodeproj/project.pbxproj';
+  const filePath = 'ios/Runner.xcodeproj/project.pbxproj';
   final replacements = {
     iosTeamId: [
       RegExp(r'(?<=DevelopmentTeam = )\w+'),
@@ -33,7 +33,7 @@ void main(List<String> arguments) async {
     for (final candidate in replacement.value) {
       contents = contents.replaceAllMapped(
         candidate,
-        (match) => '${replacement.key}',
+        (match) => replacement.key,
       );
     }
   }

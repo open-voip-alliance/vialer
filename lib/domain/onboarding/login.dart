@@ -26,9 +26,11 @@ class LoginUseCase extends UseCase {
       return false;
     }
 
-    _track(
-      usedTwoFactor: _isUsingTwoFactor(credentials),
-      isLoginFromLegacyApp: credentials is ImportedLegacyAppCredentials,
+    unawaited(
+      _track(
+        usedTwoFactor: _isUsingTwoFactor(credentials),
+        isLoginFromLegacyApp: credentials is ImportedLegacyAppCredentials,
+      ),
     );
 
     _markNowAsLoginTime();

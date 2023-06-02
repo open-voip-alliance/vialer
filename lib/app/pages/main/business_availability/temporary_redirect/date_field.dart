@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -8,9 +10,9 @@ import '../../../../resources/theme.dart';
 import 'field.dart';
 
 class DateField extends StatefulWidget {
-  final ValueNotifier<DateTime?> notifier;
+  const DateField({required this.notifier, super.key});
 
-  const DateField({required this.notifier});
+  final ValueNotifier<DateTime?> notifier;
 
   @override
   State<DateField> createState() => _DateFieldState();
@@ -110,7 +112,7 @@ class _DateFieldState extends State<DateField> {
       builder: (context) {
         return Container(
           height: 216,
-          padding: const EdgeInsets.only(top: 6.0),
+          padding: const EdgeInsets.only(top: 6),
           margin: EdgeInsets.only(
             bottom: MediaQuery.of(context).viewInsets.bottom,
           ),
@@ -163,13 +165,13 @@ class _DateFieldState extends State<DateField> {
     } else {
       switch (mode) {
         case CupertinoDatePickerMode.time:
-          _showMaterialTimePicker();
+          await _showMaterialTimePicker();
           break;
         case CupertinoDatePickerMode.date:
-          _showMaterialDatePicker();
+          await _showMaterialDatePicker();
           break;
         case CupertinoDatePickerMode.dateAndTime:
-          _showMaterialDateTimePicker();
+          await _showMaterialDateTimePicker();
           break;
       }
     }
@@ -192,7 +194,7 @@ class _DateFieldState extends State<DateField> {
                 icon: FontAwesomeIcons.calendar,
                 text: _dateFormat.format(_date),
                 hasError: _hasError,
-                onTap: () => _showPicker(time: false),
+                onTap: () => unawaited(_showPicker(time: false)),
               ),
             ),
             const SizedBox(width: 8),
@@ -201,7 +203,7 @@ class _DateFieldState extends State<DateField> {
                 icon: FontAwesomeIcons.clock,
                 text: _timeFormat.format(_date),
                 hasError: _hasError,
-                onTap: () => _showPicker(time: true),
+                onTap: () => unawaited(_showPicker(time: true)),
               ),
             ),
           ],
@@ -230,9 +232,9 @@ enum DatePickerMode {
 /// and the pickers use those colors, we have to do it like this until we use
 /// it app-wide.
 class _Themed extends StatelessWidget {
-  final Widget child;
-
   const _Themed({required this.child});
+
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {

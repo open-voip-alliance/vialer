@@ -27,36 +27,42 @@ class UpdateDestinationListener extends SettingChangeListener<Destination>
   @override
   FutureOr<SettingChangeListenResult> preStore(
     User user,
-    Destination newDestination,
+    Destination value,
   ) async {
-    final currentDestination =
-        await _destinationRepository.getActiveDestination();
-
-    var log = true;
-
-    if (currentDestination != newDestination) {
-      newDestination.when(
-        unknown: () => logger.info('Set $key to $newDestination'),
-        notAvailable: () => logger.info('Set $key to $newDestination'),
-        phoneNumber: (id, _, __) => logger.info('Set $key to $id'),
-        phoneAccount: (id, _, __, ___) => logger.info('Set $key to $id'),
-      );
-
-      log = false;
-    }
-
     final success = await _destinationRepository.setDestination(
-      destination: newDestination,
+      destination: value,
     );
 
     if (success) {
-      _metricsRepository.track('destination-changed', {
-        'has-app-account': user.appAccountUrl != null,
-        'to-fixed-destination': newDestination is PhoneNumber,
-        'to-phone-account': newDestination is PhoneAccount,
-      });
+      _track(user, value);
     }
 
-    return SettingChangeListenResult(log: log, sync: _shouldSyncUser);
+    return SettingChangeListenResult(sync: _shouldSyncUser);
+  }
+
+  Future<void> _track(User user, Destination destination) async {
+    final destinationId =
+        destination is PhoneAccount ? destination.id.toString() : null;
+
+    final isOffline = destination is NotAvailable;
+    final isFixedDestination = destination is PhoneNumber;
+    final isMobile =
+        destinationId != null && destinationId == user.appAccountId;
+    final isWebphone =
+        destinationId != null && destinationId == user.webphoneAccountId;
+
+    return _metricsRepository.track(
+      'destination-changed',
+      {
+        'has-app-account': user.appAccountUrl != null,
+        'to-phone-account': destination is PhoneAccount,
+        'to-fixed-destination': isFixedDestination,
+        'to-mobile': isMobile,
+        'to-webphone': isWebphone,
+        'to-desk-phone':
+            !isOffline && !isFixedDestination && !isMobile && !isWebphone,
+        'to-offline': isOffline,
+      },
+    );
   }
 }

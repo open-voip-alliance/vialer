@@ -9,12 +9,14 @@ abstract class FeedbackService extends ChopperService {
   static FeedbackService create() {
     return _$FeedbackService(
       ChopperClient(
-        baseUrl: 'https://feedback.spindle.dev/',
+        baseUrl: Uri.parse('https://feedback.spindle.dev/'),
         converter: const JsonConverter(),
       ),
     );
   }
 
   @Post(path: 'v2/feedback/app')
-  Future<Response> feedback(@Body() Map<String, dynamic> body);
+  Future<Response<String>> feedback(
+    @Body() Map<String, dynamic> body,
+  );
 }

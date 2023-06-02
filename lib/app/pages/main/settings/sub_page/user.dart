@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -10,7 +12,7 @@ import '../widgets/tile/username.dart';
 import 'widget.dart';
 
 class UserSubPage extends StatelessWidget {
-  const UserSubPage();
+  const UserSubPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -38,16 +40,15 @@ class UserSubPage extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 40,
-                    vertical: 20,
-                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: SettingsButton(
                     text: context.msg.main.settings.buttons.logout,
-                    solid: false,
-                    onPressed: () => context.read<SettingsCubit>().logout(),
+                    onPressed: () => unawaited(
+                      context.read<SettingsCubit>().logout(),
+                    ),
                   ),
                 ),
+                const SizedBox(height: 20),
               ],
             );
           },

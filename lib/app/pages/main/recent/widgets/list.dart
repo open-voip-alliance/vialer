@@ -13,6 +13,20 @@ import '../../widgets/conditional_placeholder.dart';
 import 'item.dart';
 
 class RecentCallsList extends StatefulWidget {
+  const RecentCallsList({
+    required this.listPadding,
+    required this.snackBarPadding,
+    required this.callRecords,
+    required this.onRefresh,
+    required this.onCallPressed,
+    required this.onCopyPressed,
+    required this.loadMoreCalls,
+    required this.manualRefresher,
+    required this.performBackgroundImport,
+    this.isLoadingInitial = false,
+    super.key,
+  });
+
   final EdgeInsets listPadding;
   final EdgeInsets snackBarPadding;
 
@@ -27,22 +41,8 @@ class RecentCallsList extends StatefulWidget {
 
   final ManualRefresher manualRefresher;
 
-  const RecentCallsList({
-    Key? key,
-    required this.listPadding,
-    required this.snackBarPadding,
-    this.isLoadingInitial = false,
-    required this.callRecords,
-    required this.onRefresh,
-    required this.onCallPressed,
-    required this.onCopyPressed,
-    required this.loadMoreCalls,
-    required this.manualRefresher,
-    required this.performBackgroundImport,
-  }) : super(key: key);
-
   @override
-  _RecentCallsListState createState() => _RecentCallsListState();
+  State<RecentCallsList> createState() => _RecentCallsListState();
 }
 
 class _RecentCallsListState extends State<RecentCallsList>
@@ -68,7 +68,7 @@ class _RecentCallsListState extends State<RecentCallsList>
     super.didChangeAppLifecycleState(state);
 
     if (state == AppLifecycleState.resumed) {
-      widget.manualRefresher.refresh();
+      unawaited(widget.manualRefresher.refresh());
       widget.performBackgroundImport();
     }
   }
@@ -165,7 +165,7 @@ class ManualRefresher {
   final _key = GlobalKey<RefreshIndicatorState>();
 
   /// This will refresh the items in the list
-  /// (calling [RecentCallList.onRefresh]), and also show the refresh indicator.
+  /// (calling `RecentCallList.onRefresh`), and also show the refresh indicator.
   Future<void>? refresh() => _key.currentState?.show();
 }
 

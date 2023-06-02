@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../../../../../../../domain/voipgrid/web_page.dart';
@@ -14,7 +16,7 @@ class DialPlanLinkTile extends StatelessWidget {
       title: Text(
         context.msg.main.settings.list.portalLinks.dialplan.title,
       ),
-      onTap: () => WebViewPage.open(context, to: WebPage.dialPlan),
+      onTap: () => unawaited(WebViewPage.open(context, to: WebPage.dialPlan)),
     );
   }
 }

@@ -1,6 +1,5 @@
 import 'package:dartx/dartx.dart';
 import 'package:drift/drift.dart';
-import 'package:flutter_phone_lib/flutter_phone_lib.dart';
 import 'package:intl/intl.dart';
 import 'package:timezone/timezone.dart';
 
@@ -18,7 +17,7 @@ extension FromDatabaseCallRecord on ClientCallDatabaseRecord {
         callType: callType,
         callDirection: direction,
         answered: answered,
-        answeredElsewhere: direction == CallDirection.inbound &&
+        answeredElsewhere: direction == Direction.inbound &&
             destinationAccountId != null &&
             !isDestinationAccountLoggedInUser,
         duration: Duration(seconds: duration),
@@ -47,7 +46,7 @@ extension FromDatabaseCallRecord on ClientCallDatabaseRecord {
 }
 
 ClientCallsCompanion toClientCallDatabaseRecord(
-  dynamic object, {
+  Map<String, dynamic> object, {
   required IsUserPhoneAccountLookup isUserPhoneAccount,
 }) {
   final destinationAccountId = (object['dst_account'] as String?).extractedId;
@@ -72,11 +71,10 @@ ClientCallsCompanion toClientCallDatabaseRecord(
     originalCallerId: object['orig_callerid'] as String,
     destinationAccountId: Value(destinationAccountId),
     sourceAccountId: Value(sourceAccountId),
-    isDestinationAccountLoggedInUser: destinationAccountId != null
-        ? isUserPhoneAccount(destinationAccountId)
-        : false,
+    isDestinationAccountLoggedInUser: destinationAccountId != null &&
+        isUserPhoneAccount(destinationAccountId),
     isSourceAccountLoggedInUser:
-        sourceAccountId != null ? isUserPhoneAccount(sourceAccountId) : false,
+        sourceAccountId != null && isUserPhoneAccount(sourceAccountId),
   );
 }
 
@@ -84,7 +82,7 @@ ClientCallsCompanion toClientCallDatabaseRecord(
 const _remoteClientCallTimezone = 'Europe/Amsterdam';
 
 extension VoipgridFormat on DateTime {
-  String get asVoipgridFormat => DateFormat('yyyy-MM-dd\'T\'HH:mm:ss').format(
+  String get asVoipgridFormat => DateFormat("yyyy-MM-dd'T'HH:mm:ss").format(
         TZDateTime.from(
           this,
           getLocation(_remoteClientCallTimezone),
@@ -115,7 +113,7 @@ extension on String? {
     if (this == null) return null;
 
     try {
-      final accountId = Uri.parse(this as String).pathSegments.lastOrNullWhere(
+      final accountId = Uri.parse(this!).pathSegments.lastOrNullWhere(
             (p) => p.isNotEmpty,
           );
 

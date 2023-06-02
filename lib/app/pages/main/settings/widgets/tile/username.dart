@@ -8,9 +8,8 @@ import 'value.dart';
 import 'widget.dart';
 
 class UsernameTile extends StatelessWidget {
-  final User user;
-
   const UsernameTile(this.user, {super.key});
+  final User user;
 
   @override
   Widget build(BuildContext context) {

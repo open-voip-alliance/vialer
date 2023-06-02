@@ -4,12 +4,12 @@ import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
 
 class RateLimitedSnackbarLabel extends StatefulWidget {
+  const RateLimitedSnackbarLabel({required this.expiresAt, super.key});
+
   final DateTime expiresAt;
 
-  const RateLimitedSnackbarLabel({required this.expiresAt});
-
   @override
-  _RateLimitedSnackbarLabelState createState() =>
+  State<RateLimitedSnackbarLabel> createState() =>
       _RateLimitedSnackbarLabelState();
 }
 

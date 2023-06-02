@@ -7,35 +7,31 @@ import '../../../../resources/theme.dart';
 import 'call_feedback.dart';
 
 class SelectAudioProblems extends StatefulWidget {
-  final Function(List<CallAudioProblem> audioProblems) onComplete;
+  const SelectAudioProblems({required this.onComplete, super.key});
 
-  const SelectAudioProblems({required this.onComplete});
+  final void Function(List<CallAudioProblem> audioProblems) onComplete;
 
   @override
   State<StatefulWidget> createState() => _SelectAudioProblemsState();
 }
 
 class _SelectAudioProblemsState extends State<SelectAudioProblems> {
-  final selection = CallAudioProblem.values.toBoolMap(
-    defaultValue: false,
-  );
+  final selection = CallAudioProblem.values.toBoolMap();
 
-  String _text(CallAudioProblem audioProblem) {
-    switch (audioProblem) {
-      case CallAudioProblem.jitter:
-        return context.msg.main.call.feedback.audioProblems.jitter;
-      case CallAudioProblem.echo:
-        return context.msg.main.call.feedback.audioProblems.echo;
-      case CallAudioProblem.crackling:
-        return context.msg.main.call.feedback.audioProblems.crackling;
-      case CallAudioProblem.robotic:
-        return context.msg.main.call.feedback.audioProblems.robotic;
-      case CallAudioProblem.tooQuiet:
-        return context.msg.main.call.feedback.audioProblems.tooQuiet;
-      case CallAudioProblem.tooLoud:
-        return context.msg.main.call.feedback.audioProblems.tooLoud;
-    }
-  }
+  String _text(CallAudioProblem audioProblem) => switch (audioProblem) {
+        CallAudioProblem.jitter =>
+          context.msg.main.call.feedback.audioProblems.jitter,
+        CallAudioProblem.echo =>
+          context.msg.main.call.feedback.audioProblems.echo,
+        CallAudioProblem.crackling =>
+          context.msg.main.call.feedback.audioProblems.crackling,
+        CallAudioProblem.robotic =>
+          context.msg.main.call.feedback.audioProblems.robotic,
+        CallAudioProblem.tooQuiet =>
+          context.msg.main.call.feedback.audioProblems.tooQuiet,
+        CallAudioProblem.tooLoud =>
+          context.msg.main.call.feedback.audioProblems.tooLoud
+      };
 
   void _onDonePressed() {
     final audioProblems =
@@ -51,11 +47,11 @@ class _SelectAudioProblemsState extends State<SelectAudioProblems> {
       actions: [
         TextButton(
           onPressed: _onDonePressed,
-          child: Text(
-            context.msg.main.call.feedback.audioProblems.done.toUpperCase(),
-          ),
           style: TextButton.styleFrom(
             foregroundColor: context.brand.theme.colors.raisedColoredButtonText,
+          ),
+          child: Text(
+            context.msg.main.call.feedback.audioProblems.done.toUpperCase(),
           ),
         )
       ],
@@ -66,8 +62,7 @@ class _SelectAudioProblemsState extends State<SelectAudioProblems> {
           ...selection.entries.map(
             (entry) => CheckboxListTile(
               contentPadding: const EdgeInsets.symmetric(
-                horizontal: 16.0,
-                vertical: 0,
+                horizontal: 16,
               ).copyWith(
                 left: 0,
               ),

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import '../../app/util/loggable.dart';
 import '../../dependency_locator.dart';
 import '../authentication/logout_on_unauthorized_response.dart';
@@ -5,8 +7,11 @@ import '../authentication/unauthorized_api_response.dart';
 import '../call_records/client/import_historic_client_call_records.dart';
 import '../call_records/client/purge_local_call_records.dart';
 import '../metrics/identify_for_tracking.dart';
+import '../onboarding/is_onboarded.dart';
 import '../use_case.dart';
 import '../user/events/logged_in_user_availability_changed.dart';
+import '../user/events/logged_in_user_was_refreshed.dart';
+import '../user/handle_user_voip_config_change.dart';
 import '../user/refresh/refresh_user.dart';
 import '../user/refresh/user_refresh_task.dart';
 import '../user/settings/app_setting.dart';
@@ -25,33 +30,52 @@ class RegisterDomainEventListenersUseCase extends UseCase with Loggable {
   final _logoutOnUnauthorizedResponse = LogoutOnUnauthorizedResponse();
   final _trackRateLimitedApiCalls = TrackRateLimitedApiCalls();
   final _refreshUser = RefreshUser();
+  final _handleUserVoipConfigChange = HandleUserVoipConfigChange();
+  final _isOnboarded = IsOnboarded();
 
   void call() {
-    _eventBus.on<UnauthorizedApiResponseEvent>(_logoutOnUnauthorizedResponse);
-    _eventBus.on<RateLimitReachedEvent>(
-      (event) => _trackRateLimitedApiCalls(event.url),
-    );
-
-    _eventBus.onSettingChange<bool>(
-      AppSetting.showClientCalls,
-      (oldValue, newValue) {
-        if (newValue == true) {
-          _importHistoricClientCalls();
-        } else {
-          _purgeLocalCallRecords(reason: PurgeReason.disabled);
-        }
-      },
-    );
-
-    _eventBus.on<SettingChanged>((_) => _identifyForTracking());
-    _eventBus.on<LoggedInUserAvailabilityChanged>(
-      (_) => _refreshUser(
-        tasksToPerform: [
-          UserRefreshTask.userDestination,
-          UserRefreshTask.userVoipConfig,
-        ],
-        synchronized: false,
-      ),
-    );
+    _eventBus
+      ..on<UnauthorizedApiResponseEvent>(_logoutOnUnauthorizedResponse)
+      ..on<RateLimitReachedEvent>(
+        (event) => _trackRateLimitedApiCalls(event.url),
+      )
+      ..onSettingChange<bool>(
+        AppSetting.showClientCalls,
+        (oldValue, newValue) {
+          if (newValue == true) {
+            unawaited(_importHistoricClientCalls());
+          } else {
+            unawaited(_purgeLocalCallRecords(reason: PurgeReason.disabled));
+          }
+        },
+      )
+      ..on<SettingChangedEvent>((_) => unawaited(_identifyForTracking()))
+      ..on<LoggedInUserAvailabilityChanged>(
+        (_) {
+          if (_isOnboarded()) {
+            unawaited(
+              _refreshUser(
+                tasksToPerform: [
+                  UserRefreshTask.userDestination,
+                  UserRefreshTask.userVoipConfig,
+                ],
+                synchronized: false,
+              ),
+            );
+          }
+        },
+      )
+      ..on<LoggedInUserWasRefreshed>(
+        (event) {
+          if (!event.isFirstTime) {
+            unawaited(
+              _handleUserVoipConfigChange(
+                previous: event.previous.voip,
+                current: event.current.voip,
+              ),
+            );
+          }
+        },
+      );
   }
 }

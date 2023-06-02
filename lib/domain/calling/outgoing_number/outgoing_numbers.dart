@@ -6,13 +6,14 @@ import '../../user/user.dart';
 import '../../voipgrid/voipgrid_service.dart';
 
 class OutgoingNumbersRepository with Loggable {
+  OutgoingNumbersRepository(this._service);
+
   final VoipgridService _service;
   final outgoingNumberRetry = AutomaticRetry.http('Change Outgoing Number');
 
-  OutgoingNumbersRepository(this._service);
-
   Future<Iterable<OutgoingNumber>> getOutgoingNumbersAvailableToClient(
-          Client client) =>
+    Client client,
+  ) =>
       _fetchAllAvailableNumbers(
         clientUuid: client.uuid,
       ).distinct().toList();
@@ -73,9 +74,9 @@ class OutgoingNumbersRepository with Loggable {
       return;
     }
 
-    final body = response.body;
+    final body = response.body!;
 
-    for (final number in (body['items'] as List<dynamic>)) {
+    for (final number in body['items'] as List<dynamic>) {
       yield OutgoingNumber(number as String);
     }
 

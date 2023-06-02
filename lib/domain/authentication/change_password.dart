@@ -10,9 +10,9 @@ class ChangePasswordUseCase extends UseCase {
   final _getUser = GetLoggedInUserUseCase();
 
   Future<void> call({
-    String? email,
     required String currentPassword,
     required String newPassword,
+    String? email,
   }) async {
     email ??= _getUser().email;
 

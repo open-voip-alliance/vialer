@@ -8,7 +8,19 @@ import 'dial_pad/keypad.dart';
 import 'dial_pad/widget.dart';
 
 class T9DialPad extends StatefulWidget {
-  /// The [number] that the user is attempting to make a call to.
+  const T9DialPad({
+    required this.onCallButtonPressed,
+    required this.callButtonIcon,
+    required this.callButtonColor,
+    required this.callButtonSemanticsHint,
+    this.controller,
+    this.onDeleteAll,
+    this.bottomLeftButton,
+    this.bottomRightButton,
+    this.isT9ContactSearchEnabled = true,
+    super.key,
+  });
+
   final void Function(String number)? onCallButtonPressed;
   final IconData callButtonIcon;
   final Color callButtonColor;
@@ -21,20 +33,8 @@ class T9DialPad extends StatefulWidget {
 
   final bool isT9ContactSearchEnabled;
 
-  const T9DialPad({
-    required this.onCallButtonPressed,
-    required this.callButtonIcon,
-    required this.callButtonColor,
-    required this.callButtonSemanticsHint,
-    this.controller,
-    this.onDeleteAll,
-    this.bottomLeftButton,
-    this.bottomRightButton,
-    this.isT9ContactSearchEnabled = true,
-  });
-
   @override
-  _T9DialPadState createState() => _T9DialPadState();
+  State<T9DialPad> createState() => _T9DialPadState();
 }
 
 class _T9DialPadState extends State<T9DialPad> {
@@ -49,7 +49,10 @@ class _T9DialPadState extends State<T9DialPad> {
   void _call(BuildContext context) {
     final number = controller.text;
 
-    assert(widget.onCallButtonPressed != null);
+    assert(
+      widget.onCallButtonPressed != null,
+      'Attempting to call when onCallButtonPressed was null',
+    );
 
     widget.onCallButtonPressed?.call(number);
 
@@ -59,7 +62,6 @@ class _T9DialPadState extends State<T9DialPad> {
   @override
   Widget build(BuildContext context) {
     return TransparentStatusBar(
-      brightness: Brightness.dark,
       child: SafeArea(
         child: Column(
           children: <Widget>[
@@ -99,18 +101,17 @@ class _T9DialPadState extends State<T9DialPad> {
 }
 
 class _DialerPrimaryButton extends StatelessWidget {
+  const _DialerPrimaryButton({
+    required this.icon,
+    required this.color,
+    required this.semanticsHint,
+    this.onPressed,
+  });
+
   final VoidCallback? onPressed;
   final IconData icon;
   final Color color;
   final String semanticsHint;
-
-  const _DialerPrimaryButton({
-    Key? key,
-    this.onPressed,
-    required this.icon,
-    required this.color,
-    required this.semanticsHint,
-  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

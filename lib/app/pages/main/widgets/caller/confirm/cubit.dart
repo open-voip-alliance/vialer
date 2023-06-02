@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../../domain/calling/call_through/get_call_through_region_number.dart';
@@ -12,12 +14,6 @@ import 'state.dart';
 export 'state.dart';
 
 class ConfirmCubit extends Cubit<ConfirmState> with Loggable {
-  final _changeSetting = ChangeSettingUseCase();
-  final _getCallThroughRegionNumber = GetCallThroughRegionNumberUseCase();
-
-  final CallerCubit _caller;
-  final String _destination;
-
   ConfirmCubit(this._caller, this._destination)
       : super(
           ConfirmState(
@@ -27,8 +23,14 @@ class ConfirmCubit extends Cubit<ConfirmState> with Loggable {
                 .get(CallSetting.outgoingNumber),
           ),
         ) {
-    _emitInitialState();
+    unawaited(_emitInitialState());
   }
+
+  final _changeSetting = ChangeSettingUseCase();
+  final _getCallThroughRegionNumber = GetCallThroughRegionNumberUseCase();
+
+  final CallerCubit _caller;
+  final String _destination;
 
   Future<void> _emitInitialState() async {
     emit(

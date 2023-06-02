@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../domain/feedback/send_feedback.dart';
@@ -9,11 +11,10 @@ import 'state.dart';
 export 'state.dart';
 
 class FeedbackCubit extends Cubit<FeedbackState> {
+  FeedbackCubit() : super(FeedbackNotSent());
   final _sendFeedback = SendFeedbackUseCase();
   final _sendSavedLogsToRemote = SendSavedLogsToRemoteUseCase();
   final _changeSetting = ChangeSettingUseCase();
-
-  FeedbackCubit() : super(FeedbackNotSent());
 
   Future<void> sendFeedback({
     required String title,
@@ -28,7 +29,7 @@ class FeedbackCubit extends Cubit<FeedbackState> {
     final result = await _changeSetting(AppSetting.remoteLogging, true);
 
     if (result != SettingChangeResult.failed) {
-      _sendSavedLogsToRemote();
+      unawaited(_sendSavedLogsToRemote());
     }
   }
 }

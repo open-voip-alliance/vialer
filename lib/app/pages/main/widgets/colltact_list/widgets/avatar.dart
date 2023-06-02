@@ -13,18 +13,18 @@ import '../util/color.dart';
 part 'avatar.freezed.dart';
 
 class ColltactAvatar extends StatelessWidget {
+  const ColltactAvatar(
+    this.colltact, {
+    super.key,
+    this.size = defaultSize,
+    this.colleaguesUpToDate = true,
+  });
+
   static const defaultSize = Avatar.defaultSize;
 
   final Colltact colltact;
   final double size;
   final bool colleaguesUpToDate;
-
-  const ColltactAvatar(
-    this.colltact, {
-    Key? key,
-    this.size = defaultSize,
-    this.colleaguesUpToDate = true,
-  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -39,14 +39,14 @@ class ColltactAvatar extends StatelessWidget {
 }
 
 class ContactAvatar extends StatelessWidget {
-  final Contact contact;
-  final double size;
-
   const ContactAvatar(
     this.contact, {
-    Key? key,
+    super.key,
     this.size = ColltactAvatar.defaultSize,
-  }) : super(key: key);
+  });
+
+  final Contact contact;
+  final double size;
 
   @override
   Widget build(BuildContext context) {
@@ -60,14 +60,14 @@ class ContactAvatar extends StatelessWidget {
 }
 
 class ColleagueAvatar extends StatelessWidget {
-  final Colleague colleague;
-  final bool colleaguesUpToDate;
-
   const ColleagueAvatar(
     this.colleague, {
-    Key? key,
+    super.key,
     this.colleaguesUpToDate = true,
-  }) : super(key: key);
+  });
+
+  final Colleague colleague;
+  final bool colleaguesUpToDate;
 
   @override
   Widget build(BuildContext context) {
@@ -95,6 +95,14 @@ class _AvatarColor with _$_AvatarColor {
 }
 
 class UserAvatar extends StatelessWidget {
+  const UserAvatar({
+    this.relevantContext,
+    this.status,
+    this.size = ColltactAvatar.defaultSize,
+    this.icon,
+    super.key,
+  });
+
   final ColleagueContext? relevantContext;
   final ColleagueAvailabilityStatus? status;
 
@@ -106,12 +114,7 @@ class UserAvatar extends StatelessWidget {
   static const _voipAccountIcon = FontAwesomeIcons.phoneOffice;
 
   final double size;
-
-  const UserAvatar({
-    this.relevantContext,
-    this.status,
-    this.size = ColltactAvatar.defaultSize,
-  });
+  final IconData? icon;
 
   _AvatarColor _color(BuildContext context) {
     final colors = context.brand.theme.colors;
@@ -132,6 +135,10 @@ class UserAvatar extends StatelessWidget {
       foreground: colors.userAvailabilityUnknownAccent,
       background: colors.userAvailabilityUnknown,
     );
+    final offline = _AvatarColor(
+      foreground: colors.userAvailabilityOfflineAccent,
+      background: colors.userAvailabilityOffline,
+    );
 
     if (relevantContext != null) {
       return relevantContext!.when(
@@ -147,9 +154,10 @@ class UserAvatar extends StatelessWidget {
         return unavailable;
       case ColleagueAvailabilityStatus.busy:
         return busy;
+      case ColleagueAvailabilityStatus.offline:
+        return offline;
       case ColleagueAvailabilityStatus.unknown:
-        return unknown;
-      default:
+      case null:
         return unknown;
     }
   }
@@ -171,11 +179,10 @@ class UserAvatar extends StatelessWidget {
         return _dndIcon;
       case ColleagueAvailabilityStatus.busy:
         return _inCallIcon;
-      case ColleagueAvailabilityStatus.unknown:
-        return _voipAccountIcon;
       case ColleagueAvailabilityStatus.offline:
         return _unavailableIcon;
-      default:
+      case ColleagueAvailabilityStatus.unknown:
+      case null:
         return _voipAccountIcon;
     }
   }
@@ -192,7 +199,9 @@ class UserAvatar extends StatelessWidget {
         child: CircleAvatar(
           backgroundColor: color.background,
           foregroundColor: color.foreground,
-          child: FaIcon(_icon(), size: size / 2.5),
+          child: icon != null
+              ? FaIcon(icon, size: size / 1.5)
+              : FaIcon(_icon(), size: size / 2.5),
         ),
       ),
     );

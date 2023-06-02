@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -16,12 +18,12 @@ import 'cubit.dart';
 import 'widgets/banner.dart';
 
 class Notice extends StatelessWidget {
-  final Widget child;
-
   const Notice({
-    Key? key,
     required this.child,
-  }) : super(key: key);
+    super.key,
+  });
+
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
@@ -35,9 +37,9 @@ class Notice extends StatelessWidget {
 
 /// Private widget with a context that has access to [NoticeCubit].
 class _Notice extends StatefulWidget {
-  final Widget child;
+  const _Notice(this.child);
 
-  _Notice(this.child);
+  final Widget child;
 
   @override
   _NoticeState createState() => _NoticeState();
@@ -50,7 +52,7 @@ class _NoticeState extends State<_Notice>
     super.didChangeAppLifecycleState(state);
 
     if (state == AppLifecycleState.resumed) {
-      context.read<NoticeCubit>().check();
+      unawaited(context.read<NoticeCubit>().check());
     }
   }
 
@@ -139,9 +141,11 @@ class _NoticeState extends State<_Notice>
                   if (state is TemporaryRedirectNotice) ...[
                     if (state.canChangeTemporaryRedirect) ...[
                       TextButton(
-                        onPressed: () => Navigator.push(
-                          context,
-                          TemporaryRedirectPickerPage.route(),
+                        onPressed: () => unawaited(
+                          Navigator.push(
+                            context,
+                            TemporaryRedirectPickerPage.route(),
+                          ),
                         ),
                         child: Text(
                           context.msg.main.temporaryRedirect.actions
@@ -160,8 +164,12 @@ class _NoticeState extends State<_Notice>
                     ),
                     if (state is NoAppAccountNotice) ...[
                       TextButton(
-                        onPressed: () => WebViewPage.open(context,
-                            to: WebPage.telephonySettings),
+                        onPressed: () => unawaited(
+                          WebViewPage.open(
+                            context,
+                            to: WebPage.telephonySettings,
+                          ),
+                        ),
                         child: Text(
                           context.msg.main.notice.actions.selectAccount
                               .toUpperCaseIfAndroid(context),
@@ -169,20 +177,23 @@ class _NoticeState extends State<_Notice>
                       ),
                     ] else ...[
                       TextButton(
-                        onPressed: () => cubit.requestPermission(
-                          [
-                            if (state is PhonePermissionDeniedNotice)
-                              Permission.phone
-                            else if (state is MicrophonePermissionDeniedNotice)
-                              Permission.microphone
-                            else if (state
-                                is BluetoothConnectPermissionDeniedNotice)
-                              Permission.bluetooth
-                            else if (state
-                                is NotificationsPermissionDeniedNotice)
-                              Permission.notifications
-                            else ...[Permission.phone, Permission.microphone],
-                          ],
+                        onPressed: () => unawaited(
+                          cubit.requestPermission(
+                            [
+                              if (state is PhonePermissionDeniedNotice)
+                                Permission.phone
+                              else if (state
+                                  is MicrophonePermissionDeniedNotice)
+                                Permission.microphone
+                              else if (state
+                                  is BluetoothConnectPermissionDeniedNotice)
+                                Permission.bluetooth
+                              else if (state
+                                  is NotificationsPermissionDeniedNotice)
+                                Permission.notifications
+                              else ...[Permission.phone, Permission.microphone],
+                            ],
+                          ),
                         ),
                         child: Text(
                           context.msg.main.notice.actions.givePermission

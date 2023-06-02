@@ -8,9 +8,8 @@ import 'value.dart';
 import 'widget.dart';
 
 class UseVoipTile extends StatelessWidget {
-  final User user;
-
   const UseVoipTile(this.user, {super.key});
+  final User user;
 
   @override
   Widget build(BuildContext context) {

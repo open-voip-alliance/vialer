@@ -3,6 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import '../colltacts/contact.dart';
 
 part 'call_record.freezed.dart';
+
 part 'call_record.g.dart';
 
 @freezed
@@ -21,7 +22,7 @@ class CallRecord with _$CallRecord {
     required CallParty destination,
   }) = CallRecordWithoutContact;
 
-  /// CallRecord with a contact that relates to the [destinationNumber].
+  /// CallRecord with a contact that relates to the [destination].
   const factory CallRecord.withContact({
     required String id,
     required CallType callType,
@@ -116,18 +117,18 @@ enum CallerType {
 
 @freezed
 class CallParty with _$CallParty {
-  const CallParty._();
-
   const factory CallParty({
-    String? name,
     required String number,
     required CallerType type,
+    String? name,
   }) = _CallParty;
-
-  bool get hasName => name?.isNotEmpty == true;
-
-  String get label => hasName ? name! : number;
 
   factory CallParty.fromJson(Map<String, dynamic> json) =>
       _$CallPartyFromJson(json);
+
+  const CallParty._();
+
+  bool get hasName => name?.isNotEmpty ?? false;
+
+  String get label => hasName ? name! : number;
 }

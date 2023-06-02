@@ -60,11 +60,14 @@ ios/Runner/Assets.xcassets/AppIcon.appiconset/*
 !ios/Runner/Assets.xcassets/AppIcon.appiconset/.gitkeep
 
 # Generated file by pre-build scripts.
-ios/Flutter/Brand.xconfig
-ios/Flutter/Env.xconfig
+ios/Flutter/Brand.xcconfig
+ios/Flutter/Env.xcconfig
 
 release_notes_*.txt
 
 # Android resources
 android/app/src/**/res/values*/
 android/app/src/**/res/font/
+
+# Ignoring generated language files
+*.i18n.yaml

@@ -18,9 +18,9 @@ class UpdateRemoteLoggingListener extends SettingChangeListener<bool>
   @override
   FutureOr<SettingChangeListenResult> preStore(
     User user,
-    bool enabled,
+    bool value,
   ) async {
-    if (enabled) {
+    if (value) {
       await _enableRemoteLogging();
     } else {
       await _disableRemoteLogging();

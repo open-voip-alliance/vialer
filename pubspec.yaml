@@ -6,8 +6,8 @@ description: >-
 version: 7.0.0
 
 environment:
-  sdk: ">=2.19.0 <3.0.0"
-  flutter: 3.7.12
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: 3.10.1
 
 dependencies:
   flutter:
@@ -19,7 +19,7 @@ dependencies:
   flutter_phone_lib:
     git:
       url: https://github.com/open-voip-alliance/flutter-phone-lib
-      ref: de0452f4a5cbb3a32a9863a23c1a14c48e8862d5
+      ref: 37f7c016988d9f848318079edbc961779c663aed
 
   # We use our own fork, this is required when using Font Awesome Pro.
   # See: https://pub.dev/packages/font_awesome_flutter#enable-pro-icons
@@ -29,10 +29,9 @@ dependencies:
       ref: f5ad8977b0cf6a75e9cd38750c322216415e3920
 
   flutter_bloc: ^7.0.0
-  pedantic: ^1.9.0
   provider: ^6.0.0
   equatable: ^2.0.0
-  chopper: ^4.0.6
+  chopper: ^6.1.1
   shared_preferences: ^2.0.17
   flutter_svg: ^1.0.0
   android_intent: ^2.0.0
@@ -43,13 +42,13 @@ dependencies:
   diacritic: ^0.1.1
   scrollable_positioned_list: ^0.3.2
   i18n: ^3.1.0
-  intl: ^0.17.0
+  intl: ^0.18.0
   flutter_dotenv: ^5.0.2
   sentry_flutter: ^6.22.0
   flutter_segment: ^3.12.1
   device_info: ^2.0.0
   package_info: ^2.0.0
-  sqlite3_flutter_libs: ^0.5.2
+  sqlite3_flutter_libs: ^0.5.15
   path_provider: ^2.0.1
   path: ^1.6.4
   timezone: ^0.8.0
@@ -66,10 +65,9 @@ dependencies:
   flutter_switch: ^0.3.2
   in_app_review: ^2.0.4
   synchronized: ^3.0.0+3
-
   duration: ^3.0.6
   flutter_keyboard_visibility: ^5.3.0
-  drift: ^1.7.1
+  drift: ^2.8.0
   recase: ^4.0.0
   watcher: ^1.0.1
   freezed_annotation: ^2.1.0
@@ -77,6 +75,7 @@ dependencies:
   mockito: ^5.3.2
   flutter_platform_widgets: ^3.2.0
   search_highlight_text: ^1.0.0+2
+  austerity: 1.1.0
 
 dev_dependencies:
   test: ^1.20.0
@@ -87,18 +86,17 @@ dev_dependencies:
   flutter_driver:
     sdk: flutter
 
-  effective_dart: ^1.2.0
   build_runner: ^2.1.2
-  chopper_generator: ^4.0.6
+  chopper_generator: ^6.0.0
   json_serializable: ^6.1.1
   flutter_launcher_icons: ^0.9.0
-  pigeon: ^3.2.0
+  pigeon: ^10.0.0
   xml: ^5.3.1
   basic_utils: ^3.9.1
   yaml: ^3.1.0
   yaml_edit: ^2.0.1
   glob: ^2.0.2
-  drift_dev: ^1.7.0
+  drift_dev: ^2.8.0
   package_config: ^2.1.0
   freezed: ^2.1.0+1
 

@@ -8,9 +8,8 @@ import 'value.dart';
 import 'widget.dart';
 
 class ShowClientCallsTile extends StatelessWidget {
-  final User user;
-
   const ShowClientCallsTile(this.user, {super.key});
+  final User user;
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +26,8 @@ class ShowClientCallsTile extends StatelessWidget {
       child: BoolSettingValue(
         user.settings,
         AppSetting.showClientCalls,
-        onChanged: user.permissions.canSeeClientCalls ? defaultOnChanged : null,
+        onChanged:
+            user.permissions.canSeeClientCalls ? defaultOnSettingChanged : null,
       ),
     );
   }

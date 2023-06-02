@@ -7,22 +7,12 @@ import '../../../../../resources/theme.dart';
 import '../../../../../util/conditional_capitalization.dart';
 import '../../../../../widgets/stylized_button.dart';
 import '../../../../../widgets/universal_refresh_indicator.dart';
+import '../../../settings/widgets/buttons/settings_button.dart';
 import '../../conditional_placeholder.dart';
 import '../cubit.dart';
 import '../widget.dart';
 
 class NoResultsPlaceholder extends StatelessWidget {
-  /// The type of NoResults page to display, if set to [null] then none will be
-  /// displayed.
-  final NoResultsType? type;
-  final String searchTerm;
-  final ColltactKind kind;
-  final Function(String number) onCall;
-  final Future<void> Function() onRefresh;
-  final bool dontAskForContactsPermissionAgain;
-  final ContactsCubit contactsCubit;
-  final Widget child;
-
   const NoResultsPlaceholder({
     required this.type,
     required this.searchTerm,
@@ -32,7 +22,19 @@ class NoResultsPlaceholder extends StatelessWidget {
     required this.dontAskForContactsPermissionAgain,
     required this.contactsCubit,
     required this.child,
+    super.key,
   });
+
+  /// The type of NoResults page to display, if set to `null` then none will be
+  /// displayed.
+  final NoResultsType? type;
+  final String searchTerm;
+  final ColltactKind kind;
+  final void Function(String number) onCall;
+  final Future<void> Function() onRefresh;
+  final bool dontAskForContactsPermissionAgain;
+  final ContactsCubit contactsCubit;
+  final Widget child;
 
   /// The call button should only be shown when the text field looks like a
   /// valid number.
@@ -40,47 +42,42 @@ class NoResultsPlaceholder extends StatelessWidget {
       type == NoResultsType.noSearchResults &&
       searchTerm.isNotEmpty &&
       searchTerm.length <= 13 &&
-      !RegExp(r'[^0-9+ ]').hasMatch(searchTerm);
+      !RegExp('[^0-9+ ]').hasMatch(searchTerm);
 
-  String _title(BuildContext context) {
-    switch (type!) {
-      case NoResultsType.noOnlineColleagues:
-        return context.msg.main.colltacts.noOnline.title;
-      case NoResultsType.noSearchResults:
-        return context.msg.main.colltacts.noResults.title;
-      case NoResultsType.colleaguesLoading:
-        return context.msg.main.contacts.list.loadingColleagues.title;
-      case NoResultsType.contactsLoading:
-        return context.msg.main.contacts.list.loadingContacts.title;
-      case NoResultsType.noContactsExist:
-        return context.msg.main.contacts.list.empty.title;
-      case NoResultsType.noContactsPermission:
-        return context.msg.main.contacts.list.noPermission
-            .description(context.brand.appName);
-    }
-  }
+  String _title(BuildContext context) => switch (type!) {
+        NoResultsType.noOnlineColleagues =>
+          context.msg.main.colltacts.noOnline.title,
+        NoResultsType.noSearchResults =>
+          context.msg.main.colltacts.noResults.title,
+        NoResultsType.colleaguesLoading =>
+          context.msg.main.contacts.list.loadingColleagues.title,
+        NoResultsType.contactsLoading =>
+          context.msg.main.contacts.list.loadingContacts.title,
+        NoResultsType.noContactsExist =>
+          context.msg.main.contacts.list.empty.title,
+        NoResultsType.noContactsPermission => context
+            .msg.main.contacts.list.noPermission
+            .description(context.brand.appName)
+      };
 
-  String _subtitle(BuildContext context) {
-    switch (type!) {
-      case NoResultsType.noOnlineColleagues:
-        return context.msg.main.colltacts.noOnline.subtitle;
-      case NoResultsType.noSearchResults:
-        return kind == ColltactKind.contact
+  String _subtitle(BuildContext context) => switch (type!) {
+        NoResultsType.noOnlineColleagues =>
+          context.msg.main.colltacts.noOnline.subtitle,
+        NoResultsType.noSearchResults => kind == ColltactKind.contact
             ? context.msg.main.colltacts.noResults.contacts(searchTerm)
-            : context.msg.main.colltacts.noResults.colleagues(searchTerm);
-      case NoResultsType.colleaguesLoading:
-        return context.msg.main.contacts.list.loadingColleagues.description;
-      case NoResultsType.contactsLoading:
-        return context.msg.main.contacts.list.loadingContacts.description;
-      case NoResultsType.noContactsExist:
-        return context.msg.main.contacts.list.empty.description(
-          context.brand.appName,
-        );
-      case NoResultsType.noContactsPermission:
-        return context.msg.main.contacts.list.noPermission
-            .permanentDescription(context.brand.appName);
-    }
-  }
+            : context.msg.main.colltacts.noResults.colleagues(searchTerm),
+        NoResultsType.colleaguesLoading =>
+          context.msg.main.contacts.list.loadingColleagues.description,
+        NoResultsType.contactsLoading =>
+          context.msg.main.contacts.list.loadingContacts.description,
+        NoResultsType.noContactsExist =>
+          context.msg.main.contacts.list.empty.description(
+            context.brand.appName,
+          ),
+        NoResultsType.noContactsPermission => context
+            .msg.main.contacts.list.noPermission
+            .permanentDescription(context.brand.appName)
+      };
 
   Widget? _button(BuildContext context) {
     if (type == NoResultsType.noContactsPermission) {
@@ -156,9 +153,9 @@ class NoResultsPlaceholder extends StatelessWidget {
 }
 
 class _CircularGraphic extends StatelessWidget {
-  final NoResultsType type;
-
   const _CircularGraphic(this.type);
+
+  final NoResultsType type;
 
   IconData _icon() {
     switch (type) {
@@ -186,7 +183,7 @@ class _CircularGraphic extends StatelessWidget {
         shape: const CircleBorder(),
         color: outerCircleColor,
         elevation: 2,
-        shadowColor: context.brand.theme.colors.primary.withOpacity(0.0),
+        shadowColor: context.brand.theme.colors.primary.withOpacity(0),
         child: Padding(
           padding: const EdgeInsets.all(32),
           child: Material(
@@ -217,40 +214,35 @@ enum NoResultsType {
 }
 
 class _ContactsPermissionButton extends StatelessWidget {
-  final bool dontAskAgain;
-  final ContactsCubit cubit;
-
-  _ContactsPermissionButton({
+  const _ContactsPermissionButton({
     required this.dontAskAgain,
     required this.cubit,
   });
 
+  final bool dontAskAgain;
+  final ContactsCubit cubit;
+
   @override
   Widget build(BuildContext context) {
-    return StylizedButton.raised(
-      colored: true,
+    return SettingsButton(
       onPressed: dontAskAgain ? cubit.requestPermission : cubit.openAppSettings,
-      child: !dontAskAgain
-          ? Text(
-              context.msg.main.contacts.list.noPermission.buttonPermission
-                  .toUpperCaseIfAndroid(context),
-            )
-          : Text(
-              context.msg.main.contacts.list.noPermission.buttonOpenSettings
-                  .toUpperCaseIfAndroid(context),
-            ),
+      text: !dontAskAgain
+          ? context.msg.main.contacts.list.noPermission.buttonPermission
+              .toUpperCaseIfAndroid(context)
+          : context.msg.main.contacts.list.noPermission.buttonOpenSettings
+              .toUpperCaseIfAndroid(context),
     );
   }
 }
 
 class _CallButton extends StatelessWidget {
-  final String searchTerm;
-  final Function(String number) onCall;
-
-  _CallButton({
+  const _CallButton({
     required this.searchTerm,
     required this.onCall,
   });
+
+  final String searchTerm;
+  final void Function(String number) onCall;
 
   @override
   Widget build(BuildContext context) {

@@ -34,8 +34,8 @@ Future<void> main(List<String> args) async {
         ' expecting e.g. v7.1.1');
   }
 
-  for (var fileName in localizationMap.keys) {
-    for (var brand in brandsToGenerateFor) {
+  for (final fileName in localizationMap.keys) {
+    for (final brand in brandsToGenerateFor) {
       final path = '$rawReleaseNotesPath/$release/$brand/$fileName';
       await File(path).create(recursive: true);
       print('Created $path');

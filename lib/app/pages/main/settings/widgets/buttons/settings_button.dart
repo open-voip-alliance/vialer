@@ -4,17 +4,18 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../../../../resources/theme.dart';
 
 class SettingsButton extends StatelessWidget {
-  final String text;
-  final IconData? icon;
-  final VoidCallback onPressed;
-  final bool solid;
-
   const SettingsButton({
     required this.text,
-    this.icon,
     required this.onPressed,
+    this.icon,
     this.solid = true,
+    super.key,
   });
+
+  final String text;
+  final IconData? icon;
+  final VoidCallback? onPressed;
+  final bool solid;
 
   @override
   Widget build(BuildContext context) {

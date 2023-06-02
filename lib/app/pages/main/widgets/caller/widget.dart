@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,10 +17,10 @@ import 'confirm/page.dart';
 import 'cubit.dart';
 
 class Caller extends StatefulWidget {
+  const Caller._(this.navigatorKey, this.child);
+
   final GlobalKey<NavigatorState> navigatorKey;
   final Widget child;
-
-  Caller._(this.navigatorKey, this.child);
 
   static Widget create({
     required GlobalKey<NavigatorState> navigatorKey,
@@ -31,7 +33,7 @@ class Caller extends StatefulWidget {
   }
 
   @override
-  _CallerState createState() => _CallerState();
+  State<Caller> createState() => _CallerState();
 }
 
 class _CallerState extends State<Caller>
@@ -75,10 +77,12 @@ class _CallerState extends State<Caller>
     if (call == null) return;
 
     if (context.isAndroid) {
-      NativeIncomingCallScreen().launch(
-        call.remotePartyHeading,
-        call.remotePartySubheading,
-        call.contact?.imageUri?.toString() ?? '',
+      unawaited(
+        NativeIncomingCallScreen().launch(
+          call.remotePartyHeading,
+          call.remotePartySubheading,
+          call.contact?.imageUri?.toString() ?? '',
+        ),
       );
       return;
     }
@@ -89,7 +93,7 @@ class _CallerState extends State<Caller>
   Future<void> _onStateChanged(BuildContext context, CallerState state) async {
     if (state is Ringing) {
       _isRinging = true;
-      launchIncomingCallScreen(state);
+      unawaited(launchIncomingCallScreen(state));
     } else {
       // Last state was ringing, remove the incoming call page.
       if (_isRinging) {
@@ -105,21 +109,25 @@ class _CallerState extends State<Caller>
         (state is Calling &&
             state.isVoip &&
             state.voipCall!.direction.isInbound)) {
-      await _navigatorState.pushAndRemoveUntil(
-        MaterialPageRoute(
-          builder: (_) => const CallPage(),
+      unawaited(
+        _navigatorState.pushAndRemoveUntil<void>(
+          MaterialPageRoute(
+            builder: (_) => const CallPage(),
+          ),
+          // We want to go back to the main screen after a call
+          // (not the dialer or possibly ringing screen).
+          (route) => route.settings.name == Routes.main,
         ),
-        // We want to go back to the main screen after a call
-        // (not the dialer or possibly ringing screen).
-        (route) => route.settings.name == Routes.main,
       );
     }
 
     if (state is ShowCallThroughConfirmPage) {
-      await _navigatorState.push(
-        ConfirmPageRoute(
-          destination: state.destination,
-          origin: state.origin,
+      unawaited(
+        _navigatorState.push<void>(
+          ConfirmPageRoute(
+            destination: state.destination,
+            origin: state.origin,
+          ),
         ),
       );
     }
@@ -127,18 +135,24 @@ class _CallerState extends State<Caller>
     if (state is StartingCallFailed) {
       if (state is StartingCallFailedWithException) {
         if (state.isVoip) {
-          await _showCallThroughErrorDialog(
-            _navigatorContext,
-            state.exception as CallThroughException,
+          unawaited(
+            _showCallThroughErrorDialog(
+              _navigatorContext,
+              state.exception as CallThroughException,
+            ),
           );
         } else {
-          await _showInitiatingCallFailedDialogWithException(
-            context,
-            state.exception,
+          unawaited(
+            _showInitiatingCallFailedDialogWithException(
+              context,
+              state.exception,
+            ),
           );
         }
       } else if (state is StartingCallFailedWithReason) {
-        await _showInitiatingCallFailedDialog(_navigatorContext, state.reason);
+        unawaited(
+          _showInitiatingCallFailedDialog(_navigatorContext, state.reason),
+        );
       }
     }
   }
@@ -196,34 +210,22 @@ Future<void> _showInitiatingCallFailedDialog(
   CallFailureReason reason,
 ) {
   String message, title = context.msg.main.call.error.title;
-  switch (reason) {
-    case CallFailureReason.invalidCallState:
-      message = context.msg.main.call.error.voip.invalidCallState;
-      break;
-    case CallFailureReason.noMicrophonePermission:
-      message = context.msg.main.call.error.voip
-          .noMicrophonePermission(context.brand.appName);
-      break;
-    case CallFailureReason.noConnectivity:
-      message = context.msg.main.call.error.voip.noConnectivity;
-      break;
-    case CallFailureReason.inCall:
-      message = context.msg.main.call.error.voip.inCall;
-      break;
-    case CallFailureReason.rejectedByAndroidTelecomFramework:
-      message =
-          context.msg.main.call.error.voip.rejectedByAndroidTelecomFramework;
-      break;
-    case CallFailureReason.rejectedByCallKit:
-      message = context.msg.main.call.error.voip.rejectedByCallKit;
-      break;
-    case CallFailureReason.unableToRegister:
-      message = context.msg.main.call.error.voip.unableToRegister;
-      break;
-    case CallFailureReason.unknown:
-      message = context.msg.main.call.error.unknown;
-      break;
-  }
+  message = switch (reason) {
+    CallFailureReason.invalidCallState =>
+      context.msg.main.call.error.voip.invalidCallState,
+    CallFailureReason.noMicrophonePermission => context.msg.main.call.error.voip
+        .noMicrophonePermission(context.brand.appName),
+    CallFailureReason.noConnectivity =>
+      context.msg.main.call.error.voip.noConnectivity,
+    CallFailureReason.inCall => context.msg.main.call.error.voip.inCall,
+    CallFailureReason.rejectedByAndroidTelecomFramework =>
+      context.msg.main.call.error.voip.rejectedByAndroidTelecomFramework,
+    CallFailureReason.rejectedByCallKit =>
+      context.msg.main.call.error.voip.rejectedByCallKit,
+    CallFailureReason.unableToRegister =>
+      context.msg.main.call.error.voip.unableToRegister,
+    CallFailureReason.unknown => context.msg.main.call.error.unknown
+  };
 
   return _AlertDialog.show(
     context,
@@ -244,14 +246,13 @@ Future<void> _showInitiatingCallFailedDialogWithException(
 }
 
 class _AlertDialog extends StatelessWidget {
-  final Widget title;
-  final Widget content;
-
   const _AlertDialog({
-    Key? key,
     required this.title,
     required this.content,
-  }) : super(key: key);
+  });
+
+  final Widget title;
+  final Widget content;
 
   static Future<void> show(
     BuildContext context, {
@@ -260,7 +261,6 @@ class _AlertDialog extends StatelessWidget {
   }) {
     return showDialog<void>(
       context: context,
-      barrierDismissible: true,
       builder: (context) {
         return _AlertDialog(
           title: title,
@@ -324,5 +324,5 @@ extension on CallScreenBehavior {
   // Pigeon doesn't support named parameters so using an extension method to
   // make this a little cleaner.
   void configure({required bool showWhenLocked}) =>
-      showWhenLocked ? enable() : disable();
+      showWhenLocked ? unawaited(enable()) : unawaited(disable());
 }

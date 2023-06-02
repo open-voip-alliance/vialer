@@ -7,7 +7,7 @@ part 'user_voip_config.g.dart';
 class UserVoipConfig with _$UserVoipConfig {
   const factory UserVoipConfig({
     @JsonKey(name: 'appaccount_account_id', fromJson: _sipUserIdFromJson)
-        required String sipUserId,
+    required String sipUserId,
     @JsonKey(name: 'appaccount_password') required String password,
     @JsonKey(name: 'appaccount_use_encryption') required bool useEncryption,
     @JsonKey(name: 'appaccount_use_opus') required bool useOpus,
@@ -25,13 +25,7 @@ class UserVoipConfig with _$UserVoipConfig {
   }
 
   static Map<String, dynamic>? serializeToJson(UserVoipConfig? config) =>
-      config != null ? config.toJson() : null;
-
-  @override
-  String toString() => '$runtimeType('
-      'sipUserId: $sipUserId, '
-      'useEncryption: $useEncryption, '
-      'useOpus: $useOpus)';
+      config?.toJson();
 }
 
 String _sipUserIdFromJson(dynamic json) =>
@@ -42,7 +36,7 @@ extension NullableUserVoipConfig on UserVoipConfig? {
 
   String get password => this?.password ?? '';
 
-  bool get useEncryption => this?.useEncryption == true;
+  bool get useEncryption => this?.useEncryption ?? false;
 
-  bool get useOpus => this?.useOpus == true;
+  bool get useOpus => this?.useOpus ?? false;
 }

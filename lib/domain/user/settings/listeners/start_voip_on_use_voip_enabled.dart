@@ -18,9 +18,9 @@ class StartVoipOnUseVoipEnabledListener extends SettingChangeListener<bool>
   @override
   FutureOr<SettingChangeListenResult> postStore(
     User user,
-    bool useVoip,
+    bool value,
   ) async {
-    if (!useVoip) return successResult;
+    if (!value) return successResult;
 
     try {
       await _registerToVoipMiddleware();

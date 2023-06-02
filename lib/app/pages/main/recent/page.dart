@@ -18,15 +18,15 @@ import 'cubit.dart';
 import 'widgets/list.dart';
 
 class RecentCallsPage extends StatefulWidget {
+  const RecentCallsPage({
+    super.key,
+    this.listPadding = EdgeInsets.zero,
+    this.snackBarPadding = EdgeInsets.zero,
+  });
+
   /// Note that `top` will always be overridden to `8`.
   final EdgeInsets listPadding;
   final EdgeInsets snackBarPadding;
-
-  const RecentCallsPage({
-    Key? key,
-    this.listPadding = EdgeInsets.zero,
-    this.snackBarPadding = EdgeInsets.zero,
-  }) : super(key: key);
 
   @override
   State<RecentCallsPage> createState() => _RecentCallsPageState();
@@ -34,9 +34,9 @@ class RecentCallsPage extends StatefulWidget {
 
 class _RecentCallsPageState extends State<RecentCallsPage> {
   final _eventBus = dependencyLocator<EventBusObserver>();
-  StreamSubscription? _eventBusSubscription;
+  StreamSubscription<SettingChangedEvent<Object>>? _eventBusSubscription;
 
-  final _getLatestUser = GetLoggedInUserUseCase();
+  final _getUser = GetLoggedInUserUseCase();
 
   bool _showClientCalls = false;
 
@@ -47,18 +47,18 @@ class _RecentCallsPageState extends State<RecentCallsPage> {
   void initState() {
     super.initState();
 
-    _updateShowClientCalls();
+    unawaited(_updateShowClientCalls());
 
     _eventBusSubscription = _eventBus.onSettingChange<bool>(
       AppSetting.showClientCalls,
       (oldValue, newValue) {
-        _updateShowClientCalls(settingValue: newValue);
+        unawaited(_updateShowClientCalls(settingValue: newValue));
       },
     );
   }
 
   Future<void> _updateShowClientCalls({bool? settingValue}) async {
-    final user = await _getLatestUser();
+    final user = _getUser();
 
     final enabled =
         settingValue ?? user.settings.get(AppSetting.showClientCalls);
@@ -96,19 +96,13 @@ class _RecentCallsPageState extends State<RecentCallsPage> {
 
   @override
   void dispose() {
-    _eventBusSubscription?.cancel();
+    unawaited(_eventBusSubscription?.cancel());
 
     super.dispose();
   }
 }
 
 class _Content extends StatefulWidget {
-  final bool showClientCalls;
-  final EdgeInsets listPadding;
-  final EdgeInsets snackBarPadding;
-  final ManualRefresher manualRefresher;
-  final ManualRefresher clientManualRefresher;
-
   const _Content({
     required this.showClientCalls,
     required this.listPadding,
@@ -116,6 +110,12 @@ class _Content extends StatefulWidget {
     required this.manualRefresher,
     required this.clientManualRefresher,
   });
+
+  final bool showClientCalls;
+  final EdgeInsets listPadding;
+  final EdgeInsets snackBarPadding;
+  final ManualRefresher manualRefresher;
+  final ManualRefresher clientManualRefresher;
 
   @override
   State<_Content> createState() => _ContentState();
@@ -157,7 +157,6 @@ class _ContentState extends State<_Content> with TickerProviderStateMixin {
 
   void _createTabController() {
     final tabController = TabController(
-      initialIndex: 0,
       length: 2,
       vsync: this,
     );
@@ -166,9 +165,9 @@ class _ContentState extends State<_Content> with TickerProviderStateMixin {
       () {
         if (!tabController.indexIsChanging) {
           if (tabController.index == 0) {
-            widget.manualRefresher.refresh();
+            unawaited(widget.manualRefresher.refresh());
           } else if (tabController.index == 1) {
-            widget.clientManualRefresher.refresh();
+            unawaited(widget.clientManualRefresher.refresh());
           }
         }
       },
@@ -249,20 +248,21 @@ class _ContentState extends State<_Content> with TickerProviderStateMixin {
 }
 
 class _Calls<C extends RecentCallsCubit> extends StatelessWidget {
-  final EdgeInsets listPadding;
-  final EdgeInsets snackBarPadding;
-  final ManualRefresher manualRefresher;
-
   const _Calls({
-    super.key,
     required this.listPadding,
     required this.snackBarPadding,
     required this.manualRefresher,
   });
 
+  final EdgeInsets listPadding;
+  final EdgeInsets snackBarPadding;
+  final ManualRefresher manualRefresher;
+
   Future<void> _refreshCalls(BuildContext context) async {
-    await context.read<C>().performBackgroundImport();
-    await context.read<C>().refreshRecentCalls();
+    final cubit = context.read<C>();
+
+    await cubit.performBackgroundImport();
+    await cubit.refreshRecentCalls();
   }
 
   @override
@@ -277,7 +277,7 @@ class _Calls<C extends RecentCallsCubit> extends StatelessWidget {
           snackBarPadding: snackBarPadding,
           isLoadingInitial: state is LoadingInitialRecentCalls,
           callRecords: recentCalls,
-          onRefresh: () => _refreshCalls(context),
+          onRefresh: () async => _refreshCalls(context),
           onCallPressed: cubit.call,
           onCopyPressed: cubit.copyNumber,
           loadMoreCalls: cubit.loadMoreRecentCalls,
@@ -290,15 +290,15 @@ class _Calls<C extends RecentCallsCubit> extends StatelessWidget {
 }
 
 class _MissedCallsToggle extends StatelessWidget {
-  final bool showClientCalls;
-  final ManualRefresher manualRefresher;
-  final ManualRefresher clientManualRefresher;
-
   const _MissedCallsToggle({
     required this.showClientCalls,
     required this.manualRefresher,
     required this.clientManualRefresher,
   });
+
+  final bool showClientCalls;
+  final ManualRefresher manualRefresher;
+  final ManualRefresher clientManualRefresher;
 
   @override
   Widget build(BuildContext context) {
@@ -315,9 +315,9 @@ class _MissedCallsToggle extends StatelessWidget {
     if (showClientCalls) {
       context.read<ClientCallsCubit>().onlyMissedCalls = value;
 
-      clientManualRefresher.refresh();
+      unawaited(clientManualRefresher.refresh());
     }
 
-    manualRefresher.refresh();
+    unawaited(manualRefresher.refresh());
   }
 }

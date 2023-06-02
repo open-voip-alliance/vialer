@@ -6,12 +6,13 @@ import '../../../../resources/theme.dart';
 import 'call_feedback.dart';
 
 class SelectCallProblem extends StatelessWidget {
-  final _types = CallProblem.values;
-  final Function(CallProblem type) onComplete;
-
   const SelectCallProblem({
     required this.onComplete,
+    super.key,
   });
+
+  List<CallProblem> get _types => CallProblem.values;
+  final void Function(CallProblem type) onComplete;
 
   @override
   Widget build(BuildContext context) {
@@ -34,35 +35,33 @@ class SelectCallProblem extends StatelessWidget {
 }
 
 class _CallProblemButton extends StatelessWidget {
-  final CallProblem problem;
-  final VoidCallback onPressed;
-
   const _CallProblemButton({
     required this.problem,
     required this.onPressed,
   });
 
+  final CallProblem problem;
+  final VoidCallback onPressed;
+
   String _text(BuildContext context) {
     final strings = context.msg.main.call.feedback.problem;
 
-    switch (problem) {
-      case CallProblem.oneWayAudio:
-        return strings.oneWayAudio;
-      case CallProblem.noAudio:
-        return strings.noAudio;
-      case CallProblem.audioProblem:
-        return strings.audioProblem;
-      case CallProblem.endedUnexpectedly:
-        return strings.endedUnexpectedly;
-      case CallProblem.somethingElse:
-        return strings.somethingElse;
-    }
+    return switch (problem) {
+      CallProblem.oneWayAudio => strings.oneWayAudio,
+      CallProblem.noAudio => strings.noAudio,
+      CallProblem.audioProblem => strings.audioProblem,
+      CallProblem.endedUnexpectedly => strings.endedUnexpectedly,
+      CallProblem.somethingElse => strings.somethingElse
+    };
   }
 
   @override
   Widget build(BuildContext context) {
     return OutlinedButton(
       onPressed: onPressed,
+      style: OutlinedButton.styleFrom(
+        alignment: Alignment.centerLeft,
+      ),
       child: FittedBox(
         fit: BoxFit.fitWidth,
         child: Text(
@@ -72,9 +71,6 @@ class _CallProblemButton extends StatelessWidget {
             color: context.brand.theme.colors.grey6,
           ),
         ),
-      ),
-      style: OutlinedButton.styleFrom(
-        alignment: Alignment.centerLeft,
       ),
     );
   }

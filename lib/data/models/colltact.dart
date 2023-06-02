@@ -11,6 +11,9 @@ part 'colltact.freezed.dart';
 /// in very similar situations and for a similar purpose.
 @freezed
 class Colltact with _$Colltact {
+  const Colltact._();
+  const factory Colltact.colleague(Colleague colleague) = ColltactColleague;
+  const factory Colltact.contact(Contact contact) = ColltactContact;
   String get name => when(
         colleague: (colleague) => colleague.name,
         contact: (contact) => contact.displayName,
@@ -28,8 +31,4 @@ class Colltact with _$Colltact {
           };
         },
       );
-
-  const Colltact._();
-  const factory Colltact.colleague(Colleague colleague) = ColltactColleague;
-  const factory Colltact.contact(Contact contact) = ColltactContact;
 }

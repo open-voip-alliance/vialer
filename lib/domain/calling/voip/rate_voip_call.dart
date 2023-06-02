@@ -22,7 +22,7 @@ class RateVoipCallUseCase extends UseCase {
     final connectivityType = await _connectivityRepository.currentType;
     final audioProblems = feedback.audioProblems ?? [];
 
-    _metricsRepository.track('call-rating', {
+    _metricsRepository.track('voip-call-rated', {
       'rating': feedback.rating,
       'mos': mos,
       'duration': call.duration,
@@ -53,11 +53,9 @@ extension Mapping on List<CallAudioProblem> {
   Map<CallAudioProblem, bool> toBoolMap({
     bool defaultValue = false,
   }) =>
-      Map<CallAudioProblem, bool>.fromIterable(
-        CallAudioProblem.values,
-        key: (e) => e as CallAudioProblem,
-        value: (e) => defaultValue,
-      );
+      {
+        for (final e in CallAudioProblem.values) e: defaultValue,
+      };
 
   /// Convert to a map with the key as the short string of
   /// [CallAudioProblem] and the given boolean value.

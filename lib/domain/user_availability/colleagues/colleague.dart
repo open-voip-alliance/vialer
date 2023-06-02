@@ -2,10 +2,44 @@ import 'package:collection/collection.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'colleague.freezed.dart';
+
 part 'colleague.g.dart';
 
 @freezed
 class Colleague with _$Colleague {
+  /// A Voipgrid user which we fully support, including their current
+  /// availability and context.
+  const factory Colleague({
+    required String id,
+    required String name,
+
+    /// A list of [ColleagueContext] events that are relevant to this colleague.
+    ///
+    /// These are sorted in order of priority with the first in the list
+    /// representing the most recent/relevant.
+    required List<ColleagueContext> context,
+    ColleagueAvailabilityStatus? status,
+
+    /// The most relevant/recent context event. For example, if the user is
+    /// in a meeting (NYI) but also in a call, then this would show them as
+    /// being in a call even if the meeting is more recent.
+    ColleagueDestination? destination,
+  }) = _Colleague;
+
+  const Colleague._();
+
+  /// A voip account that is not connected to any user, we do not get
+  /// information about their current availability, they only exist for the
+  /// user to be able to see and call them.
+  const factory Colleague.unconnectedVoipAccount({
+    required String id,
+    required String name,
+    required String number,
+  }) = UnconnectedVoipAccount;
+
+  factory Colleague.fromJson(Map<String, dynamic> json) =>
+      _$ColleagueFromJson(json);
+
   String? get number => map(
         (colleague) => colleague.destination?.number,
         unconnectedVoipAccount: (voipAccount) => voipAccount.number,
@@ -36,39 +70,6 @@ class Colleague with _$Colleague {
             isAvailableOnMobileAppOrFixedDestination,
         unconnectedVoipAccount: (_) => false,
       );
-
-  const Colleague._();
-
-  /// A Voipgrid user which we fully support, including their current
-  /// availability and context.
-  const factory Colleague({
-    required String id,
-    required String name,
-
-    /// A list of [ColleagueContext] events that are relevant to this colleague.
-    ///
-    /// These are sorted in order of priority with the first in the list
-    /// representing the most recent/relevant.
-    required List<ColleagueContext> context,
-    ColleagueAvailabilityStatus? status,
-
-    /// The most relevant/recent context event. For example, if the user is
-    /// in a meeting (NYI) but also in a call, then this would show them as
-    /// being in a call even if the meeting is more recent.
-    ColleagueDestination? destination,
-  }) = _Colleague;
-
-  /// A voip account that is not connected to any user, we do not get
-  /// information about their current availability, they only exist for the
-  /// user to be able to see and call them.
-  const factory Colleague.unconnectedVoipAccount({
-    required String id,
-    required String name,
-    required String number,
-  }) = UnconnectedVoipAccount;
-
-  factory Colleague.fromJson(Map<String, dynamic> json) =>
-      _$ColleagueFromJson(json);
 }
 
 /// A single status that represents the availability of the colleague.
@@ -87,20 +88,14 @@ enum ColleagueAvailabilityStatus {
   /// linked to their user AND they are not SIP registered anywhere.
   offline;
 
-  static ColleagueAvailabilityStatus fromServerValue(String? value) {
-    switch (value) {
-      case 'do_not_disturb':
-        return ColleagueAvailabilityStatus.doNotDisturb;
-      case 'offline':
-        return ColleagueAvailabilityStatus.offline;
-      case 'available':
-        return ColleagueAvailabilityStatus.available;
-      case 'busy':
-        return ColleagueAvailabilityStatus.busy;
-      default:
-        return ColleagueAvailabilityStatus.unknown;
-    }
-  }
+  static ColleagueAvailabilityStatus fromServerValue(String? value) =>
+      switch (value) {
+        'do_not_disturb' => ColleagueAvailabilityStatus.doNotDisturb,
+        'offline' => ColleagueAvailabilityStatus.offline,
+        'available' => ColleagueAvailabilityStatus.available,
+        'busy' => ColleagueAvailabilityStatus.busy,
+        _ => ColleagueAvailabilityStatus.unknown
+      };
 }
 
 /// The destination that we can call to reach the given colleague.
@@ -121,18 +116,13 @@ enum ColleagueDestinationType {
   fixed,
   none;
 
-  static ColleagueDestinationType fromServerValue(String? value) {
-    switch (value) {
-      case 'app_account':
-        return ColleagueDestinationType.app;
-      case 'voip_account':
-        return ColleagueDestinationType.voipAccount;
-      case 'fixeddestination':
-        return ColleagueDestinationType.fixed;
-      default:
-        return ColleagueDestinationType.none;
-    }
-  }
+  static ColleagueDestinationType fromServerValue(String? value) =>
+      switch (value) {
+        'app_account' => ColleagueDestinationType.app,
+        'voip_account' => ColleagueDestinationType.voipAccount,
+        'fixeddestination' => ColleagueDestinationType.fixed,
+        _ => ColleagueDestinationType.none
+      };
 }
 
 /// Represents a possible event that the colleague has currently performed,
@@ -140,22 +130,18 @@ enum ColleagueDestinationType {
 /// associated relevant data (e.g. the number that is calling them).
 @freezed
 class ColleagueContext with _$ColleagueContext {
+  const ColleagueContext._();
+
   const factory ColleagueContext.ringing() = Ringing;
+
   const factory ColleagueContext.inCall() = InCall;
 
   factory ColleagueContext.fromJson(Map<String, dynamic> json) =>
       _$ColleagueContextFromJson(json);
 
-  static ColleagueContext? fromServerValue(String? value) {
-    switch (value) {
-      case 'in_call':
-        return const ColleagueContext.inCall();
-      case 'ringing':
-        return const ColleagueContext.ringing();
-      default:
-        return null;
-    }
-  }
-
-  const ColleagueContext._();
+  static ColleagueContext? fromServerValue(String? value) => switch (value) {
+        'in_call' => const ColleagueContext.inCall(),
+        'ringing' => const ColleagueContext.ringing(),
+        _ => null
+      };
 }

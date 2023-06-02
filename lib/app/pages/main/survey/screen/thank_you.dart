@@ -5,7 +5,7 @@ import '../../../../util/conditional_capitalization.dart';
 import '../widgets/big_header.dart';
 
 class ThankYouScreen extends StatelessWidget {
-  const ThankYouScreen({Key? key}) : super(key: key);
+  const ThankYouScreen({super.key});
 
   void _dismiss(BuildContext context) {
     Navigator.of(context).pop();

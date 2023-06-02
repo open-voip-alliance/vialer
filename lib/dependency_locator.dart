@@ -30,7 +30,6 @@ import 'domain/onboarding/country_repository.dart';
 import 'domain/openings_hours_basic/opening_hours_repository.dart';
 import 'domain/openings_hours_basic/opening_hours_service.dart';
 import 'domain/remote_logging/logging.dart';
-import 'domain/user/brand_repository.dart';
 import 'domain/user/connectivity/connectivity.dart';
 import 'domain/user/info/build_info_repository.dart';
 import 'domain/user/info/operating_system_info_repository.dart';
@@ -46,7 +45,6 @@ final dependencyLocator = GetIt.instance;
 /// Pass `ui: false` to skip dependencies that are only used for the UI.
 Future<void> initializeDependencies({bool ui = true}) async {
   dependencyLocator
-    ..registerSingleton<BrandRepository>(BrandRepository())
     ..registerSingleton<ErrorTrackingRepository>(ErrorTrackingRepository())
     ..registerSingleton<EventBus>(StreamController.broadcast())
     ..registerSingleton<EventBusObserver>(dependencyLocator<EventBus>().stream)
@@ -66,7 +64,7 @@ Future<void> initializeDependencies({bool ui = true}) async {
       dependsOn: [StorageRepository],
     )
     ..registerSingletonAsync<MiddlewareService>(
-      () async => await MiddlewareService.create(),
+      MiddlewareService.create,
       dependsOn: [StorageRepository, ClientVoipConfigRepository],
     )
     ..registerFactory<VoipgridApiResourceCollector>(

@@ -7,12 +7,12 @@ import '../../../../../../resources/theme.dart';
 import 'widget.dart';
 
 class PortalLinksCategory extends StatelessWidget {
-  final List<Widget> children;
-
   const PortalLinksCategory({
-    super.key,
     required this.children,
+    super.key,
   });
+
+  final List<Widget> children;
 
   @override
   Widget build(BuildContext context) {

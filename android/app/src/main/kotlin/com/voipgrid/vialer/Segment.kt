@@ -44,6 +44,8 @@ class Segment(
     }
 
     fun track(event: String, properties: Map<String, String?>) = identifyIfNecessary {
+        assert(event.matches("[a-z]+(-[a-z]+)*".toRegex())) { "Event name not in param-casing." }
+
         val segmentProperties = Properties().apply {
             properties.forEach {
                 putValue(it.key, it.value)

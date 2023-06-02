@@ -20,9 +20,9 @@ class RefreshUser extends UseCase with Loggable {
   final _eventBus = dependencyLocator<EventBus>();
 
   Future<User?> call({
+    required List<UserRefreshTask> tasksToPerform,
     LoginCredentials? credentials,
     bool synchronized = true,
-    required List<UserRefreshTask> tasksToPerform,
   }) {
     Future<User?> refreshUser() => _refreshUser(credentials, tasksToPerform);
 
@@ -55,12 +55,16 @@ class RefreshUser extends UseCase with Loggable {
         voip: () => storedUser?.voip,
       );
 
+      final isFirstTime = storedUser == null;
+
       // If we're retrieving the user for the first time (logging in),
       // we store the user already, so that the AuthorizationInterceptor
       // can use it.
       if (storedUser == null) {
         _storageRepository.user = user;
       }
+
+      final previous = user;
 
       user = await tasksToPerform
           .performInParallel(user)
@@ -70,7 +74,14 @@ class RefreshUser extends UseCase with Loggable {
 
       _storageRepository.user = user;
 
-      _eventBus.broadcast(LoggedInUserWasRefreshed(user, tasksToPerform));
+      _eventBus.broadcast(
+        LoggedInUserWasRefreshed(
+          current: user,
+          previous: previous,
+          tasksPerformed: tasksToPerform,
+          isFirstTime: isFirstTime,
+        ),
+      );
 
       return user;
     }

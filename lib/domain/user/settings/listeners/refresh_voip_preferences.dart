@@ -21,7 +21,7 @@ class RefreshVoipPreferences extends SettingChangeListener<bool> with Loggable {
   @override
   FutureOr<SettingChangeListenResult> postStore(
     User user,
-    bool usePhoneRingtone,
+    bool value,
   ) async {
     await _voipRepository.refreshPreferences(user);
     return successResult;

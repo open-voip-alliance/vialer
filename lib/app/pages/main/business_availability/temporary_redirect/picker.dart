@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dartx/dartx.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -8,28 +10,28 @@ import '../../../../resources/localizations.dart';
 import '../../../../resources/theme/brand_theme.dart';
 import '../../../../util/brand.dart';
 import '../../../../util/conditional_capitalization.dart';
-import '../../../../widgets/stylized_button.dart';
 import '../../../../widgets/stylized_dropdown.dart';
 import '../../../web_view/page.dart';
+import '../../settings/widgets/buttons/settings_button.dart';
 import 'date_field.dart';
 import 'explanation.dart';
 import 'field.dart';
 
 class TemporaryRedirectPicker extends StatefulWidget {
-  final TemporaryRedirect? activeRedirect;
-  final Iterable<TemporaryRedirectDestination> availableDestinations;
-  final Future<void> Function(TemporaryRedirectDestination, DateTime) onStart;
-  final Future<void> Function()? onStop;
-  final VoidCallback? onCancel;
-
   const TemporaryRedirectPicker({
-    super.key,
     required this.activeRedirect,
     required this.availableDestinations,
     required this.onStart,
     this.onStop,
     this.onCancel,
+    super.key,
   });
+
+  final TemporaryRedirect? activeRedirect;
+  final Iterable<TemporaryRedirectDestination> availableDestinations;
+  final Future<void> Function(TemporaryRedirectDestination, DateTime) onStart;
+  final Future<void> Function()? onStop;
+  final VoidCallback? onCancel;
 
   @override
   State<TemporaryRedirectPicker> createState() =>
@@ -85,7 +87,9 @@ class _TemporaryRedirectPickerState extends State<TemporaryRedirectPicker> {
     });
   }
 
-  void _openPortal() => WebViewPage.open(context, to: WebPage.addVoicemail);
+  void _openPortal() => unawaited(
+        WebViewPage.open(context, to: WebPage.addVoicemail),
+      );
 
   String get _mainActionText {
     final text = widget.activeRedirect != null
@@ -98,7 +102,7 @@ class _TemporaryRedirectPickerState extends State<TemporaryRedirectPicker> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(32.0),
+      padding: const EdgeInsets.all(32),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -128,7 +132,6 @@ class _TemporaryRedirectPickerState extends State<TemporaryRedirectPicker> {
                   ).toList()
                 : [
                     DropdownMenuItem<TemporaryRedirectDestination>(
-                      value: null,
                       child: Text(
                         context.msg.main.temporaryRedirect.dropdown.noVoicemails
                             .item,
@@ -177,42 +180,39 @@ class _TemporaryRedirectPickerState extends State<TemporaryRedirectPicker> {
             ),
           ),
           const SizedBox(height: 16),
-          StylizedButton.raised(
-            colored: true,
+          SettingsButton(
+            text: _mainActionText,
             onPressed: _actionable &&
                     _hasCorrectUntilDate &&
                     _selectedDestination != null
-                ? () => _handleAction(
+                ? () async => _handleAction(
                       () => widget.onStart(
                         _selectedDestination!,
                         _untilDateNotifier.value!,
                       ),
                     )
                 : null,
-            child: Text(_mainActionText),
           ),
           if (widget.onCancel != null) ...[
             const SizedBox(height: 12),
-            StylizedButton.outline(
-              colored: true,
+            SettingsButton(
               onPressed: widget.onCancel,
-              child: Text(
-                context.msg.generic.button.cancel.toUpperCaseIfAndroid(context),
-              ),
+              text: context.msg.generic.button.cancel
+                  .toUpperCaseIfAndroid(context),
+              solid: false,
             ),
           ],
           if (widget.onStop != null) ...[
             const Spacer(),
             const SizedBox(height: 48),
-            StylizedButton.outline(
-              colored: true,
-              onPressed:
-                  _actionable ? () => _handleAction(widget.onStop!) : null,
-              child: Text(
-                context.msg.main.temporaryRedirect.actions.stopRedirect
-                    .labelOngoing
-                    .toUpperCaseIfAndroid(context),
-              ),
+            SettingsButton(
+              onPressed: _actionable
+                  ? () => unawaited(_handleAction(widget.onStop!))
+                  : null,
+              text: context
+                  .msg.main.temporaryRedirect.actions.stopRedirect.labelOngoing
+                  .toUpperCaseIfAndroid(context),
+              solid: false,
             ),
           ]
         ],

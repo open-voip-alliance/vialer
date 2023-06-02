@@ -9,9 +9,9 @@ import 'client_call_record.dart';
 import 'database/client_calls.dart';
 
 class LocalClientCallsRepository with Loggable {
-  final ClientCallsDatabase db;
-
   LocalClientCallsRepository(this.db);
+
+  final ClientCallsDatabase db;
 
   /// The amount of time before we consider a phone account stale and will
   /// refresh it.
@@ -73,9 +73,9 @@ class LocalClientCallsRepository with Loggable {
   }
 
   Future<List<ClientCallRecord>> getCalls({
-    int page = 1,
     required int perPage,
     required bool onlyMissedCalls,
+    int page = 1,
   }) {
     final sourceAccountTable = db.alias(
       db.colleaguePhoneAccounts,
@@ -114,20 +114,22 @@ class LocalClientCallsRepository with Loggable {
         ..where(db.clientCalls.answered.equals(false))
         ..where(
           db.clientCalls.direction.equals(
-            db.clientCalls.direction.converter.mapToSql(Direction.inbound),
+            db.clientCalls.direction.converter.toSql(Direction.inbound)!,
           ),
         );
     }
 
     return query
-        .map((row) => row.readTable(db.clientCalls).toCallRecord(
-              row.readTableOrNull(destinationAccountTable),
-              row.readTableOrNull(sourceAccountTable),
-            ))
+        .map(
+          (row) => row.readTable(db.clientCalls).toCallRecord(
+                row.readTableOrNull(destinationAccountTable),
+                row.readTableOrNull(sourceAccountTable),
+              ),
+        )
         .get();
   }
 
-  Future<Stream> watch() async {
+  Future<Stream<WatchEvent>> watch() async {
     final file = await ClientCallsDatabase.databaseFile;
 
     return FileWatcher(file.path)

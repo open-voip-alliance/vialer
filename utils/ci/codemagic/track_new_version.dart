@@ -22,16 +22,16 @@ Future<void> main(List<String> args) async {
   }
 
   final authorizationHeader = 'Basic ${'$apiToken:'.toBase64()}';
-  final identifyUrl = 'https://api.segment.io/v1/identify';
-  final trackUrl = 'https://api.segment.io/v1/track';
-  final anonymousId = 'vialer_update_user';
-  final event = 'update-released';
+  const identifyUrl = 'https://api.segment.io/v1/identify';
+  const trackUrl = 'https://api.segment.io/v1/track';
+  const anonymousId = 'vialer_update_user';
+  const event = 'update-released';
 
   // Identify anonymous user.
   await sendToSegment(
     identifyUrl,
     authorizationHeader,
-    {'anonymousId': anonymousId},
+    <String, dynamic>{'anonymousId': anonymousId},
   );
 
   // Track the new release.
@@ -49,7 +49,7 @@ Future<void> main(List<String> args) async {
 Future<void> sendToSegment(
   String url,
   String authorizationHeader,
-  Map data,
+  Map<String, dynamic> data,
 ) async {
   final client = HttpClient();
   final request = await client.postUrl(Uri.parse(url));

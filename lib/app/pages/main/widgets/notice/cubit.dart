@@ -1,3 +1,7 @@
+// Ignored because we actually follow the proper practice here, as stated in the
+// lint docs.
+// ignore_for_file: parameter_assignments
+
 import 'dart:async';
 import 'dart:io';
 
@@ -20,6 +24,13 @@ import 'state.dart';
 export 'state.dart';
 
 class NoticeCubit extends Cubit<NoticeState> with Loggable {
+  NoticeCubit(this._caller) : super(const NoNotice()) {
+    unawaited(check());
+    _eventBus
+      ..on<TemporaryRedirectDidChangeEvent>((_) => unawaited(check()))
+      ..on<LoggedInUserWasRefreshed>((_) => unawaited(check()));
+  }
+
   late final _getPermissionStatus = GetPermissionStatusUseCase();
   late final _requestPermission = RequestPermissionUseCase();
   late final _openAppSettings = OpenSettingsAppUseCase();
@@ -27,12 +38,6 @@ class NoticeCubit extends Cubit<NoticeState> with Loggable {
   late final _eventBus = dependencyLocator<EventBusObserver>();
 
   final CallerCubit _caller;
-
-  NoticeCubit(this._caller) : super(const NoNotice()) {
-    check();
-    _eventBus.on<TemporaryRedirectDidChangeEvent>((_) => check());
-    _eventBus.on<LoggedInUserWasRefreshed>((_) => check());
-  }
 
   Future<void> check({
     PermissionStatus? microphoneStatus,
@@ -80,10 +85,13 @@ class NoticeCubit extends Cubit<NoticeState> with Loggable {
     } else if (!user.isAllowedVoipCalling) {
       emit(const NoAppAccountNotice());
     } else if (user.client.currentTemporaryRedirect != null) {
-      emit(TemporaryRedirectNotice(
-        temporaryRedirect: user.client.currentTemporaryRedirect!,
-        canChangeTemporaryRedirect: user.permissions.canChangeTemporaryRedirect,
-      ));
+      emit(
+        TemporaryRedirectNotice(
+          temporaryRedirect: user.client.currentTemporaryRedirect!,
+          canChangeTemporaryRedirect:
+              user.permissions.canChangeTemporaryRedirect,
+        ),
+      );
     } else {
       emit(const NoNotice());
     }
@@ -98,6 +106,7 @@ class NoticeCubit extends Cubit<NoticeState> with Loggable {
             permission == Permission.microphone ||
             permission == Permission.bluetooth ||
             permission == Permission.notifications,
+        'Must be a relevant permission',
       );
 
       final status = await _requestPermission(permission: permission);

@@ -4,9 +4,8 @@ import '../../../../domain/feedback/survey/question.dart';
 import '../../../../domain/feedback/survey/survey.dart';
 
 abstract class SurveyState extends Equatable {
-  final Survey? survey;
-
   const SurveyState(this.survey);
+  final Survey? survey;
 
   @override
   List<Object?> get props => [survey];
@@ -15,19 +14,18 @@ abstract class SurveyState extends Equatable {
 }
 
 class LoadingSurvey extends SurveyState {
-  const LoadingSurvey([Survey? survey]) : super(survey);
+  const LoadingSurvey([super.survey]);
 
   @override
   SurveyState copyWith({Survey? survey}) => LoadingSurvey(survey);
 }
 
 class ShowHelpUsPrompt extends SurveyState {
-  final bool dontShowThisAgain;
-
   const ShowHelpUsPrompt({
-    Survey? survey,
     required this.dontShowThisAgain,
+    Survey? survey,
   }) : super(survey);
+  final bool dontShowThisAgain;
 
   @override
   List<Object?> get props => [...super.props, dontShowThisAgain];
@@ -42,17 +40,16 @@ class ShowHelpUsPrompt extends SurveyState {
 }
 
 class ShowQuestion extends SurveyState {
-  final Question question;
-  final int? answer;
-
-  final ShowQuestion? previous;
-
   const ShowQuestion(
     this.question, {
     Survey? survey,
     this.answer,
     this.previous,
   }) : super(survey);
+  final Question question;
+  final int? answer;
+
+  final ShowQuestion? previous;
 
   @override
   List<Object?> get props => [...super.props, question, answer, previous];
@@ -77,14 +74,13 @@ class ShowQuestion extends SurveyState {
     return ShowQuestion(
       question,
       survey: survey,
-      answer: null,
       previous: previous,
     );
   }
 }
 
 class ShowThankYou extends SurveyState {
-  const ShowThankYou(Survey? survey) : super(survey);
+  const ShowThankYou(super.survey);
 
   @override
   ShowThankYou copyWith({Survey? survey}) {

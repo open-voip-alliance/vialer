@@ -16,7 +16,7 @@ class ChangeRegistrationOnDndChange extends SettingChangeListener<bool>
   @override
   FutureOr<SettingChangeListenResult> postStore(
     User user,
-    bool dndEnabled,
+    bool value,
   ) async {
     // The correct value for DND will be automatically submitted when refreshing
     // our registration.

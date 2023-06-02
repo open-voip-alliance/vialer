@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -20,7 +21,7 @@ class ContactRepository with Loggable {
     // If the latest data has been requested, we are going to wait for the
     // import to be completed before returning any records.
     if (latest) {
-      return await import;
+      return import;
     }
 
     // We will then check our two caches to see if there is any data there,
@@ -33,7 +34,7 @@ class ContactRepository with Loggable {
 
     // If there is no cached data then we have no choice but to wait for
     // the import.
-    return await import;
+    return import;
   }
 
   /// Performs the performance and time consuming task of importing contacts
@@ -51,12 +52,14 @@ class ContactRepository with Loggable {
     final cachePath = (await _contactsCacheFile).path;
     final avatarCacheDirectory = (await _avatarCacheDirectory).path;
 
-    await SynchronizedTask.named('Contact Import').run(
+    await SynchronizedTask<void>.named('Contact Import').run(
       () => contactImporter.importContacts(cachePath),
     );
 
-    SynchronizedTask.named('Avatar Import').run(
-      () => contactImporter.importContactAvatars(avatarCacheDirectory),
+    unawaited(
+      SynchronizedTask<void>.named('Avatar Import').run(
+        () => contactImporter.importContactAvatars(avatarCacheDirectory),
+      ),
     );
 
     return _memoryCache = await _readContactsFromFileCache();
@@ -64,7 +67,7 @@ class ContactRepository with Loggable {
 
   bool get _isMemoryCachePopulated => _memoryCache.isNotEmpty;
 
-  /// Returns [TRUE] when the file cache has any data in it at all, this could
+  /// Returns `true` when the file cache has any data in it at all, this could
   /// be an empty contact list.
   Future<bool> get _isFileCachePopulated async {
     final cacheFile = await _contactsCacheFile;
@@ -90,7 +93,7 @@ class ContactRepository with Loggable {
     final json = await file.readAsString();
 
     return (jsonDecode(json) as List)
-        .map((e) => Contact.fromJson(e as Map<String, dynamic>))
+        .map((dynamic e) => Contact.fromJson(e as Map<String, dynamic>))
         .attachAvatarPaths(await _avatarCacheDirectory)
         .toList(growable: false);
   }
@@ -111,7 +114,7 @@ class ContactRepository with Loggable {
 
     for (final file in cacheFiles) {
       if (await file.exists()) {
-        file.delete(recursive: true);
+        unawaited(file.delete(recursive: true));
       }
     }
   }

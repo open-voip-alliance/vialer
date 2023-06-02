@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import '../../../../dependency_locator.dart';
+import '../../metrics/metrics.dart';
 import '../../use_case.dart';
 import '../../user/get_logged_in_user.dart';
 import '../../voicemail/voicemail_account.dart';
@@ -11,6 +14,7 @@ class StartTemporaryRedirect extends UseCase
   late final _getUser = GetLoggedInUserUseCase();
   late final _businessAvailability =
       dependencyLocator<BusinessAvailabilityRepository>();
+  late final _metricsRepository = dependencyLocator<MetricsRepository>();
 
   Future<void> call({
     required VoicemailAccount voicemailAccount,
@@ -24,7 +28,10 @@ class StartTemporaryRedirect extends UseCase
       ),
     );
 
-    track({'ending-at': endingAt.toIso8601String()});
-    broadcast();
+    _metricsRepository.track(
+      'temporary-redirect-started',
+      {'ending-at': endingAt.toIso8601String()},
+    );
+    unawaited(broadcast());
   }
 }

@@ -11,8 +11,10 @@ class OpeningHoursModule with _$OpeningHoursModule {
   const factory OpeningHoursModule({
     required String id,
     required String name,
-    @JsonKey(name: 'work_hours') @Default([]) List<OpeningHours> openingHours,
-    @Default([]) List<Holiday> holidays,
+    @JsonKey(name: 'work_hours')
+    @Default(<OpeningHours>[])
+    List<OpeningHours> openingHours,
+    @Default(<Holiday>[]) List<Holiday> holidays,
   }) = _OpeningHoursModule;
 
   factory OpeningHoursModule.fromJson(Map<String, dynamic> json) =>
@@ -38,8 +40,7 @@ TimeOfDay? _timeFromJson(String? time) => time != null
       )
     : null;
 
-String? _timeToJson(TimeOfDay? time) =>
-    time != null ? time.formattedTime : null;
+String? _timeToJson(TimeOfDay? time) => time?.formattedTime;
 
 @freezed
 class Holiday with _$Holiday {

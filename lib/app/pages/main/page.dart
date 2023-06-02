@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -43,7 +45,7 @@ class MainPageState extends State<MainPage> {
   ];
 
   void navigateTo(MainPageTab tab) =>
-      _navigateTo(_dialerIsPage ? tab.index : tab.index - 1);
+      unawaited(_navigateTo(_dialerIsPage ? tab.index : tab.index - 1));
 
   Future<void> _navigateTo(int? index) async {
     if (index == null) return;
@@ -68,35 +70,30 @@ class MainPageState extends State<MainPage> {
     // Only on iOS is the dialer a separate bottom nav page.
     _dialerIsPage = context.isIOS;
 
-    if (_pages == null) {
-      _pages = [
-        if (_dialerIsPage) const DialerPage(isInBottomNavBar: true),
-        ColltactsPage(
-          navigatorKey: _navigatorKeys[0],
-          bottomLettersPadding: !_dialerIsPage ? 96 : 0,
-        ),
-        RecentCallsPage(
-          listPadding: !_dialerIsPage
-              ? const EdgeInsets.only(bottom: 96)
-              : EdgeInsets.zero,
-          snackBarPadding: !_dialerIsPage
-              ? const EdgeInsets.only(right: 72)
-              : EdgeInsets.zero,
-        ),
-        const SettingsPage(),
-      ];
-    }
+    _pages ??= [
+      if (_dialerIsPage) const DialerPage(isInBottomNavBar: true),
+      ColltactsPage(
+        navigatorKey: _navigatorKeys[0],
+        bottomLettersPadding: !_dialerIsPage ? 96 : 0,
+      ),
+      RecentCallsPage(
+        listPadding: !_dialerIsPage
+            ? const EdgeInsets.only(bottom: 96)
+            : EdgeInsets.zero,
+        snackBarPadding:
+            !_dialerIsPage ? const EdgeInsets.only(right: 72) : EdgeInsets.zero,
+      ),
+      const SettingsPage(),
+    ];
 
-    if (_currentIndex == null) {
-      _currentIndex = _dialerIsPage ? 1 : 0;
-    }
+    _currentIndex ??= _dialerIsPage ? 1 : 0;
   }
 
   void _onCallerStateChanged(BuildContext context, CallerState state) {
     if (context.isIOS &&
         state is FinishedCalling &&
         state.origin == CallOrigin.dialer) {
-      _navigateTo(_previousIndex);
+      unawaited(_navigateTo(_previousIndex));
     }
   }
 
@@ -134,8 +131,9 @@ class MainPageState extends State<MainPage> {
                         // transition between the dialer and call button.
                         heroTag: CallButton.defaultHeroTag,
                         backgroundColor: context.brand.theme.colors.green1,
-                        onPressed: () =>
-                            Navigator.pushNamed(context, Routes.dialer),
+                        onPressed: () => unawaited(
+                          Navigator.pushNamed(context, Routes.dialer),
+                        ),
                         child: const Icon(
                           Icons.dialpad,
                           size: 31,
@@ -152,7 +150,6 @@ class MainPageState extends State<MainPage> {
           onTap: _navigateTo,
         ),
         body: TransparentStatusBar(
-          brightness: Brightness.dark,
           child: UserDataRefresher(
             child: ConnectivityAlert(
               child: SafeArea(
@@ -172,20 +169,19 @@ class MainPageState extends State<MainPage> {
 }
 
 class _BottomNavigationBar extends StatelessWidget {
+  const _BottomNavigationBar({
+    required this.currentIndex,
+    required this.onTap,
+    this.dialerIsPage = false,
+  });
+
   final int currentIndex;
   final ValueChanged<int> onTap;
   final bool dialerIsPage;
 
-  const _BottomNavigationBar({
-    Key? key,
-    required this.currentIndex,
-    required this.onTap,
-    this.dialerIsPage = false,
-  }) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return DecoratedBox(
       decoration: BoxDecoration(
         border: Border(
           top: BorderSide(
@@ -196,7 +192,6 @@ class _BottomNavigationBar extends StatelessWidget {
       child: BottomNavigationBar(
         key: MainPage.keys.navigationBar,
         type: BottomNavigationBarType.fixed,
-        iconSize: 24,
         selectedFontSize: 9,
         selectedItemColor: context.brand.theme.colors.primary,
         unselectedFontSize: 9,
@@ -228,9 +223,9 @@ class _BottomNavigationBar extends StatelessWidget {
             label: context.msg.main.recent.menu.title,
           ),
           BottomNavigationBarItem(
-            icon: const _BottomNavigationBarIcon(FontAwesomeIcons.gear),
+            icon: const _BottomNavigationBarIcon(FontAwesomeIcons.circleUser),
             activeIcon: const _BottomNavigationBarIcon(
-              FontAwesomeIcons.solidGear,
+              FontAwesomeIcons.solidCircleUser,
             ),
             label: context.msg.main.settings.menu.title,
           ),
@@ -241,9 +236,9 @@ class _BottomNavigationBar extends StatelessWidget {
 }
 
 class _BottomNavigationBarIcon extends StatelessWidget {
-  final IconData icon;
+  const _BottomNavigationBarIcon(this.icon);
 
-  const _BottomNavigationBarIcon(this.icon, {Key? key}) : super(key: key);
+  final IconData icon;
 
   @override
   Widget build(BuildContext context) {
@@ -262,14 +257,13 @@ enum MainPageTab {
 }
 
 class _AnimatedIndexedStack extends StatefulWidget {
-  final int index;
-  final List<Widget> children;
-
   const _AnimatedIndexedStack({
-    Key? key,
     required this.index,
     this.children = const [],
-  }) : super(key: key);
+  });
+
+  final int index;
+  final List<Widget> children;
 
   @override
   State<StatefulWidget> createState() => _AnimatedIndexedStackState();
@@ -291,16 +285,16 @@ class _AnimatedIndexedStackState extends State<_AnimatedIndexedStack>
       vsync: this,
     );
 
-    _controller.addListener(() {
-      if (_controller.status == AnimationStatus.completed ||
-          _controller.status == AnimationStatus.dismissed) {
-        setState(() {
-          _animating = false;
-        });
-      }
-    });
-
-    _controller.value = 1;
+    _controller
+      ..addListener(() {
+        if (_controller.status == AnimationStatus.completed ||
+            _controller.status == AnimationStatus.dismissed) {
+          setState(() {
+            _animating = false;
+          });
+        }
+      })
+      ..value = 1;
   }
 
   @override
@@ -310,8 +304,9 @@ class _AnimatedIndexedStackState extends State<_AnimatedIndexedStack>
     if (widget.index != oldWidget.index) {
       _previousIndex = oldWidget.index;
 
-      _controller.reset();
-      _controller.forward();
+      _controller
+        ..reset()
+        ..forward();
       _animating = true;
     }
   }
@@ -333,8 +328,8 @@ class _AnimatedIndexedStackState extends State<_AnimatedIndexedStack>
             child: ScaleTransition(
               scale: _controller.drive(
                 i == widget.index
-                    ? Tween(begin: 0.9, end: 1.0)
-                    : Tween(begin: 1.0, end: 0.9),
+                    ? Tween(begin: 0.9, end: 1)
+                    : Tween(begin: 1, end: 0.9),
               ),
               child: FadeTransition(
                 opacity: i == _previousIndex

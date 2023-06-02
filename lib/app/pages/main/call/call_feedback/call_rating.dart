@@ -7,13 +7,14 @@ import '../../../../resources/theme.dart';
 import 'call_feedback.dart';
 
 class CallRating extends StatelessWidget {
-  final Function(double) onComplete;
-  final double fontSize;
-
   const CallRating({
     required this.onComplete,
     this.fontSize = 13,
+    super.key,
   });
+
+  final void Function(double) onComplete;
+  final double fontSize;
 
   @override
   Widget build(BuildContext context) {
@@ -23,10 +24,6 @@ class CallRating extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           RatingBar(
-            initialRating: 0,
-            direction: Axis.horizontal,
-            allowHalfRating: false,
-            itemCount: 5,
             tapOnlyMode: true,
             ratingWidget: RatingWidget(
               full: FaIcon(
@@ -40,7 +37,7 @@ class CallRating extends StatelessWidget {
               ),
             ),
             itemPadding: const EdgeInsets.symmetric(
-              horizontal: 3.0,
+              horizontal: 3,
             ),
             onRatingUpdate: onComplete,
           ),

@@ -20,7 +20,7 @@ class MainActivity : FlutterActivity(), Pigeon.CallScreenBehavior {
 
         Pigeon.NativeLogging.setup(binaryMessenger, App.logger)
         Pigeon.ContactSortHostApi.setup(binaryMessenger) {
-            ContactSort().apply { orderBy = Pigeon.OrderBy.familyName }
+            ContactSort().apply { orderBy = Pigeon.OrderBy.FAMILY_NAME }
         }
 
         Pigeon.NativeIncomingCallScreen.setup(binaryMessenger) { remotePartyHeading, remotePartySubheading, imageUri ->
@@ -99,7 +99,7 @@ class MainActivity : FlutterActivity(), Pigeon.CallScreenBehavior {
     }
 
     private fun call(number: String) {
-        App.segment.track("call-initiated-from-os", mapOf())
+        App.segment.track("call-from-os-initiated", mapOf())
 
         val normalizedNumber = number.replace(Regex("[^0-9\\+]"), "")
         if (normalizedNumber.isNotEmpty()) {

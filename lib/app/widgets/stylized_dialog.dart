@@ -4,6 +4,15 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../pages/main/survey/widgets/big_header.dart';
 
 class StylizedDialog extends StatelessWidget {
+  StylizedDialog({
+    required this.content,
+    required this.headerIcon,
+    required this.title,
+    this.subtitle,
+    List<Widget>? actions,
+    this.closeButtonText,
+    super.key,
+  }) : actions = actions ?? [];
   final IconData headerIcon;
 
   final String title;
@@ -19,15 +28,6 @@ class StylizedDialog extends StatelessWidget {
   /// or to provide a custom one, simply leave this as null.
   final Text? closeButtonText;
 
-  StylizedDialog({
-    required this.headerIcon,
-    required this.title,
-    this.subtitle,
-    required this.content,
-    List<Widget>? actions,
-    this.closeButtonText,
-  }) : actions = actions ?? [];
-
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -38,7 +38,6 @@ class StylizedDialog extends StatelessWidget {
           color: Colors.white.withOpacity(0.2),
         ),
         text: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
               title,

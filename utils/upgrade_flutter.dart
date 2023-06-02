@@ -69,7 +69,7 @@ Future<void> main(List<String> arguments) async {
 
 Future<void> _updateYaml(String filePath, String value) async {
   final file = File(filePath);
-  final key = 'flutter';
+  const key = 'flutter';
 
   if (!(await file.exists())) {
     throw Exception('File not found: $filePath');

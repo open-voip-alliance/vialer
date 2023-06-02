@@ -7,6 +7,16 @@ import 'key_input.dart';
 import 'keypad.dart';
 
 class DialPad extends StatefulWidget {
+  const DialPad({
+    required this.controller,
+    required this.bottomCenterButton,
+    this.bottomLeftButton,
+    this.bottomRightButton,
+    this.onDeleteAll,
+    this.canDelete = true,
+    super.key,
+  });
+
   final TextEditingController controller;
 
   /// Whether input can be deleted with the delete button. If false, the
@@ -20,16 +30,6 @@ class DialPad extends StatefulWidget {
   final Widget? bottomLeftButton;
   final Widget bottomCenterButton;
   final Widget? bottomRightButton;
-
-  const DialPad({
-    Key? key,
-    required this.controller,
-    this.onDeleteAll,
-    this.canDelete = true,
-    this.bottomLeftButton,
-    required this.bottomCenterButton,
-    this.bottomRightButton,
-  }) : super(key: key);
 
   @override
   State<DialPad> createState() => _DialPadState();

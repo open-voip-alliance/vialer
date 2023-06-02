@@ -7,7 +7,7 @@ import '../../../../resources/theme.dart';
 import '../abstract/page.dart';
 
 class BluetoothPermissionPage extends StatelessWidget {
-  const BluetoothPermissionPage({Key? key}) : super(key: key);
+  const BluetoothPermissionPage({super.key});
 
   @override
   Widget build(BuildContext context) {

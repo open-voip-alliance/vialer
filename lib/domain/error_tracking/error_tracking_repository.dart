@@ -11,7 +11,7 @@ class ErrorTrackingRepository {
     await SentryFlutter.init(
       (options) => options
         ..dsn = dsn
-        ..beforeSend = (event, {hint}) => event.copyWith(
+        ..beforeSend = (event, {dynamic hint}) => event.copyWith(
               user: SentryUser(id: user?.uuid),
             ),
       appRunner: appRunner,

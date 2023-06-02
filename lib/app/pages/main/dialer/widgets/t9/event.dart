@@ -8,9 +8,9 @@ abstract class T9ColltactsEvent extends Equatable {
 class LoadColltacts extends T9ColltactsEvent {}
 
 class FilterT9Colltacts extends T9ColltactsEvent {
-  final String input;
-
   FilterT9Colltacts(this.input);
+
+  final String input;
 
   @override
   List<Object?> get props => [input];

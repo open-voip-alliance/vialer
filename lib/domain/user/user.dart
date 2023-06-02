@@ -1,3 +1,5 @@
+// ignore_for_file: always_put_required_named_parameters_first
+
 import 'package:dartx/dartx.dart';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -14,6 +16,21 @@ part 'user.g.dart';
 @immutable
 @JsonSerializable()
 class User extends Equatable {
+  const User({
+    required this.uuid,
+    required this.email,
+    required this.firstName,
+    this.preposition = '',
+    required this.lastName,
+    this.token,
+    this.appAccountUrl,
+    required this.client,
+    this.voip,
+    required this.settings,
+    this.permissions = const UserPermissions(),
+    this.webphoneAccountId,
+  });
+
   final String uuid;
 
   final String email;
@@ -33,6 +50,10 @@ class User extends Equatable {
   String? get appAccountId => appAccountUrl?.pathSegments.lastOrNullWhere(
         (p) => p.isNotEmpty,
       );
+
+  bool get hasAppAccount => appAccountId != null;
+
+  final String? webphoneAccountId;
 
   @JsonKey(toJson: Client.toJson, fromJson: Client.fromJson)
   final Client client;
@@ -57,20 +78,6 @@ class User extends Equatable {
   bool get isAllowedVoipCalling =>
       voip != null && voip.sipUserId.isNotNullOrBlank;
 
-  const User({
-    required this.uuid,
-    required this.email,
-    required this.firstName,
-    this.preposition = '',
-    required this.lastName,
-    this.token,
-    this.appAccountUrl,
-    required this.client,
-    this.voip,
-    required this.settings,
-    this.permissions = const UserPermissions(),
-  });
-
   User copyWith({
     String? uuid,
     String? email,
@@ -83,6 +90,7 @@ class User extends Equatable {
     NullableCopyWithArgument<UserVoipConfig> voip,
     Settings? settings,
     UserPermissions? permissions,
+    NullableCopyWithArgument<String> webphoneAccountId,
   }) {
     return User(
       uuid: uuid ?? this.uuid,
@@ -96,6 +104,9 @@ class User extends Equatable {
       voip: voip.valueOrNull(unmodified: this.voip),
       settings: settings ?? this.settings,
       permissions: permissions ?? this.permissions,
+      webphoneAccountId: webphoneAccountId.valueOrNull(
+        unmodified: this.webphoneAccountId,
+      ),
     );
   }
 
@@ -128,6 +139,7 @@ class User extends Equatable {
         voip,
         settings,
         permissions,
+        webphoneAccountId,
       ];
 
   static User fromJson(dynamic json) =>

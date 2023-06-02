@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:android_intent/android_intent.dart';
@@ -13,11 +14,10 @@ import '../../../widgets/caller.dart';
 import 'state.dart';
 
 class ColltactDetailsCubit extends Cubit<ColltactDetailsState> {
+  ColltactDetailsCubit(this._caller) : super(const ColltactDetailsState());
   final _requestPermission = RequestPermissionUseCase();
 
   final CallerCubit _caller;
-
-  ColltactDetailsCubit(this._caller) : super(const ColltactDetailsState());
 
   Future<void> call(
     String destination, {
@@ -26,7 +26,7 @@ class ColltactDetailsCubit extends Cubit<ColltactDetailsState> {
       _caller.call(destination, origin: origin);
 
   void mail(String destination) {
-    launchUrlString('mailto:$destination');
+    unawaited(launchUrlString('mailto:$destination'));
   }
 
   Future<void> edit(Colltact colltact) async {
@@ -46,9 +46,12 @@ class ColltactDetailsCubit extends Cubit<ColltactDetailsState> {
           await intent.launch();
         } else {
           try {
-            final _contact = Contact()..identifier = contact.identifier;
-            await ContactsService.openExistingContact(_contact);
-          } on FormOperationException {} // Thrown when native edit is cancelled
+            await ContactsService.openExistingContact(
+              Contact()..identifier = contact.identifier,
+            );
+          } on FormOperationException {
+            // Thrown when native edit is cancelled
+          }
         }
       }
     }

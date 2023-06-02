@@ -5,15 +5,15 @@ import '../../../../../resources/theme/brand_theme.dart';
 import '../../../../../util/brand.dart';
 
 class SearchTextField extends StatefulWidget {
+  const SearchTextField({
+    required this.onChanged,
+    super.key,
+  });
+
   final void Function(String) onChanged;
 
-  SearchTextField({
-    Key? key,
-    required this.onChanged,
-  }) : super(key: key);
-
   @override
-  _SearchTextFieldState createState() => _SearchTextFieldState();
+  State<SearchTextField> createState() => _SearchTextFieldState();
 }
 
 class _SearchTextFieldState extends State<SearchTextField> {

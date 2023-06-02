@@ -7,7 +7,7 @@ import '../../../../resources/theme.dart';
 import '../abstract/page.dart';
 
 class NotificationsPermissionPage extends StatelessWidget {
-  const NotificationsPermissionPage({Key? key}) : super(key: key);
+  const NotificationsPermissionPage({super.key});
 
   @override
   Widget build(BuildContext context) {
