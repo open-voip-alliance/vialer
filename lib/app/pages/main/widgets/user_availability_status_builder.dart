@@ -69,7 +69,9 @@ class _UserAvailabilityStatusBuilderState
         _status = event.availability.asLoggedInUserDisplayStatus();
 
         Timer(const Duration(seconds: 3), () {
-          setState(() {});
+          if (mounted) {
+            setState(() {});
+          }
         });
       },
     );
