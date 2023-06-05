@@ -5,22 +5,13 @@ import 'package:vialer/domain/user/get_logged_in_user.dart';
 import 'package:vialer/domain/user_availability/colleagues/colleague.dart';
 import '../../../resources/theme.dart';
 
-class BottomNavigationProfileIcon extends StatefulWidget {
+class BottomNavigationProfileIcon extends StatelessWidget {
   const BottomNavigationProfileIcon({
     Key? key,
     required this.active,
   }) : super(key: key);
 
   final bool active;
-
-  @override
-  State<BottomNavigationProfileIcon> createState() =>
-      _BottomNavigationProfileIconState();
-}
-
-class _BottomNavigationProfileIconState
-    extends State<BottomNavigationProfileIcon> {
-  final _getUser = GetLoggedInUserUseCase();
 
   IconData _icon(ColleagueAvailabilityStatus status) => switch (status) {
         ColleagueAvailabilityStatus.doNotDisturb =>
@@ -29,7 +20,11 @@ class _BottomNavigationProfileIconState
         _ => FontAwesomeIcons.solidCheck,
       };
 
-  Color _color(ColleagueAvailabilityStatus status) => switch (status) {
+  Color _color(
+    BuildContext context,
+    ColleagueAvailabilityStatus status,
+  ) =>
+      switch (status) {
         ColleagueAvailabilityStatus.doNotDisturb =>
           context.brand.theme.colors.userAvailabilityUnavailableIcon,
         ColleagueAvailabilityStatus.offline =>
@@ -44,7 +39,7 @@ class _BottomNavigationProfileIconState
         return Padding(
           padding: const EdgeInsets.only(bottom: 4),
           child: Badge(
-            backgroundColor: _color(status),
+            backgroundColor: _color(context, status),
             offset: Offset(6, 4),
             alignment: AlignmentDirectional.bottomEnd,
             label: FaIcon(
@@ -53,14 +48,14 @@ class _BottomNavigationProfileIconState
               size: 8,
             ),
             child: FaIcon(
-              widget.active
+              active
                   ? FontAwesomeIcons.solidCircleUser
                   : FontAwesomeIcons.circleUser,
             ),
           ),
         );
       },
-      user: _getUser(),
+      user: GetLoggedInUserUseCase()(),
     );
   }
 }
