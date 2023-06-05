@@ -35,7 +35,6 @@ class _UserAvailabilityStatusBuilderState
     extends State<UserAvailabilityStatusBuilder> {
   final _eventBus = dependencyLocator<EventBusObserver>();
   ColleagueAvailabilityStatus? _status;
-  var _isProcessingChanges = false;
 
   /// We get the [ColleagueAvailabilityStatus] from a websocket, if this
   /// websocket is down or not available we'll use this fallback instead at the
@@ -57,7 +56,7 @@ class _UserAvailabilityStatusBuilderState
     super.initState();
     _eventBus.on<LoggedInUserAvailabilityChanged>(
       (event) {
-        if (!_isProcessingChanges && mounted) {
+        if (mounted) {
           setState(() {
             _status = event.availability.asLoggedInUserDisplayStatus();
           });
