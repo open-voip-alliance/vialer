@@ -1,0 +1,7 @@
+- Improved the interface to select your ringing device
+- Improvement of the settings screen when the user has no app account
+- Upgraded Flutter and Dart
+- Unified some of the differing button styles on different settings pages
+- Fixed a bug that prevented a user from logging out
+- Android: Using a new notification style that should integrate better with the OS
+- iOS: We are using a new rendering engine for improved animations and a smoother experience
