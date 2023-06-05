@@ -63,6 +63,8 @@ class Colors {
         userAvailabilityUnavailable = v.userAvailabilityUnavailable.color,
         userAvailabilityUnavailableAccent =
             v.userAvailabilityUnavailableAccent.color,
+        userAvailabilityUnavailableIcon =
+            v.userAvailabilityUnavailableIcon.color,
         userAvailabilityUnknown = v.userAvailabilityUnknown.color,
         userAvailabilityUnknownAccent = v.userAvailabilityUnknownAccent.color,
         availabilityHeader = v.availabilityHeader.color,
@@ -136,6 +138,7 @@ class Colors {
   final Color userAvailabilityBusy;
   final Color userAvailabilityBusyAccent;
   final Color userAvailabilityUnavailable;
+  final Color userAvailabilityUnavailableIcon;
   final Color userAvailabilityUnavailableAccent;
   final Color userAvailabilityUnknown;
   final Color userAvailabilityUnknownAccent;
