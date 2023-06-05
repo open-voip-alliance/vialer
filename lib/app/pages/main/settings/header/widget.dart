@@ -9,7 +9,6 @@ import '../../../../../domain/user/user.dart';
 import '../../../../../domain/user_availability/colleagues/availbility_update.dart';
 import '../../../../../domain/user_availability/colleagues/colleague.dart';
 import '../../../../resources/theme.dart';
-import '../../widgets/colltact_list/widgets/avatar.dart';
 
 class Header extends StatefulWidget {
   const Header({
@@ -27,7 +26,6 @@ class _HeaderState extends State<Header> {
   final _eventBus = dependencyLocator<EventBusObserver>();
   var _userAvailabilityStatus = ColleagueAvailabilityStatus.available;
   String? _internalNumber;
-  ColleagueContext? _colleagueContext;
 
   @override
   void initState() {
@@ -53,11 +51,7 @@ class _HeaderState extends State<Header> {
       padding: const EdgeInsets.only(top: 4, bottom: 16),
       child: Row(
         children: [
-          UserAvatar(
-            relevantContext: _colleagueContext,
-            status: _userAvailabilityStatus,
-            icon: FontAwesomeIcons.solidCircleUser,
-          ),
+          _UserStatusHeaderAvatar(_userAvailabilityStatus),
           const SizedBox(width: 12),
           Flexible(
             child: Column(
@@ -107,5 +101,31 @@ extension UserAvailabilityStatus on AvailabilityUpdate {
     ].contains(availabilityStatus)
         ? availabilityStatus
         : ColleagueAvailabilityStatus.available;
+  }
+}
+
+class _UserStatusHeaderAvatar extends StatelessWidget {
+  const _UserStatusHeaderAvatar(
+    this.status, {
+    Key? key,
+  }) : super(key: key);
+
+  final ColleagueAvailabilityStatus? status;
+
+  Color _color(BuildContext context) => switch (status) {
+        ColleagueAvailabilityStatus.doNotDisturb =>
+          context.brand.theme.colors.userAvailabilityBusyAvatar,
+        ColleagueAvailabilityStatus.offline =>
+          context.brand.theme.colors.userAvailabilityOffline,
+        _ => context.brand.theme.colors.userAvailabilityAvailableAvatar,
+      };
+
+  @override
+  Widget build(BuildContext context) {
+    return FaIcon(
+      FontAwesomeIcons.solidCircleUser,
+      color: _color(context),
+      size: 38,
+    );
   }
 }
