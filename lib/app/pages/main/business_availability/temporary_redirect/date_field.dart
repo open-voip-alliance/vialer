@@ -26,8 +26,8 @@ class _DateFieldState extends State<DateField> {
   );
   late final _timeFormat = DateFormat.Hm(context.msg.languageCode);
 
-  late DateTime _date =
-      widget.initialDate?.toLocal() ?? DateTime.now().add(const Duration(hours: 1));
+  late DateTime _date = widget.initialDate?.toLocal() ??
+      DateTime.now().add(const Duration(hours: 1));
 
   bool _firstEdit = true;
   bool _hasError = false;
@@ -39,14 +39,12 @@ class _DateFieldState extends State<DateField> {
   void initState() {
     super.initState();
 
-    // if (widget.initialDate == null) {
-      // This has to be done post-frame because the temporary redirect picker
-      // updates its state if the value changes. Changing state is not allowed
-      // when the widget is still setting up.
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        widget.notifier.value = _date;
-      });
-    // }
+    // This has to be done post-frame because the temporary redirect picker
+    // updates its state if the value changes. Changing state is not allowed
+    // when the widget is still setting up.
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      widget.notifier.value = _date;
+    });
   }
 
   void _updateNotifierAndError() {
