@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:vialer/app/pages/main/widgets/bottom_navigation_profile_icon.dart';
 
 import '../../resources/localizations.dart';
 import '../../resources/theme.dart';
@@ -223,10 +224,8 @@ class _BottomNavigationBar extends StatelessWidget {
             label: context.msg.main.recent.menu.title,
           ),
           BottomNavigationBarItem(
-            icon: const _BottomNavigationBarIcon(FontAwesomeIcons.circleUser),
-            activeIcon: const _BottomNavigationBarIcon(
-              FontAwesomeIcons.solidCircleUser,
-            ),
+            icon: const BottomNavigationProfileIcon(active: false),
+            activeIcon: const BottomNavigationProfileIcon(active: true),
             label: context.msg.main.settings.menu.title,
           ),
         ],

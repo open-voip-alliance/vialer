@@ -67,6 +67,7 @@ class ColorValues {
     this.userAvailabilityBusyAccent = 0xFF8F0A06,
     this.userAvailabilityUnavailable = 0xFFFFD0A3,
     this.userAvailabilityUnavailableAccent = 0xFFD45400,
+    this.userAvailabilityUnavailableIcon = 0xFFFF7B24,
     this.userAvailabilityUnknown = 0xFFF5F5F5,
     this.userAvailabilityUnknownAccent = 0xFF666666,
     this.userAvailabilityOffline = 0xFF2A3041,
@@ -227,6 +228,7 @@ class ColorValues {
   final int userAvailabilityBusyAccent;
   final int userAvailabilityUnavailable;
   final int userAvailabilityUnavailableAccent;
+  final int userAvailabilityUnavailableIcon;
   final int userAvailabilityUnknown;
   final int userAvailabilityUnknownAccent;
   final int userAvailabilityOffline;
