@@ -54,9 +54,7 @@ class _TemporaryRedirectPickerState extends State<TemporaryRedirectPicker> {
     _selectedDestination = widget.activeRedirect?.destination ??
         widget.availableDestinations.firstOrNull;
 
-    _untilDateNotifier
-      ..addListener(_onUntilDateChange)
-      ..value = widget.activeRedirect?.endsAt;
+    _untilDateNotifier.addListener(_onUntilDateChange);
   }
 
   void _onUntilDateChange() {
@@ -179,6 +177,7 @@ class _TemporaryRedirectPickerState extends State<TemporaryRedirectPicker> {
           Flexible(
             child: DateField(
               notifier: _untilDateNotifier,
+              initialDate: widget.activeRedirect?.endsAt,
             ),
           ),
           const SizedBox(height: 16),
