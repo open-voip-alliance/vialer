@@ -12,6 +12,7 @@ class SettingTileCategory extends StatelessWidget {
     this.children = const [],
     this.padBottom = false,
     this.bottomBorder = true,
+    this.isButton = false,
     super.key,
   });
 
@@ -28,6 +29,9 @@ class SettingTileCategory extends StatelessWidget {
   final List<Widget> children;
   final bool padBottom;
   final bool bottomBorder;
+
+  /// When set to TRUE, will style this as a link with a trailing chevron.
+  final bool isButton;
 
   @override
   Widget build(BuildContext context) {
@@ -67,41 +71,51 @@ class SettingTileCategory extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    DecoratedBox(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: Theme.of(context).primaryColor,
-                        ),
-                      ),
-                      child: Center(
-                        child: Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: FaIcon(
-                            icon,
-                            color: Theme.of(context).primaryColor,
-                            size: 14,
+                    Row(
+                      children: [
+                        DecoratedBox(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: Theme.of(context).primaryColor,
+                            ),
+                          ),
+                          child: Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: FaIcon(
+                                icon,
+                                color: Theme.of(context).primaryColor,
+                                size: 14,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
+                        const SizedBox(width: 8),
+                        if (title != null) title!,
+                        if (titleText != null)
+                          Semantics(
+                            header: true,
+                            child: Text(
+                              titleText!.toUpperCase(),
+                              style: TextStyle(
+                                color: Theme.of(context).primaryColor,
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                      ],
                     ),
-                    const SizedBox(width: 8),
-                    if (title != null) title!,
-                    if (titleText != null)
-                      Semantics(
-                        header: true,
-                        child: Text(
-                          titleText!.toUpperCase(),
-                          style: TextStyle(
-                            color: Theme.of(context).primaryColor,
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+                    if (isButton)
+                      FaIcon(
+                        FontAwesomeIcons.angleRight,
+                        color: context.brand.theme.colors.primary,
                       ),
                   ],
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 ),
-                const SizedBox(height: 8),
+                if (children.isNotEmpty) const SizedBox(height: 8),
                 ...children,
               ],
             ),
@@ -113,6 +127,31 @@ class SettingTileCategory extends StatelessWidget {
             color: context.brand.theme.colors.grey6,
           ),
       ],
+    );
+  }
+}
+
+class SettingLinkTileCategory extends StatelessWidget {
+  const SettingLinkTileCategory({
+    required this.onTap,
+    required this.text,
+    required this.icon,
+  });
+
+  final VoidCallback onTap;
+  final String text;
+  final IconData icon;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      child: SettingTileCategory(
+        icon: icon,
+        titleText: text,
+        isButton: true,
+        padBottom: true,
+      ),
     );
   }
 }
