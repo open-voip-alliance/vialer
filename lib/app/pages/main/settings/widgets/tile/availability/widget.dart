@@ -4,16 +4,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vialer/app/pages/main/settings/widgets/tile/availability/ringing_device/widget.dart';
 
-import '../../../../../../../dependency_locator.dart';
 import '../../../../../../../domain/calling/voip/destination.dart';
-import '../../../../../../../domain/event/event_bus.dart';
-import '../../../../../../../domain/user/events/logged_in_user_availability_changed.dart';
 import '../../../../../../../domain/user/settings/call_setting.dart';
 import '../../../../../../../domain/user/settings/settings.dart';
 import '../../../../../../../domain/user/user.dart';
 import '../../../../../../../domain/user_availability/colleagues/colleague.dart';
+import '../../../../widgets/user_availability_status_builder.dart';
 import '../../../cubit.dart';
-import '../../../header/widget.dart';
 import '../value.dart';
 import '../widget.dart';
 import 'availability_status/widget.dart';
@@ -26,35 +23,10 @@ class AvailabilitySwitcher extends StatefulWidget {
 }
 
 class _AvailabilitySwitcherState extends State<AvailabilitySwitcher> {
-  final _eventBus = dependencyLocator<EventBusObserver>();
-  ColleagueAvailabilityStatus? _userAvailabilityStatus;
-  var _isProcessingChanges = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _eventBus.on<LoggedInUserAvailabilityChanged>(
-      (event) {
-        if (!_isProcessingChanges && mounted) {
-          setState(() {
-            _userAvailabilityStatus =
-                event.availability.asLoggedInUserDisplayStatus();
-          });
-          return;
-        }
-
-        // This is a hacky solution to make it so the user's availability
-        // does not switch back while we're in the process of updating it. This
-        // can be removed when DND is user-based in the near future.
-        _userAvailabilityStatus =
-            event.availability.asLoggedInUserDisplayStatus();
-
-        Timer(const Duration(seconds: 3), () {
-          setState(() {});
-        });
-      },
-    );
-  }
+  /// We want the UI to be optimistic, rather than waiting for a server response
+  /// before changing the status. We set this temporarily while making changes
+  /// to immediately update the UI with the user's choice.
+  ColleagueAvailabilityStatus? _statusOverride;
 
   Future<void> _onAvailabilityStatusChange(
     User user,
@@ -63,15 +35,14 @@ class _AvailabilitySwitcherState extends State<AvailabilitySwitcher> {
     ColleagueAvailabilityStatus requestedStatus,
   ) async {
     setState(() {
-      _userAvailabilityStatus = requestedStatus;
+      _statusOverride = requestedStatus;
     });
 
-    _isProcessingChanges = true;
     await defaultOnSettingsChanged(
       context,
       _determineSettingsToModify(user, destinations, context, requestedStatus),
     );
-    _isProcessingChanges = false;
+    _statusOverride = null;
   }
 
   Map<SettingKey, Object> _determineSettingsToModify(
@@ -108,65 +79,52 @@ class _AvailabilitySwitcherState extends State<AvailabilitySwitcher> {
     }
   }
 
-  /// We get the [ColleagueAvailabilityStatus] from a websocket, if this
-  /// websocket is down or not available we'll use this fallback instead at the
-  /// expense of accuracy.
-  ColleagueAvailabilityStatus _fallbackAvailabilityStatus(User user) {
-    if (user.settings.getOrNull(CallSetting.dnd) ?? false) {
-      return ColleagueAvailabilityStatus.doNotDisturb;
-    }
-
-    final destination = user.settings.getOrNull(CallSetting.destination);
-
-    return destination is NotAvailable
-        ? ColleagueAvailabilityStatus.offline
-        : ColleagueAvailabilityStatus.available;
-  }
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<SettingsCubit, SettingsState>(
-      buildWhen: (_, __) => !_isProcessingChanges,
       builder: (context, state) {
-        final availabilityStatus =
-            _userAvailabilityStatus ?? _fallbackAvailabilityStatus(state.user);
-
-        return SettingTile(
-          padding: EdgeInsets.zero,
-          mergeSemantics: false,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(bottom: 16),
-                child: AvailabilityStatusPicker(
-                  onStatusChanged: (status) async =>
-                      _onAvailabilityStatusChange(
-                    state.user,
-                    state.availableDestinations,
-                    context,
-                    status,
+        return UserAvailabilityStatusBuilder(
+          user: state.user,
+          builder: (context, status) {
+            final userStatus = _statusOverride ?? status;
+            return SettingTile(
+              padding: EdgeInsets.zero,
+              mergeSemantics: false,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 16),
+                    child: AvailabilityStatusPicker(
+                      onStatusChanged: (status) async =>
+                          _onAvailabilityStatusChange(
+                        state.user,
+                        state.availableDestinations,
+                        context,
+                        status,
+                      ),
+                      user: state.user,
+                      enabled: state.shouldAllowRemoteSettings,
+                      userAvailabilityStatus: userStatus,
+                    ),
                   ),
-                  user: state.user,
-                  enabled: state.shouldAllowRemoteSettings,
-                  userAvailabilityStatus: availabilityStatus,
-                ),
+                  if (state.availableDestinations.length >= 2)
+                    RingingDevice(
+                      user: state.user,
+                      destinations: state.availableDestinations,
+                      onDestinationChanged: (destination) async =>
+                          defaultOnSettingChanged(
+                        context,
+                        CallSetting.destination,
+                        destination,
+                      ),
+                      enabled: state.shouldAllowRemoteSettings,
+                      userAvailabilityStatus: userStatus,
+                    ),
+                ],
               ),
-              if (state.availableDestinations.length >= 2)
-                RingingDevice(
-                  user: state.user,
-                  destinations: state.availableDestinations,
-                  onDestinationChanged: (destination) async =>
-                      defaultOnSettingChanged(
-                    context,
-                    CallSetting.destination,
-                    destination,
-                  ),
-                  enabled: state.shouldAllowRemoteSettings,
-                  userAvailabilityStatus: availabilityStatus,
-                ),
-            ],
-          ),
+            );
+          },
         );
       },
     );

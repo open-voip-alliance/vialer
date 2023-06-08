@@ -64,21 +64,18 @@ class _BuildInfoTileState extends State<BuildInfoTile> {
           AppSetting.showTroubleshooting,
         );
 
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10),
-          child: GestureDetector(
-            onTap: !hasAccessToTroubleshooting ? _onTap : null,
-            behavior: HitTestBehavior.opaque,
-            child: SettingTileCategory(
-              icon: FontAwesomeIcons.circleInfo,
-              titleText: !buildInfo.showDetailed
-                  ? '${context.msg.main.settings.list.version} '
-                      '${buildInfo.version}'
-                  : null,
-              title:
-                  buildInfo.showDetailed ? _DetailedBuildInfo(buildInfo) : null,
-              padBottom: true,
-            ),
+        return GestureDetector(
+          onTap: !hasAccessToTroubleshooting ? _onTap : null,
+          behavior: HitTestBehavior.opaque,
+          child: SettingTileCategory(
+            icon: FontAwesomeIcons.circleInfo,
+            titleText: !buildInfo.showDetailed
+                ? '${context.msg.main.settings.list.version} '
+                    '${buildInfo.version}'
+                : null,
+            title:
+                buildInfo.showDetailed ? _DetailedBuildInfo(buildInfo) : null,
+            padBottom: true,
           ),
         );
       },

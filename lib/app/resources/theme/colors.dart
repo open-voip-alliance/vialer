@@ -56,13 +56,18 @@ class Colors {
         appBarBackground = v.appBarBackground.color,
         notificationBackground = v.notificationBackground.color,
         userAvailabilityAvailable = v.userAvailabilityAvailable.color,
+        userAvailabilityAvailableAvatar =
+            v.userAvailabilityAvailableAvatar.color,
         userAvailabilityAvailableAccent =
             v.userAvailabilityAvailableAccent.color,
         userAvailabilityBusy = v.userAvailabilityBusy.color,
         userAvailabilityBusyAccent = v.userAvailabilityBusyAccent.color,
+        userAvailabilityBusyAvatar = v.userAvailabilityBusyAvatar.color,
         userAvailabilityUnavailable = v.userAvailabilityUnavailable.color,
         userAvailabilityUnavailableAccent =
             v.userAvailabilityUnavailableAccent.color,
+        userAvailabilityUnavailableIcon =
+            v.userAvailabilityUnavailableIcon.color,
         userAvailabilityUnknown = v.userAvailabilityUnknown.color,
         userAvailabilityUnknownAccent = v.userAvailabilityUnknownAccent.color,
         availabilityHeader = v.availabilityHeader.color,
@@ -133,9 +138,12 @@ class Colors {
 
   final Color userAvailabilityAvailable;
   final Color userAvailabilityAvailableAccent;
+  final Color userAvailabilityAvailableAvatar;
   final Color userAvailabilityBusy;
   final Color userAvailabilityBusyAccent;
+  final Color userAvailabilityBusyAvatar;
   final Color userAvailabilityUnavailable;
+  final Color userAvailabilityUnavailableIcon;
   final Color userAvailabilityUnavailableAccent;
   final Color userAvailabilityUnknown;
   final Color userAvailabilityUnknownAccent;

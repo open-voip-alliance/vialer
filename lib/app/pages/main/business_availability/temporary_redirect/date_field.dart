@@ -10,9 +10,10 @@ import '../../../../resources/theme.dart';
 import 'field.dart';
 
 class DateField extends StatefulWidget {
-  const DateField({required this.notifier, super.key});
+  const DateField({required this.notifier, this.initialDate, super.key});
 
   final ValueNotifier<DateTime?> notifier;
+  final DateTime? initialDate;
 
   @override
   State<DateField> createState() => _DateFieldState();
@@ -25,7 +26,8 @@ class _DateFieldState extends State<DateField> {
   );
   late final _timeFormat = DateFormat.Hm(context.msg.languageCode);
 
-  late DateTime _date = DateTime.now().add(const Duration(hours: 1));
+  late DateTime _date = widget.initialDate?.toLocal() ??
+      DateTime.now().add(const Duration(hours: 1));
 
   bool _firstEdit = true;
   bool _hasError = false;
@@ -38,7 +40,7 @@ class _DateFieldState extends State<DateField> {
     super.initState();
 
     // This has to be done post-frame because the temporary redirect picker
-    // updates its state if the value changes. Changing state not allowed
+    // updates its state if the value changes. Changing state is not allowed
     // when the widget is still setting up.
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       widget.notifier.value = _date;
