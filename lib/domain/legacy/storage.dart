@@ -293,6 +293,19 @@ class StorageRepository {
   set currentColltactTab(ColltactTab? value) =>
       _preferences.setOrRemoveString(_currentColltactTabKey, value?.name);
 
+  static const _lastRingingDeviceKey = 'last_ringing_device';
+
+  Destination? get lastRingingDevice => _preferences.getJson(
+        _lastRingingDeviceKey,
+        Destination.fromJson,
+      );
+
+  set lastRingingDevice(Destination? value) => _preferences.setOrRemoveJson(
+        _lastRingingDeviceKey,
+        value,
+        Destination.serializeToJson,
+      );
+
   Future<void> reload() => _preferences.reload();
 
   User? _legacyUserFromJson(

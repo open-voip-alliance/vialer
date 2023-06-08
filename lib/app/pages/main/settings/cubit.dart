@@ -63,7 +63,7 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
   final _refreshUser = RefreshUser();
   final _getConnectivity = GetCurrentConnectivityTypeUseCase();
 
-  final _storageRepository = dependencyLocator<StorageRepository>();
+  final storage = dependencyLocator<StorageRepository>();
   final _eventBus = dependencyLocator<EventBusObserver>();
 
   final List<_SettingChangeRequest> _changesBeingProcessed = [];
@@ -97,8 +97,8 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
             ).then(
               (status) => status == PermissionStatus.granted,
             ),
-            userNumber: _storageRepository.userNumber,
-            availableDestinations: _storageRepository.availableDestinations,
+            userNumber: storage.userNumber,
+            availableDestinations: storage.availableDestinations,
             isApplyingChanges: _isUpdatingRemote,
             isRateLimited: _isRateLimited,
           ),

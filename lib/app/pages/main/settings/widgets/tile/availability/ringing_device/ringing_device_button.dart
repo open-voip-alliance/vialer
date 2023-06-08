@@ -72,8 +72,9 @@ class RingingDeviceButton extends StatelessWidget {
     return AvailabilityButton(
       text: _text(context),
       leadingIcon: _icon,
-      trailingIcon:
-          user.ringingDevice == type ? FontAwesomeIcons.solidBellOn : null,
+      trailingIcon: parentWidgetIsEnabled && user.ringingDevice == type
+          ? FontAwesomeIcons.solidBellOn
+          : null,
       isActive: parentWidgetIsEnabled && user.ringingDevice == type,
       onPressed: enabled
           ? () =>

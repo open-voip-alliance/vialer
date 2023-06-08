@@ -51,31 +51,48 @@ class _AvailabilitySwitcherState extends State<AvailabilitySwitcher> {
     BuildContext context,
     ColleagueAvailabilityStatus requestedStatus,
   ) {
-    final destination =
-        destinations.findHighestPriorityDestinationFor(user: user);
+    final appAccount = destinations.findAppAccountFor(user: user);
 
-    switch (requestedStatus) {
-      case ColleagueAvailabilityStatus.available:
-        return {
+    assert(
+      appAccount != null,
+      "Users without an app account shouldn't be able to change this.",
+    );
+
+    final destination =
+        context.read<SettingsCubit>().storage.lastRingingDevice ??
+            destinations.findHighestPriorityDestinationFor(user: user);
+
+    return switch (requestedStatus) {
+      ColleagueAvailabilityStatus.available => {
           CallSetting.dnd: false,
           if (destination != null) CallSetting.destination: destination,
-        };
-      case ColleagueAvailabilityStatus.doNotDisturb:
-        return {
+        },
+      ColleagueAvailabilityStatus.doNotDisturb => {
           CallSetting.dnd: true,
-          if (destination != null) CallSetting.destination: destination,
-        };
-      case ColleagueAvailabilityStatus.offline:
-        return {
+          // While DND is account based, enabling it should always point the
+          // user back to the app account otherwise it will have no effect.
+          if (appAccount != null) CallSetting.destination: appAccount,
+        },
+      ColleagueAvailabilityStatus.offline => {
           CallSetting.dnd: false,
           CallSetting.destination: const Destination.notAvailable(),
-        };
-      case ColleagueAvailabilityStatus.busy:
-      case ColleagueAvailabilityStatus.unknown:
-        throw ArgumentError(
+        },
+      _ => throw ArgumentError(
           'Only [available], [doNotDisturb], [offline] '
           'are valid options for setting user status.',
-        );
+        ),
+    };
+  }
+
+  Future<void> _onDestinationChanged(Destination destination) async {
+    await defaultOnSettingChanged(
+      context,
+      CallSetting.destination,
+      destination,
+    );
+
+    if (destination is PhoneAccount || destination is PhoneNumber) {
+      context.read<SettingsCubit>().storage.lastRingingDevice = destination;
     }
   }
 
@@ -85,7 +102,7 @@ class _AvailabilitySwitcherState extends State<AvailabilitySwitcher> {
       builder: (context, state) {
         return UserAvailabilityStatusBuilder(
           user: state.user,
-          builder: (context, status) {
+          builder: (_, status) {
             final userStatus = _statusOverride ?? status;
             return SettingTile(
               padding: EdgeInsets.zero,
@@ -112,12 +129,7 @@ class _AvailabilitySwitcherState extends State<AvailabilitySwitcher> {
                     RingingDevice(
                       user: state.user,
                       destinations: state.availableDestinations,
-                      onDestinationChanged: (destination) async =>
-                          defaultOnSettingChanged(
-                        context,
-                        CallSetting.destination,
-                        destination,
-                      ),
+                      onDestinationChanged: _onDestinationChanged,
                       enabled: state.shouldAllowRemoteSettings,
                       userAvailabilityStatus: userStatus,
                     ),
