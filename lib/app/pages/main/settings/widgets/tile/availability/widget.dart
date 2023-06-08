@@ -133,6 +133,7 @@ class _AvailabilitySwitcherState extends State<AvailabilitySwitcher> {
 
         return SettingTile(
           padding: EdgeInsets.zero,
+          mergeSemantics: false,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
