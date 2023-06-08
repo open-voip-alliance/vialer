@@ -11,6 +11,7 @@ class SettingTile extends StatelessWidget {
     this.childFillWidth = false,
     this.center = false,
     this.padding = const EdgeInsets.symmetric(horizontal: 8),
+    this.mergeSemantics = true,
     super.key,
   });
 
@@ -29,9 +30,12 @@ class SettingTile extends StatelessWidget {
 
   final EdgeInsets padding;
 
+  final bool mergeSemantics;
+
   @override
   Widget build(BuildContext context) {
-    return MergeSemantics(
+    return ConditionalMergeSemantics(
+      mergeSemantics: mergeSemantics,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -82,5 +86,21 @@ class SettingTile extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class ConditionalMergeSemantics extends StatelessWidget {
+  const ConditionalMergeSemantics({
+    required this.mergeSemantics,
+    required this.child,
+    Key? key,
+  }) : super(key: key);
+
+  final bool mergeSemantics;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return mergeSemantics ? MergeSemantics(child: child) : child;
   }
 }

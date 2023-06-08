@@ -89,6 +89,7 @@ class _AvailabilitySwitcherState extends State<AvailabilitySwitcher> {
             final userStatus = _statusOverride ?? status;
             return SettingTile(
               padding: EdgeInsets.zero,
+              mergeSemantics: false,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
