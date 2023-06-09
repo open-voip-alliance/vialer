@@ -3,11 +3,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:vialer/app/pages/main/widgets/full_screen_page.dart';
 
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
 import '../../../../util/conditional_capitalization.dart';
-import '../../../../widgets/transparent_status_bar.dart';
 import '../widgets/buttons/settings_button.dart';
 import 'cubit.dart';
 
@@ -111,43 +111,33 @@ class _FeedbackPageState extends State<FeedbackPage> {
         listener: _onStateChanged,
         child: BlocBuilder<FeedbackCubit, FeedbackState>(
           builder: (context, state) {
-            return Scaffold(
-              appBar: AppBar(
-                title: Text(context.msg.main.settings.feedback.title),
-                centerTitle: true,
-              ),
-              body: TransparentStatusBar(
-                brightness: Brightness.light,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 12,
-                    horizontal: 24,
-                  ).copyWith(
-                    top: 24,
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      _FeedbackFormHeader(
-                        visible: !isKeyboardOpen,
+            return FullScreenPage(
+              title: context.msg.main.settings.feedback.title,
+              body: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12)
+                    .copyWith(bottom: 12),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    _FeedbackFormHeader(
+                      visible: !isKeyboardOpen,
+                    ),
+                    Expanded(
+                      child: _FeedbackInput(controller: _textController),
+                    ),
+                    SizedBox(
+                      width: double.infinity,
+                      child: SettingsButton(
+                        onPressed: state is FeedbackNotSent
+                            ? () => _onSendFeedbackPressed(
+                                  context,
+                                  _textController.text,
+                                )
+                            : null,
+                        text: sendFeedbackButtonText,
                       ),
-                      Expanded(
-                        child: _FeedbackInput(controller: _textController),
-                      ),
-                      SizedBox(
-                        width: double.infinity,
-                        child: SettingsButton(
-                          onPressed: state is FeedbackNotSent
-                              ? () => _onSendFeedbackPressed(
-                                    context,
-                                    _textController.text,
-                                  )
-                              : null,
-                          text: sendFeedbackButtonText,
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             );
