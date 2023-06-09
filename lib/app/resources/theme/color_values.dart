@@ -63,10 +63,13 @@ class ColorValues {
     int? notificationBackground,
     this.userAvailabilityAvailable = 0xFFACF5A6,
     this.userAvailabilityAvailableAccent = 0xFF046614,
+    this.userAvailabilityAvailableAvatar = 0xFF63E06F,
     this.userAvailabilityBusy = 0xFFFFADAD,
     this.userAvailabilityBusyAccent = 0xFF8F0A06,
+    this.userAvailabilityBusyAvatar = 0xFFFFA257,
     this.userAvailabilityUnavailable = 0xFFFFD0A3,
     this.userAvailabilityUnavailableAccent = 0xFFD45400,
+    this.userAvailabilityUnavailableIcon = 0xFFFF7B24,
     this.userAvailabilityUnknown = 0xFFF5F5F5,
     this.userAvailabilityUnknownAccent = 0xFF666666,
     this.userAvailabilityOffline = 0xFF2A3041,
@@ -223,10 +226,13 @@ class ColorValues {
 
   final int userAvailabilityAvailable;
   final int userAvailabilityAvailableAccent;
+  final int userAvailabilityAvailableAvatar;
   final int userAvailabilityBusy;
   final int userAvailabilityBusyAccent;
+  final int userAvailabilityBusyAvatar;
   final int userAvailabilityUnavailable;
   final int userAvailabilityUnavailableAccent;
+  final int userAvailabilityUnavailableIcon;
   final int userAvailabilityUnknown;
   final int userAvailabilityUnknownAccent;
   final int userAvailabilityOffline;

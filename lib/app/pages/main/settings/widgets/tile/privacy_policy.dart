@@ -12,13 +12,10 @@ class PrivacyPolicyTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return SettingLinkTileCategory(
       onTap: () => LaunchPrivacyPolicy()(),
-      child: SettingTileCategory(
-        icon: FontAwesomeIcons.bookCircleArrowRight,
-        titleText: context.msg.main.settings.privacyPolicy,
-        padBottom: true,
-      ),
+      text: context.msg.main.settings.privacyPolicy,
+      icon: FontAwesomeIcons.bookCircleArrowRight,
     );
   }
 }

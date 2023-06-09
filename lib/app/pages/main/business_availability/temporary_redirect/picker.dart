@@ -177,6 +177,7 @@ class _TemporaryRedirectPickerState extends State<TemporaryRedirectPicker> {
           Flexible(
             child: DateField(
               notifier: _untilDateNotifier,
+              initialDate: widget.activeRedirect?.endsAt,
             ),
           ),
           const SizedBox(height: 16),
