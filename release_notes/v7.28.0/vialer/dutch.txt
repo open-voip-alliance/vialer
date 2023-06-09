@@ -1,0 +1,5 @@
+- Your current status will now be shown in the bottom navigation bar at all times
+- Feedback, privacy policy and version information have been moved to a separate section called "About the app"
+- The appearance of the feedback page has been updated
+- The appearance of the avatar on the profile page has been updated
+- Ringing device buttons will now fit more text to avoid being cut-off
