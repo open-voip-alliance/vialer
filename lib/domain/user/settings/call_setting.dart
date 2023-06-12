@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:meta/meta.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../calling/voip/destination.dart';
 import 'settings.dart';
@@ -44,6 +44,8 @@ abstract class OutgoingNumber {
   const factory OutgoingNumber(String value) = UnsuppressedOutgoingNumber;
 
   const factory OutgoingNumber.suppressed() = SuppressedOutgoingNumber;
+
+  const factory OutgoingNumber.section() = OutgoingNumberSection;
 
   factory OutgoingNumber.fromJson(dynamic json) => json == _suppressed
       ? const SuppressedOutgoingNumber()
@@ -91,4 +93,8 @@ extension OutgoingNumberExt on OutgoingNumber {
 
     return self is UnsuppressedOutgoingNumber ? self.value : '';
   }
+}
+
+class OutgoingNumberSection implements OutgoingNumber {
+  const OutgoingNumberSection();
 }
