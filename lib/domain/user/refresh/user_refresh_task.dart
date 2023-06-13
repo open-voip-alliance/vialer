@@ -13,7 +13,7 @@ import 'tasks/voipgrid_user_settings.dart';
 import 'user_refresh_task_performer.dart';
 
 enum UserRefreshTask {
-  base(null),
+  userCore(null),
   previousSessionSettings(RefreshPreviousSessionSettings()),
   userVoipConfig(RefreshUserVoipConfig()),
   userDestination(RefreshUserDestination()),
@@ -37,7 +37,7 @@ enum UserRefreshTask {
   /// A minimal set of tasks that can be run regularly, will not include
   /// anything that is unlikely to be updated regularly.
   static List<UserRefreshTask> get minimal => [
-        UserRefreshTask.base,
+        UserRefreshTask.userCore,
         UserRefreshTask.previousSessionSettings,
         UserRefreshTask.userDestination,
         UserRefreshTask.voipgridUserSettings,

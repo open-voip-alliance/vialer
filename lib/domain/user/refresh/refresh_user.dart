@@ -41,7 +41,7 @@ class RefreshUser extends UseCase with Loggable {
     Future<User?> executeUserRefreshTasks() async {
       final storedUser = _storageRepository.user;
       final latestUser =
-          tasksToPerform.contains(UserRefreshTask.base) || storedUser == null
+          tasksToPerform.contains(UserRefreshTask.userCore) || storedUser == null
               ? await _auth.getUserFromCredentials(credentials)
               : storedUser;
 
