@@ -10,5 +10,5 @@
   "businessAvailabilityUrl": "https://api.prod.holodeck.spindle.dev/business-availability/clients/",
   "openingHoursBasicUrl": "https://api.prod.holodeck.spindle.dev/opening-hours-basic/client/",
   "privacyPolicyUrl": "https://vialerapp.com/privacy/",
-  "userAvailabilityWsUrl": "wss://api.prod.holodeck.spindle.dev/user-availability-ws/ws"
+  "userAvailabilityWsUrl": "wss://api.prod.holodeck.spindle.dev/user-availability-wsabc/ws"
 }
