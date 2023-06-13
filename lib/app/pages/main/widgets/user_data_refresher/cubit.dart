@@ -27,7 +27,7 @@ class UserDataRefresherCubit extends Cubit<UserDataRefresherState>
   final _isLoggedInSomewhereElse = GetIsLoggedInSomewhereElseUseCase();
   final _logout = Logout();
 
-  Future<void> refreshIfReady() async {
+  Future<void> refreshIfReady(List<UserRefreshTask> tasksToPerform) async {
     if (!_isOnboarded()) return;
 
     final oldUser = _getLoggedInUser();
@@ -53,7 +53,7 @@ class UserDataRefresherCubit extends Cubit<UserDataRefresherState>
 
     _storageRepository.lastUserRefreshedTime = DateTime.now();
 
-    final newUser = await _refreshUser(tasksToPerform: UserRefreshTask.all);
+    final newUser = await _refreshUser(tasksToPerform: tasksToPerform);
 
     await _registerToVoipMiddleware();
 

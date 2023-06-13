@@ -11,6 +11,7 @@ import 'tasks/voipgrid_user_settings.dart';
 import 'user_refresh_task_performer.dart';
 
 enum UserRefreshTask {
+  base(null),
   previousSessionSettings(RefreshPreviousSessionSettings()),
   userVoipConfig(RefreshUserVoipConfig()),
   userDestination(RefreshUserDestination()),
@@ -24,9 +25,19 @@ enum UserRefreshTask {
 
   const UserRefreshTask(this.performer);
 
-  final UserRefreshTaskPerformer performer;
+  final UserRefreshTaskPerformer? performer;
 
   // Makes more semantic sense when calling for the purpose of including all
   // tasks rather than calling .values.
   static List<UserRefreshTask> get all => UserRefreshTask.values;
+
+  /// A minimal set of tasks that can be run regularly, will not include
+  /// anything that is unlikely to be updated regularly.
+  static List<UserRefreshTask> get minimal => [
+        UserRefreshTask.base,
+        UserRefreshTask.previousSessionSettings,
+        UserRefreshTask.userDestination,
+        UserRefreshTask.voipgridUserSettings,
+        UserRefreshTask.clientTemporaryRedirect,
+      ];
 }
