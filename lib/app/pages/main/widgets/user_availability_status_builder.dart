@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/widgets.dart';
 import 'package:vialer/app/pages/main/settings/header/widget.dart';
+import 'package:vialer/domain/user/get_logged_in_user.dart';
 import 'package:vialer/domain/user/user.dart';
 
 import '../../../../dependency_locator.dart';
@@ -10,6 +11,7 @@ import '../../../../domain/event/event_bus.dart';
 import '../../../../domain/user/events/logged_in_user_availability_changed.dart';
 import '../../../../domain/user/settings/call_setting.dart';
 import '../../../../domain/user_availability/colleagues/colleague.dart';
+import '../../../../domain/user_availability/colleagues/colleagues_repository.dart';
 
 typedef UserAvailabilityStatusBuild = Widget Function(
   BuildContext context,
@@ -20,11 +22,9 @@ class UserAvailabilityStatusBuilder extends StatefulWidget {
   const UserAvailabilityStatusBuilder({
     Key? key,
     required this.builder,
-    required this.user,
   }) : super(key: key);
 
   final UserAvailabilityStatusBuild builder;
-  final User user;
 
   @override
   State<UserAvailabilityStatusBuilder> createState() =>
@@ -34,6 +34,7 @@ class UserAvailabilityStatusBuilder extends StatefulWidget {
 class _UserAvailabilityStatusBuilderState
     extends State<UserAvailabilityStatusBuilder> {
   final _eventBus = dependencyLocator<EventBusObserver>();
+  final _colleagueRepository = dependencyLocator<ColleaguesRepository>();
   ColleagueAvailabilityStatus? _status;
 
   /// We get the [ColleagueAvailabilityStatus] from a websocket, if this
@@ -79,9 +80,12 @@ class _UserAvailabilityStatusBuilderState
 
   @override
   Widget build(BuildContext context) {
+    final fallback = _fallbackAvailabilityStatus(GetLoggedInUserUseCase()());
+    final status = _status ?? fallback;
+
     return widget.builder(
       context,
-      _status ?? _fallbackAvailabilityStatus(widget.user),
+      _colleagueRepository.isWebSocketConnected ? status : fallback,
     );
   }
 }

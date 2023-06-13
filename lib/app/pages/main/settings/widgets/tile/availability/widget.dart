@@ -84,7 +84,6 @@ class _AvailabilitySwitcherState extends State<AvailabilitySwitcher> {
     return BlocBuilder<SettingsCubit, SettingsState>(
       builder: (context, state) {
         return UserAvailabilityStatusBuilder(
-          user: state.user,
           builder: (context, status) {
             final userStatus = _statusOverride ?? status;
             return SettingTile(

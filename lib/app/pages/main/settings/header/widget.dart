@@ -10,6 +10,8 @@ import '../../../../../domain/user_availability/colleagues/availbility_update.da
 import '../../../../../domain/user_availability/colleagues/colleague.dart';
 import '../../../../resources/theme.dart';
 
+import 'package:vialer/app/pages/main/widgets/user_availability_status_builder.dart';
+
 class Header extends StatefulWidget {
   const Header({
     required this.user,
@@ -24,7 +26,6 @@ class Header extends StatefulWidget {
 
 class _HeaderState extends State<Header> {
   final _eventBus = dependencyLocator<EventBusObserver>();
-  var _userAvailabilityStatus = ColleagueAvailabilityStatus.available;
   String? _internalNumber;
 
   @override
@@ -34,8 +35,6 @@ class _HeaderState extends State<Header> {
       if (mounted) {
         setState(() {
           _internalNumber = event.availability.internalNumber;
-          _userAvailabilityStatus =
-              event.availability.asLoggedInUserDisplayStatus();
         });
       }
     });
@@ -51,7 +50,7 @@ class _HeaderState extends State<Header> {
       padding: const EdgeInsets.only(top: 4, bottom: 16),
       child: Row(
         children: [
-          _UserStatusHeaderAvatar(_userAvailabilityStatus),
+          _UserStatusHeaderAvatar(),
           const SizedBox(width: 12),
           Flexible(
             child: Column(
@@ -105,14 +104,15 @@ extension UserAvailabilityStatus on AvailabilityUpdate {
 }
 
 class _UserStatusHeaderAvatar extends StatelessWidget {
-  const _UserStatusHeaderAvatar(
-    this.status, {
+  const _UserStatusHeaderAvatar({
     Key? key,
   }) : super(key: key);
 
-  final ColleagueAvailabilityStatus? status;
-
-  Color _color(BuildContext context) => switch (status) {
+  Color _color(
+    BuildContext context,
+    ColleagueAvailabilityStatus status,
+  ) =>
+      switch (status) {
         ColleagueAvailabilityStatus.doNotDisturb =>
           context.brand.theme.colors.userAvailabilityBusyAvatar,
         ColleagueAvailabilityStatus.offline =>
@@ -122,10 +122,14 @@ class _UserStatusHeaderAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FaIcon(
-      FontAwesomeIcons.solidCircleUser,
-      color: _color(context),
-      size: 38,
+    return UserAvailabilityStatusBuilder(
+      builder: (_, status) {
+        return FaIcon(
+          FontAwesomeIcons.solidCircleUser,
+          color: _color(context, status),
+          size: 38,
+        );
+      },
     );
   }
 }
