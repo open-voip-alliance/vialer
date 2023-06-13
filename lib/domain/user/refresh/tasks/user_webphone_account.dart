@@ -14,7 +14,8 @@ class RefreshUserWebphoneAccount extends UserRefreshTaskPerformer {
   Future<UserMutator> performUserRefreshTask(User user) async {
     final webphoneAccountId = await _repository.getSelectedWebphoneAccountId();
 
-    return (User user) =>
-        user.copyWith(webphoneAccountId: () => webphoneAccountId,);
+    return (User user) => user.copyWith(
+          webphoneAccountId: () => webphoneAccountId,
+        );
   }
 }
