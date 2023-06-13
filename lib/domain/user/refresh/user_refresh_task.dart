@@ -1,3 +1,5 @@
+import 'package:vialer/domain/user/refresh/tasks/user_webphone_account.dart';
+
 import 'tasks/client_available_outgoing_numbers.dart';
 import 'tasks/client_opening_hours_modules.dart';
 import 'tasks/client_temporary_redirect.dart';
@@ -15,6 +17,7 @@ enum UserRefreshTask {
   previousSessionSettings(RefreshPreviousSessionSettings()),
   userVoipConfig(RefreshUserVoipConfig()),
   userDestination(RefreshUserDestination()),
+  userWebphoneAccount(RefreshUserWebphoneAccount()),
   voipgridUserSettings(RefreshVoipgridUserSettings()),
   voipgridUserPermissions(RefreshVoipgridUserPermissions()),
   clientOutgoingNumbers(RefreshClientAvailableOutgoingNumbers()),
@@ -39,5 +42,6 @@ enum UserRefreshTask {
         UserRefreshTask.userDestination,
         UserRefreshTask.voipgridUserSettings,
         UserRefreshTask.clientTemporaryRedirect,
+        UserRefreshTask.userWebphoneAccount,
       ];
 }
