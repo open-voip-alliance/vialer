@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vialer/app/pages/main/settings/widgets/tile/availability/ringing_device/widget.dart';
+import 'package:vialer/domain/user/get_logged_in_user.dart';
 
 import '../../../../../../../domain/calling/voip/destination.dart';
 import '../../../../../../../domain/user/settings/call_setting.dart';
@@ -29,7 +30,6 @@ class _AvailabilitySwitcherState extends State<AvailabilitySwitcher> {
   ColleagueAvailabilityStatus? _statusOverride;
 
   Future<void> _onAvailabilityStatusChange(
-    User user,
     List<Destination> destinations,
     BuildContext context,
     ColleagueAvailabilityStatus requestedStatus,
@@ -38,10 +38,13 @@ class _AvailabilitySwitcherState extends State<AvailabilitySwitcher> {
       _statusOverride = requestedStatus;
     });
 
+    final user = GetLoggedInUserUseCase()();
+
     await defaultOnSettingsChanged(
       context,
       _determineSettingsToModify(user, destinations, context, requestedStatus),
     );
+
     _statusOverride = null;
   }
 
@@ -54,29 +57,24 @@ class _AvailabilitySwitcherState extends State<AvailabilitySwitcher> {
     final destination =
         destinations.findHighestPriorityDestinationFor(user: user);
 
-    switch (requestedStatus) {
-      case ColleagueAvailabilityStatus.available:
-        return {
+    return switch (requestedStatus) {
+      ColleagueAvailabilityStatus.available => {
           CallSetting.dnd: false,
           if (destination != null) CallSetting.destination: destination,
-        };
-      case ColleagueAvailabilityStatus.doNotDisturb:
-        return {
+        },
+      ColleagueAvailabilityStatus.doNotDisturb => {
           CallSetting.dnd: true,
           if (destination != null) CallSetting.destination: destination,
-        };
-      case ColleagueAvailabilityStatus.offline:
-        return {
+        },
+      ColleagueAvailabilityStatus.offline => {
           CallSetting.dnd: false,
           CallSetting.destination: const Destination.notAvailable(),
-        };
-      case ColleagueAvailabilityStatus.busy:
-      case ColleagueAvailabilityStatus.unknown:
-        throw ArgumentError(
+        },
+      _ => throw ArgumentError(
           'Only [available], [doNotDisturb], [offline] '
           'are valid options for setting user status.',
-        );
-    }
+        ),
+    };
   }
 
   @override
@@ -84,7 +82,6 @@ class _AvailabilitySwitcherState extends State<AvailabilitySwitcher> {
     return BlocBuilder<SettingsCubit, SettingsState>(
       builder: (context, state) {
         return UserAvailabilityStatusBuilder(
-          user: state.user,
           builder: (context, status) {
             final userStatus = _statusOverride ?? status;
             return SettingTile(
@@ -98,7 +95,6 @@ class _AvailabilitySwitcherState extends State<AvailabilitySwitcher> {
                     child: AvailabilityStatusPicker(
                       onStatusChanged: (status) async =>
                           _onAvailabilityStatusChange(
-                        state.user,
                         state.availableDestinations,
                         context,
                         status,

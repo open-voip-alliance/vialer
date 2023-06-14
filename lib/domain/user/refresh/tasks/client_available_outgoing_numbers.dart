@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_types_on_closure_parameters
-
 import '../../../../dependency_locator.dart';
 import '../../../calling/outgoing_number/outgoing_numbers.dart';
 import '../../client.dart';

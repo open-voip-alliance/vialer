@@ -1,8 +1,6 @@
-import 'dart:async';
-
 import 'package:flutter/widgets.dart';
-import 'package:vialer/app/pages/main/settings/header/widget.dart';
-import 'package:vialer/domain/user/user.dart';
+import 'package:vialer/domain/user/get_logged_in_user.dart';
+import 'package:vialer/domain/user/settings/setting_changed.dart';
 
 import '../../../../dependency_locator.dart';
 import '../../../../domain/calling/voip/destination.dart';
@@ -20,11 +18,9 @@ class UserAvailabilityStatusBuilder extends StatefulWidget {
   const UserAvailabilityStatusBuilder({
     Key? key,
     required this.builder,
-    required this.user,
   }) : super(key: key);
 
   final UserAvailabilityStatusBuild builder;
-  final User user;
 
   @override
   State<UserAvailabilityStatusBuilder> createState() =>
@@ -34,54 +30,36 @@ class UserAvailabilityStatusBuilder extends StatefulWidget {
 class _UserAvailabilityStatusBuilderState
     extends State<UserAvailabilityStatusBuilder> {
   final _eventBus = dependencyLocator<EventBusObserver>();
-  ColleagueAvailabilityStatus? _status;
 
-  /// We get the [ColleagueAvailabilityStatus] from a websocket, if this
-  /// websocket is down or not available we'll use this fallback instead at the
-  /// expense of accuracy.
-  ColleagueAvailabilityStatus _fallbackAvailabilityStatus(User user) {
-    if (user.settings.getOrNull(CallSetting.dnd) ?? false) {
-      return ColleagueAvailabilityStatus.doNotDisturb;
-    }
-
+  ColleagueAvailabilityStatus get _status {
+    final user = GetLoggedInUserUseCase()();
     final destination = user.settings.getOrNull(CallSetting.destination);
+    final isDndEnabled = user.settings.getOrNull(CallSetting.dnd) ?? false;
 
-    return destination is NotAvailable
-        ? ColleagueAvailabilityStatus.offline
+    if (destination is NotAvailable) return ColleagueAvailabilityStatus.offline;
+
+    return isDndEnabled
+        ? ColleagueAvailabilityStatus.doNotDisturb
         : ColleagueAvailabilityStatus.available;
   }
 
   @override
   void initState() {
     super.initState();
-    _eventBus.on<LoggedInUserAvailabilityChanged>(
-      (event) {
-        if (mounted) {
-          setState(() {
-            _status = event.availability.asLoggedInUserDisplayStatus();
-          });
-          return;
-        }
+    _eventBus.on<LoggedInUserAvailabilityChanged>((_) {
+      setState(() {});
+    });
 
-        // This is a hacky solution to make it so the user's availability
-        // does not switch back while we're in the process of updating it. This
-        // can be removed when DND is user-based in the near future.
-        _status = event.availability.asLoggedInUserDisplayStatus();
-
-        Timer(const Duration(seconds: 3), () {
-          if (mounted) {
-            setState(() {});
-          }
-        });
-      },
-    );
+    _eventBus.on<SettingChangedEvent>((_) {
+      setState(() {});
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return widget.builder(
       context,
-      _status ?? _fallbackAvailabilityStatus(widget.user),
+      _status,
     );
   }
 }
