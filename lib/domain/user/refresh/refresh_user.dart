@@ -23,27 +23,13 @@ class RefreshUser extends UseCase with Loggable {
     required List<UserRefreshTask> tasksToPerform,
     LoginCredentials? credentials,
     bool synchronized = true,
-  }) {
-    Future<User?> refreshUser() => _refreshUser(credentials, tasksToPerform);
-
-    return synchronized
-        ? SynchronizedTask<User?>.named(
-            editUserTask,
-            SynchronizedTaskMode.queue,
-          ).run(refreshUser)
-        : refreshUser();
-  }
-
-  Future<User?> _refreshUser(
-    LoginCredentials? credentials,
-    List<UserRefreshTask> tasksToPerform,
-  ) async {
+  }) async {
     Future<User?> executeUserRefreshTasks() async {
       final storedUser = _storageRepository.user;
-      final latestUser =
-          tasksToPerform.contains(UserRefreshTask.userCore) || storedUser == null
-              ? await _auth.getUserFromCredentials(credentials)
-              : storedUser;
+      final latestUser = tasksToPerform.contains(UserRefreshTask.userCore) ||
+              storedUser == null
+          ? await _auth.getUserFromCredentials(credentials)
+          : storedUser;
 
       if (latestUser == null) return storedUser;
 
