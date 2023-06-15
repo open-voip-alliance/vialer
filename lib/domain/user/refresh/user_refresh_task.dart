@@ -1,3 +1,5 @@
+import 'package:vialer/domain/user/refresh/tasks/user_webphone_account.dart';
+
 import 'tasks/client_available_outgoing_numbers.dart';
 import 'tasks/client_opening_hours_modules.dart';
 import 'tasks/client_temporary_redirect.dart';
@@ -11,9 +13,11 @@ import 'tasks/voipgrid_user_settings.dart';
 import 'user_refresh_task_performer.dart';
 
 enum UserRefreshTask {
+  userCore(null),
   previousSessionSettings(RefreshPreviousSessionSettings()),
   userVoipConfig(RefreshUserVoipConfig()),
   userDestination(RefreshUserDestination()),
+  userWebphoneAccount(RefreshUserWebphoneAccount()),
   voipgridUserSettings(RefreshVoipgridUserSettings()),
   voipgridUserPermissions(RefreshVoipgridUserPermissions()),
   clientOutgoingNumbers(RefreshClientAvailableOutgoingNumbers()),
@@ -24,9 +28,20 @@ enum UserRefreshTask {
 
   const UserRefreshTask(this.performer);
 
-  final UserRefreshTaskPerformer performer;
+  final UserRefreshTaskPerformer? performer;
 
   // Makes more semantic sense when calling for the purpose of including all
   // tasks rather than calling .values.
   static List<UserRefreshTask> get all => UserRefreshTask.values;
+
+  /// A minimal set of tasks that can be run regularly, will not include
+  /// anything that is unlikely to be updated regularly.
+  static List<UserRefreshTask> get minimal => [
+        UserRefreshTask.userCore,
+        UserRefreshTask.previousSessionSettings,
+        UserRefreshTask.userDestination,
+        UserRefreshTask.voipgridUserSettings,
+        UserRefreshTask.clientTemporaryRedirect,
+        UserRefreshTask.userWebphoneAccount,
+      ];
 }

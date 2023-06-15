@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_types_on_closure_parameters
-
 import '../../../../dependency_locator.dart';
 import '../../../legacy/storage.dart';
 import '../../settings/settings.dart';

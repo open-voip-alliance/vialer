@@ -281,10 +281,6 @@ class VoipRepository with Loggable {
     final loginTime = _getLoginTime();
     final dndEnabled = user.settings.get(CallSetting.dnd);
 
-    if (dndEnabled) {
-      logger.info('Registering in do-not-disturb mode');
-    }
-
     final response = Platform.isAndroid
         ? await _service.postAndroidDevice(
             name: name,
@@ -320,7 +316,7 @@ class VoipRepository with Loggable {
       return;
     }
 
-    logger.info('Registered!');
+    logger.info('Registered! In do-not-disturb mode: $dndEnabled');
   }
 
   Future<void> unregister(UserVoipConfig? voipConfig) async {

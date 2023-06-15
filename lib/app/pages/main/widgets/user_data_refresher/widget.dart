@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vialer/domain/user/refresh/user_refresh_task.dart';
 
 import '../../../../util/widgets_binding_observer_registrar.dart';
 import 'cubit.dart';
@@ -42,10 +43,10 @@ class _UserDataRefresherState extends State<_UserDataRefresher>
     super.didChangeDependencies();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      unawaited(cubit.refreshIfReady());
+      unawaited(cubit.refreshIfReady(UserRefreshTask.minimal));
 
       _refreshTimer ??= Timer.periodic(const Duration(seconds: 10), (_) {
-        unawaited(cubit.refreshIfReady());
+        unawaited(cubit.refreshIfReady(UserRefreshTask.minimal));
       });
     });
   }
@@ -55,7 +56,11 @@ class _UserDataRefresherState extends State<_UserDataRefresher>
     super.didChangeAppLifecycleState(state);
 
     if (state == AppLifecycleState.resumed) {
-      unawaited(context.read<UserDataRefresherCubit>().refreshIfReady());
+      unawaited(
+        context
+            .read<UserDataRefresherCubit>()
+            .refreshIfReady(UserRefreshTask.all),
+      );
     }
   }
 
