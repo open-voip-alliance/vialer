@@ -1,10 +1,8 @@
 import 'package:flutter/widgets.dart';
-import 'package:vialer/app/util/set_state_when_mounted.dart';
+import 'package:vialer/app/util/event_bus_listener.dart';
 import 'package:vialer/domain/user/settings/setting_changed.dart';
 
-import '../../../../dependency_locator.dart';
 import '../../../../domain/calling/voip/destination.dart';
-import '../../../../domain/event/event_bus.dart';
 import '../../../../domain/user/events/logged_in_user_availability_changed.dart';
 import '../../../../domain/user/get_stored_user.dart';
 import '../../../../domain/user/settings/call_setting.dart';
@@ -31,7 +29,6 @@ class UserAvailabilityStatusBuilder extends StatefulWidget {
 
 class _UserAvailabilityStatusBuilderState
     extends State<UserAvailabilityStatusBuilder> {
-  final _eventBus = dependencyLocator<EventBusObserver>();
   User? get _user => GetStoredUserUseCase()();
 
   ColleagueAvailabilityStatus get _status {
@@ -50,22 +47,21 @@ class _UserAvailabilityStatusBuilderState
   }
 
   @override
-  void initState() {
-    super.initState();
-    _eventBus.on<LoggedInUserAvailabilityChanged>((_) {
-      setStateWhenMounted(() {});
-    });
-
-    _eventBus.on<SettingChangedEvent>((_) {
-      setStateWhenMounted(() {});
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return widget.builder(
-      context,
-      _status,
+    return EventBusListener<SettingChangedEvent>(
+      listener: (event) => rebuild(),
+      child: EventBusListener<LoggedInUserAvailabilityChanged>(
+        listener: (event) => rebuild(),
+        child: widget.builder(
+          context,
+          _status,
+        ),
+      ),
     );
   }
+}
+
+extension TriggerRebuild on State {
+  // ignore: invalid_use_of_protected_member
+  void rebuild() => setState(() {});
 }
