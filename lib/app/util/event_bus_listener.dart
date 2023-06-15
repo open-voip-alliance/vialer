@@ -5,14 +5,10 @@ import 'package:flutter/widgets.dart';
 import '../../dependency_locator.dart';
 import '../../domain/event/event_bus.dart';
 
-/// Provides a wrapper around listening for an [EventBusEvent] that does not
-/// require management of the listener. This will automatically start and stop
-/// listening so `if (mounted)` calls are not necessary when receiving
-/// an event.
-///
-/// This is only for when events need to be listened for in the widget tree, if
-/// they happen in a cubit or anywhere else the listener must be properly
-/// cleaned-up manually.
+/// Provides a convenient way to listen for [EventBusEvent] in the widget tree.
+/// The purpose is to properly handle starting and stopping the listener based
+/// on the widget's state so `if (mounted)` calls are not necessary and
+/// everything is properly cleaned-up.
 class EventBusListener<T extends EventBusEvent> extends StatefulWidget {
   const EventBusListener({
     Key? key,
