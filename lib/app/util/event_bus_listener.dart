@@ -45,8 +45,8 @@ class _EventBusListenerState<T extends EventBusEvent>
 }
 
 extension RebuildOnEvent on State {
-  /// A helper that can be passed into [EventBusListener] that will simply cause
-  /// the widget to be re-built when any event is received.
+  /// A convenience that can be passed into [EventBusListener] that will simply
+  /// cause the widget to be re-built when any event is received.
   ///
   /// This should only be used when you do not care about the content of the
   /// event, only that the event occurred.
