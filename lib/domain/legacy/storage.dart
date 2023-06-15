@@ -270,8 +270,6 @@ class StorageRepository {
             destinations.map((destination) => destination.toJson()).toList(),
       );
 
-  Future<void> clear() => _preferences.clear();
-
   static const _hasCompletedOnboarding = 'has_completed_onboarding';
 
   bool? get hasCompletedOnboardingOrNull =>
@@ -292,6 +290,24 @@ class StorageRepository {
 
   set currentColltactTab(ColltactTab? value) =>
       _preferences.setOrRemoveString(_currentColltactTabKey, value?.name);
+
+  static const _recentOutgoingNumbers = 'recent_outgoing_numbers';
+
+  Iterable<OutgoingNumber> get recentOutgoingNumbers =>
+      _preferences.getJson<Iterable<OutgoingNumber>, List<dynamic>>(
+        _recentOutgoingNumbers,
+        (list) => list.map(OutgoingNumber.fromJson).toIterable(),
+      ) ??
+      Iterable.empty();
+
+  set recentOutgoingNumbers(Iterable<OutgoingNumber> numbers) =>
+      _preferences.setOrRemoveJson<Iterable<OutgoingNumber>>(
+        _recentOutgoingNumbers,
+        numbers,
+        (numbers) => numbers.map(OutgoingNumber.toJson).toList(),
+      );
+
+  Future<void> clear() => _preferences.clear();
 
   Future<void> reload() => _preferences.reload();
 

@@ -16,10 +16,12 @@ class OutgoingNumberTile extends StatelessWidget {
     this.user, {
     super.key,
     this.enabled = true,
-  }) : _value = user.settings.get(_key);
+    this.recentOutgoingNumbers = const Iterable<OutgoingNumber>.empty(),
+  }) : _outgoingNumber = user.settings.get(_key);
   final User user;
 
-  final OutgoingNumber _value;
+  final OutgoingNumber _outgoingNumber;
+  final Iterable<OutgoingNumber> recentOutgoingNumbers;
   final bool enabled;
 
   static const _key = CallSetting.outgoingNumber;
@@ -35,6 +37,11 @@ class OutgoingNumberTile extends StatelessWidget {
               .msg.main.settings.list.accountInfo.businessNumber.suppressed,
       bold: false,
     );
+
+    // No duplicates allowed in a dropdown, so remove the recent outgoing
+    // numbers from the available numbers.
+    final availableOutgoingNumbers = user.client.outgoingNumbers
+        .where((number) => !recentOutgoingNumbers.contains(number));
 
     return SettingTileCategory(
       icon: FontAwesomeIcons.phoneArrowRight,
@@ -54,7 +61,7 @@ class OutgoingNumberTile extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.only(top: 8),
                       child: MultipleChoiceSettingValue<OutgoingNumber>(
-                        value: _value,
+                        value: _outgoingNumber,
                         padding: const EdgeInsets.only(
                           bottom: 8,
                           right: 8,
@@ -79,7 +86,47 @@ class OutgoingNumberTile extends StatelessWidget {
                               ),
                             ),
                           ),
-                          ...user.client.outgoingNumbers.map(
+                          if (recentOutgoingNumbers.isNotEmpty)
+                            DropdownMenuItem<OutgoingNumber>(
+                              enabled: false,
+                              value: const OutgoingNumber.section(),
+                              child: FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: Text(
+                                  context.msg.main.settings.list.accountInfo
+                                      .businessNumber.section.recently,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          if (recentOutgoingNumbers.isNotEmpty)
+                            ...recentOutgoingNumbers.map(
+                              (number) => DropdownMenuItem<OutgoingNumber>(
+                                value: number,
+                                child: FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  child: Text(number.toString()),
+                                ),
+                              ),
+                            ),
+                          if (recentOutgoingNumbers.isNotEmpty)
+                            DropdownMenuItem<OutgoingNumber>(
+                              enabled: false,
+                              value: const OutgoingNumber.section(),
+                              child: FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: Text(
+                                  context.msg.main.settings.list.accountInfo
+                                      .businessNumber.section.other,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ...availableOutgoingNumbers.map(
                             (number) => DropdownMenuItem<OutgoingNumber>(
                               value: number,
                               child: FittedBox(

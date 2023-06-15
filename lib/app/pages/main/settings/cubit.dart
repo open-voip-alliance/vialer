@@ -101,6 +101,7 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
             availableDestinations: _storageRepository.availableDestinations,
             isApplyingChanges: _isUpdatingRemote,
             isRateLimited: _isRateLimited,
+            recentOutgoingNumbers: _storageRepository.recentOutgoingNumbers,
           ),
         );
       }(),

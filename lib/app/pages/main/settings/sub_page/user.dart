@@ -33,6 +33,7 @@ class UserSubPage extends StatelessWidget {
                       OutgoingNumberTile(
                         state.user,
                         enabled: state.shouldAllowRemoteSettings,
+                        recentOutgoingNumbers: state.recentOutgoingNumbers,
                       ),
                       UsernameTile(state.user),
                       const SizedBox(height: 20),

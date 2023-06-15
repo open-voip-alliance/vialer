@@ -24,6 +24,8 @@ class SettingsState with _$SettingsState {
     /// when updating a remote setting, so waiting for an API response.
     @Default(false) bool isApplyingChanges,
     @Default(false) bool isRateLimited,
+    @Default(Iterable<OutgoingNumber>.empty())
+    Iterable<OutgoingNumber> recentOutgoingNumbers,
   }) = _SettingsState;
 
   const SettingsState._();
@@ -33,6 +35,7 @@ class SettingsState with _$SettingsState {
 
   bool get showDnd =>
       user.isAllowedVoipCalling && user.settings.get(CallSetting.useVoip);
+
   bool get shouldAllowRemoteSettings => !isApplyingChanges && !isRateLimited;
 
   SettingsState withChanged(
