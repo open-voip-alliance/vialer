@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_types_on_closure_parameters
-
 import '../../../../app/util/loggable.dart';
 import '../../../../dependency_locator.dart';
 import '../../../calling/voip/client_voip_config_repository.dart';
