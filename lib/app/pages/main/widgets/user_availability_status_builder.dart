@@ -29,6 +29,9 @@ class UserAvailabilityStatusBuilder extends StatefulWidget {
 
 class _UserAvailabilityStatusBuilderState
     extends State<UserAvailabilityStatusBuilder> {
+  // We're having to use this instead of [GetLoggedInUserUseCase] because this
+  // can receive events after the user has logged out, resulting in an error
+  // as the user no longer exists.
   User? get _user => GetStoredUserUseCase()();
 
   ColleagueAvailabilityStatus get _status {
