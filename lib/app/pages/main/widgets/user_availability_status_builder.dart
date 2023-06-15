@@ -1,12 +1,14 @@
 import 'package:flutter/widgets.dart';
-import 'package:vialer/domain/user/get_logged_in_user.dart';
+import 'package:vialer/app/util/set_state_when_mounted.dart';
 import 'package:vialer/domain/user/settings/setting_changed.dart';
 
 import '../../../../dependency_locator.dart';
 import '../../../../domain/calling/voip/destination.dart';
 import '../../../../domain/event/event_bus.dart';
 import '../../../../domain/user/events/logged_in_user_availability_changed.dart';
+import '../../../../domain/user/get_stored_user.dart';
 import '../../../../domain/user/settings/call_setting.dart';
+import '../../../../domain/user/user.dart';
 import '../../../../domain/user_availability/colleagues/colleague.dart';
 
 typedef UserAvailabilityStatusBuild = Widget Function(
@@ -30,9 +32,13 @@ class UserAvailabilityStatusBuilder extends StatefulWidget {
 class _UserAvailabilityStatusBuilderState
     extends State<UserAvailabilityStatusBuilder> {
   final _eventBus = dependencyLocator<EventBusObserver>();
+  User? get _user => GetStoredUserUseCase()();
 
   ColleagueAvailabilityStatus get _status {
-    final user = GetLoggedInUserUseCase()();
+    final user = _user;
+
+    if (user == null) return ColleagueAvailabilityStatus.offline;
+
     final destination = user.settings.getOrNull(CallSetting.destination);
     final isDndEnabled = user.settings.getOrNull(CallSetting.dnd) ?? false;
 
@@ -47,11 +53,11 @@ class _UserAvailabilityStatusBuilderState
   void initState() {
     super.initState();
     _eventBus.on<LoggedInUserAvailabilityChanged>((_) {
-      setState(() {});
+      setStateWhenMounted(() {});
     });
 
     _eventBus.on<SettingChangedEvent>((_) {
-      setState(() {});
+      setStateWhenMounted(() {});
     });
   }
 
