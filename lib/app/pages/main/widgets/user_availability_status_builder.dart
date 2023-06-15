@@ -49,19 +49,11 @@ class _UserAvailabilityStatusBuilderState
   @override
   Widget build(BuildContext context) {
     return EventBusListener<SettingChangedEvent>(
-      listener: (event) => rebuild(),
+      listener: rebuildOnEvent,
       child: EventBusListener<LoggedInUserAvailabilityChanged>(
-        listener: (event) => rebuild(),
-        child: widget.builder(
-          context,
-          _status,
-        ),
+        listener: rebuildOnEvent,
+        child: widget.builder(context, _status),
       ),
     );
   }
-}
-
-extension TriggerRebuild on State {
-  // ignore: invalid_use_of_protected_member
-  void rebuild() => setState(() {});
 }
