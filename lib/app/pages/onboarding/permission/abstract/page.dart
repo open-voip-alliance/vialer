@@ -17,7 +17,7 @@ class PermissionPage extends StatelessWidget {
   });
 
   final Widget icon;
-  final Widget title;
+  final String title;
   final Widget description;
   final Permission permission;
   final VoidCallback? onPermissionGranted;

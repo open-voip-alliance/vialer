@@ -14,9 +14,7 @@ class IgnoreBatteryOptimizationsPermissionPage extends StatelessWidget {
     return PermissionPage(
       permission: Permission.ignoreBatteryOptimizations,
       icon: const FaIcon(FontAwesomeIcons.batteryLow),
-      title: Text(
-        context.msg.onboarding.permission.ignoreBatteryOptimizations.title,
-      ),
+      title: context.msg.onboarding.permission.ignoreBatteryOptimizations.title,
       description: Text(
         context.msg.onboarding.permission.ignoreBatteryOptimizations
             .description(context.brand.appName),

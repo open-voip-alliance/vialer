@@ -14,9 +14,7 @@ class NotificationsPermissionPage extends StatelessWidget {
     return PermissionPage(
       permission: Permission.notifications,
       icon: const FaIcon(FontAwesomeIcons.bell),
-      title: Text(
-        context.msg.onboarding.permission.notifications.title,
-      ),
+      title: context.msg.onboarding.permission.notifications.title,
       description: Text(
         context.msg.onboarding.permission.notifications.description(
           context.brand.appName,
