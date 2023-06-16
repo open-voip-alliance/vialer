@@ -45,6 +45,16 @@ class _AvailabilitySwitcherState extends State<AvailabilitySwitcher> {
       _determineSettingsToModify(user, destinations, context, requestedStatus),
     );
 
+    // Hacky solution to making sure availability doesn't sometimes flick back
+    // to available. Should be removed with user-based dnd.
+    // ignore: inference_failure_on_instance_creation
+    await Future.delayed(const Duration(seconds: 1));
+    await defaultOnSettingChanged(
+      context,
+      CallSetting.dnd,
+      requestedStatus == ColleagueAvailabilityStatus.doNotDisturb,
+    );
+
     _statusOverride = null;
   }
 
