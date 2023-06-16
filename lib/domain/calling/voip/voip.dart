@@ -202,13 +202,14 @@ class VoipRepository with Loggable {
   Future<Auth> _createAuth(
     UserVoipConfig userConfig,
     ClientVoipConfig clientConfig,
-  ) async => Auth(
-      username: userConfig.sipUserId,
-      password: userConfig.password,
-      domain: clientConfig.sipUrl.toString(),
-      port: userConfig.useEncryption ? 5061 : 5060,
-      secure: userConfig.useEncryption,
-    );
+  ) async =>
+      Auth(
+        username: userConfig.sipUserId,
+        password: userConfig.password,
+        domain: clientConfig.sipUrl.toString(),
+        port: userConfig.useEncryption ? 5061 : 5060,
+        secure: userConfig.useEncryption,
+      );
 
   Preferences _createPreferences(User user) => Preferences(
         codecs: const [Codec.opus],
