@@ -4,13 +4,13 @@ phrase:
     targets:
     - file: ./lib/app/resources/messages.i18n.yaml
       params:
-        locale_id: en-US
+        locale_id: 85e4ba11caa8d4fe1e77f4452ae42b7e
         file_format: yml_symfony2
     - file: ./lib/app/resources/messages_nl.i18n.yaml
       params:
-        locale_id: nl-NL
+        locale_id: 0499f0d1de5f27e4b303f006f2ed912e
         file_format: yml_symfony2
     - file: ./lib/app/resources/messages_de.i18n.yaml
       params:
-        locale_id: de-DE
+        locale_id: 8d203025039e93dda4d4a8eed1873ea9
         file_format: yml_symfony2
