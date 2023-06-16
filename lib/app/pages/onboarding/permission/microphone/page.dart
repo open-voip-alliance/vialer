@@ -14,7 +14,7 @@ class MicrophonePermissionPage extends StatelessWidget {
     return PermissionPage(
       permission: Permission.microphone,
       icon: const FaIcon(FontAwesomeIcons.microphone),
-      title: Text(context.msg.onboarding.permission.microphone.title),
+      title: context.msg.onboarding.permission.microphone.title,
       description: Text(
         context.msg.onboarding.permission.microphone.description(
           context.brand.appName,
