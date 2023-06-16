@@ -445,8 +445,7 @@ class TestApp extends StatelessWidget {
         url: Uri.parse('https://partner.voipgrid.nl'),
         middlewareUrl: Uri.parse('https://vialerpush.voipgrid.nl'),
         voipgridUrl: Uri.parse('https://partner.voipgrid.nl'),
-        encryptedSipUrl: Uri.parse('sip.encryptedsip.com'),
-        unencryptedSipUrl: Uri.parse('sipproxy.voipgrid.nl'),
+        sipUrl: Uri.parse('sip.encryptedsip.com'),
         businessAvailabilityUrl: Uri.parse(
           'https://api.eu-prod.holodeck.wearespindle.com/business-availability/clients/',
         ),
