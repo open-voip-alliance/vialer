@@ -1,7 +1,7 @@
 import 'package:dartx/dartx.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:vialer/app/pages/main/widgets/user_availability_status_builder.dart';
+import 'package:vialer/app/pages/main/widgets/user_availability_status_builder/widget.dart';
 
 import '../../../../../domain/user/events/logged_in_user_availability_changed.dart';
 import '../../../../../domain/user/user.dart';
