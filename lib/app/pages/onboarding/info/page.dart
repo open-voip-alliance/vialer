@@ -57,7 +57,7 @@ class InfoPage extends StatelessWidget {
                     Flexible(
                       child: AutoSizeText(
                         title,
-                        minFontSize: 32,
+                        minFontSize: 28,
                         style: TextStyle(fontWeight: FontWeight.bold),
                         textAlign: TextAlign.center,
                       ),
