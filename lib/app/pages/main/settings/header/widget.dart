@@ -1,15 +1,14 @@
 import 'package:dartx/dartx.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:vialer/app/pages/main/widgets/user_availability_status_builder.dart';
+import 'package:vialer/app/pages/main/widgets/user_availability_status_builder/widget.dart';
 
-import '../../../../../dependency_locator.dart';
-import '../../../../../domain/event/event_bus.dart';
 import '../../../../../domain/user/events/logged_in_user_availability_changed.dart';
 import '../../../../../domain/user/user.dart';
 import '../../../../../domain/user_availability/colleagues/availbility_update.dart';
 import '../../../../../domain/user_availability/colleagues/colleague.dart';
 import '../../../../resources/theme.dart';
+import '../../../../util/event_bus_listener.dart';
 
 class Header extends StatefulWidget {
   const Header({
@@ -24,20 +23,7 @@ class Header extends StatefulWidget {
 }
 
 class _HeaderState extends State<Header> {
-  final _eventBus = dependencyLocator<EventBusObserver>();
   String? _internalNumber;
-
-  @override
-  void initState() {
-    super.initState();
-    _eventBus.on<LoggedInUserAvailabilityChanged>((event) {
-      if (mounted) {
-        setState(() {
-          _internalNumber = event.availability.internalNumber;
-        });
-      }
-    });
-  }
 
   String get _subheading => _internalNumber.isNotNullOrBlank
       ? '$_internalNumber - ${widget.user.email}'
@@ -45,40 +31,45 @@ class _HeaderState extends State<Header> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 4, bottom: 16),
-      child: Row(
-        children: [
-          _UserStatusHeaderAvatar(),
-          const SizedBox(width: 12),
-          Flexible(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  widget.user.fullName,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: context.brand.theme.colors.primary,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 22,
+    return EventBusListener<LoggedInUserAvailabilityChanged>(
+      listener: (event) => setState(
+        () => _internalNumber = event.availability.internalNumber,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.only(top: 4, bottom: 16),
+        child: Row(
+          children: [
+            _UserStatusHeaderAvatar(),
+            const SizedBox(width: 12),
+            Flexible(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    widget.user.fullName,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: context.brand.theme.colors.primary,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 22,
+                    ),
                   ),
-                ),
-                Text(
-                  _subheading,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: context.brand.theme.colors.grey6,
+                  Text(
+                    _subheading,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: context.brand.theme.colors.grey6,
+                    ),
                   ),
-                ),
-              ],
-            ),
-          )
-        ],
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

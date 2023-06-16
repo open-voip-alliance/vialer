@@ -10,7 +10,7 @@ import '../../../../../../../domain/user/settings/call_setting.dart';
 import '../../../../../../../domain/user/settings/settings.dart';
 import '../../../../../../../domain/user/user.dart';
 import '../../../../../../../domain/user_availability/colleagues/colleague.dart';
-import '../../../../widgets/user_availability_status_builder.dart';
+import '../../../../widgets/user_availability_status_builder/widget.dart';
 import '../../../cubit.dart';
 import '../value.dart';
 import '../widget.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:vialer/app/pages/main/widgets/user_availability_status_builder.dart';
+import 'package:vialer/app/pages/main/widgets/user_availability_status_builder/widget.dart';
 import 'package:vialer/domain/user_availability/colleagues/colleague.dart';
 import '../../../resources/theme.dart';
 
