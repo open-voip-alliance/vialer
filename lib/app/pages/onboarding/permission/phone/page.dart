@@ -16,7 +16,7 @@ class PhonePermissionPage extends StatelessWidget {
     return PermissionPage(
       permission: Permission.phone,
       icon: const FaIcon(FontAwesomeIcons.phone),
-      title: Text(context.msg.onboarding.permission.phone.title),
+      title: context.msg.onboarding.permission.phone.title,
       description: Text(
         context.msg.onboarding.permission.phone
             .description(context.brand.appName),

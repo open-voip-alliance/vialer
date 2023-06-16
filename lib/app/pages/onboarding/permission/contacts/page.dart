@@ -14,7 +14,7 @@ class ContactsPermissionPage extends StatelessWidget {
     return PermissionPage(
       permission: Permission.contacts,
       icon: const FaIcon(FontAwesomeIcons.addressBook),
-      title: Text(context.msg.onboarding.permission.contacts.title),
+      title: context.msg.onboarding.permission.contacts.title,
       description: Text(
         context.msg.onboarding.permission.contacts
             .description(context.brand.appName),

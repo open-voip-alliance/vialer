@@ -14,7 +14,7 @@ class BluetoothPermissionPage extends StatelessWidget {
     return PermissionPage(
       permission: Permission.bluetooth,
       icon: const FaIcon(FontAwesomeIcons.bluetooth),
-      title: Text(context.msg.onboarding.permission.bluetooth.title),
+      title: context.msg.onboarding.permission.bluetooth.title,
       description: Text(
         context.msg.onboarding.permission.bluetooth.description(
           context.brand.appName,
