@@ -11,8 +11,7 @@ class ClientVoipConfig with _$ClientVoipConfig {
   const factory ClientVoipConfig({
     @JsonKey(name: 'MIDDLEWARE', fromJson: _middlewareUrlFromJson)
     required Uri middlewareUrl,
-    @JsonKey(name: 'SIP_UDP') required Uri unencryptedSipUrl,
-    @JsonKey(name: 'SIP_TLS') required Uri encryptedSipUrl,
+    @JsonKey(name: 'SIP_TLS') required Uri sipUrl,
   }) = _ClientVoipConfig;
 
   factory ClientVoipConfig.fromJson(Map<String, dynamic> json) =>
@@ -26,8 +25,7 @@ class ClientVoipConfig with _$ClientVoipConfig {
 
     return ClientVoipConfig(
       middlewareUrl: brand.middlewareUrl,
-      unencryptedSipUrl: brand.unencryptedSipUrl,
-      encryptedSipUrl: brand.encryptedSipUrl,
+      sipUrl: brand.sipUrl,
     );
   }
 
