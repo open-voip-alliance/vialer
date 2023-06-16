@@ -5,7 +5,6 @@ import 'package:vialer/app/resources/localizations.dart';
 import '../../../../../../../../domain/calling/voip/destination.dart';
 import '../../../../../../../../domain/user/user.dart';
 import '../../../../../../../widgets/stylized_dropdown.dart';
-import '../../availability.dart';
 
 class MultipleRingingDeviceDropdown extends StatelessWidget {
   const MultipleRingingDeviceDropdown({
@@ -105,6 +104,21 @@ class _OfflineDropdown extends StatelessWidget {
       isExpanded: true,
       showIcon: false,
       onChanged: null,
+    );
+  }
+}
+
+extension DestinationDropdown on Destination {
+  String dropdownValue(BuildContext context) {
+    final destination = this;
+
+    return destination.when(
+      unknown: () => context.msg.main.settings.list.calling.unknown,
+      notAvailable: () => context.msg.main.settings.list.calling.notAvailable,
+      phoneNumber: (_, description, phoneNumber) =>
+          phoneNumber == null ? '$description' : '$phoneNumber / $description',
+      phoneAccount: (_, description, __, internalNumber) =>
+          '$internalNumber / $description',
     );
   }
 }
