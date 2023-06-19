@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_types_on_closure_parameters
-
 import '../../../openings_hours_basic/get_opening_hours_modules.dart';
 import '../../client.dart';
 import '../../permissions/user_permissions.dart';

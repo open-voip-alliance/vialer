@@ -202,18 +202,14 @@ class VoipRepository with Loggable {
   Future<Auth> _createAuth(
     UserVoipConfig userConfig,
     ClientVoipConfig clientConfig,
-  ) async {
-    final encryptedSipUrl = clientConfig.encryptedSipUrl.toString();
-    final unencryptedSipUrl = clientConfig.unencryptedSipUrl.toString();
-
-    return Auth(
-      username: userConfig.sipUserId,
-      password: userConfig.password,
-      domain: userConfig.useEncryption ? encryptedSipUrl : unencryptedSipUrl,
-      port: userConfig.useEncryption ? 5061 : 5060,
-      secure: userConfig.useEncryption,
-    );
-  }
+  ) async =>
+      Auth(
+        username: userConfig.sipUserId,
+        password: userConfig.password,
+        domain: clientConfig.sipUrl.toString(),
+        port: userConfig.useEncryption ? 5061 : 5060,
+        secure: userConfig.useEncryption,
+      );
 
   Preferences _createPreferences(User user) => Preferences(
         codecs: const [Codec.opus],
@@ -281,10 +277,6 @@ class VoipRepository with Loggable {
     final loginTime = _getLoginTime();
     final dndEnabled = user.settings.get(CallSetting.dnd);
 
-    if (dndEnabled) {
-      logger.info('Registering in do-not-disturb mode');
-    }
-
     final response = Platform.isAndroid
         ? await _service.postAndroidDevice(
             name: name,
@@ -320,7 +312,7 @@ class VoipRepository with Loggable {
       return;
     }
 
-    logger.info('Registered!');
+    logger.info('Registered! In do-not-disturb mode: $dndEnabled');
   }
 
   Future<void> unregister(UserVoipConfig? voipConfig) async {

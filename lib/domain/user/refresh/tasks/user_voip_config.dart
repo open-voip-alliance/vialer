@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_types_on_closure_parameters
-
 import 'dart:async';
 
 import '../../../../dependency_locator.dart';
@@ -18,14 +16,10 @@ class RefreshUserVoipConfig extends UserRefreshTaskPerformer {
   @override
   Future<UserMutator> performUserRefreshTask(User user) async {
     final config = await _repository.get();
-    final webphoneAccountId = await _repository.getSelectedWebphoneAccountId();
 
     _ensureAppAccountIsConfiguredCorrectly(config);
 
-    return (User user) => user.copyWith(
-          voip: () => config,
-          webphoneAccountId: () => webphoneAccountId,
-        );
+    return (User user) => user.copyWith(voip: () => config);
   }
 
   void _ensureAppAccountIsConfiguredCorrectly(UserVoipConfig? config) {

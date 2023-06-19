@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
 import '../../../resources/localizations.dart';
@@ -16,13 +17,12 @@ class InfoPage extends StatelessWidget {
   static const keys = _Keys();
 
   final Widget icon;
-  final Widget title;
+  final String title;
   final Widget description;
   final VoidCallback onPressed;
 
   @override
   Widget build(BuildContext context) {
-    final mediaQuery = MediaQuery.of(context);
     final sizeFactor = context.sizeFactor;
 
     return Padding(
@@ -42,6 +42,7 @@ class InfoPage extends StatelessWidget {
               },
               child: SingleChildScrollView(
                 child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     Padding(
                       padding: EdgeInsets.only(
@@ -53,20 +54,12 @@ class InfoPage extends StatelessWidget {
                         child: icon,
                       ),
                     ),
-                    MediaQuery(
-                      data: mediaQuery.copyWith(
-                        // Title should never get bigger than it already is,
-                        // even on max font size.
-                        textScaleFactor: mediaQuery.textScaleFactor.clamp(0, 1),
-                      ),
-                      child: DefaultTextStyle(
-                        style: TextStyle(
-                          // Scale down the title based on the screen width.
-                          fontSize: 40 * sizeFactor,
-                          fontWeight: FontWeight.bold,
-                        ),
+                    Flexible(
+                      child: AutoSizeText(
+                        title,
+                        minFontSize: 28,
+                        style: TextStyle(fontWeight: FontWeight.bold),
                         textAlign: TextAlign.center,
-                        child: title,
                       ),
                     ),
                     DefaultTextStyle(

@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_types_on_closure_parameters
-
 import '../../../business_availability/temporary_redirect/get_current_temporary_redirect.dart';
 import '../../client.dart';
 import '../../permissions/user_permissions.dart';

@@ -1,10 +1,10 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:vialer/app/pages/main/settings/widgets/tile/availability/ringing_device/widget.dart';
+import 'package:vialer/app/resources/localizations.dart';
 import '../../../../../../../../domain/calling/voip/destination.dart';
 import '../../../../../../../../domain/user/user.dart';
 import '../../../../../../../widgets/stylized_dropdown.dart';
-import '../../availability.dart';
 
 class MultipleRingingDeviceDropdown extends StatelessWidget {
   const MultipleRingingDeviceDropdown({
@@ -38,6 +38,8 @@ class MultipleRingingDeviceDropdown extends StatelessWidget {
     }
   }
 
+  bool get _shouldShowDestinations => user.currentDestination is! NotAvailable;
+
   /// Currently we support a [NotAvailable] destination which won't appear in
   /// this list, so we only want to use the current destination if it is a
   /// phone account or a phone number.
@@ -55,28 +57,68 @@ class MultipleRingingDeviceDropdown extends StatelessWidget {
       visible: relevantDestinations.isNotEmpty,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 12),
-        child: StylizedDropdown<Destination>(
-          value: _currentDestination ?? relevantDestinations.firstOrNull,
-          items: relevantDestinations
-              .map(
-                (destination) => DropdownMenuItem<Destination>(
-                  value: destination,
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Text(destination.dropdownValue(context)),
-                  ),
-                ),
+        child: _shouldShowDestinations
+            ? StylizedDropdown<Destination>(
+                value: _currentDestination ?? relevantDestinations.firstOrNull,
+                items: relevantDestinations
+                    .map(
+                      (destination) => DropdownMenuItem<Destination>(
+                        value: destination,
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(destination.dropdownValue(context)),
+                        ),
+                      ),
+                    )
+                    .toList(),
+                isExpanded: true,
+                showIcon: relevantDestinations.length >= 2,
+                onChanged: enabled && _relevantDestinations.length >= 2
+                    ? (destination) => destination != null
+                        ? onDestinationChanged(destination)
+                        : () {}
+                    : null,
               )
-              .toList(),
-          isExpanded: true,
-          showIcon: relevantDestinations.length >= 2,
-          onChanged: enabled && _relevantDestinations.length >= 2
-              ? (destination) => destination != null
-                  ? onDestinationChanged(destination)
-                  : () {}
-              : null,
-        ),
+            : _OfflineDropdown(),
       ),
+    );
+  }
+}
+
+class _OfflineDropdown extends StatelessWidget {
+  const _OfflineDropdown({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return StylizedDropdown<bool>(
+      value: true,
+      items: [
+        DropdownMenuItem<bool>(
+          value: true,
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(context.msg.ua.mobile.ringingDevice.dropdown.offline),
+          ),
+        ),
+      ],
+      isExpanded: true,
+      showIcon: false,
+      onChanged: null,
+    );
+  }
+}
+
+extension DestinationDropdown on Destination {
+  String dropdownValue(BuildContext context) {
+    final destination = this;
+
+    return destination.when(
+      unknown: () => context.msg.main.settings.list.calling.unknown,
+      notAvailable: () => context.msg.main.settings.list.calling.notAvailable,
+      phoneNumber: (_, description, phoneNumber) =>
+          phoneNumber == null ? '$description' : '$phoneNumber / $description',
+      phoneAccount: (_, description, __, internalNumber) =>
+          '$internalNumber / $description',
     );
   }
 }

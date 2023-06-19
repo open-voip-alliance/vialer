@@ -15,8 +15,14 @@ if [[ $# -eq 1 ]]; then
   PHRASE_ACCESS_TOKEN=$1
 fi
 
-if ! brew list -1 | grep -q "phrase-cli"; then
+if ! brew list -1 | grep --quiet "phrase-cli"; then
   brew install phrase-cli --quiet
 fi
+
+if brew outdated | grep --quiet "phrase-cli"; then
+  echo "pharse-cli is outdated, consider updating it with the following command:"
+  echo "brew update && brew upgrade phrase-cli"
+fi
+
 phrase pull -t "$PHRASE_ACCESS_TOKEN"
 dart run build_runner build --delete-conflicting-outputs

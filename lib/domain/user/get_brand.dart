@@ -12,12 +12,7 @@ class GetBrand extends UseCase {
       url: Uri.parse(const String.fromEnvironment('url')),
       middlewareUrl: Uri.parse(const String.fromEnvironment('middlewareUrl')),
       voipgridUrl: Uri.parse(const String.fromEnvironment('voipgridUrl')),
-      encryptedSipUrl: Uri.parse(
-        const String.fromEnvironment('encryptedSipUrl'),
-      ),
-      unencryptedSipUrl: Uri.parse(
-        const String.fromEnvironment('unencryptedSipUrl'),
-      ),
+      sipUrl: Uri.parse(const String.fromEnvironment('sipUrl')),
       businessAvailabilityUrl: Uri.parse(
         const String.fromEnvironment('businessAvailabilityUrl'),
       ),

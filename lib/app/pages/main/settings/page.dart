@@ -4,8 +4,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:vialer/app/pages/main/settings/sub_page/about_the_app.dart';
 import 'package:vialer/app/pages/main/settings/widgets/tile/availability/widget.dart';
 
-import '../../../../domain/feature/feature.dart';
-import '../../../../domain/feature/has_feature.dart';
 import '../../../resources/localizations.dart';
 import '../util/stylized_snack_bar.dart';
 import 'cubit.dart';
@@ -15,8 +13,6 @@ import 'sub_page/client.dart';
 import 'sub_page/user.dart';
 import 'widgets/container.dart';
 import 'widgets/rate_limited_snackbar_label.dart';
-import 'widgets/tile/availability.dart';
-import 'widgets/tile/dnd.dart';
 import 'widgets/tile/link/sub_page.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -55,8 +51,6 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  bool get _showNewAvailability => HasFeature()(Feature.ringingDevice);
-
   @override
   Widget build(BuildContext context) {
     return SettingsPageContainer(
@@ -70,9 +64,6 @@ class _SettingsPageState extends State<SettingsPage> {
             !previous.isRateLimited || !current.isRateLimited,
         builder: (context, state) {
           final user = state.user;
-          final showDnd = state.showDnd;
-          final userNumber = state.userNumber;
-          final destinations = state.availableDestinations;
           final cubit = context.watch<SettingsCubit>();
 
           return Expanded(
@@ -86,25 +77,8 @@ class _SettingsPageState extends State<SettingsPage> {
                       child: Column(
                         children: [
                           Header(user: state.user),
-                          // The new availability switcher will be hidden behind
-                          // a feature flag so we can easily switch back if
-                          // necessary after release.
-                          if (_showNewAvailability) ...[
-                            const AvailabilitySwitcher(),
-                            const Divider(),
-                          ] else ...[
-                            if (showDnd)
-                              DndTile(
-                                user,
-                                enabled: state.shouldAllowRemoteSettings,
-                              ),
-                            AvailabilityTile(
-                              user: user,
-                              userNumber: userNumber,
-                              destinations: destinations,
-                              enabled: state.shouldAllowRemoteSettings,
-                            ),
-                          ],
+                          const AvailabilitySwitcher(),
+                          const Divider(),
                           SubPageLinkTile(
                             title: context
                                 .msg.main.settings.subPage.appPreferences.title,

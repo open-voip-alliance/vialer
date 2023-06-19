@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_types_on_closure_parameters
-
 import '../../../../dependency_locator.dart';
 import '../../../authentication/authentication_repository.dart';
 import '../../permissions/user_permissions.dart';
