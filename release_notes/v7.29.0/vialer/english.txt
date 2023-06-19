@@ -1,0 +1,4 @@
+- When changing your outgoing number, recently used numbers will now appear at the top of the list
+- Fixed several bugs relating to changing status/ringing device
+- Stopping certain titles running onto a second line (mainly for German language)
+- Fixed a bug where the incoming call screen would sometimes not be dismissed
