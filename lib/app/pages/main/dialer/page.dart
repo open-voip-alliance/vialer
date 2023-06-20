@@ -15,6 +15,7 @@ import '../../../resources/theme.dart';
 import '../../../routes.dart';
 import '../../../util/conditional_capitalization.dart';
 import '../../../util/widgets_binding_observer_registrar.dart';
+import '../call/outgoing_number_prompt/show_prompt.dart';
 import '../settings/widgets/buttons/settings_button.dart';
 import '../widgets/caller.dart';
 import '../widgets/conditional_placeholder.dart';
@@ -94,8 +95,10 @@ class _DialerPageState extends State<DialerPage>
     }
   }
 
-  void _onCallButtonPressed(BuildContext context, String number) =>
-      unawaited(context.read<DialerCubit>().call(number));
+  void _onCallButtonPressed(BuildContext context, String number) async =>
+      showOutgoingNumberPrompt(context, (_) {
+        unawaited(context.read<DialerCubit>().call(number));
+      });
 
   @override
   void dispose() {
