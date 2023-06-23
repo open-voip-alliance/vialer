@@ -103,7 +103,7 @@ class _DialerPageState extends State<DialerPage>
       return;
     }
 
-    showOutgoingNumberPrompt(context, (_) {
+    showOutgoingNumberPrompt(context, number, (_) {
       unawaited(context.read<DialerCubit>().call(number));
     });
   }

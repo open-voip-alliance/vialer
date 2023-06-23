@@ -281,6 +281,7 @@ class _Calls<C extends RecentCallsCubit> extends StatelessWidget {
           onRefresh: () async => _refreshCalls(context),
           onCallPressed: (number) => showOutgoingNumberPrompt(
             context,
+            number,
             (_) => cubit.call(number),
           ),
           onCopyPressed: cubit.copyNumber,

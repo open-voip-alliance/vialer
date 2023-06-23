@@ -1,22 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:vialer/app/pages/main/call/outgoing_number_prompt/widget.dart';
-import 'package:vialer/domain/user/get_logged_in_user.dart';
+import 'package:vialer/domain/calling/outgoing_number/should_prompt_user_for_outgoing_number.dart';
 
-import '../../../../../dependency_locator.dart';
-import '../../../../../domain/legacy/storage.dart';
 import '../../../../../domain/user/settings/call_setting.dart';
 
 /// Pops this widget as a dialog so the user can change their outgoing number.
 Future<void> showOutgoingNumberPrompt(
   BuildContext context,
+  String destination,
   void Function(OutgoingNumber?) callback,
 ) async {
-  final user = GetLoggedInUserUseCase()();
-  final storageRepository = dependencyLocator<StorageRepository>();
-
-  if (!user.permissions.canChangeOutgoingNumber ||
-      storageRepository.doNotShouldOutgoingNumberSelector ||
-      user.client.outgoingNumbers.length < 2) {
+  if (!ShouldPromptUserForOutgoingNumber()(destination: destination)) {
     return callback(null);
   }
 
