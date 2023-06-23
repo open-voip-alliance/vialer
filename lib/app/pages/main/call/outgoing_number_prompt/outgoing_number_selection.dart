@@ -44,14 +44,14 @@ class OutgoingNumberSelection extends _$OutgoingNumberSelection {
     state = state.copyWith(doNotShowAgain: value);
   }
 
-  Future<void> changeOutgoingNumber({
+  Future<bool> changeOutgoingNumber({
     required OutgoingNumber number,
   }) async {
     // If we already have the correct outgoing number set, we don't need to
     // do anything.
     if (currentOutgoingNumber == number) {
-      _metrics.track('outgoing-number-prompt-existing-chosen');
-      return;
+      _metrics.track('outgoing-number-prompt-current-used');
+      return true;
     }
 
     state = OutgoingNumberSelectorState.updating(
@@ -85,6 +85,8 @@ class OutgoingNumberSelection extends _$OutgoingNumberSelection {
             currentOutgoingNumber,
             state.doNotShowAgain,
           );
+
+    return success;
   }
 }
 

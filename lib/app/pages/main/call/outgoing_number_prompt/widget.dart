@@ -72,11 +72,13 @@ class _Ready extends ConsumerWidget {
     OutgoingNumber outgoingNumber,
     WidgetRef ref,
   ) async {
-    await ref
+    final result = await ref
         .read(outgoingNumberSelectionProvider.notifier)
         .changeOutgoingNumber(number: outgoingNumber);
 
-    onOutgoingNumberConfigured(outgoingNumber);
+    if (result) {
+      onOutgoingNumberConfigured(outgoingNumber);
+    }
   }
 
   @override

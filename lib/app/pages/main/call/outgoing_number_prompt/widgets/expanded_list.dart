@@ -46,14 +46,16 @@ class ExpandedList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final recentOutgoingNumbers = state.recentOutgoingNumbers
+        .filter((item) => item != state.currentOutgoingNumber);
+
     return Column(
       mainAxisSize: MainAxisSize.max,
       children: [
-        if (state.recentOutgoingNumbers.isNotEmpty) ...[
+        if (recentOutgoingNumbers.isNotEmpty) ...[
           Subheading(context.strings.recentlyUsedNumbers.label),
-          ...state.recentOutgoingNumbers
-              .filter((item) => item != state.currentOutgoingNumber)
-              .toWidgets(onOutgoingNumberSelected, state.currentOutgoingNumber),
+          ...recentOutgoingNumbers.toWidgets(
+              onOutgoingNumberSelected, state.currentOutgoingNumber),
         ],
         Subheading(context.strings.allNumbers.label),
         _ButtonStylizedAsDropdown(
