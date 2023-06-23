@@ -95,10 +95,18 @@ class _DialerPageState extends State<DialerPage>
     }
   }
 
-  void _onCallButtonPressed(BuildContext context, String number) async =>
-      showOutgoingNumberPrompt(context, (_) {
-        unawaited(context.read<DialerCubit>().call(number));
-      });
+  void _onCallButtonPressed(BuildContext context, String number) async {
+    // If the number is empty, the user wants to fill the last selected number
+    // so just forward to the cubit immediately.
+    if (number.isEmpty) {
+      unawaited(context.read<DialerCubit>().call(number));
+      return;
+    }
+
+    showOutgoingNumberPrompt(context, (_) {
+      unawaited(context.read<DialerCubit>().call(number));
+    });
+  }
 
   @override
   void dispose() {
