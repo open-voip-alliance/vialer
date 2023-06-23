@@ -15,7 +15,8 @@ Future<void> showOutgoingNumberPrompt(
   final storageRepository = dependencyLocator<StorageRepository>();
 
   if (!user.permissions.canChangeOutgoingNumber ||
-      storageRepository.doNotShouldOutgoingNumberSelector) {
+      storageRepository.doNotShouldOutgoingNumberSelector ||
+      user.client.outgoingNumbers.length < 2) {
     return callback(null);
   }
 
