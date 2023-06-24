@@ -24,8 +24,8 @@ class PhoneNumber extends StatelessWidget {
       return PhoneNumber(
         outgoingNumber.valueOrEmpty,
         // We know the exact format of outgoing number.
-        formattedNumber: '(+XX) XX XXXXXX',
-        semanticsLabel: context.msg.main.outgoingCLI.prompt.suppress.title,
+        formattedNumber: context.msg.main.outgoingCLI.prompt.suppress.number,
+        semanticsLabel: context.msg.main.outgoingCLI.prompt.suppress.number,
         style: style,
       );
     }

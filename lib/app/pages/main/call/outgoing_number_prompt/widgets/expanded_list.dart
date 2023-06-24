@@ -134,36 +134,37 @@ class _AllNumbersSelectionDialogState
             ),
           ),
           SizedBox(height: 20),
-          ConstrainedBox(
-            constraints: BoxConstraints(maxHeight: 600),
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                border: Border.all(color: context.colors.grey3),
-              ),
-              child: Scrollbar(
-                controller: _scrollController,
-                thumbVisibility: true,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4).copyWith(
-                    right: 12,
-                  ),
-                  child: ListView.builder(
-                    controller: _scrollController,
-                    physics: ClampingScrollPhysics(),
-                    itemCount: items.length,
-                    shrinkWrap: true,
-                    itemBuilder: (_, index) => OutgoingNumberItem(
-                      item: items[index],
-                      onOutgoingNumberSelected: widget.onOutgoingNumberSelected,
-                      active: widget.state.isActive(items[index]),
-                      highlight: true,
-                      padding: EdgeInsets.only(left: 20),
+          if (items.isNotEmpty)
+            ConstrainedBox(
+              constraints: BoxConstraints(maxHeight: 600),
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  border: Border.all(color: context.colors.grey3),
+                ),
+                child: Scrollbar(
+                  controller: _scrollController,
+                  thumbVisibility: true,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4).copyWith(
+                      right: 12,
+                    ),
+                    child: ListView.builder(
+                      controller: _scrollController,
+                      physics: ClampingScrollPhysics(),
+                      itemCount: items.length,
+                      shrinkWrap: true,
+                      itemBuilder: (_, index) => OutgoingNumberItem(
+                        item: items[index],
+                        onOutgoingNumberSelected: widget.onOutgoingNumberSelected,
+                        active: widget.state.isActive(items[index]),
+                        highlight: true,
+                        padding: EdgeInsets.only(left: 20),
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
-          )
         ],
       ),
     );
