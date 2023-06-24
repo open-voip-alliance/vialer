@@ -56,6 +56,7 @@ class PhoneNumber extends StatelessWidget {
         child: Text(
           formattedNumber,
           style: style,
+          textAlign: TextAlign.start,
         ),
       ),
     );

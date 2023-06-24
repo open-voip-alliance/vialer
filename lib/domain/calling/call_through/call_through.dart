@@ -158,6 +158,5 @@ class CallThroughRepository with Loggable {
 }
 
 extension CallThrough on String {
-  bool get isInternalNumber =>
-      length <= 9 || (length == 10 && !startsWith('0'));
+  bool get isInternalNumber => length <= 10 && !startsWith('0');
 }

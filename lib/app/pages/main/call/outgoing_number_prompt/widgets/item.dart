@@ -28,6 +28,7 @@ class OutgoingNumberItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: double.infinity,
       decoration: shouldHighlight
           ? BoxDecoration(
               color: context.colors.primaryLight,
@@ -39,51 +40,58 @@ class OutgoingNumberItem extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
-              children: [
-                Container(
-                  width: 32,
-                  height: 32,
-                  decoration: shouldHighlight
-                      ? null
-                      : BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: active
-                              ? context.colors.primaryLight
-                              : context.colors.userAvailabilityUnknown,
-                        ),
-                  child: Center(
-                    child: FaIcon(
-                      item.isSuppressed
-                          ? FontAwesomeIcons.eyeSlash
-                          : FontAwesomeIcons.simCard,
-                      size: 14,
-                      color: active
-                          ? context.colors.primary
-                          : context.colors.grey6,
+            Expanded(
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Container(
+                    width: 32,
+                    height: 32,
+                    decoration: shouldHighlight
+                        ? null
+                        : BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: active
+                                ? context.colors.primaryLight
+                                : context.colors.userAvailabilityUnknown,
+                          ),
+                    child: Center(
+                      child: FaIcon(
+                        item.isSuppressed
+                            ? FontAwesomeIcons.eyeSlash
+                            : FontAwesomeIcons.simCard,
+                        size: 14,
+                        color: active
+                            ? context.colors.primary
+                            : context.colors.grey6,
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(width: 14),
-                Column(
-                  children: [
-                    PhoneNumber.outgoingNumber(
-                      context,
-                      item,
-                      style: Theme.of(context).textTheme.bodyMedium,
+                  SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        PhoneNumber.outgoingNumber(
+                          context,
+                          item,
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
+                        if (item.isSuppressed)
+                          Text(
+                            context.msg.main.outgoingCLI.prompt.suppress
+                                .description,
+                            style:
+                                Theme.of(context).textTheme.bodySmall?.copyWith(
+                                      fontSize: 12,
+                                      fontStyle: FontStyle.italic,
+                                    ),
+                          ),
+                      ],
                     ),
-                    if (item.isSuppressed)
-                      Text(
-                        context
-                            .msg.main.outgoingCLI.prompt.suppress.description,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              fontSize: 12,
-                              fontStyle: FontStyle.italic,
-                            ),
-                      ),
-                  ],
-                ),
-              ],
+                  ),
+                ],
+              ),
             ),
             IconButton(
               onPressed: () => onOutgoingNumberSelected(item),

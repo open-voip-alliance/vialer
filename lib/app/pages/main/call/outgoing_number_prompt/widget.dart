@@ -192,11 +192,13 @@ extension OutgoingNumberList on Iterable<OutgoingNumber> {
     OutgoingNumberSelectedCallback callback,
     OutgoingNumber current,
   ) =>
-      map((item) => OutgoingNumberItem(
-            item: item,
-            onOutgoingNumberSelected: callback,
-            active: current == this,
-          )).toList(growable: false);
+      map(
+        (item) => OutgoingNumberItem(
+          item: item,
+          onOutgoingNumberSelected: callback,
+          active: current == this,
+        ),
+      ).toList(growable: false);
 }
 
 extension on BuildContext {
