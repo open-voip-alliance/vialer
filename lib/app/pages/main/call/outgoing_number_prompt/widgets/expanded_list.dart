@@ -155,7 +155,8 @@ class _AllNumbersSelectionDialogState
                       shrinkWrap: true,
                       itemBuilder: (_, index) => OutgoingNumberItem(
                         item: items[index],
-                        onOutgoingNumberSelected: widget.onOutgoingNumberSelected,
+                        onOutgoingNumberSelected:
+                            widget.onOutgoingNumberSelected,
                         active: widget.state.isActive(items[index]),
                         highlight: true,
                         padding: EdgeInsets.only(left: 20),
