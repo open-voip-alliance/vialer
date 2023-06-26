@@ -110,6 +110,7 @@ class ChangeSettingsUseCase extends UseCase with Loggable {
           tasksToPerform: [
             UserRefreshTask.voipgridUserSettings,
             UserRefreshTask.userDestination,
+            UserRefreshTask.userDndStatus,
           ],
         );
 

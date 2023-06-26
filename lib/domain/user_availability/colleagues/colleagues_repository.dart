@@ -335,7 +335,5 @@ enum AvailabilityCloseReason {
 }
 
 extension GetDndStatus on Map<String, dynamic> {
-  DndStatus get dndStatus => DndStatus.fromBool(
-        (['payload'] as Map<String, dynamic>)['dnd'] as bool,
-      );
+  DndStatus get dndStatus => DndStatus.fromBool(this['payload']['dnd'] as bool);
 }
