@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:vialer/app/pages/main/settings/cubit.dart';
 import 'package:vialer/app/pages/main/widgets/bottom_navigation_profile_icon.dart';
 
 import '../../resources/localizations.dart';
@@ -109,6 +110,10 @@ class MainPageState extends State<MainPage> {
               child: child,
             ),
         (child) => ColleagueWebSocket.connect(child: child),
+        (child) => BlocProvider<SettingsCubit>(
+              create: (_) => SettingsCubit(),
+              child: child,
+            )
       ],
       Scaffold(
         resizeToAvoidBottomInset: false,

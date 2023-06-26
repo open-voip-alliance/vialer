@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vialer/app/pages/main/settings/cubit.dart';
 import 'package:vialer/app/pages/main/widgets/user_availability_status_builder/cubit.dart';
 
 import '../../../../../domain/user_availability/colleagues/colleague.dart';
@@ -27,7 +28,7 @@ class _UserAvailabilityStatusBuilderState
   @override
   Widget build(BuildContext context) {
     return BlocProvider<UserAvailabilityStatusCubit>(
-      create: (_) => UserAvailabilityStatusCubit(),
+      create: (_) => UserAvailabilityStatusCubit(context.read<SettingsCubit>()),
       child:
           BlocBuilder<UserAvailabilityStatusCubit, UserAvailabilityStatusState>(
         builder: (context, state) => widget.builder(context, state.status),

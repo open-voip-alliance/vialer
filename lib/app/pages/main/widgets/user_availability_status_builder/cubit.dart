@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vialer/app/pages/main/settings/cubit.dart';
 import 'package:vialer/domain/feature/feature.dart';
 import 'package:vialer/domain/feature/has_feature.dart';
 import 'package:vialer/domain/user/events/logged_in_user_dnd_status_changed.dart';
-import 'package:vialer/domain/user/settings/change_settings.dart';
 import 'package:vialer/domain/user_availability/colleagues/availbility_update.dart';
 import 'package:vialer/domain/user_availability/colleagues/colleague.dart';
 import 'package:vialer/domain/user_availability/colleagues/colleagues_repository.dart';
@@ -24,7 +24,7 @@ import 'state.dart';
 export 'state.dart';
 
 class UserAvailabilityStatusCubit extends Cubit<UserAvailabilityStatusState> {
-  UserAvailabilityStatusCubit()
+  UserAvailabilityStatusCubit(this._settingsCubit)
       : super(
           UserAvailabilityStatusState(
             status: ColleagueAvailabilityStatus.offline,
@@ -38,10 +38,10 @@ class UserAvailabilityStatusCubit extends Cubit<UserAvailabilityStatusState> {
       ..on<LoggedInUserWasRefreshed>((_) => unawaited(check()));
   }
 
+  final SettingsCubit _settingsCubit;
   late final _eventBus = dependencyLocator<EventBusObserver>();
   late final _colleagueRepository = dependencyLocator<ColleaguesRepository>();
   User? get _user => GetStoredUserUseCase()();
-  late final _changeSettings = ChangeSettingsUseCase();
 
   /// We want the UI to be optimistic, rather than waiting for a server response
   /// before changing the status. We set this temporarily while making changes
@@ -57,10 +57,8 @@ class UserAvailabilityStatusCubit extends Cubit<UserAvailabilityStatusState> {
 
     final user = GetLoggedInUserUseCase()();
 
-    await _changeSettings(
-      user.settings.copyWithAll(
-        _determineSettingsToModify(user, destinations, requestedStatus),
-      ),
+    _settingsCubit.changeSettings(
+      _determineSettingsToModify(user, destinations, requestedStatus),
     );
 
     if (!HasFeature()(Feature.userBasedDnd)) {
@@ -68,11 +66,9 @@ class UserAvailabilityStatusCubit extends Cubit<UserAvailabilityStatusState> {
       // to available. Should be removed with user-based dnd.
       // ignore: inference_failure_on_instance_creation
       await Future.delayed(const Duration(seconds: 1));
-      await _changeSettings(
-        user.settings.copyWith(
-          CallSetting.dnd,
-          requestedStatus == ColleagueAvailabilityStatus.doNotDisturb,
-        ),
+      await _settingsCubit.changeSetting(
+        CallSetting.dnd,
+        requestedStatus == ColleagueAvailabilityStatus.doNotDisturb,
       );
     }
 
