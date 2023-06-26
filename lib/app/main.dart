@@ -104,11 +104,7 @@ class _AppState extends State<App> {
                     create: (_) => TemporaryRedirectCubit(),
                     child: child,
                   ),
-
-              /// Using a Builder because the MultiWidgetParent stacks
-              /// its children from top to bottom, so the below Provider
-              /// can have the needed context with the CallerCubit.
-              (child) => Builder(
+              (child) => MultiWidgetChildWithDependencies(
                     builder: (context) {
                       return BlocProvider<ColleaguesCubit>(
                         create: (_) => ColleaguesCubit(

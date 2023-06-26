@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:vialer/app/pages/main/settings/cubit.dart';
 import 'package:vialer/app/pages/main/widgets/user_availability_status_builder/cubit.dart';
 
 import '../../../../../domain/user_availability/colleagues/colleague.dart';
@@ -10,7 +9,7 @@ typedef UserAvailabilityStatusBuild = Widget Function(
   ColleagueAvailabilityStatus status,
 );
 
-class UserAvailabilityStatusBuilder extends StatefulWidget {
+class UserAvailabilityStatusBuilder extends StatelessWidget {
   const UserAvailabilityStatusBuilder({
     Key? key,
     required this.builder,
@@ -19,20 +18,10 @@ class UserAvailabilityStatusBuilder extends StatefulWidget {
   final UserAvailabilityStatusBuild builder;
 
   @override
-  State<UserAvailabilityStatusBuilder> createState() =>
-      _UserAvailabilityStatusBuilderState();
-}
-
-class _UserAvailabilityStatusBuilderState
-    extends State<UserAvailabilityStatusBuilder> {
-  @override
   Widget build(BuildContext context) {
-    return BlocProvider<UserAvailabilityStatusCubit>(
-      create: (_) => UserAvailabilityStatusCubit(context.read<SettingsCubit>()),
-      child:
-          BlocBuilder<UserAvailabilityStatusCubit, UserAvailabilityStatusState>(
-        builder: (context, state) => widget.builder(context, state.status),
-      ),
+    return BlocBuilder<UserAvailabilityStatusCubit,
+        UserAvailabilityStatusState>(
+      builder: (context, state) => builder(context, state.status),
     );
   }
 }
