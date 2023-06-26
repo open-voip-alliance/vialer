@@ -63,7 +63,7 @@ class _DialerPageState extends State<DialerPage>
 
     setState(() {
       _enableT9ContactSearch =
-          settingValue ?? user.settings.get(AppSetting.showClientCalls);
+          settingValue ?? user.settings.get(AppSetting.enableT9ContactSearch);
     });
   }
 
