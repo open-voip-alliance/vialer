@@ -22,7 +22,7 @@ class OutgoingNumberSelection extends _$OutgoingNumberSelection {
 
   Iterable<OutgoingNumber> get outgoingNumbers => _user.client.outgoingNumbers;
   bool get shouldShowAgain =>
-      _storageRepository.doNotShouldOutgoingNumberSelector;
+      _storageRepository.doNotShowOutgoingNumberSelector;
   OutgoingNumber get currentOutgoingNumber =>
       _user.settings.get(CallSetting.outgoingNumber);
   final _changeOutgoingNumber = ChangeOutgoingNumber();
@@ -35,12 +35,12 @@ class OutgoingNumberSelection extends _$OutgoingNumberSelection {
       outgoingNumbers.toList(),
       _storageRepository.recentOutgoingNumbers,
       currentOutgoingNumber,
-      _storageRepository.doNotShouldOutgoingNumberSelector,
+      _storageRepository.doNotShowOutgoingNumberSelector,
     );
   }
 
   void doNotShowAgain(bool value) {
-    _storageRepository.doNotShouldOutgoingNumberSelector = value;
+    _storageRepository.doNotShowOutgoingNumberSelector = value;
     state = state.copyWith(doNotShowAgain: value);
   }
 
@@ -69,7 +69,7 @@ class OutgoingNumberSelection extends _$OutgoingNumberSelection {
     });
 
     if (state.doNotShowAgain) {
-      _storageRepository.doNotShouldOutgoingNumberSelector = true;
+      _storageRepository.doNotShowOutgoingNumberSelector = true;
     }
 
     state = success

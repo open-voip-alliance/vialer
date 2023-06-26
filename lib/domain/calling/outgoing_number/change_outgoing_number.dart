@@ -70,7 +70,7 @@ class ChangeOutgoingNumber extends UseCase with Loggable {
     );
 
     if (resetDoNotAskAgain) {
-      _storageRepository.doNotShouldOutgoingNumberSelector = false;
+      _storageRepository.doNotShowOutgoingNumberSelector = false;
     }
 
     conditionallyRefresh(refreshUser);

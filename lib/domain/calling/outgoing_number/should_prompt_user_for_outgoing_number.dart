@@ -29,7 +29,7 @@ class ShouldPromptUserForOutgoingNumber extends UseCase with Loggable {
       return false;
     }
 
-    if (storageRepository.doNotShouldOutgoingNumberSelector) {
+    if (storageRepository.doNotShowOutgoingNumberSelector) {
       _log('user requested to not be asked again');
       return false;
     }

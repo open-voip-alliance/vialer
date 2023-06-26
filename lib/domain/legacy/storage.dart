@@ -310,14 +310,17 @@ class StorageRepository {
   static const _doNotShowOutgoingNumberSelector =
       'do_not_show_outgoing_number_selector';
 
-  bool? get doNotShouldOutgoingNumberSelectorOrNull =>
+  bool? get doNotShowOutgoingNumberSelectorOrNull =>
       _preferences.getBool(_doNotShowOutgoingNumberSelector);
 
-  bool get doNotShouldOutgoingNumberSelector =>
+  bool get doNotShowOutgoingNumberSelector =>
       _preferences.getBool(_doNotShowOutgoingNumberSelector) ?? false;
 
-  set doNotShouldOutgoingNumberSelector(bool value) =>
-      unawaited(_preferences.setBool(_doNotShowOutgoingNumberSelector, value));
+  set doNotShowOutgoingNumberSelector(bool value) =>
+      unawaited(_preferences.setBool(
+        _doNotShowOutgoingNumberSelector,
+        value,
+      ));
 
   Future<void> clear() => _preferences.clear();
 
