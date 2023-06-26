@@ -37,7 +37,8 @@ class IdentifyForTrackingUseCase extends UseCase {
         ..._storage.grantedVoipgridPermissions.toIdentifyProperties(),
         ..._storage.colleagues.toIdentifyProperties(),
         ..._storage.currentColltactTab.toIdentifyProperties(),
-        ..._storage.doNotShouldOutgoingNumberSelector.toIdentifyProperties(),
+        ..._storage.doNotShouldOutgoingNumberSelectorOrNull
+            .toIdentifyProperties(),
       },
     ).then((_) => Future.delayed(_artificialDelay));
   }

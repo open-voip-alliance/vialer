@@ -310,7 +310,7 @@ class StorageRepository {
   static const _doNotShowOutgoingNumberSelector =
       'do_not_show_outgoing_number_selector';
 
-  bool? get doNotShouldOutgoingNumberSelectorNullable =>
+  bool? get doNotShouldOutgoingNumberSelectorOrNull =>
       _preferences.getBool(_doNotShowOutgoingNumberSelector);
 
   bool get doNotShouldOutgoingNumberSelector =>
