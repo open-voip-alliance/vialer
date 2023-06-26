@@ -57,7 +57,7 @@ class UserAvailabilityStatusCubit extends Cubit<UserAvailabilityStatusState> {
 
     final user = GetLoggedInUserUseCase()();
 
-    _settingsCubit.changeSettings(
+    await _settingsCubit.changeSettings(
       _determineSettingsToModify(user, destinations, requestedStatus),
     );
 
