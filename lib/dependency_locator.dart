@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:get_it/get_it.dart';
+import 'package:vialer/domain/calling/dnd/dnd_repository.dart';
+import 'package:vialer/domain/calling/dnd/dnd_service.dart';
 
 import 'app/util/debug.dart';
 import 'domain/authentication/authentication_repository.dart';
@@ -154,9 +156,7 @@ Future<void> initializeDependencies({bool ui = true}) async {
       dependsOn: [MiddlewareService, EnvRepository],
     )
     ..registerSingletonWithDependencies<UserVoipConfigRepository>(
-      () => UserVoipConfigRepository(
-        dependencyLocator<VoipgridService>(),
-      ),
+      () => UserVoipConfigRepository(dependencyLocator<VoipgridService>()),
       dependsOn: [StorageRepository],
     )
     ..registerSingleton<CountryRepository>(CountryRepository())
@@ -166,14 +166,13 @@ Future<void> initializeDependencies({bool ui = true}) async {
           : SegmentMetricsRepository(),
     )
     ..registerSingleton<BusinessAvailabilityRepository>(
-      BusinessAvailabilityRepository(
-        BusinessAvailabilityService.create(),
-      ),
+      BusinessAvailabilityRepository(BusinessAvailabilityService.create()),
     )
     ..registerSingleton<OpeningHoursRepository>(
-      OpeningHoursRepository(
-        OpeningHoursService.create(),
-      ),
+      OpeningHoursRepository(OpeningHoursService.create()),
+    )
+    ..registerSingleton<DndRepository>(
+      DndRepository(DndService.create()),
     );
 
   await dependencyLocator.allReady();

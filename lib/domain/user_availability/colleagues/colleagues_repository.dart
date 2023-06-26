@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dartx/dartx.dart';
+import 'package:vialer/domain/calling/dnd/dnd_repository.dart';
+import 'package:vialer/domain/user/events/logged_in_user_dnd_status_changed.dart';
 
 import '../../../app/util/loggable.dart';
 import '../../../app/util/reconnection_strategy.dart';
@@ -100,6 +102,15 @@ class ColleaguesRepository with Loggable {
         _cancelQueuedReconnect(resetAttempts: true);
 
         final event = jsonDecode(eventString as String) as Map<String, dynamic>;
+
+        if (event['name'] == 'user_dnd_changed') {
+          logger.info(
+            'Got [user_dnd_changed] event from websocket, '
+            'set to ${event.dndStatus}',
+          );
+          _eventBus.broadcast(LoggedInUserDndStatusChanged(event.dndStatus));
+          return;
+        }
 
         // We only care about this type of event for now (and that's all there
         // is currently) so if it's anything aside from this we just ignore
@@ -321,4 +332,10 @@ enum AvailabilityCloseReason {
 
   /// The remote server closed the socket, this indicates an error.
   remote,
+}
+
+extension GetDndStatus on Map<String, dynamic> {
+  DndStatus get dndStatus => DndStatus.fromBool(
+        (['payload'] as Map<String, dynamic>)['dnd'] as bool,
+      );
 }

@@ -9,5 +9,6 @@
   "businessAvailabilityUrl": "https://api.stag.holodeck.spindle.dev/business-availability/clients/",
   "openingHoursBasicUrl": "https://api.stag.holodeck.spindle.dev/opening-hours-basic/client/",
   "privacyPolicyUrl": "https://vialerapp.com/privacy/",
-  "userAvailabilityWsUrl": "wss://api.stag.holodeck.spindle.dev/user-availability-ws/ws"
+  "userAvailabilityWsUrl": "wss://api.stag.holodeck.spindle.dev/user-availability-ws/ws",
+  "dndServiceUrl": "https://api.stag.holodeck.spindle.dev/dnd-service"
 }

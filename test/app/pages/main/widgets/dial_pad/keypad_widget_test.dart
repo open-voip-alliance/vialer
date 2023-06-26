@@ -455,6 +455,7 @@ class TestApp extends StatelessWidget {
         userAvailabilityWsUrl: Uri.parse('ws'),
         privacyPolicyUrl: Uri.parse('dummypolicy.com'),
         signUpUrl: null,
+        dndServiceUrl: Uri.parse('dummydndservice.url'),
       ),
       child: Builder(
         builder: (context) {

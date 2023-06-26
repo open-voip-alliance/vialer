@@ -26,6 +26,7 @@ class GetBrand extends UseCase {
       userAvailabilityWsUrl: Uri.parse(
         const String.fromEnvironment('userAvailabilityWsUrl'),
       ),
+      dndServiceUrl: Uri.parse(const String.fromEnvironment('dndServiceUrl')),
     );
   }
 }

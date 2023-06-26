@@ -35,6 +35,7 @@ void main() {
           userAvailabilityWsUrl: Uri.parse('ws'),
           privacyPolicyUrl: Uri.parse('dummypolicy.com'),
           signUpUrl: null,
+          dndServiceUrl: Uri.parse('dummydndservice.url'),
         ),
         child: KeyInput(
           controller: controller,

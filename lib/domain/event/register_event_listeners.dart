@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:vialer/domain/user/events/logged_in_user_dnd_status_changed.dart';
+
 import '../../app/util/loggable.dart';
 import '../../dependency_locator.dart';
 import '../authentication/logout_on_unauthorized_response.dart';
@@ -59,6 +61,20 @@ class RegisterDomainEventListenersUseCase extends UseCase with Loggable {
                   UserRefreshTask.userDestination,
                   UserRefreshTask.userVoipConfig,
                 ],
+                synchronized: false,
+              ),
+            );
+          }
+        },
+      )
+      // In the future we can hopefully just update this with the value directly
+      // but for now we'll just do the second api request.
+      ..on<LoggedInUserDndStatusChanged>(
+        (_) {
+          if (_isOnboarded()) {
+            unawaited(
+              _refreshUser(
+                tasksToPerform: [UserRefreshTask.userDndStatus],
                 synchronized: false,
               ),
             );
