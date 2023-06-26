@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vialer/app/pages/main/settings/widgets/tile/availability/ringing_device/widget.dart';
+import 'package:vialer/domain/feature/feature.dart';
+import 'package:vialer/domain/feature/has_feature.dart';
 import 'package:vialer/domain/user/get_logged_in_user.dart';
 
 import '../../../../../../../domain/calling/voip/destination.dart';
@@ -44,6 +46,18 @@ class _AvailabilitySwitcherState extends State<AvailabilitySwitcher> {
       context,
       _determineSettingsToModify(user, destinations, context, requestedStatus),
     );
+
+    if (!HasFeature()(Feature.userBasedDnd)) {
+      // Hacky solution to making sure availability doesn't sometimes flick back
+      // to available. Should be removed with user-based dnd.
+      // ignore: inference_failure_on_instance_creation
+      await Future.delayed(const Duration(seconds: 1));
+      await defaultOnSettingChanged(
+        context,
+        CallSetting.dnd,
+        requestedStatus == ColleagueAvailabilityStatus.doNotDisturb,
+      );
+    }
 
     _statusOverride = null;
   }
