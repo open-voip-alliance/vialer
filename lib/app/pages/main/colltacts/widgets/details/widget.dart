@@ -74,7 +74,7 @@ class _ColltactPageDetailsState extends State<ColltactPageDetails>
   }
 
   @override
-  Widget build(BuildContext contexta) {
+  Widget build(BuildContext _) {
     return BlocListener<CallerCubit, CallerState>(
       listener: _onCallerStateChanged,
       child: BlocProvider<ColltactDetailsCubit>(
