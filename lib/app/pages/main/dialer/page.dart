@@ -15,6 +15,7 @@ import '../../../resources/theme.dart';
 import '../../../routes.dart';
 import '../../../util/conditional_capitalization.dart';
 import '../../../util/widgets_binding_observer_registrar.dart';
+import '../call/outgoing_number_prompt/show_prompt.dart';
 import '../settings/widgets/buttons/settings_button.dart';
 import '../widgets/caller.dart';
 import '../widgets/conditional_placeholder.dart';
@@ -94,8 +95,18 @@ class _DialerPageState extends State<DialerPage>
     }
   }
 
-  void _onCallButtonPressed(BuildContext context, String number) =>
+  void _onCallButtonPressed(BuildContext context, String number) async {
+    // If the number is empty, the user wants to fill the last selected number
+    // so just forward to the cubit immediately.
+    if (number.isEmpty) {
       unawaited(context.read<DialerCubit>().call(number));
+      return;
+    }
+
+    showOutgoingNumberPrompt(context, number, (_) {
+      unawaited(context.read<DialerCubit>().call(number));
+    });
+  }
 
   @override
   void dispose() {
