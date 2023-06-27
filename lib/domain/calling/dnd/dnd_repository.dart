@@ -1,6 +1,7 @@
 import 'package:vialer/app/util/loggable.dart';
 import 'package:vialer/domain/calling/dnd/dnd_service.dart';
 import 'package:vialer/domain/user/user.dart';
+import 'package:vialer/domain/user_availability/colleagues/colleague.dart';
 
 class DndRepository with Loggable {
   DndRepository(this._service);
@@ -40,6 +41,10 @@ enum DndStatus {
   doNotDisturbOff;
 
   bool asBool() => this == DndStatus.doNotDisturbOn;
+  ColleagueAvailabilityStatus? asAvailabilityStatus() =>
+      this == DndStatus.doNotDisturbOn
+          ? ColleagueAvailabilityStatus.doNotDisturb
+          : null;
   static DndStatus fromBool(bool value) =>
       value ? DndStatus.doNotDisturbOn : DndStatus.doNotDisturbOff;
 }

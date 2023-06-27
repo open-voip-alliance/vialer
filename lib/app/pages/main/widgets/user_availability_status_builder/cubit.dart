@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vialer/app/pages/main/settings/cubit.dart';
+import 'package:vialer/domain/calling/dnd/dnd_repository.dart';
 import 'package:vialer/domain/feature/feature.dart';
 import 'package:vialer/domain/feature/has_feature.dart';
 import 'package:vialer/domain/user/events/logged_in_user_dnd_status_changed.dart';
@@ -31,9 +32,13 @@ class UserAvailabilityStatusCubit extends Cubit<UserAvailabilityStatusState> {
           ),
         ) {
     _eventBus
-      ..on<LoggedInUserDndStatusChanged>((_) => unawaited(check()))
+      ..on<LoggedInUserDndStatusChanged>(
+        (event) => unawaited(check(
+          dnd: event.dndStatus,
+        )),
+      )
       ..on<LoggedInUserAvailabilityChanged>(
-        (event) => unawaited(check(event.availability)),
+        (event) => unawaited(check(availability: event.availability)),
       )
       ..on<LoggedInUserWasRefreshed>((_) => unawaited(check()));
   }
@@ -104,7 +109,12 @@ class UserAvailabilityStatusCubit extends Cubit<UserAvailabilityStatusState> {
     };
   }
 
-  Future<void> check([AvailabilityUpdate? availability]) async {
+  bool get hasUserBasedDnd => HasFeature()(Feature.userBasedDnd);
+
+  Future<void> check({
+    AvailabilityUpdate? availability,
+    DndStatus? dnd,
+  }) async {
     final override = _statusOverride;
 
     if (override != null) {
@@ -112,14 +122,18 @@ class UserAvailabilityStatusCubit extends Cubit<UserAvailabilityStatusState> {
       return;
     }
 
-    if (availability != null && HasFeature()(Feature.userBasedDnd)) {
+    final dndStatusFromWebsocket = dnd?.asAvailabilityStatus();
+
+    if ((availability != null || dndStatusFromWebsocket != null) &&
+        hasUserBasedDnd) {
       emit(
-        UserAvailabilityStatusState(status: availability.availabilityStatus),
+        UserAvailabilityStatusState(
+          status: availability?.availabilityStatus ?? dndStatusFromWebsocket!,
+        ),
       );
     }
 
-    if (!_colleagueRepository.isWebSocketConnected ||
-        !HasFeature()(Feature.userBasedDnd)) {
+    if (!_colleagueRepository.isWebSocketConnected || !hasUserBasedDnd) {
       emit(UserAvailabilityStatusState(status: _status));
     }
   }
