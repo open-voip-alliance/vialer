@@ -11,6 +11,7 @@ import '../../../../domain/user/settings/app_setting.dart';
 import '../../../../domain/user/settings/setting_changed.dart';
 import '../../../resources/localizations.dart';
 import '../../../resources/theme.dart';
+import '../call/outgoing_number_prompt/show_prompt.dart';
 import '../util/stylized_snack_bar.dart';
 import '../widgets/bottom_toggle.dart';
 import '../widgets/caller/cubit.dart';
@@ -278,7 +279,11 @@ class _Calls<C extends RecentCallsCubit> extends StatelessWidget {
           isLoadingInitial: state is LoadingInitialRecentCalls,
           callRecords: recentCalls,
           onRefresh: () async => _refreshCalls(context),
-          onCallPressed: cubit.call,
+          onCallPressed: (number) => showOutgoingNumberPrompt(
+            context,
+            number,
+            (_) => cubit.call(number),
+          ),
           onCopyPressed: cubit.copyNumber,
           loadMoreCalls: cubit.loadMoreRecentCalls,
           performBackgroundImport: cubit.performBackgroundImport,

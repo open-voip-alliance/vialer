@@ -17,7 +17,7 @@ import 'metrics.dart';
 
 class IdentifyForTrackingUseCase extends UseCase {
   final _metricsRepository = dependencyLocator<MetricsRepository>();
-  final _storageRepository = dependencyLocator<StorageRepository>();
+  final _storage = dependencyLocator<StorageRepository>();
   final _getBrand = GetBrand();
   final _getUser = GetLoggedInUserUseCase();
 
@@ -34,9 +34,11 @@ class IdentifyForTrackingUseCase extends UseCase {
         'brand': _getBrand().identifier,
         ...user.toIdentifyProperties(),
         ...user.client.toIdentifyProperties(),
-        ..._storageRepository.grantedVoipgridPermissions.toIdentifyProperties(),
-        ..._storageRepository.colleagues.toIdentifyProperties(),
-        ..._storageRepository.currentColltactTab.toIdentifyProperties(),
+        ..._storage.grantedVoipgridPermissions.toIdentifyProperties(),
+        ..._storage.colleagues.toIdentifyProperties(),
+        ..._storage.currentColltactTab.toIdentifyProperties(),
+        ..._storage.doNotShowOutgoingNumberSelectorOrNull
+            .toIdentifyProperties(),
       },
     ).then((_) => Future.delayed(_artificialDelay));
   }
@@ -96,5 +98,11 @@ extension on SettingKey {
 extension on Client {
   Map<String, dynamic> toIdentifyProperties() => <String, dynamic>{
         'outgoing-numbers-amount': outgoingNumbers.length,
+      };
+}
+
+extension on bool? {
+  Map<String, dynamic> toIdentifyProperties() => <String, dynamic>{
+        if (this != null) 'do-not-show-outgoing-number-prompt': this,
       };
 }

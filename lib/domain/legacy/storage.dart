@@ -307,6 +307,21 @@ class StorageRepository {
         (numbers) => numbers.map(OutgoingNumber.toJson).toList(),
       );
 
+  static const _doNotShowOutgoingNumberSelector =
+      'do_not_show_outgoing_number_selector';
+
+  bool? get doNotShowOutgoingNumberSelectorOrNull =>
+      _preferences.getBool(_doNotShowOutgoingNumberSelector);
+
+  bool get doNotShowOutgoingNumberSelector =>
+      _preferences.getBool(_doNotShowOutgoingNumberSelector) ?? false;
+
+  set doNotShowOutgoingNumberSelector(bool value) =>
+      unawaited(_preferences.setBool(
+        _doNotShowOutgoingNumberSelector,
+        value,
+      ));
+
   Future<void> clear() => _preferences.clear();
 
   Future<void> reload() => _preferences.reload();
