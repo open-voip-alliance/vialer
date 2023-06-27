@@ -72,7 +72,7 @@ class OutgoingNumberItem extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        PhoneNumber.outgoingNumber(
+                        FormattedPhoneNumber.outgoingNumber(
                           context,
                           item,
                           style: Theme.of(context).textTheme.bodyMedium,
