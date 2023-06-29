@@ -60,11 +60,8 @@ class RefreshUser extends UseCase with Loggable {
 
       final isFirstTime = storedUser == null;
 
-      // If we're retrieving the user for the first time (logging in),
-      // we store the user already, so that the AuthorizationInterceptor
-      // can use it.
-      if (storedUser == null) {
-        _storageRepository.user = user;
+      if (isFirstTime) {
+        user = await _performFirstTimeTasks(user);
       }
 
       final previous = user;
@@ -94,6 +91,19 @@ class RefreshUser extends UseCase with Loggable {
     return tasksToPerform.shouldSkipSynchronization
         ? executeUserRefreshTasks()
         : SynchronizedTask<User?>.of(this).run(executeUserRefreshTasks);
+  }
+
+  /// Performs some tasks that are required when we are first setting up a user.
+  Future<User> _performFirstTimeTasks(User user) async {
+    // Setting the user so it can be used for requests
+    _storageRepository.user = user;
+
+    // Fetching the permissions first so future tasks will have know what they
+    // have access to
+    final mutator =
+        await UserRefreshTask.voipgridUserPermissions.performer!.call(user);
+
+    return mutator(user);
   }
 
   void assertAllSettingsHaveValue(User user) {
