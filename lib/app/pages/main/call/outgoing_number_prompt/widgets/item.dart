@@ -84,7 +84,6 @@ class OutgoingNumberItem extends StatelessWidget {
                             style:
                                 Theme.of(context).textTheme.bodySmall?.copyWith(
                                       fontSize: 12,
-                                      fontStyle: FontStyle.italic,
                                     ),
                           ),
                       ],
