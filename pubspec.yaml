@@ -7,7 +7,7 @@ version: 7.0.0
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
-  flutter: 3.10.2
+  flutter: 3.10.5
 
 dependencies:
   flutter:
@@ -77,6 +77,8 @@ dependencies:
   search_highlight_text: ^1.0.0+2
   austerity: 1.1.0
   auto_size_text: ^3.0.0
+  flutter_riverpod: ^2.3.6
+  riverpod_annotation: ^2.1.1
 
 dev_dependencies:
   test: ^1.20.0
@@ -100,6 +102,7 @@ dev_dependencies:
   drift_dev: ^2.8.0
   package_config: ^2.1.0
   freezed: ^2.1.0+1
+  riverpod_generator: ^2.1.1
 
 
 # For information on the generic Dart part of this file, see the

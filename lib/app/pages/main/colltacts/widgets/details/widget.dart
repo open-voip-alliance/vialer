@@ -9,6 +9,7 @@ import '../../../../../../data/models/colltact.dart';
 import '../../../../../resources/localizations.dart';
 import '../../../../../resources/theme.dart';
 import '../../../../../util/widgets_binding_observer_registrar.dart';
+import '../../../call/outgoing_number_prompt/show_prompt.dart';
 import '../../../util/stylized_snack_bar.dart';
 import '../../../widgets/caller.dart';
 import '../../../widgets/colltact_list/cubit.dart';
@@ -73,7 +74,7 @@ class _ColltactPageDetailsState extends State<ColltactPageDetails>
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext _) {
     return BlocListener<CallerCubit, CallerState>(
       listener: _onCallerStateChanged,
       child: BlocProvider<ColltactDetailsCubit>(
@@ -89,12 +90,17 @@ class _ColltactPageDetailsState extends State<ColltactPageDetails>
 
                   return ColltactDetails(
                     colltact: widget.colltact,
-                    onPhoneNumberPressed: (destination) => unawaited(
-                      cubit.call(
-                        destination,
-                        origin: widget.colltact.map(
-                          colleague: (_) => CallOrigin.colleagues,
-                          contact: (_) => CallOrigin.contacts,
+                    onPhoneNumberPressed: (destination) =>
+                        showOutgoingNumberPrompt(
+                      context,
+                      destination,
+                      (_) => unawaited(
+                        cubit.call(
+                          destination,
+                          origin: widget.colltact.map(
+                            colleague: (_) => CallOrigin.colleagues,
+                            contact: (_) => CallOrigin.contacts,
+                          ),
                         ),
                       ),
                     ),

@@ -107,6 +107,7 @@ class ChangeSettingsUseCase extends UseCase with Loggable {
         final freshUser = await _refreshUser(
           synchronized: false,
           tasksToPerform: [
+            UserRefreshTask.userCore,
             UserRefreshTask.voipgridUserSettings,
             UserRefreshTask.userDestination,
           ],

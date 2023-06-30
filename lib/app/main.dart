@@ -33,6 +33,8 @@ import 'widgets/connectivity_checker/widget.dart';
 import 'widgets/missed_call_notification_listener/widget.dart';
 import 'widgets/nested_children.dart';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -85,63 +87,65 @@ class _AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
-    return BrandProvider(
-      child: Builder(
-        builder: (context) {
-          return MultiWidgetParent(
-            [
-              (child) => Caller.create(
-                    navigatorKey: _navigatorKey,
-                    child: child,
-                  ),
-              (child) => ConnectivityChecker.create(child: child),
-              (child) => MissedCallNotificationPressedListener(
-                    onMissedCallNotificationPressed: () =>
-                        App.navigateTo(MainPageTab.recents),
-                    child: child,
-                  ),
-              (child) => BlocProvider<TemporaryRedirectCubit>(
-                    create: (_) => TemporaryRedirectCubit(),
-                    child: child,
-                  ),
+    return ProviderScope(
+      child: BrandProvider(
+        child: Builder(
+          builder: (context) {
+            return MultiWidgetParent(
+              [
+                (child) => Caller.create(
+                      navigatorKey: _navigatorKey,
+                      child: child,
+                    ),
+                (child) => ConnectivityChecker.create(child: child),
+                (child) => MissedCallNotificationPressedListener(
+                      onMissedCallNotificationPressed: () =>
+                          App.navigateTo(MainPageTab.recents),
+                      child: child,
+                    ),
+                (child) => BlocProvider<TemporaryRedirectCubit>(
+                      create: (_) => TemporaryRedirectCubit(),
+                      child: child,
+                    ),
 
-              /// Using a Builder because the MultiWidgetParent stacks
-              /// its children from top to bottom, so the below Provider
-              /// can have the needed context with the CallerCubit.
-              (child) => Builder(
-                    builder: (context) {
-                      return BlocProvider<ColleaguesCubit>(
-                        create: (_) => ColleaguesCubit(
-                          context.watch<CallerCubit>(),
-                        ),
-                        child: child,
-                      );
-                    },
-                  ),
-            ],
-            MaterialApp(
-              navigatorKey: _navigatorKey,
-              title: context.brand.appName,
-              theme: context.brand.theme.themeData,
-              initialRoute: _shouldOnboard ? Routes.onboarding : Routes.main,
-              routes: Routes.mapped,
-              localizationsDelegates: const [
-                VialerLocalizations.delegate,
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-                GlobalCupertinoLocalizations.delegate,
+                /// Using a Builder because the MultiWidgetParent stacks
+                /// its children from top to bottom, so the below Provider
+                /// can have the needed context with the CallerCubit.
+                (child) => Builder(
+                      builder: (context) {
+                        return BlocProvider<ColleaguesCubit>(
+                          create: (_) => ColleaguesCubit(
+                            context.watch<CallerCubit>(),
+                          ),
+                          child: child,
+                        );
+                      },
+                    ),
               ],
-              supportedLocales: VialerLocalizations.locales.map(Locale.new),
-              builder: (context, child) {
-                if (!inDebugMode) {
-                  ErrorWidget.builder = (_) => const BuildError();
-                }
+              MaterialApp(
+                navigatorKey: _navigatorKey,
+                title: context.brand.appName,
+                theme: context.brand.theme.themeData,
+                initialRoute: _shouldOnboard ? Routes.onboarding : Routes.main,
+                routes: Routes.mapped,
+                localizationsDelegates: const [
+                  VialerLocalizations.delegate,
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate,
+                ],
+                supportedLocales: VialerLocalizations.locales.map(Locale.new),
+                builder: (context, child) {
+                  if (!inDebugMode) {
+                    ErrorWidget.builder = (_) => const BuildError();
+                  }
 
-                return child!;
-              },
-            ),
-          );
-        },
+                  return child!;
+                },
+              ),
+            );
+          },
+        ),
       ),
     );
   }

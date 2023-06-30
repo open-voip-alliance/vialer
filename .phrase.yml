@@ -14,3 +14,7 @@ phrase:
       params:
         locale_id: 8d203025039e93dda4d4a8eed1873ea9
         file_format: yml_symfony2
+    - file: ./lib/app/resources/messages_fr.i18n.yaml
+      params:
+        locale_id: 54739e72c4121979414115078a2a1826
+        file_format: yml_symfony2
