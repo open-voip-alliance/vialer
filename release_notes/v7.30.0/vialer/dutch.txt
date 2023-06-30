@@ -1,0 +1,3 @@
+- Users with multiple outgoing numbers will now be able to select a different number before each call
+- Added French-language support
+- Fixed a bug that caused contacts in the dialer to not always appear
