@@ -17,3 +17,24 @@ class MultiWidgetParent extends StatelessWidget {
     );
   }
 }
+
+/// Wraps a [Builder] purely for semantic reasons. This is to allow children in
+/// a [MultiWidgetParent] that require the context from previous builds to be
+/// initialized.
+class MultiWidgetChildWithDependencies extends StatelessWidget {
+  const MultiWidgetChildWithDependencies({
+    super.key,
+    required this.builder,
+  });
+
+  final Widget Function(BuildContext) builder;
+
+  @override
+  Widget build(BuildContext _) {
+    return Builder(
+      builder: (context) {
+        return builder(context);
+      },
+    );
+  }
+}

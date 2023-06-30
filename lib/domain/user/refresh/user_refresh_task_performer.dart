@@ -13,6 +13,7 @@ typedef ClientMutator = Client Function(Client);
 typedef SettingsMutator = Settings Function(Settings);
 
 User unmutatedUser(User user) => user;
+Settings unmutatedSettings(Settings settings) => settings;
 
 /// A [UserRefreshTaskPerformer] is a task that will "refresh" the logged-in
 /// user with new data provided by the server.

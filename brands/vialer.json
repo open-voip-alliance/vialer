@@ -10,5 +10,6 @@
   "openingHoursBasicUrl": "https://api.prod.holodeck.spindle.dev/opening-hours-basic/client/",
   "privacyPolicyUrl": "https://vialerapp.com/privacy/",
   "userAvailabilityWsUrl": "wss://api.prod.holodeck.spindle.dev/user-availability-ws/ws",
+  "dndServiceUrl": "https://api.prod.holodeck.spindle.dev/dnd-service",
   "sharedContactsUrl": "https://contacts.spindle.dev/contacts/"
 }

@@ -1,4 +1,6 @@
 import 'package:flutter/cupertino.dart';
+import 'package:vialer/domain/feature/feature.dart';
+import 'package:vialer/domain/feature/has_feature.dart';
 
 import '../../../../../../../../domain/user/user.dart';
 import '../../../../../../../../domain/user_availability/colleagues/colleague.dart';
@@ -34,7 +36,7 @@ class AvailabilityStatusPicker extends StatelessWidget {
           enabled: enabled,
           onStatusChanged: onStatusChanged,
         ),
-        if (user.hasAppAccount)
+        if (user.hasAppAccount || HasFeature()(Feature.userBasedDnd))
           AvailabilityStatusButton(
             ColleagueAvailabilityStatus.doNotDisturb,
             current: userAvailabilityStatus,

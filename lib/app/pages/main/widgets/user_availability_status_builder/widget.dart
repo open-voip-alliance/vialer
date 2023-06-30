@@ -9,7 +9,7 @@ typedef UserAvailabilityStatusBuild = Widget Function(
   ColleagueAvailabilityStatus status,
 );
 
-class UserAvailabilityStatusBuilder extends StatefulWidget {
+class UserAvailabilityStatusBuilder extends StatelessWidget {
   const UserAvailabilityStatusBuilder({
     Key? key,
     required this.builder,
@@ -18,20 +18,10 @@ class UserAvailabilityStatusBuilder extends StatefulWidget {
   final UserAvailabilityStatusBuild builder;
 
   @override
-  State<UserAvailabilityStatusBuilder> createState() =>
-      _UserAvailabilityStatusBuilderState();
-}
-
-class _UserAvailabilityStatusBuilderState
-    extends State<UserAvailabilityStatusBuilder> {
-  @override
   Widget build(BuildContext context) {
-    return BlocProvider<UserAvailabilityStatusCubit>(
-      create: (_) => UserAvailabilityStatusCubit(),
-      child:
-          BlocBuilder<UserAvailabilityStatusCubit, UserAvailabilityStatusState>(
-        builder: (context, state) => widget.builder(context, state.status),
-      ),
+    return BlocBuilder<UserAvailabilityStatusCubit,
+        UserAvailabilityStatusState>(
+      builder: (context, state) => builder(context, state.status),
     );
   }
 }
