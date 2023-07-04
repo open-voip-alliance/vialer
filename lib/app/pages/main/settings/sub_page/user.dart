@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
 import '../../../../resources/localizations.dart';
 import '../cubit.dart';
@@ -40,14 +41,21 @@ class UserSubPage extends StatelessWidget {
                     ],
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: SettingsButton(
-                    text: context.msg.main.settings.buttons.logout,
-                    onPressed: () => unawaited(
-                      context.read<SettingsCubit>().logout(),
-                    ),
-                  ),
+                KeyboardVisibilityBuilder(
+                  builder: (context, isKeyboardVisible) {
+                    return Visibility(
+                      visible: !isKeyboardVisible,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: SettingsButton(
+                          text: context.msg.main.settings.buttons.logout,
+                          onPressed: () => unawaited(
+                            context.read<SettingsCubit>().logout(),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
                 ),
                 const SizedBox(height: 20),
               ],
