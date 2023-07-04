@@ -228,7 +228,6 @@ class VoipRepository with Loggable {
   // and close it if it's initialized, otherwise we do nothing.
   Future<void> close() async {
     await _eventsSubscription?.cancel();
-    await _eventsController.close();
     await __phoneLib?.close();
     __phoneLib = null;
     _hasStartedCompleter = Completer<bool>();
