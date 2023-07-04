@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:dartx/dartx.dart';
 import 'package:recase/recase.dart';
@@ -109,4 +110,5 @@ extension on bool? {
       };
 }
 
-late final _hasGooglePlayServices = GooglePlayServices().isAvailable();
+late final _hasGooglePlayServices =
+    Platform.isAndroid ? GooglePlayServices().isAvailable() : true;
