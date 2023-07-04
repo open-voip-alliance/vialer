@@ -87,6 +87,8 @@ class _NoticeState extends State<_Notice>
       return context.msg.main.notice.noAppAccount.title;
     } else if (state is TemporaryRedirectNotice) {
       return context.msg.main.temporaryRedirect.title;
+    } else if (state is NoGooglePlayServices) {
+      return context.msg.main.notice.noGooglePlayServices.title;
     } else {
       return context.msg.main.notice.phoneAndMicrophone.title;
     }
@@ -114,6 +116,8 @@ class _NoticeState extends State<_Notice>
     } else if (state is NoAppAccountNotice) {
       content =
           context.msg.main.notice.noAppAccount.content(context.brand.appName);
+    } else if (state is NoGooglePlayServices) {
+      content = context.msg.main.notice.noGooglePlayServices.content;
     } else {
       content = context.msg.main.notice.phoneAndMicrophone.content(
         context.brand.appName,
@@ -175,7 +179,7 @@ class _NoticeState extends State<_Notice>
                               .toUpperCaseIfAndroid(context),
                         ),
                       ),
-                    ] else ...[
+                    ] else if (state is PermissionNoticeState) ...[
                       TextButton(
                         onPressed: () => unawaited(
                           cubit.requestPermission(

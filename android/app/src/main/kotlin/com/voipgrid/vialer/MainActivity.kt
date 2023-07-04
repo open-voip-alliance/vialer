@@ -5,6 +5,8 @@ import android.content.Intent
 import android.os.Build
 import android.view.WindowManager
 import androidx.annotation.NonNull
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.GoogleApiAvailability
 import com.voipgrid.vialer.IncomingCallActivity.Companion.INCOMING_CALL_CANCEL_INTENT
 import com.voipgrid.vialer.Pigeon.ContactSort
 import io.flutter.embedding.android.FlutterActivity
@@ -66,6 +68,14 @@ class MainActivity : FlutterActivity(), Pigeon.CallScreenBehavior {
         )
 
         Pigeon.Contacts.setup(binaryMessenger, ContactImporter(this))
+
+        Pigeon.GooglePlayServices.setup(
+            binaryMessenger
+        ) {
+            listOf(ConnectionResult.SUCCESS, ConnectionResult.SERVICE_UPDATING)
+                .contains(GoogleApiAvailability.getInstance()
+                .isGooglePlayServicesAvailable(this))
+        }
     }
 
     override fun enable() {

@@ -6,6 +6,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vialer/app/util/pigeon.dart';
 
 import '../../../../../dependency_locator.dart';
 import '../../../../../domain/business_availability/temporary_redirect/temporary_redirect_did_change_event.dart';
@@ -36,6 +37,7 @@ class NoticeCubit extends Cubit<NoticeState> with Loggable {
   late final _openAppSettings = OpenSettingsAppUseCase();
   late final _getUser = GetLoggedInUserUseCase();
   late final _eventBus = dependencyLocator<EventBusObserver>();
+  late final _googlePlayServices = GooglePlayServices();
 
   final CallerCubit _caller;
 
@@ -71,6 +73,9 @@ class NoticeCubit extends Cubit<NoticeState> with Loggable {
 
     final user = _getUser();
 
+    final googlePlayServicesIsAvailable =
+        Platform.isAndroid ? await _googlePlayServices.isAvailable() : true;
+
     if (phoneStatus != PermissionStatus.granted &&
         microphoneStatus != PermissionStatus.granted) {
       emit(const PhoneAndMicrophonePermissionDeniedNotice());
@@ -92,6 +97,8 @@ class NoticeCubit extends Cubit<NoticeState> with Loggable {
               user.permissions.canChangeTemporaryRedirect,
         ),
       );
+    } else if (!googlePlayServicesIsAvailable) {
+      emit(const NoGooglePlayServices());
     } else {
       emit(const NoNotice());
     }
