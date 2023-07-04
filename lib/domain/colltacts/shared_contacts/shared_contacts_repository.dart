@@ -18,10 +18,7 @@ class SharedContactsRepository with Loggable {
 
   Future<List<SharedContact>> getSharedContacts(User user) async {
     final response = await _apiResourceCollector.collect(
-      requester: (page) => _service.getSharedContacts(
-        authorization: 'Token ${user.email}:${user.token}',
-        page: page,
-      ),
+      requester: (page) => _service.getSharedContacts(page: page),
       deserializer: (json) => json,
     );
 

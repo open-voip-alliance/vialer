@@ -42,7 +42,6 @@ abstract class SharedContactsService extends ChopperService {
 
   @Get(path: '')
   Future<Response<List<Map<String, dynamic>>>> getSharedContacts({
-    @Header('Authorization') String? authorization,
     @Query() int page = 1,
     @Query('per_page') int perPage = 500,
   });
