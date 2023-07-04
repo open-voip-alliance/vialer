@@ -34,7 +34,8 @@ class IdentifyForTrackingUseCase extends UseCase {
       user,
       <String, dynamic>{
         'brand': _getBrand().identifier,
-        'google-play-services-available': _hasGooglePlayServices,
+        if (Platform.isAndroid)
+          'google-play-services-available': _hasGooglePlayServices,
         ...user.toIdentifyProperties(),
         ...user.client.toIdentifyProperties(),
         ..._storage.grantedVoipgridPermissions.toIdentifyProperties(),
@@ -111,4 +112,4 @@ extension on bool? {
 }
 
 late final _hasGooglePlayServices =
-    Platform.isAndroid ? GooglePlayServices().isAvailable() : true;
+    Platform.isAndroid ? GooglePlayServices().isAvailable() : false;
