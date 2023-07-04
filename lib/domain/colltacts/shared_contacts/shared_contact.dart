@@ -25,7 +25,7 @@ class SharedContact with _$SharedContact {
 
   String get displayName {
     if (givenName.isNotNullOrBlank || familyName.isNotNullOrBlank) {
-      return _fullName;
+      return company.isNotNullOrBlank ? '$_fullName ($company)' : _fullName;
     } else if (company.isNotNullOrBlank) {
       return company!;
     }
