@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:dartx/dartx.dart';
 import 'package:vialer/domain/colltacts/shared_contacts/shared_contacts_service.dart';
 
 import '../../../app/util/loggable.dart';
@@ -22,6 +23,19 @@ class SharedContactsRepository with Loggable {
       deserializer: (json) => json,
     );
 
-    return SharedContact.listFromApiResponse(response);
+    return SharedContact.listFromApiResponse(response)
+        .withoutNonContacts()
+        .toList();
   }
 }
+
+extension on List<SharedContact> {
+  /// The webphone added in this fake contact for some work they were doing
+  /// at some point. This isn't an actual contact and should therefore always
+  /// be removed.
+  Iterable<SharedContact> withoutNonContacts() => filterNot(
+        (contact) => contact.givenName == _unlinkedVoipAccountName,
+      );
+}
+
+const _unlinkedVoipAccountName = '__UNLINKED_VOIP_ACCOUNTS__';
