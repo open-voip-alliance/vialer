@@ -69,12 +69,19 @@ class MainActivity : FlutterActivity(), Pigeon.CallScreenBehavior {
 
         Pigeon.Contacts.setup(binaryMessenger, ContactImporter(this))
 
-        Pigeon.GooglePlayServices.setup(
-            binaryMessenger
-        ) {
-            listOf(ConnectionResult.SUCCESS, ConnectionResult.SERVICE_UPDATING)
-                .contains(GoogleApiAvailability.getInstance()
-                .isGooglePlayServicesAvailable(this))
+        Pigeon.GooglePlayServices.setup(binaryMessenger) {
+            val googlePlayServices = GoogleApiAvailability.getInstance()
+            val status = googlePlayServices.isGooglePlayServicesAvailable(this)
+
+            if (status == ConnectionResult.SUCCESS) return@setup true
+
+            if (googlePlayServices.isUserResolvableError(status)) {
+                // We aren't going to listen to results from this because this is an extremely
+                // rare situation so just using a random number as the request code.
+                googlePlayServices.getErrorDialog(this, status, 1).show()
+            }
+
+            return@setup false
         }
     }
 
