@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dartx/dartx.dart';
 import 'package:recase/recase.dart';
+import 'package:vialer/app/util/pigeon.dart';
 
 import '../../../dependency_locator.dart';
 import '../colltacts/colltact_tab.dart';
@@ -32,6 +33,7 @@ class IdentifyForTrackingUseCase extends UseCase {
       user,
       <String, dynamic>{
         'brand': _getBrand().identifier,
+        'google-play-services-available': _hasGooglePlayServices,
         ...user.toIdentifyProperties(),
         ...user.client.toIdentifyProperties(),
         ..._storage.grantedVoipgridPermissions.toIdentifyProperties(),
@@ -106,3 +108,5 @@ extension on bool? {
         if (this != null) 'do-not-show-outgoing-number-prompt': this,
       };
 }
+
+late final _hasGooglePlayServices = GooglePlayServices().isAvailable();
