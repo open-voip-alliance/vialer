@@ -632,6 +632,8 @@ extension on CallOrigin {
         return 'recent';
       case CallOrigin.contacts:
         return 'contact';
+      case CallOrigin.sharedContacts:
+        return 'sharedContact';
       case CallOrigin.colleagues:
         return 'colleague';
       case CallOrigin.unknown:

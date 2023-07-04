@@ -82,6 +82,7 @@ class _ColltactDetailsState extends State<ColltactDetails> {
                   actions: colltact.when(
                     colleague: (_) => null,
                     contact: (_) => widget.actions,
+                    sharedContact: (_) => null,
                   ),
                 ),
                 body: SafeArea(
@@ -117,6 +118,8 @@ class _ColltactDetailsState extends State<ColltactDetails> {
                                       colleague: (_) => const SizedBox.shrink(),
                                       contact: (contact) =>
                                           ColltactSubtitle(colltact),
+                                      sharedContact: (_) =>
+                                          const SizedBox.shrink(),
                                     ),
                                   ],
                                 ),
@@ -191,6 +194,15 @@ class _DestinationsList extends StatelessWidget {
                   isEmail: true,
                   onTap: () => onEmailPressed.call(e.value),
                 ),
+              ),
+            )
+            .toList(),
+        sharedContact: (sharedContact) => sharedContact.phoneNumbers
+            .map(
+              (p) => _Item(
+                value: p.phoneNumberFlat ?? '',
+                isEmail: false,
+                onTap: () => onPhoneNumberPressed.call(p.phoneNumberFlat ?? ''),
               ),
             )
             .toList(),

@@ -186,6 +186,15 @@ Future<List<T9Colltact>> _filterColltactsByRegularExpression(
               relevantPhoneNumber: number,
             ),
           ),
+          sharedContact: (sharedContact) => sharedContact.phoneNumbers.map(
+            (number) => T9Colltact(
+              colltact: colltact,
+              relevantPhoneNumber: Item(
+                label: '',
+                value: number.phoneNumberFlat ?? '',
+              ),
+            ),
+          ),
         ),
       )
       .flatten()

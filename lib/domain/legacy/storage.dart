@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../calling/voip/destination.dart';
 import '../colltacts/colltact_tab.dart';
+import '../colltacts/shared_contacts/shared_contact.dart';
 import '../user/client.dart';
 import '../user/permissions/user_permissions.dart';
 import '../user/settings/app_setting.dart';
@@ -218,6 +219,28 @@ class StorageRepository {
   set colleagues(List<Colleague> colleagues) => _preferences.setOrRemoveString(
         _colleaguesKey,
         jsonEncode(colleagues),
+      );
+
+  static const _sharedContactsKey = 'sharedContacts';
+
+  List<SharedContact> get sharedContacts {
+    final jsonString = _preferences.getString(_sharedContactsKey);
+
+    if (jsonString.isNullOrBlank) return const [];
+
+    try {
+      return (jsonDecode(jsonString!) as List<dynamic>)
+          .map((dynamic e) => SharedContact.fromJson(e as Map<String, dynamic>))
+          .toList();
+    } on Exception {
+      return const [];
+    }
+  }
+
+  set sharedContacts(List<SharedContact> sharedContacts) =>
+      _preferences.setOrRemoveString(
+        _sharedContactsKey,
+        jsonEncode(sharedContacts),
       );
 
   static const _grantedVoipgridPermissionsKey = 'granted_voipgrid_permissions';

@@ -12,6 +12,7 @@ class TrackT9Usage extends UseCase {
           'type': colltact.when(
             colleague: (_) => 'colleague',
             contact: (_) => 'contact',
+            sharedContact: (_) => 'sharedContact',
           ),
         },
       );

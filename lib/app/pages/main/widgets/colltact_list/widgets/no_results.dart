@@ -53,6 +53,8 @@ class NoResultsPlaceholder extends StatelessWidget {
           context.msg.main.contacts.list.loadingColleagues.title,
         NoResultsType.contactsLoading =>
           context.msg.main.contacts.list.loadingContacts.title,
+        NoResultsType.sharedContactsLoading =>
+          context.msg.main.contacts.list.loadingSharedContacts.title,
         NoResultsType.noContactsExist =>
           context.msg.main.contacts.list.empty.title,
         NoResultsType.noContactsPermission => context
@@ -70,6 +72,8 @@ class NoResultsPlaceholder extends StatelessWidget {
           context.msg.main.contacts.list.loadingColleagues.description,
         NoResultsType.contactsLoading =>
           context.msg.main.contacts.list.loadingContacts.description,
+        NoResultsType.sharedContactsLoading =>
+          context.msg.main.contacts.list.loadingSharedContacts.description,
         NoResultsType.noContactsExist =>
           context.msg.main.contacts.list.empty.description(
             context.brand.appName,
@@ -165,6 +169,7 @@ class _CircularGraphic extends StatelessWidget {
         return FontAwesomeIcons.magnifyingGlass;
       case NoResultsType.colleaguesLoading:
       case NoResultsType.contactsLoading:
+      case NoResultsType.sharedContactsLoading:
         return FontAwesomeIcons.abacus;
       case NoResultsType.noContactsExist:
         return FontAwesomeIcons.userSlash;
@@ -209,6 +214,7 @@ enum NoResultsType {
   noSearchResults,
   colleaguesLoading,
   contactsLoading,
+  sharedContactsLoading,
   noContactsExist,
   noContactsPermission,
 }

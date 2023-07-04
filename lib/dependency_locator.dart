@@ -19,6 +19,8 @@ import 'domain/calling/voip/user_voip_config_repository.dart';
 import 'domain/calling/voip/voip.dart';
 import 'domain/colltacts/contact_populator.dart';
 import 'domain/colltacts/contact_repository.dart';
+import 'domain/colltacts/shared_contacts/shared_contacts_repository.dart';
+import 'domain/colltacts/shared_contacts/shared_contacts_service.dart';
 import 'domain/env.dart';
 import 'domain/error_tracking/error_tracking_repository.dart';
 import 'domain/event/event_bus.dart';
@@ -50,6 +52,9 @@ Future<void> initializeDependencies({bool ui = true}) async {
     ..registerSingleton<EventBusObserver>(dependencyLocator<EventBus>().stream)
     ..registerSingleton<VoipgridService>(
       VoipgridService.create(),
+    )
+    ..registerSingleton<SharedContactsService>(
+      SharedContactsService.create(),
     )
     ..registerSingleton<ClientCallsDatabase>(ClientCallsDatabase())
     ..registerSingletonAsync<StorageRepository>(() async {
@@ -87,6 +92,12 @@ Future<void> initializeDependencies({bool ui = true}) async {
       )
       ..registerSingleton<FeedbackRepository>(FeedbackRepository())
       ..registerSingleton<ContactRepository>(ContactRepository())
+      ..registerSingleton<SharedContactsRepository>(
+        SharedContactsRepository(
+          dependencyLocator<SharedContactsService>(),
+          dependencyLocator<VoipgridApiResourceCollector>(),
+        ),
+      )
       ..registerSingleton<ColleaguesRepository>(
         ColleaguesRepository(
           dependencyLocator<VoipgridService>(),

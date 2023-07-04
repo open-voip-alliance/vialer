@@ -60,6 +60,7 @@ class _ColltactPageDetailsState extends State<ColltactPageDetails>
     final contactId = widget.colltact.when(
       colleague: (colleague) => null,
       contact: (contact) => contact.identifier,
+      sharedContact: (_) => null,
     );
 
     if (contactId == null) return;
@@ -100,6 +101,7 @@ class _ColltactPageDetailsState extends State<ColltactPageDetails>
                           origin: widget.colltact.map(
                             colleague: (_) => CallOrigin.colleagues,
                             contact: (_) => CallOrigin.contacts,
+                            sharedContact: (_) => CallOrigin.sharedContacts,
                           ),
                         ),
                       ),

@@ -6,6 +6,7 @@ import 'package:search_highlight_text/search_highlight_text.dart';
 
 import '../../../../../../data/models/colltact.dart';
 import '../../../../../../domain/colltacts/contact.dart';
+import '../../../../../../domain/colltacts/shared_contacts/shared_contact.dart';
 import '../../../../../../domain/user_availability/colleagues/colleague.dart';
 import '../widget.dart';
 import 'avatar.dart';
@@ -31,6 +32,7 @@ class ColltactItem extends StatelessWidget {
           colleague,
           colleaguesUpToDate: colleaguesUpToDate,
         ),
+        sharedContact: _SharedContactItem.new,
       );
 
   @override
@@ -100,6 +102,34 @@ class _ColleagueItem extends StatelessWidget {
         colltact,
         colleaguesUpToDate: colleaguesUpToDate,
       ),
+    );
+  }
+}
+
+class _SharedContactItem extends StatelessWidget {
+  const _SharedContactItem(this.sharedContact);
+
+  final SharedContact sharedContact;
+
+  @override
+  Widget build(BuildContext context) {
+    final colltact = Colltact.sharedContact(sharedContact);
+
+    return ColltactItem._(
+      subtitle: ColltactSubtitle(colltact),
+      onTap: () => unawaited(
+        Navigator.pushNamed(
+          context,
+          ColltactsPageRoutes.details,
+          arguments: colltact,
+        ),
+      ),
+      title: SearchHighlightText(
+        colltact.name,
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+      ),
+      avatar: ColltactAvatar(colltact),
     );
   }
 }
