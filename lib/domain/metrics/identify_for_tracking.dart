@@ -34,8 +34,7 @@ class IdentifyForTrackingUseCase extends UseCase {
       user,
       <String, dynamic>{
         'brand': _getBrand().identifier,
-        if (Platform.isAndroid)
-          'google-play-services-available': _hasGooglePlayServices,
+        ..._platformIdentifyProperties(),
         ...user.toIdentifyProperties(),
         ...user.client.toIdentifyProperties(),
         ..._storage.grantedVoipgridPermissions.toIdentifyProperties(),
@@ -46,6 +45,11 @@ class IdentifyForTrackingUseCase extends UseCase {
       },
     ).then((_) => Future.delayed(_artificialDelay));
   }
+
+  Map<String, dynamic> _platformIdentifyProperties() => {
+        if (Platform.isAndroid)
+          'google-play-services-available': _hasGooglePlayServices,
+      };
 }
 
 extension on User {
@@ -111,5 +115,7 @@ extension on bool? {
       };
 }
 
+// Created as a field so this isn't called multiple times as this almost
+// certainly won't change during one session.
 late final _hasGooglePlayServices =
     Platform.isAndroid ? GooglePlayServices().isAvailable() : false;
