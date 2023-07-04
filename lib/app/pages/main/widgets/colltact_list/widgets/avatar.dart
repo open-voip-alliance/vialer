@@ -4,6 +4,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../../../../data/models/colltact.dart';
 import '../../../../../../domain/colltacts/contact.dart';
+import '../../../../../../domain/colltacts/shared_contacts/shared_contact.dart';
 import '../../../../../../domain/user_availability/colleagues/colleague.dart';
 import '../../../../../resources/theme.dart';
 import '../../../../../util/contact.dart';
@@ -34,6 +35,7 @@ class ColltactAvatar extends StatelessWidget {
         colleaguesUpToDate: colleaguesUpToDate,
       ),
       contact: ContactAvatar.new,
+      sharedContact: SharedContactAvatar.new,
     );
   }
 }
@@ -82,6 +84,26 @@ class ColleagueAvatar extends StatelessWidget {
         (colleague) => colleague.mostRelevantContext,
         unconnectedVoipAccount: (_) => null,
       ),
+    );
+  }
+}
+
+class SharedContactAvatar extends StatelessWidget {
+  const SharedContactAvatar(
+    this.sharedContact, {
+    super.key,
+    this.size = ColltactAvatar.defaultSize,
+  });
+
+  final SharedContact sharedContact;
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    return Avatar(
+      name: sharedContact.simpleDisplayName,
+      backgroundColor: context.brand.theme.colors.primary,
+      size: size,
     );
   }
 }

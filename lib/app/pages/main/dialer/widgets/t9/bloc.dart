@@ -6,6 +6,7 @@ import 'package:diacritic/diacritic.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:vialer/domain/colltacts/shared_contacts/get_shared_contacts.dart';
 
 import '../../../../../../data/models/colltact.dart';
 import '../../../../../../domain/call_records/item.dart';
@@ -29,6 +30,7 @@ class T9ColltactsBloc extends Bloc<T9ColltactsEvent, T9ColltactsState> {
 
   final _getContacts = GetContactsUseCase();
   final _getColleagues = GetColleagues();
+  final _getSharedContacts = GetSharedContactsUseCase();
   final _getPermissionStatus = GetPermissionStatusUseCase();
 
   @override
@@ -83,10 +85,12 @@ class T9ColltactsBloc extends Bloc<T9ColltactsEvent, T9ColltactsState> {
 
     final contacts = await _getContacts(latest: false);
     final colleagues = await _getColleagues();
+    final sharedContacts = await _getSharedContacts();
 
     final colltacts = [
       ...contacts.map(Colltact.contact),
       ...colleagues.map(Colltact.colleague),
+      ...sharedContacts.map(Colltact.sharedContact),
     ];
 
     yield ColltactsLoaded(colltacts, []);
@@ -184,6 +188,15 @@ Future<List<T9Colltact>> _filterColltactsByRegularExpression(
             (number) => T9Colltact(
               colltact: colltact,
               relevantPhoneNumber: number,
+            ),
+          ),
+          sharedContact: (sharedContact) => sharedContact.phoneNumbers.map(
+            (number) => T9Colltact(
+              colltact: colltact,
+              relevantPhoneNumber: Item(
+                label: '',
+                value: number.phoneNumberFlat ?? '',
+              ),
             ),
           ),
         ),

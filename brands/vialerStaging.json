@@ -9,5 +9,6 @@
   "businessAvailabilityUrl": "https://api.stag.holodeck.spindle.dev/business-availability/clients/",
   "openingHoursBasicUrl": "https://api.stag.holodeck.spindle.dev/opening-hours-basic/client/",
   "privacyPolicyUrl": "https://vialerapp.com/privacy/",
-  "userAvailabilityWsUrl": "wss://api.stag.holodeck.spindle.dev/user-availability-ws/ws"
+  "userAvailabilityWsUrl": "wss://api.stag.holodeck.spindle.dev/user-availability-ws/ws",
+  "sharedContactsUrl": "https://openapi-mock-server.eu-stag.holodeck.wearespindle.com/mock/main/webphone/contacts/"
 }

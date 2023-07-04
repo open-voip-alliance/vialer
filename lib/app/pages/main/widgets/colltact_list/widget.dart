@@ -11,6 +11,7 @@ import '../../../../../data/models/colltact.dart';
 import '../../../../../domain/colltacts/colltact_tab.dart';
 import '../../../../../domain/colltacts/contact.dart';
 import '../../../../../domain/colltacts/get_contact_sort.dart';
+import '../../../../../domain/colltacts/shared_contacts/shared_contact.dart';
 import '../../../../../domain/user_availability/colleagues/colleague.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
@@ -20,6 +21,7 @@ import '../../../../util/pigeon.dart';
 import '../../../../util/widgets_binding_observer_registrar.dart';
 import '../../../../widgets/animated_visibility.dart';
 import '../../colltacts/colleagues/cubit.dart';
+import '../../colltacts/shared_contacts/cubit.dart';
 import '../bottom_toggle.dart';
 import '../caller.dart';
 import '../nested_navigator.dart';
@@ -82,7 +84,7 @@ class _ColltactPageState extends State<_ColltactList>
     with
         WidgetsBindingObserver,
         WidgetsBindingObserverRegistrar,
-        SingleTickerProviderStateMixin {
+        TickerProviderStateMixin {
   String? _searchTerm;
 
   static const nonLetterKey = '#';
@@ -92,8 +94,10 @@ class _ColltactPageState extends State<_ColltactList>
   @override
   void initState() {
     super.initState();
-    if (context.read<ColleaguesCubit>().canViewColleagues) {
-      _createTabController();
+
+    if (context.read<ColleaguesCubit>().shouldShowColleagues ||
+        context.read<SharedContactsCubit>().shouldShowSharedContacts) {
+      _buildTabController();
     }
   }
 
@@ -115,33 +119,70 @@ class _ColltactPageState extends State<_ColltactList>
 
     if (state == AppLifecycleState.resumed) {
       unawaited(context.read<ContactsCubit>().reloadContacts());
+      unawaited(context
+          .read<SharedContactsCubit>()
+          .loadSharedContacts(fullRefresh: true));
     }
   }
 
-  void _createTabController() {
-    final cubit = context.read<ColleaguesCubit>();
+  int get _numberOfTabs {
+    // We always want to show the phone contacts tab, so this is just being
+    // added for readability.
+    final shouldShowPhoneContacts = true;
+    final shouldShowColleagues =
+        context.read<ColleaguesCubit>().shouldShowColleagues;
+    final shouldShowSharedContacts =
+        context.read<SharedContactsCubit>().shouldShowSharedContacts;
+
+    return [
+      shouldShowPhoneContacts,
+      shouldShowColleagues,
+      shouldShowSharedContacts,
+    ].count((item) => item);
+  }
+
+  void _buildTabController() {
+    final contactsCubit = context.read<ContactsCubit>();
+    final colleaguesCubit = context.read<ColleaguesCubit>();
+    final sharedContactsCubit = context.read<SharedContactsCubit>();
+    final shouldShowSharedContacts =
+        sharedContactsCubit.shouldShowSharedContacts;
+
+    final storedTab = colleaguesCubit.getStoredTab();
+    final initialIndex = storedTab == ColltactTab.contacts
+        ? 0
+        : storedTab == ColltactTab.sharedContact || !shouldShowSharedContacts
+            ? 1
+            : 2;
 
     final tabController = TabController(
-      initialIndex: cubit.getStoredTab() == ColltactTab.contacts ? 0 : 1,
-      length: 2,
+      initialIndex: initialIndex,
+      length: _numberOfTabs,
       vsync: this,
     );
 
     tabController.addListener(
       () {
         if (!tabController.indexIsChanging) {
-          final cubit = context.read<ColleaguesCubit>();
+          final colleagueTabSelected =
+              (tabController.index == 1 && !shouldShowSharedContacts) ||
+                  tabController.index == 2;
+          final contactsTabSelected = tabController.index == 0;
 
-          final colleagueTabSelected = tabController.index == 1;
-
-          cubit.storeCurrentTab(
+          colleaguesCubit.storeCurrentTab(
             colleagueTabSelected
                 ? ColltactTab.colleagues
-                : ColltactTab.contacts,
+                : contactsTabSelected
+                    ? ColltactTab.contacts
+                    : ColltactTab.sharedContact,
           );
 
           if (colleagueTabSelected) {
-            cubit.trackColleaguesTabSelected();
+            colleaguesCubit.trackColleaguesTabSelected();
+          } else if (contactsTabSelected) {
+            contactsCubit.trackContactsTabSelected();
+          } else {
+            sharedContactsCubit.trackSharedContactsTabSelected();
           }
         }
       },
@@ -149,6 +190,8 @@ class _ColltactPageState extends State<_ColltactList>
 
     this.tabController = tabController;
   }
+
+  var _lastNumberOfTabs = 1;
 
   @override
   Widget build(BuildContext context) {
@@ -160,121 +203,228 @@ class _ColltactPageState extends State<_ColltactList>
         builder: (context, contactsState) {
           return BlocBuilder<ColleaguesCubit, ColleaguesState>(
             builder: (context, colleaguesState) {
-              final contactsCubit = context.watch<ContactsCubit>();
-              final colleaguesCubit = context.watch<ColleaguesCubit>();
+              return BlocBuilder<SharedContactsCubit, SharedContactsState>(
+                builder: (context, sharedContactsState) {
+                  final contactsCubit = context.watch<ContactsCubit>();
+                  final colleaguesCubit = context.watch<ColleaguesCubit>();
+                  final sharedContactsCubit =
+                      context.watch<SharedContactsCubit>();
+                  final numberOfTabs = _numberOfTabs;
 
-              final showWebsocketUnreachableNotice =
-                  colleaguesCubit.shouldShowColleagues &&
-                      colleaguesState is ColleaguesLoaded &&
-                      !colleaguesState.upToDate;
+                  final showWebsocketUnreachableNotice =
+                      colleaguesCubit.shouldShowColleagues &&
+                          colleaguesState is ColleaguesLoaded &&
+                          !colleaguesState.upToDate;
 
-              return DefaultTabController(
-                length: 2,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: AnimatedVisibility(
-                        visible: showWebsocketUnreachableNotice,
-                        child: NoticeBanner(
-                          icon: const FaIcon(FontAwesomeIcons.question),
-                          title: Text(
-                            context.msg.main.colleagues
-                                .websocketUnreachableNotice.title,
-                          ),
-                          content: Text(
-                            context
-                                .msg.main.colleagues.websocketUnreachableNotice
-                                .content(context.brand.appName),
+                  if (_lastNumberOfTabs != numberOfTabs) {
+                    // As the number of tabs can change dynamically we need to
+                    // rebuild the tab controller.
+                    _buildTabController();
+                  }
+
+                  _lastNumberOfTabs = numberOfTabs;
+
+                  return DefaultTabController(
+                    length: numberOfTabs,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          child: AnimatedVisibility(
+                            visible: showWebsocketUnreachableNotice,
+                            child: NoticeBanner(
+                              icon: const FaIcon(FontAwesomeIcons.question),
+                              title: Text(
+                                context.msg.main.colleagues
+                                    .websocketUnreachableNotice.title,
+                              ),
+                              content: Text(
+                                context.msg.main.colleagues
+                                    .websocketUnreachableNotice
+                                    .content(context.brand.appName),
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: SearchTextField(
-                        onChanged: _onSearchTermChanged,
-                      ),
-                    ),
-                    if (colleaguesCubit.shouldShowColleagues)
-                      TabBar(
-                        controller: tabController,
-                        labelStyle: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
-                        labelPadding: const EdgeInsets.only(
-                          top: 18,
-                          bottom: 8,
-                        ),
-                        labelColor: Theme.of(context).primaryColor,
-                        unselectedLabelColor: context.brand.theme.colors.grey1,
-                        indicatorColor: Theme.of(context).primaryColor,
-                        indicatorSize: TabBarIndicatorSize.label,
-                        tabs: [
-                          Text(
-                            context.msg.main.contacts.tabBar.contactsTabTitle
-                                .toUpperCase(),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: SearchTextField(
+                            onChanged: _onSearchTermChanged,
                           ),
-                          Text(
-                            context.msg.main.contacts.tabBar.colleaguesTabTitle
-                                .toUpperCase(),
+                        ),
+                        if (colleaguesCubit.shouldShowColleagues ||
+                            sharedContactsCubit.shouldShowSharedContacts)
+                          TabBar(
+                            controller: tabController,
+                            labelStyle: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                            labelPadding: const EdgeInsets.only(
+                              top: 18,
+                              bottom: 8,
+                            ),
+                            labelColor: Theme.of(context).primaryColor,
+                            unselectedLabelColor:
+                                context.brand.theme.colors.grey1,
+                            indicatorColor: Theme.of(context).primaryColor,
+                            indicatorSize: TabBarIndicatorSize.label,
+                            tabs: [
+                              Text(
+                                context
+                                    .msg.main.contacts.tabBar.contactsTabTitle
+                                    .toUpperCase(),
+                              ),
+                              if (sharedContactsCubit.shouldShowSharedContacts)
+                                Text(
+                                  context
+                                      .msg.main.contacts.tabBar.sharedTabTitle
+                                      .toUpperCase(),
+                                ),
+                              if (colleaguesCubit.shouldShowColleagues)
+                                Text(
+                                  context.msg.main.contacts.tabBar
+                                      .colleaguesTabTitle
+                                      .toUpperCase(),
+                                ),
+                            ],
                           ),
-                        ],
-                      ),
-                    SearchTextInheritedWidget(
-                      searchText: _searchTerm ?? '',
-                      highlightStyle: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                        fontSize: 17,
-                      ),
-                      child: Expanded(
-                        child: colleaguesCubit.shouldShowColleagues
-                            ? TabBarView(
-                                controller: tabController,
-                                children: [
-                                  _animatedSwitcher(
-                                    ColltactKind.contact,
-                                    contactsState,
-                                    contactsCubit,
-                                    colleaguesState,
-                                    colleaguesCubit,
-                                  ),
-                                  Column(
+                        SearchTextInheritedWidget(
+                          searchText: _searchTerm ?? '',
+                          highlightStyle: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                            fontSize: 17,
+                          ),
+                          child: Expanded(
+                            child: colleaguesCubit.shouldShowColleagues &&
+                                    sharedContactsCubit.shouldShowSharedContacts
+                                ? TabBarView(
+                                    controller: tabController,
                                     children: [
-                                      Expanded(
-                                        child: _animatedSwitcher(
-                                          ColltactKind.colleague,
-                                          contactsState,
-                                          contactsCubit,
-                                          colleaguesState,
-                                          colleaguesCubit,
-                                        ),
+                                      _animatedSwitcher(
+                                        ColltactKind.contact,
+                                        contactsState,
+                                        contactsCubit,
+                                        colleaguesState,
+                                        colleaguesCubit,
+                                        sharedContactsState,
+                                        sharedContactsCubit,
                                       ),
-                                      BottomToggle(
-                                        name:
-                                            context.msg.main.colleagues.toggle,
-                                        initialValue: colleaguesCubit
-                                            .showOnlineColleaguesOnly,
-                                        onChanged: (value) => colleaguesCubit
-                                            .showOnlineColleaguesOnly = value,
+                                      _animatedSwitcher(
+                                        ColltactKind.sharedContact,
+                                        contactsState,
+                                        contactsCubit,
+                                        colleaguesState,
+                                        colleaguesCubit,
+                                        sharedContactsState,
+                                        sharedContactsCubit,
+                                      ),
+                                      Column(
+                                        children: [
+                                          Expanded(
+                                            child: _animatedSwitcher(
+                                              ColltactKind.colleague,
+                                              contactsState,
+                                              contactsCubit,
+                                              colleaguesState,
+                                              colleaguesCubit,
+                                              sharedContactsState,
+                                              sharedContactsCubit,
+                                            ),
+                                          ),
+                                          BottomToggle(
+                                            name: context
+                                                .msg.main.colleagues.toggle,
+                                            initialValue: colleaguesCubit
+                                                .showOnlineColleaguesOnly,
+                                            onChanged: (value) => colleaguesCubit
+                                                    .showOnlineColleaguesOnly =
+                                                value,
+                                          ),
+                                        ],
                                       ),
                                     ],
-                                  ),
-                                ],
-                              )
-                            : _animatedSwitcher(
-                                ColltactKind.contact,
-                                contactsState,
-                                contactsCubit,
-                                colleaguesState,
-                                colleaguesCubit,
-                              ),
-                      ),
+                                  )
+                                : sharedContactsCubit.shouldShowSharedContacts
+                                    ? TabBarView(
+                                        controller: tabController,
+                                        children: [
+                                          _animatedSwitcher(
+                                            ColltactKind.contact,
+                                            contactsState,
+                                            contactsCubit,
+                                            colleaguesState,
+                                            colleaguesCubit,
+                                            sharedContactsState,
+                                            sharedContactsCubit,
+                                          ),
+                                          _animatedSwitcher(
+                                            ColltactKind.sharedContact,
+                                            contactsState,
+                                            contactsCubit,
+                                            colleaguesState,
+                                            colleaguesCubit,
+                                            sharedContactsState,
+                                            sharedContactsCubit,
+                                          ),
+                                        ],
+                                      )
+                                    : colleaguesCubit.shouldShowColleagues
+                                        ? TabBarView(
+                                            controller: tabController,
+                                            children: [
+                                              _animatedSwitcher(
+                                                ColltactKind.contact,
+                                                contactsState,
+                                                contactsCubit,
+                                                colleaguesState,
+                                                colleaguesCubit,
+                                                sharedContactsState,
+                                                sharedContactsCubit,
+                                              ),
+                                              Column(
+                                                children: [
+                                                  Expanded(
+                                                    child: _animatedSwitcher(
+                                                      ColltactKind.colleague,
+                                                      contactsState,
+                                                      contactsCubit,
+                                                      colleaguesState,
+                                                      colleaguesCubit,
+                                                      sharedContactsState,
+                                                      sharedContactsCubit,
+                                                    ),
+                                                  ),
+                                                  BottomToggle(
+                                                    name: context.msg.main
+                                                        .colleagues.toggle,
+                                                    initialValue: colleaguesCubit
+                                                        .showOnlineColleaguesOnly,
+                                                    onChanged: (value) =>
+                                                        colleaguesCubit
+                                                                .showOnlineColleaguesOnly =
+                                                            value,
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          )
+                                        : _animatedSwitcher(
+                                            ColltactKind.contact,
+                                            contactsState,
+                                            contactsCubit,
+                                            colleaguesState,
+                                            colleaguesCubit,
+                                            sharedContactsState,
+                                            sharedContactsCubit,
+                                          ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  );
+                },
               );
             },
           );
@@ -349,6 +499,10 @@ class _ColltactPageState extends State<_ColltactList>
         }
         return firstCharacter;
       },
+      sharedContact: (sharedContact) {
+        var firstCharacter = sharedContact.givenName?.characters.firstOrNull;
+        return firstCharacter;
+      },
     );
   }
 
@@ -390,6 +544,8 @@ class _ColltactPageState extends State<_ColltactList>
     ContactsState contactsState,
     ColleaguesState colleaguesState,
     ColleaguesCubit colleaguesCubit,
+    SharedContactsState sharedContactsState,
+    SharedContactsCubit sharedContactsCubit,
     ColltactKind colltactKind,
   ) {
     final hasSearchQuery = _searchTerm?.isNotEmpty ?? false;
@@ -420,6 +576,14 @@ class _ColltactPageState extends State<_ColltactList>
         return hasSearchQuery && records.isEmpty
             ? NoResultsType.noSearchResults
             : null;
+
+      case ColltactKind.sharedContact:
+        if (sharedContactsState is LoadingSharedContacts) {
+          return NoResultsType.sharedContactsLoading;
+        }
+        return hasSearchQuery && records.isEmpty
+            ? NoResultsType.noSearchResults
+            : null;
     }
   }
 
@@ -429,6 +593,8 @@ class _ColltactPageState extends State<_ColltactList>
     ContactsCubit contactsCubit,
     ColleaguesState colleaguesState,
     ColleaguesCubit colleaguesCubit,
+    SharedContactsState sharedContactsState,
+    SharedContactsCubit sharedContactsCubit,
   ) {
     final colltacts = <Colltact>[];
 
@@ -439,12 +605,19 @@ class _ColltactPageState extends State<_ColltactList>
       for (final contact in contacts) {
         colltacts.add(Colltact.contact(contact));
       }
-    } else {
+    } else if (colltactKind == ColltactKind.colleague) {
       final colleagues = colleaguesState is ColleaguesLoaded
           ? colleaguesState.filteredColleagues
           : <Colleague>[];
       for (final colleague in colleagues) {
         colltacts.add(Colltact.colleague(colleague));
+      }
+    } else {
+      final sharedContacts = sharedContactsState is SharedContactsLoaded
+          ? sharedContactsState.sharedContacts
+          : <SharedContact>[];
+      for (final sharedContact in sharedContacts) {
+        colltacts.add(Colltact.sharedContact(sharedContact));
       }
     }
 
@@ -463,6 +636,7 @@ class _ColltactPageState extends State<_ColltactList>
     Future<void> onRefresh() async {
       await colleaguesCubit.refresh();
       await contactsCubit.reloadContacts();
+      await sharedContactsCubit.loadSharedContacts(fullRefresh: true);
     }
 
     return AnimatedSwitcher(
@@ -475,6 +649,8 @@ class _ColltactPageState extends State<_ColltactList>
           contactsState,
           colleaguesState,
           colleaguesCubit,
+          sharedContactsState,
+          sharedContactsCubit,
           colltactKind,
         ),
         kind: colltactKind,
@@ -502,6 +678,7 @@ class _ColltactPageState extends State<_ColltactList>
 enum ColltactKind {
   contact,
   colleague,
+  sharedContact,
 }
 
 extension on Colltact {
@@ -512,7 +689,9 @@ extension on Colltact {
 
         if ((colleague.number ?? '').toLowerCase().replaceAll(' ', '').contains(
               term.formatForPhoneNumberQuery(),
-            )) return true;
+            )) {
+          return true;
+        }
 
         return false;
       },
@@ -532,6 +711,21 @@ extension on Colltact {
               ),
         )) {
           return true;
+        }
+
+        return false;
+      },
+      sharedContact: (sharedContact) {
+        if (sharedContact.displayName.toLowerCase().contains(term)) return true;
+        if (sharedContact.company?.toLowerCase().contains(term) ?? false)
+          return true;
+
+        for (final number in sharedContact.phoneNumbers) {
+          if ((number.phoneNumberFlat ?? '').toLowerCase().contains(
+                term.formatForPhoneNumberQuery(),
+              )) {
+            return true;
+          }
         }
 
         return false;
