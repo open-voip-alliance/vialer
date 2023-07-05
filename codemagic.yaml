@@ -293,13 +293,13 @@ workflows:
       - *run_code_generators
       - *set_version_for_merge_request
       - *update_gitlab_merge_request_with_build_url
-#      - *verify_codebase_complies_with_analysis_rules
-#      - *flutter_test
-#      - *build_for_android
-#      - *update_ios_signing_for_current_brand
-#      - *build_for_ios
-#      - *update_gitlab_merge_request_with_build_url
-#      - *release_to_sentry
+      - *verify_codebase_complies_with_analysis_rules
+      - *flutter_test
+      - *build_for_android
+      - *update_ios_signing_for_current_brand
+      - *build_for_ios
+      - *update_gitlab_merge_request_with_build_url
+      - *release_to_sentry
     triggering:
       events: [ ]
     publishing:
