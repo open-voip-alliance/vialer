@@ -3,6 +3,8 @@ import 'dart:io';
 
 import 'package:args/args.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
+import 'package:timezone/timezone.dart' as tz;
 
 /// This script updates the description of a GitLab merge request with a
 /// Codemagic build status link.
@@ -42,7 +44,7 @@ https://gitlab.wearespindle.com/api/v4/projects/105/merge_requests/$mergeRequest
   // Using a multi-line string as it is easier to read what is being produced,
   // rather than splitting it.
   final buildInformation = '''
-[Codemagic: Latest Build ($buildNumber)](https://codemagic.io/app/$projectId/build/$buildId)
+[Codemagic: Latest Build ($buildNumber, $_time)](https://codemagic.io/app/$projectId/build/$buildId)
 ''';
 
   final response = await http.get(url, headers: headers);
@@ -64,7 +66,7 @@ extension on String {
 
   String replaceExistingBuildInformation(String buildInformation) =>
       replaceAllMapped(
-        RegExp(r'^\[Codemagic\:.+$', multiLine: true),
+        RegExp(r'^\[Codemagic:.+$', multiLine: true),
         (match) => buildInformation,
       );
 
@@ -86,3 +88,6 @@ Future<http.Response> _updateWithNewDescription(
         },
       ),
     );
+
+String get _time => DateFormat('H:mm:ss', 'en')
+    .format(tz.TZDateTime.now(tz.getLocation('Europe/Amsterdam')));
