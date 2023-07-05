@@ -94,6 +94,6 @@ Future<http.Response> _updateWithNewDescription(
 String get _time {
   timezoneInit.initializeTimeZones();
   initializeDateFormatting();
-  return DateFormat('y-M-d H:mm:ss', 'en')
+  return DateFormat('dd/MM/yyyy H:mm:ss', 'en')
       .format(tz.TZDateTime.now(tz.getLocation('Europe/Amsterdam')));
 }
