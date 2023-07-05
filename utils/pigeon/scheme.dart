@@ -89,3 +89,8 @@ abstract class Contacts {
   @async
   void importContactAvatars(String avatarDirectoryPath);
 }
+
+@HostApi()
+abstract class GooglePlayServices {
+  bool isAvailable();
+}

@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:dartx/dartx.dart';
 import 'package:recase/recase.dart';
+import 'package:vialer/app/util/pigeon.dart';
 
 import '../../../dependency_locator.dart';
 import '../colltacts/colltact_tab.dart';
@@ -32,6 +34,7 @@ class IdentifyForTrackingUseCase extends UseCase {
       user,
       <String, dynamic>{
         'brand': _getBrand().identifier,
+        ...await _platformIdentifyProperties(),
         ...user.toIdentifyProperties(),
         ...user.client.toIdentifyProperties(),
         ..._storage.grantedVoipgridPermissions.toIdentifyProperties(),
@@ -42,7 +45,14 @@ class IdentifyForTrackingUseCase extends UseCase {
       },
     ).then((_) => Future.delayed(_artificialDelay));
   }
+
+  Future<Map<String, dynamic>> _platformIdentifyProperties() async => {
+        if (Platform.isAndroid)
+          'google-play-services-available': await _isPlayServicesAvailable,
+      };
 }
+
+late final _isPlayServicesAvailable = GooglePlayServices().isAvailable();
 
 extension on User {
   Map<String, dynamic> toIdentifyProperties() {
