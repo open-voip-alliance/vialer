@@ -4,8 +4,9 @@ import 'dart:io';
 import 'package:args/args.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'package:timezone/data/latest.dart' as init;
+import 'package:timezone/data/latest.dart' as timezoneInit;
 import 'package:timezone/timezone.dart' as tz;
+import 'package:intl/date_symbol_data_local.dart';
 
 /// This script updates the description of a GitLab merge request with a
 /// Codemagic build status link.
@@ -91,8 +92,8 @@ Future<http.Response> _updateWithNewDescription(
     );
 
 String get _time {
-
-  init.initializeTimeZones();
+  timezoneInit.initializeTimeZones();
+  initializeDateFormatting();
   return DateFormat('H:mm:ss', 'en')
       .format(tz.TZDateTime.now(tz.getLocation('Europe/Amsterdam')));
 }
