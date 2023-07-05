@@ -31,6 +31,7 @@ class StylizedTextField extends StatelessWidget {
     this.enabled = true,
     this.elevation = 4,
     this.bordered = false,
+    this.semanticsLabel,
   });
 
   final TextEditingController? controller;
@@ -56,6 +57,7 @@ class StylizedTextField extends StatelessWidget {
   final bool enabled;
   final double elevation;
   final bool bordered;
+  final String? semanticsLabel;
 
   static const color = Colors.grey;
 
@@ -73,50 +75,54 @@ class StylizedTextField extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       elevation: elevation,
-      child: TextField(
-        textAlign: textAlign,
-        inputFormatters: inputFormatters,
-        controller: controller,
-        focusNode: focusNode,
-        autocorrect: autoCorrect,
-        textCapitalization: textCapitalization,
-        enabled: enabled,
-        decoration: InputDecoration(
-          prefixIcon: prefixIcon != null
-              // We have to use `Icon` here instead of `FaIcon`, otherwise
-              // the alignment will be off.
-              ? Icon(
-                  prefixIcon,
-                  color: hasError
-                      ? context.brand.theme.colors.errorContent
-                      : color,
-                  size: 16,
-                )
-              : prefixWidget,
-          suffixIcon: suffix,
-          labelText: labelText,
-          border: inputBorder,
-          enabledBorder: inputBorder,
-          disabledBorder: inputBorder,
-          focusedBorder: inputBorder,
-          labelStyle: const TextStyle(
-            color: color,
+      child: Semantics(
+        textField: true,
+        value: semanticsLabel,
+        child: TextField(
+          textAlign: textAlign,
+          inputFormatters: inputFormatters,
+          controller: controller,
+          focusNode: focusNode,
+          autocorrect: autoCorrect,
+          textCapitalization: textCapitalization,
+          enabled: enabled,
+          decoration: InputDecoration(
+            prefixIcon: prefixIcon != null
+                // We have to use `Icon` here instead of `FaIcon`, otherwise
+                // the alignment will be off.
+                ? Icon(
+                    prefixIcon,
+                    color: hasError
+                        ? context.brand.theme.colors.errorContent
+                        : color,
+                    size: 16,
+                  )
+                : prefixWidget,
+            suffixIcon: suffix,
+            labelText: labelText,
+            border: inputBorder,
+            enabledBorder: inputBorder,
+            disabledBorder: inputBorder,
+            focusedBorder: inputBorder,
+            labelStyle: const TextStyle(
+              color: color,
+            ),
+            focusColor: color,
+            filled: true,
+            fillColor: Colors.white,
+            floatingLabelBehavior: FloatingLabelBehavior.never,
+            hintText: hintText,
           ),
-          focusColor: color,
-          filled: true,
-          fillColor: Colors.white,
-          floatingLabelBehavior: FloatingLabelBehavior.never,
-          hintText: hintText,
+          style: textStyle,
+          obscureText: obscureText,
+          keyboardType: keyboardType,
+          textInputAction: TextInputAction.next,
+          autofillHints: autofillHints,
+          onEditingComplete: onEditingComplete,
+          onChanged: onChanged,
+          onTap: onTap,
+          onSubmitted: onSubmitted,
         ),
-        style: textStyle,
-        obscureText: obscureText,
-        keyboardType: keyboardType,
-        textInputAction: TextInputAction.next,
-        autofillHints: autofillHints,
-        onEditingComplete: onEditingComplete,
-        onChanged: onChanged,
-        onTap: onTap,
-        onSubmitted: onSubmitted,
       ),
     );
   }

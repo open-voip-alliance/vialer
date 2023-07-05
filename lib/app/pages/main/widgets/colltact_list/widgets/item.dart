@@ -57,7 +57,7 @@ class _ContactItem extends StatelessWidget {
 
     return ColltactItem._(
       title: PhoneNumberText(
-        SearchHighlightText(
+        child: SearchHighlightText(
           colltact.name,
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
@@ -89,7 +89,7 @@ class _ColleagueItem extends StatelessWidget {
 
     return ColltactItem._(
       title: PhoneNumberText(
-        SearchHighlightText(colleague.name),
+        child: SearchHighlightText(colleague.name),
         content: colleague.name,
       ),
       subtitle: ColltactSubtitle(

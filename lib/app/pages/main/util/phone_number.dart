@@ -43,7 +43,7 @@ class FormattedPhoneNumber extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PhoneNumberText(
-      Text(
+      child: Text(
         formattedNumber,
         style: style,
         textAlign: TextAlign.start,
@@ -61,8 +61,8 @@ class FormattedPhoneNumber extends StatelessWidget {
 /// any number will be matched so this must only be used in situations where
 /// you would never want to include a regular number.
 class PhoneNumberText extends StatelessWidget {
-  const PhoneNumberText(
-    this.child, {
+  const PhoneNumberText({
+    required this.child,
     this.content,
     this.semanticsLabel,
     super.key,
@@ -83,6 +83,7 @@ class PhoneNumberText extends StatelessWidget {
   Widget build(BuildContext context) {
     assert(child is Text || content != null);
 
+    print("TEST123 ${_semanticsLabel}");
     return Semantics(
       label: _semanticsLabel,
       child: ExcludeSemantics(child: child),
@@ -114,8 +115,11 @@ extension PhoneNumberSemantics on String {
   String get phoneNumberSemanticLabel => split('')
       .filter((element) => !_ignoredCharacters.contains(element))
       .join(' ');
+
+  String get asSemanticsLabelIfPhoneNumber =>
+      looksLikePhoneNumber() ? phoneNumberSemanticLabel : this;
 }
 
 extension on String {
-  bool looksLikePhoneNumber() => RegExp(r'^[0-9+]+\(\)$').hasMatch(this);
+  bool looksLikePhoneNumber() => RegExp(r'^[0-9+() ]+$').hasMatch(this);
 }

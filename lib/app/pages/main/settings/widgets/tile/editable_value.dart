@@ -174,6 +174,8 @@ class _StringEditSettingValueState extends State<StringEditSettingValue> {
               _applyEditingFormatter();
               _validate();
             },
+            semanticsLabel:
+                _textEditingController.text.asSemanticsLabelIfPhoneNumber,
           ),
         ],
       );
@@ -182,7 +184,7 @@ class _StringEditSettingValueState extends State<StringEditSettingValue> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           PhoneNumberText(
-            Text(
+            child: Text(
               widget.value,
               style: const TextStyle(
                 fontSize: 16,

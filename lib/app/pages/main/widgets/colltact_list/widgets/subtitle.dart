@@ -87,7 +87,7 @@ class ColltactSubtitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PhoneNumberText(
-      Text(
+      child: Text(
         _text(context),
         overflow: TextOverflow.ellipsis,
         style: TextStyle(color: context.brand.theme.colors.grey4),
