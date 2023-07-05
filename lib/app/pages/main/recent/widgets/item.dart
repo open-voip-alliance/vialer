@@ -5,6 +5,7 @@ import 'package:duration/duration.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:vialer/app/pages/main/util/phone_number.dart';
 
 import '../../../../../domain/call_records/call_record.dart';
 import '../../../../resources/localizations.dart';
@@ -52,14 +53,22 @@ class _RecentCallItemTitle extends StatelessWidget {
       return Row(
         children: [
           Text(context.msg.main.recent.list.item.client.internal.title),
-          _WidthAdjustedText(callRecord.caller.number),
+          PhoneNumberText(
+            child: _WidthAdjustedText((callRecord.caller.number)),
+            content: callRecord.caller.number,
+          ),
           const Text(' & '),
-          _WidthAdjustedText(callRecord.destination.number),
+          PhoneNumberText(
+            child: _WidthAdjustedText((callRecord.destination.number)),
+            content: callRecord.destination.number,
+          ),
         ],
       );
     }
 
-    return Text(callRecord.displayLabel);
+    return PhoneNumberText(
+      child: Text(callRecord.displayLabel),
+    );
   }
 }
 

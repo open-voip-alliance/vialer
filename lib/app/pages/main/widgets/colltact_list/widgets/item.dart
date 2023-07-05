@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:search_highlight_text/search_highlight_text.dart';
+import 'package:vialer/app/pages/main/util/phone_number.dart';
 
 import '../../../../../../data/models/colltact.dart';
 import '../../../../../../domain/colltacts/contact.dart';
@@ -55,6 +56,14 @@ class _ContactItem extends StatelessWidget {
     final colltact = Colltact.contact(contact);
 
     return ColltactItem._(
+      title: PhoneNumberText(
+        child: SearchHighlightText(
+          colltact.name,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+        ),
+        content: colltact.name,
+      ),
       subtitle: ColltactSubtitle(colltact),
       onTap: () => unawaited(
         Navigator.pushNamed(
@@ -62,11 +71,6 @@ class _ContactItem extends StatelessWidget {
           ColltactsPageRoutes.details,
           arguments: colltact,
         ),
-      ),
-      title: SearchHighlightText(
-        colltact.name,
-        maxLines: 2,
-        overflow: TextOverflow.ellipsis,
       ),
       avatar: ColltactAvatar(colltact),
     );
@@ -84,7 +88,10 @@ class _ColleagueItem extends StatelessWidget {
     final colltact = Colltact.colleague(colleague);
 
     return ColltactItem._(
-      title: SearchHighlightText(colleague.name),
+      title: PhoneNumberText(
+        child: SearchHighlightText(colleague.name),
+        content: colleague.name,
+      ),
       subtitle: ColltactSubtitle(
         colltact,
         colleaguesUpToDate: colleaguesUpToDate,
