@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:args/args.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:timezone/data/latest.dart' as init;
 import 'package:timezone/timezone.dart' as tz;
 
 /// This script updates the description of a GitLab merge request with a
@@ -89,5 +90,9 @@ Future<http.Response> _updateWithNewDescription(
       ),
     );
 
-String get _time => DateFormat('H:mm:ss', 'en')
-    .format(tz.TZDateTime.now(tz.getLocation('Europe/Amsterdam')));
+String get _time {
+
+  init.initializeTimeZones();
+  return DateFormat('H:mm:ss', 'en')
+      .format(tz.TZDateTime.now(tz.getLocation('Europe/Amsterdam')));
+}
