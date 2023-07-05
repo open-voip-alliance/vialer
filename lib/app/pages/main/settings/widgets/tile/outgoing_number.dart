@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:vialer/app/pages/main/util/phone_number.dart';
 
 import '../../../../../../domain/user/settings/call_setting.dart';
 import '../../../../../../domain/user/user.dart';
@@ -92,11 +93,13 @@ class OutgoingNumberTile extends StatelessWidget {
                               value: const OutgoingNumber.section(),
                               child: FittedBox(
                                 fit: BoxFit.scaleDown,
-                                child: Text(
-                                  context.msg.main.settings.list.accountInfo
-                                      .businessNumber.section.recently,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
+                                child: PhoneNumberText(
+                                  child: Text(
+                                    context.msg.main.settings.list.accountInfo
+                                        .businessNumber.section.recently,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -107,7 +110,9 @@ class OutgoingNumberTile extends StatelessWidget {
                                 value: number,
                                 child: FittedBox(
                                   fit: BoxFit.scaleDown,
-                                  child: Text(number.toString()),
+                                  child: PhoneNumberText(
+                                    child: Text(number.toString()),
+                                  ),
                                 ),
                               ),
                             ),
@@ -117,11 +122,13 @@ class OutgoingNumberTile extends StatelessWidget {
                               value: const OutgoingNumber.section(),
                               child: FittedBox(
                                 fit: BoxFit.scaleDown,
-                                child: Text(
-                                  context.msg.main.settings.list.accountInfo
-                                      .businessNumber.section.other,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
+                                child: PhoneNumberText(
+                                  child: Text(
+                                    context.msg.main.settings.list.accountInfo
+                                        .businessNumber.section.other,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -131,7 +138,9 @@ class OutgoingNumberTile extends StatelessWidget {
                               value: number,
                               child: FittedBox(
                                 fit: BoxFit.scaleDown,
-                                child: Text(number.toString()),
+                                child: PhoneNumberText(
+                                  child: Text(number.toString()),
+                                ),
                               ),
                             ),
                           ),

@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:vialer/app/pages/main/util/phone_number.dart';
 
 import '../../../../../../data/models/colltact.dart';
 import '../../../../../../domain/colltacts/contact.dart';
@@ -85,10 +86,12 @@ class ColltactSubtitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      _text(context),
-      overflow: TextOverflow.ellipsis,
-      style: TextStyle(color: context.brand.theme.colors.grey4),
+    return PhoneNumberText(
+      child: Text(
+        _text(context),
+        overflow: TextOverflow.ellipsis,
+        style: TextStyle(color: context.brand.theme.colors.grey4),
+      ),
     );
   }
 }
