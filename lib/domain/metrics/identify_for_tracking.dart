@@ -48,10 +48,11 @@ class IdentifyForTrackingUseCase extends UseCase {
 
   Future<Map<String, dynamic>> _platformIdentifyProperties() async => {
         if (Platform.isAndroid)
-          'google-play-services-available':
-              await GooglePlayServices().isAvailable(),
+          'google-play-services-available': await _isPlayServicesAvailable,
       };
 }
+
+late final _isPlayServicesAvailable = GooglePlayServices().isAvailable();
 
 extension on User {
   Map<String, dynamic> toIdentifyProperties() {
