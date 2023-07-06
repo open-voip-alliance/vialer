@@ -65,9 +65,14 @@ class NoResultsPlaceholder extends StatelessWidget {
   String _subtitle(BuildContext context) => switch (type!) {
         NoResultsType.noOnlineColleagues =>
           context.msg.main.colltacts.noOnline.subtitle,
-        NoResultsType.noSearchResults => kind == ColltactKind.contact
-            ? context.msg.main.colltacts.noResults.contacts(searchTerm)
-            : context.msg.main.colltacts.noResults.colleagues(searchTerm),
+        NoResultsType.noSearchResults => switch (kind) {
+            ColltactKind.contact =>
+              context.msg.main.colltacts.noResults.contacts(searchTerm),
+            ColltactKind.colleague =>
+              context.msg.main.colltacts.noResults.colleagues(searchTerm),
+            ColltactKind.sharedContact =>
+              context.msg.main.colltacts.noResults.sharedContacts(searchTerm),
+          },
         NoResultsType.colleaguesLoading =>
           context.msg.main.contacts.list.loadingColleagues.description,
         NoResultsType.contactsLoading =>
