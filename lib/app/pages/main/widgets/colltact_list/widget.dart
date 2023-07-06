@@ -499,10 +499,8 @@ class _ColltactPageState extends State<_ColltactList>
         }
         return firstCharacter;
       },
-      sharedContact: (sharedContact) {
-        var firstCharacter = sharedContact.givenName?.characters.firstOrNull;
-        return firstCharacter;
-      },
+      sharedContact: (sharedContact) =>
+          sharedContact.givenName?.characters.firstOrNull,
     );
   }
 
@@ -717,11 +715,11 @@ extension on Colltact {
       },
       sharedContact: (sharedContact) {
         if (sharedContact.displayName.toLowerCase().contains(term)) return true;
-        if (sharedContact.company?.toLowerCase().contains(term) ?? false)
+        if (sharedContact.companyName?.toLowerCase().contains(term) ?? false)
           return true;
 
         for (final number in sharedContact.phoneNumbers) {
-          if ((number.phoneNumberFlat ?? '').toLowerCase().contains(
+          if ((number.phoneNumberFlat).toLowerCase().contains(
                 term.formatForPhoneNumberQuery(),
               )) {
             return true;

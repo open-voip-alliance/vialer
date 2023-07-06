@@ -8,21 +8,23 @@ import '../../domain/user_availability/colleagues/colleague.dart';
 
 part 'colltact.freezed.dart';
 
-/// Wraps a colleague, webphone shared contact and phone contact in a single object as they are often used
-/// in very similar situations and for a similar purpose.
+/// Wraps a colleague, webphone shared contact and phone contact in a single
+/// object as they are often used in very similar situations and for a similar
+/// purpose.
 @freezed
-class Colltact with _$Colltact {
+sealed class Colltact with _$Colltact {
   const Colltact._();
   const factory Colltact.colleague(Colleague colleague) = ColltactColleague;
   const factory Colltact.contact(Contact contact) = ColltactContact;
   const factory Colltact.sharedContact(SharedContact contact) =
       ColltactSharedContact;
 
-  String get name => when(
-        colleague: (colleague) => colleague.name,
-        contact: (contact) => contact.displayName,
-        sharedContact: (sharedContact) => sharedContact.displayName,
-      );
+  String get name => switch (this) {
+        ColltactColleague colleague => colleague.name,
+        ColltactContact contact => contact.contact.displayName,
+        ColltactSharedContact sharedContact =>
+          sharedContact.contact.displayName,
+      };
 
   String Function(ContactSort) get getSortKey => when(
         colleague: (colleague) => (_) => colleague.name.toLowerCase(),

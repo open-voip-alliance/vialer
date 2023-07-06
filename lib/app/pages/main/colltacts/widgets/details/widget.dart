@@ -98,11 +98,12 @@ class _ColltactPageDetailsState extends State<ColltactPageDetails>
                       (_) => unawaited(
                         cubit.call(
                           destination,
-                          origin: widget.colltact.map(
-                            colleague: (_) => CallOrigin.colleagues,
-                            contact: (_) => CallOrigin.contacts,
-                            sharedContact: (_) => CallOrigin.sharedContacts,
-                          ),
+                          origin: switch (widget.colltact) {
+                            ColltactColleague() => CallOrigin.colleagues,
+                            ColltactContact() => CallOrigin.contacts,
+                            ColltactSharedContact() =>
+                              CallOrigin.sharedContacts,
+                          },
                         ),
                       ),
                     ),

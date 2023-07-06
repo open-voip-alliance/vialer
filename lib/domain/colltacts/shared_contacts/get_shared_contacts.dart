@@ -17,12 +17,9 @@ class GetSharedContactsUseCase extends UseCase {
   }) async {
     final cachedSharedContacts = _storage.sharedContacts;
 
-    final sharedContacts =
-        cachedSharedContacts.isEmpty || forceSharedContactsRefresh
-            ? await _fetchSharedContacts()
-            : cachedSharedContacts;
-
-    return sharedContacts;
+    return cachedSharedContacts.isEmpty || forceSharedContactsRefresh
+        ? await _fetchSharedContacts()
+        : cachedSharedContacts;
   }
 
   Future<List<SharedContact>> _fetchSharedContacts() async =>

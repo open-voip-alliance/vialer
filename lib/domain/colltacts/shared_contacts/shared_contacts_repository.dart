@@ -23,13 +23,11 @@ class SharedContactsRepository with Loggable {
       deserializer: (json) => json,
     );
 
-    return SharedContact.listFromApiResponse(response)
-        .withoutNonContacts()
-        .toList();
+    return response.map(SharedContact.fromJson).withoutNonContacts().toList();
   }
 }
 
-extension on List<SharedContact> {
+extension on Iterable<SharedContact> {
   /// The webphone added in this fake contact for some work they were doing
   /// at some point. This isn't an actual contact and should therefore always
   /// be removed.

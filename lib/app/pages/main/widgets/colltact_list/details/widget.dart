@@ -79,11 +79,11 @@ class _ColltactDetailsState extends State<ColltactDetails> {
                   iconTheme: IconThemeData(
                     color: Theme.of(context).primaryColor,
                   ),
-                  actions: colltact.when(
-                    colleague: (_) => null,
-                    contact: (_) => widget.actions,
-                    sharedContact: (_) => null,
-                  ),
+                  actions: switch (colltact) {
+                    ColltactColleague() => null,
+                    ColltactContact() => widget.actions,
+                    ColltactSharedContact() => null,
+                  },
                 ),
                 body: SafeArea(
                   child: Padding(
@@ -200,9 +200,9 @@ class _DestinationsList extends StatelessWidget {
         sharedContact: (sharedContact) => sharedContact.phoneNumbers
             .map(
               (p) => _Item(
-                value: p.phoneNumberFlat ?? '',
+                value: p.phoneNumberFlat,
                 isEmail: false,
-                onTap: () => onPhoneNumberPressed.call(p.phoneNumberFlat ?? ''),
+                onTap: () => onPhoneNumberPressed.call(p.phoneNumberFlat),
               ),
             )
             .toList(),

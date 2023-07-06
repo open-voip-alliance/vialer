@@ -9,11 +9,11 @@ class TrackT9Usage extends UseCase {
   Future<void> call(Colltact colltact) async => _metricsRepository.track(
         'contact-t9-selected',
         {
-          'type': colltact.when(
-            colleague: (_) => 'colleague',
-            contact: (_) => 'contact',
-            sharedContact: (_) => 'sharedContact',
-          ),
+          'type': switch (colltact) {
+            ColltactColleague() => 'colleague',
+            ColltactContact() => 'contact',
+            ColltactSharedContact() => 'sharedContact',
+          },
         },
       );
 }

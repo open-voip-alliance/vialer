@@ -97,7 +97,7 @@ class ColltactSubtitle extends StatelessWidget {
 
     if (phoneNumbers.length == 1 &&
         phoneNumbers.first.phoneNumberFlat.isNotNullOrEmpty) {
-      text = phoneNumbers.first.phoneNumberFlat!;
+      text = phoneNumbers.first.phoneNumberFlat;
     } else if (phoneNumbers.isNotEmpty) {
       text = context.msg.main.contacts.list.item.numbers(
         phoneNumbers.length,

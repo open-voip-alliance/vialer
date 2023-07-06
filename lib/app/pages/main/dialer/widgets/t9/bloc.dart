@@ -195,7 +195,7 @@ Future<List<T9Colltact>> _filterColltactsByRegularExpression(
               colltact: colltact,
               relevantPhoneNumber: Item(
                 label: '',
-                value: number.phoneNumberFlat ?? '',
+                value: number.phoneNumberFlat,
               ),
             ),
           ),
