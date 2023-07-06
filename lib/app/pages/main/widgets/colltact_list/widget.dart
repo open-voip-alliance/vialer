@@ -719,9 +719,9 @@ extension on Colltact {
           return true;
 
         for (final number in sharedContact.phoneNumbers) {
-          if ((number.phoneNumberFlat).toLowerCase().contains(
-                term.formatForPhoneNumberQuery(),
-              )) {
+          if (number.phoneNumberFlat
+              .toLowerCase()
+              .contains(term.formatForPhoneNumberQuery())) {
             return true;
           }
         }
