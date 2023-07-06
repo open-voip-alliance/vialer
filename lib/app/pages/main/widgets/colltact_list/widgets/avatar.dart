@@ -102,7 +102,7 @@ class SharedContactAvatar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Avatar(
       name: sharedContact.simpleDisplayName,
-      backgroundColor: context.brand.theme.colors.primary,
+      backgroundColor: sharedContact.calculateColor(context),
       size: size,
     );
   }
