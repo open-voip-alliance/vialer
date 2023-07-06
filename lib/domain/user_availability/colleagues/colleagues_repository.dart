@@ -12,7 +12,7 @@ import '../../user/events/logged_in_user_availability_changed.dart';
 import '../../user/user.dart';
 import '../../voipgrid/voipgrid_api_resource_collector.dart';
 import '../../voipgrid/voipgrid_service.dart';
-import 'availbility_update.dart';
+import 'availability_update.dart';
 import 'colleague.dart';
 
 class ColleaguesRepository with Loggable {

@@ -26,6 +26,9 @@ class GetBrand extends UseCase {
       userAvailabilityWsUrl: Uri.parse(
         const String.fromEnvironment('userAvailabilityWsUrl'),
       ),
+      sharedContactsUrl: Uri.parse(
+        const String.fromEnvironment('sharedContactsUrl'),
+      ),
     );
   }
 }

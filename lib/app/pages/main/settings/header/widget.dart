@@ -5,7 +5,7 @@ import 'package:vialer/app/pages/main/widgets/user_availability_status_builder/w
 
 import '../../../../../domain/user/events/logged_in_user_availability_changed.dart';
 import '../../../../../domain/user/user.dart';
-import '../../../../../domain/user_availability/colleagues/availbility_update.dart';
+import '../../../../../domain/user_availability/colleagues/availability_update.dart';
 import '../../../../../domain/user_availability/colleagues/colleague.dart';
 import '../../../../resources/theme.dart';
 import '../../../../util/event_bus_listener.dart';

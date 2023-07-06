@@ -340,6 +340,7 @@ enum CallOrigin {
   dialer,
   recents,
   contacts,
+  sharedContacts,
   colleagues,
   unknown,
 }

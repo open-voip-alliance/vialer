@@ -10,7 +10,7 @@ import 'contact.dart';
 import 'contact_repository.dart';
 
 class GetContactsUseCase extends UseCase {
-  final _contactsRepository = dependencyLocator<ContactRepository>();
+  final _contactRepository = dependencyLocator<ContactRepository>();
   final _permissionRepository = dependencyLocator<PermissionRepository>();
 
   Future<List<Contact>> call({
@@ -21,11 +21,11 @@ class GetContactsUseCase extends UseCase {
     );
 
     if (status != PermissionStatus.granted) {
-      unawaited(_contactsRepository.cleanUp());
+      unawaited(_contactRepository.cleanUp());
       throw NoPermissionException();
     }
 
-    final contacts = await _contactsRepository.getContacts();
+    final contacts = await _contactRepository.getContacts();
 
     return contacts;
   }

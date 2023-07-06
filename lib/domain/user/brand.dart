@@ -1,7 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'brand.freezed.dart';
-
 part 'brand.g.dart';
 
 @freezed
@@ -19,6 +18,7 @@ class Brand with _$Brand {
     required Uri privacyPolicyUrl,
     required Uri? signUpUrl,
     required Uri userAvailabilityWsUrl,
+    required Uri sharedContactsUrl,
   }) = _Brand;
 
   const Brand._();

@@ -8,7 +8,7 @@ import '../../../../../domain/authentication/user_was_logged_out.dart';
 import '../../../../../domain/colltacts/colltact_tab.dart';
 import '../../../../../domain/event/event_bus.dart';
 import '../../../../../domain/legacy/storage.dart';
-import '../../../../../domain/metrics/track_colleague_tab_selected.dart';
+import '../../../../../domain/metrics/metrics.dart';
 import '../../../../../domain/user/get_logged_in_user.dart';
 import '../../../../../domain/user/settings/app_setting.dart';
 import '../../../../../domain/user/settings/change_setting.dart';
@@ -34,6 +34,7 @@ class ColleaguesCubit extends Cubit<ColleaguesState> {
   }
 
   final _storageRepository = dependencyLocator<StorageRepository>();
+  final _metricsRepository = dependencyLocator<MetricsRepository>();
 
   late final _shouldShowColleagues = ShouldShowColleagues();
   late final _receiveColleagueAvailability = ReceiveColleagueAvailability();
@@ -42,7 +43,6 @@ class ColleaguesCubit extends Cubit<ColleaguesState> {
   final _eventBus = dependencyLocator<EventBusObserver>();
   final _getUser = GetLoggedInUserUseCase();
   final _changeSetting = ChangeSettingUseCase();
-  final _trackColleagueTabSelected = TrackColleagueTabSelectedUseCase();
 
   final CallerCubit _caller;
 
@@ -125,7 +125,8 @@ class ColleaguesCubit extends Cubit<ColleaguesState> {
     await connectToWebSocket(fullRefresh: true);
   }
 
-  void trackColleaguesTabSelected() => _trackColleagueTabSelected();
+  void trackColleaguesTabSelected() =>
+      _metricsRepository.track('colleague-tab-selected');
 
   Future<void> call(String destination) =>
       _caller.call(destination, origin: CallOrigin.colleagues);

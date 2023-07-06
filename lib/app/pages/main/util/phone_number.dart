@@ -83,7 +83,6 @@ class PhoneNumberText extends StatelessWidget {
   Widget build(BuildContext context) {
     assert(child is Text || content != null);
 
-    print("TEST123 ${_semanticsLabel}");
     return Semantics(
       label: _semanticsLabel,
       child: ExcludeSemantics(child: child),
