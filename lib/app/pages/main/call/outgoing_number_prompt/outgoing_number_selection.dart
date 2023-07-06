@@ -65,7 +65,7 @@ class OutgoingNumberSelection extends _$OutgoingNumberSelection {
 
     _metrics.track('outgoing-number-prompt-number-changed', {
       'success': success,
-      'doNotShowAgain': doNotShowAgain,
+      'doNotShowAgain': state.doNotShowAgain,
     });
 
     if (state.doNotShowAgain) {
