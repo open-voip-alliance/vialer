@@ -143,6 +143,8 @@ class _T9ColltactsListState extends State<_T9ColltactsList> {
                     t9Colltact.colltact.when(
                       colleague: (colleague) => colleague.name,
                       contact: (contact) => contact.displayName,
+                      sharedContact: (sharedContact) =>
+                          sharedContact.displayName,
                     ),
                   ),
                   subtitle: Text(t9Colltact.relevantPhoneNumber.value),

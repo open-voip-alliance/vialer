@@ -5,7 +5,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import '../call_records/item.dart';
 
 part 'contact.freezed.dart';
-
 part 'contact.g.dart';
 
 @freezed

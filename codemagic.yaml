@@ -316,7 +316,7 @@ workflows:
       - *use_workflow_build_number
       - *prepare_environment_file
       - *run_code_generators
-      - *set_version_for_merge_request
+      - *set_version_for_other
       - *verify_codebase_complies_with_analysis_rules
       - *flutter_test
       - *update_ios_signing_for_current_brand

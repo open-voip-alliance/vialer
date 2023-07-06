@@ -35,6 +35,8 @@ void main() {
           userAvailabilityWsUrl: Uri.parse('ws'),
           privacyPolicyUrl: Uri.parse('dummypolicy.com'),
           signUpUrl: null,
+          sharedContactsUrl:
+              Uri.parse('https://contacts.spindle.dev/contacts/'),
         ),
         child: KeyInput(
           controller: controller,
@@ -51,7 +53,7 @@ void main() {
   });
 
   testWidgets(
-    'Keyinput takes input via controller and updates properly',
+    'KeyInput takes input via controller and updates properly',
     (tester) async {
       await tester.pumpWidget(testWidget);
       const testString = '+31612345678';

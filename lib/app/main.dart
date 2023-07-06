@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:timezone/data/latest.dart';
+import 'package:vialer/app/pages/main/colltacts/shared_contacts/cubit.dart';
 
 import '../dependency_locator.dart';
 import '../domain/authentication/user_was_logged_out.dart';
@@ -115,6 +116,16 @@ class _AppState extends State<App> {
                       builder: (context) {
                         return BlocProvider<ColleaguesCubit>(
                           create: (_) => ColleaguesCubit(
+                            context.watch<CallerCubit>(),
+                          ),
+                          child: child,
+                        );
+                      },
+                    ),
+                (child) => Builder(
+                      builder: (context) {
+                        return BlocProvider<SharedContactsCubit>(
+                          create: (_) => SharedContactsCubit(
                             context.watch<CallerCubit>(),
                           ),
                           child: child,

@@ -9,5 +9,6 @@
   "businessAvailabilityUrl": "https://api.prod.holodeck.spindle.dev/business-availability/clients/",
   "openingHoursBasicUrl": "https://api.prod.holodeck.spindle.dev/opening-hours-basic/client/",
   "privacyPolicyUrl": "https://bellenmetannabel.nl/app/uploads/Terms-Of-Use-And-Privacy.pdf",
-  "userAvailabilityWsUrl": "wss://api.prod.holodeck.spindle.dev/user-availability-ws/ws"
+  "userAvailabilityWsUrl": "wss://api.prod.holodeck.spindle.dev/user-availability-ws/ws",
+  "sharedContactsUrl": "https://contacts.spindle.dev/contacts/"
 }

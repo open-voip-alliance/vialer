@@ -60,6 +60,7 @@ class _ColltactPageDetailsState extends State<ColltactPageDetails>
     final contactId = widget.colltact.when(
       colleague: (colleague) => null,
       contact: (contact) => contact.identifier,
+      sharedContact: (_) => null,
     );
 
     if (contactId == null) return;
@@ -97,10 +98,12 @@ class _ColltactPageDetailsState extends State<ColltactPageDetails>
                       (_) => unawaited(
                         cubit.call(
                           destination,
-                          origin: widget.colltact.map(
-                            colleague: (_) => CallOrigin.colleagues,
-                            contact: (_) => CallOrigin.contacts,
-                          ),
+                          origin: switch (widget.colltact) {
+                            ColltactColleague() => CallOrigin.colleagues,
+                            ColltactContact() => CallOrigin.contacts,
+                            ColltactSharedContact() =>
+                              CallOrigin.sharedContacts,
+                          },
                         ),
                       ),
                     ),
