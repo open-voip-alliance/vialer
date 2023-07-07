@@ -8,7 +8,6 @@ import '../../../../../domain/authentication/user_was_logged_out.dart';
 import '../../../../../domain/colltacts/shared_contacts/get_shared_contacts.dart';
 import '../../../../../domain/colltacts/shared_contacts/shared_contact.dart';
 import '../../../../../domain/event/event_bus.dart';
-import '../../../../../domain/metrics/metrics.dart';
 import '../../widgets/caller/cubit.dart';
 import 'state.dart';
 
@@ -30,7 +29,6 @@ class SharedContactsCubit extends Cubit<SharedContactsState> {
 
   final _eventBus = dependencyLocator<EventBusObserver>();
   final _getSharedContacts = GetSharedContactsUseCase();
-  final _metricsRepository = dependencyLocator<MetricsRepository>();
 
   final CallerCubit _caller;
 
@@ -50,13 +48,6 @@ class SharedContactsCubit extends Cubit<SharedContactsState> {
     _sharedContacts =
         await _getSharedContacts(forceSharedContactsRefresh: fullRefresh);
 
-    emit(
-      SharedContactsState.loaded(
-        sharedContacts: _sharedContacts,
-      ),
-    );
+    emit(SharedContactsState.loaded(sharedContacts: _sharedContacts));
   }
-
-  void trackSharedContactsTabSelected() =>
-      _metricsRepository.track('shared-contacts-tab-selected');
 }

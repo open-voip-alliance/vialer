@@ -4,12 +4,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 
-import '../../../../../../data/models/colltact.dart';
-import '../../../../../resources/localizations.dart';
-import '../../../colltacts/colleagues/cubit.dart';
-import '../../../widgets/caller.dart';
-import '../../../widgets/header.dart';
-import '../cubit.dart';
+import '../../../../../../../data/models/colltact.dart';
+import '../../../../../../resources/localizations.dart';
+import '../../../../colltacts/colleagues/cubit.dart';
+import '../../../../widgets/caller.dart';
+import '../../../../widgets/header.dart';
+import '../../../../colltacts/contacts/cubit.dart';
 import '../widgets/avatar.dart';
 import '../widgets/subtitle.dart';
 import 'cubit.dart';

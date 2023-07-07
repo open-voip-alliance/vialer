@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:vialer/app/pages/main/colltacts/widgets/colltact_list/util/color.dart';
+import 'package:vialer/app/util/contact.dart';
 
-import '../../../../../../data/models/colltact.dart';
-import '../../../../../../domain/colltacts/contact.dart';
-import '../../../../../../domain/colltacts/shared_contacts/shared_contact.dart';
-import '../../../../../../domain/user_availability/colleagues/colleague.dart';
-import '../../../../../resources/theme.dart';
-import '../../../../../util/contact.dart';
-import '../../../widgets/avatar.dart';
-import '../util/color.dart';
+import '../../../../../../../data/models/colltact.dart';
+import '../../../../../../../domain/colltacts/contact.dart';
+import '../../../../../../../domain/colltacts/shared_contacts/shared_contact.dart';
+import '../../../../../../../domain/user_availability/colleagues/colleague.dart';
+import '../../../../../../resources/theme.dart';
+import '../../../../widgets/avatar.dart';
 
 part 'avatar.freezed.dart';
 

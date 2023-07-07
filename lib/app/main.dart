@@ -5,7 +5,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:timezone/data/latest.dart';
+import 'package:vialer/app/pages/main/business_availability/temporary_redirect/cubit.dart';
+import 'package:vialer/app/pages/main/colltacts/colleagues/cubit.dart';
 import 'package:vialer/app/pages/main/colltacts/shared_contacts/cubit.dart';
+import 'package:vialer/app/pages/main/widgets/caller/cubit.dart';
+import 'package:vialer/app/pages/main/widgets/caller/widget.dart';
+import 'package:vialer/app/widgets/connectivity_checker/widget.dart';
+import 'package:vialer/app/widgets/missed_call_notification_listener/widget.dart';
+import 'package:vialer/app/widgets/nested_children.dart';
 
 import '../dependency_locator.dart';
 import '../domain/authentication/user_was_logged_out.dart';
@@ -20,20 +27,13 @@ import '../domain/onboarding/should_onboard.dart';
 import '../domain/remote_logging/enable_console_logging.dart';
 import '../domain/remote_logging/enable_remote_logging_if_needed.dart';
 import '../domain/user/get_stored_user.dart';
-import 'pages/main/business_availability/temporary_redirect/cubit.dart';
-import 'pages/main/colltacts/colleagues/cubit.dart';
 import 'pages/main/page.dart';
-import 'pages/main/widgets/caller/cubit.dart';
-import 'pages/main/widgets/caller/widget.dart';
 import 'resources/localizations.dart';
 import 'resources/theme.dart';
 import 'routes.dart';
 import 'util/debug.dart';
 import 'widgets/brand_provider/widget.dart';
 import 'widgets/build_error.dart';
-import 'widgets/connectivity_checker/widget.dart';
-import 'widgets/missed_call_notification_listener/widget.dart';
-import 'widgets/nested_children.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

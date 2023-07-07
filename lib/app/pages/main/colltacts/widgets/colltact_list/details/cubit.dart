@@ -6,11 +6,11 @@ import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
-import '../../../../../../data/models/colltact.dart';
-import '../../../../../../domain/onboarding/request_permission.dart';
-import '../../../../../../domain/user/permissions/permission.dart';
-import '../../../../../../domain/user/permissions/permission_status.dart';
-import '../../../widgets/caller.dart';
+import '../../../../../../../data/models/colltact.dart';
+import '../../../../../../../domain/onboarding/request_permission.dart';
+import '../../../../../../../domain/user/permissions/permission.dart';
+import '../../../../../../../domain/user/permissions/permission_status.dart';
+import '../../../../widgets/caller.dart';
 import 'state.dart';
 
 class ColltactDetailsCubit extends Cubit<ColltactDetailsState> {
