@@ -4,7 +4,6 @@ import 'dart:io';
 
 import 'package:dartx/dartx.dart';
 
-import 'ci/codemagic/prepare_release_notes.dart';
 import 'generate_release_notes_template.dart';
 
 Future<void> main(List<String> arguments) async {
@@ -46,11 +45,11 @@ Future<void> main(List<String> arguments) async {
     _error('Release cancelled');
   }
 
-  await _tagToRelease(version);
+  await _tagRelease(version);
   _success('Release tag [v$version] created successfully');
   _sleep();
 
-  // await _pushTags(version);
+  await _pushTags(version);
   _success('Release tag pushed to Gitlab');
   _finish('Release has been started successfully');
   _finish('Builds will now begin shortly: https://codemagic.io/builds');
@@ -126,7 +125,7 @@ Future<void> _pullLatest(String version) => Process.run(
       ['pull', 'origin', 'release/v$version'],
     );
 
-Future<void> _tagToRelease(String version) async {
+Future<void> _tagRelease(String version) async {
   final result = await Process.run(
     'git',
     ['tag', '-a', 'v$version', '-m', '"v$version"'],
