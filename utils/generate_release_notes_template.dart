@@ -29,10 +29,7 @@ final validReleasePattern = RegExp(r'^v[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$');
 Future<void> main(List<String> args) async {
   final release = await findReleaseName(args);
 
-  if (!validReleasePattern.hasMatch(release)) {
-    throw ArgumentError('$release does not look like a valid release,'
-        ' expecting e.g. v7.1.1');
-  }
+  validateReleaseVersion(release);
 
   for (final fileName in localizationMap.keys) {
     for (final brand in brandsToGenerateFor) {
@@ -68,5 +65,14 @@ Future<String> get currentGitBranch async => Process.run(
         'HEAD',
       ],
     ).then(
-      (value) => value.stdout as String,
+      (value) => (value.stdout as String).trim(),
     );
+
+void validateReleaseVersion(String version) {
+  if (!validReleasePattern.hasMatch(version)) {
+    throw ArgumentError(
+      '$version does not look like a valid release,'
+      ' expecting e.g. v7.1.1',
+    );
+  }
+}
