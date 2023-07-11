@@ -20,7 +20,7 @@ sealed class Colltact with _$Colltact {
       ColltactSharedContact;
 
   String get name => switch (this) {
-        ColltactColleague colleague => colleague.name,
+        ColltactColleague colleague => colleague.colleague.name,
         ColltactContact contact => contact.contact.displayName,
         ColltactSharedContact sharedContact =>
           sharedContact.contact.displayName,

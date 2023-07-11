@@ -53,15 +53,9 @@ class _RecentCallItemTitle extends StatelessWidget {
       return Row(
         children: [
           Text(context.msg.main.recent.list.item.client.internal.title),
-          PhoneNumberText(
-            child: _WidthAdjustedText((callRecord.caller.number)),
-            content: callRecord.caller.number,
-          ),
+          _WidthAdjustedText(callRecord.caller.number),
           const Text(' & '),
-          PhoneNumberText(
-            child: _WidthAdjustedText((callRecord.destination.number)),
-            content: callRecord.destination.number,
-          ),
+          _WidthAdjustedText(callRecord.destination.number),
         ],
       );
     }
@@ -84,10 +78,12 @@ class _WidthAdjustedText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Flexible(
-      child: Text(
-        text,
-        overflow: TextOverflow.ellipsis,
-        style: style,
+      child: PhoneNumberText(
+        child: Text(
+          text,
+          overflow: TextOverflow.ellipsis,
+          style: style,
+        ),
       ),
     );
   }
