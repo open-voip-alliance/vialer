@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vialer/app/pages/main/util/phone_number.dart';
 
 import '../../../../../../domain/user/settings/settings.dart';
 import '../../../../../resources/localizations.dart';
@@ -104,11 +105,13 @@ class StringValue extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      value,
-      style: TextStyle(
-        fontSize: 16,
-        fontWeight: bold ? FontWeight.bold : null,
+    return PhoneNumberText(
+      child: Text(
+        value,
+        style: TextStyle(
+          fontSize: 16,
+          fontWeight: bold ? FontWeight.bold : null,
+        ),
       ),
     );
   }

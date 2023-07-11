@@ -17,23 +17,27 @@ class NoticeDismissed extends NoNotice {
   const NoticeDismissed();
 }
 
-class MicrophonePermissionDeniedNotice extends NoticeState {
+abstract class PermissionNoticeState extends NoticeState {
+  const PermissionNoticeState();
+}
+
+class MicrophonePermissionDeniedNotice extends PermissionNoticeState {
   const MicrophonePermissionDeniedNotice();
 }
 
-class PhonePermissionDeniedNotice extends NoticeState {
+class PhonePermissionDeniedNotice extends PermissionNoticeState {
   const PhonePermissionDeniedNotice();
 }
 
-class PhoneAndMicrophonePermissionDeniedNotice extends NoticeState {
+class PhoneAndMicrophonePermissionDeniedNotice extends PermissionNoticeState {
   const PhoneAndMicrophonePermissionDeniedNotice();
 }
 
-class BluetoothConnectPermissionDeniedNotice extends NoticeState {
+class BluetoothConnectPermissionDeniedNotice extends PermissionNoticeState {
   const BluetoothConnectPermissionDeniedNotice();
 }
 
-class NotificationsPermissionDeniedNotice extends NoticeState {
+class NotificationsPermissionDeniedNotice extends PermissionNoticeState {
   const NotificationsPermissionDeniedNotice();
 }
 
@@ -55,4 +59,8 @@ class TemporaryRedirectNotice extends NoticeState {
 
 class NoAppAccountNotice extends NoticeState {
   const NoAppAccountNotice();
+}
+
+class NoGooglePlayServices extends NoticeState {
+  const NoGooglePlayServices();
 }

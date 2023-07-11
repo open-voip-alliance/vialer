@@ -1,8 +1,10 @@
-import 'package:collection/collection.dart';
+import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
+import 'package:vialer/app/pages/main/util/phone_number.dart';
 
 import '../../../../../../data/models/colltact.dart';
 import '../../../../../../domain/colltacts/contact.dart';
+import '../../../../../../domain/colltacts/shared_contacts/shared_contact.dart';
 import '../../../../../../domain/user_availability/colleagues/colleague.dart';
 import '../../../../../resources/localizations.dart';
 import '../../../../../resources/theme.dart';
@@ -25,6 +27,8 @@ class ColltactSubtitle extends StatelessWidget {
         colleague,
         colleaguesUpToDate,
       ),
+      sharedContact: (sharedContact) =>
+          _textForSharedContact(context, sharedContact),
     );
   }
 
@@ -83,12 +87,33 @@ class ColltactSubtitle extends StatelessWidget {
     }
   }
 
+  String _textForSharedContact(
+    BuildContext context,
+    SharedContact sharedContact,
+  ) {
+    final phoneNumbers = sharedContact.phoneNumbers;
+
+    var text = context.msg.main.contacts.list.item.noNumber;
+
+    if (phoneNumbers.length == 1 &&
+        phoneNumbers.first.phoneNumberFlat.isNotNullOrEmpty) {
+      text = phoneNumbers.first.phoneNumberFlat;
+    } else if (phoneNumbers.isNotEmpty) {
+      text = context.msg.main.contacts.list.item.numbers(
+        phoneNumbers.length,
+      );
+    }
+    return text;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Text(
-      _text(context),
-      overflow: TextOverflow.ellipsis,
-      style: TextStyle(color: context.brand.theme.colors.grey4),
+    return PhoneNumberText(
+      child: Text(
+        _text(context),
+        overflow: TextOverflow.ellipsis,
+        style: TextStyle(color: context.brand.theme.colors.grey4),
+      ),
     );
   }
 }

@@ -3,9 +3,11 @@ import 'dart:io';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../dependency_locator.dart';
 import '../../../../../domain/colltacts/contact.dart';
 import '../../../../../domain/colltacts/get_contact_sort.dart';
 import '../../../../../domain/colltacts/get_contacts.dart';
+import '../../../../../domain/metrics/metrics.dart';
 import '../../../../../domain/onboarding/request_permission.dart';
 import '../../../../../domain/user/get_permission_status.dart';
 import '../../../../../domain/user/permissions/permission.dart';
@@ -26,6 +28,7 @@ class ContactsCubit extends Cubit<ContactsState> {
   final _requestPermission = RequestPermissionUseCase();
   final _openAppSettings = OpenSettingsAppUseCase();
   final _getContactSort = GetContactSortUseCase();
+  final _metricsRepository = dependencyLocator<MetricsRepository>();
 
   final CallerCubit _caller;
 
@@ -66,4 +69,7 @@ class ContactsCubit extends Cubit<ContactsState> {
   }
 
   void openAppSettings() => unawaited(_openAppSettings());
+
+  void trackContactsTabSelected() =>
+      _metricsRepository.track('contacts-tab-selected');
 }

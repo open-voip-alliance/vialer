@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:vialer/app/pages/main/util/phone_number.dart';
 
 import '../../../../../../domain/user/settings/settings.dart';
 import '../../../../../widgets/stylized_dropdown.dart';
@@ -173,6 +174,8 @@ class _StringEditSettingValueState extends State<StringEditSettingValue> {
               _applyEditingFormatter();
               _validate();
             },
+            semanticsLabel:
+                _textEditingController.text.asSemanticsLabelIfPhoneNumber,
           ),
         ],
       );
@@ -180,10 +183,12 @@ class _StringEditSettingValueState extends State<StringEditSettingValue> {
       return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Text(
-            widget.value,
-            style: const TextStyle(
-              fontSize: 16,
+          PhoneNumberText(
+            child: Text(
+              widget.value,
+              style: const TextStyle(
+                fontSize: 16,
+              ),
             ),
           ),
           IconButton(

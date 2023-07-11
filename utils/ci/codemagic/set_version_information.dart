@@ -135,7 +135,7 @@ Future<String> _getMostRecentGitTag() => Process.run('git', [
       '--abbrev=0',
       '--match',
       'v*',
-    ]).then((value) => value.stdout.toString().trim().replaceAll('v', ''));
+    ]).then((value) => value.stdout.toString().trim().replaceFirst('v', ''));
 
 enum Type {
   appStore,

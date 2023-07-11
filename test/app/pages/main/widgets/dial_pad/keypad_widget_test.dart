@@ -455,6 +455,7 @@ class TestApp extends StatelessWidget {
         userAvailabilityWsUrl: Uri.parse('ws'),
         privacyPolicyUrl: Uri.parse('dummypolicy.com'),
         signUpUrl: null,
+        sharedContactsUrl: Uri.parse('https://contacts.spindle.dev/contacts/'),
       ),
       child: Builder(
         builder: (context) {

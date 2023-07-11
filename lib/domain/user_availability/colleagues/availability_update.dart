@@ -2,7 +2,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'colleague.dart';
 
-part 'availbility_update.freezed.dart';
+part 'availability_update.freezed.dart';
 
 @freezed
 class AvailabilityUpdate with _$AvailabilityUpdate {

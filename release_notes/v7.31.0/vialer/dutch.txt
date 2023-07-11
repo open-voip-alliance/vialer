@@ -1,0 +1,4 @@
+- A new tab has been added to the Contacts page called "Shared", this will show any contacts that have been added via the Webphone
+- Fixed a bug where the call screen wouldn't appear after logging out and back in
+- Screen readers will now read all phone numbers as individual digits, rather than as an actual number (e.g. 3-1-4 rather than three-hundred-and-fourteen)
+- Android: A notice will now be displayed in the app if it is installed on a phone without Google Play Services (e.g. Huawei)

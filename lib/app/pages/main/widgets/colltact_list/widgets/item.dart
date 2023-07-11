@@ -3,9 +3,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:search_highlight_text/search_highlight_text.dart';
+import 'package:vialer/app/pages/main/util/phone_number.dart';
 
 import '../../../../../../data/models/colltact.dart';
 import '../../../../../../domain/colltacts/contact.dart';
+import '../../../../../../domain/colltacts/shared_contacts/shared_contact.dart';
 import '../../../../../../domain/user_availability/colleagues/colleague.dart';
 import '../widget.dart';
 import 'avatar.dart';
@@ -31,6 +33,7 @@ class ColltactItem extends StatelessWidget {
           colleague,
           colleaguesUpToDate: colleaguesUpToDate,
         ),
+        sharedContact: _SharedContactItem.new,
       );
 
   @override
@@ -55,6 +58,14 @@ class _ContactItem extends StatelessWidget {
     final colltact = Colltact.contact(contact);
 
     return ColltactItem._(
+      title: PhoneNumberText(
+        child: SearchHighlightText(
+          colltact.name,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+        ),
+        content: colltact.name,
+      ),
       subtitle: ColltactSubtitle(colltact),
       onTap: () => unawaited(
         Navigator.pushNamed(
@@ -62,11 +73,6 @@ class _ContactItem extends StatelessWidget {
           ColltactsPageRoutes.details,
           arguments: colltact,
         ),
-      ),
-      title: SearchHighlightText(
-        colltact.name,
-        maxLines: 2,
-        overflow: TextOverflow.ellipsis,
       ),
       avatar: ColltactAvatar(colltact),
     );
@@ -84,7 +90,10 @@ class _ColleagueItem extends StatelessWidget {
     final colltact = Colltact.colleague(colleague);
 
     return ColltactItem._(
-      title: SearchHighlightText(colleague.name),
+      title: PhoneNumberText(
+        child: SearchHighlightText(colleague.name),
+        content: colleague.name,
+      ),
       subtitle: ColltactSubtitle(
         colltact,
         colleaguesUpToDate: colleaguesUpToDate,
@@ -100,6 +109,34 @@ class _ColleagueItem extends StatelessWidget {
         colltact,
         colleaguesUpToDate: colleaguesUpToDate,
       ),
+    );
+  }
+}
+
+class _SharedContactItem extends StatelessWidget {
+  const _SharedContactItem(this.sharedContact);
+
+  final SharedContact sharedContact;
+
+  @override
+  Widget build(BuildContext context) {
+    final colltact = Colltact.sharedContact(sharedContact);
+
+    return ColltactItem._(
+      subtitle: ColltactSubtitle(colltact),
+      onTap: () => unawaited(
+        Navigator.pushNamed(
+          context,
+          ColltactsPageRoutes.details,
+          arguments: colltact,
+        ),
+      ),
+      title: SearchHighlightText(
+        colltact.name,
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+      ),
+      avatar: ColltactAvatar(colltact),
     );
   }
 }

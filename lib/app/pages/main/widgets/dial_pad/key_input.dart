@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:vialer/app/pages/main/util/phone_number.dart';
 
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
@@ -53,38 +54,39 @@ class _KeyInputState extends State<KeyInput> {
   Widget build(BuildContext context) {
     const deleteButtonPadding = 24.0;
 
-    return TextField(
-      controller: widget.controller,
-      scrollController: _scrollController,
-      // This is needed so that the keyboard doesn't popup. We can't use
-      // readOnly because then pasting is not allowed.
-      focusNode: _NeverFocusNode(),
-      inputFormatters: [_KeyInputFormatter()],
-      showCursor: true,
-      magnifierConfiguration: TextMagnifierConfiguration.disabled,
-      decoration: InputDecoration(
-        border: InputBorder.none,
-        filled: true,
-        fillColor: context.brand.theme.colors.grey3.withOpacity(0.5),
-        contentPadding: const EdgeInsets.only(
-          left: _DeleteButton.size + deleteButtonPadding + 12,
-          top: 8,
-          right: 12,
-          bottom: 8,
-        ),
-        suffixIcon: Padding(
-          padding: const EdgeInsets.only(right: deleteButtonPadding),
-          child: _DeleteButton(
-            controller: widget.controller,
-            cursorShownNotifier: widget.cursorShownNotifier,
-            canDelete: widget.canDelete,
-            onDeleteAll: widget.onDeleteAll,
+    return Semantics(
+      label: widget.controller.text.phoneNumberSemanticLabel,
+      child: TextField(
+        controller: widget.controller,
+        scrollController: _scrollController,
+        // This is needed so that the keyboard doesn't popup. We can't use
+        // readOnly because then pasting is not allowed.
+        focusNode: _NeverFocusNode(),
+        inputFormatters: [_KeyInputFormatter()],
+        showCursor: true,
+        magnifierConfiguration: TextMagnifierConfiguration.disabled,
+        decoration: InputDecoration(
+          border: InputBorder.none,
+          filled: true,
+          fillColor: context.brand.theme.colors.grey3.withOpacity(0.5),
+          contentPadding: const EdgeInsets.only(
+            left: _DeleteButton.size + deleteButtonPadding + 12,
+            top: 8,
+            right: 12,
+            bottom: 8,
+          ),
+          suffixIcon: Padding(
+            padding: const EdgeInsets.only(right: deleteButtonPadding),
+            child: _DeleteButton(
+              controller: widget.controller,
+              cursorShownNotifier: widget.cursorShownNotifier,
+              canDelete: widget.canDelete,
+              onDeleteAll: widget.onDeleteAll,
+            ),
           ),
         ),
-      ),
-      textAlign: TextAlign.center,
-      style: const TextStyle(
-        fontSize: 32,
+        textAlign: TextAlign.center,
+        style: const TextStyle(fontSize: 32),
       ),
     );
   }
