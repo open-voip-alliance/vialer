@@ -75,6 +75,7 @@ class ColorValues {
     this.userAvailabilityOffline = 0xFF2A3041,
     this.userAvailabilityOfflineAccent = 0xFFFFFFFF,
     this.availabilityHeader = 0xFF2A3041,
+    this.settingsBadge = 0xFFF15A29,
   })  : onPrimaryGradient = onPrimaryGradient ?? onPrimary,
         textButtonForeground = textButtonForeground ?? primary,
         buttonBackground = buttonBackground ?? primaryLight,
@@ -239,6 +240,7 @@ class ColorValues {
   final int userAvailabilityOfflineAccent;
 
   final int availabilityHeader;
+  final int settingsBadge;
 
   Map<String, dynamic> toJson() => _$ColorValuesToJson(this);
 }
