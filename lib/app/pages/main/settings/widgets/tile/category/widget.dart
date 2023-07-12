@@ -82,24 +82,27 @@ class SettingTileCategory extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        DecoratedBox(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: Theme.of(context).primaryColor,
+                        Container(
+                          width: 40,
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: Theme.of(context).primaryColor,
+                              ),
                             ),
-                          ),
-                          child: Center(
-                            child: Padding(
-                              padding: const EdgeInsets.all(10),
-                              child: showBadge
-                                  ? Badge(
-                                      backgroundColor: context
-                                          .brand.theme.colors.settingsBadge,
-                                      smallSize: 8,
-                                      child: iconWidget,
-                                    )
-                                  : iconWidget,
+                            child: Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: showBadge
+                                    ? Badge(
+                                        backgroundColor: context
+                                            .brand.theme.colors.settingsBadge,
+                                        smallSize: 8,
+                                        child: iconWidget,
+                                      )
+                                    : iconWidget,
+                              ),
                             ),
                           ),
                         ),
