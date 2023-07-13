@@ -29,7 +29,7 @@ class GetWebPageUrlUseCase extends UseCase {
     WebPage.addVoicemail: '/client/{clientId}/voicemail/add/',
     WebPage.telephonySettings:
         '/client/{clientId}/user/{userId}/change/#tc0=user-tab-2',
-    WebPage.featureAnnouncements: '/featureannouncements',
+    WebPage.featureAnnouncements: '/featureannouncements?interface=mobile',
   };
 
   final _unauthenticatedPages = [WebPage.passwordReset];
