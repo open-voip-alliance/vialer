@@ -22,7 +22,7 @@ class FeatureAnnouncementTile extends StatelessWidget {
       ),
       text: context.msg.main.settings.featureAnnouncement.title,
       icon: FontAwesomeIcons.bell,
-      showBadge: true,
+      showBadge: false,
     );
   }
 }
