@@ -12,3 +12,5 @@ class HasFeature extends UseCase {
   bool call(Feature feature) =>
       _env.get('FEATURE_${feature.name.constantCase}').isNotEmpty;
 }
+
+bool hasFeature(Feature feature) => HasFeature()(feature);

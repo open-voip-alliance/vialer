@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vialer/app/pages/main/settings/widgets/tile/feature_announcement.dart';
+import 'package:vialer/domain/feature/has_feature.dart';
 
+import '../../../../../domain/feature/feature.dart';
 import '../../../../resources/localizations.dart';
 import '../cubit.dart';
 import '../widgets/tile/build_info.dart';
@@ -23,6 +26,8 @@ class AboutTheAppSubPage extends StatelessWidget {
           child: (state) {
             return ListView(
               children: [
+                if (hasFeature(Feature.featureAnnouncement))
+                  const FeatureAnnouncementTile(),
                 const FeedbackTile(),
                 const PrivacyPolicyTile(),
                 if (state.buildInfo != null) BuildInfoTile(state.buildInfo!),
