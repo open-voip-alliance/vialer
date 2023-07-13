@@ -8,4 +8,5 @@ enum WebPage {
   openingHoursBasicList,
   addVoicemail,
   telephonySettings,
+  featureAnnouncements,
 }

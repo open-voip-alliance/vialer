@@ -13,6 +13,7 @@ class SettingTileCategory extends StatelessWidget {
     this.padBottom = false,
     this.bottomBorder = true,
     this.isButton = false,
+    this.showBadge = false,
     super.key,
   });
 
@@ -33,6 +34,8 @@ class SettingTileCategory extends StatelessWidget {
   /// When set to TRUE, will style this as a link with a trailing chevron.
   final bool isButton;
 
+  final bool showBadge;
+
   @override
   Widget build(BuildContext context) {
     assert(
@@ -45,6 +48,12 @@ class SettingTileCategory extends StatelessWidget {
     // Default divider height halved, minus 1 for the thickness (actual height
     // in our case).
     const dividerPadding = 16 / 2 - dividerHeight;
+
+    final iconWidget = FaIcon(
+      icon,
+      color: Theme.of(context).primaryColor,
+      size: 14,
+    );
 
     return Column(
       children: <Widget>[
@@ -73,20 +82,26 @@ class SettingTileCategory extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        DecoratedBox(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: Theme.of(context).primaryColor,
-                            ),
-                          ),
-                          child: Center(
-                            child: Padding(
-                              padding: const EdgeInsets.all(10),
-                              child: FaIcon(
-                                icon,
+                        Container(
+                          width: 40,
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(
                                 color: Theme.of(context).primaryColor,
-                                size: 14,
+                              ),
+                            ),
+                            child: Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: showBadge
+                                    ? Badge(
+                                        backgroundColor: context
+                                            .brand.theme.colors.settingsBadge,
+                                        smallSize: 8,
+                                        child: iconWidget,
+                                      )
+                                    : iconWidget,
                               ),
                             ),
                           ),
@@ -136,11 +151,13 @@ class SettingLinkTileCategory extends StatelessWidget {
     required this.onTap,
     required this.text,
     required this.icon,
+    this.showBadge = false,
   });
 
   final VoidCallback onTap;
   final String text;
   final IconData icon;
+  final bool showBadge;
 
   @override
   Widget build(BuildContext context) {
@@ -151,6 +168,7 @@ class SettingLinkTileCategory extends StatelessWidget {
         titleText: text,
         isButton: true,
         padBottom: true,
+        showBadge: showBadge,
       ),
     );
   }
