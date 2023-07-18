@@ -12,5 +12,6 @@
   "privacyPolicyUrl": "https://www.voys.nl/app-privacy/",
   "signUpUrl": "https://www.voys.nl/samenstellen/",
   "userAvailabilityWsUrl": "wss://api.prod.holodeck.spindle.dev/user-availability-ws/ws",
+  "dndServiceUrl": "https://api.prod.holodeck.spindle.dev/dnd-service",
   "sharedContactsUrl": "https://contacts.spindle.dev/contacts/"
 }

@@ -9,9 +9,9 @@ part 'business_availability_service.chopper.dart';
 @ChopperApi()
 abstract class BusinessAvailabilityService extends ChopperService {
   static BusinessAvailabilityService create() {
-    final getBrand = GetBrand();
+    final brand = GetBrand()();
     final businessAvailabilityBaseUrl =
-        getBrand().businessAvailabilityUrl.toString();
+        brand.businessAvailabilityUrl.toString();
 
     return _$BusinessAvailabilityService(
       ChopperClient(

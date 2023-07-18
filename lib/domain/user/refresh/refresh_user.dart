@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:vialer/domain/authentication/user_logged_in.dart';
+
 import '../../../app/util/loggable.dart';
 import '../../../app/util/synchronized_task.dart';
 import '../../../dependency_locator.dart';
@@ -75,12 +77,14 @@ class RefreshUser extends UseCase with Loggable {
       _storageRepository.user = user;
 
       _eventBus.broadcast(
-        LoggedInUserWasRefreshed(
-          current: user,
-          previous: previous,
-          tasksPerformed: tasksToPerform,
-          isFirstTime: isFirstTime,
-        ),
+        isFirstTime
+            ? UserLoggedIn(user: user)
+            : LoggedInUserWasRefreshed(
+                current: user,
+                previous: previous,
+                tasksPerformed: tasksToPerform,
+                isFirstTime: isFirstTime,
+              ),
       );
 
       return user;
