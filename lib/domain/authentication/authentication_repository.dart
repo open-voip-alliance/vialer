@@ -1,3 +1,4 @@
+import 'package:chopper/chopper.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../../app/util/automatic_retry.dart';
@@ -70,10 +71,16 @@ class AuthRepository with Loggable {
       'Either email or token must be passed',
     );
 
-    final response = await _service.getSystemUser(
-      authorization:
-          email != null && token != null ? 'Token $email:$token' : null,
-    );
+    late Response<Map<String, dynamic>> response;
+
+    try {
+      response = await _service.getSystemUser(
+        authorization:
+            email != null && token != null ? 'Token $email:$token' : null,
+      );
+    } catch (e) {
+      throw FailedToRetrieveUserException();
+    }
 
     if (response.error
         .toString()

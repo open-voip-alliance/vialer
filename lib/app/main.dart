@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:timezone/data/latest.dart';
 import 'package:vialer/app/pages/main/colltacts/shared_contacts/cubit.dart';
 
@@ -33,8 +34,6 @@ import 'widgets/build_error.dart';
 import 'widgets/connectivity_checker/widget.dart';
 import 'widgets/missed_call_notification_listener/widget.dart';
 import 'widgets/nested_children.dart';
-
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -108,11 +107,7 @@ class _AppState extends State<App> {
                       create: (_) => TemporaryRedirectCubit(),
                       child: child,
                     ),
-
-                /// Using a Builder because the MultiWidgetParent stacks
-                /// its children from top to bottom, so the below Provider
-                /// can have the needed context with the CallerCubit.
-                (child) => Builder(
+                (child) => MultiWidgetChildWithDependencies(
                       builder: (context) {
                         return BlocProvider<ColleaguesCubit>(
                           create: (_) => ColleaguesCubit(

@@ -2,12 +2,14 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:vialer/domain/authentication/user_logged_in.dart';
 
 import '../../../../../dependency_locator.dart';
 import '../../../../../domain/authentication/user_was_logged_out.dart';
 import '../../../../../domain/colltacts/colltact_tab.dart';
 import '../../../../../domain/event/event_bus.dart';
 import '../../../../../domain/legacy/storage.dart';
+import '../../../../../domain/onboarding/is_onboarded.dart';
 import '../../../../../domain/metrics/metrics.dart';
 import '../../../../../domain/user/get_logged_in_user.dart';
 import '../../../../../domain/user/settings/app_setting.dart';
@@ -28,9 +30,17 @@ class ColleaguesCubit extends Cubit<ColleaguesState> {
             showOnlineColleaguesOnly: false,
           ),
         ) {
-    _eventBus.on<UserWasLoggedOutEvent>((event) {
-      unawaited(disconnectFromWebSocket(purgeCache: true));
-    });
+    _eventBus
+      ..on<UserWasLoggedOutEvent>((_) async {
+        emit(ColleaguesState.loading(
+          showOnlineColleaguesOnly: state.showOnlineColleaguesOnly,
+        ));
+        await disconnectFromWebSocket(purgeCache: true);
+        close();
+      })
+      ..on<UserLoggedIn>(
+        (_) => unawaited(connectToWebSocket(fullRefresh: true)),
+      );
   }
 
   final _storageRepository = dependencyLocator<StorageRepository>();
@@ -67,10 +77,14 @@ class ColleaguesCubit extends Cubit<ColleaguesState> {
     unawaited(_changeSetting(AppSetting.showOnlineColleaguesOnly, value));
   }
 
-  Future<void> connectToWebSocket({bool fullRefresh = false}) async {
-    if (!_shouldShowColleagues() || _subscription != null) return;
+  bool get _isOnboarded => IsOnboarded()();
 
-    final lastKnownCollegues = _colleagues;
+  Future<void> connectToWebSocket({bool fullRefresh = false}) async {
+    if (!_isOnboarded || !_shouldShowColleagues() || _subscription != null) {
+      return;
+    }
+
+    final lastKnownColleagues = _colleagues;
 
     emit(
       ColleaguesState.loading(
@@ -103,7 +117,7 @@ class ColleaguesCubit extends Cubit<ColleaguesState> {
               onDone: () {
                 emit(
                   ColleaguesState.loaded(
-                    lastKnownCollegues,
+                    lastKnownColleagues,
                     showOnlineColleaguesOnly: showOnlineColleaguesOnly,
                     upToDate: false,
                   ),
@@ -142,6 +156,7 @@ class ColleaguesCubit extends Cubit<ColleaguesState> {
   @override
   Future<void> close() async {
     await _subscription?.cancel();
+    _subscription = null;
     await super.close();
   }
 }

@@ -51,6 +51,8 @@ class ColleaguesRepository with Loggable {
   /// When there is new API data, this should be updated.
   List<Colleague> colleagues = [];
 
+  bool _doNotReconnect = false;
+
   /// Listens to a WebSocket for availability updates, and will then update
   /// the provided list of colleagues with the new status and broadcast it
   /// to the returned stream.
@@ -67,7 +69,11 @@ class ColleaguesRepository with Loggable {
 
     if (_socket != null) return broadcastStream!;
 
-    Future<void> attemptReconnect(String log) async {
+    Future<void> attemptReconnect(int? closeCode, String log) async {
+      if (_doNotReconnect) {
+        logger.info('Not attempting to reconnect as closed locally');
+        return;
+      }
       logger.warning(log);
       await stopListeningForAvailability(
         reason: AvailabilityCloseReason.remote,
@@ -89,7 +95,9 @@ class ColleaguesRepository with Loggable {
     try {
       await _connectToWebSocketServer(user, brand);
     } on Exception catch (e) {
-      unawaited(attemptReconnect('Failed to start websocket: $e'));
+      unawaited(
+        attemptReconnect(_socket?.closeCode, 'Failed to start websocket: $e'),
+      );
       return broadcastStream = controller.stream.asBroadcastStream();
     }
 
@@ -140,8 +148,14 @@ class ColleaguesRepository with Loggable {
 
         controller.add(colleagues);
       },
-      onDone: () => attemptReconnect('UA WS has closed'),
-      onError: (dynamic e) => attemptReconnect('UA WS error: $e'),
+      onDone: () => attemptReconnect(
+        _socket?.closeCode,
+        'UA WS has closed',
+      ),
+      onError: (dynamic e) => attemptReconnect(
+        _socket?.closeCode,
+        'UA WS error: $e',
+      ),
     );
 
     return broadcastStream = controller.stream.asBroadcastStream();
@@ -151,6 +165,7 @@ class ColleaguesRepository with Loggable {
     User user,
     Brand brand,
   ) async {
+    _doNotReconnect = false;
     await _socket?.close();
     final url = '${brand.userAvailabilityWsUrl}/${user.client.uuid}';
 
@@ -161,13 +176,15 @@ class ColleaguesRepository with Loggable {
       headers: {
         'Authorization': 'Bearer ${user.token}',
       },
-    );
+    )
+      ..pingInterval = const Duration(seconds: 30);
   }
 
   Future<void> stopListeningForAvailability({
     AvailabilityCloseReason reason = AvailabilityCloseReason.local,
   }) async {
     logger.info('Disconnecting from UA WebSocket');
+    _doNotReconnect = true;
     await _socket?.close();
     _controller?.addError(reason);
     _socket = null;
