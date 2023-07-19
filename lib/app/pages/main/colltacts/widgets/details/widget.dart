@@ -123,7 +123,10 @@ class _ColltactPageDetailsState extends State<ColltactPageDetails>
                                     ),
                                   ),
                                 )
-                              : const FaIcon(FontAwesomeIcons.pen),
+                              : Padding(
+                                  padding: const EdgeInsets.only(top: 12),
+                                  child: const FaIcon(FontAwesomeIcons.pen),
+                                ),
                         ),
                       ),
                     ],
