@@ -107,9 +107,9 @@ class ColorValues {
 
   /// Defaults should be left as-is.
   const ColorValues.voys({
-    int primary = 0xFF3B14B9,
-    int primaryDark = 0xFF31227A,
-    int primaryLight = 0xFFC0B4E8,
+    int primary = 0xFF270597,
+    int primaryDark = 0xFF1E1B4B,
+    int primaryLight = 0xFFF0F0FF,
   }) : this(
           primary: primary,
           primaryDark: primaryDark,
@@ -127,8 +127,8 @@ class ColorValues {
   /// Defaults should be left as-is.
   const ColorValues.verbonden({
     int primary = 0xFF3336AD,
-    int primaryDark = 0xFF20238B,
-    int primaryLight = 0xFF484BD2,
+    int primaryDark = 0xFF01243C,
+    int primaryLight = 0xFFD2D3FF,
   }) : this(
           primary: primary,
           primaryDark: primaryDark,
@@ -145,9 +145,9 @@ class ColorValues {
 
   /// Defaults should be left as-is.
   const ColorValues.annabel({
-    int primary = 0xFF5F4B8B,
-    int primaryDark = 0xFF3C247F,
-    int primaryLight = 0xFFD9D2EF,
+    int primary = 0xFFBC3056,
+    int primaryDark = 0xFF770040,
+    int primaryLight = 0xFFEFCDD6,
   }) : this(
           primary: primary,
           primaryDark: primaryDark,
