@@ -72,7 +72,8 @@ class Colors {
         userAvailabilityUnknownAccent = v.userAvailabilityUnknownAccent.color,
         availabilityHeader = v.availabilityHeader.color,
         userAvailabilityOffline = v.userAvailabilityOffline.color,
-        userAvailabilityOfflineAccent = v.userAvailabilityOfflineAccent.color;
+        userAvailabilityOfflineAccent = v.userAvailabilityOfflineAccent.color,
+        settingsBadge = v.settingsBadge.color;
 
   final Color primary;
   final Color primaryDark;
@@ -151,6 +152,8 @@ class Colors {
   final Color userAvailabilityOfflineAccent;
 
   final Color availabilityHeader;
+
+  final Color settingsBadge;
 }
 
 extension on int {

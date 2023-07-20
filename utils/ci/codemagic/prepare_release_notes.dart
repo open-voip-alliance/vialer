@@ -9,19 +9,17 @@ import 'package:yaml_edit/yaml_edit.dart';
 /// A mapping between the supported language and the language codes used by the
 /// app/play store. e.g. dutch.txt will produce nl_NL.txt and nl.txt
 const localizationMap = {
-  'english.txt': [
-    'en-US',
-  ],
-  'dutch.txt': [
-    'nl-NL',
-    'nl',
-  ],
+  'english.txt': ['en-US'],
 };
 
 /// The messages files that should be updated with the release notes.
 const messagesLocalizationMap = {
-  'english.txt': ['messages.i18n', 'messages_de.i18n'],
-  'dutch.txt': ['messages_nl.i18n'],
+  'english.txt': [
+    'messages.i18n',
+    'messages_de.i18n',
+    'messages_nl.i18n',
+    'messages_fr.i18n',
+  ],
 };
 
 /// The path to where the messages.yaml files are stored.

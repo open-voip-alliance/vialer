@@ -31,7 +31,7 @@ class FormattedPhoneNumber extends StatelessWidget {
     return FormattedPhoneNumber(
       outgoingNumber.valueOrEmpty,
       // We know the exact format of outgoing number.
-      formattedNumber: '(+${n[1]}${n[2]}) ${n[3]}${n[4]} ${n.slice(4)}',
+      formattedNumber: '(+${n[1]}${n[2]}) ${n[3]}${n[4]} ${n.slice(5)}',
       style: style,
     );
   }

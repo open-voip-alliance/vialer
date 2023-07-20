@@ -3,7 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:vialer/app/pages/main/settings/cubit.dart';
 import 'package:vialer/app/pages/main/widgets/bottom_navigation_profile_icon.dart';
+import 'package:vialer/app/pages/main/widgets/user_availability_status_builder/cubit.dart';
 
 import '../../resources/localizations.dart';
 import '../../resources/theme.dart';
@@ -109,6 +111,20 @@ class MainPageState extends State<MainPage> {
               child: child,
             ),
         (child) => ColleagueWebSocket.connect(child: child),
+        (child) => BlocProvider<SettingsCubit>(
+              create: (_) => SettingsCubit(),
+              child: child,
+            ),
+        (child) => MultiWidgetChildWithDependencies(
+              builder: (context) {
+                return BlocProvider<UserAvailabilityStatusCubit>(
+                  create: (_) => UserAvailabilityStatusCubit(
+                    context.watch<SettingsCubit>(),
+                  ),
+                  child: child,
+                );
+              },
+            ),
       ],
       Scaffold(
         resizeToAvoidBottomInset: false,

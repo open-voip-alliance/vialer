@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:vialer/domain/user/settings/listeners/update_dnd_status.dart';
+
 import '../../../app/util/loggable.dart';
 import '../../../app/util/synchronized_task.dart';
 import '../../../dependency_locator.dart';
@@ -12,7 +14,6 @@ import '../../user/get_logged_in_user.dart';
 import '../refresh/refresh_user.dart';
 import '../refresh/user_refresh_task.dart';
 import '../user.dart';
-import 'listeners/change_registration_on_dnd_change.dart';
 import 'listeners/refresh_voip_preferences.dart';
 import 'listeners/setting_change_listener.dart';
 import 'listeners/start_voip_on_use_voip_enabled.dart';
@@ -42,7 +43,7 @@ class ChangeSettingsUseCase extends UseCase with Loggable {
     UpdateRemoteLoggingListener(),
     UpdateUseMobileNumberAsFallbackListener(),
     StartVoipOnUseVoipEnabledListener(),
-    ChangeRegistrationOnDndChange(),
+    UpdateDndStatus(),
     RefreshVoipPreferences(),
   ];
 
@@ -110,6 +111,7 @@ class ChangeSettingsUseCase extends UseCase with Loggable {
             UserRefreshTask.userCore,
             UserRefreshTask.voipgridUserSettings,
             UserRefreshTask.userDestination,
+            UserRefreshTask.userDndStatus,
           ],
         );
 

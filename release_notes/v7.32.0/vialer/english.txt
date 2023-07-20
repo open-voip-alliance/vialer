@@ -1,0 +1,2 @@
+- Fixed displaying an extra digit in outgoing number
+- Android: Fixed alignment issue on the contact edit screen
