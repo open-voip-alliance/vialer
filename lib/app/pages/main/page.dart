@@ -37,7 +37,6 @@ class MainPage extends StatefulWidget {
 
 class MainPageState extends State<MainPage> {
   int? _currentIndex;
-  int? _previousIndex;
 
   List<Widget>? _pages;
 
@@ -52,8 +51,6 @@ class MainPageState extends State<MainPage> {
 
   Future<void> _navigateTo(int? index) async {
     if (index == null) return;
-
-    _previousIndex = _currentIndex;
 
     setState(() {
       _currentIndex = index;
@@ -96,7 +93,7 @@ class MainPageState extends State<MainPage> {
     if (context.isIOS &&
         state is FinishedCalling &&
         state.origin == CallOrigin.dialer) {
-      unawaited(_navigateTo(_previousIndex));
+      _navigateTo(_currentIndex);
     }
   }
 
