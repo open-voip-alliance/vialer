@@ -64,11 +64,8 @@ Future<String> _checkReleaseNotesExist(String version) async {
     _error('Did not find release notes at path [${file.path}]');
   }
 
-  if (dutchFile.existsSync()) {
-    _error(
-      'We only support English release notes, '
-      '[${dutchFile.path}] should be deleted',
-    );
+  if (!dutchFile.existsSync()) {
+    _error('Did not find release notes at path [${file.path}]');
   }
 
   final content = file.readAsStringSync();
