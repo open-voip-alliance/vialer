@@ -53,6 +53,7 @@ class _RecentCallItemTitle extends StatelessWidget {
       return Row(
         children: [
           Text(context.msg.main.recent.list.item.client.internal.title),
+          const Text(' '),
           _WidthAdjustedText(callRecord.caller.number),
           const Text(' & '),
           _WidthAdjustedText(callRecord.destination.number),
