@@ -1,18 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:timezone/data/latest.dart';
-import 'package:vialer/app/pages/main/business_availability/temporary_redirect/cubit.dart';
-import 'package:vialer/app/pages/main/colltacts/colleagues/cubit.dart';
-import 'package:vialer/app/pages/main/colltacts/shared_contacts/cubit.dart';
-import 'package:vialer/app/pages/main/widgets/caller/cubit.dart';
-import 'package:vialer/app/pages/main/widgets/caller/widget.dart';
-import 'package:vialer/app/widgets/connectivity_checker/widget.dart';
-import 'package:vialer/app/widgets/missed_call_notification_listener/widget.dart';
-import 'package:vialer/app/widgets/nested_children.dart';
+import 'package:vialer/app/util/global_bloc_provider.dart';
 
 import '../dependency_locator.dart';
 import '../domain/authentication/user_was_logged_out.dart';
@@ -91,44 +83,9 @@ class _AppState extends State<App> {
       child: BrandProvider(
         child: Builder(
           builder: (context) {
-            return MultiWidgetParent(
-              [
-                (child) => Caller.create(
-                      navigatorKey: _navigatorKey,
-                      child: child,
-                    ),
-                (child) => ConnectivityChecker.create(child: child),
-                (child) => MissedCallNotificationPressedListener(
-                      onMissedCallNotificationPressed: () =>
-                          App.navigateTo(MainPageTab.recents),
-                      child: child,
-                    ),
-                (child) => BlocProvider<TemporaryRedirectCubit>(
-                      create: (_) => TemporaryRedirectCubit(),
-                      child: child,
-                    ),
-                (child) => MultiWidgetChildWithDependencies(
-                      builder: (context) {
-                        return BlocProvider<ColleaguesCubit>(
-                          create: (_) => ColleaguesCubit(
-                            context.watch<CallerCubit>(),
-                          ),
-                          child: child,
-                        );
-                      },
-                    ),
-                (child) => Builder(
-                      builder: (context) {
-                        return BlocProvider<SharedContactsCubit>(
-                          create: (_) => SharedContactsCubit(
-                            context.watch<CallerCubit>(),
-                          ),
-                          child: child,
-                        );
-                      },
-                    ),
-              ],
-              MaterialApp(
+            return GlobalBlocProvider(
+              navigatorKey: _navigatorKey,
+              child: MaterialApp(
                 navigatorKey: _navigatorKey,
                 title: context.brand.appName,
                 theme: context.brand.theme.themeData,
@@ -155,6 +112,7 @@ class _AppState extends State<App> {
       ),
     );
   }
+
 
   /// Listen for any app-level events, these events should require a "global"
   /// response. For example, the user should be forced back to the onboarding
