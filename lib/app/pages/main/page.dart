@@ -19,7 +19,6 @@ import 'colltacts/page.dart';
 import 'dialer/page.dart';
 import 'recent/page.dart';
 import 'settings/page.dart';
-import 'widgets/caller.dart';
 import 'widgets/connectivity_alert.dart';
 import 'widgets/notice/widget.dart';
 import 'widgets/survey_triggerer/widget.dart';
@@ -37,7 +36,6 @@ class MainPage extends StatefulWidget {
 
 class MainPageState extends State<MainPage> {
   int? _currentIndex;
-  int? _previousIndex;
 
   List<Widget>? _pages;
 
@@ -52,8 +50,6 @@ class MainPageState extends State<MainPage> {
 
   Future<void> _navigateTo(int? index) async {
     if (index == null) return;
-
-    _previousIndex = _currentIndex;
 
     setState(() {
       _currentIndex = index;
@@ -92,24 +88,12 @@ class MainPageState extends State<MainPage> {
     _currentIndex ??= _dialerIsPage ? 1 : 0;
   }
 
-  void _onCallerStateChanged(BuildContext context, CallerState state) {
-    if (context.isIOS &&
-        state is FinishedCalling &&
-        state.origin == CallOrigin.dialer) {
-      unawaited(_navigateTo(_previousIndex));
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return MultiWidgetParent(
       [
         (child) => SurveyTriggerer(child: child),
         (child) => AppUpdateChecker.create(child: child),
-        (child) => BlocListener<CallerCubit, CallerState>(
-              listener: _onCallerStateChanged,
-              child: child,
-            ),
         (child) => ColleagueWebSocket.connect(child: child),
         (child) => BlocProvider<SettingsCubit>(
               create: (_) => SettingsCubit(),
