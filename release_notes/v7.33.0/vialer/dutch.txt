@@ -1,0 +1,3 @@
+- Added a settings screen showing the newly added features
+- Fixed an aligment issue in the recents list
+- iOS: fixed a bug where you weren't redirected back to the dialer after a call
