@@ -1,11 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:timezone/data/latest.dart';
-import 'package:vialer/app/pages/main/colltacts/shared_contacts/cubit.dart';
+import 'package:vialer/app/util/global_bloc_provider.dart';
 
 import '../dependency_locator.dart';
 import '../domain/authentication/user_was_logged_out.dart';
@@ -20,20 +19,13 @@ import '../domain/onboarding/should_onboard.dart';
 import '../domain/remote_logging/enable_console_logging.dart';
 import '../domain/remote_logging/enable_remote_logging_if_needed.dart';
 import '../domain/user/get_stored_user.dart';
-import 'pages/main/business_availability/temporary_redirect/cubit.dart';
-import 'pages/main/colltacts/colleagues/cubit.dart';
 import 'pages/main/page.dart';
-import 'pages/main/widgets/caller/cubit.dart';
-import 'pages/main/widgets/caller/widget.dart';
 import 'resources/localizations.dart';
 import 'resources/theme.dart';
 import 'routes.dart';
 import 'util/debug.dart';
 import 'widgets/brand_provider/widget.dart';
 import 'widgets/build_error.dart';
-import 'widgets/connectivity_checker/widget.dart';
-import 'widgets/missed_call_notification_listener/widget.dart';
-import 'widgets/nested_children.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -91,44 +83,9 @@ class _AppState extends State<App> {
       child: BrandProvider(
         child: Builder(
           builder: (context) {
-            return MultiWidgetParent(
-              [
-                (child) => Caller.create(
-                      navigatorKey: _navigatorKey,
-                      child: child,
-                    ),
-                (child) => ConnectivityChecker.create(child: child),
-                (child) => MissedCallNotificationPressedListener(
-                      onMissedCallNotificationPressed: () =>
-                          App.navigateTo(MainPageTab.recents),
-                      child: child,
-                    ),
-                (child) => BlocProvider<TemporaryRedirectCubit>(
-                      create: (_) => TemporaryRedirectCubit(),
-                      child: child,
-                    ),
-                (child) => MultiWidgetChildWithDependencies(
-                      builder: (context) {
-                        return BlocProvider<ColleaguesCubit>(
-                          create: (_) => ColleaguesCubit(
-                            context.watch<CallerCubit>(),
-                          ),
-                          child: child,
-                        );
-                      },
-                    ),
-                (child) => Builder(
-                      builder: (context) {
-                        return BlocProvider<SharedContactsCubit>(
-                          create: (_) => SharedContactsCubit(
-                            context.watch<CallerCubit>(),
-                          ),
-                          child: child,
-                        );
-                      },
-                    ),
-              ],
-              MaterialApp(
+            return GlobalBlocProvider(
+              navigatorKey: _navigatorKey,
+              child: MaterialApp(
                 navigatorKey: _navigatorKey,
                 title: context.brand.appName,
                 theme: context.brand.theme.themeData,
@@ -155,6 +112,7 @@ class _AppState extends State<App> {
       ),
     );
   }
+
 
   /// Listen for any app-level events, these events should require a "global"
   /// response. For example, the user should be forced back to the onboarding

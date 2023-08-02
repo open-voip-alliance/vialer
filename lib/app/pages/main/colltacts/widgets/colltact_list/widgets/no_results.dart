@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../../../../resources/localizations.dart';
-import '../../../../../resources/theme.dart';
-import '../../../../../util/conditional_capitalization.dart';
-import '../../../../../widgets/stylized_button.dart';
-import '../../../../../widgets/universal_refresh_indicator.dart';
-import '../../../settings/widgets/buttons/settings_button.dart';
-import '../../conditional_placeholder.dart';
-import '../cubit.dart';
-import '../widget.dart';
+import '../../../../../../resources/localizations.dart';
+import '../../../../../../resources/theme.dart';
+import '../../../../../../util/conditional_capitalization.dart';
+import '../../../../../../widgets/stylized_button.dart';
+import '../../../../../../widgets/universal_refresh_indicator.dart';
+import '../../../../settings/widgets/buttons/settings_button.dart';
+import '../../../../colltacts/contacts/cubit.dart';
+import '../../../../widgets/conditional_placeholder.dart';
+import '../util/kind.dart';
 
 class NoResultsPlaceholder extends StatelessWidget {
   const NoResultsPlaceholder({

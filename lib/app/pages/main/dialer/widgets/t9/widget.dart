@@ -7,7 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../../domain/colltacts/t9_colltact.dart';
 import '../../../../../../domain/metrics/track_t9_usage.dart';
 import '../../../../../util/contact.dart';
-import '../../../widgets/colltact_list/widgets/avatar.dart';
+import '../../../colltacts/widgets/colltact_list/widgets/avatar.dart';
 import 'bloc.dart';
 
 class T9ColltactsListView extends StatelessWidget {

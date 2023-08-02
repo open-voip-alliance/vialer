@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:vialer/app/pages/main/colltacts/widgets/colltact_list/widget.dart';
 
-import '../widgets/colltact_list/widget.dart';
 import 'widgets/details/widget.dart';
 
 class ColltactsPage extends StatelessWidget {
