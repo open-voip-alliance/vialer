@@ -2,12 +2,12 @@ import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
 import 'package:vialer/app/pages/main/util/phone_number.dart';
 
-import '../../../../../../data/models/colltact.dart';
-import '../../../../../../domain/colltacts/contact.dart';
-import '../../../../../../domain/colltacts/shared_contacts/shared_contact.dart';
-import '../../../../../../domain/user_availability/colleagues/colleague.dart';
-import '../../../../../resources/localizations.dart';
-import '../../../../../resources/theme.dart';
+import '../../../../../../../data/models/colltact.dart';
+import '../../../../../../../domain/colltacts/contact.dart';
+import '../../../../../../../domain/colltacts/shared_contacts/shared_contact.dart';
+import '../../../../../../../domain/user_availability/colleagues/colleague.dart';
+import '../../../../../../resources/localizations.dart';
+import '../../../../../../resources/theme.dart';
 
 class ColltactSubtitle extends StatelessWidget {
   const ColltactSubtitle(

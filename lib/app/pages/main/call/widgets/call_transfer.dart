@@ -6,8 +6,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
-import '../../widgets/colltact_list/details/widget.dart';
-import '../../widgets/colltact_list/widget.dart';
+import '../../colltacts/widgets/colltact_list/details/widget.dart';
+import '../../colltacts/widgets/colltact_list/widget.dart';
 import '../../widgets/nested_navigator.dart';
 import '../../widgets/t9_dial_pad.dart';
 import 'call_header_container.dart';

@@ -5,10 +5,10 @@ import 'package:provider/provider.dart';
 import 'package:search_highlight_text/search_highlight_text.dart';
 import 'package:vialer/app/pages/main/util/phone_number.dart';
 
-import '../../../../../../data/models/colltact.dart';
-import '../../../../../../domain/colltacts/contact.dart';
-import '../../../../../../domain/colltacts/shared_contacts/shared_contact.dart';
-import '../../../../../../domain/user_availability/colleagues/colleague.dart';
+import '../../../../../../../data/models/colltact.dart';
+import '../../../../../../../domain/colltacts/contact.dart';
+import '../../../../../../../domain/colltacts/shared_contacts/shared_contact.dart';
+import '../../../../../../../domain/user_availability/colleagues/colleague.dart';
 import '../widget.dart';
 import 'avatar.dart';
 import 'subtitle.dart';

@@ -12,9 +12,9 @@ import '../../../../../util/widgets_binding_observer_registrar.dart';
 import '../../../call/outgoing_number_prompt/show_prompt.dart';
 import '../../../util/stylized_snack_bar.dart';
 import '../../../widgets/caller.dart';
-import '../../../widgets/colltact_list/cubit.dart';
-import '../../../widgets/colltact_list/details/cubit.dart';
-import '../../../widgets/colltact_list/details/widget.dart';
+import '../../contacts/cubit.dart';
+import '../colltact_list/details/cubit.dart';
+import '../colltact_list/details/widget.dart';
 
 class ColltactPageDetails extends StatefulWidget {
   const ColltactPageDetails({

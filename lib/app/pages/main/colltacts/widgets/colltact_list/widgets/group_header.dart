@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../resources/theme.dart';
+import '../../../../../../resources/theme.dart';
 
 class GroupHeader extends StatelessWidget {
   const GroupHeader({
