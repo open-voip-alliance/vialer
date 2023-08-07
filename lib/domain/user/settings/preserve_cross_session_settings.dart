@@ -19,7 +19,8 @@ class PreserveCrossSessionSettings extends UseCase with Loggable {
   /// Must not include any user-specific settings, should almost always only be
   /// [bool] or otherwise very simple settings.
   ///
-  /// For example, it should NOT store [CallSetting.
+  /// For example, it should NOT store [CallSetting.outgoingNumber] as that is
+  /// a setting only relevant to the currently logged-in user.
   static const preserve = [
     CallSetting.usePhoneRingtone,
     AppSetting.enableT9ContactSearch,
