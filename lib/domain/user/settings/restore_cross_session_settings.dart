@@ -8,7 +8,7 @@ import 'change_settings.dart';
 
 /// Restores any settings that were preserved via
 /// `PreserveCrossSessionSettings`. This will apply these as new settings and
-/// will therefore run all all associated listeners.
+/// will therefore run all associated listeners.
 class RestoreCrossSessionSettings extends UseCase with Loggable {
   final _storage = dependencyLocator<StorageRepository>();
   final _changeSettings = ChangeSettingsUseCase();
