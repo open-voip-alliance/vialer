@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:android_intent/android_intent.dart';
+import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -43,6 +44,14 @@ class ColltactDetailsCubit extends Cubit<ColltactDetailsState> {
           );
 
           await intent.launch();
+        } else {
+          try {
+            await ContactsService.openExistingContact(
+              Contact()..identifier = contact.identifier,
+            );
+          } on FormOperationException {
+            // Thrown when native edit is cancelled
+          }
         }
       }
     }
