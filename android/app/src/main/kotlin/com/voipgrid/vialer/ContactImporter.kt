@@ -5,12 +5,6 @@ import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.toLowerCase
 import com.google.gson.Gson
-import contacts.core.Contacts
-import contacts.core.Fields
-import contacts.core.entities.Email
-import contacts.core.entities.Phone
-import contacts.core.isNotNullOrEmpty
-import contacts.core.util.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
