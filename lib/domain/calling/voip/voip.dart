@@ -278,10 +278,8 @@ class VoipRepository with Loggable {
     final loginTime = _getLoginTime();
 
     final userBasedDndEnabled = HasFeature()(Feature.userBasedDnd);
-    final dndEnabled = userBasedDndEnabled
-        ? false
-        : user.settings.get(CallSetting.dnd);
-
+    final dndEnabled =
+        userBasedDndEnabled ? false : user.settings.get(CallSetting.dnd);
 
     final response = Platform.isAndroid
         ? await _service.postAndroidDevice(
