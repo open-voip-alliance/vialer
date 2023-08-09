@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -50,13 +52,32 @@ class ContactAvatar extends StatelessWidget {
   final Contact contact;
   final double size;
 
+  Future<File?> _loadAvatar() async => contact.avatar;
+
   @override
   Widget build(BuildContext context) {
-    return Avatar(
-      name: contact.displayName,
-      backgroundColor: contact.calculateColor(context),
-      image: contact.avatar,
-      size: size,
+    return FutureBuilder<File?>(
+      future: _loadAvatar(),
+      builder: (context, snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.none:
+          case ConnectionState.waiting:
+            return const CircularProgressIndicator();
+          case ConnectionState.active:
+          case ConnectionState.done:
+            if (snapshot.hasError) {
+              return const SizedBox.shrink();
+            } else {
+              final avatarFile = snapshot.data;
+              return Avatar(
+                name: contact.displayName,
+                backgroundColor: contact.calculateColor(context),
+                image: avatarFile != null ? avatarFile : null,
+                size: size,
+              );
+            }
+        }
+      },
     );
   }
 }
