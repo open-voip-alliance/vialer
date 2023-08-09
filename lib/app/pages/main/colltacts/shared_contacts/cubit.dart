@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:vialer/domain/user/events/logged_in_user_was_refreshed.dart';
 
 import '../../../../../dependency_locator.dart';
+import '../../../../../domain/authentication/user_logged_in.dart';
 import '../../../../../domain/authentication/user_was_logged_out.dart';
 import '../../../../../domain/colltacts/shared_contacts/get_shared_contacts.dart';
 import '../../../../../domain/colltacts/shared_contacts/shared_contact.dart';
@@ -21,8 +21,7 @@ class SharedContactsCubit extends Cubit<SharedContactsState> {
       ..on<UserWasLoggedOutEvent>((_) {
         emit(SharedContactsState.loading());
       })
-      // TODO: Replace with the LoggedIn event when it is merged in
-      ..on<LoggedInUserWasRefreshed>(
+      ..on<UserLoggedIn>(
         (_) => loadSharedContacts(fullRefresh: false),
       );
   }
