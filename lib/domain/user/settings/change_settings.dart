@@ -54,7 +54,10 @@ class ChangeSettingsUseCase extends UseCase with Loggable {
   // in the UI but have no effect), it means some code is called that
   // launches an [EditUser] task while calling this use case (most likely
   // the culprit is calling RefreshUser).
-  Future<ChangeSettingsResult> call(Settings settings) {
+  Future<ChangeSettingsResult> call(
+    Settings settings, {
+    bool track = true,
+  }) {
     var givenSettings = settings;
     // These variables have to be defined outside of the tasks, to share
     // state between tasks.
@@ -149,7 +152,9 @@ class ChangeSettingsUseCase extends UseCase with Loggable {
           logger.info('Set $key to $value');
         }
 
-        _metricsRepository.trackSettingChange(key, value);
+        if (track) {
+          _metricsRepository.trackSettingChange(key, value);
+        }
 
         _eventBus.broadcast(
           SettingChangedEvent(key, oldValue, value),
