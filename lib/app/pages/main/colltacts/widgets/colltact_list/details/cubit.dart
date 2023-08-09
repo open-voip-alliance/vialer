@@ -1,9 +1,7 @@
 import 'dart:async';
-import 'dart:io';
 
-import 'package:android_intent/android_intent.dart';
-import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../../../../../../data/models/colltact.dart';
@@ -30,30 +28,16 @@ class ColltactDetailsCubit extends Cubit<ColltactDetailsState> {
   }
 
   Future<void> edit(Colltact colltact) async {
-    if (colltact is ColltactContact) {
-      final status = await _requestPermission(permission: Permission.contacts);
+    if (colltact is! ColltactContact) return;
 
-      if (status == PermissionStatus.granted) {
-        final contact = colltact.contact;
+    final status = await _requestPermission(permission: Permission.contacts);
 
-        if (Platform.isAndroid) {
-          final intent = AndroidIntent(
-            action: 'android.intent.action.EDIT',
-            data:
-                'content://com.android.contacts/contacts/${contact.identifier}',
-          );
+    if (status != PermissionStatus.granted) return;
 
-          await intent.launch();
-        } else {
-          try {
-            await ContactsService.openExistingContact(
-              Contact()..identifier = contact.identifier,
-            );
-          } on FormOperationException {
-            // Thrown when native edit is cancelled
-          }
-        }
-      }
-    }
+    final id = colltact.contact.identifier;
+
+    if (id == null) return;
+
+    await FlutterContacts.openExternalEdit(id);
   }
 }
