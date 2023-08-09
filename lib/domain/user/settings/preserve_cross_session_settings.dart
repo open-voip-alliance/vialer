@@ -46,6 +46,6 @@ class PreserveCrossSessionSettings extends UseCase with Loggable {
       'Preserving [${preserve.map((e) => e.name).join(', ')}] for future login',
     );
 
-    _storage.previousSessionSettings = settings;
+    _storage.previousSessionSettings = Settings.defaults.diff(settings);
   }
 }

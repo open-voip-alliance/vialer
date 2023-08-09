@@ -28,7 +28,7 @@ class LoginUseCase extends UseCase {
       return false;
     }
 
-    _restorePreviousSessionSettings(user);
+    await _restorePreviousSessionSettings(user);
 
     unawaited(
       _track(

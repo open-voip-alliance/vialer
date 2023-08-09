@@ -21,6 +21,6 @@ class RestoreCrossSessionSettings extends UseCase with Loggable {
 
     logger.info('Restoring cross-session settings');
 
-    _changeSettings(settings, track: false);
+    await _changeSettings(settings, track: false);
   }
 }
