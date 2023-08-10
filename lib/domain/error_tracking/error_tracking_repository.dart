@@ -29,23 +29,24 @@ extension on Logger {
   void logSentryEvent(SentryEvent event) => severe(
         // The event id lets you look this up in Sentry so we don't need
         // to display the entire stack trace.
-        'Error [${event.sentryUrl}]: ${event.title}',
+        'Error [${event._sentryUrl}]: ${event.title}',
       );
 }
 
 extension on SentryEvent {
   String get title => exceptions?.firstOrNull?.value ?? 'unknown';
 
-  EnvRepository get env => dependencyLocator<EnvRepository>();
+  EnvRepository get _env => dependencyLocator<EnvRepository>();
 
-  String get baseUrl =>
+  String get _baseUrl =>
       // Extracts our sentry URL from the [errorTrackingDsn] env var so we don't
       // need to repeat it.
-      RegExp('@([a-z\.]+)\/').firstMatch(env.errorTrackingDsn)?.group(0) ?? '';
+      RegExp('@([a-z\.]+)\/').firstMatch(_env.errorTrackingDsn)?.group(0) ?? '';
 
-  String get sentryUrl {
-    final project = env.isProduction ? 'vialer-app' : 'vialer-beta-environment';
+  String get _sentryUrl {
+    final project =
+        _env.isProduction ? 'vialer-app' : 'vialer-beta-environment';
 
-    return 'https://${baseUrl}organizations/sentry/discover/$project:$eventId/';
+    return 'https://${_baseUrl}organizations/sentry/discover/$project:$eventId/';
   }
 }
