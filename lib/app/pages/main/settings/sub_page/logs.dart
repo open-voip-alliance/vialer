@@ -19,7 +19,9 @@ class LogSubPage extends StatelessWidget {
         final cubit = context.watch<SettingsCubit>();
 
         final rawLogs = dependencyLocator<StorageRepository>().logs;
-        final logs = rawLogs!.split('\n').reversed.toList();
+        final logs = rawLogs != null
+            ? rawLogs.split('\n').reversed.toList()
+            : <String>[];
 
         return SettingsSubPage(
           cubit: cubit,
