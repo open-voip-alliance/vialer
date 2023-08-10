@@ -52,7 +52,7 @@ class _AvatarState extends State<Avatar> {
     }
   }
 
-  File? _existingImage;
+  FileImage? _existingImage;
 
   @override
   void initState() {
@@ -65,7 +65,7 @@ class _AvatarState extends State<Avatar> {
             if (!mounted) return;
 
             setState(() {
-              _existingImage = widget.image;
+              _existingImage = FileImage(widget.image!);
             });
           });
         }
@@ -88,7 +88,7 @@ class _AvatarState extends State<Avatar> {
         child: CircleAvatar(
           foregroundColor: widget.foregroundColor,
           backgroundColor: widget.backgroundColor,
-          backgroundImage: hasImage ? FileImage(existingImage) : null,
+          backgroundImage: hasImage ? existingImage : null,
           child: showFallback
               ? _withStyle(widget.fallback)
               : widget.name != null && !hasImage

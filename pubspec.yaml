@@ -80,6 +80,7 @@ dependencies:
   flutter_riverpod: ^2.3.6
   riverpod_annotation: ^2.1.1
   connection_network_type: ^0.0.1
+  timer_builder: ^2.0.0
 
 dev_dependencies:
   test: ^1.20.0

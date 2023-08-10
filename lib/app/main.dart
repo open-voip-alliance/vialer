@@ -113,7 +113,6 @@ class _AppState extends State<App> {
     );
   }
 
-
   /// Listen for any app-level events, these events should require a "global"
   /// response. For example, the user should be forced back to the onboarding
   /// screen whenever they are logged out.
