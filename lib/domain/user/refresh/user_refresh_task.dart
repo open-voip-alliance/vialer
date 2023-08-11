@@ -6,7 +6,6 @@ import 'tasks/client_opening_hours_modules.dart';
 import 'tasks/client_temporary_redirect.dart';
 import 'tasks/client_voicemail_accounts.dart';
 import 'tasks/client_voip_config.dart';
-import 'tasks/previous_session_settings.dart';
 import 'tasks/user_destination.dart';
 import 'tasks/user_voip_config.dart';
 import 'tasks/voipgrid_user_permissions.dart';
@@ -15,7 +14,6 @@ import 'user_refresh_task_performer.dart';
 
 enum UserRefreshTask {
   userCore(null),
-  previousSessionSettings(RefreshPreviousSessionSettings()),
   userVoipConfig(RefreshUserVoipConfig()),
   userDestination(RefreshUserDestination()),
   userWebphoneAccount(RefreshUserWebphoneAccount()),
@@ -40,7 +38,6 @@ enum UserRefreshTask {
   /// anything that is unlikely to be updated regularly.
   static List<UserRefreshTask> get minimal => [
         UserRefreshTask.userCore,
-        UserRefreshTask.previousSessionSettings,
         UserRefreshTask.userDndStatus,
         UserRefreshTask.userDestination,
         UserRefreshTask.voipgridUserSettings,

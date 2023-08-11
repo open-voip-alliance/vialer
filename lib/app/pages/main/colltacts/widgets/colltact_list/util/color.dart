@@ -2,9 +2,9 @@ import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
 import 'package:vialer/domain/calling/call_through/call_through.dart';
 
-import '../../../../../../domain/colltacts/contact.dart';
-import '../../../../../../domain/colltacts/shared_contacts/shared_contact.dart';
-import '../../../util/color.dart';
+import '../../../../../../../domain/colltacts/contact.dart';
+import '../../../../../../../domain/colltacts/shared_contacts/shared_contact.dart';
+import '../../../../util/color.dart';
 
 extension ContactColor on Contact {
   Color calculateColor(BuildContext context) => calculateColorForPhoneNumber(

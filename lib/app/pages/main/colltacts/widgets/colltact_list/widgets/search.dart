@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../../../../resources/theme/brand_theme.dart';
-import '../../../../../util/brand.dart';
+import '../../../../../../resources/theme/brand_theme.dart';
+import '../../../../../../util/brand.dart';
 
 class SearchTextField extends StatefulWidget {
   const SearchTextField({

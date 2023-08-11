@@ -5,5 +5,11 @@ import '../../user/get_logged_in_user.dart';
 class ShouldShowColleagues extends UseCase with Loggable {
   late final _getUser = GetLoggedInUserUseCase();
 
-  bool call() => _getUser().permissions.canViewColleagues;
+  bool call() {
+    try {
+      return _getUser().permissions.canViewColleagues;
+    } on TypeError catch (_) {
+      return false;
+    }
+  }
 }

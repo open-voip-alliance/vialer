@@ -6,11 +6,8 @@ import 'package:vialer/domain/authentication/user_logged_in.dart';
 
 import '../../../../../dependency_locator.dart';
 import '../../../../../domain/authentication/user_was_logged_out.dart';
-import '../../../../../domain/colltacts/colltact_tab.dart';
 import '../../../../../domain/event/event_bus.dart';
-import '../../../../../domain/legacy/storage.dart';
 import '../../../../../domain/onboarding/is_onboarded.dart';
-import '../../../../../domain/metrics/metrics.dart';
 import '../../../../../domain/user/get_logged_in_user.dart';
 import '../../../../../domain/user/settings/app_setting.dart';
 import '../../../../../domain/user/settings/change_setting.dart';
@@ -42,9 +39,6 @@ class ColleaguesCubit extends Cubit<ColleaguesState> {
         (_) => unawaited(connectToWebSocket(fullRefresh: true)),
       );
   }
-
-  final _storageRepository = dependencyLocator<StorageRepository>();
-  final _metricsRepository = dependencyLocator<MetricsRepository>();
 
   late final _shouldShowColleagues = ShouldShowColleagues();
   late final _receiveColleagueAvailability = ReceiveColleagueAvailability();
@@ -139,19 +133,8 @@ class ColleaguesCubit extends Cubit<ColleaguesState> {
     await connectToWebSocket(fullRefresh: true);
   }
 
-  void trackColleaguesTabSelected() =>
-      _metricsRepository.track('colleague-tab-selected');
-
   Future<void> call(String destination) =>
       _caller.call(destination, origin: CallOrigin.colleagues);
-
-  ColltactTab getStoredTab() =>
-      _storageRepository.currentColltactTab ?? ColltactTab.contacts;
-
-  // ignore: use_setters_to_change_properties
-  void storeCurrentTab(ColltactTab tab) {
-    _storageRepository.currentColltactTab = tab;
-  }
 
   @override
   Future<void> close() async {
