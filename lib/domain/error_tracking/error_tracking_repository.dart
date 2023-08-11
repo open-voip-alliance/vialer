@@ -41,12 +41,12 @@ extension on SentryEvent {
   String get _baseUrl =>
       // Extracts our sentry URL from the [errorTrackingDsn] env var so we don't
       // need to repeat it.
-      RegExp('@([a-z\.]+)\/').firstMatch(_env.errorTrackingDsn)?.group(0) ?? '';
+      RegExp('@([a-z\.]+)\/').firstMatch(_env.errorTrackingDsn)?.group(1) ?? '';
 
   String get _sentryUrl {
     final project =
         _env.isProduction ? 'vialer-app' : 'vialer-beta-environment';
 
-    return 'https://${_baseUrl}organizations/sentry/discover/$project:$eventId/';
+    return 'https://${_baseUrl}/organizations/sentry/discover/$project:$eventId/';
   }
 }
