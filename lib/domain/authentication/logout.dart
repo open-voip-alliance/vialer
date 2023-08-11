@@ -7,7 +7,7 @@ import '../event/event_bus.dart';
 import '../legacy/storage.dart';
 import '../use_case.dart';
 import '../user/get_logged_in_user.dart';
-import '../user/settings/app_setting.dart';
+import '../user/settings/preserve_cross_session_settings.dart';
 import 'user_was_logged_out.dart';
 
 class Logout extends UseCase {
@@ -17,6 +17,7 @@ class Logout extends UseCase {
   final _getUser = GetLoggedInUserUseCase();
   final _stopVoip = StopVoipUseCase();
   final _purgeClientCalls = PurgeLocalCallRecordsUseCase();
+  final _preserveCrossSessionSettings = PreserveCrossSessionSettings();
 
   Future<void> call() async {
     await _stopVoip();
@@ -26,20 +27,17 @@ class Logout extends UseCase {
 
   /// Clear the storage of all user-specific values.
   Future<void> _clearStorage() async {
-    // Settings that we want to save across sessions.
     final pushToken = _storageRepository.pushToken;
     final remoteNotificationToken = _storageRepository.remoteNotificationToken;
-    final crossSessionSettings = _getUser().settings.getAll([
-      AppSetting.remoteLogging,
-    ]);
+    final user = _getUser();
 
     await _storageRepository.clear();
 
     _storageRepository
       ..pushToken = pushToken
-      ..remoteNotificationToken = remoteNotificationToken
-      ..previousSessionSettings = crossSessionSettings;
+      ..remoteNotificationToken = remoteNotificationToken;
 
+    await _preserveCrossSessionSettings(user);
     await _purgeClientCalls(reason: PurgeReason.logout);
 
     _eventBus.broadcast(const UserWasLoggedOutEvent());
