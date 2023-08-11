@@ -27,6 +27,7 @@ class Logout extends UseCase {
 
   /// Clear the storage of all user-specific values.
   Future<void> _clearStorage() async {
+    throw Exception('Testing MR #1348');
     final pushToken = _storageRepository.pushToken;
     final remoteNotificationToken = _storageRepository.remoteNotificationToken;
     final user = _getUser();
