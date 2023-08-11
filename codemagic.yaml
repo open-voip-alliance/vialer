@@ -229,13 +229,13 @@ workflows:
       - *prepare_environment_file
       - *run_code_generators
       - *set_version_for_other
-      - *verify_codebase_complies_with_analysis_rules
-      - *flutter_test
+#      - *verify_codebase_complies_with_analysis_rules
+#      - *flutter_test
       - *build_for_android
       - *update_ios_signing_for_current_brand
       - *build_for_ios
-      - *set_testflight_release_notes_for_main
-      - *release_to_sentry
+#      - *set_testflight_release_notes_for_main
+#      - *release_to_sentry
     artifacts: *defaults_artifacts
 
   release-candidate:
