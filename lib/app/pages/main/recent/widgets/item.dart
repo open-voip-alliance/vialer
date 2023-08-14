@@ -147,19 +147,23 @@ class _RecentCallItemContainer extends StatelessWidget {
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 16),
       leading: !callRecord.isClientCall
-          ? Avatar(
-              name: callRecord.displayLabel,
-              backgroundColor: calculateColorForPhoneNumber(
-                context,
-                callRecord.thirdPartyNumber,
+          ? ExcludeSemantics(
+              child: Avatar(
+                name: callRecord.displayLabel,
+                backgroundColor: calculateColorForPhoneNumber(
+                  context,
+                  callRecord.thirdPartyNumber,
+                ),
+                showFallback: callRecord is CallRecordWithContact &&
+                    (callRecord as CallRecordWithContact)
+                            .contact
+                            ?.displayName ==
+                        null,
+                image: callRecord is CallRecordWithContact
+                    ? (callRecord as CallRecordWithContact).contact?.avatar
+                    : null,
+                fallback: const Text('#'),
               ),
-              showFallback: callRecord is CallRecordWithContact &&
-                  (callRecord as CallRecordWithContact).contact?.displayName ==
-                      null,
-              image: callRecord is CallRecordWithContact
-                  ? (callRecord as CallRecordWithContact).contact?.avatar
-                  : null,
-              fallback: const Text('#'),
             )
           : null,
       title: GestureDetector(
