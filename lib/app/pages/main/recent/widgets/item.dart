@@ -256,6 +256,13 @@ class _RecentItemSubtitleText extends StatelessWidget {
         spacer: '',
       );
 
+  String get _durationForSemantics => prettyDuration(
+        callRecord.duration,
+        abbreviated: false,
+        delimiter: ' ',
+        spacer: ' ',
+      );
+
   String _callPartyText(CallParty party) {
     if (party.name == null ||
         party.name!.isEmpty ||
@@ -320,20 +327,25 @@ class _RecentItemSubtitleText extends StatelessWidget {
     }
   }
 
-  String _text(BuildContext context) {
+  String _text(
+    BuildContext context, {
+    bool forSemantics = false,
+  }) {
+    final duration = forSemantics ? _durationForSemantics : _duration;
+
     if (callRecord.isInbound) {
       if (callRecord.wasMissed) {
         return context.msg.main.recent.list.item.wasMissed(_time);
       } else {
-        return context.msg.main.recent.list.item.inbound(_time, _duration);
+        return context.msg.main.recent.list.item.inbound(_time, duration);
       }
     }
 
     if (callRecord.isOutbound) {
-      return context.msg.main.recent.list.item.outbound(_time, _duration);
+      return context.msg.main.recent.list.item.outbound(_time, duration);
     }
 
-    return '$_time - $_duration';
+    return '$_time - $duration';
   }
 
   @override
@@ -388,6 +400,7 @@ class _RecentItemSubtitleText extends StatelessWidget {
     return Text(
       _text(context),
       style: textStyle,
+      semanticsLabel: _text(context, forSemantics: true),
     );
   }
 }
@@ -456,22 +469,26 @@ class RecentCallHeader extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: Row(
-              children: [
-                divider,
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Text(
-                    _text(context, headerDate: date.toLocal()),
-                    style: TextStyle(
-                      color: color,
+          Semantics(
+            header: true,
+            container: true,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Row(
+                children: [
+                  divider,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Text(
+                      _text(context, headerDate: date.toLocal()),
+                      style: TextStyle(
+                        color: color,
+                      ),
                     ),
                   ),
-                ),
-                divider,
-              ],
+                  divider,
+                ],
+              ),
             ),
           ),
           const SizedBox(height: 16),
