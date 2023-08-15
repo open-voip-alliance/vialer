@@ -153,6 +153,7 @@ class _RecentCallItemContainer extends StatelessWidget {
         behavior: HitTestBehavior.translucent,
         onTap: onCallPressed,
         child: child,
+        excludeFromSemantics: true,
       ),
       onTap: _emptyOnTapToKeepSplash,
       trailing: RecentItemPopupMenu(
