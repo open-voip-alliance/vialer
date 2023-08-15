@@ -30,9 +30,13 @@ class KeyInput extends StatefulWidget {
 class _KeyInputState extends State<KeyInput> {
   final _scrollController = ScrollController();
 
+  String phoneNumberSemanticLabel = '';
+
   @override
   void initState() {
     super.initState();
+
+    phoneNumberSemanticLabel = widget.controller.text.phoneNumberSemanticLabel;
 
     widget.controller.addListener(_onInputChanged);
   }
@@ -48,6 +52,11 @@ class _KeyInputState extends State<KeyInput> {
         ),
       );
     });
+
+    setState(() {
+      phoneNumberSemanticLabel =
+          widget.controller.text.phoneNumberSemanticLabel;
+    });
   }
 
   @override
@@ -55,7 +64,8 @@ class _KeyInputState extends State<KeyInput> {
     const deleteButtonPadding = 24.0;
 
     return Semantics(
-      label: widget.controller.text.phoneNumberSemanticLabel,
+      label: phoneNumberSemanticLabel,
+      // textField: true,
       child: TextField(
         controller: widget.controller,
         scrollController: _scrollController,
