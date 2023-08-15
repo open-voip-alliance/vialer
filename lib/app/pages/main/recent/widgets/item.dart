@@ -147,24 +147,7 @@ class _RecentCallItemContainer extends StatelessWidget {
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 16),
       leading: !callRecord.isClientCall
-          ? ExcludeSemantics(
-              child: Avatar(
-                name: callRecord.displayLabel,
-                backgroundColor: calculateColorForPhoneNumber(
-                  context,
-                  callRecord.thirdPartyNumber,
-                ),
-                showFallback: callRecord is CallRecordWithContact &&
-                    (callRecord as CallRecordWithContact)
-                            .contact
-                            ?.displayName ==
-                        null,
-                image: callRecord is CallRecordWithContact
-                    ? (callRecord as CallRecordWithContact).contact?.avatar
-                    : null,
-                fallback: const Text('#'),
-              ),
-            )
+          ? _RecentItemAvatar(callRecord)
           : null,
       title: GestureDetector(
         behavior: HitTestBehavior.translucent,
@@ -179,6 +162,35 @@ class _RecentCallItemContainer extends StatelessWidget {
     );
   }
 }
+
+class _RecentItemAvatar extends StatelessWidget {
+  const _RecentItemAvatar(this.callRecord);
+
+  final CallRecord callRecord;
+
+  @override
+  Widget build(BuildContext context) {
+    return ExcludeSemantics(
+      child: Avatar(
+        name: callRecord.displayLabel,
+        backgroundColor: calculateColorForPhoneNumber(
+          context,
+          callRecord.thirdPartyNumber,
+        ),
+        showFallback: callRecord is CallRecordWithContact &&
+            (callRecord as CallRecordWithContact)
+                .contact
+                ?.displayName ==
+                null,
+        image: callRecord is CallRecordWithContact
+            ? (callRecord as CallRecordWithContact).contact?.avatar
+            : null,
+        fallback: const Text('#'),
+      ),
+    );
+  }
+}
+
 
 class _RecentItemSubtitle extends StatelessWidget {
   const _RecentItemSubtitle(this.callRecord);
@@ -468,36 +480,39 @@ class RecentCallHeader extends StatelessWidget {
       child: Divider(height: 1, color: color),
     );
 
-    return Padding(
-      padding: const EdgeInsets.only(top: 8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Semantics(
-            header: true,
-            container: true,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Row(
-                children: [
-                  divider,
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Text(
-                      _text(context, headerDate: date.toLocal()),
-                      style: TextStyle(
-                        color: color,
+    return Semantics(
+      explicitChildNodes: true,
+      child: Padding(
+        padding: const EdgeInsets.only(top: 8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Semantics(
+              header: true,
+              container: true,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Row(
+                  children: [
+                    divider,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Text(
+                        _text(context, headerDate: date.toLocal()),
+                        style: TextStyle(
+                          color: color,
+                        ),
                       ),
                     ),
-                  ),
-                  divider,
-                ],
+                    divider,
+                  ],
+                ),
               ),
             ),
-          ),
-          const SizedBox(height: 16),
-          child,
-        ],
+            const SizedBox(height: 16),
+            child,
+          ],
+        ),
       ),
     );
   }
