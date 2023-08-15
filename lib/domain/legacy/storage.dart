@@ -89,8 +89,7 @@ class StorageRepository {
     return user;
   }
 
-  set user(User? user) =>
-      _preferences.setOrRemoveJson(_userKey, user, User.toJson);
+  set user(User? user) => _preferences.setOrRemoveObject(_userKey, user);
 
   // This value cannot change.
   static const _legacySettingsKey = 'settings';
@@ -514,6 +513,14 @@ extension on SharedPreferences {
       value != null ? json.encode(toJson(value)) : null,
     );
   }
+
+  /// Uses [jsonEncode] which requires a `.toJson()` to be implemented. This
+  /// should automatically work for any Freezed model that has setup json
+  /// encoding.
+  void setOrRemoveObject(String key, dynamic object) => setOrRemoveString(
+        key,
+        jsonEncode(object),
+      );
 }
 
 extension RawPermissions on List<dynamic> {
