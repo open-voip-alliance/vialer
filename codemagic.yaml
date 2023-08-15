@@ -634,3 +634,7 @@ workflows:
       - *set_version_for_other
       - *build_for_android
       - *write_dependency_trees_to_artifacts
+    artifacts:
+      - build/dependency_tree/flutter.txt
+      - build/dependency_tree/android.txt
+      - build/dependency_tree/combined.txt
