@@ -6,5 +6,5 @@ touch "$FLUTTER_FILE"
 touch "$ANDROID_FILE"
 
 flutter pub deps > "$FLUTTER_FILE"
-cd android
+cd android || exit
 ./gradlew app:dependencies > "$ANDROID_FILE"
