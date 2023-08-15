@@ -69,6 +69,9 @@ custom: # Custom properties to make workflows cleaner
       name: Calling our Zapier webhook to inform of a new production build
       ignore_failure: true
       script: curl "https://hooks.zapier.com/hooks/catch/1394555/blav33z?build_id=${CM_BUILD_ID}"
+    - &write_dependency_trees_to_artifacts
+      name: Creating dependency tree files
+      script: . utils/ci/codemagic/bin/create_dependency_tree_files.sh
   config: &config # Default configuration that can be applied to all normal workflows
     max_build_duration: 90
     instance_type: mac_mini_m1
@@ -604,3 +607,30 @@ workflows:
       - *set_testflight_release_notes_for_main
       - *release_to_sentry
     artifacts: *defaults_artifacts
+
+  # Creates files with dependency trees in the output artifacts for this workflow. This is just
+  # a convenient way to access them rather than doing it locally.
+  dependency-tree:
+    name: Dependency Tree
+    <<: *config
+    environment:
+      groups:
+        - configuration
+        - diagnostics
+        - vialer_android_firebase
+        - vialer_upload_keystore_credentials
+        - vialer_playstore_credentials
+        - vialer_ios_appstore_credentials
+      <<: *config_environment
+      vars:
+        <<: *brand_config_vialer_env_vars
+        IOS_SIGNING_TYPE: "IOS_APP_DEVELOPMENT"
+        ENABLE_IOS_SANDBOX_PUSH_NOTIFICATIONS: "true"
+        FINALIZE_SENTRY_RELEASE: "false"
+    scripts:
+      - *use_workflow_build_number
+      - *prepare_environment_file
+      - *run_code_generators
+      - *set_version_for_other
+      - *update_ios_signing_for_current_brand
+      - *write_dependency_trees_to_artifacts
