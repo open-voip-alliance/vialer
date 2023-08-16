@@ -7,14 +7,17 @@ PODS:
   - AppsFlyerFramework (6.9.1):
     - AppsFlyerFramework/Main (= 6.9.1)
   - AppsFlyerFramework/Main (6.9.1)
+  - connection_network_type (0.0.1):
+    - Flutter
+    - ReachabilitySwift
   - connectivity_plus (0.0.1):
     - Flutter
     - ReachabilitySwift
-  - contacts_service (0.2.2):
-    - Flutter
   - device_info (0.0.1):
     - Flutter
   - Flutter (1.0.0)
+  - flutter_contacts (0.0.1):
+    - Flutter
   - flutter_inappwebview (0.0.1):
     - Flutter
     - flutter_inappwebview/Core (= 0.0.1)
@@ -99,10 +102,11 @@ PODS:
 DEPENDENCIES:
   - Alamofire (~> 5.4)
   - Analytics (~> 4.1)
+  - connection_network_type (from `.symlinks/plugins/connection_network_type/ios`)
   - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
-  - contacts_service (from `.symlinks/plugins/contacts_service/ios`)
   - device_info (from `.symlinks/plugins/device_info/ios`)
   - Flutter (from `Flutter`)
+  - flutter_contacts (from `.symlinks/plugins/flutter_contacts/ios`)
   - flutter_inappwebview (from `.symlinks/plugins/flutter_inappwebview/ios`)
   - flutter_keyboard_visibility (from `.symlinks/plugins/flutter_keyboard_visibility/ios`)
   - flutter_libphonenumber (from `.symlinks/plugins/flutter_libphonenumber/ios`)
@@ -142,14 +146,16 @@ SPEC REPOS:
     - linphone-sdk-novideo
 
 EXTERNAL SOURCES:
+  connection_network_type:
+    :path: ".symlinks/plugins/connection_network_type/ios"
   connectivity_plus:
     :path: ".symlinks/plugins/connectivity_plus/ios"
-  contacts_service:
-    :path: ".symlinks/plugins/contacts_service/ios"
   device_info:
     :path: ".symlinks/plugins/device_info/ios"
   Flutter:
     :path: Flutter
+  flutter_contacts:
+    :path: ".symlinks/plugins/flutter_contacts/ios"
   flutter_inappwebview:
     :path: ".symlinks/plugins/flutter_inappwebview/ios"
   flutter_keyboard_visibility:
@@ -201,10 +207,11 @@ SPEC CHECKSUMS:
   Analytics: eefe524436f904b8bb3f8c8c3425280e43b34efc
   AnalyticsConnector: eccd7e1cd3dd18e6bd09ac2506e37d4ed43ba3f4
   AppsFlyerFramework: dc9aa675faa8e1a2ed40fb295d3c5408ee2b972a
+  connection_network_type: 160e62717f4cfc913811aa4e4ccf7f4e60497936
   connectivity_plus: 413a8857dd5d9f1c399a39130850d02fe0feaf7e
-  contacts_service: 849e1f84281804c8bfbec1b4c3eedcb23c5d3eca
   device_info: d7d233b645a32c40dfdc212de5cf646ca482f175
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
+  flutter_contacts: edb1c5ce76aa433e20e6cb14c615f4c0b66e0983
   flutter_inappwebview: bfd58618f49dc62f2676de690fc6dcda1d6c3721
   flutter_keyboard_visibility: 0339d06371254c3eb25eeb90ba8d17dca8f9c069
   flutter_libphonenumber: 8e7a8f974fda0f5915cf0af846879adf90b08f51
@@ -236,4 +243,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: df5689a3bcea3ea40b740bdf6675c7c9be441b4a
 
-COCOAPODS: 1.12.0
+COCOAPODS: 1.12.1
