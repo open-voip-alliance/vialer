@@ -23,15 +23,23 @@ if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
 
-def hasBrandId = project.hasProperty('identifier')
-if (!hasBrandId) {
-    throw new GradleException("Brand identifier missing, probably --dart-define-from-file isn't set.")
-}
+def brand = [:]
 
-def brand = [
-    identifier: project.getProperty('identifier'),
-    appId: project.getProperty('appId')
-];
+if (project.hasProperty('identifier')) {
+    brand.identifier = project.getProperty('identifier')
+    brand.appId = project.getProperty('appId')
+} else {
+    logger.error("""
+Brand identifier is missing, this likely means you have not included --dart-define-from-file when
+running via Flutter.
+
+We will fallback to the information from vialer.json as this allows us to compile the app in a
+purely Android environment. If you are not in a purely Android environment you should resolve this
+instead.
+""")
+    brand.identifier = 'vialer'
+    brand.appId = 'com.voipgrid.vialer'
+}
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
@@ -138,6 +146,21 @@ dependencies {
     def lifecycle_version = "2.5.1"
     implementation "androidx.lifecycle:lifecycle-viewmodel:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+}
+
+configurations.all {
+    // Segment pulls in this "appsflyer" library as an integration, this is flagged by Google Play
+    // as an "ad SDK". This doesn't really seem to be the case but we don't use these integrations
+    // so we will just make sure they are excluded.
+    exclude group: "com.appsflyer", module: "segment-android-integration"
+
+    // We will also be cautious and remove the Amplitude integrations, because it does a pretty
+    // similar thing to AppsFlyer so could be flagged in the future.
+    //
+    // Note: We use Amplitude internally but all this data is funneled through Segment, we don't
+    // send any data to Amplitude directly so don't need any integrations in the app itself.
+    exclude group: "com.amplitude", module: "android-sdk"
+    exclude group: "com.segment.analytics.android.integrations", module: "amplitude"
 }
 
 apply plugin: 'com.google.gms.google-services'
