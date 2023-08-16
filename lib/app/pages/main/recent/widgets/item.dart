@@ -146,9 +146,7 @@ class _RecentCallItemContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-      leading: !callRecord.isClientCall
-          ? _RecentItemAvatar(callRecord)
-          : null,
+      leading: !callRecord.isClientCall ? _RecentItemAvatar(callRecord) : null,
       title: GestureDetector(
         behavior: HitTestBehavior.translucent,
         onTap: onCallPressed,
@@ -179,10 +177,7 @@ class _RecentItemAvatar extends StatelessWidget {
           callRecord.thirdPartyNumber,
         ),
         showFallback: callRecord is CallRecordWithContact &&
-            (callRecord as CallRecordWithContact)
-                .contact
-                ?.displayName ==
-                null,
+            (callRecord as CallRecordWithContact).contact?.displayName == null,
         image: callRecord is CallRecordWithContact
             ? (callRecord as CallRecordWithContact).contact?.avatar
             : null,
@@ -191,7 +186,6 @@ class _RecentItemAvatar extends StatelessWidget {
     );
   }
 }
-
 
 class _RecentItemSubtitle extends StatelessWidget {
   const _RecentItemSubtitle(this.callRecord);
@@ -462,8 +456,12 @@ class RecentCallHeader extends StatelessWidget {
   String _text(
     BuildContext context, {
     required DateTime headerDate,
+    bool forSemantics = false,
   }) {
-    final date = DateFormat.yMd(Platform.localeName).format(headerDate);
+    final dateFormat = forSemantics
+        ? DateFormat.yMMMMd(Platform.localeName)
+        : DateFormat.yMd(Platform.localeName);
+    final date = dateFormat.format(headerDate);
     final prefix = headerDate.isToday
         ? '${context.msg.main.recent.list.headers.today} - '
         : headerDate.wasYesterday
@@ -476,6 +474,7 @@ class RecentCallHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = context.brand.theme.colors.grey4;
+    final date = this.date.toLocal();
 
     final divider = Expanded(
       child: Divider(height: 1, color: color),
@@ -491,6 +490,8 @@ class RecentCallHeader extends StatelessWidget {
             Semantics(
               header: true,
               container: true,
+              excludeSemantics: true,
+              label: _text(context, headerDate: date, forSemantics: true),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Row(
@@ -499,7 +500,7 @@ class RecentCallHeader extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: Text(
-                        _text(context, headerDate: date.toLocal()),
+                        _text(context, headerDate: date),
                         style: TextStyle(
                           color: color,
                         ),
