@@ -146,31 +146,42 @@ class _RecentCallItemContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-      leading: !callRecord.isClientCall
-          ? Avatar(
-              name: callRecord.displayLabel,
-              backgroundColor: calculateColorForPhoneNumber(
-                context,
-                callRecord.thirdPartyNumber,
-              ),
-              showFallback: callRecord is CallRecordWithContact &&
-                  (callRecord as CallRecordWithContact).contact?.displayName ==
-                      null,
-              image: callRecord is CallRecordWithContact
-                  ? (callRecord as CallRecordWithContact).contact?.avatar
-                  : null,
-              fallback: const Text('#'),
-            )
-          : null,
+      leading: !callRecord.isClientCall ? _RecentItemAvatar(callRecord) : null,
       title: GestureDetector(
         behavior: HitTestBehavior.translucent,
         onTap: onCallPressed,
         child: child,
+        excludeFromSemantics: true,
       ),
       onTap: _emptyOnTapToKeepSplash,
       trailing: RecentItemPopupMenu(
         callRecord: callRecord,
         onPopupMenuItemPress: _onPopupMenuItemPress,
+      ),
+    );
+  }
+}
+
+class _RecentItemAvatar extends StatelessWidget {
+  const _RecentItemAvatar(this.callRecord);
+
+  final CallRecord callRecord;
+
+  @override
+  Widget build(BuildContext context) {
+    return ExcludeSemantics(
+      child: Avatar(
+        name: callRecord.displayLabel,
+        backgroundColor: calculateColorForPhoneNumber(
+          context,
+          callRecord.thirdPartyNumber,
+        ),
+        showFallback: callRecord is CallRecordWithContact &&
+            (callRecord as CallRecordWithContact).contact?.displayName == null,
+        image: callRecord is CallRecordWithContact
+            ? (callRecord as CallRecordWithContact).contact?.avatar
+            : null,
+        fallback: const Text('#'),
       ),
     );
   }
@@ -256,6 +267,13 @@ class _RecentItemSubtitleText extends StatelessWidget {
         spacer: '',
       );
 
+  String get _durationForSemantics => prettyDuration(
+        callRecord.duration,
+        abbreviated: false,
+        delimiter: ' ',
+        spacer: ' ',
+      );
+
   String _callPartyText(CallParty party) {
     if (party.name == null ||
         party.name!.isEmpty ||
@@ -320,20 +338,25 @@ class _RecentItemSubtitleText extends StatelessWidget {
     }
   }
 
-  String _text(BuildContext context) {
+  String _text(
+    BuildContext context, {
+    bool forSemantics = false,
+  }) {
+    final duration = forSemantics ? _durationForSemantics : _duration;
+
     if (callRecord.isInbound) {
       if (callRecord.wasMissed) {
         return context.msg.main.recent.list.item.wasMissed(_time);
       } else {
-        return context.msg.main.recent.list.item.inbound(_time, _duration);
+        return context.msg.main.recent.list.item.inbound(_time, duration);
       }
     }
 
     if (callRecord.isOutbound) {
-      return context.msg.main.recent.list.item.outbound(_time, _duration);
+      return context.msg.main.recent.list.item.outbound(_time, duration);
     }
 
-    return '$_time - $_duration';
+    return '$_time - $duration';
   }
 
   @override
@@ -388,6 +411,7 @@ class _RecentItemSubtitleText extends StatelessWidget {
     return Text(
       _text(context),
       style: textStyle,
+      semanticsLabel: _text(context, forSemantics: true),
     );
   }
 }
@@ -432,8 +456,12 @@ class RecentCallHeader extends StatelessWidget {
   String _text(
     BuildContext context, {
     required DateTime headerDate,
+    bool forSemantics = false,
   }) {
-    final date = DateFormat.yMd(Platform.localeName).format(headerDate);
+    final dateFormat = forSemantics
+        ? DateFormat.yMMMMd(Platform.localeName)
+        : DateFormat.yMd(Platform.localeName);
+    final date = dateFormat.format(headerDate);
     final prefix = headerDate.isToday
         ? '${context.msg.main.recent.list.headers.today} - '
         : headerDate.wasYesterday
@@ -446,37 +474,47 @@ class RecentCallHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = context.brand.theme.colors.grey4;
+    final date = this.date.toLocal();
 
     final divider = Expanded(
       child: Divider(height: 1, color: color),
     );
 
-    return Padding(
-      padding: const EdgeInsets.only(top: 8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: Row(
-              children: [
-                divider,
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Text(
-                    _text(context, headerDate: date.toLocal()),
-                    style: TextStyle(
-                      color: color,
+    return Semantics(
+      explicitChildNodes: true,
+      child: Padding(
+        padding: const EdgeInsets.only(top: 8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Semantics(
+              header: true,
+              container: true,
+              excludeSemantics: true,
+              label: _text(context, headerDate: date, forSemantics: true),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Row(
+                  children: [
+                    divider,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Text(
+                        _text(context, headerDate: date),
+                        style: TextStyle(
+                          color: color,
+                        ),
+                      ),
                     ),
-                  ),
+                    divider,
+                  ],
                 ),
-                divider,
-              ],
+              ),
             ),
-          ),
-          const SizedBox(height: 16),
-          child,
-        ],
+            const SizedBox(height: 16),
+            child,
+          ],
+        ),
       ),
     );
   }
