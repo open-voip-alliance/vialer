@@ -1,48 +1,25 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../domain/onboarding/step.dart';
 
-class OnboardingState extends Equatable {
-  const OnboardingState({
-    required this.allSteps,
-    required this.currentStep,
-    this.password,
-    this.email,
-    this.completed = false,
-  });
+part 'state.freezed.dart';
 
-  /// All steps to go through in the onboarding process. Steps may be
-  /// added later on during the onboarding process.
-  ///
-  /// For example, when the user is required to change their password,
-  /// the `OnboardingStep.password` will be added.
-  final Iterable<OnboardingStep> allSteps;
-  final OnboardingStep currentStep;
+@freezed
+class OnboardingState with _$OnboardingState {
+  const factory OnboardingState({
+    /// All steps to go through in the onboarding process. Steps may be
+    /// added later on during the onboarding process.
+    ///
+    /// For example, when the user is required to change their password,
+    /// the `OnboardingStep.password` will be added.
+    required Iterable<OnboardingStep> allSteps,
+    required OnboardingStep currentStep,
 
-  /// User entered email, saved for if they need to change their password.
-  final String? email;
-
-  /// User entered password, saved for if they need to change their password.
-  final String? password;
-
-  final bool completed;
-
-  @override
-  List<Object?> get props => [allSteps, currentStep, password, completed];
-
-  OnboardingState copyWith({
-    Iterable<OnboardingStep>? allSteps,
-    OnboardingStep? currentStep,
+    /// User entered password, saved for if they need to change their password.
     String? email,
+
+    /// User entered email, saved for if they need to change their password.
     String? password,
-    bool? completed,
-  }) {
-    return OnboardingState(
-      allSteps: allSteps ?? this.allSteps,
-      currentStep: currentStep ?? this.currentStep,
-      email: email ?? this.email,
-      password: password ?? this.password,
-      completed: completed ?? this.completed,
-    );
-  }
+    @Default(false) bool completed,
+  }) = _OnboardingState;
 }

@@ -1,12 +1,10 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../../domain/user/user.dart';
 
-class WelcomeState extends Equatable {
-  const WelcomeState({this.user});
+part 'state.freezed.dart';
 
-  final User? user;
-
-  @override
-  List<Object?> get props => [user];
+@freezed
+class WelcomeState with _$WelcomeState {
+  const factory WelcomeState({User? user}) = _WelcomeState;
 }
