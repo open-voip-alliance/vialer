@@ -84,12 +84,15 @@ class _MobileNumberPageState extends State<MobileNumberPage> {
                         height: isKeyboardVisible ? 24 : 64,
                       ),
                       if (!isKeyboardVisible)
-                        Text(
-                          context.msg.onboarding.mobileNumber.title,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontSize: 40,
-                            fontWeight: FontWeight.bold,
+                        Semantics(
+                          header: true,
+                          child: Text(
+                            context.msg.onboarding.mobileNumber.title,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontSize: 40,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       AnimatedContainer(
@@ -139,13 +142,16 @@ class _MobileNumberPageState extends State<MobileNumberPage> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: <Widget>[
-                            StylizedButton.raised(
-                              key: MobileNumberPage.keys.continueButton,
-                              onPressed: () =>
-                                  _onContinueButtonPressed(context),
-                              child: Text(
-                                context.msg.onboarding.mobileNumber.button
-                                    .toUpperCaseIfAndroid(context),
+                            Semantics(
+                              button:true,
+                              child: StylizedButton.raised(
+                                key: MobileNumberPage.keys.continueButton,
+                                onPressed: () =>
+                                    _onContinueButtonPressed(context),
+                                child: Text(
+                                  context.msg.onboarding.mobileNumber.button
+                                      .toUpperCaseIfAndroid(context),
+                                ),
                               ),
                             ),
                           ],

@@ -70,13 +70,16 @@ class _PasswordPageState extends State<PasswordPage>
           builder: (context, state) {
             return Column(
               children: <Widget>[
-                Text(
-                  context.msg.onboarding.password.title,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontSize: 26,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                Semantics(
+                  header: true,
+                  child: Text(
+                    context.msg.onboarding.password.title,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 26,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 16),

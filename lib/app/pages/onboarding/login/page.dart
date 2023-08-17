@@ -91,13 +91,16 @@ class _LoginPageState extends State<LoginPage>
                   child: SingleChildScrollView(
                     child: Column(
                       children: <Widget>[
-                        Text(
-                          context.msg.onboarding.login.title,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontSize: 26,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
+                        Semantics(
+                          header: true,
+                          child: Text(
+                            context.msg.onboarding.login.title,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontSize: 26,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                         AnimatedContainer(
