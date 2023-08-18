@@ -1,13 +1,30 @@
+import 'dart:async';
+
 import 'package:dartx/dartx.dart';
 import 'package:logging/logging.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:vialer/app/util/loggable.dart';
+import 'package:vialer/domain/error_tracking/should_send_sentry_event.dart';
 
 import '../../dependency_locator.dart';
 import '../env.dart';
 import '../user/user.dart';
 
 class ErrorTrackingRepository with Loggable {
+  final _shouldSend = ShouldSendSentryEvent();
+
+  FutureOr<SentryEvent?> _beforeSend(
+    SentryEvent event,
+    User? user, {
+    dynamic hint,
+  }) async {
+    final shouldSend = _shouldSend(event);
+
+    logger.logSentryEvent(event, willBeSentToSentry: shouldSend);
+
+    return shouldSend ? event.copyWith(user: SentryUser(id: user?.uuid)) : null;
+  }
+
   Future<void> run(
     void Function() appRunner,
     String dsn,
@@ -16,20 +33,25 @@ class ErrorTrackingRepository with Loggable {
     await SentryFlutter.init(
       (options) => options
         ..dsn = dsn
-        ..beforeSend = (event, {dynamic hint}) {
-          logger.logSentryEvent(event);
-          return event.copyWith(user: SentryUser(id: user?.uuid));
-        },
+        ..sampleRate = 0.5
+        ..beforeSend =
+            (event, {dynamic hint}) => _beforeSend(event, user, hint: hint),
       appRunner: appRunner,
     );
   }
 }
 
 extension on Logger {
-  void logSentryEvent(SentryEvent event) => severe(
+  void logSentryEvent(
+    SentryEvent event, {
+    bool willBeSentToSentry = true,
+  }) =>
+      severe(
         // The event id lets you look this up in Sentry so we don't need
         // to display the entire stack trace.
-        'Error [${event._sentryUrl}]: ${event.title}',
+        willBeSentToSentry
+            ? 'Error [${event._sentryUrl}]: ${event.title}'
+            : 'Error not submitted to Sentry: ${event.title}',
       );
 }
 
