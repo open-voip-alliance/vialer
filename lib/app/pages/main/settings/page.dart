@@ -110,7 +110,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             cubit: cubit,
                             pageBuilder: (_) => const AboutTheAppSubPage(),
                           ),
-                          if (state.showTroubleshooting && isProduction)
+                          if (!isProduction)
                             SubPageLinkTile(
                               title: context
                                   .msg
