@@ -5,6 +5,7 @@ import 'package:vialer/app/pages/main/settings/sub_page/about_the_app.dart';
 import 'package:vialer/app/pages/main/settings/sub_page/system.dart';
 import 'package:vialer/app/pages/main/settings/widgets/tile/availability/widget.dart';
 
+import '../../../../domain/env.dart';
 import '../../../resources/localizations.dart';
 import '../util/stylized_snack_bar.dart';
 import 'cubit.dart';
@@ -109,7 +110,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             cubit: cubit,
                             pageBuilder: (_) => const AboutTheAppSubPage(),
                           ),
-                          if (state.showTroubleshooting)
+                          if (state.showTroubleshooting && isProduction)
                             SubPageLinkTile(
                               title: context
                                   .msg
