@@ -15,10 +15,10 @@ class OnboardingState with _$OnboardingState {
     required Iterable<OnboardingStep> allSteps,
     required OnboardingStep currentStep,
 
-    /// User entered password, saved for if they need to change their password.
+    /// User entered email, saved for if they need to change their password.
     String? email,
 
-    /// User entered email, saved for if they need to change their password.
+    /// User entered password, saved for if they need to change their password.
     String? password,
     @Default(false) bool completed,
   }) = _OnboardingState;
