@@ -8,6 +8,7 @@ import '../../../dependency_locator.dart';
 import '../../authentication/authentication_repository.dart';
 import '../../event/event_bus.dart';
 import '../../legacy/storage.dart';
+import '../../onboarding/exceptions.dart';
 import '../../onboarding/login_credentials.dart';
 import '../../use_case.dart';
 import '../events/logged_in_user_was_refreshed.dart';
@@ -36,6 +37,14 @@ class RefreshUser extends UseCase with Loggable {
         : refreshUser();
   }
 
+  Future<User?> _getUser(LoginCredentials? credentials) async {
+    try {
+      return _auth.getUserFromCredentials(credentials);
+    } on FailedToRetrieveUserException {
+      return null;
+    }
+  }
+
   Future<User?> _refreshUser(
     LoginCredentials? credentials,
     List<UserRefreshTask> tasksToPerform,
@@ -44,7 +53,7 @@ class RefreshUser extends UseCase with Loggable {
       final storedUser = _storageRepository.user;
       final latestUser = tasksToPerform.contains(UserRefreshTask.userCore) ||
               storedUser == null
-          ? await _auth.getUserFromCredentials(credentials)
+          ? await _getUser(credentials)
           : storedUser;
 
       if (latestUser == null) return storedUser;
