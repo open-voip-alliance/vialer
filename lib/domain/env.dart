@@ -40,7 +40,7 @@ extension Environment on String? {
   /// they will resolve to [true] when an environment variable is cast
   /// to a boolean.
   ///
-  /// These will all be downcast before comparing so case is irrelevant.
+  /// These will all be downcased before comparing so case is irrelevant.
   static const _truthy = ['1', 'true'];
 
   bool toBool() => _truthy.any(
