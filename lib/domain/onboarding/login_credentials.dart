@@ -1,25 +1,17 @@
-abstract class LoginCredentials {
-  const LoginCredentials();
-}
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class UserProvidedCredentials extends LoginCredentials {
-  const UserProvidedCredentials({
-    required this.email,
-    required this.password,
-    this.twoFactorCode,
-  });
+part 'login_credentials.freezed.dart';
 
-  final String email;
-  final String password;
-  final String? twoFactorCode;
-}
+@freezed
+sealed class LoginCredentials with _$LoginCredentials {
+  const factory LoginCredentials.userProvided({
+    required String email,
+    required String password,
+    String? twoFactorCode,
+  }) = UserProvidedCredentials;
 
-class ImportedLegacyAppCredentials extends LoginCredentials {
-  const ImportedLegacyAppCredentials(
-    this.token,
-    this.email,
-  );
-
-  final String token;
-  final String email;
+  const factory LoginCredentials.importedFromLegacyApp(
+    String token,
+    String email,
+  ) = ImportedLegacyAppCredentials;
 }
