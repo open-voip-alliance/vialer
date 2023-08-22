@@ -1,5 +1,7 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
+import '../dependency_locator.dart';
+
 class EnvRepository {
   late Map<String, String> _env;
 
@@ -38,3 +40,11 @@ extension on String {
     return this == '1' || toLowerCase() == 'true';
   }
 }
+
+/// Determine if the app is in production, this means that it is a build
+/// that has been (or will be) published for anybody to download
+/// from the Play Store/App Store.
+///
+/// A build that is used for any sort of testing (e.g. internal previews) are
+/// not counted as in production.
+bool get isProduction => dependencyLocator<EnvRepository>().isProduction;

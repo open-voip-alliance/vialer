@@ -34,7 +34,6 @@ class AppPreferencesSubPage extends StatelessWidget {
             user.permissions.canViewMobileNumberFallbackStatus;
         final hasIgnoreOptimizationsPermission =
             state.hasIgnoreBatteryOptimizationsPermission;
-        final showTroubleshooting = state.showTroubleshooting;
         final cubit = context.watch<SettingsCubit>();
 
         return SettingsSubPage(
@@ -79,8 +78,8 @@ class AppPreferencesSubPage extends StatelessWidget {
                     RemoteLoggingTile(user),
                   ],
                 ),
-                if (user.isAllowedVoipCalling && showTroubleshooting)
-                  const AdvancedSettingsCategory(
+                if (state.showTroubleshooting)
+                  AdvancedSettingsCategory(
                     children: [
                       TroubleshootingLinkTile(),
                     ],
