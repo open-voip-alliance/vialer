@@ -33,8 +33,6 @@ class EnvRepository {
   bool get isProduction => get('IS_PRODUCTION').toBool();
 }
 
-extension on String {
-  bool toBool() {
-    return this == '1' || toLowerCase() == 'true';
-  }
+extension Envrironment on String? {
+  bool toBool() => this == '1' || this?.toLowerCase() == 'true';
 }

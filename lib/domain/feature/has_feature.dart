@@ -10,7 +10,7 @@ class HasFeature extends UseCase {
   final _env = dependencyLocator<EnvRepository>();
 
   bool call(Feature feature) =>
-      _env.get('FEATURE_${feature.name.constantCase}').isNotEmpty;
+      _env.get('FEATURE_${feature.name.constantCase}').toBool();
 }
 
 bool hasFeature(Feature feature) => HasFeature()(feature);
