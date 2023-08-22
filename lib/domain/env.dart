@@ -35,10 +35,17 @@ class EnvRepository {
   bool get isProduction => get('IS_PRODUCTION').toBool();
 }
 
-extension on String {
-  bool toBool() {
-    return this == '1' || toLowerCase() == 'true';
-  }
+extension Environment on String? {
+  /// These values are considered "truthy" in the environment file, meaning
+  /// they will resolve to [true] when an environment variable is cast
+  /// to a boolean.
+  ///
+  /// These will all be downcast before comparing so case is irrelevant.
+  static const _truthy = ['1', 'true'];
+
+  bool toBool() => _truthy.any(
+        (truthy) => truthy.toLowerCase() == this?.toLowerCase(),
+      );
 }
 
 /// Determine if the app is in production, this means that it is a build
