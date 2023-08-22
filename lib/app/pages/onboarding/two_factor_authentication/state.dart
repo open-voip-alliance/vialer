@@ -1,28 +1,14 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-abstract class TwoFactorState extends Equatable {
-  const TwoFactorState();
+part 'state.freezed.dart';
 
-  @override
-  List<Object?> get props => [];
-}
-
-class CodeNotSubmitted extends TwoFactorState {
-  const CodeNotSubmitted();
-}
-
-class AwaitingServerResponse extends TwoFactorState {
-  const AwaitingServerResponse();
-}
-
-class CodeAccepted extends TwoFactorState {
-  const CodeAccepted();
-}
-
-class PasswordChangeRequired extends TwoFactorState {
-  const PasswordChangeRequired();
-}
-
-class CodeRejected extends TwoFactorState {
-  const CodeRejected();
+@freezed
+sealed class TwoFactorState with _$TwoFactorState {
+  const factory TwoFactorState.codeNotSubmitted() = CodeNotSubmitted;
+  const factory TwoFactorState.awaitingServerResponse() =
+      AwaitingServerResponse;
+  const factory TwoFactorState.codeAccepted() = CodeAccepted;
+  const factory TwoFactorState.passwordChangeRequired() =
+      PasswordChangeRequired;
+  const factory TwoFactorState.codeRejected() = CodeRejected;
 }

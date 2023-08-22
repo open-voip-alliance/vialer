@@ -1,12 +1,10 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class PermissionState extends Equatable {
-  @override
-  List<Object?> get props => [];
+part 'state.freezed.dart';
+
+@freezed
+sealed class PermissionState with _$PermissionState {
+  const factory PermissionState.notRequested() = PermissionNotRequested;
+  const factory PermissionState.granted() = PermissionGranted;
+  const factory PermissionState.denied() = PermissionDenied;
 }
-
-class PermissionNotRequested extends PermissionState {}
-
-class PermissionGranted extends PermissionState {}
-
-class PermissionDenied extends PermissionState {}
