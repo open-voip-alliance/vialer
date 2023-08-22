@@ -38,6 +38,7 @@ class _BuildInfoTileState extends State<BuildInfoTile> {
               .read<SettingsCubit>()
               .changeSetting(AppSetting.showTroubleshooting, true),
         );
+        Navigator.of(context).pop();
       }
 
       ScaffoldMessenger.of(context).showSnackBar(
