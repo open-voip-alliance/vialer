@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_cast
+
 import 'package:vialer/app/util/loggable.dart';
 import 'package:vialer/domain/use_case.dart';
 import 'package:vialer/domain/user/settings/settings.dart';
@@ -32,20 +34,17 @@ class PreserveCrossSessionSettings extends UseCase with Loggable {
   ];
 
   Future<void> call(User user) async {
-    final settings = Settings(
-      Map.fromEntries(
-        preserve.map(
-          // This fails to compile without explicitly casting to [SettingKey]
-          // ignore: unnecessary_cast
-          (key) => MapEntry(key as SettingKey, user.settings.get(key)),
-        ),
-      ),
+    final preserved = Map.fromEntries(
+      preserve.map((key) => MapEntry(
+            key as SettingKey,
+            user.settings.get(key as SettingKey),
+          )),
     );
 
     logger.info(
       'Preserving [${preserve.map((e) => e.name).join(', ')}] for future login',
     );
 
-    _storage.previousSessionSettings = Settings.defaults.diff(settings);
+    _storage.previousSessionSettings = preserved;
   }
 }

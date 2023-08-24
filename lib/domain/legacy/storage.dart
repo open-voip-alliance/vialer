@@ -18,76 +18,17 @@ import '../voipgrid/client_voip_config.dart';
 import '../voipgrid/user_voip_config.dart';
 
 class StorageRepository {
-  late SharedPreferences _preferences;
+  final SharedPreferences _preferences;
 
-  Future<void> load() async {
-    _preferences = await SharedPreferences.getInstance();
-  }
+  const StorageRepository(this._preferences);
 
   // Value must stay the same, otherwise everything breaks.
   static const _userKey = 'system_user';
 
-  User? get user {
-    final userJson = _preferences.getJson(
-          _userKey,
-          (j) => j! as Map<String, dynamic>,
-        ) ??
-        const {};
-
-    User? user;
-
-    // TODO: Remove legacy User deserialization eventually.
-    // If the user has a 'settings' key, we know it's not a legacy user.
-    if (userJson.containsKey('settings')) {
-      user = _preferences.getJson<User, Map<String, dynamic>>(
+  User? get user => _preferences.getJson<User, Map<String, dynamic>>(
         _userKey,
         User.fromJson,
       );
-    } else {
-      final legacyUser = _preferences.getJson(
-        _legacySettingsKey,
-        (settingsJson) => _legacyUserFromJson(
-          userJson,
-          settingsJson! as List<dynamic>,
-        ),
-      );
-
-      // Legacy settings are deleted to prevent
-      // overwriting new settings later on.
-      if (legacyUser != null) {
-        user = legacyUser;
-        // Save to non-legacy user.
-        this.user = user;
-        _preferences.setOrRemoveString(_legacySettingsKey, null);
-      }
-    }
-
-    if (_preferences.containsKey(_legacyVoipConfigKey)) {
-      user = user?.copyWith(
-        voip: () => _preferences.getJson<UserVoipConfig?, Map<String, dynamic>>(
-          _legacyVoipConfigKey,
-          UserVoipConfig.serializeFromJson,
-        ),
-      );
-      this.user = user;
-      _preferences.setOrRemoveString(_legacyVoipConfigKey, null);
-    }
-
-    if (_preferences.containsKey(_legacyServerConfigKey)) {
-      user = user?.copyWith(
-        client: user.client.copyWith(
-          voip: _preferences.getJson(
-            _legacyServerConfigKey,
-            ClientVoipConfig.fromJson,
-          ),
-        ),
-      );
-      this.user = user;
-      _preferences.setOrRemoveString(_legacyVoipConfigKey, null);
-    }
-
-    return user;
-  }
 
   set user(User? user) => _preferences.setOrRemoveObject(_userKey, user);
 
@@ -185,18 +126,18 @@ class StorageRepository {
   set appRatingSurveyShownTime(DateTime? value) =>
       _preferences.setOrRemoveDateTime(_appRatingSurveyShownTimeKey, value);
 
-  static const _legacyServerConfigKey = 'server_config';
-
   static const _previousSessionSettingsKey = 'previous_session_settings';
 
   Settings get previousSessionSettings =>
-      _preferences.getJson(_previousSessionSettingsKey, Settings.fromJson) ??
-      const Settings.empty();
+      _preferences.containsKey(_previousSessionSettingsKey)
+          ? jsonDecode(_preferences.getString(_previousSessionSettingsKey)!)
+              as Settings
+          : {};
 
-  set previousSessionSettings(Settings? value) => _preferences.setOrRemoveJson(
+  set previousSessionSettings(Settings? value) =>
+      _preferences.setOrRemoveString(
         _previousSessionSettingsKey,
-        value,
-        Settings.toJson,
+        jsonEncode(value),
       );
 
   static const _colleaguesKey = 'colleagues';
@@ -442,7 +383,6 @@ class StorageRepository {
         outgoingNumbers:
             clientOutgoingNumbers?.map(OutgoingNumber.new) ?? const [],
       ),
-      settings: Settings.defaults.copyWithAll(settings),
       permissions: permissions ?? const UserPermissions(),
     );
   }

@@ -137,17 +137,14 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
       changeSettings({key: value});
 
   Future<void> changeSettings(Map<SettingKey, Object> settings) async {
-    // Immediately emit a copy of the state with the changed setting for extra
-    // smoothness.
-    final newSettings = Settings(settings);
 
     // We're going to track any requests to update remote and then make sure
     // we don't update the settings page while that's happening. This also
     // allows us to prevent input until changes have finished.
     final changeRequest = _SettingChangeRequest();
     _changesBeingProcessed.add(changeRequest);
-    emit(state.withChanged(newSettings, isApplyingChanges: true));
-    await _changeSettings(newSettings);
+    emit(state.withChanged(GetLoggedInUserUseCase()(), isApplyingChanges: true));
+    await _changeSettings(settings);
     _changesBeingProcessed.remove(changeRequest);
     _emitUpdatedState();
   }

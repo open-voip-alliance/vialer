@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:vialer/domain/user/settings/settings_repository.dart';
+
 import '../../../../dependency_locator.dart';
 import '../../../call_records/client/purge_local_call_records.dart';
 import '../../../voipgrid/user_permissions.dart';
@@ -47,11 +49,10 @@ class RefreshVoipgridUserPermissions extends UserRefreshTaskPerformer {
     // If client calls are enabled, we're going to disable it as the user
     // no longer has permission for it.
     if (user.settings.get(AppSetting.showClientCalls)) {
-      newUser = user.copyWith(
-        settings: user.settings.copyWith(
-          AppSetting.showClientCalls,
-          false,
-        ),
+      // todo move up
+      dependencyLocator<SettingsRepository>().change(
+        AppSetting.showClientCalls,
+        false,
       );
     }
 

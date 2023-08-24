@@ -1,5 +1,7 @@
 import 'package:chopper/chopper.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:vialer/domain/user/settings/call_setting.dart';
+import 'package:vialer/domain/user/settings/change_setting.dart';
 
 import '../../app/util/automatic_retry.dart';
 import '../../app/util/loggable.dart';
@@ -8,8 +10,6 @@ import '../onboarding/exceptions.dart';
 import '../onboarding/login_credentials.dart';
 import '../onboarding/two_factor_authentication_required.dart';
 import '../user/client.dart';
-import '../user/settings/call_setting.dart';
-import '../user/settings/settings.dart';
 import '../user/user.dart';
 import '../voipgrid/client_voip_config.dart';
 import '../voipgrid/voipgrid_service.dart';
@@ -93,9 +93,17 @@ class AuthRepository with Loggable {
       throw FailedToRetrieveUserException();
     }
 
-    return _SystemUserResponse.fromJson(
+    final systemUser = _SystemUserResponse.fromJson(
       response.body!,
-    ).toUser();
+    );
+final a = systemUser.mobileNumber;
+print("TEST123 >>>>${systemUser.mobileNumber}<<<<<");
+    // todo clean-up
+    ChangeSettingUseCase()(CallSetting.mobileNumber, systemUser.mobileNumber ?? '', skipSideEffects: true,);
+    ChangeSettingUseCase()(CallSetting.outgoingNumber, OutgoingNumber.fromJson(systemUser.outgoingCli ?? ''), skipSideEffects: true,);
+
+
+    return systemUser.toUser();
   }
 
   /// If null is returned, authentication failed.
@@ -330,11 +338,5 @@ class _SystemUserResponse {
           url: clientUrl,
           voip: ClientVoipConfig.fallback(),
         ),
-        settings: Settings({
-          CallSetting.mobileNumber: mobileNumber ?? '',
-          CallSetting.outgoingNumber: OutgoingNumber.fromJson(
-            outgoingCli ?? '',
-          ),
-        }),
       );
 }

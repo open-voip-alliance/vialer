@@ -1,29 +1,109 @@
 import 'dart:async';
 
+import 'package:vialer/domain/user/get_logged_in_user.dart';
+import 'package:vialer/domain/user/refresh/refresh_user.dart';
+import 'package:vialer/domain/user/refresh/user_refresh_task.dart';
+import 'package:vialer/domain/user/settings/setting_changed.dart';
+import 'package:vialer/domain/user/settings/settings_repository.dart';
+import 'package:vialer/domain/user/user.dart';
+
+import '../../../dependency_locator.dart';
+import '../../event/event_bus.dart';
+import '../../metrics/metrics.dart';
 import '../../use_case.dart';
-import 'change_settings.dart';
+import 'listeners/setting_change_listener.dart';
+import 'listeners/refresh_voip_preferences.dart';
+import 'listeners/start_voip_on_use_voip_enabled.dart';
+import 'listeners/update_availability.dart';
+import 'listeners/update_dnd_status.dart';
+import 'listeners/update_mobile_number.dart';
+import 'listeners/update_outgoing_number.dart';
+import 'listeners/update_remote_logging.dart';
+import 'listeners/update_use_mobile_number_as_fallback.dart';
 import 'settings.dart';
 
 class ChangeSettingUseCase extends UseCase {
-  final _changeSettings = ChangeSettingsUseCase();
+  final _settingsRepository = dependencyLocator.get<SettingsRepository>();
+  final _metricsRepository = dependencyLocator<MetricsRepository>();
+  final _eventBus = dependencyLocator<EventBus>();
+  final _getCurrentUser = GetLoggedInUserUseCase();
+
+  final _listeners = <SettingChangeListener>[
+    UpdateDestinationListener(),
+    UpdateMobileNumberListener(),
+    UpdateOutgoingNumberListener(),
+    UpdateRemoteLoggingListener(),
+    UpdateUseMobileNumberAsFallbackListener(),
+    StartVoipOnUseVoipEnabledListener(),
+    UpdateDndStatus(),
+    RefreshVoipPreferences(),
+  ];
 
   Future<SettingChangeResult> call<T extends Object>(
     SettingKey<T> key,
-    T value,
-  ) {
-    // Because this is often called with <T> being omitted, in which case Dart
-    // does not infer T based on the given key, we assert  whether the type
-    // matches with what we'd expect from the key.
-    assert(
-      value.runtimeType == key.valueType,
-      "value doesn't have expected value type of key",
-    );
-    return _changeSettings(Settings({key: value})).then((r) {
-      if (r.failed.contains(key)) return SettingChangeResult.failed;
-      if (r.changed.contains(key)) return SettingChangeResult.changed;
-      return SettingChangeResult.unchanged;
-    });
+    T value, {
+    bool track = true,
+    bool skipSideEffects = false,
+  }) async {
+    if (skipSideEffects) {
+      await _settingsRepository.change(key, value);
+      return SettingChangeResult.changed;
+    }
+
+    final user = _getCurrentUser();
+    final oldSettingValue = user.settings.get(key);
+
+    final beforeResult = await _callListeners(key, value, ListenerType.before);
+
+    await _settingsRepository.change(key, value);
+
+    final afterResult = await _callListeners(key, value, ListenerType.after);
+
+    final result = beforeResult + afterResult;
+
+    if (result.log) {
+      logger.info('Set $key to $value');
+    }
+
+    if (track) {
+      _metricsRepository.trackSettingChange(key, value);
+    }
+
+    // If we ever fail, we want to make sure we have fetched the latest data
+    // so the user isn't out-of-sync with the server.
+    if (result.sync || result.failed) {
+      await RefreshUser()(tasksToPerform: UserRefreshTask.all);
+    }
+
+    _eventBus.broadcast(SettingChangedEvent(key, oldSettingValue, value));
+
+    return result.toSettingChangeResult();
   }
+
+  Future<SettingChangeListenResult> _callListeners<T extends Object>(
+    SettingKey<T> key,
+    T value,
+    ListenerType type,
+  ) async {
+    final user = GetLoggedInUserUseCase()();
+
+    for (final listener in _listeners) {
+      if (!listener.shouldHandle(key)) continue;
+
+      final futureOrResult = type == ListenerType.before
+          ? listener.preStore(user, value)
+          : listener.postStore(user, value);
+
+      return futureOrResult is Future ? await futureOrResult : futureOrResult;
+    }
+
+    return SettingChangeListenResult(log: false, sync: false, failed: false);
+  }
+}
+
+enum ListenerType {
+  before,
+  after,
 }
 
 enum SettingChangeResult {
@@ -31,4 +111,9 @@ enum SettingChangeResult {
   unchanged,
   changed,
   failed,
+}
+
+extension on SettingChangeListenResult {
+  SettingChangeResult toSettingChangeResult() =>
+      this.failed ? SettingChangeResult.failed : SettingChangeResult.changed;
 }

@@ -24,7 +24,7 @@ abstract class SettingChangeListener<T extends Object> {
 
     return SettingChangeListenResult(
       log: log,
-      sync: success,
+      sync: false,
       failed: !success,
     );
   }
@@ -59,6 +59,12 @@ class SettingChangeListenResult {
 
   /// Whether the change failed.
   final bool failed;
+
+  SettingChangeListenResult operator +(SettingChangeListenResult other) => SettingChangeListenResult(
+    log: log || other.log,
+    sync: sync || other.sync,
+    failed: failed || other.failed,
+  );
 }
 
 const successResult = SettingChangeListenResult();

@@ -1,19 +1,20 @@
 // ignore_for_file: avoid_types_on_closure_parameters
 
 import 'package:meta/meta.dart';
+import 'package:vialer/domain/user/settings/change_setting.dart';
+import 'package:vialer/domain/user/settings/settings.dart';
+import 'package:vialer/domain/user/settings/settings_repository.dart';
 
 import '../client.dart';
 import '../permissions/user_permissions.dart';
-import '../settings/settings.dart';
 import '../user.dart';
 import 'user_refresh_task.dart';
 
 typedef UserMutator = User Function(User);
 typedef ClientMutator = Client Function(Client);
-typedef SettingsMutator = Settings Function(Settings);
+typedef SettingsMutator = (SettingKey key, Object value) Function(User)?;
 
 User unmutatedUser(User user) => user;
-Settings unmutatedSettings(Settings settings) => settings;
 
 /// A [UserRefreshTaskPerformer] is a task that will "refresh" the logged-in
 /// user with new data provided by the server.
@@ -80,14 +81,21 @@ abstract class ClientRefreshTaskPerformer extends UserRefreshTaskPerformer {
 }
 
 /// See [ClientRefreshTaskPerformer] for more information, this applies in
-/// exactly the same way but to [Settings] rather than [Client].
+/// exactly the same way but to [SettingsRepository] rather than [Client].
 abstract class SettingsRefreshTaskPerformer extends UserRefreshTaskPerformer {
   const SettingsRefreshTaskPerformer();
 
   @override
   Future<UserMutator> performUserRefreshTask(User user) async {
-    final mutator = await performSettingsRefreshTask(user);
-    return (User user) => user.copyWith(settings: mutator(user.settings));
+    final result = await performSettingsRefreshTask(user);
+
+    if (result == null) return unmutatedUser;
+
+    final change = result(user);
+
+    await ChangeSettingUseCase()(change.$1, change.$2, skipSideEffects: true);
+
+    return unmutatedUser;
   }
 
   @protected

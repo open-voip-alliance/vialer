@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:dartx/dartx.dart';
-import 'package:recase/recase.dart';
 import 'package:vialer/app/util/pigeon.dart';
 
 import '../../../dependency_locator.dart';
@@ -58,13 +57,14 @@ extension on User {
   Map<String, dynamic> toIdentifyProperties() {
     final properties = <String, dynamic>{};
 
-    for (final a in settings.entries) {
-      // For now we only care about bool settings, but can be expanded in the
-      // future.
-      if (a.value is bool) {
-        properties[a.key.asPropertyKey] = a.value;
-      }
-    }
+    // todo: Find alll settings
+    // for (final a in settings.entries) {
+    //   // For now we only care about bool settings, but can be expanded in the
+    //   // future.
+    //   if (a.value is bool) {
+    //     properties[a.key.asPropertyKey] = a.value;
+    //   }
+    // }
 
     return properties;
   }
@@ -97,12 +97,12 @@ extension on ColltactTab? {
 }
 
 extension on SettingKey {
-  String get asPropertyKey {
-    // We don't care about the generic argument, just the base type.
-    final type = runtimeType.toString().replaceAll(RegExp('<.+>'), '');
-
-    return '$type-$name'.paramCase;
-  }
+  // String get asPropertyKey {
+  //   // We don't care about the generic argument, just the base type.
+  //   final type = runtimeType.toString().replaceAll(RegExp('<.+>'), '');
+  //
+  //   return '$type-$name'.paramCase;
+  // }
 }
 
 extension on Client {

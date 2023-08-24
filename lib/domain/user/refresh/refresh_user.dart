@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:vialer/domain/authentication/user_logged_in.dart';
+import 'package:vialer/domain/user/settings/settings_repository.dart';
 
 import '../../../app/util/loggable.dart';
 import '../../../app/util/synchronized_task.dart';
@@ -12,13 +13,13 @@ import '../../onboarding/exceptions.dart';
 import '../../onboarding/login_credentials.dart';
 import '../../use_case.dart';
 import '../events/logged_in_user_was_refreshed.dart';
-import '../settings/settings.dart';
 import '../user.dart';
 import 'user_refresh_task.dart';
 import 'user_refresh_task_performer.dart';
 
 class RefreshUser extends UseCase with Loggable {
   final _storageRepository = dependencyLocator<StorageRepository>();
+  final _settings = dependencyLocator<SettingsRepository>();
   final _auth = dependencyLocator<AuthRepository>();
   final _eventBus = dependencyLocator<EventBus>();
 
@@ -58,12 +59,13 @@ class RefreshUser extends UseCase with Loggable {
 
       if (latestUser == null) return storedUser;
 
+      _settings.loadDefaultSettings();
+
       // Latest user contains some settings, such as mobile and
       // outgoing number.
       var user = storedUser?.copyFrom(latestUser) ?? latestUser;
 
       user = user.copyWith(
-        settings: Settings.defaults.copyFrom(user.settings),
         permissions: storedUser?.permissions,
         client: storedUser?.client,
         voip: () => storedUser?.voip,
@@ -80,8 +82,6 @@ class RefreshUser extends UseCase with Loggable {
       user = await tasksToPerform
           .performInParallel(user)
           .then((userMutators) => userMutators.mutateInSequence(user));
-
-      assertAllSettingsHaveValue(user);
 
       _storageRepository.user = user;
 
@@ -117,18 +117,6 @@ class RefreshUser extends UseCase with Loggable {
         await UserRefreshTask.voipgridUserPermissions.performer!.call(user);
 
     return mutator(user);
-  }
-
-  void assertAllSettingsHaveValue(User user) {
-    assert(
-      user.settings.isComplete,
-      // ignore: prefer_interpolation_to_compose_strings
-      'The following settings are missing from the user: ' +
-          Settings.possibleKeys
-              .difference(user.settings.keys)
-              .toList()
-              .toString(),
-    );
   }
 }
 
