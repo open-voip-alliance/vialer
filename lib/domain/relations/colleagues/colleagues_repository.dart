@@ -11,6 +11,7 @@ import '../../event/event_bus.dart';
 import '../../user/brand.dart';
 import '../../user/events/logged_in_user_availability_changed.dart';
 import '../../user/user.dart';
+import '../../voipgrid/user_permissions.dart';
 import '../../voipgrid/voipgrid_api_resource_collector.dart';
 import '../../voipgrid/voipgrid_service.dart';
 import 'availability_update.dart';
@@ -235,7 +236,7 @@ class ColleaguesRepository with Loggable {
   Future<List<Colleague>> getColleagues(User user) async {
     final clientId = user.client.id.toString();
 
-    final users = user.permissions.canViewColleagues
+    final users = user.hasPermission(Permission.canViewColleagues)
         ? await _apiResourceCollector.collect(
             requester: (page) => _service.getUsers(
               clientId,
@@ -245,7 +246,7 @@ class ColleaguesRepository with Loggable {
           )
         : const <Map<String, dynamic>>[];
 
-    final voipAccounts = user.permissions.canViewVoipAccounts
+    final voipAccounts = user.hasPermission(Permission.canViewVoipAccounts)
         ? await _apiResourceCollector.collect(
             requester: (page) => _service.getUnconnectedVoipAccounts(
               clientId,

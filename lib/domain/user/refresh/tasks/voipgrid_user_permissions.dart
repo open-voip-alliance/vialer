@@ -5,17 +5,18 @@ import 'package:vialer/domain/user/settings/change_setting.dart';
 import '../../../../dependency_locator.dart';
 import '../../../call_records/client/purge_local_call_records.dart';
 import '../../../voipgrid/user_permissions.dart';
-import '../../permissions/user_permissions.dart';
 import '../../settings/app_setting.dart';
 import '../../user.dart';
 import '../user_refresh_task_performer.dart';
+
+typedef Permissions = Set<Permission>;
 
 class RefreshVoipgridUserPermissions extends UserRefreshTaskPerformer {
   const RefreshVoipgridUserPermissions();
 
   @override
   Future<UserMutator> performUserRefreshTask(User user) async {
-    late final List<UserPermission> granted;
+    late final List<VoipgridPermission> granted;
 
     try {
       granted = await dependencyLocator<UserPermissionsRepository>()
@@ -34,11 +35,8 @@ class RefreshVoipgridUserPermissions extends UserRefreshTaskPerformer {
         .copyWith(permissions: permissions);
   }
 
-  User _applyPermissionsSideEffects(
-    UserPermissions permissions,
-    User user,
-  ) {
-    if (permissions.canSeeClientCalls) return user;
+  User _applyPermissionsSideEffects(Permissions permissions, User user) {
+    if (permissions.contains(Permission.canSeeClientCalls)) return user;
 
     unawaited(
       PurgeLocalCallRecordsUseCase()(reason: PurgeReason.permissionFailed),
@@ -56,22 +54,35 @@ class RefreshVoipgridUserPermissions extends UserRefreshTaskPerformer {
   }
 }
 
-extension on List<UserPermission> {
-  UserPermissions toUserPermissions() => UserPermissions(
-        canSeeClientCalls: contains(UserPermission.clientCalls),
-        canChangeMobileNumberFallback:
-            contains(UserPermission.changeMobileNumberFallback),
-        canViewMobileNumberFallbackStatus: contains(UserPermission.viewUser),
-        // The only redirect target currently is Voicemail, so if the user
-        // cannot view Voicemail they can't use the feature.
-        canChangeTemporaryRedirect: contains(UserPermission.viewVoicemail) &&
-            contains(UserPermission.temporaryRedirect),
-        canViewVoicemailAccounts: contains(UserPermission.viewVoicemail),
-        canChangeOutgoingNumber: contains(UserPermission.changeVoipAccount),
-        canViewColleagues: contains(UserPermission.listUsers),
-        canViewVoipAccounts: contains(UserPermission.listVoipAccounts),
-        canViewDialPlans: contains(UserPermission.viewRouting),
-        canViewStats: contains(UserPermission.viewStats),
-        canChangeOpeningHours: contains(UserPermission.changeOpeningHours),
-      );
+extension on List<VoipgridPermission> {
+  static const _mapping = {
+    VoipgridPermission.clientCalls: Permission.canSeeClientCalls,
+    VoipgridPermission.changeMobileNumberFallback:
+        Permission.canChangeMobileNumberFallback,
+    VoipgridPermission.viewUser: Permission.canViewMobileNumberFallbackStatus,
+    VoipgridPermission.viewVoicemail: Permission.canViewVoicemailAccounts,
+    VoipgridPermission.changeVoipAccount: Permission.canChangeOutgoingNumber,
+    VoipgridPermission.listUsers: Permission.canViewColleagues,
+    VoipgridPermission.listVoipAccounts: Permission.canViewVoipAccounts,
+    VoipgridPermission.viewRouting: Permission.canViewDialPlans,
+    VoipgridPermission.viewStats: Permission.canViewStats,
+    VoipgridPermission.changeOpeningHours: Permission.canChangeOpeningHours,
+  };
+
+  Permissions toUserPermissions() {
+    var permissions = Permissions.from(
+      this
+          .where((permission) => _mapping.containsKey(permission))
+          .map((permission) => _mapping[permission]!),
+    );
+
+    if (contains(VoipgridPermission.viewVoicemail) &&
+        contains(VoipgridPermission.temporaryRedirect)) {
+      // The only redirect target currently is Voicemail, so if the user
+      // cannot view Voicemail they can't use the feature.
+      permissions.add(Permission.canChangeTemporaryRedirect);
+    }
+
+    return permissions;
+  }
 }

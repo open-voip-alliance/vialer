@@ -16,6 +16,7 @@ import '../../../../../domain/relations/colleagues/colleague.dart';
 import '../../../../../domain/relations/colleagues/receive_colleague_availability.dart';
 import '../../../../../domain/relations/colleagues/should_show_colleagues.dart';
 import '../../../../../domain/relations/colleagues/stop_receiving_colleague_availability.dart';
+import '../../../../../domain/voipgrid/user_permissions.dart';
 import '../../widgets/caller/cubit.dart';
 import 'state.dart';
 
@@ -62,7 +63,8 @@ class ColleaguesCubit extends Cubit<ColleaguesState> {
       _shouldShowColleagues() &&
       (_colleagues.isNotEmpty || state is LoadingColleagues);
 
-  bool get canViewColleagues => _getUser().permissions.canViewColleagues;
+  bool get canViewColleagues =>
+      _getUser().hasPermission(Permission.canViewColleagues);
 
   bool get showOnlineColleaguesOnly =>
       _getUser().settings.get(AppSetting.showOnlineColleaguesOnly);
