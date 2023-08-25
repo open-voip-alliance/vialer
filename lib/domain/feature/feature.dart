@@ -22,5 +22,4 @@ import 'has_feature.dart';
 /// an enum always needs at least one constant.
 enum Feature {
   userBasedDnd,
-  featureAnnouncement,
 }
