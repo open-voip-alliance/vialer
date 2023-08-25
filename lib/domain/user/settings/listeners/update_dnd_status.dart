@@ -20,11 +20,9 @@ class UpdateDndStatus extends SettingChangeListener<bool> with Loggable {
   @override
   final key = CallSetting.dnd;
 
-  bool get hasUserBasedDnd => HasFeature()(Feature.userBasedDnd);
-
   @override
   FutureOr<SettingChangeListenResult> preStore(User user, bool value) async {
-    if (hasUserBasedDnd) {
+    if (hasFeature(Feature.userBasedDnd)) {
       await _repository.changeDndStatus(
         GetLoggedInUserUseCase()(),
         DndStatus.fromBool(value),
@@ -38,7 +36,7 @@ class UpdateDndStatus extends SettingChangeListener<bool> with Loggable {
     User user,
     bool value,
   ) async {
-    if (!hasUserBasedDnd) {
+    if (!hasFeature(Feature.userBasedDnd)) {
       // The correct value for DND will be automatically submitted when refreshing
       // our registration.
       await _registerToVoipMiddleware();
