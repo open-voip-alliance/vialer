@@ -418,4 +418,3 @@ extension on String {
     return replaceAll(RegExp(r'\s'), '');
   }
 }
-

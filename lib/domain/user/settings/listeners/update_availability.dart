@@ -5,8 +5,8 @@ import '../../../../dependency_locator.dart';
 import '../../../calling/voip/destination.dart';
 import '../../../calling/voip/destination_repository.dart';
 import '../../../metrics/metrics.dart';
+import '../../../relations/colleagues/colleagues_repository.dart';
 import '../../../user/user.dart';
-import '../../../user_availability/colleagues/colleagues_repository.dart';
 import '../call_setting.dart';
 import 'setting_change_listener.dart';
 
