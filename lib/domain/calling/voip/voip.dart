@@ -126,12 +126,6 @@ class VoipRepository with Loggable {
             ..preferences = preferences;
 
           return ApplicationSetup(
-            initialize: _initialize,
-            middleware: const Middleware(
-              respond: _middlewareRespond,
-              tokenReceived: _middlewareTokenReceived,
-              inspect: _middlewareInspect,
-            ),
             onMissedCallNotificationPressed: () =>
                 _missedCallNotificationPressedController.add(true),
             userAgent: '${brand.appName} '
@@ -425,11 +419,3 @@ extension on String {
   }
 }
 
-// TODO: Remove these once FPL supports optional arguments properly
-Future<void> _initialize() async {}
-
-void _middlewareRespond(RemoteMessage message, bool available) {}
-
-void _middlewareTokenReceived(String token) {}
-
-bool _middlewareInspect(RemoteMessage message) => true;

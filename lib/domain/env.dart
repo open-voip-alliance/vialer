@@ -1,4 +1,8 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:recase/recase.dart';
+
+import '../dependency_locator.dart';
+import 'feature/feature.dart';
 
 class EnvRepository {
   late Map<String, String> _env;
@@ -31,10 +35,28 @@ class EnvRepository {
   bool get inTest => get('IN_TEST').toBool();
 
   bool get isProduction => get('IS_PRODUCTION').toBool();
+
+  bool isFeatureFlagEnabled(Feature feature) =>
+      get('FEATURE_${feature.name.constantCase}').toBool();
 }
 
-extension on String {
-  bool toBool() {
-    return this == '1' || toLowerCase() == 'true';
-  }
+extension on String? {
+  /// These values are considered "truthy" in the environment file, meaning
+  /// they will resolve to [true] when an environment variable is cast
+  /// to a boolean.
+  ///
+  /// These will all be downcased before comparing so case is irrelevant.
+  static const truthy = ['1', 'true'];
+
+  bool toBool() => truthy.any(
+        (truthy) => truthy.toLowerCase() == this?.toLowerCase(),
+      );
 }
+
+/// Determine if the app is in production, this means that it is a build
+/// that has been (or will be) published for anybody to download
+/// from the Play Store/App Store.
+///
+/// A build that is used for any sort of testing (e.g. internal previews) are
+/// not counted as in production.
+bool get isProduction => dependencyLocator<EnvRepository>().isProduction;

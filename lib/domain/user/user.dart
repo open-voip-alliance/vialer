@@ -1,9 +1,7 @@
 // ignore_for_file: always_put_required_named_parameters_first
 
 import 'package:dartx/dartx.dart';
-import 'package:equatable/equatable.dart';
-import 'package:json_annotation/json_annotation.dart';
-import 'package:meta/meta.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../app/util/nullable_copy_with_argument.dart';
 import '../voipgrid/user_voip_config.dart';
@@ -12,71 +10,54 @@ import 'permissions/user_permissions.dart';
 import 'settings/settings.dart';
 
 part 'user.g.dart';
+part 'user.freezed.dart';
 
-@immutable
-@JsonSerializable()
-class User extends Equatable {
-  const User({
-    required this.uuid,
-    required this.email,
-    required this.firstName,
-    this.preposition = '',
-    required this.lastName,
-    this.token,
-    this.appAccountUrl,
-    required this.client,
-    this.voip,
-    required this.settings,
-    this.permissions = const UserPermissions(),
-    this.webphoneAccountId,
-  });
+@Freezed(copyWith: false)
+class User with _$User {
+  const User._();
 
-  final String uuid;
+  const factory User({
+    required String uuid,
+    required String email,
+    required String firstName,
+    @Default('') String preposition,
+    required String lastName,
+    String? token,
+    Uri? appAccountUrl,
+    String? webphoneAccountId,
+    @JsonKey(toJson: Client.toJson, fromJson: Client.fromJson)
+    required Client client,
+    @JsonKey(
+      toJson: UserVoipConfig.serializeToJson,
+      fromJson: UserVoipConfig.serializeFromJson,
+    )
+    UserVoipConfig? voip,
+    @JsonKey(toJson: Settings.toJson, fromJson: Settings.fromJson)
+    required Settings settings,
+    @JsonKey(
+      toJson: UserPermissions.serializeToJson,
+      fromJson: UserPermissions.fromJson,
+    )
+    @Default(const UserPermissions())
+    UserPermissions permissions,
+  }) = _User;
 
-  final String email;
-
-  final String firstName;
-  final String preposition;
-  final String lastName;
+  factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 
   String get fullName => [firstName, preposition, lastName]
       .where((part) => part.isNotBlank)
       .join(' ');
 
-  final String? token;
-
-  final Uri? appAccountUrl;
+  // A user must have voip config to be able to call, if they don't then this
+  // suggests that there is no app account configured.
+  bool get isAllowedVoipCalling =>
+      voip != null && voip.sipUserId.isNotNullOrBlank;
 
   String? get appAccountId => appAccountUrl?.pathSegments.lastOrNullWhere(
         (p) => p.isNotEmpty,
       );
 
   bool get hasAppAccount => appAccountId != null;
-
-  final String? webphoneAccountId;
-
-  @JsonKey(toJson: Client.toJson, fromJson: Client.fromJson)
-  final Client client;
-
-  @JsonKey(
-    toJson: UserVoipConfig.serializeToJson,
-    fromJson: UserVoipConfig.serializeFromJson,
-  )
-  final UserVoipConfig? voip;
-
-  @JsonKey(toJson: Settings.toJson, fromJson: Settings.fromJson)
-  final Settings settings;
-
-  @JsonKey(
-    toJson: UserPermissions.serializeToJson,
-    fromJson: UserPermissions.fromJson,
-  )
-  final UserPermissions permissions;
-
-  // A user must have voip config to be able to call, if they don't then this
-  // suggests that there is no app account configured.
-  bool get isAllowedVoipCalling =>
-      voip != null && voip.sipUserId.isNotNullOrBlank;
 
   User copyWith({
     String? uuid,
@@ -125,25 +106,4 @@ class User extends Equatable {
       permissions: user.permissions,
     );
   }
-
-  @override
-  List<Object?> get props => [
-        uuid,
-        email,
-        firstName,
-        preposition,
-        lastName,
-        token,
-        appAccountUrl,
-        client,
-        voip,
-        settings,
-        permissions,
-        webphoneAccountId,
-      ];
-
-  static User fromJson(dynamic json) =>
-      _$UserFromJson(json as Map<String, dynamic>);
-
-  static Map<String, dynamic> toJson(User value) => _$UserToJson(value);
 }

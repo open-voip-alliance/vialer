@@ -1,18 +1,12 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class MobileNumberState extends Equatable {
-  const MobileNumberState(this.mobileNumber);
+part 'state.freezed.dart';
 
-  final String mobileNumber;
-
-  @override
-  List<Object?> get props => [mobileNumber];
-}
-
-class MobileNumberAccepted extends MobileNumberState {
-  const MobileNumberAccepted(super.mobileNumber);
-}
-
-class MobileNumberNotAccepted extends MobileNumberState {
-  const MobileNumberNotAccepted(super.mobileNumber);
+@freezed
+sealed class MobileNumberState with _$MobileNumberState {
+  const factory MobileNumberState(String mobileNumber) = _MobileNumberState;
+  const factory MobileNumberState.accepted(String mobileNumber) =
+      MobileNumberAccepted;
+  const factory MobileNumberState.notAccepted(String mobileNumber) =
+      MobileNumberNotAccepted;
 }

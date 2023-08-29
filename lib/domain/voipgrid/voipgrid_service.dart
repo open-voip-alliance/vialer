@@ -65,7 +65,7 @@ abstract class VoipgridService extends ChopperService {
     @Query('per_page') int perPage = 20,
   });
 
-  @Get(path: 'v2/callthrough')
+  @Get(path: 'v2/callthrough/')
   Future<Response<Map<String, dynamic>>> callthrough({
     @Query('destination') required String destination,
   });
