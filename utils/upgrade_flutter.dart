@@ -24,7 +24,7 @@ const pubspecLock = 'pubspec.lock';
 Future<void> main(List<String> arguments) async {
   if (arguments.length != 2) {
     throw Exception(
-      'Usage: dart upgrade_flutter.dart <version number> <ticket id>',
+      '❗ Usage: dart upgrade_flutter.dart <version number> <ticket id>',
     );
   }
 
@@ -35,24 +35,32 @@ Future<void> main(List<String> arguments) async {
 
   if (await _hasChanges()) {
     throw Exception(
-      'There are uncommitted or staged changes. '
+      '❌ There are uncommitted or staged changes. '
       'Please commit or discard them before running this script.',
     );
   }
 
+  print('🆙 Upgrading flutter');
   await _runProcess('flutter', ['upgrade']);
 
+  print('⚙️ Checking out develop branch');
   await _runProcess('git', ['checkout', 'develop']);
+
+  print('⚙️ Pulling develop');
   await _runProcess('git', ['pull', 'origin', 'develop']);
 
+  print('⚙️ Creating branch');
   final newBranchName = '$ticketId-upgrade-flutter-$versionNumber';
   await _runProcess('git', ['checkout', '-b', newBranchName]);
 
+  print('⚙️ Updating files');
   await _updateYaml(codemagicYaml, versionNumber);
   await _updateYaml(pubspecYaml, versionNumber);
 
+  print('🆙 Upgrading packages');
   await _runProcess('flutter', ['pub', 'get']);
 
+  print('⚙️ Adding files to git');
   await _runProcess('git', [
     'add',
     pubspecYaml,
@@ -60,11 +68,17 @@ Future<void> main(List<String> arguments) async {
     codemagicYaml,
   ]);
 
+  print('⚙️ Comminting files to git');
   await _runProcess(
     'git',
     ['commit', '-m', 'Upgrade Flutter to version $versionNumber'],
   );
+
+  print('⚙️ Pushing files');
   await _runProcess('git', ['push', 'origin', newBranchName]);
+
+  print('🙌 Finished upgrading to Flutter $versionNumber, '
+      'you can find the MR on gitlab');
 }
 
 Future<void> _updateYaml(String filePath, String value) async {
@@ -72,7 +86,7 @@ Future<void> _updateYaml(String filePath, String value) async {
   const key = 'flutter';
 
   if (!(await file.exists())) {
-    throw Exception('File not found: $filePath');
+    throw Exception('❌ File not found: $filePath');
   }
 
   final contents = await file.readAsString();
@@ -91,7 +105,7 @@ Future<void> _runProcess(String executable, List<String> arguments) async {
 
   if (result.exitCode != 0) {
     throw Exception(
-      'Error running process: $executable ${arguments.join(' ')}\n'
+      '❌ Error running process: $executable ${arguments.join(' ')}\n'
       'Exit code: ${result.exitCode}\n'
       'Stderr: ${result.stderr}\n'
       'Stdout: ${result.stdout}\n',
@@ -108,7 +122,7 @@ Future<void> _checkInCorrectDirectory() async {
 
   if (missingFiles.isNotEmpty) {
     throw Exception(
-      'This script must be run in the root of the project.',
+      '❌ This script must be run in the root of the project.',
     );
   }
 }
