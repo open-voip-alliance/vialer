@@ -85,9 +85,6 @@ value class UserJson(private val json: JSONObject) {
 
     val client: ClientJson
         get() = ClientJson(json.getJSONObject("client"))
-
-    val settings: SettingsJson
-        get() = SettingsJson(json.getJSONObject("settings"))
 }
 
 @JvmInline
