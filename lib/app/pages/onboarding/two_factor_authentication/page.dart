@@ -68,13 +68,16 @@ class _TwoFactorAuthenticationPageState
           builder: (context, state) {
             return Column(
               children: <Widget>[
-                Text(
-                  context.msg.onboarding.twoFactor.title,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                Semantics(
+                  header: true,
+                  child: Text(
+                    context.msg.onboarding.twoFactor.title,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 32),
