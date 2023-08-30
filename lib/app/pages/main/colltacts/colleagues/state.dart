@@ -1,7 +1,7 @@
 import 'package:dartx/dartx.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../../../../../domain/user_availability/colleagues/colleague.dart';
+import '../../../../../domain/relations/colleagues/colleague.dart';
 
 part 'state.freezed.dart';
 

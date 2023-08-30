@@ -1,57 +1,82 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:vialer/app/pages/main/widgets/user_availability_status_builder/widget.dart';
-import 'package:vialer/domain/user_availability/colleagues/colleague.dart';
+import '../../../../domain/relations/user_availability_status.dart';
 import '../../../resources/theme.dart';
 
 class BottomNavigationProfileIcon extends StatelessWidget {
   const BottomNavigationProfileIcon({
     Key? key,
     required this.active,
+    this.large = false,
+    this.color,
   }) : super(key: key);
 
   final bool active;
+  final bool large;
+  final Color? color;
 
-  IconData _icon(ColleagueAvailabilityStatus status) => switch (status) {
-        ColleagueAvailabilityStatus.doNotDisturb =>
-          FontAwesomeIcons.solidBellSlash,
-        ColleagueAvailabilityStatus.offline => FontAwesomeIcons.solidMinus,
-        _ => FontAwesomeIcons.solidCheck,
+  IconData _icon(UserAvailabilityStatus status) => switch (status) {
+        UserAvailabilityStatus.doNotDisturb => FontAwesomeIcons.solidBellSlash,
+        UserAvailabilityStatus.offline => FontAwesomeIcons.solidMinus,
+        UserAvailabilityStatus.onlineWithRingingDeviceOffline =>
+          FontAwesomeIcons.exclamation,
+        UserAvailabilityStatus.online => FontAwesomeIcons.solidCheck,
       };
 
   Color _color(
     BuildContext context,
-    ColleagueAvailabilityStatus status,
+    UserAvailabilityStatus status,
   ) =>
       switch (status) {
-        ColleagueAvailabilityStatus.doNotDisturb =>
+        UserAvailabilityStatus.doNotDisturb =>
           context.brand.theme.colors.userAvailabilityUnavailableIcon,
-        ColleagueAvailabilityStatus.offline =>
+        UserAvailabilityStatus.offline =>
           context.brand.theme.colors.userAvailabilityOffline,
-        _ => context.brand.theme.colors.green1,
+        UserAvailabilityStatus.onlineWithRingingDeviceOffline =>
+          context.brand.theme.colors.red1,
+        UserAvailabilityStatus.online => context.brand.theme.colors.green1,
       };
 
   @override
   Widget build(BuildContext context) {
     return UserAvailabilityStatusBuilder(
       builder: (context, status) {
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 4),
-          child: Badge(
-            backgroundColor: _color(context, status),
-            offset: Offset(6, 4),
-            alignment: AlignmentDirectional.bottomEnd,
-            label: FaIcon(
-              _icon(status),
-              color: Colors.white,
-              size: 8,
-            ),
-            child: FaIcon(
+        return Stack(
+          clipBehavior: Clip.none,
+          children: [
+            FaIcon(
               active
                   ? FontAwesomeIcons.solidCircleUser
                   : FontAwesomeIcons.circleUser,
+              size: large ? 36 : null,
+              color: color,
             ),
-          ),
+            Positioned(
+              right: -4,
+              bottom: -2,
+              child: Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: _color(context, status),
+                ),
+                constraints: BoxConstraints(
+                  minWidth: large ? 16 : 12,
+                  minHeight: large ? 16 : 12,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(2),
+                  child: Center(
+                    child: FaIcon(
+                      _icon(status),
+                      color: Colors.white,
+                      size: large ? 10 : 8,
+                    ),
+                  ),
+                ),
+              ),
+            )
+          ],
         );
       },
     );

@@ -8,7 +8,7 @@ import 'package:vialer/app/pages/main/util/phone_number.dart';
 import '../../../../../../../data/models/colltact.dart';
 import '../../../../../../../domain/colltacts/contact.dart';
 import '../../../../../../../domain/colltacts/shared_contacts/shared_contact.dart';
-import '../../../../../../../domain/user_availability/colleagues/colleague.dart';
+import '../../../../../../../domain/relations/colleagues/colleague.dart';
 import '../widget.dart';
 import 'avatar.dart';
 import 'subtitle.dart';
