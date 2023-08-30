@@ -17,13 +17,11 @@ import '../../../../../../resources/localizations.dart';
 class AvailabilitySwitcher extends StatelessWidget {
   const AvailabilitySwitcher({super.key});
 
-  void _showSnackBar(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(_buildSnackBar(context));
-  }
+  void _showSnackBar(BuildContext context) =>
+      ScaffoldMessenger.of(context).showSnackBar(_buildSnackBar(context));
 
-  void _hideSnackBar(BuildContext context) {
-    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-  }
+  void _hideSnackBar(BuildContext context) =>
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
 
   @override
   Widget build(BuildContext context) {

@@ -21,53 +21,49 @@ class AvailabilityStatusButton extends StatelessWidget {
   final bool enabled;
   final StatusChangeCallback onStatusChanged;
 
-  String _text(BuildContext context) => switch (type) {
-        UserAvailabilityStatus.online =>
-          context.msg.main.colleagues.status.available,
-        UserAvailabilityStatus.onlineWithRingingDeviceOffline =>
-          context.msg.main.colleagues.status.availableRingingDeviceOffline,
-        UserAvailabilityStatus.doNotDisturb =>
-          context.msg.main.colleagues.status.doNotDisturb,
-        _ => context.msg.main.colleagues.status.offline,
-      };
+  (String, IconData, Color, Color) _styling(BuildContext context) {
+    final strings = context.msg.main.colleagues.status;
+    final colors = context.brand.theme.colors;
 
-  IconData get _icon => switch (type) {
-        UserAvailabilityStatus.online => FontAwesomeIcons.circleCheck,
-        UserAvailabilityStatus.onlineWithRingingDeviceOffline =>
+    return switch (type) {
+      UserAvailabilityStatus.online => (
+          strings.available,
+          FontAwesomeIcons.circleCheck,
+          colors.userAvailabilityAvailableAccent,
+          colors.userAvailabilityAvailable,
+        ),
+      UserAvailabilityStatus.onlineWithRingingDeviceOffline => (
+          strings.availableRingingDeviceOffline,
           FontAwesomeIcons.circleExclamation,
-        UserAvailabilityStatus.doNotDisturb => FontAwesomeIcons.bellSlash,
-        _ => FontAwesomeIcons.circleMinus,
-      };
-
-  Color _foregroundColor(BuildContext context) => switch (type) {
-        UserAvailabilityStatus.online =>
-          context.brand.theme.colors.userAvailabilityAvailableAccent,
-        UserAvailabilityStatus.onlineWithRingingDeviceOffline =>
-          context.brand.theme.colors.userAvailabilityBusyAccent,
-        UserAvailabilityStatus.doNotDisturb =>
-          context.brand.theme.colors.userAvailabilityUnavailableAccent,
-        _ => context.brand.theme.colors.userAvailabilityOfflineAccent,
-      };
-
-  Color _backgroundColor(BuildContext context) => switch (type) {
-        UserAvailabilityStatus.online =>
-          context.brand.theme.colors.userAvailabilityAvailable,
-        UserAvailabilityStatus.onlineWithRingingDeviceOffline =>
-          context.brand.theme.colors.userAvailabilityBusy,
-        UserAvailabilityStatus.doNotDisturb =>
-          context.brand.theme.colors.userAvailabilityUnavailable,
-        _ => context.brand.theme.colors.userAvailabilityOffline,
-      };
+          colors.userAvailabilityBusyAccent,
+          colors.userAvailabilityBusy,
+        ),
+      UserAvailabilityStatus.doNotDisturb => (
+          strings.doNotDisturb,
+          FontAwesomeIcons.bellSlash,
+          colors.userAvailabilityUnavailableAccent,
+          colors.userAvailabilityUnavailable,
+        ),
+      _ => (
+          strings.offline,
+          FontAwesomeIcons.circleMinus,
+          colors.userAvailabilityOfflineAccent,
+          colors.userAvailabilityOffline,
+        ),
+    };
+  }
 
   @override
   Widget build(BuildContext context) {
+    final (text, icon, foregroundColor, backgroundColor) = _styling(context);
+
     return AvailabilityButton(
-      text: _text(context),
-      leadingIcon: _icon,
+      text: text,
+      leadingIcon: icon,
       onPressed: enabled ? () => onStatusChanged(type) : null,
       isActive: current == type,
-      foregroundColor: _foregroundColor(context),
-      backgroundColor: _backgroundColor(context),
+      foregroundColor: foregroundColor,
+      backgroundColor: backgroundColor,
     );
   }
 }
