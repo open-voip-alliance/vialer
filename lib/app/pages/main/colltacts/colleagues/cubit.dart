@@ -11,10 +11,10 @@ import '../../../../../domain/onboarding/is_onboarded.dart';
 import '../../../../../domain/user/get_logged_in_user.dart';
 import '../../../../../domain/user/settings/app_setting.dart';
 import '../../../../../domain/user/settings/change_setting.dart';
-import '../../../../../domain/user_availability/colleagues/colleague.dart';
-import '../../../../../domain/user_availability/colleagues/receive_colleague_availability.dart';
-import '../../../../../domain/user_availability/colleagues/should_show_colleagues.dart';
-import '../../../../../domain/user_availability/colleagues/stop_receiving_colleague_availability.dart';
+import '../../../../../domain/relations/colleagues/colleague.dart';
+import '../../../../../domain/relations/colleagues/receive_colleague_availability.dart';
+import '../../../../../domain/relations/colleagues/should_show_colleagues.dart';
+import '../../../../../domain/relations/colleagues/stop_receiving_colleague_availability.dart';
 import '../../widgets/caller/cubit.dart';
 import 'state.dart';
 

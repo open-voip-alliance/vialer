@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dartx/dartx.dart';
+import 'package:vialer/domain/relations/user_availability_status.dart';
 
 import '../../../app/util/loggable.dart';
 import '../../../app/util/reconnection_strategy.dart';
@@ -126,7 +127,10 @@ class ColleaguesRepository with Loggable {
         // know our user has changed on the server.
         if (userUuid == user.uuid) {
           _eventBus.broadcast(
-            LoggedInUserAvailabilityChanged(availability: availability),
+            LoggedInUserAvailabilityChanged(
+              availability: availability,
+              userAvailabilityStatus: availability.toUserAvailabilityStatus(),
+            ),
           );
         }
 
@@ -338,4 +342,22 @@ enum AvailabilityCloseReason {
 
   /// The remote server closed the socket, this indicates an error.
   remote,
+}
+
+extension on AvailabilityUpdate {
+  UserAvailabilityStatus toUserAvailabilityStatus() {
+    if (destination.type == ColleagueDestinationType.voipAccount &&
+        availabilityStatus == ColleagueAvailabilityStatus.offline) {
+      return UserAvailabilityStatus.onlineWithRingingDeviceOffline;
+    }
+
+    return switch (availabilityStatus) {
+      ColleagueAvailabilityStatus.available => UserAvailabilityStatus.online,
+      ColleagueAvailabilityStatus.busy => UserAvailabilityStatus.online,
+      ColleagueAvailabilityStatus.unknown => UserAvailabilityStatus.online,
+      ColleagueAvailabilityStatus.offline => UserAvailabilityStatus.offline,
+      ColleagueAvailabilityStatus.doNotDisturb =>
+        UserAvailabilityStatus.doNotDisturb,
+    };
+  }
 }

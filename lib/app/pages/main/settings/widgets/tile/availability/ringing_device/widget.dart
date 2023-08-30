@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:vialer/app/pages/main/settings/widgets/tile/availability/ringing_device/ringing_device_button.dart';
 
 import '../../../../../../../../domain/calling/voip/destination.dart';
+import '../../../../../../../../domain/relations/user_availability_status.dart';
 import '../../../../../../../../domain/user/settings/call_setting.dart';
 import '../../../../../../../../domain/user/user.dart';
-import '../../../../../../../../domain/user_availability/colleagues/colleague.dart';
 import '../../../../../../../resources/localizations.dart';
 import '../header.dart';
 import 'multiple_ringing_device_dropdown.dart';
+import '../../../../../../../resources/theme.dart';
 
 typedef DestinationChangedCallback = void Function(Destination destination);
 
@@ -24,12 +25,15 @@ class RingingDevice extends StatelessWidget {
   final User user;
   final List<Destination> destinations;
   final DestinationChangedCallback onDestinationChanged;
-  final ColleagueAvailabilityStatus userAvailabilityStatus;
+  final UserAvailabilityStatus userAvailabilityStatus;
   final bool enabled;
 
-  bool get shouldEntireWidgetBeDisabled =>
-      userAvailabilityStatus == ColleagueAvailabilityStatus.offline ||
-      userAvailabilityStatus == ColleagueAvailabilityStatus.doNotDisturb;
+  bool get shouldEntireWidgetBeDisabled => switch (userAvailabilityStatus) {
+        UserAvailabilityStatus.online => false,
+        UserAvailabilityStatus.onlineWithRingingDeviceOffline => false,
+        UserAvailabilityStatus.doNotDisturb => true,
+        UserAvailabilityStatus.offline => true,
+      };
 
   @override
   Widget build(BuildContext context) {
@@ -61,6 +65,8 @@ class RingingDevice extends StatelessWidget {
                   destinations: destinations,
                   onDestinationChanged: onDestinationChanged,
                   parentWidgetIsEnabled: !shouldEntireWidgetBeDisabled,
+                  isRingingDeviceOffline: userAvailabilityStatus ==
+                      UserAvailabilityStatus.onlineWithRingingDeviceOffline,
                 ),
               if (deskPhones.isNotEmpty)
                 RingingDeviceButton(
@@ -70,6 +76,8 @@ class RingingDevice extends StatelessWidget {
                   destinations: destinations,
                   onDestinationChanged: onDestinationChanged,
                   parentWidgetIsEnabled: !shouldEntireWidgetBeDisabled,
+                  isRingingDeviceOffline: userAvailabilityStatus ==
+                      UserAvailabilityStatus.onlineWithRingingDeviceOffline,
                 ),
               if (webphoneAccount != null)
                 RingingDeviceButton(
@@ -79,6 +87,8 @@ class RingingDevice extends StatelessWidget {
                   destinations: destinations,
                   onDestinationChanged: onDestinationChanged,
                   parentWidgetIsEnabled: !shouldEntireWidgetBeDisabled,
+                  isRingingDeviceOffline: userAvailabilityStatus ==
+                      UserAvailabilityStatus.onlineWithRingingDeviceOffline,
                 ),
               if (fixedDestinations.isNotEmpty)
                 RingingDeviceButton(
@@ -88,9 +98,22 @@ class RingingDevice extends StatelessWidget {
                   destinations: destinations,
                   onDestinationChanged: onDestinationChanged,
                   parentWidgetIsEnabled: !shouldEntireWidgetBeDisabled,
+                  isRingingDeviceOffline: userAvailabilityStatus ==
+                      UserAvailabilityStatus.onlineWithRingingDeviceOffline,
                 ),
             ],
           ),
+          if (userAvailabilityStatus ==
+              UserAvailabilityStatus.onlineWithRingingDeviceOffline)
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Text(
+                context.msg.main.colleagues.status.selectedDeviceOffline,
+                style: TextStyle(
+                  color: context.brand.theme.colors.userAvailabilityBusyAccent,
+                ),
+              ),
+            ),
           MultipleRingingDeviceDropdown(
             user: user,
             destinations: destinations,

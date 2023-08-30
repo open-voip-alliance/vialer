@@ -8,13 +8,13 @@ import 'package:vialer/app/util/pigeon.dart';
 import '../../../dependency_locator.dart';
 import '../colltacts/colltact_tab.dart';
 import '../legacy/storage.dart';
+import '../relations/colleagues/colleague.dart';
 import '../use_case.dart';
 import '../user/client.dart';
 import '../user/get_brand.dart';
 import '../user/get_logged_in_user.dart';
 import '../user/settings/settings.dart';
 import '../user/user.dart';
-import '../user_availability/colleagues/colleague.dart';
 import 'metrics.dart';
 
 class IdentifyForTrackingUseCase extends UseCase {

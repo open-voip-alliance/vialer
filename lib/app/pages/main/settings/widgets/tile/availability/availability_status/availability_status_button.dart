@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:vialer/app/pages/main/settings/widgets/tile/availability/availability_status/widget.dart';
 
-import '../../../../../../../../domain/user_availability/colleagues/colleague.dart';
+import '../../../../../../../../domain/relations/user_availability_status.dart';
 import '../../../../../../../resources/localizations.dart';
 import '../../../../../../../resources/theme.dart';
 import '../button.dart';
@@ -16,72 +16,54 @@ class AvailabilityStatusButton extends StatelessWidget {
     super.key,
   });
 
-  final ColleagueAvailabilityStatus type;
-  final ColleagueAvailabilityStatus current;
+  final UserAvailabilityStatus type;
+  final UserAvailabilityStatus current;
   final bool enabled;
   final StatusChangeCallback onStatusChanged;
 
-  String _text(BuildContext context) {
-    switch (type) {
-      case ColleagueAvailabilityStatus.available:
-      case ColleagueAvailabilityStatus.busy:
-        return context.msg.main.colleagues.status.available;
-      case ColleagueAvailabilityStatus.doNotDisturb:
-        return context.msg.main.colleagues.status.doNotDisturb;
-      case ColleagueAvailabilityStatus.unknown:
-      case ColleagueAvailabilityStatus.offline:
-        return context.msg.main.colleagues.status.offline;
-    }
-  }
+  (String, IconData, Color, Color) _styling(BuildContext context) {
+    final strings = context.msg.main.colleagues.status;
+    final colors = context.brand.theme.colors;
 
-  IconData get _icon {
-    switch (type) {
-      case ColleagueAvailabilityStatus.available:
-      case ColleagueAvailabilityStatus.busy:
-        return FontAwesomeIcons.circleCheck;
-      case ColleagueAvailabilityStatus.doNotDisturb:
-        return FontAwesomeIcons.bellSlash;
-      case ColleagueAvailabilityStatus.unknown:
-      case ColleagueAvailabilityStatus.offline:
-        return FontAwesomeIcons.circleMinus;
-    }
-  }
-
-  Color _foregroundColor(BuildContext context) {
-    switch (type) {
-      case ColleagueAvailabilityStatus.available:
-      case ColleagueAvailabilityStatus.busy:
-        return context.brand.theme.colors.userAvailabilityAvailableAccent;
-      case ColleagueAvailabilityStatus.doNotDisturb:
-        return context.brand.theme.colors.userAvailabilityUnavailableAccent;
-      case ColleagueAvailabilityStatus.unknown:
-      case ColleagueAvailabilityStatus.offline:
-        return context.brand.theme.colors.userAvailabilityOfflineAccent;
-    }
-  }
-
-  Color _backgroundColor(BuildContext context) {
-    switch (type) {
-      case ColleagueAvailabilityStatus.available:
-      case ColleagueAvailabilityStatus.busy:
-        return context.brand.theme.colors.userAvailabilityAvailable;
-      case ColleagueAvailabilityStatus.doNotDisturb:
-        return context.brand.theme.colors.userAvailabilityUnavailable;
-      case ColleagueAvailabilityStatus.unknown:
-      case ColleagueAvailabilityStatus.offline:
-        return context.brand.theme.colors.userAvailabilityOffline;
-    }
+    return switch (type) {
+      UserAvailabilityStatus.online => (
+          strings.available,
+          FontAwesomeIcons.circleCheck,
+          colors.userAvailabilityAvailableAccent,
+          colors.userAvailabilityAvailable,
+        ),
+      UserAvailabilityStatus.onlineWithRingingDeviceOffline => (
+          strings.availableRingingDeviceOffline,
+          FontAwesomeIcons.circleExclamation,
+          colors.userAvailabilityBusyAccent,
+          colors.userAvailabilityBusy,
+        ),
+      UserAvailabilityStatus.doNotDisturb => (
+          strings.doNotDisturb,
+          FontAwesomeIcons.bellSlash,
+          colors.userAvailabilityUnavailableAccent,
+          colors.userAvailabilityUnavailable,
+        ),
+      _ => (
+          strings.offline,
+          FontAwesomeIcons.circleMinus,
+          colors.userAvailabilityOfflineAccent,
+          colors.userAvailabilityOffline,
+        ),
+    };
   }
 
   @override
   Widget build(BuildContext context) {
+    final (text, icon, foregroundColor, backgroundColor) = _styling(context);
+
     return AvailabilityButton(
-      text: _text(context),
-      leadingIcon: _icon,
+      text: text,
+      leadingIcon: icon,
       onPressed: enabled ? () => onStatusChanged(type) : null,
       isActive: current == type,
-      foregroundColor: _foregroundColor(context),
-      backgroundColor: _backgroundColor(context),
+      foregroundColor: foregroundColor,
+      backgroundColor: backgroundColor,
     );
   }
 }

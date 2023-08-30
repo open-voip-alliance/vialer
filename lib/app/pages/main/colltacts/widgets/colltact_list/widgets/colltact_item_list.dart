@@ -13,7 +13,7 @@ import '../../../../../../../data/models/colltact.dart';
 import '../../../../../../../domain/colltacts/contact.dart';
 import '../../../../../../../domain/colltacts/get_contact_sort.dart';
 import '../../../../../../../domain/colltacts/shared_contacts/shared_contact.dart';
-import '../../../../../../../domain/user_availability/colleagues/colleague.dart';
+import '../../../../../../../domain/relations/colleagues/colleague.dart';
 import '../../../../../../util/pigeon.dart';
 import '../../../colleagues/cubit.dart';
 import '../../../contacts/state.dart';
