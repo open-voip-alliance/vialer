@@ -18,6 +18,7 @@ import '../../../../../domain/user/get_stored_user.dart';
 import '../../../../../domain/user/settings/call_setting.dart';
 import '../../../../../domain/user/settings/settings.dart';
 import '../../../../../domain/user/user.dart';
+import '../../settings/widgets/tile/availability/ringing_device/widget.dart';
 import 'state.dart';
 
 export 'state.dart';
@@ -84,14 +85,26 @@ class UserAvailabilityStatusCubit extends Cubit<UserAvailabilityStatusState> {
     final destination =
         destinations.findHighestPriorityDestinationFor(user: user);
 
+    // We still need to make sure a user gets a ringing device when they are
+    // coming from offline, otherwise pressing "available" would not make
+    // them available.
+    final shouldChangeOnAvailable =
+        destination != null && user.ringingDevice == RingingDeviceType.unknown;
+
+    // We never want enabling dnd to change the ringing device when using the
+    // new dnd api. It's still required for the legacy dnd but should be removed
+    // when possible.
+    final shouldChangeOnDnd =
+        destination != null && !hasFeature(Feature.userBasedDnd);
+
     return switch (requestedStatus) {
       UserAvailabilityStatus.online => {
           CallSetting.dnd: false,
-          if (destination != null) CallSetting.destination: destination,
+          if (shouldChangeOnAvailable) CallSetting.destination: destination,
         },
       UserAvailabilityStatus.doNotDisturb => {
           CallSetting.dnd: true,
-          if (destination != null) CallSetting.destination: destination,
+          if (shouldChangeOnDnd) CallSetting.destination: destination,
         },
       UserAvailabilityStatus.offline => {
           CallSetting.dnd: false,

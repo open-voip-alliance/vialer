@@ -143,7 +143,7 @@ class _MobileNumberPageState extends State<MobileNumberPage> {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: <Widget>[
                             Semantics(
-                              button:true,
+                              button: true,
                               child: StylizedButton.raised(
                                 key: MobileNumberPage.keys.continueButton,
                                 onPressed: () =>
