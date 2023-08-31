@@ -88,8 +88,6 @@ class ChangeSettingUseCase extends UseCase {
 }
 
 enum SettingChangeResult {
-  /// The value was already the same as it was supposed to change to.
-  unchanged,
   changed,
   failed,
 }
