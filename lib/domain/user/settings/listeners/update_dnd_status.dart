@@ -21,21 +21,14 @@ class UpdateDndStatus extends SettingChangeListener<bool> with Loggable {
   final key = CallSetting.dnd;
 
   @override
-  FutureOr<SettingChangeListenResult> preStore(User user, bool value) async {
+  FutureOr<SettingChangeListenResult> applySettingsSideEffects(User user, bool value) async {
     if (hasFeature(Feature.userBasedDnd)) {
       await _repository.changeDndStatus(
         GetLoggedInUserUseCase()(),
         DndStatus.fromBool(value),
       );
     }
-    return successResult;
-  }
 
-  @override
-  FutureOr<SettingChangeListenResult> postStore(
-    User user,
-    bool value,
-  ) async {
     if (!hasFeature(Feature.userBasedDnd)) {
       // The correct value for DND will be automatically submitted when refreshing
       // our registration.

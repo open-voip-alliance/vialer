@@ -25,7 +25,7 @@ class UpdateDestinationListener extends SettingChangeListener<Destination>
   final key = CallSetting.destination;
 
   @override
-  FutureOr<SettingChangeListenResult> preStore(
+  FutureOr<SettingChangeListenResult> applySettingsSideEffects(
     User user,
     Destination value,
   ) async {

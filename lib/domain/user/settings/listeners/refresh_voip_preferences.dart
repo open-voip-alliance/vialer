@@ -19,7 +19,7 @@ class RefreshVoipPreferences extends SettingChangeListener<bool> with Loggable {
   final otherKeys = const [AppSetting.showCallsInNativeRecents];
 
   @override
-  FutureOr<SettingChangeListenResult> postStore(
+  FutureOr<SettingChangeListenResult> applySettingsSideEffects(
     User user,
     bool value,
   ) async {

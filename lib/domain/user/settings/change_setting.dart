@@ -46,13 +46,9 @@ class ChangeSettingUseCase extends UseCase {
     final user = _getCurrentUser();
     final oldSettingValue = user.settings.get(key);
 
-    final beforeResult = await _callListeners(key, value, ListenerType.before);
-
     await ForceUpdateSetting()(key, value);
 
-    final afterResult = await _callListeners(key, value, ListenerType.after);
-
-    final result = beforeResult + afterResult;
+    final result = await _callListeners(key, value);
 
     if (result.log) {
       logger.info('Set $key to $value');
@@ -76,27 +72,19 @@ class ChangeSettingUseCase extends UseCase {
   Future<SettingChangeListenResult> _callListeners<T extends Object>(
     SettingKey<T> key,
     T value,
-    ListenerType type,
   ) async {
     final user = GetLoggedInUserUseCase()();
 
     for (final listener in _listeners) {
       if (!listener.shouldHandle(key)) continue;
 
-      final futureOrResult = type == ListenerType.before
-          ? listener.preStore(user, value)
-          : listener.postStore(user, value);
+      final futureOrResult = listener.applySettingsSideEffects(user, value);
 
       return futureOrResult is Future ? await futureOrResult : futureOrResult;
     }
 
     return SettingChangeListenResult(log: false, sync: false, failed: false);
   }
-}
-
-enum ListenerType {
-  before,
-  after,
 }
 
 enum SettingChangeResult {

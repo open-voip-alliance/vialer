@@ -29,12 +29,11 @@ abstract class SettingChangeListener<T extends Object> {
     );
   }
 
-  /// Before the settings are stored.
-  FutureOr<SettingChangeListenResult> preStore(User user, T value) =>
-      successResult;
-
   /// After the settings are stored.
-  FutureOr<SettingChangeListenResult> postStore(User user, T value) =>
+  FutureOr<SettingChangeListenResult> applySettingsSideEffects(
+    User user,
+    T value,
+  ) =>
       successResult;
 
   bool shouldHandle(SettingKey key) =>
@@ -59,13 +58,6 @@ class SettingChangeListenResult {
 
   /// Whether the change failed.
   final bool failed;
-
-  SettingChangeListenResult operator +(SettingChangeListenResult other) =>
-      SettingChangeListenResult(
-        log: log || other.log,
-        sync: sync || other.sync,
-        failed: failed || other.failed,
-      );
 }
 
 const successResult = SettingChangeListenResult();
