@@ -78,7 +78,7 @@ Future<void> main(List<String> arguments) async {
   await _runProcess('git', ['push', 'origin', newBranchName]);
 
   print('🙌 Finished upgrading to Flutter $versionNumber, '
-      'you can find the MR on gitlab');
+      'you can create the MR on gitlab');
 }
 
 Future<void> _updateYaml(String filePath, String value) async {
