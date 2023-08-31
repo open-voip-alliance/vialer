@@ -60,11 +60,12 @@ class SettingChangeListenResult {
   /// Whether the change failed.
   final bool failed;
 
-  SettingChangeListenResult operator +(SettingChangeListenResult other) => SettingChangeListenResult(
-    log: log || other.log,
-    sync: sync || other.sync,
-    failed: failed || other.failed,
-  );
+  SettingChangeListenResult operator +(SettingChangeListenResult other) =>
+      SettingChangeListenResult(
+        log: log || other.log,
+        sync: sync || other.sync,
+        failed: failed || other.failed,
+      );
 }
 
 const successResult = SettingChangeListenResult();

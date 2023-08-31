@@ -1,9 +1,7 @@
-
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:recase/recase.dart';
-
 
 typedef ValueToJson<T> = dynamic Function(T value);
 typedef ValueFromJson<T> = T Function(dynamic json);

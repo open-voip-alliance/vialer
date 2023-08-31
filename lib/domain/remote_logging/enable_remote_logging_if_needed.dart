@@ -1,7 +1,6 @@
 import '../use_case.dart';
 
 class EnableRemoteLoggingIfNeededUseCase extends UseCase {
-
   Future<void> call() async {
     //todo
     // final settings =

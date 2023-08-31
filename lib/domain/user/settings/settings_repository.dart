@@ -32,10 +32,10 @@ class SettingsRepository {
         key.asSharedPreferencesKey(),
         value is String ? value : jsonEncode(key.valueToJson(value)),
       );
-  
+
   bool _isPrimitive<T extends Object>(SettingKey<T> key) {
     final type = key.valueType;
-    
+
     return type == String || type == bool || type == int || type == double;
   }
 

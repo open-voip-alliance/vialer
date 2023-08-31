@@ -1,7 +1,7 @@
 // ignore_for_file: avoid_types_on_closure_parameters
 
 import 'package:meta/meta.dart';
-import 'package:vialer/domain/user/settings/change_setting.dart';
+import 'package:vialer/domain/user/settings/force_update_setting.dart';
 import 'package:vialer/domain/user/settings/settings.dart';
 import 'package:vialer/domain/user/settings/settings_repository.dart';
 
@@ -91,9 +91,9 @@ abstract class SettingsRefreshTaskPerformer extends UserRefreshTaskPerformer {
 
     if (result == null) return unmutatedUser;
 
-    final change = result(user);
+    final (key, value) = result(user);
 
-    await ChangeSettingUseCase()(change.$1, change.$2, skipSideEffects: true);
+    await ForceUpdateSetting()(key, value);
 
     return unmutatedUser;
   }

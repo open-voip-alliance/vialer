@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:vialer/domain/user/get_logged_in_user.dart';
 import 'package:vialer/domain/user/refresh/refresh_user.dart';
 import 'package:vialer/domain/user/refresh/user_refresh_task.dart';
+import 'package:vialer/domain/user/settings/force_update_setting.dart';
 import 'package:vialer/domain/user/settings/setting_changed.dart';
-import 'package:vialer/domain/user/settings/settings_repository.dart';
 import 'package:vialer/domain/user/user.dart';
 
 import '../../../dependency_locator.dart';
@@ -23,7 +23,6 @@ import 'listeners/update_use_mobile_number_as_fallback.dart';
 import 'settings.dart';
 
 class ChangeSettingUseCase extends UseCase {
-  final _settingsRepository = dependencyLocator.get<SettingsRepository>();
   final _metricsRepository = dependencyLocator<MetricsRepository>();
   final _eventBus = dependencyLocator<EventBus>();
   final _getCurrentUser = GetLoggedInUserUseCase();
@@ -43,19 +42,13 @@ class ChangeSettingUseCase extends UseCase {
     SettingKey<T> key,
     T value, {
     bool track = true,
-    bool skipSideEffects = false,
   }) async {
-    if (skipSideEffects) {
-      await _settingsRepository.change(key, value);
-      return SettingChangeResult.changed;
-    }
-
     final user = _getCurrentUser();
     final oldSettingValue = user.settings.get(key);
 
     final beforeResult = await _callListeners(key, value, ListenerType.before);
 
-    await _settingsRepository.change(key, value);
+    await ForceUpdateSetting()(key, value);
 
     final afterResult = await _callListeners(key, value, ListenerType.after);
 

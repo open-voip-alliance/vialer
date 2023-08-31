@@ -1,7 +1,6 @@
 import 'package:chopper/chopper.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:vialer/domain/user/settings/call_setting.dart';
-import 'package:vialer/domain/user/settings/change_setting.dart';
 
 import '../../app/util/automatic_retry.dart';
 import '../../app/util/loggable.dart';
@@ -10,6 +9,7 @@ import '../onboarding/exceptions.dart';
 import '../onboarding/login_credentials.dart';
 import '../onboarding/two_factor_authentication_required.dart';
 import '../user/client.dart';
+import '../user/settings/force_update_settings.dart';
 import '../user/user.dart';
 import '../voipgrid/client_voip_config.dart';
 import '../voipgrid/voipgrid_service.dart';
@@ -96,12 +96,14 @@ class AuthRepository with Loggable {
     final systemUser = _SystemUserResponse.fromJson(
       response.body!,
     );
-final a = systemUser.mobileNumber;
-print("TEST123 >>>>${systemUser.mobileNumber}<<<<<");
-    // todo clean-up
-    ChangeSettingUseCase()(CallSetting.mobileNumber, systemUser.mobileNumber ?? '', skipSideEffects: true,);
-    ChangeSettingUseCase()(CallSetting.outgoingNumber, OutgoingNumber.fromJson(systemUser.outgoingCli ?? ''), skipSideEffects: true,);
 
+    ForceUpdateSettings()(
+      {
+        CallSetting.mobileNumber: systemUser.mobileNumber ?? '',
+        CallSetting.outgoingNumber:
+            OutgoingNumber.fromJson(systemUser.outgoingCli ?? ''),
+      },
+    );
 
     return systemUser.toUser();
   }

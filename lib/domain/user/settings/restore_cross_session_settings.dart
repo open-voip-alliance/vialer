@@ -1,6 +1,6 @@
 import 'package:vialer/app/util/loggable.dart';
 import 'package:vialer/domain/use_case.dart';
-import 'package:vialer/domain/user/settings/change_setting.dart';
+import 'package:vialer/domain/user/settings/force_update_settings.dart';
 
 import '../../../dependency_locator.dart';
 import '../../legacy/storage.dart';
@@ -13,11 +13,5 @@ class RestoreCrossSessionSettings extends UseCase with Loggable {
   final _storage = dependencyLocator<StorageRepository>();
 
   Future<void> call(User user) async =>
-      _storage.previousSessionSettings.forEach(
-        (key, value) => ChangeSettingUseCase()(
-          key,
-          value,
-          skipSideEffects: true,
-        ),
-      );
+      ForceUpdateSettings()(_storage.previousSessionSettings);
 }
