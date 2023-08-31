@@ -177,9 +177,6 @@ class _DateFieldState extends State<DateField> {
         case CupertinoDatePickerMode.dateAndTime:
           await _showMaterialDateTimePicker();
           break;
-        case CupertinoDatePickerMode.monthYear:
-          await _showMaterialDatePicker();
-          break;
       }
     }
 
