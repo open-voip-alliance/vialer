@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_cast
+
 import 'dart:async';
 import 'dart:io';
 
@@ -65,7 +67,9 @@ extension on User {
       ...CallSetting.values,
     ];
 
-    for (final key in settingsToInclude) {
+    for (final i in settingsToInclude) {
+      final key = i as SettingKey<Object>;
+
       // For now we only care about bool settings, but can be expanded in the
       // future.
       if (key.valueType == bool) {
