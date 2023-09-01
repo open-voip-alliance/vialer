@@ -42,9 +42,18 @@ class ChangeSettingUseCase extends UseCase {
     SettingKey<T> key,
     T value, {
     bool track = true,
+    bool force = false,
   }) async {
     final user = _getCurrentUser();
     final oldSettingValue = user.settings.get(key);
+
+    if (value == oldSettingValue && !force) {
+      logger.info(
+        'Skipping updating this setting as it is the same as stored.',
+      );
+
+      return SettingChangeResult.changed;
+    }
 
     await ForceUpdateSetting()(key, value);
 

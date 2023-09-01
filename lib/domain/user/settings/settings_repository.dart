@@ -33,6 +33,9 @@ class SettingsRepository {
         value is String ? value : jsonEncode(key.valueToJson(value)),
       );
 
+  bool has<T extends Object>(SettingKey<T> key) =>
+      _storage.containsKey(key.asSharedPreferencesKey());
+
   bool _isPrimitive<T extends Object>(SettingKey<T> key) {
     final type = key.valueType;
 

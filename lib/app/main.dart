@@ -42,7 +42,6 @@ Future<void> main() async {
   unawaited(EnableConsoleLoggingUseCase()());
   unawaited(EnableRemoteLoggingIfNeededUseCase()());
 
-
   final errorTrackingRepository = dependencyLocator<ErrorTrackingRepository>();
   final dsn = dependencyLocator<EnvRepository>().errorTrackingDsn;
   final user = GetStoredUserUseCase()();
