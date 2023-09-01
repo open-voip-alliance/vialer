@@ -44,7 +44,7 @@ class SettingsRepository {
 
   /// Attempts to load any default settings if a value for these doesn't already
   /// exist.
-  Future<void> loadDefaultSettings() async => _defaults.forEach(
+  Future<void> applyDefaultSettings() async => _defaults.forEach(
         (key, value) async {
           if (!_storage.containsKey(key.asSharedPreferencesKey())) {
             await change(key, value);

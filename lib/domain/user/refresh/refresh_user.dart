@@ -59,7 +59,7 @@ class RefreshUser extends UseCase with Loggable {
 
       if (latestUser == null) return storedUser;
 
-      _settings.loadDefaultSettings();
+      _settings.applyDefaultSettings();
 
       // Latest user contains some settings, such as mobile and
       // outgoing number.
