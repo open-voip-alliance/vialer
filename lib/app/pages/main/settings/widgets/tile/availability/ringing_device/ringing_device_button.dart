@@ -6,6 +6,7 @@ import '../../../../../../../../domain/calling/voip/destination.dart';
 import '../../../../../../../../domain/user/user.dart';
 import '../../../../../../../resources/localizations.dart';
 import '../button.dart';
+import '../../../../../../../resources/theme.dart';
 
 class RingingDeviceButton extends StatelessWidget {
   const RingingDeviceButton(
@@ -14,6 +15,7 @@ class RingingDeviceButton extends StatelessWidget {
     required this.enabled,
     required this.destinations,
     required this.onDestinationChanged,
+    required this.isRingingDeviceOffline,
     this.parentWidgetIsEnabled = true,
     super.key,
   });
@@ -24,6 +26,7 @@ class RingingDeviceButton extends StatelessWidget {
   final List<Destination> destinations;
   final User user;
   final bool parentWidgetIsEnabled;
+  final bool isRingingDeviceOffline;
 
   String _text(BuildContext context) {
     switch (type) {
@@ -67,18 +70,30 @@ class RingingDeviceButton extends StatelessWidget {
     }
   }
 
+  IconData? get _trailingIcon {
+    if (user.ringingDevice != type || !enabled) return null;
+
+    return isRingingDeviceOffline
+        ? FontAwesomeIcons.solidTriangleExclamation
+        : FontAwesomeIcons.solidBellOn;
+  }
+
   @override
   Widget build(BuildContext context) {
     return AvailabilityButton(
       text: _text(context),
       leadingIcon: _icon,
-      trailingIcon: user.ringingDevice == type && enabled
-          ? FontAwesomeIcons.solidBellOn
-          : null,
+      trailingIcon: _trailingIcon,
       isActive: parentWidgetIsEnabled && user.ringingDevice == type,
       onPressed: enabled
           ? () =>
               _destination != null ? onDestinationChanged(_destination!) : {}
+          : null,
+      backgroundColor: isRingingDeviceOffline
+          ? context.brand.theme.colors.userAvailabilityBusy
+          : null,
+      foregroundColor: isRingingDeviceOffline
+          ? context.brand.theme.colors.userAvailabilityBusyAccent
           : null,
     );
   }

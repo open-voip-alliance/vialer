@@ -15,7 +15,7 @@ import '../../../../../../domain/colltacts/t9_colltact.dart';
 import '../../../../../../domain/user/get_permission_status.dart';
 import '../../../../../../domain/user/permissions/permission.dart';
 import '../../../../../../domain/user/permissions/permission_status.dart';
-import '../../../../../../domain/user_availability/colleagues/get_colleagues.dart';
+import '../../../../../../domain/relations/colleagues/get_colleagues.dart';
 import '../../../../../util/extensions.dart';
 import 'event.dart';
 import 'state.dart';

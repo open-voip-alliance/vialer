@@ -4,7 +4,7 @@ import '../../app/util/contact.dart';
 import '../../app/util/pigeon.dart';
 import '../../domain/colltacts/contact.dart';
 import '../../domain/colltacts/shared_contacts/shared_contact.dart';
-import '../../domain/user_availability/colleagues/colleague.dart';
+import '../../domain/relations/colleagues/colleague.dart';
 
 part 'colltact.freezed.dart';
 

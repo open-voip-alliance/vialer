@@ -7,13 +7,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../calling/voip/destination.dart';
 import '../colltacts/colltact_tab.dart';
 import '../colltacts/shared_contacts/shared_contact.dart';
+import '../relations/colleagues/colleague.dart';
 import '../user/client.dart';
 import '../user/permissions/user_permissions.dart';
 import '../user/settings/app_setting.dart';
 import '../user/settings/call_setting.dart';
 import '../user/settings/settings.dart';
 import '../user/user.dart';
-import '../user_availability/colleagues/colleague.dart';
 import '../voipgrid/client_voip_config.dart';
 import '../voipgrid/user_voip_config.dart';
 

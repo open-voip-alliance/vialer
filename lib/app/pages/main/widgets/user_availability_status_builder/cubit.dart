@@ -2,15 +2,15 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vialer/app/pages/main/settings/cubit.dart';
-import 'package:vialer/app/pages/main/settings/widgets/tile/availability/ringing_device/widget.dart';
 import 'package:vialer/domain/feature/feature.dart';
 import 'package:vialer/domain/feature/has_feature.dart';
-import 'package:vialer/domain/user_availability/colleagues/colleague.dart';
-import 'package:vialer/domain/user_availability/colleagues/colleagues_repository.dart';
+import 'package:vialer/domain/relations/colleagues/colleague.dart';
+import 'package:vialer/domain/relations/colleagues/colleagues_repository.dart';
 
 import '../../../../../dependency_locator.dart';
 import '../../../../../domain/calling/voip/destination.dart';
 import '../../../../../domain/event/event_bus.dart';
+import '../../../../../domain/relations/user_availability_status.dart';
 import '../../../../../domain/user/events/logged_in_user_availability_changed.dart';
 import '../../../../../domain/user/events/logged_in_user_was_refreshed.dart';
 import '../../../../../domain/user/get_logged_in_user.dart';
@@ -18,7 +18,7 @@ import '../../../../../domain/user/get_stored_user.dart';
 import '../../../../../domain/user/settings/call_setting.dart';
 import '../../../../../domain/user/settings/settings.dart';
 import '../../../../../domain/user/user.dart';
-import '../../../../../domain/user_availability/colleagues/availability_update.dart';
+import '../../settings/widgets/tile/availability/ringing_device/widget.dart';
 import 'state.dart';
 
 export 'state.dart';
@@ -27,12 +27,13 @@ class UserAvailabilityStatusCubit extends Cubit<UserAvailabilityStatusState> {
   UserAvailabilityStatusCubit(this._settingsCubit)
       : super(
           UserAvailabilityStatusState(
-            status: ColleagueAvailabilityStatus.offline,
+            status:
+                ColleagueAvailabilityStatus.offline.toUserAvailabilityStatus(),
           ),
         ) {
     _eventBus
       ..on<LoggedInUserAvailabilityChanged>(
-        (event) => unawaited(check(availability: event.availability)),
+        (event) => unawaited(check(availability: event.userAvailabilityStatus)),
       )
       ..on<LoggedInUserWasRefreshed>((_) => unawaited(check()));
   }
@@ -45,12 +46,13 @@ class UserAvailabilityStatusCubit extends Cubit<UserAvailabilityStatusState> {
   /// We want the UI to be optimistic, rather than waiting for a server response
   /// before changing the status. We set this temporarily while making changes
   /// to immediately update the UI with the user's choice.
-  ColleagueAvailabilityStatus? _statusOverride;
+  UserAvailabilityStatus? _statusOverride;
 
   Future<void> changeAvailabilityStatus(
-    ColleagueAvailabilityStatus requestedStatus,
+    UserAvailabilityStatus requestedStatus,
     List<Destination> destinations,
   ) async {
+    requestedStatus = requestedStatus.basic;
     _statusOverride = requestedStatus;
     check();
 
@@ -78,7 +80,7 @@ class UserAvailabilityStatusCubit extends Cubit<UserAvailabilityStatusState> {
   Map<SettingKey, Object> _determineSettingsToModify(
     User user,
     List<Destination> destinations,
-    ColleagueAvailabilityStatus requestedStatus,
+    UserAvailabilityStatus requestedStatus,
   ) {
     final destination =
         destinations.findHighestPriorityDestinationFor(user: user);
@@ -96,15 +98,15 @@ class UserAvailabilityStatusCubit extends Cubit<UserAvailabilityStatusState> {
         destination != null && !hasFeature(Feature.userBasedDnd);
 
     return switch (requestedStatus) {
-      ColleagueAvailabilityStatus.available => {
+      UserAvailabilityStatus.online => {
           CallSetting.dnd: false,
           if (shouldChangeOnAvailable) CallSetting.destination: destination,
         },
-      ColleagueAvailabilityStatus.doNotDisturb => {
+      UserAvailabilityStatus.doNotDisturb => {
           CallSetting.dnd: true,
           if (shouldChangeOnDnd) CallSetting.destination: destination,
         },
-      ColleagueAvailabilityStatus.offline => {
+      UserAvailabilityStatus.offline => {
           CallSetting.dnd: false,
           CallSetting.destination: const Destination.notAvailable(),
         },
@@ -116,7 +118,7 @@ class UserAvailabilityStatusCubit extends Cubit<UserAvailabilityStatusState> {
   }
 
   Future<void> check({
-    AvailabilityUpdate? availability,
+    UserAvailabilityStatus? availability,
   }) async {
     final override = _statusOverride;
 
@@ -126,9 +128,7 @@ class UserAvailabilityStatusCubit extends Cubit<UserAvailabilityStatusState> {
     }
 
     if (availability != null && hasFeature(Feature.userBasedDnd)) {
-      emit(
-        UserAvailabilityStatusState(status: availability.availabilityStatus),
-      );
+      emit(UserAvailabilityStatusState(status: availability));
     }
 
     if (!_colleagueRepository.isWebSocketConnected ||
@@ -140,18 +140,28 @@ class UserAvailabilityStatusCubit extends Cubit<UserAvailabilityStatusState> {
   // This is only used while we are using legacy do-not-disturb, or the
   // websocket is unavailable. Otherwise we should always be using the value
   // directly from the websocket.
-  ColleagueAvailabilityStatus get _status {
+  UserAvailabilityStatus get _status {
     final user = _user;
 
-    if (user == null) return ColleagueAvailabilityStatus.offline;
+    if (user == null) return UserAvailabilityStatus.offline;
 
     final destination = user.settings.getOrNull(CallSetting.destination);
     final isDndEnabled = user.settings.getOrNull(CallSetting.dnd) ?? false;
 
-    if (destination is NotAvailable) return ColleagueAvailabilityStatus.offline;
+    if (destination is NotAvailable) return UserAvailabilityStatus.offline;
 
     return isDndEnabled
-        ? ColleagueAvailabilityStatus.doNotDisturb
-        : ColleagueAvailabilityStatus.available;
+        ? UserAvailabilityStatus.doNotDisturb
+        : UserAvailabilityStatus.online;
   }
+}
+
+extension on ColleagueAvailabilityStatus {
+  UserAvailabilityStatus toUserAvailabilityStatus() => switch (this) {
+        ColleagueAvailabilityStatus.available => UserAvailabilityStatus.online,
+        ColleagueAvailabilityStatus.offline => UserAvailabilityStatus.offline,
+        ColleagueAvailabilityStatus.doNotDisturb =>
+          UserAvailabilityStatus.doNotDisturb,
+        _ => UserAvailabilityStatus.online,
+      };
 }

@@ -1,0 +1,4 @@
+- A new status and some warnings will be displayed when your current ringing device is offline
+- Screen readers will now properly identify headers during the onboarding process
+- Fixed a bug that would still occasionally set do-not-disturb using the legacy method
+- The "system" debugging page will now be properly hidden

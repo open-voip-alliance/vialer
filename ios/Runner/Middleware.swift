@@ -44,12 +44,6 @@ public class Middleware: NativeMiddleware {
         
         lastRegisteredToken = token
         
-        let dndEnabled = flutterSharedPreferences.getBoolSetting(name: "DndSetting")
-
-        if dndEnabled {
-            logger.writeLog("Registering in do-not-disturb mode")
-        }
-        
         let data = [
             "name": middlewareCredentials.email,
             "token": token,
@@ -60,7 +54,7 @@ public class Middleware: NativeMiddleware {
             "push_profile": "once",
             "sandbox": Bundle.main.infoDictionary?["Sandbox"] as? String,
             "remote_notification_token": flutterSharedPreferences.remoteNotificationToken,
-            "dnd": String(dndEnabled)
+            "dnd": String(false)
         ]
 
         var request = createMiddlewareRequest(email: middlewareCredentials.email, token: middlewareCredentials.loginToken, url: baseUrl + REGISTER_URL)

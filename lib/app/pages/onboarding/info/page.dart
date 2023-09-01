@@ -55,11 +55,14 @@ class InfoPage extends StatelessWidget {
                       ),
                     ),
                     Flexible(
-                      child: AutoSizeText(
-                        title,
-                        minFontSize: 28,
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                        textAlign: TextAlign.center,
+                      child: Semantics(
+                        header: true,
+                        child: AutoSizeText(
+                          title,
+                          minFontSize: 28,
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center,
+                        ),
                       ),
                     ),
                     DefaultTextStyle(
