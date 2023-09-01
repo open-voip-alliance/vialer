@@ -94,8 +94,9 @@ class UserAvailabilityStatusCubit extends Cubit<UserAvailabilityStatusState> {
     // We never want enabling dnd to change the ringing device when using the
     // new dnd api. It's still required for the legacy dnd but should be removed
     // when possible.
-    final shouldChangeOnDnd =
-        destination != null && !hasFeature(Feature.userBasedDnd);
+    final shouldChangeOnDnd = destination != null &&
+        (!hasFeature(Feature.userBasedDnd) ||
+            user.currentDestination is NotAvailable);
 
     return switch (requestedStatus) {
       UserAvailabilityStatus.online => {
