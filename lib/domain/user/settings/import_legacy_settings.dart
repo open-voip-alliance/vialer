@@ -9,7 +9,7 @@ import '../../use_case.dart';
 /// Imports any legacy settings from when settings were stored against the user
 /// object in a single json blob.
 ///
-/// This doesn't interact with settings at all, just directly dumps the settings
+/// This doesn't interact with settings at all, just directly dumps the raw data
 /// into separate keys.
 ///
 /// This should be removed when almost all users have upgraded from 7.36.0.
