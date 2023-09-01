@@ -1,0 +1,1 @@
+- Fixed a bug where switching your status from offline to do not disturb would not be applied correctly
