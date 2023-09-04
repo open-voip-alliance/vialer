@@ -59,8 +59,6 @@ class RefreshUser extends UseCase with Loggable {
 
       if (latestUser == null) return storedUser;
 
-      _settings.applyDefaultSettings();
-
       // Latest user contains some settings, such as mobile and
       // outgoing number.
       var user = storedUser?.copyFrom(latestUser) ?? latestUser;
@@ -75,6 +73,10 @@ class RefreshUser extends UseCase with Loggable {
 
       if (isFirstTime) {
         user = await _performFirstTimeTasks(user);
+      } else {
+        // If it's the first time logging in then we will apply these
+        // during the login process.
+        await _settings.applyDefaultSettings();
       }
 
       final previous = user;
