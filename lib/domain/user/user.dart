@@ -37,7 +37,7 @@ class User with _$User {
       toJson: UserPermissions.serializeToJson,
       fromJson: UserPermissions.fromJson,
     )
-    @Default(const UserPermissions())
+    @Default(UserPermissions())
     UserPermissions permissions,
   }) = _User;
 

@@ -26,6 +26,7 @@ class SettingsState with _$SettingsState {
     @Default(false) bool isRateLimited,
     @Default(Iterable<OutgoingNumber>.empty())
     Iterable<OutgoingNumber> recentOutgoingNumbers,
+    @Default(false) bool hasUnreadFeatureAnnouncements,
   }) = _SettingsState;
 
   const SettingsState._();
