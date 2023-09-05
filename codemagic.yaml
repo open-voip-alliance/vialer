@@ -244,6 +244,9 @@ workflows:
   release-candidate:
     name: Release Candidate
     <<: *main_workflow
+    environment:
+      groups:
+        - production_and_release_candidate
     triggering:
       events:
         - push
@@ -360,6 +363,7 @@ workflows:
       groups:
         - configuration
         - production_diagnostics
+        - production_and_release_candidate
         - vialer_android_firebase
         - vialer_upload_keystore_credentials
         - vialer_playstore_credentials
