@@ -139,6 +139,7 @@ class _DateFieldState extends State<DateField> {
                     case CupertinoDatePickerMode.time:
                       _updateTime(TimeOfDay.fromDateTime(newDate));
                       break;
+                    case CupertinoDatePickerMode.monthYear:
                     case CupertinoDatePickerMode.date:
                       _updateDate(newDate);
                       break;
@@ -169,6 +170,7 @@ class _DateFieldState extends State<DateField> {
         case CupertinoDatePickerMode.time:
           await _showMaterialTimePicker();
           break;
+        case CupertinoDatePickerMode.monthYear:
         case CupertinoDatePickerMode.date:
           await _showMaterialDatePicker();
           break;
