@@ -12,7 +12,7 @@ class UpdateOutgoingNumberListener extends SettingChangeListener<OutgoingNumber>
   final key = CallSetting.outgoingNumber;
 
   @override
-  FutureOr<SettingChangeListenResult> preStore(
+  FutureOr<SettingChangeListenResult> applySettingsSideEffects(
     User user,
     OutgoingNumber value,
   ) =>

@@ -7,7 +7,7 @@ part 'destination.freezed.dart';
 part 'destination.g.dart';
 
 @freezed
-class Destination with _$Destination {
+sealed class Destination with _$Destination {
   const factory Destination.unknown() = Unknown;
 
   const factory Destination.notAvailable() = NotAvailable;

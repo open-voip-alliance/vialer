@@ -2,7 +2,6 @@ import '../../../../dependency_locator.dart';
 import '../../../authentication/authentication_repository.dart';
 import '../../permissions/user_permissions.dart';
 import '../../settings/call_setting.dart';
-import '../../settings/settings.dart';
 import '../../user.dart';
 import '../user_refresh_task_performer.dart';
 
@@ -16,7 +15,7 @@ class RefreshVoipgridUserSettings extends SettingsRefreshTaskPerformer {
     final useMobileNumberAsFallback = await dependencyLocator<AuthRepository>()
         .isUserUsingMobileNumberAsFallback(user);
 
-    return (Settings settings) => settings.copyWith(
+    return (User user) => (
           CallSetting.useMobileNumberAsFallback,
           useMobileNumberAsFallback,
         );

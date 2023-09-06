@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:vialer/domain/authentication/user_logged_in.dart';
+import 'package:vialer/domain/user/user.dart';
 
 import '../../../../../dependency_locator.dart';
 import '../../../../../domain/authentication/user_was_logged_out.dart';

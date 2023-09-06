@@ -8,91 +8,24 @@ import '../calling/voip/destination.dart';
 import '../colltacts/colltact_tab.dart';
 import '../colltacts/shared_contacts/shared_contact.dart';
 import '../relations/colleagues/colleague.dart';
-import '../user/client.dart';
-import '../user/permissions/user_permissions.dart';
-import '../user/settings/app_setting.dart';
 import '../user/settings/call_setting.dart';
 import '../user/settings/settings.dart';
 import '../user/user.dart';
-import '../voipgrid/client_voip_config.dart';
-import '../voipgrid/user_voip_config.dart';
 
 class StorageRepository {
-  late SharedPreferences _preferences;
+  final SharedPreferences _preferences;
 
-  Future<void> load() async {
-    _preferences = await SharedPreferences.getInstance();
-  }
+  const StorageRepository(this._preferences);
 
   // Value must stay the same, otherwise everything breaks.
   static const _userKey = 'system_user';
 
-  User? get user {
-    final userJson = _preferences.getJson(
-          _userKey,
-          (j) => j! as Map<String, dynamic>,
-        ) ??
-        const {};
-
-    User? user;
-
-    // TODO: Remove legacy User deserialization eventually.
-    // If the user has a 'settings' key, we know it's not a legacy user.
-    if (userJson.containsKey('settings')) {
-      user = _preferences.getJson<User, Map<String, dynamic>>(
+  User? get user => _preferences.getJson<User, Map<String, dynamic>>(
         _userKey,
         User.fromJson,
       );
-    } else {
-      final legacyUser = _preferences.getJson(
-        _legacySettingsKey,
-        (settingsJson) => _legacyUserFromJson(
-          userJson,
-          settingsJson! as List<dynamic>,
-        ),
-      );
-
-      // Legacy settings are deleted to prevent
-      // overwriting new settings later on.
-      if (legacyUser != null) {
-        user = legacyUser;
-        // Save to non-legacy user.
-        this.user = user;
-        _preferences.setOrRemoveString(_legacySettingsKey, null);
-      }
-    }
-
-    if (_preferences.containsKey(_legacyVoipConfigKey)) {
-      user = user?.copyWith(
-        voip: () => _preferences.getJson<UserVoipConfig?, Map<String, dynamic>>(
-          _legacyVoipConfigKey,
-          UserVoipConfig.serializeFromJson,
-        ),
-      );
-      this.user = user;
-      _preferences.setOrRemoveString(_legacyVoipConfigKey, null);
-    }
-
-    if (_preferences.containsKey(_legacyServerConfigKey)) {
-      user = user?.copyWith(
-        client: user.client.copyWith(
-          voip: _preferences.getJson(
-            _legacyServerConfigKey,
-            ClientVoipConfig.fromJson,
-          ),
-        ),
-      );
-      this.user = user;
-      _preferences.setOrRemoveString(_legacyVoipConfigKey, null);
-    }
-
-    return user;
-  }
 
   set user(User? user) => _preferences.setOrRemoveObject(_userKey, user);
-
-  // This value cannot change.
-  static const _legacySettingsKey = 'settings';
 
   static const _logsKey = 'logs';
 
@@ -132,8 +65,6 @@ class StorageRepository {
 
   set remoteNotificationToken(String? value) =>
       _preferences.setOrRemoveString(_remoteNotificationTokenKey, value);
-
-  static const _legacyVoipConfigKey = 'voip_config';
 
   /// We store the last installed version so we can check if the user has
   /// updated the app, and if they need to be shown the release notes.
@@ -185,18 +116,18 @@ class StorageRepository {
   set appRatingSurveyShownTime(DateTime? value) =>
       _preferences.setOrRemoveDateTime(_appRatingSurveyShownTimeKey, value);
 
-  static const _legacyServerConfigKey = 'server_config';
-
   static const _previousSessionSettingsKey = 'previous_session_settings';
 
   Settings get previousSessionSettings =>
-      _preferences.getJson(_previousSessionSettingsKey, Settings.fromJson) ??
-      const Settings.empty();
+      _preferences.containsKey(_previousSessionSettingsKey)
+          ? jsonDecode(_preferences.getString(_previousSessionSettingsKey)!)
+              as Settings
+          : {};
 
-  set previousSessionSettings(Settings? value) => _preferences.setOrRemoveJson(
+  set previousSessionSettings(Settings? value) =>
+      _preferences.setOrRemoveString(
         _previousSessionSettingsKey,
-        value,
-        Settings.toJson,
+        jsonEncode(value),
       );
 
   static const _colleaguesKey = 'colleagues';
@@ -347,105 +278,6 @@ class StorageRepository {
   Future<void> clear() => _preferences.clear();
 
   Future<void> reload() => _preferences.reload();
-
-  User? _legacyUserFromJson(
-    Map<String, dynamic> userJson,
-    List<dynamic> settingsJson,
-  ) {
-    if (userJson.isEmpty) return null;
-
-    final settings = <SettingKey, Object>{};
-
-    Iterable<String>? clientOutgoingNumbers;
-    UserPermissions? permissions;
-
-    for (final j in settingsJson) {
-      final jObj = j as Map<String, dynamic>;
-      final dynamic type = jObj['type'];
-      final dynamic value = jObj['value'];
-
-      assert(type != null, 'type must not be null');
-      assert(value != null, 'value must not be null');
-
-      // Make sure to add an explicit type cast if using `value` directly.
-      switch (type) {
-        case 'RemoteLoggingSetting':
-          settings[AppSetting.remoteLogging] = value as bool;
-          break;
-        case 'ShowDialerConfirmPopupSetting':
-          settings[AppSetting.showDialerConfirmPopup] = value as bool;
-          break;
-        case 'ShowSurveysSetting':
-          settings[AppSetting.showSurveys] = value as bool;
-          break;
-        case 'BusinessNumberSetting':
-        case 'OutgoingNumberSetting':
-          settings[CallSetting.outgoingNumber] = OutgoingNumber.fromJson(value);
-          break;
-        case 'MobileNumberSetting':
-          settings[CallSetting.mobileNumber] = value as String;
-          break;
-        case 'UsePhoneRingtoneSetting':
-          settings[CallSetting.usePhoneRingtone] = value as bool;
-          break;
-        case 'UseVoipSetting':
-          settings[CallSetting.useVoip] = value as bool;
-          break;
-        case 'ShowCallsInNativeRecentsSetting':
-          settings[AppSetting.showCallsInNativeRecents] = value as bool;
-          break;
-        case 'AvailabilitySetting':
-          settings[CallSetting.destination] = Destination.fromJson(
-            value as Map<String, dynamic>,
-          );
-          break;
-        case 'DndSetting':
-          settings[CallSetting.dnd] = value as bool;
-          break;
-        case 'ShowClientCallsSetting':
-          settings[AppSetting.showClientCalls] = value as bool;
-          break;
-        case 'UseMobileNumberAsFallbackSetting':
-          settings[CallSetting.useMobileNumberAsFallback] = value as bool;
-          break;
-        case 'ClientOutgoingNumbersSetting':
-          clientOutgoingNumbers =
-              ((value as Map<String, dynamic>)['numbers'] as List<dynamic>)
-                  .cast();
-          break;
-        case 'VoipgridPermissionsSetting':
-          permissions = const UserPermissions();
-          break;
-      }
-    }
-
-    final appAccountUrlString = userJson['app_account'] as String?;
-    final clientId = userJson['client_id'] as int;
-    final clientUuid = userJson['client_uuid'] as String;
-    final clientName = userJson['client_name'] as String;
-    final clientUrlString = userJson['client'] as String;
-
-    return User(
-      uuid: userJson['uuid'] as String,
-      email: userJson['email'] as String,
-      firstName: userJson['first_name'] as String,
-      lastName: userJson['last_name'] as String,
-      token: userJson['token'] as String?,
-      appAccountUrl:
-          appAccountUrlString != null ? Uri.parse(appAccountUrlString) : null,
-      client: Client(
-        id: clientId,
-        uuid: clientUuid,
-        name: clientName,
-        url: Uri.parse(clientUrlString),
-        voip: ClientVoipConfig.fallback(),
-        outgoingNumbers:
-            clientOutgoingNumbers?.map(OutgoingNumber.new) ?? const [],
-      ),
-      settings: Settings.defaults.copyWithAll(settings),
-      permissions: permissions ?? const UserPermissions(),
-    );
-  }
 }
 
 extension on SharedPreferences {

@@ -7,7 +7,7 @@ import '../event/event_bus.dart';
 import '../legacy/storage.dart';
 import '../use_case.dart';
 import '../user/get_logged_in_user.dart';
-import '../user/settings/preserve_cross_session_settings.dart';
+import '../user/settings/clear_and_preserve_cross_session_settings.dart';
 import 'user_was_logged_out.dart';
 
 class Logout extends UseCase {
@@ -17,7 +17,8 @@ class Logout extends UseCase {
   final _getUser = GetLoggedInUserUseCase();
   final _stopVoip = StopVoipUseCase();
   final _purgeClientCalls = PurgeLocalCallRecordsUseCase();
-  final _preserveCrossSessionSettings = PreserveCrossSessionSettings();
+  final _preserveCrossSessionSettings =
+      ClearStorageAndPreserveCrossSessionSettings();
 
   Future<void> call() async {
     await _stopVoip();
@@ -31,13 +32,12 @@ class Logout extends UseCase {
     final remoteNotificationToken = _storageRepository.remoteNotificationToken;
     final user = _getUser();
 
-    await _storageRepository.clear();
+    await _preserveCrossSessionSettings(user);
 
     _storageRepository
       ..pushToken = pushToken
       ..remoteNotificationToken = remoteNotificationToken;
 
-    await _preserveCrossSessionSettings(user);
     await _purgeClientCalls(reason: PurgeReason.logout);
 
     _eventBus.broadcast(const UserWasLoggedOutEvent());

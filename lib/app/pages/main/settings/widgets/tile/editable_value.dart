@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:vialer/app/pages/main/util/phone_number.dart';
+import 'package:vialer/domain/user/settings/settings_repository.dart';
 
 import '../../../../../../domain/user/settings/settings.dart';
 import '../../../../../widgets/stylized_dropdown.dart';
@@ -58,7 +59,7 @@ class StringEditSettingValue extends StatefulWidget {
     this.isResettable = false,
     super.key,
   }) : value = settings.get(setting);
-  final Settings settings;
+  final SettingsRepository settings;
   final SettingKey<String> setting;
   final ValueChangedWithContext<String> onChanged;
 

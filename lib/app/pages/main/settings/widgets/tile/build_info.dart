@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:vialer/domain/user/user.dart';
 
 import '../../../../../../../domain/user/info/build_info.dart';
 import '../../../../../../../domain/user/settings/app_setting.dart';
