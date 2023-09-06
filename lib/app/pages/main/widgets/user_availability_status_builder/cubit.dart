@@ -2,8 +2,6 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vialer/app/pages/main/settings/cubit.dart';
-import 'package:vialer/domain/feature/feature.dart';
-import 'package:vialer/domain/feature/has_feature.dart';
 import 'package:vialer/domain/relations/colleagues/colleague.dart';
 import 'package:vialer/domain/relations/colleagues/colleagues_repository.dart';
 
@@ -43,17 +41,11 @@ class UserAvailabilityStatusCubit extends Cubit<UserAvailabilityStatusState> {
   late final _colleagueRepository = dependencyLocator<ColleaguesRepository>();
   User? get _user => GetStoredUserUseCase()();
 
-  /// We want the UI to be optimistic, rather than waiting for a server response
-  /// before changing the status. We set this temporarily while making changes
-  /// to immediately update the UI with the user's choice.
-  UserAvailabilityStatus? _statusOverride;
-
   Future<void> changeAvailabilityStatus(
     UserAvailabilityStatus requestedStatus,
     List<Destination> destinations,
   ) async {
     requestedStatus = requestedStatus.basic;
-    _statusOverride = requestedStatus;
     check();
 
     final user = GetLoggedInUserUseCase()();
@@ -62,18 +54,6 @@ class UserAvailabilityStatusCubit extends Cubit<UserAvailabilityStatusState> {
       _determineSettingsToModify(user, destinations, requestedStatus),
     );
 
-    if (!hasFeature(Feature.userBasedDnd)) {
-      // Hacky solution to making sure availability doesn't sometimes flick back
-      // to available. Should be removed with user-based dnd.
-      // ignore: inference_failure_on_instance_creation
-      await Future.delayed(const Duration(seconds: 1));
-      await _settingsCubit.changeSetting(
-        CallSetting.dnd,
-        requestedStatus == ColleagueAvailabilityStatus.doNotDisturb,
-      );
-    }
-
-    _statusOverride = null;
     check();
   }
 
@@ -94,9 +74,8 @@ class UserAvailabilityStatusCubit extends Cubit<UserAvailabilityStatusState> {
     // We never want enabling dnd to change the ringing device when using the
     // new dnd api. It's still required for the legacy dnd but should be removed
     // when possible.
-    final shouldChangeOnDnd = destination != null &&
-        (!hasFeature(Feature.userBasedDnd) ||
-            user.currentDestination is NotAvailable);
+    final shouldChangeOnDnd =
+        destination != null && user.currentDestination is NotAvailable;
 
     return switch (requestedStatus) {
       UserAvailabilityStatus.online => {
@@ -108,8 +87,8 @@ class UserAvailabilityStatusCubit extends Cubit<UserAvailabilityStatusState> {
           if (shouldChangeOnDnd) CallSetting.destination: destination,
         },
       UserAvailabilityStatus.offline => {
-          CallSetting.dnd: false,
           CallSetting.destination: const Destination.notAvailable(),
+          CallSetting.dnd: false,
         },
       _ => throw ArgumentError(
           'Only [available], [doNotDisturb], [offline] '
@@ -121,19 +100,11 @@ class UserAvailabilityStatusCubit extends Cubit<UserAvailabilityStatusState> {
   Future<void> check({
     UserAvailabilityStatus? availability,
   }) async {
-    final override = _statusOverride;
-
-    if (override != null) {
-      emit(UserAvailabilityStatusState(status: override));
-      return;
-    }
-
-    if (availability != null && hasFeature(Feature.userBasedDnd)) {
+    if (availability != null) {
       emit(UserAvailabilityStatusState(status: availability));
     }
 
-    if (!_colleagueRepository.isWebSocketConnected ||
-        !hasFeature(Feature.userBasedDnd)) {
+    if (!_colleagueRepository.isWebSocketConnected) {
       emit(UserAvailabilityStatusState(status: _status));
     }
   }

@@ -145,7 +145,7 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
       state.withChanged(GetLoggedInUserUseCase()(), isApplyingChanges: true),
     );
     for (final entry in settings.entries) {
-      await ChangeSettingUseCase()(entry.key, entry.value);
+      await ChangeSettingUseCase()(entry.key, entry.value, force: true);
     }
     _changesBeingProcessed.remove(changeRequest);
     _emitUpdatedState();

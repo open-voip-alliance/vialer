@@ -57,13 +57,16 @@ class AvailabilityStatusButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final (text, icon, foregroundColor, backgroundColor) = _styling(context);
 
-    return AvailabilityButton(
-      text: text,
-      leadingIcon: icon,
-      onPressed: enabled ? () => onStatusChanged(type) : null,
-      isActive: current == type,
-      foregroundColor: foregroundColor,
-      backgroundColor: backgroundColor,
+    return Opacity(
+      opacity: enabled ? 1 : 0.5,
+      child: AvailabilityButton(
+        text: text,
+        leadingIcon: icon,
+        onPressed: enabled ? () => onStatusChanged(type) : null,
+        isActive: current == type,
+        foregroundColor: foregroundColor,
+        backgroundColor: backgroundColor,
+      ),
     );
   }
 }

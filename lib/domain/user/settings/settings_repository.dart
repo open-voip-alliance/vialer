@@ -38,7 +38,6 @@ class SettingsRepository {
     return _storage.containsKey(key.asSharedPreferencesKey());
   }
 
-
   bool _isPrimitive<T extends Object>(SettingKey<T> key) {
     final type = key.valueType;
 
