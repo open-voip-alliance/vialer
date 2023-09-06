@@ -16,7 +16,7 @@ class StartVoipOnUseVoipEnabledListener extends SettingChangeListener<bool>
   final key = CallSetting.useVoip;
 
   @override
-  FutureOr<SettingChangeListenResult> postStore(
+  FutureOr<SettingChangeListenResult> applySettingsSideEffects(
     User user,
     bool value,
   ) async {

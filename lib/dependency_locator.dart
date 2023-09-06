@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:get_it/get_it.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vialer/domain/calling/dnd/dnd_repository.dart';
 import 'package:vialer/domain/calling/dnd/dnd_service.dart';
+import 'package:vialer/domain/user/settings/settings_repository.dart';
 
 import 'app/util/debug.dart';
 import 'domain/authentication/authentication_repository.dart';
@@ -59,15 +61,19 @@ Future<void> initializeDependencies({bool ui = true}) async {
       SharedContactsService.create(),
     )
     ..registerSingleton<ClientCallsDatabase>(ClientCallsDatabase())
-    ..registerSingletonAsync<StorageRepository>(() async {
-      final storageRepository = StorageRepository();
-      await storageRepository.load();
-      return storageRepository;
-    })
+    ..registerSingletonAsync<SharedPreferences>(
+      () => SharedPreferences.getInstance(),
+    )
+    ..registerSingletonWithDependencies<StorageRepository>(
+      () => StorageRepository(dependencyLocator<SharedPreferences>()),
+      dependsOn: [SharedPreferences],
+    )
+    ..registerSingletonWithDependencies<SettingsRepository>(
+      () => SettingsRepository(dependencyLocator<SharedPreferences>()),
+      dependsOn: [SharedPreferences],
+    )
     ..registerSingletonWithDependencies<ClientVoipConfigRepository>(
-      () => ClientVoipConfigRepository(
-        dependencyLocator<VoipgridService>(),
-      ),
+      () => ClientVoipConfigRepository(dependencyLocator<VoipgridService>()),
       dependsOn: [StorageRepository],
     )
     ..registerSingletonAsync<MiddlewareService>(

@@ -1,9 +1,12 @@
+// ignore_for_file: unnecessary_cast
+
 import 'dart:async';
 import 'dart:io';
 
 import 'package:dartx/dartx.dart';
 import 'package:recase/recase.dart';
 import 'package:vialer/app/util/pigeon.dart';
+import 'package:vialer/domain/user/settings/app_setting.dart';
 
 import '../../../dependency_locator.dart';
 import '../colltacts/colltact_tab.dart';
@@ -13,6 +16,7 @@ import '../use_case.dart';
 import '../user/client.dart';
 import '../user/get_brand.dart';
 import '../user/get_logged_in_user.dart';
+import '../user/settings/call_setting.dart';
 import '../user/settings/settings.dart';
 import '../user/user.dart';
 import 'metrics.dart';
@@ -58,11 +62,18 @@ extension on User {
   Map<String, dynamic> toIdentifyProperties() {
     final properties = <String, dynamic>{};
 
-    for (final a in settings.entries) {
+    final settingsToInclude = [
+      ...AppSetting.values,
+      ...CallSetting.values,
+    ];
+
+    for (final i in settingsToInclude) {
+      final key = i as SettingKey<Object>;
+
       // For now we only care about bool settings, but can be expanded in the
       // future.
-      if (a.value is bool) {
-        properties[a.key.asPropertyKey] = a.value;
+      if (key.valueType == bool) {
+        properties[key.asPropertyKey] = settings.get(key);
       }
     }
 

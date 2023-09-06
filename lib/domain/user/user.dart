@@ -2,12 +2,13 @@
 
 import 'package:dartx/dartx.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:vialer/dependency_locator.dart';
+import 'package:vialer/domain/user/settings/settings_repository.dart';
 
 import '../../app/util/nullable_copy_with_argument.dart';
 import '../voipgrid/user_voip_config.dart';
 import 'client.dart';
 import 'permissions/user_permissions.dart';
-import 'settings/settings.dart';
 
 part 'user.g.dart';
 part 'user.freezed.dart';
@@ -32,8 +33,6 @@ class User with _$User {
       fromJson: UserVoipConfig.serializeFromJson,
     )
     UserVoipConfig? voip,
-    @JsonKey(toJson: Settings.toJson, fromJson: Settings.fromJson)
-    required Settings settings,
     @JsonKey(
       toJson: UserPermissions.serializeToJson,
       fromJson: UserPermissions.fromJson,
@@ -69,7 +68,6 @@ class User with _$User {
     Uri? appAccountUrl,
     Client? client,
     NullableCopyWithArgument<UserVoipConfig> voip,
-    Settings? settings,
     UserPermissions? permissions,
     NullableCopyWithArgument<String> webphoneAccountId,
   }) {
@@ -83,7 +81,6 @@ class User with _$User {
       appAccountUrl: appAccountUrl ?? this.appAccountUrl,
       client: client ?? this.client,
       voip: voip.valueOrNull(unmodified: this.voip),
-      settings: settings ?? this.settings,
       permissions: permissions ?? this.permissions,
       webphoneAccountId: webphoneAccountId.valueOrNull(
         unmodified: this.webphoneAccountId,
@@ -102,8 +99,11 @@ class User with _$User {
       appAccountUrl: user.appAccountUrl,
       client: user.client,
       voip: () => user.voip,
-      settings: settings.copyFrom(user.settings),
       permissions: user.permissions,
     );
   }
+}
+
+extension SettingsAccess on User {
+  SettingsRepository get settings => dependencyLocator<SettingsRepository>();
 }

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vialer/domain/user/user.dart';
 
 import '../../../../../../domain/calling/call_through/get_call_through_region_number.dart';
 import '../../../../../../domain/user/get_logged_in_user.dart';

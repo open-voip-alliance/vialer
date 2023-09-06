@@ -1,6 +1,7 @@
 import 'package:dartx/dartx.dart';
 import 'package:flutter/foundation.dart';
 import 'package:timezone/data/latest.dart';
+import 'package:vialer/domain/user/user.dart';
 
 import '../../../../app/util/loggable.dart';
 import '../../user/get_logged_in_user.dart';

@@ -5,7 +5,6 @@ import 'package:vialer/domain/user/refresh/user_refresh_task_performer.dart';
 import 'package:vialer/domain/user/settings/call_setting.dart';
 
 import '../../../../dependency_locator.dart';
-import '../../settings/settings.dart';
 import '../../user.dart';
 
 class RefreshUserDndStatus extends SettingsRefreshTaskPerformer {
@@ -16,18 +15,15 @@ class RefreshUserDndStatus extends SettingsRefreshTaskPerformer {
   @override
   Future<SettingsMutator> performSettingsRefreshTask(User user) async {
     if (!HasFeature()(Feature.userBasedDnd)) {
-      return (Settings settings) => settings;
+      return null;
     }
 
     try {
       final dndStatus = await _repository.getDndStatus(user);
 
-      return (Settings settings) => settings.copyWith(
-            CallSetting.dnd,
-            dndStatus.asBool(),
-          );
+      return (User user) => (CallSetting.dnd, dndStatus.asBool());
     } catch (e) {
-      return unmutatedSettings;
+      return null;
     }
   }
 }

@@ -19,22 +19,18 @@ abstract class SettingChangeListener<T extends Object> {
   Future<SettingChangeListenResult> changeRemoteValue(
     Future<bool> Function() action, {
     bool log = true,
-  }) async {
-    final success = await action();
-
-    return SettingChangeListenResult(
-      log: log,
-      sync: success,
-      failed: !success,
-    );
-  }
-
-  /// Before the settings are stored.
-  FutureOr<SettingChangeListenResult> preStore(User user, T value) =>
-      successResult;
+  }) async =>
+      SettingChangeListenResult(
+        log: log,
+        sync: false,
+        failed: !(await action()),
+      );
 
   /// After the settings are stored.
-  FutureOr<SettingChangeListenResult> postStore(User user, T value) =>
+  FutureOr<SettingChangeListenResult> applySettingsSideEffects(
+    User user,
+    T value,
+  ) =>
       successResult;
 
   bool shouldHandle(SettingKey key) =>

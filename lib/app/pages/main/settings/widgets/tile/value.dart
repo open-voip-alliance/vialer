@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vialer/app/pages/main/util/phone_number.dart';
+import 'package:vialer/domain/user/settings/settings_repository.dart';
 
 import '../../../../../../domain/user/settings/settings.dart';
 import '../../../../../resources/localizations.dart';
@@ -79,7 +80,7 @@ class BoolSettingValue extends StatelessWidget {
     super.key,
   });
 
-  final Settings settings;
+  final SettingsRepository settings;
   final SettingKey<bool> settingKey;
   final ValueChangedWithContext<bool>? onChanged;
 
@@ -131,7 +132,7 @@ class StringSettingValue<T extends Object> extends StatelessWidget {
           T == String || value != null,
           'settingKey must be SettingKey<String> or value must be set',
         );
-  final Settings settings;
+  final SettingsRepository settings;
   final SettingKey<T> settingKey;
 
   /// If [T] is not [String], use this function to retrieve the

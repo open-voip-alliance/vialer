@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:in_app_review/in_app_review.dart';
+import 'package:vialer/domain/user/user.dart';
 
 import '../../../../domain/feedback/send_survey_results.dart';
 import '../../../../domain/feedback/survey/get_survey.dart';
