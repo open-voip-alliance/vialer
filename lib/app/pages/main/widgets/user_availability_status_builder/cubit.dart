@@ -100,13 +100,28 @@ class UserAvailabilityStatusCubit extends Cubit<UserAvailabilityStatusState> {
   Future<void> check({
     UserAvailabilityStatus? availability,
   }) async {
+    final destination = _user?.currentDestination;
+
     if (availability != null) {
-      emit(UserAvailabilityStatusState(status: availability));
+      return emit(state.copyWith(
+        status: availability,
+        currentDestination: destination,
+      ));
     }
 
+    // If the websocket can't connect we're just going to fallback to
+    // determining the status based on what we have stored locally. This is
+    // usually accurate, but not necessarily.
     if (!_colleagueRepository.isWebSocketConnected) {
-      emit(UserAvailabilityStatusState(status: _status));
+      return emit(state.copyWith(
+        status: _status,
+        currentDestination: destination,
+      ));
     }
+
+    // We don't have any availability update, so we'll just make sure to emit
+    // the new state with the current destination.
+    emit(state.copyWith(currentDestination: destination));
   }
 
   // This is only used while we are using legacy do-not-disturb, or the
