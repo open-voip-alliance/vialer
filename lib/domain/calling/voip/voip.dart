@@ -7,8 +7,6 @@ import '../../../app/util/loggable.dart';
 import '../../../dependency_locator.dart';
 import '../../authentication/get_is_logged_in_somewhere_else.dart';
 import '../../env.dart';
-import '../../feature/feature.dart';
-import '../../feature/has_feature.dart';
 import '../../legacy/storage.dart';
 import '../../user/brand.dart';
 import '../../user/get_build_info.dart';
@@ -271,10 +269,6 @@ class VoipRepository with Loggable {
     final useSandbox = _envRepository.sandbox;
     final loginTime = _getLoginTime();
 
-    final userBasedDndEnabled = HasFeature()(Feature.userBasedDnd);
-    final dndEnabled =
-        userBasedDndEnabled ? false : user.settings.get(CallSetting.dnd);
-
     final response = Platform.isAndroid
         ? await _service.postAndroidDevice(
             name: name,
@@ -284,7 +278,7 @@ class VoipRepository with Loggable {
             clientVersion: clientVersion,
             app: app,
             appStartupTime: loginTime?.toUtc().toIso8601String(),
-            dnd: dndEnabled,
+            dnd: false,
           )
         : Platform.isIOS
             ? await _service.postAppleDevice(
@@ -297,7 +291,7 @@ class VoipRepository with Loggable {
                 appStartupTime: loginTime?.toUtc().toIso8601String(),
                 sandbox: useSandbox,
                 remoteNotificationToken: remoteNotificationToken,
-                dnd: dndEnabled,
+                dnd: false,
               )
             : throw UnsupportedError(
                 'Unsupported platform: ${Platform.operatingSystem}',
@@ -309,8 +303,6 @@ class VoipRepository with Loggable {
       );
       return;
     }
-
-    logger.info('Registered! In do-not-disturb mode: $dndEnabled');
   }
 
   Future<void> unregister(UserVoipConfig? voipConfig) async {
