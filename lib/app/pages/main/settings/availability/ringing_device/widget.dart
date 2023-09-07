@@ -119,6 +119,7 @@ class RingingDevice extends StatelessWidget {
             destinations: destinations,
             enabled: enableButtons,
             onDestinationChanged: onDestinationChanged,
+            loading: !enabled,
           ),
         ],
       ),
