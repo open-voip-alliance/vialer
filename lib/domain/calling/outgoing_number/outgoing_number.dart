@@ -5,7 +5,7 @@ part 'outgoing_number.freezed.dart';
 
 part 'outgoing_number.g.dart';
 
-@freezed
+@Freezed(equal: false)
 sealed class OutgoingNumber with _$OutgoingNumber {
   const OutgoingNumber._();
   const factory OutgoingNumber() = _OutgoingNumber;
@@ -47,6 +47,24 @@ sealed class OutgoingNumber with _$OutgoingNumber {
 
   static Map<String, dynamic> serializeToJson(OutgoingNumber outgoingNumber) =>
       outgoingNumber.toJson();
+
+  @override
+  bool operator ==(Object other) {
+    if (other is! OutgoingNumber) return false;
+
+    if (other is SuppressedOutgoingNumber && this is SuppressedOutgoingNumber) {
+      return true;
+    }
+
+    final self = this;
+
+    if (other is UnsuppressedOutgoingNumber &&
+        self is UnsuppressedOutgoingNumber) {
+      return other.number == self.number;
+    }
+
+    return false;
+  }
 }
 
 const _suppressed = 'suppressed';
