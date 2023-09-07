@@ -100,6 +100,7 @@ class _Ready extends ConsumerWidget {
               item: state.currentOutgoingNumber,
               onOutgoingNumberSelected: callback,
               active: true,
+              showIcon: true,
             ),
             state.outgoingNumbers.length < _maxOutgoingNumbersBeforeExpandedList
                 ? BasicList(state, onOutgoingNumberSelected: callback)
@@ -110,6 +111,7 @@ class _Ready extends ConsumerWidget {
                 item: OutgoingNumber.suppressed(),
                 onOutgoingNumberSelected: callback,
                 active: false,
+                showIcon: true,
               ),
             ],
             DoNotShowAgainCheckbox(
@@ -197,6 +199,7 @@ extension OutgoingNumberList on Iterable<OutgoingNumber> {
           item: item,
           onOutgoingNumberSelected: callback,
           active: current == this,
+          showIcon: true,
         ),
       ).toList(growable: false);
 }
