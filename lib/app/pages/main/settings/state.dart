@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import '../../../../domain/calling/outgoing_number/outgoing_number.dart';
 import '../../../../domain/calling/voip/destination.dart';
 import '../../../../domain/user/info/build_info.dart';
 import '../../../../domain/user/settings/app_setting.dart';

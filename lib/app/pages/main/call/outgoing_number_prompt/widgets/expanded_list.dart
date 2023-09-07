@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:vialer/app/util/context_extensions.dart';
 
-import '../../../../../../domain/user/settings/call_setting.dart';
+import '../../../../../../domain/calling/outgoing_number/outgoing_number.dart';
 import '../../../../../resources/localizations.dart';
 import '../../../../../resources/messages.i18n.dart';
 import '../outgoing_number_selection.dart';
@@ -84,7 +84,11 @@ class _AllNumbersSelectionDialogState
   var searchTerm = '';
 
   List<OutgoingNumber> get items => widget.state.outgoingNumbers
-      .where((item) => item.valueOrEmpty.contains(searchTerm))
+      .where(
+        (item) =>
+            item.valueOrEmpty.contains(searchTerm) ||
+            item.descriptionOrEmpty.contains(searchTerm),
+      )
       .toList()
       .sortedBy((element) => element.valueOrEmpty);
 

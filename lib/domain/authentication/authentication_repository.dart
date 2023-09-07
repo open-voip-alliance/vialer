@@ -4,6 +4,7 @@ import 'package:vialer/domain/user/settings/call_setting.dart';
 
 import '../../app/util/automatic_retry.dart';
 import '../../app/util/loggable.dart';
+import '../calling/outgoing_number/outgoing_number.dart';
 import '../onboarding/auto_login.dart';
 import '../onboarding/exceptions.dart';
 import '../onboarding/login_credentials.dart';

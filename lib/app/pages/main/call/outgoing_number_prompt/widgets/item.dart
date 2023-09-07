@@ -4,7 +4,7 @@ import 'package:vialer/app/pages/main/util/phone_number.dart';
 import 'package:vialer/app/resources/localizations.dart';
 import 'package:vialer/app/util/context_extensions.dart';
 
-import '../../../../../../domain/user/settings/call_setting.dart';
+import '../../../../../../domain/calling/outgoing_number/outgoing_number.dart';
 
 class OutgoingNumberItem extends StatelessWidget {
   const OutgoingNumberItem({
@@ -69,25 +69,7 @@ class OutgoingNumberItem extends StatelessWidget {
                   ),
                   SizedBox(width: 14),
                   Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        FormattedPhoneNumber.outgoingNumber(
-                          context,
-                          item,
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        ),
-                        if (item.isSuppressed)
-                          Text(
-                            context.msg.main.outgoingCLI.prompt.suppress
-                                .description,
-                            style:
-                                Theme.of(context).textTheme.bodySmall?.copyWith(
-                                      fontSize: 12,
-                                    ),
-                          ),
-                      ],
-                    ),
+                    child: OutgoingNumberInfo(item: item),
                   ),
                 ],
               ),
@@ -103,6 +85,43 @@ class OutgoingNumberItem extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class OutgoingNumberInfo extends StatelessWidget {
+  const OutgoingNumberInfo({
+    super.key,
+    required this.item,
+    this.textStyle,
+    this.subtitleTextStyle,
+  });
+
+  final OutgoingNumber item;
+  final TextStyle? textStyle;
+  final TextStyle? subtitleTextStyle;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        FormattedPhoneNumber.outgoingNumber(
+          context,
+          item,
+          style: textStyle ?? Theme.of(context).textTheme.bodyMedium,
+        ),
+        if (item.isSuppressed || item.hasDescription)
+          Text(
+            item.isSuppressed
+                ? context.msg.main.outgoingCLI.prompt.suppress.description
+                : item.descriptionOrEmpty,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: subtitleTextStyle ??
+                Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 12),
+          ),
+      ],
     );
   }
 }
