@@ -163,7 +163,6 @@ class _AllNumbersSelectionDialogState
                             widget.onOutgoingNumberSelected,
                         active: widget.state.isActive(items[index]),
                         highlight: true,
-                        padding: EdgeInsets.only(left: 20),
                       ),
                     ),
                   ),

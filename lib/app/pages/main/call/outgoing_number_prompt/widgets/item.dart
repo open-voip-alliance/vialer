@@ -13,12 +13,14 @@ class OutgoingNumberItem extends StatelessWidget {
     required this.active,
     this.highlight = false,
     this.padding = EdgeInsets.zero,
+    this.showIcon = false,
   });
 
   final OutgoingNumber item;
   final void Function(OutgoingNumber outgoingNumber) onOutgoingNumberSelected;
   final bool active;
   final EdgeInsets padding;
+  final bool showIcon;
 
   /// Whether or not to highlight the row for an active number.
   final bool highlight;
@@ -44,29 +46,30 @@ class OutgoingNumberItem extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  Container(
-                    width: 32,
-                    height: 32,
-                    decoration: shouldHighlight
-                        ? null
-                        : BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: active
-                                ? context.colors.primaryLight
-                                : context.colors.userAvailabilityUnknown,
-                          ),
-                    child: Center(
-                      child: FaIcon(
-                        item.isSuppressed
-                            ? FontAwesomeIcons.eyeSlash
-                            : FontAwesomeIcons.simCard,
-                        size: 14,
-                        color: active
-                            ? context.colors.primary
-                            : context.colors.grey6,
+                  if (showIcon)
+                    Container(
+                      width: 32,
+                      height: 32,
+                      decoration: shouldHighlight
+                          ? null
+                          : BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: active
+                                  ? context.colors.primaryLight
+                                  : context.colors.userAvailabilityUnknown,
+                            ),
+                      child: Center(
+                        child: FaIcon(
+                          item.isSuppressed
+                              ? FontAwesomeIcons.eyeSlash
+                              : FontAwesomeIcons.simCard,
+                          size: 14,
+                          color: active
+                              ? context.colors.primary
+                              : context.colors.grey6,
+                        ),
                       ),
                     ),
-                  ),
                   SizedBox(width: 14),
                   Expanded(
                     child: OutgoingNumberInfo(item: item),
