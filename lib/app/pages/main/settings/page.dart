@@ -3,11 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:vialer/app/pages/main/settings/sub_page/about_the_app.dart';
 import 'package:vialer/app/pages/main/settings/sub_page/system.dart';
-import 'package:vialer/app/pages/main/settings/widgets/tile/availability/widget.dart';
 
 import '../../../../domain/env.dart';
 import '../../../resources/localizations.dart';
 import '../util/stylized_snack_bar.dart';
+import 'availability/widget.dart';
 import 'cubit.dart';
 import 'header/widget.dart';
 import 'sub_page/app_preferences.dart';

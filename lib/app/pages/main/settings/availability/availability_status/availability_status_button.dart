@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:vialer/app/pages/main/settings/widgets/tile/availability/availability_status/widget.dart';
+import 'package:vialer/app/pages/main/settings/availability/availability_status/widget.dart';
 
 import '../../../../../../../../domain/relations/user_availability_status.dart';
-import '../../../../../../../resources/localizations.dart';
-import '../../../../../../../resources/theme.dart';
+import '../../../../../resources/localizations.dart';
+import '../../../../../resources/theme.dart';
 import '../button.dart';
 
 class AvailabilityStatusButton extends StatelessWidget {
@@ -57,13 +57,16 @@ class AvailabilityStatusButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final (text, icon, foregroundColor, backgroundColor) = _styling(context);
 
-    return AvailabilityButton(
-      text: text,
-      leadingIcon: icon,
-      onPressed: enabled ? () => onStatusChanged(type) : null,
-      isActive: current == type,
-      foregroundColor: foregroundColor,
-      backgroundColor: backgroundColor,
+    return Opacity(
+      opacity: enabled ? 1 : 0.5,
+      child: AvailabilityButton(
+        text: text,
+        leadingIcon: icon,
+        onPressed: enabled ? () => onStatusChanged(type) : null,
+        isActive: current == type,
+        foregroundColor: foregroundColor,
+        backgroundColor: backgroundColor,
+      ),
     );
   }
 }

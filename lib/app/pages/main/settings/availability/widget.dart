@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:vialer/app/pages/main/settings/widgets/tile/availability/ringing_device/widget.dart';
+import 'package:vialer/app/pages/main/settings/availability/ringing_device/widget.dart';
 
 import '../../../../../../../domain/relations/user_availability_status.dart';
 import '../../../../../../../domain/user/settings/call_setting.dart';
-import '../../../../widgets/user_availability_status_builder/cubit.dart';
-import '../../../../widgets/user_availability_status_builder/widget.dart';
-import '../../../cubit.dart';
-import '../value.dart';
-import '../widget.dart';
+import '../../widgets/user_availability_status_builder/cubit.dart';
+import '../../widgets/user_availability_status_builder/widget.dart';
+import '../cubit.dart';
+import '../widgets/tile/value.dart';
+import '../widgets/tile/widget.dart';
 import 'availability_status/widget.dart';
-import '../../../../../../resources/theme.dart';
-import '../../../../../../resources/localizations.dart';
+import '../../../../resources/theme.dart';
+import '../../../../resources/localizations.dart';
 
 class AvailabilitySwitcher extends StatelessWidget {
   const AvailabilitySwitcher({super.key});
