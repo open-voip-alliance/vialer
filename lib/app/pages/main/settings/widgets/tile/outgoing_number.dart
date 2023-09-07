@@ -2,8 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:vialer/app/pages/main/call/outgoing_number_prompt/widgets/item.dart';
 import 'package:vialer/app/pages/main/util/phone_number.dart';
 
+import '../../../../../../domain/calling/outgoing_number/outgoing_number.dart';
 import '../../../../../../domain/user/settings/call_setting.dart';
 import '../../../../../../domain/user/user.dart';
 import '../../../../../resources/localizations.dart';
@@ -29,14 +31,10 @@ class OutgoingNumberTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final locked = StringSettingValue(
-      user.settings,
-      _key,
-      value: (number) => number is UnsuppressedOutgoingNumber
-          ? number.value
-          : context
-              .msg.main.settings.list.accountInfo.businessNumber.suppressed,
-      bold: false,
+    final locked = OutgoingNumberInfo(
+      item: user.settings.get(CallSetting.outgoingNumber),
+      textStyle: TextStyle(fontSize: 16),
+      subtitleTextStyle: TextStyle(fontSize: 12),
     );
 
     // No duplicates allowed in a dropdown, so remove the recent outgoing
@@ -59,93 +57,82 @@ class OutgoingNumberTile extends StatelessWidget {
           child: user.permissions.canChangeOutgoingNumber
               ? EditableSettingField(
                   unlocked: Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 8),
-                      child: MultipleChoiceSettingValue<OutgoingNumber>(
-                        value: _outgoingNumber,
-                        padding: const EdgeInsets.only(
-                          bottom: 8,
-                          right: 8,
+                    child: MultipleChoiceSettingValue<OutgoingNumber>(
+                      value: _outgoingNumber,
+                      padding: const EdgeInsets.only(
+                        bottom: 8,
+                        right: 8,
+                      ),
+                      onChanged: enabled
+                          ? (number) => unawaited(
+                                defaultOnSettingChanged(
+                                  context,
+                                  _key,
+                                  number,
+                                ),
+                              )
+                          : null,
+                      items: [
+                        DropdownMenuItem<OutgoingNumber>(
+                          value: const OutgoingNumber.suppressed(),
+                          child: OutgoingNumberInfo(
+                            item: OutgoingNumber.suppressed(),
+                          ),
                         ),
-                        onChanged: enabled
-                            ? (number) => unawaited(
-                                  defaultOnSettingChanged(
-                                    context,
-                                    _key,
-                                    number,
-                                  ),
-                                )
-                            : null,
-                        items: [
+                        if (recentOutgoingNumbers.isNotEmpty)
                           DropdownMenuItem<OutgoingNumber>(
-                            value: const OutgoingNumber.suppressed(),
+                            enabled: false,
+                            value: const OutgoingNumber.section(),
                             child: FittedBox(
                               fit: BoxFit.scaleDown,
-                              child: Text(
-                                context.msg.main.settings.list.accountInfo
-                                    .businessNumber.suppressed,
+                              child: PhoneNumberText(
+                                child: Text(
+                                  context.msg.main.settings.list.accountInfo
+                                      .businessNumber.section.recently,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
-                          if (recentOutgoingNumbers.isNotEmpty)
-                            DropdownMenuItem<OutgoingNumber>(
-                              enabled: false,
-                              value: const OutgoingNumber.section(),
-                              child: FittedBox(
-                                fit: BoxFit.scaleDown,
-                                child: PhoneNumberText(
-                                  child: Text(
-                                    context.msg.main.settings.list.accountInfo
-                                        .businessNumber.section.recently,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          if (recentOutgoingNumbers.isNotEmpty)
-                            ...recentOutgoingNumbers.map(
-                              (number) => DropdownMenuItem<OutgoingNumber>(
-                                value: number,
-                                child: FittedBox(
-                                  fit: BoxFit.scaleDown,
-                                  child: PhoneNumberText(
-                                    child: Text(number.toString()),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          if (recentOutgoingNumbers.isNotEmpty)
-                            DropdownMenuItem<OutgoingNumber>(
-                              enabled: false,
-                              value: const OutgoingNumber.section(),
-                              child: FittedBox(
-                                fit: BoxFit.scaleDown,
-                                child: PhoneNumberText(
-                                  child: Text(
-                                    context.msg.main.settings.list.accountInfo
-                                        .businessNumber.section.other,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ...availableOutgoingNumbers.map(
+                        if (recentOutgoingNumbers.isNotEmpty)
+                          ...recentOutgoingNumbers.map(
                             (number) => DropdownMenuItem<OutgoingNumber>(
                               value: number,
                               child: FittedBox(
                                 fit: BoxFit.scaleDown,
-                                child: PhoneNumberText(
-                                  child: Text(number.toString()),
+                                child: OutgoingNumberInfo(item: number),
+                              ),
+                            ),
+                          ),
+                        if (recentOutgoingNumbers.isNotEmpty)
+                          DropdownMenuItem<OutgoingNumber>(
+                            enabled: false,
+                            value: const OutgoingNumber.section(),
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: PhoneNumberText(
+                                child: Text(
+                                  context.msg.main.settings.list.accountInfo
+                                      .businessNumber.section.other,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ],
-                      ),
+                        ...availableOutgoingNumbers.map(
+                          (number) => DropdownMenuItem<OutgoingNumber>(
+                            value: number,
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: OutgoingNumberInfo(item: number),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   locked: locked,

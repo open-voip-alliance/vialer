@@ -1,7 +1,7 @@
 import 'package:dartx/dartx.dart';
 import 'package:flutter/widgets.dart';
-import 'package:vialer/domain/user/settings/call_setting.dart';
 
+import '../../../../domain/calling/outgoing_number/outgoing_number.dart';
 import '../../../resources/localizations.dart';
 
 class FormattedPhoneNumber extends StatelessWidget {
