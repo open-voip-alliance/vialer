@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:vialer/app/pages/main/settings/widgets/tile/availability/ringing_device/ringing_device_button.dart';
+import 'package:vialer/app/pages/main/settings/availability/ringing_device/ringing_device_button.dart';
 
 import '../../../../../../../../domain/calling/voip/destination.dart';
 import '../../../../../../../../domain/relations/user_availability_status.dart';
 import '../../../../../../../../domain/user/settings/call_setting.dart';
 import '../../../../../../../../domain/user/user.dart';
-import '../../../../../../../resources/localizations.dart';
+import '../../../../../resources/localizations.dart';
 import '../header.dart';
 import 'multiple_ringing_device_dropdown.dart';
-import '../../../../../../../resources/theme.dart';
+import '../../../../../resources/theme.dart';
 
 typedef DestinationChangedCallback = void Function(Destination destination);
 

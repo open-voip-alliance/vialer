@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:vialer/app/pages/main/settings/widgets/tile/availability/ringing_device/widget.dart';
+import 'package:vialer/app/pages/main/settings/availability/ringing_device/widget.dart';
 
 import '../../../../../../../../domain/calling/voip/destination.dart';
 import '../../../../../../../../domain/user/user.dart';
-import '../../../../../../../resources/localizations.dart';
+import '../../../../../resources/localizations.dart';
 import '../button.dart';
-import '../../../../../../../resources/theme.dart';
+import '../../../../../resources/theme.dart';
 
 class RingingDeviceButton extends StatelessWidget {
   const RingingDeviceButton(

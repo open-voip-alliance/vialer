@@ -16,7 +16,7 @@ import '../../../../../domain/user/get_stored_user.dart';
 import '../../../../../domain/user/settings/call_setting.dart';
 import '../../../../../domain/user/settings/settings.dart';
 import '../../../../../domain/user/user.dart';
-import '../../settings/widgets/tile/availability/ringing_device/widget.dart';
+import '../../settings/availability/ringing_device/widget.dart';
 import 'state.dart';
 
 export 'state.dart';

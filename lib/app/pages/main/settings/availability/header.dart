@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import '../../../../../../resources/theme.dart';
+import '../../../../resources/theme.dart';
 
 class AvailabilityHeader extends StatelessWidget {
   const AvailabilityHeader(

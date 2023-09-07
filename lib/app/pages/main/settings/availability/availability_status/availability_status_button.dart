@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:vialer/app/pages/main/settings/widgets/tile/availability/availability_status/widget.dart';
+import 'package:vialer/app/pages/main/settings/availability/availability_status/widget.dart';
 
 import '../../../../../../../../domain/relations/user_availability_status.dart';
-import '../../../../../../../resources/localizations.dart';
-import '../../../../../../../resources/theme.dart';
+import '../../../../../resources/localizations.dart';
+import '../../../../../resources/theme.dart';
 import '../button.dart';
 
 class AvailabilityStatusButton extends StatelessWidget {

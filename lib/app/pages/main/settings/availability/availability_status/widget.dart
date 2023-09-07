@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 
 import '../../../../../../../../domain/relations/user_availability_status.dart';
 import '../../../../../../../../domain/user/user.dart';
-import '../../../../../../../resources/localizations.dart';
+import '../../../../../resources/localizations.dart';
 import '../header.dart';
 import 'availability_status_button.dart';
 

@@ -1,10 +1,10 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:vialer/app/pages/main/settings/widgets/tile/availability/ringing_device/widget.dart';
+import 'package:vialer/app/pages/main/settings/availability/ringing_device/widget.dart';
 import 'package:vialer/app/resources/localizations.dart';
 import '../../../../../../../../domain/calling/voip/destination.dart';
 import '../../../../../../../../domain/user/user.dart';
-import '../../../../../../../widgets/stylized_dropdown.dart';
+import '../../../../../widgets/stylized_dropdown.dart';
 
 class MultipleRingingDeviceDropdown extends StatelessWidget {
   const MultipleRingingDeviceDropdown({
