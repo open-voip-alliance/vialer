@@ -72,7 +72,7 @@ extension on User {
 
       // For now we only care about bool settings, but can be expanded in the
       // future.
-      if (key.valueType == bool) {
+      if (key.valueType == bool && settings.has(key)) {
         properties[key.asPropertyKey] = settings.get(key);
       }
     }
