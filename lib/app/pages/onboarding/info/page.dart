@@ -1,11 +1,12 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 
 import '../../../resources/localizations.dart';
 import '../../../util/conditional_capitalization.dart';
 import '../../../widgets/stylized_button.dart';
 
-class InfoPage extends StatelessWidget {
+class InfoPage extends StatefulWidget {
   const InfoPage({
     required this.icon,
     required this.title,
@@ -20,6 +21,20 @@ class InfoPage extends StatelessWidget {
   final String title;
   final Widget description;
   final VoidCallback onPressed;
+
+  @override
+  State<InfoPage> createState() => _InfoPageState();
+}
+
+class _InfoPageState extends State<InfoPage> {
+  final _headerKey = GlobalKey();
+  var _hasResetSemantics = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _focusSemanticsOnHeader();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,14 +66,15 @@ class InfoPage extends StatelessWidget {
                       ),
                       child: IconTheme(
                         data: IconTheme.of(context).copyWith(size: 54),
-                        child: icon,
+                        child: widget.icon,
                       ),
                     ),
                     Flexible(
                       child: Semantics(
                         header: true,
                         child: AutoSizeText(
-                          title,
+                          key: _headerKey,
+                          widget.title,
                           minFontSize: 28,
                           style: TextStyle(fontWeight: FontWeight.bold),
                           textAlign: TextAlign.center,
@@ -74,7 +90,7 @@ class InfoPage extends StatelessWidget {
                           top: 24,
                           bottom: 24,
                         ),
-                        child: description,
+                        child: widget.description,
                       ),
                     ),
                   ],
@@ -82,17 +98,40 @@ class InfoPage extends StatelessWidget {
               ),
             ),
           ),
-          StylizedButton.raised(
-            key: keys.continueButton,
-            onPressed: onPressed,
-            child: Text(
-              context.msg.onboarding.permission.button.iUnderstand
-                  .toUpperCaseIfAndroid(context),
+          Semantics(
+            excludeSemantics: !_hasResetSemantics,
+            button: true,
+            child: StylizedButton.raised(
+              key: InfoPage.keys.continueButton,
+              onPressed: widget.onPressed,
+              child: Text(
+                context.msg.onboarding.permission.button.iUnderstand
+                    .toUpperCaseIfAndroid(context),
+              ),
             ),
           ),
         ],
       ),
     );
+  }
+
+  /// A hacky way to resolve an issue where the screen reader would
+  /// stay focused on the continue button rather than returning to the header
+  /// when navigating to the next page.
+  ///
+  /// See #1715 for more info.
+  void _focusSemanticsOnHeader() {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      _headerKey.currentContext
+          ?.findRenderObject()
+          ?.sendSemanticsEvent(const FocusSemanticEvent());
+
+      await Future<void>.delayed(const Duration(milliseconds: 100));
+
+      if (mounted) {
+        setState(() => _hasResetSemantics = true);
+      }
+    });
   }
 }
 
