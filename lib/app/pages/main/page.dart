@@ -45,11 +45,15 @@ class MainPageState extends State<MainPage> {
     GlobalKey<NavigatorState>(),
   ];
 
+  final _navigatorKey = GlobalKey<NavigatorState>();
+
   void navigateTo(MainPageTab tab) =>
       unawaited(_navigateTo(_dialerIsPage ? tab.index : tab.index - 1));
 
   Future<void> _navigateTo(int? index) async {
     if (index == null) return;
+
+    _popProfileSubPages(index);
 
     setState(() {
       _currentIndex = index;
@@ -60,6 +64,19 @@ class MainPageState extends State<MainPage> {
         }
       }
     });
+  }
+
+  /// If we're on the profile page this will pop all of the subpages to get back
+  /// to the main profile page.
+  void _popProfileSubPages(int index) {
+    final profilePageIndex = _dialerIsPage ? 3 : 2;
+
+    if (_currentIndex == profilePageIndex && index == profilePageIndex) {
+      final navigator = Navigator.of(_navigatorKey.currentContext!);
+      while (navigator.canPop()) {
+        navigator.pop();
+      }
+    }
   }
 
   @override
@@ -82,7 +99,7 @@ class MainPageState extends State<MainPage> {
         snackBarPadding:
             !_dialerIsPage ? const EdgeInsets.only(right: 72) : EdgeInsets.zero,
       ),
-      const SettingsPage(),
+      SettingsPage(navigatorKey: _navigatorKey),
     ];
 
     _currentIndex ??= _dialerIsPage ? 1 : 0;
