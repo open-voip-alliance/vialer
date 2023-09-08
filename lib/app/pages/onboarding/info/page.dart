@@ -126,7 +126,7 @@ class _InfoPageState extends State<InfoPage> {
           ?.findRenderObject()
           ?.sendSemanticsEvent(const FocusSemanticEvent());
 
-      await Future<void>.delayed(const Duration(seconds: 1));
+      await Future<void>.delayed(const Duration(seconds: 2));
 
       if (mounted) {
         setState(() => _hasResetSemantics = true);
