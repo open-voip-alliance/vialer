@@ -4,6 +4,7 @@ workflow:
 
 stages:
   - build and test
+  - dependabot
 
 build & test:
   image: dart:latest
@@ -38,6 +39,7 @@ build & test:
     - dart ./bin/build_via_codemagic.dart
 
 .dependabot:
+  stage: dependabot
   image:
     name: docker.io/andrcuns/dependabot-gitlab:latest
     entrypoint: [""]
