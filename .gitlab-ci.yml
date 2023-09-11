@@ -1,15 +1,11 @@
-workflow:
-  rules:
-    - if: $CI_MERGE_REQUEST_IID
-
 stages:
   - build and test
-  - dependabot
 
 build & test:
   image: dart:latest
   stage: build and test
   rules:
+    - if: $CI_MERGE_REQUEST_IID
     - if: '$CI_MERGE_REQUEST_EVENT_TYPE == "detached"'
       variables:
         CODEMAGIC_WORKFLOW: "gitlab-ci-merge-request"
@@ -39,7 +35,6 @@ build & test:
     - dart ./bin/build_via_codemagic.dart
 
 .dependabot:
-  stage: dependabot
   image:
     name: docker.io/andrcuns/dependabot-gitlab:latest
     entrypoint: [""]
