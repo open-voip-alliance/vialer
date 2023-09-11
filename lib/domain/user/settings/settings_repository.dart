@@ -16,6 +16,8 @@ class SettingsRepository {
       };
 
   T? getOrNull<T extends Object>(SettingKey<T> key) {
+    if (!has(key)) return null;
+
     final value = _storage.get(key.asSharedPreferencesKey());
     final type = key.valueType;
 
@@ -33,10 +35,8 @@ class SettingsRepository {
         value is String ? value : jsonEncode(key.valueToJson(value)),
       );
 
-  bool has<T extends Object>(SettingKey<T> key) {
-    print(key.asSharedPreferencesKey());
-    return _storage.containsKey(key.asSharedPreferencesKey());
-  }
+  bool has<T extends Object>(SettingKey<T> key) =>
+      _storage.containsKey(key.asSharedPreferencesKey());
 
   bool _isPrimitive<T extends Object>(SettingKey<T> key) {
     final type = key.valueType;

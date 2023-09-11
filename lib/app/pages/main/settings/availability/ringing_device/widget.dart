@@ -128,7 +128,8 @@ class RingingDevice extends StatelessWidget {
 }
 
 extension UserRingingDevice on User {
-  Destination get currentDestination => settings.get(CallSetting.destination);
+  Destination get currentDestination =>
+      settings.getOrNull(CallSetting.destination) ?? Destination.unknown();
 
   RingingDeviceType get ringingDevice {
     return currentDestination.map(
