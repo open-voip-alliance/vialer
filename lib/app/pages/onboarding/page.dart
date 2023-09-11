@@ -130,13 +130,16 @@ class OnboardingPageState extends State<OnboardingPage> {
                       physics: const NeverScrollableScrollPhysics(),
                       children: currentPages.entries.map((entry) {
                         final page = entry.value;
-                        return SafeArea(
-                          child: Provider<EdgeInsets>(
-                            create: (_) => const EdgeInsets.all(48).copyWith(
-                              top: 128,
-                              bottom: 32,
+                        return Semantics(
+                          explicitChildNodes: true,
+                          child: SafeArea(
+                            child: Provider<EdgeInsets>(
+                              create: (_) => const EdgeInsets.all(48).copyWith(
+                                top: 128,
+                                bottom: 32,
+                              ),
+                              child: page(context),
                             ),
-                            child: page(context),
                           ),
                         );
                       }).toList(),
