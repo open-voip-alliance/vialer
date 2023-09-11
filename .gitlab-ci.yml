@@ -39,7 +39,7 @@ build & test:
 
 .dependabot:
   image:
-    name: "docker.io/andrcuns/dependabot-gitlab:latest"
+    name: docker.io/andrcuns/dependabot-gitlab:latest
     entrypoint: [""]
   variables:
     GIT_STRATEGY: none
@@ -52,4 +52,4 @@ build & test:
   script:
     - bundle exec rake "dependabot:update[$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME,$PACKAGE_MANAGER,/]"
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_NAME == "dependabot
+    - if: '$CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_NAME == "dependabot"
