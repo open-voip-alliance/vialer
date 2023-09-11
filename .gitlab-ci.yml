@@ -1,6 +1,5 @@
 build & test:
   image: dart:latest
-  stage: build and test
   rules:
     - if: $CI_MERGE_REQUEST_IID
     - if: '$CI_MERGE_REQUEST_EVENT_TYPE == "detached"'
