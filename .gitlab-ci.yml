@@ -39,7 +39,7 @@ build & test:
 
 .dependabot:
   image:
-    name: docker.io/andrcuns/dependabot-gitlab:latest
+    name: "docker.io/andrcuns/dependabot-gitlab:latest"
     entrypoint: [""]
   variables:
     GIT_STRATEGY: none
