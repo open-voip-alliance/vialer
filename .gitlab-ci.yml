@@ -30,7 +30,7 @@ build & test:
     - dart ./bin/remove_build_url.dart
     - dart ./bin/build_via_codemagic.dart
 
-.dependabot:
+dependabot:
   image:
     name: docker.io/andrcuns/dependabot-gitlab:latest
     entrypoint: [""]
