@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vialer/app/pages/main/settings/cubit.dart';
 import 'package:vialer/domain/relations/colleagues/colleague.dart';
-import 'package:vialer/domain/relations/colleagues/colleagues_repository.dart';
+import 'package:vialer/domain/relations/websocket/relations_websocket.dart';
 
 import '../../../../../dependency_locator.dart';
 import '../../../../../domain/calling/voip/destination.dart';
@@ -38,7 +38,7 @@ class UserAvailabilityStatusCubit extends Cubit<UserAvailabilityStatusState> {
 
   final SettingsCubit _settingsCubit;
   late final _eventBus = dependencyLocator<EventBusObserver>();
-  late final _colleagueRepository = dependencyLocator<ColleaguesRepository>();
+  late final _websocket = dependencyLocator<RelationsWebsocket>();
   User? get _user => GetStoredUserUseCase()();
 
   Future<void> changeAvailabilityStatus(
@@ -112,7 +112,7 @@ class UserAvailabilityStatusCubit extends Cubit<UserAvailabilityStatusState> {
     // If the websocket can't connect we're just going to fallback to
     // determining the status based on what we have stored locally. This is
     // usually accurate, but not necessarily.
-    if (!_colleagueRepository.isWebSocketConnected) {
+    if (!_websocket.isWebSocketConnected) {
       return emit(state.copyWith(
         status: _status,
         currentDestination: destination,

@@ -2,10 +2,13 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vialer/dependency_locator.dart';
+import 'package:vialer/domain/event/event_bus.dart';
+import 'package:vialer/domain/relations/websocket/relations_websocket.dart';
 
+import '../../../../../domain/authentication/user_logged_in.dart';
 import '../../../../util/widgets_binding_observer_registrar.dart';
 import '../../../../widgets/connectivity_checker/cubit.dart';
-import 'cubit.dart';
 
 class ColleagueWebSocket extends StatefulWidget {
   const ColleagueWebSocket._(this.child);
@@ -23,10 +26,14 @@ class ColleagueWebSocket extends StatefulWidget {
 
 class _ColleagueWebSocketState extends State<ColleagueWebSocket>
     with WidgetsBindingObserver, WidgetsBindingObserverRegistrar {
+  final _websocket = dependencyLocator<RelationsWebsocket>();
+  final _eventBus = dependencyLocator<EventBusObserver>();
+
   @override
   void initState() {
     super.initState();
-    unawaited(context.read<ColleaguesCubit>().connectToWebSocket());
+    unawaited(_websocket.connect());
+    _eventBus.on<UserLoggedIn>((_) => unawaited(_websocket.connect()));
   }
 
   @override
@@ -34,7 +41,7 @@ class _ColleagueWebSocketState extends State<ColleagueWebSocket>
     super.didChangeAppLifecycleState(state);
 
     if (state == AppLifecycleState.resumed) {
-      unawaited(context.read<ColleaguesCubit>().connectToWebSocket());
+      unawaited(_websocket.connect());
     }
   }
 
@@ -42,12 +49,10 @@ class _ColleagueWebSocketState extends State<ColleagueWebSocket>
     BuildContext context,
     ConnectivityState state,
   ) {
-    final cubit = context.read<ColleaguesCubit>();
-
     unawaited(
       state.map(
-        connected: (_) => cubit.connectToWebSocket(),
-        disconnected: (_) => cubit.disconnectFromWebSocket(),
+        connected: (_) => _websocket.connect(),
+        disconnected: (_) => _websocket.disconnect(),
       ),
     );
   }

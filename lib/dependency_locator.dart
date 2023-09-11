@@ -4,6 +4,7 @@ import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vialer/domain/calling/dnd/dnd_repository.dart';
 import 'package:vialer/domain/calling/dnd/dnd_service.dart';
+import 'package:vialer/domain/relations/websocket/relations_websocket.dart';
 import 'package:vialer/domain/user/settings/settings_repository.dart';
 
 import 'app/util/debug.dart';
@@ -110,9 +111,9 @@ Future<void> initializeDependencies({bool ui = true}) async {
         ColleaguesRepository(
           dependencyLocator<VoipgridService>(),
           dependencyLocator<VoipgridApiResourceCollector>(),
-          dependencyLocator<EventBus>(),
         ),
-      );
+      )
+      ..registerSingleton(RelationsWebsocket());
   }
 
   dependencyLocator
