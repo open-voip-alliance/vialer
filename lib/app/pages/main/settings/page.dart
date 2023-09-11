@@ -18,7 +18,9 @@ import 'widgets/rate_limited_snackbar_label.dart';
 import 'widgets/tile/link/sub_page.dart';
 
 class SettingsPage extends StatefulWidget {
-  const SettingsPage({super.key});
+  SettingsPage({required this.navigatorKey, super.key});
+
+  final GlobalKey<NavigatorState> navigatorKey;
 
   @override
   State<StatefulWidget> createState() => _SettingsPageState();
@@ -57,6 +59,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return SettingsPageContainer(
       scaffoldMessengerKey: _scaffoldMessengerKey,
+      navigatorKey: widget.navigatorKey,
       child: BlocConsumer<SettingsCubit, SettingsState>(
         listener: _onStateChanged,
         // We're not going to listen when there are new rate limited states
