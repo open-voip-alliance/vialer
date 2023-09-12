@@ -54,7 +54,8 @@ class _CallerState extends State<Caller>
     final cubit = context.read<CallerCubit>();
 
     if (state == AppLifecycleState.resumed) {
-      if (cubit.state is Calling && !_resumedOnceDuringCalling) {
+      if ((cubit.state is Calling || cubit.state is CallingWithLowMos) &&
+          !_resumedOnceDuringCalling) {
         // We keep track of this so we don't prematurely say we can call again,
         // because the app state will be resumed too soon.
         _resumedOnceDuringCalling = true;
@@ -107,6 +108,9 @@ class _CallerState extends State<Caller>
 
     if (state is StartingCall && state.isVoip ||
         (state is Calling &&
+            state.isVoip &&
+            state.voipCall!.direction.isInbound) ||
+        (state is CallingWithLowMos &&
             state.isVoip &&
             state.voipCall!.direction.isInbound)) {
       unawaited(

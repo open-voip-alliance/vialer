@@ -85,6 +85,8 @@ abstract class CallProcessState extends CallOriginDetermined {
       isInTransfer && voipCall!.isOnHold ||
       voipCall?.state == CallState.connected;
 
+  bool get isInBadQualityCall => voipCall != null && voipCall!.currentMos < 3;
+
   @override
   List<Object?> get props => [
         ...super.props,
@@ -109,6 +111,12 @@ abstract class CallProcessState extends CallOriginDetermined {
   }
 
   Calling calling({CallSessionState? voip}) => Calling(
+        origin: origin,
+        voip: voip ?? this.voip,
+      );
+
+  CallingWithLowMos callingWithLowMos({CallSessionState? voip}) =>
+      CallingWithLowMos(
         origin: origin,
         voip: voip ?? this.voip,
       );
@@ -279,6 +287,23 @@ class Calling extends CallProcessState {
     CallSessionState? voip,
   }) =>
       Calling(
+        origin: origin ?? this.origin,
+        voip: voip ?? this.voip,
+      );
+}
+
+class CallingWithLowMos extends CallProcessState {
+  const CallingWithLowMos({
+    required super.origin,
+    required super.voip,
+  });
+
+  @override
+  CallingWithLowMos copyWith({
+    CallOrigin? origin,
+    CallSessionState? voip,
+  }) =>
+      CallingWithLowMos(
         origin: origin ?? this.origin,
         voip: voip ?? this.voip,
       );

@@ -1,5 +1,5 @@
 PODS:
-  - Alamofire (5.7.1)
+  - Alamofire (5.8.0)
   - Amplitude (8.17.1):
     - AnalyticsConnector (~> 1.0.0)
   - Analytics (4.1.6)
@@ -198,14 +198,14 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   iOSPhoneLib:
-    :commit: e14939e15a3994cf5fb87e44c1c6f17c8128fa33
+    :commit: faea729422289d990b10b519acedaa7b859afe43
     :git: https://github.com/open-voip-alliance/iOS-Phone-Lib.git
   le:
     :commit: ce8800f6d3290e182d48082680679d64a05ca778
     :git: https://github.com/LogentriesCommunity/le_ios.git
 
 SPEC CHECKSUMS:
-  Alamofire: 0123a34370cb170936ae79a8df46cc62b2edeb88
+  Alamofire: 0e92e751b3e9e66d7982db43919d01f313b8eb91
   Amplitude: a43a03b98ce379b1fd7a08b5733d199ff5d9130f
   Analytics: eefe524436f904b8bb3f8c8c3425280e43b34efc
   AnalyticsConnector: eccd7e1cd3dd18e6bd09ac2506e37d4ed43ba3f4
