@@ -1,9 +1,9 @@
 import '../../../app/util/automatic_retry.dart';
 import '../../../app/util/loggable.dart';
 import '../../user/client.dart';
-import '../../user/settings/call_setting.dart';
 import '../../user/user.dart';
 import '../../voipgrid/voipgrid_service.dart';
+import 'outgoing_number.dart';
 
 class OutgoingNumbersRepository with Loggable {
   OutgoingNumbersRepository(this._service);
@@ -76,8 +76,11 @@ class OutgoingNumbersRepository with Loggable {
 
     final body = response.body!;
 
-    for (final number in body['items'] as List<dynamic>) {
-      yield OutgoingNumber(number as String);
+    for (final item in body['items'] as List<dynamic>) {
+      yield OutgoingNumber.unsuppressed(
+        item['number'] as String,
+        description: item['description'] as String,
+      );
     }
 
     final next = body['next'] as String?;

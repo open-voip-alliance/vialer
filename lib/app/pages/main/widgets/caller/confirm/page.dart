@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../../../../../domain/user/settings/call_setting.dart';
+import '../../../../../../domain/calling/outgoing_number/outgoing_number.dart';
 import '../../../../../resources/localizations.dart';
 import '../../../../../resources/theme.dart';
 import '../../../../../routes.dart';
@@ -195,7 +195,7 @@ class ConfirmPageState extends State<ConfirmPage>
                               const SizedBox(height: 8),
                               Text(
                                 outgoingNumber is UnsuppressedOutgoingNumber
-                                    ? outgoingNumber.value
+                                    ? outgoingNumber.number
                                     : context.msg.main.settings.list.accountInfo
                                         .businessNumber.suppressed,
                                 style: _largeStyle,

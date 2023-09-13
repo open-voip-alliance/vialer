@@ -4,10 +4,10 @@ import 'package:meta/meta.dart';
 
 import '../../app/util/nullable_copy_with_argument.dart';
 import '../business_availability/temporary_redirect/temporary_redirect.dart';
+import '../calling/outgoing_number/outgoing_number.dart';
 import '../openings_hours_basic/opening_hours.dart';
 import '../voicemail/voicemail_account.dart';
 import '../voipgrid/client_voip_config.dart';
-import 'settings/call_setting.dart';
 
 part 'client.g.dart';
 
@@ -102,8 +102,9 @@ class Client extends Equatable {
   static Client fromJson(Map<String, dynamic> json) => _$ClientFromJson(json);
 }
 
-List<String> _outgoingNumbersToJson(Iterable<OutgoingNumber> numbers) =>
-    numbers.map(OutgoingNumber.toJson).toList();
+List<Map<String, dynamic>> _outgoingNumbersToJson(
+        Iterable<OutgoingNumber> numbers) =>
+    numbers.map(OutgoingNumber.serializeToJson).toList();
 
 ClientVoipConfig _clientVoipConfigFromJson(Map<String, dynamic>? json) {
   if (json == null) return ClientVoipConfig.fallback();

@@ -130,7 +130,9 @@ abstract class VoipgridService extends ChopperService {
     @Body() required Map<String, dynamic> body,
   });
 
-  @Get(path: 'v2/clients/{clientUuid}/callerid_numbers')
+  @Get(
+      path: 'v2/clients/{clientUuid}/callerid_numbers',
+      headers: {'Accept': 'application/json;version=2'})
   Future<Response<Map<String, dynamic>>> getClientBusinessNumbers({
     @Path() required String clientUuid,
     @Query('page') int page = 1,
