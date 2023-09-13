@@ -47,4 +47,4 @@ dependabot:
     - if: '$CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_NAME == "dependabot"'
 
 pub:
-  extends: .dependabot
+  extends: dependabot
