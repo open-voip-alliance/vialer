@@ -5,6 +5,7 @@ import 'package:vialer/domain/user/get_logged_in_user.dart';
 
 import '../../../../../dependency_locator.dart';
 import '../../../../../domain/calling/outgoing_number/change_outgoing_number.dart';
+import '../../../../../domain/calling/outgoing_number/outgoing_number.dart';
 import '../../../../../domain/legacy/storage.dart';
 import '../../../../../domain/metrics/metrics.dart';
 import '../../../../../domain/user/settings/call_setting.dart';

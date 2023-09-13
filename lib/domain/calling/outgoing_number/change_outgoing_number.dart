@@ -11,8 +11,8 @@ import 'package:vialer/domain/user/refresh/user_refresh_task.dart';
 import '../../../dependency_locator.dart';
 import '../../legacy/storage.dart';
 import '../../metrics/metrics.dart';
-import '../../user/settings/call_setting.dart';
 import '../../user/user.dart';
+import 'outgoing_number.dart';
 import 'outgoing_numbers.dart';
 
 /// This is a use-case rather than via settings because we want to provide the
@@ -52,7 +52,7 @@ class ChangeOutgoingNumber extends UseCase with Loggable {
 
     _metricsRepository.track('outgoing-number-changed');
 
-    final number = (value as UnsuppressedOutgoingNumber).value;
+    final number = (value as UnsuppressedOutgoingNumber).number;
 
     // Store the last recent and unique outgoing numbers for easy access.
     final recentOutgoingNumbers = _storageRepository.recentOutgoingNumbers

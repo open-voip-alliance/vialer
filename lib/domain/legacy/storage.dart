@@ -4,11 +4,11 @@ import 'dart:convert';
 import 'package:dartx/dartx.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../calling/outgoing_number/outgoing_number.dart';
 import '../calling/voip/destination.dart';
 import '../colltacts/colltact_tab.dart';
 import '../colltacts/shared_contacts/shared_contact.dart';
 import '../relations/colleagues/colleague.dart';
-import '../user/settings/call_setting.dart';
 import '../user/settings/settings.dart';
 import '../user/user.dart';
 
@@ -257,7 +257,7 @@ class StorageRepository {
       _preferences.setOrRemoveJson<Iterable<OutgoingNumber>>(
         _recentOutgoingNumbers,
         numbers,
-        (numbers) => numbers.map(OutgoingNumber.toJson).toList(),
+        (numbers) => numbers.map(OutgoingNumber.serializeToJson).toList(),
       );
 
   static const _doNotShowOutgoingNumberSelector =
