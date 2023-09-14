@@ -572,8 +572,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "235aa663a739f3e82de64a4557cdc73ae7de7e86"
-      resolved-ref: "235aa663a739f3e82de64a4557cdc73ae7de7e86"
+      ref: "406f56714bd3ee8f457ec4d4117e604cbfa55314"
+      resolved-ref: "406f56714bd3ee8f457ec4d4117e604cbfa55314"
       url: "https://github.com/open-voip-alliance/flutter-phone-lib"
     source: git
     version: "0.0.1"
@@ -1669,4 +1669,4 @@ packages:
     version: "2.1.1"
 sdks:
   dart: ">=3.1.0-185.0.dev <4.0.0"
-  flutter: ">=3.13.1"
+  flutter: ">=3.13.3"
