@@ -20,10 +20,23 @@ class StorageRepository {
   // Value must stay the same, otherwise everything breaks.
   static const _userKey = 'system_user';
 
-  User? get user => _preferences.getJson<User, Map<String, dynamic>>(
-        _userKey,
-        User.fromJson,
-      );
+  User? get user {
+    final json = _preferences.getJson(
+          _userKey,
+          (j) => j! as Map<String, dynamic>,
+        ) ??
+        const {};
+
+    // When upgrading to the new user permission setup, remove the old ones.
+    // With the periodically user update, permissions will be stored with the
+    // new structure. Remove when all of the users are upgraded.
+    if (json.containsKey('permissions') &&
+        json['permissions'] is Map<String, dynamic>) {
+      json.remove('permissions');
+    }
+
+    return User.fromJson(json);
+  }
 
   set user(User? user) => _preferences.setOrRemoveObject(_userKey, user);
 
