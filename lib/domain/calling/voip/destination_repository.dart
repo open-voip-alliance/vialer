@@ -1,5 +1,7 @@
 import 'package:dartx/dartx.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:vialer/domain/feature/feature.dart';
+import 'package:vialer/domain/feature/has_feature.dart';
 
 import '../../../app/util/automatic_retry.dart';
 import '../../../app/util/json_converter.dart';
@@ -49,14 +51,48 @@ class DestinationRepository with Loggable {
         .toList()
         .first;
 
+    final staleDestinations = _storageRepository.availableDestinations;
+
     _storageRepository
       ..userNumber = destinations.userNumber
       ..availableDestinations = destinations.available;
+
+    _carryOverIsOnline(staleDestinations);
 
     selectedUserDestinationId = destinations.selectedDestinationId;
 
     return destinations.active;
   }
+
+  /// We want to carry over the isOnline status from our old data, this is
+  /// because this data is received via the websocket rather than the
+  /// destinations api.
+  void _carryOverIsOnline(List<Destination> staleDestinations) {
+    if (doesNotHaveFeature(Feature.offlineUserDevices)) return;
+
+    staleDestinations.whereType<PhoneAccount>().forEach(
+          (staleDestination) => updateIsOnline(
+            staleDestination.accountId,
+            staleDestination.isOnline,
+          ),
+        );
+  }
+
+  void updateIsOnline(int accountId, bool isOnline) =>
+      _storageRepository.availableDestinations =
+          _storageRepository.availableDestinations
+              .map(
+                (destination) => destination.map(
+                  unknown: (destination) => destination,
+                  notAvailable: (destination) => destination,
+                  phoneNumber: (destination) => destination,
+                  phoneAccount: (destination) =>
+                      destination.accountId == accountId
+                          ? destination.copyWith(isOnline: isOnline)
+                          : destination,
+                ),
+              )
+              .toList();
 
   Future<bool> setDestination({
     required Destination destination,

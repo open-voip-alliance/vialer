@@ -21,6 +21,5 @@ import 'has_feature.dart';
 /// [deprecated]. We can't remove it in that case, because
 /// an enum always needs at least one constant.
 enum Feature {
-  @Deprecated('Just a reserved enum while we do not have active flags')
-  reserved,
+  offlineUserDevices,
 }

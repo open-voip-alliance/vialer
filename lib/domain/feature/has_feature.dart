@@ -13,3 +13,4 @@ class HasFeature extends UseCase {
 }
 
 bool hasFeature(Feature feature) => HasFeature()(feature);
+bool doesNotHaveFeature(Feature feature) => !HasFeature()(feature);

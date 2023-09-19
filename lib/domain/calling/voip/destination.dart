@@ -23,8 +23,9 @@ sealed class Destination with _$Destination {
     int? id,
     String description,
     int accountId,
-    int internalNumber,
-  ) = PhoneAccount;
+    int internalNumber, {
+    @Default(true) bool isOnline,
+  }) = PhoneAccount;
 
   factory Destination.fromJson(dynamic json) =>
       _$DestinationFromJson(json as Map<String, dynamic>);

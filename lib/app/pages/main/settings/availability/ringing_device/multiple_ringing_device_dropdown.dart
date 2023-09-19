@@ -135,7 +135,7 @@ extension DestinationDropdown on Destination {
       notAvailable: () => context.msg.main.settings.list.calling.notAvailable,
       phoneNumber: (_, description, phoneNumber) =>
           phoneNumber == null ? '$description' : '$phoneNumber / $description',
-      phoneAccount: (_, description, __, internalNumber) =>
+      phoneAccount: (_, description, __, internalNumber, isOnline) =>
           '$internalNumber / $description',
     );
   }
