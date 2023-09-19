@@ -64,6 +64,9 @@ class DestinationRepository with Loggable {
     return destinations.active;
   }
 
+  List<Destination> get availableDestinations =>
+      _storageRepository.availableDestinations;
+
   /// We want to carry over the isOnline status from our old data, this is
   /// because this data is received via the websocket rather than the
   /// destinations api.
@@ -78,7 +81,7 @@ class DestinationRepository with Loggable {
         );
   }
 
-  void updateIsOnline(int accountId, bool isOnline) =>
+  Future<void> updateIsOnline(int accountId, bool isOnline) async =>
       _storageRepository.availableDestinations =
           _storageRepository.availableDestinations
               .map(

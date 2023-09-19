@@ -2,8 +2,10 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vialer/app/pages/main/settings/cubit.dart';
+import 'package:vialer/domain/calling/voip/destination_repository.dart';
 import 'package:vialer/domain/relations/colleagues/colleague.dart';
 import 'package:vialer/domain/relations/colleagues/colleagues_repository.dart';
+import 'package:vialer/domain/user/events/user_devices_changed.dart';
 
 import '../../../../../dependency_locator.dart';
 import '../../../../../domain/calling/voip/destination.dart';
@@ -33,12 +35,14 @@ class UserAvailabilityStatusCubit extends Cubit<UserAvailabilityStatusState> {
       ..on<LoggedInUserAvailabilityChanged>(
         (event) => unawaited(check(availability: event.userAvailabilityStatus)),
       )
-      ..on<LoggedInUserWasRefreshed>((_) => unawaited(check()));
+      ..on<LoggedInUserWasRefreshed>((_) => unawaited(check()))
+      ..on<UserDevicesChanged>((_) => unawaited(check()));
   }
 
   final SettingsCubit _settingsCubit;
   late final _eventBus = dependencyLocator<EventBusObserver>();
   late final _colleagueRepository = dependencyLocator<ColleaguesRepository>();
+  late final _destinations = dependencyLocator<DestinationRepository>();
   User? get _user => GetStoredUserUseCase()();
 
   Future<void> changeAvailabilityStatus(
@@ -101,11 +105,13 @@ class UserAvailabilityStatusCubit extends Cubit<UserAvailabilityStatusState> {
     UserAvailabilityStatus? availability,
   }) async {
     final destination = _user?.currentDestination;
+    final availableDestinations = _destinations.availableDestinations;
 
     if (availability != null) {
       return emit(state.copyWith(
         status: availability,
         currentDestination: destination,
+        availableDestinations: availableDestinations,
       ));
     }
 
@@ -116,12 +122,16 @@ class UserAvailabilityStatusCubit extends Cubit<UserAvailabilityStatusState> {
       return emit(state.copyWith(
         status: _status,
         currentDestination: destination,
+        availableDestinations: availableDestinations,
       ));
     }
 
     // We don't have any availability update, so we'll just make sure to emit
     // the new state with the current destination.
-    emit(state.copyWith(currentDestination: destination));
+    emit(state.copyWith(
+      currentDestination: destination,
+      availableDestinations: availableDestinations,
+    ));
   }
 
   // This is only used while we are using legacy do-not-disturb, or the
