@@ -82,3 +82,12 @@ extension DestinationsList on List<Destination> {
     );
   }
 }
+
+extension IsOnline on Destination {
+  bool get isOnline => map(
+        unknown: (_) => true,
+        notAvailable: (_) => true,
+        phoneNumber: (_) => true,
+        phoneAccount: (phoneAccount) => phoneAccount.isOnline,
+      );
+}

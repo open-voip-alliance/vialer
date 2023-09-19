@@ -12,6 +12,7 @@ class AvailabilityButton extends StatelessWidget {
     this.isActive = true,
     this.backgroundColor,
     this.foregroundColor,
+    this.isDestinationOnline = true,
     super.key,
   });
 
@@ -22,6 +23,7 @@ class AvailabilityButton extends StatelessWidget {
   final String text;
   final Color? backgroundColor;
   final Color? foregroundColor;
+  final bool isDestinationOnline;
 
   Color _backgroundColor(BuildContext context) =>
       backgroundColor ?? context.brand.theme.colors.userAvailabilityAvailable;
@@ -87,6 +89,9 @@ class AvailabilityButton extends StatelessWidget {
               FaIcon(
                 trailingIcon,
                 size: 14,
+                color: isDestinationOnline
+                    ? null
+                    : context.brand.theme.colors.red1,
               ),
           ],
         ),

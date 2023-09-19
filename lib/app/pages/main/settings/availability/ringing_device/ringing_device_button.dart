@@ -56,27 +56,38 @@ class RingingDeviceButton extends StatelessWidget {
     }
   }
 
-  Destination? get _destination {
-    switch (type) {
-      case RingingDeviceType.webphone:
-        return destinations.findWebphoneAccountFor(user: user);
-      case RingingDeviceType.deskPhone:
-      case RingingDeviceType.unknown:
-        return destinations.deskPhonesFor(user: user).first;
-      case RingingDeviceType.mobile:
-        return destinations.findAppAccountFor(user: user);
-      case RingingDeviceType.fixed:
-        return destinations.fixedDestinationsFor(user: user).first;
-    }
-  }
+  List<Destination?> get _destinations => switch (type) {
+        RingingDeviceType.webphone => [
+            destinations.findWebphoneAccountFor(user: user)
+          ],
+        RingingDeviceType.deskPhone ||
+        RingingDeviceType.unknown =>
+          destinations.deskPhonesFor(user: user),
+        RingingDeviceType.mobile => [
+            destinations.findAppAccountFor(user: user)
+          ],
+        RingingDeviceType.fixed =>
+          destinations.fixedDestinationsFor(user: user),
+      };
+
+  Destination? get _destination => _destinations.firstOrNull;
 
   IconData? get _trailingIcon {
+    if (!_isAtLeastOneDestinationOnline) {
+      return FontAwesomeIcons.solidTriangleExclamation;
+    }
+
     if (user.ringingDevice != type || !enabled) return null;
 
     return isRingingDeviceOffline
         ? FontAwesomeIcons.solidTriangleExclamation
         : FontAwesomeIcons.solidBellOn;
   }
+
+  bool get _isAtLeastOneDestinationOnline => _destinations.any(
+        (destination) =>
+            destination is PhoneAccount ? destination.isOnline : true,
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +96,7 @@ class RingingDeviceButton extends StatelessWidget {
       leadingIcon: _icon,
       trailingIcon: _trailingIcon,
       isActive: parentWidgetIsEnabled && user.ringingDevice == type,
-      onPressed: enabled
+      onPressed: enabled && _isAtLeastOneDestinationOnline
           ? () =>
               _destination != null ? onDestinationChanged(_destination!) : {}
           : null,
@@ -95,6 +106,7 @@ class RingingDeviceButton extends StatelessWidget {
       foregroundColor: isRingingDeviceOffline
           ? context.brand.theme.colors.userAvailabilityBusyAccent
           : null,
+      isDestinationOnline: _isAtLeastOneDestinationOnline,
     );
   }
 }

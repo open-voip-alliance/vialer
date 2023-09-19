@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:vialer/app/pages/main/settings/availability/ringing_device/widget.dart';
 import 'package:vialer/app/resources/localizations.dart';
 import '../../../../../../../../domain/calling/voip/destination.dart';
@@ -70,9 +71,26 @@ class MultipleRingingDeviceDropdown extends StatelessWidget {
                         .map(
                           (destination) => DropdownMenuItem<Destination>(
                             value: destination,
-                            child: FittedBox(
-                              fit: BoxFit.scaleDown,
-                              child: Text(destination.dropdownValue(context)),
+                            child: Opacity(
+                              opacity: destination.isOnline ? 1 : 0.5,
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  FittedBox(
+                                    fit: BoxFit.scaleDown,
+                                    child: Text(
+                                      destination.dropdownValue(context),
+                                    ),
+                                  ),
+                                  if (!destination.isOnline)
+                                    FaIcon(
+                                      FontAwesomeIcons.solidTriangleExclamation,
+                                      size: 16,
+                                      color: context.brand.theme.colors.red1,
+                                    ),
+                                ],
+                              ),
                             ),
                           ),
                         )
@@ -80,9 +98,10 @@ class MultipleRingingDeviceDropdown extends StatelessWidget {
                     isExpanded: true,
                     showIcon: relevantDestinations.length >= 2,
                     onChanged: enabled && _relevantDestinations.length >= 2
-                        ? (destination) => destination != null
-                            ? onDestinationChanged(destination)
-                            : () {}
+                        ? (destination) =>
+                            destination != null && destination.isOnline
+                                ? onDestinationChanged(destination)
+                                : () {}
                         : null,
                   )
                 : _OfflineDropdown())
