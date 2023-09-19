@@ -76,7 +76,7 @@ custom: # Custom properties to make workflows cleaner
     max_build_duration: 90
     instance_type: mac_mini_m1
     environment: &config_environment
-      flutter: 3.13.4
+      flutter: 3.13.3
       # This has to be 14.2 for our integration tests to work, it should be changed to latest
       # when the tooling supports xCode 14.3.
       xcode: 14.2
@@ -253,6 +253,12 @@ workflows:
         - vialer_upload_keystore_credentials
         - vialer_playstore_credentials
         - vialer_ios_appstore_credentials
+      <<: *config_environment
+      vars:
+        <<: *brand_config_vialer_env_vars
+        IOS_SIGNING_TYPE: "IOS_APP_DEVELOPMENT"
+        ENABLE_IOS_SANDBOX_PUSH_NOTIFICATIONS: "true"
+        FINALIZE_SENTRY_RELEASE: "false"
     triggering:
       events:
         - push
