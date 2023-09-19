@@ -1,12 +1,17 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
+
 abstract class EventBusEvent {}
 
 typedef EventBusObserver = Stream<EventBusEvent>;
 typedef EventBus = StreamController<EventBusEvent>;
 
 extension Broadcasting on EventBus {
-  void broadcast(EventBusEvent event) => add(event);
+  void broadcast(EventBusEvent event) {
+    debugPrint('Broadcasting $event');
+    add(event);
+  }
 }
 
 // When using within a widget, you should always use the EventBusListener widget

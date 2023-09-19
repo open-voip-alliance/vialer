@@ -33,6 +33,9 @@ class RelationsWebsocket with Loggable {
 
   bool _doNotReconnect = false;
 
+  /// We will store some events in a buffer
+  final _buffer = <dynamic>[];
+
   Future<void> connect() async {
     if (_socket != null) return;
 
@@ -61,6 +64,7 @@ class RelationsWebsocket with Loggable {
 
     _socket!.listen(
       (data) {
+        print("TEST123 - socket");
         // If we are receiving events, we will make sure to cancel any queued
         // reconnect timer as we are obviously connected.
         _cancelQueuedReconnect(resetAttempts: true);

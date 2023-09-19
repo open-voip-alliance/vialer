@@ -13,8 +13,6 @@ import '../../../../../dependency_locator.dart';
 import '../../../../../domain/authentication/user_was_logged_out.dart';
 import '../../../../../domain/event/event_bus.dart';
 import '../../../../../domain/onboarding/is_onboarded.dart';
-import '../../../../../domain/relations/user_availability_status.dart';
-import '../../../../../domain/user/events/logged_in_user_availability_changed.dart';
 import '../../../../../domain/user/get_logged_in_user.dart';
 import '../../../../../domain/user/settings/app_setting.dart';
 import '../../../../../domain/user/settings/change_setting.dart';
@@ -42,7 +40,12 @@ class ColleaguesCubit extends Cubit<ColleaguesState> {
         close();
       })
       ..debounceTime(const Duration(milliseconds: 50))
-          .on<UserAvailabilityChangedPayload>(_colleaguesChanged);
+          .on<UserAvailabilityChangedPayload>(
+        (event) async {
+          await _colleaguesChanged(event);
+          return _emitColleagues();
+        },
+      );
   }
 
   late final _shouldShowColleagues = ShouldShowColleagues();
@@ -57,14 +60,11 @@ class ColleaguesCubit extends Cubit<ColleaguesState> {
 
   StreamSubscription<List<Colleague>>? _subscription;
 
-  List<Colleague> get _colleagues => state.map(
-        loading: (_) => [],
-        loaded: (state) => state.colleagues,
-      );
+  List<Colleague> colleagues = [];
 
   bool get shouldShowColleagues =>
       _shouldShowColleagues() &&
-      (_colleagues.isNotEmpty || state is LoadingColleagues);
+      (colleagues.isNotEmpty || state is LoadingColleagues);
 
   bool get canViewColleagues => _getUser().permissions.canViewColleagues;
 
@@ -79,36 +79,26 @@ class ColleaguesCubit extends Cubit<ColleaguesState> {
   bool get _isOnboarded => IsOnboarded()();
 
   Future<void> _colleaguesChanged(UserAvailabilityChangedPayload event) async {
-    final user = _getUser();
-
-    // We are going to hijack this WebSocket and emit an event when we
-    // know our user has changed on the server.
-    if (event.userUuid == user.uuid) {
-      dependencyLocator<EventBus>().broadcast(
-        LoggedInUserAvailabilityChanged(
-          availability: event,
-          userAvailabilityStatus: event.toUserAvailabilityStatus(),
-        ),
-      );
+    print("TEST123 event $event");
+    if (!_isOnboarded || !_shouldShowColleagues()) {
+      colleagues = [];
+      return;
     }
 
-    if (!_isOnboarded || !_shouldShowColleagues()) return;
-
-    final colleagues =
-        state is LoadingColleagues ? await _fetchColleagues() : _colleagues;
+    if (colleagues.isEmpty) {
+      colleagues = await _fetchColleagues();
+    }
 
     final colleague = colleagues.findByUserUuid(event.userUuid);
 
     // If no colleague is found, we can't update the availability of it.
-    if (colleague == null) {
-      return _updateColleagues(colleagues);
-    }
+    if (colleague == null) return;
 
     // We don't want to display colleagues that do not have linked
     // destinations as these are essentially inactive users that do not
     // have any possible availability status.
     if (!event.hasLinkedDestinations) {
-      _updateColleagues(colleagues..remove(colleague));
+      colleagues..remove(colleague);
       return;
     }
 
@@ -116,14 +106,12 @@ class ColleaguesCubit extends Cubit<ColleaguesState> {
       original: colleague,
       replacement: colleague.populateWithAvailability(event),
     );
-
-    _updateColleagues(colleagues);
   }
 
-  void _updateColleagues(List<Colleague> colleagues) {
+  void _emitColleagues() {
     emit(
       ColleaguesState.loaded(
-        colleagues,
+        this.colleagues,
         showOnlineColleaguesOnly: state.showOnlineColleaguesOnly,
       ),
     );
@@ -158,7 +146,7 @@ class ColleaguesCubit extends Cubit<ColleaguesState> {
 
   /// Purge our locally stored cache, in this case in the cubit's state, so we
   /// dismiss stale data.
-  void _purgeCache() => _updateColleagues([]);
+  void _purgeCache() => colleagues = [];
 }
 
 extension on List<Colleague> {
@@ -193,22 +181,4 @@ extension on Colleague {
         // just leave them as is.
         unconnectedVoipAccount: (voipAccount) => voipAccount,
       );
-}
-
-extension on UserAvailabilityChangedPayload {
-  UserAvailabilityStatus toUserAvailabilityStatus() {
-    if (destinationType == ColleagueDestinationType.voipAccount &&
-        availability == ColleagueAvailabilityStatus.offline) {
-      return UserAvailabilityStatus.onlineWithRingingDeviceOffline;
-    }
-
-    return switch (availability) {
-      ColleagueAvailabilityStatus.available => UserAvailabilityStatus.online,
-      ColleagueAvailabilityStatus.busy => UserAvailabilityStatus.online,
-      ColleagueAvailabilityStatus.unknown => UserAvailabilityStatus.online,
-      ColleagueAvailabilityStatus.offline => UserAvailabilityStatus.offline,
-      ColleagueAvailabilityStatus.doNotDisturb =>
-        UserAvailabilityStatus.doNotDisturb,
-    };
-  }
 }

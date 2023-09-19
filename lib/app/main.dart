@@ -5,6 +5,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:timezone/data/latest.dart';
 import 'package:vialer/app/util/global_bloc_provider.dart';
+import 'package:vialer/domain/relations/websocket/register_websocket_event_listeners.dart';
 import 'package:vialer/domain/user/settings/import_legacy_settings.dart';
 
 import '../dependency_locator.dart';
@@ -39,6 +40,7 @@ Future<void> main() async {
   ApplyOnboardingMigration()();
   unawaited(InitializeMetricCollection()());
   RegisterDomainEventListenersUseCase()();
+  unawaited(RegisterWebSocketEventListeners()());
   unawaited(EnableConsoleLoggingUseCase()());
   unawaited(EnableRemoteLoggingIfNeededUseCase()());
 
