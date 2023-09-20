@@ -1,0 +1,6 @@
+- Added a loading spinner when changing your availability
+- When changing your outgoing number you will now also see the number's description
+- Tapping the "profile" button while in a sub-menu will now return you to the profile page
+- Fixed a bug where it wasn't possible to progress in onboarding while using a screen reader
+- Fixed some bugs relating to dnd syncing between the app and webphone
+- Deactivated voip accounts will no longer show in the colleagues tab

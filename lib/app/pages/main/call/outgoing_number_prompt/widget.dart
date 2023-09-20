@@ -13,7 +13,7 @@ import 'package:vialer/app/pages/main/widgets/caller.dart';
 import 'package:vialer/app/resources/messages.i18n.dart';
 import 'package:vialer/app/util/context_extensions.dart';
 
-import '../../../../../domain/user/settings/call_setting.dart';
+import '../../../../../domain/calling/outgoing_number/outgoing_number.dart';
 
 import '../../../../resources/localizations.dart';
 
@@ -100,6 +100,7 @@ class _Ready extends ConsumerWidget {
               item: state.currentOutgoingNumber,
               onOutgoingNumberSelected: callback,
               active: true,
+              showIcon: true,
             ),
             state.outgoingNumbers.length < _maxOutgoingNumbersBeforeExpandedList
                 ? BasicList(state, onOutgoingNumberSelected: callback)
@@ -110,6 +111,7 @@ class _Ready extends ConsumerWidget {
                 item: OutgoingNumber.suppressed(),
                 onOutgoingNumberSelected: callback,
                 active: false,
+                showIcon: true,
               ),
             ],
             DoNotShowAgainCheckbox(
@@ -197,6 +199,7 @@ extension OutgoingNumberList on Iterable<OutgoingNumber> {
           item: item,
           onOutgoingNumberSelected: callback,
           active: current == this,
+          showIcon: true,
         ),
       ).toList(growable: false);
 }

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dartx/dartx.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vialer/domain/user/settings/change_setting.dart';
 
 import '../../../../dependency_locator.dart';
 import '../../../../domain/authentication/logout.dart';
@@ -22,7 +23,6 @@ import '../../../../domain/user/permissions/permission_status.dart';
 import '../../../../domain/user/refresh/refresh_user.dart';
 import '../../../../domain/user/refresh/user_refresh_task.dart';
 import '../../../../domain/user/settings/call_setting.dart';
-import '../../../../domain/user/settings/change_settings.dart';
 import '../../../../domain/user/settings/settings.dart';
 import '../../../../domain/user/user.dart';
 import '../../../../domain/voipgrid/rate_limit_reached_event.dart';
@@ -49,7 +49,6 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
       });
   }
 
-  final _changeSettings = ChangeSettingsUseCase();
   final _getBuildInfo = GetBuildInfoUseCase();
   final _sendSavedLogsToRemote = SendSavedLogsToRemoteUseCase();
   final _getPermissionStatus = GetPermissionStatusUseCase();
@@ -136,18 +135,18 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
   ) =>
       changeSettings({key: value});
 
-  Future<void> changeSettings(Map<SettingKey, Object> settings) async {
-    // Immediately emit a copy of the state with the changed setting for extra
-    // smoothness.
-    final newSettings = Settings(settings);
-
+  Future<void> changeSettings(Settings settings) async {
     // We're going to track any requests to update remote and then make sure
     // we don't update the settings page while that's happening. This also
     // allows us to prevent input until changes have finished.
     final changeRequest = _SettingChangeRequest();
     _changesBeingProcessed.add(changeRequest);
-    emit(state.withChanged(newSettings, isApplyingChanges: true));
-    await _changeSettings(newSettings);
+    emit(
+      state.withChanged(GetLoggedInUserUseCase()(), isApplyingChanges: true),
+    );
+    for (final entry in settings.entries) {
+      await ChangeSettingUseCase()(entry.key, entry.value, force: true);
+    }
     _changesBeingProcessed.remove(changeRequest);
     _emitUpdatedState();
   }

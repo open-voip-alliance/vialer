@@ -7,7 +7,7 @@ version: 7.0.0
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
-  flutter: 3.10.5
+  flutter: 3.13.3
 
 dependencies:
   flutter:
@@ -19,7 +19,7 @@ dependencies:
   flutter_phone_lib:
     git:
       url: https://github.com/open-voip-alliance/flutter-phone-lib
-      ref: 235aa663a739f3e82de64a4557cdc73ae7de7e86
+      ref: 406f56714bd3ee8f457ec4d4117e604cbfa55314
 
   # We use our own fork, this is required when using Font Awesome Pro.
   # See: https://pub.dev/packages/font_awesome_flutter#enable-pro-icons
@@ -43,7 +43,7 @@ dependencies:
   i18n: ^3.1.0
   intl: ^0.18.0
   flutter_dotenv: ^5.0.2
-  sentry_flutter: ^6.22.0
+  sentry_flutter: ^7.9.0
   flutter_segment: ^3.12.1
   device_info: ^2.0.0
   package_info: ^2.0.0

@@ -6,6 +6,7 @@ import 'package:dartx/dartx.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_phone_lib/flutter_phone_lib.dart' hide Reason;
 import 'package:flutter_phone_lib/flutter_phone_lib.dart' as fpl;
+import 'package:vialer/domain/user/user.dart';
 
 import '../../../../../dependency_locator.dart';
 import '../../../../../domain/calling/call.dart';

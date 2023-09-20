@@ -263,13 +263,13 @@ class ColleaguesRepository with Loggable {
           context: [],
         ),
       ),
-      ...voipAccounts.map(
-        (e) => Colleague.unconnectedVoipAccount(
-          id: e['id'] as String,
-          name: e['description'] as String,
-          number: e['internal_number'] as String,
-        ),
-      ),
+      ...voipAccounts.onlyActive().map(
+            (e) => Colleague.unconnectedVoipAccount(
+              id: e['id'] as String,
+              name: e['description'] as String,
+              number: e['internal_number'] as String,
+            ),
+          ),
     ].without(user: user);
   }
 }
@@ -292,6 +292,11 @@ extension on List<Colleague> {
       [replacement],
     );
   }
+}
+
+extension on List<Map<String, dynamic>> {
+  List<Map<String, dynamic>> onlyActive() =>
+      filter((element) => element['status']?.toString() == 'active').toList();
 }
 
 extension on Colleague {

@@ -1,10 +1,10 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import '../../../../domain/calling/outgoing_number/outgoing_number.dart';
 import '../../../../domain/calling/voip/destination.dart';
 import '../../../../domain/user/info/build_info.dart';
 import '../../../../domain/user/settings/app_setting.dart';
 import '../../../../domain/user/settings/call_setting.dart';
-import '../../../../domain/user/settings/settings.dart';
 import '../../../../domain/user/user.dart';
 
 part 'state.freezed.dart';
@@ -39,11 +39,11 @@ class SettingsState with _$SettingsState {
   bool get shouldAllowRemoteSettings => !isApplyingChanges && !isRateLimited;
 
   SettingsState withChanged(
-    Settings settings, {
+    User user, {
     bool isApplyingChanges = false,
   }) =>
       copyWith(
-        user: user.copyWith(settings: user.settings.copyFrom(settings)),
+        user: user,
         isApplyingChanges: isApplyingChanges,
       );
 }

@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vialer/domain/user/user.dart';
 
 import '../../../../domain/user/get_logged_in_user.dart';
 import '../../../../domain/user/settings/call_setting.dart';

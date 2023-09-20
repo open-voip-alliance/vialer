@@ -5,6 +5,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:timezone/data/latest.dart';
 import 'package:vialer/app/util/global_bloc_provider.dart';
+import 'package:vialer/domain/user/settings/import_legacy_settings.dart';
 
 import '../dependency_locator.dart';
 import '../domain/authentication/user_was_logged_out.dart';
@@ -33,6 +34,7 @@ Future<void> main() async {
   initializeTimeZones();
 
   await initializeDependencies();
+  await ImportLegacySettings()();
 
   ApplyOnboardingMigration()();
   unawaited(InitializeMetricCollection()());

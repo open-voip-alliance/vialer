@@ -3,11 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:vialer/app/pages/main/settings/sub_page/about_the_app.dart';
 import 'package:vialer/app/pages/main/settings/sub_page/system.dart';
-import 'package:vialer/app/pages/main/settings/widgets/tile/availability/widget.dart';
 
 import '../../../../domain/env.dart';
 import '../../../resources/localizations.dart';
 import '../util/stylized_snack_bar.dart';
+import 'availability/widget.dart';
 import 'cubit.dart';
 import 'header/widget.dart';
 import 'sub_page/app_preferences.dart';
@@ -18,7 +18,9 @@ import 'widgets/rate_limited_snackbar_label.dart';
 import 'widgets/tile/link/sub_page.dart';
 
 class SettingsPage extends StatefulWidget {
-  const SettingsPage({super.key});
+  SettingsPage({required this.navigatorKey, super.key});
+
+  final GlobalKey<NavigatorState> navigatorKey;
 
   @override
   State<StatefulWidget> createState() => _SettingsPageState();
@@ -57,6 +59,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return SettingsPageContainer(
       scaffoldMessengerKey: _scaffoldMessengerKey,
+      navigatorKey: widget.navigatorKey,
       child: BlocConsumer<SettingsCubit, SettingsState>(
         listener: _onStateChanged,
         // We're not going to listen when there are new rate limited states

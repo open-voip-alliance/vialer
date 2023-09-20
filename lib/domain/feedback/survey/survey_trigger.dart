@@ -1,9 +1,9 @@
 import 'dart:math';
 
 import 'package:dartx/dartx.dart';
+import 'package:vialer/domain/user/settings/settings_repository.dart';
 
 import '../../user/settings/app_setting.dart';
-import '../../user/settings/settings.dart';
 
 /// When and where the survey is displayed.
 class SurveyTrigger {
@@ -41,7 +41,7 @@ class AfterAnAmountOfActionsOnAppLaunchTrigger extends SurveyTrigger {
   static const percentChanceIfConditionsMet = 50;
 
   static bool isTriggered({
-    required Settings settings,
+    required SettingsRepository settings,
     required int actionsCount,
     required Duration? timeSinceLastSurvey,
   }) {

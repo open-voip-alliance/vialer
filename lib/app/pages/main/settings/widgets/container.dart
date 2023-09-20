@@ -10,18 +10,21 @@ import '../cubit.dart';
 class SettingsPageContainer extends StatelessWidget {
   const SettingsPageContainer({
     required this.scaffoldMessengerKey,
+    required this.navigatorKey,
     required this.child,
     super.key,
   });
 
   final Widget child;
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey;
+  final GlobalKey<NavigatorState> navigatorKey;
 
   @override
   Widget build(BuildContext context) {
     return ScaffoldMessenger(
       key: scaffoldMessengerKey,
       child: NestedNavigator(
+        navigatorKey: navigatorKey,
         routes: {
           'root': (context, _) {
             return BlocBuilder<SettingsCubit, SettingsState>(

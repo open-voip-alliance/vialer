@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vialer/domain/user/user.dart';
 
 import '../../../../../domain/feedback/mark_now_as_app_rating_survey_shown.dart';
 import '../../../../../domain/feedback/reset_app_rating_survey_action_count.dart';
