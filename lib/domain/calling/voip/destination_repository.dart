@@ -51,9 +51,13 @@ class DestinationRepository with Loggable {
         .toList()
         .first;
 
+    final staleDestinations = _storageRepository.availableDestinations;
+
     _storageRepository
       ..userNumber = destinations.userNumber
       ..availableDestinations = destinations.available;
+
+    _carryOverIsOnline(staleDestinations);
 
     selectedUserDestinationId = destinations.selectedDestinationId;
 
@@ -62,6 +66,20 @@ class DestinationRepository with Loggable {
 
   List<Destination> get availableDestinations =>
       _storageRepository.availableDestinations;
+
+  /// We want to carry over the isOnline status from our old data, this is
+  /// because this data is received via the websocket rather than the
+  /// destinations api.
+  void _carryOverIsOnline(List<Destination> staleDestinations) {
+    if (doesNotHaveFeature(Feature.offlineUserDevices)) return;
+
+    staleDestinations.whereType<PhoneAccount>().forEach(
+          (staleDestination) => updateIsOnline(
+            staleDestination.accountId,
+            staleDestination.isOnline,
+          ),
+        );
+  }
 
   Future<void> updateIsOnline(int accountId, bool isOnline) async =>
       _storageRepository.availableDestinations =

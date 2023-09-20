@@ -1,3 +1,4 @@
+import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:vialer/app/pages/main/settings/availability/ringing_device/widget.dart';
@@ -70,7 +71,14 @@ class RingingDeviceButton extends StatelessWidget {
           destinations.fixedDestinationsFor(user: user),
       };
 
-  Destination? get _destination => _destinations.firstOrNull;
+  Destination? get _destination {
+    final destination = _destinations
+        .whereNotNull()
+        .where((destination) => destination.isOnline)
+        .firstOrNull;
+
+    return destination != null ? destination : _destinations.firstOrNull;
+  }
 
   IconData? get _trailingIcon {
     if (!_isAtLeastOneDestinationOnline) {

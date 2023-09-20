@@ -51,7 +51,7 @@ class MultipleRingingDeviceDropdown extends StatelessWidget {
   Destination? get _currentDestination =>
       user.currentDestination is PhoneAccount ||
               user.currentDestination is PhoneNumber
-          ? user.currentDestination
+          ? user.currentDestination.toDestinationObject()
           : null;
 
   @override
