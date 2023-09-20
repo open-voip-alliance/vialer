@@ -11,6 +11,7 @@ import 'package:vialer/domain/colltacts/colltact_tab.dart';
 
 import '../../../../../../data/models/colltact.dart';
 import '../../../../../resources/localizations.dart';
+import '../../../../../util/widgets_binding_observer_registrar.dart';
 import '../../../colltacts/colleagues/cubit.dart';
 import '../../../colltacts/shared_contacts/cubit.dart';
 import '../../../colltacts/contacts/cubit.dart';
@@ -65,7 +66,10 @@ class _ColltactList extends StatefulWidget {
 }
 
 class _ColltactPageState extends State<_ColltactList>
-    with WidgetsBindingObserver, TickerProviderStateMixin {
+    with
+        WidgetsBindingObserver,
+        WidgetsBindingObserverRegistrar,
+        TickerProviderStateMixin {
   String? _searchTerm;
   TabController? tabController;
 
