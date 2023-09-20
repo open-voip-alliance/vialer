@@ -253,6 +253,12 @@ workflows:
         - vialer_upload_keystore_credentials
         - vialer_playstore_credentials
         - vialer_ios_appstore_credentials
+      <<: *config_environment
+      vars:
+        <<: *brand_config_vialer_env_vars
+        IOS_SIGNING_TYPE: "IOS_APP_DEVELOPMENT"
+        ENABLE_IOS_SANDBOX_PUSH_NOTIFICATIONS: "true"
+        FINALIZE_SENTRY_RELEASE: "false"
     triggering:
       events:
         - push
