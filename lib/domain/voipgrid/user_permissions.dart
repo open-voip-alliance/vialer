@@ -13,24 +13,25 @@ class UserPermissionsRepository with Loggable {
   final StorageRepository _storage;
 
   static const _permissionsMapping = {
-    'cdr.view_record': UserPermission.clientCalls,
-    'permission.change_user': UserPermission.changeMobileNumberFallback,
+    'cdr.view_record': VoipgridPermission.clientCalls,
+    'permission.change_user': VoipgridPermission.changeMobileNumberFallback,
     // There is only one temporary redirect permission, it is not separated
     // between viewing and changing.
     'business_availability.change_temporary_redirect':
-        UserPermission.temporaryRedirect,
-    'voicemail.view_voicemail': UserPermission.viewVoicemail,
-    'phoneaccount.change_phoneaccount': UserPermission.changeVoipAccount,
-    'permission.view_user': UserPermission.viewUser,
+        VoipgridPermission.temporaryRedirect,
+    'voicemail.view_voicemail': VoipgridPermission.viewVoicemail,
+    'phoneaccount.change_phoneaccount': VoipgridPermission.changeVoipAccount,
+    'permission.view_user': VoipgridPermission.viewUser,
     'phoneaccount.list_api_voipaccount_basic_info':
-        UserPermission.listVoipAccounts,
-    'permission.list_api_user_basic_info': UserPermission.listUsers,
-    'routing.view_routing': UserPermission.viewRouting,
-    'stats.view_stats': UserPermission.viewStats,
-    'openinghours.change_openinghoursgroup': UserPermission.changeOpeningHours,
+        VoipgridPermission.listVoipAccounts,
+    'permission.list_api_user_basic_info': VoipgridPermission.listUsers,
+    'routing.view_routing': VoipgridPermission.viewRouting,
+    'stats.view_stats': VoipgridPermission.viewStats,
+    'openinghours.change_openinghoursgroup':
+        VoipgridPermission.changeOpeningHours,
   };
 
-  Future<List<UserPermission>> getGrantedPermissions({
+  Future<List<VoipgridPermission>> getGrantedPermissions({
     required User user,
   }) async {
     final response = await _service.getVoipgridPermissions();
@@ -59,7 +60,7 @@ class UserPermissionsRepository with Loggable {
   }
 }
 
-enum UserPermission {
+enum VoipgridPermission {
   clientCalls,
   viewMobileNumberFallback,
   changeMobileNumberFallback,
@@ -72,6 +73,20 @@ enum UserPermission {
   viewStats,
   viewRouting,
   changeOpeningHours,
+}
+
+enum Permission {
+  canSeeClientCalls,
+  canChangeMobileNumberFallback,
+  canViewMobileNumberFallbackStatus,
+  canChangeTemporaryRedirect,
+  canViewVoicemailAccounts,
+  canChangeOutgoingNumber,
+  canViewColleagues,
+  canViewVoipAccounts,
+  canViewDialPlans,
+  canViewStats,
+  canChangeOpeningHours,
 }
 
 class UnableToRetrievePermissionsException extends VialerException {}

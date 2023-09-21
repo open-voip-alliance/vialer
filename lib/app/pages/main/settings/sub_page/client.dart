@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vialer/domain/voipgrid/user_permissions.dart';
 
 import '../../../../../domain/user/user.dart';
 import '../../../../resources/localizations.dart';
@@ -30,7 +31,7 @@ class ClientSubPage extends StatelessWidget {
           child: (state) {
             return ListView(
               children: [
-                if (user.permissions.canChangeTemporaryRedirect)
+                if (user.hasPermission(Permission.canChangeTemporaryRedirect))
                   const TemporaryRedirectCategory(
                     children: [
                       TemporaryRedirectSettingTile(),
@@ -39,14 +40,15 @@ class ClientSubPage extends StatelessWidget {
                 if (user.canViewAtLeastOneWebView)
                   PortalLinksCategory(
                     children: [
-                      if (user.permissions.canSeeClientCalls)
+                      if (user.hasPermission(Permission.canSeeClientCalls))
                         const CallsLinkTile(),
-                      if (user.permissions.canViewDialPlans)
+                      if (user.hasPermission(Permission.canViewDialPlans))
                         const DialPlanLinkTile(),
                       if (cubit.shouldShowOpeningHoursBasic &&
                           user.client.openingHoursModules.isNotEmpty)
                         OpeningHoursLinkTile(user),
-                      if (user.permissions.canViewStats) const StatsLinkTile(),
+                      if (user.hasPermission(Permission.canViewStats))
+                        const StatsLinkTile(),
                     ],
                   ),
               ],
@@ -60,18 +62,18 @@ class ClientSubPage extends StatelessWidget {
 
 extension UserPermissions on User {
   bool get canViewClientSubPage => [
-        permissions.canChangeTemporaryRedirect,
+        hasPermission(Permission.canChangeTemporaryRedirect),
         client.openingHoursModules.isNotEmpty,
-        permissions.canSeeClientCalls,
-        permissions.canViewDialPlans,
-        permissions.canViewStats,
+        hasPermission(Permission.canSeeClientCalls),
+        hasPermission(Permission.canViewDialPlans),
+        hasPermission(Permission.canViewStats),
       ].hasAtLeastOne;
 
   bool get canViewAtLeastOneWebView => [
         client.openingHoursModules.isNotEmpty,
-        permissions.canSeeClientCalls,
-        permissions.canViewDialPlans,
-        permissions.canViewStats,
+        hasPermission(Permission.canSeeClientCalls),
+        hasPermission(Permission.canViewDialPlans),
+        hasPermission(Permission.canViewStats),
       ].hasAtLeastOne;
 }
 

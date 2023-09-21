@@ -6,7 +6,8 @@ import 'package:vialer/domain/user/settings/settings.dart';
 import 'package:vialer/domain/user/settings/settings_repository.dart';
 
 import '../client.dart';
-import '../permissions/user_permissions.dart';
+import 'package:vialer/domain/user/refresh/tasks/voipgrid_user_permissions.dart';
+
 import '../user.dart';
 import 'user_refresh_task.dart';
 
@@ -46,7 +47,7 @@ abstract class UserRefreshTaskPerformer {
   /// are behind a permission as this will avoid unnecessary, failing, api
   /// requests.
   @protected
-  bool isPermitted(UserPermissions userPermissions) => true;
+  bool isPermitted(Permissions permissions) => true;
 
   /// Determines if this refresh task should be run, if it is dependent on a
   /// [UserPermissions] check, make sure to use the [isPermitted] method. This
