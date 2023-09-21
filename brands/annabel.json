@@ -11,5 +11,6 @@
   "privacyPolicyUrl": "https://bellenmetannabel.nl/app/uploads/Terms-Of-Use-And-Privacy.pdf",
   "userAvailabilityWsUrl": "wss://api.prod.holodeck.spindle.dev/user-availability-ws/ws",
   "dndServiceUrl": "https://api.prod.holodeck.spindle.dev/dnd-service",
-  "sharedContactsUrl": "https://contacts.spindle.dev/contacts/"
+  "sharedContactsUrl": "https://contacts.spindle.dev/contacts/",
+  "featureAnnouncementsUrl": "https://api.prod.holodeck.spindle.dev/feature-announcements/"
 }
