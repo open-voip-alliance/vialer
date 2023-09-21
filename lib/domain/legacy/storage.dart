@@ -25,8 +25,9 @@ class StorageRepository {
     final json = _preferences.getJson(
           _userKey,
           (j) => j! as Map<String, dynamic>,
-        ) ??
-        const {};
+        );
+
+    if (json == null) return null;
 
     // When upgrading to the new user permission setup, remove the old ones and
     // convert to the new set.
