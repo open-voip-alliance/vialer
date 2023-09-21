@@ -148,8 +148,6 @@ class _CallPageState extends State<_CallPage>
     _dismissScreenTimer = Timer(after, dismiss);
   }
 
-  // Only called when the state type has changed, not when a state with the same
-  // type but different call information has been emitted.
   Future<void> _onStateChanged(BuildContext context, CallerState state) async {
     final cubit = context.read<CallerCubit>();
 
@@ -253,8 +251,6 @@ class _CallPageState extends State<_CallPage>
   Widget build(BuildContext context) {
     return Scaffold(
       body: BlocListener<CallerCubit, CallerState>(
-        listenWhen: (previous, current) =>
-            previous.runtimeType != current.runtimeType,
         listener: _onStateChanged,
         child: CallProcessStateBuilder(
           builder: (context, state) {
