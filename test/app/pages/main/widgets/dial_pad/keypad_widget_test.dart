@@ -457,6 +457,9 @@ class TestApp extends StatelessWidget {
         signUpUrl: null,
         dndServiceUrl: Uri.parse('dummydndservice.url'),
         sharedContactsUrl: Uri.parse('https://contacts.spindle.dev/contacts/'),
+        featureAnnouncementsUrl: Uri.parse(
+          "https://api.prod.holodeck.spindle.dev/feature-announcments/",
+        ),
       ),
       child: Builder(
         builder: (context) {
