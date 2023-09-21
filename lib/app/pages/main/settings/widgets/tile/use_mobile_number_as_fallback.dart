@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 
 import '../../../../../../domain/user/settings/call_setting.dart';
 import '../../../../../../domain/user/user.dart';
+import '../../../../../../domain/voipgrid/user_permissions.dart';
 import '../../../../../resources/localizations.dart';
 import 'value.dart';
 import 'widget.dart';
@@ -32,9 +33,11 @@ class UseMobileNumberAsFallbackTile extends StatelessWidget {
       child: BoolSettingValue(
         user.settings,
         CallSetting.useMobileNumberAsFallback,
-        onChanged: user.permissions.canChangeMobileNumberFallback && enabled
-            ? defaultOnSettingChanged
-            : null,
+        onChanged:
+            user.hasPermission(Permission.canChangeMobileNumberFallback) &&
+                    enabled
+                ? defaultOnSettingChanged
+                : null,
       ),
     );
   }

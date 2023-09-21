@@ -4,11 +4,13 @@ import 'package:dartx/dartx.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:vialer/dependency_locator.dart';
 import 'package:vialer/domain/user/settings/settings_repository.dart';
+import 'package:vialer/domain/user/refresh/tasks/voipgrid_user_permissions.dart';
 
 import '../../app/util/nullable_copy_with_argument.dart';
+import '../voipgrid/user_permissions.dart';
 import '../voipgrid/user_voip_config.dart';
 import 'client.dart';
-import 'permissions/user_permissions.dart';
+import 'settings/settings.dart';
 
 part 'user.g.dart';
 part 'user.freezed.dart';
@@ -33,12 +35,7 @@ class User with _$User {
       fromJson: UserVoipConfig.serializeFromJson,
     )
     UserVoipConfig? voip,
-    @JsonKey(
-      toJson: UserPermissions.serializeToJson,
-      fromJson: UserPermissions.fromJson,
-    )
-    @Default(UserPermissions())
-    UserPermissions permissions,
+    @Default({}) Permissions permissions,
   }) = _User;
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
@@ -58,6 +55,8 @@ class User with _$User {
 
   bool get hasAppAccount => appAccountId != null;
 
+  bool hasPermission(Permission permission) => permissions.contains(permission);
+
   User copyWith({
     String? uuid,
     String? email,
@@ -68,7 +67,8 @@ class User with _$User {
     Uri? appAccountUrl,
     Client? client,
     NullableCopyWithArgument<UserVoipConfig> voip,
-    UserPermissions? permissions,
+    Settings? settings,
+    Permissions? permissions,
     NullableCopyWithArgument<String> webphoneAccountId,
   }) {
     return User(

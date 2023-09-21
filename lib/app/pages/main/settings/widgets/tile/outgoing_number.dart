@@ -8,6 +8,7 @@ import 'package:vialer/app/pages/main/util/phone_number.dart';
 import '../../../../../../domain/calling/outgoing_number/outgoing_number.dart';
 import '../../../../../../domain/user/settings/call_setting.dart';
 import '../../../../../../domain/user/user.dart';
+import '../../../../../../domain/voipgrid/user_permissions.dart';
 import '../../../../../resources/localizations.dart';
 import 'category/widget.dart';
 import 'editable_value.dart';
@@ -54,7 +55,7 @@ class OutgoingNumberTile extends StatelessWidget {
                 .msg.main.settings.list.accountInfo.businessNumber.description,
           ),
           childFillWidth: true,
-          child: user.permissions.canChangeOutgoingNumber
+          child: user.hasPermission(Permission.canChangeOutgoingNumber)
               ? EditableSettingField(
                   unlocked: Expanded(
                     child: MultipleChoiceSettingValue<OutgoingNumber>(
