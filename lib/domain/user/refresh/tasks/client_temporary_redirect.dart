@@ -1,6 +1,8 @@
+import 'package:vialer/domain/user/refresh/tasks/voipgrid_user_permissions.dart';
+
 import '../../../business_availability/temporary_redirect/get_current_temporary_redirect.dart';
+import '../../../voipgrid/user_permissions.dart';
 import '../../client.dart';
-import '../../permissions/user_permissions.dart';
 import '../user_refresh_task_performer.dart';
 
 class RefreshClientTemporaryRedirect extends ClientRefreshTaskPerformer {
@@ -16,6 +18,6 @@ class RefreshClientTemporaryRedirect extends ClientRefreshTaskPerformer {
   }
 
   @override
-  bool isPermitted(UserPermissions userPermissions) =>
-      userPermissions.canChangeTemporaryRedirect;
+  bool isPermitted(Permissions permissions) =>
+      permissions.contains(Permission.canChangeTemporaryRedirect);
 }

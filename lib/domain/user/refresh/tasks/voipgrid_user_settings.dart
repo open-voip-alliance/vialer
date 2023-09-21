@@ -1,6 +1,8 @@
+import 'package:vialer/domain/user/refresh/tasks/voipgrid_user_permissions.dart';
+
 import '../../../../dependency_locator.dart';
 import '../../../authentication/authentication_repository.dart';
-import '../../permissions/user_permissions.dart';
+import '../../../voipgrid/user_permissions.dart';
 import '../../settings/call_setting.dart';
 import '../../user.dart';
 import '../user_refresh_task_performer.dart';
@@ -22,6 +24,6 @@ class RefreshVoipgridUserSettings extends SettingsRefreshTaskPerformer {
   }
 
   @override
-  bool isPermitted(UserPermissions userPermissions) =>
-      userPermissions.canViewMobileNumberFallbackStatus;
+  bool isPermitted(Permissions permissions) =>
+      permissions.contains(Permission.canViewMobileNumberFallbackStatus);
 }

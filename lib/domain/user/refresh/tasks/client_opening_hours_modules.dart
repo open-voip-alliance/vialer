@@ -1,6 +1,8 @@
+import 'package:vialer/domain/user/refresh/tasks/voipgrid_user_permissions.dart';
+
 import '../../../openings_hours_basic/get_opening_hours_modules.dart';
+import '../../../voipgrid/user_permissions.dart';
 import '../../client.dart';
-import '../../permissions/user_permissions.dart';
 import '../user_refresh_task_performer.dart';
 
 class RefreshClientOpeningHoursModules extends ClientRefreshTaskPerformer {
@@ -16,6 +18,6 @@ class RefreshClientOpeningHoursModules extends ClientRefreshTaskPerformer {
   }
 
   @override
-  bool isPermitted(UserPermissions userPermissions) =>
-      userPermissions.canChangeOpeningHours;
+  bool isPermitted(Permissions permissions) =>
+      permissions.contains(Permission.canChangeOpeningHours);
 }

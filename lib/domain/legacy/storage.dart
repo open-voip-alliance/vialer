@@ -9,6 +9,7 @@ import '../calling/voip/destination.dart';
 import '../colltacts/colltact_tab.dart';
 import '../colltacts/shared_contacts/shared_contact.dart';
 import '../relations/colleagues/colleague.dart';
+import '../voipgrid/user_permissions.dart';
 import '../user/settings/settings.dart';
 import '../user/user.dart';
 
@@ -20,10 +21,29 @@ class StorageRepository {
   // Value must stay the same, otherwise everything breaks.
   static const _userKey = 'system_user';
 
-  User? get user => _preferences.getJson<User, Map<String, dynamic>>(
-        _userKey,
-        User.fromJson,
-      );
+  User? get user {
+    final json = _preferences.getJson(
+          _userKey,
+          (j) => j! as Map<String, dynamic>,
+        );
+
+    if (json == null) return null;
+
+    // When upgrading to the new user permission setup, remove the old ones and
+    // convert to the new set.
+    // Remove when all of the users are upgraded.
+    if (json.containsKey('permissions') &&
+        json['permissions'] is Map<String, dynamic>) {
+      final permissions = <Permission>{}..addAll(
+          (json['permissions'] as Map<String, dynamic>).toNewPermissions());
+
+      json.remove('permissions');
+
+      return User.fromJson(json).copyWith(permissions: permissions);
+    }
+
+    return User.fromJson(json);
+  }
 
   set user(User? user) => _preferences.setOrRemoveObject(_userKey, user);
 
@@ -360,4 +380,34 @@ extension RawPermissions on List<dynamic> {
       .map((permission) => permission.toString())
       .sorted()
       .toList();
+}
+
+extension NewPermissions on Map<String, dynamic> {
+  Set<Permission> toNewPermissions() {
+    final permissions = this;
+    return {
+      if (permissions['canSeeClientCalls'] as bool? ?? false)
+        Permission.canSeeClientCalls,
+      if (permissions['canChangeMobileNumberFallback'] as bool? ?? false)
+        Permission.canChangeMobileNumberFallback,
+      if (permissions['canViewMobileNumberFallbackStatus'] as bool? ?? false)
+        Permission.canViewMobileNumberFallbackStatus,
+      if (permissions['canChangeTemporaryRedirect'] as bool? ?? false)
+        Permission.canChangeMobileNumberFallback,
+      if (permissions['canViewVoicemailAccounts'] as bool? ?? false)
+        Permission.canViewVoicemailAccounts,
+      if (permissions['canChangeOutgoingNumber'] as bool? ?? false)
+        Permission.canChangeOutgoingNumber,
+      if (permissions['canViewColleagues'] as bool? ?? false)
+        Permission.canViewColleagues,
+      if (permissions['canViewVoipAccounts'] as bool? ?? false)
+        Permission.canViewVoipAccounts,
+      if (permissions['canViewDialPlans'] as bool? ?? false)
+        Permission.canViewDialPlans,
+      if (permissions['canViewStats'] as bool? ?? false)
+        Permission.canViewStats,
+      if (permissions['canChangeOpeningHours'] as bool? ?? false)
+        Permission.canChangeOpeningHours,
+    };
+  }
 }

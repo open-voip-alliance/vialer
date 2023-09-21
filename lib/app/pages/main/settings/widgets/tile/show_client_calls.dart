@@ -3,12 +3,14 @@ import 'package:flutter/widgets.dart';
 
 import '../../../../../../domain/user/settings/app_setting.dart';
 import '../../../../../../domain/user/user.dart';
+import '../../../../../../domain/voipgrid/user_permissions.dart';
 import '../../../../../resources/localizations.dart';
 import 'value.dart';
 import 'widget.dart';
 
 class ShowClientCallsTile extends StatelessWidget {
   const ShowClientCallsTile(this.user, {super.key});
+
   final User user;
 
   @override
@@ -18,7 +20,7 @@ class ShowClientCallsTile extends StatelessWidget {
         context.msg.main.settings.list.calling.showClientCalls.title,
       ),
       description: Text(
-        user.permissions.canSeeClientCalls
+        user.hasPermission(Permission.canSeeClientCalls)
             ? context.msg.main.settings.list.calling.showClientCalls.description
             : context
                 .msg.main.settings.list.calling.showClientCalls.noPermission,
@@ -26,8 +28,9 @@ class ShowClientCallsTile extends StatelessWidget {
       child: BoolSettingValue(
         user.settings,
         AppSetting.showClientCalls,
-        onChanged:
-            user.permissions.canSeeClientCalls ? defaultOnSettingChanged : null,
+        onChanged: user.hasPermission(Permission.canSeeClientCalls)
+            ? defaultOnSettingChanged
+            : null,
       ),
     );
   }
