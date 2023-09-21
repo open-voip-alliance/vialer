@@ -15,7 +15,7 @@ import 'user_refresh_task_performer.dart';
 
 enum UserRefreshTask {
   userCore(null),
-  userVoipConfig(RefreshUserVoipConfig()),
+  appAccount(RefreshAppAccount()),
   userDestination(RefreshUserDestination()),
   userWebphoneAccount(RefreshUserWebphoneAccount()),
   userDndStatus(RefreshUserDndStatus()),

@@ -8,11 +8,11 @@ class UnregisterToVoipMiddlewareUseCase extends UseCase {
   late final _voipRepository = dependencyLocator<VoipRepository>();
   late final _getUser = GetLoggedInUserUseCase();
 
-  Future<void> call({AppAccount? userVoipConfig}) async {
+  Future<void> call({AppAccount? appAccount}) async {
     final user = _getUser();
 
-    if (userVoipConfig != null || user.isAllowedVoipCalling) {
-      await _voipRepository.unregister(userVoipConfig ?? user.appAccount);
+    if (appAccount != null || user.isAllowedVoipCalling) {
+      await _voipRepository.unregister(appAccount ?? user.appAccount);
     }
   }
 }

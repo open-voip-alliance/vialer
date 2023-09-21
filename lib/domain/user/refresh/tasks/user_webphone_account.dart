@@ -7,8 +7,8 @@ import '../../user.dart';
 class RefreshUserWebphoneAccount extends UserRefreshTaskPerformer {
   const RefreshUserWebphoneAccount();
 
-  UserVoipConfigRepository get _repository =>
-      dependencyLocator<UserVoipConfigRepository>();
+  AppAccountRepository get _repository =>
+      dependencyLocator<AppAccountRepository>();
 
   @override
   Future<UserMutator> performUserRefreshTask(User user) async {

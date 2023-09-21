@@ -174,8 +174,8 @@ Future<void> initializeDependencies({bool ui = true}) async {
       VoipRepository.new,
       dependsOn: [MiddlewareService, EnvRepository],
     )
-    ..registerSingletonWithDependencies<UserVoipConfigRepository>(
-      () => UserVoipConfigRepository(dependencyLocator<VoipgridService>()),
+    ..registerSingletonWithDependencies<AppAccountRepository>(
+      () => AppAccountRepository(dependencyLocator<VoipgridService>()),
       dependsOn: [StorageRepository],
     )
     ..registerSingleton<CountryRepository>(CountryRepository())

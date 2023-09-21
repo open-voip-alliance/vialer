@@ -31,7 +31,7 @@ class AppAccount with _$AppAccount {
 String _sipUserIdFromJson(dynamic json) =>
     json is String ? json : json?.toString() ?? '';
 
-extension NullableUserVoipConfig on AppAccount? {
+extension NullableAppAccount on AppAccount? {
   String get sipUserId => this?.sipUserId ?? '';
 
   String get password => this?.password ?? '';

@@ -4,8 +4,8 @@ import '../../../app/util/loggable.dart';
 import '../../voipgrid/user_voip_config.dart';
 import '../../voipgrid/voipgrid_service.dart';
 
-class UserVoipConfigRepository with Loggable {
-  UserVoipConfigRepository(this._service);
+class AppAccountRepository with Loggable {
+  AppAccountRepository(this._service);
   final VoipgridService _service;
 
   Future<AppAccount?> get() async {

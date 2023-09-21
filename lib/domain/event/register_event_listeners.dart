@@ -30,7 +30,7 @@ class RegisterDomainEventListenersUseCase extends UseCase with Loggable {
   final _logoutOnUnauthorizedResponse = LogoutOnUnauthorizedResponse();
   final _trackRateLimitedApiCalls = TrackRateLimitedApiCalls();
   final _refreshUser = RefreshUser();
-  final _handleUserVoipConfigChange = HandleUserVoipConfigChange();
+  final _handleAppAccountChange = HandleAppAccountChange();
   final _isOnboarded = IsOnboarded();
 
   void call() {
@@ -57,7 +57,7 @@ class RegisterDomainEventListenersUseCase extends UseCase with Loggable {
               _refreshUser(
                 tasksToPerform: [
                   UserRefreshTask.userDestination,
-                  UserRefreshTask.userVoipConfig,
+                  UserRefreshTask.appAccount,
                 ],
                 synchronized: false,
               ),
@@ -69,7 +69,7 @@ class RegisterDomainEventListenersUseCase extends UseCase with Loggable {
         (event) {
           if (!event.isFirstTime) {
             unawaited(
-              _handleUserVoipConfigChange(
+              _handleAppAccountChange(
                 previous: event.previous.appAccount,
                 current: event.current.appAccount,
               ),

@@ -7,7 +7,7 @@ import '../metrics/metrics.dart';
 import '../use_case.dart';
 import '../voipgrid/user_voip_config.dart';
 
-class HandleUserVoipConfigChange extends UseCase with Loggable {
+class HandleAppAccountChange extends UseCase with Loggable {
   late final _metrics = dependencyLocator<MetricsRepository>();
   late final _stopVoip = StopVoipUseCase();
   late final _startVoip = StartVoipUseCase();
@@ -78,7 +78,7 @@ class HandleUserVoipConfigChange extends UseCase with Loggable {
     required AppAccount appAccount,
   }) async {
     await _stopVoip();
-    return _unregisterFromMiddleware(userVoipConfig: appAccount);
+    return _unregisterFromMiddleware(appAccount: appAccount);
   }
 }
 

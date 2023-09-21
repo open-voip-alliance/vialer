@@ -7,11 +7,11 @@ import '../../../voipgrid/user_voip_config.dart';
 import '../../user.dart';
 import '../user_refresh_task_performer.dart';
 
-class RefreshUserVoipConfig extends UserRefreshTaskPerformer {
-  const RefreshUserVoipConfig();
+class RefreshAppAccount extends UserRefreshTaskPerformer {
+  const RefreshAppAccount();
 
-  UserVoipConfigRepository get _repository =>
-      dependencyLocator<UserVoipConfigRepository>();
+  AppAccountRepository get _repository =>
+      dependencyLocator<AppAccountRepository>();
 
   @override
   Future<UserMutator> performUserRefreshTask(User user) async {
