@@ -140,9 +140,10 @@ class _TemporaryRedirectPickerState extends State<TemporaryRedirectPicker> {
                           fontStyle: FontStyle.italic,
                         ),
                       ),
-                    )
+                    ),
                   ],
-            onChanged: _changeSelectedDestination,
+            onChanged:
+                _hasAvailableDestinations ? _changeSelectedDestination : null,
           ),
           if (!_hasAvailableDestinations) ...[
             const SizedBox(height: 8),
@@ -153,6 +154,7 @@ class _TemporaryRedirectPickerState extends State<TemporaryRedirectPicker> {
                     text: context.msg.main.temporaryRedirect.dropdown
                         .noVoicemails.hint.start,
                   ),
+                  TextSpan(text: ' '),
                   TextSpan(
                     text: context.msg.main.temporaryRedirect.dropdown
                         .noVoicemails.hint.link,
@@ -160,6 +162,7 @@ class _TemporaryRedirectPickerState extends State<TemporaryRedirectPicker> {
                         const TextStyle(decoration: TextDecoration.underline),
                     recognizer: TapGestureRecognizer()..onTap = _openPortal,
                   ),
+                  TextSpan(text: ' '),
                   TextSpan(
                     text: context.msg.main.temporaryRedirect.dropdown
                         .noVoicemails.hint.end,

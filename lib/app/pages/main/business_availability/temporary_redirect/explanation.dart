@@ -32,7 +32,7 @@ class TemporaryRedirectExplanation extends StatelessWidget {
                 fontStyle: FontStyle.italic,
               ),
             ),
-          if (currentDestination is Unknown) const TextSpan(text: ' '),
+          const TextSpan(text: ' '),
           TextSpan(
             text: context.msg.main.temporaryRedirect.explanation.end(
               endsAt.toTemporaryRedirectFormat(),
