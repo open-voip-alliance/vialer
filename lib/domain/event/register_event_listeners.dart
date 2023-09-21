@@ -70,8 +70,8 @@ class RegisterDomainEventListenersUseCase extends UseCase with Loggable {
           if (!event.isFirstTime) {
             unawaited(
               _handleUserVoipConfigChange(
-                previous: event.previous.voip,
-                current: event.current.voip,
+                previous: event.previous.appAccount,
+                current: event.current.appAccount,
               ),
             );
           }

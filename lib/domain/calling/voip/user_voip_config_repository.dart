@@ -8,7 +8,7 @@ class UserVoipConfigRepository with Loggable {
   UserVoipConfigRepository(this._service);
   final VoipgridService _service;
 
-  Future<UserVoipConfig?> get() async {
+  Future<AppAccount?> get() async {
     final response = await _service.getMobileProfile();
 
     // If we get a 404, there is no app account so we should return null
@@ -27,7 +27,7 @@ class UserVoipConfigRepository with Loggable {
       return null;
     }
 
-    return UserVoipConfig.serializeFromJson(body);
+    return AppAccount.serializeFromJson(body);
   }
 
   Future<String?> getSelectedWebphoneAccountId() async {

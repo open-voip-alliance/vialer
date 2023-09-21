@@ -22,7 +22,7 @@ class RefreshUserVoipConfig extends UserRefreshTaskPerformer {
     return (User user) => user.copyWith(voip: () => config);
   }
 
-  void _ensureAppAccountIsConfiguredCorrectly(UserVoipConfig? config) {
+  void _ensureAppAccountIsConfiguredCorrectly(AppAccount? config) {
     if (config == null) return;
 
     if (!config.useEncryption || !config.useOpus) {

@@ -110,7 +110,7 @@ class VoipRepository with Loggable {
     _startUpBrand = brand;
     _startUpBuildInfo = buildInfo;
 
-    final userConfig = user.voip!;
+    final userConfig = user.appAccount!;
 
     final preferences = _createPreferences(user);
 
@@ -194,7 +194,7 @@ class VoipRepository with Loggable {
   }
 
   Future<Auth> _createAuth(
-    UserVoipConfig userConfig,
+    AppAccount userConfig,
     ClientVoipConfig clientConfig,
   ) async =>
       Auth(
@@ -236,7 +236,7 @@ class VoipRepository with Loggable {
     }
   }
 
-  Future<void> register(UserVoipConfig? voipConfig) async {
+  Future<void> register(AppAccount? voipConfig) async {
     if (await _isLoggedInSomewhereElse()) {
       unawaited(unregister(voipConfig));
       logger.info('Registration cancelled: User has logged in elsewhere');
@@ -305,7 +305,7 @@ class VoipRepository with Loggable {
     }
   }
 
-  Future<void> unregister(UserVoipConfig? voipConfig) async {
+  Future<void> unregister(AppAccount? voipConfig) async {
     assert(voipConfig?.sipUserId != null, 'No sipUserId present');
 
     logger.info('Unregistering..');

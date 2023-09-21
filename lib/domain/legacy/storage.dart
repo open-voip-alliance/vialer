@@ -23,9 +23,9 @@ class StorageRepository {
 
   User? get user {
     final json = _preferences.getJson(
-          _userKey,
-          (j) => j! as Map<String, dynamic>,
-        );
+      _userKey,
+      (j) => j! as Map<String, dynamic>,
+    );
 
     if (json == null) return null;
 

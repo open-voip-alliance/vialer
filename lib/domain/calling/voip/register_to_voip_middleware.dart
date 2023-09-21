@@ -12,7 +12,7 @@ class RegisterToVoipMiddlewareUseCase extends UseCase {
 
   Future<void> call() async {
     if (_getHasVoipEnabled()) {
-      await _voipRepository.register(_getUser().voip);
+      await _voipRepository.register(_getUser().appAccount);
     }
   }
 }
