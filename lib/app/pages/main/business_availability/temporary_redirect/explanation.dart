@@ -8,10 +8,12 @@ class TemporaryRedirectExplanation extends StatelessWidget {
   const TemporaryRedirectExplanation({
     required this.currentDestination,
     required this.endsAt,
+    this.hasDestinations = true,
     super.key,
   });
   final TemporaryRedirectDestination? currentDestination;
   final DateTime? endsAt;
+  final bool hasDestinations;
 
   String _voicemailText(BuildContext context) =>
       currentDestination?.displayName ??
@@ -19,26 +21,29 @@ class TemporaryRedirectExplanation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text.rich(
-      TextSpan(
-        children: [
-          TextSpan(
-            text: context.msg.main.temporaryRedirect.explanation.start,
-          ),
-          if (currentDestination is Voicemail)
+    return Visibility(
+      visible: hasDestinations,
+      child: Text.rich(
+        TextSpan(
+          children: [
             TextSpan(
-              text: ' ${_voicemailText(context)} ',
-              style: const TextStyle(
-                fontStyle: FontStyle.italic,
+              text: context.msg.main.temporaryRedirect.explanation.start,
+            ),
+            if (currentDestination is Voicemail)
+              TextSpan(
+                text: ' ${_voicemailText(context)} ',
+                style: const TextStyle(
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+            const TextSpan(text: ' '),
+            TextSpan(
+              text: context.msg.main.temporaryRedirect.explanation.end(
+                endsAt.toTemporaryRedirectFormat(),
               ),
             ),
-          const TextSpan(text: ' '),
-          TextSpan(
-            text: context.msg.main.temporaryRedirect.explanation.end(
-              endsAt.toTemporaryRedirectFormat(),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
