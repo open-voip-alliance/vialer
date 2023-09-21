@@ -9,7 +9,12 @@ import '../../../../web_view/page.dart';
 import 'category/widget.dart';
 
 class FeatureAnnouncementTile extends StatelessWidget {
-  const FeatureAnnouncementTile({super.key});
+  const FeatureAnnouncementTile({
+    super.key,
+    required this.hasUnreadFeatureAnnouncements,
+  });
+
+  final bool hasUnreadFeatureAnnouncements;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +27,7 @@ class FeatureAnnouncementTile extends StatelessWidget {
       ),
       text: context.msg.main.settings.featureAnnouncement.title,
       icon: FontAwesomeIcons.bell,
-      showBadge: false,
+      showBadge: hasUnreadFeatureAnnouncements,
     );
   }
 }

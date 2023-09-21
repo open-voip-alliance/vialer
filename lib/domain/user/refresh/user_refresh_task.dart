@@ -1,4 +1,5 @@
 import 'package:vialer/domain/user/refresh/tasks/user_dnd_status.dart';
+import 'package:vialer/domain/user/refresh/tasks/user_has_feature_announcements.dart';
 import 'package:vialer/domain/user/refresh/tasks/user_webphone_account.dart';
 
 import 'tasks/client_available_outgoing_numbers.dart';
@@ -24,7 +25,8 @@ enum UserRefreshTask {
   clientVoicemailAccounts(RefreshClientVoicemailAccounts()),
   clientVoipConfig(RefreshClientVoipConfig()),
   clientTemporaryRedirect(RefreshClientTemporaryRedirect()),
-  clientOpeningHoursModules(RefreshClientOpeningHoursModules());
+  clientOpeningHoursModules(RefreshClientOpeningHoursModules()),
+  userHasFeatureAnnouncements(RefreshUserHasUnreadFeatureAnnouncements());
 
   const UserRefreshTask(this.performer);
 
@@ -43,5 +45,6 @@ enum UserRefreshTask {
         UserRefreshTask.voipgridUserSettings,
         UserRefreshTask.clientTemporaryRedirect,
         UserRefreshTask.userWebphoneAccount,
+        UserRefreshTask.userHasFeatureAnnouncements,
       ];
 }

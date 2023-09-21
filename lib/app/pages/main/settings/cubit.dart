@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dartx/dartx.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vialer/domain/user/settings/change_setting.dart';
+import 'package:vialer/domain/user/settings/app_setting.dart';
 
 import '../../../../dependency_locator.dart';
 import '../../../../domain/authentication/logout.dart';
@@ -101,6 +102,8 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
             isApplyingChanges: _isUpdatingRemote,
             isRateLimited: _isRateLimited,
             recentOutgoingNumbers: _storageRepository.recentOutgoingNumbers,
+            hasUnreadFeatureAnnouncements:
+                user!.settings.get(AppSetting.hasUnreadFeatureAnnouncements),
           ),
         );
       }(),
