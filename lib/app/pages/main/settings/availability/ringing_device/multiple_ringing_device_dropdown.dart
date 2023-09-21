@@ -54,6 +54,16 @@ class MultipleRingingDeviceDropdown extends StatelessWidget {
           ? user.currentDestination.toDestinationObject()
           : null;
 
+  _MultipleRingingDeviceVisibility get _visibility {
+    if (loading) return _MultipleRingingDeviceVisibility.loading;
+
+    if (!_shouldShowDestinations) {
+      return _MultipleRingingDeviceVisibility.offline;
+    }
+
+    return _MultipleRingingDeviceVisibility.visible;
+  }
+
   @override
   Widget build(BuildContext context) {
     final relevantDestinations = _relevantDestinations;
@@ -62,50 +72,92 @@ class MultipleRingingDeviceDropdown extends StatelessWidget {
       visible: relevantDestinations.isNotEmpty,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 12),
-        child: !loading
-            ? (_shouldShowDestinations
-                ? StylizedDropdown<Destination>(
-                    value:
-                        _currentDestination ?? relevantDestinations.firstOrNull,
-                    items: relevantDestinations
-                        .map(
-                          (destination) => DropdownMenuItem<Destination>(
-                            value: destination,
-                            child: Opacity(
-                              opacity: destination.isOnline ? 1 : 0.5,
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  FittedBox(
-                                    fit: BoxFit.scaleDown,
-                                    child: Text(
-                                      destination.dropdownValue(context),
-                                    ),
-                                  ),
-                                  if (!destination.isOnline)
-                                    FaIcon(
-                                      FontAwesomeIcons.solidTriangleExclamation,
-                                      size: 16,
-                                      color: context.brand.theme.colors.red1,
-                                    ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        )
-                        .toList(),
-                    isExpanded: true,
-                    showIcon: relevantDestinations.length >= 2,
-                    onChanged: enabled && _relevantDestinations.length >= 2
-                        ? (destination) =>
-                            destination != null && destination.isOnline
-                                ? onDestinationChanged(destination)
-                                : () {}
-                        : null,
-                  )
-                : _OfflineDropdown())
-            : _LoadingDropdown(),
+        child: switch (_visibility) {
+          _MultipleRingingDeviceVisibility.loading => _LoadingDropdown(),
+          _MultipleRingingDeviceVisibility.offline => _OfflineDropdown(),
+          _MultipleRingingDeviceVisibility.visible => _DestinationDropdown(
+              currentDestination: _currentDestination,
+              relevantDestinations: relevantDestinations,
+              enabled: enabled,
+              onDestinationChanged: onDestinationChanged,
+            ),
+        },
+      ),
+    );
+  }
+}
+
+class _DestinationDropdown extends StatelessWidget {
+  const _DestinationDropdown({
+    required Destination? this.currentDestination,
+    required this.relevantDestinations,
+    required this.enabled,
+    required this.onDestinationChanged,
+  });
+
+  final Destination? currentDestination;
+  final List<Destination> relevantDestinations;
+  final bool enabled;
+  final DestinationChangedCallback onDestinationChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return StylizedDropdown<Destination>(
+      value: currentDestination ?? relevantDestinations.firstOrNull,
+      items: relevantDestinations
+          .map(
+            (destination) => DropdownMenuItem<Destination>(
+              value: destination,
+              child: _DestinationDropdownItem(destination),
+              enabled: destination.isOnline,
+            ),
+          )
+          .toList(),
+      isExpanded: true,
+      showIcon: relevantDestinations.length >= 2,
+      onChanged: enabled && relevantDestinations.length >= 2
+          ? (destination) => destination != null && destination.isOnline
+              ? onDestinationChanged(destination)
+              : () {}
+          : null,
+    );
+  }
+}
+
+enum _MultipleRingingDeviceVisibility {
+  loading,
+  offline,
+  visible,
+}
+
+class _DestinationDropdownItem extends StatelessWidget {
+  const _DestinationDropdownItem(this.destination);
+
+  final Destination destination;
+
+  @override
+  Widget build(BuildContext context) {
+    return Opacity(
+      opacity: destination.isOnline ? 1 : 0.5,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          if (!destination.isOnline)
+            Container(
+              width: 28,
+              child: FaIcon(
+                FontAwesomeIcons.solidTriangleExclamation,
+                size: 16,
+                color: context.brand.theme.colors.red1,
+              ),
+            ),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              destination.dropdownValue(context),
+            ),
+          ),
+        ],
       ),
     );
   }
