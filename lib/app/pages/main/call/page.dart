@@ -172,9 +172,11 @@ class _CallPageState extends State<_CallPage>
       _dismissScreenTimer?.cancel();
     }
 
-    if (state is Calling || state is FinishedCalling) {
+    final isInBadQualityCall = cubit.processState.isInBadQualityCall;
+
+    if (!isInBadQualityCall || state is FinishedCalling) {
       _hideSnackBar(context);
-    } else if (state is CallingWithLowMos) {
+    } else if (state is Calling && isInBadQualityCall) {
       _showSnackBarForLowMos(context);
       _metrics.track('ongoing-call-connectivity-warning-shown', {
         'call-id': state.voipCall?.callId,

@@ -143,11 +143,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
             direction: CallDirection.inbound,
           );
 
-          if (processState.isInBadQualityCall) {
-            emit(CallingWithLowMos(origin: CallOrigin.incoming, voip: voip));
-          } else {
-            emit(Calling(origin: CallOrigin.incoming, voip: voip));
-          }
+          emit(Calling(origin: CallOrigin.incoming, voip: voip));
         }
       }
     } on VoipNotAllowedException {
@@ -273,11 +269,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
         logger.info('Starting call-through call');
         await _call(destination: destination, useVoip: false);
 
-        if (processState.isInBadQualityCall) {
-          emit(processState.callingWithLowMos());
-        } else {
-          emit(processState.calling());
-        }
+        emit(processState.calling());
       } on CallThroughException catch (e) {
         emit(processState.failed(e));
       }
@@ -372,21 +364,13 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
 
     if (event is CallConnected) {
       _preservedCallSessionState = _PreservedCallSessionState();
-      if (state.isInBadQualityCall) {
-        emit(state.callingWithLowMos(voip: callSessionState));
-      } else {
-        emit(state.calling(voip: callSessionState));
-      }
+      emit(state.calling(voip: callSessionState));
       logger.info('VoIP call connected');
     } else if (event is AttendedTransferStarted) {
       emit(state.transferStarted(voip: callSessionState));
       logger.info('VoIP attended transfer started');
     } else if (event is AttendedTransferAborted) {
-      if (state.isInBadQualityCall) {
-        emit(state.callingWithLowMos(voip: callSessionState));
-      } else {
-        emit(state.calling(voip: callSessionState));
-      }
+      emit(state.calling(voip: callSessionState));
       logger.info('VoIP attended transfer aborted');
     } else if (event is AttendedTransferEnded) {
       emit(state.transferComplete(voip: callSessionState));
@@ -456,11 +440,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
     final origin =
         state is CallOriginDetermined ? state.origin : CallOrigin.unknown;
 
-    if (processState.isInBadQualityCall) {
-      emit(CallingWithLowMos(origin: origin, voip: callSessionState));
-    } else {
-      emit(Calling(origin: origin, voip: callSessionState));
-    }
+    emit(Calling(origin: origin, voip: callSessionState));
 
     logger.info('VoIP call connected (recovered)');
   }
@@ -564,9 +544,6 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
     }
 
     if (state is Calling) {
-      emit(state.finished());
-      logger.info('Call-through call ended');
-    } else if (state is CallingWithLowMos) {
       emit(state.finished());
       logger.info('Call-through call ended');
     } else if (state is! NoPermission) {

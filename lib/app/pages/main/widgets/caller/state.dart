@@ -115,12 +115,6 @@ abstract class CallProcessState extends CallOriginDetermined {
         voip: voip ?? this.voip,
       );
 
-  CallingWithLowMos callingWithLowMos({CallSessionState? voip}) =>
-      CallingWithLowMos(
-        origin: origin,
-        voip: voip ?? this.voip,
-      );
-
   FinishedCalling finished({CallSessionState? voip}) => FinishedCalling(
         origin: origin,
         voip: voip ?? this.voip,
@@ -287,23 +281,6 @@ class Calling extends CallProcessState {
     CallSessionState? voip,
   }) =>
       Calling(
-        origin: origin ?? this.origin,
-        voip: voip ?? this.voip,
-      );
-}
-
-class CallingWithLowMos extends CallProcessState {
-  const CallingWithLowMos({
-    required super.origin,
-    required super.voip,
-  });
-
-  @override
-  CallingWithLowMos copyWith({
-    CallOrigin? origin,
-    CallSessionState? voip,
-  }) =>
-      CallingWithLowMos(
         origin: origin ?? this.origin,
         voip: voip ?? this.voip,
       );
