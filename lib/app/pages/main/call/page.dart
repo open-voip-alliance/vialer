@@ -6,11 +6,15 @@ import 'package:flutter/semantics.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_phone_lib/flutter_phone_lib.dart'
     hide AttendedTransferStarted;
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../../../dependency_locator.dart';
 import '../../../../domain/feedback/call_problem.dart';
+import '../../../../domain/metrics/metrics.dart';
 import '../../../resources/localizations.dart';
 import '../../../resources/theme.dart';
 import '../../../util/widgets_binding_observer_registrar.dart';
+import '../util/stylized_snack_bar.dart';
 import '../widgets/caller.dart';
 import '../widgets/nested_navigator.dart';
 import 'call_feedback/call_feedback.dart';
@@ -92,6 +96,8 @@ class _CallPageState extends State<_CallPage>
   // we will store this timer so we can cancel it if another call is started.
   Timer? _dismissScreenTimer;
 
+  late final _metrics = dependencyLocator<MetricsRepository>();
+
   @override
   void initState() {
     super.initState();
@@ -142,8 +148,6 @@ class _CallPageState extends State<_CallPage>
     _dismissScreenTimer = Timer(after, dismiss);
   }
 
-  // Only called when the state type has changed, not when a state with the same
-  // type but different call information has been emitted.
   Future<void> _onStateChanged(BuildContext context, CallerState state) async {
     final cubit = context.read<CallerCubit>();
 
@@ -166,6 +170,19 @@ class _CallPageState extends State<_CallPage>
       // dismiss timer so we don't hide the screen with an active call. This
       // might occur if a new call is started quickly after the last one.
       _dismissScreenTimer?.cancel();
+    }
+
+    final isInBadQualityCall = cubit.processState.isInBadQualityCall;
+
+    if (!isInBadQualityCall || state is FinishedCalling) {
+      _hideSnackBar(context);
+    } else if (state is Calling && isInBadQualityCall) {
+      _showSnackBarForLowMos(context);
+      _metrics.track('ongoing-call-connectivity-warning-shown', {
+        'call-id': state.voipCall?.callId,
+        'mos': state.voipCall?.mos,
+        'currentMos': state.voipCall?.currentMos,
+      });
     }
   }
 
@@ -218,12 +235,24 @@ class _CallPageState extends State<_CallPage>
     unawaited(Navigator.pushNamed(context, _transferRoute));
   }
 
+  void _showSnackBarForLowMos(BuildContext context) {
+    showSnackBar(
+      context,
+      duration: const Duration(days: 365),
+      icon: const FaIcon(FontAwesomeIcons.exclamation),
+      label: Text(context.msg.main.call.ongoing.connectionWarning.title),
+      padding: const EdgeInsets.only(right: 72),
+    );
+  }
+
+  void _hideSnackBar(BuildContext context) {
+    ScaffoldMessenger.of(context).clearSnackBars();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: BlocListener<CallerCubit, CallerState>(
-        listenWhen: (previous, current) =>
-            previous.runtimeType != current.runtimeType,
         listener: _onStateChanged,
         child: CallProcessStateBuilder(
           builder: (context, state) {
