@@ -48,7 +48,7 @@ import UserNotifications
             registerPlugins,
             nativeMiddleware: middleware,
             onCallEnded: { (call) in
-                self.segment?.track(event: "voip-call-ended", properties: [
+                self.segment?.track(event: "phone-lib-voip-call-ended", properties: [
                     "call_id" : middleware.currentCallInfo?.callId ?? "",
                     "correlation_id" : middleware.currentCallInfo?.correlationId ?? "",
                     "push_received_time" : middleware.currentCallInfo?.pushReceivedTime ?? "",
