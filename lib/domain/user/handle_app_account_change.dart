@@ -2,16 +2,16 @@ import '../../app/util/loggable.dart';
 import '../../dependency_locator.dart';
 import '../calling/voip/start_voip.dart';
 import '../calling/voip/stop_voip.dart';
-import '../calling/voip/unregister_to_voip_middleware.dart';
+import '../calling/voip/unregister_to_middleware.dart';
 import '../metrics/metrics.dart';
 import '../use_case.dart';
-import '../voipgrid/user_voip_config.dart';
+import '../voipgrid/app_account.dart';
 
 class HandleAppAccountChange extends UseCase with Loggable {
   late final _metrics = dependencyLocator<MetricsRepository>();
   late final _stopVoip = StopVoipUseCase();
   late final _startVoip = StartVoipUseCase();
-  late final _unregisterFromMiddleware = UnregisterToVoipMiddlewareUseCase();
+  late final _unregisterFromMiddleware = UnregisterToMiddlewareUseCase();
 
   Future<void> call({
     required AppAccount? previous,

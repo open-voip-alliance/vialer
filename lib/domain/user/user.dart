@@ -8,7 +8,7 @@ import 'package:vialer/domain/user/refresh/tasks/voipgrid_user_permissions.dart'
 
 import '../../app/util/nullable_copy_with_argument.dart';
 import '../voipgrid/user_permissions.dart';
-import '../voipgrid/user_voip_config.dart';
+import '../voipgrid/app_account.dart';
 import 'client.dart';
 import 'settings/settings.dart';
 
@@ -67,7 +67,7 @@ class User with _$User {
     String? token,
     Uri? appAccountUrl,
     Client? client,
-    NullableCopyWithArgument<AppAccount> voip,
+    NullableCopyWithArgument<AppAccount> appAccount,
     Settings? settings,
     Permissions? permissions,
     NullableCopyWithArgument<String> webphoneAccountId,
@@ -81,7 +81,7 @@ class User with _$User {
       token: token ?? this.token,
       appAccountUrl: appAccountUrl ?? this.appAccountUrl,
       client: client ?? this.client,
-      appAccount: voip.valueOrNull(unmodified: this.appAccount),
+      appAccount: appAccount.valueOrNull(unmodified: this.appAccount),
       permissions: permissions ?? this.permissions,
       webphoneAccountId: webphoneAccountId.valueOrNull(
         unmodified: this.webphoneAccountId,
@@ -99,8 +99,9 @@ class User with _$User {
       token: user.token,
       appAccountUrl: user.appAccountUrl,
       client: user.client,
-      voip: () => user.appAccount,
+      appAccount: () => user.appAccount,
       permissions: user.permissions,
+      webphoneAccountId: () => user.webphoneAccountId,
     );
   }
 }

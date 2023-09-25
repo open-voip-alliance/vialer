@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import '../../../app/util/loggable.dart';
-import '../../voipgrid/user_voip_config.dart';
+import '../../voipgrid/app_account.dart';
 import '../../voipgrid/voipgrid_service.dart';
 
 class AppAccountRepository with Loggable {
@@ -16,13 +16,13 @@ class AppAccountRepository with Loggable {
     if (response.statusCode == 404) return null;
 
     if (!response.isSuccessful) {
-      logFailedResponse(response, name: 'Fetch VoipConfig');
+      logFailedResponse(response, name: 'Fetch AppAccount');
       throw RequestException(response.statusCode);
     }
 
     final body = response.body!;
 
-    if (!body.hasVoipConfig) {
+    if (!body.hasAppAccount) {
       logger.info('This user does not have an app account configured.');
       return null;
     }
@@ -47,7 +47,7 @@ class AppAccountRepository with Loggable {
 }
 
 extension on Map<String, dynamic> {
-  bool get hasVoipConfig => this['appaccount_account_id'] != null;
+  bool get hasAppAccount => this['appaccount_account_id'] != null;
 }
 
 class RequestException implements Exception {

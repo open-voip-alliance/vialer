@@ -11,7 +11,7 @@ import '../onboarding/is_onboarded.dart';
 import '../use_case.dart';
 import '../user/events/logged_in_user_availability_changed.dart';
 import '../user/events/logged_in_user_was_refreshed.dart';
-import '../user/handle_user_voip_config_change.dart';
+import '../user/handle_app_account_change.dart';
 import '../user/refresh/refresh_user.dart';
 import '../user/refresh/user_refresh_task.dart';
 import '../user/settings/app_setting.dart';

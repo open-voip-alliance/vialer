@@ -4,7 +4,7 @@ import '../../user/get_logged_in_user.dart';
 import 'get_has_voip_enabled.dart';
 import 'voip.dart';
 
-class RegisterToVoipMiddlewareUseCase extends UseCase {
+class RegisterToMiddlewareUseCase extends UseCase {
   final _voipRepository = dependencyLocator<VoipRepository>();
 
   final _getHasVoipEnabled = GetHasVoipEnabledUseCase();

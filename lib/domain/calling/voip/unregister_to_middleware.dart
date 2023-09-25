@@ -1,10 +1,10 @@
 import '../../../dependency_locator.dart';
 import '../../use_case.dart';
 import '../../user/get_logged_in_user.dart';
-import '../../voipgrid/user_voip_config.dart';
+import '../../voipgrid/app_account.dart';
 import 'voip.dart';
 
-class UnregisterToVoipMiddlewareUseCase extends UseCase {
+class UnregisterToMiddlewareUseCase extends UseCase {
   late final _voipRepository = dependencyLocator<VoipRepository>();
   late final _getUser = GetLoggedInUserUseCase();
 

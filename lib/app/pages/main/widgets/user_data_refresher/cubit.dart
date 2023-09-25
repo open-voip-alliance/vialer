@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../dependency_locator.dart';
 import '../../../../../domain/authentication/get_is_logged_in_somewhere_else.dart';
 import '../../../../../domain/authentication/logout.dart';
-import '../../../../../domain/calling/voip/register_to_voip_middleware.dart';
+import '../../../../../domain/calling/voip/register_to_middleware.dart';
 import '../../../../../domain/legacy/storage.dart';
 import '../../../../../domain/onboarding/is_onboarded.dart';
 import '../../../../../domain/user/get_logged_in_user.dart';
@@ -23,7 +23,7 @@ class UserDataRefresherCubit extends Cubit<UserDataRefresherState>
   late final _storageRepository = dependencyLocator<StorageRepository>();
   final _getLoggedInUser = GetLoggedInUserUseCase();
   final _refreshUser = RefreshUser();
-  final _registerToVoipMiddleware = RegisterToVoipMiddlewareUseCase();
+  final _registerToVoipMiddleware = RegisterToMiddlewareUseCase();
   final _isLoggedInSomewhereElse = GetIsLoggedInSomewhereElseUseCase();
   final _logout = Logout();
 

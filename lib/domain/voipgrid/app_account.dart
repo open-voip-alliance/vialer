@@ -1,7 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'user_voip_config.freezed.dart';
-part 'user_voip_config.g.dart';
+part 'app_account.freezed.dart';
+part 'app_account.g.dart';
 
 @freezed
 class AppAccount with _$AppAccount {
