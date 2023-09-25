@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import '../../../../app/util/loggable.dart';
-import '../../../calling/voip/register_to_voip_middleware.dart';
+import '../../../calling/voip/register_to_middleware.dart';
 import '../../../calling/voip/start_voip.dart';
 import '../../../user/user.dart';
 import '../call_setting.dart';
@@ -9,7 +9,7 @@ import 'setting_change_listener.dart';
 
 class StartVoipOnUseVoipEnabledListener extends SettingChangeListener<bool>
     with Loggable {
-  final _registerToVoipMiddleware = RegisterToVoipMiddlewareUseCase();
+  final _registerToVoipMiddleware = RegisterToMiddlewareUseCase();
   final _startVoip = StartVoipUseCase();
 
   @override

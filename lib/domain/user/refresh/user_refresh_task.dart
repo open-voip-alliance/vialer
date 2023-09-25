@@ -8,14 +8,14 @@ import 'tasks/client_temporary_redirect.dart';
 import 'tasks/client_voicemail_accounts.dart';
 import 'tasks/client_voip_config.dart';
 import 'tasks/user_destination.dart';
-import 'tasks/user_voip_config.dart';
+import 'tasks/app_account.dart';
 import 'tasks/voipgrid_user_permissions.dart';
 import 'tasks/voipgrid_user_settings.dart';
 import 'user_refresh_task_performer.dart';
 
 enum UserRefreshTask {
   userCore(null),
-  userVoipConfig(RefreshUserVoipConfig()),
+  appAccount(RefreshAppAccount()),
   userDestination(RefreshUserDestination()),
   userWebphoneAccount(RefreshUserWebphoneAccount()),
   userDndStatus(RefreshUserDndStatus()),
