@@ -268,6 +268,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
         emit(StartingCall(origin: origin));
         logger.info('Starting call-through call');
         await _call(destination: destination, useVoip: false);
+
         emit(processState.calling());
       } on CallThroughException catch (e) {
         emit(processState.failed(e));
