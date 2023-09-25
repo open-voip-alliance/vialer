@@ -1,37 +1,37 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'user_voip_config.freezed.dart';
-part 'user_voip_config.g.dart';
+part 'app_account.freezed.dart';
+part 'app_account.g.dart';
 
 @freezed
-class UserVoipConfig with _$UserVoipConfig {
-  const factory UserVoipConfig({
+class AppAccount with _$AppAccount {
+  const factory AppAccount({
     @JsonKey(name: 'appaccount_account_id', fromJson: _sipUserIdFromJson)
     required String sipUserId,
     @JsonKey(name: 'appaccount_password') required String password,
     @JsonKey(name: 'appaccount_use_encryption') required bool useEncryption,
     @JsonKey(name: 'appaccount_use_opus') required bool useOpus,
-  }) = _UserVoipConfig;
+  }) = _AppAccount;
 
-  factory UserVoipConfig.fromJson(Map<String, dynamic> json) =>
-      _$UserVoipConfigFromJson(json);
+  factory AppAccount.fromJson(Map<String, dynamic> json) =>
+      _$AppAccountFromJson(json);
 
-  static UserVoipConfig? serializeFromJson(Map<String, dynamic>? json) {
+  static AppAccount? serializeFromJson(Map<String, dynamic>? json) {
     if (json == null) return null;
 
     if (json['appaccount_password'] == null) return null;
 
-    return _$UserVoipConfigFromJson(json);
+    return _$AppAccountFromJson(json);
   }
 
-  static Map<String, dynamic>? serializeToJson(UserVoipConfig? config) =>
+  static Map<String, dynamic>? serializeToJson(AppAccount? config) =>
       config?.toJson();
 }
 
 String _sipUserIdFromJson(dynamic json) =>
     json is String ? json : json?.toString() ?? '';
 
-extension NullableUserVoipConfig on UserVoipConfig? {
+extension NullableAppAccount on AppAccount? {
   String get sipUserId => this?.sipUserId ?? '';
 
   String get password => this?.password ?? '';

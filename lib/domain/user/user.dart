@@ -8,7 +8,7 @@ import 'package:vialer/domain/user/refresh/tasks/voipgrid_user_permissions.dart'
 
 import '../../app/util/nullable_copy_with_argument.dart';
 import '../voipgrid/user_permissions.dart';
-import '../voipgrid/user_voip_config.dart';
+import '../voipgrid/app_account.dart';
 import 'client.dart';
 import 'settings/settings.dart';
 
@@ -31,10 +31,11 @@ class User with _$User {
     @JsonKey(toJson: Client.toJson, fromJson: Client.fromJson)
     required Client client,
     @JsonKey(
-      toJson: UserVoipConfig.serializeToJson,
-      fromJson: UserVoipConfig.serializeFromJson,
+      name: 'voip',
+      toJson: AppAccount.serializeToJson,
+      fromJson: AppAccount.serializeFromJson,
     )
-    UserVoipConfig? voip,
+    AppAccount? appAccount,
     @Default({}) Permissions permissions,
   }) = _User;
 
@@ -47,7 +48,7 @@ class User with _$User {
   // A user must have voip config to be able to call, if they don't then this
   // suggests that there is no app account configured.
   bool get isAllowedVoipCalling =>
-      voip != null && voip.sipUserId.isNotNullOrBlank;
+      appAccount != null && appAccount.sipUserId.isNotNullOrBlank;
 
   String? get appAccountId => appAccountUrl?.pathSegments.lastOrNullWhere(
         (p) => p.isNotEmpty,
@@ -66,7 +67,7 @@ class User with _$User {
     String? token,
     Uri? appAccountUrl,
     Client? client,
-    NullableCopyWithArgument<UserVoipConfig> voip,
+    NullableCopyWithArgument<AppAccount> appAccount,
     Settings? settings,
     Permissions? permissions,
     NullableCopyWithArgument<String> webphoneAccountId,
@@ -80,7 +81,7 @@ class User with _$User {
       token: token ?? this.token,
       appAccountUrl: appAccountUrl ?? this.appAccountUrl,
       client: client ?? this.client,
-      voip: voip.valueOrNull(unmodified: this.voip),
+      appAccount: appAccount.valueOrNull(unmodified: this.appAccount),
       permissions: permissions ?? this.permissions,
       webphoneAccountId: webphoneAccountId.valueOrNull(
         unmodified: this.webphoneAccountId,
@@ -98,8 +99,9 @@ class User with _$User {
       token: user.token,
       appAccountUrl: user.appAccountUrl,
       client: user.client,
-      voip: () => user.voip,
+      appAccount: () => user.appAccount,
       permissions: user.permissions,
+      webphoneAccountId: () => user.webphoneAccountId,
     );
   }
 }

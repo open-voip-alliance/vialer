@@ -1,14 +1,14 @@
 import 'package:vialer/domain/user/refresh/user_refresh_task_performer.dart';
 
 import '../../../../dependency_locator.dart';
-import '../../../calling/voip/user_voip_config_repository.dart';
+import '../../../calling/voip/app_account_repository.dart';
 import '../../user.dart';
 
 class RefreshUserWebphoneAccount extends UserRefreshTaskPerformer {
   const RefreshUserWebphoneAccount();
 
-  UserVoipConfigRepository get _repository =>
-      dependencyLocator<UserVoipConfigRepository>();
+  AppAccountRepository get _repository =>
+      dependencyLocator<AppAccountRepository>();
 
   @override
   Future<UserMutator> performUserRefreshTask(User user) async {

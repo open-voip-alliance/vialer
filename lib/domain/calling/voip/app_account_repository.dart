@@ -1,14 +1,14 @@
 import 'dart:async';
 
 import '../../../app/util/loggable.dart';
-import '../../voipgrid/user_voip_config.dart';
+import '../../voipgrid/app_account.dart';
 import '../../voipgrid/voipgrid_service.dart';
 
-class UserVoipConfigRepository with Loggable {
-  UserVoipConfigRepository(this._service);
+class AppAccountRepository with Loggable {
+  AppAccountRepository(this._service);
   final VoipgridService _service;
 
-  Future<UserVoipConfig?> get() async {
+  Future<AppAccount?> get() async {
     final response = await _service.getMobileProfile();
 
     // If we get a 404, there is no app account so we should return null
@@ -16,18 +16,18 @@ class UserVoipConfigRepository with Loggable {
     if (response.statusCode == 404) return null;
 
     if (!response.isSuccessful) {
-      logFailedResponse(response, name: 'Fetch VoipConfig');
+      logFailedResponse(response, name: 'Fetch AppAccount');
       throw RequestException(response.statusCode);
     }
 
     final body = response.body!;
 
-    if (!body.hasVoipConfig) {
+    if (!body.hasAppAccount) {
       logger.info('This user does not have an app account configured.');
       return null;
     }
 
-    return UserVoipConfig.serializeFromJson(body);
+    return AppAccount.serializeFromJson(body);
   }
 
   Future<String?> getSelectedWebphoneAccountId() async {
@@ -47,7 +47,7 @@ class UserVoipConfigRepository with Loggable {
 }
 
 extension on Map<String, dynamic> {
-  bool get hasVoipConfig => this['appaccount_account_id'] != null;
+  bool get hasAppAccount => this['appaccount_account_id'] != null;
 }
 
 class RequestException implements Exception {

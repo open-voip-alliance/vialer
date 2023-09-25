@@ -21,7 +21,7 @@ import 'domain/calling/middleware/middleware_service.dart';
 import 'domain/calling/outgoing_number/outgoing_numbers.dart';
 import 'domain/calling/voip/client_voip_config_repository.dart';
 import 'domain/calling/voip/destination_repository.dart';
-import 'domain/calling/voip/user_voip_config_repository.dart';
+import 'domain/calling/voip/app_account_repository.dart';
 import 'domain/calling/voip/voip.dart';
 import 'domain/colltacts/contact_populator.dart';
 import 'domain/colltacts/contact_repository.dart';
@@ -174,8 +174,8 @@ Future<void> initializeDependencies({bool ui = true}) async {
       VoipRepository.new,
       dependsOn: [MiddlewareService, EnvRepository],
     )
-    ..registerSingletonWithDependencies<UserVoipConfigRepository>(
-      () => UserVoipConfigRepository(dependencyLocator<VoipgridService>()),
+    ..registerSingletonWithDependencies<AppAccountRepository>(
+      () => AppAccountRepository(dependencyLocator<VoipgridService>()),
       dependsOn: [StorageRepository],
     )
     ..registerSingleton<CountryRepository>(CountryRepository())

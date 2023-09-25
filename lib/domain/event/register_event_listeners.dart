@@ -11,7 +11,7 @@ import '../onboarding/is_onboarded.dart';
 import '../use_case.dart';
 import '../user/events/logged_in_user_availability_changed.dart';
 import '../user/events/logged_in_user_was_refreshed.dart';
-import '../user/handle_user_voip_config_change.dart';
+import '../user/handle_app_account_change.dart';
 import '../user/refresh/refresh_user.dart';
 import '../user/refresh/user_refresh_task.dart';
 import '../user/settings/app_setting.dart';
@@ -30,7 +30,7 @@ class RegisterDomainEventListenersUseCase extends UseCase with Loggable {
   final _logoutOnUnauthorizedResponse = LogoutOnUnauthorizedResponse();
   final _trackRateLimitedApiCalls = TrackRateLimitedApiCalls();
   final _refreshUser = RefreshUser();
-  final _handleUserVoipConfigChange = HandleUserVoipConfigChange();
+  final _handleAppAccountChange = HandleAppAccountChange();
   final _isOnboarded = IsOnboarded();
 
   void call() {
@@ -57,7 +57,7 @@ class RegisterDomainEventListenersUseCase extends UseCase with Loggable {
               _refreshUser(
                 tasksToPerform: [
                   UserRefreshTask.userDestination,
-                  UserRefreshTask.userVoipConfig,
+                  UserRefreshTask.appAccount,
                 ],
                 synchronized: false,
               ),
@@ -69,9 +69,9 @@ class RegisterDomainEventListenersUseCase extends UseCase with Loggable {
         (event) {
           if (!event.isFirstTime) {
             unawaited(
-              _handleUserVoipConfigChange(
-                previous: event.previous.voip,
-                current: event.current.voip,
+              _handleAppAccountChange(
+                previous: event.previous.appAccount,
+                current: event.current.appAccount,
               ),
             );
           }

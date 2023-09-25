@@ -66,7 +66,7 @@ class RefreshUser extends UseCase with Loggable {
       user = user.copyWith(
         permissions: storedUser?.permissions,
         client: storedUser?.client,
-        voip: () => storedUser?.voip,
+        appAccount: () => storedUser?.appAccount,
       );
 
       final isFirstTime = storedUser == null;
