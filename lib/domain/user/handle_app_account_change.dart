@@ -2,20 +2,20 @@ import '../../app/util/loggable.dart';
 import '../../dependency_locator.dart';
 import '../calling/voip/start_voip.dart';
 import '../calling/voip/stop_voip.dart';
-import '../calling/voip/unregister_to_voip_middleware.dart';
+import '../calling/voip/unregister_to_middleware.dart';
 import '../metrics/metrics.dart';
 import '../use_case.dart';
-import '../voipgrid/user_voip_config.dart';
+import '../voipgrid/app_account.dart';
 
-class HandleUserVoipConfigChange extends UseCase with Loggable {
+class HandleAppAccountChange extends UseCase with Loggable {
   late final _metrics = dependencyLocator<MetricsRepository>();
   late final _stopVoip = StopVoipUseCase();
   late final _startVoip = StartVoipUseCase();
-  late final _unregisterFromMiddleware = UnregisterToVoipMiddlewareUseCase();
+  late final _unregisterFromMiddleware = UnregisterToMiddlewareUseCase();
 
   Future<void> call({
-    required UserVoipConfig? previous,
-    required UserVoipConfig? current,
+    required AppAccount? previous,
+    required AppAccount? current,
   }) async {
     if (previous == current) return;
 
@@ -28,7 +28,7 @@ class HandleUserVoipConfigChange extends UseCase with Loggable {
     }
   }
 
-  Future<void> _handleAppAccountAdded(UserVoipConfig current) {
+  Future<void> _handleAppAccountAdded(AppAccount current) {
     logger.info(
       'App account [${current.sipUserId}] has been added to this user and they '
       'will now be able to make calls',
@@ -37,7 +37,7 @@ class HandleUserVoipConfigChange extends UseCase with Loggable {
     return _startVoip();
   }
 
-  Future<void> _handleAppAccountRemoved(UserVoipConfig previous) {
+  Future<void> _handleAppAccountRemoved(AppAccount previous) {
     logger.info(
       'App account [${previous.sipUserId}] has been removed from this user and '
       'they will no longer be able to make calls',
@@ -47,8 +47,8 @@ class HandleUserVoipConfigChange extends UseCase with Loggable {
   }
 
   Future<void> _handleAppAccountChanged(
-    UserVoipConfig previous,
-    UserVoipConfig current,
+    AppAccount previous,
+    AppAccount current,
   ) async {
     // We don't care if only basic parameters have been changed for the app
     // account (such as codecs) as the app will fix these automatically.
@@ -75,14 +75,14 @@ class HandleUserVoipConfigChange extends UseCase with Loggable {
   /// that we can ensure the previous, removed app account is fully unregistered
   /// and will no longer receive calls.
   Future<void> _stopVoipAndUnregister({
-    required UserVoipConfig appAccount,
+    required AppAccount appAccount,
   }) async {
     await _stopVoip();
-    return _unregisterFromMiddleware(userVoipConfig: appAccount);
+    return _unregisterFromMiddleware(appAccount: appAccount);
   }
 }
 
-extension on UserVoipConfig {
-  bool haveVoipCredentialsChanged(UserVoipConfig other) =>
+extension on AppAccount {
+  bool haveVoipCredentialsChanged(AppAccount other) =>
       sipUserId != other.sipUserId || password != other.password;
 }

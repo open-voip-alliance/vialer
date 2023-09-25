@@ -18,7 +18,7 @@ import '../../user/settings/app_setting.dart';
 import '../../user/settings/call_setting.dart';
 import '../../user/user.dart';
 import '../../voipgrid/client_voip_config.dart';
-import '../../voipgrid/user_voip_config.dart';
+import '../../voipgrid/app_account.dart';
 import '../middleware/middleware_service.dart';
 
 class VoipRepository with Loggable {
@@ -110,7 +110,7 @@ class VoipRepository with Loggable {
     _startUpBrand = brand;
     _startUpBuildInfo = buildInfo;
 
-    final userConfig = user.voip!;
+    final userConfig = user.appAccount!;
 
     final preferences = _createPreferences(user);
 
@@ -194,15 +194,15 @@ class VoipRepository with Loggable {
   }
 
   Future<Auth> _createAuth(
-    UserVoipConfig userConfig,
+    AppAccount appAccount,
     ClientVoipConfig clientConfig,
   ) async =>
       Auth(
-        username: userConfig.sipUserId,
-        password: userConfig.password,
+        username: appAccount.sipUserId,
+        password: appAccount.password,
         domain: clientConfig.sipUrl.toString(),
-        port: userConfig.useEncryption ? 5061 : 5060,
-        secure: userConfig.useEncryption,
+        port: appAccount.useEncryption ? 5061 : 5060,
+        secure: appAccount.useEncryption,
       );
 
   Preferences _createPreferences(User user) => Preferences(
@@ -236,16 +236,16 @@ class VoipRepository with Loggable {
     }
   }
 
-  Future<void> register(UserVoipConfig? voipConfig) async {
+  Future<void> register(AppAccount? appAccount) async {
     if (await _isLoggedInSomewhereElse()) {
-      unawaited(unregister(voipConfig));
+      unawaited(unregister(appAccount));
       logger.info('Registration cancelled: User has logged in elsewhere');
       return;
     }
 
     final user = _getUser();
 
-    if (voipConfig?.sipUserId == null) {
+    if (appAccount?.sipUserId == null) {
       logger.info('Registration cancelled: No SIP user ID set');
       return;
     }
@@ -260,7 +260,7 @@ class VoipRepository with Loggable {
     final name = user.email;
     final token = _token!;
     final remoteNotificationToken = _remoteNotificationToken ?? '';
-    final sipUserId = voipConfig!.sipUserId;
+    final sipUserId = appAccount!.sipUserId;
     final osVersion = await _operatingSystemInfoRepository
         .getOperatingSystemInfo()
         .then((i) => i.version);
@@ -305,8 +305,8 @@ class VoipRepository with Loggable {
     }
   }
 
-  Future<void> unregister(UserVoipConfig? voipConfig) async {
-    assert(voipConfig?.sipUserId != null, 'No sipUserId present');
+  Future<void> unregister(AppAccount? appAccount) async {
+    assert(appAccount?.sipUserId != null, 'No sipUserId present');
 
     logger.info('Unregistering..');
 
@@ -316,13 +316,13 @@ class VoipRepository with Loggable {
       return;
     }
 
-    if (voipConfig?.sipUserId == null) {
+    if (appAccount?.sipUserId == null) {
       logger.warning('Unable to unregister without a [sipUserId]');
       return;
     }
 
     final token = _token!;
-    final sipUserId = voipConfig!.sipUserId;
+    final sipUserId = appAccount!.sipUserId;
     final app = await _getBuildInfo().then((i) => i.packageName);
 
     final response = Platform.isAndroid
