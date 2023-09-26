@@ -46,7 +46,7 @@ class RefreshVoipgridUserPermissions extends UserRefreshTaskPerformer {
 
     // If client calls are enabled, we're going to disable it as the user
     // no longer has permission for it.
-    if (user.settings.get(AppSetting.showClientCalls)) {
+    if (user.settings.getOrNull(AppSetting.showClientCalls) == true) {
       ChangeSettingUseCase()(AppSetting.showClientCalls, false);
     }
 
