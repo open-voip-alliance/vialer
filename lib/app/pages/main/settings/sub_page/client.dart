@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:vialer/app/pages/main/settings/sub_page/client/queue_statistics/widget.dart';
+import 'package:vialer/domain/feature/has_feature.dart';
 import 'package:vialer/domain/voipgrid/user_permissions.dart';
 
+import '../../../../../domain/feature/feature.dart';
 import '../../../../../domain/user/user.dart';
 import '../../../../resources/localizations.dart';
 import '../../business_availability/temporary_redirect/setting_tile.dart';
@@ -12,6 +16,7 @@ import '../widgets/tile/link/calls.dart';
 import '../widgets/tile/link/dial_plan.dart';
 import '../widgets/tile/link/opening_hours.dart';
 import '../widgets/tile/link/stats.dart';
+import '../widgets/tile/link/sub_page.dart';
 import 'widget.dart';
 
 class ClientSubPage extends StatelessWidget {
@@ -49,6 +54,13 @@ class ClientSubPage extends StatelessWidget {
                         OpeningHoursLinkTile(user),
                       if (user.hasPermission(Permission.canViewStats))
                         const StatsLinkTile(),
+                      if (hasFeature(Feature.queueStatistics))
+                        SubPageLinkTile(
+                          title: 'Queue Statistics',
+                          icon: FontAwesomeIcons.fileSpreadsheet,
+                          cubit: cubit,
+                          pageBuilder: (_) => const QueueStatisticsSubPage(),
+                        )
                     ],
                   ),
               ],

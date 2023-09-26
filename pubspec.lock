@@ -321,6 +321,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.3"
+  csslib:
+    dependency: transitive
+    description:
+      name: csslib
+      sha256: "706b5707578e0c1b4b7550f64078f0a0f19dec3f50a178ffae7006b0a9ca58fb"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0"
   cupertino_icons:
     dependency: transitive
     description:
@@ -361,6 +369,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.0"
+  date_format:
+    dependency: transitive
+    description:
+      name: date_format
+      sha256: "8e5154ca363411847220c8cbc43afcf69c08e8debe40ba09d57710c25711760c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.7"
   dbus:
     dependency: transitive
     description:
@@ -689,6 +705,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.1"
+  glog:
+    dependency: transitive
+    description:
+      name: glog
+      sha256: "655491ed9edc961f49d4d840ad8903c2cd47cd1138511f6509b85695a57e299d"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.3.0"
   graphs:
     dependency: transitive
     description:
@@ -697,6 +721,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.0"
+  html:
+    dependency: transitive
+    description:
+      name: html
+      sha256: "3a7812d5bcd2894edf53dfaf8cd640876cf6cef50a8f238745c8b8120ea74d3a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.15.4"
+  html_template:
+    dependency: transitive
+    description:
+      name: html_template
+      sha256: b5b513df8ebd8c4592b7ae268aaa9a66e0b1d76e8c71362e5914ece2d70b667e
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.2"
   http:
     dependency: transitive
     description:
@@ -1126,6 +1166,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.1.0"
+  res_client:
+    dependency: "direct main"
+    description:
+      name: res_client
+      sha256: "1c63c34f5e667b84ccdc8fec9b474b3c95aaa57695e95592238a8c3c2fabf47d"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.8.5"
   riverpod:
     dependency: transitive
     description:
@@ -1483,6 +1531,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.1"
+  tuple:
+    dependency: transitive
+    description:
+      name: tuple
+      sha256: a97ce2013f240b2f3807bcbaf218765b6f301c3eff91092bcfa23a039e7dd151
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.2"
   typed_data:
     dependency: transitive
     description:
@@ -1667,6 +1723,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.1"
+  yaml_writer:
+    dependency: transitive
+    description:
+      name: yaml_writer
+      sha256: "76740047e3d4b1687c588bc8cb3466bea55a7d915a91bb23e99ea2a8c58337b6"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.3"
 sdks:
   dart: ">=3.1.0-185.0.dev <4.0.0"
   flutter: ">=3.13.3"
