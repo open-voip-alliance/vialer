@@ -42,7 +42,7 @@ class Segment {
         initialize()
 
         if !isInitialized {
-            logger.writeLog("Native Segment failed to initialize. Aborting track event.")
+            logger.writeLog("Segment not initialized, logging event: \(event) with properties: \(properties)")
             return
         }
         
