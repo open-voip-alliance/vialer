@@ -40,6 +40,11 @@ class Segment {
         assert(regex.firstMatch(in: event, range: NSRange(location: 0, length: event.count)) != nil, "Event name not in param-casing.")
 
         initialize()
+
+        if !isInitialized {
+            logger.writeLog("Segment not initialized, logging event: \(event) with properties: \(properties)")
+            return
+        }
         
         logger.writeLog("Native Segment Event: \(event) with properties: \(properties)")
         
