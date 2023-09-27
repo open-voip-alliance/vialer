@@ -353,10 +353,13 @@ class VoipRepository with Loggable {
 
   Future<void> answerCall() async => (await _phoneLib).actions.answer();
 
-  Future<void> refreshPreferences(User user) async =>
+  Future<void> refreshPreferences(User user) async {
+    if (_startUpUser != null) {
       (await _phoneLib).updatePreferences(
         _createPreferences(user),
       );
+    }
+  }
 
   Future<Call?> get activeCall async => (await _phoneLib).calls.active;
 
