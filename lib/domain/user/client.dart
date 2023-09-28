@@ -1,6 +1,4 @@
-import 'package:equatable/equatable.dart';
-import 'package:json_annotation/json_annotation.dart';
-import 'package:meta/meta.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../app/util/nullable_copy_with_argument.dart';
 import '../business_availability/temporary_redirect/temporary_redirect.dart';
@@ -9,58 +7,34 @@ import '../openings_hours_basic/opening_hours.dart';
 import '../voicemail/voicemail_account.dart';
 import '../voipgrid/client_voip_config.dart';
 
+part 'client.freezed.dart';
+
 part 'client.g.dart';
 
-@immutable
-@JsonSerializable()
-class Client extends Equatable {
-  const Client({
-    required this.id,
-    required this.uuid,
-    required this.name,
-    required this.url,
-    required this.voip,
-    this.outgoingNumbers = const [],
-    this.voicemailAccounts = const [],
-    this.currentTemporaryRedirect,
-    this.openingHoursModules = const [],
-  });
+@Freezed(copyWith: false)
+class Client with _$Client {
+  const Client._();
 
-  final int id;
-  final String uuid;
-  final String name;
-  final Uri url;
+  const factory Client({
+    required int id,
+    required String uuid,
+    required String name,
+    required Uri url,
+    @JsonKey(
+      toJson: ClientVoipConfig.serializeToJson,
+      fromJson: _clientVoipConfigFromJson,
+    )
+    required ClientVoipConfig voip,
 
-  @JsonKey(
-    toJson: ClientVoipConfig.serializeToJson,
-    fromJson: _clientVoipConfigFromJson,
-  )
-  final ClientVoipConfig voip;
-
-  /// This represents the business numbers that are available to the client
-  /// the logged-in user belongs to.
-  @JsonKey(toJson: _outgoingNumbersToJson)
-  final Iterable<OutgoingNumber> outgoingNumbers;
-
-  final Iterable<VoicemailAccount> voicemailAccounts;
-
-  final TemporaryRedirect? currentTemporaryRedirect;
-
-  @JsonKey(name: 'openingHours')
-  final Iterable<OpeningHoursModule> openingHoursModules;
-
-  @override
-  List<Object?> get props => [
-        id,
-        uuid,
-        name,
-        url,
-        voip,
-        outgoingNumbers,
-        voicemailAccounts,
-        currentTemporaryRedirect,
-        openingHoursModules,
-      ];
+    /// This represents the business numbers that are available to the client
+    /// the logged-in user belongs to.
+    @JsonKey(toJson: _outgoingNumbersToJson)
+    @Default([])
+    Iterable<OutgoingNumber> outgoingNumbers,
+    @Default([]) Iterable<VoicemailAccount> voicemailAccounts,
+    TemporaryRedirect? currentTemporaryRedirect,
+    @Default([]) Iterable<OpeningHoursModule> openingHoursModules,
+  }) = _Client;
 
   Client copyWith({
     int? id,
@@ -97,9 +71,9 @@ class Client extends Equatable {
     );
   }
 
-  static Map<String, dynamic>? toJson(Client value) => _$ClientToJson(value);
+  factory Client.fromJson(Map<String, dynamic> json) => _$ClientFromJson(json);
 
-  static Client fromJson(Map<String, dynamic> json) => _$ClientFromJson(json);
+  static Map<String, dynamic>? serializeToJson(Client value) => value.toJson();
 }
 
 List<Map<String, dynamic>> _outgoingNumbersToJson(
