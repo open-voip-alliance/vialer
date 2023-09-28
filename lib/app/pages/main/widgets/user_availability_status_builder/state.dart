@@ -10,5 +10,6 @@ class UserAvailabilityStatusState with _$UserAvailabilityStatusState {
   const factory UserAvailabilityStatusState({
     required UserAvailabilityStatus status,
     Destination? currentDestination,
+    @Default([]) List<Destination> availableDestinations,
   }) = _UserAvailabilityStatusState;
 }

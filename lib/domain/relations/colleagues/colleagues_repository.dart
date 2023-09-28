@@ -14,6 +14,8 @@ import '../../user/user.dart';
 import '../../voipgrid/user_permissions.dart';
 import '../../voipgrid/voipgrid_api_resource_collector.dart';
 import '../../voipgrid/voipgrid_service.dart';
+import '../update_destinations_with_is_online.dart';
+import '../websocket/payloads/user_devices_changed.dart';
 import 'availability_update.dart';
 import 'colleague.dart';
 
@@ -27,6 +29,8 @@ class ColleaguesRepository with Loggable {
   final VoipgridService _service;
   final VoipgridApiResourceCollector _apiResourceCollector;
   final EventBus _eventBus;
+
+  late final _updateDestinationsWithIsOnline = UpdateDestinationsWithIsOnline();
 
   WebSocket? _socket;
 
@@ -111,10 +115,17 @@ class ColleaguesRepository with Loggable {
 
         final event = jsonDecode(eventString as String) as Map<String, dynamic>;
 
+        final eventName = event['name'];
+
+        if (eventName == 'user_devices_changed') {
+          _updateDestinationsWithIsOnline(event.toUserDevicesChanged());
+          return;
+        }
+
         // We only care about this type of event for now (and that's all there
         // is currently) so if it's anything aside from this we just ignore
         // it.
-        if (event['name'] != 'user_availability_changed') return;
+        if (eventName != 'user_availability_changed') return;
 
         final payload = event['payload'] as Map<String, dynamic>;
 
@@ -366,4 +377,11 @@ extension on AvailabilityUpdate {
         UserAvailabilityStatus.doNotDisturb,
     };
   }
+}
+
+extension on Map<String, dynamic> {
+  UserDevicesChangedPayload toUserDevicesChanged() =>
+      UserDevicesChangedPayload.fromJson(
+        this['payload'] as Map<String, dynamic>,
+      );
 }
