@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:vialer/app/pages/main/settings/availability/ringing_device/ringing_device_button.dart';
 
 import '../../../../../../../../domain/calling/voip/destination.dart';
@@ -143,6 +144,11 @@ class _SomeDevicesOfflineWarning extends StatelessWidget {
     return _RingingDeviceWarning(
       text: context.msg.main.colleagues.status.someDevicesOffline,
       color: context.brand.theme.colors.grey6,
+      icon: FaIcon(
+        FontAwesomeIcons.solidTriangleExclamation,
+        size: 16,
+        color: context.brand.theme.colors.red1,
+      ),
     );
   }
 }
@@ -151,18 +157,31 @@ class _RingingDeviceWarning extends StatelessWidget {
   const _RingingDeviceWarning({
     required this.text,
     required this.color,
+    this.icon,
   });
 
   final String text;
   final Color color;
+  final FaIcon? icon;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 8),
-      child: Text(
-        text,
-        style: TextStyle(color: color),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          if (icon != null) ...[
+            icon!,
+            SizedBox(width: 10),
+          ],
+          Expanded(
+            child: Text(
+              text,
+              style: TextStyle(color: color),
+            ),
+          ),
+        ],
       ),
     );
   }

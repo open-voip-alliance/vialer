@@ -1,7 +1,5 @@
 import 'package:dartx/dartx.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:vialer/domain/feature/feature.dart';
-import 'package:vialer/domain/feature/has_feature.dart';
 
 import '../../../app/util/automatic_retry.dart';
 import '../../../app/util/json_converter.dart';
@@ -71,8 +69,6 @@ class DestinationRepository with Loggable {
   /// because this data is received via the websocket rather than the
   /// destinations api.
   void _carryOverIsOnline(List<Destination> staleDestinations) {
-    if (doesNotHaveFeature(Feature.offlineUserDevices)) return;
-
     staleDestinations.whereType<PhoneAccount>().forEach(
           (staleDestination) => updateIsOnline(
             staleDestination.accountId,

@@ -19,8 +19,6 @@
 /// [deprecated]. We can't remove it in that case, because
 /// an enum always needs at least one constant.
 enum Feature {
-  /// The back-end does not currently emit events when device status changes,
-  /// only on first connect. So the basic functionality is usable but it is
-  /// not ready for production yet.
-  offlineUserDevices,
+  @Deprecated('Placeholder')
+  placeholder,
 }
