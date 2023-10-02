@@ -21,6 +21,7 @@ if [ -e "$READ_FILE" ]; then
     fi
   done < "$READ_FILE"
 
+  echo "" >> "$READ_FILE"
   echo "Imported all variables from $READ_FILE to $OUTPUT_FILE."
 else
   echo "Error: $READ_FILE file not found."
