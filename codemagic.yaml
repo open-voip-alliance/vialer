@@ -49,7 +49,9 @@ custom: # Custom properties to make workflows cleaner
       script: . utils/ci/codemagic/bin/build_for_ios.sh
     - &prepare_environment_for_integration_testing
       name: Preparing environment for integration testing
-      script: . utils/ci/codemagic/bin/prepare_environment_file.sh .env.test.example
+      script: |
+        export IN_TEST=true
+        . utils/ci/codemagic/bin/prepare_environment_file.sh .env.test.example
     - &run_integration_tests_ios
       name: Running integration tests on iOS emulator
       script: . utils/ci/codemagic/bin/run_integration_tests_ios.sh
