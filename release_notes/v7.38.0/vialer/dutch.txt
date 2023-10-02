@@ -1,0 +1,4 @@
+- When a ringing device is offline, you will get a warning and you will no longer be able to switch to them
+- A warning message will be shown during a call when network connectivity is poor
+- Fixed multiple issues involving onboarding with a screen reader
+- A badge will be shown on the feature announcements item in the profile menu when you have unread announcements
