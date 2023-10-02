@@ -6,12 +6,10 @@
 READ_FILE=$1
 OUTPUT_FILE=".env"
 
-echo "" >> "$OUTPUT_FILE"
-
 # Check if .env.example file exists
 if [ -e "$READ_FILE" ]; then
   # Read each line in .env.example
-  while IFS= read -r line; do
+  while IFS= read -r line || [ -n "$line" ]; do
     # Check if the line is in the correct format
     if [[ "$line" =~ ^[A-Za-z_][A-Za-z0-9_]*= ]]; then
       # Extract the key and value from the line
