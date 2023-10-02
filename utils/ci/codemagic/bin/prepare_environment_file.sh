@@ -21,7 +21,7 @@ if [ -e "$READ_FILE" ]; then
     fi
   done < "$READ_FILE"
 
-  echo "Imported all variables from .env.example to .env."
+  echo "Imported all variables from $READ_FILE to $OUTPUT_FILE."
 else
-  echo "Error: .env.example file not found."
+  echo "Error: $READ_FILE file not found."
 fi
