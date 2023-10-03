@@ -1,8 +1,8 @@
 #!/bin/bash
-
 # Imports all variables from the READ_FILE (supplied as a command line argument) into the
 # OUTPUT_FILE which is hard-coded to ".env".
 
+set -e
 READ_FILE=$1
 OUTPUT_FILE=".env"
 
