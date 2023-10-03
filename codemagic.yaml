@@ -22,7 +22,7 @@ custom: # Custom properties to make workflows cleaner
       script: dart utils/ci/codemagic/set_version_information.dart --type other
     - &prepare_environment_file
       name: Preparing .env file
-      script: . utils/ci/codemagic/bin/prepare_environment_file.sh
+      script: . utils/ci/codemagic/bin/prepare_environment_file.sh .env.example
     - &prepare_release_notes_from_files
       name: Preparing the release notes from the release notes on the file system
       script: dart utils/ci/codemagic/prepare_release_notes.dart
@@ -49,7 +49,9 @@ custom: # Custom properties to make workflows cleaner
       script: . utils/ci/codemagic/bin/build_for_ios.sh
     - &prepare_environment_for_integration_testing
       name: Preparing environment for integration testing
-      script: . utils/ci/codemagic/bin/prepare_environment_for_integration_testing.sh
+      script: |
+        export IN_TEST=true
+        . utils/ci/codemagic/bin/prepare_environment_file.sh .env.test.example
     - &run_integration_tests_ios
       name: Running integration tests on iOS emulator
       script: . utils/ci/codemagic/bin/run_integration_tests_ios.sh
