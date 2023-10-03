@@ -229,8 +229,8 @@ extension on List<Destination> {
     return [
       if (appAccount != null) appAccount.isOnline,
       if (webphoneAccount != null) webphoneAccount.isOnline,
-      fixedDestinations.isAtLeastOneOnline,
-      deskPhones.isAtLeastOneOnline,
+      if (fixedDestinations.isNotEmpty) fixedDestinations.isAtLeastOneOnline,
+      if (deskPhones.isNotEmpty) deskPhones.isAtLeastOneOnline,
     ].any((element) => !element);
   }
 
