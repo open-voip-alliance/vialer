@@ -33,7 +33,9 @@ class Client with _$Client {
     Iterable<OutgoingNumber> outgoingNumbers,
     @Default([]) Iterable<VoicemailAccount> voicemailAccounts,
     TemporaryRedirect? currentTemporaryRedirect,
-    @Default([]) Iterable<OpeningHoursModule> openingHoursModules,
+    @Default([])
+    @JsonKey(name: 'openingHours')
+    Iterable<OpeningHoursModule> openingHoursModules,
   }) = _Client;
 
   Client copyWith({
