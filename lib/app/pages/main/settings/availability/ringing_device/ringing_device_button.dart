@@ -1,13 +1,14 @@
 import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:vialer/app/pages/main/settings/availability/ringing_device/widget.dart';
 
 import '../../../../../../../../domain/calling/voip/destination.dart';
 import '../../../../../../../../domain/user/user.dart';
 import '../../../../../resources/localizations.dart';
-import '../button.dart';
 import '../../../../../resources/theme.dart';
+import '../button.dart';
 
 class RingingDeviceButton extends StatelessWidget {
   const RingingDeviceButton(
@@ -97,6 +98,18 @@ class RingingDeviceButton extends StatelessWidget {
             destination is PhoneAccount ? destination.isOnline : true,
       );
 
+  void _onPressed(
+    BuildContext context,
+  ) {
+    if (enabled && _isAtLeastOneDestinationOnline && _destination != null) {
+      onDestinationChanged(_destination!);
+      SemanticsService.announce(
+        '${_text(context)} was selected to receive calls', //wip add localized String
+        Directionality.of(context),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return AvailabilityButton(
@@ -104,10 +117,7 @@ class RingingDeviceButton extends StatelessWidget {
       leadingIcon: _icon,
       trailingIcon: _trailingIcon,
       isActive: parentWidgetIsEnabled && user.ringingDevice == type,
-      onPressed: enabled && _isAtLeastOneDestinationOnline
-          ? () =>
-              _destination != null ? onDestinationChanged(_destination!) : {}
-          : null,
+      onPressed: () => _onPressed(context),
       backgroundColor: isRingingDeviceOffline
           ? context.brand.theme.colors.userAvailabilityBusy
           : null,
