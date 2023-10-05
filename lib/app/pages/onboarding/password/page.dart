@@ -6,6 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
 import '../../../resources/localizations.dart';
+import '../../../resources/theme.dart';
 import '../../../util/conditional_capitalization.dart';
 import '../../../util/password.dart';
 import '../../../widgets/stylized_button.dart';
@@ -104,6 +105,8 @@ class _PasswordPageState extends State<PasswordPage>
                         _hidePassword
                             ? FontAwesomeIcons.eyeSlash
                             : FontAwesomeIcons.eye,
+                        color: context.brand.theme.colors.primary,
+                        size: 20,
                       ),
                       onPressed: _toggleHidePassword,
                     ),
