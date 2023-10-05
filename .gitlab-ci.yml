@@ -2,8 +2,19 @@ workflow:
   rules:
     - if: $CI_MERGE_REQUEST_IID
 
+
 stages:
+  - lint
   - build and test
+
+lint:commit:
+  image: registry.hub.docker.com/library/node:alpine
+  stage: lint
+  before_script:
+    - apk add --no-cache git
+    - npm install --save-dev @commitlint/config-conventional @commitlint/cli
+  script:
+    - echo "${CI_COMMIT_MESSAGE}" | npx commitlint
 
 build & test:
   image: dart:latest
