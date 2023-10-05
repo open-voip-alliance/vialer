@@ -14,7 +14,7 @@ lint:commit:
     - apk add --no-cache git
     - npm install --save-dev @commitlint/config-conventional @commitlint/cli
   script:
-    - echo "${CI_COMMIT_MESSAGE}" | npx commitlint
+    - commitlint --from=HEAD~1
 
 build & test:
   image: dart:latest
