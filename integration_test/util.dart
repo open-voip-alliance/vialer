@@ -77,6 +77,7 @@ class TestUser {
 TestUser? _tester1;
 TestUser? _tester2;
 TestUser? _testUserWithoutAppAccount;
+TestUser? _testUserWithEndUserPermissions;
 
 TestUser get testUser1 => _tester1 ??= TestUser(
       dotenv.env['TEST_USER_1_EMAIL']!,
@@ -92,6 +93,12 @@ TestUser get testUserWithoutAppAccount =>
     _testUserWithoutAppAccount ??= TestUser(
       dotenv.env['TEST_USER_WITHOUT_APP_ACCOUNT_EMAIL']!,
       dotenv.env['TEST_USER_WITHOUT_APP_ACCOUNT_PASSWORD']!,
+    );
+
+TestUser get testUserWithEndUserPermissions =>
+    _testUserWithEndUserPermissions ??= TestUser(
+      dotenv.env['TEST_USER_WITH_END_USER_PERMISSIONS_EMAIL']!,
+      dotenv.env['TEST_USER_WITH_END_USER_PERMISSIONS_PASSWORD']!,
     );
 
 extension OnboardingPageTesting on GlobalKey<OnboardingPageState> {
