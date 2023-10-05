@@ -15,9 +15,10 @@ import '../../../../../domain/onboarding/request_permission.dart';
 import '../../../../../domain/user/events/logged_in_user_was_refreshed.dart';
 import '../../../../../domain/user/get_logged_in_user.dart';
 import '../../../../../domain/user/get_permission_status.dart';
-import '../../../../../domain/user/permissions/permission.dart';
+import '../../../../../domain/user/permissions/permission.dart' as os;
 import '../../../../../domain/user/permissions/permission_status.dart';
 import '../../../../../domain/user/settings/open_settings.dart';
+import '../../../../../domain/voipgrid/user_permissions.dart';
 import '../../../../util/loggable.dart';
 import '../caller.dart';
 import 'state.dart';
@@ -50,24 +51,24 @@ class NoticeCubit extends Cubit<NoticeState> with Loggable {
     if (state is NoticeDismissed) return;
 
     microphoneStatus ??= await _getPermissionStatus(
-      permission: Permission.microphone,
+      permission: os.Permission.microphone,
     );
 
     phoneStatus = Platform.isIOS
         ? PermissionStatus.granted
         : phoneStatus ??= await _getPermissionStatus(
-            permission: Permission.phone,
+            permission: os.Permission.phone,
           );
 
     bluetoothStatus = Platform.isIOS
         ? PermissionStatus.granted
         : bluetoothStatus ??= await _getPermissionStatus(
-            permission: Permission.bluetooth,
+            permission: os.Permission.bluetooth,
           );
 
     notificationsStatus = Platform.isIOS
         ? notificationsStatus ??= await _getPermissionStatus(
-            permission: Permission.notifications,
+            permission: os.Permission.notifications,
           )
         : PermissionStatus.granted;
 
@@ -94,7 +95,7 @@ class NoticeCubit extends Cubit<NoticeState> with Loggable {
         TemporaryRedirectNotice(
           temporaryRedirect: user.client.currentTemporaryRedirect!,
           canChangeTemporaryRedirect:
-              user.permissions.canChangeTemporaryRedirect,
+              user.hasPermission(Permission.canChangeTemporaryRedirect),
         ),
       );
     } else if (!googlePlayServicesIsAvailable) {
@@ -106,13 +107,13 @@ class NoticeCubit extends Cubit<NoticeState> with Loggable {
 
   Future<void> openAppSettings() => _openAppSettings();
 
-  Future<void> requestPermission(List<Permission> permissions) async {
+  Future<void> requestPermission(List<os.Permission> permissions) async {
     for (final permission in permissions) {
       assert(
-        permission == Permission.phone ||
-            permission == Permission.microphone ||
-            permission == Permission.bluetooth ||
-            permission == Permission.notifications,
+        permission == os.Permission.phone ||
+            permission == os.Permission.microphone ||
+            permission == os.Permission.bluetooth ||
+            permission == os.Permission.notifications,
         'Must be a relevant permission',
       );
 
@@ -122,17 +123,18 @@ class NoticeCubit extends Cubit<NoticeState> with Loggable {
         await _openAppSettings();
       }
 
-      if (permission == Permission.phone &&
+      if (permission == os.Permission.phone &&
           status == PermissionStatus.granted) {
         _caller.initialize();
       }
 
       await check(
-        microphoneStatus: permission == Permission.microphone ? status : null,
-        phoneStatus: permission == Permission.phone ? status : null,
-        bluetoothStatus: permission == Permission.bluetooth ? status : null,
+        microphoneStatus:
+            permission == os.Permission.microphone ? status : null,
+        phoneStatus: permission == os.Permission.phone ? status : null,
+        bluetoothStatus: permission == os.Permission.bluetooth ? status : null,
         notificationsStatus:
-            permission == Permission.notifications ? status : null,
+            permission == os.Permission.notifications ? status : null,
       );
 
       // No need to request more if there's no notice.

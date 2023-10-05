@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dartx/dartx.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vialer/domain/user/settings/change_setting.dart';
+import 'package:vialer/domain/user/settings/app_setting.dart';
 
 import '../../../../dependency_locator.dart';
 import '../../../../domain/authentication/logout.dart';
@@ -15,6 +16,7 @@ import '../../../../domain/openings_hours_basic/should_show_opening_hours_basic.
 import '../../../../domain/user/connectivity/connectivity_type.dart';
 import '../../../../domain/user/connectivity/get_current_connectivity_status.dart';
 import '../../../../domain/user/events/logged_in_user_was_refreshed.dart';
+import '../../../../domain/user/events/user_devices_changed.dart';
 import '../../../../domain/user/get_build_info.dart';
 import '../../../../domain/user/get_logged_in_user.dart';
 import '../../../../domain/user/get_permission_status.dart';
@@ -38,6 +40,7 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
       ..on<LoggedInUserWasRefreshed>(
         (event) => _emitUpdatedState(user: event.current),
       )
+      ..on<UserDevicesChanged>((_) => _emitUpdatedState())
       ..on<RateLimitReachedEvent>((event) {
         _isRateLimited = true;
         _emitUpdatedState();
@@ -101,6 +104,8 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
             isApplyingChanges: _isUpdatingRemote,
             isRateLimited: _isRateLimited,
             recentOutgoingNumbers: _storageRepository.recentOutgoingNumbers,
+            hasUnreadFeatureAnnouncements:
+                user!.settings.get(AppSetting.hasUnreadFeatureAnnouncements),
           ),
         );
       }(),

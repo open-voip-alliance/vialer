@@ -494,10 +494,11 @@ packages:
   flutter_inappwebview:
     dependency: "direct main"
     description:
-      name: flutter_inappwebview
-      sha256: f73505c792cf083d5566e1a94002311be497d984b5607f25be36d685cf6361cf
-      url: "https://pub.dev"
-    source: hosted
+      path: "."
+      ref: fix-xcode-17
+      resolved-ref: "54ef7aa3bc637684e12eaf730d983a39fd0f345e"
+      url: "https://github.com/vixez/flutter_inappwebview.git"
+    source: git
     version: "5.7.2+3"
   flutter_keyboard_visibility:
     dependency: "direct main"
@@ -572,8 +573,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "406f56714bd3ee8f457ec4d4117e604cbfa55314"
-      resolved-ref: "406f56714bd3ee8f457ec4d4117e604cbfa55314"
+      ref: "111e074b1cb8bae2751712a9d25f286beede20e5"
+      resolved-ref: "111e074b1cb8bae2751712a9d25f286beede20e5"
       url: "https://github.com/open-voip-alliance/flutter-phone-lib"
     source: git
     version: "0.0.1"
@@ -1669,4 +1670,4 @@ packages:
     version: "2.1.1"
 sdks:
   dart: ">=3.1.0-185.0.dev <4.0.0"
-  flutter: ">=3.13.3"
+  flutter: ">=3.13.5"

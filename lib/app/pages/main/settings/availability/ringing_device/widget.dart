@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:vialer/app/pages/main/settings/availability/ringing_device/ringing_device_button.dart';
 
 import '../../../../../../../../domain/calling/voip/destination.dart';
@@ -42,6 +43,10 @@ class RingingDevice extends StatelessWidget {
     final fixedDestinations = destinations.fixedDestinationsFor(user: user);
     final deskPhones = destinations.deskPhonesFor(user: user);
     final enableButtons = !shouldEntireWidgetBeDisabled && enabled;
+    final showDeviceOfflineWarning = userAvailabilityStatus ==
+        UserAvailabilityStatus.onlineWithRingingDeviceOffline;
+    final showSomeDevicesOfflineWarning =
+        destinations.areSomeRingingDevicesOffline(user);
 
     return Opacity(
       opacity: shouldEntireWidgetBeDisabled ? 0.5 : 1,
@@ -103,23 +108,78 @@ class RingingDevice extends StatelessWidget {
                 ),
             ],
           ),
-          if (userAvailabilityStatus ==
-              UserAvailabilityStatus.onlineWithRingingDeviceOffline)
-            Padding(
-              padding: const EdgeInsets.only(top: 8),
-              child: Text(
-                context.msg.main.colleagues.status.selectedDeviceOffline,
-                style: TextStyle(
-                  color: context.brand.theme.colors.userAvailabilityBusyAccent,
-                ),
-              ),
-            ),
+          if (showDeviceOfflineWarning) _CurrentDeviceOfflineWarning(),
+          if (showSomeDevicesOfflineWarning && !showDeviceOfflineWarning)
+            _SomeDevicesOfflineWarning(),
           MultipleRingingDeviceDropdown(
             user: user,
             destinations: destinations,
             enabled: enableButtons,
             onDestinationChanged: onDestinationChanged,
             loading: !enabled,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _CurrentDeviceOfflineWarning extends StatelessWidget {
+  const _CurrentDeviceOfflineWarning();
+
+  @override
+  Widget build(BuildContext context) {
+    return _RingingDeviceWarning(
+      text: context.msg.main.colleagues.status.selectedDeviceOffline,
+      color: context.brand.theme.colors.userAvailabilityBusyAccent,
+    );
+  }
+}
+
+class _SomeDevicesOfflineWarning extends StatelessWidget {
+  const _SomeDevicesOfflineWarning();
+
+  @override
+  Widget build(BuildContext context) {
+    return _RingingDeviceWarning(
+      text: context.msg.main.colleagues.status.someDevicesOffline,
+      color: context.brand.theme.colors.grey6,
+      icon: FaIcon(
+        FontAwesomeIcons.solidTriangleExclamation,
+        size: 16,
+        color: context.brand.theme.colors.red1,
+      ),
+    );
+  }
+}
+
+class _RingingDeviceWarning extends StatelessWidget {
+  const _RingingDeviceWarning({
+    required this.text,
+    required this.color,
+    this.icon,
+  });
+
+  final String text;
+  final Color color;
+  final FaIcon? icon;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          if (icon != null) ...[
+            icon!,
+            SizedBox(width: 10),
+          ],
+          Expanded(
+            child: Text(
+              text,
+              style: TextStyle(color: color),
+            ),
           ),
         ],
       ),
@@ -155,4 +215,24 @@ enum RingingDeviceType {
   deskPhone,
   mobile,
   fixed,
+}
+
+extension on List<Destination> {
+  /// Returns TRUE if a ringing device is not selectable because it is offline.
+  /// For ringing devices with multiple options, they must all be offline.
+  bool areSomeRingingDevicesOffline(User user) {
+    final appAccount = findAppAccountFor(user: user);
+    final webphoneAccount = findWebphoneAccountFor(user: user);
+    final fixedDestinations = fixedDestinationsFor(user: user);
+    final deskPhones = deskPhonesFor(user: user);
+
+    return [
+      if (appAccount != null) appAccount.isOnline,
+      if (webphoneAccount != null) webphoneAccount.isOnline,
+      if (fixedDestinations.isNotEmpty) fixedDestinations.isAtLeastOneOnline,
+      if (deskPhones.isNotEmpty) deskPhones.isAtLeastOneOnline,
+    ].any((element) => !element);
+  }
+
+  bool get isAtLeastOneOnline => any((destination) => destination.isOnline);
 }

@@ -6,6 +6,7 @@ import '../../../dependency_locator.dart';
 import '../../legacy/storage.dart';
 import '../../user/get_logged_in_user.dart';
 import '../../user/user.dart';
+import '../../voipgrid/user_permissions.dart';
 
 /// A usecase that wraps the logic of determining whether or not to display the
 /// outgoing number prompt for a given user and the number they have dialed.
@@ -19,7 +20,7 @@ class ShouldPromptUserForOutgoingNumber extends UseCase with Loggable {
       return false;
     }
 
-    if (!_user.permissions.canChangeOutgoingNumber) {
+    if (!_user.hasPermission(Permission.canChangeOutgoingNumber)) {
       _log('permissions');
       return false;
     }

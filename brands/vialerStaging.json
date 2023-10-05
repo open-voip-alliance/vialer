@@ -11,5 +11,6 @@
   "privacyPolicyUrl": "https://vialerapp.com/privacy/",
   "userAvailabilityWsUrl": "wss://api.stag.holodeck.spindle.dev/user-availability-ws/ws",
   "dndServiceUrl": "https://api.stag.holodeck.spindle.dev/dnd-service",
-  "sharedContactsUrl": "https://openapi-mock-server.eu-stag.holodeck.wearespindle.com/mock/main/webphone/contacts/"
+  "sharedContactsUrl": "https://openapi-mock-server.eu-stag.holodeck.wearespindle.com/mock/main/webphone/contacts/",
+  "featureAnnouncementsUrl": "https://api.prod.holodeck.spindle.dev/feature-announcements/"
 }

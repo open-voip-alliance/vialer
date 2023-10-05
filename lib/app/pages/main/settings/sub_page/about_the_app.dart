@@ -24,7 +24,10 @@ class AboutTheAppSubPage extends StatelessWidget {
           child: (state) {
             return ListView(
               children: [
-                const FeatureAnnouncementTile(),
+                FeatureAnnouncementTile(
+                  hasUnreadFeatureAnnouncements:
+                      state.hasUnreadFeatureAnnouncements,
+                ),
                 const FeedbackTile(),
                 const PrivacyPolicyTile(),
                 if (state.buildInfo != null) BuildInfoTile(state.buildInfo!),

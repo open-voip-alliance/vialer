@@ -2,11 +2,9 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../../dependency_locator.dart';
 import '../../../../../domain/authentication/get_is_logged_in_somewhere_else.dart';
 import '../../../../../domain/authentication/logout.dart';
-import '../../../../../domain/calling/voip/register_to_voip_middleware.dart';
-import '../../../../../domain/legacy/storage.dart';
+import '../../../../../domain/calling/voip/register_to_middleware.dart';
 import '../../../../../domain/onboarding/is_onboarded.dart';
 import '../../../../../domain/user/get_logged_in_user.dart';
 import '../../../../../domain/user/refresh/refresh_user.dart';
@@ -20,12 +18,13 @@ class UserDataRefresherCubit extends Cubit<UserDataRefresherState>
     with Loggable {
   UserDataRefresherCubit() : super(const NotRefreshing());
   final _isOnboarded = IsOnboarded();
-  late final _storageRepository = dependencyLocator<StorageRepository>();
   final _getLoggedInUser = GetLoggedInUserUseCase();
   final _refreshUser = RefreshUser();
-  final _registerToVoipMiddleware = RegisterToVoipMiddlewareUseCase();
+  final _registerToVoipMiddleware = RegisterToMiddlewareUseCase();
   final _isLoggedInSomewhereElse = GetIsLoggedInSomewhereElseUseCase();
   final _logout = Logout();
+
+  final _lastTimeTaskWasRefreshed = <UserRefreshTask, DateTime>{};
 
   Future<void> refreshIfReady(List<UserRefreshTask> tasksToPerform) async {
     if (!_isOnboarded()) return;
@@ -44,14 +43,16 @@ class UserDataRefresherCubit extends Cubit<UserDataRefresherState>
       return;
     }
 
-    // If we have refreshed too recently we don't want to do anything.
-    if (!_storageRepository.lastUserRefreshedTime.isReadyForRefresh) {
-      emit(const NotRefreshing());
+    tasksToPerform = _onlyReadyTasks(tasksToPerform);
 
+    if (tasksToPerform.isEmpty) {
+      emit(const NotRefreshing());
       return;
     }
 
-    _storageRepository.lastUserRefreshedTime = DateTime.now();
+    tasksToPerform.forEach(
+      (task) => _lastTimeTaskWasRefreshed[task] = DateTime.now(),
+    );
 
     final newUser = await _refreshUser(tasksToPerform: tasksToPerform);
 
@@ -63,6 +64,13 @@ class UserDataRefresherCubit extends Cubit<UserDataRefresherState>
       logger.info('Refreshed user data with new changes applied');
     }
   }
+
+  /// We're only going to keep tasks that are ready to be refreshed, and the
+  /// rest will be removed.
+  List<UserRefreshTask> _onlyReadyTasks(List<UserRefreshTask> tasksToPerform) =>
+      tasksToPerform
+          .where((task) => _lastTimeTaskWasRefreshed[task].isReadyForRefresh)
+          .toList();
 }
 
 extension on DateTime? {

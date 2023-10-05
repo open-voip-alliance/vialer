@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:dartx/dartx.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:vialer/domain/user/refresh/refresh_user.dart';
+import 'package:vialer/domain/user/refresh/user_refresh_task.dart';
 
 import '../../../../../domain/business_availability/temporary_redirect/temporary_redirect.dart';
 import '../../../../../domain/voipgrid/web_page.dart';
@@ -87,8 +89,11 @@ class _TemporaryRedirectPickerState extends State<TemporaryRedirectPicker> {
     });
   }
 
-  void _openPortal() => unawaited(
-        WebViewPage.open(context, to: WebPage.addVoicemail),
+  void _openPortal() =>
+      WebViewPage.open(context, to: WebPage.addVoicemail).then(
+        (value) => RefreshUser()(
+          tasksToPerform: [UserRefreshTask.clientVoicemailAccounts],
+        ),
       );
 
   String get _mainActionText {
@@ -109,6 +114,7 @@ class _TemporaryRedirectPickerState extends State<TemporaryRedirectPicker> {
           TemporaryRedirectExplanation(
             currentDestination: _selectedDestination,
             endsAt: _untilDateNotifier.value,
+            hasDestinations: _hasAvailableDestinations,
           ),
           const SizedBox(height: 16),
           FieldHeader(
@@ -140,9 +146,10 @@ class _TemporaryRedirectPickerState extends State<TemporaryRedirectPicker> {
                           fontStyle: FontStyle.italic,
                         ),
                       ),
-                    )
+                    ),
                   ],
-            onChanged: _changeSelectedDestination,
+            onChanged:
+                _hasAvailableDestinations ? _changeSelectedDestination : null,
           ),
           if (!_hasAvailableDestinations) ...[
             const SizedBox(height: 8),
@@ -153,6 +160,7 @@ class _TemporaryRedirectPickerState extends State<TemporaryRedirectPicker> {
                     text: context.msg.main.temporaryRedirect.dropdown
                         .noVoicemails.hint.start,
                   ),
+                  TextSpan(text: ' '),
                   TextSpan(
                     text: context.msg.main.temporaryRedirect.dropdown
                         .noVoicemails.hint.link,
@@ -160,6 +168,7 @@ class _TemporaryRedirectPickerState extends State<TemporaryRedirectPicker> {
                         const TextStyle(decoration: TextDecoration.underline),
                     recognizer: TapGestureRecognizer()..onTap = _openPortal,
                   ),
+                  TextSpan(text: ' '),
                   TextSpan(
                     text: context.msg.main.temporaryRedirect.dropdown
                         .noVoicemails.hint.end,

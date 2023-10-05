@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:vialer/domain/user/user.dart';
+import 'package:vialer/domain/voipgrid/user_permissions.dart';
 
 import '../../../../dependency_locator.dart';
 import '../../../../domain/event/event_bus.dart';
@@ -64,7 +65,7 @@ class _RecentCallsPageState extends State<RecentCallsPage> {
 
     final enabled =
         settingValue ?? user.settings.get(AppSetting.showClientCalls);
-    final hasPermission = user.permissions.canSeeClientCalls;
+    final hasPermission = user.hasPermission(Permission.canSeeClientCalls);
 
     setState(() {
       _showClientCalls = enabled && hasPermission;

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vialer/domain/business_insights/feature_announcements/feature_announcements_repository.dart';
 import 'package:vialer/domain/calling/dnd/dnd_repository.dart';
 import 'package:vialer/domain/calling/dnd/dnd_service.dart';
 import 'package:vialer/domain/user/settings/settings_repository.dart';
@@ -10,6 +11,7 @@ import 'app/util/debug.dart';
 import 'domain/authentication/authentication_repository.dart';
 import 'domain/business_availability/business_availability_repository.dart';
 import 'domain/business_availability/business_availability_service.dart';
+import 'domain/business_insights/feature_announcements/feature_announcements_service.dart';
 import 'domain/call_records/client/database/client_calls.dart';
 import 'domain/call_records/client/local_client_calls.dart';
 import 'domain/call_records/client/remote_client_calls.dart';
@@ -19,7 +21,7 @@ import 'domain/calling/middleware/middleware_service.dart';
 import 'domain/calling/outgoing_number/outgoing_numbers.dart';
 import 'domain/calling/voip/client_voip_config_repository.dart';
 import 'domain/calling/voip/destination_repository.dart';
-import 'domain/calling/voip/user_voip_config_repository.dart';
+import 'domain/calling/voip/app_account_repository.dart';
 import 'domain/calling/voip/voip.dart';
 import 'domain/colltacts/contact_populator.dart';
 import 'domain/colltacts/contact_repository.dart';
@@ -172,8 +174,8 @@ Future<void> initializeDependencies({bool ui = true}) async {
       VoipRepository.new,
       dependsOn: [MiddlewareService, EnvRepository],
     )
-    ..registerSingletonWithDependencies<UserVoipConfigRepository>(
-      () => UserVoipConfigRepository(dependencyLocator<VoipgridService>()),
+    ..registerSingletonWithDependencies<AppAccountRepository>(
+      () => AppAccountRepository(dependencyLocator<VoipgridService>()),
       dependsOn: [StorageRepository],
     )
     ..registerSingleton<CountryRepository>(CountryRepository())
@@ -187,6 +189,9 @@ Future<void> initializeDependencies({bool ui = true}) async {
     )
     ..registerSingleton<OpeningHoursRepository>(
       OpeningHoursRepository(OpeningHoursService.create()),
+    )
+    ..registerSingleton<FeatureAnnouncementsRepository>(
+      FeatureAnnouncementsRepository(FeatureAnnouncementsService.create()),
     )
     ..registerSingleton<DndRepository>(
       DndRepository(DndService.create()),

@@ -22,7 +22,6 @@ class UniversalRefreshIndicator extends StatelessWidget {
       onRefresh: onRefresh,
       child: Stack(
         children: [
-          child,
           ListView(
             padding: EdgeInsets.zero,
             shrinkWrap: true,
@@ -32,6 +31,7 @@ class UniversalRefreshIndicator extends StatelessWidget {
               ),
             ],
           ),
+          child,
         ],
       ),
     );

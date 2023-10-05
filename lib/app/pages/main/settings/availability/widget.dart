@@ -21,7 +21,7 @@ class AvailabilitySwitcher extends StatelessWidget {
       ScaffoldMessenger.of(context).showSnackBar(_buildSnackBar(context));
 
   void _hideSnackBar(BuildContext context) =>
-      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+      ScaffoldMessenger.of(context).clearSnackBars();
 
   @override
   Widget build(BuildContext context) {

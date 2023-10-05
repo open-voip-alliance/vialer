@@ -11,8 +11,11 @@ import '../../event/event_bus.dart';
 import '../../user/brand.dart';
 import '../../user/events/logged_in_user_availability_changed.dart';
 import '../../user/user.dart';
+import '../../voipgrid/user_permissions.dart';
 import '../../voipgrid/voipgrid_api_resource_collector.dart';
 import '../../voipgrid/voipgrid_service.dart';
+import '../update_destinations_with_is_online.dart';
+import '../websocket/payloads/user_devices_changed.dart';
 import 'availability_update.dart';
 import 'colleague.dart';
 
@@ -26,6 +29,8 @@ class ColleaguesRepository with Loggable {
   final VoipgridService _service;
   final VoipgridApiResourceCollector _apiResourceCollector;
   final EventBus _eventBus;
+
+  late final _updateDestinationsWithIsOnline = UpdateDestinationsWithIsOnline();
 
   WebSocket? _socket;
 
@@ -110,10 +115,17 @@ class ColleaguesRepository with Loggable {
 
         final event = jsonDecode(eventString as String) as Map<String, dynamic>;
 
+        final eventName = event['name'];
+
+        if (eventName == 'user_devices_changed') {
+          _updateDestinationsWithIsOnline(event.toUserDevicesChanged());
+          return;
+        }
+
         // We only care about this type of event for now (and that's all there
         // is currently) so if it's anything aside from this we just ignore
         // it.
-        if (event['name'] != 'user_availability_changed') return;
+        if (eventName != 'user_availability_changed') return;
 
         final payload = event['payload'] as Map<String, dynamic>;
 
@@ -235,7 +247,7 @@ class ColleaguesRepository with Loggable {
   Future<List<Colleague>> getColleagues(User user) async {
     final clientId = user.client.id.toString();
 
-    final users = user.permissions.canViewColleagues
+    final users = user.hasPermission(Permission.canViewColleagues)
         ? await _apiResourceCollector.collect(
             requester: (page) => _service.getUsers(
               clientId,
@@ -245,7 +257,7 @@ class ColleaguesRepository with Loggable {
           )
         : const <Map<String, dynamic>>[];
 
-    final voipAccounts = user.permissions.canViewVoipAccounts
+    final voipAccounts = user.hasPermission(Permission.canViewVoipAccounts)
         ? await _apiResourceCollector.collect(
             requester: (page) => _service.getUnconnectedVoipAccounts(
               clientId,
@@ -365,4 +377,11 @@ extension on AvailabilityUpdate {
         UserAvailabilityStatus.doNotDisturb,
     };
   }
+}
+
+extension on Map<String, dynamic> {
+  UserDevicesChangedPayload toUserDevicesChanged() =>
+      UserDevicesChangedPayload.fromJson(
+        this['payload'] as Map<String, dynamic>,
+      );
 }

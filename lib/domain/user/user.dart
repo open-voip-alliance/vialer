@@ -4,11 +4,13 @@ import 'package:dartx/dartx.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:vialer/dependency_locator.dart';
 import 'package:vialer/domain/user/settings/settings_repository.dart';
+import 'package:vialer/domain/user/refresh/tasks/voipgrid_user_permissions.dart';
 
 import '../../app/util/nullable_copy_with_argument.dart';
-import '../voipgrid/user_voip_config.dart';
+import '../voipgrid/user_permissions.dart';
+import '../voipgrid/app_account.dart';
 import 'client.dart';
-import 'permissions/user_permissions.dart';
+import 'settings/settings.dart';
 
 part 'user.g.dart';
 part 'user.freezed.dart';
@@ -29,16 +31,12 @@ class User with _$User {
     @JsonKey(toJson: Client.toJson, fromJson: Client.fromJson)
     required Client client,
     @JsonKey(
-      toJson: UserVoipConfig.serializeToJson,
-      fromJson: UserVoipConfig.serializeFromJson,
+      name: 'voip',
+      toJson: AppAccount.serializeToJson,
+      fromJson: AppAccount.serializeFromJson,
     )
-    UserVoipConfig? voip,
-    @JsonKey(
-      toJson: UserPermissions.serializeToJson,
-      fromJson: UserPermissions.fromJson,
-    )
-    @Default(const UserPermissions())
-    UserPermissions permissions,
+    AppAccount? appAccount,
+    @Default({}) Permissions permissions,
   }) = _User;
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
@@ -50,13 +48,15 @@ class User with _$User {
   // A user must have voip config to be able to call, if they don't then this
   // suggests that there is no app account configured.
   bool get isAllowedVoipCalling =>
-      voip != null && voip.sipUserId.isNotNullOrBlank;
+      appAccount != null && appAccount.sipUserId.isNotNullOrBlank;
 
   String? get appAccountId => appAccountUrl?.pathSegments.lastOrNullWhere(
         (p) => p.isNotEmpty,
       );
 
   bool get hasAppAccount => appAccountId != null;
+
+  bool hasPermission(Permission permission) => permissions.contains(permission);
 
   User copyWith({
     String? uuid,
@@ -67,8 +67,9 @@ class User with _$User {
     String? token,
     Uri? appAccountUrl,
     Client? client,
-    NullableCopyWithArgument<UserVoipConfig> voip,
-    UserPermissions? permissions,
+    NullableCopyWithArgument<AppAccount> appAccount,
+    Settings? settings,
+    Permissions? permissions,
     NullableCopyWithArgument<String> webphoneAccountId,
   }) {
     return User(
@@ -80,7 +81,7 @@ class User with _$User {
       token: token ?? this.token,
       appAccountUrl: appAccountUrl ?? this.appAccountUrl,
       client: client ?? this.client,
-      voip: voip.valueOrNull(unmodified: this.voip),
+      appAccount: appAccount.valueOrNull(unmodified: this.appAccount),
       permissions: permissions ?? this.permissions,
       webphoneAccountId: webphoneAccountId.valueOrNull(
         unmodified: this.webphoneAccountId,
@@ -98,8 +99,9 @@ class User with _$User {
       token: user.token,
       appAccountUrl: user.appAccountUrl,
       client: user.client,
-      voip: () => user.voip,
+      appAccount: () => user.appAccount,
       permissions: user.permissions,
+      webphoneAccountId: () => user.webphoneAccountId,
     );
   }
 }
