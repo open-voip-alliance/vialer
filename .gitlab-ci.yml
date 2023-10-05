@@ -14,7 +14,7 @@ lint:commit:
     - apk add --no-cache git
     - npm install --save-dev @commitlint/config-conventional @commitlint/cli
   script:
-    - commitlint --from=HEAD~1
+    - git log -1 --pretty=%B | npx commitlint
 
 build & test:
   image: dart:latest
