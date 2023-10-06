@@ -62,7 +62,8 @@ class AvailabilityStatusButton extends StatelessWidget {
     if (enabled) {
       onStatusChanged(type);
       SemanticsService.announce(
-        'Status $text was selected', //wip add localized String
+        context.msg.main.settings.list.calling.availability.screenReader.status
+            .selection(text),
         Directionality.of(context),
       );
     }

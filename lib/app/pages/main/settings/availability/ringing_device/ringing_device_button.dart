@@ -104,7 +104,9 @@ class RingingDeviceButton extends StatelessWidget {
     if (enabled && _isAtLeastOneDestinationOnline && _destination != null) {
       onDestinationChanged(_destination!);
       SemanticsService.announce(
-        '${_text(context)} was selected to receive calls', //wip add localized String
+        context.msg.main.settings.list.calling.availability.screenReader
+            .ringingDevice
+            .selection(_text(context)),
         Directionality.of(context),
       );
     }
