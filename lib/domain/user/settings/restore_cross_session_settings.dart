@@ -24,8 +24,5 @@ class RestoreCrossSessionSettings extends UseCase with Loggable {
         force: true,
       );
     }
-
-    // This must be done after we have restored any preserved settings.
-    return user.settings.applyDefaultSettings();
   }
 }
