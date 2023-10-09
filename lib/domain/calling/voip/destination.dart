@@ -114,7 +114,7 @@ extension UserDestinationLookUp on Destination {
           .firstOrNull,
       PhoneNumber phoneNumber => destinations
           .whereType<PhoneNumber>()
-          .where((element) => phoneNumber.id == phoneNumber.id)
+          .where((element) => element.id == phoneNumber.id)
           .firstOrNull,
     };
 
