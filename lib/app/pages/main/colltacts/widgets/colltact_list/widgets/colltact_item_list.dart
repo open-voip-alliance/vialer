@@ -169,6 +169,8 @@ class ColltactItemList extends StatelessWidget {
       case ColltactKind.sharedContact:
         if (sharedContactsState is LoadingSharedContacts) {
           return NoResultsType.sharedContactsLoading;
+        } else if (!hasSearchQuery && records.isEmpty) {
+          return NoResultsType.noSharedContactsExist;
         }
         return hasSearchQuery && records.isEmpty
             ? NoResultsType.noSearchResults

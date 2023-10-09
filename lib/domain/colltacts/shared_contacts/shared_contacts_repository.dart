@@ -25,6 +25,32 @@ class SharedContactsRepository with Loggable {
 
     return response.map(SharedContact.fromJson).withoutNonContacts().toList();
   }
+
+  Future<void> createSharedContact(
+    String givenName,
+    String familyName,
+    String company, [
+    List<String> phoneNumbers = const [],
+  ]) async {
+    final formattedPhoneNumbersList = phoneNumbers
+        .map(
+          (phoneNumber) => {'phone_number_flat': phoneNumber},
+        )
+        .toList();
+
+    final response = await _service.createSharedContact({
+      'given_name': givenName,
+      'family_name': familyName,
+      'company_name': company,
+      'phone_numbers': formattedPhoneNumbersList,
+      'groups': <dynamic>[],
+      'voip_accounts': <dynamic>[],
+    });
+
+    if (!response.isSuccessful) {
+      throw Exception('Error');
+    }
+  }
 }
 
 extension on Iterable<SharedContact> {
