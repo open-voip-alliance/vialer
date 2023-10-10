@@ -266,7 +266,7 @@ class VoipRepository with Loggable {
         .then((i) => i.version);
     final clientVersion = buildInfo.version;
     final app = buildInfo.packageName;
-    final useSandbox = _envRepository.sandbox;
+    final useSandbox = _envRepository.iosSandboxPushNotifications;
     final loginTime = _getLoginTime();
 
     final response = Platform.isAndroid

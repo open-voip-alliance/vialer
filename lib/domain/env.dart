@@ -30,7 +30,8 @@ class EnvRepository {
 
   String get tag => get('TAG');
 
-  bool get sandbox => get('SANDBOX').toBool();
+  bool get iosSandboxPushNotifications =>
+      get('ENABLE_IOS_SANDBOX_PUSH_NOTIFICATIONS').toBool();
 
   bool get inTest => get('IN_TEST').toBool();
 
