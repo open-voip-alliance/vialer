@@ -1,0 +1,1 @@
+- Fixed a visual bug where the "call forwarding" dropdown would not show the current destination correctly
