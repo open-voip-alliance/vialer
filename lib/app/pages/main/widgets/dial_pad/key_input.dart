@@ -68,7 +68,10 @@ class _KeyInputState extends State<KeyInput> {
               container: true,
               label: widget.controller.text.isEmpty
                   ? context.msg.main.dialer.screenReader.phoneNumberInput
-                  : widget.controller.text.phoneNumberSemanticLabel,
+                  : context.msg.main.dialer.screenReader
+                      .phoneNumberInputPopulated(
+                      widget.controller.text.phoneNumberSemanticLabel,
+                    ),
               child: TextField(
                 controller: widget.controller,
                 scrollController: _scrollController,
