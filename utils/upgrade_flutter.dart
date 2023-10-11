@@ -71,7 +71,7 @@ Future<void> main(List<String> arguments) async {
   print('⚙️ Comminting files to git');
   await _runProcess(
     'git',
-    ['commit', '-m', 'Upgrade Flutter to version $versionNumber'],
+    ['commit', '-m', 'chore(flutter): upgraded to version $versionNumber'],
   );
 
   print('⚙️ Pushing files');
