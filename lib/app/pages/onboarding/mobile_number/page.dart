@@ -85,15 +85,15 @@ class _MobileNumberPageState extends State<MobileNumberPage> {
                         duration: _duration,
                         height: isKeyboardVisible ? 24 : 64,
                       ),
-                      if (!isKeyboardVisible)
-                        Column(
-                          children: [
-                            FaIcon(
-                              FontAwesomeIcons.mobile,
-                              color: context.brand.theme.colors.primary,
-                              size: 48,
-                            ),
-                            SizedBox(height: 24),
+                      Column(
+                        children: [
+                          FaIcon(
+                            FontAwesomeIcons.mobile,
+                            color: context.brand.theme.colors.primary,
+                            size: 48,
+                          ),
+                          SizedBox(height: 24),
+                          if (!isKeyboardVisible)
                             Semantics(
                               header: true,
                               child: Text(
@@ -106,14 +106,13 @@ class _MobileNumberPageState extends State<MobileNumberPage> {
                                 ),
                               ),
                             ),
-                          ],
-                        ),
+                        ],
+                      ),
                       AnimatedContainer(
                         curve: _curve,
                         duration: _duration,
                         height: isKeyboardVisible ? 0 : 32,
                       ),
-                      if (isKeyboardVisible) SizedBox(height: 80),
                       Text(
                         context.msg.onboarding.mobileNumber.description(
                           Provider.of<Brand>(context).appName,
@@ -168,9 +167,12 @@ class _MobileNumberPageState extends State<MobileNumberPage> {
                           context.msg.onboarding.mobileNumber.info,
                         ),
                       ),
+                      if (isKeyboardVisible) SizedBox(height: 40),
                       Expanded(
                         child: Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
+                          mainAxisAlignment: isKeyboardVisible
+                              ? MainAxisAlignment.start
+                              : MainAxisAlignment.end,
                           children: <Widget>[
                             Semantics(
                               button: true,
