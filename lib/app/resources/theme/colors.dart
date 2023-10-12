@@ -41,8 +41,6 @@ class Colors {
         available = v.available.color,
         availableAccent = v.availableAccent.color,
         splashScreen = v.splashScreen.color,
-        onboardingGradientStart = v.onboardingGradientStart.color,
-        onboardingGradientEnd = v.onboardingGradientEnd.color,
         primaryGradientStart = v.primaryGradientStart.color,
         primaryGradientEnd = v.primaryGradientEnd.color,
         onPrimaryGradient = v.onPrimaryGradient.color,
@@ -116,9 +114,6 @@ class Colors {
   final Color availableAccent;
 
   final Color splashScreen;
-
-  final Color onboardingGradientStart;
-  final Color onboardingGradientEnd;
 
   final Color primaryGradientStart;
   final Color primaryGradientEnd;

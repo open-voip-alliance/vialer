@@ -221,6 +221,9 @@ class _LoginPageState extends State<LoginPage>
                                                   .toUpperCaseIfAndroid(
                                                 context,
                                               ),
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                              ),
                                             )
                                           : Row(
                                               mainAxisAlignment:
@@ -245,6 +248,9 @@ class _LoginPageState extends State<LoginPage>
                                                         .button.loggingIn
                                                         .toUpperCaseIfAndroid(
                                                       context,
+                                                    ),
+                                                    style: TextStyle(
+                                                      color: Colors.white,
                                                     ),
                                                   ),
                                                 ),

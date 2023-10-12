@@ -85,6 +85,7 @@ class ErrorAlert extends StatelessWidget {
                                     title!,
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
+                                      color: Colors.white,
                                     ),
                                   ),
                                 ),
