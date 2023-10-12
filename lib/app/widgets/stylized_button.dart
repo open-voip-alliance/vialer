@@ -9,6 +9,7 @@ class StylizedButton extends StatelessWidget {
     this.colored = false,
     this.margin,
     this.onPressed,
+    this.borderRadius,
     super.key,
   });
 
@@ -26,6 +27,7 @@ class StylizedButton extends StatelessWidget {
       margin: margin,
       onPressed: onPressed,
       child: child,
+      borderRadius: BorderRadius.circular(8),
     );
   }
 
@@ -43,6 +45,7 @@ class StylizedButton extends StatelessWidget {
       margin: margin,
       onPressed: onPressed,
       child: child,
+      borderRadius: BorderRadius.circular(8),
     );
   }
 
@@ -50,19 +53,18 @@ class StylizedButton extends StatelessWidget {
   static const _curve = Curves.decelerate;
 
   static const _borderWidth = 1.0;
-  static const _bottomBorderWidth = 2.0;
 
   final StylizedButtonType type;
   final bool colored;
   final VoidCallback? onPressed;
   final EdgeInsets? margin;
   final Widget child;
+  final BorderRadius? borderRadius;
 
   @override
   Widget build(BuildContext context) {
-    final borderRadius = BorderRadius.circular(2);
+    final borderRadius = this.borderRadius ?? BorderRadius.circular(2);
     final color = context.brand.theme.colors.buttonBackground;
-    final shadeColor = context.brand.theme.colors.buttonShade;
 
     final disabled = onPressed == null;
     const disabledForegroundColor = Color(0xFF555555);
@@ -84,7 +86,6 @@ class StylizedButton extends StatelessWidget {
 
     final isRaised = type == StylizedButtonType.raised;
     final isOutline = type == StylizedButtonType.outline;
-    final isFlat = type == StylizedButtonType.flat;
 
     return Padding(
       padding: margin ?? const EdgeInsets.symmetric(horizontal: 24),
@@ -128,45 +129,32 @@ class StylizedButton extends StatelessWidget {
                       ? (colored ? color : Colors.white)
                       : Colors.transparent,
             ),
-            child: CustomPaint(
-              painter: _BottomBorderPainter(
-                enabled: !isFlat,
-                thickness: isRaised
-                    ? _bottomBorderWidth
-                    : _bottomBorderWidth - _borderWidth,
-                color: isOutline
-                    ? (colored ? color : Colors.white)
-                    : (colored && !disabled
-                        ? shadeColor
-                        : const Color(0xFFE0E0E0)),
-              ),
-              child: Material(
-                color: Colors.transparent,
-                shape: shape,
-                child: InkWell(
-                  customBorder: shape,
-                  onTap: onPressed,
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                      vertical: 12 + (!isOutline ? 1.0 : 0.0),
-                      horizontal: 16 + (!isOutline ? 1.0 : 0.0),
-                    ),
-                    child: Center(
-                      child: AnimatedTheme(
+            child: Material(
+              color: Colors.transparent,
+              shape: shape,
+              child: InkWell(
+                customBorder: shape,
+                onTap: onPressed,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    vertical: 12 + (!isOutline ? 1.0 : 0.0),
+                    horizontal: 16 + (!isOutline ? 1.0 : 0.0),
+                  ),
+                  child: Center(
+                    child: AnimatedTheme(
+                      duration: _duration,
+                      curve: _curve,
+                      data: Theme.of(context).copyWith(
+                        iconTheme: IconThemeData(color: textColor),
+                      ),
+                      child: AnimatedDefaultTextStyle(
                         duration: _duration,
                         curve: _curve,
-                        data: Theme.of(context).copyWith(
-                          iconTheme: IconThemeData(color: textColor),
+                        style: TextStyle(
+                          color: textColor,
+                          fontWeight: FontWeight.bold,
                         ),
-                        child: AnimatedDefaultTextStyle(
-                          duration: _duration,
-                          curve: _curve,
-                          style: TextStyle(
-                            color: textColor,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          child: child,
-                        ),
+                        child: child,
                       ),
                     ),
                   ),
@@ -184,33 +172,4 @@ enum StylizedButtonType {
   raised,
   outline,
   flat,
-}
-
-class _BottomBorderPainter extends CustomPainter {
-  _BottomBorderPainter({
-    required this.color,
-    required this.thickness,
-    this.enabled = true,
-  });
-
-  final bool enabled;
-  final Color color;
-  final double thickness;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    if (enabled) {
-      canvas.drawRect(
-        Rect.fromPoints(
-          Offset(-2, size.height - thickness),
-          Offset(size.width + 2, size.height + thickness),
-        ),
-        Paint()..color = color,
-      );
-    }
-  }
-
-  @override
-  bool shouldRepaint(_BottomBorderPainter oldDelegate) =>
-      color != oldDelegate.color || thickness != oldDelegate.thickness;
 }

@@ -17,6 +17,7 @@ class Colors {
       : primary = v.primary.color,
         primaryDark = v.primaryDark.color,
         primaryLight = v.primaryLight.color,
+        infoText = v.infoText.color,
         onPrimary = v.onPrimary.color,
         grey1 = v.grey1.color,
         grey2 = v.grey2.color,
@@ -78,6 +79,8 @@ class Colors {
   final Color primary;
   final Color primaryDark;
   final Color primaryLight;
+
+  final Color infoText;
 
   /// Color for use when the [primary] color is the background.
   final Color onPrimary;

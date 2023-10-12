@@ -109,20 +109,22 @@ class OnboardingPageState extends State<OnboardingPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Background(
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: BlocProvider<OnboardingCubit>(
-          create: (_) => OnboardingCubit(
-            context.watch<CallerCubit>(),
-          ),
-          child: BlocConsumer<OnboardingCubit, OnboardingState>(
-            listener: _onStateChange,
-            builder: (context, state) {
-              return WillPopScope(
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      resizeToAvoidBottomInset: false,
+      body: BlocProvider<OnboardingCubit>(
+        create: (_) => OnboardingCubit(
+          context.watch<CallerCubit>(),
+        ),
+        child: BlocConsumer<OnboardingCubit, OnboardingState>(
+          listener: _onStateChange,
+          builder: (context, state) {
+            return Background(
+              style: state.currentStep.asBackgroundStyle(),
+              child: WillPopScope(
                 onWillPop: () async => _backward(context),
                 child: DefaultTextStyle(
-                  style: const TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.black),
                   child: IconTheme(
                     data: const IconThemeData(color: Colors.white),
                     child: PageView(
@@ -146,9 +148,9 @@ class OnboardingPageState extends State<OnboardingPage> {
                     ),
                   ),
                 ),
-              );
-            },
-          ),
+              ),
+            );
+          },
         ),
       ),
     );
@@ -157,4 +159,14 @@ class OnboardingPageState extends State<OnboardingPage> {
 
 class _Keys {
   final page = GlobalKey<OnboardingPageState>();
+}
+
+extension on OnboardingStep {
+  /// Defines the type of background we should be using based on what onboarding
+  /// step we are on.
+  Style asBackgroundStyle() => switch (this) {
+        OnboardingStep.login => Style.triangle,
+        OnboardingStep.password => Style.split,
+        _ => Style.cascading,
+      };
 }

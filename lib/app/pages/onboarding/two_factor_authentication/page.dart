@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:vialer/app/resources/theme.dart';
 
 import '../../../resources/localizations.dart';
 import '../../../util/widgets_binding_observer_registrar.dart';
@@ -68,15 +69,21 @@ class _TwoFactorAuthenticationPageState
           builder: (context, state) {
             return Column(
               children: <Widget>[
+                FaIcon(
+                  FontAwesomeIcons.shieldKeyhole,
+                  color: context.brand.theme.colors.primary,
+                  size: 48,
+                ),
+                SizedBox(height: 24),
                 Semantics(
                   header: true,
                   child: Text(
                     context.msg.onboarding.twoFactor.title,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 32,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                      color: context.brand.theme.colors.primary,
                     ),
                   ),
                 ),
@@ -105,9 +112,10 @@ class _TwoFactorAuthenticationPageState
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const FaIcon(
+                        FaIcon(
                           FontAwesomeIcons.check,
                           size: 60,
+                          color: context.brand.theme.colors.primary,
                         ),
                         const SizedBox(height: 16),
                         Text(context.msg.onboarding.twoFactor.success),
@@ -115,7 +123,7 @@ class _TwoFactorAuthenticationPageState
                     ),
                   ),
                 if (state is AwaitingServerResponse)
-                  const Expanded(
+                  Expanded(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -123,7 +131,9 @@ class _TwoFactorAuthenticationPageState
                           width: 60,
                           height: 60,
                           child: CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation(Colors.white),
+                            valueColor: AlwaysStoppedAnimation(
+                              context.brand.theme.colors.primary,
+                            ),
                           ),
                         ),
                       ],
