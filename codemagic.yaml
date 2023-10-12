@@ -670,7 +670,7 @@ workflows:
     artifacts: *defaults_artifacts
 
   main-annabel:
-    name: Build a version of the app with Verbonden theming
+    name: Build a version of the app with Annabel theming
     <<: *config
     environment:
       groups:
