@@ -86,7 +86,7 @@ class ColorValues {
   const ColorValues.vialer({
     int primary = 0xFFFF7B24,
     int primaryDark = 0xFFD45400,
-    int primaryLight = 0xFFFFD0A3,
+    int primaryLight = 0xFFFFEDD5,
   }) : this(
           primary: primary,
           primaryDark: primaryDark,
