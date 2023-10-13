@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:vialer/app/pages/main/settings/availability/availability_status/widget.dart';
 
@@ -53,6 +54,21 @@ class AvailabilityStatusButton extends StatelessWidget {
     };
   }
 
+  void _onPressed(
+    BuildContext context,
+    UserAvailabilityStatus type,
+    String text,
+  ) {
+    if (enabled) {
+      onStatusChanged(type);
+      SemanticsService.announce(
+        context.msg.main.settings.list.calling.availability.screenReader.status
+            .selection(text),
+        Directionality.of(context),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final (text, icon, foregroundColor, backgroundColor) = _styling(context);
@@ -62,7 +78,7 @@ class AvailabilityStatusButton extends StatelessWidget {
       child: AvailabilityButton(
         text: text,
         leadingIcon: icon,
-        onPressed: enabled ? () => onStatusChanged(type) : null,
+        onPressed: () => _onPressed(context, type, text),
         isActive: current == type,
         foregroundColor: foregroundColor,
         backgroundColor: backgroundColor,

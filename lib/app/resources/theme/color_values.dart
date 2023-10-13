@@ -24,10 +24,9 @@ class ColorValues {
     required this.primaryDark,
     required this.primaryLight,
     required this.splashScreen,
-    required this.onboardingGradientStart,
-    required this.onboardingGradientEnd,
     required this.primaryGradientStart,
     required this.primaryGradientEnd,
+    this.infoText = 0xFF666666,
     this.onPrimary = 0xFFFFFFFF,
     this.grey1 = 0xFFCCCCCC,
     this.grey2 = 0xFFD8D8D8,
@@ -57,7 +56,7 @@ class ColorValues {
     int? textButtonForeground,
     int? buttonBackground,
     int? buttonShade,
-    int? buttonRaisedColorText,
+    this.raisedColoredButtonText = 0xFFFFFFFF,
     this.appBarForeground = 0xFFFFFFFF,
     int? appBarBackground,
     int? notificationBackground,
@@ -79,7 +78,6 @@ class ColorValues {
   })  : onPrimaryGradient = onPrimaryGradient ?? onPrimary,
         textButtonForeground = textButtonForeground ?? primary,
         buttonBackground = buttonBackground ?? primaryLight,
-        raisedColoredButtonText = buttonRaisedColorText ?? primaryDark,
         buttonShade = buttonShade ?? primary,
         appBarBackground = appBarBackground ?? primary,
         notificationBackground = notificationBackground ?? primary;
@@ -88,19 +86,15 @@ class ColorValues {
   const ColorValues.vialer({
     int primary = 0xFFFF7B24,
     int primaryDark = 0xFFD45400,
-    int primaryLight = 0xFFFFD0A3,
-    int onboardingGradientStart = 0xFFFF8213,
-    int onboardingGradientEnd = 0xFFE94E1B,
+    int primaryLight = 0xFFFFEDD5,
   }) : this(
           primary: primary,
           primaryDark: primaryDark,
           primaryLight: primaryLight,
           splashScreen: primaryLight,
-          onboardingGradientStart: onboardingGradientStart,
-          onboardingGradientEnd: onboardingGradientEnd,
-          primaryGradientStart: onboardingGradientStart,
-          primaryGradientEnd: onboardingGradientEnd,
-          textButtonForeground: primaryDark,
+          primaryGradientStart: 0xFFFF8213,
+          primaryGradientEnd: 0xFFE94E1B,
+          buttonBackground: primary,
           appBarForeground: primaryDark,
           appBarBackground: primaryLight,
         );
@@ -115,13 +109,10 @@ class ColorValues {
           primaryDark: primaryDark,
           primaryLight: primaryLight,
           splashScreen: primary,
-          onboardingGradientStart: 0xFFC0B4E8,
-          onboardingGradientEnd: primaryDark,
           primaryGradientStart: primary,
           primaryGradientEnd: 0xFF7F67D1,
           buttonBackground: primary,
           buttonShade: primaryDark,
-          buttonRaisedColorText: 0xFFFFFFFF,
         );
 
   /// Defaults should be left as-is.
@@ -134,13 +125,10 @@ class ColorValues {
           primaryDark: primaryDark,
           primaryLight: primaryLight,
           splashScreen: 0xFFFFFFFF,
-          onboardingGradientStart: 0xFF70D8FF,
-          onboardingGradientEnd: primary,
           primaryGradientStart: primary,
           primaryGradientEnd: primaryDark,
           buttonBackground: primary,
           buttonShade: primaryDark,
-          buttonRaisedColorText: 0xFFFFFFFF,
         );
 
   /// Defaults should be left as-is.
@@ -153,18 +141,17 @@ class ColorValues {
           primaryDark: primaryDark,
           primaryLight: primaryLight,
           splashScreen: primaryLight,
-          onboardingGradientStart: primaryLight,
-          onboardingGradientEnd: primaryDark,
           primaryGradientStart: primary,
           primaryGradientEnd: primaryDark,
           buttonBackground: primary,
           buttonShade: primaryDark,
-          buttonRaisedColorText: 0xFFFFFFFF,
         );
 
   final int primary;
   final int primaryDark;
   final int primaryLight;
+
+  final int infoText;
 
   /// Color for use when the [primary] color is the background.
   final int onPrimary;
@@ -200,9 +187,6 @@ class ColorValues {
   final int availableAccent;
 
   final int splashScreen;
-
-  final int onboardingGradientStart;
-  final int onboardingGradientEnd;
 
   final int primaryGradientStart;
   final int primaryGradientEnd;

@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vialer/app/resources/theme.dart';
 
 import '../../../../domain/onboarding/step.dart';
 import '../../../resources/localizations.dart';
-import '../../../util/brand.dart';
 import '../cubit.dart';
 import 'cubit.dart';
 
@@ -47,15 +47,17 @@ class _WelcomePageState extends State<WelcomePage> {
                 text: '${context.msg.onboarding.welcome.title(
                   context.brand.appName,
                 )}\n',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 40,
                   fontWeight: FontWeight.w500,
+                  color: context.brand.theme.colors.primary,
                 ),
                 children: [
                   TextSpan(
                     text: state.user?.firstName ?? '',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 50,
+                      color: context.brand.theme.colors.primary,
                     ),
                   ),
                 ],

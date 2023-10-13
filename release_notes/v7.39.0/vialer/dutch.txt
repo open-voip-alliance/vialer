@@ -1,0 +1,3 @@
+- A new onboarding design has been implemented
+- Screen readers will now properly identify selection of ringing device and status in settings
+- Fixed an issue where the temporary redirect notice was not being shown

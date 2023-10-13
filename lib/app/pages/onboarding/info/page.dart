@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
+import 'package:vialer/app/resources/theme.dart';
 
 import '../../../resources/localizations.dart';
 import '../../../util/conditional_capitalization.dart';
@@ -65,7 +66,9 @@ class _InfoPageState extends State<InfoPage> {
                         bottom: 24,
                       ),
                       child: IconTheme(
-                        data: IconTheme.of(context).copyWith(size: 54),
+                        data: IconTheme.of(context).copyWith(size: 54).copyWith(
+                              color: context.brand.theme.colors.primary,
+                            ),
                         child: widget.icon,
                       ),
                     ),
@@ -76,14 +79,19 @@ class _InfoPageState extends State<InfoPage> {
                           key: _headerKey,
                           widget.title,
                           minFontSize: 28,
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: context.brand.theme.colors.primary,
+                          ),
                           textAlign: TextAlign.center,
                         ),
                       ),
                     ),
                     DefaultTextStyle(
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 18,
+                        color:
+                            context.brand.theme.colors.userAvailabilityOffline,
                       ),
                       child: Padding(
                         padding: const EdgeInsets.only(
@@ -102,6 +110,7 @@ class _InfoPageState extends State<InfoPage> {
             excludeSemantics: !_hasResetSemantics,
             button: true,
             child: StylizedButton.raised(
+              colored: true,
               key: InfoPage.keys.continueButton,
               onPressed: widget.onPressed,
               child: Text(

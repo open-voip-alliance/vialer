@@ -37,14 +37,14 @@ class ErrorAlert extends StatelessWidget {
               clipper: const ShapeBorderClipper(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(
-                    Radius.circular(4),
+                    Radius.circular(8),
                   ),
                 ),
               ),
               child: Container(
                 padding: padding,
                 decoration: BoxDecoration(
-                  color: context.brand.theme.colors.errorBackground,
+                  color: Colors.black.withOpacity(0.4),
                   border: Border(
                     top: BorderSide(
                       color: context.brand.theme.colors.errorContent,
@@ -56,15 +56,18 @@ class ErrorAlert extends StatelessWidget {
                   children: <Widget>[
                     const SizedBox(width: 9),
                     Container(
-                      padding: const EdgeInsets.all(5),
+                      width: 24,
+                      height: 24,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: Colors.black.withOpacity(0.5),
                       ),
-                      child: FaIcon(
-                        FontAwesomeIcons.exclamation,
-                        size: 12,
-                        color: context.brand.theme.colors.errorContent,
+                      child: Center(
+                        child: FaIcon(
+                          FontAwesomeIcons.exclamation,
+                          size: 12,
+                          color: context.brand.theme.colors.errorContent,
+                        ),
                       ),
                     ),
                     const SizedBox(width: 13),
@@ -82,10 +85,14 @@ class ErrorAlert extends StatelessWidget {
                                     title!,
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
+                                      color: Colors.white,
                                     ),
                                   ),
                                 ),
-                              Text(message),
+                              Text(
+                                message,
+                                style: TextStyle(color: Colors.white),
+                              ),
                             ],
                           ),
                         ),

@@ -21,21 +21,6 @@ class BrandTheme {
     ],
   );
 
-  late final onboardingGradient = LinearGradient(
-    begin: Alignment.topCenter,
-    end: Alignment.bottomCenter,
-    colors: [
-      colors.onboardingGradientStart,
-      colors.onboardingGradientEnd,
-    ],
-  );
-
-  late final onboardingGradientReversed = LinearGradient(
-    colors: onboardingGradient.colors,
-    begin: onboardingGradient.end,
-    end: onboardingGradient.begin,
-  );
-
   late final primaryGradient = LinearGradient(
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,

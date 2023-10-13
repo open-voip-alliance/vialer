@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:vialer/domain/authentication/user_logged_in.dart';
-import 'package:vialer/domain/user/settings/settings_repository.dart';
 
 import '../../../app/util/loggable.dart';
 import '../../../app/util/synchronized_task.dart';
@@ -19,7 +18,6 @@ import 'user_refresh_task_performer.dart';
 
 class RefreshUser extends UseCase with Loggable {
   final _storageRepository = dependencyLocator<StorageRepository>();
-  final _settings = dependencyLocator<SettingsRepository>();
   final _auth = dependencyLocator<AuthRepository>();
   final _eventBus = dependencyLocator<EventBus>();
 
@@ -73,10 +71,6 @@ class RefreshUser extends UseCase with Loggable {
 
       if (isFirstTime) {
         user = await _performFirstTimeTasks(user);
-      } else {
-        // If it's the first time logging in then we will apply these
-        // during the login process.
-        await _settings.applyDefaultSettings();
       }
 
       final previous = user;

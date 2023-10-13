@@ -29,10 +29,17 @@ enum CallSetting<T extends Object> with SettingKey<T> {
   @override
   final SettingValueJsonConverter<T>? valueJsonConverter;
 
-  static const Map<CallSetting, bool> defaultValues = {
-    CallSetting.useVoip: true,
-    CallSetting.dnd: false,
-    CallSetting.usePhoneRingtone: false,
-    CallSetting.useMobileNumberAsFallback: false,
-  };
+  static Map<CallSetting, Object?> get defaultValues => Map.fromEntries(
+        CallSetting.values.map((s) => MapEntry(s, s._defaultValue)),
+      );
+
+  Object? get _defaultValue => switch (this) {
+        CallSetting.useVoip => true,
+        CallSetting.dnd => false,
+        CallSetting.usePhoneRingtone => false,
+        CallSetting.useMobileNumberAsFallback => false,
+        CallSetting.outgoingNumber => null,
+        CallSetting.mobileNumber => null,
+        CallSetting.destination => Destination.unknown(),
+      };
 }

@@ -28,7 +28,7 @@ class User with _$User {
     String? token,
     Uri? appAccountUrl,
     String? webphoneAccountId,
-    @JsonKey(toJson: Client.toJson, fromJson: Client.fromJson)
+    @JsonKey(toJson: Client.serializeToJson, fromJson: Client.fromJson)
     required Client client,
     @JsonKey(
       name: 'voip',
