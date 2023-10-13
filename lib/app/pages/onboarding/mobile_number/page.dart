@@ -3,7 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:vialer/app/resources/theme.dart';
 
 import '../../../../domain/user/brand.dart';
 import '../../../resources/localizations.dart';
@@ -83,18 +85,29 @@ class _MobileNumberPageState extends State<MobileNumberPage> {
                         duration: _duration,
                         height: isKeyboardVisible ? 24 : 64,
                       ),
-                      if (!isKeyboardVisible)
-                        Semantics(
-                          header: true,
-                          child: Text(
-                            context.msg.onboarding.mobileNumber.title,
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              fontSize: 40,
-                              fontWeight: FontWeight.bold,
-                            ),
+                      Column(
+                        children: [
+                          FaIcon(
+                            FontAwesomeIcons.mobile,
+                            color: context.brand.theme.colors.primary,
+                            size: 48,
                           ),
-                        ),
+                          SizedBox(height: 24),
+                          if (!isKeyboardVisible)
+                            Semantics(
+                              header: true,
+                              child: Text(
+                                context.msg.onboarding.mobileNumber.title,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 40,
+                                  fontWeight: FontWeight.bold,
+                                  color: context.brand.theme.colors.primary,
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
                       AnimatedContainer(
                         curve: _curve,
                         duration: _duration,
@@ -116,9 +129,24 @@ class _MobileNumberPageState extends State<MobileNumberPage> {
                       ),
                       StylizedTextField(
                         key: MobileNumberPage.keys.field,
-                        prefixWidget: CountryFlagField.create(
-                          controller: _mobileNumberController,
-                          focusNode: _mobileNumberFocusNode,
+                        bordered: true,
+                        prefixWidget: IntrinsicHeight(
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              CountryFlagField.create(
+                                controller: _mobileNumberController,
+                                focusNode: _mobileNumberFocusNode,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(right: 6),
+                                child: VerticalDivider(
+                                  thickness: 1,
+                                  color: context.brand.theme.colors.grey1,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                         controller: _mobileNumberController,
                         focusNode: _mobileNumberFocusNode,
@@ -131,20 +159,25 @@ class _MobileNumberPageState extends State<MobileNumberPage> {
                       ),
                       const SizedBox(height: 16),
                       DefaultTextStyle(
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 14,
+                          color: context.brand.theme.colors.infoText,
                         ),
                         child: Text(
                           context.msg.onboarding.mobileNumber.info,
                         ),
                       ),
+                      if (isKeyboardVisible) SizedBox(height: 40),
                       Expanded(
                         child: Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
+                          mainAxisAlignment: isKeyboardVisible
+                              ? MainAxisAlignment.start
+                              : MainAxisAlignment.end,
                           children: <Widget>[
                             Semantics(
                               button: true,
                               child: StylizedButton.raised(
+                                colored: true,
                                 key: MobileNumberPage.keys.continueButton,
                                 onPressed: () =>
                                     _onContinueButtonPressed(context),
