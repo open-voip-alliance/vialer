@@ -70,62 +70,71 @@ class _PasswordPageState extends State<PasswordPage>
           listener: _onStateChanged,
           builder: (context, state) {
             return Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Semantics(
-                  header: true,
-                  child: Text(
-                    context.msg.onboarding.password.title,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 26,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                ErrorAlert(
-                  visible: state is PasswordNotAllowed,
-                  inline: false,
-                  title: context.msg.onboarding.password.error.title,
-                  message: context.msg.onboarding.password.error.message,
-                ),
-                StylizedTextField(
-                  controller: _passwordController,
-                  prefixIcon: FontAwesomeIcons.lock,
-                  obscureText: _hidePassword,
-                  hasError: state is PasswordNotAllowed,
-                  suffix: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 200),
-                    switchInCurve: Curves.decelerate,
-                    switchOutCurve: Curves.decelerate.flipped,
-                    child: IconButton(
-                      key: ValueKey(_hidePassword),
-                      icon: Icon(
-                        _hidePassword
-                            ? FontAwesomeIcons.eyeSlash
-                            : FontAwesomeIcons.eye,
-                        color: context.brand.theme.colors.primary,
-                        size: 20,
+                Column(
+                  children: [
+                    Semantics(
+                      header: true,
+                      child: Text(
+                        context.msg.onboarding.password.title,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 40,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
                       ),
-                      onPressed: _toggleHidePassword,
                     ),
-                  ),
+                    const SizedBox(height: 24),
+                    Text(
+                      context.msg.onboarding.password.description,
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                    const SizedBox(height: 24),
+                    ErrorAlert(
+                      visible: state is PasswordNotAllowed,
+                      inline: false,
+                      title: context.msg.onboarding.password.error.title,
+                      message: context.msg.onboarding.password.error.message,
+                    ),
+                    StylizedTextField(
+                      controller: _passwordController,
+                      prefixIcon: FontAwesomeIcons.lock,
+                      obscureText: _hidePassword,
+                      hasError: state is PasswordNotAllowed,
+                      suffix: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 200),
+                        switchInCurve: Curves.decelerate,
+                        switchOutCurve: Curves.decelerate.flipped,
+                        child: IconButton(
+                          key: ValueKey(_hidePassword),
+                          icon: Icon(
+                            _hidePassword
+                                ? FontAwesomeIcons.eyeSlash
+                                : FontAwesomeIcons.eye,
+                            color: context.brand.theme.colors.infoText,
+                            size: 16,
+                          ),
+                          onPressed: _toggleHidePassword,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      context.msg.onboarding.password.requirements,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                  ],
                 ),
-                const SizedBox(height: 16),
-                Text(
-                  context.msg.onboarding.password.requirements,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-                const SizedBox(height: 24),
                 SizedBox(
                   width: double.infinity,
                   child: StylizedButton.raised(
+                    colored: true,
                     onPressed: () => _onChangePasswordButtonPressed(context),
                     child: Text(
                       context.msg.onboarding.password.button

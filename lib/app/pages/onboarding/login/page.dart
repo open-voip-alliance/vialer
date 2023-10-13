@@ -76,7 +76,8 @@ class _LoginPageState extends State<LoginPage>
   Widget build(BuildContext context) {
     return KeyboardVisibilityBuilder(
       builder: (context, isKeyboardVisible) {
-        final defaultPadding = Provider.of<EdgeInsets>(context);
+        final defaultPadding =
+            Provider.of<EdgeInsets>(context).copyWith(top: 60);
 
         return AnimatedContainer(
           curve: _curve,
@@ -99,7 +100,7 @@ class _LoginPageState extends State<LoginPage>
                             context.msg.onboarding.login.title,
                             textAlign: TextAlign.center,
                             style: const TextStyle(
-                              fontSize: 26,
+                              fontSize: 40,
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
                             ),
@@ -165,8 +166,8 @@ class _LoginPageState extends State<LoginPage>
                                 _hidePassword
                                     ? FontAwesomeIcons.eyeSlash
                                     : FontAwesomeIcons.eye,
-                                color: context.brand.theme.colors.primary,
-                                size: 20,
+                                color: context.brand.theme.colors.infoText,
+                                size: 16,
                                 key: ValueKey(_hidePassword),
                               ),
                             ),
@@ -197,6 +198,7 @@ class _LoginPageState extends State<LoginPage>
                                   ConnectivityState>(
                                 builder: (context, connectivityState) {
                                   return StylizedButton.raised(
+                                    colored: true,
                                     key: LoginPage.keys.loginButton,
                                     onPressed: loginState is! LoggingIn &&
                                             connectivityState is! Disconnected
@@ -206,7 +208,7 @@ class _LoginPageState extends State<LoginPage>
                                                     _passwordController.text,
                                                   ),
                                             )
-                                        : null,
+                                        : () => {},
                                     child: AnimatedSwitcher(
                                       switchInCurve: Curves.decelerate,
                                       switchOutCurve: Curves.decelerate.flipped,
@@ -218,6 +220,9 @@ class _LoginPageState extends State<LoginPage>
                                                   .msg.onboarding.button.login
                                                   .toUpperCaseIfAndroid(
                                                 context,
+                                              ),
+                                              style: TextStyle(
+                                                color: Colors.white,
                                               ),
                                             )
                                           : Row(
@@ -232,8 +237,7 @@ class _LoginPageState extends State<LoginPage>
                                                     strokeWidth: 2.5,
                                                     valueColor:
                                                         AlwaysStoppedAnimation(
-                                                      Theme.of(context)
-                                                          .primaryColor,
+                                                      Colors.white,
                                                     ),
                                                   ),
                                                 ),
@@ -244,6 +248,9 @@ class _LoginPageState extends State<LoginPage>
                                                         .button.loggingIn
                                                         .toUpperCaseIfAndroid(
                                                       context,
+                                                    ),
+                                                    style: TextStyle(
+                                                      color: Colors.white,
                                                     ),
                                                   ),
                                                 ),
@@ -258,11 +265,15 @@ class _LoginPageState extends State<LoginPage>
                             SizedBox(
                               width: double.infinity,
                               child: StylizedButton.outline(
+                                colored: true,
                                 onPressed: _goToPasswordReset,
                                 child: Text(
                                   context.msg.onboarding.login.button
                                       .forgotPassword
                                       .toUpperCaseIfAndroid(context),
+                                  style: TextStyle(
+                                    color: context.brand.theme.colors.primary,
+                                  ),
                                 ),
                               ),
                             ),
@@ -274,7 +285,10 @@ class _LoginPageState extends State<LoginPage>
                                   context.msg.onboarding.login.button
                                       .signUp(context.brand.appName)
                                       .toUpperCaseIfAndroid(context),
-                                  style: const TextStyle(color: Colors.white),
+                                  style: TextStyle(
+                                    color: context.brand.theme.colors
+                                        .userAvailabilityOffline,
+                                  ),
                                 ),
                               ),
                             TextButton(
@@ -282,7 +296,10 @@ class _LoginPageState extends State<LoginPage>
                               child: Text(
                                 context.msg.main.settings.privacyPolicy
                                     .toUpperCaseIfAndroid(context),
-                                style: const TextStyle(color: Colors.white),
+                                style: TextStyle(
+                                  color: context.brand.theme.colors
+                                      .userAvailabilityOffline,
+                                ),
                               ),
                             ),
                           ],

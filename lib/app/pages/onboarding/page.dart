@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/onboarding/step.dart';
@@ -109,9 +110,11 @@ class OnboardingPageState extends State<OnboardingPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Background(
+    return KeyboardDismissOnTap(
+      dismissOnCapturedTaps: true,
       child: Scaffold(
         backgroundColor: Colors.transparent,
+        resizeToAvoidBottomInset: false,
         body: BlocProvider<OnboardingCubit>(
           create: (_) => OnboardingCubit(
             context.watch<CallerCubit>(),
@@ -119,30 +122,34 @@ class OnboardingPageState extends State<OnboardingPage> {
           child: BlocConsumer<OnboardingCubit, OnboardingState>(
             listener: _onStateChange,
             builder: (context, state) {
-              return WillPopScope(
-                onWillPop: () async => _backward(context),
-                child: DefaultTextStyle(
-                  style: const TextStyle(color: Colors.white),
-                  child: IconTheme(
-                    data: const IconThemeData(color: Colors.white),
-                    child: PageView(
-                      controller: pageController,
-                      physics: const NeverScrollableScrollPhysics(),
-                      children: currentPages.entries.map((entry) {
-                        final page = entry.value;
-                        return Semantics(
-                          explicitChildNodes: true,
-                          child: SafeArea(
-                            child: Provider<EdgeInsets>(
-                              create: (_) => const EdgeInsets.all(48).copyWith(
-                                top: 128,
-                                bottom: 32,
+              return Background(
+                style: state.currentStep.asBackgroundStyle(),
+                child: WillPopScope(
+                  onWillPop: () async => _backward(context),
+                  child: DefaultTextStyle(
+                    style: const TextStyle(color: Colors.black),
+                    child: IconTheme(
+                      data: const IconThemeData(color: Colors.white),
+                      child: PageView(
+                        controller: pageController,
+                        physics: const NeverScrollableScrollPhysics(),
+                        children: currentPages.entries.map((entry) {
+                          final page = entry.value;
+                          return Semantics(
+                            explicitChildNodes: true,
+                            child: SafeArea(
+                              child: Provider<EdgeInsets>(
+                                create: (_) =>
+                                    const EdgeInsets.all(48).copyWith(
+                                  top: 128,
+                                  bottom: 32,
+                                ),
+                                child: page(context),
                               ),
-                              child: page(context),
                             ),
-                          ),
-                        );
-                      }).toList(),
+                          );
+                        }).toList(),
+                      ),
                     ),
                   ),
                 ),
@@ -157,4 +164,14 @@ class OnboardingPageState extends State<OnboardingPage> {
 
 class _Keys {
   final page = GlobalKey<OnboardingPageState>();
+}
+
+extension on OnboardingStep {
+  /// Defines the type of background we should be using based on what onboarding
+  /// step we are on.
+  Style asBackgroundStyle() => switch (this) {
+        OnboardingStep.login => Style.triangle,
+        OnboardingStep.password => Style.split,
+        _ => Style.cascading,
+      };
 }
