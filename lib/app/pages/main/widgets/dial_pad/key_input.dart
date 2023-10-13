@@ -66,6 +66,7 @@ class _KeyInputState extends State<KeyInput> {
             child: Semantics(
               excludeSemantics: true,
               container: true,
+              blockUserActions: true,
               label: widget.controller.text.isEmpty
                   ? context.msg.main.dialer.screenReader.phoneNumberInput
                   : context.msg.main.dialer.screenReader
@@ -81,6 +82,7 @@ class _KeyInputState extends State<KeyInput> {
                 inputFormatters: [_KeyInputFormatter()],
                 showCursor: true,
                 magnifierConfiguration: TextMagnifierConfiguration.disabled,
+                enableInteractiveSelection: !context.isUsingScreenReader,
                 decoration: InputDecoration(
                   border: InputBorder.none,
                   filled: false,
@@ -304,4 +306,8 @@ class _DeleteButtonState extends State<_DeleteButton> {
       ),
     );
   }
+}
+
+extension Accessibility on BuildContext {
+  bool get isUsingScreenReader => MediaQuery.of(this).accessibleNavigation;
 }
