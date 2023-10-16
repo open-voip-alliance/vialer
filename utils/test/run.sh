@@ -12,6 +12,8 @@ echo "Granting permissions"
 adb shell pm grant com.voipgrid.vialer android.permission.CALL_PHONE
 adb shell pm grant com.voipgrid.vialer android.permission.READ_CONTACTS
 adb shell pm grant com.voipgrid.vialer android.permission.RECORD_AUDIO
+adb shell pm grant com.voipgrid.vialer android.permission.BLUETOOTH_CONNECT
+adb shell pm grant com.voipgrid.vialer android.permission.POST_NOTIFICATIONS
 
 # With IN_TEST=true, the permission screens are shown but not requested during onboarding. Otherwise
 # onboarding would not progress.
