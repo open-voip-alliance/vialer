@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_phone_lib/flutter_phone_lib.dart'
     hide AttendedTransferStarted;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:vialer/app/widgets/animated_visibility.dart';
 
 import '../../../../dependency_locator.dart';
 import '../../../../domain/feedback/call_problem.dart';
@@ -286,6 +287,10 @@ class _CallPageState extends State<_CallPage>
                       onTransferButtonPressed: _transfer,
                     ),
                   ),
+                ),
+                AnimatedVisibility(
+                  visible: state.isInBadQualityCall,
+                  child: SizedBox(height: 100),
                 ),
               ],
             );
