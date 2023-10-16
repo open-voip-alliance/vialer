@@ -423,6 +423,7 @@ workflows:
       groups:
         - configuration
         - production_diagnostics
+        - production_and_release_candidate
         - voys_android_firebase
         - voys_playstore_credentials
         - voys_upload_keystore_credentials
@@ -439,6 +440,7 @@ workflows:
       groups:
         - configuration
         - production_diagnostics
+        - production_and_release_candidate
         - verbonden_android_firebase
         - verbonden_playstore_credentials
         - verbonden_upload_keystore_credentials
@@ -455,6 +457,7 @@ workflows:
       groups:
         - configuration
         - production_diagnostics
+        - production_and_release_candidate
         - annabel_android_firebase
         - annabel_playstore_credentials
         - annabel_upload_keystore_credentials
