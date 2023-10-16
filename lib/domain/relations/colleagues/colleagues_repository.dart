@@ -38,6 +38,8 @@ class ColleaguesRepository with Loggable {
 
   Stream<List<Colleague>>? broadcastStream;
 
+  StreamSubscription<dynamic>? streamSubscription;
+
   bool get isWebSocketConnected => _socket != null;
 
   Timer? _reconnectTimer;
@@ -102,13 +104,13 @@ class ColleaguesRepository with Loggable {
       await _connectToWebSocketServer(user, brand);
     } on Exception catch (e) {
       unawaited(
-        attemptReconnect(_socket?.closeCode, 'Failed to start websocket: $e'),
+        attemptReconnect(_socket?.closeCode,
             'Attempt reconnect since UA WS failed to start: $e'),
       );
       return broadcastStream = controller.stream.asBroadcastStream();
     }
 
-    _socket!.listen(
+    streamSubscription = _socket!.listen(
       (dynamic eventString) {
         // If we are receiving events, we will make sure to cancel any queued
         // reconnect timer as we are obviously connected.
@@ -175,6 +177,9 @@ class ColleaguesRepository with Loggable {
       ),
     );
 
+    // Since asBroadcastStream internally listen to the original stream to
+    // generate the broadcast one, this imply you can't call this method twice
+    // on the same stream.
     return broadcastStream = controller.stream.asBroadcastStream();
   }
 
@@ -204,6 +209,9 @@ class ColleaguesRepository with Loggable {
     _doNotReconnect = true;
     await _socket?.close();
     _controller?.addError(reason);
+    _controller?.close();
+    streamSubscription?.cancel();
+    streamSubscription = null;
     _socket = null;
     broadcastStream = null;
   }

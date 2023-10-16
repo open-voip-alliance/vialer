@@ -30,13 +30,15 @@ class Logout extends UseCase {
   Future<void> _clearStorage() async {
     final pushToken = _storageRepository.pushToken;
     final remoteNotificationToken = _storageRepository.remoteNotificationToken;
+    final hasCompletedOnboarding = _storageRepository.hasCompletedOnboarding;
     final user = _getUser();
 
     await _preserveCrossSessionSettings(user);
 
     _storageRepository
       ..pushToken = pushToken
-      ..remoteNotificationToken = remoteNotificationToken;
+      ..remoteNotificationToken = remoteNotificationToken
+      ..hasCompletedOnboarding = hasCompletedOnboarding;
 
     await _purgeClientCalls(reason: PurgeReason.logout);
 
