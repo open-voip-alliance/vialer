@@ -103,6 +103,7 @@ class ColleaguesRepository with Loggable {
     } on Exception catch (e) {
       unawaited(
         attemptReconnect(_socket?.closeCode, 'Failed to start websocket: $e'),
+            'Attempt reconnect since UA WS failed to start: $e'),
       );
       return broadcastStream = controller.stream.asBroadcastStream();
     }
@@ -166,11 +167,11 @@ class ColleaguesRepository with Loggable {
       },
       onDone: () => attemptReconnect(
         _socket?.closeCode,
-        'UA WS has closed',
+        'Attempt reconnect since UA WS has closed',
       ),
       onError: (dynamic e) => attemptReconnect(
         _socket?.closeCode,
-        'UA WS error: $e',
+        'Attempt reconnect since UA WS had an error: $e',
       ),
     );
 
