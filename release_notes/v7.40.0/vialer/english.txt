@@ -1,0 +1,2 @@
+- Fixed a bug that prevented searching for certain symbols in the contact list
+- Significantly improved the experience of using the dialer when using a screen reader
