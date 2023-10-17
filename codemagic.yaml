@@ -295,6 +295,34 @@ workflows:
           success: true
           failure: false
 
+  # Dumps a build into #vialer_mobile_last_published_build so QA can test new release candidates
+  # against it.
+  last-published:
+    name: Create last published build
+    <<: *main_workflow
+    environment:
+      groups:
+        - configuration
+        - diagnostics
+        - production_and_release_candidate
+        - vialer_android_firebase
+        - vialer_upload_keystore_credentials
+        - vialer_ios_appstore_credentials
+      <<: *config_environment
+      vars:
+        <<: *brand_config_vialer_env_vars
+        IOS_SIGNING_TYPE: "IOS_APP_DEVELOPMENT"
+        ENABLE_IOS_SANDBOX_PUSH_NOTIFICATIONS: "true"
+        FINALIZE_SENTRY_RELEASE: "false"
+    triggering: *production_was_tagged
+    publishing:
+      slack:
+        channel: '#vialer_mobile_last_published_build'
+        notify_on_build_start: false
+        notify:
+          success: true
+          failure: false
+
   # Run automatically via `.gitlab-ci.yml`
   gitlab-ci-merge-train:
     name: Gitlab CI Merge Train
