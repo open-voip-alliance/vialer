@@ -128,49 +128,54 @@ class _DialerPageState extends State<DialerPage>
             final callerCubit = context.watch<CallerCubit>();
             final dialerCubit = context.watch<DialerCubit>();
 
-            final body = SafeArea(
-              child: ConditionalPlaceholder(
-                showPlaceholder: state is NoPermission,
-                placeholder: Warning(
-                  title: Text(
-                    context.msg.main.dialer.noPermission.title,
-                  ),
-                  description: state is NoPermission && !state.dontAskAgain
-                      ? Text(
-                          context.msg.main.dialer.noPermission
-                              .description(appName),
-                        )
-                      : Text(
-                          context.msg.main.dialer.noPermission
-                              .permanentDescription(appName),
-                        ),
-                  icon: const FaIcon(FontAwesomeIcons.phoneXmark),
-                  children: <Widget>[
-                    const SizedBox(height: 40),
-                    SettingsButton(
-                      onPressed: state is NoPermission && !state.dontAskAgain
-                          ? callerCubit.requestPermission
-                          : callerCubit.openAppSettings,
-                      text: state is NoPermission && !state.dontAskAgain
-                          ? context
-                              .msg.main.dialer.noPermission.buttonPermission
-                              .toUpperCaseIfAndroid(context)
-                          : context
-                              .msg.main.dialer.noPermission.buttonOpenSettings
-                              .toUpperCaseIfAndroid(context),
+            final body = Semantics(
+              explicitChildNodes: true,
+              container: true,
+              label: context.msg.main.dialer.screenReader.title,
+              child: SafeArea(
+                child: ConditionalPlaceholder(
+                  showPlaceholder: state is NoPermission,
+                  placeholder: Warning(
+                    title: Text(
+                      context.msg.main.dialer.noPermission.title,
                     ),
-                  ],
-                ),
-                child: T9DialPad(
-                  callButtonColor: context.brand.theme.colors.green1,
-                  callButtonIcon: FontAwesomeIcons.solidPhone,
-                  callButtonSemanticsHint: context.msg.generic.button.call,
-                  onCallButtonPressed: state is CanCall
-                      ? (number) => _onCallButtonPressed(context, number)
-                      : null,
-                  controller: _dialPadController,
-                  onDeleteAll: dialerCubit.clearLastCalledDestination,
-                  isT9ContactSearchEnabled: _enableT9ContactSearch,
+                    description: state is NoPermission && !state.dontAskAgain
+                        ? Text(
+                            context.msg.main.dialer.noPermission
+                                .description(appName),
+                          )
+                        : Text(
+                            context.msg.main.dialer.noPermission
+                                .permanentDescription(appName),
+                          ),
+                    icon: const FaIcon(FontAwesomeIcons.phoneXmark),
+                    children: <Widget>[
+                      const SizedBox(height: 40),
+                      SettingsButton(
+                        onPressed: state is NoPermission && !state.dontAskAgain
+                            ? callerCubit.requestPermission
+                            : callerCubit.openAppSettings,
+                        text: state is NoPermission && !state.dontAskAgain
+                            ? context
+                                .msg.main.dialer.noPermission.buttonPermission
+                                .toUpperCaseIfAndroid(context)
+                            : context
+                                .msg.main.dialer.noPermission.buttonOpenSettings
+                                .toUpperCaseIfAndroid(context),
+                      ),
+                    ],
+                  ),
+                  child: T9DialPad(
+                    callButtonColor: context.brand.theme.colors.green1,
+                    callButtonIcon: FontAwesomeIcons.solidPhone,
+                    callButtonSemanticsHint: context.msg.generic.button.call,
+                    onCallButtonPressed: state is CanCall
+                        ? (number) => _onCallButtonPressed(context, number)
+                        : null,
+                    controller: _dialPadController,
+                    onDeleteAll: dialerCubit.clearLastCalledDestination,
+                    isT9ContactSearchEnabled: _enableT9ContactSearch,
+                  ),
                 ),
               ),
             );
