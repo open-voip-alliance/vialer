@@ -243,7 +243,9 @@ class _SearchText extends StatelessWidget {
       searchTerm: search,
       bottomLettersPadding: bottomLettersPadding,
       child: SearchTextInheritedWidget(
-        searchText: search,
+        // Required otherwise the search_highlight_text package throws an
+        // exception when searching for reserved regex characters.
+        searchText: RegExp.escape(search),
         highlightStyle: const TextStyle(
           fontWeight: FontWeight.bold,
           color: Colors.black,
