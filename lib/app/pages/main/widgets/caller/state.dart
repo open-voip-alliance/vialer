@@ -86,7 +86,10 @@ abstract class CallProcessState extends CallOriginDetermined {
       voipCall?.state == CallState.connected;
 
   bool get isInBadQualityCall =>
-      voipCall != null && voipCall!.currentMos > 0 && voipCall!.currentMos < 3;
+      voipCall != null &&
+      voipCall!.currentMos > 0 &&
+      voipCall!.currentMos < 3 &&
+      voipCall!.duration >= 2;
 
   @override
   List<Object?> get props => [

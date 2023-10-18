@@ -133,9 +133,9 @@ class ColorValues {
 
   /// Defaults should be left as-is.
   const ColorValues.annabel({
-    int primary = 0xFFBC3056,
-    int primaryDark = 0xFF770040,
-    int primaryLight = 0xFFEFCDD6,
+    int primary = 0xFF645394,
+    int primaryDark = 0xFF160E2D,
+    int primaryLight = 0xFFEDE9F9,
   }) : this(
           primary: primary,
           primaryDark: primaryDark,
