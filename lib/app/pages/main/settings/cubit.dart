@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dartx/dartx.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vialer/domain/user/get_stored_user.dart';
 import 'package:vialer/domain/user/settings/change_setting.dart';
 import 'package:vialer/domain/user/settings/app_setting.dart';
 
@@ -59,7 +60,7 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
   final _logout = Logout();
   final _performEchoCancellationCalibration =
       PerformEchoCancellationCalibrationUseCase();
-  final _getUser = GetLoggedInUserUseCase();
+  final _getUser = GetStoredUserUseCase();
   final _shouldShowOpeningHoursBasic = ShouldShowOpeningHoursBasic();
 
   final _refreshUser = RefreshUser();
@@ -82,13 +83,13 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
   }) {
     unawaited(
       () async {
+        user = user ?? _getUser();
+
         // We don't want to emit any refresh changes while we're in the progress
-        // of changing remote settings.
-        if (_isUpdatingRemote && !_isRateLimited) {
+        // of changing remote settings or the user isn't logged in (anymore).
+        if ((_isUpdatingRemote && !_isRateLimited) || user == null) {
           return;
         }
-
-        user = user ?? _getUser();
 
         emit(
           SettingsState(
