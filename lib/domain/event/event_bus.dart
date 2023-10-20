@@ -12,7 +12,7 @@ extension Broadcasting on EventBus {
 // When using within a widget, you should always use the EventBusListener widget
 // while will handle disposing of the listener properly.
 extension Observing on EventBusObserver {
-  StreamSubscription<T> on<T>(
+  StreamSubscription<T> on<T extends EventBusEvent>(
     void Function(T event)? onData, {
     Function? onError,
     void Function()? onDone,

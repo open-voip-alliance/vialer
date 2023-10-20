@@ -15,7 +15,7 @@ import '../../../../../../domain/colltacts/t9_colltact.dart';
 import '../../../../../../domain/user/get_permission_status.dart';
 import '../../../../../../domain/user/permissions/permission.dart';
 import '../../../../../../domain/user/permissions/permission_status.dart';
-import '../../../../../../domain/relations/colleagues/get_colleagues.dart';
+import '../../../../../../domain/relations/colleagues/get_cached_colleagues.dart';
 import '../../../../../util/extensions.dart';
 import 'event.dart';
 import 'state.dart';
@@ -29,7 +29,7 @@ class T9ColltactsBloc extends Bloc<T9ColltactsEvent, T9ColltactsState> {
   }
 
   final _getContacts = GetContactsUseCase();
-  final _getColleagues = GetColleagues();
+  final _getColleagues = GetCachedColleagues();
   final _getSharedContacts = GetSharedContactsUseCase();
   final _getPermissionStatus = GetPermissionStatusUseCase();
 

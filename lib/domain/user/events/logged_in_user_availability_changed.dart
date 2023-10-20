@@ -2,7 +2,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:vialer/domain/relations/user_availability_status.dart';
 
 import '../../event/event_bus.dart';
-import '../../relations/colleagues/availability_update.dart';
+import '../../relations/websocket/payloads/user_availability_changed.dart';
 
 part 'logged_in_user_availability_changed.freezed.dart';
 
@@ -12,7 +12,7 @@ class LoggedInUserAvailabilityChanged
     with _$LoggedInUserAvailabilityChanged
     implements EventBusEvent {
   const factory LoggedInUserAvailabilityChanged({
-    required AvailabilityUpdate availability,
+    required UserAvailabilityChangedPayload availability,
     required UserAvailabilityStatus userAvailabilityStatus,
   }) = _LoggedInUserAvailabilityChanged;
 }

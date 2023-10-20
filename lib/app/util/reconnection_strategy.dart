@@ -9,6 +9,13 @@ class ReconnectionStrategy {
     _createSchedule();
   }
 
+  static ReconnectionStrategy defaultStrategy = ReconnectionStrategy(
+    const RetryPattern(
+      initialDelay: Duration(seconds: 10),
+      jitter: true,
+    ),
+  );
+
   int attempts = 0;
   late final List<Duration> schedule;
 

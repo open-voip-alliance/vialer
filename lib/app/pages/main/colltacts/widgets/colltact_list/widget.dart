@@ -142,7 +142,7 @@ class _ColltactPageState extends State<_ColltactList>
             return Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                WebsocketUnreachableNotice(),
+                WebSocketUnreachableNotice(),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: SearchTextField(onChanged: _onSearchTermChanged),

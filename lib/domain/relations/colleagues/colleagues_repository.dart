@@ -1,253 +1,38 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
 
 import 'package:dartx/dartx.dart';
-import 'package:vialer/domain/relations/user_availability_status.dart';
 
 import '../../../app/util/loggable.dart';
-import '../../../app/util/reconnection_strategy.dart';
-import '../../event/event_bus.dart';
-import '../../user/brand.dart';
-import '../../user/events/logged_in_user_availability_changed.dart';
+import '../../legacy/storage.dart';
 import '../../user/user.dart';
 import '../../voipgrid/user_permissions.dart';
 import '../../voipgrid/voipgrid_api_resource_collector.dart';
 import '../../voipgrid/voipgrid_service.dart';
-import '../update_destinations_with_is_online.dart';
-import '../websocket/payloads/user_devices_changed.dart';
-import 'availability_update.dart';
 import 'colleague.dart';
 
 class ColleaguesRepository with Loggable {
   ColleaguesRepository(
     this._service,
     this._apiResourceCollector,
-    this._eventBus,
+    this._storageRepository,
   );
 
   final VoipgridService _service;
   final VoipgridApiResourceCollector _apiResourceCollector;
-  final EventBus _eventBus;
+  final StorageRepository _storageRepository;
 
-  late final _updateDestinationsWithIsOnline = UpdateDestinationsWithIsOnline();
+  List<Colleague> getColleaguesFromCache() => _storageRepository.colleagues;
 
-  WebSocket? _socket;
-
-  StreamController<List<Colleague>>? _controller;
-
-  Stream<List<Colleague>>? broadcastStream;
-
-  bool get isWebSocketConnected => _socket != null;
-
-  Timer? _reconnectTimer;
-
-  final _reconnectionStrategy = ReconnectionStrategy(
-    const RetryPattern(
-      initialDelay: Duration(seconds: 10),
-      jitter: true,
-    ),
-  );
-
-  /// This is the base list of colleagues that we use to update with changes
-  /// from the WebSocket. The WebSocket does *not* provide enough data by
-  /// itself, we need the data from the API and that is the data that is
-  /// stored here.
-  ///
-  /// When there is new API data, this should be updated.
-  List<Colleague> colleagues = [];
-
-  bool _doNotReconnect = false;
-
-  /// Listens to a WebSocket for availability updates, and will then update
-  /// the provided list of colleagues with the new status and broadcast it
-  /// to the returned stream.
-  ///
-  /// The availability of all users is only delivered when first opening
-  /// a socket, so if you want to force a refresh you must first call
-  /// [stopListeningForAvailability] and then call this method again.
-  Future<Stream<List<Colleague>>> startListeningForAvailability({
-    required User user,
-    required Brand brand,
-    required List<Colleague> initialColleagues,
-  }) async {
-    colleagues = initialColleagues;
-
-    if (_socket != null) return broadcastStream!;
-
-    Future<void> attemptReconnect(int? closeCode, String log) async {
-      if (_doNotReconnect) {
-        logger.info('Not attempting to reconnect as closed locally');
-        return;
-      }
-      logger.warning(log);
-      await stopListeningForAvailability(
-        reason: AvailabilityCloseReason.remote,
-      );
-      await _attemptReconnect(
-        user: user,
-        brand: brand,
-        initialColleagues: initialColleagues,
-      );
-    }
-
-    if (_controller == null || (_controller?.isClosed ?? false)) {
-      _controller = StreamController<List<Colleague>>();
-    }
-
-    // ignore: close_sinks
-    final controller = _controller!;
-
-    try {
-      await _connectToWebSocketServer(user, brand);
-    } on Exception catch (e) {
-      unawaited(
-        attemptReconnect(_socket?.closeCode, 'Failed to start websocket: $e'),
-      );
-      return broadcastStream = controller.stream.asBroadcastStream();
-    }
-
-    _socket!.listen(
-      (dynamic eventString) {
-        // If we are receiving events, we will make sure to cancel any queued
-        // reconnect timer as we are obviously connected.
-        _cancelQueuedReconnect(resetAttempts: true);
-
-        final event = jsonDecode(eventString as String) as Map<String, dynamic>;
-
-        final eventName = event['name'];
-
-        if (eventName == 'user_devices_changed') {
-          _updateDestinationsWithIsOnline(event.toUserDevicesChanged());
-          return;
-        }
-
-        // We only care about this type of event for now (and that's all there
-        // is currently) so if it's anything aside from this we just ignore
-        // it.
-        if (eventName != 'user_availability_changed') return;
-
-        final payload = event['payload'] as Map<String, dynamic>;
-
-        final userUuid = payload['user_uuid'] as String;
-
-        final colleague = colleagues.findByUserUuid(userUuid);
-
-        final availability = payload.toAvailabilityUpdate();
-
-        // We are going to hijack this WebSocket and emit an event when we
-        // know our user has changed on the server.
-        if (userUuid == user.uuid) {
-          _eventBus.broadcast(
-            LoggedInUserAvailabilityChanged(
-              availability: availability,
-              userAvailabilityStatus: availability.toUserAvailabilityStatus(),
-            ),
-          );
-        }
-
-        // If no colleague is found, we can't update the availability of it.
-        if (colleague == null) return;
-
-        // We don't want to display colleagues that do not have linked
-        // destinations as these are essentially inactive users that do not
-        // have any possible availability status.
-        if (payload['has_linked_destinations'] != true) {
-          controller.add(colleagues..remove(colleague));
-          return;
-        }
-
-        colleagues.replace(
-          original: colleague,
-          replacement: colleague.populateWithAvailability(availability),
-        );
-
-        controller.add(colleagues);
-      },
-      onDone: () => attemptReconnect(
-        _socket?.closeCode,
-        'UA WS has closed',
-      ),
-      onError: (dynamic e) => attemptReconnect(
-        _socket?.closeCode,
-        'UA WS error: $e',
-      ),
-    );
-
-    return broadcastStream = controller.stream.asBroadcastStream();
-  }
-
-  Future<WebSocket> _connectToWebSocketServer(
-    User user,
-    Brand brand,
-  ) async {
-    _doNotReconnect = false;
-    await _socket?.close();
-    final url = '${brand.userAvailabilityWsUrl}/${user.client.uuid}';
-
-    logger.info('Attempting connection to UA WebSocket at: $url');
-
-    return _socket = await WebSocket.connect(
-      url,
-      headers: {
-        'Authorization': 'Bearer ${user.token}',
-      },
-    )
-      ..pingInterval = const Duration(seconds: 30);
-  }
-
-  Future<void> stopListeningForAvailability({
-    AvailabilityCloseReason reason = AvailabilityCloseReason.local,
-  }) async {
-    logger.info('Disconnecting from UA WebSocket');
-    _doNotReconnect = true;
-    await _socket?.close();
-    _controller?.addError(reason);
-    _socket = null;
-    broadcastStream = null;
-  }
-
-  Future<void> _attemptReconnect({
-    required User user,
-    required Brand brand,
-    required List<Colleague> initialColleagues,
-  }) async {
-    if (_reconnectTimer != null) return;
-
-    final reconnectWaitTime = _reconnectionStrategy.delayFor();
-
-    _reconnectionStrategy.increment();
-
-    logger.info(
-      'Attempting reconnect in ${reconnectWaitTime.inMilliseconds} ms',
-    );
-
-    _reconnectTimer = Timer(reconnectWaitTime, () async {
-      logger.info('Attempting websocket reconnect');
-      _cancelQueuedReconnect();
-      await startListeningForAvailability(
-        user: user,
-        brand: brand,
-        initialColleagues: initialColleagues,
-      );
-    });
-  }
-
-  void _cancelQueuedReconnect({bool resetAttempts = false}) {
-    _reconnectTimer?.cancel();
-    _reconnectTimer = null;
-    if (resetAttempts) {
-      _reconnectionStrategy.reset();
-    }
-  }
+  void updateColleaguesCache(List<Colleague> colleagues) =>
+      _storageRepository.colleagues = colleagues;
 
   /// This only provides the most basic information about colleagues,
   /// the rest needs to be queried by calling [startListeningForAvailability]
   /// and listening for updates.
-  Future<List<Colleague>> getColleagues(User user) async {
+  Future<List<Colleague>> fetchColleagues(User user) async {
     final clientId = user.client.id.toString();
 
-    final users = user.hasPermission(Permission.canViewColleagues)
+    final users = user.permissions.contains(Permission.canViewColleagues)
         ? await _apiResourceCollector.collect(
             requester: (page) => _service.getUsers(
               clientId,
@@ -257,15 +42,16 @@ class ColleaguesRepository with Loggable {
           )
         : const <Map<String, dynamic>>[];
 
-    final voipAccounts = user.hasPermission(Permission.canViewVoipAccounts)
-        ? await _apiResourceCollector.collect(
-            requester: (page) => _service.getUnconnectedVoipAccounts(
-              clientId,
-              page: page,
-            ),
-            deserializer: (json) => json,
-          )
-        : const <Map<String, dynamic>>[];
+    final voipAccounts =
+        user.permissions.contains(Permission.canViewVoipAccounts)
+            ? await _apiResourceCollector.collect(
+                requester: (page) => _service.getUnconnectedVoipAccounts(
+                  clientId,
+                  page: page,
+                ),
+                deserializer: (json) => json,
+              )
+            : const <Map<String, dynamic>>[];
 
     return [
       ...users.map(
@@ -275,13 +61,13 @@ class ColleaguesRepository with Loggable {
           context: [],
         ),
       ),
-      ...voipAccounts.onlyActive().map(
-            (e) => Colleague.unconnectedVoipAccount(
-              id: e['id'] as String,
-              name: e['description'] as String,
-              number: e['internal_number'] as String,
-            ),
-          ),
+      ...voipAccounts.map(
+        (e) => Colleague.unconnectedVoipAccount(
+          id: e['id'] as String,
+          name: e['description'] as String,
+          number: e['internal_number'] as String,
+        ),
+      ),
     ].without(user: user);
   }
 }
@@ -291,97 +77,4 @@ extension on List<Colleague> {
   /// the logged in user from the list of colleagues.
   List<Colleague> without({required User user}) =>
       filter((colleague) => colleague.id != user.uuid).toList();
-
-  Colleague? findByUserUuid(String uuid) =>
-      where((colleague) => colleague.id == uuid).firstOrNull;
-
-  void replace({required Colleague original, required Colleague replacement}) {
-    final index = indexOf(original);
-
-    replaceRange(
-      index,
-      index + 1,
-      [replacement],
-    );
-  }
-}
-
-extension on List<Map<String, dynamic>> {
-  List<Map<String, dynamic>> onlyActive() =>
-      filter((element) => element['status']?.toString() == 'active').toList();
-}
-
-extension on Colleague {
-  Colleague populateWithAvailability(
-    AvailabilityUpdate availability,
-  ) =>
-      map(
-        (colleague) => colleague.copyWith(
-          status: availability.availabilityStatus,
-          destination: availability.destination,
-          context: availability.context,
-        ),
-        // We don't get availability updates for voip accounts so we will
-        // just leave them as is.
-        unconnectedVoipAccount: (voipAccount) => voipAccount,
-      );
-}
-
-extension on List<dynamic> {
-  List<ColleagueContext> buildUserAvailabilityContext() => map(
-        (dynamic e) => ColleagueContext.fromServerValue(
-          (e as Map<String, dynamic>)['type'] as String,
-        ),
-      ).filterNotNull().toList();
-}
-
-extension on Map<String, dynamic> {
-  AvailabilityUpdate toAvailabilityUpdate() => AvailabilityUpdate(
-        availabilityStatus: ColleagueAvailabilityStatus.fromServerValue(
-          this['availability'] as String?,
-        ),
-        context:
-            (this['context'] as List<dynamic>).buildUserAvailabilityContext(),
-        internalNumber: this['internal_number'].toString(),
-        destination: ColleagueDestination(
-          number: this['internal_number'].toString(),
-          type: ColleagueDestinationType.fromServerValue(
-            this['destination_type'] as String?,
-          ),
-        ),
-      );
-}
-
-/// Indicates the reason why the `_controller` has been closed.
-enum AvailabilityCloseReason {
-  /// We closed the socket, likely to refresh it.
-  local,
-
-  /// The remote server closed the socket, this indicates an error.
-  remote,
-}
-
-extension on AvailabilityUpdate {
-  UserAvailabilityStatus toUserAvailabilityStatus() {
-    if (destination.type == ColleagueDestinationType.voipAccount &&
-        availabilityStatus == ColleagueAvailabilityStatus.offline) {
-      return UserAvailabilityStatus.onlineWithRingingDeviceOffline;
-    }
-
-    return switch (availabilityStatus) {
-      ColleagueAvailabilityStatus.available => UserAvailabilityStatus.online,
-      ColleagueAvailabilityStatus.busy => UserAvailabilityStatus.online,
-      ColleagueAvailabilityStatus.unknown => UserAvailabilityStatus.online,
-      ColleagueAvailabilityStatus.offline => UserAvailabilityStatus.offline,
-      ColleagueAvailabilityStatus.doNotDisturb =>
-        UserAvailabilityStatus.doNotDisturb,
-    };
-  }
-}
-
-extension on Map<String, dynamic> {
-  UserDevicesChangedPayload toUserDevicesChanged() =>
-      UserDevicesChangedPayload.fromJson(
-        this['payload'] as Map<String, dynamic>,
-      );
 }

@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vialer/domain/onboarding/user_completed_onboarding.dart';
 
 import '../../../dependency_locator.dart';
+import '../../../domain/event/event_bus.dart';
 import '../../../domain/legacy/storage.dart';
 import '../../../domain/onboarding/get_steps.dart';
 import '../../../domain/onboarding/step.dart';
@@ -30,6 +32,7 @@ class OnboardingCubit extends Cubit<OnboardingState> with Loggable {
   }
 
   final _storage = dependencyLocator<StorageRepository>();
+  final _eventBus = dependencyLocator<EventBus>();
 
   final _getSteps = GetOnboardingStepsUseCase();
 
@@ -61,6 +64,7 @@ class OnboardingCubit extends Cubit<OnboardingState> with Loggable {
       logger.info('Onboarding complete');
 
       _storage.hasCompletedOnboarding = true;
+      _eventBus.broadcast(UserCompletedOnboarding());
 
       _caller.initialize();
       emit(state.copyWith(completed: true));
