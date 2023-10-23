@@ -41,6 +41,11 @@ class _MobileNumberPageState extends State<MobileNumberPage> {
         _mobileNumberController.text = cubit.state.mobileNumber;
       }),
     );
+
+    _mobileNumberController.addListener(() {
+      cubit.validate(_mobileNumberController.text);
+    });
+
     return cubit;
   }
 
@@ -124,7 +129,8 @@ class _MobileNumberPageState extends State<MobileNumberPage> {
                       const SizedBox(height: 24),
                       ErrorAlert(
                         visible: state is MobileNumberNotAccepted,
-                        message: context.msg.onboarding.mobileNumber.error,
+                        message: context.msg.main.settings.list.accountInfo
+                            .mobileNumber.help,
                         inline: false,
                       ),
                       StylizedTextField(
@@ -167,7 +173,7 @@ class _MobileNumberPageState extends State<MobileNumberPage> {
                           context.msg.onboarding.mobileNumber.info,
                         ),
                       ),
-                      if (isKeyboardVisible) SizedBox(height: 40),
+                      if (isKeyboardVisible) SizedBox(height: 16),
                       Expanded(
                         child: Column(
                           mainAxisAlignment: isKeyboardVisible
@@ -179,8 +185,9 @@ class _MobileNumberPageState extends State<MobileNumberPage> {
                               child: StylizedButton.raised(
                                 colored: true,
                                 key: MobileNumberPage.keys.continueButton,
-                                onPressed: () =>
-                                    _onContinueButtonPressed(context),
+                                onPressed: state is! MobileNumberNotAccepted
+                                    ? () => _onContinueButtonPressed(context)
+                                    : null,
                                 child: Text(
                                   context.msg.onboarding.mobileNumber.button
                                       .toUpperCaseIfAndroid(context),
