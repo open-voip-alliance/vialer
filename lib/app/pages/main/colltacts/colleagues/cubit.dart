@@ -67,13 +67,10 @@ class ColleaguesCubit extends Cubit<ColleaguesState> {
     final colleagues = event.colleagues;
 
     emit(
-      ColleaguesState.loading(
-        showOnlineColleaguesOnly: showOnlineColleaguesOnly,
-      ),
-    );
-    emit(
       ColleaguesState.loaded(
-        colleagues,
+        // As a new list otherwise the equality check will not read this as a
+        // new state.
+        colleagues.toList(),
         showOnlineColleaguesOnly: showOnlineColleaguesOnly,
         upToDate: _relationsWebSocket.isWebSocketConnected,
       ),

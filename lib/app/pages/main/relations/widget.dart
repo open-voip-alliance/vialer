@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vialer/dependency_locator.dart';
+import 'package:vialer/domain/authentication/user_logged_in.dart';
 import 'package:vialer/domain/authentication/user_was_logged_out.dart';
-import 'package:vialer/domain/onboarding/user_completed_onboarding.dart';
 
 import '../../../../domain/event/event_bus.dart';
 import '../../../../domain/relations/websocket/relations_web_socket.dart';
@@ -32,7 +32,7 @@ class _RelationsWebSocketState extends State<RelationsWebSocketManager>
 
   void _registerEventListeners() {
     _eventBus
-      ..on<UserCompletedOnboarding>((_) => _relationsWebSocket.connect())
+      ..on<UserLoggedIn>((_) => _relationsWebSocket.connect())
       ..on<UserWasLoggedOutEvent>((_) => _relationsWebSocket.disconnect());
   }
 

@@ -123,11 +123,14 @@ extension on List<Colleague> {
   /// information is fetched.
   ///
   /// This will only override the basic information and add new colleagues.
-  void addAnyNewColleagues(List<Colleague> newColleagues) =>
-      addAll(newColleagues.where((c) => findByUserUuid(c.id) == null));
+  void addAnyNewColleagues(List<Colleague> newColleagues) => addAll(
+        newColleagues.where(
+          (colleague) => findByUserUuid(colleague.id) == null,
+        ),
+      );
 }
 
-extension on UserAvailabilityChangedPayload {
+extension IsAboutLoggedInUser on UserAvailabilityChangedPayload {
   bool get isAboutLoggedInUser {
     final user = GetStoredUserUseCase()();
 

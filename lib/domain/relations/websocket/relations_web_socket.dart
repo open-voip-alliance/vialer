@@ -34,7 +34,7 @@ class RelationsWebSocket with Loggable {
   }) async {
     if (_auth == null || _socket != null) return;
 
-    Future<void> attemptReconnect(int? closeCode, String log) async {
+    Future<void> attemptReconnect(int? _, String log) async {
       if (_doNotReconnect) {
         logger.info('Not attempting to reconnect as closed locally');
         _socket = null;
