@@ -244,7 +244,7 @@ class ColltactItemList extends StatelessWidget {
         return firstCharacter;
       },
       sharedContact: (sharedContact) =>
-          sharedContact.givenName?.characters.firstOrNull,
+          sharedContact.displayName.characters.firstOrNull,
     );
   }
 
