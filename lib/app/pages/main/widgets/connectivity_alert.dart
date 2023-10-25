@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -31,12 +32,20 @@ class _ConnectivityAlertState extends State<ConnectivityAlert> {
 
   void _showOrHideSnackBar(BuildContext context, ConnectivityState state) {
     if (state is Disconnected) {
+      final message = context.msg.connectivity.noConnection.message;
+
+      SemanticsService.announce(
+        message,
+        Directionality.of(context),
+        assertiveness: Assertiveness.assertive,
+      );
+
       showSnackBar(
         context,
         // Hacky way of showing the snack bar 'forever'
         duration: const Duration(days: 365),
         icon: const FaIcon(FontAwesomeIcons.exclamation),
-        label: Text(context.msg.connectivity.noConnection.message),
+        label: Text(message),
       );
     }
 
