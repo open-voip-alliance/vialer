@@ -14,5 +14,6 @@ class LoggedInUserAvailabilityChanged
   const factory LoggedInUserAvailabilityChanged({
     required UserAvailabilityChangedPayload availability,
     required UserAvailabilityStatus userAvailabilityStatus,
+    required bool isRingingDeviceOffline,
   }) = _LoggedInUserAvailabilityChanged;
 }

@@ -33,7 +33,12 @@ class UserAvailabilityStatusCubit extends Cubit<UserAvailabilityStatusState> {
         ) {
     _eventBus
       ..on<LoggedInUserAvailabilityChanged>(
-        (event) => unawaited(check(availability: event.userAvailabilityStatus)),
+        (event) => unawaited(
+          check(
+            availability: event.userAvailabilityStatus,
+            isRingingDeviceOffline: event.isRingingDeviceOffline,
+          ),
+        ),
       )
       ..on<LoggedInUserWasRefreshed>((_) => unawaited(check()))
       ..on<UserDevicesChanged>((_) => unawaited(check()));
@@ -49,7 +54,6 @@ class UserAvailabilityStatusCubit extends Cubit<UserAvailabilityStatusState> {
     UserAvailabilityStatus requestedStatus,
     List<Destination> destinations,
   ) async {
-    requestedStatus = requestedStatus.basic;
     check();
 
     final user = GetLoggedInUserUseCase()();
@@ -94,15 +98,12 @@ class UserAvailabilityStatusCubit extends Cubit<UserAvailabilityStatusState> {
           CallSetting.destination: const Destination.notAvailable(),
           CallSetting.dnd: false,
         },
-      _ => throw ArgumentError(
-          'Only [available], [doNotDisturb], [offline] '
-          'are valid options for setting user status.',
-        ),
     };
   }
 
   Future<void> check({
     UserAvailabilityStatus? availability,
+    bool isRingingDeviceOffline = false,
   }) async {
     final destination = _user?.currentDestination;
     final availableDestinations = _destinations.availableDestinations;
@@ -112,6 +113,7 @@ class UserAvailabilityStatusCubit extends Cubit<UserAvailabilityStatusState> {
         status: availability,
         currentDestination: destination,
         availableDestinations: availableDestinations,
+        isRingingDeviceOffline: isRingingDeviceOffline,
       ));
     }
 

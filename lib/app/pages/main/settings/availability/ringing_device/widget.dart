@@ -20,6 +20,7 @@ class RingingDevice extends StatelessWidget {
     required this.onDestinationChanged,
     required this.userAvailabilityStatus,
     this.enabled = true,
+    required this.isRingingDeviceOffline,
     super.key,
   });
 
@@ -28,13 +29,15 @@ class RingingDevice extends StatelessWidget {
   final DestinationChangedCallback onDestinationChanged;
   final UserAvailabilityStatus userAvailabilityStatus;
   final bool enabled;
+  final bool isRingingDeviceOffline;
 
-  bool get shouldEntireWidgetBeDisabled => switch (userAvailabilityStatus) {
-        UserAvailabilityStatus.online => false,
-        UserAvailabilityStatus.onlineWithRingingDeviceOffline => false,
-        UserAvailabilityStatus.doNotDisturb => true,
-        UserAvailabilityStatus.offline => true,
-      };
+  bool get shouldEntireWidgetBeDisabled => isRingingDeviceOffline
+      ? false
+      : switch (userAvailabilityStatus) {
+          UserAvailabilityStatus.online => false,
+          UserAvailabilityStatus.doNotDisturb => true,
+          UserAvailabilityStatus.offline => true,
+        };
 
   @override
   Widget build(BuildContext context) {
@@ -43,8 +46,7 @@ class RingingDevice extends StatelessWidget {
     final fixedDestinations = destinations.fixedDestinationsFor(user: user);
     final deskPhones = destinations.deskPhonesFor(user: user);
     final enableButtons = !shouldEntireWidgetBeDisabled && enabled;
-    final showDeviceOfflineWarning = userAvailabilityStatus ==
-        UserAvailabilityStatus.onlineWithRingingDeviceOffline;
+    final showDeviceOfflineWarning = isRingingDeviceOffline;
     final showSomeDevicesOfflineWarning =
         destinations.areSomeRingingDevicesOffline(user);
 
@@ -70,8 +72,7 @@ class RingingDevice extends StatelessWidget {
                   destinations: destinations,
                   onDestinationChanged: onDestinationChanged,
                   parentWidgetIsEnabled: !shouldEntireWidgetBeDisabled,
-                  isRingingDeviceOffline: userAvailabilityStatus ==
-                      UserAvailabilityStatus.onlineWithRingingDeviceOffline,
+                  isRingingDeviceOffline: isRingingDeviceOffline,
                 ),
               if (deskPhones.isNotEmpty)
                 RingingDeviceButton(
@@ -81,8 +82,7 @@ class RingingDevice extends StatelessWidget {
                   destinations: destinations,
                   onDestinationChanged: onDestinationChanged,
                   parentWidgetIsEnabled: !shouldEntireWidgetBeDisabled,
-                  isRingingDeviceOffline: userAvailabilityStatus ==
-                      UserAvailabilityStatus.onlineWithRingingDeviceOffline,
+                  isRingingDeviceOffline: isRingingDeviceOffline,
                 ),
               if (webphoneAccount != null)
                 RingingDeviceButton(
@@ -92,8 +92,7 @@ class RingingDevice extends StatelessWidget {
                   destinations: destinations,
                   onDestinationChanged: onDestinationChanged,
                   parentWidgetIsEnabled: !shouldEntireWidgetBeDisabled,
-                  isRingingDeviceOffline: userAvailabilityStatus ==
-                      UserAvailabilityStatus.onlineWithRingingDeviceOffline,
+                  isRingingDeviceOffline: isRingingDeviceOffline,
                 ),
               if (fixedDestinations.isNotEmpty)
                 RingingDeviceButton(
@@ -103,8 +102,7 @@ class RingingDevice extends StatelessWidget {
                   destinations: destinations,
                   onDestinationChanged: onDestinationChanged,
                   parentWidgetIsEnabled: !shouldEntireWidgetBeDisabled,
-                  isRingingDeviceOffline: userAvailabilityStatus ==
-                      UserAvailabilityStatus.onlineWithRingingDeviceOffline,
+                  isRingingDeviceOffline: isRingingDeviceOffline,
                 ),
             ],
           ),

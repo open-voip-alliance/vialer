@@ -11,5 +11,6 @@ class UserAvailabilityStatusState with _$UserAvailabilityStatusState {
     required UserAvailabilityStatus status,
     Destination? currentDestination,
     @Default([]) List<Destination> availableDestinations,
+    @Default(false) bool isRingingDeviceOffline,
   }) = _UserAvailabilityStatusState;
 }
