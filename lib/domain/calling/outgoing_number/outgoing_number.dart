@@ -65,6 +65,8 @@ sealed class OutgoingNumber with _$OutgoingNumber {
 
     return false;
   }
+
+  int get hashCode => valueOrEmpty.hashCode;
 }
 
 const _suppressed = 'suppressed';
