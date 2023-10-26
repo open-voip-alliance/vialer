@@ -1,10 +1,13 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:vialer/domain/relations/websocket/payloads/payload.dart';
 
 part 'user_devices_changed.freezed.dart';
 part 'user_devices_changed.g.dart';
 
 @freezed
-class UserDevicesChangedPayload with _$UserDevicesChangedPayload {
+class UserDevicesChangedPayload
+    with _$UserDevicesChangedPayload
+    implements Payload {
   @JsonSerializable(fieldRename: FieldRename.snake)
   const factory UserDevicesChangedPayload({
     required String userUuid,

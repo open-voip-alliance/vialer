@@ -3,8 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:vialer/app/pages/main/relations/widget.dart';
 import 'package:vialer/app/pages/main/settings/cubit.dart';
 import 'package:vialer/app/pages/main/widgets/bottom_navigation_profile_icon.dart';
+import 'package:vialer/app/pages/main/widgets/caller/cubit.dart';
 import 'package:vialer/app/pages/main/widgets/user_availability_status_builder/cubit.dart';
 
 import '../../resources/localizations.dart';
@@ -14,8 +16,11 @@ import '../../widgets/app_update_checker/widget.dart';
 import '../../widgets/nested_children.dart';
 import '../../widgets/transparent_status_bar.dart';
 import 'call/widgets/call_button.dart';
-import 'colltacts/colleagues/widget.dart';
+import 'colltacts/colleagues/cubit.dart';
+import 'colltacts/contacts/cubit.dart';
+import 'colltacts/cubit.dart';
 import 'colltacts/page.dart';
+import 'colltacts/shared_contacts/cubit.dart';
 import 'dialer/page.dart';
 import 'recent/page.dart';
 import 'settings/page.dart';
@@ -111,7 +116,6 @@ class MainPageState extends State<MainPage> {
       [
         (child) => SurveyTriggerer(child: child),
         (child) => AppUpdateChecker.create(child: child),
-        (child) => ColleagueWebSocket.connect(child: child),
         (child) => BlocProvider<SettingsCubit>(
               create: (_) => SettingsCubit(),
               child: child,
@@ -125,6 +129,29 @@ class MainPageState extends State<MainPage> {
                   child: child,
                 );
               },
+            ),
+        (child) => MultiWidgetChildWithDependencies(
+              builder: (context) {
+                return BlocProvider<ColleaguesCubit>(
+                  create: (_) => ColleaguesCubit(context.watch<CallerCubit>()),
+                  child: child,
+                );
+              },
+            ),
+        (child) => Builder(
+              builder: (context) {
+                return BlocProvider<ColltactsTabsCubit>(
+                  create: (_) => ColltactsTabsCubit(
+                    context.watch<ContactsCubit>(),
+                    context.watch<ColleaguesCubit>(),
+                    context.watch<SharedContactsCubit>(),
+                  ),
+                  child: child,
+                );
+              },
+            ),
+        (child) => BuildWebSocketDependantCubitsThenConnect(
+              child: child,
             ),
       ],
       Scaffold(
@@ -371,4 +398,29 @@ class _AnimatedIndexedStackState extends State<_AnimatedIndexedStack>
 class _Keys {
   final page = GlobalKey<MainPageState>();
   final navigationBar = GlobalKey<State<BottomNavigationBar>>();
+}
+
+/// Multiple cubits require the initial data that we receive when connecting
+/// to the websocket so we want to ensure these cubits are created and
+/// listening for events before we connect to the WebSocket.
+class BuildWebSocketDependantCubitsThenConnect extends StatelessWidget {
+  const BuildWebSocketDependantCubitsThenConnect({
+    super.key,
+    required this.child,
+  });
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiWidgetChildWithDependencies(
+      builder: (context) => BlocProvider.value(
+        value: BlocProvider.of<ColleaguesCubit>(context),
+        child: BlocProvider.value(
+          value: BlocProvider.of<UserAvailabilityStatusCubit>(context),
+          child: RelationsWebSocketManager.connect(child),
+        ),
+      ),
+    );
+  }
 }

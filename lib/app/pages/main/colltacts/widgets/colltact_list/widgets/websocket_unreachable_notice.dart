@@ -8,8 +8,8 @@ import '../../../../widgets/notice/widgets/banner.dart';
 import '../../../../../../resources/localizations.dart';
 import '../../../../../../util/brand.dart';
 
-class WebsocketUnreachableNotice extends StatelessWidget {
-  const WebsocketUnreachableNotice({super.key});
+class WebSocketUnreachableNotice extends StatelessWidget {
+  const WebSocketUnreachableNotice({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,13 +18,13 @@ class WebsocketUnreachableNotice extends StatelessWidget {
       child: BlocBuilder<ColleaguesCubit, ColleaguesState>(
         builder: (_, state) {
           final colleaguesCubit = context.watch<ColleaguesCubit>();
-          final showWebsocketUnreachableNotice =
+          final showWebSocketUnreachableNotice =
               colleaguesCubit.shouldShowColleagues &&
                   state is ColleaguesLoaded &&
                   !state.upToDate;
 
           return AnimatedVisibility(
-            visible: showWebsocketUnreachableNotice,
+            visible: showWebSocketUnreachableNotice,
             child: NoticeBanner(
               icon: const FaIcon(FontAwesomeIcons.question),
               title: Text(

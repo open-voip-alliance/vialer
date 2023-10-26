@@ -38,6 +38,7 @@ import 'domain/onboarding/country_repository.dart';
 import 'domain/openings_hours_basic/opening_hours_repository.dart';
 import 'domain/openings_hours_basic/opening_hours_service.dart';
 import 'domain/relations/colleagues/colleagues_repository.dart';
+import 'domain/relations/websocket/relations_web_socket.dart';
 import 'domain/remote_logging/logging.dart';
 import 'domain/user/connectivity/connectivity.dart';
 import 'domain/user/info/build_info_repository.dart';
@@ -108,13 +109,15 @@ Future<void> initializeDependencies({bool ui = true}) async {
           dependencyLocator<VoipgridApiResourceCollector>(),
         ),
       )
-      ..registerSingleton<ColleaguesRepository>(
-        ColleaguesRepository(
+      ..registerSingletonWithDependencies<ColleaguesRepository>(
+        () => ColleaguesRepository(
           dependencyLocator<VoipgridService>(),
           dependencyLocator<VoipgridApiResourceCollector>(),
-          dependencyLocator<EventBus>(),
+          dependencyLocator<StorageRepository>(),
         ),
-      );
+        dependsOn: [StorageRepository],
+      )
+      ..registerSingleton<RelationsWebSocket>(RelationsWebSocket());
   }
 
   dependencyLocator
