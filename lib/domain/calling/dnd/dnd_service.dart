@@ -22,13 +22,13 @@ abstract class DndService extends ChopperService {
     );
   }
 
-  @Get(path: 'clients/{clientUuid}/users/{userUuid}')
+  @Get(path: 'clients/{clientUuid}/users/{userUuid}/status')
   Future<Response<Map<String, dynamic>>> getDndStatus({
     @Path() required String clientUuid,
     @Path() required String userUuid,
   });
 
-  @Post(path: 'clients/{clientUuid}/users/{userUuid}')
+  @Post(path: 'clients/{clientUuid}/users/{userUuid}/status')
   Future<Response<Map<String, dynamic>>> changeDndStatus(
     @Body() Map<String, dynamic> body, {
     @Path() required String clientUuid,

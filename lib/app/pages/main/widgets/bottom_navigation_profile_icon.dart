@@ -16,32 +16,39 @@ class BottomNavigationProfileIcon extends StatelessWidget {
   final bool large;
   final Color? color;
 
-  IconData _icon(UserAvailabilityStatus status) => switch (status) {
-        UserAvailabilityStatus.doNotDisturb => FontAwesomeIcons.solidBellSlash,
-        UserAvailabilityStatus.offline => FontAwesomeIcons.solidMinus,
-        UserAvailabilityStatus.onlineWithRingingDeviceOffline =>
-          FontAwesomeIcons.exclamation,
-        UserAvailabilityStatus.online => FontAwesomeIcons.solidCheck,
-      };
+  IconData _icon(
+    UserAvailabilityStatus status,
+    bool isRingingDeviceOffline,
+  ) =>
+      isRingingDeviceOffline
+          ? FontAwesomeIcons.exclamation
+          : switch (status) {
+              UserAvailabilityStatus.doNotDisturb =>
+                FontAwesomeIcons.solidBellSlash,
+              UserAvailabilityStatus.offline => FontAwesomeIcons.solidMinus,
+              UserAvailabilityStatus.online => FontAwesomeIcons.solidCheck,
+            };
 
   Color _color(
     BuildContext context,
     UserAvailabilityStatus status,
+    bool isRingingDeviceOffline,
   ) =>
-      switch (status) {
-        UserAvailabilityStatus.doNotDisturb =>
-          context.brand.theme.colors.userAvailabilityUnavailableIcon,
-        UserAvailabilityStatus.offline =>
-          context.brand.theme.colors.userAvailabilityOffline,
-        UserAvailabilityStatus.onlineWithRingingDeviceOffline =>
-          context.brand.theme.colors.red1,
-        UserAvailabilityStatus.online => context.brand.theme.colors.green1,
-      };
+      isRingingDeviceOffline
+          ? context.brand.theme.colors.red1
+          : switch (status) {
+              UserAvailabilityStatus.doNotDisturb =>
+                context.brand.theme.colors.userAvailabilityUnavailableIcon,
+              UserAvailabilityStatus.offline =>
+                context.brand.theme.colors.userAvailabilityOffline,
+              UserAvailabilityStatus.online =>
+                context.brand.theme.colors.green1,
+            };
 
   @override
   Widget build(BuildContext context) {
     return UserAvailabilityStatusBuilder(
-      builder: (context, status) {
+      builder: (context, status, isRingingDeviceOffline) {
         return Stack(
           clipBehavior: Clip.none,
           children: [
@@ -58,7 +65,7 @@ class BottomNavigationProfileIcon extends StatelessWidget {
               child: Container(
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: _color(context, status),
+                  color: _color(context, status, isRingingDeviceOffline),
                 ),
                 constraints: BoxConstraints(
                   minWidth: large ? 16 : 12,
@@ -68,7 +75,7 @@ class BottomNavigationProfileIcon extends StatelessWidget {
                   padding: const EdgeInsets.all(2),
                   child: Center(
                     child: FaIcon(
-                      _icon(status),
+                      _icon(status, isRingingDeviceOffline),
                       color: Colors.white,
                       size: large ? 10 : 8,
                     ),

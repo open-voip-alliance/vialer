@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:vialer/app/pages/main/settings/availability/ringing_device/widget.dart';
 
-import '../../../../../../../domain/relations/user_availability_status.dart';
 import '../../../../../../../domain/user/settings/call_setting.dart';
 import '../../widgets/user_availability_status_builder/cubit.dart';
 import '../../widgets/user_availability_status_builder/widget.dart';
@@ -28,11 +27,11 @@ class AvailabilitySwitcher extends StatelessWidget {
     return BlocBuilder<SettingsCubit, SettingsState>(
       builder: (_, state) {
         return UserAvailabilityStatusBuilder(
-          listener: (context, status) =>
-              status == UserAvailabilityStatus.onlineWithRingingDeviceOffline
+          listener: (context, status, isRingingDeviceOffline) =>
+              isRingingDeviceOffline
                   ? _showSnackBar(context)
                   : _hideSnackBar(context),
-          builder: (context, status) {
+          builder: (context, status, isRingingDeviceOffline) {
             return SettingTile(
               padding: EdgeInsets.zero,
               mergeSemantics: false,
@@ -51,6 +50,7 @@ class AvailabilitySwitcher extends StatelessWidget {
                       user: state.user,
                       enabled: state.shouldAllowRemoteSettings,
                       userAvailabilityStatus: status,
+                      isRingingDeviceOffline: isRingingDeviceOffline,
                     ),
                   ),
                   if (state.availableDestinations.length >= 2)
@@ -65,6 +65,7 @@ class AvailabilitySwitcher extends StatelessWidget {
                       ),
                       enabled: state.shouldAllowRemoteSettings,
                       userAvailabilityStatus: status,
+                      isRingingDeviceOffline: isRingingDeviceOffline,
                     ),
                 ],
               ),

@@ -14,6 +14,7 @@ class AvailabilityStatusPicker extends StatelessWidget {
     required this.user,
     required this.userAvailabilityStatus,
     this.enabled = true,
+    required this.isRingingDeviceOffline,
     super.key,
   });
 
@@ -21,6 +22,7 @@ class AvailabilityStatusPicker extends StatelessWidget {
   final User user;
   final bool enabled;
   final UserAvailabilityStatus userAvailabilityStatus;
+  final bool isRingingDeviceOffline;
 
   @override
   Widget build(BuildContext context) {
@@ -28,33 +30,35 @@ class AvailabilityStatusPicker extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         AvailabilityHeader(context.msg.ua.mobile.statusLabel),
-        if (userAvailabilityStatus !=
-            UserAvailabilityStatus.onlineWithRingingDeviceOffline)
+        if (!isRingingDeviceOffline)
           AvailabilityStatusButton(
             UserAvailabilityStatus.online,
             current: userAvailabilityStatus,
             enabled: enabled,
             onStatusChanged: onStatusChanged,
+            isRingingDeviceOffline: isRingingDeviceOffline,
           ),
-        if (userAvailabilityStatus ==
-            UserAvailabilityStatus.onlineWithRingingDeviceOffline)
+        if (isRingingDeviceOffline)
           AvailabilityStatusButton(
-            UserAvailabilityStatus.onlineWithRingingDeviceOffline,
+            UserAvailabilityStatus.online,
             current: userAvailabilityStatus,
             enabled: enabled,
             onStatusChanged: onStatusChanged,
+            isRingingDeviceOffline: isRingingDeviceOffline,
           ),
         AvailabilityStatusButton(
           UserAvailabilityStatus.doNotDisturb,
           current: userAvailabilityStatus,
           enabled: enabled,
           onStatusChanged: onStatusChanged,
+          isRingingDeviceOffline: isRingingDeviceOffline,
         ),
         AvailabilityStatusButton(
           UserAvailabilityStatus.offline,
           current: userAvailabilityStatus,
           enabled: enabled,
           onStatusChanged: onStatusChanged,
+          isRingingDeviceOffline: isRingingDeviceOffline,
         ),
       ],
     );
