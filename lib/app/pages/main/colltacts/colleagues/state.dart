@@ -6,10 +6,11 @@ import '../../../../../domain/relations/colleagues/colleague.dart';
 part 'state.freezed.dart';
 
 @freezed
-class ColleaguesState with _$ColleaguesState {
+sealed class ColleaguesState with _$ColleaguesState {
   const factory ColleaguesState.loading({
     required bool showOnlineColleaguesOnly,
   }) = LoadingColleagues;
+
   const factory ColleaguesState.loaded(
     List<Colleague> colleagues, {
     required bool showOnlineColleaguesOnly,
