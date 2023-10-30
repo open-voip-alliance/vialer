@@ -67,20 +67,12 @@ class SharedContactFormCubit extends Cubit<SharedContactFormState> {
     emit(SharedContactFormState.inProgress());
 
     try {
-      if (phoneNumbers == null) {
-        await _createSharedContact(
-          firstName: firstName,
-          lastName: lastName,
-          company: company,
-        );
-      } else {
-        await _createSharedContact(
-          firstName: firstName,
-          lastName: lastName,
-          company: company,
-          phoneNumbers: phoneNumbers,
-        );
-      }
+      await _createSharedContact(
+        firstName: firstName,
+        lastName: lastName,
+        company: company,
+        phoneNumbers: phoneNumbers ?? [],
+      );
       emit(SharedContactFormState.success());
     } catch (error) {
       emit(SharedContactFormState.error(

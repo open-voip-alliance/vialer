@@ -2,11 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:vialer/app/resources/theme.dart';
 
-const _horizontalLeadingPadding = 12.0;
-const _horizontalTrailingPadding = 16.0;
-const _iconWidth = 48.0;
-const _bottomVerticalPadding = 12.0;
-
 class SharedContactFieldRow extends StatelessWidget {
   const SharedContactFieldRow({
     this.icon,
@@ -35,12 +30,12 @@ class SharedContactFieldRow extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(
-            horizontal: _horizontalLeadingPadding,
+            horizontal: 12.0,
           ),
           child: Row(
             children: <Widget>[
               Container(
-                width: _iconWidth,
+                width: 48.0,
                 alignment: Alignment.center,
                 child: FaIcon(
                   icon,
@@ -64,13 +59,15 @@ class SharedContactFieldRow extends StatelessWidget {
                         width: 10,
                       ),
                       Container(
-                        width: _iconWidth,
+                        width: 48.0,
                         child: OutlinedButton(
                           onPressed: () => onDelete!(key!),
                           style: OutlinedButton.styleFrom(
                             backgroundColor: Colors.white,
                             padding: const EdgeInsets.symmetric(
-                                vertical: 12, horizontal: 12),
+                              vertical: 12,
+                              horizontal: 12,
+                            ),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
@@ -86,12 +83,12 @@ class SharedContactFieldRow extends StatelessWidget {
                   ),
                 ),
               const SizedBox(
-                width: _horizontalTrailingPadding,
+                width: 16.0,
               ),
             ],
           ),
         ),
-        const SizedBox(height: _bottomVerticalPadding),
+        const SizedBox(height: 12.0),
       ],
     );
   }

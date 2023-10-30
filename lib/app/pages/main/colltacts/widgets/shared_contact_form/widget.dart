@@ -104,21 +104,6 @@ class _SharedContactFormState extends State<_SharedContactForm> {
     });
   }
 
-  Widget _addConclusionButton({
-    required String title,
-    required void Function() onPressed,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 36,
-      ),
-      child: SettingsButton(
-        onPressed: onPressed,
-        text: title,
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<SharedContactFormCubit, SharedContactFormState>(
@@ -146,10 +131,14 @@ class _SharedContactFormState extends State<_SharedContactForm> {
 
         if (state is InProgress) {
           return LoadingIndicator(
-            title: Text(context
-                .msg.main.contacts.sharedContacts.form.loadingIndicator.title),
-            description: Text(context.msg.main.contacts.sharedContacts.form
-                .loadingIndicator.description),
+            title: Text(
+              context
+                  .msg.main.contacts.sharedContacts.form.loadingIndicator.title,
+            ),
+            description: Text(
+              context.msg.main.contacts.sharedContacts.form.loadingIndicator
+                  .description,
+            ),
           );
         }
 
@@ -254,14 +243,14 @@ class _SharedContactFormState extends State<_SharedContactForm> {
                     ),
                   ),
                 const SizedBox(height: 36),
-                _addConclusionButton(
+                _ConclusionButton(
                   title: context
                       .msg.main.contacts.sharedContacts.form.cancelButtonTitle
                       .toUpperCaseIfAndroid(context),
                   onPressed: () => Navigator.pop(context),
                 ),
                 const SizedBox(height: 6),
-                _addConclusionButton(
+                _ConclusionButton(
                   title: context.msg.main.contacts.sharedContacts.form
                       .saveContactButtonTitle
                       .toUpperCaseIfAndroid(context),
@@ -285,6 +274,32 @@ class _SharedContactFormState extends State<_SharedContactForm> {
           ),
         );
       },
+    );
+  }
+}
+
+class _ConclusionButton extends StatelessWidget {
+  const _ConclusionButton({
+    required this.title,
+    required this.onPressed,
+    Key? key,
+  }) : super(key: key);
+
+  final String title;
+  final void Function() onPressed;
+
+  @override
+  Widget build(
+    BuildContext context,
+  ) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 36,
+      ),
+      child: SettingsButton(
+        onPressed: onPressed,
+        text: title,
+      ),
     );
   }
 }
