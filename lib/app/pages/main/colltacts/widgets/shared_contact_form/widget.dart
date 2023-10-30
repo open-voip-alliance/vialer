@@ -12,9 +12,7 @@ import 'cubit.dart';
 import 'state.dart';
 import 'util/field_row.dart';
 
-const _horizontalPadding = 12.0;
-const _leadingSize = 48.0;
-const _verticalPadding = 6.0;
+/// This is a back-end limitation
 const _maximumPhoneNumberFields = 10;
 
 class SharedContactForm extends StatelessWidget {
@@ -75,7 +73,8 @@ class _SharedContactFormState extends State<_SharedContactForm> {
 
   int get _phoneNumberFieldsCount => _deletablePhoneNumberFields.length + 1;
 
-  void _addDeletablePhoneNumberField(SharedContactFormCubit cubit) {
+  void _addDeletablePhoneNumberField(
+      SharedContactFormCubit cubit, BuildContext context) {
     final key = UniqueKey();
     _deletablePhoneNumberFields = List.from(_deletablePhoneNumberFields)
       ..add(
@@ -87,7 +86,10 @@ class _SharedContactFormState extends State<_SharedContactForm> {
           initialValue: () =>
               phoneNumbers[key].isNullOrEmpty ? null : phoneNumbers[key],
           isForPhoneNumber: true,
-          validator: (value) => cubit.validatePhoneNumber(value),
+          validator: (value) => cubit.validatePhoneNumber(
+            value,
+            context,
+          ),
           onValueChanged: (value) => phoneNumbers[key] = value,
           isDeletable: true,
           onDelete: (key) => _deletePhoneNumberField(key),
@@ -96,13 +98,9 @@ class _SharedContactFormState extends State<_SharedContactForm> {
   }
 
   void _deletePhoneNumberField(Key key) {
-    final fieldToBeDeleted =
-        _deletablePhoneNumberFields.firstWhere((e) => e.key == key);
-    final index = _deletablePhoneNumberFields.indexOf(fieldToBeDeleted);
-
     phoneNumbers.remove(key);
     setState(() {
-      _deletablePhoneNumberFields.removeAt(index);
+      _deletablePhoneNumberFields.removeWhere((e) => e.key == key);
     });
   }
 
@@ -112,7 +110,7 @@ class _SharedContactFormState extends State<_SharedContactForm> {
   }) {
     return Padding(
       padding: const EdgeInsets.symmetric(
-        horizontal: _horizontalPadding * 3,
+        horizontal: 36,
       ),
       child: SettingsButton(
         onPressed: onPressed,
@@ -167,7 +165,12 @@ class _SharedContactFormState extends State<_SharedContactForm> {
                   initialValue: () =>
                       firstName.isNullOrEmpty ? null : firstName,
                   validator: (value) => cubit.validateText(
-                      value, firstName, lastName, company, context),
+                    value,
+                    firstName,
+                    lastName,
+                    company,
+                    context,
+                  ),
                   onValueChanged: (value) => firstName = value,
                 ),
                 SharedContactFieldRow(
@@ -176,7 +179,12 @@ class _SharedContactFormState extends State<_SharedContactForm> {
                       .msg.main.contacts.sharedContacts.form.lastNameHintText,
                   initialValue: () => lastName.isNullOrEmpty ? null : lastName,
                   validator: (value) => cubit.validateText(
-                      value, firstName, lastName, company, context),
+                    value,
+                    firstName,
+                    lastName,
+                    company,
+                    context,
+                  ),
                   onValueChanged: (value) => lastName = value,
                 ),
                 SharedContactFieldRow(
@@ -185,7 +193,12 @@ class _SharedContactFormState extends State<_SharedContactForm> {
                       .msg.main.contacts.sharedContacts.form.companyHintText,
                   initialValue: () => company.isNullOrEmpty ? null : company,
                   validator: (value) => cubit.validateText(
-                      value, firstName, lastName, company, context),
+                    value,
+                    firstName,
+                    lastName,
+                    company,
+                    context,
+                  ),
                   onValueChanged: (value) => company = value,
                 ),
                 SharedContactFieldRow(
@@ -196,24 +209,25 @@ class _SharedContactFormState extends State<_SharedContactForm> {
                       ? null
                       : phoneNumbers[null],
                   isForPhoneNumber: true,
-                  validator: (value) => cubit.validatePhoneNumber(value),
+                  validator: (value) => cubit.validatePhoneNumber(
+                    value,
+                    context,
+                  ),
                   onValueChanged: (value) => phoneNumbers[null] = value,
                 ),
                 Column(
-                  children: <Widget>[
-                    ..._deletablePhoneNumberFields,
-                  ],
+                  children: _deletablePhoneNumberFields,
                 ),
-                const SizedBox(height: _verticalPadding / 2),
+                const SizedBox(height: 3),
                 if (_phoneNumberFieldsCount < _maximumPhoneNumberFields)
                   Padding(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: _horizontalPadding,
+                      horizontal: 12,
                     ),
                     child: Row(
                       children: <Widget>[
                         Container(
-                          width: _leadingSize / 3,
+                          width: 16,
                           alignment: Alignment.center,
                           child: const SizedBox.shrink(),
                         ),
@@ -222,7 +236,10 @@ class _SharedContactFormState extends State<_SharedContactForm> {
                             onPressed: () => setState(() {
                               if (_phoneNumberFieldsCount <
                                   _maximumPhoneNumberFields) {
-                                _addDeletablePhoneNumberField(cubit);
+                                _addDeletablePhoneNumberField(
+                                  cubit,
+                                  context,
+                                );
                               }
                             }),
                             solid: false,
@@ -236,14 +253,14 @@ class _SharedContactFormState extends State<_SharedContactForm> {
                       ],
                     ),
                   ),
-                const SizedBox(height: 6 * _verticalPadding),
+                const SizedBox(height: 36),
                 _addConclusionButton(
                   title: context
                       .msg.main.contacts.sharedContacts.form.cancelButtonTitle
                       .toUpperCaseIfAndroid(context),
                   onPressed: () => Navigator.pop(context),
                 ),
-                const SizedBox(height: _verticalPadding),
+                const SizedBox(height: 6),
                 _addConclusionButton(
                   title: context.msg.main.contacts.sharedContacts.form
                       .saveContactButtonTitle
@@ -251,15 +268,18 @@ class _SharedContactFormState extends State<_SharedContactForm> {
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
                       final phoneNumbersList =
-                          cubit.createListWithoutBlankEntries(
-                              phoneNumbers.values.toList());
+                          phoneNumbers.values.toList().removeBlankEntries();
 
                       cubit.onSubmit(
-                          firstName, lastName, company, phoneNumbersList);
+                        firstName,
+                        lastName,
+                        company,
+                        phoneNumbersList,
+                      );
                     }
                   },
                 ),
-                const SizedBox(height: _verticalPadding * 2),
+                const SizedBox(height: 12),
               ],
             ),
           ),
@@ -267,4 +287,9 @@ class _SharedContactFormState extends State<_SharedContactForm> {
       },
     );
   }
+}
+
+extension on List<String> {
+  List<String> removeBlankEntries() =>
+      where((element) => element.isNotBlank).toList();
 }

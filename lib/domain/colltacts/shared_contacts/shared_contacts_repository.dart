@@ -48,6 +48,7 @@ class SharedContactsRepository with Loggable {
     });
 
     if (!response.isSuccessful) {
+      logFailedResponse(response, name: 'Post create shared contact');
       throw Exception('Error');
     }
   }

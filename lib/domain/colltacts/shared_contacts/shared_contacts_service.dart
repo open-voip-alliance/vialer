@@ -40,13 +40,13 @@ abstract class SharedContactsService extends ChopperService {
     );
   }
 
-  @Get(path: '')
+  @Get()
   Future<Response<List<Map<String, dynamic>>>> getSharedContacts({
     @Query() int page = 1,
     @Query('per_page') int perPage = 500,
   });
 
-  @Post(path: '')
+  @Post()
   Future<Response<Map<String, dynamic>>> createSharedContact(
     @Body() Map<String, dynamic> body,
   );

@@ -10,21 +10,13 @@ class CreateSharedContactUseCase extends UseCase {
     required String firstName,
     required String lastName,
     required String company,
-    required List<String>? phoneNumbers,
+    List<String> phoneNumbers = const [],
   }) {
-    if (phoneNumbers == null) {
-      return _sharedContactsRepository.createSharedContact(
-        firstName,
-        lastName,
-        company,
-      );
-    } else {
-      return _sharedContactsRepository.createSharedContact(
-        firstName,
-        lastName,
-        company,
-        phoneNumbers,
-      );
-    }
+    return _sharedContactsRepository.createSharedContact(
+      firstName,
+      lastName,
+      company,
+      phoneNumbers,
+    );
   }
 }

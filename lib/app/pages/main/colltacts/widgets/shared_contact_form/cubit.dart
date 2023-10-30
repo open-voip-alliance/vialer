@@ -14,8 +14,13 @@ class SharedContactFormCubit extends Cubit<SharedContactFormState> {
 
   final _createSharedContact = CreateSharedContactUseCase();
 
-  String? validateText(String? text, String? firstName, String? lastName,
-      String? company, BuildContext context) {
+  String? validateText(
+    String? text,
+    String? firstName,
+    String? lastName,
+    String? company,
+    BuildContext context,
+  ) {
     final textLengthValidation = _validateTextLength(text, context);
     if (textLengthValidation != null) {
       return textLengthValidation;
@@ -24,14 +29,18 @@ class SharedContactFormCubit extends Cubit<SharedContactFormState> {
   }
 
   String? _validateTextLength(String? text, BuildContext context) {
-    if (text != null && text.length > 256) {
+    if (text != null && text.length > 255) {
       return context.msg.main.contacts.sharedContacts.form.tooLongText;
     }
     return null;
   }
 
-  String? _validateTextFields(String? firstName, String? lastName,
-      String? company, BuildContext context) {
+  String? _validateTextFields(
+    String? firstName,
+    String? lastName,
+    String? company,
+    BuildContext context,
+  ) {
     if (firstName.isNullOrEmpty &&
         lastName.isNullOrEmpty &&
         company.isNullOrEmpty) {
@@ -41,16 +50,12 @@ class SharedContactFormCubit extends Cubit<SharedContactFormState> {
     return null;
   }
 
-  String? validatePhoneNumber(String? text) {
+  String? validatePhoneNumber(String? text, BuildContext context) {
     ///TODO: validate with api call for phone number on a following ticket
+    if (text != null && text.length > 128) {
+      return context.msg.main.contacts.sharedContacts.form.tooLongPhoneNumber;
+    }
     return null;
-  }
-
-  List<String>? createListWithoutBlankEntries(List<String> phoneNumbers) {
-    final phoneNumbersList =
-        phoneNumbers.where((phoneNumber) => phoneNumber.isNotBlank).toList();
-
-    return phoneNumbersList;
   }
 
   void onSubmit(
@@ -59,26 +64,31 @@ class SharedContactFormCubit extends Cubit<SharedContactFormState> {
     String? company,
     List<String>? phoneNumbers,
   ) async {
-    final inProgressState = SharedContactFormState.inProgress();
-    emit(inProgressState);
+    emit(SharedContactFormState.inProgress());
 
     try {
-      await _createSharedContact(
-        firstName: firstName ?? '',
-        lastName: lastName ?? '',
-        company: company ?? '',
-        phoneNumbers: phoneNumbers,
-      );
-      final successState = SharedContactFormState.success();
-      emit(successState);
+      if (phoneNumbers == null) {
+        await _createSharedContact(
+          firstName: firstName ?? '',
+          lastName: lastName ?? '',
+          company: company ?? '',
+        );
+      } else {
+        await _createSharedContact(
+          firstName: firstName ?? '',
+          lastName: lastName ?? '',
+          company: company ?? '',
+          phoneNumbers: phoneNumbers,
+        );
+      }
+      emit(SharedContactFormState.success());
     } catch (error) {
-      final errorState = SharedContactFormState.error(
+      emit(SharedContactFormState.error(
         firstName: firstName,
         lastName: lastName,
         company: company,
         phoneNumbers: phoneNumbers,
-      );
-      emit(errorState);
+      ));
     }
   }
 }
