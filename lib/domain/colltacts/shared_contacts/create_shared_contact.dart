@@ -7,9 +7,9 @@ class CreateSharedContactUseCase extends UseCase {
       dependencyLocator<SharedContactsRepository>();
 
   Future<void> call({
-    required String firstName,
-    required String lastName,
-    required String company,
+    required String? firstName,
+    required String? lastName,
+    required String? company,
     List<String> phoneNumbers = const [],
   }) {
     return _sharedContactsRepository.createSharedContact(

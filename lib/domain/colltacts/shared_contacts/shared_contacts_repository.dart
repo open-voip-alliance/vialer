@@ -27,11 +27,11 @@ class SharedContactsRepository with Loggable {
   }
 
   Future<void> createSharedContact(
-    String givenName,
-    String familyName,
-    String company, [
-    List<String> phoneNumbers = const [],
-  ]) async {
+    String? givenName,
+    String? familyName,
+    String? company,
+    List<String> phoneNumbers,
+  ) async {
     final formattedPhoneNumbersList = phoneNumbers
         .map(
           (phoneNumber) => {'phone_number_flat': phoneNumber},
@@ -39,9 +39,9 @@ class SharedContactsRepository with Loggable {
         .toList();
 
     final response = await _service.createSharedContact({
-      'given_name': givenName,
-      'family_name': familyName,
-      'company_name': company,
+      'given_name': givenName ?? '',
+      'family_name': familyName ?? '',
+      'company_name': company ?? '',
       'phone_numbers': formattedPhoneNumbersList,
       'groups': <dynamic>[],
       'voip_accounts': <dynamic>[],
