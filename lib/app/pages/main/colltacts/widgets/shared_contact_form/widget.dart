@@ -260,7 +260,7 @@ class _SharedContactFormState extends State<_SharedContactForm> {
                         firstName,
                         lastName,
                         company,
-                        phoneNumbers.createValuesListWithNoBlanks(),
+                        phoneNumbers.toListWithoutBlankEntries(),
                       );
                     }
                   },
@@ -301,12 +301,7 @@ class _ConclusionButton extends StatelessWidget {
   }
 }
 
-extension on List<String> {
-  List<String> removeBlankEntries() =>
-      where((element) => element.isNotBlank).toList();
-}
-
 extension on Map<Key?, String> {
-  List<String> createValuesListWithNoBlanks() =>
-      values.toList().removeBlankEntries();
+  List<String> toListWithoutBlankEntries() =>
+      values.where((element) => element.isNotBlank).toList();
 }
