@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -8,9 +10,10 @@ import '../../../../../../../../domain/calling/voip/destination.dart';
 import '../../../../../../../../domain/user/user.dart';
 import '../../../../../resources/localizations.dart';
 import '../../../../../resources/theme.dart';
+import '../../../util/stylized_snack_bar.dart';
 import '../button.dart';
 
-class RingingDeviceButton extends StatelessWidget {
+class RingingDeviceButton extends StatefulWidget {
   const RingingDeviceButton(
     this.type, {
     required this.user,
@@ -30,8 +33,15 @@ class RingingDeviceButton extends StatelessWidget {
   final bool parentWidgetIsEnabled;
   final bool isRingingDeviceOffline;
 
+  @override
+  State<RingingDeviceButton> createState() => _RingingDeviceButtonState();
+}
+
+class _RingingDeviceButtonState extends State<RingingDeviceButton> {
+  bool _showWarningIcon = false;
+
   String _text(BuildContext context) {
-    switch (type) {
+    switch (widget.type) {
       case RingingDeviceType.webphone:
         return context.msg.ua.mobile.devices.webphone;
       case RingingDeviceType.deskPhone:
@@ -45,7 +55,7 @@ class RingingDeviceButton extends StatelessWidget {
   }
 
   IconData get _icon {
-    switch (type) {
+    switch (widget.type) {
       case RingingDeviceType.webphone:
         return FontAwesomeIcons.desktop;
       case RingingDeviceType.deskPhone:
@@ -58,18 +68,18 @@ class RingingDeviceButton extends StatelessWidget {
     }
   }
 
-  List<Destination?> get _destinations => switch (type) {
+  List<Destination?> get _destinations => switch (widget.type) {
         RingingDeviceType.webphone => [
-            destinations.findWebphoneAccountFor(user: user)
+            widget.destinations.findWebphoneAccountFor(user: widget.user)
           ],
         RingingDeviceType.deskPhone ||
         RingingDeviceType.unknown =>
-          destinations.deskPhonesFor(user: user),
+          widget.destinations.deskPhonesFor(user: widget.user),
         RingingDeviceType.mobile => [
-            destinations.findAppAccountFor(user: user)
+            widget.destinations.findAppAccountFor(user: widget.user)
           ],
         RingingDeviceType.fixed =>
-          destinations.fixedDestinationsFor(user: user),
+          widget.destinations.fixedDestinationsFor(user: widget.user),
       };
 
   Destination? get _destination {
@@ -82,13 +92,14 @@ class RingingDeviceButton extends StatelessWidget {
   }
 
   IconData? get _trailingIcon {
-    if (!_isAtLeastOneDestinationOnline) {
+    if (_showWarningIcon) {
       return FontAwesomeIcons.solidTriangleExclamation;
     }
 
-    if (user.ringingDevice != type || !enabled) return null;
+    if (widget.user.ringingDevice != widget.type || !widget.enabled)
+      return null;
 
-    return isRingingDeviceOffline
+    return widget.isRingingDeviceOffline
         ? FontAwesomeIcons.solidTriangleExclamation
         : FontAwesomeIcons.solidBellOn;
   }
@@ -98,11 +109,57 @@ class RingingDeviceButton extends StatelessWidget {
             destination is PhoneAccount ? destination.isOnline : true,
       );
 
-  void _onPressed(
+  Timer? _timer;
+
+  bool get _isCurrentUserDestination =>
+      widget.user.ringingDevice == widget.type;
+
+  Future<void> _showSelectedRingingDeviceOfflineWarning(
     BuildContext context,
-  ) {
-    if (enabled && _isAtLeastOneDestinationOnline && _destination != null) {
-      onDestinationChanged(_destination!);
+  ) async {
+    final warningDuration = const Duration(seconds: 3);
+
+    setState(() => _showWarningIcon = true);
+
+    if (_timer != null) {
+      _timer?.cancel();
+      _timer = null;
+    }
+
+    Timer(warningDuration, () {
+      setState(() => _showWarningIcon = false);
+    });
+
+    ScaffoldMessenger.of(context).clearSnackBars();
+
+    showSnackBar(
+      context,
+      duration: warningDuration,
+      icon: FaIcon(
+        FontAwesomeIcons.solidTriangleExclamation,
+        size: 22,
+        color: context.brand.theme.colors.primaryDark,
+      ),
+      label: Text(
+        context.msg.main.colleagues.status.someDevicesOffline,
+        style: TextStyle(
+          color: context.brand.theme.colors.primaryDark,
+          fontSize: 14,
+        ),
+      ),
+      backgroundColor: context.brand.theme.colors.primaryLight,
+      contentPadding: EdgeInsets.symmetric(vertical: 4),
+    );
+  }
+
+  void _onPressed(BuildContext context) {
+    if (!_isAtLeastOneDestinationOnline) {
+      _showSelectedRingingDeviceOfflineWarning(context);
+      return;
+    }
+
+    if (widget.enabled) {
+      widget.onDestinationChanged(_destination!);
       SemanticsService.announce(
         context.msg.main.settings.list.calling.availability.screenReader
             .ringingDevice
@@ -112,20 +169,42 @@ class RingingDeviceButton extends StatelessWidget {
     }
   }
 
+  Color? _backgroundColor(BuildContext context) {
+    if (widget.isRingingDeviceOffline && _isCurrentUserDestination) {
+      return context.brand.theme.colors.userAvailabilityBusy;
+    }
+
+    if (!_isAtLeastOneDestinationOnline) {
+      return context.brand.theme.colors.userAvailabilityUnknown;
+    }
+
+    return null;
+  }
+
+  Color? _foregroundColor(BuildContext context) {
+    if (widget.isRingingDeviceOffline && _isCurrentUserDestination) {
+      return context.brand.theme.colors.userAvailabilityBusyAccent;
+    }
+
+    if (!_isAtLeastOneDestinationOnline) {
+      return context.brand.theme.colors.disabledText;
+    }
+
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return AvailabilityButton(
       text: _text(context),
       leadingIcon: _icon,
       trailingIcon: _trailingIcon,
-      isActive: parentWidgetIsEnabled && user.ringingDevice == type,
+      isActive: widget.parentWidgetIsEnabled && _isCurrentUserDestination,
       onPressed: () => _onPressed(context),
-      backgroundColor: isRingingDeviceOffline
-          ? context.brand.theme.colors.userAvailabilityBusy
-          : null,
-      foregroundColor: isRingingDeviceOffline
-          ? context.brand.theme.colors.userAvailabilityBusyAccent
-          : null,
+      backgroundColor: _backgroundColor(context),
+      foregroundColor: _foregroundColor(context),
+      disabledBackgroundColor: _backgroundColor(context),
+      disabledForegroundColor: _foregroundColor(context),
       isDestinationOnline: _isAtLeastOneDestinationOnline,
     );
   }

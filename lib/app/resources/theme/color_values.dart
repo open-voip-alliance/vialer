@@ -27,6 +27,7 @@ class ColorValues {
     required this.primaryGradientStart,
     required this.primaryGradientEnd,
     this.infoText = 0xFF666666,
+    this.disabledText = 0xFFA3A3A3,
     this.onPrimary = 0xFFFFFFFF,
     this.grey1 = 0xFFCCCCCC,
     this.grey2 = 0xFFD8D8D8,
@@ -152,6 +153,7 @@ class ColorValues {
   final int primaryLight;
 
   final int infoText;
+  final int disabledText;
 
   /// Color for use when the [primary] color is the background.
   final int onPrimary;
