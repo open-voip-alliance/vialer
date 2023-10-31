@@ -256,14 +256,11 @@ class _SharedContactFormState extends State<_SharedContactForm> {
                       .toUpperCaseIfAndroid(context),
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      final phoneNumbersList =
-                          phoneNumbers.values.toList().removeBlankEntries();
-
                       cubit.onSubmit(
                         firstName,
                         lastName,
                         company,
-                        phoneNumbersList,
+                        phoneNumbers.createValuesListWithNoBlanks(),
                       );
                     }
                   },
@@ -307,4 +304,9 @@ class _ConclusionButton extends StatelessWidget {
 extension on List<String> {
   List<String> removeBlankEntries() =>
       where((element) => element.isNotBlank).toList();
+}
+
+extension on Map<Key?, String> {
+  List<String> createValuesListWithNoBlanks() =>
+      values.toList().removeBlankEntries();
 }

@@ -43,8 +43,8 @@ class SharedContactsRepository with Loggable {
       'family_name': familyName ?? '',
       'company_name': company ?? '',
       'phone_numbers': formattedPhoneNumbersList,
-      'groups': <dynamic>[],
-      'voip_accounts': <dynamic>[],
+      'groups': const <dynamic>[],
+      'voip_accounts': const <dynamic>[],
     });
 
     if (!response.isSuccessful) {

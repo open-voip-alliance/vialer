@@ -71,7 +71,7 @@ class SharedContactFormCubit extends Cubit<SharedContactFormState> {
         firstName: firstName,
         lastName: lastName,
         company: company,
-        phoneNumbers: phoneNumbers ?? [],
+        phoneNumbers: phoneNumbers ?? const [],
       );
       emit(SharedContactFormState.success());
     } catch (error) {

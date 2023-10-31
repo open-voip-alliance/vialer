@@ -124,7 +124,7 @@ class _SharedContactTextFormField extends StatelessWidget {
           hintStyle: TextStyle(color: context.brand.theme.colors.grey5),
           fillColor: Colors.white,
           filled: true,
-          contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+          contentPadding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10.0),
             borderSide: BorderSide(
