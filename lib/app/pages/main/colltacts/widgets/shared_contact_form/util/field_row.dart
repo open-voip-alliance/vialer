@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:vialer/app/resources/theme.dart';
@@ -117,8 +119,11 @@ class _SharedContactTextFormField extends StatelessWidget {
         validator: validator,
         initialValue: initialValue(),
         onChanged: (value) => onValueChanged(value),
-        keyboardType:
-            isForPhoneNumber ? TextInputType.phone : TextInputType.text,
+        keyboardType: isForPhoneNumber
+            ? Platform.isIOS
+                ? TextInputType.numberWithOptions(signed: true)
+                : TextInputType.phone
+            : TextInputType.text,
         decoration: InputDecoration(
           hintText: hintText,
           hintStyle: TextStyle(color: context.brand.theme.colors.grey5),

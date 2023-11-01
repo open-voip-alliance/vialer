@@ -242,14 +242,7 @@ class _SharedContactFormState extends State<_SharedContactForm> {
                       ],
                     ),
                   ),
-                const SizedBox(height: 36),
-                _ConclusionButton(
-                  title: context
-                      .msg.main.contacts.sharedContacts.form.cancelButtonTitle
-                      .toUpperCaseIfAndroid(context),
-                  onPressed: () => Navigator.pop(context),
-                ),
-                const SizedBox(height: 6),
+                const SizedBox(height: 26),
                 _ConclusionButton(
                   title: context.msg.main.contacts.sharedContacts.form
                       .saveContactButtonTitle
@@ -264,6 +257,13 @@ class _SharedContactFormState extends State<_SharedContactForm> {
                       );
                     }
                   },
+                ),
+                const SizedBox(height: 6),
+                _ConclusionButton(
+                  title: context
+                      .msg.main.contacts.sharedContacts.form.cancelButtonTitle
+                      .toUpperCaseIfAndroid(context),
+                  onPressed: () => Navigator.pop(context),
                 ),
                 const SizedBox(height: 12),
               ],
