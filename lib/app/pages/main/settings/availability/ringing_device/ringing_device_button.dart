@@ -38,7 +38,7 @@ class RingingDeviceButton extends StatefulWidget {
 }
 
 class _RingingDeviceButtonState extends State<RingingDeviceButton> {
-  bool _showWarningIcon = false;
+  bool _isWarningAboutOfflineRingingDevice = false;
 
   String _text(BuildContext context) {
     switch (widget.type) {
@@ -92,7 +92,7 @@ class _RingingDeviceButtonState extends State<RingingDeviceButton> {
   }
 
   IconData? get _trailingIcon {
-    if (_showWarningIcon) {
+    if (_isWarningAboutOfflineRingingDevice) {
       return FontAwesomeIcons.solidTriangleExclamation;
     }
 
@@ -117,24 +117,27 @@ class _RingingDeviceButtonState extends State<RingingDeviceButton> {
   Future<void> _showSelectedRingingDeviceOfflineWarning(
     BuildContext context,
   ) async {
-    final warningDuration = const Duration(seconds: 3);
+    if (_timer != null) _timer?.cancel();
 
-    setState(() => _showWarningIcon = true);
-
-    if (_timer != null) {
-      _timer?.cancel();
-      _timer = null;
+    if (!_isWarningAboutOfflineRingingDevice) {
+      ScaffoldMessenger.of(context).clearSnackBars();
+      _presentWarningSnackBar(context);
     }
 
-    Timer(warningDuration, () {
-      setState(() => _showWarningIcon = false);
+    setState(() => _isWarningAboutOfflineRingingDevice = true);
+
+    _timer = Timer(const Duration(seconds: 4), () {
+      ScaffoldMessenger.of(context).clearSnackBars();
+      setState(() => _isWarningAboutOfflineRingingDevice = false);
     });
+  }
 
-    ScaffoldMessenger.of(context).clearSnackBars();
-
+  void _presentWarningSnackBar(BuildContext context) {
     showSnackBar(
       context,
-      duration: warningDuration,
+      // Setting a high duration as we will manually cancel this, but this will
+      // make sure it doesn't hang around if something goes wrong.
+      duration: Duration(minutes: 1),
       icon: FaIcon(
         FontAwesomeIcons.solidTriangleExclamation,
         size: 22,
