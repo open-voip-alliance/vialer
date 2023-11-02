@@ -12,3 +12,9 @@ class SharedContactsState with _$SharedContactsState {
     required List<SharedContact> sharedContacts,
   }) = SharedContactsLoaded;
 }
+
+extension LoadedAndNotEmpty on SharedContactsState {
+  bool get isLoadedWithNoEmptyList =>
+      this is SharedContactsLoaded &&
+      (this as SharedContactsLoaded).sharedContacts.isNotEmpty;
+}

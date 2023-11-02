@@ -2,24 +2,28 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:search_highlight_text/search_highlight_text.dart';
 import 'package:vialer/app/pages/main/colltacts/cubit.dart';
+import 'package:vialer/app/pages/main/colltacts/widgets/add_shared_contact/page.dart';
 import 'package:vialer/app/pages/main/colltacts/widgets/colltact_list/util/kind.dart';
 import 'package:vialer/app/pages/main/colltacts/widgets/colltact_list/widgets/colltact_item_list.dart';
 import 'package:vialer/app/pages/main/colltacts/widgets/colltact_list/widgets/websocket_unreachable_notice.dart';
+import 'package:vialer/app/util/conditional_capitalization.dart';
 import 'package:vialer/domain/colltacts/colltact_tab.dart';
 
 import '../../../../../../data/models/colltact.dart';
 import '../../../../../resources/localizations.dart';
 import '../../../../../util/widgets_binding_observer_registrar.dart';
 import '../../../colltacts/colleagues/cubit.dart';
-import '../../../colltacts/shared_contacts/cubit.dart';
 import '../../../colltacts/contacts/cubit.dart';
+import '../../../colltacts/shared_contacts/cubit.dart';
+import '../../../settings/widgets/buttons/settings_button.dart';
 import '../../../widgets/bottom_toggle.dart';
 import '../../../widgets/flexible_tab_bar_view.dart';
 import '../../../widgets/nested_navigator.dart';
-import 'widgets/search.dart';
 import 'widgets/colltacts_tab_bar.dart';
+import 'widgets/search.dart';
 
 abstract class ColltactsPageRoutes {
   static const root = '/';
@@ -108,7 +112,7 @@ class _ColltactPageState extends State<_ColltactList>
     final numberOfTabs = tabs.length;
 
     final shouldRebuildTabController =
-        numberOfTabs > 1 && this.tabController?.length != numberOfTabs;
+        this.tabController?.length != numberOfTabs;
 
     if (!shouldRebuildTabController) return;
 
@@ -147,7 +151,7 @@ class _ColltactPageState extends State<_ColltactList>
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: SearchTextField(onChanged: _onSearchTermChanged),
                 ),
-                if (tabs.length > 1) ColltactsTabBar(controller: tabController),
+                ColltactsTabBar(controller: tabController),
                 Expanded(
                   child: FlexibleTabBarView(
                     controller: tabController,
@@ -155,8 +159,7 @@ class _ColltactPageState extends State<_ColltactList>
                       (tab) => switch (tab) {
                         ColltactTab.contacts =>
                           ColltactItemList(ColltactKind.contact),
-                        ColltactTab.sharedContact =>
-                          ColltactItemList(ColltactKind.sharedContact),
+                        ColltactTab.sharedContact => SharedContactItemList(),
                         ColltactTab.colleagues => ColleagueItemList(),
                       },
                     ),
@@ -191,6 +194,59 @@ class ColleagueItemList extends StatelessWidget {
               initialValue: colleaguesCubit.showOnlineColleaguesOnly,
               onChanged: (value) =>
                   colleaguesCubit.showOnlineColleaguesOnly = value,
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class SharedContactItemList extends StatelessWidget {
+  const SharedContactItemList({
+    super.key,
+  });
+
+  Widget _addSharedContactButton(
+    BuildContext context,
+    SharedContactsCubit sharedContactsCubit,
+  ) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      child: SettingsButton(
+        onPressed: () => unawaited(
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) {
+                return AddSharedContactPage(
+                    onSave: () => sharedContactsCubit.loadSharedContacts(
+                        fullRefresh: true));
+              },
+            ),
+          ),
+        ),
+        solid: false,
+        icon: FontAwesomeIcons.userPlus,
+        text: context.msg.main.contacts.list.addSharedContact.title
+            .toUpperCaseIfAndroid(context),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<SharedContactsCubit, SharedContactsState>(
+      builder: (_, state) {
+        final sharedContactsCubit = context.read<SharedContactsCubit>();
+        final sharedContactsState = sharedContactsCubit.state;
+
+        return Column(
+          children: [
+            if (sharedContactsState.isLoadedWithNoEmptyList)
+              _addSharedContactButton(context, sharedContactsCubit),
+            Expanded(
+              child: ColltactItemList(ColltactKind.sharedContact),
             ),
           ],
         );
