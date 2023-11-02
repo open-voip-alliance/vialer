@@ -7,11 +7,13 @@ import '../../../../../domain/relations/user_availability_status.dart';
 typedef UserAvailabilityStatusBuild = Widget Function(
   BuildContext context,
   UserAvailabilityStatus status,
+  bool isCurrentRingingDeviceOffline,
 );
 
 typedef UserAvailabilityStatusListener = void Function(
   BuildContext context,
   UserAvailabilityStatus status,
+  bool isCurrentRingingDeviceOffline,
 );
 
 class UserAvailabilityStatusBuilder extends StatelessWidget {
@@ -30,9 +32,18 @@ class UserAvailabilityStatusBuilder extends StatelessWidget {
 
     return BlocConsumer<UserAvailabilityStatusCubit,
         UserAvailabilityStatusState>(
-      listener: (context, state) =>
-          listener != null ? listener(context, state.status) : null,
-      builder: (context, state) => builder(context, state.status),
+      listener: (context, state) => listener != null
+          ? listener(
+              context,
+              state.status,
+              state.isRingingDeviceOffline,
+            )
+          : null,
+      builder: (context, state) => builder(
+        context,
+        state.status,
+        state.isRingingDeviceOffline,
+      ),
     );
   }
 }
