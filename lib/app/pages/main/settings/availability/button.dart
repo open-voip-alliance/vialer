@@ -11,7 +11,9 @@ class AvailabilityButton extends StatelessWidget {
     this.onPressed,
     this.isActive = true,
     this.backgroundColor,
+    this.disabledBackgroundColor,
     this.foregroundColor,
+    this.disabledForegroundColor,
     this.isDestinationOnline = true,
     super.key,
   });
@@ -22,14 +24,25 @@ class AvailabilityButton extends StatelessWidget {
   final IconData? trailingIcon;
   final String text;
   final Color? backgroundColor;
+  final Color? disabledBackgroundColor;
   final Color? foregroundColor;
+  final Color? disabledForegroundColor;
   final bool isDestinationOnline;
 
   Color _backgroundColor(BuildContext context) =>
       backgroundColor ?? context.brand.theme.colors.userAvailabilityAvailable;
+
   Color _foregroundColor(BuildContext context) =>
       foregroundColor ??
       context.brand.theme.colors.userAvailabilityAvailableAccent;
+
+  Color _disabledBackgroundColor(BuildContext context) =>
+      disabledBackgroundColor ??
+      context.brand.theme.colors.userAvailabilityUnknown;
+
+  Color _disabledForegroundColor(BuildContext context) =>
+      disabledForegroundColor ??
+      context.brand.theme.colors.userAvailabilityUnknownAccent;
 
   @override
   Widget build(BuildContext context) {
@@ -39,16 +52,16 @@ class AvailabilityButton extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 10),
         backgroundColor: isActive
             ? _backgroundColor(context)
-            : context.brand.theme.colors.userAvailabilityUnknown,
+            : _disabledBackgroundColor(context),
         foregroundColor: isActive
             ? _foregroundColor(context)
-            : context.brand.theme.colors.userAvailabilityUnknownAccent,
+            : _disabledForegroundColor(context),
         disabledBackgroundColor: isActive
             ? _backgroundColor(context)
-            : context.brand.theme.colors.userAvailabilityUnknown,
+            : _disabledBackgroundColor(context),
         disabledForegroundColor: isActive
             ? _foregroundColor(context)
-            : context.brand.theme.colors.userAvailabilityUnknownAccent,
+            : _disabledForegroundColor(context),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
         ),
@@ -85,14 +98,7 @@ class AvailabilityButton extends StatelessWidget {
                 ],
               ),
             ),
-            if (trailingIcon != null)
-              FaIcon(
-                trailingIcon,
-                size: 14,
-                color: isDestinationOnline
-                    ? null
-                    : context.brand.theme.colors.red1,
-              ),
+            if (trailingIcon != null) FaIcon(trailingIcon, size: 14),
           ],
         ),
       ),

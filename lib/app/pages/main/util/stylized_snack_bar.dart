@@ -7,11 +7,17 @@ void showSnackBar(
   required Widget icon,
   required Widget label,
   EdgeInsets padding = EdgeInsets.zero,
+  EdgeInsets contentPadding = const EdgeInsets.symmetric(horizontal: 16),
   Duration duration = const Duration(seconds: 4),
   ScaffoldMessengerState? scaffoldMessengerState,
+  Color? backgroundColor,
+  Color? contentColor,
+  Widget divider = const SizedBox(width: 24),
 }) {
-  final backgroundColor = context.brand.theme.colors.buttonBackground;
-  final contentColor = context.brand.theme.colors.raisedColoredButtonText;
+  backgroundColor =
+      backgroundColor ?? context.brand.theme.colors.buttonBackground;
+  contentColor =
+      contentColor ?? context.brand.theme.colors.raisedColoredButtonText;
 
   (scaffoldMessengerState ?? ScaffoldMessenger.of(context)).showSnackBar(
     SnackBar(
@@ -19,19 +25,14 @@ void showSnackBar(
       behavior: SnackBarBehavior.fixed,
       backgroundColor: backgroundColor,
       content: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 16,
-        ),
+        padding: contentPadding,
         child: Row(
           children: <Widget>[
             IconTheme.merge(
-              data: IconThemeData(
-                color: contentColor,
-                size: 16,
-              ),
+              data: IconThemeData(color: contentColor, size: 16),
               child: icon,
             ),
-            const SizedBox(width: 24),
+            divider,
             Expanded(
               child: Padding(
                 padding: padding,
