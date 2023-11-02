@@ -60,8 +60,7 @@ class ColltactsTabsCubit extends Cubit<List<ColltactTab>> {
 
   bool _shouldShow({required ColltactKind kind}) => switch (kind) {
         ColltactKind.contact => true,
-        ColltactKind.sharedContact =>
-          sharedContactsCubit.shouldShowSharedContacts,
+        ColltactKind.sharedContact => true,
         ColltactKind.colleague => colleaguesCubit.shouldShowColleagues,
       };
 
