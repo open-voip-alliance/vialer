@@ -33,9 +33,6 @@ class SharedContactsCubit extends Cubit<SharedContactsState> {
 
   List<SharedContact> _sharedContacts = [];
 
-  bool get shouldShowSharedContacts =>
-      (_sharedContacts.isNotEmpty || state is LoadingSharedContacts);
-
   Future<void> call(String destination) =>
       _caller.call(destination, origin: CallOrigin.sharedContacts);
 
