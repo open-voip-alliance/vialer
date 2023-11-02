@@ -1,0 +1,15 @@
+targets:
+  $default:
+    builders:
+      vialer|colorsGeneratorBuilder:
+        enabled: true
+        generate_for:
+          - lib/app/resources/theme/colors.dart
+
+builders:
+  colorsGeneratorBuilder:
+    import: 'builders/generators.dart'
+    builder_factories: ['colorsGeneratorBuilder']
+    auto_apply: dependents
+    build_extensions: {".dart": [".vialer.dart"]}
+    build_to: source

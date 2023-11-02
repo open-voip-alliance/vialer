@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart' hide Colors;
+import 'package:vialer/app/resources/theme/colors.dart';
 
 import '../../../domain/user/brand.dart';
 import 'brand_icon_code_points.dart';
-import 'color_values.dart';
-import 'colors.dart';
+import 'colors.vialer.dart';
 
 @immutable
 class BrandTheme {
   BrandTheme(this.colors, this.logo);
 
-  final Colors colors;
+  final FlutterColors colors;
   final IconData logo;
 
   late final splashScreenGradient = LinearGradient(
@@ -69,7 +69,7 @@ extension ThemeOfBrand on Brand {
   static BrandTheme? _theme;
 
   BrandTheme get theme => _theme ??= BrandTheme(
-        Colors(colorValues),
+        FlutterColors(colors),
         icon,
       );
 }
