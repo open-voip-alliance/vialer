@@ -14,6 +14,7 @@ class AvailabilityStatusButton extends StatelessWidget {
     required this.current,
     required this.enabled,
     required this.onStatusChanged,
+    required this.isRingingDeviceOffline,
     super.key,
   });
 
@@ -21,10 +22,20 @@ class AvailabilityStatusButton extends StatelessWidget {
   final UserAvailabilityStatus current;
   final bool enabled;
   final StatusChangeCallback onStatusChanged;
+  final bool isRingingDeviceOffline;
 
   (String, IconData, Color, Color) _styling(BuildContext context) {
     final strings = context.msg.main.colleagues.status;
     final colors = context.brand.theme.colors;
+
+    if (isRingingDeviceOffline && type == UserAvailabilityStatus.online) {
+      return (
+        strings.availableRingingDeviceOffline,
+        FontAwesomeIcons.circleExclamation,
+        colors.userAvailabilityBusyAccent,
+        colors.userAvailabilityBusy,
+      );
+    }
 
     return switch (type) {
       UserAvailabilityStatus.online => (
@@ -32,12 +43,6 @@ class AvailabilityStatusButton extends StatelessWidget {
           FontAwesomeIcons.circleCheck,
           colors.userAvailabilityAvailableAccent,
           colors.userAvailabilityAvailable,
-        ),
-      UserAvailabilityStatus.onlineWithRingingDeviceOffline => (
-          strings.availableRingingDeviceOffline,
-          FontAwesomeIcons.circleExclamation,
-          colors.userAvailabilityBusyAccent,
-          colors.userAvailabilityBusy,
         ),
       UserAvailabilityStatus.doNotDisturb => (
           strings.doNotDisturb,
