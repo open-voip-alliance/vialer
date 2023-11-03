@@ -84,6 +84,7 @@ dependencies:
   flutter_contacts: ^1.1.7+1
   connection_network_type: ^0.0.1
   timer_builder: ^2.0.0
+  gap: ^3.0.1
 
 dev_dependencies:
   test: ^1.20.0
