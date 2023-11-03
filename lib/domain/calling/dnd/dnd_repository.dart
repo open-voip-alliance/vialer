@@ -15,24 +15,18 @@ class DndRepository with Loggable {
       userUuid: user.uuid,
     );
 
-    // 404 is a perfectly valid response from the API, this means their status
-    // is not yet set which means it is off.
-    if (response.statusCode == 404) {
-      return DndStatus.doNotDisturbOff;
-    }
-
     if (!response.isSuccessful) {
       logFailedResponse(response, name: 'Get Dnd Status');
       throw Exception('Unable to get dnd status from the api');
     }
 
-    return DndStatus.fromBool(response.body!['dnd'] as bool);
+    return DndStatus.fromBool(response.body!['status'] == 'DND');
   }
 
   Future<void> changeDndStatus(User user, DndStatus dndStatus) =>
       _service.changeDndStatus(
         {
-          'dnd': dndStatus.asBool(),
+          'status': dndStatus.asBool() ? 'DND' : 'AVAILABLE',
         },
         clientUuid: user.client.uuid,
         userUuid: user.uuid,

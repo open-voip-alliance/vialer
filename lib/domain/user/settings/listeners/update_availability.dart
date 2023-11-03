@@ -5,7 +5,7 @@ import '../../../../dependency_locator.dart';
 import '../../../calling/voip/destination.dart';
 import '../../../calling/voip/destination_repository.dart';
 import '../../../metrics/metrics.dart';
-import '../../../relations/colleagues/colleagues_repository.dart';
+import '../../../relations/websocket/relations_web_socket.dart';
 import '../../../user/user.dart';
 import '../call_setting.dart';
 import 'setting_change_listener.dart';
@@ -14,12 +14,12 @@ class UpdateDestinationListener extends SettingChangeListener<Destination>
     with Loggable {
   final _destinationRepository = dependencyLocator<DestinationRepository>();
   final _metricsRepository = dependencyLocator<MetricsRepository>();
-  final _colleagueRepository = dependencyLocator<ColleaguesRepository>();
+  final _relationsWebSocket = dependencyLocator<RelationsWebSocket>();
 
   /// When we are connected to the Colleague WebSocket we will automatically
   /// get availability updates pushed to us, so to avoid refreshing the user
   /// multiple times we will not do it while connected to the ws.
-  bool get _shouldSyncUser => !_colleagueRepository.isWebSocketConnected;
+  bool get _shouldSyncUser => !_relationsWebSocket.isWebSocketConnected;
 
   @override
   final key = CallSetting.destination;

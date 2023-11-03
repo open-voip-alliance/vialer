@@ -169,6 +169,8 @@ class ColltactItemList extends StatelessWidget {
       case ColltactKind.sharedContact:
         if (sharedContactsState is LoadingSharedContacts) {
           return NoResultsType.sharedContactsLoading;
+        } else if (!hasSearchQuery && records.isEmpty) {
+          return NoResultsType.noSharedContactsExist;
         }
         return hasSearchQuery && records.isEmpty
             ? NoResultsType.noSearchResults
@@ -244,7 +246,7 @@ class ColltactItemList extends StatelessWidget {
         return firstCharacter;
       },
       sharedContact: (sharedContact) =>
-          sharedContact.givenName?.characters.firstOrNull,
+          sharedContact.displayName.characters.firstOrNull,
     );
   }
 

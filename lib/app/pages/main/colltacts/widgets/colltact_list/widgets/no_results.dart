@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -7,9 +10,11 @@ import '../../../../../../resources/theme.dart';
 import '../../../../../../util/conditional_capitalization.dart';
 import '../../../../../../widgets/stylized_button.dart';
 import '../../../../../../widgets/universal_refresh_indicator.dart';
-import '../../../../settings/widgets/buttons/settings_button.dart';
 import '../../../../colltacts/contacts/cubit.dart';
+import '../../../../settings/widgets/buttons/settings_button.dart';
 import '../../../../widgets/conditional_placeholder.dart';
+import '../../../shared_contacts/cubit.dart';
+import '../../add_shared_contact/page.dart';
 import '../util/kind.dart';
 
 class NoResultsPlaceholder extends StatelessWidget {
@@ -59,7 +64,9 @@ class NoResultsPlaceholder extends StatelessWidget {
           context.msg.main.contacts.list.empty.title,
         NoResultsType.noContactsPermission => context
             .msg.main.contacts.list.noPermission
-            .description(context.brand.appName)
+            .description(context.brand.appName),
+        NoResultsType.noSharedContactsExist =>
+          context.msg.main.contacts.list.emptySharedContacts.title,
       };
 
   String _subtitle(BuildContext context) => switch (type!) {
@@ -85,7 +92,10 @@ class NoResultsPlaceholder extends StatelessWidget {
           ),
         NoResultsType.noContactsPermission => context
             .msg.main.contacts.list.noPermission
-            .permanentDescription(context.brand.appName)
+            .permanentDescription(context.brand.appName),
+        NoResultsType.noSharedContactsExist => context
+            .msg.main.contacts.list.emptySharedContacts
+            .description(context.brand.appName),
       };
 
   Widget? _button(BuildContext context) {
@@ -94,6 +104,8 @@ class NoResultsPlaceholder extends StatelessWidget {
         dontAskAgain: dontAskForContactsPermissionAgain,
         cubit: contactsCubit,
       );
+    } else if (type == NoResultsType.noSharedContactsExist) {
+      return _CreateSharedContactButton();
     }
 
     if (_shouldShowCallButton) {
@@ -108,7 +120,8 @@ class NoResultsPlaceholder extends StatelessWidget {
     if (type == null) return child;
 
     if (type == NoResultsType.contactsLoading ||
-        type == NoResultsType.colleaguesLoading) {
+        type == NoResultsType.colleaguesLoading ||
+        type == NoResultsType.sharedContactsLoading) {
       return LoadingIndicator(
         title: Text(_title(context)),
         description: Text(_subtitle(context)),
@@ -168,8 +181,6 @@ class _CircularGraphic extends StatelessWidget {
 
   IconData _icon() {
     switch (type) {
-      case NoResultsType.noOnlineColleagues:
-        return FontAwesomeIcons.usersSlash;
       case NoResultsType.noSearchResults:
         return FontAwesomeIcons.magnifyingGlass;
       case NoResultsType.colleaguesLoading:
@@ -177,6 +188,8 @@ class _CircularGraphic extends StatelessWidget {
       case NoResultsType.sharedContactsLoading:
         return FontAwesomeIcons.abacus;
       case NoResultsType.noContactsExist:
+      case NoResultsType.noSharedContactsExist:
+      case NoResultsType.noOnlineColleagues:
         return FontAwesomeIcons.userSlash;
       case NoResultsType.noContactsPermission:
         return FontAwesomeIcons.lock;
@@ -220,6 +233,7 @@ enum NoResultsType {
   colleaguesLoading,
   contactsLoading,
   sharedContactsLoading,
+  noSharedContactsExist,
   noContactsExist,
   noContactsPermission,
 }
@@ -242,6 +256,33 @@ class _ContactsPermissionButton extends StatelessWidget {
               .toUpperCaseIfAndroid(context)
           : context.msg.main.contacts.list.noPermission.buttonOpenSettings
               .toUpperCaseIfAndroid(context),
+    );
+  }
+}
+
+class _CreateSharedContactButton extends StatelessWidget {
+  const _CreateSharedContactButton();
+
+  @override
+  Widget build(BuildContext context) {
+    return SettingsButton(
+      onPressed: () => unawaited(
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) {
+              return AddSharedContactPage(
+                  onSave: () => context
+                      .read<SharedContactsCubit>()
+                      .loadSharedContacts(fullRefresh: true));
+            },
+          ),
+        ),
+      ),
+      solid: false,
+      icon: FontAwesomeIcons.userPlus,
+      text: context.msg.main.contacts.list.createSharedContactButton.title
+          .toUpperCaseIfAndroid(context),
     );
   }
 }

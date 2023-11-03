@@ -4,13 +4,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vialer/app/pages/main/settings/cubit.dart';
 import 'package:vialer/domain/calling/voip/destination_repository.dart';
 import 'package:vialer/domain/relations/colleagues/colleague.dart';
-import 'package:vialer/domain/relations/colleagues/colleagues_repository.dart';
 import 'package:vialer/domain/user/events/user_devices_changed.dart';
 
 import '../../../../../dependency_locator.dart';
 import '../../../../../domain/calling/voip/destination.dart';
 import '../../../../../domain/event/event_bus.dart';
 import '../../../../../domain/relations/user_availability_status.dart';
+import '../../../../../domain/relations/websocket/relations_web_socket.dart';
 import '../../../../../domain/user/events/logged_in_user_availability_changed.dart';
 import '../../../../../domain/user/events/logged_in_user_was_refreshed.dart';
 import '../../../../../domain/user/get_logged_in_user.dart';
@@ -33,7 +33,12 @@ class UserAvailabilityStatusCubit extends Cubit<UserAvailabilityStatusState> {
         ) {
     _eventBus
       ..on<LoggedInUserAvailabilityChanged>(
-        (event) => unawaited(check(availability: event.userAvailabilityStatus)),
+        (event) => unawaited(
+          check(
+            availability: event.userAvailabilityStatus,
+            isRingingDeviceOffline: event.isRingingDeviceOffline,
+          ),
+        ),
       )
       ..on<LoggedInUserWasRefreshed>((_) => unawaited(check()))
       ..on<UserDevicesChanged>((_) => unawaited(check()));
@@ -41,7 +46,7 @@ class UserAvailabilityStatusCubit extends Cubit<UserAvailabilityStatusState> {
 
   final SettingsCubit _settingsCubit;
   late final _eventBus = dependencyLocator<EventBusObserver>();
-  late final _colleagueRepository = dependencyLocator<ColleaguesRepository>();
+  late final _relationsWebSocket = dependencyLocator<RelationsWebSocket>();
   late final _destinations = dependencyLocator<DestinationRepository>();
   User? get _user => GetStoredUserUseCase()();
 
@@ -49,7 +54,6 @@ class UserAvailabilityStatusCubit extends Cubit<UserAvailabilityStatusState> {
     UserAvailabilityStatus requestedStatus,
     List<Destination> destinations,
   ) async {
-    requestedStatus = requestedStatus.basic;
     check();
 
     final user = GetLoggedInUserUseCase()();
@@ -94,15 +98,12 @@ class UserAvailabilityStatusCubit extends Cubit<UserAvailabilityStatusState> {
           CallSetting.destination: const Destination.notAvailable(),
           CallSetting.dnd: false,
         },
-      _ => throw ArgumentError(
-          'Only [available], [doNotDisturb], [offline] '
-          'are valid options for setting user status.',
-        ),
     };
   }
 
   Future<void> check({
     UserAvailabilityStatus? availability,
+    bool isRingingDeviceOffline = false,
   }) async {
     final destination = _user?.currentDestination;
     final availableDestinations = _destinations.availableDestinations;
@@ -112,13 +113,14 @@ class UserAvailabilityStatusCubit extends Cubit<UserAvailabilityStatusState> {
         status: availability,
         currentDestination: destination,
         availableDestinations: availableDestinations,
+        isRingingDeviceOffline: isRingingDeviceOffline,
       ));
     }
 
     // If the websocket can't connect we're just going to fallback to
     // determining the status based on what we have stored locally. This is
     // usually accurate, but not necessarily.
-    if (!_colleagueRepository.isWebSocketConnected) {
+    if (!_relationsWebSocket.isWebSocketConnected) {
       return emit(state.copyWith(
         status: _status,
         currentDestination: destination,

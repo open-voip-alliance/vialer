@@ -19,6 +19,7 @@ class ColltactsTabsCubit extends Cubit<List<ColltactTab>> {
     contactsCubit.stream.listen((_) => _rebuildTabs());
     colleaguesCubit.stream.listen((_) => _rebuildTabs());
     sharedContactsCubit.stream.listen((_) => _rebuildTabs());
+    _rebuildTabs();
   }
 
   final ContactsCubit contactsCubit;
@@ -59,8 +60,7 @@ class ColltactsTabsCubit extends Cubit<List<ColltactTab>> {
 
   bool _shouldShow({required ColltactKind kind}) => switch (kind) {
         ColltactKind.contact => true,
-        ColltactKind.sharedContact =>
-          sharedContactsCubit.shouldShowSharedContacts,
+        ColltactKind.sharedContact => true,
         ColltactKind.colleague => colleaguesCubit.shouldShowColleagues,
       };
 

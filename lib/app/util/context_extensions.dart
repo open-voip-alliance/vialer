@@ -1,8 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:vialer/app/resources/theme.dart';
-
-import '../resources/theme/colors.dart';
+import 'package:vialer/app/resources/theme/colors.vialer.dart';
 
 extension ContextExtensions on BuildContext {
-  Colors get colors => brand.theme.colors;
+  FlutterColors get colors => brand.theme.colors;
 }

@@ -114,15 +114,7 @@ enum ColleagueDestinationType {
   app,
   voipAccount,
   fixed,
-  none;
-
-  static ColleagueDestinationType fromServerValue(String? value) =>
-      switch (value) {
-        'app_account' => ColleagueDestinationType.app,
-        'voip_account' => ColleagueDestinationType.voipAccount,
-        'fixeddestination' => ColleagueDestinationType.fixed,
-        _ => ColleagueDestinationType.none
-      };
+  none,
 }
 
 /// Represents a possible event that the colleague has currently performed,

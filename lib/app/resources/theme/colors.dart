@@ -1,159 +1,244 @@
-import 'dart:ui';
+// Never import anything from Flutter here!
 
-import 'color_values.dart';
+import 'package:json_annotation/json_annotation.dart';
 
-// Regex (for IntelliJ) for find and replace to automatically
-// access the correct property from the values:
+import '../../../domain/user/brand.dart';
+
+part 'colors.g.dart';
+
+// Why ints?
 //
-// Fields:
-// Find: final int ([A-z0-9]+);
-// Replace: final Color $1;
+// The reason a type of int is used for all values instead of
+// Color, is because dart:ui (where Color comes from) is not available
+// on non-Flutter Dart. This means that when running a script locally
+// or on CI that wants to use these values, fails.
 //
-// Initializer:
-// Find: ([A-z0-9]+),
-// Replace: $1 = v.$1.color,
+// Specifically a script for generating native values uses these.
+//
+// Another small bonus is that writing color definitions is shorter since you
+// don't have to call the Color constructor everytime!
+@JsonSerializable(createFactory: false)
 class Colors {
-  Colors(ColorValues v)
-      : primary = v.primary.color,
-        primaryDark = v.primaryDark.color,
-        primaryLight = v.primaryLight.color,
-        infoText = v.infoText.color,
-        onPrimary = v.onPrimary.color,
-        grey1 = v.grey1.color,
-        grey2 = v.grey2.color,
-        grey3 = v.grey3.color,
-        grey4 = v.grey4.color,
-        grey5 = v.grey5.color,
-        grey6 = v.grey6.color,
-        grey7 = v.grey7.color,
-        settingsBackgroundHighlight = v.settingsBackgroundHighlight.color,
-        green1 = v.green1.color,
-        green2 = v.green2.color,
-        green3 = v.green3.color,
-        red1 = v.red1.color,
-        answeredElsewhere = v.answeredElsewhere.color,
-        notAvailable = v.notAvailable.color,
-        notAvailableAccent = v.notAvailableAccent.color,
-        availableElsewhere = v.availableElsewhere.color,
-        availableElsewhereAccent = v.availableElsewhereAccent.color,
-        dnd = v.dnd.color,
-        dndAccent = v.dndAccent.color,
-        available = v.available.color,
-        availableAccent = v.availableAccent.color,
-        splashScreen = v.splashScreen.color,
-        primaryGradientStart = v.primaryGradientStart.color,
-        primaryGradientEnd = v.primaryGradientEnd.color,
-        onPrimaryGradient = v.onPrimaryGradient.color,
-        errorBorder = v.errorBorder.color,
-        errorContent = v.errorContent.color,
-        errorBackground = v.errorBackground.color,
-        textButtonForeground = v.textButtonForeground.color,
-        buttonBackground = v.buttonBackground.color,
-        buttonShade = v.buttonShade.color,
-        raisedColoredButtonText = v.raisedColoredButtonText.color,
-        appBarForeground = v.appBarForeground.color,
-        appBarBackground = v.appBarBackground.color,
-        notificationBackground = v.notificationBackground.color,
-        userAvailabilityAvailable = v.userAvailabilityAvailable.color,
-        userAvailabilityAvailableAvatar =
-            v.userAvailabilityAvailableAvatar.color,
-        userAvailabilityAvailableAccent =
-            v.userAvailabilityAvailableAccent.color,
-        userAvailabilityBusy = v.userAvailabilityBusy.color,
-        userAvailabilityBusyAccent = v.userAvailabilityBusyAccent.color,
-        userAvailabilityBusyAvatar = v.userAvailabilityBusyAvatar.color,
-        userAvailabilityUnavailable = v.userAvailabilityUnavailable.color,
-        userAvailabilityUnavailableAccent =
-            v.userAvailabilityUnavailableAccent.color,
-        userAvailabilityUnavailableIcon =
-            v.userAvailabilityUnavailableIcon.color,
-        userAvailabilityUnknown = v.userAvailabilityUnknown.color,
-        userAvailabilityUnknownAccent = v.userAvailabilityUnknownAccent.color,
-        availabilityHeader = v.availabilityHeader.color,
-        userAvailabilityOffline = v.userAvailabilityOffline.color,
-        userAvailabilityOfflineAccent = v.userAvailabilityOfflineAccent.color,
-        settingsBadge = v.settingsBadge.color;
+  const Colors({
+    required this.primary,
+    required this.primaryDark,
+    required this.primaryLight,
+    required this.splashScreen,
+    required this.primaryGradientStart,
+    required this.primaryGradientEnd,
+    this.infoText = 0xFF666666,
+    this.disabledText = 0xFFA3A3A3,
+    this.onPrimary = 0xFFFFFFFF,
+    this.grey1 = 0xFFCCCCCC,
+    this.grey2 = 0xFFD8D8D8,
+    this.grey3 = 0xFFE0E0E0,
+    this.grey4 = 0xFF8F8F8F,
+    this.grey5 = 0xFF8B95A3,
+    this.grey6 = 0xFF666666,
+    this.grey7 = 0xFFF6F6F6,
+    this.settingsBackgroundHighlight = 0xFFEFF0F8,
+    this.green1 = 0xFF28CA42,
+    this.green2 = 0xFFACF5A6,
+    this.green3 = 0xFF046614,
+    this.red1 = 0xFFDA534F,
+    this.answeredElsewhere = 0xFF1F86FF,
+    this.notAvailable = 0xFF840D09,
+    this.notAvailableAccent = 0xFFFFBABF,
+    this.availableElsewhere = 0xFF0047CE,
+    this.availableElsewhereAccent = 0xFFECEEF7,
+    this.dnd = 0xFFD1530B,
+    this.dndAccent = 0xFFFFC999,
+    this.available = 0xFF075B15,
+    this.availableAccent = 0xFFA2F39C,
+    int? onPrimaryGradient,
+    this.errorBorder = 0x57DA534F,
+    this.errorContent = 0xFFDA534F,
+    this.errorBackground = 0x4D000000,
+    int? textButtonForeground,
+    int? buttonBackground,
+    int? buttonShade,
+    this.raisedColoredButtonText = 0xFFFFFFFF,
+    this.appBarForeground = 0xFFFFFFFF,
+    int? appBarBackground,
+    int? notificationBackground,
+    this.userAvailabilityAvailable = 0xFFACF5A6,
+    this.userAvailabilityAvailableAccent = 0xFF046614,
+    this.userAvailabilityAvailableAvatar = 0xFF63E06F,
+    this.userAvailabilityBusy = 0xFFFFADAD,
+    this.userAvailabilityBusyAccent = 0xFF8F0A06,
+    this.userAvailabilityBusyAvatar = 0xFFFFA257,
+    this.userAvailabilityUnavailable = 0xFFFFD0A3,
+    this.userAvailabilityUnavailableAccent = 0xFFD45400,
+    this.userAvailabilityUnavailableIcon = 0xFFFF7B24,
+    this.userAvailabilityUnknown = 0xFFF5F5F5,
+    this.userAvailabilityUnknownAccent = 0xFF666666,
+    this.userAvailabilityOffline = 0xFF2A3041,
+    this.userAvailabilityOfflineAccent = 0xFFFFFFFF,
+    this.availabilityHeader = 0xFF2A3041,
+    this.settingsBadge = 0xFFF15A29,
+  })  : onPrimaryGradient = onPrimaryGradient ?? onPrimary,
+        textButtonForeground = textButtonForeground ?? primary,
+        buttonBackground = buttonBackground ?? primaryLight,
+        buttonShade = buttonShade ?? primary,
+        appBarBackground = appBarBackground ?? primary,
+        notificationBackground = notificationBackground ?? primary;
 
-  final Color primary;
-  final Color primaryDark;
-  final Color primaryLight;
+  /// Defaults should be left as-is.
+  const Colors.vialer({
+    int primary = 0xFFFF7B24,
+    int primaryDark = 0xFFD45400,
+    int primaryLight = 0xFFFFEDD5,
+  }) : this(
+          primary: primary,
+          primaryDark: primaryDark,
+          primaryLight: primaryLight,
+          splashScreen: primaryLight,
+          primaryGradientStart: 0xFFFF8213,
+          primaryGradientEnd: 0xFFE94E1B,
+          buttonBackground: primary,
+          appBarForeground: primaryDark,
+          appBarBackground: primaryLight,
+        );
 
-  final Color infoText;
+  /// Defaults should be left as-is.
+  const Colors.voys({
+    int primary = 0xFF270597,
+    int primaryDark = 0xFF1E1B4B,
+    int primaryLight = 0xFFF0F0FF,
+  }) : this(
+          primary: primary,
+          primaryDark: primaryDark,
+          primaryLight: primaryLight,
+          splashScreen: primary,
+          primaryGradientStart: primary,
+          primaryGradientEnd: 0xFF7F67D1,
+          buttonBackground: primary,
+          buttonShade: primaryDark,
+        );
+
+  /// Defaults should be left as-is.
+  const Colors.verbonden({
+    int primary = 0xFF3336AD,
+    int primaryDark = 0xFF01243C,
+    int primaryLight = 0xFFD2D3FF,
+  }) : this(
+          primary: primary,
+          primaryDark: primaryDark,
+          primaryLight: primaryLight,
+          splashScreen: 0xFFFFFFFF,
+          primaryGradientStart: primary,
+          primaryGradientEnd: primaryDark,
+          buttonBackground: primary,
+          buttonShade: primaryDark,
+        );
+
+  /// Defaults should be left as-is.
+  const Colors.annabel({
+    int primary = 0xFF645394,
+    int primaryDark = 0xFF160E2D,
+    int primaryLight = 0xFFEDE9F9,
+  }) : this(
+          primary: primary,
+          primaryDark: primaryDark,
+          primaryLight: primaryLight,
+          splashScreen: primaryLight,
+          primaryGradientStart: primary,
+          primaryGradientEnd: primaryDark,
+          buttonBackground: primary,
+          buttonShade: primaryDark,
+        );
+
+  final int primary;
+  final int primaryDark;
+  final int primaryLight;
+
+  final int infoText;
+  final int disabledText;
 
   /// Color for use when the [primary] color is the background.
-  final Color onPrimary;
+  final int onPrimary;
 
-  final Color grey1;
-  final Color grey2;
-  final Color grey3;
-  final Color grey4;
-  final Color grey5;
-  final Color grey6;
-  final Color grey7;
+  final int grey1;
+  final int grey2;
+  final int grey3;
+  final int grey4;
+  final int grey5;
+  final int grey6;
+  final int grey7;
 
-  final Color settingsBackgroundHighlight;
+  final int settingsBackgroundHighlight;
 
-  final Color green1;
-  final Color green2;
-  final Color green3;
+  final int green1;
+  final int green2;
+  final int green3;
 
-  final Color red1;
+  final int red1;
 
-  final Color answeredElsewhere;
+  final int answeredElsewhere;
 
-  final Color notAvailable;
-  final Color notAvailableAccent;
+  final int notAvailable;
+  final int notAvailableAccent;
 
-  final Color availableElsewhere;
-  final Color availableElsewhereAccent;
+  final int availableElsewhere;
+  final int availableElsewhereAccent;
 
-  final Color dnd;
-  final Color dndAccent;
+  final int dnd;
+  final int dndAccent;
 
-  final Color available;
-  final Color availableAccent;
+  final int available;
+  final int availableAccent;
 
-  final Color splashScreen;
+  final int splashScreen;
 
-  final Color primaryGradientStart;
-  final Color primaryGradientEnd;
+  final int primaryGradientStart;
+  final int primaryGradientEnd;
 
-  final Color onPrimaryGradient;
+  final int onPrimaryGradient;
 
-  final Color errorBorder;
-  final Color errorContent;
-  final Color errorBackground;
+  final int errorBorder;
+  final int errorContent;
+  final int errorBackground;
 
-  final Color textButtonForeground;
-  final Color buttonBackground;
-  final Color buttonShade;
-  final Color raisedColoredButtonText;
+  final int textButtonForeground;
+  final int buttonBackground;
+  final int buttonShade;
+  final int raisedColoredButtonText;
 
-  final Color appBarForeground;
-  final Color appBarBackground;
+  final int appBarForeground;
+  final int appBarBackground;
 
-  /// Only used by the Android Phone Lib, here for completionist's sake.
-  final Color notificationBackground;
+  /// Name should not be changed, this color is expected by
+  /// the Android Phone Lib.
+  final int notificationBackground;
 
-  final Color userAvailabilityAvailable;
-  final Color userAvailabilityAvailableAccent;
-  final Color userAvailabilityAvailableAvatar;
-  final Color userAvailabilityBusy;
-  final Color userAvailabilityBusyAccent;
-  final Color userAvailabilityBusyAvatar;
-  final Color userAvailabilityUnavailable;
-  final Color userAvailabilityUnavailableIcon;
-  final Color userAvailabilityUnavailableAccent;
-  final Color userAvailabilityUnknown;
-  final Color userAvailabilityUnknownAccent;
-  final Color userAvailabilityOffline;
-  final Color userAvailabilityOfflineAccent;
+  final int userAvailabilityAvailable;
+  final int userAvailabilityAvailableAccent;
+  final int userAvailabilityAvailableAvatar;
+  final int userAvailabilityBusy;
+  final int userAvailabilityBusyAccent;
+  final int userAvailabilityBusyAvatar;
+  final int userAvailabilityUnavailable;
+  final int userAvailabilityUnavailableAccent;
+  final int userAvailabilityUnavailableIcon;
+  final int userAvailabilityUnknown;
+  final int userAvailabilityUnknownAccent;
+  final int userAvailabilityOffline;
+  final int userAvailabilityOfflineAccent;
 
-  final Color availabilityHeader;
+  final int availabilityHeader;
+  final int settingsBadge;
 
-  final Color settingsBadge;
+  Map<String, dynamic> toJson() => _$ColorsToJson(this);
 }
 
-extension on int {
-  Color get color => Color(this);
+extension BrandColors on Brand {
+  /// The color values associated with this [Brand].
+  ///
+  /// To use `dart:ui` `Color`s, use `brand.theme.colors`.
+  Colors get colors => select(
+        vialer: const Colors.vialer(),
+        voys: const Colors.voys(),
+        verbonden: const Colors.verbonden(),
+        annabel: const Colors.annabel(),
+      );
 }

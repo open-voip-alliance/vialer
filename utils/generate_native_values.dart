@@ -5,7 +5,7 @@ import 'package:basic_utils/basic_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:package_config/package_config.dart';
 import 'package:vialer/app/resources/theme/brand_icon_code_points.dart';
-import 'package:vialer/app/resources/theme/color_values.dart';
+import 'package:vialer/app/resources/theme/colors.dart';
 import 'package:vialer/domain/user/brand.dart';
 import 'package:xml/xml.dart';
 import 'package:yaml/yaml.dart';
@@ -107,7 +107,7 @@ Future<void> writeBrandValues(Brand brand) async {
 Future<void> writeColorValues(Brand brand) async {
   final builder = createXmlBuilder();
 
-  final colors = brand.colorValues.toJson();
+  final colors = brand.colors.toJson();
 
   builder.element(
     'resources',

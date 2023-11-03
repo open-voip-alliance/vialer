@@ -7,7 +7,7 @@ version: 7.0.0
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
-  flutter: 3.13.6
+  flutter: 3.13.9
 
 dependencies:
   flutter:
@@ -84,6 +84,7 @@ dependencies:
   flutter_contacts: ^1.1.7+1
   connection_network_type: ^0.0.1
   timer_builder: ^2.0.0
+  gap: ^3.0.1
 
 dev_dependencies:
   test: ^1.20.0
@@ -108,6 +109,7 @@ dev_dependencies:
   package_config: ^2.1.0
   freezed: ^2.1.0+1
   riverpod_generator: ^2.1.1
+  source_gen: ^1.4.0
 
 
 # For information on the generic Dart part of this file, see the

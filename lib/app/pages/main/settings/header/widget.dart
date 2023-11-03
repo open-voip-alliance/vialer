@@ -30,7 +30,7 @@ class _HeaderState extends State<Header> {
   Widget build(BuildContext context) {
     return EventBusListener<LoggedInUserAvailabilityChanged>(
       listener: (event) => setState(
-        () => _internalNumber = event.availability.internalNumber,
+        () => _internalNumber = event.availability.internalNumber.toString(),
       ),
       child: Padding(
         padding: const EdgeInsets.only(top: 4, bottom: 16),
