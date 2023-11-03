@@ -42,10 +42,6 @@ class _MobileNumberPageState extends State<MobileNumberPage> {
       }),
     );
 
-    _mobileNumberController.addListener(() {
-      cubit.validate(_mobileNumberController.text);
-    });
-
     return cubit;
   }
 
@@ -160,6 +156,8 @@ class _MobileNumberPageState extends State<MobileNumberPage> {
                         hintText: context.msg.onboarding.mobileNumber.hint,
                         keyboardType: TextInputType.phone,
                         hasError: state is MobileNumberNotAccepted,
+                        onChanged: (number) =>
+                            context.read<MobileNumberCubit>().validate(number),
                         autoCorrect: false,
                         onSubmitted: (_) => _onContinueButtonPressed(context),
                       ),

@@ -5,6 +5,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vialer/domain/business_insights/feature_announcements/feature_announcements_repository.dart';
 import 'package:vialer/domain/calling/dnd/dnd_repository.dart';
 import 'package:vialer/domain/calling/dnd/dnd_service.dart';
+import 'package:vialer/domain/phone_numbers/phone_number_repository.dart';
+import 'package:vialer/domain/phone_numbers/phone_number_service.dart';
 import 'package:vialer/domain/user/settings/settings_repository.dart';
 
 import 'app/util/debug.dart';
@@ -198,7 +200,8 @@ Future<void> initializeDependencies({bool ui = true}) async {
     )
     ..registerSingleton<DndRepository>(
       DndRepository(DndService.create()),
-    );
+    )
+    ..registerSingleton(PhoneNumberRepository(PhoneNumberService.create()));
 
   await dependencyLocator.allReady();
 }
