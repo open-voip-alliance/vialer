@@ -60,7 +60,7 @@ dependencies:
     git:
       url: https://github.com/vixez/flutter_inappwebview.git
       ref: fix-xcode-17
-  json_annotation: ^4.7.0
+  json_annotation: ^4.8.1
   flutter_rating_bar: ^4.0.0
   flutter_libphonenumber: ^1.0.3
   styled_text: ^4.0.0+1
