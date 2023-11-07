@@ -1,0 +1,4 @@
+- You can now add new shared contacts
+- Removed error messages when one of your ringing devices is offline
+- Newly added colleagues will now show in your colleague list much more quickly
+- Fixed some bugs relating to the colleagues list not loading

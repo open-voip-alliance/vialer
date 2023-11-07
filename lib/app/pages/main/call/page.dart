@@ -15,6 +15,10 @@ import '../../../../domain/metrics/metrics.dart';
 import '../../../resources/localizations.dart';
 import '../../../resources/theme.dart';
 import '../../../util/widgets_binding_observer_registrar.dart';
+import '../colltacts/colleagues/cubit.dart';
+import '../colltacts/contacts/cubit.dart';
+import '../colltacts/cubit.dart';
+import '../colltacts/shared_contacts/cubit.dart';
 import '../util/stylized_snack_bar.dart';
 import '../widgets/caller.dart';
 import '../widgets/nested_navigator.dart';
@@ -41,44 +45,46 @@ const _contactsRoute = 'contacts';
 class _CallOrTransferPageState extends State<CallPage> {
   @override
   Widget build(BuildContext context) {
-    return NestedNavigator(
-      // Users can never leave the ongoing call page.
-      onWillPop: () => SynchronousFuture(false),
-      fullscreenDialog: true,
-      routes: {
-        _callRoute: (context, _) => const _CallPage(),
-        _transferRoute: (context, _) {
-          return Scaffold(
-            body: Container(
-              alignment: Alignment.center,
-              child: CallProcessStateBuilder(
-                builder: (context, state) {
-                  return CallTransfer(
-                    activeCall: state.voipCall!,
-                    onTransferTargetSelected: (number) {
-                      unawaited(
-                        context.read<CallerCubit>().beginTransfer(number),
-                      );
-                      Navigator.of(context).pop();
-                    },
-                    onCloseButtonPressed: () =>
-                        Navigator.of(context, rootNavigator: true).pop(),
-                    onContactsButtonPressed: () {
-                      unawaited(
-                        Navigator.pushNamed(context, _contactsRoute).then(
-                          (number) => context
-                              .read<CallerCubit>()
-                              .beginTransfer(number! as String),
-                        ),
-                      );
-                    },
-                  );
-                },
+    return _TemporaryCubitProvider(
+      child: NestedNavigator(
+        // Users can never leave the ongoing call page.
+        onWillPop: () => SynchronousFuture(false),
+        fullscreenDialog: true,
+        routes: {
+          _callRoute: (context, _) => const _CallPage(),
+          _transferRoute: (context, _) {
+            return Scaffold(
+              body: Container(
+                alignment: Alignment.center,
+                child: CallProcessStateBuilder(
+                  builder: (context, state) {
+                    return CallTransfer(
+                      activeCall: state.voipCall!,
+                      onTransferTargetSelected: (number) {
+                        unawaited(
+                          context.read<CallerCubit>().beginTransfer(number),
+                        );
+                        Navigator.of(context).pop();
+                      },
+                      onCloseButtonPressed: () =>
+                          Navigator.of(context, rootNavigator: true).pop(),
+                      onContactsButtonPressed: () {
+                        unawaited(
+                          Navigator.pushNamed(context, _contactsRoute).then(
+                            (number) => context
+                                .read<CallerCubit>()
+                                .beginTransfer(number! as String),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
               ),
-            ),
-          );
+            );
+          },
         },
-      },
+      ),
     );
   }
 }
@@ -364,6 +370,36 @@ class _CallHeader extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+/// To resolve an issue causing users not to be able to transfer to contacts,
+/// we are going to re-created the necessary cubits here.
+///
+/// This should be removed when we have moved to Riverpod.
+class _TemporaryCubitProvider extends StatelessWidget {
+  const _TemporaryCubitProvider({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<ColleaguesCubit>(
+          create: (context) =>
+              ColleaguesCubit(context.read<CallerCubit>())..refresh(),
+        ),
+        BlocProvider<ColltactsTabsCubit>(
+          create: (context) => ColltactsTabsCubit(
+            context.read<ContactsCubit>(),
+            context.read<ColleaguesCubit>(),
+            context.read<SharedContactsCubit>(),
+          ),
+        ),
+      ],
+      child: child,
     );
   }
 }
