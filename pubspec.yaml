@@ -109,7 +109,11 @@ dev_dependencies:
   package_config: ^2.1.0
   freezed: ^2.1.0+1
   riverpod_generator: ^2.1.1
-  source_gen: ^1.4.0
+
+  # Nested package that contains all code generation, this means the configuration can be stored
+  # in `vialer_generators/build.yaml`.
+  vialer_generators:
+    path: vialer_generators
 
 
 flutter:
