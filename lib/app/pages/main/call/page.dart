@@ -375,7 +375,10 @@ class _CallHeader extends StatelessWidget {
 }
 
 /// To resolve an issue causing users not to be able to transfer to contacts,
-/// we are going to re-created the necessary cubits here.
+/// we are going to re-create the necessary cubits here. This is because
+/// [ColltactsTabsCubit] and [ColleaguesCubit] were moved to be created
+/// in `main/page.dart` rather than `global_bloc_provider.dart`. This page
+/// does not
 ///
 /// This should be removed when we have moved to Riverpod.
 class _TemporaryCubitProvider extends StatelessWidget {
