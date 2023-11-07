@@ -8,7 +8,7 @@ import 'package:analyzer/dart/element/element.dart';
 /// in `color_values.dart` within Flutter.
 class ColorsGenerator extends Generator {
   @override
-  FutureOr<String> generate(LibraryReader library, BuildStep step) async {
+  FutureOr<String?> generate(LibraryReader library, BuildStep step) async {
     final buffer = StringBuffer();
 
     buffer.writeln("import 'dart:ui';");
@@ -16,20 +16,24 @@ class ColorsGenerator extends Generator {
     buffer.writeln('class $_generatedClassName {');
     buffer.writeln('$_generatedClassName($_className v) : ');
 
-    final colors = library.colorsClass.constructors.first.parameters;
+    try {
+      final colors = library.colorsClass.constructors.first.parameters;
 
-    colors.forEach((element) {
-      buffer.writeln('${element.name} = Color(v.${element.name})');
-      buffer.write(element == colors.last ? ';' : ',');
-    });
+      colors.forEach((element) {
+        buffer.writeln('${element.name} = Color(v.${element.name})');
+        buffer.write(element == colors.last ? ';' : ',');
+      });
 
-    colors.forEach((element) {
-      buffer.writeln('final Color ${element.name};');
-    });
+      colors.forEach((element) {
+        buffer.writeln('final Color ${element.name};');
+      });
 
-    buffer.writeln('}');
+      buffer.writeln('}');
 
-    return buffer.toString();
+      return buffer.toString();
+    } on Exception {
+      return null;
+    }
   }
 }
 
