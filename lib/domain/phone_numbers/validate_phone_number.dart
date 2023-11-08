@@ -26,6 +26,14 @@ class ValidatePhoneNumber extends UseCase {
 
     final isValid = validTypes.contains(result.type);
 
-    return strict ? result.flat == number : isValid;
+    if (!strict) return isValid;
+
+    return _performStrictValidation(number, result);
   }
+
+  bool _performStrictValidation(String number, ValidPhoneNumberResult result) =>
+      [
+        result.flat == number,
+        result.pretty == number,
+      ].any((result) => result);
 }
