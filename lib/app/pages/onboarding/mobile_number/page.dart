@@ -39,18 +39,17 @@ class _MobileNumberPageState extends State<MobileNumberPage> {
     WidgetsBinding.instance.addPostFrameCallback(
       (_) => setState(() {
         _mobileNumberController.text = cubit.state.mobileNumber;
-        cubit.validate(_mobileNumberController.text);
       }),
     );
+
+    _mobileNumberController.addListener(() {
+      cubit.validate(_mobileNumberController.text);
+    });
 
     return cubit;
   }
 
   void _onStateChanged(BuildContext context, MobileNumberState state) {
-    setState(() {
-      _mobileNumberController.text = state.mobileNumber;
-    });
-
     if (state is MobileNumberAccepted) {
       context.read<OnboardingCubit>().forward();
     }
@@ -157,8 +156,6 @@ class _MobileNumberPageState extends State<MobileNumberPage> {
                         hintText: context.msg.onboarding.mobileNumber.hint,
                         keyboardType: TextInputType.phone,
                         hasError: state is MobileNumberNotAccepted,
-                        onChanged: (number) =>
-                            context.read<MobileNumberCubit>().validate(number),
                         autoCorrect: false,
                         onSubmitted: (_) => _onContinueButtonPressed(context),
                       ),
