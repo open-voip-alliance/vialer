@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
 import 'package:vialer/domain/phone_numbers/phone_number_repository.dart';
 import 'package:vialer/domain/phone_numbers/phone_number_service.dart';
+import 'package:vialer/domain/phone_numbers/strictly_validate_mobile_phone_number.dart';
 import 'package:vialer/domain/phone_numbers/validate_mobile_phone_number.dart';
 
 void main() {
@@ -44,6 +45,11 @@ void main() {
     'Does not accept short number',
     '123',
   );
+
+  expectsNumberToBeInvalidWhenStrict(
+    'Does not allow incorrectly formatted mobile number when strict',
+    '+310640112000',
+  );
 }
 
 void expectsNumberToBeValid(String description, String number) {
@@ -55,5 +61,11 @@ void expectsNumberToBeValid(String description, String number) {
 void expectsNumberToBeInvalid(String description, String number) {
   test(description, () async {
     expect(await ValidateMobilePhoneNumber()(number), false);
+  });
+}
+
+void expectsNumberToBeInvalidWhenStrict(String description, String number) {
+  test(description, () async {
+    expect(await StrictlyValidateMobilePhoneNumber()(number), false);
   });
 }
