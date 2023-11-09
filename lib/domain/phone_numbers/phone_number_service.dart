@@ -10,11 +10,14 @@ part 'phone_number_service.chopper.dart';
 @singleton
 abstract class PhoneNumberService extends ChopperService {
   @factoryMethod
-  static PhoneNumberService create({Uri? uri}) => _$PhoneNumberService(
+  static PhoneNumberService create() => createFromUri(
+        Uri.parse(GetBrand()().phoneNumberValidationUrl.toString()),
+      );
+
+  static PhoneNumberService createFromUri(Uri uri) => _$PhoneNumberService(
         // This end-point does not require authentication.
         ChopperClient(
-          baseUrl: uri ??
-              Uri.parse(GetBrand()().phoneNumberValidationUrl.toString()),
+          baseUrl: uri,
           converter: JsonConverter(),
         ),
       );
