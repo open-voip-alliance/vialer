@@ -48,6 +48,7 @@ class UserAvailabilityStatusCubit extends Cubit<UserAvailabilityStatusState> {
   late final _eventBus = dependencyLocator<EventBusObserver>();
   late final _relationsWebSocket = dependencyLocator<RelationsWebSocket>();
   late final _destinations = dependencyLocator<DestinationRepository>();
+
   User? get _user => GetStoredUserUseCase()();
 
   Future<void> changeAvailabilityStatus(
@@ -88,14 +89,16 @@ class UserAvailabilityStatusCubit extends Cubit<UserAvailabilityStatusState> {
     return switch (requestedStatus) {
       UserAvailabilityStatus.online => {
           CallSetting.dnd: false,
-          if (shouldChangeOnAvailable) CallSetting.destination: destination,
+          if (shouldChangeOnAvailable)
+            CallSetting.destination: destination.identifier,
         },
       UserAvailabilityStatus.doNotDisturb => {
           CallSetting.dnd: true,
-          if (shouldChangeOnDnd) CallSetting.destination: destination,
+          if (shouldChangeOnDnd)
+            CallSetting.destination: destination.identifier,
         },
       UserAvailabilityStatus.offline => {
-          CallSetting.destination: const Destination.notAvailable(),
+          CallSetting.destination: const Destination.notAvailable().identifier,
           CallSetting.dnd: false,
         },
     };

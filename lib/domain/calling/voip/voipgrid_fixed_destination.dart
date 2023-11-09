@@ -25,7 +25,7 @@ class VoipgridFixedDestination extends VoipgridDestination
 
   @override
   Destination toDestination() => Destination.phoneNumber(
-        id,
+        id!,
         description,
         phoneNumber,
       );

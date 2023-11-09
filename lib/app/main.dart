@@ -20,6 +20,7 @@ import '../domain/onboarding/should_onboard.dart';
 import '../domain/remote_logging/enable_console_logging.dart';
 import '../domain/remote_logging/enable_remote_logging_if_needed.dart';
 import '../domain/user/get_stored_user.dart';
+import '../domain/calling/voip/apply_destination_migration.dart';
 import 'pages/main/page.dart';
 import 'resources/localizations.dart';
 import 'resources/theme.dart';
@@ -41,6 +42,7 @@ Future<void> main() async {
   RegisterDomainEventListenersUseCase()();
   unawaited(EnableConsoleLoggingUseCase()());
   unawaited(EnableRemoteLoggingIfNeededUseCase()());
+  ApplyDestinationMigration()();
 
   final errorTrackingRepository = dependencyLocator<ErrorTrackingRepository>();
   final dsn = dependencyLocator<EnvRepository>().errorTrackingDsn;

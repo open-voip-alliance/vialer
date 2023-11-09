@@ -13,12 +13,7 @@ enum CallSetting<T extends Object> with SettingKey<T> {
   mobileNumber<String>(),
   dnd<bool>(),
   usePhoneRingtone<bool>(),
-  destination<Destination>(
-    Converters(
-      Destination.serializeToJson,
-      Destination.fromJson,
-    ),
-  ),
+  destination<int>(),
 
   /// If set to `true` the user has decided they want incoming calls to
   /// fallback to their configured mobile number, via a GSM call.
