@@ -40,7 +40,7 @@ abstract class MetricsRepository {
 /// Used in debug environments to just log events to the console for debugging
 /// purposes.
 @Singleton(as: MetricsRepository)
-@dev
+@debug
 class ConsoleLoggingMetricsRepository extends MetricsRepository {
   @override
   Future<void> initialize(String? key) async {

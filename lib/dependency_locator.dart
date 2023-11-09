@@ -27,5 +27,5 @@ const noDebug = Environment('noDebug');
 
 extension on GetIt {
   GetIt initBasedOnEnvironment() =>
-      init(environment: inDebugMode ? dev.name : prod.name);
+      init(environment: inDebugMode ? debug.name : noDebug.name);
 }
