@@ -1,9 +1,11 @@
+import 'package:injectable/injectable.dart';
 import 'package:vialer/app/util/loggable.dart';
 import 'package:vialer/domain/calling/dnd/dnd_service.dart';
 import 'package:vialer/domain/user/user.dart';
 
 import '../../relations/colleagues/colleague.dart';
 
+@injectable
 class DndRepository with Loggable {
   DndRepository(this._service);
 

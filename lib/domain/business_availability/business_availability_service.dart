@@ -1,4 +1,5 @@
 import 'package:chopper/chopper.dart' hide JsonConverter;
+import 'package:injectable/injectable.dart';
 
 import '../user/get_brand.dart';
 import '../user/user.dart';
@@ -7,7 +8,9 @@ import '../util.dart';
 part 'business_availability_service.chopper.dart';
 
 @ChopperApi()
+@singleton
 abstract class BusinessAvailabilityService extends ChopperService {
+  @factoryMethod
   static BusinessAvailabilityService create() {
     final brand = GetBrand()();
     final businessAvailabilityBaseUrl =

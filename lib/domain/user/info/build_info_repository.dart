@@ -1,9 +1,11 @@
+import 'package:injectable/injectable.dart';
 import 'package:package_info/package_info.dart';
 
 import '../../../dependency_locator.dart';
 import '../../env.dart';
 import 'build_info.dart';
 
+@singleton
 class BuildInfoRepository {
   late final _envRepository = dependencyLocator<EnvRepository>();
 

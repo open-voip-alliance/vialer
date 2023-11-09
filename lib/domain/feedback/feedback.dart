@@ -1,11 +1,13 @@
 import 'dart:io';
 
 import 'package:device_info/device_info.dart';
+import 'package:injectable/injectable.dart';
 import 'package:package_info/package_info.dart';
 
 import '../user/user.dart';
 import 'feedback_service.dart';
 
+@singleton
 class FeedbackRepository {
   Future<void> send({
     required String title,

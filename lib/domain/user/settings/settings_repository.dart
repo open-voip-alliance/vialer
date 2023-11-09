@@ -1,10 +1,12 @@
 import 'dart:convert';
 
+import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vialer/domain/user/settings/app_setting.dart';
 import 'package:vialer/domain/user/settings/call_setting.dart';
 import 'package:vialer/domain/user/settings/settings.dart';
 
+@singleton
 class SettingsRepository {
   final SharedPreferences _storage;
 

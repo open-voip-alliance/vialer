@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:dartx/dartx.dart';
+import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../calling/outgoing_number/outgoing_number.dart';
@@ -13,6 +14,7 @@ import '../voipgrid/user_permissions.dart';
 import '../user/settings/settings.dart';
 import '../user/user.dart';
 
+@singleton
 class StorageRepository {
   final SharedPreferences _preferences;
 

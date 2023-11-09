@@ -1,4 +1,5 @@
 import 'package:dartx/dartx.dart';
+import 'package:injectable/injectable.dart';
 
 import '../../../app/util/loggable.dart';
 import '../../../data/mappers/call_record.dart';
@@ -7,6 +8,7 @@ import '../../colltacts/contact.dart' as domain;
 import '../../voipgrid/voipgrid_service.dart';
 import '../call_record.dart';
 
+@singleton
 class RecentCallRepository with Loggable {
   RecentCallRepository(
     this._service,
