@@ -50,10 +50,6 @@ class _MobileNumberPageState extends State<MobileNumberPage> {
   }
 
   void _onStateChanged(BuildContext context, MobileNumberState state) {
-    setState(() {
-      _mobileNumberController.text = state.mobileNumber;
-    });
-
     if (state is MobileNumberAccepted) {
       context.read<OnboardingCubit>().forward();
     }

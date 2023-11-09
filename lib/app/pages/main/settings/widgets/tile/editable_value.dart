@@ -141,17 +141,17 @@ class _StringEditSettingValueState extends State<StringEditSettingValue> {
     });
   }
 
-  void _validate() {
-    setState(() async {
-      final validate = widget.validate;
+  void _validate() async {
+    final validate = widget.validate;
 
-      if (validate == null) {
-        _isValid = true;
-        return;
-      }
+    if (validate == null) {
+      setState(() => _isValid = true);
+      return;
+    }
 
-      _isValid = await validate(_textEditingController.text);
-    });
+    final isValid = await validate(_textEditingController.text);
+
+    setState(() => _isValid = isValid);
   }
 
   @override

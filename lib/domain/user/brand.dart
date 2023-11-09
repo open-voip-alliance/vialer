@@ -21,6 +21,7 @@ class Brand with _$Brand {
     required Uri userAvailabilityWsUrl,
     required Uri dndServiceUrl,
     required Uri sharedContactsUrl,
+    required Uri phoneNumberValidationUrl,
     required Uri featureAnnouncementsUrl,
   }) = _Brand;
 

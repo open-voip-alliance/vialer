@@ -1,7 +1,20 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:vialer/domain/calling/validates_phone_number.dart';
+import 'package:get_it/get_it.dart';
+import 'package:vialer/domain/phone_numbers/phone_number_repository.dart';
+import 'package:vialer/domain/phone_numbers/phone_number_service.dart';
+import 'package:vialer/domain/phone_numbers/validate_mobile_phone_number.dart';
 
 void main() {
+  GetIt.instance
+    ..registerSingleton(
+      PhoneNumberRepository(
+        PhoneNumberService.create(
+          uri: Uri.parse('https://phonenumbers.spindle.dev'),
+        ),
+      ),
+    )
+    ..allReady();
+
   expectsNumberToBeValid(
     'Accepts a valid Dutch mobile number',
     '+31640112000',
@@ -9,12 +22,12 @@ void main() {
 
   expectsNumberToBeValid(
     'Accepts a valid Belgian mobile number',
-    '+32640112000',
+    '+32456194246',
   );
 
   expectsNumberToBeValid(
     'Accepts a valid German mobile number',
-    '+49640112000',
+    '+4915134876966',
   );
 
   expectsNumberToBeValid(
@@ -24,12 +37,7 @@ void main() {
 
   expectsNumberToBeValid(
     'Accepts a valid UK mobile number',
-    '+447700900077',
-  );
-
-  expectsNumberToBeInvalid(
-    'Does not accept mobile number without country code',
-    '0640112000',
+    '+447401123123',
   );
 
   expectsNumberToBeInvalid(
@@ -40,12 +48,12 @@ void main() {
 
 void expectsNumberToBeValid(String description, String number) {
   test(description, () async {
-    expect(await ValidatesPhoneNumber()(number), true);
+    expect(await ValidateMobilePhoneNumber()(number), true);
   });
 }
 
 void expectsNumberToBeInvalid(String description, String number) {
   test(description, () async {
-    expect(await ValidatesPhoneNumber()(number), false);
+    expect(await ValidateMobilePhoneNumber()(number), false);
   });
 }
