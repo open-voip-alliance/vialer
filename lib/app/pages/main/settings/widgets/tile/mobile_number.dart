@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:vialer/domain/calling/validates_phone_number.dart';
 
+import '../../../../../../domain/phone_numbers/strictly_validate_mobile_phone_number.dart';
 import '../../../../../../domain/user/settings/call_setting.dart';
 import '../../../../../../domain/user/user.dart';
 import '../../../../../resources/localizations.dart';
@@ -40,7 +40,7 @@ class MobileNumberTile extends StatelessWidget {
             user.settings,
             key,
             isResettable: true,
-            validate: ValidatesPhoneNumber(),
+            validate: StrictlyValidateMobilePhoneNumber(),
             editingFormatter: _formatMobileNumberDuringEditing,
             help: _MobileNumberTileHelp(),
           ),

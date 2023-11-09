@@ -30,6 +30,9 @@ class GetBrand extends UseCase {
       sharedContactsUrl: Uri.parse(
         const String.fromEnvironment('sharedContactsUrl'),
       ),
+      phoneNumberValidationUrl: Uri.parse(
+        const String.fromEnvironment('phoneNumberValidationUrl'),
+      ),
       featureAnnouncementsUrl:
           Uri.parse(const String.fromEnvironment('featureAnnouncementsUrl')),
     );
