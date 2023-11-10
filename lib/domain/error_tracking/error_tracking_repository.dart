@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dartx/dartx.dart';
+import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:vialer/app/util/loggable.dart';
@@ -10,6 +11,7 @@ import '../../dependency_locator.dart';
 import '../env.dart';
 import '../user/user.dart';
 
+@singleton
 class ErrorTrackingRepository with Loggable {
   final _shouldSend = ShouldSendSentryEvent();
 

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dartx/dartx.dart';
+import 'package:injectable/injectable.dart';
 import 'package:vialer/domain/colltacts/shared_contacts/shared_contacts_service.dart';
 
 import '../../../app/util/loggable.dart';
@@ -8,6 +9,7 @@ import '../../user/user.dart';
 import '../../voipgrid/voipgrid_api_resource_collector.dart';
 import 'shared_contact.dart';
 
+@singleton
 class SharedContactsRepository with Loggable {
   SharedContactsRepository(
     this._service,

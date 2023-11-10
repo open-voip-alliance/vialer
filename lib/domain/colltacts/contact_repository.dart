@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dartx/dartx.dart';
+import 'package:injectable/injectable.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../../app/util/loggable.dart';
@@ -10,6 +11,7 @@ import '../../app/util/pigeon.dart';
 import '../../app/util/synchronized_task.dart';
 import 'contact.dart';
 
+@singleton
 class ContactRepository with Loggable {
   var _memoryCache = <Contact>[];
 

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/services.dart';
+import 'package:injectable/injectable.dart';
 import 'package:libphonenumber/libphonenumber.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -12,6 +13,7 @@ import '../../user/user.dart';
 import '../../voipgrid/voipgrid_service.dart';
 import 'call_through_exception.dart';
 
+@singleton
 class CallThroughRepository with Loggable {
   CallThroughRepository(this._service);
 

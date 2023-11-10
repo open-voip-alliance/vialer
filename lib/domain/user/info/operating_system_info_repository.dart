@@ -1,9 +1,11 @@
 import 'dart:io';
 
 import 'package:device_info/device_info.dart';
+import 'package:injectable/injectable.dart';
 
 import 'operating_system_info.dart';
 
+@singleton
 class OperatingSystemInfoRepository {
   Future<OperatingSystemInfo> getOperatingSystemInfo() async {
     return OperatingSystemInfo(

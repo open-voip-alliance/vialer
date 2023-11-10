@@ -2,11 +2,13 @@ import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
 
 import '../../app/util/pigeon.dart';
 import '../user/user.dart';
 
+@singleton
 class LoggingRepository {
   /// A map that will be used to anonymize the logs in both dart and the native
   /// loggers.

@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:injectable/injectable.dart';
 import 'package:vialer/app/util/loggable.dart';
 import 'package:vialer/domain/phone_numbers/phone_number_service.dart';
 
@@ -6,6 +7,7 @@ part 'phone_number_repository.freezed.dart';
 
 part 'phone_number_repository.g.dart';
 
+@singleton
 class PhoneNumberRepository with Loggable {
   PhoneNumberRepository(this._service);
 

@@ -2,9 +2,11 @@ import 'dart:async';
 
 import 'package:dartx/dartx.dart';
 import 'package:flutter_libphonenumber/flutter_libphonenumber.dart';
+import 'package:injectable/injectable.dart';
 
 import 'country.dart';
 
+@singleton
 class CountryRepository {
   CountryRepository() {
     unawaited(FlutterLibphonenumber().init());
