@@ -1,3 +1,6 @@
+import 'package:injectable/injectable.dart';
+
+@singleton
 class MemoryStorageRepository {
   String? regionNumber;
 

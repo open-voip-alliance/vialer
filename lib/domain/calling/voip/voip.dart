@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter_phone_lib/flutter_phone_lib.dart';
+import 'package:injectable/injectable.dart';
 
 import '../../../app/util/loggable.dart';
 import '../../../dependency_locator.dart';
@@ -21,6 +22,7 @@ import '../../voipgrid/client_voip_config.dart';
 import '../../voipgrid/app_account.dart';
 import '../middleware/middleware_service.dart';
 
+@lazySingleton
 class VoipRepository with Loggable {
   final _service = dependencyLocator<MiddlewareService>();
 

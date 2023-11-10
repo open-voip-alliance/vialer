@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:chopper/chopper.dart';
 import 'package:dartx/dartx.dart';
 import 'package:drift/drift.dart';
+import 'package:injectable/injectable.dart';
 
 import '../../../app/util/loggable.dart';
 import '../../voipgrid/voipgrid_service.dart';
@@ -23,6 +24,7 @@ typedef IsUserPhoneAccountLookup = bool Function(int);
 /// into the database.
 ///
 /// Use [LocalClientCallsRepository] instead.
+@singleton
 class RemoteClientCallsRepository with Loggable {
   RemoteClientCallsRepository(this._service);
 

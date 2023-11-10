@@ -8,8 +8,8 @@ import '../use_case.dart';
 import 'metrics.dart';
 
 class InitializeMetricCollection extends UseCase {
-  final _envRepository = dependencyLocator<EnvRepository>();
-  final _metricsRepository = dependencyLocator<MetricsRepository>();
+  late final _envRepository = dependencyLocator<EnvRepository>();
+  late final _metricsRepository = dependencyLocator<MetricsRepository>();
   final _nativeMetrics = NativeMetrics();
 
   Future<void> call() async {

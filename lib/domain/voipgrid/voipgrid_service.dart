@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:chopper/chopper.dart' hide JsonConverter;
+import 'package:injectable/injectable.dart';
 
 import '../user/user.dart';
 import '../util.dart';
@@ -9,7 +10,9 @@ import 'get_voipgrid_base_url.dart';
 part 'voipgrid_service.chopper.dart';
 
 @ChopperApi(baseUrl: '/api/')
+@singleton
 abstract class VoipgridService extends ChopperService {
+  @factoryMethod
   static VoipgridService create() {
     final getVoipgridBaseUrl = GetVoipgridBaseUrlUseCase();
 

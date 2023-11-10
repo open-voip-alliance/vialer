@@ -1,4 +1,5 @@
 import 'package:chopper/chopper.dart';
+import 'package:injectable/injectable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:vialer/domain/user/settings/call_setting.dart';
 
@@ -17,6 +18,7 @@ import '../voipgrid/voipgrid_service.dart';
 
 part 'authentication_repository.g.dart';
 
+@singleton
 class AuthRepository with Loggable {
   AuthRepository(this._service);
 

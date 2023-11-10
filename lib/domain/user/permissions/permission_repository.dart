@@ -1,9 +1,11 @@
+import 'package:injectable/injectable.dart';
 import 'package:permission_handler/permission_handler.dart'
     as permission_handler;
 
 import 'permission.dart' as domain;
 import 'permission_status.dart' as domain;
 
+@singleton
 class PermissionRepository {
   Future<domain.PermissionStatus> getPermissionStatus(
     domain.Permission permission,

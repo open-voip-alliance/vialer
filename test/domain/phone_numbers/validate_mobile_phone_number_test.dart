@@ -8,8 +8,8 @@ void main() {
   GetIt.instance
     ..registerSingleton(
       PhoneNumberRepository(
-        PhoneNumberService.create(
-          uri: Uri.parse('https://phonenumbers.spindle.dev'),
+        PhoneNumberService.createFromUri(
+          Uri.parse('https://phonenumbers.spindle.dev'),
         ),
       ),
     )

@@ -1,11 +1,20 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:injectable/injectable.dart';
 import 'package:recase/recase.dart';
 
 import '../dependency_locator.dart';
 import 'feature/feature.dart';
 
+@singleton
 class EnvRepository {
   late Map<String, String> _env;
+
+  @factoryMethod
+  static Future<EnvRepository> create() async {
+    final env = EnvRepository();
+    await env.load();
+    return env;
+  }
 
   Future<void> load() async {
     await dotenv.load();

@@ -1,8 +1,11 @@
+import 'package:injectable/injectable.dart';
+
 import '../../app/util/loggable.dart';
 import '../user/user.dart';
 import 'opening_hours.dart';
 import 'opening_hours_service.dart';
 
+@injectable
 class OpeningHoursRepository with Loggable {
   OpeningHoursRepository(this._service);
 

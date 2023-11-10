@@ -1,5 +1,6 @@
 import 'package:chopper/chopper.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:injectable/injectable.dart';
 
 import '../../app/util/loggable.dart';
 
@@ -15,10 +16,14 @@ typedef Deserializer<T> = T Function(Map<String, dynamic> json);
 ///
 /// This should only be used with APIs that return responses compatible with
 /// [_PaginatedVoipgridApiResponse], this should be all APIs 2022-onwards.
+@injectable
 class VoipgridApiResourceCollector with Loggable {
   VoipgridApiResourceCollector({
     this.safe = true,
   });
+
+  @factoryMethod
+  VoipgridApiResourceCollector.safe() : safe = true;
 
   /// This is to prevent situations where a developer is requesting a huge
   /// number of items causing a vast number of requests. This should only

@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:injectable/injectable.dart';
 
 import '../../app/util/loggable.dart';
 import '../user/client.dart';
@@ -13,6 +14,7 @@ part 'business_availability_repository.freezed.dart';
 
 part 'business_availability_repository.g.dart';
 
+@injectable
 class BusinessAvailabilityRepository with Loggable {
   BusinessAvailabilityRepository(this._service);
 

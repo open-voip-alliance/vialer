@@ -1,3 +1,5 @@
+import 'package:injectable/injectable.dart';
+
 import '../../../app/util/automatic_retry.dart';
 import '../../../app/util/loggable.dart';
 import '../../user/client.dart';
@@ -5,6 +7,7 @@ import '../../user/user.dart';
 import '../../voipgrid/voipgrid_service.dart';
 import 'outgoing_number.dart';
 
+@singleton
 class OutgoingNumbersRepository with Loggable {
   OutgoingNumbersRepository(this._service);
 

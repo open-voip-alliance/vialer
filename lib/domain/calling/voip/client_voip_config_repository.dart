@@ -1,10 +1,13 @@
 import 'dart:async';
 
+import 'package:injectable/injectable.dart';
+
 import '../../../app/util/loggable.dart';
 import '../../onboarding/is_onboarded.dart';
 import '../../voipgrid/client_voip_config.dart';
 import '../../voipgrid/voipgrid_service.dart';
 
+@lazySingleton
 class ClientVoipConfigRepository with Loggable {
   ClientVoipConfigRepository(this._service);
 
