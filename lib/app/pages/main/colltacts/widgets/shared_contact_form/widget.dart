@@ -6,8 +6,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
 import 'package:vialer/app/resources/localizations.dart';
 import 'package:vialer/app/util/conditional_capitalization.dart';
-
 import '../../../settings/widgets/buttons/settings_button.dart';
+import 'package:vialer/app/resources/theme.dart';
+import '../../../../../../domain/colltacts/shared_contacts/shared_contact.dart';
+import '../../../../../resources/messages.i18n.dart';
 import '../../../widgets/conditional_placeholder.dart';
 import '../../../widgets/header.dart';
 import 'cubit.dart';
@@ -81,25 +83,18 @@ class _SharedContactFormState extends State<_SharedContactForm> {
   ) {
     if (_phoneNumberFieldsCount >= _maximumPhoneNumberFields) return;
 
-    setState(() {
-      final key = UniqueKey();
-      _deletablePhoneNumberFields = List.from(_deletablePhoneNumberFields)
-        ..add(
-          SharedContactFieldRow(
-            key: key,
-            icon: null,
-            hintText: context
-                .msg.main.contacts.sharedContacts.form.phoneNumberHintText,
-            initialValue: () =>
-                phoneNumbers[key].isNullOrEmpty ? null : phoneNumbers[key],
-            isForPhoneNumber: true,
-            validator: (value) => cubit.validatePhoneNumber(
-              value,
-              context,
-            ),
-            onValueChanged: (value) => phoneNumbers[key] = value,
-            isDeletable: true,
-            onDelete: (key) => _deletePhoneNumberField(key),
+    _deletablePhoneNumberFields = List.from(_deletablePhoneNumberFields)
+      ..add(
+        SharedContactFieldRow(
+          key: key,
+          icon: null,
+          hintText: context.strings.phoneNumberHintText,
+          initialValue: () =>
+              phoneNumbers[key].isNullOrEmpty ? null : phoneNumbers[key],
+          isForPhoneNumber: true,
+          validator: (value) => cubit.validatePhoneNumber(
+            value,
+            context,
           ),
         );
     });
@@ -109,6 +104,20 @@ class _SharedContactFormState extends State<_SharedContactForm> {
     phoneNumbers.remove(key);
     setState(() {
       _deletablePhoneNumberFields.removeWhere((e) => e.key == key);
+    });
+  }
+
+  void _createDeletablePhoneNumberFieldsFromMap(
+    SharedContactFormCubit cubit,
+    BuildContext context,
+  ) {
+    phoneNumbers.forEach((key, value) {
+      if (key != null)
+        _addDeletablePhoneNumberField(
+          cubit,
+          context,
+          key as UniqueKey,
+        );
     });
   }
 
@@ -128,7 +137,7 @@ class _SharedContactFormState extends State<_SharedContactForm> {
             ..hideCurrentSnackBar()
             ..showSnackBar(SnackBar(
               content: Text(
-                context.msg.main.contacts.sharedContacts.form.genericError,
+                context.strings.genericError,
               ),
             ));
         }
@@ -140,12 +149,10 @@ class _SharedContactFormState extends State<_SharedContactForm> {
         if (state is InProgress) {
           return LoadingIndicator(
             title: Text(
-              context
-                  .msg.main.contacts.sharedContacts.form.loadingIndicator.title,
+              context.strings.loadingIndicator.title,
             ),
             description: Text(
-              context.msg.main.contacts.sharedContacts.form.loadingIndicator
-                  .description,
+              context.strings.loadingIndicator.description,
             ),
           );
         }
@@ -157,8 +164,7 @@ class _SharedContactFormState extends State<_SharedContactForm> {
               children: <Widget>[
                 SharedContactFieldRow(
                   icon: FontAwesomeIcons.user,
-                  hintText: context
-                      .msg.main.contacts.sharedContacts.form.firstNameHintText,
+                  hintText: context.strings.firstNameHintText,
                   initialValue: () =>
                       firstName.isNullOrEmpty ? null : firstName,
                   validator: (value) => cubit.validateText(
@@ -172,8 +178,7 @@ class _SharedContactFormState extends State<_SharedContactForm> {
                 ),
                 SharedContactFieldRow(
                   icon: null,
-                  hintText: context
-                      .msg.main.contacts.sharedContacts.form.lastNameHintText,
+                  hintText: context.strings.lastNameHintText,
                   initialValue: () => lastName.isNullOrEmpty ? null : lastName,
                   validator: (value) => cubit.validateText(
                     value,
@@ -186,8 +191,7 @@ class _SharedContactFormState extends State<_SharedContactForm> {
                 ),
                 SharedContactFieldRow(
                   icon: FontAwesomeIcons.building,
-                  hintText: context
-                      .msg.main.contacts.sharedContacts.form.companyHintText,
+                  hintText: context.strings.companyHintText,
                   initialValue: () => company.isNullOrEmpty ? null : company,
                   validator: (value) => cubit.validateText(
                     value,
@@ -200,8 +204,7 @@ class _SharedContactFormState extends State<_SharedContactForm> {
                 ),
                 SharedContactFieldRow(
                   icon: FontAwesomeIcons.phone,
-                  hintText: context.msg.main.contacts.sharedContacts.form
-                      .phoneNumberHintText,
+                  hintText: context.strings.phoneNumberHintText,
                   initialValue: () => phoneNumbers[null].isNullOrEmpty
                       ? null
                       : phoneNumbers[null],
@@ -239,8 +242,7 @@ class _SharedContactFormState extends State<_SharedContactForm> {
                                 ),
                                 Gap(12),
                                 PlatformText(
-                                  context.msg.main.contacts.sharedContacts.form
-                                      .addPhoneNumberButtonTitle,
+                                  context.strings.addPhoneNumberButtonTitle,
                                 ),
                               ],
                             ),
@@ -256,9 +258,9 @@ class _SharedContactFormState extends State<_SharedContactForm> {
                   ),
                 const SizedBox(height: 26),
                 _ConclusionButton(
-                  title: context.msg.main.contacts.sharedContacts.form
-                      .saveContactButtonTitle
-                      .toUpperCaseIfAndroid(context),
+                  title: context.strings.saveContactButtonTitle, //wip
+                  backgroundColor: context.brand.theme.colors.primary,
+                  textColor: Colors.white,
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
                       cubit.onSubmit(
@@ -270,14 +272,27 @@ class _SharedContactFormState extends State<_SharedContactForm> {
                     }
                   },
                 ),
-                const SizedBox(height: 6),
-                _ConclusionButton(
-                  title: context
-                      .msg.main.contacts.sharedContacts.form.cancelButtonTitle
-                      .toUpperCaseIfAndroid(context),
-                  onPressed: () => Navigator.pop(context),
-                ),
-                const SizedBox(height: 12),
+                const Gap(6),
+                if (_isEditContactForm)
+                  _ConclusionButton(
+                    title: context.strings.deleteContactButtonTitle,
+                    backgroundColor: Colors.red.shade100,
+                    textColor: context.brand.theme.colors.red1,
+                    onPressed: () => _DeleteConfirmation.show(
+                      context,
+                      contactName: widget.sharedContact!.simpleDisplayName,
+                      contactUuid: widget.sharedContact!.id,
+                      sharedContactFormCubit: cubit,
+                    ),
+                  )
+                else
+                  _ConclusionButton(
+                    title: context.strings.cancelButtonTitle,
+                    backgroundColor: context.brand.theme.colors.primary,
+                    textColor: Colors.white,
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                const Gap(12),
               ],
             ),
           ),
@@ -307,8 +322,101 @@ class _ConclusionButton extends StatelessWidget {
       ),
       child: SettingsButton(
         onPressed: onPressed,
-        text: title,
+        child: Align(
+          alignment: Alignment.center,
+          child: PlatformText(
+            title,
+            maxLines: 1,
+            style: TextStyle(
+              color: textColor,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ),
       ),
+    );
+  }
+}
+
+class _DeleteConfirmation extends StatelessWidget {
+  const _DeleteConfirmation({
+    required this.contactName,
+    required this.contactUuid,
+    required this.sharedContactFormCubit,
+  });
+
+  final String contactName;
+  final String? contactUuid;
+  final SharedContactFormCubit sharedContactFormCubit;
+
+  static Future<void> show(
+    BuildContext context, {
+    required String contactName,
+    required String? contactUuid,
+    required SharedContactFormCubit sharedContactFormCubit,
+  }) {
+    return showDialog<void>(
+      context: context,
+      builder: (context) {
+        return _DeleteConfirmation(
+          contactName: contactName,
+          contactUuid: contactUuid,
+          sharedContactFormCubit: sharedContactFormCubit,
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(
+    BuildContext context,
+  ) {
+    Widget binIcon = FaIcon(
+      FontAwesomeIcons.trashCan,
+      size: 20,
+      color: context.brand.theme.colors.red1,
+    );
+    Widget dialogTitle = Column(
+      children: [
+        binIcon,
+        const Gap(10),
+        Text(
+          context.strings.confirmationDialog.deleteContactDialogTitle,
+        ),
+      ],
+    );
+
+    void Function() onDelete = () {
+      sharedContactFormCubit.onDelete(contactUuid);
+      Navigator.pop(context);
+    };
+
+    return PlatformAlertDialog(
+      title: dialogTitle,
+      content: Text(
+        context.strings.confirmationDialog
+            .deleteContactDialogContent(contactName),
+      ),
+      material: (_, __) => MaterialAlertDialogData(
+        actionsPadding: const EdgeInsets.symmetric(horizontal: 24.0),
+      ),
+      actions: <Widget>[
+        PlatformDialogAction(
+          onPressed: () => Navigator.pop(context),
+          child: PlatformText(
+            context.strings.confirmationDialog.cancelButtonTitle,
+          ),
+        ),
+        PlatformDialogAction(
+          onPressed: onDelete,
+          child: PlatformText(
+            context.strings.confirmationDialog.deleteContactButtonTitle,
+            style: TextStyle(
+              color: context.brand.theme.colors.red1,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -316,4 +424,9 @@ class _ConclusionButton extends StatelessWidget {
 extension on Map<Key?, String> {
   List<String> toListWithoutBlankEntries() =>
       values.where((element) => element.isNotBlank).toList();
+}
+
+extension SharedContactsFormMessages on BuildContext {
+  FormSharedContactsContactsMainMessages get strings =>
+      msg.main.contacts.sharedContacts.form;
 }

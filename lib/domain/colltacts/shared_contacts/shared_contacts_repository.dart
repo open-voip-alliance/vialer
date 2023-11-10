@@ -54,6 +54,48 @@ class SharedContactsRepository with Loggable {
       throw Exception('Error');
     }
   }
+
+  Future<void> deleteSharedContact(String? sharedContactUuid) async {
+    final response = await _service.deleteSharedContact(
+      sharedContactUuid ?? '',
+    );
+
+    if (!response.isSuccessful) {
+      logFailedResponse(response, name: 'Delete shared contact');
+      throw Exception('Error');
+    }
+  }
+
+  Future<void> updateSharedContact(
+    String? sharedContactUuid,
+    String? givenName,
+    String? familyName,
+    String? company, [
+    List<String> phoneNumbers = const [],
+  ]) async {
+    final formattedPhoneNumbersList = phoneNumbers
+        .map(
+          (phoneNumber) => {'phone_number_flat': phoneNumber},
+        )
+        .toList();
+
+    final response = await _service.updateSharedContact(
+      sharedContactUuid ?? '',
+      {
+        'given_name': givenName ?? '',
+        'family_name': familyName ?? '',
+        'company_name': company ?? '',
+        'phone_numbers': formattedPhoneNumbersList,
+        'groups': const <dynamic>[],
+        'voip_accounts': const <dynamic>[],
+      },
+    );
+
+    if (!response.isSuccessful) {
+      logFailedResponse(response, name: 'Put update shared contact');
+      throw Exception('Error');
+    }
+  }
 }
 
 extension on Iterable<SharedContact> {

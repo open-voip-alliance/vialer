@@ -119,6 +119,7 @@ class _SharedContactTextFormField extends StatelessWidget {
         validator: validator,
         initialValue: initialValue(),
         onChanged: (value) => onValueChanged(value),
+        textInputAction: TextInputAction.next,
         keyboardType: isForPhoneNumber
             ? Platform.isIOS
                 ? TextInputType.numberWithOptions(signed: true)
