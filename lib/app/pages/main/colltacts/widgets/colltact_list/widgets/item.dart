@@ -41,7 +41,7 @@ class ColltactItem extends StatelessWidget {
     return ListTile(
       contentPadding: Provider.of<EdgeInsets>(context),
       onTap: onTap,
-      leading: avatar,
+      leading: avatar, //wip
       title: title,
       subtitle: subtitle,
     );
