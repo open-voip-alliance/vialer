@@ -13,8 +13,10 @@ import '../../../call/outgoing_number_prompt/show_prompt.dart';
 import '../../../util/stylized_snack_bar.dart';
 import '../../../widgets/caller.dart';
 import '../../contacts/cubit.dart';
+import '../../shared_contacts/cubit.dart';
 import '../colltact_list/details/cubit.dart';
 import '../colltact_list/details/widget.dart';
+import '../edit_shared_contact/page.dart';
 
 class ColltactPageDetails extends StatefulWidget {
   const ColltactPageDetails({

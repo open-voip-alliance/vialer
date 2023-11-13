@@ -1,14 +1,14 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:vialer/app/pages/main/colltacts/colleagues/cubit.dart';
-import 'package:vialer/app/pages/main/colltacts/contacts/cubit.dart';
-import 'package:vialer/app/pages/main/colltacts/shared_contacts/cubit.dart';
-import 'package:vialer/app/pages/main/colltacts/widgets/colltact_list/util/kind.dart';
-import 'package:vialer/domain/metrics/metrics.dart';
 
 import '../../../../dependency_locator.dart';
 import '../../../../domain/colltacts/colltact_tab.dart';
 import '../../../../domain/legacy/storage.dart';
+import '../../../../domain/metrics/metrics.dart';
+import 'colleagues/cubit.dart';
+import 'contacts/cubit.dart';
+import 'shared_contacts/cubit.dart';
+import 'widgets/colltact_list/util/kind.dart';
 
 class ColltactsTabsCubit extends Cubit<List<ColltactTab>> {
   ColltactsTabsCubit(

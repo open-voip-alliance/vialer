@@ -5,9 +5,8 @@ import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
 import 'package:vialer/app/resources/localizations.dart';
-import 'package:vialer/app/util/conditional_capitalization.dart';
-import '../../../settings/widgets/buttons/settings_button.dart';
 import 'package:vialer/app/resources/theme.dart';
+
 import '../../../../../../domain/colltacts/shared_contacts/shared_contact.dart';
 import '../../../../../resources/messages.i18n.dart';
 import '../../../widgets/conditional_placeholder.dart';
@@ -23,11 +22,15 @@ class SharedContactForm extends StatelessWidget {
   const SharedContactForm({
     required this.title,
     required this.onSave,
+    this.onDelete,
+    this.sharedContact,
     Key? key,
   }) : super(key: key);
 
   final String title;
   final VoidCallback onSave;
+  final SharedContact? sharedContact;
+  final VoidCallback? onDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +50,9 @@ class SharedContactForm extends StatelessWidget {
             top: 32,
           ),
           child: _SharedContactForm(
+            sharedContact: sharedContact,
             onSave: onSave,
+            onDelete: onDelete,
           ),
         ),
       ),
@@ -58,10 +63,14 @@ class SharedContactForm extends StatelessWidget {
 class _SharedContactForm extends StatefulWidget {
   const _SharedContactForm({
     required this.onSave,
+    this.sharedContact,
+    this.onDelete,
     Key? key,
   }) : super(key: key);
 
   final VoidCallback onSave;
+  final SharedContact? sharedContact;
+  final VoidCallback? onDelete;
 
   @override
   State<_SharedContactForm> createState() => _SharedContactFormState();
@@ -76,10 +85,41 @@ class _SharedContactFormState extends State<_SharedContactForm> {
   List<SharedContactFieldRow> _deletablePhoneNumberFields = [];
 
   int get _phoneNumberFieldsCount => _deletablePhoneNumberFields.length + 1;
+  bool get _isEditContactForm => widget.sharedContact != null;
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (_isEditContactForm) {
+      _setValuesFromSharedContact(widget.sharedContact!);
+    }
+  }
+
+  void _setValuesFromSharedContact(SharedContact sharedContact) {
+    firstName = sharedContact.givenName;
+    lastName = sharedContact.familyName;
+    company = sharedContact.companyName;
+
+    final phoneNumbersFromContact = Map.fromEntries(
+      sharedContact.phoneNumbers.map(
+        (e) => MapEntry(UniqueKey(), e.phoneNumberFlat),
+      ),
+    );
+
+    phoneNumbersFromContact.forEach((key, value) {
+      if (key == phoneNumbersFromContact.keys.first) {
+        phoneNumbers[null] = value;
+      } else {
+        phoneNumbers[key] = value;
+      }
+    });
+  }
 
   void _addDeletablePhoneNumberField(
     SharedContactFormCubit cubit,
     BuildContext context,
+    UniqueKey key,
   ) {
     if (_phoneNumberFieldsCount >= _maximumPhoneNumberFields) return;
 
@@ -96,8 +136,11 @@ class _SharedContactFormState extends State<_SharedContactForm> {
             value,
             context,
           ),
-        );
-    });
+          onValueChanged: (value) => phoneNumbers[key] = value,
+          isDeletable: true,
+          onDelete: (key) => _deletePhoneNumberField(key),
+        ),
+      );
   }
 
   void _deletePhoneNumberField(Key key) {
@@ -126,13 +169,16 @@ class _SharedContactFormState extends State<_SharedContactForm> {
     return BlocConsumer<SharedContactFormCubit, SharedContactFormState>(
       listenWhen: (oldState, newState) => oldState != newState,
       listener: (context, state) {
-        if (state is Success) {
+        if (state is Saved) {
           widget.onSave();
-          Navigator.pop(context);
-          return;
+        } else if (state is Deleted) {
+          widget.onDelete!();
         }
 
-        if (state is Error) {
+        if (state is Saved || state is Deleted) {
+          Navigator.pop(context);
+          return;
+        } else if (state is Error) {
           ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()
             ..showSnackBar(SnackBar(
@@ -155,6 +201,10 @@ class _SharedContactFormState extends State<_SharedContactForm> {
               context.strings.loadingIndicator.description,
             ),
           );
+        }
+
+        if (_isEditContactForm && _deletablePhoneNumberFields.isEmpty) {
+          _createDeletablePhoneNumberFieldsFromMap(cubit, context);
         }
 
         return Form(
@@ -218,7 +268,7 @@ class _SharedContactFormState extends State<_SharedContactForm> {
                 Column(
                   children: _deletablePhoneNumberFields,
                 ),
-                const SizedBox(height: 3),
+                const Gap(3),
                 if (_phoneNumberFieldsCount < _maximumPhoneNumberFields)
                   Padding(
                     padding: const EdgeInsets.symmetric(
@@ -246,24 +296,29 @@ class _SharedContactFormState extends State<_SharedContactForm> {
                                 ),
                               ],
                             ),
-                            onPressed: () => _addDeletablePhoneNumberField(
-                              cubit,
-                              context,
-                            ),
+                            onPressed: () => setState(() {
+                              _addDeletablePhoneNumberField(
+                                cubit,
+                                context,
+                                UniqueKey(),
+                              );
+                            }),
                           ),
                         ),
-                        const SizedBox(width: 16),
+                        const Gap(16),
                       ],
                     ),
                   ),
-                const SizedBox(height: 26),
+                const Gap(26),
                 _ConclusionButton(
-                  title: context.strings.saveContactButtonTitle, //wip
+                  title: context.strings.saveContactButtonTitle,
                   backgroundColor: context.brand.theme.colors.primary,
                   textColor: Colors.white,
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      cubit.onSubmit(
+                      cubit.onSave(
+                        _isEditContactForm,
+                        widget.sharedContact?.id,
                         firstName,
                         lastName,
                         company,
@@ -306,11 +361,15 @@ class _ConclusionButton extends StatelessWidget {
   const _ConclusionButton({
     required this.title,
     required this.onPressed,
+    required this.backgroundColor,
+    required this.textColor,
     Key? key,
   }) : super(key: key);
 
   final String title;
   final void Function() onPressed;
+  final Color backgroundColor;
+  final Color textColor;
 
   @override
   Widget build(
@@ -320,7 +379,14 @@ class _ConclusionButton extends StatelessWidget {
       padding: const EdgeInsets.symmetric(
         horizontal: 36,
       ),
-      child: SettingsButton(
+      child: OutlinedButton(
+        style: OutlinedButton.styleFrom(
+          backgroundColor: backgroundColor,
+          padding: const EdgeInsets.symmetric(
+            vertical: 12,
+            horizontal: 12,
+          ),
+        ),
         onPressed: onPressed,
         child: Align(
           alignment: Alignment.center,
