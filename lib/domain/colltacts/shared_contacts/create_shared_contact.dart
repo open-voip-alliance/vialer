@@ -13,14 +13,14 @@ class CreateSharedContactUseCase extends UseCase {
     required String? lastName,
     required String? company,
     List<String> phoneNumbers = const [],
-  }) {
-    _metricsRepository.track('create-shared-contact');
-
-    return _sharedContactsRepository.createSharedContact(
+  }) async {
+    await _sharedContactsRepository.createSharedContact(
       firstName,
       lastName,
       company,
       phoneNumbers,
     );
+
+    _metricsRepository.track('shared-contact-created');
   }
 }

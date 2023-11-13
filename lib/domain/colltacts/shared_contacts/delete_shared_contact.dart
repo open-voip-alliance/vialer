@@ -8,9 +8,9 @@ class DeleteSharedContactUseCase extends UseCase {
       dependencyLocator<SharedContactsRepository>();
   final _metricsRepository = dependencyLocator<MetricsRepository>();
 
-  Future<void> call({required String? uuid}) {
-    _metricsRepository.track('delete-shared-contact');
+  Future<void> call({required String? uuid}) async {
+    await _sharedContactsRepository.deleteSharedContact(uuid);
 
-    return _sharedContactsRepository.deleteSharedContact(uuid);
+    _metricsRepository.track('shared-contact-deleted');
   }
 }

@@ -14,15 +14,15 @@ class UpdateSharedContactUseCase extends UseCase {
     required String? lastName,
     required String? company,
     List<String> phoneNumbers = const [],
-  }) {
-    _metricsRepository.track('edit-shared-contact');
-
-    return _sharedContactsRepository.updateSharedContact(
+  }) async {
+    await _sharedContactsRepository.updateSharedContact(
       uuid,
       firstName,
       lastName,
       company,
       phoneNumbers,
     );
+
+    _metricsRepository.track('shared-contact-updated');
   }
 }
