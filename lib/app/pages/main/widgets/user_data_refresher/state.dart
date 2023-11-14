@@ -1,16 +1,9 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-abstract class UserDataRefresherState extends Equatable {
-  const UserDataRefresherState();
+part 'state.freezed.dart';
 
-  @override
-  List<Object?> get props => [];
-}
-
-class NotRefreshing extends UserDataRefresherState {
-  const NotRefreshing();
-}
-
-class Refreshing extends UserDataRefresherState {
-  const Refreshing();
+@freezed
+sealed class UserDataRefresherState with _$UserDataRefresherState {
+  const factory UserDataRefresherState.notRefreshing() = NotRefreshing;
+  const factory UserDataRefresherState.refreshing() = Refreshing;
 }
