@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:dartx/dartx.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../app/util/loggable.dart';
@@ -119,17 +120,26 @@ extension on _TemporaryRedirectResponse {
 }
 
 extension on TemporaryRedirect {
-  Map<String, dynamic> asRequestData() => {
-        // Has to be UTC, because we need a time-zone aware string,
-        // and `toIso8601String` only adds time-zone information
-        // with UTC DateTimes.
-        'end': endsAt.toUtc().toIso8601String(),
-        'destination': {
-          'type': 'VOICEMAIL',
-          'id': destination.map(
-            voicemail: (destination) => destination.voicemailAccount.id,
-            unknown: (_) => throw UnableToRedirectToUnknownDestination(),
-          ),
-        },
-      };
+  Map<String, dynamic> asRequestData() {
+    final destination = this.destination;
+
+    if (destination is! Voicemail) {
+      throw UnableToRedirectToUnknownDestination();
+    }
+
+    final voicemail = destination.voicemailAccount;
+
+    return {
+      // Has to be UTC, because we need a time-zone aware string,
+      // and `toIso8601String` only adds time-zone information
+      // with UTC DateTimes.
+      'end': endsAt.toUtc().toIso8601String(),
+      'destination': {
+        'type': 'VOICEMAIL',
+        'id': voicemail.id,
+        if (voicemail.uuid.isNotBlank)
+          'uuid': voicemail.uuid,
+      },
+    };
+  }
 }
