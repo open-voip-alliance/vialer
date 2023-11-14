@@ -1,18 +1,12 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-abstract class MissedCallNotificationPressedListenerState {
-  const MissedCallNotificationPressedListenerState();
+part 'state.freezed.dart';
+
+@freezed
+sealed class MissedCallNotificationPressedListenerState
+    with _$MissedCallNotificationPressedListenerState {
+  const factory MissedCallNotificationPressedListenerState.notPressed() =
+      MissedCallNotificationNotPressed;
+  const factory MissedCallNotificationPressedListenerState.pressed() =
+      MissedCallNotificationPressed;
 }
-
-class MissedCallNotificationNotPressed extends Equatable
-    implements MissedCallNotificationPressedListenerState {
-  const MissedCallNotificationNotPressed();
-
-  @override
-  List<Object?> get props => [];
-}
-
-/// This state does _not_ extend [Equatable], since it should not be equal
-/// to other [MissedCallNotificationPressed] states in any scenario.
-class MissedCallNotificationPressed
-    extends MissedCallNotificationPressedListenerState {}
