@@ -1,22 +1,10 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-abstract class AppUpdateState extends Equatable {
-  const AppUpdateState();
+part 'state.freezed.dart';
 
-  @override
-  List<Object?> get props => [];
-}
-
-class NewUpdateWasInstalled extends AppUpdateState {
-  const NewUpdateWasInstalled(this.version);
-
-  final String version;
-}
-
-class UpdateReadyToInstall extends AppUpdateState {
-  const UpdateReadyToInstall();
-}
-
-class AppWasNotUpdated extends AppUpdateState {
-  const AppWasNotUpdated();
+@freezed
+sealed class AppUpdateState with _$AppUpdateState {
+  const factory AppUpdateState.newUpdateWasInstalled() = NewUpdateWasInstalled;
+  const factory AppUpdateState.updateReadyToInstall() = UpdateReadyToInstall;
+  const factory AppUpdateState.appWasNotUpdated() = AppWasNotUpdated;
 }
