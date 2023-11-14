@@ -1,10 +1,8 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class DialerState extends Equatable {
-  const DialerState({this.lastCalledDestination});
+part 'state.freezed.dart';
 
-  final String? lastCalledDestination;
-
-  @override
-  List<Object?> get props => [lastCalledDestination];
+@freezed
+class DialerState with _$DialerState {
+  const factory DialerState({String? lastCalledDestination}) = _DialerState;
 }
