@@ -1,25 +1,15 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../../../domain/feedback/survey/survey.dart';
 import '../../../../../domain/feedback/survey/survey_trigger.dart';
 
-abstract class SurveyTriggererState extends Equatable {
-  const SurveyTriggererState();
+part 'state.freezed.dart';
 
-  @override
-  List<Object?> get props => [];
-}
-
-class SurveyNotTriggered extends SurveyTriggererState {
-  const SurveyNotTriggered();
-}
-
-class SurveyTriggered extends SurveyTriggererState {
-  const SurveyTriggered(this.id, this.trigger);
-
-  final SurveyId id;
-  final SurveyTrigger trigger;
-
-  @override
-  List<Object?> get props => [id, trigger];
+@freezed
+sealed class SurveyTriggererState with _$SurveyTriggererState {
+  const factory SurveyTriggererState.surveyNotTriggered() = SurveyNotTriggered;
+  const factory SurveyTriggererState.surveyTriggered(
+    SurveyId id,
+    SurveyTrigger trigger,
+  ) = SurveyTriggered;
 }
