@@ -1,12 +1,10 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-abstract class FeedbackState extends Equatable {
-  @override
-  List<Object?> get props => [];
+part 'state.freezed.dart';
+
+@freezed
+sealed class FeedbackState with _$FeedbackState {
+  const factory FeedbackState.feedbackSending() = FeedbackSending;
+  const factory FeedbackState.feedbackNotSent() = FeedbackNotSent;
+  const factory FeedbackState.feedbackSent() = FeedbackSent;
 }
-
-class FeedbackSending extends FeedbackState {}
-
-class FeedbackNotSent extends FeedbackState {}
-
-class FeedbackSent extends FeedbackState {}
