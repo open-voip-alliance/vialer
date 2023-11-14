@@ -1,12 +1,10 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../domain/user/brand.dart';
 
-class BrandProviderState extends Equatable {
-  const BrandProviderState(this.brand);
+part 'state.freezed.dart';
 
-  final Brand brand;
-
-  @override
-  List<Object?> get props => [brand];
+@freezed
+class BrandProviderState with _$BrandProviderState {
+  const factory BrandProviderState(Brand brand) = _BrandProviderState;
 }
