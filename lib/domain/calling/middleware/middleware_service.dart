@@ -24,6 +24,7 @@ abstract class MiddlewareService extends ChopperService {
         interceptors: [
           const AuthorizationInterceptor(),
           UnauthorizedResponseInterceptor(),
+          ...globalInterceptors,
         ],
       ),
     );

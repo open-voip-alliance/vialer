@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:chopper/chopper.dart' as chopper;
 import 'package:chopper/chopper.dart';
 import 'package:dartx/dartx.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 import '../dependency_locator.dart';
 import 'authentication/unauthorized_api_response.dart';
@@ -130,6 +131,37 @@ class RateLimitReachedInterceptor extends chopper.ResponseInterceptor {
   bool _isRateLimited(int statusCode) => statusCode == 429;
 }
 
+class SubmitUnexpectedFailedRequestsToSentry
+    extends chopper.ResponseInterceptor {
+  @override
+  FutureOr<chopper.Response<dynamic>> onResponse(Response<dynamic> response) {
+    final statusCode = response.statusCode;
+
+    if (!statusCode.shouldSubmitStatusCodeToSentry) return response;
+
+    final url = response.base.request?.url.path ?? '';
+    final body = response.bodyString;
+
+    if (Sentry.isEnabled) {
+      Sentry.captureMessage(
+        '$url responded with [$statusCode]',
+        level: SentryLevel.error,
+        params: [url, statusCode, body],
+      );
+    }
+
+    return response;
+  }
+}
+
+extension on int {
+  bool get shouldSubmitStatusCodeToSentry {
+    if (this < 400) return false;
+
+    return [404, 429].contains(this);
+  }
+}
+
 class JsonConverter extends chopper.JsonConverter {
   @override
   FutureOr<chopper.Response<dynamic>> decodeJson<BodyType, InnerType>(
@@ -144,3 +176,7 @@ class JsonConverter extends chopper.JsonConverter {
     return super.decodeJson<BodyType, InnerType>(response);
   }
 }
+
+Iterable<chopper.ResponseInterceptor> get globalInterceptors => [
+      SubmitUnexpectedFailedRequestsToSentry(),
+    ];

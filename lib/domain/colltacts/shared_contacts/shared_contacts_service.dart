@@ -2,7 +2,6 @@ import 'package:chopper/chopper.dart' hide JsonConverter;
 import 'package:injectable/injectable.dart';
 
 import '../../user/get_brand.dart';
-import '../../user/user.dart';
 import '../../util.dart';
 
 part 'shared_contacts_service.chopper.dart';
@@ -19,25 +18,9 @@ abstract class SharedContactsService extends ChopperService {
       ChopperClient(
         baseUrl: Uri.parse(sharedContactsBaseUrl),
         converter: JsonConverter(),
-        interceptors: const <RequestInterceptor>[
-          AuthorizationInterceptor(
-            onlyModernAuth: false,
-          ),
-        ],
-      ),
-    );
-  }
-
-  static SharedContactsService createInIsolate({
-    required User user,
-    required String baseUrl,
-  }) {
-    return _$SharedContactsService(
-      ChopperClient(
-        baseUrl: Uri.parse(baseUrl),
-        converter: JsonConverter(),
-        interceptors: <RequestInterceptor>[
-          AuthorizationInterceptor(user: user),
+        interceptors: [
+          AuthorizationInterceptor(onlyModernAuth: false),
+          ...globalInterceptors,
         ],
       ),
     );

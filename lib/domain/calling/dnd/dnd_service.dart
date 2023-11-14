@@ -18,8 +18,9 @@ abstract class DndService extends ChopperService {
       ChopperClient(
         baseUrl: Uri.parse(dndUrl),
         converter: JsonConverter(),
-        interceptors: <RequestInterceptor>[
+        interceptors: [
           const AuthorizationInterceptor(onlyModernAuth: true),
+          ...globalInterceptors,
         ],
       ),
     );

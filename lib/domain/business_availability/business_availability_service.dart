@@ -20,10 +20,9 @@ abstract class BusinessAvailabilityService extends ChopperService {
       ChopperClient(
         baseUrl: Uri.parse(businessAvailabilityBaseUrl),
         converter: JsonConverter(),
-        interceptors: const <RequestInterceptor>[
-          AuthorizationInterceptor(
-            onlyModernAuth: true,
-          ),
+        interceptors: [
+          AuthorizationInterceptor(onlyModernAuth: true),
+          ...globalInterceptors,
         ],
       ),
     );
@@ -37,8 +36,9 @@ abstract class BusinessAvailabilityService extends ChopperService {
       ChopperClient(
         baseUrl: Uri.parse(baseUrl),
         converter: JsonConverter(),
-        interceptors: <RequestInterceptor>[
+        interceptors: [
           AuthorizationInterceptor(user: user),
+          ...globalInterceptors,
         ],
       ),
     );

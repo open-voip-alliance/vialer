@@ -18,10 +18,9 @@ abstract class FeatureAnnouncementsService extends ChopperService {
       ChopperClient(
         baseUrl: Uri.parse(featureAnnouncementsUrl),
         converter: JsonConverter(),
-        interceptors: <RequestInterceptor>[
-          const AuthorizationInterceptor(
-            onlyModernAuth: true,
-          ),
+        interceptors: [
+          const AuthorizationInterceptor(onlyModernAuth: true),
+          ...globalInterceptors,
         ],
       ),
     );
