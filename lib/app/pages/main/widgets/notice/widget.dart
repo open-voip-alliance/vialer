@@ -179,7 +179,7 @@ class _NoticeState extends State<_Notice>
                               .toUpperCaseIfAndroid(context),
                         ),
                       ),
-                    ] else if (state is PermissionNoticeState) ...[
+                    ] else if (state.isPermissionNotice) ...[
                       TextButton(
                         onPressed: () => unawaited(
                           cubit.requestPermission(
