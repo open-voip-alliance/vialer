@@ -53,4 +53,15 @@ abstract class SharedContactsService extends ChopperService {
   Future<Response<Map<String, dynamic>>> createSharedContact(
     @Body() Map<String, dynamic> body,
   );
+
+  @Delete(path: '{sharedContactUuid}')
+  Future<Response<Map<String, dynamic>>> deleteSharedContact(
+    @Path() String sharedContactUuid,
+  );
+
+  @Put(path: '{sharedContactUuid}')
+  Future<Response<Map<String, dynamic>>> updateSharedContact(
+    @Path() String sharedContactUuid,
+    @Body() Map<String, dynamic> body,
+  );
 }

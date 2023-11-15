@@ -13,9 +13,12 @@ sealed class SharedContactFormState with _$SharedContactFormState {
 
   const factory SharedContactFormState.inProgress() = InProgress;
 
-  const factory SharedContactFormState.success() = Success;
+  const factory SharedContactFormState.saved() = Saved;
+
+  const factory SharedContactFormState.deleted() = Deleted;
 
   const factory SharedContactFormState.error({
+    String? uuid,
     String? firstName,
     String? lastName,
     String? company,
