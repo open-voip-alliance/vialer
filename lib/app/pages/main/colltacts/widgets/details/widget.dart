@@ -13,8 +13,10 @@ import '../../../call/outgoing_number_prompt/show_prompt.dart';
 import '../../../util/stylized_snack_bar.dart';
 import '../../../widgets/caller.dart';
 import '../../contacts/cubit.dart';
+import '../../shared_contacts/cubit.dart';
 import '../colltact_list/details/cubit.dart';
 import '../colltact_list/details/widget.dart';
+import '../edit_shared_contact/page.dart';
 
 class ColltactPageDetails extends StatefulWidget {
   const ColltactPageDetails({
@@ -74,6 +76,36 @@ class _ColltactPageDetailsState extends State<ColltactPageDetails>
     }
   }
 
+  void refreshSharedContacts(SharedContactsCubit cubit) =>
+      cubit.loadSharedContacts(fullRefresh: true);
+
+  void _onEditTap(
+    ColltactDetailsCubit colltactDetailsCubit,
+    SharedContactsCubit sharedContactsCubit,
+  ) {
+    if (widget.colltact is ColltactContact)
+      unawaited(colltactDetailsCubit.edit(widget.colltact as ColltactContact));
+    else if (widget.colltact is ColltactSharedContact)
+      unawaited(
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) {
+              return EditSharedContactPage(
+                sharedContact:
+                    (widget.colltact as ColltactSharedContact).contact,
+                onSave: () => refreshSharedContacts(sharedContactsCubit),
+                onDelete: () {
+                  refreshSharedContacts(sharedContactsCubit);
+                  Navigator.pop(context);
+                },
+              );
+            },
+          ),
+        ),
+      );
+  }
+
   @override
   Widget build(BuildContext _) {
     return BlocListener<CallerCubit, CallerState>(
@@ -87,7 +119,10 @@ class _ColltactPageDetailsState extends State<ColltactPageDetails>
               create: (_) => ColltactDetailsCubit(context.watch<CallerCubit>()),
               child: Builder(
                 builder: (context) {
-                  final cubit = context.read<ColltactDetailsCubit>();
+                  final colltactDetailsCubit =
+                      context.read<ColltactDetailsCubit>();
+                  final sharedContactsCubit =
+                      context.read<SharedContactsCubit>();
 
                   return ColltactDetails(
                     colltact: widget.colltact,
@@ -96,7 +131,7 @@ class _ColltactPageDetailsState extends State<ColltactPageDetails>
                       context,
                       destination,
                       (_) => unawaited(
-                        cubit.call(
+                        colltactDetailsCubit.call(
                           destination,
                           origin: switch (widget.colltact) {
                             ColltactColleague() => CallOrigin.colleagues,
@@ -107,12 +142,15 @@ class _ColltactPageDetailsState extends State<ColltactPageDetails>
                         ),
                       ),
                     ),
-                    onEmailPressed: cubit.mail,
+                    onEmailPressed: colltactDetailsCubit.mail,
                     actions: [
                       Padding(
                         padding: const EdgeInsets.only(right: 20),
                         child: GestureDetector(
-                          onTap: () => unawaited(cubit.edit(widget.colltact)),
+                          onTap: () => _onEditTap(
+                            colltactDetailsCubit,
+                            sharedContactsCubit,
+                          ),
                           child: context.isIOS
                               ? Padding(
                                   padding: const EdgeInsets.only(top: 24),
