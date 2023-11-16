@@ -30,7 +30,6 @@ sealed class NoticeState with _$NoticeState {
   bool get isPermissionNotice => switch (this) {
         MicrophonePermissionDeniedNotice() ||
         PhonePermissionDeniedNotice() ||
-        PhonePermissionDeniedNotice() ||
         PhoneAndMicrophonePermissionDeniedNotice() ||
         BluetoothConnectPermissionDeniedNotice() ||
         NotificationsPermissionDeniedNotice() =>
