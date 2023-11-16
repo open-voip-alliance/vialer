@@ -2,8 +2,10 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter_segment/flutter_segment.dart';
+import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
 import 'package:recase/recase.dart';
+import 'package:vialer/dependency_locator.dart';
 
 import '../user/settings/call_setting.dart';
 import '../user/settings/settings.dart';
@@ -37,6 +39,8 @@ abstract class MetricsRepository {
 
 /// Used in debug environments to just log events to the console for debugging
 /// purposes.
+@Singleton(as: MetricsRepository)
+@debug
 class ConsoleLoggingMetricsRepository extends MetricsRepository {
   @override
   Future<void> initialize(String? key) async {
@@ -98,6 +102,8 @@ class ConsoleLoggingMetricsRepository extends MetricsRepository {
   }
 }
 
+@Singleton(as: MetricsRepository)
+@noDebug
 class SegmentMetricsRepository extends MetricsRepository {
   @override
   Future<void> initialize(String? key) async {

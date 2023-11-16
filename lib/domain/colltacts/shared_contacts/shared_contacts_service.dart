@@ -1,4 +1,5 @@
 import 'package:chopper/chopper.dart' hide JsonConverter;
+import 'package:injectable/injectable.dart';
 
 import '../../user/get_brand.dart';
 import '../../user/user.dart';
@@ -7,7 +8,9 @@ import '../../util.dart';
 part 'shared_contacts_service.chopper.dart';
 
 @ChopperApi()
+@singleton
 abstract class SharedContactsService extends ChopperService {
+  @factoryMethod
   static SharedContactsService create() {
     final getBrand = GetBrand();
     final sharedContactsBaseUrl = getBrand().sharedContactsUrl.toString();
@@ -48,6 +51,17 @@ abstract class SharedContactsService extends ChopperService {
 
   @Post()
   Future<Response<Map<String, dynamic>>> createSharedContact(
+    @Body() Map<String, dynamic> body,
+  );
+
+  @Delete(path: '{sharedContactUuid}')
+  Future<Response<Map<String, dynamic>>> deleteSharedContact(
+    @Path() String sharedContactUuid,
+  );
+
+  @Put(path: '{sharedContactUuid}')
+  Future<Response<Map<String, dynamic>>> updateSharedContact(
+    @Path() String sharedContactUuid,
     @Body() Map<String, dynamic> body,
   );
 }

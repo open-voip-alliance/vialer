@@ -1,4 +1,5 @@
 import 'package:chopper/chopper.dart' hide JsonConverter;
+import 'package:injectable/injectable.dart';
 
 import '../../user/get_brand.dart';
 import '../../util.dart';
@@ -6,7 +7,9 @@ import '../../util.dart';
 part 'dnd_service.chopper.dart';
 
 @ChopperApi()
+@singleton
 abstract class DndService extends ChopperService {
+  @factoryMethod
   static DndService create() {
     final brand = GetBrand()();
     final dndUrl = brand.dndServiceUrl.toString();

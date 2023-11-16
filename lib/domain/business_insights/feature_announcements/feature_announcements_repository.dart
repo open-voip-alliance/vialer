@@ -1,6 +1,9 @@
+import 'package:injectable/injectable.dart';
+
 import '../../../app/util/loggable.dart';
 import 'feature_announcements_service.dart';
 
+@injectable
 class FeatureAnnouncementsRepository with Loggable {
   FeatureAnnouncementsRepository(this._service);
 

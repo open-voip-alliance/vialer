@@ -1,4 +1,5 @@
 import 'package:dartx/dartx.dart';
+import 'package:injectable/injectable.dart';
 
 import '../../app/util/loggable.dart';
 import '../legacy/storage.dart';
@@ -6,6 +7,7 @@ import '../user/user.dart';
 import '../vialer.dart';
 import 'voipgrid_service.dart';
 
+@singleton
 class UserPermissionsRepository with Loggable {
   UserPermissionsRepository(this._service, this._storage);
 

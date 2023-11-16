@@ -1,5 +1,6 @@
 import 'package:dartx/dartx.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:injectable/injectable.dart';
 
 import '../../../app/util/automatic_retry.dart';
 import '../../../app/util/json_converter.dart';
@@ -15,6 +16,7 @@ import 'voipgrid_phone_account.dart';
 
 part 'destination_repository.g.dart';
 
+@lazySingleton
 class DestinationRepository with Loggable {
   DestinationRepository(this._service);
 

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dartx/dartx.dart';
+import 'package:injectable/injectable.dart';
 
 import '../../../app/util/loggable.dart';
 import '../../legacy/storage.dart';
@@ -10,6 +11,7 @@ import '../../voipgrid/voipgrid_api_resource_collector.dart';
 import '../../voipgrid/voipgrid_service.dart';
 import 'colleague.dart';
 
+@singleton
 class ColleaguesRepository with Loggable {
   ColleaguesRepository(
     this._service,

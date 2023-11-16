@@ -65,7 +65,7 @@ class StringEditSettingValue extends StatefulWidget {
 
   /// A callback to validate the input, should return TRUE if the provided
   /// string is valid input.
-  final bool Function(String)? validate;
+  final Future<bool> Function(String)? validate;
 
   /// A help widget that will be displayed above the input field if [validate]
   /// fails. This will have no effect if [validate] is `null`.
@@ -141,11 +141,17 @@ class _StringEditSettingValueState extends State<StringEditSettingValue> {
     });
   }
 
-  void _validate() {
-    setState(() {
-      final validate = widget.validate;
-      _isValid = validate?.call(_textEditingController.text) ?? true;
-    });
+  void _validate() async {
+    final validate = widget.validate;
+
+    if (validate == null) {
+      setState(() => _isValid = true);
+      return;
+    }
+
+    final isValid = await validate(_textEditingController.text);
+
+    setState(() => _isValid = isValid);
   }
 
   @override

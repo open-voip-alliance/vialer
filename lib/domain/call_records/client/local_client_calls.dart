@@ -1,5 +1,6 @@
 import 'package:dartx/dartx.dart';
 import 'package:drift/drift.dart';
+import 'package:injectable/injectable.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:watcher/watcher.dart';
 
@@ -8,6 +9,7 @@ import '../call_record.dart';
 import 'client_call_record.dart';
 import 'database/client_calls.dart';
 
+@singleton
 class LocalClientCallsRepository with Loggable {
   LocalClientCallsRepository(this.db);
 

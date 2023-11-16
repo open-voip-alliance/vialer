@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vialer/domain/phone_numbers/strictly_validate_mobile_phone_number.dart';
 import 'package:vialer/domain/user/user.dart';
 
 import '../../../../domain/user/get_logged_in_user.dart';
@@ -9,6 +10,8 @@ import 'state.dart';
 export 'state.dart';
 
 class MobileNumberCubit extends Cubit<MobileNumberState> {
+  late final _validatesPhoneNumber = StrictlyValidateMobilePhoneNumber();
+
   MobileNumberCubit()
       : super(
           MobileNumberState(
@@ -25,6 +28,18 @@ class MobileNumberCubit extends Cubit<MobileNumberState> {
     emit(
       accepted
           ? MobileNumberAccepted(mobileNumber)
+          : MobileNumberNotAccepted(mobileNumber),
+    );
+  }
+
+  Future<void> validate(String mobileNumber) async {
+    final isValid = mobileNumber.isNotEmpty
+        ? await _validatesPhoneNumber(mobileNumber)
+        : true;
+
+    emit(
+      isValid
+          ? MobileNumberState(mobileNumber)
           : MobileNumberNotAccepted(mobileNumber),
     );
   }

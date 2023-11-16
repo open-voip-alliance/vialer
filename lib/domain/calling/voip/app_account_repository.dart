@@ -1,9 +1,12 @@
 import 'dart:async';
 
+import 'package:injectable/injectable.dart';
+
 import '../../../app/util/loggable.dart';
 import '../../voipgrid/app_account.dart';
 import '../../voipgrid/voipgrid_service.dart';
 
+@singleton
 class AppAccountRepository with Loggable {
   AppAccountRepository(this._service);
   final VoipgridService _service;

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:chopper/chopper.dart' hide JsonConverter;
+import 'package:injectable/injectable.dart';
 
 import '../../user/get_stored_user.dart';
 import '../../util.dart';
@@ -9,8 +10,10 @@ import '../../voipgrid/client_voip_config.dart';
 part 'middleware_service.chopper.dart';
 
 @ChopperApi(baseUrl: '/api/')
+@lazySingleton
 abstract class MiddlewareService extends ChopperService {
-  static Future<MiddlewareService> create() async {
+  @factoryMethod
+  static MiddlewareService create() {
     final voipConfig =
         GetStoredUserUseCase()()?.client.voip ?? ClientVoipConfig.fallback();
 

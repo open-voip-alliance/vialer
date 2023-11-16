@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:injectable/injectable.dart';
 import 'package:vialer/app/util/loggable.dart';
 import 'package:vialer/domain/relations/websocket/relations_websocket_event_dispatcher.dart';
 import '../../../app/util/reconnection_strategy.dart';
 import 'get_web_socket_url.dart';
 
+@singleton
 class RelationsWebSocket with Loggable {
   late final _eventDispatcher = RelationsWebSocketEventDispatcher();
 

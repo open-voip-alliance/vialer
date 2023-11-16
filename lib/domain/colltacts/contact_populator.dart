@@ -1,7 +1,10 @@
+import 'package:injectable/injectable.dart';
+
 import '../call_records/call_record.dart';
 import 'contact.dart';
 import 'contact_repository.dart';
 
+@singleton
 class CallRecordContactPopulator {
   const CallRecordContactPopulator(this._contactsRepository);
 
