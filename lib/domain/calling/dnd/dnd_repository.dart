@@ -27,19 +27,12 @@ class DndRepository with Loggable {
 
     final status = response.body!['status'];
 
-    // Relations are doing some work to make their use of constants consistent,
-    // this means we will need to temporarily accept both versions. This can
-    // be changed to only accept the snake-case in a future release.
     return DndStatus.fromBool(status == _dnd);
   }
 
   Future<void> changeDndStatus(User user, DndStatus dndStatus) =>
       _service.changeDndStatus(
         {
-          // Relating to the comments mentioned above, the back-end will
-          // accept both caps and snake-case versions for a while after the
-          // changes have been deployed. This should also be changed to submit
-          // snake-case in a future release.
           'status': dndStatus.asBool() ? _dnd : _available,
         },
         clientUuid: user.client.uuid,
