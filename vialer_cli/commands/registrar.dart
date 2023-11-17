@@ -8,6 +8,6 @@ import 'flutter/upgrade.dart';
 /// If you make a change to this list or to any command within it, you must run
 /// `dart pub global activate --source path vialer_cli`
 /// to be able ot use it again.
-final commands = <Command>[
+final commands = <Command<void>>[
   UpgradeFlutter(),
 ];

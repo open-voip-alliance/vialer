@@ -26,7 +26,7 @@ const pubspecLock = 'pubspec.lock';
 ///
 /// Only the 'pubspec.yaml', 'pubspec.lock', and 'codemagic.yaml' files will be
 /// added to the git commit.
-class UpgradeFlutter extends Command {
+class UpgradeFlutter extends Command<void> {
   UpgradeFlutter() {
     argParser
       ..addOption(
@@ -59,8 +59,8 @@ class UpgradeFlutter extends Command {
   Future<void> run() async {
     await _checkInCorrectDirectory();
 
-    final versionNumber = args['version'];
-    final ticketId = args['ticket-id'];
+    final versionNumber = args['version'].toString();
+    final ticketId = args['ticket-id'].toString();
 
     if (await _hasChanges()) {
       throw Exception(
