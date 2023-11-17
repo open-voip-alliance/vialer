@@ -118,6 +118,10 @@ dev_dependencies:
   vialer_generators:
     path: vialer_generators
 
+  # Nested package that contains all our CLI commands,
+  vialer_cli:
+    path: vialer_cli
+
 
 flutter:
   uses-material-design: true
