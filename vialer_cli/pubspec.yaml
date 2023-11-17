@@ -1,0 +1,11 @@
+name: vialer_cli
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+executables:
+  vialer: vialer_cli
+dependencies:
+  args: ^2.4.2
+  dartx: ^1.2.0
+  austerity: 1.1.0
