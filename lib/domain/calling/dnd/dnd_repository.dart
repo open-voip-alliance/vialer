@@ -5,6 +5,9 @@ import 'package:vialer/domain/user/user.dart';
 
 import '../../relations/colleagues/colleague.dart';
 
+const _dnd = 'do_not_disturb';
+const _available = 'available';
+
 @injectable
 class DndRepository with Loggable {
   DndRepository(this._service);
@@ -27,9 +30,7 @@ class DndRepository with Loggable {
     // Relations are doing some work to make their use of constants consistent,
     // this means we will need to temporarily accept both versions. This can
     // be changed to only accept the snake-case in a future release.
-    return DndStatus.fromBool(
-      ['DND', 'do_not_disturb'].contains(status),
-    );
+    return DndStatus.fromBool(status == _dnd);
   }
 
   Future<void> changeDndStatus(User user, DndStatus dndStatus) =>
@@ -39,7 +40,7 @@ class DndRepository with Loggable {
           // accept both caps and snake-case versions for a while after the
           // changes have been deployed. This should also be changed to submit
           // snake-case in a future release.
-          'status': dndStatus.asBool() ? 'DND' : 'AVAILABLE',
+          'status': dndStatus.asBool() ? _dnd : _available,
         },
         clientUuid: user.client.uuid,
         userUuid: user.uuid,
