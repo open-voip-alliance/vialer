@@ -42,7 +42,7 @@ Future<void> main() async {
   RegisterDomainEventListenersUseCase()();
   unawaited(EnableConsoleLoggingUseCase()());
   unawaited(EnableRemoteLoggingIfNeededUseCase()());
-  ApplyDestinationMigration()();
+  MigrateDestinationObjectToIdentifier()();
 
   final errorTrackingRepository = dependencyLocator<ErrorTrackingRepository>();
   final dsn = dependencyLocator<EnvRepository>().errorTrackingDsn;

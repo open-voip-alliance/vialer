@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vialer/domain/calling/voip/destination.dart';
 
@@ -9,40 +10,37 @@ import '../../user/settings/settings_repository.dart';
 
 /// This runs when the app starts. It migrates the former Destination settings,
 /// stored as an object to the new form, just the id.
-class ApplyDestinationMigration extends UseCase {
+class MigrateDestinationObjectToIdentifier extends UseCase {
   final settings = dependencyLocator<SettingsRepository>();
   final preferences = dependencyLocator<SharedPreferences>();
 
   void call() {
-    final destination =
+    final setting =
         preferences.get(CallSetting.destination.asSharedPreferencesKey());
 
-    if (destination == null ||
-        (destination is String && destination.isNumeric())) return;
+    if (setting == null || (setting is String && setting.isNumeric())) return;
 
-    try {
-      final setting = jsonDecode(destination as String) as Map<String, dynamic>;
+    final destination = Destination.fromJson(
+      jsonDecode(setting as String) as Map<String, dynamic>,
+    );
 
-      final runtimeType = setting['runtimeType'];
-      if (['phoneNumber', 'phoneAccount'].contains(runtimeType)) {
-        settings.change(CallSetting.destination, setting['id'] as int);
-      } else if (runtimeType == 'unknown') {
+    switch (destination) {
+      case PhoneNumber():
+      case PhoneAccount():
+        settings.change(CallSetting.destination, destination.identifier);
+        break;
+      case Unknown():
         settings.change(
           CallSetting.destination,
           Destination.unknown().identifier,
         );
-      } else {
+        break;
+      case NotAvailable():
         settings.change(
           CallSetting.destination,
           Destination.notAvailable().identifier,
         );
-      }
-    } on Exception {
-      // As a fallback, set to unknown destination.
-      settings.change(
-        CallSetting.destination,
-        Destination.unknown().identifier,
-      );
+        break;
     }
   }
 }
