@@ -9,7 +9,6 @@ import './widgets/navigation_controls.dart';
 import '../../../domain/voipgrid/web_page.dart';
 import '../../pages/main/widgets/conditional_placeholder.dart';
 import '../../resources/localizations.dart';
-import '../../util/conditional_capitalization.dart';
 import '../main/settings/widgets/buttons/settings_button.dart';
 
 class WebViewPage extends StatefulWidget {
@@ -88,8 +87,7 @@ class _WebViewPageState extends State<WebViewPage> {
                   const SizedBox(height: 16),
                   SettingsButton(
                     onPressed: () => _onTryAgainButtonPressed(context),
-                    text: context.msg.generic.button.tryAgain
-                        .toUpperCaseIfAndroid(context),
+                    text: context.msg.generic.button.tryAgain,
                   ),
                 ],
               );

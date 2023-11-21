@@ -14,7 +14,6 @@ import '../../../../domain/user/settings/setting_changed.dart';
 import '../../../resources/localizations.dart';
 import '../../../resources/theme.dart';
 import '../../../routes.dart';
-import '../../../util/conditional_capitalization.dart';
 import '../../../util/widgets_binding_observer_registrar.dart';
 import '../call/outgoing_number_prompt/show_prompt.dart';
 import '../settings/widgets/buttons/settings_button.dart';
@@ -158,10 +157,8 @@ class _DialerPageState extends State<DialerPage>
                         text: state is NoPermission && !state.dontAskAgain
                             ? context
                                 .msg.main.dialer.noPermission.buttonPermission
-                                .toUpperCaseIfAndroid(context)
-                            : context
-                                .msg.main.dialer.noPermission.buttonOpenSettings
-                                .toUpperCaseIfAndroid(context),
+                            : context.msg.main.dialer.noPermission
+                                .buttonOpenSettings,
                       ),
                     ],
                   ),

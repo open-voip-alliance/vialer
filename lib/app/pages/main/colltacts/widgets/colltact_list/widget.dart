@@ -9,7 +9,6 @@ import 'package:vialer/app/pages/main/colltacts/widgets/add_shared_contact/page.
 import 'package:vialer/app/pages/main/colltacts/widgets/colltact_list/util/kind.dart';
 import 'package:vialer/app/pages/main/colltacts/widgets/colltact_list/widgets/colltact_item_list.dart';
 import 'package:vialer/app/pages/main/colltacts/widgets/colltact_list/widgets/websocket_unreachable_notice.dart';
-import 'package:vialer/app/util/conditional_capitalization.dart';
 import 'package:vialer/domain/colltacts/colltact_tab.dart';
 
 import '../../../../../../data/models/colltact.dart';
@@ -228,8 +227,7 @@ class SharedContactItemList extends StatelessWidget {
         ),
         solid: false,
         icon: FontAwesomeIcons.userPlus,
-        text: context.msg.main.contacts.list.addSharedContact.title
-            .toUpperCaseIfAndroid(context),
+        text: context.msg.main.contacts.list.addSharedContact.title,
       ),
     );
   }
