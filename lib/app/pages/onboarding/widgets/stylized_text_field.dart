@@ -73,59 +73,63 @@ class StylizedTextField extends StatelessWidget {
             ),
           );
 
-    return IgnoreKeyboardDismiss(
-      child: Material(
-        color: Colors.transparent,
-        elevation: elevation,
-        child: Semantics(
-          textField: true,
-          value: semanticsLabel,
-          child: TextField(
-            textAlign: textAlign,
-            inputFormatters: inputFormatters,
-            controller: controller,
-            focusNode: focusNode,
-            autocorrect: autoCorrect,
-            textCapitalization: textCapitalization,
-            enabled: enabled,
-            decoration: InputDecoration(
-              prefixIcon: prefixIcon != null
-                  // We have to use `Icon` here instead of `FaIcon`, otherwise
-                  // the alignment will be off.
-                  ? Icon(
-                      prefixIcon,
-                      color: hasError
-                          ? context.brand.theme.colors.errorContent
-                          : color,
-                      size: 16,
-                    )
-                  : prefixWidget,
-              suffixIcon: suffix,
-              labelText: labelText,
-              border: inputBorder,
-              enabledBorder: inputBorder,
-              disabledBorder: inputBorder,
-              focusedBorder: inputBorder,
-              labelStyle: const TextStyle(
-                color: color,
-              ),
-              focusColor: color,
-              filled: true,
-              fillColor: Colors.white,
-              floatingLabelBehavior: FloatingLabelBehavior.never,
-              hintText: hintText,
-            ),
-            style: textStyle,
-            obscureText: obscureText,
-            keyboardType: keyboardType,
-            textInputAction: TextInputAction.next,
-            autofillHints: autofillHints,
-            onEditingComplete: onEditingComplete,
-            onChanged: onChanged,
-            onTap: onTap,
-            onSubmitted: onSubmitted,
-          ),
+    Widget textField = TextField(
+      textAlign: textAlign,
+      inputFormatters: inputFormatters,
+      controller: controller,
+      focusNode: focusNode,
+      autocorrect: autoCorrect,
+      textCapitalization: textCapitalization,
+      enabled: enabled,
+      decoration: InputDecoration(
+        prefixIcon: prefixIcon != null
+            ? Icon(
+                prefixIcon,
+                color:
+                    hasError ? context.brand.theme.colors.errorContent : color,
+                size: 16,
+              )
+            : prefixWidget,
+        suffixIcon: suffix,
+        labelText: labelText,
+        border: inputBorder,
+        enabledBorder: inputBorder,
+        disabledBorder: inputBorder,
+        focusedBorder: inputBorder,
+        labelStyle: const TextStyle(
+          color: color,
         ),
+        focusColor: color,
+        filled: true,
+        fillColor: Colors.white,
+        floatingLabelBehavior: FloatingLabelBehavior.never,
+        hintText: hintText,
+      ),
+      style: textStyle,
+      obscureText: obscureText,
+      keyboardType: keyboardType,
+      textInputAction: TextInputAction.next,
+      autofillHints: autofillHints,
+      onEditingComplete: onEditingComplete,
+      onChanged: onChanged,
+      onTap: onTap,
+      onSubmitted: onSubmitted,
+    );
+
+    // Check if there is a KeyboardDismissOnTap parent class to prevent exception if IgnoreKeyboardDismiss is used as wrapper
+    if (context.findAncestorWidgetOfExactType<KeyboardDismissOnTap>() != null) {
+      textField = IgnoreKeyboardDismiss(
+        child: textField,
+      );
+    }
+
+    return Material(
+      color: Colors.transparent,
+      elevation: elevation,
+      child: Semantics(
+        textField: true,
+        value: semanticsLabel,
+        child: textField,
       ),
     );
   }
