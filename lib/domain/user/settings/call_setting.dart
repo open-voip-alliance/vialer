@@ -1,3 +1,5 @@
+import 'package:vialer/domain/relations/user_availability_status.dart';
+
 import '../../calling/outgoing_number/outgoing_number.dart';
 import '../../calling/voip/destination.dart';
 import 'settings.dart';
@@ -11,7 +13,6 @@ enum CallSetting<T extends Object> with SettingKey<T> {
     ),
   ),
   mobileNumber<String>(),
-  dnd<bool>(),
   usePhoneRingtone<bool>(),
   destination<Destination>(
     Converters(
@@ -22,7 +23,14 @@ enum CallSetting<T extends Object> with SettingKey<T> {
 
   /// If set to `true` the user has decided they want incoming calls to
   /// fallback to their configured mobile number, via a GSM call.
-  useMobileNumberAsFallback<bool>();
+  useMobileNumberAsFallback<bool>(),
+
+  availabilityStatus<UserAvailabilityStatus>(
+    Converters(
+      UserAvailabilityStatus.serializeToJson,
+      UserAvailabilityStatus.fromJson,
+    ),
+  );
 
   const CallSetting([this.valueJsonConverter]);
 
@@ -35,7 +43,7 @@ enum CallSetting<T extends Object> with SettingKey<T> {
 
   Object? get _defaultValue => switch (this) {
         CallSetting.useVoip => true,
-        CallSetting.dnd => false,
+        CallSetting.availabilityStatus => UserAvailabilityStatus.online,
         CallSetting.usePhoneRingtone => false,
         CallSetting.useMobileNumberAsFallback => false,
         CallSetting.outgoingNumber => null,

@@ -34,7 +34,7 @@ class ChangeSettingUseCase extends UseCase {
     UpdateRemoteLoggingListener(),
     UpdateUseMobileNumberAsFallbackListener(),
     StartVoipOnUseVoipEnabledListener(),
-    UpdateDndStatus(),
+    UpdateAvailabilityStatus(),
     RefreshVoipPreferences(),
   ];
 

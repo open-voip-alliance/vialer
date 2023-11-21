@@ -13,10 +13,8 @@ import '../../../../../domain/relations/user_availability_status.dart';
 import '../../../../../domain/relations/websocket/relations_web_socket.dart';
 import '../../../../../domain/user/events/logged_in_user_availability_changed.dart';
 import '../../../../../domain/user/events/logged_in_user_was_refreshed.dart';
-import '../../../../../domain/user/get_logged_in_user.dart';
 import '../../../../../domain/user/get_stored_user.dart';
 import '../../../../../domain/user/settings/call_setting.dart';
-import '../../../../../domain/user/settings/settings.dart';
 import '../../../../../domain/user/user.dart';
 import '../../settings/availability/ringing_device/widget.dart';
 import 'state.dart';
@@ -56,49 +54,12 @@ class UserAvailabilityStatusCubit extends Cubit<UserAvailabilityStatusState> {
   ) async {
     check();
 
-    final user = GetLoggedInUserUseCase()();
-
-    await _settingsCubit.changeSettings(
-      _determineSettingsToModify(user, destinations, requestedStatus),
+    await _settingsCubit.changeSetting(
+      CallSetting.availabilityStatus,
+      requestedStatus,
     );
 
     check();
-  }
-
-  Map<SettingKey, Object> _determineSettingsToModify(
-    User user,
-    List<Destination> destinations,
-    UserAvailabilityStatus requestedStatus,
-  ) {
-    final destination =
-        destinations.findHighestPriorityDestinationFor(user: user);
-
-    // We still need to make sure a user gets a ringing device when they are
-    // coming from offline, otherwise pressing "available" would not make
-    // them available.
-    final shouldChangeOnAvailable =
-        destination != null && user.ringingDevice == RingingDeviceType.unknown;
-
-    // We never want enabling dnd to change the ringing device when using the
-    // new dnd api. It's still required for the legacy dnd but should be removed
-    // when possible.
-    final shouldChangeOnDnd =
-        destination != null && user.currentDestination is NotAvailable;
-
-    return switch (requestedStatus) {
-      UserAvailabilityStatus.online => {
-          CallSetting.dnd: false,
-          if (shouldChangeOnAvailable) CallSetting.destination: destination,
-        },
-      UserAvailabilityStatus.doNotDisturb => {
-          CallSetting.dnd: true,
-          if (shouldChangeOnDnd) CallSetting.destination: destination,
-        },
-      UserAvailabilityStatus.offline => {
-          CallSetting.destination: const Destination.notAvailable(),
-          CallSetting.dnd: false,
-        },
-    };
   }
 
   Future<void> check({
@@ -144,14 +105,7 @@ class UserAvailabilityStatusCubit extends Cubit<UserAvailabilityStatusState> {
 
     if (user == null) return UserAvailabilityStatus.offline;
 
-    final destination = user.settings.getOrNull(CallSetting.destination);
-    final isDndEnabled = user.settings.getOrNull(CallSetting.dnd) ?? false;
-
-    if (destination is NotAvailable) return UserAvailabilityStatus.offline;
-
-    return isDndEnabled
-        ? UserAvailabilityStatus.doNotDisturb
-        : UserAvailabilityStatus.online;
+    return user.settings.get(CallSetting.availabilityStatus);
   }
 }
 

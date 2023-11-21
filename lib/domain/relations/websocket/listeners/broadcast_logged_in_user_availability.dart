@@ -33,7 +33,7 @@ extension on UserAvailabilityChangedPayload {
       destinationType == ColleagueDestinationType.voipAccount &&
       availability == ColleagueAvailabilityStatus.offline;
 
-  UserAvailabilityStatus toUserAvailabilityStatus() => switch (availability) {
+  UserAvailabilityStatus toUserAvailabilityStatus() => switch (userStatus) {
         ColleagueAvailabilityStatus.available => UserAvailabilityStatus.online,
         ColleagueAvailabilityStatus.busy => UserAvailabilityStatus.online,
         ColleagueAvailabilityStatus.unknown => UserAvailabilityStatus.online,
