@@ -99,10 +99,6 @@ class _FeedbackPageState extends State<FeedbackPage> {
 
   @override
   Widget build(BuildContext context) {
-    final sendFeedbackButtonText = context
-        .msg.main.settings.feedback.buttons.send
-        .toUpperCaseIfAndroid(context);
-
     final isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom != 0;
 
     return BlocProvider<FeedbackCubit>(
@@ -134,7 +130,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                                   _textController.text,
                                 )
                             : null,
-                        text: sendFeedbackButtonText,
+                        text: context.msg.main.settings.feedback.buttons.send,
                       ),
                     ),
                   ],

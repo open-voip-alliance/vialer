@@ -11,7 +11,6 @@ import '../../../../../domain/voipgrid/web_page.dart';
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme/brand_theme.dart';
 import '../../../../util/brand.dart';
-import '../../../../util/conditional_capitalization.dart';
 import '../../../../widgets/stylized_dropdown.dart';
 import '../../../web_view/page.dart';
 import '../../settings/widgets/buttons/settings_button.dart';
@@ -96,13 +95,9 @@ class _TemporaryRedirectPickerState extends State<TemporaryRedirectPicker> {
         ),
       );
 
-  String get _mainActionText {
-    final text = widget.activeRedirect != null
-        ? context.msg.main.temporaryRedirect.actions.changeRedirect.label
-        : context.msg.main.temporaryRedirect.actions.startRedirect.label;
-
-    return text.toUpperCaseIfAndroid(context);
-  }
+  String get _mainActionText => widget.activeRedirect != null
+      ? context.msg.main.temporaryRedirect.actions.changeRedirect.label
+      : context.msg.main.temporaryRedirect.actions.startRedirect.label;
 
   @override
   Widget build(BuildContext context) {
@@ -207,8 +202,7 @@ class _TemporaryRedirectPickerState extends State<TemporaryRedirectPicker> {
             const SizedBox(height: 12),
             SettingsButton(
               onPressed: widget.onCancel,
-              text: context.msg.generic.button.cancel
-                  .toUpperCaseIfAndroid(context),
+              text: context.msg.generic.button.cancel,
               solid: false,
             ),
           ],
@@ -220,8 +214,7 @@ class _TemporaryRedirectPickerState extends State<TemporaryRedirectPicker> {
                   ? () => unawaited(_handleAction(widget.onStop!))
                   : null,
               text: context
-                  .msg.main.temporaryRedirect.actions.stopRedirect.labelOngoing
-                  .toUpperCaseIfAndroid(context),
+                  .msg.main.temporaryRedirect.actions.stopRedirect.labelOngoing,
               solid: false,
             ),
           ]

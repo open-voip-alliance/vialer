@@ -253,9 +253,7 @@ class _ContactsPermissionButton extends StatelessWidget {
       onPressed: dontAskAgain ? cubit.openAppSettings : cubit.requestPermission,
       text: dontAskAgain
           ? context.msg.main.contacts.list.noPermission.buttonOpenSettings
-              .toUpperCaseIfAndroid(context)
-          : context.msg.main.contacts.list.noPermission.buttonPermission
-              .toUpperCaseIfAndroid(context),
+          : context.msg.main.contacts.list.noPermission.buttonPermission,
     );
   }
 }
