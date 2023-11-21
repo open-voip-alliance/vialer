@@ -6,6 +6,7 @@ import 'package:vialer/domain/calling/voip/destination_repository.dart';
 import '../../user/user.dart';
 
 part 'destination.freezed.dart';
+
 part 'destination.g.dart';
 
 @freezed
@@ -16,13 +17,13 @@ sealed class Destination with _$Destination {
 
   // Formally known as FixedDestination.
   const factory Destination.phoneNumber(
-    int? id,
+    int id,
     String? description,
     String? phoneNumber,
   ) = PhoneNumber;
 
   const factory Destination.phoneAccount(
-    int? id,
+    int id,
     String description,
     int accountId,
     int internalNumber, {
@@ -31,9 +32,15 @@ sealed class Destination with _$Destination {
 
   factory Destination.fromJson(dynamic json) =>
       _$DestinationFromJson(json as Map<String, dynamic>);
+}
 
-  static Map<String, dynamic> serializeToJson(Destination destination) =>
-      destination.toJson();
+extension DestinationIdentifier on Destination {
+  int get identifier => map(
+        unknown: (_) => 0,
+        notAvailable: (_) => -1,
+        phoneNumber: (phoneNumber) => phoneNumber.id,
+        phoneAccount: (phoneAccount) => phoneAccount.id,
+      );
 }
 
 extension DestinationsList on List<Destination> {

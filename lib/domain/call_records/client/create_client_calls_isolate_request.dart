@@ -1,5 +1,3 @@
-import 'package:dartx/dartx.dart';
-
 import '../../../dependency_locator.dart';
 import '../../calling/voip/destination.dart';
 import '../../legacy/storage.dart';
@@ -20,8 +18,7 @@ class CreateClientCallsIsolateRequestUseCase extends UseCase {
 
     return destinations
         .whereType<PhoneAccount>()
-        .filter((phoneAccount) => phoneAccount.id != null)
-        .map((phoneAccount) => phoneAccount.id!)
+        .map((phoneAccount) => phoneAccount.id)
         .toList();
   }
 
