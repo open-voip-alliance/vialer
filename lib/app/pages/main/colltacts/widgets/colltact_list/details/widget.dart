@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -47,44 +46,19 @@ class _ColltactDetailsState extends State<ColltactDetails> {
           builder: (context, colleagueState) {
             return BlocBuilder<ContactsCubit, ContactsState>(
               builder: (context, contactsState) {
+                final sharedContactsCubit = context.read<SharedContactsCubit>();
+                final contactsCubit = context.read<ContactsCubit>();
+                final colleaguesCubit = context.read<ColleaguesCubit>();
+
                 var colltact = widget.colltact;
 
-                if (contactsState is ContactsLoaded &&
-                    colltact is ColltactContact) {
-                  final contact = contactsState.contacts.firstWhereOrNull(
-                    (contact) =>
-                        contact.identifier ==
-                        (colltact as ColltactContact).contact.identifier,
-                  );
-                  if (contact != null) {
-                    colltact = Colltact.contact(contact);
-                  }
-                }
-
-                if (colleagueState is ColleaguesLoaded &&
-                    colltact is ColltactColleague) {
-                  final colleague = colleagueState.colleagues.firstWhereOrNull(
-                    (colleague) =>
-                        colleague.id ==
-                        (colltact as ColltactColleague).colleague.id,
-                  );
-                  if (colleague != null) {
-                    colltact = Colltact.colleague(colleague);
-                  }
-                }
-
-                if (sharedContactsState is SharedContactsLoaded &&
-                    colltact is ColltactSharedContact) {
-                  final contact =
-                      sharedContactsState.sharedContacts.firstWhereOrNull(
-                    (sharedContact) =>
-                        sharedContact.id ==
-                        (colltact as ColltactSharedContact).contact.id,
-                  );
-                  if (contact != null) {
-                    colltact = Colltact.sharedContact(contact);
-                  }
-                }
+                /// Ensure we have the latest Colltact data
+                colltact.when(
+                  colleague: (_) => colleaguesCubit.refreshColleague(colltact),
+                  contact: (_) => contactsCubit.refreshContact(colltact),
+                  sharedContact: (_) =>
+                      sharedContactsCubit.refreshSharedContact(colltact),
+                );
 
                 return Scaffold(
                   appBar: AppBar(

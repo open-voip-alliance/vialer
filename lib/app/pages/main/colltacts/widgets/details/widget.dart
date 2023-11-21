@@ -123,20 +123,10 @@ class _ColltactPageDetailsState extends State<ColltactPageDetails>
                       context.read<ColltactDetailsCubit>();
                   final sharedContactsCubit =
                       context.read<SharedContactsCubit>();
-                  var colltact = widget.colltact;
 
-                  if (sharedContactsState is SharedContactsLoaded &&
-                      colltact is ColltactSharedContact) {
-                    final contact =
-                        sharedContactsState.sharedContacts.firstWhereOrNull(
-                      (sharedContact) =>
-                          sharedContact.id ==
-                          (colltact as ColltactSharedContact).contact.id,
-                    );
-                    if (contact != null) {
-                      colltact = Colltact.sharedContact(contact);
-                    }
-                  }
+                  /// Ensure we have the latest sharedContact data
+                  var colltact =
+                      sharedContactsCubit.refreshSharedContact(widget.colltact);
 
                   return ColltactDetails(
                     colltact: colltact,

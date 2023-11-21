@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../data/models/colltact.dart';
 import '../../../../../domain/colltacts/contact.dart';
 import '../../../../../domain/colltacts/get_contact_sort.dart';
 import '../../../../../domain/colltacts/get_contacts.dart';
@@ -66,4 +68,16 @@ class ContactsCubit extends Cubit<ContactsState> {
   }
 
   void openAppSettings() => unawaited(_openAppSettings());
+
+  Colltact refreshContact(Colltact colltact) {
+    if (state is ContactsLoaded && colltact is ColltactContact) {
+      final contact = (state as ContactsLoaded).contacts.firstWhereOrNull(
+            (contact) =>
+                contact.identifier ==
+                (colltact as ColltactContact).contact.identifier,
+          );
+      if (contact != null) colltact = Colltact.contact(contact);
+    }
+    return colltact;
+  }
 }
