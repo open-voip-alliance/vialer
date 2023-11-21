@@ -76,7 +76,7 @@ custom: # Custom properties to make workflows cleaner
       script: . utils/ci/codemagic/bin/create_dependency_tree_files.sh
   config: &config # Default configuration that can be applied to all normal workflows
     max_build_duration: 90
-    instance_type: mac_mini_m1
+    instance_type: mac_mini_m2
     environment: &config_environment
       flutter: 3.13.9
       # This has to be 14.2 for our integration tests to work, it should be changed to latest
