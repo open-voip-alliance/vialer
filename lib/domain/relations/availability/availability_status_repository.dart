@@ -23,9 +23,9 @@ class UserAvailabilityStatusRepository with Loggable {
       throw Exception('Unable to get dnd status from the api');
     }
 
-    final status = response.body!['status'];
-
-    return UserAvailabilityStatusConversion.fromServer(status as String);
+    return UserAvailabilityStatusConversion.fromServer(
+      response.body!['status'] as String,
+    );
   }
 
   Future<void> changeStatus(User user, UserAvailabilityStatus status) async {
@@ -44,6 +44,8 @@ class UserAvailabilityStatusRepository with Loggable {
 }
 
 extension UserAvailabilityStatusConversion on UserAvailabilityStatus {
+  /// New user statuses will be added in the future, we want to always fallback
+  /// to a given default so we can handle these new statuses as best we can.
   static const _default = UserAvailabilityStatus.online;
 
   static const _mapping = {
@@ -55,8 +57,6 @@ extension UserAvailabilityStatusConversion on UserAvailabilityStatus {
   String asServerValue() => _mapping.getOrElse(this, () => _mapping[_default]!);
 
   static UserAvailabilityStatus fromServer(String value) =>
-      _mapping.entries
-          .firstOrNullWhere((element) => element.value == value)
-          ?.key ??
+      _mapping.entries.firstOrNullWhere((entry) => entry.value == value)?.key ??
       _default;
 }
