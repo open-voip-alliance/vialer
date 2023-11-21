@@ -28,6 +28,7 @@ abstract class VoipgridService extends ChopperService {
           ),
           UnauthorizedResponseInterceptor(),
           RateLimitReachedInterceptor(),
+          ...globalInterceptors,
         ],
       ),
     );

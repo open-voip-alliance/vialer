@@ -139,8 +139,7 @@ extension on TemporaryRedirect {
       'destination': {
         'type': 'VOICEMAIL',
         'id': voicemail.id,
-        if (voicemail.uuid.isNotBlank)
-          'uuid': voicemail.uuid,
+        if (voicemail.uuid.isNotBlank) 'uuid': voicemail.uuid,
       },
     };
   }
