@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:vialer/app/pages/main/settings/availability/ringing_device/widget.dart';
+import 'package:vialer/domain/calling/voip/destination.dart';
 
 import '../../../../../../../domain/user/settings/call_setting.dart';
 import '../../widgets/user_availability_status_builder/cubit.dart';
@@ -61,7 +62,7 @@ class AvailabilitySwitcher extends StatelessWidget {
                           defaultOnSettingChanged(
                         context,
                         CallSetting.destination,
-                        destination,
+                        destination.identifier,
                       ),
                       enabled: state.shouldAllowRemoteSettings,
                       userAvailabilityStatus: status,

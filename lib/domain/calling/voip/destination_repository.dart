@@ -27,7 +27,7 @@ class DestinationRepository with Loggable {
 
   late int selectedUserDestinationId;
 
-  Future<Destination> getActiveDestination() async {
+  Future<int> getActiveDestination() async {
     final response = await _service.getAvailability();
 
     if (!response.isSuccessful) {
@@ -35,12 +35,12 @@ class DestinationRepository with Loggable {
         response,
         name: 'Get active and available destinations',
       );
-      return const Destination.unknown();
+      return const Destination.unknown().identifier;
     }
 
     final objects = response.body?['objects'] as List<dynamic>? ?? <dynamic>[];
 
-    if (objects.isEmpty) return const Destination.unknown();
+    if (objects.isEmpty) return const Destination.unknown().identifier;
 
     final destinations = objects
         .map(
@@ -61,7 +61,7 @@ class DestinationRepository with Loggable {
 
     selectedUserDestinationId = destinations.selectedDestinationId;
 
-    return destinations.active;
+    return destinations.active.identifier;
   }
 
   List<Destination> get availableDestinations =>
@@ -188,4 +188,20 @@ class _AvailabilityResponse {
       .toList();
 
   int get selectedDestinationId => selectedDestinationInfo!.id;
+}
+
+extension intToDestination on int {
+  Destination asDestination() {
+    late final storageRepository = dependencyLocator<StorageRepository>();
+    final id = this;
+
+    if (id == Destination.notAvailable().identifier) {
+      return Destination.notAvailable();
+    } else if (id == Destination.unknown().identifier) {
+      return Destination.unknown();
+    }
+
+    return storageRepository.availableDestinations
+        .firstWhere((destination) => id == destination.identifier);
+  }
 }

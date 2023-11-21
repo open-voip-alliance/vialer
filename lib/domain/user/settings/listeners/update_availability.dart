@@ -10,7 +10,7 @@ import '../../../user/user.dart';
 import '../call_setting.dart';
 import 'setting_change_listener.dart';
 
-class UpdateDestinationListener extends SettingChangeListener<Destination>
+class UpdateDestinationListener extends SettingChangeListener<int>
     with Loggable {
   final _destinationRepository = dependencyLocator<DestinationRepository>();
   final _metricsRepository = dependencyLocator<MetricsRepository>();
@@ -27,14 +27,14 @@ class UpdateDestinationListener extends SettingChangeListener<Destination>
   @override
   FutureOr<SettingChangeListenResult> applySettingsSideEffects(
     User user,
-    Destination value,
+    int value,
   ) async {
     final success = await _destinationRepository.setDestination(
-      destination: value,
+      destination: value.asDestination(),
     );
 
     if (success) {
-      _track(user, value);
+      _track(user, value.asDestination());
     }
 
     return SettingChangeListenResult(sync: _shouldSyncUser);

@@ -9,6 +9,7 @@ import '../../../../../resources/localizations.dart';
 import '../header.dart';
 import 'multiple_ringing_device_dropdown.dart';
 import '../../../../../resources/theme.dart';
+import '../../../../../../../../domain/calling/voip/destination_repository.dart';
 
 typedef DestinationChangedCallback = void Function(Destination destination);
 
@@ -159,7 +160,9 @@ class _RingingDeviceWarning extends StatelessWidget {
 
 extension UserRingingDevice on User {
   Destination get currentDestination =>
-      settings.getOrNull(CallSetting.destination) ?? Destination.unknown();
+      settings.getOrNull(CallSetting.destination) != null
+          ? settings.get(CallSetting.destination).asDestination()
+          : Destination.unknown();
 
   RingingDeviceType get ringingDevice {
     return currentDestination.map(
