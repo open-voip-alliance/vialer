@@ -59,6 +59,11 @@ abstract class VoipgridService extends ChopperService {
     @Header('Authorization') String? authorization,
   });
 
+  @Post(path: 'permission/password_reset/')
+  Future<Response<Map<String, dynamic>>> requestNewPassword(
+    @Body() Map<String, dynamic> body,
+  );
+
   @Get(path: 'v2/call/personalized/')
   Future<Response<List<dynamic>>> getPersonalCalls({
     @Query('answered') bool? answered,
