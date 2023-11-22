@@ -158,7 +158,7 @@ extension on int {
   bool get shouldSubmitStatusCodeToSentry {
     if (this < 400) return false;
 
-    return [404, 429].contains(this);
+    return ![404, 429].contains(this);
   }
 }
 
