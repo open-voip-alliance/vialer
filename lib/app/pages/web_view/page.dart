@@ -92,7 +92,7 @@ class _WebViewPageState extends State<WebViewPage> {
                 ],
               );
             }
-            if (state is LoadedUrl) {
+            if (state.isLoaded) {
               return Stack(
                 children: [
                   InAppWebView(
