@@ -69,7 +69,7 @@ class ContactsCubit extends Cubit<ContactsState> {
 
   void openAppSettings() => unawaited(_openAppSettings());
 
-  Colltact refreshContact(Colltact colltact) {
+  Colltact refreshColltactContact(Colltact colltact) {
     if (state is ContactsLoaded && colltact is ColltactContact) {
       final contact = (state as ContactsLoaded).contacts.firstWhereOrNull(
             (contact) =>

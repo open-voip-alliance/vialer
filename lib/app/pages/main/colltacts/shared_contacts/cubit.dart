@@ -49,7 +49,7 @@ class SharedContactsCubit extends Cubit<SharedContactsState> {
     emit(SharedContactsState.loaded(sharedContacts: _sharedContacts));
   }
 
-  Colltact refreshSharedContact(Colltact colltact) {
+  Colltact refreshColltactSharedContact(Colltact colltact) {
     if (state is SharedContactsLoaded && colltact is ColltactSharedContact) {
       final sharedContact =
           (state as SharedContactsLoaded).sharedContacts.firstWhereOrNull(

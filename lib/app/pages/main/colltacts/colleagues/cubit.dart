@@ -89,7 +89,7 @@ class ColleaguesCubit extends Cubit<ColleaguesState> {
   Future<void> call(String destination) =>
       _caller.call(destination, origin: CallOrigin.colleagues);
 
-  Colltact refreshColleague(Colltact colltact) {
+  Colltact refreshColltactColleague(Colltact colltact) {
     if (state is ColleaguesLoaded && colltact is ColltactColleague) {
       final colleague = (state as ColleaguesLoaded).colleagues.firstWhereOrNull(
             (colleague) =>

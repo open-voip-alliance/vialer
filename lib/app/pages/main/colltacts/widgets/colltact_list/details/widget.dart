@@ -53,10 +53,11 @@ class _ColltactDetailsState extends State<ColltactDetails> {
                 /// Ensure we have the latest Colltact data
                 var colltact = widget.colltact.when(
                   colleague: (_) =>
-                      colleaguesCubit.refreshColleague(widget.colltact),
-                  contact: (_) => contactsCubit.refreshContact(widget.colltact),
-                  sharedContact: (_) =>
-                      sharedContactsCubit.refreshSharedContact(widget.colltact),
+                      colleaguesCubit.refreshColltactColleague(widget.colltact),
+                  contact: (_) =>
+                      contactsCubit.refreshColltactContact(widget.colltact),
+                  sharedContact: (_) => sharedContactsCubit
+                      .refreshColltactSharedContact(widget.colltact),
                 );
 
                 return Scaffold(
