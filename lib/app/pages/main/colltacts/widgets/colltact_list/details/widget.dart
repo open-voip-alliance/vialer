@@ -50,14 +50,13 @@ class _ColltactDetailsState extends State<ColltactDetails> {
                 final contactsCubit = context.read<ContactsCubit>();
                 final colleaguesCubit = context.read<ColleaguesCubit>();
 
-                var colltact = widget.colltact;
-
                 /// Ensure we have the latest Colltact data
-                colltact.when(
-                  colleague: (_) => colleaguesCubit.refreshColleague(colltact),
-                  contact: (_) => contactsCubit.refreshContact(colltact),
+                var colltact = widget.colltact.when(
+                  colleague: (_) =>
+                      colleaguesCubit.refreshColleague(widget.colltact),
+                  contact: (_) => contactsCubit.refreshContact(widget.colltact),
                   sharedContact: (_) =>
-                      sharedContactsCubit.refreshSharedContact(colltact),
+                      sharedContactsCubit.refreshSharedContact(widget.colltact),
                 );
 
                 return Scaffold(
