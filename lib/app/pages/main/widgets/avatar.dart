@@ -85,20 +85,22 @@ class _AvatarState extends State<Avatar> {
       alignment: Alignment.center,
       child: AspectRatio(
         aspectRatio: 1 / 1,
-        child: CircleAvatar(
-          foregroundColor: widget.foregroundColor,
-          backgroundColor: widget.backgroundColor,
-          backgroundImage: hasImage ? existingImage : null,
-          child: showFallback
-              ? _withStyle(widget.fallback)
-              : widget.name != null && !hasImage
-                  ? _withStyle(
-                      Text(
-                        _letters,
-                        style: TextStyle(fontSize: 15),
-                      ),
-                    )
-                  : null, //  We show the avatar.
+        child: ExcludeSemantics(
+          child: CircleAvatar(
+            foregroundColor: widget.foregroundColor,
+            backgroundColor: widget.backgroundColor,
+            backgroundImage: hasImage ? existingImage : null,
+            child: showFallback
+                ? _withStyle(widget.fallback)
+                : widget.name != null && !hasImage
+                    ? _withStyle(
+                        Text(
+                          _letters,
+                          style: TextStyle(fontSize: 15),
+                        ),
+                      )
+                    : null, //  We show the avatar.
+          ),
         ),
       ),
     );
