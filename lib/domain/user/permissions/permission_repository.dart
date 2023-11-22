@@ -46,7 +46,8 @@ extension PermissionMapper on domain.Permission {
 
 extension PermissionStatusMapper on permission_handler.PermissionStatus {
   domain.PermissionStatus toDomainEntity() => switch (this) {
-        permission_handler.PermissionStatus.granted =>
+        permission_handler.PermissionStatus.granted ||
+        permission_handler.PermissionStatus.provisional =>
           domain.PermissionStatus.granted,
         permission_handler.PermissionStatus.denied =>
           domain.PermissionStatus.denied,
