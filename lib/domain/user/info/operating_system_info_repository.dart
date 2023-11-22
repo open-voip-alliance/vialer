@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:device_info/device_info.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:injectable/injectable.dart';
 
 import 'operating_system_info.dart';
