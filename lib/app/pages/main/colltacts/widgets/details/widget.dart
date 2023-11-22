@@ -125,8 +125,8 @@ class _ColltactPageDetailsState extends State<ColltactPageDetails>
                       context.read<SharedContactsCubit>();
 
                   /// Ensure we have the latest sharedContact data
-                  var colltact =
-                      sharedContactsCubit.refreshSharedContact(widget.colltact);
+                  var colltact = sharedContactsCubit
+                      .refreshColltactSharedContact(widget.colltact);
 
                   return ColltactDetails(
                     colltact: colltact,
