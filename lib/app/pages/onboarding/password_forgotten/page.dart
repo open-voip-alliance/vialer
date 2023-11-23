@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
 import '../../../resources/localizations.dart';
 import '../widgets/background.dart';
@@ -61,53 +62,55 @@ class PasswordForgottenPage extends ConsumerWidget {
       return '';
     }
 
-    return Scaffold(
-      body: Background(
-        style: Style.split,
-        child: SafeArea(
-          child: Column(
-            children: [
-              Align(
-                alignment: Alignment.topRight,
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: IconButton(
-                    icon: Icon(Icons.close, color: Colors.white, size: 40),
-                    onPressed: () => _pop(),
+    return KeyboardDismissOnTap(
+      child: Scaffold(
+        body: Background(
+          style: Style.split,
+          child: SafeArea(
+            child: Column(
+              children: [
+                Align(
+                  alignment: Alignment.topRight,
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: IconButton(
+                      icon: Icon(Icons.close, color: Colors.white, size: 40),
+                      onPressed: () => _pop(),
+                    ),
                   ),
                 ),
-              ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(50.0, 0.0, 50.0, 20.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Wrap(
-                        runSpacing: 40,
-                        children: [
-                          title(context),
-                          description(context),
-                          emailInput(
-                              context, passwordForgottenState, _errorText()),
-                        ],
-                      ),
-                      Spacer(),
-                      StylizedButton.raised(
-                          colored: true,
-                          onPressed: _handleRequestNewPassword,
-                          isLoading: passwordForgottenState is Loading,
-                          child: passwordForgottenState is Loading
-                              ? Text(context.msg.onboarding.passwordForgotten
-                                  .button.requestingPasswordReset)
-                              : Text(context.msg.onboarding.passwordForgotten
-                                  .button.requestPasswordReset)),
-                    ],
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(50.0, 0.0, 50.0, 20.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Wrap(
+                          runSpacing: 40,
+                          children: [
+                            title(context),
+                            description(context),
+                            emailInput(
+                                context, passwordForgottenState, _errorText()),
+                          ],
+                        ),
+                        Spacer(),
+                        StylizedButton.raised(
+                            colored: true,
+                            onPressed: _handleRequestNewPassword,
+                            isLoading: passwordForgottenState is Loading,
+                            child: passwordForgottenState is Loading
+                                ? Text(context.msg.onboarding.passwordForgotten
+                                    .button.requestingPasswordReset)
+                                : Text(context.msg.onboarding.passwordForgotten
+                                    .button.requestPasswordReset)),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -148,6 +151,7 @@ class PasswordForgottenPage extends ConsumerWidget {
           keyboardType: TextInputType.emailAddress,
           hasError: errorText.isNotEmpty,
           autofillHints: const [AutofillHints.email],
+          textInputAction: TextInputAction.done,
         ),
         ErrorAlert(
           key: Key('wrongEmailFormatError'),

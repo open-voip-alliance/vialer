@@ -33,6 +33,7 @@ class StylizedTextField extends StatelessWidget {
     this.elevation = 4,
     this.bordered = false,
     this.semanticsLabel,
+    this.textInputAction = TextInputAction.next,
   });
 
   final TextEditingController? controller;
@@ -59,6 +60,7 @@ class StylizedTextField extends StatelessWidget {
   final double elevation;
   final bool bordered;
   final String? semanticsLabel;
+  final TextInputAction textInputAction;
 
   static const color = Colors.grey;
 
@@ -108,7 +110,7 @@ class StylizedTextField extends StatelessWidget {
       style: textStyle,
       obscureText: obscureText,
       keyboardType: keyboardType,
-      textInputAction: TextInputAction.next,
+      textInputAction: textInputAction,
       autofillHints: autofillHints,
       onEditingComplete: onEditingComplete,
       onChanged: onChanged,
