@@ -10,7 +10,8 @@ import '../../../../domain/onboarding/two_factor_authentication_required.dart';
 import '../../../../domain/remote_logging/enable_remote_logging_if_needed.dart';
 import '../../../../domain/user/get_brand.dart';
 import '../../../util/loggable.dart';
-import '../../../util/password.dart' as util;
+import '../../../util/account_validation.dart' as util;
+
 import '../cubit.dart';
 import 'state.dart';
 
@@ -32,13 +33,7 @@ class LoginCubit extends Cubit<LoginState> with Loggable {
 
     emit(const LoggingIn());
 
-    const local = r"[a-z0-9.!#$%&'*+/=?^_`{|}~-]+";
-    const domain = '[a-z0-9](?:[a-z0-9-]{0,253}[a-z0-9])?';
-    const tld = r'(?:\.[a-z0-9](?:[a-z0-9-]{0,253}[a-z0-9])?)+';
-    final hasValidEmailFormat = RegExp(
-      '^$local@$domain$tld\$',
-      caseSensitive: false,
-    ).hasMatch(email);
+    final hasValidEmailFormat = util.hasValidEmailFormat(email);
     final hasValidPasswordFormat = util.hasValidPasswordFormat(password);
 
     if (!hasValidEmailFormat || !hasValidPasswordFormat) {

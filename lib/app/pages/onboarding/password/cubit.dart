@@ -6,7 +6,7 @@ import '../../../../domain/onboarding/login_credentials.dart';
 import '../../../../domain/onboarding/step.dart';
 import '../../../../domain/onboarding/two_factor_authentication_required.dart';
 import '../../../util/loggable.dart';
-import '../../../util/password.dart';
+import '../../../util/account_validation.dart';
 import '../cubit.dart';
 import 'state.dart';
 

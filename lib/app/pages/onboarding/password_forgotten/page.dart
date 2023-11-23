@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../../../resources/localizations.dart';
 import '../widgets/background.dart';
 import '../widgets/stylized_text_field.dart';
@@ -18,25 +19,46 @@ class PasswordForgottenPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(passwordForgottenProvider);
+    final passwordForgottenState = ref.watch(passwordForgottenProvider);
 
     void _pop([String? message]) {
-      Navigator.of(context).pop(message);
+      // Pop the pages, is not required but maybe pop is in place to make sure if this is called multiple times pop is only called once.
+      Navigator.of(context).maybePop(message);
     }
 
-    if (state == PasswordForgottenState.success) {
-      // Postpone the navigation to the next frame
-      WidgetsBinding.instance.addPostFrameCallback((_) {
+    /// Listens to changes in the [PasswordForgottenState] and performs an action based on the state.
+    /// If the [newState] is of type [Success], it pops a message with the provided success message.
+    ref.listen<PasswordForgottenState>(passwordForgottenProvider,
+        (PasswordForgottenState? previousState,
+            PasswordForgottenState newState) {
+      if (newState is Success)
         _pop('Your password has been reset. Please check your email.');
-      });
-    }
+    });
 
-    void handleButtonPress() {
-      if (state != PasswordForgottenState.loading) {
+    /// Handles the request for a new password.
+    ///
+    /// If the [passwordForgottenState] is not [Loading], it closes the keyboard and
+    /// calls the `requestNewPassword` method of the [passwordForgottenProvider] with
+    /// the text from the [emailController].
+    void _handleRequestNewPassword() {
+      if (passwordForgottenState is! Loading) {
+        // Close the keyboard
+        FocusScope.of(context).unfocus();
         ref
             .read(passwordForgottenProvider.notifier)
             .requestNewPassword(emailController.text);
       }
+    }
+
+    String _errorText(PasswordForgottenState passwordForgottenState) {
+      if (passwordForgottenState is NotSubmitted &&
+          !passwordForgottenState.hasValidEmailFormat) {
+        return context.msg.onboarding.login.error.wrongEmailFormat;
+      }
+      if (passwordForgottenState is Failure) {
+        return context.msg.main.contacts.sharedContacts.form.genericError;
+      }
+      return '';
     }
 
     return Scaffold(
@@ -58,54 +80,69 @@ class PasswordForgottenPage extends ConsumerWidget {
                 Wrap(
                   runSpacing: 40,
                   children: [
-                    Text('Password forgotten',
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontSize: 40,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        )),
-                    Text(
-                        'Enter your email address below to receive an email with the steps to reset your password.',
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          color: Colors.white60,
-                        )),
-                    StylizedTextField(
-                      key: Key('emailField'),
-                      //controller: emailController,
-                      autoCorrect: false,
-                      prefixIcon: FontAwesomeIcons.envelope,
-                      labelText: context.msg.onboarding.login.placeholder.email,
-                      keyboardType: TextInputType.emailAddress,
-                      hasError: state is Failure,
-                      // (loginState is LoginNotSubmitted &&
-                      //     !loginState.hasValidEmailFormat),
-                      autofillHints: const [AutofillHints.email],
-                    ),
-                    ErrorAlert(
-                      //key: 'test', //LoginPage.keys.wrongEmailFormatError,
-                      visible: state == PasswordForgottenState.failure,
-                      inline: true,
-                      message: 'er gaat wel fout',
-                      //context.msg.onboarding.login.error.wrongEmailFormat,
-                    ),
+                    title(),
+                    description(),
+                    emailInput(context, passwordForgottenState,
+                        _errorText(passwordForgottenState)),
                   ],
                 ),
                 Spacer(),
                 StylizedButton.raised(
                     colored: true,
-                    onPressed: handleButtonPress,
-                    isLoading: state == PasswordForgottenState.loading,
-                    child: state == PasswordForgottenState.loading
-                        ? Text("Request new password")
-                        : Text("Requesting new password"))
+                    onPressed: _handleRequestNewPassword,
+                    isLoading: passwordForgottenState is Loading,
+                    child: passwordForgottenState is Loading
+                        ? Text("Requesting password reset")
+                        : Text("Request password reset"))
               ],
             ),
           ),
         ),
       ),
+    );
+  }
+
+  Text title() {
+    return Text('Password forgotten',
+        textAlign: TextAlign.center,
+        style: const TextStyle(
+          fontSize: 40,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ));
+  }
+
+  Text description() {
+    return Text(
+        'Enter your email address below to receive an email with the steps to reset your password.',
+        textAlign: TextAlign.center,
+        style: const TextStyle(
+          fontSize: 16,
+          color: Colors.white60,
+        ));
+  }
+
+  Column emailInput(BuildContext context,
+      PasswordForgottenState passwordForgottenState, String errorText) {
+    return Column(
+      children: [
+        StylizedTextField(
+          key: Key('emailField'),
+          controller: emailController,
+          autoCorrect: false,
+          prefixIcon: FontAwesomeIcons.envelope,
+          labelText: context.msg.onboarding.login.placeholder.email,
+          keyboardType: TextInputType.emailAddress,
+          hasError: errorText.isNotEmpty,
+          autofillHints: const [AutofillHints.email],
+        ),
+        ErrorAlert(
+          key: Key('wrongEmailFormatError'),
+          visible: errorText.isNotEmpty,
+          inline: true,
+          message: errorText,
+        ),
+      ],
     );
   }
 }

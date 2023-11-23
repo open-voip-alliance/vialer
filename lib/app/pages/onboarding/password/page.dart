@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 import '../../../resources/localizations.dart';
 import '../../../resources/theme.dart';
 import '../../../util/conditional_capitalization.dart';
-import '../../../util/password.dart';
+import '../../../util/account_validation.dart';
 import '../../../widgets/stylized_button.dart';
 import '../cubit.dart';
 import '../widgets/error.dart';
