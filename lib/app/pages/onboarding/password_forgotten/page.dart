@@ -134,7 +134,7 @@ class PasswordForgottenPage extends ConsumerWidget {
         textAlign: TextAlign.left,
         style: const TextStyle(
           fontSize: 16,
-          color: Colors.white60,
+          color: Colors.white,
         ));
   }
 
