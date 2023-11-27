@@ -35,12 +35,9 @@ extension on UserAvailabilityChangedPayload {
       availability == ColleagueAvailabilityStatus.offline;
 
   UserAvailabilityStatus toUserAvailabilityStatus() => switch (userStatus) {
-        ColleagueAvailabilityStatus.available ||
-        ColleagueAvailabilityStatus.busy ||
-        ColleagueAvailabilityStatus.unknown =>
-          UserAvailabilityStatus.online,
         ColleagueAvailabilityStatus.offline => UserAvailabilityStatus.offline,
         ColleagueAvailabilityStatus.doNotDisturb =>
           UserAvailabilityStatus.doNotDisturb,
+        _ => UserAvailabilityStatus.online,
       };
 }
