@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter_phone_lib/flutter_phone_lib.dart';
 import 'package:injectable/injectable.dart';
+import 'package:vialer/domain/calling/voip/unable_to_initialize_phone_lib.dart';
 
 import '../../../app/util/loggable.dart';
 import '../../../dependency_locator.dart';
@@ -18,8 +19,8 @@ import '../../user/info/operating_system_info_repository.dart';
 import '../../user/settings/app_setting.dart';
 import '../../user/settings/call_setting.dart';
 import '../../user/user.dart';
-import '../../voipgrid/client_voip_config.dart';
 import '../../voipgrid/app_account.dart';
+import '../../voipgrid/client_voip_config.dart';
 import '../middleware/middleware_service.dart';
 
 @lazySingleton
@@ -57,6 +58,8 @@ class VoipRepository with Loggable {
           'Not possible to initialize PhoneLib, '
           'there are no cached startup values',
         );
+
+        throw UnableToInitializePhoneLibException();
       }
 
       return initializeAndStart(
