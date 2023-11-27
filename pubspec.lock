@@ -750,10 +750,10 @@ packages:
     dependency: "direct main"
     description:
       name: i18n
-      sha256: cbf95db340dc82fe2ea6aa8b85f86692c3f7d6ff97d0f7bcf4f56c02aa91cb74
+      sha256: cfd452e0170ab9ba0fb117d6c16b879177c19969956647f60280d272aa996b35
       url: "https://pub.dev"
     source: hosted
-    version: "3.4.1"
+    version: "4.0.8"
   image:
     dependency: transitive
     description:
