@@ -1,9 +1,10 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
 import 'package:vialer/dependency_locator.dart';
+
 import '../../../../domain/authentication/request_new_password.dart';
 import '../../../../domain/authentication/authentication_repository.dart';
+import '../../../util/loggable.dart';
 import '../../../util/account_validation.dart' as util;
 
 part 'state.g.dart';
@@ -21,6 +22,8 @@ class PasswordForgotten extends _$PasswordForgotten {
   }
 
   Future<void> requestNewPassword(String email) async {
+    logger.info('Requesting new password');
+
     final hasValidEmailFormat = util.hasValidEmailFormat(email);
 
     if (!hasValidEmailFormat) {
