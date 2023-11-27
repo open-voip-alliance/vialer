@@ -30,6 +30,7 @@ class BroadcastLoggedInUserAvailability
 
 extension on UserAvailabilityChangedPayload {
   bool get isRingingDeviceOffline =>
+      userStatus != ColleagueAvailabilityStatus.offline &&
       destinationType == ColleagueDestinationType.voipAccount &&
       availability == ColleagueAvailabilityStatus.offline;
 
