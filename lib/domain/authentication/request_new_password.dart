@@ -9,9 +9,8 @@ class RequestNewPasswordUseCase extends UseCase {
 
   Future<bool> call({
     required String email,
-  }) async {
-    return await _authRepository.requestNewPassword(
-      email: email,
-    );
-  }
+  }) =>
+      _authRepository.requestNewPassword(
+        email: email,
+      );
 }

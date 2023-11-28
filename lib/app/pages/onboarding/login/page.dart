@@ -11,7 +11,6 @@ import '../../../../domain/user/launch_privacy_policy.dart';
 import '../../../../domain/user/launch_sign_up.dart';
 import '../../../resources/localizations.dart';
 import '../../../resources/theme.dart';
-import '../../../util/conditional_capitalization.dart';
 import '../../../util/widgets_binding_observer_registrar.dart';
 
 import '../../../../app/pages/main/util/stylized_snack_bar.dart';
@@ -246,20 +245,14 @@ class _LoginPageState extends State<LoginPage>
                                         : () => {},
                                     isLoading: loginState is LoggingIn,
                                     child: loginState is! LoggingIn
-                                        ? Text(
-                                            context.msg.onboarding.button.login
-                                                .toUpperCaseIfAndroid(
-                                              context,
-                                            ),
+                                        ? PlatformText(
+                                            context.msg.onboarding.button.login,
                                             style: TextStyle(
                                               color: Colors.white,
                                             ))
-                                        : Text(
+                                        : PlatformText(
                                             context.msg.onboarding.login.button
-                                                .loggingIn
-                                                .toUpperCaseIfAndroid(
-                                              context,
-                                            ),
+                                                .loggingIn,
                                             style: TextStyle(
                                               color: Colors.white,
                                             ),
@@ -274,10 +267,9 @@ class _LoginPageState extends State<LoginPage>
                               child: StylizedButton.outline(
                                 colored: true,
                                 onPressed: _goToPasswordForgotten,
-                                child: Text(
+                                child: PlatformText(
                                   context.msg.onboarding.login.button
-                                      .forgotPassword
-                                      .toUpperCaseIfAndroid(context),
+                                      .forgotPassword,
                                   style: TextStyle(
                                     color: context.brand.theme.colors.primary,
                                   ),
@@ -288,10 +280,9 @@ class _LoginPageState extends State<LoginPage>
                             if (context.read<LoginCubit>().shouldShowSignUpLink)
                               TextButton(
                                 onPressed: () => LaunchSignUp()(),
-                                child: Text(
+                                child: PlatformText(
                                   context.msg.onboarding.login.button
-                                      .signUp(context.brand.appName)
-                                      .toUpperCaseIfAndroid(context),
+                                      .signUp(context.brand.appName),
                                   style: TextStyle(
                                     color: context.brand.theme.colors
                                         .userAvailabilityOffline,
@@ -300,9 +291,8 @@ class _LoginPageState extends State<LoginPage>
                               ),
                             TextButton(
                               onPressed: () => LaunchPrivacyPolicy()(),
-                              child: Text(
-                                context.msg.main.settings.privacyPolicy
-                                    .toUpperCaseIfAndroid(context),
+                              child: PlatformText(
+                                context.msg.main.settings.privacyPolicy,
                                 style: TextStyle(
                                   color: context.brand.theme.colors
                                       .userAvailabilityOffline,

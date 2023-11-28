@@ -160,11 +160,10 @@ class StylizedButton extends StatelessWidget {
                           color: textColor,
                           fontWeight: FontWeight.bold,
                         ),
-                        child:
-                            isLoading // Wrap child in loading indicator if nc
-                                ? _buildLoadingIndicatorButton(
-                                    textColor: textColor, child: child)
-                                : child,
+                        child: isLoading
+                            ? _loadingIndicatorButton(
+                                textColor: textColor, child: child)
+                            : child,
                       ),
                     ),
                   ),
@@ -176,15 +175,19 @@ class StylizedButton extends StatelessWidget {
       ),
     );
   }
+}
 
-  /// Builds a stylized button with a loading indicator.
-  ///
-  /// The [textColor] parameter specifies the color of the button's text.
-  /// The [child] parameter is the widget to be displayed inside the button.
-  ///
-  /// Returns a [Widget] that represents the stylized button with a loading indicator.
-  Widget _buildLoadingIndicatorButton(
-      {required Color textColor, required Widget child}) {
+class _loadingIndicatorButton extends StatelessWidget {
+  const _loadingIndicatorButton({
+    required this.textColor,
+    required this.child,
+  });
+
+  final Color textColor;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
     return AnimatedSwitcher(
       switchInCurve: Curves.decelerate,
       switchOutCurve: Curves.decelerate.flipped,
@@ -203,9 +206,7 @@ class StylizedButton extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 8),
-          Flexible(
-            child: child,
-          ),
+          Flexible(child: child),
         ],
       ),
     );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
@@ -9,6 +10,7 @@ import '../widgets/stylized_text_field.dart';
 import '../../../widgets/stylized_button.dart';
 import '../widgets/error.dart';
 import 'state.dart';
+import 'riverpod.dart';
 
 class PasswordForgottenPage extends ConsumerWidget {
   PasswordForgottenPage({
@@ -18,14 +20,49 @@ class PasswordForgottenPage extends ConsumerWidget {
 
   final TextEditingController emailController;
 
+  void _pop(BuildContext context, [String? message]) {
+    // Pop the pages, is not required but maybe pop is in place to make sure if this is called multiple times pop is only called once.
+    Navigator.of(context).maybePop(message);
+  }
+
+  /// Handles the request for a new password.
+  ///
+  /// This method is responsible for handling the request for a new password.
+  /// It takes the [context], [ref], and [state] as parameters.
+  /// If the [state] is not of type [Loading], it closes the keyboard and
+  /// calls the `requestNewPassword` method of the [passwordForgottenProvider]
+  /// notifier, passing the text from the [emailController].
+  void _handleRequestNewPassword(
+      BuildContext context, WidgetRef ref, PasswordForgottenState state) {
+    if (state is! Loading) {
+      // Close the keyboard
+      FocusScope.of(context).unfocus();
+      ref
+          .read(passwordForgottenProvider.notifier)
+          .requestNewPassword(emailController.text);
+    }
+  }
+
+  /// Returns the error text based on the [state] of the password forgotten page.
+  ///
+  /// The [state] is used to determine the appropriate error message to display.
+  /// If the [state] is [PasswordForgottenState.failure], the generic error message from the shared contacts form is returned.
+  /// If the [state] is [PasswordForgottenState.notSubmitted], the error message for wrong email format is returned if [hasValidEmailFormat] is false.
+  /// Otherwise, an empty string is returned.
+  String _errorText(BuildContext context, PasswordForgottenState state) {
+    // Use maybeWhen to prevent having to go through all states
+    return state.maybeWhen(
+      failure: () => context.msg.main.contacts.sharedContacts.form.genericError,
+      notSubmitted: (bool hasValidEmailFormat) => hasValidEmailFormat
+          ? ''
+          : context.msg.onboarding.login.error.wrongEmailFormat,
+      orElse: () => '',
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final passwordForgottenState = ref.watch(passwordForgottenProvider);
-
-    void _pop([String? message]) {
-      // Pop the pages, is not required but maybe pop is in place to make sure if this is called multiple times pop is only called once.
-      Navigator.of(context).maybePop(message);
-    }
 
     /// Listens to changes in the [PasswordForgottenState] and performs an action based on the state.
     /// If the [newState] is of type [Success], it pops a message with the provided success message.
@@ -33,34 +70,8 @@ class PasswordForgottenPage extends ConsumerWidget {
         (PasswordForgottenState? previousState,
             PasswordForgottenState newState) {
       if (newState is Success)
-        _pop(context.msg.onboarding.passwordForgotten.success);
+        _pop(context, context.msg.onboarding.passwordForgotten.success);
     });
-
-    /// Handles the request for a new password.
-    ///
-    /// If the [passwordForgottenState] is not [Loading], it closes the keyboard and
-    /// calls the `requestNewPassword` method of the [passwordForgottenProvider] with
-    /// the text from the [emailController].
-    void _handleRequestNewPassword() {
-      if (passwordForgottenState is! Loading) {
-        // Close the keyboard
-        FocusScope.of(context).unfocus();
-        ref
-            .read(passwordForgottenProvider.notifier)
-            .requestNewPassword(emailController.text);
-      }
-    }
-
-    String _errorText() {
-      if (passwordForgottenState is NotSubmitted &&
-          !passwordForgottenState.hasValidEmailFormat) {
-        return context.msg.onboarding.login.error.wrongEmailFormat;
-      }
-      if (passwordForgottenState is Failure) {
-        return context.msg.main.contacts.sharedContacts.form.genericError;
-      }
-      return '';
-    }
 
     return KeyboardDismissOnTap(
       child: Scaffold(
@@ -75,7 +86,7 @@ class PasswordForgottenPage extends ConsumerWidget {
                     padding: const EdgeInsets.all(20.0),
                     child: IconButton(
                       icon: Icon(Icons.close, color: Colors.white, size: 40),
-                      onPressed: () => _pop(),
+                      onPressed: () => _pop(context),
                     ),
                   ),
                 ),
@@ -89,22 +100,33 @@ class PasswordForgottenPage extends ConsumerWidget {
                         Wrap(
                           runSpacing: 40,
                           children: [
-                            title(context),
-                            description(context),
-                            emailInput(
-                                context, passwordForgottenState, _errorText()),
+                            _TitleWidget(),
+                            _DescriptionWidget(),
+                            _EmailInput(
+                              _errorText(context, passwordForgottenState),
+                              emailController,
+                            ),
                           ],
                         ),
                         Spacer(),
                         StylizedButton.raised(
                             colored: true,
-                            onPressed: _handleRequestNewPassword,
+                            onPressed: () => _handleRequestNewPassword(
+                                context, ref, passwordForgottenState),
                             isLoading: passwordForgottenState is Loading,
                             child: passwordForgottenState is Loading
-                                ? Text(context.msg.onboarding.passwordForgotten
-                                    .button.requestingPasswordReset)
-                                : Text(context.msg.onboarding.passwordForgotten
-                                    .button.requestPasswordReset)),
+                                ? PlatformText(context
+                                    .msg
+                                    .onboarding
+                                    .passwordForgotten
+                                    .button
+                                    .requestingPasswordReset)
+                                : PlatformText(context
+                                    .msg
+                                    .onboarding
+                                    .passwordForgotten
+                                    .button
+                                    .requestPasswordReset)),
                       ],
                     ),
                   ),
@@ -116,30 +138,16 @@ class PasswordForgottenPage extends ConsumerWidget {
       ),
     );
   }
+}
 
-  Center title(BuildContext context) {
-    return Center(
-      child: Text(context.msg.onboarding.passwordForgotten.title,
-          textAlign: TextAlign.center,
-          style: const TextStyle(
-            fontSize: 40,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          )),
-    );
-  }
+class _EmailInput extends StatelessWidget {
+  final String errorText;
+  final TextEditingController emailController;
 
-  Text description(BuildContext context) {
-    return Text(context.msg.onboarding.passwordForgotten.description,
-        textAlign: TextAlign.left,
-        style: const TextStyle(
-          fontSize: 16,
-          color: Colors.white,
-        ));
-  }
+  _EmailInput(this.errorText, this.emailController);
 
-  Column emailInput(BuildContext context,
-      PasswordForgottenState passwordForgottenState, String errorText) {
+  @override
+  Widget build(BuildContext context) {
     return Column(
       children: [
         StylizedTextField(
@@ -160,6 +168,37 @@ class PasswordForgottenPage extends ConsumerWidget {
           message: errorText,
         ),
       ],
+    );
+  }
+}
+
+class _TitleWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text(
+        context.msg.onboarding.passwordForgotten.title,
+        textAlign: TextAlign.center,
+        style: const TextStyle(
+          fontSize: 40,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
+}
+
+class _DescriptionWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      context.msg.onboarding.passwordForgotten.description,
+      textAlign: TextAlign.left,
+      style: const TextStyle(
+        fontSize: 16,
+        color: Colors.white,
+      ),
     );
   }
 }

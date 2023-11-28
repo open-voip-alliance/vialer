@@ -10,7 +10,7 @@ import '../../../../domain/onboarding/two_factor_authentication_required.dart';
 import '../../../../domain/remote_logging/enable_remote_logging_if_needed.dart';
 import '../../../../domain/user/get_brand.dart';
 import '../../../util/loggable.dart';
-import '../../../util/account_validation.dart' as util;
+import '../../../../domain/authentication/validate_account.dart';
 
 import '../cubit.dart';
 import 'state.dart';
@@ -33,8 +33,10 @@ class LoginCubit extends Cubit<LoginState> with Loggable {
 
     emit(const LoggingIn());
 
-    final hasValidEmailFormat = util.hasValidEmailFormat(email);
-    final hasValidPasswordFormat = util.hasValidPasswordFormat(password);
+    final hasValidEmailFormat =
+        await ValidateAccount.hasValidEmailFormat(email);
+    final hasValidPasswordFormat =
+        await ValidateAccount.hasValidPasswordFormat(password);
 
     if (!hasValidEmailFormat || !hasValidPasswordFormat) {
       emit(

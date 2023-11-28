@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:vialer/app/util/context_extensions.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
 import '../../../resources/theme.dart';
@@ -98,9 +99,7 @@ class StylizedTextField extends StatelessWidget {
         enabledBorder: inputBorder,
         disabledBorder: inputBorder,
         focusedBorder: inputBorder,
-        labelStyle: const TextStyle(
-          color: color,
-        ),
+        labelStyle: const TextStyle(color: color),
         focusColor: color,
         filled: true,
         fillColor: Colors.white,
@@ -118,12 +117,9 @@ class StylizedTextField extends StatelessWidget {
       onSubmitted: onSubmitted,
     );
 
-    // Check if there is a KeyboardDismissOnTap parent class to prevent exception if IgnoreKeyboardDismiss is used as wrapper
-    if (context.findAncestorWidgetOfExactType<KeyboardDismissOnTap>() != null) {
-      textField = IgnoreKeyboardDismiss(
-        child: textField,
-      );
-    }
+    textField = context.hasKeyboardDismissAsParent
+        ? IgnoreKeyboardDismiss(child: textField)
+        : textField;
 
     return Material(
       color: Colors.transparent,

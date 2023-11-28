@@ -6,7 +6,7 @@ import '../../../../domain/onboarding/login_credentials.dart';
 import '../../../../domain/onboarding/step.dart';
 import '../../../../domain/onboarding/two_factor_authentication_required.dart';
 import '../../../util/loggable.dart';
-import '../../../util/account_validation.dart';
+import '../../../../domain/authentication/validate_account.dart';
 import '../cubit.dart';
 import 'state.dart';
 
@@ -22,7 +22,7 @@ class PasswordCubit extends Cubit<PasswordState> with Loggable {
   Future<void> changePassword(String password) async {
     logger.info('Changing password');
 
-    if (!hasValidPasswordFormat(password)) {
+    if (await ValidateAccount.hasValidPasswordFormat(password) == false) {
       emit(PasswordNotAllowed());
       return;
     }
