@@ -15,9 +15,11 @@ class CallHeaderContainer extends StatelessWidget {
     return Hero(
       tag: 'call-header-container',
       flightShuttleBuilder: (flightContext, _, __, ___, toHeroContext) {
-        return DefaultTextStyle(
-          style: DefaultTextStyle.of(toHeroContext).style,
-          child: toHeroContext.widget,
+        return SingleChildScrollView(
+          child: DefaultTextStyle(
+            style: DefaultTextStyle.of(toHeroContext).style,
+            child: toHeroContext.widget,
+          ),
         );
       },
       child: DecoratedBox(
