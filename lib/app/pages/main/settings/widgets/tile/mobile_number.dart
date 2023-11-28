@@ -31,18 +31,24 @@ class MobileNumberTile extends StatelessWidget {
       titleText: context.msg.main.settings.list.accountInfo.mobileNumber.title,
       bottomBorder: false,
       children: [
-        SettingTile(
-          description: Text(
-            context.msg.main.settings.list.accountInfo.mobileNumber.description,
-          ),
-          childFillWidth: true,
-          child: StringEditSettingValue(
-            user.settings,
-            key,
-            isResettable: true,
-            validate: StrictlyValidateMobilePhoneNumber(),
-            editingFormatter: _formatMobileNumberDuringEditing,
-            help: _MobileNumberTileHelp(),
+        Semantics(
+          explicitChildNodes: true,
+          container: true,
+          child: SettingTile(
+            mergeSemantics: false,
+            description: Text(
+              context
+                  .msg.main.settings.list.accountInfo.mobileNumber.description,
+            ),
+            childFillWidth: true,
+            child: StringEditSettingValue(
+              user.settings,
+              key,
+              isResettable: true,
+              validate: StrictlyValidateMobilePhoneNumber(),
+              editingFormatter: _formatMobileNumberDuringEditing,
+              help: _MobileNumberTileHelp(),
+            ),
           ),
         ),
       ],
