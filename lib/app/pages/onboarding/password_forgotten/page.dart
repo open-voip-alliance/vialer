@@ -43,21 +43,18 @@ class PasswordForgottenPage extends ConsumerWidget {
     }
   }
 
-  /// Returns the error text based on the [state] of the password forgotten page.
-  ///
-  /// The [state] is used to determine the appropriate error message to display.
-  /// If the [state] is [PasswordForgottenState.failure], the generic error message from the shared contacts form is returned.
-  /// If the [state] is [PasswordForgottenState.notSubmitted], the error message for wrong email format is returned if [hasValidEmailFormat] is false.
-  /// Otherwise, an empty string is returned.
+  /// Returns the error text based on the given [context] and [state].
   String _errorText(BuildContext context, PasswordForgottenState state) {
-    // Use maybeWhen to prevent having to go through all states
-    return state.maybeWhen(
-      failure: () => context.msg.main.contacts.sharedContacts.form.genericError,
-      notSubmitted: (bool hasValidEmailFormat) => hasValidEmailFormat
-          ? ''
-          : context.msg.onboarding.login.error.wrongEmailFormat,
-      orElse: () => '',
-    );
+    switch (state.runtimeType) {
+      case Failure:
+        return context.msg.main.contacts.sharedContacts.form.genericError;
+      case NotSubmitted:
+        return (state as NotSubmitted).hasValidEmailFormat
+            ? ''
+            : context.msg.onboarding.login.error.wrongEmailFormat;
+      default:
+        return '';
+    }
   }
 
   @override

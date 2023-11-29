@@ -54,7 +54,7 @@ class _LoginPageState extends State<LoginPage>
   /// It returns a [String] message after navigating back from the [PasswordForgottenPage].
   /// The [message] can be null if no message is returned.
   void _goToPasswordForgotten() async {
-    final String? message = await Navigator.push(
+    final message = await Navigator.push<String?>(
       context,
       platformPageRoute(
         fullscreenDialog: true,
