@@ -127,6 +127,9 @@ abstract class VoipgridService extends ChopperService {
     @Path() required String userId,
   });
 
+  @Get(path: 'v2/user/details')
+  Future<Response<Map<String, dynamic>>> getUserDetails();
+
   @Patch(path: 'v2/clients/{clientId}/users/{userId}')
   Future<Response<Map<String, dynamic>>> updateUserSettings({
     @Path() required String clientId,

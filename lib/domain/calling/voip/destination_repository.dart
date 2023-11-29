@@ -1,20 +1,11 @@
-import 'package:dartx/dartx.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../app/util/automatic_retry.dart';
-import '../../../app/util/json_converter.dart';
 import '../../../app/util/loggable.dart';
 import '../../../dependency_locator.dart';
 import '../../legacy/storage.dart';
 import '../../voipgrid/voipgrid_service.dart';
 import 'destination.dart';
-import 'selected_destination_info.dart';
-import 'voipgrid_destination.dart';
-import 'voipgrid_fixed_destination.dart';
-import 'voipgrid_phone_account.dart';
-
-part 'destination_repository.g.dart';
 
 @lazySingleton
 class DestinationRepository with Loggable {
@@ -25,169 +16,87 @@ class DestinationRepository with Loggable {
   final VoipgridService _service;
   final automaticRetry = AutomaticRetry.http('Change Destination');
 
+  /// This is not a reference to a specific destination, but it is a reference
+  /// to the object against the user that contains a selected destination. When
+  /// we want to update the user's selected destination, we need to know this id
+  /// even though it (at least seems to be) constant for each user.
+  ///
+  /// This is not useful data or impacts the user in anyway, it is purely to
+  /// allow us to execute API requests.
+  ///
+  /// However, this means that this *needs* to be set whenever we get an API
+  /// response that contains it, otherwise it won't be possible to set the
+  /// destination.
   late int selectedUserDestinationId;
 
-  Future<int> getActiveDestination() async {
-    final response = await _service.getAvailability();
-
-    if (!response.isSuccessful) {
-      logFailedResponse(
-        response,
-        name: 'Get active and available destinations',
-      );
-      return const Destination.unknown().identifier;
-    }
-
-    final objects = response.body?['objects'] as List<dynamic>? ?? <dynamic>[];
-
-    if (objects.isEmpty) return const Destination.unknown().identifier;
-
-    final destinations = objects
-        .map(
-          (dynamic obj) => _AvailabilityResponse.fromJson(
-            obj as Map<String, dynamic>,
-          ),
-        )
-        .toList()
-        .first;
-
+  Future<void> updateDestinations(Iterable<Destination> destinations) async {
     final staleDestinations = _storageRepository.availableDestinations;
 
-    _storageRepository
-      ..userNumber = destinations.userNumber
-      ..availableDestinations = destinations.available;
-
-    _carryOverIsOnline(staleDestinations);
-
-    selectedUserDestinationId = destinations.selectedDestinationId;
-
-    return destinations.active.identifier;
+    _storageRepository.availableDestinations =
+        destinations.importIsOnline(staleDestinations).toList();
   }
 
   List<Destination> get availableDestinations =>
       _storageRepository.availableDestinations;
 
-  /// We want to carry over the isOnline status from our old data, this is
-  /// because this data is received via the websocket rather than the
-  /// destinations api.
-  void _carryOverIsOnline(List<Destination> staleDestinations) {
-    staleDestinations.whereType<PhoneAccount>().forEach(
-          (staleDestination) => updateIsOnline(
-            staleDestination.accountId,
-            staleDestination.isOnline,
-          ),
-        );
-  }
-
   Future<void> updateIsOnline(int accountId, bool isOnline) async =>
-      _storageRepository.availableDestinations =
-          _storageRepository.availableDestinations
-              .map(
-                (destination) => destination.map(
-                  unknown: (destination) => destination,
-                  notAvailable: (destination) => destination,
-                  phoneNumber: (destination) => destination,
-                  phoneAccount: (destination) =>
-                      destination.accountId == accountId
-                          ? destination.copyWith(isOnline: isOnline)
-                          : destination,
-                ),
-              )
-              .toList();
+      _storageRepository.availableDestinations = _storageRepository
+          .availableDestinations
+          .updateIsOnline(accountId, isOnline)
+          .toList();
 
-  Future<bool> setDestination({
-    required Destination destination,
-  }) async {
-    try {
-      await automaticRetry.run(
-        () async {
-          final response = await _service.setAvailability(
-            selectedUserDestinationId.toString(),
-            {
-              'phoneaccount': destination is PhoneAccount
-                  ? destination.id.toString()
-                  : null,
-              'fixeddestination':
-                  destination is PhoneNumber ? destination.id.toString() : null,
-            },
-          );
+  Future<bool> setDestination(Destination destination) async {
+    final response = await _service.setAvailability(
+      selectedUserDestinationId.toString(),
+      destination.toPostParameters(),
+    );
 
-          if (!response.isSuccessful) {
-            logFailedResponse(response, name: 'Set destination');
-            return AutomaticRetryTaskOutput.success(response);
-          }
-
-          return AutomaticRetryTaskOutput.success(response);
-        },
-      );
-
-      return true;
-    } on AutomaticRetryMaximumAttemptsReached {
+    if (!response.isSuccessful) {
+      logFailedResponse(response, name: 'Set destination');
       return false;
     }
+
+    return true;
   }
 }
 
-@JsonSerializable(fieldRename: FieldRename.snake)
-class _AvailabilityResponse {
-  const _AvailabilityResponse({
-    required this.id,
-    required this.fixedDestinations,
-    required this.phoneAccounts,
-    required this.selectedDestinationInfo,
-    required this.userNumber,
-  });
+extension on Destination {
+  Map<String, dynamic> toPostParameters() => switch (this) {
+        PhoneAccount dest => {'phoneaccount': dest.identifier.toString()},
+        PhoneNumber dest => {'fixeddestination': dest.identifier.toString()},
+        _ => {},
+      };
+}
 
-  factory _AvailabilityResponse.fromJson(dynamic json) =>
-      _$AvailabilityResponseFromJson(json as Map<String, dynamic>);
-  @JsonIdConverter()
-  final int? id;
-
-  @JsonKey(name: 'fixeddestinations')
-  final List<VoipgridFixedDestination> fixedDestinations;
-
-  @JsonKey(name: 'phoneaccounts')
-  final List<VoipgridPhoneAccount> phoneAccounts;
-
-  @JsonKey(name: 'selecteduserdestination')
-  final SelectedDestinationInfo? selectedDestinationInfo;
-
-  /// Temporarily provide default values to allow for users upgrading from
-  /// an older version. defaultValue and includeIfNull can be removed
-  /// in the future.
-  @JsonKey(name: 'internal_number', defaultValue: 0, includeIfNull: false)
-  final int userNumber;
-
-  VoipgridDestination? get _activeDestination {
-    if (selectedDestinationInfo?.phoneAccountId == null &&
-        selectedDestinationInfo?.fixedDestinationId == null) {
-      return null;
-    } else {
-      return _voipgridDestinations.firstOrNullWhere(
-        (destination) =>
-            destination.id == selectedDestinationInfo?.phoneAccountId ||
-            destination.id == selectedDestinationInfo?.fixedDestinationId,
+extension on Iterable<Destination> {
+  Iterable<Destination> updateIsOnline(int accountId, bool isOnline) => map(
+        (destination) => destination.map(
+          unknown: (destination) => destination,
+          notAvailable: (destination) => destination,
+          phoneNumber: (destination) => destination,
+          phoneAccount: (destination) => destination.accountId == accountId
+              ? destination.copyWith(isOnline: isOnline)
+              : destination,
+        ),
       );
-    }
-  }
 
-  List<VoipgridDestination> get _voipgridDestinations {
-    return [
-      ...fixedDestinations,
-      ...phoneAccounts,
-    ];
-  }
+  Iterable<Destination> importIsOnline(
+    Iterable<Destination> staleDestinations,
+  ) =>
+      map((destination) {
+        if (destination is PhoneAccount) {
+          final staleDestination = staleDestinations
+              .whereType<PhoneAccount>()
+              .where((element) => element.accountId == destination.accountId)
+              .firstOrNull;
 
-  Destination get active => _activeDestination != null
-      ? _activeDestination!.toDestination()
-      : const Destination.notAvailable();
+          if (staleDestination != null) {
+            return destination.copyWith(isOnline: staleDestination.isOnline);
+          }
+        }
 
-  List<Destination> get available => _voipgridDestinations
-      .map((d) => d.toDestination())
-      .prependElement(const Destination.notAvailable())
-      .toList();
-
-  int get selectedDestinationId => selectedDestinationInfo!.id;
+        return destination;
+      }).toList();
 }
 
 extension intToDestination on int {

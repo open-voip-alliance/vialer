@@ -100,7 +100,6 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
             ).then(
               (status) => status == PermissionStatus.granted,
             ),
-            userNumber: _storageRepository.userNumber,
             availableDestinations: _storageRepository.availableDestinations,
             isApplyingChanges: _isUpdatingRemote,
             isRateLimited: _isRateLimited,
@@ -159,7 +158,7 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
 
   Future<void> refreshAvailability() async {
     logger.info('Refreshing availability');
-    await _refreshUser(tasksToPerform: [UserRefreshTask.userDestination]);
+    await _refreshUser(tasksToPerform: [UserRefreshTask.userDetails]);
     _emitUpdatedState();
   }
 

@@ -30,11 +30,14 @@ class UpdateDestinationListener extends SettingChangeListener<int>
     int value,
   ) async {
     final success = await _destinationRepository.setDestination(
-      destination: value.asDestination(),
+      value.asDestination(),
     );
 
     if (success) {
-      _track(user, value.asDestination());
+      _track(
+        user,
+        value.asDestination(),
+      );
     }
 
     return SettingChangeListenResult(sync: _shouldSyncUser);
