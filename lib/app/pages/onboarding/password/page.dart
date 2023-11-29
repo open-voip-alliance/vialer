@@ -34,7 +34,8 @@ class _PasswordPageState extends State<PasswordPage>
 
     _passwordController.addListener(() async {
       _canSubmit = await ValidateAccount.hasValidPasswordFormat(
-          _passwordController.text);
+        _passwordController.text,
+      );
     });
   }
 

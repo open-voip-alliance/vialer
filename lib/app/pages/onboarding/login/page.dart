@@ -60,7 +60,9 @@ class _LoginPageState extends State<LoginPage>
         fullscreenDialog: true,
         context: context,
         builder: (context) => PasswordForgottenPage(
-          emailController: TextEditingController(text: _emailController.text),
+          emailController: TextEditingController(
+            text: _emailController.text,
+          ),
         ),
       ),
     );
@@ -249,7 +251,8 @@ class _LoginPageState extends State<LoginPage>
                                             context.msg.onboarding.button.login,
                                             style: TextStyle(
                                               color: Colors.white,
-                                            ))
+                                            ),
+                                          )
                                         : PlatformText(
                                             context.msg.onboarding.login.button
                                                 .loggingIn,

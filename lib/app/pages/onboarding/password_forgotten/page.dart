@@ -110,23 +110,20 @@ class PasswordForgottenPage extends ConsumerWidget {
                         ),
                         Spacer(),
                         StylizedButton.raised(
-                            colored: true,
-                            onPressed: () => _handleRequestNewPassword(
-                                context, ref, passwordForgottenState),
-                            isLoading: passwordForgottenState is Loading,
-                            child: passwordForgottenState is Loading
-                                ? PlatformText(context
-                                    .msg
-                                    .onboarding
-                                    .passwordForgotten
-                                    .button
-                                    .requestingPasswordReset)
-                                : PlatformText(context
-                                    .msg
-                                    .onboarding
-                                    .passwordForgotten
-                                    .button
-                                    .requestPasswordReset)),
+                          colored: true,
+                          onPressed: () => _handleRequestNewPassword(
+                              context, ref, passwordForgottenState),
+                          isLoading: passwordForgottenState is Loading,
+                          child: passwordForgottenState is Loading
+                              ? PlatformText(
+                                  context.msg.onboarding.passwordForgotten
+                                      .button.requestingPasswordReset,
+                                )
+                              : PlatformText(
+                                  context.msg.onboarding.passwordForgotten
+                                      .button.requestPasswordReset,
+                                ),
+                        ),
                       ],
                     ),
                   ),
