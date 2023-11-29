@@ -19,7 +19,7 @@ class Brand with _$Brand {
     required Uri privacyPolicyUrl,
     required Uri? signUpUrl,
     required Uri userAvailabilityWsUrl,
-    required Uri dndServiceUrl,
+    required Uri availabilityServiceUrl,
     required Uri sharedContactsUrl,
     required Uri phoneNumberValidationUrl,
     required Uri featureAnnouncementsUrl,

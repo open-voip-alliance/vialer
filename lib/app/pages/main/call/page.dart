@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_phone_lib/flutter_phone_lib.dart'
     hide AttendedTransferStarted;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:gap/gap.dart';
 import 'package:vialer/app/widgets/animated_visibility.dart';
 
 import '../../../../dependency_locator.dart';
@@ -296,7 +297,7 @@ class _CallPageState extends State<_CallPage>
                 ),
                 AnimatedVisibility(
                   visible: state.isInBadQualityCall,
-                  child: SizedBox(height: 100),
+                  child: Gap(100),
                 ),
               ],
             );
@@ -328,7 +329,7 @@ class _CallHeader extends StatelessWidget {
         ),
         child: Column(
           children: [
-            const SizedBox(height: 12),
+            const Gap(12),
             Text(
               call.remotePartyHeading,
               textAlign: TextAlign.center,
@@ -337,14 +338,14 @@ class _CallHeader extends StatelessWidget {
                 fontWeight: FontWeight.w300,
               ),
             ),
-            const SizedBox(height: 2),
+            const Gap(2),
             Text(
               call.remotePartySubheading,
               style: const TextStyle(
                 fontSize: 16,
               ),
             ),
-            const SizedBox(height: 4),
+            const Gap(4),
             Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(13.5),
@@ -366,7 +367,7 @@ class _CallHeader extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 12),
+            const Gap(12),
           ],
         ),
       ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../../resources/theme.dart';
@@ -40,7 +41,7 @@ class SettingsButton extends StatelessWidget {
             const SizedBox(width: 10),
           ],
           Flexible(
-            child: Text(
+            child: PlatformText(
               text,
               maxLines: 1,
               style: TextStyle(

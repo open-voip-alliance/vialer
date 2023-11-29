@@ -1,30 +1,14 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../../../../domain/calling/outgoing_number/outgoing_number.dart';
 
-class ConfirmState extends Equatable {
-  const ConfirmState({
-    required this.showConfirmPage,
-    required this.outgoingNumber,
-    this.regionNumber,
-  });
+part 'state.freezed.dart';
 
-  final OutgoingNumber outgoingNumber;
-  final String? regionNumber;
-  final bool showConfirmPage;
-
-  ConfirmState copyWith({
-    OutgoingNumber? outgoingNumber,
+@freezed
+class ConfirmState with _$ConfirmState {
+  const factory ConfirmState({
+    required bool showConfirmPage,
+    required OutgoingNumber outgoingNumber,
     String? regionNumber,
-    bool? showConfirmPage,
-  }) {
-    return ConfirmState(
-      outgoingNumber: outgoingNumber ?? this.outgoingNumber,
-      regionNumber: regionNumber ?? this.regionNumber,
-      showConfirmPage: showConfirmPage ?? this.showConfirmPage,
-    );
-  }
-
-  @override
-  List<Object?> get props => [outgoingNumber, regionNumber, showConfirmPage];
+  }) = _ConfirmState;
 }

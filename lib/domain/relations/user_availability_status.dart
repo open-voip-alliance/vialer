@@ -4,5 +4,11 @@
 enum UserAvailabilityStatus {
   online,
   offline,
-  doNotDisturb,
+  doNotDisturb;
+
+  static String serializeToJson(UserAvailabilityStatus destination) =>
+      destination.name;
+
+  static UserAvailabilityStatus fromJson(dynamic json) =>
+      UserAvailabilityStatus.values.byName(json as String);
 }

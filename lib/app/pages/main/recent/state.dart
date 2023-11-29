@@ -1,40 +1,30 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../../domain/call_records/call_record.dart';
 
-abstract class RecentCallsState extends Equatable {
-  const RecentCallsState(this.callRecords, this.page);
+part 'state.freezed.dart';
 
-  final List<CallRecord> callRecords;
-
-  final int page;
+@freezed
+sealed class RecentCallsState with _$RecentCallsState {
+  const RecentCallsState._();
+  const factory RecentCallsState.loadingInitialRecentCalls([
+    @Default([]) List<CallRecord> callRecords,
+    @Default(1) int page,
+  ]) = LoadingInitialRecentCalls;
+  const factory RecentCallsState.refreshingRecentCalls(
+    List<CallRecord> callRecords,
+    int page,
+  ) = RefreshingRecentCalls;
+  const factory RecentCallsState.loadingMoreRecentCalls(
+    List<CallRecord> callRecords,
+    int page,
+  ) = LoadingMoreRecentCalls;
+  const factory RecentCallsState.recentCallsLoaded(
+    List<CallRecord> callRecords,
+    int page,
+  ) = RecentCallsLoaded;
 
   static const _maxPages = 10;
 
   bool get maxPagesLoaded => page == _maxPages;
-
-  @override
-  List<Object?> get props => [callRecords, page];
-}
-
-class LoadingInitialRecentCalls extends RecentCallsState {
-  const LoadingInitialRecentCalls() : super(const [], 1);
-}
-
-class RefreshingRecentCalls extends RecentCallsState {
-  const RefreshingRecentCalls(
-    super.callRecords,
-    super.page,
-  );
-}
-
-class LoadingMoreRecentCalls extends RecentCallsState {
-  const LoadingMoreRecentCalls(
-    super.callRecords,
-    super.page,
-  );
-}
-
-class RecentCallsLoaded extends RecentCallsState {
-  const RecentCallsLoaded(super.callRecords, super.page);
 }

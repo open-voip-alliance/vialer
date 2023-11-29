@@ -45,10 +45,10 @@ packages:
     dependency: transitive
     description:
       name: args
-      sha256: c372bb384f273f0c2a8aaaa226dad84dc27c8519a691b888725dec59518ad53a
+      sha256: eef6c46b622e0494a36c5a12d10d77fb4e855501a91c1b9ef9339326e58f0596
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.1"
+    version: "2.4.2"
   async:
     dependency: transitive
     description:
@@ -357,10 +357,10 @@ packages:
     dependency: "direct main"
     description:
       name: dartx
-      sha256: "45d7176701f16c5a5e00a4798791c1964bc231491b879369c818dd9a9c764871"
+      sha256: "8b25435617027257d43e6508b5fe061012880ddfdaa75a71d607c3de2a13d244"
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.0"
+    version: "1.2.0"
   dbus:
     dependency: transitive
     description:
@@ -377,22 +377,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.0"
-  device_info:
+  device_info_plus:
     dependency: "direct main"
     description:
-      name: device_info
-      sha256: f4a8156cb7b7480d969cb734907d18b333c8f0bc0b1ad0b342cdcecf30d62c48
+      name: device_info_plus
+      sha256: "0042cb3b2a76413ea5f8a2b40cec2a33e01d0c937e91f0f7c211fde4f7739ba6"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.3"
-  device_info_platform_interface:
+    version: "9.1.1"
+  device_info_plus_platform_interface:
     dependency: transitive
     description:
-      name: device_info_platform_interface
-      sha256: b148e0bf9640145d09a4f8dea96614076f889e7f7f8b5ecab1c7e5c2dbc73c1b
+      name: device_info_plus_platform_interface
+      sha256: d3b01d5868b50ae571cd1dc6e502fc94d956b665756180f7b16ead09e836fd64
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.1"
+    version: "7.0.0"
   diacritic:
     dependency: "direct main"
     description:
@@ -750,10 +750,10 @@ packages:
     dependency: "direct main"
     description:
       name: i18n
-      sha256: cbf95db340dc82fe2ea6aa8b85f86692c3f7d6ff97d0f7bcf4f56c02aa91cb74
+      sha256: cfd452e0170ab9ba0fb117d6c16b879177c19969956647f60280d272aa996b35
       url: "https://pub.dev"
     source: hosted
-    version: "3.4.1"
+    version: "4.0.8"
   image:
     dependency: transitive
     description:
@@ -1612,6 +1612,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.4"
+  vialer_cli:
+    dependency: "direct dev"
+    description:
+      path: vialer_cli
+      relative: true
+    source: path
+    version: "0.0.0"
   vialer_generators:
     dependency: "direct dev"
     description:
@@ -1675,6 +1682,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.1.4"
+  win32_registry:
+    dependency: transitive
+    description:
+      name: win32_registry
+      sha256: "1c52f994bdccb77103a6231ad4ea331a244dbcef5d1f37d8462f713143b0bfae"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.0"
   xdg_directories:
     dependency: transitive
     description:

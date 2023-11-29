@@ -1,0 +1,3 @@
+- Setting yourself to offline will no longer change your current ringing device
+- Made various improvements when navigating with a screen reader
+- Fixed a bug with the button informing you that a permission needs to be granted

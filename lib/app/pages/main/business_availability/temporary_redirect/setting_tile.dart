@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
-import '../../../../util/conditional_capitalization.dart';
 import '../../settings/widgets/buttons/settings_button.dart';
 import '../../settings/widgets/tile/widget.dart';
 import 'cubit.dart';
@@ -30,8 +29,7 @@ class TemporaryRedirectSettingTile extends StatelessWidget {
                 SettingsButton(
                   onPressed: cubit.stopTemporaryRedirect,
                   text: context
-                      .msg.main.temporaryRedirect.actions.stopRedirect.label
-                      .toUpperCaseIfAndroid(context),
+                      .msg.main.temporaryRedirect.actions.stopRedirect.label,
                 ),
                 const SizedBox(height: 8),
                 Text(
@@ -47,12 +45,11 @@ class TemporaryRedirectSettingTile extends StatelessWidget {
                     TemporaryRedirectPickerPage.route(),
                   ),
                 ),
-                text: (hasTemporaryRedirect
-                        ? context.msg.main.temporaryRedirect.actions
-                            .changeRedirect.label
-                        : context.msg.main.temporaryRedirect.actions
-                            .setupRedirect.label)
-                    .toUpperCaseIfAndroid(context),
+                text: hasTemporaryRedirect
+                    ? context
+                        .msg.main.temporaryRedirect.actions.changeRedirect.label
+                    : context
+                        .msg.main.temporaryRedirect.actions.setupRedirect.label,
               ),
               const SizedBox(height: 8),
               Text(

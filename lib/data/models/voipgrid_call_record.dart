@@ -1,104 +1,80 @@
-import 'package:equatable/equatable.dart';
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'voipgrid_call_record.g.dart';
+part 'voipgrid_call_record.freezed.dart';
 
-@JsonSerializable(fieldRename: FieldRename.snake)
-class VoipgridCallRecord extends Equatable {
-  const VoipgridCallRecord({
-    required this.id,
-    required this.type,
-    required this.answered,
-    required this.isAnsweredElsewhere,
-    required this.startTime,
-    required this.direction,
-    required this.durationInSeconds,
-    required this.from,
-    required this.to,
-  });
+@freezed
+class VoipgridCallRecord with _$VoipgridCallRecord {
+  @JsonSerializable(fieldRename: FieldRename.snake)
+  const factory VoipgridCallRecord({
+    required String id,
+    required String type,
+    required bool answered,
+    required bool isAnsweredElsewhere,
+    required DateTime startTime,
+    required String direction,
+    required int durationInSeconds,
+    required CallRecordFromDetail from,
+    required CallRecordToDetail to,
+  }) = _VoipgridCallRecord;
 
   factory VoipgridCallRecord.fromJson(Map<String, dynamic> json) =>
       _$VoipgridCallRecordFromJson(json);
-  final String id;
-  final String type;
-  final bool answered;
-  final bool isAnsweredElsewhere;
-  final DateTime startTime;
-  final String direction;
-  final int durationInSeconds;
-  final CallRecordFromDetail from;
-  final CallRecordToDetail to;
-
-  @override
-  List<Object> get props => [id];
 }
 
-@JsonSerializable(fieldRename: FieldRename.snake)
-class CallRecordFromDetail {
-  const CallRecordFromDetail({
-    required this.type,
-    required this.phoneNumber,
-    required this.dialedNumber,
-    this.callerName,
-    this.voipAccount,
-  });
+@freezed
+class CallRecordFromDetail with _$CallRecordFromDetail {
+  @JsonSerializable(fieldRename: FieldRename.snake)
+  const factory CallRecordFromDetail({
+    required String type,
+    required String phoneNumber,
+    required String dialedNumber,
+    String? callerName,
+    CallRecordVoipAccount? voipAccount,
+  }) = _CallRecordFromDetail;
 
   factory CallRecordFromDetail.fromJson(Map<String, dynamic> json) =>
       _$CallRecordFromDetailFromJson(json);
-  final String type;
-  final String phoneNumber;
-  final String dialedNumber;
-  final String? callerName;
-  final CallRecordVoipAccount? voipAccount;
 }
 
-@JsonSerializable(fieldRename: FieldRename.snake)
-class CallRecordToDetail {
-  const CallRecordToDetail({
-    required this.type,
-    required this.phoneNumber,
-    this.voipAccount,
-    this.fixedDestination,
-  });
+@freezed
+class CallRecordToDetail with _$CallRecordToDetail {
+  @JsonSerializable(fieldRename: FieldRename.snake)
+  const factory CallRecordToDetail({
+    required String type,
+    required String phoneNumber,
+    CallRecordVoipAccount? voipAccount,
+    CallRecordFixedDestination? fixedDestination,
+  }) = _CallRecordToDetail;
 
   factory CallRecordToDetail.fromJson(Map<String, dynamic> json) =>
       _$CallRecordToDetailFromJson(json);
-  final String type;
-  final String phoneNumber;
-  final CallRecordVoipAccount? voipAccount;
-  final CallRecordFixedDestination? fixedDestination;
 }
 
-@JsonSerializable(fieldRename: FieldRename.snake)
-class CallRecordVoipAccount {
-  const CallRecordVoipAccount({
-    required this.id,
-    required this.internalNumber,
-    this.description,
-    this.outgoingName,
-    this.outgoingNumber,
-  });
+@freezed
+class CallRecordVoipAccount with _$CallRecordVoipAccount {
+  @JsonSerializable(fieldRename: FieldRename.snake)
+  const factory CallRecordVoipAccount({
+    required int id,
+    String? description,
+    required String internalNumber,
+    String? outgoingName,
+    String? outgoingNumber,
+  }) = _CallRecordVoipAccount;
 
   factory CallRecordVoipAccount.fromJson(Map<String, dynamic> json) =>
       _$CallRecordVoipAccountFromJson(json);
-  final int id;
-  final String? description;
-  final String internalNumber;
-  final String? outgoingName;
-  final String? outgoingNumber;
 }
 
-@JsonSerializable(fieldRename: FieldRename.snake)
-class CallRecordFixedDestination {
-  const CallRecordFixedDestination({
-    required this.id,
-    required this.phoneNumber,
-    this.description,
-  });
+@freezed
+class CallRecordFixedDestination with _$CallRecordFixedDestination {
+  @JsonSerializable(fieldRename: FieldRename.snake)
+  const factory CallRecordFixedDestination({
+    required int id,
+    required String phoneNumber,
+    String? description,
+  }) = _CallRecordFixedDestination;
 
   factory CallRecordFixedDestination.fromJson(Map<String, dynamic> json) =>
       _$CallRecordFixedDestinationFromJson(json);
-  final int id;
-  final String? description;
-  final String phoneNumber;
 }

@@ -1,27 +1,14 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../../../../domain/onboarding/country.dart';
 
-abstract class CountryFieldState extends Equatable {
-  const CountryFieldState();
+part 'state.freezed.dart';
 
-  @override
-  List<Object?> get props => [];
-}
-
-class LoadingCountries extends CountryFieldState {
-  const LoadingCountries();
-}
-
-class CountriesLoaded extends CountryFieldState {
-  const CountriesLoaded({
-    required this.countries,
-    required this.currentCountry,
-  });
-
-  final Iterable<Country> countries;
-  final Country currentCountry;
-
-  @override
-  List<Object?> get props => [countries, currentCountry];
+@freezed
+sealed class CountryFieldState with _$CountryFieldState {
+  const factory CountryFieldState.loading() = LoadingCountries;
+  const factory CountryFieldState.loaded({
+    required Iterable<Country> countries,
+    required Country currentCountry,
+  }) = CountriesLoaded;
 }

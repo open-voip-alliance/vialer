@@ -1,17 +1,9 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-abstract class T9ColltactsEvent extends Equatable {
-  @override
-  List<Object?> get props => [];
-}
+part 'event.freezed.dart';
 
-class LoadColltacts extends T9ColltactsEvent {}
-
-class FilterT9Colltacts extends T9ColltactsEvent {
-  FilterT9Colltacts(this.input);
-
-  final String input;
-
-  @override
-  List<Object?> get props => [input];
+@freezed
+sealed class T9ColltactsEvent with _$T9ColltactsEvent {
+  const factory T9ColltactsEvent.load() = LoadColltacts;
+  const factory T9ColltactsEvent.filter(String input) = FilterT9Colltacts;
 }

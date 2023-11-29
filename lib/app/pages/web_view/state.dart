@@ -1,34 +1,26 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-abstract class WebViewState extends Equatable {
-  const WebViewState();
+part 'state.freezed.dart';
 
-  @override
-  List<Object?> get props => [];
-}
+@freezed
+sealed class WebViewState with _$WebViewState {
+  const WebViewState._();
+  const factory WebViewState.loadingUrl() = LoadingUrl;
+  const factory WebViewState.loadedUrl({required String url}) = LoadedUrl;
+  const factory WebViewState.loadedWebView({required String url}) =
+      LoadedWebView;
+  const factory WebViewState.loadPortalUrlError() = LoadPortalUrlError;
+  const factory WebViewState.loadWebViewError({
+    required String description,
+  }) = LoadWebViewError;
 
-class LoadingUrl extends WebViewState {}
+  bool get isLoaded => switch (this) {
+        LoadedUrl() || LoadedWebView() => true,
+        _ => false,
+      };
 
-class LoadedUrl extends WebViewState {
-  const LoadedUrl({required this.url});
-
-  final String url;
-
-  @override
-  List<Object?> get props => [url];
-}
-
-class LoadedWebView extends LoadedUrl {
-  const LoadedWebView({required super.url});
-}
-
-class LoadPortalUrlError extends WebViewState {}
-
-class LoadWebViewError extends WebViewState {
-  const LoadWebViewError({required this.description});
-
-  final String description;
-
-  @override
-  List<Object?> get props => [description];
+  String get url => switch (this) {
+        LoadedUrl() || LoadedWebView() => url,
+        _ => '',
+      };
 }
