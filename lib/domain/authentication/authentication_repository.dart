@@ -175,13 +175,10 @@ class AuthRepository with Loggable {
   /// Returns a [Future] that completes with a [bool] indicating whether the request was successful or not.
   Future<bool> requestNewPassword({
     required String email,
-  }) async {
-    final response = await _service.requestNewPassword({
-      'email': email,
-    });
-
-    return response.isSuccessful;
-  }
+  }) =>
+      _service.requestNewPassword({
+        'email': email,
+      }).then((response) => response.isSuccessful);
 
   Future<String> getAutoLoginToken() async {
     final response = await _service.getAutoLoginToken();

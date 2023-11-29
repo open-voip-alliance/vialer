@@ -8,7 +8,8 @@ import 'package:provider/provider.dart';
 import '../../../resources/localizations.dart';
 import '../../../resources/theme.dart';
 import '../../../util/conditional_capitalization.dart';
-import '../../../../domain/authentication/validate_account.dart';
+import '../../../../domain/authentication/validate_password.dart';
+import 'package:vialer/dependency_locator.dart';
 import '../../../widgets/stylized_button.dart';
 import '../cubit.dart';
 import '../widgets/error.dart';
@@ -25,6 +26,7 @@ class PasswordPage extends StatefulWidget {
 class _PasswordPageState extends State<PasswordPage>
     with TickerProviderStateMixin {
   final _passwordController = TextEditingController();
+  final _validatePassword = dependencyLocator<ValidatePassword>();
   bool _canSubmit = false;
   bool _hidePassword = true;
 
@@ -33,7 +35,7 @@ class _PasswordPageState extends State<PasswordPage>
     super.initState();
 
     _passwordController.addListener(() async {
-      _canSubmit = await ValidateAccount.hasValidPasswordFormat(
+      _canSubmit = await _validatePassword(
         _passwordController.text,
       );
     });

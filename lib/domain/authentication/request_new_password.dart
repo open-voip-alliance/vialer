@@ -5,10 +5,10 @@ import 'dart:async';
 import '../use_case.dart';
 
 @injectable
-class RequestNewPasswordUseCase extends UseCase {
+class RequestNewPassword extends UseCase {
   final AuthRepository _authRepository;
 
-  RequestNewPasswordUseCase(this._authRepository);
+  RequestNewPassword(this._authRepository);
 
   Future<bool> call({
     required String email,

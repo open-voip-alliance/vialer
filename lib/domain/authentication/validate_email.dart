@@ -1,11 +1,8 @@
 import 'package:vialer/domain/use_case.dart';
+import 'package:injectable/injectable.dart';
 
-class ValidateAccount extends UseCase {
-  /// Validate if the password is valid according the VG format:
-  /// at least 6 characters and 1 non-alphabetical character.
-  static Future<bool> hasValidPasswordFormat(String password) async =>
-      password.length >= 6 && RegExp('[^A-z]+').hasMatch(password);
-
+@injectable
+class ValidateEmail extends UseCase {
   /// Checks if the given [email] has a valid email format.
   ///
   /// The email format is validated using regular expressions. It checks if the email
@@ -17,7 +14,7 @@ class ValidateAccount extends UseCase {
   /// must start with a period (.) followed by at least one character.
   ///
   /// Returns `true` if the [email] has a valid format, `false` otherwise.
-  static Future<bool> hasValidEmailFormat(String email) async {
+  Future<bool> call(String email) async {
     const local = r"[a-z0-9.!#$%&'*+/=?^_`{|}~-]+";
     const domain = '[a-z0-9](?:[a-z0-9-]{0,253}[a-z0-9])?';
     const tld = r'(?:\.[a-z0-9](?:[a-z0-9-]{0,253}[a-z0-9])?)+';

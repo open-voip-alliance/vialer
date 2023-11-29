@@ -162,7 +162,9 @@ class StylizedButton extends StatelessWidget {
                         ),
                         child: isLoading
                             ? _loadingIndicatorButton(
-                                textColor: textColor, child: child)
+                                textColor: textColor,
+                                child: child,
+                              )
                             : child,
                       ),
                     ),

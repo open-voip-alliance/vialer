@@ -44,18 +44,14 @@ class PasswordForgottenPage extends ConsumerWidget {
   }
 
   /// Returns the error text based on the given [context] and [state].
-  String _errorText(BuildContext context, PasswordForgottenState state) {
-    switch (state.runtimeType) {
-      case Failure:
-        return context.msg.main.contacts.sharedContacts.form.genericError;
-      case NotSubmitted:
-        return (state as NotSubmitted).hasValidEmailFormat
+  String _errorText(BuildContext context, PasswordForgottenState state) =>
+      switch (state) {
+        Failure() => context.msg.main.contacts.sharedContacts.form.genericError,
+        NotSubmitted state => state.hasValidEmailFormat
             ? ''
-            : context.msg.onboarding.login.error.wrongEmailFormat;
-      default:
-        return '';
-    }
-  }
+            : context.msg.onboarding.login.error.wrongEmailFormat,
+        _ => '',
+      };
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -97,8 +93,8 @@ class PasswordForgottenPage extends ConsumerWidget {
                         Wrap(
                           runSpacing: 40,
                           children: [
-                            _TitleWidget(),
-                            _DescriptionWidget(),
+                            _Title(),
+                            _Description(),
                             _EmailInput(
                               _errorText(context, passwordForgottenState),
                               emailController,
@@ -166,7 +162,7 @@ class _EmailInput extends StatelessWidget {
   }
 }
 
-class _TitleWidget extends StatelessWidget {
+class _Title extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -183,7 +179,7 @@ class _TitleWidget extends StatelessWidget {
   }
 }
 
-class _DescriptionWidget extends StatelessWidget {
+class _Description extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(
