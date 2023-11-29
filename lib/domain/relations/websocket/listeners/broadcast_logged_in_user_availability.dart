@@ -30,22 +30,14 @@ class BroadcastLoggedInUserAvailability
 
 extension on UserAvailabilityChangedPayload {
   bool get isRingingDeviceOffline =>
+      userStatus != ColleagueAvailabilityStatus.offline &&
       destinationType == ColleagueDestinationType.voipAccount &&
       availability == ColleagueAvailabilityStatus.offline;
 
-  UserAvailabilityStatus toUserAvailabilityStatus() => switch (availability) {
-        ColleagueAvailabilityStatus.available => UserAvailabilityStatus.online,
-        ColleagueAvailabilityStatus.busy => UserAvailabilityStatus.online,
-        ColleagueAvailabilityStatus.unknown => UserAvailabilityStatus.online,
-        // When a user's ringing device is offline we get [offline] from the
-        // websocket (as this is how they would appear to other colleagues),
-        // but to the logged-in user they are online (they have a destination).
-        // This is just a temporary solution until back-end changes have been
-        // made and we get the status the user has selected.
-        ColleagueAvailabilityStatus.offline => isRingingDeviceOffline
-            ? UserAvailabilityStatus.online
-            : UserAvailabilityStatus.offline,
+  UserAvailabilityStatus toUserAvailabilityStatus() => switch (userStatus) {
+        ColleagueAvailabilityStatus.offline => UserAvailabilityStatus.offline,
         ColleagueAvailabilityStatus.doNotDisturb =>
           UserAvailabilityStatus.doNotDisturb,
+        _ => UserAvailabilityStatus.online,
       };
 }

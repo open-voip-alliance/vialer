@@ -18,8 +18,17 @@ class UserAvailabilityChangedPayload
     required int internalNumber,
     @JsonKey(fromJson: _colleagueDestinationTypeFromJson)
     required ColleagueDestinationType destinationType,
+
+    /// This is the inferred status, based on things such as if the user has
+    /// a destination set. This is the status that should be used for
+    /// colleagues.
     @JsonKey(fromJson: _availabilityFromJson)
     required ColleagueAvailabilityStatus availability,
+
+    /// This is the status that the user has specifically chosen, it should
+    /// be the preferred status when showing what the current user has chosen.
+    @JsonKey(fromJson: _availabilityFromJson)
+    required ColleagueAvailabilityStatus userStatus,
     @JsonKey(fromJson: _colleagueContextFromJson)
     required List<ColleagueContext> context,
   }) = _UserAvailabilityChangedPayload;
