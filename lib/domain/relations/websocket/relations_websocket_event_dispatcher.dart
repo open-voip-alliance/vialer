@@ -57,7 +57,9 @@ class RelationsWebSocketEventDispatcher {
     }
 
     for (final listener in listeners) {
+      if (listener.shouldSkipHandling(payload)) continue;
       listener.handle(payload);
+      listener.previous = payload;
     }
   }
 
@@ -73,4 +75,9 @@ typedef ListenerCallback = Future<void> Function(Listener);
 extension on List<Listener> {
   List<Listener> listeningFor(Payload payload) =>
       where((l) => l.shouldHandle(payload)).toList();
+}
+
+extension on Listener {
+  bool shouldSkipHandling(Payload payload) =>
+      !handleEveryPayload && previous == payload;
 }

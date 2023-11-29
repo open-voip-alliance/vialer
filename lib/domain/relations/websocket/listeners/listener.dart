@@ -8,6 +8,17 @@ abstract class Listener<T extends Payload> {
 
   Type get type => T;
 
+  /// The payload that was handled last by the listener.
+  ///
+  /// Listeners will not be delivered payloads they are identical to the
+  /// previous one unless they opt out of this by setting
+  /// [handleEveryPayload] to [true].
+  Payload? previous;
+
+  /// Override this to ensure every payload is handled by the listener,
+  /// whether it is a new one or not. See [previous] for more information.
+  bool handleEveryPayload = false;
+
   /// Determine if we should handle a specific event, by default this will only
   /// accept events of type [T] but can be overridden for more complex behavior
   /// if necessary.
