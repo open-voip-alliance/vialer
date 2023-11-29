@@ -4,36 +4,34 @@ import 'package:injectable/injectable.dart';
 import '../../user/get_brand.dart';
 import '../../util.dart';
 
-part 'dnd_service.chopper.dart';
+part 'availability_status_service.chopper.dart';
 
 @ChopperApi()
 @singleton
-abstract class DndService extends ChopperService {
+abstract class UserAvailabilityService extends ChopperService {
   @factoryMethod
-  static DndService create() {
+  static UserAvailabilityService create() {
     final brand = GetBrand()();
-    final dndUrl = brand.dndServiceUrl.toString();
 
-    return _$DndService(
+    return _$UserAvailabilityService(
       ChopperClient(
-        baseUrl: Uri.parse(dndUrl),
+        baseUrl: brand.availabilityServiceUrl,
         converter: JsonConverter(),
-        interceptors: [
+        interceptors: <RequestInterceptor>[
           const AuthorizationInterceptor(onlyModernAuth: true),
-          ...globalInterceptors,
         ],
       ),
     );
   }
 
   @Get(path: 'clients/{clientUuid}/users/{userUuid}/status')
-  Future<Response<Map<String, dynamic>>> getDndStatus({
+  Future<Response<Map<String, dynamic>>> getAvailabilityStatus({
     @Path() required String clientUuid,
     @Path() required String userUuid,
   });
 
   @Post(path: 'clients/{clientUuid}/users/{userUuid}/status')
-  Future<Response<Map<String, dynamic>>> changeDndStatus(
+  Future<Response<Map<String, dynamic>>> changeAvailabilityStatus(
     @Body() Map<String, dynamic> body, {
     @Path() required String clientUuid,
     @Path() required String userUuid,

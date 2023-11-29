@@ -1,4 +1,4 @@
-import 'package:vialer/domain/user/refresh/tasks/user_dnd_status.dart';
+import 'package:vialer/domain/user/refresh/tasks/user_availability_status.dart';
 import 'package:vialer/domain/user/refresh/tasks/user_has_feature_announcements.dart';
 import 'package:vialer/domain/user/refresh/tasks/user_webphone_account.dart';
 
@@ -18,7 +18,7 @@ enum UserRefreshTask {
   appAccount(RefreshAppAccount()),
   userDestination(RefreshUserDestination()),
   userWebphoneAccount(RefreshUserWebphoneAccount()),
-  userDndStatus(RefreshUserDndStatus()),
+  userAvailabilityStatus(RefreshUserAvailabilityStatus()),
   voipgridUserSettings(RefreshVoipgridUserSettings()),
   voipgridUserPermissions(RefreshVoipgridUserPermissions()),
   clientOutgoingNumbers(RefreshClientAvailableOutgoingNumbers()),
@@ -40,7 +40,7 @@ enum UserRefreshTask {
   /// anything that is unlikely to be updated regularly.
   static List<UserRefreshTask> get minimal => [
         UserRefreshTask.userCore,
-        UserRefreshTask.userDndStatus,
+        UserRefreshTask.userAvailabilityStatus,
         UserRefreshTask.userDestination,
         UserRefreshTask.voipgridUserSettings,
         UserRefreshTask.clientTemporaryRedirect,

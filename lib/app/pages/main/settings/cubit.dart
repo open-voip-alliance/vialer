@@ -114,7 +114,7 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
   }
 
   static const _remoteSettings = [
-    CallSetting.dnd,
+    CallSetting.availabilityStatus,
     CallSetting.destination,
     CallSetting.mobileNumber,
     CallSetting.outgoingNumber,
