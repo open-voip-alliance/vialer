@@ -33,7 +33,10 @@ class PasswordForgottenPage extends ConsumerWidget {
   /// calls the `requestNewPassword` method of the [passwordForgottenProvider]
   /// notifier, passing the text from the [emailController].
   void _handleRequestNewPassword(
-      BuildContext context, WidgetRef ref, PasswordForgottenState state) {
+    BuildContext context,
+    WidgetRef ref,
+    PasswordForgottenState state,
+  ) {
     if (state is! Loading) {
       // Close the keyboard
       FocusScope.of(context).unfocus();
@@ -63,7 +66,10 @@ class PasswordForgottenPage extends ConsumerWidget {
         (PasswordForgottenState? previousState,
             PasswordForgottenState newState) {
       if (newState is Success)
-        _pop(context, context.msg.onboarding.passwordForgotten.success);
+        _pop(
+          context,
+          context.msg.onboarding.passwordForgotten.success,
+        );
     });
 
     return KeyboardDismissOnTap(
