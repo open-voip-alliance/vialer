@@ -2,20 +2,16 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:vialer/dependency_locator.dart';
 
 import '../../../../domain/authentication/request_new_password.dart';
-import '../../../../domain/authentication/authentication_repository.dart';
 import '../../../util/loggable.dart';
 import '../../../../domain/authentication/validate_account.dart';
-
 import 'state.dart';
 
 part 'riverpod.g.dart';
 
 @riverpod
 class PasswordForgotten extends _$PasswordForgotten {
-  late final _authRepository = dependencyLocator<AuthRepository>();
-
   late final _requestNewPasswordUseCase =
-      RequestNewPasswordUseCase(_authRepository);
+      dependencyLocator<RequestNewPasswordUseCase>();
 
   PasswordForgottenState build() => PasswordForgottenState.initial();
 
