@@ -58,17 +58,6 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
     if (_isOnboarded() && _storageRepository.hasCompletedOnboarding) {
       initialize();
     }
-
-    unawaited(
-      _hasVoipStarted().then(
-        (_) {
-          // We can still do these things, even if VoIP failed to start.
-          checkPhonePermission();
-          _voipCallEventSubscription ??=
-              _getVoipCallEventStream().listen(_onVoipCallEvent);
-        },
-      ),
-    );
   }
 
   final _isOnboarded = IsOnboarded();
@@ -119,6 +108,17 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
   void initialize() {
     unawaited(checkPhonePermission());
     unawaited(_startVoipIfNecessary());
+
+    unawaited(
+      _hasVoipStarted().then(
+        (_) {
+          // We can still do these things, even if VoIP failed to start.
+          checkPhonePermission();
+          _voipCallEventSubscription ??=
+              _getVoipCallEventStream().listen(_onVoipCallEvent);
+        },
+      ),
+    );
   }
 
   Future<void> _startVoipIfNecessary() async {
