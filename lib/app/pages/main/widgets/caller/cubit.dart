@@ -55,7 +55,7 @@ export 'state.dart';
 
 class CallerCubit extends Cubit<CallerState> with Loggable {
   CallerCubit() : super(const CanCall()) {
-    if (_isOnboarded() && _storageRepository.hasCompletedOnboarding) {
+    if (_isOnboarded()) {
       initialize();
     }
   }
