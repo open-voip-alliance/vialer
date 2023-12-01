@@ -46,18 +46,22 @@ apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
-    compileSdkVersion 34
+    compileSdkVersion 33
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
         main.res.srcDirs += "src/${brand.identifier}/res"
     }
 
+    lintOptions {
+        disable 'InvalidPackage'
+        checkReleaseBuilds false
+    }
 
     defaultConfig {
         applicationId brand.appId
         minSdkVersion 26
-        targetSdkVersion 34
+        targetSdkVersion 33
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -102,11 +106,6 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    namespace 'com.voipgrid.vialer'
-    lint {
-        checkReleaseBuilds false
-        disable 'InvalidPackage'
-    }
 }
 
 task generateNativeValues(type:Exec) {
@@ -134,12 +133,12 @@ dependencies {
     implementation 'com.github.LogentriesCommunity:le_android:4.1.0'
     implementation 'com.squareup.okhttp3:okhttp:4.9.1'
     implementation 'com.google.android.material:material:1.4.0'
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'androidx.activity:activity-compose:1.8.1'
-    implementation 'androidx.compose.material:material:1.5.4'
-    implementation 'androidx.compose.animation:animation:1.5.4'
-    implementation 'androidx.compose.ui:ui-tooling:1.5.4'
+    implementation 'androidx.appcompat:appcompat:1.4.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
+    implementation 'androidx.activity:activity-compose:1.6.1'
+    implementation 'androidx.compose.material:material:1.0.5'
+    implementation 'androidx.compose.animation:animation:1.0.5'
+    implementation 'androidx.compose.ui:ui-tooling:1.0.5'
     implementation 'com.segment.analytics.android:analytics:4.10.4'
     implementation 'io.coil-kt:coil-compose:1.4.0'
     implementation 'com.github.vestrel00.contacts-android:core:0.2.4'
