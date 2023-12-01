@@ -46,8 +46,6 @@ apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
-    namespace brand.appId
-
     compileSdkVersion 33
 
     sourceSets {
