@@ -96,7 +96,7 @@ class BusinessAvailabilityRepository with Loggable {
 }
 
 @freezed
-class _TemporaryRedirectResponse with _$_TemporaryRedirectResponse {
+class _TemporaryRedirectResponse with _$TemporaryRedirectResponse {
   const factory _TemporaryRedirectResponse({
     required String id,
     @JsonKey(fromJson: _dateTimeFromJson) required DateTime end,
@@ -104,7 +104,7 @@ class _TemporaryRedirectResponse with _$_TemporaryRedirectResponse {
   }) = __TemporaryRedirectResponse;
 
   factory _TemporaryRedirectResponse.fromJson(Map<String, Object?> json) =>
-      _$_TemporaryRedirectResponseFromJson(json);
+      _$TemporaryRedirectResponseFromJson(json);
 }
 
 DateTime _dateTimeFromJson(String datetime) => DateTime.parse(datetime);

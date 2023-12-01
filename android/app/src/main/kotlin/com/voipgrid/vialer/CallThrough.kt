@@ -7,12 +7,11 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import com.voipgrid.vialer.logging.Logger
 
-
-class CallThrough(
+class CallThroughCalling(
     private val context: Context,
     private val log: Logger,
     private val segment: Segment,
-): Pigeon.CallThrough {
+): CallThrough {
 
     override fun startCall(number: String) {
         log.writeLog("Attempting to start call-through call.")
