@@ -175,7 +175,7 @@ custom: # Custom properties to make workflows cleaner
       google_play:
         credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
         track: production
-        in_app_update_priority: 1
+        in_app_update_priority: 3
 
     publish_for_beta: &publish_for_beta
       app_store_connect:
