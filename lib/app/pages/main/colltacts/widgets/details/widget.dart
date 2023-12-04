@@ -80,20 +80,20 @@ class _ColltactPageDetailsState extends State<ColltactPageDetails>
       cubit.loadSharedContacts(fullRefresh: true);
 
   void _onEditTap(
+    Colltact colltact,
     ColltactDetailsCubit colltactDetailsCubit,
     SharedContactsCubit sharedContactsCubit,
   ) {
-    if (widget.colltact is ColltactContact)
-      unawaited(colltactDetailsCubit.edit(widget.colltact as ColltactContact));
-    else if (widget.colltact is ColltactSharedContact)
+    if (colltact is ColltactContact)
+      unawaited(colltactDetailsCubit.edit(colltact));
+    else if (colltact is ColltactSharedContact)
       unawaited(
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (_) {
               return EditSharedContactPage(
-                sharedContact:
-                    (widget.colltact as ColltactSharedContact).contact,
+                sharedContact: colltact.contact,
                 onSave: () => refreshSharedContacts(sharedContactsCubit),
                 onDelete: () {
                   refreshSharedContacts(sharedContactsCubit);
@@ -117,15 +117,19 @@ class _ColltactPageDetailsState extends State<ColltactPageDetails>
           builder: (context, state) {
             return BlocProvider<ColltactDetailsCubit>(
               create: (_) => ColltactDetailsCubit(context.watch<CallerCubit>()),
-              child: Builder(
-                builder: (context) {
+              child: BlocBuilder<SharedContactsCubit, SharedContactsState>(
+                builder: (context, sharedContactsState) {
                   final colltactDetailsCubit =
                       context.read<ColltactDetailsCubit>();
                   final sharedContactsCubit =
                       context.read<SharedContactsCubit>();
 
+                  /// Ensure we have the latest sharedContact data
+                  var colltact = sharedContactsCubit
+                      .refreshColltactSharedContact(widget.colltact);
+
                   return ColltactDetails(
-                    colltact: widget.colltact,
+                    colltact: colltact,
                     onPhoneNumberPressed: (destination) =>
                         showOutgoingNumberPrompt(
                       context,
@@ -133,7 +137,7 @@ class _ColltactPageDetailsState extends State<ColltactPageDetails>
                       (_) => unawaited(
                         colltactDetailsCubit.call(
                           destination,
-                          origin: switch (widget.colltact) {
+                          origin: switch (colltact) {
                             ColltactColleague() => CallOrigin.colleagues,
                             ColltactContact() => CallOrigin.contacts,
                             ColltactSharedContact() =>
@@ -148,6 +152,7 @@ class _ColltactPageDetailsState extends State<ColltactPageDetails>
                         padding: const EdgeInsets.only(right: 20),
                         child: GestureDetector(
                           onTap: () => _onEditTap(
+                            colltact,
                             colltactDetailsCubit,
                             sharedContactsCubit,
                           ),

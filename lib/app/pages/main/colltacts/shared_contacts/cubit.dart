@@ -1,7 +1,9 @@
 import 'dart:async';
 
+import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../data/models/colltact.dart';
 import '../../../../../dependency_locator.dart';
 import '../../../../../domain/authentication/user_logged_in.dart';
 import '../../../../../domain/authentication/user_was_logged_out.dart';
@@ -45,5 +47,19 @@ class SharedContactsCubit extends Cubit<SharedContactsState> {
         await _getSharedContacts(forceSharedContactsRefresh: fullRefresh);
 
     emit(SharedContactsState.loaded(sharedContacts: _sharedContacts));
+  }
+
+  Colltact refreshColltactSharedContact(Colltact colltact) {
+    if (state is SharedContactsLoaded && colltact is ColltactSharedContact) {
+      final sharedContact =
+          (state as SharedContactsLoaded).sharedContacts.firstWhereOrNull(
+                (sharedContact) =>
+                    sharedContact.id ==
+                    (colltact as ColltactSharedContact).contact.id,
+              );
+      if (sharedContact != null)
+        colltact = Colltact.sharedContact(sharedContact);
+    }
+    return colltact;
   }
 }
