@@ -78,6 +78,7 @@ ColleagueDestinationType _colleagueDestinationTypeFromJson(String? value) =>
 
 @freezed
 class SelectedDestination with _$SelectedDestination {
+  @JsonSerializable(fieldRename: FieldRename.snake)
   const factory SelectedDestination({
     required int destinationId,
     @JsonKey(fromJson: _colleagueDestinationTypeFromJson)
