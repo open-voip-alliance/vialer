@@ -1,32 +1,28 @@
+import 'package:vialer/domain/user/refresh/tasks/user_details.dart';
 import 'package:vialer/domain/user/refresh/tasks/user_availability_status.dart';
 import 'package:vialer/domain/user/refresh/tasks/user_has_feature_announcements.dart';
-import 'package:vialer/domain/user/refresh/tasks/user_webphone_account.dart';
 
 import 'tasks/client_available_outgoing_numbers.dart';
 import 'tasks/client_opening_hours_modules.dart';
 import 'tasks/client_temporary_redirect.dart';
 import 'tasks/client_voicemail_accounts.dart';
 import 'tasks/client_voip_config.dart';
-import 'tasks/user_destination.dart';
 import 'tasks/app_account.dart';
 import 'tasks/voipgrid_user_permissions.dart';
-import 'tasks/voipgrid_user_settings.dart';
 import 'user_refresh_task_performer.dart';
 
 enum UserRefreshTask {
   userCore(null),
   appAccount(RefreshAppAccount()),
-  userDestination(RefreshUserDestination()),
-  userWebphoneAccount(RefreshUserWebphoneAccount()),
   userAvailabilityStatus(RefreshUserAvailabilityStatus()),
-  voipgridUserSettings(RefreshVoipgridUserSettings()),
   voipgridUserPermissions(RefreshVoipgridUserPermissions()),
   clientOutgoingNumbers(RefreshClientAvailableOutgoingNumbers()),
   clientVoicemailAccounts(RefreshClientVoicemailAccounts()),
   clientVoipConfig(RefreshClientVoipConfig()),
   clientTemporaryRedirect(RefreshClientTemporaryRedirect()),
   clientOpeningHoursModules(RefreshClientOpeningHoursModules()),
-  userHasFeatureAnnouncements(RefreshUserHasUnreadFeatureAnnouncements());
+  userHasFeatureAnnouncements(RefreshUserHasUnreadFeatureAnnouncements()),
+  userDetails(RefreshUserDetails());
 
   const UserRefreshTask(this.performer);
 
@@ -40,11 +36,9 @@ enum UserRefreshTask {
   /// anything that is unlikely to be updated regularly.
   static List<UserRefreshTask> get minimal => [
         UserRefreshTask.userCore,
+        UserRefreshTask.userDetails,
         UserRefreshTask.userAvailabilityStatus,
-        UserRefreshTask.userDestination,
-        UserRefreshTask.voipgridUserSettings,
         UserRefreshTask.clientTemporaryRedirect,
-        UserRefreshTask.userWebphoneAccount,
         UserRefreshTask.userHasFeatureAnnouncements,
       ];
 }
