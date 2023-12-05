@@ -73,6 +73,7 @@ class PasswordForgottenPage extends ConsumerWidget {
     });
 
     return KeyboardDismissOnTap(
+      dismissOnCapturedTaps: true,
       child: Scaffold(
         body: Background(
           style: Style.split,
