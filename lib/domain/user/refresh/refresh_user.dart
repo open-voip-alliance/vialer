@@ -41,6 +41,8 @@ class RefreshUser extends UseCase with Loggable {
       return _auth.getUserFromCredentials(credentials);
     } on FailedToRetrieveUserException {
       return null;
+    } on NeedToChangePasswordException {
+      return null;
     }
   }
 
