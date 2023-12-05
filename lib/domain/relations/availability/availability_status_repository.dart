@@ -50,6 +50,7 @@ extension UserAvailabilityStatusConversion on UserAvailabilityStatus {
 
   static const _mapping = {
     UserAvailabilityStatus.online: 'available',
+    UserAvailabilityStatus.availableForColleagues: 'available_for_colleagues',
     UserAvailabilityStatus.doNotDisturb: 'do_not_disturb',
     UserAvailabilityStatus.offline: 'offline',
   };

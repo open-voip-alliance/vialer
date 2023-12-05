@@ -140,18 +140,18 @@ extension on ColleagueContext {
 }
 
 extension on ColleagueAvailabilityStatus {
-  String text(BuildContext context) {
-    switch (this) {
-      case ColleagueAvailabilityStatus.doNotDisturb:
-        return context.msg.main.colleagues.status.doNotDisturb;
-      case ColleagueAvailabilityStatus.offline:
-        return context.msg.main.colleagues.status.offline;
-      case ColleagueAvailabilityStatus.available:
-        return context.msg.main.colleagues.status.available;
-      case ColleagueAvailabilityStatus.busy:
-        return context.msg.main.colleagues.status.busy;
-      case ColleagueAvailabilityStatus.unknown:
-        return context.msg.main.colleagues.status.unknown;
-    }
-  }
+  String text(BuildContext context) => switch (this) {
+        ColleagueAvailabilityStatus.doNotDisturb =>
+          context.msg.main.colleagues.status.doNotDisturb,
+        ColleagueAvailabilityStatus.offline =>
+          context.msg.main.colleagues.status.offline,
+        ColleagueAvailabilityStatus.available =>
+          context.msg.main.colleagues.status.available,
+        ColleagueAvailabilityStatus.availableForColleagues =>
+          context.msg.main.colleagues.status.availableInternally,
+        ColleagueAvailabilityStatus.busy =>
+          context.msg.main.colleagues.status.busy,
+        ColleagueAvailabilityStatus.unknown =>
+          context.msg.main.colleagues.status.unknown
+      };
 }

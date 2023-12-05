@@ -3,6 +3,7 @@
 /// but there are different statuses available for each.
 enum UserAvailabilityStatus {
   online,
+  availableForColleagues,
   offline,
   doNotDisturb;
 

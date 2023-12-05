@@ -34,7 +34,9 @@ class RingingDevice extends StatelessWidget {
   bool get shouldEntireWidgetBeDisabled => isRingingDeviceOffline
       ? false
       : switch (userAvailabilityStatus) {
-          UserAvailabilityStatus.online => false,
+          UserAvailabilityStatus.online ||
+          UserAvailabilityStatus.availableForColleagues =>
+            false,
           UserAvailabilityStatus.doNotDisturb => true,
           UserAvailabilityStatus.offline => true,
         };
