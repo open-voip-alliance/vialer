@@ -213,13 +213,6 @@ class StorageRepository {
   set lastPeriodicIdentifyTime(DateTime? value) =>
       _preferences.setOrRemoveDateTime(_lastPeriodicIdentifyTime, value);
 
-  static const _userNumberKey = 'user_number';
-
-  int? get userNumber => _preferences.getInt(_userNumberKey);
-
-  set userNumber(int? number) =>
-      _preferences.setOrRemoveInt(_userNumberKey, number);
-
   static const _availableDestinationsKey = 'available_destinations';
 
   List<Destination> get availableDestinations =>
@@ -384,8 +377,6 @@ extension NewPermissions on Map<String, dynamic> {
         Permission.canSeeClientCalls,
       if (permissions['canChangeMobileNumberFallback'] as bool? ?? false)
         Permission.canChangeMobileNumberFallback,
-      if (permissions['canViewMobileNumberFallbackStatus'] as bool? ?? false)
-        Permission.canViewMobileNumberFallbackStatus,
       if (permissions['canChangeTemporaryRedirect'] as bool? ?? false)
         Permission.canChangeMobileNumberFallback,
       if (permissions['canViewVoicemailAccounts'] as bool? ?? false)
