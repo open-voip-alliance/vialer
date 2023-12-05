@@ -59,7 +59,7 @@ abstract class VoipgridService extends ChopperService {
     @Header('Authorization') String? authorization,
   });
 
-  @Post(path: 'permission/password_reset/')
+  @Post(path: 'permission/password_reset_test/')
   Future<Response<Map<String, dynamic>>> requestNewPassword(
     @Body() Map<String, dynamic> body,
   );
