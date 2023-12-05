@@ -26,7 +26,7 @@ class ReconnectionStrategy {
   void reset() => attempts = 0;
 
   Duration delayFor() =>
-      attempts <= schedule.length ? schedule[attempts] : schedule.last;
+      attempts < schedule.length ? schedule[attempts] : schedule.last;
 
   void _createSchedule() {
     schedule = List.generate(params.maxBackOff, (attempt) {
