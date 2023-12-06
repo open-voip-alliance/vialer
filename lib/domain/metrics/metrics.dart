@@ -149,7 +149,7 @@ class SegmentMetricsRepository extends MetricsRepository {
   ]) async {
     assert(eventName == eventName.paramCase, 'Event name not in param-casing.');
 
-    Segment.track(eventName: eventName, properties: properties);
+    unawaited(Segment.track(eventName: eventName, properties: properties));
   }
 }
 
