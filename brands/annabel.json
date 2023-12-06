@@ -8,7 +8,7 @@
   "sipUrl": "sip.encryptedsip.com",
   "businessAvailabilityUrl": "https://api.prod.holodeck.spindle.dev/business-availability/clients/",
   "openingHoursBasicUrl": "https://api.prod.holodeck.spindle.dev/opening-hours-basic/client/",
-  "privacyPolicyUrl": "https://bellenmetannabel.nl/app/uploads/Terms-Of-Use-And-Privacy.pdf",
+  "privacyPolicyUrl": "https://bellenmetannabel.nl/privacy-app/",
   "userAvailabilityWsUrl": "wss://api.prod.holodeck.spindle.dev/user-availability-ws/ws",
   "availabilityServiceUrl": "https://api.prod.holodeck.spindle.dev/dnd-service",
   "sharedContactsUrl": "https://contacts.spindle.dev/contacts/",
