@@ -10,6 +10,7 @@ class StylizedButton extends StatelessWidget {
     this.margin,
     this.onPressed,
     this.borderRadius,
+    this.isLoading = false,
     super.key,
   });
 
@@ -19,6 +20,7 @@ class StylizedButton extends StatelessWidget {
     bool colored = false,
     EdgeInsets? margin,
     VoidCallback? onPressed,
+    bool isLoading = false,
   }) {
     return StylizedButton(
       type: StylizedButtonType.raised,
@@ -28,6 +30,7 @@ class StylizedButton extends StatelessWidget {
       onPressed: onPressed,
       child: child,
       borderRadius: BorderRadius.circular(8),
+      isLoading: isLoading,
     );
   }
 
@@ -37,6 +40,7 @@ class StylizedButton extends StatelessWidget {
     bool colored = false,
     EdgeInsets? margin,
     VoidCallback? onPressed,
+    bool isLoading = false,
   }) {
     return StylizedButton(
       type: StylizedButtonType.outline,
@@ -46,6 +50,7 @@ class StylizedButton extends StatelessWidget {
       onPressed: onPressed,
       child: child,
       borderRadius: BorderRadius.circular(8),
+      isLoading: isLoading,
     );
   }
 
@@ -60,6 +65,7 @@ class StylizedButton extends StatelessWidget {
   final EdgeInsets? margin;
   final Widget child;
   final BorderRadius? borderRadius;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -154,7 +160,12 @@ class StylizedButton extends StatelessWidget {
                           color: textColor,
                           fontWeight: FontWeight.bold,
                         ),
-                        child: child,
+                        child: isLoading
+                            ? _loadingIndicatorButton(
+                                textColor: textColor,
+                                child: child,
+                              )
+                            : child,
                       ),
                     ),
                   ),
@@ -163,6 +174,42 @@ class StylizedButton extends StatelessWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _loadingIndicatorButton extends StatelessWidget {
+  const _loadingIndicatorButton({
+    required this.textColor,
+    required this.child,
+  });
+
+  final Color textColor;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedSwitcher(
+      switchInCurve: Curves.decelerate,
+      switchOutCurve: Curves.decelerate.flipped,
+      duration: const Duration(milliseconds: 200),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          SizedBox(
+            width: 14,
+            height: 14,
+            child: CircularProgressIndicator(
+              strokeWidth: 2.5,
+              valueColor: AlwaysStoppedAnimation(
+                textColor,
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          Flexible(child: child),
+        ],
       ),
     );
   }
