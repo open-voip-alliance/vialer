@@ -8,7 +8,6 @@ import '../../../dependency_locator.dart';
 import '../../authentication/authentication_repository.dart';
 import '../../event/event_bus.dart';
 import '../../legacy/storage.dart';
-import '../../onboarding/exceptions.dart';
 import '../../onboarding/login_credentials.dart';
 import '../../use_case.dart';
 import '../events/logged_in_user_was_refreshed.dart';
@@ -39,7 +38,7 @@ class RefreshUser extends UseCase with Loggable {
   Future<User?> _getUser(LoginCredentials? credentials) async {
     try {
       return _auth.getUserFromCredentials(credentials);
-    } on FailedToRetrieveUserException {
+    } on Exception {
       return null;
     }
   }
