@@ -2,11 +2,11 @@ import 'dart:convert';
 
 import 'package:vialer/app/util/loggable.dart';
 import 'package:vialer/domain/relations/websocket/listeners/listener.dart';
+import 'package:vialer/domain/relations/websocket/listeners/logged_in_user_availability_changed_handler.dart';
 import 'package:vialer/domain/relations/websocket/listeners/update_destinations_with_is_online.dart';
 import 'package:vialer/domain/relations/websocket/payloads/payload.dart';
 import 'package:vialer/domain/relations/websocket/payloads/user_devices_changed.dart';
 
-import 'listeners/broadcast_logged_in_user_availability.dart';
 import 'listeners/colleague_update_handler.dart';
 import 'payloads/user_availability_changed.dart';
 
@@ -16,7 +16,7 @@ class RelationsWebSocketEventDispatcher {
   /// A [Listener] will handle any events that they are capable of handling,
   /// you can register multiple handlers for the same event.
   final _listeners = <Listener>[
-    BroadcastLoggedInUserAvailability(),
+    LoggedInUserAvailabilityChangedHandler(),
     ColleagueUpdateHandler(),
     UpdateDestinationWithIsOnline(),
   ];
@@ -57,7 +57,9 @@ class RelationsWebSocketEventDispatcher {
     }
 
     for (final listener in listeners) {
+      if (listener.shouldSkipHandling(payload)) continue;
       listener.handle(payload);
+      listener.previous = payload;
     }
   }
 
@@ -73,4 +75,9 @@ typedef ListenerCallback = Future<void> Function(Listener);
 extension on List<Listener> {
   List<Listener> listeningFor(Payload payload) =>
       where((l) => l.shouldHandle(payload)).toList();
+}
+
+extension on Listener {
+  bool shouldSkipHandling(Payload payload) =>
+      !handleEveryPayload && previous == payload;
 }

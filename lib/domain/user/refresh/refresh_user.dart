@@ -29,10 +29,7 @@ class RefreshUser extends UseCase with Loggable {
     Future<User?> refreshUser() => _refreshUser(credentials, tasksToPerform);
 
     return synchronized
-        ? SynchronizedTask<User?>.named(
-            editUserTask,
-            SynchronizedTaskMode.queue,
-          ).run(refreshUser)
+        ? SynchronizedTask<User?>.named(editUserTask).run(refreshUser)
         : refreshUser();
   }
 
@@ -65,6 +62,7 @@ class RefreshUser extends UseCase with Loggable {
         permissions: storedUser?.permissions,
         client: storedUser?.client,
         appAccount: () => storedUser?.appAccount,
+        webphoneAccountId: () => storedUser?.webphoneAccountId,
       );
 
       final isFirstTime = storedUser == null;

@@ -43,6 +43,6 @@ enum CallSetting<T extends Object> with SettingKey<T> {
         CallSetting.useMobileNumberAsFallback => false,
         CallSetting.outgoingNumber => null,
         CallSetting.mobileNumber => null,
-        CallSetting.destination => Destination.unknown(),
+        CallSetting.destination => Destination.unknown().identifier,
       };
 }
