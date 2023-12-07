@@ -438,7 +438,7 @@ workflows:
       - *flutter_test
       - *build_for_android
       - *update_ios_signing_for_current_brand
-      - *build_for_ios
+#      - *build_for_ios
       - *release_to_sentry
       - *track_new_version
       - *call_zapier_production_build_webhook
