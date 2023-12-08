@@ -8,11 +8,12 @@ import 'package:yaml_edit/yaml_edit.dart';
 
 /// A mapping between the supported language and the language codes used by the
 /// app/play store. e.g. dutch.txt will produce nl_NL.txt and nl.txt
+///
+/// Only files in the release notes directory matching the keys in this map
+/// will be used. Any other file will be ignored.
 const localizationMap = {
   'english.txt': [
     'en-US',
-  ],
-  'dutch.txt': [
     'nl-NL',
     'nl',
   ],
@@ -24,8 +25,8 @@ const messagesLocalizationMap = {
     'messages.i18n',
     'messages_de.i18n',
     'messages_fr.i18n',
+    'messages_nl.i18n',
   ],
-  'dutch.txt': ['messages_nl.i18n'],
 };
 
 /// The path to where the messages.yaml files are stored.
@@ -76,7 +77,10 @@ Future<void> main(List<String> args) async {
     brand: brand,
   );
 
-  final files = await directory.list().toList();
+  final files = await directory
+      .list()
+      .where((file) => localizationMap.keys.contains(basename(file.path)))
+      .toList();
 
   if (files.isEmpty) {
     throw Exception('There are no files in the release notes directory');
