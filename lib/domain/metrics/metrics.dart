@@ -26,7 +26,7 @@ abstract class MetricsRepository {
 
   void trackSettingChange<T extends Object>(
     SettingKey<T> key,
-    T value,
+    String value,
   ) {
     if (!key.shouldTrack) return;
 
@@ -181,7 +181,7 @@ extension _SettingMetrics<T extends Object> on SettingKey<T> {
   String toMetricKey() => ReCase(name).paramCase;
 
   /// The setting formatted as properties to submit to metrics.
-  Map<String, T> toMetricProperties(T value) {
+  Map<String, String> toMetricProperties(String value) {
     if (isPii) {
       return const {};
     }
