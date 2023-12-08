@@ -25,7 +25,7 @@ class GetWebSocketAuthentication extends UseCase {
   RelationsWebSocketAuthentication? call() => _isOnboarded
       ? RelationsWebSocketAuthentication(
           url: '${_brand.userAvailabilityWsUrl}/${_user.client.uuid}?'
-              'version=v${version.toString()}',
+              'ws_api_version=v${version.toString()}',
           headers: {'Authorization': 'Bearer ${_user.token}'},
         )
       : null;

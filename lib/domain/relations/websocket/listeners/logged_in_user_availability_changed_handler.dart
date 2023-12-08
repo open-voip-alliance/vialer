@@ -1,6 +1,7 @@
 import 'package:vialer/dependency_locator.dart';
 import 'package:vialer/domain/calling/voip/destination.dart';
 import 'package:vialer/domain/calling/voip/destination_repository.dart';
+import 'package:vialer/domain/relations/utils.dart';
 import 'package:vialer/domain/relations/websocket/listeners/colleague_update_handler.dart';
 import 'package:vialer/domain/relations/websocket/listeners/listener.dart';
 import 'package:vialer/domain/relations/websocket/payloads/user_availability_changed.dart';
@@ -87,12 +88,8 @@ extension on UserAvailabilityChangedPayload {
       destinationType == ColleagueDestinationType.voipAccount &&
       availability == ColleagueAvailabilityStatus.offline;
 
-  UserAvailabilityStatus toUserAvailabilityStatus() => switch (userStatus) {
-        ColleagueAvailabilityStatus.offline => UserAvailabilityStatus.offline,
-        ColleagueAvailabilityStatus.doNotDisturb =>
-          UserAvailabilityStatus.doNotDisturb,
-        _ => UserAvailabilityStatus.online,
-      };
+  UserAvailabilityStatus toUserAvailabilityStatus() =>
+      userStatus.toUserAvailabilityStatus();
 }
 
 extension on List<Destination> {
