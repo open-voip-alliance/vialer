@@ -595,7 +595,6 @@ workflows:
         IOS_SIGNING_TYPE: "IOS_APP_STORE"
         ENABLE_IOS_SANDBOX_PUSH_NOTIFICATIONS: "false"
         FINALIZE_SENTRY_RELEASE: "true"
-        FEATURE_SET_AVAILABLE_FOR_COLLEAGUES_STATUS: "true"
     artifacts: *defaults_artifacts
     triggering: *internal_preview_was_tagged
     scripts:
