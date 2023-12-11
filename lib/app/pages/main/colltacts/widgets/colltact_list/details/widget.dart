@@ -237,20 +237,25 @@ class _Item extends StatelessWidget {
           )
         : null;
 
-    return ListTile(
-      contentPadding: const EdgeInsets.symmetric(
-        horizontal: _horizontalPadding,
-      ),
-      leading: Container(
-        width: _leadingSize,
-        alignment: Alignment.center,
-        child: FaIcon(
-          isEmail ? FontAwesomeIcons.envelope : FontAwesomeIcons.phone,
+    return Semantics(
+      hint: label == null ? value : [label, value].join(" "),
+      child: ExcludeSemantics(
+        child: ListTile(
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: _horizontalPadding,
+          ),
+          leading: Container(
+            width: _leadingSize,
+            alignment: Alignment.center,
+            child: FaIcon(
+              isEmail ? FontAwesomeIcons.envelope : FontAwesomeIcons.phone,
+            ),
+          ),
+          title: Text(value),
+          subtitle: label == null ? null : Text(label),
+          onTap: onTap,
         ),
       ),
-      title: Text(value),
-      subtitle: label == null ? null : Text(label),
-      onTap: onTap,
     );
   }
 }
