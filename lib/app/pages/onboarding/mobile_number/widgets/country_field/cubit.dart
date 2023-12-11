@@ -37,6 +37,22 @@ class CountryFieldCubit extends Cubit<CountryFieldState> {
     );
   }
 
+  /// Retrieves the country from the given list of countries based on the provided criteria.
+  /// If no country satisfies the criteria, it falls back to retrieving the preferred country using [_getPreferredCurrentCountry] method.
+  ///
+  /// Parameters:
+  /// - countries: The list of countries to search from.
+  /// - criteria: The criteria function used to determine if a country is preferred.
+  ///
+  /// Returns:
+  /// - The country that satisfies the criteria, or the fallback preferred country.
+  Future<Country> _getCountryFirstWhere(
+      {required Iterable<Country> countries,
+      required bool Function(Country) criteria}) async {
+    return countries.firstWhereOrNull(criteria) ??
+        await _getPreferredCurrentCountry(countries: countries);
+  }
+
   /// Retrieves the preferred country from a list of countries.
   ///
   /// The preferred country is determined by the current locale of the device.
@@ -73,16 +89,17 @@ class CountryFieldCubit extends Cubit<CountryFieldState> {
       }
 
       final countries = state.countries;
-      final country = parsedNumber != null
-          ? countries.firstWhereOrNull(
-              (country) => country.callingCode == parsedNumber!['country_code'],
-            )
-          : null;
+      final currentCountry = parsedNumber != null
+          ? await _getCountryFirstWhere(
+              countries: countries,
+              criteria: (Country country) =>
+                  country.callingCode == parsedNumber!['country_code'])
+          : await _getPreferredCurrentCountry(countries: countries);
 
       emit(
         CountriesLoaded(
           countries: countries,
-          currentCountry: country ?? countries.first,
+          currentCountry: currentCountry,
         ),
       );
     }
