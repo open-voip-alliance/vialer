@@ -45,9 +45,10 @@ class CountryFieldCubit extends Cubit<CountryFieldState> {
   ///
   /// Returns:
   /// - The country that satisfies the criteria, or the fallback preferred country.
-  Future<Country> _getCountryFirstWhere(
-          {required Iterable<Country> countries,
-          required bool Function(Country) criteria}) async =>
+  Future<Country> _getCountryFirstWhere({
+    required Iterable<Country> countries,
+    required bool Function(Country) criteria,
+  }) async =>
       countries.firstWhereOrNull(criteria) ??
       await countries.getPreferredCurrentCountry();
 
