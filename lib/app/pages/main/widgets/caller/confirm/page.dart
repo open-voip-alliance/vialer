@@ -117,11 +117,9 @@ class ConfirmPageState extends State<ConfirmPage>
     cubit.cancelCallThroughCall();
   }
 
-  Future<bool> _onWillPop(bool _) async {
+  Future<void> _onWillPop(bool didPop) async {
+    if (didPop) return;
     _pop();
-
-    // We pop ourselves
-    return false;
   }
 
   static const _style = TextStyle(
