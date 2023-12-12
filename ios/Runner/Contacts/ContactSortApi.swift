@@ -2,15 +2,14 @@ import Contacts
 
 class ContactSortApi: NSObject, ContactSortHostApi {
     func getSortingWithError(_ error: AutoreleasingUnsafeMutablePointer<FlutterError?>) -> ContactSort? {
-        let contactSort = ContactSort()
+        let contactSort: OrderBy
+
         switch CNContactsUserDefaults.shared().sortOrder {
-        case .givenName:
-            contactSort.orderBy = OrderBy.givenName
-        case .familyName:
-            contactSort.orderBy = OrderBy.familyName
-        default:
-            contactSort.orderBy = OrderBy.givenName
+            case .givenName: contactSort = OrderBy.givenName
+            case .familyName: contactSort = OrderBy.familyName
+            default: contactSort = OrderBy.givenName
         }
-        return contactSort
+        
+        return ContactSort.makeWithOrder(by: OrderByBox(value: contactSort))
     }
 }

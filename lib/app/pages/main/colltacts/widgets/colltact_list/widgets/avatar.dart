@@ -130,7 +130,7 @@ class SharedContactAvatar extends StatelessWidget {
 }
 
 @freezed
-class _AvatarColor with _$_AvatarColor {
+class _AvatarColor with _$AvatarColor {
   const factory _AvatarColor({
     required Color foreground,
     required Color background,

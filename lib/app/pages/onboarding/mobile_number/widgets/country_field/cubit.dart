@@ -38,7 +38,7 @@ class CountryFieldCubit extends Cubit<CountryFieldState> {
     if (state is CountriesLoaded) {
       Map<String, dynamic>? parsedNumber;
       try {
-        parsedNumber = await FlutterLibphonenumber().parse(mobileNumber);
+        parsedNumber = await parse(mobileNumber);
       } on PlatformException {
         // Parsing failed and parsedNumber stays null.
       }

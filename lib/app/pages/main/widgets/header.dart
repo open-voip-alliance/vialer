@@ -21,7 +21,10 @@ class Header extends StatelessWidget {
       child: MediaQuery(
         data: mediaQuery.copyWith(
           // Never make title bigger based on font settings.
-          textScaleFactor: mediaQuery.textScaleFactor.clamp(0, 1.0),
+          textScaler: mediaQuery.textScaler.clamp(
+            minScaleFactor: 0,
+            maxScaleFactor: 1.0,
+          ),
         ),
         child: Text(
           data,

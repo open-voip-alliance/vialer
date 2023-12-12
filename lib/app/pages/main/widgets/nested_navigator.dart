@@ -62,7 +62,7 @@ class _NestedNavigatorState extends State<NestedNavigator> {
   // Since the nested navigator cannot capture the back button press (Android),
   // we use WillPopScope to capture that event, and pop the nested navigator
   // route if possible.
-  Future<bool> _onWillPop() {
+  Future<bool> _onWillPop(bool _) {
     for (final navigatorKey in _navigatorsToPop.reversed) {
       final state = navigatorKey.currentState!;
       if (state.canPop()) {
@@ -119,8 +119,8 @@ class _NestedNavigatorState extends State<NestedNavigator> {
       // add the navigator states to pop to the root NestedNavigator.
       return Provider<_NestedNavigatorState>.value(
         value: this,
-        child: WillPopScope(
-          onWillPop: _onWillPop,
+        child: PopScope(
+          onPopInvoked: _onWillPop,
           child: result,
         ),
       );

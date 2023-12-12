@@ -1,112 +1,76 @@
-import 'dart:async';
 import 'dart:io';
 
 import 'package:dartx/dartx.dart';
 import 'package:diacritic/diacritic.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rxdart/rxdart.dart';
-import 'package:vialer/domain/colltacts/shared_contacts/get_shared_contacts.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:vialer/app/pages/main/dialer/widgets/t9/state.dart';
+import 'package:vialer/app/util/extensions.dart';
 
 import '../../../../../../data/models/colltact.dart';
 import '../../../../../../domain/call_records/item.dart';
 import '../../../../../../domain/colltacts/get_contacts.dart';
+import '../../../../../../domain/colltacts/shared_contacts/get_shared_contacts.dart';
 import '../../../../../../domain/colltacts/t9_colltact.dart';
+import '../../../../../../domain/relations/colleagues/get_cached_colleagues.dart';
 import '../../../../../../domain/user/get_permission_status.dart';
 import '../../../../../../domain/user/permissions/permission.dart';
 import '../../../../../../domain/user/permissions/permission_status.dart';
-import '../../../../../../domain/relations/colleagues/get_cached_colleagues.dart';
-import '../../../../../util/extensions.dart';
-import 'event.dart';
-import 'state.dart';
 
-export 'event.dart';
-export 'state.dart';
+part 'riverpod.g.dart';
 
-class T9ColltactsBloc extends Bloc<T9ColltactsEvent, T9ColltactsState> {
-  T9ColltactsBloc() : super(const LoadingColltacts()) {
-    add(LoadColltacts());
-  }
-
+@Riverpod(keepAlive: true)
+class T9Colltacts extends _$T9Colltacts {
   final _getContacts = GetContactsUseCase();
   final _getColleagues = GetCachedColleagues();
   final _getSharedContacts = GetSharedContactsUseCase();
   final _getPermissionStatus = GetPermissionStatusUseCase();
 
   @override
-  Stream<T9ColltactsState> mapEventToState(T9ColltactsEvent event) async* {
-    if (event is LoadColltacts) {
-      yield* _loadColltactsIfAllowed();
-    } else if (event is FilterT9Colltacts) {
-      yield* _filterColltacts(event);
-    }
+  T9ColltactsState build() {
+    return T9ColltactsState.loading();
   }
 
-  @override
-  Stream<Transition<T9ColltactsEvent, T9ColltactsState>> transformEvents(
-    Stream<T9ColltactsEvent> events,
-    // ignore: deprecated_member_use
-    TransitionFunction<T9ColltactsEvent, T9ColltactsState> transitionFn,
-  ) {
-    // Only add a debounce to the filter event.
-    final nonDebounceStream =
-        events.where((event) => event is! FilterT9Colltacts);
-
-    final debounceStream = events
-        .where((event) => event is FilterT9Colltacts)
-        .debounceTime(const Duration(milliseconds: 500));
-
-    // ignore: deprecated_member_use
-    return super.transformEvents(
-      MergeStream([nonDebounceStream, debounceStream]),
-      transitionFn,
-    );
-  }
-
-  Stream<T9ColltactsState> _loadColltactsIfAllowed() async* {
+  Future<void> loadColltactsIfAllowed() async {
     final status = await _getPermissionStatus(permission: Permission.contacts);
 
     if (status == PermissionStatus.granted) {
-      yield* _loadColltacts();
+      _loadColltacts();
     } else {
-      yield NoPermission(
+      state = T9ColltactsState.noPermission(
         dontAskAgain: status == PermissionStatus.permanentlyDenied ||
             (Platform.isIOS && status == PermissionStatus.denied),
       );
     }
   }
 
-  Stream<T9ColltactsState> _loadColltacts() async* {
+  Future<void> _loadColltacts() async {
     if (state is NoPermission) return;
 
     if (state is! ColltactsLoaded) {
-      yield const LoadingColltacts();
+      state = T9ColltactsState.loading();
     }
 
     final contacts = await _getContacts(latest: false);
     final colleagues = await _getColleagues();
     final sharedContacts = await _getSharedContacts();
 
-    final colltacts = [
+    state = T9ColltactsState.loaded([
       ...contacts.map(Colltact.contact),
       ...colleagues.map(Colltact.colleague),
       ...sharedContacts.map(Colltact.sharedContact),
-    ];
-
-    yield ColltactsLoaded(colltacts, []);
+    ], []);
   }
 
-  Stream<T9ColltactsState> _filterColltacts(FilterT9Colltacts event) async* {
+  Future<void> filter(String input) async {
     // Necessary for auto cast.
     final state = this.state;
-
-    final input = event.input;
 
     if (state is NoPermission) return;
 
     if (state is ColltactsLoaded) {
       if (input.isEmpty) {
-        yield ColltactsLoaded(state.colltacts, []);
+        this.state = T9ColltactsState.loaded(state.colltacts, []);
         return;
       }
 
@@ -118,7 +82,7 @@ class T9ColltactsBloc extends Bloc<T9ColltactsEvent, T9ColltactsState> {
         ),
       );
 
-      yield ColltactsLoaded(state.colltacts, t9Colltacts);
+      this.state = T9ColltactsState.loaded(state.colltacts, t9Colltacts);
     }
   }
 
