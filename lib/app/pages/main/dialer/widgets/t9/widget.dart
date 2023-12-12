@@ -2,13 +2,14 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:vialer/app/pages/main/dialer/widgets/t9/riverpod.dart';
+import 'package:vialer/app/pages/main/dialer/widgets/t9/state.dart';
 
 import '../../../../../../domain/colltacts/t9_colltact.dart';
 import '../../../../../../domain/metrics/track_t9_usage.dart';
 import '../../../../../util/contact.dart';
 import '../../../colltacts/widgets/colltact_list/widgets/avatar.dart';
-import 'bloc.dart';
 
 class T9ColltactsListView extends StatelessWidget {
   const T9ColltactsListView({
@@ -20,16 +21,11 @@ class T9ColltactsListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<T9ColltactsBloc>(
-      create: (_) => T9ColltactsBloc(),
-      child: _T9ColltactsList(
-        controller: controller,
-      ),
-    );
+    return _T9ColltactsList(controller: controller);
   }
 }
 
-class _T9ColltactsList extends StatefulWidget {
+class _T9ColltactsList extends ConsumerStatefulWidget {
   const _T9ColltactsList({required this.controller});
 
   final TextEditingController controller;
@@ -38,7 +34,7 @@ class _T9ColltactsList extends StatefulWidget {
   _T9ColltactsListState createState() => _T9ColltactsListState();
 }
 
-class _T9ColltactsListState extends State<_T9ColltactsList> {
+class _T9ColltactsListState extends ConsumerState<_T9ColltactsList> {
   final _listKey = GlobalKey();
 
   final _scrollController = ScrollController();
@@ -49,6 +45,8 @@ class _T9ColltactsListState extends State<_T9ColltactsList> {
   @override
   void initState() {
     super.initState();
+
+    ref.read(t9ColltactsProvider.notifier).loadColltactsIfAllowed();
 
     widget.controller.addListener(_onInputChanged);
 
@@ -82,83 +80,76 @@ class _T9ColltactsListState extends State<_T9ColltactsList> {
     }
   }
 
-  void _onInputChanged() {
-    context
-        .read<T9ColltactsBloc>()
-        .add(FilterT9Colltacts(widget.controller.text));
-  }
+  void _onInputChanged() =>
+      ref.read(t9ColltactsProvider.notifier).filter(widget.controller.text);
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<T9ColltactsBloc, T9ColltactsState>(
-      listener: _onStateChanged,
-      builder: (context, state) {
-        final contacts =
-            state is ColltactsLoaded ? state.filteredColltacts : <T9Colltact>[];
+    final state = ref.watch(t9ColltactsProvider);
 
-        return SizedBox(
-          // If the height has not been calculated yet (first frame), use the
-          // default two-line ListTile height, extracted from Flutter
-          // source code.
-          height: _height ?? (76.0 * 2),
-          child: Scrollbar(
-            controller: _scrollController,
-            thumbVisibility: true,
-            child: ListView.builder(
-              controller: _scrollController,
-              padding: EdgeInsets.zero,
-              // In the first frame we put 1 dummy ListTile in the list, to
-              // get the size we need for the list itself.
-              itemCount:
-                  _height == null ? max(contacts.length, 1) : contacts.length,
-              itemBuilder: (context, index) {
-                final t9Colltact =
-                    contacts.length > index ? contacts[index] : null;
+    _onStateChanged(context, state);
 
-                // This happens on the first frame,
-                // to calculate the size of the list.
-                if (t9Colltact == null) {
-                  return Visibility(
-                    visible: false,
-                    maintainSize: true,
-                    maintainAnimation: true,
-                    maintainState: true,
-                    child: ListTile(
-                      // We only want the GlobalKey to be used once in the tree.
-                      // Even without the check it should be used only once,
-                      // but better to be safe than sorry.
-                      key: index == 0 ? _listKey : null,
-                      leading: const SizedBox(
-                        height: ColltactAvatar.defaultSize,
-                      ),
-                      title: const Text(''),
-                      subtitle: const Text(''),
-                    ),
-                  );
-                }
+    final contacts =
+        state is ColltactsLoaded ? state.filteredColltacts : <T9Colltact>[];
 
-                return ListTile(
-                  leading: ColltactAvatar(t9Colltact.colltact),
-                  title: Text(
-                    t9Colltact.colltact.when(
-                      colleague: (colleague) => colleague.name,
-                      contact: (contact) => contact.displayName,
-                      sharedContact: (sharedContact) =>
-                          sharedContact.displayName,
-                    ),
+    return SizedBox(
+      // If the height has not been calculated yet (first frame), use the
+      // default two-line ListTile height, extracted from Flutter
+      // source code.
+      height: _height ?? (76.0 * 2),
+      child: Scrollbar(
+        controller: _scrollController,
+        thumbVisibility: true,
+        child: ListView.builder(
+          controller: _scrollController,
+          padding: EdgeInsets.zero,
+          // In the first frame we put 1 dummy ListTile in the list, to
+          // get the size we need for the list itself.
+          itemCount:
+              _height == null ? max(contacts.length, 1) : contacts.length,
+          itemBuilder: (context, index) {
+            final t9Colltact = contacts.length > index ? contacts[index] : null;
+
+            // This happens on the first frame,
+            // to calculate the size of the list.
+            if (t9Colltact == null) {
+              return Visibility(
+                visible: false,
+                maintainSize: true,
+                maintainAnimation: true,
+                maintainState: true,
+                child: ListTile(
+                  // We only want the GlobalKey to be used once in the tree.
+                  // Even without the check it should be used only once,
+                  // but better to be safe than sorry.
+                  key: index == 0 ? _listKey : null,
+                  leading: const SizedBox(
+                    height: ColltactAvatar.defaultSize,
                   ),
-                  subtitle: Text(t9Colltact.relevantPhoneNumber.value),
-                  onTap: () {
-                    unawaited(TrackT9Usage()(t9Colltact.colltact));
-                    widget.controller.text =
-                        t9Colltact.relevantPhoneNumber.value;
-                  },
-                );
+                  title: const Text(''),
+                  subtitle: const Text(''),
+                ),
+              );
+            }
+
+            return ListTile(
+              leading: ColltactAvatar(t9Colltact.colltact),
+              title: Text(
+                t9Colltact.colltact.when(
+                  colleague: (colleague) => colleague.name,
+                  contact: (contact) => contact.displayName,
+                  sharedContact: (sharedContact) => sharedContact.displayName,
+                ),
+              ),
+              subtitle: Text(t9Colltact.relevantPhoneNumber.value),
+              onTap: () {
+                unawaited(TrackT9Usage()(t9Colltact.colltact));
+                widget.controller.text = t9Colltact.relevantPhoneNumber.value;
               },
-            ),
-          ),
-        );
-      },
+            );
+          },
+        ),
+      ),
     );
   }
 

@@ -191,7 +191,7 @@ class _SideLetter extends StatelessWidget {
         child: Text(
           letter,
           textAlign: TextAlign.center,
-          textScaleFactor: 1,
+          textScaler: TextScaler.linear(1),
           style: TextStyle(
             fontSize: fontSize,
             fontWeight: FontWeight.w500,

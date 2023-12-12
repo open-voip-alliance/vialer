@@ -4,7 +4,7 @@ import android.content.Context
 import android.util.Log
 import com.logentries.logger.AndroidLogger
 import com.voipgrid.vialer.FlutterSharedPreferences
-import com.voipgrid.vialer.Pigeon
+import com.voipgrid.vialer.NativeLogging
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import org.openvoipalliance.flutterphonelib.PhoneLibLogLevel
@@ -17,7 +17,7 @@ import java.time.format.DateTimeFormatter
 typealias LogEntries = AndroidLogger
 
 class Logger(private val context: Context, private val prefs: FlutterSharedPreferences) :
-    Pigeon.NativeLogging {
+    NativeLogging {
 
     private var anonymizationRules: Map<String, String> = mapOf()
     private var logEntries: LogEntries? = null
@@ -69,13 +69,13 @@ class Logger(private val context: Context, private val prefs: FlutterSharedPrefe
     override fun startNativeRemoteLogging(
         token: String,
         userIdentifier: String,
-        anonymizationRules: MutableMap<String, String>,
-        result: Pigeon.Result<Void>
+        anonymizationRules: Map<String, String>,
+        callback: (Result<Unit>) -> Unit
     ) {
         logEntries = createRemoteLogger(token)
         this.userIdentifier = userIdentifier
         this.anonymizationRules = anonymizationRules
-        result.success(null)
+        callback(Result.success(Unit))
     }
 
     override fun startNativeConsoleLogging() {

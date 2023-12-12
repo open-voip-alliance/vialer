@@ -55,6 +55,8 @@ extension PermissionStatusMapper on permission_handler.PermissionStatus {
         permission_handler.PermissionStatus.restricted =>
           domain.PermissionStatus.restricted,
         permission_handler.PermissionStatus.limited =>
-          domain.PermissionStatus.undetermined
+          domain.PermissionStatus.undetermined,
+        permission_handler.PermissionStatus.provisional =>
+          domain.PermissionStatus.granted,
       };
 }

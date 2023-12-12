@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../domain/metrics/track_web_view.dart';
@@ -39,7 +38,7 @@ class WebViewCubit extends Cubit<WebViewState> with Loggable {
     try {
       final url = await _getWebViewUrl(page: _page);
 
-      _trackWebView(page: describeEnum(_page));
+      _trackWebView(page: _page.name);
 
       emit(LoadedUrl(url: url));
     } on AutoLoginException {
