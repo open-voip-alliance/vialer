@@ -1,18 +1,20 @@
 import 'dart:async';
 
+import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vialer/domain/user/user.dart';
 
+import '../../../../../data/models/colltact.dart';
 import '../../../../../dependency_locator.dart';
 import '../../../../../domain/authentication/user_was_logged_out.dart';
 import '../../../../../domain/event/event_bus.dart';
+import '../../../../../domain/relations/colleagues/colleague.dart';
+import '../../../../../domain/relations/colleagues/should_show_colleagues.dart';
 import '../../../../../domain/relations/events/colleague_list_did_change.dart';
 import '../../../../../domain/relations/websocket/relations_web_socket.dart';
 import '../../../../../domain/user/get_logged_in_user.dart';
 import '../../../../../domain/user/settings/app_setting.dart';
 import '../../../../../domain/user/settings/change_setting.dart';
-import '../../../../../domain/relations/colleagues/colleague.dart';
-import '../../../../../domain/relations/colleagues/should_show_colleagues.dart';
 import '../../../../../domain/voipgrid/user_permissions.dart';
 import '../../widgets/caller/cubit.dart';
 import 'state.dart';
@@ -86,4 +88,15 @@ class ColleaguesCubit extends Cubit<ColleaguesState> {
 
   Future<void> call(String destination) =>
       _caller.call(destination, origin: CallOrigin.colleagues);
+
+  Colltact refreshColltactColleague(Colltact colltact) {
+    if (state is ColleaguesLoaded && colltact is ColltactColleague) {
+      final colleague = (state as ColleaguesLoaded).colleagues.firstWhereOrNull(
+            (colleague) =>
+                colleague.id == (colltact as ColltactColleague).colleague.id,
+          );
+      if (colleague != null) colltact = Colltact.colleague(colleague);
+    }
+    return colltact;
+  }
 }

@@ -1,0 +1,5 @@
+- Colleagues will now be removed from the colleagues list if they are deleted in the portal
+- Colleague names will now be updated in the colleague list if they are updated in the portal
+- Editing a shared contact will now show you the most recent information
+- Added an in-app screen when resetting a forgotten password
+- Improved screen reader support in the settings menu

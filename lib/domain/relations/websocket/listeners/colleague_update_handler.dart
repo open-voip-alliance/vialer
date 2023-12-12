@@ -67,9 +67,12 @@ class ColleagueUpdateHandler extends Listener<UserAvailabilityChangedPayload>
     broadcast(ColleagueListDidChangeEvent(colleagues));
   }
 
-  Future<void> _refreshColleagues() async => colleagues.addAnyNewColleagues(
-        await _fetchColleaguesAsSyncTask(),
-      );
+  Future<void> _refreshColleagues() async {
+    final fetchedColleagues = await _fetchColleaguesAsSyncTask();
+    this.colleagues.addAnyNewColleagues(fetchedColleagues);
+    this.colleagues.removeAnyDeletedColleagues(fetchedColleagues);
+    this.colleagues.updateColleagueNameIfModified(fetchedColleagues);
+  }
 
   Future<List<Colleague>> _fetchColleaguesAsSyncTask() =>
       SynchronizedTask<List<Colleague>>.of(this).run(() => _fetchColleagues());
@@ -78,11 +81,6 @@ class ColleagueUpdateHandler extends Listener<UserAvailabilityChangedPayload>
   Future<void> onRefreshRequested() async {
     colleagues = [];
     return _refreshColleagues();
-  }
-
-  @override
-  Future<void> onDisconnect() async {
-    colleagues = [];
   }
 }
 
@@ -128,6 +126,25 @@ extension on List<Colleague> {
           (colleague) => findByUserUuid(colleague.id) == null,
         ),
       );
+
+  void removeAnyDeletedColleagues(List<Colleague> newColleagues) {
+    for (final colleague in this) {
+      if (newColleagues.findByUserUuid(colleague.id) == null) {
+        remove(colleague);
+      }
+    }
+  }
+
+  void updateColleagueNameIfModified(List<Colleague> newColleagues) {
+    for (final colleague in this) {
+      final latest = newColleagues.findByUserUuid(colleague.id);
+
+      if (latest == null) continue;
+
+      this.remove(colleague);
+      this.add(colleague.copyWith(name: latest.name));
+    }
+  }
 }
 
 extension IsAboutLoggedInUser on UserAvailabilityChangedPayload {

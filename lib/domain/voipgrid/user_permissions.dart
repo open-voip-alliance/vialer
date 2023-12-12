@@ -23,7 +23,6 @@ class UserPermissionsRepository with Loggable {
         VoipgridPermission.temporaryRedirect,
     'voicemail.view_voicemail': VoipgridPermission.viewVoicemail,
     'phoneaccount.change_phoneaccount': VoipgridPermission.changeVoipAccount,
-    'permission.view_user': VoipgridPermission.viewUser,
     'phoneaccount.list_api_voipaccount_basic_info':
         VoipgridPermission.listVoipAccounts,
     'permission.list_api_user_basic_info': VoipgridPermission.listUsers,
@@ -69,7 +68,6 @@ enum VoipgridPermission {
   temporaryRedirect,
   viewVoicemail,
   changeVoipAccount,
-  viewUser,
   listVoipAccounts,
   listUsers,
   viewStats,
@@ -80,6 +78,10 @@ enum VoipgridPermission {
 enum Permission {
   canSeeClientCalls,
   canChangeMobileNumberFallback,
+  @Deprecated(
+    'Permission is no longer necessary but this enum must '
+    'still exist for deserializing old users',
+  )
   canViewMobileNumberFallbackStatus,
   canChangeTemporaryRedirect,
   canViewVoicemailAccounts,

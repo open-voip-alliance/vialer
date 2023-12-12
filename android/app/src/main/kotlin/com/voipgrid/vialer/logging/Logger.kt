@@ -51,7 +51,9 @@ class Logger(private val context: Context, private val prefs: FlutterSharedPrefe
         }
 
         if (prefs.user != null) {
-            MainScope().launch { prefs.appendLogs(anonymize(formattedMessage)) }
+            // Temporarily disabled due to OOM issues. Should be re-enabled and use a file backing
+            // rather than storing logs in memory.
+            //MainScope().launch { prefs.appendLogs(anonymize(formattedMessage)) }
         }
     }
 

@@ -6,7 +6,8 @@ import '../../../../domain/onboarding/login_credentials.dart';
 import '../../../../domain/onboarding/step.dart';
 import '../../../../domain/onboarding/two_factor_authentication_required.dart';
 import '../../../util/loggable.dart';
-import '../../../util/password.dart';
+import '../../../../domain/authentication/validate_password.dart';
+import 'package:vialer/dependency_locator.dart';
 import '../cubit.dart';
 import 'state.dart';
 
@@ -17,12 +18,13 @@ class PasswordCubit extends Cubit<PasswordState> with Loggable {
   final OnboardingCubit _onboarding;
 
   final _changePassword = ChangePasswordUseCase();
+  final _validatePassword = dependencyLocator<ValidatePassword>();
   final _login = LoginUseCase();
 
   Future<void> changePassword(String password) async {
     logger.info('Changing password');
 
-    if (!hasValidPasswordFormat(password)) {
+    if (await _validatePassword(password) == false) {
       emit(PasswordNotAllowed());
       return;
     }

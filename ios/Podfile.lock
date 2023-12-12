@@ -13,7 +13,7 @@ PODS:
   - connectivity_plus (0.0.1):
     - Flutter
     - ReachabilitySwift
-  - device_info (0.0.1):
+  - device_info_plus (0.0.1):
     - Flutter
   - Flutter (1.0.0)
   - flutter_contacts (0.0.1):
@@ -106,7 +106,7 @@ DEPENDENCIES:
   - Analytics (~> 4.1)
   - connection_network_type (from `.symlinks/plugins/connection_network_type/ios`)
   - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
-  - device_info (from `.symlinks/plugins/device_info/ios`)
+  - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
   - Flutter (from `Flutter`)
   - flutter_contacts (from `.symlinks/plugins/flutter_contacts/ios`)
   - flutter_inappwebview (from `.symlinks/plugins/flutter_inappwebview/ios`)
@@ -153,8 +153,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/connection_network_type/ios"
   connectivity_plus:
     :path: ".symlinks/plugins/connectivity_plus/ios"
-  device_info:
-    :path: ".symlinks/plugins/device_info/ios"
+  device_info_plus:
+    :path: ".symlinks/plugins/device_info_plus/ios"
   Flutter:
     :path: Flutter
   flutter_contacts:

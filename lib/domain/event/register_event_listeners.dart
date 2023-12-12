@@ -7,13 +7,9 @@ import '../authentication/unauthorized_api_response.dart';
 import '../call_records/client/import_historic_client_call_records.dart';
 import '../call_records/client/purge_local_call_records.dart';
 import '../metrics/identify_for_tracking.dart';
-import '../onboarding/is_onboarded.dart';
 import '../use_case.dart';
-import '../user/events/logged_in_user_availability_changed.dart';
 import '../user/events/logged_in_user_was_refreshed.dart';
 import '../user/handle_app_account_change.dart';
-import '../user/refresh/refresh_user.dart';
-import '../user/refresh/user_refresh_task.dart';
 import '../user/settings/app_setting.dart';
 import '../user/settings/setting_changed.dart';
 import '../voipgrid/rate_limit_reached_event.dart';
@@ -29,9 +25,7 @@ class RegisterDomainEventListenersUseCase extends UseCase with Loggable {
   final _identifyForTracking = IdentifyForTrackingUseCase();
   final _logoutOnUnauthorizedResponse = LogoutOnUnauthorizedResponse();
   final _trackRateLimitedApiCalls = TrackRateLimitedApiCalls();
-  final _refreshUser = RefreshUser();
   final _handleAppAccountChange = HandleAppAccountChange();
-  final _isOnboarded = IsOnboarded();
 
   void call() {
     _eventBus
@@ -50,21 +44,6 @@ class RegisterDomainEventListenersUseCase extends UseCase with Loggable {
         },
       )
       ..on<SettingChangedEvent>((_) => unawaited(_identifyForTracking()))
-      ..on<LoggedInUserAvailabilityChanged>(
-        (_) {
-          if (_isOnboarded()) {
-            unawaited(
-              _refreshUser(
-                tasksToPerform: [
-                  UserRefreshTask.userDestination,
-                  UserRefreshTask.appAccount,
-                ],
-                synchronized: false,
-              ),
-            );
-          }
-        },
-      )
       ..on<LoggedInUserWasRefreshed>(
         (event) {
           if (!event.isFirstTime) {

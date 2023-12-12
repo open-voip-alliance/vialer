@@ -16,7 +16,6 @@ class SettingsState with _$SettingsState {
     BuildInfo? buildInfo,
     @Default(false) bool hasIgnoreBatteryOptimizationsPermission,
     @Default(false) bool hasTemporaryRedirect,
-    int? userNumber,
     @Default([Destination.notAvailable()])
     List<Destination> availableDestinations,
 
