@@ -11,8 +11,8 @@ import '../../../dependency_locator.dart';
 import '../../event/event_bus.dart';
 import '../../metrics/metrics.dart';
 import '../../use_case.dart';
-import 'listeners/setting_change_listener.dart';
 import 'listeners/refresh_voip_preferences.dart';
+import 'listeners/setting_change_listener.dart';
 import 'listeners/start_voip_on_use_voip_enabled.dart';
 import 'listeners/update_availability.dart';
 import 'listeners/update_dnd_status.dart';
@@ -64,7 +64,7 @@ class ChangeSettingUseCase extends UseCase {
     }
 
     if (track) {
-      _metricsRepository.trackSettingChange(key, value);
+      _metricsRepository.trackSettingChange(key, value.toString());
     }
 
     // If we ever fail, we want to make sure we have fetched the latest data
