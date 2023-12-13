@@ -117,11 +117,9 @@ class ConfirmPageState extends State<ConfirmPage>
     cubit.cancelCallThroughCall();
   }
 
-  Future<bool> _onWillPop() async {
+  Future<void> _onWillPop(bool didPop) async {
+    if (didPop) return;
     _pop();
-
-    // We pop ourselves
-    return false;
   }
 
   static const _style = TextStyle(
@@ -135,8 +133,8 @@ class ConfirmPageState extends State<ConfirmPage>
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: _onWillPop,
+    return PopScope(
+      onPopInvoked: _onWillPop,
       child: TransparentStatusBar(
         child: Padding(
           padding: const EdgeInsets.only(
@@ -154,8 +152,11 @@ class ConfirmPageState extends State<ConfirmPage>
 
                 final outgoingNumber = state.outgoingNumber;
 
-                final paragraphDistance =
-                    48 * (1.0 - (MediaQuery.textScaleFactorOf(context) - 1.0));
+                final scaleFactor =
+                    // ignore: deprecated_member_use
+                    MediaQuery.textScalerOf(context).textScaleFactor;
+
+                final paragraphDistance = 48 * (1.0 - (scaleFactor - 1.0));
 
                 return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 48),

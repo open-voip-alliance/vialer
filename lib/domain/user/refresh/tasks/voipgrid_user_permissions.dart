@@ -59,7 +59,6 @@ extension on List<VoipgridPermission> {
     VoipgridPermission.clientCalls: Permission.canSeeClientCalls,
     VoipgridPermission.changeMobileNumberFallback:
         Permission.canChangeMobileNumberFallback,
-    VoipgridPermission.viewUser: Permission.canViewMobileNumberFallbackStatus,
     VoipgridPermission.viewVoicemail: Permission.canViewVoicemailAccounts,
     VoipgridPermission.changeVoipAccount: Permission.canChangeOutgoingNumber,
     VoipgridPermission.listUsers: Permission.canViewColleagues,

@@ -11,6 +11,8 @@ part 'user_availability_changed.g.dart';
 class UserAvailabilityChangedPayload
     with _$UserAvailabilityChangedPayload
     implements Payload {
+  const UserAvailabilityChangedPayload._();
+
   @JsonSerializable(fieldRename: FieldRename.snake)
   const factory UserAvailabilityChangedPayload({
     required String userUuid,
@@ -31,7 +33,16 @@ class UserAvailabilityChangedPayload
     required ColleagueAvailabilityStatus userStatus,
     @JsonKey(fromJson: _colleagueContextFromJson)
     required List<ColleagueContext> context,
+
+    /// The list of selected destinations, currently we only support a single
+    /// selected destination but this is a list to future-proof as we plan
+    /// to support multiple selected destinations in the future.
+    @JsonKey(name: 'destinations')
+    required List<SelectedDestination> selectedDestinations,
   }) = _UserAvailabilityChangedPayload;
+
+  SelectedDestination? get selectedDestination =>
+      selectedDestinations.firstOrNull;
 
   factory UserAvailabilityChangedPayload.fromJson(Map<String, dynamic> json) =>
       _$UserAvailabilityChangedPayloadFromJson(json);
@@ -42,6 +53,8 @@ ColleagueAvailabilityStatus _availabilityFromJson(String? value) =>
       'do_not_disturb' => ColleagueAvailabilityStatus.doNotDisturb,
       'offline' => ColleagueAvailabilityStatus.offline,
       'available' => ColleagueAvailabilityStatus.available,
+      'available_for_colleagues' =>
+        ColleagueAvailabilityStatus.availableForColleagues,
       'busy' => ColleagueAvailabilityStatus.busy,
       _ => ColleagueAvailabilityStatus.unknown
     };
@@ -64,3 +77,16 @@ ColleagueDestinationType _colleagueDestinationTypeFromJson(String? value) =>
       'fixeddestination' => ColleagueDestinationType.fixed,
       _ => ColleagueDestinationType.none
     };
+
+@freezed
+class SelectedDestination with _$SelectedDestination {
+  @JsonSerializable(fieldRename: FieldRename.snake)
+  const factory SelectedDestination({
+    required int destinationId,
+    @JsonKey(fromJson: _colleagueDestinationTypeFromJson)
+    required ColleagueDestinationType destinationType,
+  }) = _SelectedDestination;
+
+  factory SelectedDestination.fromJson(Map<String, dynamic> json) =>
+      _$SelectedDestinationFromJson(json);
+}

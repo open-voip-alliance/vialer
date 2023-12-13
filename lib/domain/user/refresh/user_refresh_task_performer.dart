@@ -56,6 +56,9 @@ abstract class UserRefreshTaskPerformer {
   /// Implementing this method will mean [isPermitted] is ignored.
   @protected
   bool shouldRun(User user) => isPermitted(user.permissions);
+
+  Future<void> updateSetting(SettingKey key, Object value) =>
+      ForceUpdateSetting()(key, value);
 }
 
 /// A task that is specifically to update the [Client] entity, while this is
@@ -94,7 +97,7 @@ abstract class SettingsRefreshTaskPerformer extends UserRefreshTaskPerformer {
 
     final (key, value) = result(user);
 
-    await ForceUpdateSetting()(key, value);
+    await updateSetting(key, value);
 
     return unmutatedUser;
   }

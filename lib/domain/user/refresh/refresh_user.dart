@@ -8,7 +8,6 @@ import '../../../dependency_locator.dart';
 import '../../authentication/authentication_repository.dart';
 import '../../event/event_bus.dart';
 import '../../legacy/storage.dart';
-import '../../onboarding/exceptions.dart';
 import '../../onboarding/login_credentials.dart';
 import '../../use_case.dart';
 import '../events/logged_in_user_was_refreshed.dart';
@@ -29,17 +28,14 @@ class RefreshUser extends UseCase with Loggable {
     Future<User?> refreshUser() => _refreshUser(credentials, tasksToPerform);
 
     return synchronized
-        ? SynchronizedTask<User?>.named(
-            editUserTask,
-            SynchronizedTaskMode.queue,
-          ).run(refreshUser)
+        ? SynchronizedTask<User?>.named(editUserTask).run(refreshUser)
         : refreshUser();
   }
 
   Future<User?> _getUser(LoginCredentials? credentials) async {
     try {
       return _auth.getUserFromCredentials(credentials);
-    } on FailedToRetrieveUserException {
+    } on Exception {
       return null;
     }
   }
@@ -65,6 +61,7 @@ class RefreshUser extends UseCase with Loggable {
         permissions: storedUser?.permissions,
         client: storedUser?.client,
         appAccount: () => storedUser?.appAccount,
+        webphoneAccountId: () => storedUser?.webphoneAccountId,
       );
 
       final isFirstTime = storedUser == null;

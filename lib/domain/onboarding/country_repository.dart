@@ -9,7 +9,7 @@ import 'country.dart';
 @singleton
 class CountryRepository {
   CountryRepository() {
-    unawaited(FlutterLibphonenumber().init());
+    unawaited(init());
   }
 
   Future<Iterable<Country>> getCountries() async {

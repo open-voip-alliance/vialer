@@ -398,9 +398,12 @@ class _KeypadValueButtonState extends State<KeypadValueButton> {
                         ),
                         // The font size is based on the available space, and we
                         // never make the font size bigger
-                        textScaleFactor: min(
-                          constraints.maxWidth / KeypadValueButton.maxSize,
-                          MediaQuery.textScaleFactorOf(context),
+                        textScaler: TextScaler.linear(
+                          min(
+                            constraints.maxWidth / KeypadValueButton.maxSize,
+                            // ignore: deprecated_member_use
+                            MediaQuery.textScalerOf(context).textScaleFactor,
+                          ),
                         ),
                       ),
                       Text(

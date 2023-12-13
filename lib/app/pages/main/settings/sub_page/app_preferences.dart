@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vialer/domain/user/user.dart';
-import 'package:vialer/domain/voipgrid/user_permissions.dart';
 
 import '../../../../../domain/user/settings/call_setting.dart';
 import '../../../../resources/localizations.dart';
@@ -32,8 +31,6 @@ class AppPreferencesSubPage extends StatelessWidget {
       builder: (context, state) {
         final user = state.user;
         final useVoip = user.settings.get(CallSetting.useVoip);
-        final canViewMobileFallback =
-            user.hasPermission(Permission.canViewMobileNumberFallbackStatus);
         final hasIgnoreOptimizationsPermission =
             state.hasIgnoreBatteryOptimizationsPermission;
         final cubit = context.watch<SettingsCubit>();
@@ -47,7 +44,7 @@ class AppPreferencesSubPage extends StatelessWidget {
                 CallingCategory(
                   children: [
                     if (user.isAllowedVoipCalling) UseVoipTile(user),
-                    if (useVoip && canViewMobileFallback)
+                    if (useVoip)
                       UseMobileNumberAsFallbackTile(
                         user,
                         enabled: state.shouldAllowRemoteSettings,

@@ -78,7 +78,7 @@ custom: # Custom properties to make workflows cleaner
     max_build_duration: 90
     instance_type: mac_mini_m2
     environment: &config_environment
-      flutter: 3.13.9
+      flutter: 3.16.3
       # This has to be 14.2 for our integration tests to work, it should be changed to latest
       # when the tooling supports xCode 14.3.
       xcode: 14.2
@@ -595,6 +595,7 @@ workflows:
         IOS_SIGNING_TYPE: "IOS_APP_STORE"
         ENABLE_IOS_SANDBOX_PUSH_NOTIFICATIONS: "false"
         FINALIZE_SENTRY_RELEASE: "true"
+        FEATURE_SET_AVAILABLE_FOR_COLLEAGUES_STATUS: "true"
     artifacts: *defaults_artifacts
     triggering: *internal_preview_was_tagged
     scripts:

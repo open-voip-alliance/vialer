@@ -8,72 +8,85 @@ import androidx.annotation.NonNull
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.voipgrid.vialer.IncomingCallActivity.Companion.INCOMING_CALL_CANCEL_INTENT
-import com.voipgrid.vialer.Pigeon.ContactSort
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugins.GeneratedPluginRegistrant
 import org.openvoipalliance.flutterphonelib.*
 
-class MainActivity : FlutterActivity(), Pigeon.CallScreenBehavior {
+class MainActivity : FlutterActivity(), CallScreenBehavior {
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         GeneratedPluginRegistrant.registerWith(flutterEngine)
 
         val binaryMessenger = flutterEngine.dartExecutor.binaryMessenger
 
-        Pigeon.NativeLogging.setup(binaryMessenger, App.logger)
-        Pigeon.ContactSortHostApi.setup(binaryMessenger) {
-            ContactSort().apply { orderBy = Pigeon.OrderBy.FAMILY_NAME }
-        }
+        NativeLogging.setUp(binaryMessenger, App.logger)
+        ContactSortHostApi.setUp(binaryMessenger, object : ContactSortHostApi {
+            override fun getSorting(): ContactSort {
+                return ContactSort(orderBy = OrderBy.FAMILYNAME)
+            }
+        })
 
-        Pigeon.NativeIncomingCallScreen.setup(binaryMessenger) { remotePartyHeading, remotePartySubheading, imageUri ->
-            this.launchIncomingCallScreen(
-                remotePartyHeading, remotePartySubheading, when {
-                    imageUri.isNullOrBlank() -> null
-                    else -> imageUri
-                }
-            )
-        }
+        NativeIncomingCallScreen.setUp(binaryMessenger, object : NativeIncomingCallScreen {
+            override fun launch(
+                remotePartyHeading: String,
+                remotePartySubheading: String,
+                imageUri: String,
+            ) {
+                this@MainActivity.launchIncomingCallScreen(
+                    remotePartyHeading, remotePartySubheading, when {
+                        imageUri.isNullOrBlank() -> null
+                        else -> imageUri
+                    }
+                )
+            }
+        })
 
-        Pigeon.Tones.setup(
+        Tones.setUp(
             binaryMessenger,
             SystemTones(this, App.logger)
         )
 
-        Pigeon.NativeMetrics.setup(binaryMessenger) {
-            App.segment.initialize()
-        }
+        NativeMetrics.setUp(binaryMessenger, object : NativeMetrics {
+            override fun initialize() {
+                App.segment.initialize()
+            }
+        })
 
-        Pigeon.CallThrough.setup(binaryMessenger, CallThrough(this, App.logger, App.segment))
+        CallThrough.setUp(binaryMessenger, CallThroughCalling(this, App.logger, App.segment))
 
-        Pigeon.CallScreenBehavior.setup(binaryMessenger, this)
+        CallScreenBehavior.setUp(binaryMessenger, this)
 
-        val androidAppUpdates = Pigeon.AndroidFlexibleUpdateHandler(binaryMessenger)
+        val androidAppUpdates = AndroidFlexibleUpdateHandler(binaryMessenger)
 
         val updater = AppUpdater(
             this@MainActivity,
             onUpdateTypeKnown = { isFlexible ->
-                androidAppUpdates.onUpdateTypeKnown(isFlexible) { }
+                androidAppUpdates.onUpdateTypeKnown(isFlexible) { return@onUpdateTypeKnown  }
             },
             onFlexibleUpdateDownloaded = {
-                androidAppUpdates.onDownloaded { }
+                androidAppUpdates.onDownloaded {
+                    Result.success(Unit)
+                }
             }
         )
 
-        Pigeon.AppUpdates.setup(
+        AppUpdates.setUp(
             binaryMessenger,
-            object : Pigeon.AppUpdates {
+            object : AppUpdates {
                 override fun check() = updater.check()
                 override fun completeAndroidFlexibleUpdate() = updater.completeFlexibleUpdate()
             }
         )
 
-        Pigeon.Contacts.setup(binaryMessenger, ContactImporter(this))
+        Contacts.setUp(binaryMessenger, ContactImporter(this))
 
-        Pigeon.GooglePlayServices.setup(binaryMessenger) {
-            val googlePlayServices = GoogleApiAvailability.getInstance()
-            val status = googlePlayServices.isGooglePlayServicesAvailable(this)
-            status == ConnectionResult.SUCCESS
-        }
+        GooglePlayServices.setUp(binaryMessenger, object : GooglePlayServices {
+            override fun isAvailable(): Boolean {
+                val googlePlayServices = GoogleApiAvailability.getInstance()
+                val status = googlePlayServices.isGooglePlayServicesAvailable(this@MainActivity)
+                return status == ConnectionResult.SUCCESS
+            }
+        })
     }
 
     override fun enable() {

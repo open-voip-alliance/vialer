@@ -2,7 +2,7 @@ import android.content.Context
 import android.media.AudioManager
 import android.media.ToneGenerator
 import android.provider.Settings
-import com.voipgrid.vialer.Pigeon.Tones
+import com.voipgrid.vialer.Tones
 import com.voipgrid.vialer.logging.Logger
 import java.util.*
 import kotlin.concurrent.schedule

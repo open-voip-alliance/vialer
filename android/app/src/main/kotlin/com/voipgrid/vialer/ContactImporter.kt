@@ -16,7 +16,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
 
-class ContactImporter(context: Context) : Pigeon.Contacts {
+class ContactImporter(context: Context) : com.voipgrid.vialer.Contacts {
     private val gson = Gson()
     private val contacts: Contacts
 
@@ -24,7 +24,7 @@ class ContactImporter(context: Context) : Pigeon.Contacts {
         contacts = Contacts(context)
     }
 
-    override fun importContacts(cacheFilePath: String, result: Pigeon.Result<Void>) {
+    override fun importContacts(cacheFilePath: String, callback: (Result<Unit>) -> Unit) {
         CoroutineScope(Dispatchers.IO).launch {
             val results = contacts
                 .broadQuery()
@@ -45,11 +45,15 @@ class ContactImporter(context: Context) : Pigeon.Contacts {
             if (results.isNotEmpty()) {
                 File(cacheFilePath).writeText(gson.toJson(results))
             }
-            result.success(null)
+
+
+
+            callback(Result.success(Unit))
         }
     }
 
-    override fun importContactAvatars(avatarDirectoryPath: String, result: Pigeon.Result<Void>) {
+
+    override fun importContactAvatars(avatarDirectoryPath: String, callback: (Result<Unit>) -> Unit) {
         CoroutineScope(Dispatchers.IO).launch {
             val results = contacts
                 .query()
@@ -70,7 +74,7 @@ class ContactImporter(context: Context) : Pigeon.Contacts {
                 )
             }
 
-            result.success(null)
+            callback(Result.success(Unit))
         }
     }
 
