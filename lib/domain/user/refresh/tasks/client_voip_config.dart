@@ -31,8 +31,8 @@ class RefreshClientVoipConfig extends ClientRefreshTaskPerformer {
     }
 
     dependencyLocator<MetricsRepository>().track('server-config-changed', {
-      'from': current,
-      'to': latest,
+      'from': current.toString(),
+      'to': latest.toString(),
     });
 
     logger.info(
