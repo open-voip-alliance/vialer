@@ -129,11 +129,11 @@ Future<_CodemagicBuild> _fetchCodemagicBuild({
       .then(readResponse)
       .then(jsonDecode)
       .then((value) => value as Map<String, dynamic>)
-      .then((response) => response['build'] as Map<String, dynamic>);
+      .then((response) => response['build'] as Map<String, dynamic>?);
 
-  final status = build['status'] as String?;
+  final status = build?['status'] as String?;
 
-  if (status == null) {
+  if (status == null || build == null) {
     if (!retry) {
       throw Exception('Unable to fetch codemagic build: [$buildId].');
     }
