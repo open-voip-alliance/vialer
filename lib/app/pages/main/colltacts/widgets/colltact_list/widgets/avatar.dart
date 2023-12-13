@@ -148,7 +148,9 @@ class UserAvatar extends StatelessWidget {
   final ColleagueContext? relevantContext;
   final ColleagueAvailabilityStatus? status;
 
-  static const _availableIcon = FontAwesomeIcons.user;
+  static const _availableIcon = FontAwesomeIcons.check;
+  static const _availableForColleaguesIcon =
+      FontAwesomeIcons.arrowRightArrowLeft;
   static const _unavailableIcon = FontAwesomeIcons.userSlash;
   static const _ringingIcon = FontAwesomeIcons.bellOn;
   static const _inCallIcon = FontAwesomeIcons.phoneVolume;
@@ -188,19 +190,15 @@ class UserAvatar extends StatelessWidget {
       );
     }
 
-    switch (status) {
-      case ColleagueAvailabilityStatus.available:
-        return available;
-      case ColleagueAvailabilityStatus.doNotDisturb:
-        return unavailable;
-      case ColleagueAvailabilityStatus.busy:
-        return busy;
-      case ColleagueAvailabilityStatus.offline:
-        return offline;
-      case ColleagueAvailabilityStatus.unknown:
-      case null:
-        return unknown;
-    }
+    return switch (status) {
+      ColleagueAvailabilityStatus.available ||
+      ColleagueAvailabilityStatus.availableForColleagues =>
+        available,
+      ColleagueAvailabilityStatus.doNotDisturb => unavailable,
+      ColleagueAvailabilityStatus.busy => busy,
+      ColleagueAvailabilityStatus.offline => offline,
+      _ => unknown,
+    };
   }
 
   IconData _icon() {
@@ -213,19 +211,15 @@ class UserAvatar extends StatelessWidget {
       );
     }
 
-    switch (status) {
-      case ColleagueAvailabilityStatus.available:
-        return _availableIcon;
-      case ColleagueAvailabilityStatus.doNotDisturb:
-        return _dndIcon;
-      case ColleagueAvailabilityStatus.busy:
-        return _inCallIcon;
-      case ColleagueAvailabilityStatus.offline:
-        return _unavailableIcon;
-      case ColleagueAvailabilityStatus.unknown:
-      case null:
-        return _voipAccountIcon;
-    }
+    return switch (status) {
+      ColleagueAvailabilityStatus.available => _availableIcon,
+      ColleagueAvailabilityStatus.availableForColleagues =>
+        _availableForColleaguesIcon,
+      ColleagueAvailabilityStatus.doNotDisturb => _dndIcon,
+      ColleagueAvailabilityStatus.busy => _inCallIcon,
+      ColleagueAvailabilityStatus.offline => _unavailableIcon,
+      _ => _voipAccountIcon,
+    };
   }
 
   @override

@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vialer/app/pages/main/settings/cubit.dart';
 import 'package:vialer/domain/calling/voip/destination_repository.dart';
-import 'package:vialer/domain/relations/colleagues/colleague.dart';
 import 'package:vialer/domain/user/events/user_devices_changed.dart';
 
 import '../../../../../dependency_locator.dart';
@@ -23,12 +22,7 @@ export 'state.dart';
 
 class UserAvailabilityStatusCubit extends Cubit<UserAvailabilityStatusState> {
   UserAvailabilityStatusCubit(this._settingsCubit)
-      : super(
-          UserAvailabilityStatusState(
-            status:
-                ColleagueAvailabilityStatus.offline.toUserAvailabilityStatus(),
-          ),
-        ) {
+      : super(UserAvailabilityStatusState(UserAvailabilityStatus.offline)) {
     _eventBus
       ..on<LoggedInUserAvailabilityChanged>(
         (event) => unawaited(
@@ -107,14 +101,4 @@ class UserAvailabilityStatusCubit extends Cubit<UserAvailabilityStatusState> {
 
     return user.settings.get(CallSetting.availabilityStatus);
   }
-}
-
-extension on ColleagueAvailabilityStatus {
-  UserAvailabilityStatus toUserAvailabilityStatus() => switch (this) {
-        ColleagueAvailabilityStatus.available => UserAvailabilityStatus.online,
-        ColleagueAvailabilityStatus.offline => UserAvailabilityStatus.offline,
-        ColleagueAvailabilityStatus.doNotDisturb =>
-          UserAvailabilityStatus.doNotDisturb,
-        _ => UserAvailabilityStatus.online,
-      };
 }
