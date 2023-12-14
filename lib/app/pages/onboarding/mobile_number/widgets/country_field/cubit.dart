@@ -4,6 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_libphonenumber/flutter_libphonenumber.dart';
+import 'package:country_codes/country_codes.dart';
 
 import '../../../../../../domain/onboarding/country.dart';
 import '../../../../../../domain/onboarding/get_countries.dart';
@@ -25,13 +26,31 @@ class CountryFieldCubit extends Cubit<CountryFieldState> {
       (country) => ['NL', 'DE', 'BE', 'ZA'].contains(country.isoCode),
     );
 
+    final totalCountries = [...mainCountries, ...countries];
+
     emit(
       CountriesLoaded(
-        countries: [...mainCountries, ...countries],
-        currentCountry: mainCountries.first,
+        countries: totalCountries,
+        currentCountry: await totalCountries.getPreferredCurrentCountry(),
       ),
     );
   }
+
+  /// Retrieves the country from the given list of countries based on the provided criteria.
+  /// If no country satisfies the criteria, it falls back to retrieving the preferred country using [_getPreferredCurrentCountry] method.
+  ///
+  /// Parameters:
+  /// - countries: The list of countries to search from.
+  /// - criteria: The criteria function used to determine if a country is preferred.
+  ///
+  /// Returns:
+  /// - The country that satisfies the criteria, or the fallback preferred country.
+  Future<Country> _getCountryFirstWhere({
+    required Iterable<Country> countries,
+    required bool Function(Country) criteria,
+  }) async =>
+      countries.firstWhereOrNull(criteria) ??
+      await countries.getPreferredCurrentCountry();
 
   Future<void> pickCountryByMobileNumber(String mobileNumber) async {
     final state = this.state;
@@ -44,16 +63,18 @@ class CountryFieldCubit extends Cubit<CountryFieldState> {
       }
 
       final countries = state.countries;
-      final country = parsedNumber != null
-          ? countries.firstWhereOrNull(
-              (country) => country.callingCode == parsedNumber!['country_code'],
+      final currentCountry = parsedNumber != null
+          ? await _getCountryFirstWhere(
+              countries: countries,
+              criteria: (Country country) =>
+                  country.callingCode == parsedNumber!['country_code'],
             )
-          : null;
+          : await countries.getPreferredCurrentCountry();
 
       emit(
         CountriesLoaded(
           countries: countries,
-          currentCountry: country ?? countries.first,
+          currentCountry: currentCountry,
         ),
       );
     }
@@ -69,5 +90,24 @@ class CountryFieldCubit extends Cubit<CountryFieldState> {
         ),
       );
     }
+  }
+}
+
+extension PreferredCountry on Iterable<Country> {
+  /// Retrieves the preferred current country based on the device's locale.
+  ///
+  /// This method initializes the country codes and then retrieves the ISO code of the device's locale.
+  /// It then searches for the first country in the list that matches the ISO code.
+  /// If no match is found, it returns the first country in the list.
+  ///
+  /// Returns the preferred current country.
+  Future<Country> getPreferredCurrentCountry() async {
+    await CountryCodes.init();
+    final countryIsoCode = CountryCodes.detailsForLocale().alpha2Code;
+
+    return this.firstWhere(
+      (Country country) => country.isoCode == countryIsoCode,
+      orElse: () => this.first,
+    );
   }
 }
