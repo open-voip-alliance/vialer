@@ -134,13 +134,13 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
       Future.wait(keys.map((key) async => canChangeRemoteSetting(key)))
           .then((value) => value.all((canChange) => canChange));
 
-  Future<void> changeSetting<T extends Object>(
+  Future<SettingChangeResult> changeSetting<T extends Object>(
     SettingKey<T> key,
     T value,
   ) =>
-      changeSettings({key: value});
+      changeSettings({key: value}).then((results) => results.first);
 
-  Future<void> changeSettings(Settings settings) async {
+  Future<List<SettingChangeResult>> changeSettings(Settings settings) async {
     // We're going to track any requests to update remote and then make sure
     // we don't update the settings page while that's happening. This also
     // allows us to prevent input until changes have finished.
@@ -149,11 +149,18 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
     emit(
       state.withChanged(GetLoggedInUserUseCase()(), isApplyingChanges: true),
     );
+    final results = <SettingChangeResult>[];
+
     for (final entry in settings.entries) {
-      await ChangeSettingUseCase()(entry.key, entry.value, force: true);
+      results.add(await ChangeSettingUseCase()(
+        entry.key,
+        entry.value,
+        force: true,
+      ));
     }
     _changesBeingProcessed.remove(changeRequest);
     _emitUpdatedState();
+    return results;
   }
 
   Future<void> refreshAvailability() async {

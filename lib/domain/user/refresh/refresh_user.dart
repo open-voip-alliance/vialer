@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:injectable/injectable.dart';
 import 'package:vialer/domain/authentication/user_logged_in.dart';
 
 import '../../../app/util/loggable.dart';
@@ -15,6 +16,7 @@ import '../user.dart';
 import 'user_refresh_task.dart';
 import 'user_refresh_task_performer.dart';
 
+@injectable
 class RefreshUser extends UseCase with Loggable {
   final _storageRepository = dependencyLocator<StorageRepository>();
   final _auth = dependencyLocator<AuthRepository>();

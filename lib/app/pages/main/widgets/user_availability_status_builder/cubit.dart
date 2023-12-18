@@ -4,10 +4,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vialer/app/pages/main/settings/cubit.dart';
 import 'package:vialer/domain/calling/voip/destination_repository.dart';
 import 'package:vialer/domain/user/events/user_devices_changed.dart';
+import 'package:vialer/domain/user/get_logged_in_user.dart';
 
 import '../../../../../dependency_locator.dart';
 import '../../../../../domain/calling/voip/destination.dart';
 import '../../../../../domain/event/event_bus.dart';
+import '../../../../../domain/relations/availability/availability_status_repository.dart';
 import '../../../../../domain/relations/user_availability_status.dart';
 import '../../../../../domain/relations/websocket/relations_web_socket.dart';
 import '../../../../../domain/user/events/logged_in_user_availability_changed.dart';
@@ -40,6 +42,8 @@ class UserAvailabilityStatusCubit extends Cubit<UserAvailabilityStatusState> {
   late final _eventBus = dependencyLocator<EventBusObserver>();
   late final _relationsWebSocket = dependencyLocator<RelationsWebSocket>();
   late final _destinations = dependencyLocator<DestinationRepository>();
+  late final _availabilityStatusRepository =
+      dependencyLocator<UserAvailabilityStatusRepository>();
   User? get _user => GetStoredUserUseCase()();
 
   Future<void> changeAvailabilityStatus(
@@ -48,12 +52,12 @@ class UserAvailabilityStatusCubit extends Cubit<UserAvailabilityStatusState> {
   ) async {
     check();
 
-    await _settingsCubit.changeSetting(
+    final result = await _settingsCubit.changeSetting(
       CallSetting.availabilityStatus,
       requestedStatus,
     );
 
-    check();
+    check(availability: result.wasChanged ? requestedStatus : null);
   }
 
   Future<void> check({
@@ -62,6 +66,11 @@ class UserAvailabilityStatusCubit extends Cubit<UserAvailabilityStatusState> {
   }) async {
     final destination = _user?.currentDestination;
     final availableDestinations = _destinations.availableDestinations;
+
+    // If the websocket is offline we're going to fetch this value from the api.
+    if (!_relationsWebSocket.isWebSocketConnected) {
+      availability = await _fetchStatusFromServer();
+    }
 
     if (availability != null) {
       return emit(state.copyWith(
@@ -90,6 +99,11 @@ class UserAvailabilityStatusCubit extends Cubit<UserAvailabilityStatusState> {
       availableDestinations: availableDestinations,
     ));
   }
+
+  Future<UserAvailabilityStatus> _fetchStatusFromServer() =>
+      _availabilityStatusRepository.getAvailabilityStatus(
+        GetLoggedInUserUseCase()(),
+      );
 
   // This is only used while we are using legacy do-not-disturb, or the
   // websocket is unavailable. Otherwise we should always be using the value
