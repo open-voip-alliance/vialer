@@ -11,6 +11,8 @@ import com.voipgrid.vialer.IncomingCallActivity.Companion.INCOMING_CALL_CANCEL_I
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugins.GeneratedPluginRegistrant
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.ktx.messaging
 import org.openvoipalliance.flutterphonelib.*
 
 class MainActivity : FlutterActivity(), CallScreenBehavior {
@@ -134,6 +136,12 @@ class MainActivity : FlutterActivity(), CallScreenBehavior {
         val pressedNotification = getIntent()?.getBooleanExtra(PhoneLib.PRESSED_MISSED_CALL_NOTIFICATION_EXTRA, false)
         if (pressedNotification == true) {
             PhoneLib.notifyMissedCallNotificationPressed()
+        }
+
+        Firebase.messaging.token.addOnSuccessListener {
+            it?.let {
+                App.middleware.tokenReceived(it)
+            }
         }
     }
 
