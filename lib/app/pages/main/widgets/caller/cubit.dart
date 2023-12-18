@@ -55,20 +55,9 @@ export 'state.dart';
 
 class CallerCubit extends Cubit<CallerState> with Loggable {
   CallerCubit() : super(const CanCall()) {
-    if (_isOnboarded() && _storageRepository.hasCompletedOnboarding) {
+    if (_isOnboarded()) {
       initialize();
     }
-
-    unawaited(
-      _hasVoipStarted().then(
-        (_) {
-          // We can still do these things, even if VoIP failed to start.
-          checkPhonePermission();
-          _voipCallEventSubscription ??=
-              _getVoipCallEventStream().listen(_onVoipCallEvent);
-        },
-      ),
-    );
   }
 
   final _isOnboarded = IsOnboarded();
@@ -119,6 +108,17 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
   void initialize() {
     unawaited(checkPhonePermission());
     unawaited(_startVoipIfNecessary());
+
+    unawaited(
+      _hasVoipStarted().then(
+        (_) {
+          // We can still do these things, even if VoIP failed to start.
+          checkPhonePermission();
+          _voipCallEventSubscription ??=
+              _getVoipCallEventStream().listen(_onVoipCallEvent);
+        },
+      ),
+    );
   }
 
   Future<void> _startVoipIfNecessary() async {
