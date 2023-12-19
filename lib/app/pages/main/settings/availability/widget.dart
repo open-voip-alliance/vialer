@@ -54,7 +54,7 @@ class AvailabilitySwitcher extends StatelessWidget {
                       isRingingDeviceOffline: isRingingDeviceOffline,
                     ),
                   ),
-                  if (state.availableDestinations.length >= 2)
+                  if (state.availableDestinations.length >= 1)
                     RingingDevice(
                       user: state.user,
                       destinations: state.availableDestinations,
