@@ -1,0 +1,2 @@
+- Fixed a bug where dismissing a notice would immediately show a second irrelevant notice
+- We will now always show the ringing device switcher, even if you only have a single destination

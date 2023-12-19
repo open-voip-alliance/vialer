@@ -10,7 +10,6 @@ import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
 import '../../../../util/conditional_capitalization.dart';
 import '../../../../util/widgets_binding_observer_registrar.dart';
-import '../../../../widgets/animated_visibility.dart';
 import '../../../web_view/page.dart';
 import '../../business_availability/temporary_redirect/explanation.dart';
 import '../../business_availability/temporary_redirect/page.dart';
@@ -135,8 +134,8 @@ class _NoticeState extends State<_Notice>
           builder: (context, state) {
             final cubit = context.read<NoticeCubit>();
 
-            return AnimatedVisibility(
-              visible: state is! NoNotice,
+            return Visibility(
+              visible: state.shouldShowNotice,
               child: NoticeBanner(
                 icon: FaIcon(_iconFor(state)),
                 title: Text(_titleFor(state)),
