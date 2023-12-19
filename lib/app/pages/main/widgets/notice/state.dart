@@ -36,4 +36,6 @@ sealed class NoticeState with _$NoticeState {
           true,
         _ => false,
       };
+
+  bool get shouldShow => this is! NoNotice && this is! NoticeDismissed;
 }
