@@ -135,7 +135,7 @@ class _NoticeState extends State<_Notice>
             final cubit = context.read<NoticeCubit>();
 
             return Visibility(
-              visible: state.shouldShowNotice,
+              visible: state.shouldShow,
               child: NoticeBanner(
                 icon: FaIcon(_iconFor(state)),
                 title: Text(_titleFor(state)),
