@@ -98,7 +98,9 @@ class ChangeSettingUseCase extends UseCase {
 
 enum SettingChangeResult {
   changed,
-  failed,
+  failed;
+
+  bool get wasChanged => this == SettingChangeResult.changed;
 }
 
 extension on SettingChangeListenResult {

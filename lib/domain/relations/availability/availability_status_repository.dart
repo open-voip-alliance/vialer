@@ -28,7 +28,7 @@ class UserAvailabilityStatusRepository with Loggable {
     );
   }
 
-  Future<void> changeStatus(User user, UserAvailabilityStatus status) async {
+  Future<bool> changeStatus(User user, UserAvailabilityStatus status) async {
     final response = await _service.changeAvailabilityStatus(
       {
         'status': status.asServerValue(),
@@ -39,7 +39,10 @@ class UserAvailabilityStatusRepository with Loggable {
 
     if (!response.isSuccessful) {
       logFailedResponse(response, name: 'Change availability status');
+      return false;
     }
+
+    return true;
   }
 }
 

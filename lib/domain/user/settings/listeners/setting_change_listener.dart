@@ -59,3 +59,8 @@ class SettingChangeListenResult {
 
 const successResult = SettingChangeListenResult();
 const failedResult = SettingChangeListenResult(failed: true);
+
+extension AsSettingChangeListenResult on bool {
+  SettingChangeListenResult asSettingChangeListenResult() =>
+      this ? successResult : failedResult;
+}
