@@ -34,7 +34,6 @@ class App : FlutterApplication() {
                     "reason" to call.reason,
                     "direction" to call.direction,
                     "duration" to call.duration,
-                    "mos" to call.mos,
                     "is_ignoring_battery_optimizations" to isIgnoringBatteryOptimizations.toString(),
                     "middleware_url" to middleware.baseUrl,
                 ))
