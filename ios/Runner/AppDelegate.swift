@@ -55,7 +55,6 @@ import UserNotifications
                     "reason" : call.reason,
                     "direction" : call.direction,
                     "duration" : call.duration,
-                    "mos" : call.mos,
                     "middleware_url" : middleware.baseUrl,
                 ])
 
