@@ -66,6 +66,8 @@ class ColleaguesCubit extends Cubit<ColleaguesState> {
   }
 
   void _colleaguesWereChanged(ColleagueListDidChangeEvent event) {
+    if (isClosed) return;
+
     final colleagues = event.colleagues;
 
     emit(
