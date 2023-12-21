@@ -1,5 +1,5 @@
 import 'package:injectable/injectable.dart';
-import 'package:package_info/package_info.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../../dependency_locator.dart';
 import '../../env.dart';
