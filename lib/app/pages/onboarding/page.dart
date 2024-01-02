@@ -124,8 +124,8 @@ class OnboardingPageState extends State<OnboardingPage> {
             builder: (context, state) {
               return Background(
                 style: state.currentStep.asBackgroundStyle(),
-                child: WillPopScope(
-                  onWillPop: () async => _backward(context),
+                child: PopScope(
+                  onPopInvoked: (_) async => _backward(context),
                   child: DefaultTextStyle(
                     style: const TextStyle(color: Colors.black),
                     child: IconTheme(

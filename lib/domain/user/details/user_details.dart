@@ -46,7 +46,7 @@ class UserDetails with _$UserDetails {
 }
 
 @freezed
-class _AppAccount with _$_AppAccount {
+class _AppAccount with _$AppAccount {
   @JsonSerializable(fieldRename: FieldRename.snake)
   const factory _AppAccount({
     String? mobileNumber,
@@ -55,22 +55,22 @@ class _AppAccount with _$_AppAccount {
   }) = __AppAccount;
 
   factory _AppAccount.fromJson(Map<String, dynamic> json) =>
-      _$_AppAccountFromJson(json);
+      _$AppAccountFromJson(json);
 }
 
 @freezed
-class _WebphoneAccount with _$_WebphoneAccount {
+class _WebphoneAccount with _$WebphoneAccount {
   @JsonSerializable(fieldRename: FieldRename.snake)
   const factory _WebphoneAccount({
     _VoipAccountDestination? voipAccount,
   }) = __WebphoneAccount;
 
   factory _WebphoneAccount.fromJson(Map<String, dynamic> json) =>
-      _$_WebphoneAccountFromJson(json);
+      _$WebphoneAccountFromJson(json);
 }
 
 @freezed
-class _Destinations with _$_Destinations {
+class _Destinations with _$Destinations {
   @JsonSerializable(fieldRename: FieldRename.snake)
   const factory _Destinations({
     @Default([]) Iterable<_VoipAccountDestination> voipAccounts,
@@ -78,11 +78,11 @@ class _Destinations with _$_Destinations {
   }) = __Destinations;
 
   factory _Destinations.fromJson(Map<String, dynamic> json) =>
-      _$_DestinationsFromJson(json);
+      _$DestinationsFromJson(json);
 }
 
 @freezed
-sealed class _Destination with _$_Destination {
+sealed class _Destination with _$Destination {
   const _Destination._();
 
   @JsonSerializable(fieldRename: FieldRename.snake)
@@ -118,11 +118,11 @@ sealed class _Destination with _$_Destination {
       );
 
   factory _Destination.fromJson(Map<String, dynamic> json) =>
-      _$_DestinationFromJson(json);
+      _$DestinationFromJson(json);
 }
 
 @freezed
-class _SelectedDestination with _$_SelectedDestination {
+class _SelectedDestination with _$SelectedDestination {
   const _SelectedDestination._();
 
   @JsonSerializable(fieldRename: FieldRename.snake)
@@ -139,5 +139,5 @@ class _SelectedDestination with _$_SelectedDestination {
       ?.toDestination();
 
   factory _SelectedDestination.fromJson(Map<String, dynamic> json) =>
-      _$_SelectedDestinationFromJson(json);
+      _$SelectedDestinationFromJson(json);
 }

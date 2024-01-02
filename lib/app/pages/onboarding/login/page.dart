@@ -3,22 +3,25 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../../../domain/user/launch_privacy_policy.dart';
 import '../../../../domain/user/launch_sign_up.dart';
 import '../../../resources/localizations.dart';
 import '../../../resources/theme.dart';
-import '../../../util/conditional_capitalization.dart';
 import '../../../util/widgets_binding_observer_registrar.dart';
+
+import '../../../../app/pages/main/util/stylized_snack_bar.dart';
 import '../../../widgets/connectivity_checker.dart';
 import '../../../widgets/stylized_button.dart';
 import '../cubit.dart';
 import '../widgets/error.dart';
 import '../widgets/stylized_text_field.dart';
 import 'cubit.dart';
+
+import '../password_forgotten/page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({
@@ -44,11 +47,44 @@ class _LoginPageState extends State<LoginPage>
 
   bool _hidePassword = true;
 
-  void _goToPasswordReset() {
-    unawaited(
-      launchUrlString(
-        context.brand.url.resolve('/user/password_reset/').toString(),
+  /// Navigates to the password forgotten page.
+  ///
+  /// This method is used to navigate to the [PasswordForgottenPage] and pass the email
+  /// entered in the login page to the [PasswordForgottenPage] using the [emailController].
+  /// It returns a [String] message after navigating back from the [PasswordForgottenPage].
+  /// The [message] can be null if no message is returned.
+  void _goToPasswordForgotten() async {
+    final message = await Navigator.push<String?>(
+      context,
+      platformPageRoute(
+        fullscreenDialog: true,
+        context: context,
+        builder: (context) => PasswordForgottenPage(
+          emailController: TextEditingController(
+            text: _emailController.text,
+          ),
+        ),
       ),
+    );
+
+    // Delay the snackbar to prevent it from showing before the page transition
+    Future.delayed(const Duration(milliseconds: 500), () {
+      if (message != null) {
+        _showSnackBarResetPassword(content: message);
+      }
+    });
+  }
+
+  /// Shows a snackbar with a reset password message.
+  ///
+  /// The [content] parameter is the message to be displayed in the snackbar.
+  void _showSnackBarResetPassword({required String content}) {
+    showSnackBar(
+      context,
+      duration: const Duration(seconds: 5),
+      icon: const FaIcon(FontAwesomeIcons.check),
+      label: Text(content),
+      padding: const EdgeInsets.only(right: 72),
     );
   }
 
@@ -209,54 +245,21 @@ class _LoginPageState extends State<LoginPage>
                                                   ),
                                             )
                                         : () => {},
-                                    child: AnimatedSwitcher(
-                                      switchInCurve: Curves.decelerate,
-                                      switchOutCurve: Curves.decelerate.flipped,
-                                      duration:
-                                          const Duration(milliseconds: 200),
-                                      child: loginState is! LoggingIn
-                                          ? Text(
-                                              context
-                                                  .msg.onboarding.button.login
-                                                  .toUpperCaseIfAndroid(
-                                                context,
-                                              ),
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                              ),
-                                            )
-                                          : Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: <Widget>[
-                                                SizedBox(
-                                                  width: 14,
-                                                  height: 14,
-                                                  child:
-                                                      CircularProgressIndicator(
-                                                    strokeWidth: 2.5,
-                                                    valueColor:
-                                                        AlwaysStoppedAnimation(
-                                                      Colors.white,
-                                                    ),
-                                                  ),
-                                                ),
-                                                const SizedBox(width: 8),
-                                                Flexible(
-                                                  child: Text(
-                                                    context.msg.onboarding.login
-                                                        .button.loggingIn
-                                                        .toUpperCaseIfAndroid(
-                                                      context,
-                                                    ),
-                                                    style: TextStyle(
-                                                      color: Colors.white,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
+                                    isLoading: loginState is LoggingIn,
+                                    child: loginState is! LoggingIn
+                                        ? PlatformText(
+                                            context.msg.onboarding.button.login,
+                                            style: TextStyle(
+                                              color: Colors.white,
                                             ),
-                                    ),
+                                          )
+                                        : PlatformText(
+                                            context.msg.onboarding.login.button
+                                                .loggingIn,
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
                                   );
                                 },
                               ),
@@ -266,11 +269,10 @@ class _LoginPageState extends State<LoginPage>
                               width: double.infinity,
                               child: StylizedButton.outline(
                                 colored: true,
-                                onPressed: _goToPasswordReset,
-                                child: Text(
+                                onPressed: _goToPasswordForgotten,
+                                child: PlatformText(
                                   context.msg.onboarding.login.button
-                                      .forgotPassword
-                                      .toUpperCaseIfAndroid(context),
+                                      .forgotPassword,
                                   style: TextStyle(
                                     color: context.brand.theme.colors.primary,
                                   ),
@@ -281,10 +283,9 @@ class _LoginPageState extends State<LoginPage>
                             if (context.read<LoginCubit>().shouldShowSignUpLink)
                               TextButton(
                                 onPressed: () => LaunchSignUp()(),
-                                child: Text(
+                                child: PlatformText(
                                   context.msg.onboarding.login.button
-                                      .signUp(context.brand.appName)
-                                      .toUpperCaseIfAndroid(context),
+                                      .signUp(context.brand.appName),
                                   style: TextStyle(
                                     color: context.brand.theme.colors
                                         .userAvailabilityOffline,
@@ -293,9 +294,8 @@ class _LoginPageState extends State<LoginPage>
                               ),
                             TextButton(
                               onPressed: () => LaunchPrivacyPolicy()(),
-                              child: Text(
-                                context.msg.main.settings.privacyPolicy
-                                    .toUpperCaseIfAndroid(context),
+                              child: PlatformText(
+                                context.msg.main.settings.privacyPolicy,
                                 style: TextStyle(
                                   color: context.brand.theme.colors
                                       .userAvailabilityOffline,

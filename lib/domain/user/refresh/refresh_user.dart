@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:injectable/injectable.dart';
 import 'package:vialer/domain/authentication/user_logged_in.dart';
 
 import '../../../app/util/loggable.dart';
@@ -8,7 +9,6 @@ import '../../../dependency_locator.dart';
 import '../../authentication/authentication_repository.dart';
 import '../../event/event_bus.dart';
 import '../../legacy/storage.dart';
-import '../../onboarding/exceptions.dart';
 import '../../onboarding/login_credentials.dart';
 import '../../use_case.dart';
 import '../events/logged_in_user_was_refreshed.dart';
@@ -16,6 +16,7 @@ import '../user.dart';
 import 'user_refresh_task.dart';
 import 'user_refresh_task_performer.dart';
 
+@injectable
 class RefreshUser extends UseCase with Loggable {
   final _storageRepository = dependencyLocator<StorageRepository>();
   final _auth = dependencyLocator<AuthRepository>();
@@ -36,7 +37,7 @@ class RefreshUser extends UseCase with Loggable {
   Future<User?> _getUser(LoginCredentials? credentials) async {
     try {
       return _auth.getUserFromCredentials(credentials);
-    } on FailedToRetrieveUserException {
+    } on Exception {
       return null;
     }
   }

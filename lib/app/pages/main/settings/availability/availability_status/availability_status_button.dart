@@ -44,13 +44,19 @@ class AvailabilityStatusButton extends StatelessWidget {
           colors.userAvailabilityAvailableAccent,
           colors.userAvailabilityAvailable,
         ),
+      UserAvailabilityStatus.availableForColleagues => (
+          strings.availableInternally,
+          FontAwesomeIcons.arrowRightArrowLeft,
+          colors.userAvailabilityAvailableAccent,
+          colors.userAvailabilityAvailable,
+        ),
       UserAvailabilityStatus.doNotDisturb => (
           strings.doNotDisturb,
           FontAwesomeIcons.bellSlash,
           colors.userAvailabilityUnavailableAccent,
           colors.userAvailabilityUnavailable,
         ),
-      _ => (
+      UserAvailabilityStatus.offline => (
           strings.offline,
           FontAwesomeIcons.circleMinus,
           colors.userAvailabilityOfflineAccent,

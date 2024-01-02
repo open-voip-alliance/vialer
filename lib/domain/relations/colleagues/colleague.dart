@@ -64,6 +64,7 @@ class Colleague with _$Colleague {
         (colleague) =>
             const [
               ColleagueAvailabilityStatus.available,
+              ColleagueAvailabilityStatus.availableForColleagues,
               ColleagueAvailabilityStatus.doNotDisturb,
               ColleagueAvailabilityStatus.busy,
             ].contains(colleague.status) ||
@@ -86,16 +87,9 @@ enum ColleagueAvailabilityStatus {
 
   /// A user will only appear as offline when they don't have an app account
   /// linked to their user AND they are not SIP registered anywhere.
-  offline;
+  offline,
 
-  static ColleagueAvailabilityStatus fromServerValue(String? value) =>
-      switch (value) {
-        'do_not_disturb' => ColleagueAvailabilityStatus.doNotDisturb,
-        'offline' => ColleagueAvailabilityStatus.offline,
-        'available' => ColleagueAvailabilityStatus.available,
-        'busy' => ColleagueAvailabilityStatus.busy,
-        _ => ColleagueAvailabilityStatus.unknown
-      };
+  availableForColleagues;
 }
 
 /// The destination that we can call to reach the given colleague.

@@ -23,10 +23,12 @@ class BottomNavigationProfileIcon extends StatelessWidget {
       isRingingDeviceOffline
           ? FontAwesomeIcons.exclamation
           : switch (status) {
+              UserAvailabilityStatus.online => FontAwesomeIcons.solidCheck,
+              UserAvailabilityStatus.availableForColleagues =>
+                FontAwesomeIcons.solidArrowRightArrowLeft,
               UserAvailabilityStatus.doNotDisturb =>
                 FontAwesomeIcons.solidBellSlash,
               UserAvailabilityStatus.offline => FontAwesomeIcons.solidMinus,
-              UserAvailabilityStatus.online => FontAwesomeIcons.solidCheck,
             };
 
   Color _color(
@@ -41,7 +43,8 @@ class BottomNavigationProfileIcon extends StatelessWidget {
                 context.brand.theme.colors.userAvailabilityUnavailableIcon,
               UserAvailabilityStatus.offline =>
                 context.brand.theme.colors.userAvailabilityOffline,
-              UserAvailabilityStatus.online =>
+              UserAvailabilityStatus.online ||
+              UserAvailabilityStatus.availableForColleagues =>
                 context.brand.theme.colors.green1,
             };
 

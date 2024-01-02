@@ -64,6 +64,14 @@ void main() {
     // very unlikely.
     expect(schedules.toSet().toList().length, greaterThan(1));
   });
+
+  test('It does not throw an exception when attempts matches schedule size',
+      () async {
+    final strategy = ReconnectionStrategy(defaultPattern);
+    strategy.delayFor();
+    strategy.increment(amount: 10);
+    strategy.delayFor();
+  });
 }
 
 const defaultPattern = RetryPattern(initialDelay: Duration(seconds: 10));

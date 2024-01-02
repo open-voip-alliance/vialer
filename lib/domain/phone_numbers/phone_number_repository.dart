@@ -33,7 +33,7 @@ class PhoneNumberRepository with Loggable {
 }
 
 @freezed
-class _PhoneNumberValidationResponse with _$_PhoneNumberValidationResponse {
+class _PhoneNumberValidationResponse with _$PhoneNumberValidationResponse {
   @JsonSerializable(fieldRename: FieldRename.snake)
   const factory _PhoneNumberValidationResponse({
     // These properties are only used when creating via JSON.
@@ -48,7 +48,7 @@ class _PhoneNumberValidationResponse with _$_PhoneNumberValidationResponse {
   }) = __PhoneNumberValidationResponse;
 
   factory _PhoneNumberValidationResponse.fromJson(Map<String, dynamic> json) =>
-      _$_PhoneNumberValidationResponseFromJson(json);
+      _$PhoneNumberValidationResponseFromJson(json);
 }
 
 @freezed

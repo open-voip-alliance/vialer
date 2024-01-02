@@ -85,67 +85,75 @@ class Colors {
 
   /// Defaults should be left as-is.
   const Colors.vialer({
+    int primaryDarkest = 0xFFD45400,
+    int primaryDarker = 0xFFE6640E,
     int primary = 0xFFFF7B24,
-    int primaryDark = 0xFFD45400,
-    int primaryLight = 0xFFFFEDD5,
+    int primaryLighter = 0xFFFDBA74,
+    int primaryLightest = 0xFFFFEDD5,
   }) : this(
           primary: primary,
-          primaryDark: primaryDark,
-          primaryLight: primaryLight,
-          splashScreen: primaryLight,
+          primaryDark: primaryDarkest,
+          primaryLight: primaryLightest,
+          splashScreen: primaryLightest,
           primaryGradientStart: 0xFFFF8213,
           primaryGradientEnd: 0xFFE94E1B,
           buttonBackground: primary,
-          appBarForeground: primaryDark,
-          appBarBackground: primaryLight,
+          appBarForeground: primaryDarkest,
+          appBarBackground: primaryLightest,
         );
 
   /// Defaults should be left as-is.
   const Colors.voys({
+    int primaryDarkest = 0xFF1E1B4B,
+    int primaryDarker = 0xFF000577,
     int primary = 0xFF270597,
-    int primaryDark = 0xFF1E1B4B,
-    int primaryLight = 0xFFF0F0FF,
+    int primaryLighter = 0xFFB7B2F8,
+    int primaryLightest = 0xFFF0F0FF,
   }) : this(
           primary: primary,
-          primaryDark: primaryDark,
-          primaryLight: primaryLight,
+          primaryDark: primaryDarkest,
+          primaryLight: primaryLightest,
           splashScreen: primary,
           primaryGradientStart: primary,
           primaryGradientEnd: 0xFF7F67D1,
           buttonBackground: primary,
-          buttonShade: primaryDark,
+          buttonShade: primaryDarkest,
         );
 
   /// Defaults should be left as-is.
   const Colors.verbonden({
+    int primaryDarkest = 0xFF01243C,
+    int primaryDarker = 0xFF1A2D75,
     int primary = 0xFF3336AD,
-    int primaryDark = 0xFF01243C,
-    int primaryLight = 0xFFD2D3FF,
+    int primaryLighter = 0xFF8385D6,
+    int primaryLightest = 0xFFD2D3FF,
   }) : this(
           primary: primary,
-          primaryDark: primaryDark,
-          primaryLight: primaryLight,
+          primaryDark: primaryDarkest,
+          primaryLight: primaryLightest,
           splashScreen: 0xFFFFFFFF,
           primaryGradientStart: primary,
-          primaryGradientEnd: primaryDark,
+          primaryGradientEnd: primaryDarkest,
           buttonBackground: primary,
-          buttonShade: primaryDark,
+          buttonShade: primaryDarkest,
         );
 
   /// Defaults should be left as-is.
   const Colors.annabel({
+    int primaryDarkest = 0xFF160E2D,
+    int primaryDarker = 0xFF382E52,
     int primary = 0xFF645394,
-    int primaryDark = 0xFF160E2D,
-    int primaryLight = 0xFFEDE9F9,
+    int primaryLighter = 0xFFABA1C5,
+    int primaryLightest = 0xFFEDE9F9,
   }) : this(
           primary: primary,
-          primaryDark: primaryDark,
-          primaryLight: primaryLight,
-          splashScreen: primaryLight,
+          primaryDark: primaryDarkest,
+          primaryLight: primaryLightest,
+          splashScreen: primaryLightest,
           primaryGradientStart: primary,
-          primaryGradientEnd: primaryDark,
+          primaryGradientEnd: primaryDarkest,
           buttonBackground: primary,
-          buttonShade: primaryDark,
+          buttonShade: primaryDarkest,
         );
 
   final int primary;

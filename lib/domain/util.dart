@@ -81,7 +81,7 @@ class AuthorizationInterceptor implements chopper.RequestInterceptor {
 /// We want to log out any users if they encounter as 401 response as this
 /// suggests that we do not have a valid token, this will fire the appropriate
 /// event so action can be taken.
-class UnauthorizedResponseInterceptor extends chopper.ResponseInterceptor {
+class UnauthorizedResponseInterceptor implements chopper.ResponseInterceptor {
   UnauthorizedResponseInterceptor({
     this.unauthorizedStatusCodes = const [401],
   });
@@ -109,7 +109,7 @@ class UnauthorizedResponseInterceptor extends chopper.ResponseInterceptor {
       unauthorizedStatusCodes.contains(statusCode);
 }
 
-class RateLimitReachedInterceptor extends chopper.ResponseInterceptor {
+class RateLimitReachedInterceptor implements chopper.ResponseInterceptor {
   final _eventBus = dependencyLocator<EventBus>();
 
   @override
@@ -132,7 +132,7 @@ class RateLimitReachedInterceptor extends chopper.ResponseInterceptor {
 }
 
 class SubmitUnexpectedFailedRequestsToSentry
-    extends chopper.ResponseInterceptor {
+    implements chopper.ResponseInterceptor {
   @override
   FutureOr<chopper.Response<dynamic>> onResponse(Response<dynamic> response) {
     final statusCode = response.statusCode;

@@ -53,6 +53,8 @@ ColleagueAvailabilityStatus _availabilityFromJson(String? value) =>
       'do_not_disturb' => ColleagueAvailabilityStatus.doNotDisturb,
       'offline' => ColleagueAvailabilityStatus.offline,
       'available' => ColleagueAvailabilityStatus.available,
+      'available_for_colleagues' =>
+        ColleagueAvailabilityStatus.availableForColleagues,
       'busy' => ColleagueAvailabilityStatus.busy,
       _ => ColleagueAvailabilityStatus.unknown
     };

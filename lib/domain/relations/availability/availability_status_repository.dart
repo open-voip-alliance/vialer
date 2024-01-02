@@ -28,7 +28,7 @@ class UserAvailabilityStatusRepository with Loggable {
     );
   }
 
-  Future<void> changeStatus(User user, UserAvailabilityStatus status) async {
+  Future<bool> changeStatus(User user, UserAvailabilityStatus status) async {
     final response = await _service.changeAvailabilityStatus(
       {
         'status': status.asServerValue(),
@@ -39,7 +39,10 @@ class UserAvailabilityStatusRepository with Loggable {
 
     if (!response.isSuccessful) {
       logFailedResponse(response, name: 'Change availability status');
+      return false;
     }
+
+    return true;
   }
 }
 
@@ -50,6 +53,7 @@ extension UserAvailabilityStatusConversion on UserAvailabilityStatus {
 
   static const _mapping = {
     UserAvailabilityStatus.online: 'available',
+    UserAvailabilityStatus.availableForColleagues: 'available_for_colleagues',
     UserAvailabilityStatus.doNotDisturb: 'do_not_disturb',
     UserAvailabilityStatus.offline: 'offline',
   };

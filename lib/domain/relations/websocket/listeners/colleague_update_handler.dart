@@ -68,10 +68,10 @@ class ColleagueUpdateHandler extends Listener<UserAvailabilityChangedPayload>
   }
 
   Future<void> _refreshColleagues() async {
-    this.colleagues = await _fetchColleaguesAsSyncTask();
-    this.colleagues.addAnyNewColleagues(colleagues);
-    this.colleagues.removeAnyDeletedColleagues(colleagues);
-    this.colleagues.updateColleagueNameIfModified(colleagues);
+    final fetchedColleagues = await _fetchColleaguesAsSyncTask();
+    this.colleagues.addAnyNewColleagues(fetchedColleagues);
+    this.colleagues.removeAnyDeletedColleagues(fetchedColleagues);
+    this.colleagues.updateColleagueNameIfModified(fetchedColleagues);
   }
 
   Future<List<Colleague>> _fetchColleaguesAsSyncTask() =>

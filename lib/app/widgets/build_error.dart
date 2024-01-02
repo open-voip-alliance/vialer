@@ -10,7 +10,7 @@ class BuildError extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       context.msg.buildError.anErrorOccurred,
-      textScaleFactor: 1,
+      textScaler: TextScaler.linear(1),
       textAlign: TextAlign.center,
       style: TextStyle(
         fontSize: 14,

@@ -22,9 +22,8 @@ class UpdateAvailabilityStatus
   FutureOr<SettingChangeListenResult> applySettingsSideEffects(
     User user,
     UserAvailabilityStatus value,
-  ) async {
-    await _repository.changeStatus(GetLoggedInUserUseCase()(), value);
-
-    return successResult;
-  }
+  ) =>
+      _repository
+          .changeStatus(GetLoggedInUserUseCase()(), value)
+          .then((result) => result.asSettingChangeListenResult());
 }

@@ -10,7 +10,9 @@ import '../../../../domain/onboarding/two_factor_authentication_required.dart';
 import '../../../../domain/remote_logging/enable_remote_logging_if_needed.dart';
 import '../../../../domain/user/get_brand.dart';
 import '../../../util/loggable.dart';
-import '../../../util/password.dart' as util;
+import '../../../../domain/authentication/validate_password.dart';
+import '../../../../domain/authentication/validate_email.dart';
+import 'package:vialer/dependency_locator.dart';
 import '../cubit.dart';
 import 'state.dart';
 
@@ -26,20 +28,16 @@ class LoginCubit extends Cubit<LoginState> with Loggable {
   final _enableRemoteLoggingIfNeeded = EnableRemoteLoggingIfNeededUseCase();
   final _login = LoginUseCase();
   final _getBrand = GetBrand();
+  final _validatePassword = dependencyLocator<ValidatePassword>();
+  final _validateEmail = dependencyLocator<ValidateEmail>();
 
   Future<void> login(String email, String password) async {
     logger.info('Logging in');
 
     emit(const LoggingIn());
 
-    const local = r"[a-z0-9.!#$%&'*+/=?^_`{|}~-]+";
-    const domain = '[a-z0-9](?:[a-z0-9-]{0,253}[a-z0-9])?';
-    const tld = r'(?:\.[a-z0-9](?:[a-z0-9-]{0,253}[a-z0-9])?)+';
-    final hasValidEmailFormat = RegExp(
-      '^$local@$domain$tld\$',
-      caseSensitive: false,
-    ).hasMatch(email);
-    final hasValidPasswordFormat = util.hasValidPasswordFormat(password);
+    final hasValidEmailFormat = await _validateEmail(email);
+    final hasValidPasswordFormat = await _validatePassword(password);
 
     if (!hasValidEmailFormat || !hasValidPasswordFormat) {
       emit(

@@ -47,6 +47,8 @@ class Middleware(
         }
 
     override fun tokenReceived(token: String) {
+        prefs.pushToken = token
+
         if (lastRegisteredToken == token) {
             return
         }
@@ -96,8 +98,6 @@ class Middleware(
                 }
             }
         )
-
-        prefs.pushToken = token
     }
 
     override fun respond(
