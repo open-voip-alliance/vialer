@@ -44,7 +44,7 @@ dependencies:
   intl: ^0.18.1
   flutter_dotenv: ^5.1.0
   sentry_flutter: ^7.14.0
-  flutter_segment: ^3.13.1
+  flutter_segment_sdk: ^3.13.2
   package_info_plus: ^5.0.1
   sqlite3_flutter_libs: ^0.5.18
   path_provider: ^2.1.1

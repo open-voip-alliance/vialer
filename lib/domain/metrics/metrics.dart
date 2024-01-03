@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 
-import 'package:flutter_segment/flutter_segment.dart';
+import 'package:flutter_segment_sdk/flutter_segment.dart';
 import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
 import 'package:recase/recase.dart';
