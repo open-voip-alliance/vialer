@@ -617,14 +617,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.4.9"
-  flutter_segment:
+  flutter_segment_sdk:
     dependency: "direct main"
     description:
-      name: flutter_segment
-      sha256: f821c0d5347e10a05b2058b34f1b775a516ff1ff4889778a674890767241dbd5
+      name: flutter_segment_sdk
+      sha256: b5e2076bf71505f2c163e9cbf20ada168c8ba2c01dbfba23e3e7d9ef5f34b481
       url: "https://pub.dev"
     source: hosted
-    version: "3.13.1"
+    version: "3.13.4"
   flutter_svg:
     dependency: "direct main"
     description:

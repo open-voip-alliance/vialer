@@ -35,7 +35,7 @@ PODS:
   - flutter_phone_lib (0.0.1):
     - Flutter
     - iOSPhoneLib
-  - flutter_segment (3.13.1):
+  - flutter_segment_sdk (3.13.1):
     - Analytics (= 4.1.6)
     - Flutter
     - Segment-Amplitude (= 3.3.2)
@@ -114,7 +114,7 @@ DEPENDENCIES:
   - flutter_keyboard_visibility (from `.symlinks/plugins/flutter_keyboard_visibility/ios`)
   - flutter_libphonenumber_ios (from `.symlinks/plugins/flutter_libphonenumber_ios/ios`)
   - flutter_phone_lib (from `.symlinks/plugins/flutter_phone_lib/ios`)
-  - flutter_segment (from `.symlinks/plugins/flutter_segment/ios`)
+  - flutter_segment_sdk (from `.symlinks/plugins/flutter_segment_sdk/ios`)
   - in_app_review (from `.symlinks/plugins/in_app_review/ios`)
   - integration_test (from `.symlinks/plugins/integration_test/ios`)
   - iOSPhoneLib (from `https://github.com/open-voip-alliance/iOS-Phone-Lib.git`)
@@ -169,8 +169,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_libphonenumber_ios/ios"
   flutter_phone_lib:
     :path: ".symlinks/plugins/flutter_phone_lib/ios"
-  flutter_segment:
-    :path: ".symlinks/plugins/flutter_segment/ios"
+  flutter_segment_sdk:
+    :path: ".symlinks/plugins/flutter_segment_sdk/ios"
   in_app_review:
     :path: ".symlinks/plugins/in_app_review/ios"
   integration_test:
@@ -220,7 +220,7 @@ SPEC CHECKSUMS:
   flutter_keyboard_visibility: 0339d06371254c3eb25eeb90ba8d17dca8f9c069
   flutter_libphonenumber_ios: a4d7de8865ef47d0f77b1d047e88ef7aed488d53
   flutter_phone_lib: 060b342f95c63f9e07e1577f76db7e06f349ef8a
-  flutter_segment: 25061561c7429e8a8e463c29a58869c2ca696d8f
+  flutter_segment_sdk: 1f10af57ddcee29dedf01bb37800f8301c89b307
   in_app_review: 318597b3a06c22bb46dc454d56828c85f444f99d
   integration_test: 13825b8a9334a850581300559b8839134b124670
   iOSPhoneLib: e196ea3181edf9570ee064a8caecb89d8befa6fd
