@@ -297,7 +297,7 @@ class _CallPageState extends State<_CallPage>
                 ),
                 AnimatedVisibility(
                   visible: state.isInBadQualityCall,
-                  child: Gap(100),
+                  child: SizedBox(height: 100),
                 ),
               ],
             );
