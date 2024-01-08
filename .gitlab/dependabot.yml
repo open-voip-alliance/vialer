@@ -1,4 +1,9 @@
 version: 2
+registries:
+  my-pub-registry:
+    type: pub-repository
+    url: https://onepub.dev/api/xhopsdavuh/
+    token: ${{ONEPUB_TOKEN}}
 updates:
   - package-ecosystem: pub
     directory: /
