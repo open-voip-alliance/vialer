@@ -654,12 +654,11 @@ packages:
   font_awesome_flutter:
     dependency: "direct main"
     description:
-      path: "."
-      ref: f5ad8977b0cf6a75e9cd38750c322216415e3920
-      resolved-ref: f5ad8977b0cf6a75e9cd38750c322216415e3920
-      url: "git@gitlab.wearespindle.com:vialer/mobile/font-awesome.git"
-    source: git
-    version: "10.4.0"
+      name: font_awesome_flutter
+      sha256: "08938d59c4f5e0577b91e2f95d28771a9481ccb3f5f60447f18f85bd3a2acaaa"
+      url: "https://onepub.dev/api/xhopsdavuh/"
+    source: hosted
+    version: "1.0.0"
   freezed:
     dependency: "direct dev"
     description:
