@@ -1,6 +1,6 @@
 version: 2
 registries:
-  my-pub-registry:
+  onepub:
     type: pub-repository
     url: https://onepub.dev/api/xhopsdavuh/
     token: ${{ONEPUB_TOKEN}}
@@ -18,3 +18,5 @@ updates:
     assignees:
       - dependabot
     open-pull-requests-limit: 25
+    registries:
+      - onepub
