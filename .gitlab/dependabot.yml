@@ -2,5 +2,14 @@ version: 2
 updates:
   - package-ecosystem: pub
     directory: /
+    commit-message:
+      prefix: "chore(deps): "
     schedule:
       interval: daily
+      time: "01:00"
+    rebase-strategy:
+      strategy: auto
+    auto-merge: true
+    assignees:
+      - dependabot
+    open-pull-requests-limit: 25
