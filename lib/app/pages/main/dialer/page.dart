@@ -153,8 +153,8 @@ class _DialerPageState extends State<DialerPage>
                       text: state is NoPermission && !state.dontAskAgain
                           ? context
                               .msg.main.dialer.noPermission.buttonPermission
-                          : context.msg.main.dialer.noPermission
-                              .buttonOpenSettings,
+                          : context
+                              .msg.main.dialer.noPermission.buttonOpenSettings,
                     ),
                   ],
                 ),

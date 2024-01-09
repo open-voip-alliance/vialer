@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:vialer/app/pages/main/util/phone_number.dart';
 
 import '../../../../resources/localizations.dart';
 import '../../../../resources/theme.dart';
