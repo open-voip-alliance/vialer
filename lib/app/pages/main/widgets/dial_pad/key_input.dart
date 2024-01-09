@@ -63,39 +63,28 @@ class _KeyInputState extends State<KeyInput> {
       child: Row(
         children: [
           Expanded(
-            child: Semantics(
-              excludeSemantics: true,
-              container: true,
-              blockUserActions: true,
-              label: widget.controller.text.isEmpty
-                  ? context.msg.main.dialer.screenReader.phoneNumberInput
-                  : context.msg.main.dialer.screenReader
-                      .phoneNumberInputPopulated(
-                      widget.controller.text.phoneNumberSemanticLabel,
-                    ),
-              child: TextField(
-                controller: widget.controller,
-                scrollController: _scrollController,
-                // This is needed so that the keyboard doesn't popup. We can't use
-                // readOnly because then pasting is not allowed.
-                focusNode: _NeverFocusNode(),
-                inputFormatters: [_KeyInputFormatter()],
-                showCursor: true,
-                magnifierConfiguration: TextMagnifierConfiguration.disabled,
-                enableInteractiveSelection: !context.isUsingScreenReader,
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  filled: false,
-                  contentPadding: const EdgeInsets.only(
-                    left: _DeleteButton.size + deleteButtonPadding + 12,
-                    top: 8,
-                    right: 12,
-                    bottom: 8,
-                  ),
+            child: TextField(
+              controller: widget.controller,
+              scrollController: _scrollController,
+              // This is needed so that the keyboard doesn't popup. We can't use
+              // readOnly because then pasting is not allowed.
+              focusNode: _NeverFocusNode(),
+              inputFormatters: [_KeyInputFormatter()],
+              showCursor: true,
+              magnifierConfiguration: TextMagnifierConfiguration.disabled,
+              enableInteractiveSelection: !context.isUsingScreenReader,
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                filled: false,
+                contentPadding: const EdgeInsets.only(
+                  left: _DeleteButton.size + deleteButtonPadding + 12,
+                  top: 8,
+                  right: 12,
+                  bottom: 8,
                 ),
-                textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 32),
               ),
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 32),
             ),
           ),
           Padding(
