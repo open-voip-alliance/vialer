@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:vialer/app/pages/main/util/phone_number.dart';
 
@@ -66,14 +67,14 @@ class _KeyInputState extends State<KeyInput> {
             child: Semantics(
               excludeSemantics: true,
               container: true,
-              blockUserActions: true,
+              blockUserActions: context.isUsingScreenReader,
               label: widget.controller.text.isEmpty
                   ? context.msg.main.dialer.screenReader.phoneNumberInput
                   : context.msg.main.dialer.screenReader
                       .phoneNumberInputPopulated(
                       widget.controller.text.phoneNumberSemanticLabel,
                     ),
-              child: TextField(
+              child: PlatformTextField(
                 controller: widget.controller,
                 scrollController: _scrollController,
                 // This is needed so that the keyboard doesn't popup. We can't use
@@ -83,10 +84,26 @@ class _KeyInputState extends State<KeyInput> {
                 showCursor: true,
                 magnifierConfiguration: TextMagnifierConfiguration.disabled,
                 enableInteractiveSelection: !context.isUsingScreenReader,
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  filled: false,
-                  contentPadding: const EdgeInsets.only(
+                material: (_, __) => MaterialTextFieldData(
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    filled: false,
+                    contentPadding: const EdgeInsets.only(
+                      left: _DeleteButton.size + deleteButtonPadding + 12,
+                      top: 8,
+                      right: 12,
+                      bottom: 8,
+                    ),
+                  ),
+                ),
+                cupertino: (_, __) => CupertinoTextFieldData(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      width: 0,
+                      color: Colors.transparent,
+                    ),
+                  ),
+                  padding: const EdgeInsets.only(
                     left: _DeleteButton.size + deleteButtonPadding + 12,
                     top: 8,
                     right: 12,
