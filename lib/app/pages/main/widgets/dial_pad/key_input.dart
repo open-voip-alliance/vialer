@@ -59,6 +59,13 @@ class _KeyInputState extends State<KeyInput> {
   Widget build(BuildContext context) {
     const deleteButtonPadding = 24.0;
 
+    const padding = EdgeInsets.only(
+      left: _DeleteButton.size + deleteButtonPadding + 12,
+      top: 8,
+      right: 12,
+      bottom: 8,
+    );
+
     return Container(
       color: context.brand.theme.colors.grey3.withOpacity(0.5),
       child: Row(
@@ -87,12 +94,7 @@ class _KeyInputState extends State<KeyInput> {
                   decoration: InputDecoration(
                     border: InputBorder.none,
                     filled: false,
-                    contentPadding: const EdgeInsets.only(
-                      left: _DeleteButton.size + deleteButtonPadding + 12,
-                      top: 8,
-                      right: 12,
-                      bottom: 8,
-                    ),
+                    contentPadding: padding,
                   ),
                 ),
                 cupertino: (_, __) => CupertinoTextFieldData(
@@ -102,12 +104,7 @@ class _KeyInputState extends State<KeyInput> {
                       color: Colors.transparent,
                     ),
                   ),
-                  padding: const EdgeInsets.only(
-                    left: _DeleteButton.size + deleteButtonPadding + 12,
-                    top: 8,
-                    right: 12,
-                    bottom: 8,
-                  ),
+                  padding: padding,
                 ),
               ),
             ),
