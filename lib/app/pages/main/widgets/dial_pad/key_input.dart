@@ -77,13 +77,12 @@ class _KeyInputState extends State<KeyInput> {
               child: PlatformTextField(
                 controller: widget.controller,
                 scrollController: _scrollController,
-                // This is needed so that the keyboard doesn't popup. We can't use
-                // readOnly because then pasting is not allowed.
-                focusNode: _NeverFocusNode(),
                 inputFormatters: [_KeyInputFormatter()],
-                showCursor: true,
-                magnifierConfiguration: TextMagnifierConfiguration.disabled,
+                showCursor: false,
+                keyboardType: TextInputType.none,
                 enableInteractiveSelection: !context.isUsingScreenReader,
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 32),
                 material: (_, __) => MaterialTextFieldData(
                   decoration: InputDecoration(
                     border: InputBorder.none,
@@ -110,8 +109,6 @@ class _KeyInputState extends State<KeyInput> {
                     bottom: 8,
                   ),
                 ),
-                textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 32),
               ),
             ),
           ),
@@ -134,11 +131,6 @@ class _KeyInputState extends State<KeyInput> {
     widget.controller.removeListener(_onInputChanged);
     super.dispose();
   }
-}
-
-class _NeverFocusNode extends FocusNode {
-  @override
-  bool get hasFocus => false;
 }
 
 /// Removes all characters not generally allowed in a phone number.
