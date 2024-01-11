@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:vialer/app/pages/main/util/phone_number.dart';
 
@@ -58,6 +59,13 @@ class _KeyInputState extends State<KeyInput> {
   Widget build(BuildContext context) {
     const deleteButtonPadding = 24.0;
 
+    const padding = EdgeInsets.only(
+      left: _DeleteButton.size + deleteButtonPadding + 12,
+      top: 8,
+      right: 12,
+      bottom: 8,
+    );
+
     return Container(
       color: context.brand.theme.colors.grey3.withOpacity(0.5),
       child: Row(
@@ -66,35 +74,38 @@ class _KeyInputState extends State<KeyInput> {
             child: Semantics(
               excludeSemantics: true,
               container: true,
-              blockUserActions: true,
+              blockUserActions: context.isUsingScreenReader,
               label: widget.controller.text.isEmpty
                   ? context.msg.main.dialer.screenReader.phoneNumberInput
                   : context.msg.main.dialer.screenReader
                       .phoneNumberInputPopulated(
                       widget.controller.text.phoneNumberSemanticLabel,
                     ),
-              child: TextField(
+              child: PlatformTextField(
                 controller: widget.controller,
                 scrollController: _scrollController,
-                // This is needed so that the keyboard doesn't popup. We can't use
-                // readOnly because then pasting is not allowed.
-                focusNode: _NeverFocusNode(),
                 inputFormatters: [_KeyInputFormatter()],
-                showCursor: true,
-                magnifierConfiguration: TextMagnifierConfiguration.disabled,
+                showCursor: false,
+                keyboardType: TextInputType.none,
                 enableInteractiveSelection: !context.isUsingScreenReader,
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  filled: false,
-                  contentPadding: const EdgeInsets.only(
-                    left: _DeleteButton.size + deleteButtonPadding + 12,
-                    top: 8,
-                    right: 12,
-                    bottom: 8,
-                  ),
-                ),
                 textAlign: TextAlign.center,
                 style: const TextStyle(fontSize: 32),
+                material: (_, __) => MaterialTextFieldData(
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    filled: false,
+                    contentPadding: padding,
+                  ),
+                ),
+                cupertino: (_, __) => CupertinoTextFieldData(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      width: 0,
+                      color: Colors.transparent,
+                    ),
+                  ),
+                  padding: padding,
+                ),
               ),
             ),
           ),
@@ -117,11 +128,6 @@ class _KeyInputState extends State<KeyInput> {
     widget.controller.removeListener(_onInputChanged);
     super.dispose();
   }
-}
-
-class _NeverFocusNode extends FocusNode {
-  @override
-  bool get hasFocus => false;
 }
 
 /// Removes all characters not generally allowed in a phone number.
