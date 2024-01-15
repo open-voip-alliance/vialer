@@ -480,13 +480,6 @@ extension CallDestinationLabel on CallRecord {
   }
 }
 
-extension ClientCallRecordDisplay on ClientCallRecordWithContact {
-  String get callerDisplayLabel => callerContact?.displayName ?? displayLabel;
-
-  String get destinationDisplayLabel =>
-      destinationContact?.displayName ?? displayLabel;
-}
-
 class RecentCallHeader extends StatelessWidget {
   const RecentCallHeader({
     required this.date,
