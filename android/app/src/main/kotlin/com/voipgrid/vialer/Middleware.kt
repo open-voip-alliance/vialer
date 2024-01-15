@@ -21,12 +21,6 @@ class Middleware(
     private val client = OkHttpClient()
 
     /**
-     * Used to reduce the number of requests made to the middleware, we'll only re-register if the
-     * token actually changes.
-     */
-    private var lastRegisteredToken: String? = null
-
-    /**
      * Store the information from the push message that was received so we can submit this at the
      * end of the call to provide better metrics regarding our reliability.
      */
@@ -49,12 +43,6 @@ class Middleware(
     override fun tokenReceived(token: String) {
         prefs.pushToken = token
 
-        if (lastRegisteredToken == token) {
-            return
-        }
-
-        lastRegisteredToken = token
-
         val middlewareCredentials = middlewareCredentials
 
         if (middlewareCredentials == null) {
@@ -70,6 +58,7 @@ class Middleware(
             add("client_version", BuildConfig.VERSION_NAME)
             add("app", context.packageName)
             add("dnd", false.toString())
+            add("app_startup_timestamp", prefs.loginTime)
         }.build()
 
         val request = createMiddlewareRequest(
@@ -84,7 +73,6 @@ class Middleware(
             object : Callback {
                 override fun onFailure(call: Call, e: IOException) {
                     log("Registration failed: ${e.localizedMessage}")
-                    lastRegisteredToken = null
                 }
 
                 override fun onResponse(call: Call, response: Response) = response.use {
@@ -92,7 +80,6 @@ class Middleware(
                         true -> log("Registration successful")
                         false -> {
                             log("Registration failed: response code was ${response.code}")
-                            lastRegisteredToken = null
                         }
                     }
                 }

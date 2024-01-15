@@ -1,15 +1,16 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vialer/presentation/util/loggable.dart';
 
 import '../../../../../data/models/user/refresh/user_refresh_task.dart';
+import '../../../../../dependency_locator.dart';
 import '../../../../../domain/usecases/authentication/get_is_logged_in_somewhere_else.dart';
 import '../../../../../domain/usecases/authentication/logout.dart';
 import '../../../../../domain/usecases/calling/voip/register_to_middleware.dart';
 import '../../../../../domain/usecases/onboarding/is_onboarded.dart';
 import '../../../../../domain/usecases/user/get_logged_in_user.dart';
 import '../../../../../domain/usecases/user/refresh/refresh_user.dart';
-import 'package:vialer/presentation/util/loggable.dart';
 import 'state.dart';
 
 export 'state.dart';
@@ -20,7 +21,8 @@ class UserDataRefresherCubit extends Cubit<UserDataRefresherState>
   final _isOnboarded = IsOnboarded();
   final _getLoggedInUser = GetLoggedInUserUseCase();
   final _refreshUser = RefreshUser();
-  final _registerToVoipMiddleware = RegisterToMiddlewareUseCase();
+  final _registerToMiddleware =
+      dependencyLocator<RegisterToMiddlewareUseCase>();
   final _isLoggedInSomewhereElse = GetIsLoggedInSomewhereElseUseCase();
   final _logout = Logout();
 
@@ -56,7 +58,7 @@ class UserDataRefresherCubit extends Cubit<UserDataRefresherState>
 
     final newUser = await _refreshUser(tasksToPerform: tasksToPerform);
 
-    await _registerToVoipMiddleware();
+    await _registerToMiddleware();
 
     emit(const NotRefreshing());
 

@@ -30,38 +30,11 @@ abstract class MiddlewareService extends ChopperService {
     );
   }
 
-  @Post(path: 'android-device/')
-  Future<Response<String>> postAndroidDevice({
-    @Field() required String name,
-    @Field() required String token,
-    @Field('sip_user_id') required String sipUserId,
-    @Field('os_version') required String osVersion,
-    @Field('client_version') required String clientVersion,
-    @Field() required String app,
-    @Field('app_startup_timestamp') String? appStartupTime,
-    @Field('dnd') bool dnd = false,
-  });
-
   @Delete(path: 'android-device/')
   Future<Response<String>> deleteAndroidDevice({
     @Field() required String token,
     @Field('sip_user_id') required String sipUserId,
     @Field() required String app,
-  });
-
-  @Post(path: 'apns-device/')
-  Future<Response<String>> postAppleDevice({
-    @Field() required String name,
-    @Field() required String token,
-    @Field('sip_user_id') required String sipUserId,
-    @Field('os_version') required String osVersion,
-    @Field('client_version') required String clientVersion,
-    @Field() required String app,
-    @Field() required bool sandbox,
-    @Field('remote_notification_token') required String remoteNotificationToken,
-    @Field('app_startup_timestamp') String? appStartupTime,
-    @Field('push_profile') String pushProfile = 'once',
-    @Field('dnd') bool dnd = false,
   });
 
   @Delete(path: 'apns-device/')

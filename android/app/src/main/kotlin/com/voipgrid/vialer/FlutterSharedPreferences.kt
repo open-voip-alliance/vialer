@@ -26,6 +26,10 @@ class FlutterSharedPreferences(private val context: Context) {
         set(value) = prefs.edit().putBoolean(IS_LOGGED_IN_SOMEWHERE_ELSE_KEY, value)
             .apply()
 
+    // Formatted as a iso8601 string.
+    val loginTime
+        get() = prefs.getString(LOGIN_TIME_KEY, "") ?: ""
+
     private var logs
         get() = prefs.getString(LOGS_KEY, "")
         set(value) = prefs.edit().putString(LOGS_KEY, value).apply()
@@ -57,6 +61,7 @@ class FlutterSharedPreferences(private val context: Context) {
         private const val LOGS_KEY = "${KEY_PREFIX}logs"
         private const val IS_LOGGED_IN_SOMEWHERE_ELSE_KEY =
             "${KEY_PREFIX}is_logged_in_somewhere_else"
+        private const val LOGIN_TIME_KEY = "${KEY_PREFIX}login_time"
     }
 }
 
