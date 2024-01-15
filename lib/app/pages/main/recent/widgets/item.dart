@@ -47,22 +47,59 @@ class _RecentCallItemTitle extends StatelessWidget {
 
   final CallRecord callRecord;
 
+  bool get _shouldRenderAsInternalCall =>
+      callRecord.renderType == CallRecordRenderType.internalCall &&
+      callRecord is ClientCallRecordWithContact;
+
   @override
   Widget build(BuildContext context) {
-    if (callRecord.renderType == CallRecordRenderType.internalCall) {
-      return Row(
-        children: [
-          Text(context.msg.main.recent.list.item.client.internal.title),
-          const Text(' '),
-          _WidthAdjustedText(callRecord.caller.number),
-          const Text(' & '),
-          _WidthAdjustedText(callRecord.destination.number),
-        ],
-      );
+    final callRecord = this.callRecord;
+
+    if (_shouldRenderAsInternalCall) {
+      return _InternalCall(callRecord as ClientCallRecordWithContact);
     }
 
-    return PhoneNumberText(
-      child: Text(callRecord.displayLabel),
+    return PhoneNumberText(child: Text(callRecord.displayLabel));
+  }
+}
+
+class _InternalCall extends StatelessWidget {
+  const _InternalCall(this.callRecord);
+
+  final ClientCallRecordWithContact callRecord;
+
+  String _partyText({required String number, String? name}) {
+    if (name.isNullOrBlank) return number;
+
+    return '$name ($number)';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final prefix = context.msg.main.recent.list.item.client.internal.title;
+
+    final caller = _partyText(
+      number: callRecord.destination.number,
+      name: callRecord.destinationContact?.displayName ??
+          callRecord.destination.name,
+    );
+
+    final destination = _partyText(
+      number: callRecord.caller.number,
+      name: callRecord.callerContact?.displayName ?? callRecord.caller.name,
+    );
+
+    return Row(
+      children: [
+        Flexible(
+          child: Text(
+            '$prefix $caller & $destination',
+            overflow: TextOverflow.ellipsis,
+            maxLines: 2,
+            softWrap: true,
+          ),
+        ),
+      ],
     );
   }
 }
@@ -424,6 +461,8 @@ extension CallDestinationLabel on CallRecord {
       withoutContact: (_) => null,
       withContact: (callRecord) => callRecord.contact,
       client: (_) => null,
+      clientWithContact: (record) =>
+          isInbound ? record.callerContact : record.destinationContact,
     );
 
     // We always want to prioritize a local contact in the user's phone.
@@ -439,6 +478,13 @@ extension CallDestinationLabel on CallRecord {
 
     return thirdPartyNumber;
   }
+}
+
+extension ClientCallRecordDisplay on ClientCallRecordWithContact {
+  String get callerDisplayLabel => callerContact?.displayName ?? displayLabel;
+
+  String get destinationDisplayLabel =>
+      destinationContact?.displayName ?? displayLabel;
 }
 
 class RecentCallHeader extends StatelessWidget {
@@ -540,7 +586,8 @@ enum CallRecordRenderType {
 }
 
 extension RenderType on CallRecord {
-  bool get isClientCall => this is ClientCallRecord;
+  bool get isClientCall =>
+      this is ClientCallRecord || this is ClientCallRecordWithContact;
 
   /// See [CallRecordRenderType]
   CallRecordRenderType get renderType {
@@ -549,12 +596,20 @@ extension RenderType on CallRecord {
     return callRecord.map(
       withoutContact: (_) => CallRecordRenderType.other,
       withContact: (_) => CallRecordRenderType.other,
-      client: (callRecord) => callRecord.renderType,
+      client: (record) => record.renderType,
+      clientWithContact: (record) => record.renderType,
     );
   }
 }
 
-extension ClientRenderType on ClientCallRecord {
+extension on ClientCallRecord {
+  CallRecordRenderType get renderType => withContact(
+        callerContact: null,
+        destinationContact: null,
+      ).renderType;
+}
+
+extension ClientRenderType on ClientCallRecordWithContact {
   CallRecordRenderType get renderType {
     if (callType == CallType.colleague) {
       return CallRecordRenderType.internalCall;
