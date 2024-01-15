@@ -40,8 +40,9 @@ class CallRecordContactPopulator {
 
         return call.withContact(
           callerContact: contacts.findContactForAllVariations(callerVariations),
-          destinationContact:
-              contacts.findContactForAllVariations(destinationVariations),
+          destinationContact: contacts.findContactForAllVariations(
+            destinationVariations,
+          ),
         );
       },
     ).toList();
