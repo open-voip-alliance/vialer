@@ -68,23 +68,23 @@ class _InternalCall extends StatelessWidget {
 
   final ClientCallRecordWithContact callRecord;
 
-  String _partyText({required String number, String? name}) {
-    if (name.isNullOrBlank) return number;
-
-    return '$name ($number)';
-  }
+  String _callPartyText({
+    required String number,
+    String? name,
+  }) =>
+      name.isNullOrBlank ? number : '$name ($number)';
 
   @override
   Widget build(BuildContext context) {
     final prefix = context.msg.main.recent.list.item.client.internal.title;
 
-    final caller = _partyText(
+    final caller = _callPartyText(
       number: callRecord.destination.number,
       name: callRecord.destinationContact?.displayName ??
           callRecord.destination.name,
     );
 
-    final destination = _partyText(
+    final destination = _callPartyText(
       number: callRecord.caller.number,
       name: callRecord.callerContact?.displayName ?? callRecord.caller.name,
     );
