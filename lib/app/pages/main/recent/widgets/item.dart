@@ -92,11 +92,13 @@ class _InternalCall extends StatelessWidget {
     return Row(
       children: [
         Flexible(
-          child: Text(
-            '$prefix $caller & $destination',
-            overflow: TextOverflow.ellipsis,
-            maxLines: 2,
-            softWrap: true,
+          child: PhoneNumberText(
+            child: Text(
+              '$prefix $caller & $destination',
+              overflow: TextOverflow.ellipsis,
+              maxLines: 2,
+              softWrap: true,
+            ),
           ),
         ),
       ],
