@@ -44,15 +44,13 @@ PODS:
     - Flutter
   - integration_test (0.0.1):
     - Flutter
-  - iOSPhoneLib (0.1.1):
-    - linphone-sdk-novideo (= 5.2.112)
+  - iOSPhoneLib (0.1.4):
     - Swinject (~> 2.8.2)
   - le (1.2)
   - libphonenumber (0.0.1):
     - Flutter
     - libPhoneNumber-iOS
   - libPhoneNumber-iOS (0.9.15)
-  - linphone-sdk-novideo (5.2.112)
   - OrderedSet (5.0.0)
   - package_info_plus (0.4.5):
     - Flutter
@@ -117,7 +115,6 @@ DEPENDENCIES:
   - flutter_segment_sdk (from `.symlinks/plugins/flutter_segment_sdk/ios`)
   - in_app_review (from `.symlinks/plugins/in_app_review/ios`)
   - integration_test (from `.symlinks/plugins/integration_test/ios`)
-  - iOSPhoneLib (from `https://github.com/open-voip-alliance/iOS-Phone-Lib.git`)
   - le (from `https://github.com/LogentriesCommunity/le_ios.git`)
   - libphonenumber (from `.symlinks/plugins/libphonenumber/ios`)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
@@ -135,6 +132,7 @@ SPEC REPOS:
     - Analytics
     - AnalyticsConnector
     - AppsFlyerFramework
+    - iOSPhoneLib
     - libPhoneNumber-iOS
     - OrderedSet
     - PhoneNumberKit
@@ -145,8 +143,6 @@ SPEC REPOS:
     - SentryPrivate
     - sqlite3
     - Swinject
-  https://gitlab.linphone.org/BC/public/podspec.git:
-    - linphone-sdk-novideo
 
 EXTERNAL SOURCES:
   connection_network_type:
@@ -175,8 +171,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/in_app_review/ios"
   integration_test:
     :path: ".symlinks/plugins/integration_test/ios"
-  iOSPhoneLib:
-    :git: https://github.com/open-voip-alliance/iOS-Phone-Lib.git
   le:
     :git: https://github.com/LogentriesCommunity/le_ios.git
   libphonenumber:
@@ -197,9 +191,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/url_launcher_ios/ios"
 
 CHECKOUT OPTIONS:
-  iOSPhoneLib:
-    :commit: f24d4d551182c7abf391422211637605695519fb
-    :git: https://github.com/open-voip-alliance/iOS-Phone-Lib.git
   le:
     :commit: ce8800f6d3290e182d48082680679d64a05ca778
     :git: https://github.com/LogentriesCommunity/le_ios.git
@@ -223,11 +214,10 @@ SPEC CHECKSUMS:
   flutter_segment_sdk: 1f10af57ddcee29dedf01bb37800f8301c89b307
   in_app_review: 318597b3a06c22bb46dc454d56828c85f444f99d
   integration_test: 13825b8a9334a850581300559b8839134b124670
-  iOSPhoneLib: e196ea3181edf9570ee064a8caecb89d8befa6fd
+  iOSPhoneLib: bf982971b4be7a4b535352011abed5e542deb196
   le: 6854003e293bf5b3cb822ef06971f1cc23a77eb9
   libphonenumber: bd14d5abfc5939ab0b0767234e2d8e2593af258e
   libPhoneNumber-iOS: 0a32a9525cf8744fe02c5206eb30d571e38f7d75
-  linphone-sdk-novideo: 59d4d269f564909108bae583ed5dc03ae0bd14d6
   OrderedSet: aaeb196f7fef5a9edf55d89760da9176ad40b93c
   package_info_plus: 115f4ad11e0698c8c1c5d8a689390df880f47e85
   path_provider_foundation: 29f094ae23ebbca9d3d0cec13889cd9060c0e943
@@ -245,6 +235,6 @@ SPEC CHECKSUMS:
   Swinject: 893c9a543000ac2f10ee4cbaf0933c6992c935d5
   url_launcher_ios: bf5ce03e0e2088bad9cc378ea97fa0ed5b49673b
 
-PODFILE CHECKSUM: 807c5e6c94985caaf294c16f2d1afcf25b2797b5
+PODFILE CHECKSUM: ee5876d915c23109c48d14bae194fb3133d43ae9
 
-COCOAPODS: 1.12.1
+COCOAPODS: 1.14.3

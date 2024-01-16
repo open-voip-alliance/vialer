@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
-		3B3967161E833CAA004F5970 /* (null) in Resources */ = {isa = PBXBuildFile; };
+		3B3967161E833CAA004F5970 /* BuildFile in Resources */ = {isa = PBXBuildFile; };
 		5C12BB9C28F45B4F00053E2F /* ringback.wav in Resources */ = {isa = PBXBuildFile; fileRef = 5C12BB9B28F45B4F00053E2F /* ringback.wav */; };
 		5C1A6765272441C70079B4D1 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1A6764272441C70079B4D1 /* Logger.swift */; };
 		5C5B39A22823B94D0052D50F /* SystemTones.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C5B39A12823B94D0052D50F /* SystemTones.swift */; };
@@ -349,7 +349,7 @@
 			files = (
 				97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */,
 				5CF09A4B280EEBF9009B3C9C /* ringtone.wav in Resources */,
-				3B3967161E833CAA004F5970 /* (null) in Resources */,
+				3B3967161E833CAA004F5970 /* BuildFile in Resources */,
 				5C12BB9C28F45B4F00053E2F /* ringback.wav in Resources */,
 				97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */,
 				97C146FC1CF9000F007C117D /* Main.storyboard in Resources */,
@@ -454,7 +454,6 @@
 				"${BUILT_PRODUCTS_DIR}/le/le.framework",
 				"${BUILT_PRODUCTS_DIR}/libPhoneNumber-iOS/libPhoneNumber_iOS.framework",
 				"${BUILT_PRODUCTS_DIR}/libphonenumber/libphonenumber.framework",
-				"${BUILT_PRODUCTS_DIR}/linphone-sdk-novideo/linphonesw.framework",
 				"${BUILT_PRODUCTS_DIR}/package_info_plus/package_info_plus.framework",
 				"${BUILT_PRODUCTS_DIR}/path_provider_foundation/path_provider_foundation.framework",
 				"${BUILT_PRODUCTS_DIR}/sentry_flutter/sentry_flutter.framework",
@@ -462,22 +461,23 @@
 				"${BUILT_PRODUCTS_DIR}/sqlite3/sqlite3.framework",
 				"${BUILT_PRODUCTS_DIR}/sqlite3_flutter_libs/sqlite3_flutter_libs.framework",
 				"${BUILT_PRODUCTS_DIR}/url_launcher_ios/url_launcher_ios.framework",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/linphone-sdk-novideo/bctoolbox-ios.framework/bctoolbox-ios",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/linphone-sdk-novideo/bctoolbox.framework/bctoolbox",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/linphone-sdk-novideo/belcard.framework/belcard",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/linphone-sdk-novideo/belle-sip.framework/belle-sip",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/linphone-sdk-novideo/belr.framework/belr",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/linphone-sdk-novideo/lime.framework/lime",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/linphone-sdk-novideo/linphone.framework/linphone",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/linphone-sdk-novideo/linphonetester.framework/linphonetester",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/linphone-sdk-novideo/mediastreamer2.framework/mediastreamer2",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/linphone-sdk-novideo/msamr.framework/msamr",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/linphone-sdk-novideo/mscodec2.framework/mscodec2",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/linphone-sdk-novideo/msopenh264.framework/msopenh264",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/linphone-sdk-novideo/mssilk.framework/mssilk",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/linphone-sdk-novideo/mswebrtc.framework/mswebrtc",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/linphone-sdk-novideo/ortp.framework/ortp",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/linphone-sdk-novideo/ZXing.framework/ZXing",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/iOSPhoneLib/bctoolbox-ios.framework/bctoolbox-ios",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/iOSPhoneLib/bctoolbox.framework/bctoolbox",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/iOSPhoneLib/belcard.framework/belcard",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/iOSPhoneLib/belle-sip.framework/belle-sip",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/iOSPhoneLib/belr.framework/belr",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/iOSPhoneLib/lime.framework/lime",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/iOSPhoneLib/linphone.framework/linphone",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/iOSPhoneLib/linphonesw.framework/linphonesw",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/iOSPhoneLib/linphonetester.framework/linphonetester",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/iOSPhoneLib/mediastreamer2.framework/mediastreamer2",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/iOSPhoneLib/msamr.framework/msamr",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/iOSPhoneLib/mscodec2.framework/mscodec2",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/iOSPhoneLib/msopenh264.framework/msopenh264",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/iOSPhoneLib/mssilk.framework/mssilk",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/iOSPhoneLib/mswebrtc.framework/mswebrtc",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/iOSPhoneLib/ortp.framework/ortp",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/iOSPhoneLib/ZXing.framework/ZXing",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
@@ -506,7 +506,6 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/le.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/libPhoneNumber_iOS.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/libphonenumber.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/linphonesw.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/package_info_plus.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/path_provider_foundation.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/sentry_flutter.framework",
@@ -521,6 +520,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/belr.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/lime.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/linphone.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/linphonesw.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/linphonetester.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/mediastreamer2.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/msamr.framework",
