@@ -216,9 +216,9 @@ Future<void> _runGenerationIfNeeded(
       'ios/Runner/pigeon.h',
       '--objc_source_out',
       'ios/Runner/pigeon.m',
-      '--java_out',
-      'android/app/src/main/java/com/voipgrid/vialer/Pigeon.java',
-      '--java_package',
+      '--kotlin_out',
+      'android/app/src/main/kotlin/com/voipgrid/vialer/Pigeon.kt',
+      '--kotlin_package',
       'com.voipgrid.vialer',
     ],
   );
