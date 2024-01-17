@@ -45,8 +45,6 @@ class SharedContactsRepository with Loggable {
       'family_name': familyName ?? '',
       'company_name': company ?? '',
       'phone_numbers': formattedPhoneNumbersList,
-      'groups': const <dynamic>[],
-      'voip_accounts': const <dynamic>[],
     });
 
     if (!response.isSuccessful) {
@@ -86,8 +84,6 @@ class SharedContactsRepository with Loggable {
         'family_name': familyName ?? '',
         'company_name': company ?? '',
         'phone_numbers': formattedPhoneNumbersList,
-        'groups': const <dynamic>[],
-        'voip_accounts': const <dynamic>[],
       },
     );
 
