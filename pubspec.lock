@@ -587,11 +587,10 @@ packages:
   flutter_phone_lib:
     dependency: "direct main"
     description:
-      path: "."
-      ref: "2147102ef326b863a107d4eabe62f1aea730d23e"
-      resolved-ref: "2147102ef326b863a107d4eabe62f1aea730d23e"
-      url: "https://github.com/open-voip-alliance/flutter-phone-lib"
-    source: git
+      name: flutter_phone_lib
+      sha256: "2d1e2a2d4f612464639c95ed899f86d6c0c02f53f5b0f52b5f8b218892fc5328"
+      url: "https://pub.dev"
+    source: hosted
     version: "0.0.1"
   flutter_platform_widgets:
     dependency: "direct main"
