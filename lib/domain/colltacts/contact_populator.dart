@@ -15,17 +15,35 @@ class CallRecordContactPopulator {
   ) async {
     final contacts = await getContactPhoneNumberMap();
 
+    return callRecords
+        .map(
+          (call) => call.withContact(
+            contacts.findContactForAllVariations(call.lookupVariations),
+          ),
+        )
+        .toList();
+  }
+
+  Future<List<ClientCallRecordWithContact>> populateForClientCalls(
+    List<ClientCallRecord> callRecords,
+  ) async {
+    final contacts = await getContactPhoneNumberMap();
+
     return callRecords.map(
       (call) {
-        for (final number in call.lookupVariations) {
-          final contact = contacts[number];
+        final callerVariations = call.createVariations(
+          call.caller.number,
+        );
+        final destinationVariations = call.createVariations(
+          call.destination.number,
+        );
 
-          if (contact != null) {
-            return call.withContact(contact);
-          }
-        }
-
-        return call.withContact(null);
+        return call.withContact(
+          callerContact: contacts.findContactForAllVariations(callerVariations),
+          destinationContact: contacts.findContactForAllVariations(
+            destinationVariations,
+          ),
+        );
       },
     ).toList();
   }
@@ -58,6 +76,20 @@ class CallRecordContactPopulator {
   }
 }
 
+extension on Map<String, Contact> {
+  Contact? findContactForAllVariations(List<String> variations) {
+    for (final number in variations) {
+      final contact = this[number];
+
+      if (contact != null) {
+        return contact;
+      }
+    }
+
+    return null;
+  }
+}
+
 extension on CallRecord {
   String get numberForContactLookup =>
       isOutbound ? destination.number : caller.number;
@@ -66,8 +98,10 @@ extension on CallRecord {
   /// contacts, this is mainly a simple way to remove the country code
   /// without introducing any complicated/slow phone number parsing.
   List<String> get lookupVariations {
-    final number = numberForContactLookup;
+    return createVariations(numberForContactLookup);
+  }
 
+  List<String> createVariations(String number) {
     if (number.length <= 5) return [number];
 
     return [
