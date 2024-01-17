@@ -7,7 +7,7 @@ part 'call_record.freezed.dart';
 part 'call_record.g.dart';
 
 @freezed
-class CallRecord with _$CallRecord {
+sealed class CallRecord with _$CallRecord {
   const CallRecord._();
 
   const factory CallRecord.withoutContact({
@@ -52,6 +52,24 @@ class CallRecord with _$CallRecord {
     required bool wasInitiatedByLoggedInUser,
   }) = ClientCallRecord;
 
+  const factory CallRecord.clientWithContact({
+    required String id,
+    required CallType callType,
+    required Direction callDirection,
+    required bool answered,
+    required bool answeredElsewhere,
+    required Duration duration,
+    required DateTime date,
+    required CallParty caller,
+    required CallParty destination,
+    required bool didTargetColleague,
+    required bool didTargetLoggedInUser,
+    required bool wasInitiatedByColleague,
+    required bool wasInitiatedByLoggedInUser,
+    Contact? callerContact,
+    Contact? destinationContact,
+  }) = ClientCallRecordWithContact;
+
   bool get wasMissed => !answered;
 
   Direction get direction =>
@@ -82,20 +100,42 @@ class CallRecord with _$CallRecord {
 }
 
 extension WithContact on CallRecord {
-  CallRecordWithContact withContact(Contact? contact) {
-    return CallRecordWithContact(
-      id: id,
-      callType: callType,
-      callDirection: callDirection,
-      answered: answered,
-      answeredElsewhere: answeredElsewhere,
-      duration: duration,
-      date: date,
-      caller: caller,
-      destination: destination,
-      contact: contact,
-    );
-  }
+  CallRecordWithContact withContact(Contact? contact) => CallRecordWithContact(
+        id: id,
+        callType: callType,
+        callDirection: callDirection,
+        answered: answered,
+        answeredElsewhere: answeredElsewhere,
+        duration: duration,
+        date: date,
+        caller: caller,
+        destination: destination,
+        contact: contact,
+      );
+}
+
+extension ClientWithContact on ClientCallRecord {
+  ClientCallRecordWithContact withContact({
+    Contact? callerContact,
+    Contact? destinationContact,
+  }) =>
+      ClientCallRecordWithContact(
+        id: id,
+        callType: callType,
+        callDirection: callDirection,
+        answered: answered,
+        answeredElsewhere: answeredElsewhere,
+        duration: duration,
+        date: date,
+        caller: caller,
+        destination: destination,
+        wasInitiatedByColleague: wasInitiatedByColleague,
+        wasInitiatedByLoggedInUser: wasInitiatedByLoggedInUser,
+        didTargetColleague: didTargetColleague,
+        didTargetLoggedInUser: didTargetLoggedInUser,
+        callerContact: callerContact,
+        destinationContact: destinationContact,
+      );
 }
 
 enum Direction {
