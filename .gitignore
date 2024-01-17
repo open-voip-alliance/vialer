@@ -52,6 +52,7 @@ lib/app/util/pigeon.dart
 ios/Runner/pigeon.h
 ios/Runner/pigeon.m
 android/app/src/main/java/com/voipgrid/vialer/Pigeon.java
+android/app/src/main/kotlin/com/voipgrid/vialer/Pigeon.kt
 
 # Android
 local.properties
