@@ -103,6 +103,11 @@ class _CallPageState extends State<_CallPage>
   // We sometimes want to dismiss the screen after an amount of seconds
   // we will store this timer so we can cancel it if another call is started.
   Timer? _dismissScreenTimer;
+  Timer? _poorQualityCallTimer;
+
+  /// The [Duration] that the call must be below the minimum quality threshold
+  /// before we show a warning to the user.
+  static const _poorQualityMinimumDuration = Duration(seconds: 2);
 
   late final _metrics = dependencyLocator<MetricsRepository>();
 
@@ -244,16 +249,29 @@ class _CallPageState extends State<_CallPage>
   }
 
   void _showSnackBarForLowMos(BuildContext context) {
-    showSnackBar(
-      context,
-      duration: const Duration(days: 365),
-      icon: const FaIcon(FontAwesomeIcons.exclamation),
-      label: Text(context.msg.main.call.ongoing.connectionWarning.title),
-      padding: const EdgeInsets.only(right: 72),
+    if (_poorQualityCallTimer?.isActive == true) return;
+
+    _poorQualityCallTimer = Timer(
+      _poorQualityMinimumDuration,
+      () {
+        final state = context.read<CallerCubit>().state;
+
+        if (state is! CallProcessState) return;
+        if (!state.isInBadQualityCall) return;
+
+        showSnackBar(
+          context,
+          duration: const Duration(days: 365),
+          icon: const FaIcon(FontAwesomeIcons.exclamation),
+          label: Text(context.msg.main.call.ongoing.connectionWarning.title),
+          padding: const EdgeInsets.only(right: 72),
+        );
+      },
     );
   }
 
   void _hideSnackBar(BuildContext context) {
+    _poorQualityCallTimer?.cancel();
     ScaffoldMessenger.of(context).clearSnackBars();
   }
 
