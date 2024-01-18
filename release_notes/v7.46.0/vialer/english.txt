@@ -1,0 +1,3 @@
+- Recent calls in the "all" tab will now show contact information if the number is your phone's contacts
+- Fixed a bug that made it difficult to paste phone numbers into the dialer
+- Pressing the "log out" button will now show a loading spinner
