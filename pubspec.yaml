@@ -113,6 +113,9 @@ dev_dependencies:
   vialer_generators:
     path: vialer_generators
 
+  vialer_cli:
+    path: vialer_cli
+
 
 flutter:
   uses-material-design: true
