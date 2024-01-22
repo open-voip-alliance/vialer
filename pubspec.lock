@@ -1634,6 +1634,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.4"
+  vialer_cli:
+    dependency: "direct dev"
+    description:
+      path: vialer_cli
+      relative: true
+    source: path
+    version: "0.0.0"
   vialer_generators:
     dependency: "direct dev"
     description:
@@ -1747,4 +1754,4 @@ packages:
     version: "2.1.1"
 sdks:
   dart: ">=3.2.0 <4.0.0"
-  flutter: ">=3.16.5"
+  flutter: ">=3.16.8"
