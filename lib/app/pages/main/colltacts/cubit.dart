@@ -56,7 +56,10 @@ class ColltactsTabsCubit extends Cubit<List<ColltactTab>> {
   void storeCurrentTab(int index) =>
       _storageRepository.currentColltactTab = _indexToTab(index);
 
-  void _rebuildTabs() => emit(_tabs);
+  void _rebuildTabs() {
+    if (isClosed) return;
+    emit(_tabs);
+  }
 
   bool _shouldShow({required ColltactKind kind}) => switch (kind) {
         ColltactKind.contact => true,

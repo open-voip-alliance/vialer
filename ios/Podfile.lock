@@ -31,11 +31,11 @@ PODS:
     - Flutter
   - flutter_libphonenumber_ios (1.1.4):
     - Flutter
-    - PhoneNumberKit/PhoneNumberKitCore (= 3.6.6)
+    - PhoneNumberKit/PhoneNumberKitCore (= 3.7.6)
   - flutter_phone_lib (0.0.1):
     - Flutter
     - iOSPhoneLib
-  - flutter_segment (3.13.1):
+  - flutter_segment_sdk (3.13.1):
     - Analytics (= 4.1.6)
     - Flutter
     - Segment-Amplitude (= 3.3.2)
@@ -44,18 +44,14 @@ PODS:
     - Flutter
   - integration_test (0.0.1):
     - Flutter
-  - iOSPhoneLib (0.1.1):
-    - linphone-sdk-novideo (= 5.2.112)
+  - iOSPhoneLib (0.1.4):
     - Swinject (~> 2.8.2)
   - le (1.2)
   - libphonenumber (0.0.1):
     - Flutter
     - libPhoneNumber-iOS
   - libPhoneNumber-iOS (0.9.15)
-  - linphone-sdk-novideo (5.2.112)
   - OrderedSet (5.0.0)
-  - package_info (0.0.1):
-    - Flutter
   - package_info_plus (0.4.5):
     - Flutter
   - path_provider_foundation (0.0.1):
@@ -63,7 +59,7 @@ PODS:
     - FlutterMacOS
   - permission_handler_apple (9.1.1):
     - Flutter
-  - PhoneNumberKit/PhoneNumberKitCore (3.6.6)
+  - PhoneNumberKit/PhoneNumberKitCore (3.7.6)
   - ReachabilitySwift (5.0.0)
   - Segment-Amplitude (3.3.2):
     - Amplitude (~> 8.3)
@@ -74,13 +70,13 @@ PODS:
   - segment-appsflyer-ios/Main (6.10.1):
     - Analytics
     - AppsFlyerFramework (= 6.10.1)
-  - Sentry/HybridSDK (8.15.2):
-    - SentryPrivate (= 8.15.2)
+  - Sentry/HybridSDK (8.17.2):
+    - SentryPrivate (= 8.17.2)
   - sentry_flutter (0.0.1):
     - Flutter
     - FlutterMacOS
-    - Sentry/HybridSDK (= 8.15.2)
-  - SentryPrivate (8.15.2)
+    - Sentry/HybridSDK (= 8.17.2)
+  - SentryPrivate (8.17.2)
   - shared_preferences_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
@@ -116,13 +112,11 @@ DEPENDENCIES:
   - flutter_keyboard_visibility (from `.symlinks/plugins/flutter_keyboard_visibility/ios`)
   - flutter_libphonenumber_ios (from `.symlinks/plugins/flutter_libphonenumber_ios/ios`)
   - flutter_phone_lib (from `.symlinks/plugins/flutter_phone_lib/ios`)
-  - flutter_segment (from `.symlinks/plugins/flutter_segment/ios`)
+  - flutter_segment_sdk (from `.symlinks/plugins/flutter_segment_sdk/ios`)
   - in_app_review (from `.symlinks/plugins/in_app_review/ios`)
   - integration_test (from `.symlinks/plugins/integration_test/ios`)
-  - iOSPhoneLib (from `https://github.com/open-voip-alliance/iOS-Phone-Lib.git`)
   - le (from `https://github.com/LogentriesCommunity/le_ios.git`)
   - libphonenumber (from `.symlinks/plugins/libphonenumber/ios`)
-  - package_info (from `.symlinks/plugins/package_info/ios`)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
@@ -138,6 +132,7 @@ SPEC REPOS:
     - Analytics
     - AnalyticsConnector
     - AppsFlyerFramework
+    - iOSPhoneLib
     - libPhoneNumber-iOS
     - OrderedSet
     - PhoneNumberKit
@@ -148,8 +143,6 @@ SPEC REPOS:
     - SentryPrivate
     - sqlite3
     - Swinject
-  https://gitlab.linphone.org/BC/public/podspec.git:
-    - linphone-sdk-novideo
 
 EXTERNAL SOURCES:
   connection_network_type:
@@ -172,20 +165,16 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_libphonenumber_ios/ios"
   flutter_phone_lib:
     :path: ".symlinks/plugins/flutter_phone_lib/ios"
-  flutter_segment:
-    :path: ".symlinks/plugins/flutter_segment/ios"
+  flutter_segment_sdk:
+    :path: ".symlinks/plugins/flutter_segment_sdk/ios"
   in_app_review:
     :path: ".symlinks/plugins/in_app_review/ios"
   integration_test:
     :path: ".symlinks/plugins/integration_test/ios"
-  iOSPhoneLib:
-    :git: https://github.com/open-voip-alliance/iOS-Phone-Lib.git
   le:
     :git: https://github.com/LogentriesCommunity/le_ios.git
   libphonenumber:
     :path: ".symlinks/plugins/libphonenumber/ios"
-  package_info:
-    :path: ".symlinks/plugins/package_info/ios"
   package_info_plus:
     :path: ".symlinks/plugins/package_info_plus/ios"
   path_provider_foundation:
@@ -202,9 +191,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/url_launcher_ios/ios"
 
 CHECKOUT OPTIONS:
-  iOSPhoneLib:
-    :commit: f24d4d551182c7abf391422211637605695519fb
-    :git: https://github.com/open-voip-alliance/iOS-Phone-Lib.git
   le:
     :commit: ce8800f6d3290e182d48082680679d64a05ca778
     :git: https://github.com/LogentriesCommunity/le_ios.git
@@ -223,34 +209,32 @@ SPEC CHECKSUMS:
   flutter_contacts: edb1c5ce76aa433e20e6cb14c615f4c0b66e0983
   flutter_inappwebview: 3d32228f1304635e7c028b0d4252937730bbc6cf
   flutter_keyboard_visibility: 0339d06371254c3eb25eeb90ba8d17dca8f9c069
-  flutter_libphonenumber_ios: 80bfe6d4d69334aaf36642c1b528615bfffe7c6a
+  flutter_libphonenumber_ios: a4d7de8865ef47d0f77b1d047e88ef7aed488d53
   flutter_phone_lib: 060b342f95c63f9e07e1577f76db7e06f349ef8a
-  flutter_segment: 25061561c7429e8a8e463c29a58869c2ca696d8f
+  flutter_segment_sdk: 1f10af57ddcee29dedf01bb37800f8301c89b307
   in_app_review: 318597b3a06c22bb46dc454d56828c85f444f99d
   integration_test: 13825b8a9334a850581300559b8839134b124670
-  iOSPhoneLib: e196ea3181edf9570ee064a8caecb89d8befa6fd
+  iOSPhoneLib: bf982971b4be7a4b535352011abed5e542deb196
   le: 6854003e293bf5b3cb822ef06971f1cc23a77eb9
   libphonenumber: bd14d5abfc5939ab0b0767234e2d8e2593af258e
   libPhoneNumber-iOS: 0a32a9525cf8744fe02c5206eb30d571e38f7d75
-  linphone-sdk-novideo: 59d4d269f564909108bae583ed5dc03ae0bd14d6
   OrderedSet: aaeb196f7fef5a9edf55d89760da9176ad40b93c
-  package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
   package_info_plus: 115f4ad11e0698c8c1c5d8a689390df880f47e85
   path_provider_foundation: 29f094ae23ebbca9d3d0cec13889cd9060c0e943
   permission_handler_apple: e76247795d700c14ea09e3a2d8855d41ee80a2e6
-  PhoneNumberKit: 5b1be7ee4955dfeeb855f51eecdd829ab24b3484
+  PhoneNumberKit: 3c68a822bad955ffcefc72a52df72b6596498555
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
   Segment-Amplitude: 6c1e59c8c278a21029ba7a6a788fcb31b9233a2c
   segment-appsflyer-ios: 98124c817857be032697c92f613be97404a4c330
-  Sentry: 6f5742b4c47c17c9adcf265f6f328cf4a0ed1923
-  sentry_flutter: 2c309a1d4b45e59d02cfa15795705687f1e2081b
-  SentryPrivate: b2f7996f37781080f04a946eb4e377ff63c64195
+  Sentry: 64a9f9c3637af913adcf53deced05bbe452d1410
+  sentry_flutter: 57912cf425e09398bdf47f38842a1fcb9836f1be
+  SentryPrivate: 024c6fed507ac39ae98e6d087034160f942920d5
   shared_preferences_foundation: 5b919d13b803cadd15ed2dc053125c68730e5126
   sqlite3: 6e2d4a4879854d0ec86b476bf3c3e30870bac273
   sqlite3_flutter_libs: eb769059df0356dc52ddda040f09cacc9391a7cf
   Swinject: 893c9a543000ac2f10ee4cbaf0933c6992c935d5
   url_launcher_ios: bf5ce03e0e2088bad9cc378ea97fa0ed5b49673b
 
-PODFILE CHECKSUM: df5689a3bcea3ea40b740bdf6675c7c9be441b4a
+PODFILE CHECKSUM: ee5876d915c23109c48d14bae194fb3133d43ae9
 
 COCOAPODS: 1.14.3

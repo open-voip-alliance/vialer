@@ -78,11 +78,11 @@ custom: # Custom properties to make workflows cleaner
     max_build_duration: 90
     instance_type: mac_mini_m2
     environment: &config_environment
-      flutter: 3.16.3
+      flutter: 3.16.5
       # This has to be 14.2 for our integration tests to work, it should be changed to latest
       # when the tooling supports xCode 14.3.
       xcode: 14.2
-      cocoapods: 1.11.3
+      cocoapods: 1.14.3
     cache:
       cache_paths:
         - $HOME/Library/Caches/CocoaPods
@@ -166,11 +166,7 @@ custom: # Custom properties to make workflows cleaner
         key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
         issuer_id: $APP_STORE_CONNECT_ISSUER_ID
         submit_to_app_store: true
-        submit_to_testflight: true
         release_type: MANUAL
-        beta_groups:
-          - Beta Testers
-          - External Testers
         cancel_previous_submissions: true
       google_play:
         credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS

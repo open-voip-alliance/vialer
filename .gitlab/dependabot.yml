@@ -1,6 +1,22 @@
 version: 2
+registries:
+  onepub:
+    type: pub-repository
+    url: https://onepub.dev/api/xhopsdavuh/
+    token: ${{ONEPUB_TOKEN}}
 updates:
   - package-ecosystem: pub
     directory: /
+    commit-message:
+      prefix: "chore(deps): "
     schedule:
       interval: daily
+      time: "01:00"
+    rebase-strategy:
+      strategy: auto
+    auto-merge: true
+    assignees:
+      - dependabot
+    open-pull-requests-limit: 25
+    registries:
+      - onepub

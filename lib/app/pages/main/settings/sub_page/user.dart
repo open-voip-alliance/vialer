@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
+import 'package:vialer/app/util/context_extensions.dart';
 
 import '../../../../resources/localizations.dart';
 import '../cubit.dart';
@@ -47,12 +48,7 @@ class UserSubPage extends StatelessWidget {
                       visible: !isKeyboardVisible,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: SettingsButton(
-                          text: context.msg.main.settings.buttons.logout,
-                          onPressed: () => unawaited(
-                            context.read<SettingsCubit>().logout(),
-                          ),
-                        ),
+                        child: _LogoutButton(),
                       ),
                     );
                   },
@@ -62,6 +58,38 @@ class UserSubPage extends StatelessWidget {
             );
           },
         );
+      },
+    );
+  }
+}
+
+class _LogoutButton extends StatefulWidget {
+  const _LogoutButton();
+
+  @override
+  State<_LogoutButton> createState() => _LogoutButtonState();
+}
+
+class _LogoutButtonState extends State<_LogoutButton> {
+  final _isLoggingOut = ValueNotifier(false);
+
+  Future<void> _logout() async {
+    _isLoggingOut.value = true;
+    await context.read<SettingsCubit>().logout();
+    _isLoggingOut.value = false;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<bool>(
+      valueListenable: _isLoggingOut,
+      builder: (_, isLoggingOut, __) {
+        return !isLoggingOut
+            ? SettingsButton(
+                text: context.msg.main.settings.buttons.logout,
+                onPressed: _logout,
+              )
+            : CircularProgressIndicator(color: context.colors.primary);
       },
     );
   }

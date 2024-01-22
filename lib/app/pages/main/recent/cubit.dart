@@ -104,17 +104,17 @@ class ClientCallsCubit extends RecentCallsCubit {
     );
   }
 
-  final _getRecentClientCalls = GetRecentClientCallsUseCase();
+  final _getRecentClientCalls =
+      dependencyLocator<GetRecentClientCallsUseCase>();
   final _importNewClientCalls = ImportNewClientCallRecordsUseCase();
   final _localClientCalls = dependencyLocator<LocalClientCallsRepository>();
 
   @override
-  Future<List<ClientCallRecord>> _fetch({required int page}) async {
-    return _getRecentClientCalls(
-      page: page,
-      onlyMissedCalls: onlyMissedCalls,
-    );
-  }
+  Future<List<ClientCallRecordWithContact>> _fetch({required int page}) =>
+      _getRecentClientCalls(
+        page: page,
+        onlyMissedCalls: onlyMissedCalls,
+      );
 
   @override
   Future<void> performBackgroundImport() => _importNewClientCalls();
