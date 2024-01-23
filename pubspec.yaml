@@ -15,16 +15,10 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  # TODO: Use pub dependency.
-  flutter_phone_lib:
-    git:
-      url: https://github.com/open-voip-alliance/flutter-phone-lib
-      ref: 2147102ef326b863a107d4eabe62f1aea730d23e
-
+  flutter_phone_lib: 0.0.3
   font_awesome_flutter:
     hosted: https://onepub.dev/api/xhopsdavuh/
     version: ^1.0.0
-
   flutter_bloc: ^8.1.3
   provider: ^6.1.1
   equatable: ^2.0.5
