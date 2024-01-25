@@ -14,8 +14,6 @@ class SharedContact with _$SharedContact {
     String? familyName,
     String? companyName,
     @Default([]) List<SharedContactPhoneNumber> phoneNumbers,
-    @Default([]) List<SharedContactGroup> groups,
-    @Default([]) List<SharedContactVoipAccount> voipAccounts,
   }) = _SharedContact;
 
   factory SharedContact.fromJson(Map<String, dynamic> json) =>
@@ -66,31 +64,4 @@ class SharedContactPhoneNumber with _$SharedContactPhoneNumber {
 
   factory SharedContactPhoneNumber.fromJson(Map<String, dynamic> json) =>
       _$SharedContactPhoneNumberFromJson(json);
-}
-
-@freezed
-class SharedContactVoipAccount with _$SharedContactVoipAccount {
-  @JsonSerializable(fieldRename: FieldRename.snake)
-  const factory SharedContactVoipAccount({
-    required int accountId,
-    String? description,
-    String? internalNumber,
-    bool? isAppAccount,
-    bool? isDesktopAccount,
-    @Default({}) Map<String, dynamic> sipRegInfo,
-  }) = _SharedContactVoipAccount;
-
-  factory SharedContactVoipAccount.fromJson(Map<String, dynamic> json) =>
-      _$SharedContactVoipAccountFromJson(json);
-}
-
-@freezed
-class SharedContactGroup with _$SharedContactGroup {
-  @JsonSerializable(fieldRename: FieldRename.snake)
-  const factory SharedContactGroup({
-    String? name,
-  }) = _SharedContactGroup;
-
-  factory SharedContactGroup.fromJson(Map<String, dynamic> json) =>
-      _$SharedContactGroupFromJson(json);
 }
