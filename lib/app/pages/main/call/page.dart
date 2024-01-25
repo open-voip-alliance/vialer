@@ -109,6 +109,8 @@ class _CallPageState extends State<_CallPage>
   /// before we show a warning to the user.
   static const _poorQualityMinimumDuration = Duration(seconds: 2);
 
+  bool isNotifyingUserAboutBadQualityCall = false;
+
   late final _metrics = dependencyLocator<MetricsRepository>();
 
   @override
@@ -255,9 +257,15 @@ class _CallPageState extends State<_CallPage>
       _poorQualityMinimumDuration,
       () {
         final state = context.read<CallerCubit>().state;
+        final shouldNotifyUserAboutBadQualityCall =
+            state is CallProcessState && state.isInBadQualityCall;
 
-        if (state is! CallProcessState) return;
-        if (!state.isInBadQualityCall) return;
+        setState(
+          () => isNotifyingUserAboutBadQualityCall =
+              shouldNotifyUserAboutBadQualityCall,
+        );
+
+        if (!shouldNotifyUserAboutBadQualityCall) return;
 
         showSnackBar(
           context,
@@ -271,6 +279,7 @@ class _CallPageState extends State<_CallPage>
   }
 
   void _hideSnackBar(BuildContext context) {
+    setState(() => isNotifyingUserAboutBadQualityCall = false);
     _poorQualityCallTimer?.cancel();
     ScaffoldMessenger.of(context).clearSnackBars();
   }
@@ -314,7 +323,7 @@ class _CallPageState extends State<_CallPage>
                   ),
                 ),
                 AnimatedVisibility(
-                  visible: state.isInBadQualityCall,
+                  visible: isNotifyingUserAboutBadQualityCall,
                   child: SizedBox(height: 100),
                 ),
               ],
