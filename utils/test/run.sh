@@ -2,7 +2,7 @@
 
 if [[ "$CI" == "true" ]]; then
   echo "Building debug version of app for testing in CI mode"
-  flutter build apk --debug --target=lib/app/main.dart --dart-define-from-file=brands/vialer.json
+  flutter build apk --debug --target=lib/presentation/main.dart --dart-define-from-file=brands/vialer.json
   flutter install --debug
 else
   flutter install

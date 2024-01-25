@@ -1,7 +1,7 @@
 // ignore_for_file: avoid_redundant_argument_values
 
 import 'package:test/test.dart';
-import 'package:vialer/domain/call_records/client/month_splitter.dart';
+import 'package:vialer/data/models/call_records/client/month_splitter.dart';
 
 void main() {
   final splitter = MonthSplitter();

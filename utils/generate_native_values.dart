@@ -4,9 +4,9 @@ import 'dart:io';
 import 'package:basic_utils/basic_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:package_config/package_config.dart';
-import 'package:vialer/app/resources/theme/brand_icon_code_points.dart';
-import 'package:vialer/app/resources/theme/colors.dart';
-import 'package:vialer/domain/user/brand.dart';
+import 'package:vialer/data/models/user/brand.dart';
+import 'package:vialer/presentation/resources/theme/brand_icon_code_points.dart';
+import 'package:vialer/presentation/resources/theme/colors.dart';
 import 'package:xml/xml.dart';
 import 'package:yaml/yaml.dart';
 
@@ -139,7 +139,7 @@ Future<void> writeLanguageValues(Brand brand) async {
 
     final localeOrEmpty = locale != null ? '_$locale' : '';
     final languageStrings = loadYaml(
-      await File('lib/app/resources/messages$localeOrEmpty.i18n.yaml')
+      await File('lib/presentation/resources/messages$localeOrEmpty.i18n.yaml')
           .readAsString(),
     ) as YamlMap;
 

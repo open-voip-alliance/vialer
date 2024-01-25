@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
-import 'package:vialer/app/util/automatic_retry.dart';
+import 'package:vialer/presentation/util/automatic_retry.dart';
 
 @GenerateNiceMocks([MockSpec<DummyClass>()])
 import 'automatic_retry_test.mocks.dart';
