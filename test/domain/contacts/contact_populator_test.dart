@@ -8,8 +8,11 @@ import 'package:vialer/domain/call_records/item.dart';
 import 'package:vialer/domain/colltacts/contact.dart';
 import 'package:vialer/domain/colltacts/contact_populator.dart';
 import 'package:vialer/domain/colltacts/contact_repository.dart';
+import 'package:vialer/domain/colltacts/shared_contacts/shared_contact.dart';
+import 'package:vialer/domain/legacy/storage.dart';
 
 @GenerateNiceMocks([MockSpec<ContactRepository>()])
+@GenerateNiceMocks([MockSpec<StorageRepository>()])
 import 'contact_populator_test.mocks.dart';
 
 void main() {
@@ -25,10 +28,26 @@ void main() {
     );
   });
 
+  test('External number matches shared contact number exactly', () {
+    _expectsToMatchContact(
+      numberInCallRecord: externalNumber,
+      numbersInContacts: [],
+      numbersInSharedContacts: [externalNumber],
+    );
+  });
+
   test('Internal number matches contact number exactly', () {
     _expectsToMatchContact(
       numberInCallRecord: internalNumber,
       numbersInContacts: [internalNumber],
+    );
+  });
+
+  test('Internal number matches shared contact number exactly', () {
+    _expectsToMatchContact(
+      numberInCallRecord: internalNumber,
+      numbersInContacts: [],
+      numbersInSharedContacts: [internalNumber],
     );
   });
 
@@ -39,10 +58,26 @@ void main() {
     );
   });
 
+  test('External number matches shared contact without country code', () {
+    _expectsToMatchContact(
+      numberInCallRecord: externalNumber,
+      numbersInContacts: [],
+      numbersInSharedContacts: ['0640366644']
+    );
+  });
+
   test('Internal number does not match with country code', () {
     _expectsNotToMatchContact(
       numberInCallRecord: internalNumber,
       numbersInContacts: ['+31241'],
+    );
+  });
+
+  test('Internal number does not match with shared contact country code', () {
+    _expectsNotToMatchContact(
+      numberInCallRecord: internalNumber,
+      numbersInContacts: [],
+      numbersInSharedContacts: ['+31241'],
     );
   });
 }
@@ -50,11 +85,13 @@ void main() {
 void _expectsToMatchContact({
   required String numberInCallRecord,
   required List<String> numbersInContacts,
+  List<String> numbersInSharedContacts = const [],
 }) =>
     unawaited(
       _expectContactMatching(
         numberInCallRecord,
         numbersInContacts,
+        numbersInSharedContacts,
         shouldMatch: true,
       ),
     );
@@ -62,23 +99,27 @@ void _expectsToMatchContact({
 void _expectsNotToMatchContact({
   required String numberInCallRecord,
   required List<String> numbersInContacts,
+  List<String> numbersInSharedContacts = const [],
 }) =>
     unawaited(
       _expectContactMatching(
         numberInCallRecord,
         numbersInContacts,
+        numbersInSharedContacts,
         shouldMatch: false,
       ),
     );
 
 Future<void> _expectContactMatching(
   String numberInCallRecord,
-  List<String> numbersInContacts, {
+  List<String> numbersInContacts,
+  List<String> numbersInSharedContacts, {
   required bool shouldMatch,
 }) async {
   final records = _generateDummyCallRecordsForNumber(numberInCallRecord);
   final result = await CallRecordContactPopulator(
     await _createMockWithStoredNumbers(numbersInContacts),
+    await _createMockWithStorageRepository(numbersInSharedContacts),
   ).populate(records);
   expect(
     result.first.contact,
@@ -125,6 +166,18 @@ Future<MockContactRepository> _createMockWithStoredNumbers(
   return contactRepositoryMock;
 }
 
+Future<MockStorageRepository> _createMockWithStorageRepository(
+  List<String> numbers,
+) async {
+  final contactRepositoryMock = MockStorageRepository();
+
+  when(contactRepositoryMock.sharedContacts).thenAnswer(
+    (_) => numbers.map(_generateDummySharedContact).toList(),
+  );
+
+  return contactRepositoryMock;
+}
+
 Contact _generateDummyContact(String number) => Contact(
       givenName: 'Foo',
       middleName: 'Bar',
@@ -140,3 +193,11 @@ Contact _generateDummyContact(String number) => Contact(
       company: 'acme',
       avatarPath: null,
     );
+
+SharedContact _generateDummySharedContact(String number) => SharedContact(
+  givenName: 'Foo',
+  familyName: 'Baz',
+  companyName: 'acme',
+  phoneNumbers: [SharedContactPhoneNumber(phoneNumberFlat: number)],
+  id: '123',
+);

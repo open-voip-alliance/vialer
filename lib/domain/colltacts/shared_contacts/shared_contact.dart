@@ -51,17 +51,18 @@ class SharedContact with _$SharedContact {
 
 @freezed
 class SharedContactPhoneNumber with _$SharedContactPhoneNumber {
+  const SharedContactPhoneNumber._();
+
   @JsonSerializable(fieldRename: FieldRename.snake)
   const factory SharedContactPhoneNumber({
-    bool? isValid,
-    String? phoneNumberPretty,
     required String phoneNumberFlat,
-    String? phoneNumberType,
+    String? phoneNumberPretty,
     String? callingCode,
-    String? countryCode,
-    String? location,
   }) = _SharedContactPhoneNumber;
 
   factory SharedContactPhoneNumber.fromJson(Map<String, dynamic> json) =>
       _$SharedContactPhoneNumberFromJson(json);
+
+  String get withoutCallingCode =>
+      phoneNumberFlat.replaceFirst('+${callingCode}', '0');
 }
