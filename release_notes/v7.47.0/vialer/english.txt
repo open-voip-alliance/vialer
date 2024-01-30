@@ -1,0 +1,5 @@
+- Recent calls will now match to shared contacts
+- The "poor quality warning" will only be displayed if the poor quality lasts for more than 2 seconds
+- iOS: The Dynamic Island will now show the correct call duration
+- Android: Pressing the Android back button in a profile sub-menu will now return you to the profile page
+- Android: Dialling an emergency number will now open the phone's native dealer with the number pre-filled in
