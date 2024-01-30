@@ -588,10 +588,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_phone_lib
-      sha256: b58d1c6c5ca27994bc7be98181a020f297f99bd23740c61fbbf053b856a6f990
+      sha256: "12d0ddd4fc6f72c1e7e8ea834c24ea16b814cf7b4d98724aa2105ea3161770eb"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.3"
+    version: "0.0.7"
   flutter_platform_widgets:
     dependency: "direct main"
     description:
