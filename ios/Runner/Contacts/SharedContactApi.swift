@@ -35,11 +35,11 @@ class SharedContactsApi: NSObject, SharedContacts {
         let newHash = contactsData?.hashValue
         let oldHash = userDefaults?.integer(forKey: AppConstants.contactsHashKey)
 
-        if newHash != oldHash, let callDirectoryExtensionIdentifier = AppConstants.callDirectoryExtensionIdentifier {
+        if newHash != oldHash {
             userDefaults?.set(contactsData, forKey: AppConstants.contactsDataKey)
             userDefaults?.set(newHash, forKey: AppConstants.contactsHashKey)
 
-            CXCallDirectoryManager.sharedInstance.reloadExtension(withIdentifier: callDirectoryExtensionIdentifier) { error in
+            CXCallDirectoryManager.sharedInstance.reloadExtension(withIdentifier: AppConstants.callDirectoryExtensionIdentifier) { error in
                 if let error = error {
                     print("Error reloading extension: \(error)")
                 } else {

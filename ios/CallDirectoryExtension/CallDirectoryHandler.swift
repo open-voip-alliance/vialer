@@ -26,7 +26,6 @@ class CallDirectoryHandler: CXCallDirectoryProvider {
                                                 label: entry.displayName)
             }
         }
-        
 
         context.completeRequest()
     }
