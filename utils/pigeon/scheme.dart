@@ -15,6 +15,28 @@ abstract class ContactSortHostApi {
   ContactSort getSorting();
 }
 
+class NativePhoneNumber {
+  String phoneNumberFlat;
+  String phoneNumberWithoutCallingCode;
+
+  NativePhoneNumber(
+      {required this.phoneNumberFlat,
+      required this.phoneNumberWithoutCallingCode});
+}
+
+class NativeSharedContact {
+  List<NativePhoneNumber?> phoneNumbers;
+  String displayName;
+
+  NativeSharedContact({required this.phoneNumbers, required this.displayName});
+}
+
+@HostApi()
+// ignore:one_member_abstracts
+abstract class SharedContacts {
+  void processSharedContacts(List<NativeSharedContact> contacts);
+}
+
 /// Allow logging to be performed natively, this allows us to bypass the
 /// conversion from native to Dart and the associated overhead.
 @HostApi()

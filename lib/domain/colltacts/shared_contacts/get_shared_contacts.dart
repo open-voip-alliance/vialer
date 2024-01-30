@@ -1,3 +1,5 @@
+import 'package:vialer/app/util/pigeon.dart';
+
 import '../../../app/util/synchronized_task.dart';
 import '../../../dependency_locator.dart';
 import '../../legacy/storage.dart';
@@ -11,15 +13,44 @@ class GetSharedContactsUseCase extends UseCase {
       dependencyLocator<SharedContactsRepository>();
   late final _getUser = GetLoggedInUserUseCase();
   late final _storage = dependencyLocator<StorageRepository>();
+  late final _nativeSharedContacts = SharedContacts();
 
   Future<List<SharedContact>> call({
     bool forceSharedContactsRefresh = false,
   }) async {
     final cachedSharedContacts = _storage.sharedContacts;
+    final sharedContacts =
+        cachedSharedContacts.isEmpty || forceSharedContactsRefresh
+            ? await _fetchSharedContacts()
+            : cachedSharedContacts;
 
-    return cachedSharedContacts.isEmpty || forceSharedContactsRefresh
-        ? await _fetchSharedContacts()
-        : cachedSharedContacts;
+    _processNativeSharedContacts(sharedContacts);
+
+    return sharedContacts;
+  }
+
+  /// Processes the native shared contacts by converting them into a list of [NativeSharedContact] objects
+  /// and passing them to the [_nativeSharedContacts.processSharedContacts] method.
+  ///
+  /// The [sharedContacts] parameter is a list of [SharedContact] objects representing the shared contacts
+  /// to be processed.
+  void _processNativeSharedContacts(List<SharedContact> sharedContacts) {
+    _nativeSharedContacts.processSharedContacts(
+      sharedContacts
+          .map(
+            (contact) => NativeSharedContact(
+              phoneNumbers: contact.phoneNumbers
+                  .map((phoneNumber) => NativePhoneNumber(
+                        phoneNumberFlat: phoneNumber.phoneNumberFlat,
+                        phoneNumberWithoutCallingCode:
+                            phoneNumber.withoutCallingCode,
+                      ))
+                  .toList(),
+              displayName: contact.displayName,
+            ),
+          )
+          .toList(),
+    );
   }
 
   Future<List<SharedContact>> _fetchSharedContacts() async =>
