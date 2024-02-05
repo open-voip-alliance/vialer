@@ -15,7 +15,7 @@ abstract class ThirdPartyRegistrar {
   @singleton
   EventBusObserver getEventBusObserver(EventBus eventBus) => eventBus.stream;
 
-  @singleton
+  @preResolve
   Future<SharedPreferences> get sharedPreferences =>
       SharedPreferences.getInstance();
 }

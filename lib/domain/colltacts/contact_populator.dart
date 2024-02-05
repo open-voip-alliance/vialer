@@ -1,48 +1,57 @@
 import 'package:injectable/injectable.dart';
+import 'package:vialer/domain/call_records/item.dart';
+import 'package:vialer/domain/colltacts/shared_contacts/shared_contact.dart';
 
 import '../call_records/call_record.dart';
+import '../legacy/storage.dart';
 import 'contact.dart';
 import 'contact_repository.dart';
 
 @singleton
 class CallRecordContactPopulator {
-  const CallRecordContactPopulator(this._contactsRepository);
+  const CallRecordContactPopulator(
+    this._contactsRepository,
+    this._storageRepository,
+  );
 
   final ContactRepository _contactsRepository;
+  final StorageRepository _storageRepository;
 
   Future<List<CallRecordWithContact>> populate(
     List<CallRecord> callRecords,
   ) async {
-    final contacts = await getContactPhoneNumberMap();
+    final contacts = await _getContactPhoneNumberMap();
+    final sharedContacts = await _getSharedContactPhoneNumberMap();
 
-    return callRecords
-        .map(
-          (call) => call.withContact(
-            contacts.findContactForAllVariations(call.lookupVariations),
-          ),
-        )
-        .toList();
+    return callRecords.map((call) {
+      final contact = contacts.findForVariations(call.lookupVariations) ??
+          sharedContacts.findForVariations(call.lookupVariations);
+
+      return call.withContact(contact);
+    }).toList();
   }
 
   Future<List<ClientCallRecordWithContact>> populateForClientCalls(
     List<ClientCallRecord> callRecords,
   ) async {
-    final contacts = await getContactPhoneNumberMap();
+    final contacts = await _getContactPhoneNumberMap();
+    final sharedContacts = await _getSharedContactPhoneNumberMap();
 
     return callRecords.map(
       (call) {
-        final callerVariations = call.createVariations(
-          call.caller.number,
-        );
+        final callerVariations = call.createVariations(call.caller.number);
         final destinationVariations = call.createVariations(
           call.destination.number,
         );
 
+        final caller = contacts.findForVariations(callerVariations) ??
+            sharedContacts.findForVariations(callerVariations);
+        final destination = contacts.findForVariations(destinationVariations) ??
+            sharedContacts.findForVariations(destinationVariations);
+
         return call.withContact(
-          callerContact: contacts.findContactForAllVariations(callerVariations),
-          destinationContact: contacts.findContactForAllVariations(
-            destinationVariations,
-          ),
+          callerContact: caller,
+          destinationContact: destination,
         );
       },
     ).toList();
@@ -50,7 +59,7 @@ class CallRecordContactPopulator {
 
   /// Retrieve a mapping between a phone number and a contact, this allows for
   /// optimized look-up of contacts.
-  Future<Map<String, Contact>> getContactPhoneNumberMap() async {
+  Future<Map<String, Contact>> _getContactPhoneNumberMap() async {
     final contacts = await _contactsRepository.getContacts();
     final map = <String, Contact>{};
 
@@ -74,10 +83,26 @@ class CallRecordContactPopulator {
 
     return map;
   }
+
+  Future<Map<String, Contact>> _getSharedContactPhoneNumberMap() async {
+    final contacts = await _storageRepository.sharedContacts;
+    final map = <String, Contact>{};
+
+    for (final sharedContact in contacts) {
+      for (final item in sharedContact.phoneNumbers) {
+        final contact = sharedContact.toContact();
+
+        map[item.phoneNumberFlat] = contact;
+        map[item.withoutCallingCode] = contact;
+      }
+    }
+
+    return map;
+  }
 }
 
 extension on Map<String, Contact> {
-  Contact? findContactForAllVariations(List<String> variations) {
+  Contact? findForVariations(List<String> variations) {
     for (final number in variations) {
       final contact = this[number];
 
@@ -88,6 +113,27 @@ extension on Map<String, Contact> {
 
     return null;
   }
+}
+
+extension on SharedContact {
+  Contact toContact() => Contact(
+        givenName: givenName,
+        middleName: '',
+        familyName: familyName,
+        chosenName: displayName,
+        avatarPath: null,
+        phoneNumbers: phoneNumbers
+            .map(
+              (e) => Item(
+                label: '',
+                value: e.phoneNumberFlat,
+              ),
+            )
+            .toList(),
+        emails: [],
+        identifier: id,
+        company: companyName,
+      );
 }
 
 extension on CallRecord {
