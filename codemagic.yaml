@@ -218,6 +218,7 @@ workflows:
         IOS_SIGNING_TYPE: "IOS_APP_DEVELOPMENT"
         ENABLE_IOS_SANDBOX_PUSH_NOTIFICATIONS: "true"
         FINALIZE_SENTRY_RELEASE: "false"
+        FEATURE_SET_AVAILABLE_FOR_COLLEAGUES_STATUS: "true"
     triggering:
       cancel_previous_builds: true
       events:
