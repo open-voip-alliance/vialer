@@ -103,11 +103,12 @@ class _DestinationDropdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StylizedDropdown<Destination>(
-      value: currentDestination ?? relevantDestinations.firstOrNull,
+      value: (currentDestination ?? relevantDestinations.firstOrNull)
+          ?.toDestinationObject(),
       items: relevantDestinations
           .map(
             (destination) => DropdownMenuItem<Destination>(
-              value: destination,
+              value: destination.toDestinationObject(),
               child: _DestinationDropdownItem(destination),
               enabled: destination.isOnline,
             ),
