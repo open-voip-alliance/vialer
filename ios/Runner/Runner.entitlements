@@ -6,7 +6,7 @@
 	<string>development</string>
 	<key>com.apple.security.application-groups</key>
 	<array>
-		<string>group.com.voipgrid.vialer</string>
+		<string>group.com.voipgrid.vialer.contacts</string>
 	</array>
 	<key>com.apple.security.cs.allow-jit</key>
 	<true/>

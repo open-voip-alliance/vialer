@@ -9,9 +9,13 @@
 import Foundation
 
 struct AppConstants {
-    static let bundleIdentifier = Bundle.main.bundleIdentifier ?? "default"
-    static let appGroupIdentifier = "group." + bundleIdentifier
-    static let callDirectoryExtensionIdentifier = bundleIdentifier + ".CallDirectoryExtension"
+    static let appGroupIdentifier: String? = {
+        return Bundle.main.object(forInfoDictionaryKey: "App Group identifier") as? String
+    }()
+    static let callDirectoryExtensionIdentifier: String? = {
+        return Bundle.main.object(forInfoDictionaryKey: "Call Directory extension identifier") as? String
+    }()
+    
     static let contactsDataKey = "contactsData"
     static let contactsHashKey = "contactsHash"
 }

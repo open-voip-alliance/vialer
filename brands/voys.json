@@ -2,6 +2,8 @@
   "identifier": "voys",
   "appId": "com.voys.app",
   "appName": "Voys",
+  "appGroup": "group.com.voys.app.contacts",
+  "callDirectoryExtension": "com.voys.app.CallDirectoryExtension",
   "url": "https://freedom.voys.nl",
   "aboutUrl": "https://www.voys.nl/hulp/toestellen/voys-4g-app/",
   "middlewareUrl": "https://vialerpush.voipgrid.nl",

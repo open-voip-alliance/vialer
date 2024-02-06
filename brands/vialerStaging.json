@@ -1,6 +1,8 @@
 {
   "identifier": "vialerStaging",
   "appId": "com.voipgrid.vialer",
+  "appGroup": "group.com.voipgrid.vialer.contacts",
+  "callDirectoryExtension": "com.voipgrid.vialer.CallDirectoryExtension",
   "appName": "Vialer Staging",
   "url": "https://staging.voipgrid.nl",
   "middlewareUrl": "https://vialerpush-staging.voipgrid.nl",

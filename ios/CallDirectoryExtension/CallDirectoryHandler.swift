@@ -16,11 +16,15 @@ class CallDirectoryHandler: CXCallDirectoryProvider {
         
         context.removeAllIdentificationEntries()
         
+        /**
+         Adds identification entries to the call directory context based on the contacts stored in UserDefaults.
+
+         - Parameters:
+            - context: The call directory context.
+         */
         let userDefaults = UserDefaults(suiteName: AppConstants.appGroupIdentifier)
-        
         if let contactsData = userDefaults?.data(forKey: AppConstants.contactsDataKey) {
             guard let contacts = try? JSONDecoder().decode([CodableSharedContact].self, from: contactsData) else { return }
-
             for entry in contacts {
                 context.addIdentificationEntry(withNextSequentialPhoneNumber: entry.phoneNumber,
                                                 label: entry.displayName)
