@@ -38,18 +38,25 @@ void main(List<String> arguments) async {
     var contents = await file.readAsString();
 
     for (final replacement in replacements.entries) {
-      for (final candidate in replacement.value) {
-        contents = contents.replaceAllMapped(
-          candidate,
-          (match) =>
-              replacement.key +
-              (match[0]?.endsWith('.CallDirectoryExtension') ?? false
-                  ? '.CallDirectoryExtension'
-                  : ''),
-        );
-      }
+      contents = replaceCandidate(replacement, contents);
     }
 
     await file.writeAsString(contents);
   }
+}
+
+String appendExtensionIfNecessary(String? match) {
+  const extension = '.CallDirectoryExtension';
+  return (match?.endsWith(extension) ?? false) ? extension : '';
+}
+
+String replaceCandidate(
+    MapEntry<String, List<RegExp>> replacement, String contents) {
+  for (final candidate in replacement.value) {
+    contents = contents.replaceAllMapped(
+      candidate,
+      (match) => replacement.key + appendExtensionIfNecessary(match[0]),
+    );
+  }
+  return contents;
 }

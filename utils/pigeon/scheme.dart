@@ -19,9 +19,10 @@ class NativePhoneNumber {
   String phoneNumberFlat;
   String phoneNumberWithoutCallingCode;
 
-  NativePhoneNumber(
-      {required this.phoneNumberFlat,
-      required this.phoneNumberWithoutCallingCode});
+  NativePhoneNumber({
+    required this.phoneNumberFlat,
+    required this.phoneNumberWithoutCallingCode,
+  });
 }
 
 class NativeSharedContact {
