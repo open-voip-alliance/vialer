@@ -40,11 +40,13 @@ class GetSharedContactsUseCase extends UseCase {
           .map(
             (contact) => NativeSharedContact(
               phoneNumbers: contact.phoneNumbers
-                  .map((phoneNumber) => NativePhoneNumber(
-                        phoneNumberFlat: phoneNumber.phoneNumberFlat,
-                        phoneNumberWithoutCallingCode:
-                            phoneNumber.withoutCallingCode,
-                      ))
+                  .map(
+                    (phoneNumber) => NativePhoneNumber(
+                      phoneNumberFlat: phoneNumber.phoneNumberFlat,
+                      phoneNumberWithoutCallingCode:
+                          phoneNumber.withoutCallingCode,
+                    ),
+                  )
                   .toList(),
               displayName: contact.displayName,
             ),
