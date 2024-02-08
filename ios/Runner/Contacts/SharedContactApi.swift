@@ -35,7 +35,7 @@ class SharedContactsApi: NSObject, SharedContacts {
         
         let contactsData = try? JSONEncoder().encode(sortedContacts)
 
-        let newHash = contactsData?.hashValue
+        let newHash = createHash(sortedContacts)
         let oldHash = userDefaults?.integer(forKey: AppConstants.contactsHashKey)
 
         // Compare hashes to avoid unnecessary updates
@@ -51,4 +51,15 @@ class SharedContactsApi: NSObject, SharedContacts {
          }
     }
 }
- 
+
+/// Calculates the hash value for an array of CodableSharedContact objects.
+/// - Parameter contacts: An array of CodableSharedContact objects.
+/// - Returns: The hash value calculated for the array of contacts.
+private func createHash(_ contacts: [CodableSharedContact]) -> Int {
+    var hasher = Hasher()
+    for contact in contacts {
+        hasher.combine(contact.phoneNumber)
+        hasher.combine(contact.displayName)
+    }
+    return hasher.finalize()
+}
