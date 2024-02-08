@@ -28,7 +28,7 @@ class AvailabilityStatusButton extends StatelessWidget {
     final strings = context.msg.main.colleagues.status;
     final colors = context.brand.theme.colors;
 
-    if (isRingingDeviceOffline && type == UserAvailabilityStatus.online) {
+    if (type == current && isRingingDeviceOffline && type.isOnlineOrSimilar) {
       return (
         strings.availableRingingDeviceOffline,
         FontAwesomeIcons.circleExclamation,
@@ -96,4 +96,14 @@ class AvailabilityStatusButton extends StatelessWidget {
       ),
     );
   }
+}
+
+extension on UserAvailabilityStatus {
+  /// There are multiple similar statuses to [UserAvailabilityStatus.online]
+  /// that we want to handle in similar ways. This will return [true] if this
+  /// status is any that should be considered as "online".
+  bool get isOnlineOrSimilar => [
+        UserAvailabilityStatus.online,
+        UserAvailabilityStatus.availableForColleagues,
+      ].contains(this);
 }
