@@ -30,7 +30,7 @@ const messagesLocalizationMap = {
 };
 
 /// The path to where the messages.yaml files are stored.
-const messagesFileDirectory = 'lib/app/resources/';
+const messagesFileDirectory = 'lib/presentation/resources/';
 
 const rawReleaseNotesPath = 'release_notes';
 

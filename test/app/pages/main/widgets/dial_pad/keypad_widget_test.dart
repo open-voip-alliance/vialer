@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:vialer/app/pages/main/widgets/dial_pad/keypad.dart';
-import 'package:vialer/app/resources/localizations.dart';
-import 'package:vialer/app/resources/theme.dart';
-import 'package:vialer/app/widgets/brand_provider/widget.dart';
-import 'package:vialer/domain/user/brand.dart';
+import 'package:vialer/data/models/user/brand.dart';
+import 'package:vialer/presentation/resources/localizations.dart';
+import 'package:vialer/presentation/resources/theme.dart';
+import 'package:vialer/presentation/shared/widgets/brand_provider/widget.dart';
+import 'package:vialer/presentation/shared/widgets/dial_pad/keypad.dart';
 
 void main() {
   final textController = TextEditingController();

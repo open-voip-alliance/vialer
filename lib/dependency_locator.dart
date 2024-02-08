@@ -3,9 +3,8 @@ import 'dart:async';
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 
-import 'app/util/debug.dart';
-
 import 'dependency_locator.config.dart';
+import 'presentation/util/debug.dart';
 
 final dependencyLocator = GetIt.instance;
 

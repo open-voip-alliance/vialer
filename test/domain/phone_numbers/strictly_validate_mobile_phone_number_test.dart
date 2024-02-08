@@ -1,9 +1,8 @@
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
-import 'package:vialer/domain/phone_numbers/phone_number_repository.dart';
-import 'package:vialer/domain/phone_numbers/phone_number_service.dart';
-import 'package:vialer/domain/phone_numbers/strictly_validate_mobile_phone_number.dart';
+import 'package:vialer/data/API/opening_hours_basic/phone_number_service.dart';
+import 'package:vialer/data/repositories/phone_numbers/phone_number_repository.dart';
+import 'package:vialer/domain/usecases/phone_numbers/strictly_validate_mobile_phone_number.dart';
 
 void main() {
   GetIt.instance
@@ -43,4 +42,3 @@ void expectsNumberToBeInvalid(String description, String number) {
     expect(await StrictlyValidateMobilePhoneNumber()(number), false);
   });
 }
-

@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:test/test.dart';
-import 'package:vialer/app/util/synchronized_task.dart';
+import 'package:vialer/presentation/util/synchronized_task.dart';
 
 void main() {
   test('A task only executes the first future if already running', () async {

@@ -3,13 +3,13 @@ import 'dart:async';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
-import 'package:vialer/domain/call_records/call_record.dart';
-import 'package:vialer/domain/call_records/item.dart';
-import 'package:vialer/domain/colltacts/contact.dart';
-import 'package:vialer/domain/colltacts/contact_populator.dart';
-import 'package:vialer/domain/colltacts/contact_repository.dart';
-import 'package:vialer/domain/colltacts/shared_contacts/shared_contact.dart';
-import 'package:vialer/domain/legacy/storage.dart';
+import 'package:vialer/data/models/call_records/call_record.dart';
+import 'package:vialer/data/models/call_records/item.dart';
+import 'package:vialer/data/models/colltacts/contact.dart';
+import 'package:vialer/data/models/colltacts/contact_populator.dart';
+import 'package:vialer/data/models/colltacts/shared_contacts/shared_contact.dart';
+import 'package:vialer/data/repositories/colltacts/contact_repository.dart';
+import 'package:vialer/data/repositories/legacy/storage.dart';
 
 @GenerateNiceMocks([MockSpec<ContactRepository>()])
 @GenerateNiceMocks([MockSpec<StorageRepository>()])
@@ -60,10 +60,9 @@ void main() {
 
   test('External number matches shared contact without country code', () {
     _expectsToMatchContact(
-      numberInCallRecord: externalNumber,
-      numbersInContacts: [],
-      numbersInSharedContacts: ['0640366644']
-    );
+        numberInCallRecord: externalNumber,
+        numbersInContacts: [],
+        numbersInSharedContacts: ['0640366644']);
   });
 
   test('Internal number does not match with country code', () {
@@ -195,9 +194,9 @@ Contact _generateDummyContact(String number) => Contact(
     );
 
 SharedContact _generateDummySharedContact(String number) => SharedContact(
-  givenName: 'Foo',
-  familyName: 'Baz',
-  companyName: 'acme',
-  phoneNumbers: [SharedContactPhoneNumber(phoneNumberFlat: number)],
-  id: '123',
-);
+      givenName: 'Foo',
+      familyName: 'Baz',
+      companyName: 'acme',
+      phoneNumbers: [SharedContactPhoneNumber(phoneNumberFlat: number)],
+      id: '123',
+    );
