@@ -13,9 +13,9 @@
   "openingHoursBasicUrl": "https://api.prod.holodeck.spindle.dev/opening-hours-basic/client/",
   "privacyPolicyUrl": "https://www.voys.nl/app-privacy/",
   "signUpUrl": "https://www.voys.nl/samenstellen/",
-  "userAvailabilityWsUrl": "wss://api.prod.holodeck.spindle.dev/user-availability-ws/ws",
   "availabilityServiceUrl": "https://api.prod.holodeck.spindle.dev/dnd-service",
   "sharedContactsUrl": "https://contacts.spindle.dev/contacts/",
   "phoneNumberValidationUrl": "https://phonenumbers.spindle.dev",
-  "featureAnnouncementsUrl": "https://api.prod.holodeck.spindle.dev/feature-announcements/"
+  "featureAnnouncementsUrl": "https://api.prod.holodeck.spindle.dev/feature-announcements/",
+  "resgateUrl": "wss://resgate.prod.holodeck.spindle.dev"
 }

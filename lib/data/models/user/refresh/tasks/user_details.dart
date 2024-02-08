@@ -21,6 +21,8 @@ class RefreshUserDetails extends UserRefreshTaskPerformer {
   Future<UserMutator> performUserRefreshTask(User user) async {
     final userDetails = await _userDetails.getUserDetails();
 
+    if (userDetails == null) return unmutatedUser;
+
     _storeSelectedDestinationId(userDetails);
 
     return (User user) {
