@@ -48,6 +48,7 @@ lib/generated_plugin_registrant.dart
 *.i18n.dart
 *.vialer.dart
 *.config.dart
+*pigeon.dart
 lib/presentation/util/pigeon.dart
 ios/Runner/pigeon.h
 ios/Runner/pigeon.m
