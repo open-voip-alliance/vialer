@@ -1,0 +1,9 @@
+import '../../../data/repositories/legacy/storage.dart';
+import '../../../dependency_locator.dart';
+import '../use_case.dart';
+
+class ResetAppRatingSurveyActionCountUseCase extends UseCase {
+  final _storageRepository = dependencyLocator<StorageRepository>();
+
+  void call() => _storageRepository.appRatingSurveyActionCount = 0;
+}

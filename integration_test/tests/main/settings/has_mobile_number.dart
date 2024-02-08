@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:vialer/app/pages/main/settings/page.dart';
+import 'package:vialer/presentation/features/settings/pages/settings.dart';
 
 import '../../../util.dart';
 

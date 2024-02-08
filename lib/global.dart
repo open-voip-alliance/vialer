@@ -1,5 +1,6 @@
 import 'package:vialer/dependency_locator.dart';
-import 'package:vialer/domain/metrics/metrics.dart';
+
+import 'data/repositories/metrics/metrics.dart';
 
 // This file will contain a limited amount of global helper functions, these
 // should mainly be reserved for developer-level interactions rather than

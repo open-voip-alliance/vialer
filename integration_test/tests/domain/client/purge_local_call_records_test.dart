@@ -2,11 +2,11 @@ import 'dart:async';
 
 import 'package:drift/drift.dart';
 import 'package:test/test.dart';
+import 'package:vialer/data/models/call_records/call_record.dart';
+import 'package:vialer/data/models/call_records/client/database/client_calls.dart';
+import 'package:vialer/data/repositories/call_records/client/local_client_calls.dart';
 import 'package:vialer/dependency_locator.dart';
-import 'package:vialer/domain/authentication/logout.dart';
-import 'package:vialer/domain/call_records/call_record.dart';
-import 'package:vialer/domain/call_records/client/database/client_calls.dart';
-import 'package:vialer/domain/call_records/client/local_client_calls.dart';
+import 'package:vialer/domain/usecases/authentication/logout.dart';
 
 import '../../../../integration_test/util.dart';
 

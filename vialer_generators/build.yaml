@@ -4,7 +4,7 @@ targets:
       vialer_generators:colorsGeneratorBuilder:
         enabled: true
         generate_for:
-          - lib/app/resources/theme/colors.dart
+          - lib/presentation/resources/theme/colors.dart
 
 builders:
   colorsGeneratorBuilder:

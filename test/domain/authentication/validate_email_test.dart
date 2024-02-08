@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:vialer/domain/authentication/validate_email.dart';
+import 'package:vialer/domain/usecases/authentication/validate_email.dart';
 
 void main() {
   final _validateEmail = ValidateEmail();

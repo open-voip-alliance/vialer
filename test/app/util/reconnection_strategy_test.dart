@@ -1,5 +1,5 @@
 import 'package:test/test.dart';
-import 'package:vialer/app/util/reconnection_strategy.dart';
+import 'package:vialer/presentation/util/reconnection_strategy.dart';
 
 void main() {
   test(

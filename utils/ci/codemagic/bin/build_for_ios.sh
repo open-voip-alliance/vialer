@@ -10,7 +10,7 @@ app-store-connect fetch-signing-files "$BUNDLE_ID" \
 keychain add-certificates
 xcode-project use-profiles
 flutter build ipa --release \
---target=lib/app/main.dart \
+--target=lib/presentation/main.dart \
 --export-options-plist=/Users/builder/export_options.plist \
 --build-number="$BUILD_NR" \
 --dart-define-from-file="brands/$BRAND.json" \
