@@ -109,6 +109,7 @@
 		8F30C2052B67D21C008EB39F /* SharedContactApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedContactApi.swift; sourceTree = "<group>"; };
 		8F30C2072B67D387008EB39F /* CodableSharedContact.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodableSharedContact.swift; sourceTree = "<group>"; };
 		8F30C20E2B69287B008EB39F /* AppConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConstants.swift; sourceTree = "<group>"; };
+		8F9961B12B750B5A0041FD2D /* Brand.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Brand.xcconfig; path = Flutter/Brand.xcconfig; sourceTree = "<group>"; };
 		9740EEB21CF90195004384FC /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Debug.xcconfig; path = Flutter/Debug.xcconfig; sourceTree = "<group>"; };
 		9740EEB31CF90195004384FC /* Generated.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Generated.xcconfig; path = Flutter/Generated.xcconfig; sourceTree = "<group>"; };
 		97C146EE1CF9000F007C117D /* Runner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Runner.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -198,6 +199,7 @@
 		9740EEB11CF90186004384FC /* Flutter */ = {
 			isa = PBXGroup;
 			children = (
+				8F9961B12B750B5A0041FD2D /* Brand.xcconfig */,
 				9740EEB21CF90195004384FC /* Debug.xcconfig */,
 				7AFA3C8E1D35360C0083082E /* Release.xcconfig */,
 				9740EEB31CF90195004384FC /* Generated.xcconfig */,
@@ -838,6 +840,7 @@
 		};
 		8F30C1FF2B67AC33008EB39F /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8F9961B12B750B5A0041FD2D /* Brand.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -881,6 +884,7 @@
 		};
 		8F30C2002B67AC33008EB39F /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8F9961B12B750B5A0041FD2D /* Brand.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -922,6 +926,7 @@
 		};
 		8F30C2012B67AC33008EB39F /* Profile */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8F9961B12B750B5A0041FD2D /* Brand.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
