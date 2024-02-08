@@ -42,25 +42,16 @@ class AvailabilityStatusPicker extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         AvailabilityHeader(context.msg.ua.mobile.statusLabel),
-        if (!isRingingDeviceOffline)
-          AvailabilityStatusButton(
-            UserAvailabilityStatus.online,
-            current: userAvailabilityStatus,
-            enabled: enabled,
-            onStatusChanged: onStatusChanged,
-            isRingingDeviceOffline: isRingingDeviceOffline,
-          ),
+        AvailabilityStatusButton(
+          UserAvailabilityStatus.online,
+          current: userAvailabilityStatus,
+          enabled: enabled,
+          onStatusChanged: onStatusChanged,
+          isRingingDeviceOffline: isRingingDeviceOffline,
+        ),
         if (_shouldShowAvailableForColleaguesButton)
           AvailabilityStatusButton(
             UserAvailabilityStatus.availableForColleagues,
-            current: userAvailabilityStatus,
-            enabled: enabled,
-            onStatusChanged: onStatusChanged,
-            isRingingDeviceOffline: isRingingDeviceOffline,
-          ),
-        if (isRingingDeviceOffline)
-          AvailabilityStatusButton(
-            UserAvailabilityStatus.online,
             current: userAvailabilityStatus,
             enabled: enabled,
             onStatusChanged: onStatusChanged,
