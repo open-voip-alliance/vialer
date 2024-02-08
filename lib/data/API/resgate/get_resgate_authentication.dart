@@ -25,7 +25,7 @@ class GetResgateAuthentication extends UseCase {
   ResgateAuthentication? call() => _isOnboarded
       ? ResgateAuthentication(
           url: _brand.resgateUrl,
-          token: _user.token ?? '',
+          token: _user.token!,
         )
       : null;
 }

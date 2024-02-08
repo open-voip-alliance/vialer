@@ -109,8 +109,9 @@ class Resgate with Loggable {
     final resgate = _resgate!;
 
     for (final entry in _listenersAndDeserializers.entries) {
-      final items =
-          await resgate.getItems(entry.listener.resourceToSubscribeTo);
+      final items = await resgate.getItems(
+        entry.listener.resourceToSubscribeTo,
+      );
 
       for (final item in items) {
         await _callListenerForItem(entry, item);
