@@ -18,11 +18,11 @@ class Brand with _$Brand {
     required Uri openingHoursBasicUrl,
     required Uri privacyPolicyUrl,
     required Uri? signUpUrl,
-    required Uri userAvailabilityWsUrl,
     required Uri availabilityServiceUrl,
     required Uri sharedContactsUrl,
     required Uri phoneNumberValidationUrl,
     required Uri featureAnnouncementsUrl,
+    required Uri resgateUrl,
   }) = _Brand;
 
   const Brand._();
