@@ -62,7 +62,7 @@ class Resgate with Loggable {
         return;
       }
       logger.warning(log);
-      await _disconnect(reason: RelationsWebSocketCloseReason.remote);
+      await _disconnect(reason: ResgateCloseReason.remote);
       await _attemptReconnect();
     }
 
@@ -182,7 +182,7 @@ class Resgate with Loggable {
   }
 
   Future<void> _disconnect({
-    RelationsWebSocketCloseReason reason = RelationsWebSocketCloseReason.local,
+    ResgateCloseReason reason = ResgateCloseReason.local,
     bool shouldUpdateListeners = true,
   }) async {
     logger.info('Disconnecting from Resgate');
@@ -236,7 +236,7 @@ class Resgate with Loggable {
 typedef ListenerCallback = Future<void> Function(ResgateListener);
 
 /// Indicates the reason why the `_controller` has been closed.
-enum RelationsWebSocketCloseReason {
+enum ResgateCloseReason {
   /// We closed the socket, likely to refresh it.
   local,
 
@@ -254,9 +254,7 @@ extension on ResClient {
       params: {'token': credentials.token},
     );
   }
-}
 
-extension on ResClient {
   // Normalizes a model or collection into a collection so we can handle both
   // of these in a similar way.
   Future<List<ResModel>> getItems(String rid) async {
