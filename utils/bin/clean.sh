@@ -56,18 +56,6 @@ main() {
     echo "Deleting empty directories in directory: $current_dir"
     # Recursively delete empty directories
     delete_empty_directories "$current_dir"
-
-    # Run the specified dart command
-    if [[ "$dry_run" == false ]]; then
-        echo "Running generators again"
-        flutter clean
-        flutter pub get
-        utils/bin/pigeon.sh
-        utils/bin/strings.sh
-        dart run build_runner build --delete-conflicting-outputs
-        dart run build_runner build --delete-conflicting-outputs
-        echo "It is complete!"
-    fi
 }
 
 # Call the main function with arguments
