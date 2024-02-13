@@ -15,28 +15,48 @@ void main(List<String> arguments) async {
   final iosTeamId = arguments[0];
   final iosBundleId = arguments[1];
 
-  const filePath = 'ios/Runner.xcodeproj/project.pbxproj';
+  final filePaths = [
+    'ios/Runner.xcodeproj/project.pbxproj',
+    'ios/Runner/Runner.entitlements',
+    'ios/CallDirectoryExtension/CallDirectoryExtension.entitlements',
+  ];
+
   final replacements = {
     iosTeamId: [
       RegExp(r'(?<=DevelopmentTeam = )\w+'),
       RegExp(r'(?<=DEVELOPMENT_TEAM = )\w+'),
     ],
     iosBundleId: [
-      RegExp(r'(?<=PRODUCT_BUNDLE_IDENTIFIER = )[\w.]+(?=;)'),
+      RegExp(
+          r'(?<=PRODUCT_BUNDLE_IDENTIFIER = )[\w.]+(?=\.CallDirectoryExtension;|;)'),
+      RegExp(r'(?<=<string>group.)[\w.]+(?=\.contacts</string>)'),
     ]
   };
 
-  final file = File(filePath);
-  var contents = await file.readAsString();
+  for (final filePath in filePaths) {
+    final file = File(filePath);
+    var contents = await file.readAsString();
 
-  for (final replacement in replacements.entries) {
-    for (final candidate in replacement.value) {
-      contents = contents.replaceAllMapped(
-        candidate,
-        (match) => replacement.key,
-      );
+    for (final replacement in replacements.entries) {
+      contents = replaceCandidate(replacement, contents);
     }
-  }
 
-  await file.writeAsString(contents);
+    await file.writeAsString(contents);
+  }
+}
+
+String appendExtensionIfNecessary(String? match) {
+  const extension = '.CallDirectoryExtension';
+  return (match?.endsWith(extension) ?? false) ? extension : '';
+}
+
+String replaceCandidate(
+    MapEntry<String, List<RegExp>> replacement, String contents) {
+  for (final candidate in replacement.value) {
+    contents = contents.replaceAllMapped(
+      candidate,
+      (match) => replacement.key + appendExtensionIfNecessary(match[0]),
+    );
+  }
+  return contents;
 }

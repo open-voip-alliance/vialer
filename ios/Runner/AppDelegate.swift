@@ -73,6 +73,7 @@ import UserNotifications
         SetUpCallScreenBehavior(controller.binaryMessenger, CallScreenBehaviorApi())
         SetUpTones(controller.binaryMessenger, SystemTones())
         SetUpContacts(controller.binaryMessenger, ContactImporter(logger: logger))
+        SetUpSharedContacts(controller.binaryMessenger, SharedContactsApi())
         
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
     }
