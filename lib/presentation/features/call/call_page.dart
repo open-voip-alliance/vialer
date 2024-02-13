@@ -58,6 +58,7 @@ class _CallOrTransferPageState extends State<CallPage> {
               body: Container(
                 alignment: Alignment.center,
                 child: CallProcessStateBuilder(
+                  ignoreCallDurationChanges: true,
                   builder: (context, state) {
                     return CallTransfer(
                       activeCall: state.voipCall!,
