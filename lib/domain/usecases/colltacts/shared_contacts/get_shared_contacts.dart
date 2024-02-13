@@ -1,4 +1,4 @@
-import 'package:vialer/app/util/pigeon.dart';
+import '../../../../presentation/util/pigeon.dart';
 import '../../../../data/models/colltacts/shared_contacts/shared_contact.dart';
 import '../../../../data/repositories/colltacts/shared_contacts/shared_contacts_repository.dart';
 import '../../../../data/repositories/legacy/storage.dart';
