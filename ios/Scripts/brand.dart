@@ -12,6 +12,8 @@ Future<void> main(List<String> arguments) async {
     values: {
       'BUNDLE_NAME': defines['appName']!,
       'BUNDLE_ID': defines['appId']!,
+      'APP_GROUP_IDENTIFIER': defines['appGroup']!,
+      'CALL_DIRECTORY_EXTENSION_IDENTIFIER': defines['callDirectoryExtension']!,
       'MIDDLEWARE_URL': Uri.encodeComponent(defines['middlewareUrl']!),
     },
   );

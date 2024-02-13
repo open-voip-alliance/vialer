@@ -7,7 +7,6 @@ import 'dart:io';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vialer/presentation/util/loggable.dart';
-import 'package:vialer/presentation/util/pigeon.dart';
 
 import '../../../../../data/models/business_availability/temporary_redirect/temporary_redirect_did_change_event.dart';
 import '../../../../../data/models/event/event_bus.dart';
@@ -20,6 +19,7 @@ import '../../../../../domain/usecases/onboarding/request_permission.dart';
 import '../../../../../domain/usecases/user/get_logged_in_user.dart';
 import '../../../../../domain/usecases/user/get_permission_status.dart';
 import '../../../../../domain/usecases/user/settings/open_settings.dart';
+import '../../../../../presentation/util/pigeon.dart';
 import '../../widgets/caller.dart';
 import 'state.dart';
 

@@ -1,6 +1,8 @@
 {
   "identifier": "verbonden",
   "appId": "nl.verbonden.app",
+  "appGroup": "group.nl.verbonden.app.contacts",
+  "callDirectoryExtension": "nl.verbonden.app.CallDirectoryExtension",
   "appName": "Verbonden",
   "url": "https://partner.voipgrid.nl",
   "middlewareUrl": "https://vialerpush.voipgrid.nl",
