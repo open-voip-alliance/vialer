@@ -67,13 +67,13 @@ import UserNotifications
         )
 
         let controller: FlutterViewController = window?.rootViewController as! FlutterViewController
-        SetUpContactSortHostApi(controller.binaryMessenger, ContactSortApi())
-        SetUpNativeLogging(controller.binaryMessenger, logger)
-        SetUpNativeMetrics(controller.binaryMessenger, Metrics())
-        SetUpCallScreenBehavior(controller.binaryMessenger, CallScreenBehaviorApi())
-        SetUpTones(controller.binaryMessenger, SystemTones())
-        SetUpContacts(controller.binaryMessenger, ContactImporter(logger: logger))
-        SetUpSharedContacts(controller.binaryMessenger, SharedContactsApi())
+        ContactSortHostApiSetup.setUp(binaryMessenger: controller.binaryMessenger, api: ContactSortApi())
+        NativeLoggingSetup.setUp(binaryMessenger: controller.binaryMessenger, api: logger)
+        NativeMetricsSetup.setUp(binaryMessenger: controller.binaryMessenger, api: Metrics())
+        CallScreenBehaviorSetup.setUp(binaryMessenger: controller.binaryMessenger, api: CallScreenBehaviorApi())
+        TonesSetup.setUp(binaryMessenger: controller.binaryMessenger, api: SystemTones())
+        ContactsSetup.setUp(binaryMessenger: controller.binaryMessenger, api: ContactImporter(logger: logger))
+        SharedContactsSetup.setUp(binaryMessenger: controller.binaryMessenger, api:  SharedContactsApi())
         
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
     }

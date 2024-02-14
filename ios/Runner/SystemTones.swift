@@ -2,7 +2,7 @@ import Foundation
 import AudioToolbox
 
 class SystemTones: NSObject, Tones {
-    func play(forDigitDigit digit: String, error: AutoreleasingUnsafeMutablePointer<FlutterError?>) {
+    func playForDigit(digit: String) throws {
         guard let char = digit.first else {
             return
         }
@@ -13,6 +13,7 @@ class SystemTones: NSObject, Tones {
 
         AudioServicesPlaySystemSoundWithCompletion(tone, nil)
     }
+
     
     private func toTone(_ char: Character) -> UInt32? {
         switch char {
