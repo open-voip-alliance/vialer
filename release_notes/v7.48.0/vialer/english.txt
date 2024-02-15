@@ -1,0 +1,2 @@
+- iOS: Shared contacts will now be used for incoming calls
+- Fixed a UI bug when displaying a certain user status
