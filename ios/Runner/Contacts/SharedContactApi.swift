@@ -60,11 +60,12 @@ private func createHash(_ contacts: [CodableSharedContact]) -> Int {
 
 extension Set<CodableSharedContact> {
     mutating func add(phoneNumber: String?, forContact contact: NativeSharedContact) {
-        if let phoneNumber = phoneNumber {
-            if let cxCallDirectoryPhoneNumber = CXCallDirectoryPhoneNumber(phoneNumber) {
-                let codableContact = CodableSharedContact(phoneNumber: cxCallDirectoryPhoneNumber, displayName: contact.displayName)
-                insert(codableContact)
-            }
+        guard let phoneNumber = phoneNumber,
+              let cxCallDirectoryPhoneNumber = CXCallDirectoryPhoneNumber(phoneNumber) else {
+            return
         }
+    
+        let codableContact = CodableSharedContact(phoneNumber: cxCallDirectoryPhoneNumber, displayName: contact.displayName)
+        insert(codableContact)
     }
 }
