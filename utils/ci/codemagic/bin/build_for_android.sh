@@ -3,7 +3,7 @@ echo "flutter.sdk=$HOME/programs/flutter" > "$FCI_BUILD_DIR/android/local.proper
 echo "$ANDROID_FIREBASE_SECRET" | base64 --decode > "$FCI_BUILD_DIR"/android/app/google-services.json
 echo "$FCI_KEYSTORE" | base64 --decode > "$FCI_KEYSTORE_PATH"
 flutter build appbundle -v --release \
- --target=lib/app/main.dart \
+ --target=lib/presentation/main.dart \
  --build-number="$BUILD_NR"  \
  --dart-define-from-file="brands/$BRAND.json" \
  --dart-define SEGMENT_ANDROID_KEY="$SEGMENT_ANDROID_WRITE_KEY"

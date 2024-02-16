@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:vialer/app/pages/onboarding/login/page.dart';
-import 'package:vialer/app/pages/onboarding/mobile_number/page.dart';
-import 'package:vialer/app/pages/onboarding/page.dart';
-import 'package:vialer/domain/onboarding/step.dart';
+import 'package:vialer/data/models/onboarding/step.dart';
+import 'package:vialer/presentation/features/onboarding/pages/login/login_page.dart';
+import 'package:vialer/presentation/features/onboarding/pages/mobile_number/mobile_number_page.dart';
+import 'package:vialer/presentation/features/onboarding/widgets/page.dart';
 
 import '../../../util.dart';
 

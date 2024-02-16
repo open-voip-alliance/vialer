@@ -1,6 +1,8 @@
 {
   "identifier": "annabel",
   "appId": "com.bellenmetannabel.app",
+  "appGroup": "group.com.bellenmetannabel.app.contacts",
+  "callDirectoryExtension": "com.bellenmetannabel.app.CallDirectoryExtension",
   "appName": "ANNAbel",
   "url": "https://partner.voipgrid.nl",
   "middlewareUrl": "https://vialerpush.voipgrid.nl",

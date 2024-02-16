@@ -1,0 +1,2 @@
+- iOS: Shared contacts will now be used to look-up the caller for incoming calls. This must be enabled first: Open settings -> phone -> call blocking & identification -> toggle the switch to enable the extension
+- Fixed a UI bug when displaying a certain user status

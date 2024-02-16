@@ -6,6 +6,10 @@
 	<string>$(SANDBOX)</string>
 	<key>MiddlewareUrl</key>
 	<string>$(MIDDLEWARE_URL)</string>
+	<key>App Group identifier</key>
+	<string>$(APP_GROUP_IDENTIFIER)</string>
+	<key>Call Directory extension identifier</key>
+	<string>$(CALL_DIRECTORY_EXTENSION_IDENTIFIER)</string>
 	<key>Segment Key</key>
 	<string>$(SEGMENT_IOS_KEY)</string>
 	<key>NSBonjourServices</key>

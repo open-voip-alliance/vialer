@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:vialer/domain/authentication/validate_password.dart';
+import 'package:vialer/domain/usecases/authentication/validate_password.dart';
 
 void main() {
   final _validatePassword = ValidatePassword();
