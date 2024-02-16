@@ -15,8 +15,7 @@ void main(List<String> arguments) {
   }
 
   // ignore: argument_type_not_assignable_to_error_handler
-  runner.run(arguments).catchError((Exception error) {
-    if (error is! UsageException) throw error;
+  runner.run(arguments).catchError((dynamic error) {
     stdout.write(error);
     exit(64);
   });
