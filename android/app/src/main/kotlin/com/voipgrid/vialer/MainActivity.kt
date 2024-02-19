@@ -89,6 +89,10 @@ class MainActivity : FlutterActivity(), CallScreenBehavior {
                 return status == ConnectionResult.SUCCESS
             }
         })
+
+        SharedContacts.setUp(binaryMessenger, object : SharedContacts {
+            override fun processSharedContacts(contacts: List<NativeSharedContact>) {}
+        })
     }
 
     override fun enable() {
