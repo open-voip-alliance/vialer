@@ -9,7 +9,7 @@ class ContactImporter: NSObject, Contacts {
         self.logger = logger
     }
     
-    func importCacheFilePath(_ cacheFilePath: String, completion: @escaping (FlutterError?) -> Void) {
+    func importContacts(cacheFilePath: String, completion: @escaping (Result<Void, Error>) -> Void) {
         DispatchQueue.global(qos: .background).async {
             let results = self.findAllContacts().map { contact in
                 Contact(
@@ -43,7 +43,7 @@ class ContactImporter: NSObject, Contacts {
                 self.logger.writeLog("Contact importing failed: \(error)")
             }
             
-            completion(nil)
+            completion(Result.success(Void()))
         }
     }
     
@@ -79,7 +79,7 @@ class ContactImporter: NSObject, Contacts {
         }
     }
     
-    func importContactAvatarsAvatarDirectoryPath(_ avatarDirectoryPath: String, completion: @escaping (FlutterError?) -> Void) {
+    func importContactAvatars(avatarDirectoryPath: String, completion: @escaping (Result<Void, Error>) -> Void) {
         DispatchQueue.global(qos: .background).async {
             let contacts = self.findAllContacts(withImages: true)
                 .filter { contact in contact.imageDataAvailable}
@@ -101,9 +101,11 @@ class ContactImporter: NSObject, Contacts {
                     })
             }
             
-            completion(nil)
+            completion(Result.success(Void()))
         }
     }
+    
+    
     
     private func removeOrphanedAvatars(directory: String, validIds: [String]) {
         let files = FileManager.default

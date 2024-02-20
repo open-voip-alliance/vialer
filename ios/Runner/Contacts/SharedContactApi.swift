@@ -2,6 +2,7 @@ import Foundation
 import CallKit
 
 class SharedContactsApi: NSObject, SharedContacts {
+    
     /**
      Processes the shared contacts and updates the call directory extension if necessary.
      
@@ -9,7 +10,7 @@ class SharedContactsApi: NSObject, SharedContacts {
         - contacts: An array of NativeSharedContact objects representing the shared contacts.
         - error: A pointer to a FlutterError object that will be populated with an error if one occurs during the process.
      */
-    func processSharedContactsContacts(_ contacts: [NativeSharedContact], error: AutoreleasingUnsafeMutablePointer<FlutterError?>) {
+    func processSharedContacts(contacts: [NativeSharedContact]) throws {
         let userDefaults = UserDefaults(suiteName: AppConstants.appGroupIdentifier)
 
         // Use a set to avoid duplicates
@@ -18,15 +19,8 @@ class SharedContactsApi: NSObject, SharedContacts {
         // Save both phone numbers with and without calling code to have a better chance of matching incoming calls
         for contact in contacts {
             for phoneNumber in contact.phoneNumbers {
-                if let phoneNumberFlat = CXCallDirectoryPhoneNumber(phoneNumber.phoneNumberFlat) {
-                    let codableContact = CodableSharedContact(phoneNumber: phoneNumberFlat, displayName: contact.displayName)
-                    codableContacts.insert(codableContact)
-                }
-                
-                if let phoneNumberWithoutCallingCode = CXCallDirectoryPhoneNumber(phoneNumber.phoneNumberWithoutCallingCode) {
-                    let codableContact = CodableSharedContact(phoneNumber: phoneNumberWithoutCallingCode, displayName: contact.displayName)
-                    codableContacts.insert(codableContact)
-                }
+                codableContacts.add(phoneNumber: phoneNumber?.phoneNumberFlat, forContact: contact)
+                codableContacts.add(phoneNumber: phoneNumber?.phoneNumberWithoutCallingCode, forContact: contact)
             }
         }
         
@@ -62,4 +56,16 @@ private func createHash(_ contacts: [CodableSharedContact]) -> Int {
         hasher.combine(contact.displayName)
     }
     return hasher.finalize()
+}
+
+extension Set<CodableSharedContact> {
+    mutating func add(phoneNumber: String?, forContact contact: NativeSharedContact) {
+        guard let phoneNumber = phoneNumber,
+              let cxCallDirectoryPhoneNumber = CXCallDirectoryPhoneNumber(phoneNumber) else {
+            return
+        }
+    
+        let codableContact = CodableSharedContact(phoneNumber: cxCallDirectoryPhoneNumber, displayName: contact.displayName)
+        insert(codableContact)
+    }
 }
