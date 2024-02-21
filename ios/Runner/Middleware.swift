@@ -36,19 +36,20 @@ public class Middleware: NSObject, NativeMiddleware, MiddlewareRegistrar {
     }
 
     public func tokenReceived(token: String) {
+        let sandbox = Bundle.main.infoDictionary?["Sandbox"] as? String
         let data = [
             "name": middlewareCredentials.email,
             "token": token,
             "sip_user_id": middlewareCredentials.sipUserId,
             "os_version": UIDevice.current.systemVersion,
-            "client_version": Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String,
-            "app": Bundle.main.bundleIdentifier,
+            "client_version": Bundle.main.infoDictionary?["CFBundleShortVersionString"] as Any,
+            "app": Bundle.main.bundleIdentifier as Any,
             "push_profile": "once",
-            "sandbox": (Bundle.main.infoDictionary?["Sandbox"] as? String) ?? "false",
+            "sandbox": (sandbox?.lowercased() == "true"),
             "remote_notification_token": flutterSharedPreferences.remoteNotificationToken,
-            "dnd": String(false),
+            "dnd": false,
             "app_startup_timestamp": flutterSharedPreferences.loginTime
-        ]
+        ] as [String : Any]
 
         var request = createMiddlewareRequest(email: middlewareCredentials.email, token: middlewareCredentials.loginToken, url: baseUrl + REGISTER_URL)
 
