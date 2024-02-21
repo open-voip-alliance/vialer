@@ -55,11 +55,14 @@ class T9Colltacts extends _$T9Colltacts {
     final colleagues = await _getColleagues();
     final sharedContacts = await _getSharedContacts();
 
-    state = T9ColltactsState.loaded([
-      ...contacts.map(Colltact.contact),
-      ...colleagues.map(Colltact.colleague),
-      ...sharedContacts.map(Colltact.sharedContact),
-    ], []);
+    state = T9ColltactsState.loaded(
+      [
+        ...contacts.map(Colltact.contact),
+        ...colleagues.map(Colltact.colleague),
+        ...sharedContacts.map(Colltact.sharedContact),
+      ],
+      [],
+    );
   }
 
   Future<void> filter(String input) async {
@@ -70,7 +73,10 @@ class T9Colltacts extends _$T9Colltacts {
 
     if (state is ColltactsLoaded) {
       if (input.isEmpty) {
-        this.state = T9ColltactsState.loaded(state.colltacts, []);
+        this.state = T9ColltactsState.loaded(
+          state.colltacts,
+          [],
+        );
         return;
       }
 
@@ -82,7 +88,10 @@ class T9Colltacts extends _$T9Colltacts {
         ),
       );
 
-      this.state = T9ColltactsState.loaded(state.colltacts, t9Colltacts);
+      this.state = T9ColltactsState.loaded(
+        state.colltacts,
+        t9Colltacts,
+      );
     }
   }
 
