@@ -93,6 +93,10 @@ class MainActivity : FlutterActivity(), CallScreenBehavior {
         SharedContacts.setUp(binaryMessenger, object : SharedContacts {
             override fun processSharedContacts(contacts: List<NativeSharedContact>) {}
         })
+
+        MiddlewareRegistrar.setUp(binaryMessenger, object : MiddlewareRegistrar {
+            override fun register(token: String) = App.middleware.tokenReceived(token)
+        })
     }
 
     override fun enable() {

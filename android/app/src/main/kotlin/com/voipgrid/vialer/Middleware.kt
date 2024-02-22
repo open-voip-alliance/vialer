@@ -6,6 +6,9 @@ import android.os.Build
 import com.google.firebase.messaging.RemoteMessage
 import com.voipgrid.vialer.logging.Logger
 import okhttp3.*
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONObject
 import org.openvoipalliance.flutterphonelib.NativeMiddleware
 import org.openvoipalliance.flutterphonelib.NativeMiddlewareUnavailableReason
 import java.io.IOException
@@ -19,12 +22,6 @@ class Middleware(
     private val loggedInElsewhereNotification: LoggedInElsewhereNotification,
 ) : NativeMiddleware {
     private val client = OkHttpClient()
-
-    /**
-     * Used to reduce the number of requests made to the middleware, we'll only re-register if the
-     * token actually changes.
-     */
-    private var lastRegisteredToken: String? = null
 
     /**
      * Store the information from the push message that was received so we can submit this at the
@@ -49,12 +46,6 @@ class Middleware(
     override fun tokenReceived(token: String) {
         prefs.pushToken = token
 
-        if (lastRegisteredToken == token) {
-            return
-        }
-
-        lastRegisteredToken = token
-
         val middlewareCredentials = middlewareCredentials
 
         if (middlewareCredentials == null) {
@@ -62,29 +53,31 @@ class Middleware(
             return
         }
 
-        val data = FormBody.Builder().apply {
-            add("name", middlewareCredentials.email)
-            add("token", token)
-            add("sip_user_id", middlewareCredentials.sipUserId)
-            add("os_version", Build.VERSION.RELEASE)
-            add("client_version", BuildConfig.VERSION_NAME)
-            add("app", context.packageName)
-            add("dnd", false.toString())
-        }.build()
+        val jsonObject = JSONObject().apply {
+            put("name", middlewareCredentials.email)
+            put("token", token)
+            put("sip_user_id", middlewareCredentials.sipUserId)
+            put("os_version", Build.VERSION.RELEASE)
+            put("client_version", BuildConfig.VERSION_NAME)
+            put("app", context.packageName)
+            put("dnd", false)
+            put("app_startup_timestamp", prefs.loginTime)
+        }
+
+        val requestBody = jsonObject.toString().toRequestBody("application/json".toMediaType())
 
         val request = createMiddlewareRequest(
             middlewareCredentials.email,
             middlewareCredentials.loginToken,
             url = "${baseUrl}/android-device/",
         )
-            .post(data)
+            .post(requestBody)
             .build()
 
         client.newCall(request).enqueue(
             object : Callback {
                 override fun onFailure(call: Call, e: IOException) {
                     log("Registration failed: ${e.localizedMessage}")
-                    lastRegisteredToken = null
                 }
 
                 override fun onResponse(call: Call, response: Response) = response.use {
@@ -92,7 +85,6 @@ class Middleware(
                         true -> log("Registration successful")
                         false -> {
                             log("Registration failed: response code was ${response.code}")
-                            lastRegisteredToken = null
                         }
                     }
                 }

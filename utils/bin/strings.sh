@@ -15,7 +15,7 @@ if [[ $# -eq 1 ]]; then
   PHRASE_ACCESS_TOKEN=$1
 fi
 
-if ! brew list -1 | grep --quiet "phrase-cli"; then
+if ! brew list --formulae -1 | grep --quiet "phrase-cli"; then
   brew install phrase-cli --quiet
 fi
 

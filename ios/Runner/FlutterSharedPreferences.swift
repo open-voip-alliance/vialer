@@ -3,13 +3,12 @@ import Foundation
 class FlutterSharedPreferences {
     
     private let FLUTTER_SHARED_PREF_SYSTEM_USER = "flutter.system_user"
-    private let FLUTTER_SHARED_PREF_VOIP_CONFIG = "flutter.voip_config"
-    private let FLUTTER_SHARED_PREF_SERVER_CONFIG = "flutter.server_config"
     private let FLUTTER_SHARED_PREF_PUSH_TOKEN = "flutter.push_token"
     private let FLUTTER_SHARED_PREF_SETTINGS = "flutter.settings"
     private let FLUTTER_SHARED_PREF_LOGS = "flutter.logs"
     private let FLUTTER_SHARED_PREF_IS_LOGGED_IN_SOMEWHERE_ELSE = "flutter.is_logged_in_somewhere_else"
     private let FLUTTER_SHARED_PREF_REMOTE_NOTIFICATION_TOKEN = "flutter.remote_notification_token"
+    private let FLUTTER_SHARED_PREF_LOGIN_TIME = "flutter.login_time"
     
     private let appendLogsQueue = DispatchQueue(label: "appendLogsQueue")
 
@@ -21,18 +20,13 @@ class FlutterSharedPreferences {
         }
     }
     
-    var voipConfig: [String: Any]? {
-        get {
-            convertToDictionary(text: defaults.string(forKey: FLUTTER_SHARED_PREF_VOIP_CONFIG) ?? "")
-        }
-    }
-    
     var middlewareUrl: String {
         get {
-            let pref = convertToDictionary(text: defaults.string(forKey: FLUTTER_SHARED_PREF_SERVER_CONFIG) ?? "")
+            let client = (systemUser?["client"] as? [String : Any])
+            let voip = (client?["voip"] as? [String : Any])
             let fallbackUrl = (Bundle.main.infoDictionary?["MiddlewareUrl"] as? String)!.removingPercentEncoding!
             
-            return pref?["MIDDLEWARE"] as? String ?? fallbackUrl
+            return voip?["MIDDLEWARE"] as? String ?? fallbackUrl
         }
     }
     
@@ -65,6 +59,13 @@ class FlutterSharedPreferences {
             defaults.synchronize()
         }
     }
+    
+    // Formatted as a iso8601 string.
+    var loginTime: String {
+        get {
+            defaults.string(forKey: FLUTTER_SHARED_PREF_LOGIN_TIME) ?? ""
+        }
+    }
 
     private var settings: [Any]? {
         get {
@@ -77,7 +78,7 @@ class FlutterSharedPreferences {
             do {
                 return try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
             } catch {
-                print(error.localizedDescription)
+                print(error)
             }
         }
         return nil
@@ -88,7 +89,7 @@ class FlutterSharedPreferences {
             do {
                 return try JSONSerialization.jsonObject(with: data, options: []) as? [Any]
             } catch {
-                print(error.localizedDescription)
+                print(error)
             }
         }
         return nil

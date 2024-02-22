@@ -117,3 +117,8 @@ abstract class Contacts {
 abstract class GooglePlayServices {
   bool isAvailable();
 }
+
+@HostApi()
+abstract class MiddlewareRegistrar {
+  void register(String token);
+}
