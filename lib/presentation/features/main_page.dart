@@ -175,10 +175,12 @@ class MainPageState extends State<MainPage> {
                         // We use the CallButton's hero tag for a nice
                         // transition between the dialer and call button.
                         heroTag: CallButton.defaultHeroTag,
+                        foregroundColor: Colors.white,
                         backgroundColor: context.brand.theme.colors.green1,
                         onPressed: () => unawaited(
                           Navigator.pushNamed(context, Routes.dialer),
                         ),
+                        shape: CircleBorder(),
                         child: const Icon(
                           Icons.dialpad,
                           size: 31,

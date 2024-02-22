@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
 import 'package:vialer/presentation/resources/theme.dart';
 
 class SettingsButton extends StatelessWidget {
@@ -27,6 +26,11 @@ class SettingsButton extends StatelessWidget {
       style: OutlinedButton.styleFrom(
         backgroundColor: backgroundColor,
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+        side: BorderSide(
+          width: 1,
+          color: context.brand.theme.colors.primary.withOpacity(0.12),
+        ),
       ),
       onPressed: onPressed,
       child: Row(

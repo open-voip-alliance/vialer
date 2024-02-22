@@ -86,11 +86,14 @@ class BoolSettingValue extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StylizedSwitch(
-      value: settings.getOrNull(settingKey) ?? false,
-      onChanged: onChanged != null
-          ? (value) => onChanged!(context, settingKey, value)
-          : null,
+    return Padding(
+      padding: const EdgeInsets.only(left: 8.0),
+      child: StylizedSwitch(
+        value: settings.getOrNull(settingKey) ?? false,
+        onChanged: onChanged != null
+            ? (value) => onChanged!(context, settingKey, value)
+            : null,
+      ),
     );
   }
 }
