@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>Sandbox</key>
-	<string>$(SANDBOX)</string>
+	<string>$(ENABLE_IOS_SANDBOX_PUSH_NOTIFICATIONS)</string>
 	<key>MiddlewareUrl</key>
 	<string>$(MIDDLEWARE_URL)</string>
 	<key>App Group identifier</key>

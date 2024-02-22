@@ -12,7 +12,8 @@ class StartVoipUseCase extends UseCase with Loggable {
   final _voipRepository = dependencyLocator<VoipRepository>();
 
   final _getUser = GetLoggedInUserUseCase();
-  final _registerToMiddleware = RegisterToMiddlewareUseCase();
+  final _registerToMiddleware =
+      dependencyLocator<RegisterToMiddlewareUseCase>();
   final _getBrand = GetBrand();
   final _getBuildInfo = GetBuildInfoUseCase();
 

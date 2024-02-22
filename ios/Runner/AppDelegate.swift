@@ -74,7 +74,8 @@ import UserNotifications
         TonesSetup.setUp(binaryMessenger: controller.binaryMessenger, api: SystemTones())
         ContactsSetup.setUp(binaryMessenger: controller.binaryMessenger, api: ContactImporter(logger: logger))
         SharedContactsSetup.setUp(binaryMessenger: controller.binaryMessenger, api:  SharedContactsApi())
-        
+        MiddlewareRegistrarSetup.setUp(binaryMessenger: controller.binaryMessenger, api: middleware)
+
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
     }
     

@@ -2,8 +2,7 @@ import flutter_phone_lib
 import PushKit
 import Alamofire
 
-public class Middleware: NativeMiddleware {
-    
+public class Middleware: NSObject, NativeMiddleware, MiddlewareRegistrar {
     private let logger: Logger
     private let segment: Segment
 
@@ -17,7 +16,6 @@ public class Middleware: NativeMiddleware {
 
     private let REGISTER_URL = "apns-device/"
 
-    private var lastRegisteredToken: String?
     public var currentCallInfo: CurrentCallInfo?
 
     private static let secondsBeforeRejected = 8
@@ -27,7 +25,7 @@ public class Middleware: NativeMiddleware {
             MiddlewareCredentials(
                 email: flutterSharedPreferences.systemUser?["email"] as? String ?? "",
                 loginToken: flutterSharedPreferences.systemUser?["token"] as? String ?? "",
-                sipUserId: flutterSharedPreferences.voipConfig?["appaccount_account_id"] as? String ?? ""
+                sipUserId: (flutterSharedPreferences.systemUser?["voip"] as? [String : Any])?["appaccount_account_id"] as? String ?? ""
             )
         }
     }
@@ -38,24 +36,20 @@ public class Middleware: NativeMiddleware {
     }
 
     public func tokenReceived(token: String) {
-        if lastRegisteredToken == token {
-            return
-        }
-        
-        lastRegisteredToken = token
-        
+        let sandbox = Bundle.main.infoDictionary?["Sandbox"] as? String
         let data = [
             "name": middlewareCredentials.email,
             "token": token,
             "sip_user_id": middlewareCredentials.sipUserId,
             "os_version": UIDevice.current.systemVersion,
-            "client_version": Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String,
-            "app": Bundle.main.bundleIdentifier,
+            "client_version": Bundle.main.infoDictionary?["CFBundleShortVersionString"] as Any,
+            "app": Bundle.main.bundleIdentifier as Any,
             "push_profile": "once",
-            "sandbox": Bundle.main.infoDictionary?["Sandbox"] as? String,
+            "sandbox": (sandbox?.lowercased() == "true"),
             "remote_notification_token": flutterSharedPreferences.remoteNotificationToken,
-            "dnd": String(false)
-        ]
+            "dnd": false,
+            "app_startup_timestamp": flutterSharedPreferences.loginTime
+        ] as [String : Any]
 
         var request = createMiddlewareRequest(email: middlewareCredentials.email, token: middlewareCredentials.loginToken, url: baseUrl + REGISTER_URL)
 
@@ -64,7 +58,6 @@ public class Middleware: NativeMiddleware {
         AF.request(request).responseData { (response) -> Void in
             if response.error != nil {
                 self.logger.writeLog("Registration failed: \(response.error!)")
-                self.lastRegisteredToken = nil
             }
 
             switch response.result {
@@ -73,7 +66,6 @@ public class Middleware: NativeMiddleware {
             case .failure(_):
                 let statusCode = response.response?.statusCode
                 self.logger.writeLog("Registration failed: response code was \(String(describing: statusCode))")
-                self.lastRegisteredToken = nil
            }
         }
 
@@ -126,7 +118,6 @@ public class Middleware: NativeMiddleware {
         AF.request(request).response { (response) -> Void in
             if response.error != nil {
                 self.logger.writeLog("Middleware respond failed: \(response.error!)")
-                self.lastRegisteredToken = nil
                 track(response.error?.errorDescription ?? "error")
                 return
             }
@@ -139,7 +130,6 @@ public class Middleware: NativeMiddleware {
                 case .failure(_):
                     let statusCode = response.response?.statusCode
                     self.logger.writeLog("Middleware respond failed: response code was \(String(describing: statusCode))")
-                    self.lastRegisteredToken = nil
            }
         }
 
@@ -186,6 +176,10 @@ public class Middleware: NativeMiddleware {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
         return request
+    }
+    
+    func register(token: String) throws {
+        self.tokenReceived(token: token)
     }
 }
 
