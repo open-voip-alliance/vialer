@@ -51,6 +51,7 @@ abstract class CallProcessState extends CallOriginDetermined {
   const CallProcessState({
     required CallOrigin origin,
     required this.voip,
+    this.isTransferAborted = false,
   }) : super(origin);
   final CallSessionState? voip;
 
@@ -66,6 +67,8 @@ abstract class CallProcessState extends CallOriginDetermined {
 
   bool get isInTransfer =>
       (this is AttendedTransferStarted) || (this is AttendedTransferComplete);
+
+  final bool isTransferAborted;
 
   /// We are currently in a state where we can perform actions on the call,
   /// such as placing it on hold.
@@ -114,9 +117,10 @@ abstract class CallProcessState extends CallOriginDetermined {
     );
   }
 
-  Calling calling({CallSessionState? voip}) => Calling(
+  Calling calling({CallSessionState? voip, bool? isTransferAborted}) => Calling(
         origin: origin,
         voip: voip ?? this.voip,
+        isTransferAborted: isTransferAborted ?? false,
       );
 
   FinishedCalling finished({CallSessionState? voip}) => FinishedCalling(
@@ -277,16 +281,19 @@ class Calling extends CallProcessState {
   const Calling({
     required super.origin,
     required super.voip,
+    super.isTransferAborted = false,
   });
 
   @override
   Calling copyWith({
     CallOrigin? origin,
     CallSessionState? voip,
+    bool? isTransferAborted,
   }) =>
       Calling(
         origin: origin ?? this.origin,
         voip: voip ?? this.voip,
+        isTransferAborted: isTransferAborted ?? false,
       );
 }
 
