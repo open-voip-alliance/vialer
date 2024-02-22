@@ -40,7 +40,6 @@ class BrandTheme {
   );
 
   late final themeData = ThemeData(
-    useMaterial3: false,
     primaryColor: colors.primary,
     primaryColorDark: colors.primaryDark,
     primaryColorLight: colors.primaryLight,

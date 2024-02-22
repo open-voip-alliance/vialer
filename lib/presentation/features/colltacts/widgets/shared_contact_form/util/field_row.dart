@@ -73,6 +73,11 @@ class SharedContactFieldRow extends StatelessWidget {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
+                            side: BorderSide(
+                              width: 1,
+                              color: context.brand.theme.colors.primary
+                                  .withOpacity(0.12),
+                            ),
                           ),
                           child: FaIcon(
                             FontAwesomeIcons.trashCan,
