@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:vialer/presentation/features/settings/pages/system/installed_applications.dart';
 import 'package:vialer/presentation/resources/localizations.dart';
+import 'package:vialer/presentation/resources/theme/brand_theme.dart';
 
 import '../../controllers/cubit.dart';
 import '../../widgets/tile/link/sub_page.dart';
@@ -40,6 +42,13 @@ class SystemSubPage extends StatelessWidget {
                   cubit: cubit,
                   pageBuilder: (_) => const FeatureFlagsSubPage(),
                 ),
+                if (context.isAndroid)
+                  SubPageLinkTile(
+                    title: 'Installed Apps',
+                    icon: FontAwesomeIcons.albumCollection,
+                    cubit: cubit,
+                    pageBuilder: (_) => const InstalledApplicationsSubPage(),
+                  ),
               ],
             );
           },
