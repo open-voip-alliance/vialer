@@ -15,7 +15,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  flutter_phone_lib: 0.0.9
+  flutter_phone_lib: 0.0.12
   font_awesome_flutter:
     hosted: https://onepub.dev/api/xhopsdavuh/
     version: ^1.0.0
@@ -109,7 +109,6 @@ dev_dependencies:
 
   vialer_cli:
     path: vialer_cli
-
 
 flutter:
   uses-material-design: true
