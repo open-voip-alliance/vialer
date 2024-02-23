@@ -29,7 +29,7 @@ class SharedContactsCubit extends Cubit<SharedContactsState> {
   }
 
   final _eventBus = dependencyLocator<EventBusObserver>();
-  final _getSharedContacts = GetSharedContactsUseCase();
+  final _getSharedContacts = dependencyLocator<GetSharedContactsUseCase>();
 
   final CallerCubit _caller;
 

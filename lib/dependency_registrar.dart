@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vialer/presentation/util/pigeon.dart';
 
 import 'data/models/event/event_bus.dart';
 
@@ -18,4 +19,10 @@ abstract class ThirdPartyRegistrar {
   @preResolve
   Future<SharedPreferences> get sharedPreferences =>
       SharedPreferences.getInstance();
+}
+
+@module
+abstract class PigeonRegistrar {
+  @singleton
+  SharedContacts getSharedContacts() => SharedContacts();
 }

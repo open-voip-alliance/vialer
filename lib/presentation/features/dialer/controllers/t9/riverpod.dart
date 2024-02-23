@@ -16,6 +16,7 @@ import '../../../../../../domain/usecases/colltacts/get_contacts.dart';
 import '../../../../../../domain/usecases/colltacts/shared_contacts/get_shared_contacts.dart';
 import '../../../../../../domain/usecases/relations/colleagues/get_cached_colleagues.dart';
 import '../../../../../../domain/usecases/user/get_permission_status.dart';
+import '../../../../../dependency_locator.dart';
 
 part 'riverpod.g.dart';
 
@@ -23,7 +24,7 @@ part 'riverpod.g.dart';
 class T9Colltacts extends _$T9Colltacts {
   final _getContacts = GetContactsUseCase();
   final _getColleagues = GetCachedColleagues();
-  final _getSharedContacts = GetSharedContactsUseCase();
+  final _getSharedContacts = dependencyLocator<GetSharedContactsUseCase>();
   final _getPermissionStatus = GetPermissionStatusUseCase();
 
   @override
