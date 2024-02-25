@@ -122,3 +122,8 @@ abstract class GooglePlayServices {
 abstract class MiddlewareRegistrar {
   void register(String token);
 }
+
+@FlutterApi()
+abstract class NativeToFlutter {
+  void launchDialerAndPopulateNumber(String number);
+}
