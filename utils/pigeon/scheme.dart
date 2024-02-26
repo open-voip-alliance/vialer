@@ -127,3 +127,10 @@ abstract class MiddlewareRegistrar {
 abstract class NativeToFlutter {
   void launchDialerAndPopulateNumber(String number);
 }
+
+@HostApi()
+// ignore: one_member_abstracts
+abstract class NativeClipboard {
+  @async
+  bool hasPhoneNumber();
+}
