@@ -50,14 +50,9 @@ class _CallTransferState extends State<CallTransfer> {
   }
 
   void _onColltactPhoneNumberPressed(
-      BuildContext context, Colltact colltact, String number) {
-    final via = colltact.when(
-      colleague: (_) => 'colleague',
-      contact: (_) => 'contact',
-      sharedContact: (_) => 'sharedContact',
-    );
+      BuildContext context, Colltact colltact, String number,) {
     track('call-transfer-initiated', {
-      'via': via,
+      'via': ReCase(colltact.runtimeType.toString()).paramCase,
     });
     Navigator.pop(context, number);
   }
