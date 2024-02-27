@@ -3,9 +3,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_phone_lib/flutter_phone_lib.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:recase/recase.dart';
 import 'package:vialer/presentation/resources/localizations.dart';
 import 'package:vialer/presentation/resources/theme.dart';
 
+import '../../../../data/models/colltacts/colltact.dart';
+import '../../../../global.dart';
 import '../../../shared/widgets/nested_navigator.dart';
 import '../../../shared/widgets/t9_dial_pad.dart';
 import '../../colltacts/widgets/colltact_list/details/widget.dart';
@@ -47,8 +50,29 @@ class _CallTransferState extends State<CallTransfer> {
     widget.onTransferTargetSelected(number);
   }
 
-  void _onColltactPhoneNumberPressed(BuildContext context, String number) {
+  void _onColltactPhoneNumberPressed(
+    BuildContext context,
+    Colltact colltact,
+    String number,
+  ) {
+    track('call-transfer-initiated', {
+      'via': ReCase(colltact.runtimeType.toString()).paramCase,
+    });
     Navigator.pop(context, number);
+  }
+
+  void _onDialPadCallButtonPressed(String number) {
+    track('call-transfer-initiated', {
+      'via': 'dialer',
+    });
+    widget.onTransferTargetSelected(number);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    track('call-transfer-ui-presented');
   }
 
   @override
@@ -104,7 +128,7 @@ class _CallTransferState extends State<CallTransfer> {
                   callButtonColor: context.brand.theme.colors.green1,
                   callButtonSemanticsHint:
                       context.msg.main.call.ongoing.actions.transfer.label,
-                  onCallButtonPressed: widget.onTransferTargetSelected,
+                  onCallButtonPressed: _onDialPadCallButtonPressed,
                   bottomLeftButton: closeButton,
                   bottomRightButton: IconButton(
                     icon: FaIcon(
@@ -130,6 +154,7 @@ class _CallTransferState extends State<CallTransfer> {
                               onPhoneNumberPressed: (number) =>
                                   _onColltactPhoneNumberPressed(
                                 routeContext,
+                                colltact,
                                 number,
                               ),
                               onEmailPressed: (_) {},
