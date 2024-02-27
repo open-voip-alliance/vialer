@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_phone_lib/flutter_phone_lib.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:recase/recase.dart';
 import 'package:vialer/presentation/resources/localizations.dart';
 import 'package:vialer/presentation/resources/theme.dart';
 
@@ -50,7 +51,10 @@ class _CallTransferState extends State<CallTransfer> {
   }
 
   void _onColltactPhoneNumberPressed(
-      BuildContext context, Colltact colltact, String number,) {
+    BuildContext context,
+    Colltact colltact,
+    String number,
+  ) {
     track('call-transfer-initiated', {
       'via': ReCase(colltact.runtimeType.toString()).paramCase,
     });
