@@ -28,6 +28,7 @@ import 'colltacts/pages/colltacts_page.dart';
 import 'dialer/dialer_page.dart';
 import 'recent/recent_calls_page.dart';
 import 'settings/pages/settings.dart';
+import '../../../presentation/util/pigeon_extensions.dart';
 
 class MainPage extends StatefulWidget {
   /// There can only be one.
@@ -108,6 +109,18 @@ class MainPageState extends State<MainPage> {
     ];
 
     _currentIndex ??= _dialerIsPage ? 1 : 0;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    NativeToFlutterSetup.onLaunchDialerAndPopulateNumber(
+      (number) => Navigator.pushNamed(
+        context,
+        Routes.dialer,
+        arguments: number,
+      ),
+    );
   }
 
   @override
