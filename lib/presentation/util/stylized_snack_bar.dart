@@ -12,6 +12,7 @@ void showSnackBar(
   Color? backgroundColor,
   Color? contentColor,
   Widget divider = const SizedBox(width: 24),
+  bool excludeSemantics = false,
 }) {
   backgroundColor =
       backgroundColor ?? context.brand.theme.colors.buttonBackground;
@@ -23,28 +24,31 @@ void showSnackBar(
       duration: duration,
       behavior: SnackBarBehavior.fixed,
       backgroundColor: backgroundColor,
-      content: Padding(
-        padding: contentPadding,
-        child: Row(
-          children: <Widget>[
-            IconTheme.merge(
-              data: IconThemeData(color: contentColor, size: 16),
-              child: icon,
-            ),
-            divider,
-            Expanded(
-              child: Padding(
-                padding: padding,
-                child: DefaultTextStyle.merge(
-                  style: TextStyle(
-                    color: contentColor,
-                    fontSize: 16,
+      content: ExcludeSemantics(
+        excluding: excludeSemantics,
+        child: Padding(
+          padding: contentPadding,
+          child: Row(
+            children: <Widget>[
+              IconTheme.merge(
+                data: IconThemeData(color: contentColor, size: 16),
+                child: icon,
+              ),
+              divider,
+              Expanded(
+                child: Padding(
+                  padding: padding,
+                  child: DefaultTextStyle.merge(
+                    style: TextStyle(
+                      color: contentColor,
+                      fontSize: 16,
+                    ),
+                    child: label,
                   ),
-                  child: label,
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     ),
