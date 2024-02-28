@@ -297,6 +297,7 @@ class _CallPageState extends State<_CallPage>
           icon: const FaIcon(FontAwesomeIcons.exclamation),
           label: Text(context.msg.main.call.ongoing.connectionWarning.title),
           padding: const EdgeInsets.only(right: 72),
+          excludeSemantics: true,
         );
       },
     );

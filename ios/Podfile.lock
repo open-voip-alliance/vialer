@@ -1,6 +1,6 @@
 PODS:
   - Alamofire (5.8.1)
-  - Amplitude (8.18.0):
+  - Amplitude (8.18.1):
     - AnalyticsConnector (~> 1.0.0)
   - Analytics (4.1.6)
   - AnalyticsConnector (1.0.3)
@@ -197,7 +197,7 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   Alamofire: 3ca42e259043ee0dc5c0cdd76c4bc568b8e42af7
-  Amplitude: 184def4f87aa26f94a93a7faa334e06b1cae704d
+  Amplitude: 7a0f3abd801de051fd06c81ee3dabd7a92f0a191
   Analytics: eefe524436f904b8bb3f8c8c3425280e43b34efc
   AnalyticsConnector: a53214d38ae22734c6266106c0492b37832633a9
   AppsFlyerFramework: 88a6eed37ad52bcee4ad74232efa8e22809d06c9
@@ -237,4 +237,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: ee5876d915c23109c48d14bae194fb3133d43ae9
 
-COCOAPODS: 1.14.3
+COCOAPODS: 1.15.2
