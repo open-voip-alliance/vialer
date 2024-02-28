@@ -4,20 +4,28 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:vialer/data/API/voipgrid/voipgrid_service.dart';
 
+import '../../../../presentation/util/loggable.dart';
 import '../../../models/calling/voip/destination.dart';
 
 part 'user_details.freezed.dart';
 part 'user_details.g.dart';
 
 @injectable
-class UserDetailsRepository {
+class UserDetailsRepository with Loggable {
   UserDetailsRepository(this._service);
 
   final VoipgridService _service;
 
-  Future<UserDetails> getUserDetails() => _service
-      .getUserDetails()
-      .then((response) => UserDetails.fromJson(response.body!));
+  Future<UserDetails?> getUserDetails() async {
+    final response = await _service.getUserDetails();
+
+    if (!response.isSuccessful) {
+      logFailedResponse(response, name: 'Get User Details');
+      return null;
+    }
+
+    return UserDetails.fromJson(response.body!);
+  }
 }
 
 @freezed

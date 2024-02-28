@@ -23,9 +23,6 @@ class GetBrand extends UseCase {
         const String.fromEnvironment('privacyPolicyUrl'),
       ),
       signUpUrl: signUpUrl.isNotEmpty ? Uri.parse(signUpUrl) : null,
-      userAvailabilityWsUrl: Uri.parse(
-        const String.fromEnvironment('userAvailabilityWsUrl'),
-      ),
       availabilityServiceUrl: Uri.parse(
         const String.fromEnvironment('availabilityServiceUrl'),
       ),
@@ -35,8 +32,12 @@ class GetBrand extends UseCase {
       phoneNumberValidationUrl: Uri.parse(
         const String.fromEnvironment('phoneNumberValidationUrl'),
       ),
-      featureAnnouncementsUrl:
-          Uri.parse(const String.fromEnvironment('featureAnnouncementsUrl')),
+      featureAnnouncementsUrl: Uri.parse(
+        const String.fromEnvironment('featureAnnouncementsUrl'),
+      ),
+      resgateUrl: Uri.parse(
+        const String.fromEnvironment('resgateUrl'),
+      ),
     );
   }
 }

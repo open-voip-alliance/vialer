@@ -2,13 +2,13 @@ import 'dart:async';
 
 import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vialer/data/API/resgate/resgate.dart';
 import 'package:vialer/data/models/user/user.dart';
 
 import '../../../../../../data/models/colltacts/colltact.dart';
 import '../../../../../../data/models/event/event_bus.dart';
 import '../../../../../../data/models/relations/colleagues/colleague.dart';
 import '../../../../../../data/models/relations/events/colleague_list_did_change.dart';
-import '../../../../../../data/models/relations/websocket/relations_web_socket.dart';
 import '../../../../../../data/models/user/settings/app_setting.dart';
 import '../../../../../../data/repositories/voipgrid/user_permissions.dart';
 import '../../../../../../dependency_locator.dart';
@@ -38,7 +38,7 @@ class ColleaguesCubit extends Cubit<ColleaguesState> {
   }
 
   late final _shouldShowColleagues = ShouldShowColleagues();
-  final _relationsWebSocket = dependencyLocator<RelationsWebSocket>();
+  final _resgate = dependencyLocator<Resgate>();
   final _eventBus = dependencyLocator<EventBusObserver>();
   final _getUser = GetLoggedInUserUseCase();
   final _changeSetting = ChangeSettingUseCase();
@@ -76,7 +76,7 @@ class ColleaguesCubit extends Cubit<ColleaguesState> {
         // new state.
         colleagues.toList(),
         showOnlineColleaguesOnly: showOnlineColleaguesOnly,
-        upToDate: _relationsWebSocket.isWebSocketConnected,
+        upToDate: _resgate.isConnected,
       ),
     );
   }
@@ -86,7 +86,7 @@ class ColleaguesCubit extends Cubit<ColleaguesState> {
   ///
   /// This should only be called on a specific user-action as it has a large
   /// amount of overhead.
-  Future<void> refresh() async => _relationsWebSocket.refresh();
+  Future<void> refresh() async => _resgate.refresh();
 
   Future<void> call(String destination) =>
       _caller.call(destination, origin: CallOrigin.colleagues);
