@@ -1,13 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vialer/data/API/resgate/resgate.dart';
 import 'package:vialer/data/repositories/calling/voip/destination_repository.dart';
 import 'package:vialer/presentation/features/settings/controllers/cubit.dart';
 
 import '../../../../../data/models/calling/voip/destination.dart';
 import '../../../../../data/models/event/event_bus.dart';
 import '../../../../../data/models/relations/user_availability_status.dart';
-import '../../../../../data/models/relations/websocket/relations_web_socket.dart';
 import '../../../../../data/models/user/events/logged_in_user_availability_changed.dart';
 import '../../../../../data/models/user/events/logged_in_user_was_refreshed.dart';
 import '../../../../../data/models/user/events/user_devices_changed.dart';
@@ -40,7 +40,7 @@ class UserAvailabilityStatusCubit extends Cubit<UserAvailabilityStatusState> {
 
   final SettingsCubit _settingsCubit;
   late final _eventBus = dependencyLocator<EventBusObserver>();
-  late final _relationsWebSocket = dependencyLocator<RelationsWebSocket>();
+  late final _relationsWebSocket = dependencyLocator<Resgate>();
   late final _destinations = dependencyLocator<DestinationRepository>();
   late final _availabilityStatusRepository =
       dependencyLocator<UserAvailabilityStatusRepository>();
@@ -68,7 +68,7 @@ class UserAvailabilityStatusCubit extends Cubit<UserAvailabilityStatusState> {
     final availableDestinations = _destinations.availableDestinations;
 
     // If the websocket is offline we're going to fetch this value from the api.
-    if (!_relationsWebSocket.isWebSocketConnected) {
+    if (!_relationsWebSocket.isConnected) {
       availability = await _fetchStatusFromServer();
     }
 
@@ -84,7 +84,7 @@ class UserAvailabilityStatusCubit extends Cubit<UserAvailabilityStatusState> {
     // If the websocket can't connect we're just going to fallback to
     // determining the status based on what we have stored locally. This is
     // usually accurate, but not necessarily.
-    if (!_relationsWebSocket.isWebSocketConnected) {
+    if (!_relationsWebSocket.isConnected) {
       return emit(state.copyWith(
         status: _status,
         currentDestination: destination,

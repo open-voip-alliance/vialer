@@ -1,21 +1,23 @@
 import 'package:dartx/dartx.dart';
-import 'package:vialer/domain/usecases/relations/colleagues/fetch_colleagues_from_remote.dart';
-import 'package:vialer/domain/usecases/user/get_stored_user.dart';
-import 'package:vialer/presentation/util/loggable.dart';
-import 'package:vialer/presentation/util/synchronized_task.dart';
 
-import '../../../../../domain/usecases/relations/colleagues/get_cached_colleagues.dart';
-import '../../../../../domain/usecases/relations/colleagues/update_cached_colleagues.dart';
-import '../../colleagues/colleague.dart';
-import '../../events/colleague_list_did_change.dart';
+import '../../../../domain/usecases/relations/colleagues/fetch_colleagues_from_remote.dart';
+import '../../../../domain/usecases/relations/colleagues/get_cached_colleagues.dart';
+import '../../../../domain/usecases/relations/colleagues/update_cached_colleagues.dart';
+import '../../../../domain/usecases/user/get_stored_user.dart';
+import '../../../../presentation/util/loggable.dart';
+import '../../../../presentation/util/synchronized_task.dart';
+import '../../../models/relations/colleagues/colleague.dart';
+import '../../../models/relations/events/colleague_list_did_change.dart';
 import '../payloads/payload.dart';
 import '../payloads/user_availability_changed.dart';
+import '../rid_generator.dart';
 import 'listener.dart';
 
 typedef ColleagueList = List<Colleague>;
 
-class ColleagueUpdateHandler extends Listener<UserAvailabilityChangedPayload>
-    with Loggable {
+class ColleagueUpdateHandler
+    extends ResgateListener<UserAvailabilityChangedPayload>
+    with Loggable, RidGenerator {
   late final _getCachedColleagues = GetCachedColleagues();
   late final _updateCachedColleagues = UpdateCachedColleagues();
   late final _fetchColleagues = FetchColleaguesFromRemote();
@@ -23,7 +25,7 @@ class ColleagueUpdateHandler extends Listener<UserAvailabilityChangedPayload>
   List<Colleague> colleagues = [];
 
   @override
-  bool shouldHandle(Payload payload) {
+  bool shouldHandle(ResgatePayload payload) {
     if (payload is! UserAvailabilityChangedPayload) return false;
 
     return !payload.isAboutLoggedInUser;
@@ -82,6 +84,14 @@ class ColleagueUpdateHandler extends Listener<UserAvailabilityChangedPayload>
     colleagues = [];
     return _refreshColleagues();
   }
+
+  @override
+  String get resourceToSubscribeTo =>
+      createRid((_, client) => 'availability.client.$client');
+
+  @override
+  RegExp get resourceToHandle =>
+      RegExp(resourceToSubscribeTo + r'.user.[^.]+$');
 }
 
 extension on Colleague {
@@ -93,7 +103,8 @@ extension on Colleague {
           status: availability.availability,
           destination: ColleagueDestination(
             number: availability.internalNumber.toString(),
-            type: availability.destinationType,
+            type: availability.selectedDestination?.destinationType ??
+                ColleagueDestinationType.none,
           ),
           context: availability.context,
         ),

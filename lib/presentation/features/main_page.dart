@@ -420,7 +420,7 @@ class BuildWebSocketDependantCubitsThenConnect extends StatelessWidget {
         value: BlocProvider.of<ColleaguesCubit>(context),
         child: BlocProvider.value(
           value: BlocProvider.of<UserAvailabilityStatusCubit>(context),
-          child: RelationsWebSocketManager.connect(child),
+          child: ResgateManager.connect(child),
         ),
       ),
     );
