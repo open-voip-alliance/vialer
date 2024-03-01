@@ -12,7 +12,6 @@ class EnableRemoteLoggingUseCase extends UseCase {
 
   Future<void> call() async {
     final user = _getUser();
-    final token = _getLoggingToken();
 
     final loggingIdentifier = user?.loggingIdentifier ?? '';
 
@@ -20,18 +19,30 @@ class EnableRemoteLoggingUseCase extends UseCase {
       await _loggingRepository.disableNativeConsoleLogging();
     }
 
-    await _loggingRepository.enableNativeRemoteLogging(
-      userIdentifier: loggingIdentifier,
-      token: token,
-    );
+    final token = _getToken();
 
     if (_loggingRepository.isLoggingToRemote) {
       await _loggingRepository.disableRemoteLogging();
     }
 
+    if (token == null) return;
+
+    await _loggingRepository.enableNativeRemoteLogging(
+      userIdentifier: loggingIdentifier,
+      token: token,
+    );
+
     return _loggingRepository.enableRemoteLogging(
       userIdentifier: loggingIdentifier,
       token: token,
     );
+  }
+
+  String? _getToken() {
+    try {
+      return _getLoggingToken();
+    } catch (e) {
+      return null;
+    }
   }
 }

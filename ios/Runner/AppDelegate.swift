@@ -9,6 +9,7 @@ import UserNotifications
     private let logger = Logger()
     private let flutterSharedPreferences = FlutterSharedPreferences()
     private var segment: Segment?
+    private var nativeToFlutter: NativeToFlutter?
 
     private var ringtonePath: String {
         let filename = "ringtone-\(Bundle.brandName)"
@@ -67,23 +68,24 @@ import UserNotifications
         )
 
         let controller: FlutterViewController = window?.rootViewController as! FlutterViewController
-        SetUpContactSortHostApi(controller.binaryMessenger, ContactSortApi())
-        SetUpNativeLogging(controller.binaryMessenger, logger)
-        SetUpNativeMetrics(controller.binaryMessenger, Metrics())
-        SetUpCallScreenBehavior(controller.binaryMessenger, CallScreenBehaviorApi())
-        SetUpTones(controller.binaryMessenger, SystemTones())
-        SetUpContacts(controller.binaryMessenger, ContactImporter(logger: logger))
-        SetUpSharedContacts(controller.binaryMessenger, SharedContactsApi())
-        
+        ContactSortHostApiSetup.setUp(binaryMessenger: controller.binaryMessenger, api: ContactSortApi())
+        NativeLoggingSetup.setUp(binaryMessenger: controller.binaryMessenger, api: logger)
+        NativeMetricsSetup.setUp(binaryMessenger: controller.binaryMessenger, api: Metrics())
+        CallScreenBehaviorSetup.setUp(binaryMessenger: controller.binaryMessenger, api: CallScreenBehaviorApi())
+        TonesSetup.setUp(binaryMessenger: controller.binaryMessenger, api: SystemTones())
+        ContactsSetup.setUp(binaryMessenger: controller.binaryMessenger, api: ContactImporter(logger: logger))
+        SharedContactsSetup.setUp(binaryMessenger: controller.binaryMessenger, api:  SharedContactsApi())
+        MiddlewareRegistrarSetup.setUp(binaryMessenger: controller.binaryMessenger, api: middleware)
+        nativeToFlutter = NativeToFlutter(binaryMessenger: controller.binaryMessenger)
+
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
     }
     
     /// Handles receiving call starts from outside the application (e.g. contacts)
     override func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
         if let handle = userActivity.startCallHandle {
-            segment?.track(event: "call-from-os-initiated", properties: [:])
             let number = handle.replacingOccurrences(of: "[^0-9\\+]", with: "", options: .regularExpression)
-            startCall(number: number)
+            nativeToFlutter?.launchDialerAndPopulateNumber(number: number, completion: { _ in })
         }
         
         return true

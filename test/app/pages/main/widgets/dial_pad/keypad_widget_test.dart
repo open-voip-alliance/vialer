@@ -452,7 +452,7 @@ class TestApp extends StatelessWidget {
         openingHoursBasicUrl: Uri.parse(
           'https://api.eu-prod.holodeck.wearespindle.com/openinghours/client/',
         ),
-        userAvailabilityWsUrl: Uri.parse('ws'),
+        resgateUrl: Uri.parse('resgate'),
         privacyPolicyUrl: Uri.parse('dummypolicy.com'),
         signUpUrl: null,
         availabilityServiceUrl: Uri.parse('dummydndservice.url'),

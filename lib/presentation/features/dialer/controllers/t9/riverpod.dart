@@ -16,6 +16,7 @@ import '../../../../../../domain/usecases/colltacts/get_contacts.dart';
 import '../../../../../../domain/usecases/colltacts/shared_contacts/get_shared_contacts.dart';
 import '../../../../../../domain/usecases/relations/colleagues/get_cached_colleagues.dart';
 import '../../../../../../domain/usecases/user/get_permission_status.dart';
+import '../../../../../dependency_locator.dart';
 
 part 'riverpod.g.dart';
 
@@ -23,7 +24,7 @@ part 'riverpod.g.dart';
 class T9Colltacts extends _$T9Colltacts {
   final _getContacts = GetContactsUseCase();
   final _getColleagues = GetCachedColleagues();
-  final _getSharedContacts = GetSharedContactsUseCase();
+  final _getSharedContacts = dependencyLocator<GetSharedContactsUseCase>();
   final _getPermissionStatus = GetPermissionStatusUseCase();
 
   @override
@@ -55,11 +56,14 @@ class T9Colltacts extends _$T9Colltacts {
     final colleagues = await _getColleagues();
     final sharedContacts = await _getSharedContacts();
 
-    state = T9ColltactsState.loaded([
-      ...contacts.map(Colltact.contact),
-      ...colleagues.map(Colltact.colleague),
-      ...sharedContacts.map(Colltact.sharedContact),
-    ], []);
+    state = T9ColltactsState.loaded(
+      [
+        ...contacts.map(Colltact.contact),
+        ...colleagues.map(Colltact.colleague),
+        ...sharedContacts.map(Colltact.sharedContact),
+      ],
+      [],
+    );
   }
 
   Future<void> filter(String input) async {
@@ -70,7 +74,10 @@ class T9Colltacts extends _$T9Colltacts {
 
     if (state is ColltactsLoaded) {
       if (input.isEmpty) {
-        this.state = T9ColltactsState.loaded(state.colltacts, []);
+        this.state = T9ColltactsState.loaded(
+          state.colltacts,
+          [],
+        );
         return;
       }
 
@@ -82,7 +89,10 @@ class T9Colltacts extends _$T9Colltacts {
         ),
       );
 
-      this.state = T9ColltactsState.loaded(state.colltacts, t9Colltacts);
+      this.state = T9ColltactsState.loaded(
+        state.colltacts,
+        t9Colltacts,
+      );
     }
   }
 

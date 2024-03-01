@@ -3,19 +3,22 @@ package com.voipgrid.vialer
 import SystemTones
 import android.content.Intent
 import android.os.Build
+import android.os.Bundle
 import android.view.WindowManager
 import androidx.annotation.NonNull
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.ktx.messaging
 import com.voipgrid.vialer.IncomingCallActivity.Companion.INCOMING_CALL_CANCEL_INTENT
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugins.GeneratedPluginRegistrant
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.messaging.ktx.messaging
-import org.openvoipalliance.flutterphonelib.*
+import org.openvoipalliance.flutterphonelib.PhoneLib
 
 class MainActivity : FlutterActivity(), CallScreenBehavior {
+    private lateinit var nativeToFlutter: NativeToFlutter
+
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         GeneratedPluginRegistrant.registerWith(flutterEngine)
 
@@ -89,6 +92,16 @@ class MainActivity : FlutterActivity(), CallScreenBehavior {
                 return status == ConnectionResult.SUCCESS
             }
         })
+
+        SharedContacts.setUp(binaryMessenger, object : SharedContacts {
+            override fun processSharedContacts(contacts: List<NativeSharedContact>) {}
+        })
+
+        MiddlewareRegistrar.setUp(binaryMessenger, object : MiddlewareRegistrar {
+            override fun register(token: String) = App.middleware.tokenReceived(token)
+        })
+
+        nativeToFlutter = NativeToFlutter(binaryMessenger);
     }
 
     override fun enable() {
@@ -114,26 +127,26 @@ class MainActivity : FlutterActivity(), CallScreenBehavior {
 
     protected override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        when (intent.action) {
-            Intent.ACTION_DIAL, Intent.ACTION_CALL, Intent.ACTION_VIEW ->
-                call(intent.data?.schemeSpecificPart ?: "")
-        }
+        intent.onCallAction { number -> call(number) }
         setIntent(intent);
     }
 
-    private fun call(number: String) {
-        App.segment.track("call-from-os-initiated", mapOf())
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        intent.onCallAction { number -> call(number) }
+    }
 
+    private fun call(number: String) {
         val normalizedNumber = number.replace(Regex("[^0-9\\+]"), "")
         if (normalizedNumber.isNotEmpty()) {
-            startCall(normalizedNumber)
+            nativeToFlutter.launchDialerAndPopulateNumber(normalizedNumber) {}
         }
     }
 
     protected override fun onResume() {
         super.onResume()
 
-        val pressedNotification = getIntent()?.getBooleanExtra(PhoneLib.PRESSED_MISSED_CALL_NOTIFICATION_EXTRA, false)
+        val pressedNotification = intent?.getBooleanExtra(PhoneLib.PRESSED_MISSED_CALL_NOTIFICATION_EXTRA, false)
         if (pressedNotification == true) {
             PhoneLib.notifyMissedCallNotificationPressed()
         }
@@ -155,4 +168,9 @@ class MainActivity : FlutterActivity(), CallScreenBehavior {
                 or WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
                 or WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON)
     }
+}
+
+fun Intent.onCallAction(callback: (number: String) -> Unit) = when (action) {
+    Intent.ACTION_DIAL, Intent.ACTION_CALL, Intent.ACTION_VIEW -> callback(data?.schemeSpecificPart ?: "")
+    else -> {}
 }

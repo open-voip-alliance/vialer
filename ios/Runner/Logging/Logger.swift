@@ -2,6 +2,7 @@ import Foundation
 import le
 
 class Logger: NSObject, NativeLogging {
+    
 
     private static let CONSOLE_LOG_KEY = "VIALER-PIL"
     private var anonymizationRules = [NSRegularExpression : String]()
@@ -52,30 +53,30 @@ class Logger: NSObject, NativeLogging {
         })
     }
     
-    func startNativeRemoteLoggingToken(_ token: String?, userIdentifier: String?, anonymizationRules: [String : String]?, completion: @escaping (FlutterError?) -> Void) {
+    func startNativeRemoteLogging(token: String, userIdentifier: String, anonymizationRules: [String : String], completion: @escaping (Result<Void, Error>) -> Void) {
         logEntries = LELog.session(withToken: token)
         logEntries?.debugLogs = false
         self.userIdentifier = userIdentifier
         
         do {
-            self.anonymizationRules = try anonymizationRules?.reduce(into: [NSRegularExpression:String]()) { dict, entry in
+            self.anonymizationRules = try anonymizationRules.reduce(into: [NSRegularExpression:String]()) { dict, entry in
                 return dict[try NSRegularExpression(pattern: entry.key)] = entry.value
-            } ?? [NSRegularExpression:String]()
+            } 
         } catch {}
         
-        completion(nil)
+        completion(Result.success(Void()))
     }
     
-    func startNativeConsoleLoggingWithError(_ error: AutoreleasingUnsafeMutablePointer<FlutterError?>) {
+    func startNativeConsoleLogging() throws {
         isConsoleLoggingEnabled = true
     }
     
-    func stopNativeRemoteLoggingWithError(_ error: AutoreleasingUnsafeMutablePointer<FlutterError?>) {
+    func stopNativeRemoteLogging() throws {
         logEntries = nil
         userIdentifier = nil
     }
     
-    func stopNativeConsoleLoggingWithError(_ error: AutoreleasingUnsafeMutablePointer<FlutterError?>) {
+    func stopNativeConsoleLogging() throws {
         isConsoleLoggingEnabled = false
     }
 }

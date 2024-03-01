@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_phone_lib/flutter_phone_lib.dart' as fpl;
 import 'package:flutter_phone_lib/flutter_phone_lib.dart' hide Reason;
 import 'package:vialer/data/models/user/user.dart';
+import 'package:vialer/presentation/util/loggable.dart';
 
 import '../../../../../data/models/calling/call_failure_reason.dart';
 import '../../../../../data/models/calling/call_through/call_through_exception.dart';
@@ -48,7 +49,6 @@ import '../../../../../domain/usecases/user/connectivity/get_current_connectivit
 import '../../../../../domain/usecases/user/get_logged_in_user.dart';
 import '../../../../../domain/usecases/user/get_permission_status.dart';
 import '../../../../../domain/usecases/user/settings/open_settings.dart';
-import 'package:vialer/presentation/util/loggable.dart';
 import 'state.dart' hide AttendedTransferStarted;
 
 export 'state.dart';
@@ -370,7 +370,7 @@ class CallerCubit extends Cubit<CallerState> with Loggable {
       emit(state.transferStarted(voip: callSessionState));
       logger.info('VoIP attended transfer started');
     } else if (event is AttendedTransferAborted) {
-      emit(state.calling(voip: callSessionState));
+      emit(state.calling(voip: callSessionState, isTransferAborted: true));
       logger.info('VoIP attended transfer aborted');
     } else if (event is AttendedTransferEnded) {
       emit(state.transferComplete(voip: callSessionState));

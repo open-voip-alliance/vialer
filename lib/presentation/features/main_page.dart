@@ -28,6 +28,7 @@ import 'colltacts/pages/colltacts_page.dart';
 import 'dialer/dialer_page.dart';
 import 'recent/recent_calls_page.dart';
 import 'settings/pages/settings.dart';
+import '../../../presentation/util/pigeon_extensions.dart';
 
 class MainPage extends StatefulWidget {
   /// There can only be one.
@@ -111,6 +112,18 @@ class MainPageState extends State<MainPage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    NativeToFlutterSetup.onLaunchDialerAndPopulateNumber(
+      (number) => Navigator.pushNamed(
+        context,
+        Routes.dialer,
+        arguments: number,
+      ),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MultiWidgetParent(
       [
@@ -175,10 +188,12 @@ class MainPageState extends State<MainPage> {
                         // We use the CallButton's hero tag for a nice
                         // transition between the dialer and call button.
                         heroTag: CallButton.defaultHeroTag,
+                        foregroundColor: Colors.white,
                         backgroundColor: context.brand.theme.colors.green1,
                         onPressed: () => unawaited(
                           Navigator.pushNamed(context, Routes.dialer),
                         ),
+                        shape: CircleBorder(),
                         child: const Icon(
                           Icons.dialpad,
                           size: 31,
@@ -418,7 +433,7 @@ class BuildWebSocketDependantCubitsThenConnect extends StatelessWidget {
         value: BlocProvider.of<ColleaguesCubit>(context),
         child: BlocProvider.value(
           value: BlocProvider.of<UserAvailabilityStatusCubit>(context),
-          child: RelationsWebSocketManager.connect(child),
+          child: ResgateManager.connect(child),
         ),
       ),
     );

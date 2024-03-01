@@ -122,9 +122,11 @@ class CallButton extends StatelessWidget {
           child: FloatingActionButton(
             heroTag: heroTag,
             onPressed: onPressed,
+            foregroundColor: Colors.white,
             backgroundColor: onPressed != null
                 ? backgroundColor
                 : context.brand.theme.colors.grey3,
+            shape: CircleBorder(),
             child: FaIcon(
               icon,
               size: 24,

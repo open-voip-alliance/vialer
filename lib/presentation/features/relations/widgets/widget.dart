@@ -1,33 +1,33 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vialer/data/API/authentication/user_logged_in.dart';
+import 'package:vialer/data/API/resgate/resgate.dart';
 import 'package:vialer/dependency_locator.dart';
 import 'package:vialer/domain/usecases/authentication/user_was_logged_out.dart';
 
 import '../../../../../data/models/event/event_bus.dart';
-import '../../../../../data/models/relations/websocket/relations_web_socket.dart';
 import '../../../shared/controllers/connectivity_checker/cubit.dart';
 import '../../../util/widgets_binding_observer_registrar.dart';
 
 /// This connects the [RelationsWebSocket] with the app lifecycle and events
 /// to properly disconnect or connect when appropriate, for example when
 /// the app is launched.
-class RelationsWebSocketManager extends StatefulWidget {
-  const RelationsWebSocketManager._(this.child);
+class ResgateManager extends StatefulWidget {
+  const ResgateManager._(this.child);
 
   final Widget child;
 
   static Widget connect(Widget child) {
-    return RelationsWebSocketManager._(child);
+    return ResgateManager._(child);
   }
 
   @override
-  State<StatefulWidget> createState() => _RelationsWebSocketState();
+  State<StatefulWidget> createState() => _ResgateManagerState();
 }
 
-class _RelationsWebSocketState extends State<RelationsWebSocketManager>
+class _ResgateManagerState extends State<ResgateManager>
     with WidgetsBindingObserver, WidgetsBindingObserverRegistrar {
-  final _relationsWebSocket = dependencyLocator<RelationsWebSocket>();
+  final _relationsWebSocket = dependencyLocator<Resgate>();
   final _eventBus = dependencyLocator<EventBusObserver>();
 
   void _registerEventListeners() {

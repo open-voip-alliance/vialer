@@ -61,6 +61,11 @@ class _CallProblemButton extends StatelessWidget {
       onPressed: onPressed,
       style: OutlinedButton.styleFrom(
         alignment: Alignment.centerLeft,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+        side: BorderSide(
+          width: 1,
+          color: context.brand.theme.colors.primary.withOpacity(0.12),
+        ),
       ),
       child: FittedBox(
         fit: BoxFit.fitWidth,

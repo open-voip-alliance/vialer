@@ -58,6 +58,7 @@ class _CallOrTransferPageState extends State<CallPage> {
               body: Container(
                 alignment: Alignment.center,
                 child: CallProcessStateBuilder(
+                  ignoreCallDurationChanges: true,
                   builder: (context, state) {
                     return CallTransfer(
                       activeCall: state.voipCall!,
@@ -199,6 +200,29 @@ class _CallPageState extends State<_CallPage>
         'currentMos': state.voipCall?.currentMos,
       });
     }
+
+    _announceStateChanged(context, state);
+  }
+
+  void _announceStateChanged(BuildContext context, CallerState state) {
+    if (state is AttendedTransferComplete) {
+      Future.delayed(const Duration(milliseconds: 500), () async {
+        SemanticsService.announce(
+          context.msg.main.call.transfer.complete.message,
+          Directionality.of(context),
+        );
+      });
+    } else if (state is Calling && state.isTransferAborted) {
+      SemanticsService.announce(
+        context.msg.main.call.transfer.abort.message,
+        Directionality.of(context),
+      );
+    } else if (state is FinishedCalling) {
+      SemanticsService.announce(
+        context.msg.main.call.ended.message,
+        Directionality.of(context),
+      );
+    }
   }
 
   Future<void> _requestCallRating(BuildContext context, FinishedCalling state) {
@@ -273,6 +297,7 @@ class _CallPageState extends State<_CallPage>
           icon: const FaIcon(FontAwesomeIcons.exclamation),
           label: Text(context.msg.main.call.ongoing.connectionWarning.title),
           padding: const EdgeInsets.only(right: 72),
+          excludeSemantics: true,
         );
       },
     );

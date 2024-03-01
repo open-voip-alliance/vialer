@@ -4,43 +4,30 @@ import 'dart:io';
 import 'package:flutter_phone_lib/flutter_phone_lib.dart';
 import 'package:injectable/injectable.dart';
 import 'package:vialer/data/models/calling/voip/unable_to_initialize_phone_lib.dart';
+import 'package:vialer/domain/usecases/calling/voip/prepare_voip_preferences.dart';
 
 import '../../../../dependency_locator.dart';
-import '../../../../domain/usecases/authentication/get_is_logged_in_somewhere_else.dart';
 import '../../../../domain/usecases/user/get_build_info.dart';
-import '../../../../domain/usecases/user/get_logged_in_user.dart';
-import '../../../../domain/usecases/user/get_login_time.dart';
 import '../../../../presentation/util/loggable.dart';
 import '../../../API/calling/middleware/middleware_service.dart';
 import '../../../models/user/brand.dart';
 import '../../../models/user/info/build_info.dart';
-import '../../../models/user/settings/app_setting.dart';
-import '../../../models/user/settings/call_setting.dart';
 import '../../../models/user/user.dart';
 import '../../../models/voipgrid/app_account.dart';
 import '../../../models/voipgrid/client_voip_config.dart';
-import '../../env.dart';
 import '../../legacy/storage.dart';
-import '../../user/info/operating_system_info_repository.dart';
 
 @lazySingleton
 class VoipRepository with Loggable {
   final _service = dependencyLocator<MiddlewareService>();
 
-  final _getUser = GetLoggedInUserUseCase();
   final _getBuildInfo = GetBuildInfoUseCase();
-  final _isLoggedInSomewhereElse = GetIsLoggedInSomewhereElseUseCase();
-  final _getLoginTime = GetLoginTimeUseCase();
 
   final _storageRepository = dependencyLocator<StorageRepository>();
-  final _operatingSystemInfoRepository =
-      dependencyLocator<OperatingSystemInfoRepository>();
-  final _envRepository = dependencyLocator<EnvRepository>();
+  late final _prepareVoipPreferences =
+      dependencyLocator<PrepareVoipPreferences>();
 
   String? get _token => _storageRepository.pushToken;
-
-  String? get _remoteNotificationToken =>
-      _storageRepository.remoteNotificationToken;
 
   PhoneLib? __phoneLib;
 
@@ -117,7 +104,7 @@ class VoipRepository with Loggable {
 
     final userConfig = user.appAccount!;
 
-    final preferences = _createPreferences(user);
+    final preferences = await _prepareVoipPreferences();
 
     /// Returns true if successfully initialized, false otherwise.
     Future<bool> initialize({bool firstTry = true}) async {
@@ -162,7 +149,7 @@ class VoipRepository with Loggable {
     Future<bool> start({bool firstTry = true}) async {
       try {
         await __phoneLib!.start(
-          _createPreferences(user),
+          await _prepareVoipPreferences(),
           await _createAuth(userConfig, clientConfig),
         );
       } on Exception catch (e) {
@@ -210,16 +197,6 @@ class VoipRepository with Loggable {
         secure: appAccount.useEncryption,
       );
 
-  Preferences _createPreferences(User user) => Preferences(
-        codecs: const [Codec.opus],
-        useApplicationProvidedRingtone: !user.settings.get(
-          CallSetting.usePhoneRingtone,
-        ),
-        showCallsInNativeRecents: user.settings.get(
-          AppSetting.showCallsInNativeRecents,
-        ),
-      );
-
   // We refer to the backing field `__phoneLib` instead of
   // the getter `_phoneLib`, because if for some reason the phone lib was not
   // initialized, we don't want to do that now (which will happen if _phoneLib
@@ -238,75 +215,6 @@ class VoipRepository with Loggable {
   Future<void> stop() async {
     if (_hasStartedCompleter.isCompleted && await hasStarted) {
       await (await _phoneLib).stop();
-    }
-  }
-
-  Future<void> register(AppAccount? appAccount) async {
-    if (await _isLoggedInSomewhereElse()) {
-      unawaited(unregister(appAccount));
-      logger.info('Registration cancelled: User has logged in elsewhere');
-      return;
-    }
-
-    final user = _getUser();
-
-    if (appAccount?.sipUserId == null) {
-      logger.info('Registration cancelled: No SIP user ID set');
-      return;
-    }
-
-    if (_token == null) {
-      logger.info('Registration cancelled: No token');
-      return;
-    }
-
-    final buildInfo = await _getBuildInfo();
-
-    final name = user.email;
-    final token = _token!;
-    final remoteNotificationToken = _remoteNotificationToken ?? '';
-    final sipUserId = appAccount!.sipUserId;
-    final osVersion = await _operatingSystemInfoRepository
-        .getOperatingSystemInfo()
-        .then((i) => i.version);
-    final clientVersion = buildInfo.version;
-    final app = buildInfo.packageName;
-    final useSandbox = _envRepository.iosSandboxPushNotifications;
-    final loginTime = _getLoginTime();
-
-    final response = Platform.isAndroid
-        ? await _service.postAndroidDevice(
-            name: name,
-            token: token,
-            sipUserId: sipUserId,
-            osVersion: osVersion,
-            clientVersion: clientVersion,
-            app: app,
-            appStartupTime: loginTime?.toUtc().toIso8601String(),
-            dnd: false,
-          )
-        : Platform.isIOS
-            ? await _service.postAppleDevice(
-                name: name,
-                token: token,
-                sipUserId: sipUserId,
-                osVersion: osVersion,
-                clientVersion: clientVersion,
-                app: app,
-                appStartupTime: loginTime?.toUtc().toIso8601String(),
-                sandbox: useSandbox,
-                remoteNotificationToken: remoteNotificationToken,
-                dnd: false,
-              )
-            : throw UnsupportedError(
-                'Unsupported platform: ${Platform.operatingSystem}',
-              );
-
-    if (!response.isSuccessful) {
-      logger.warning(
-        'Registration failed: ${response.statusCode} ${response.error}',
-      );
-      return;
     }
   }
 
@@ -360,9 +268,7 @@ class VoipRepository with Loggable {
 
   Future<void> refreshPreferences(User user) async {
     if (_startUpUser != null) {
-      (await _phoneLib).updatePreferences(
-        _createPreferences(user),
-      );
+      (await _phoneLib).updatePreferences(await _prepareVoipPreferences());
     }
   }
 

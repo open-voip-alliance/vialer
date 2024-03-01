@@ -1,18 +1,26 @@
-import '../../../../presentation/util/pigeon.dart';
+import 'package:injectable/injectable.dart';
+import 'package:vialer/domain/usecases/colltacts/shared_contacts/propagate_shared_contacts.dart';
+
 import '../../../../data/models/colltacts/shared_contacts/shared_contact.dart';
 import '../../../../data/repositories/colltacts/shared_contacts/shared_contacts_repository.dart';
 import '../../../../data/repositories/legacy/storage.dart';
-import '../../../../dependency_locator.dart';
 import '../../../../presentation/util/synchronized_task.dart';
 import '../../use_case.dart';
 import '../../user/get_logged_in_user.dart';
 
+@injectable
 class GetSharedContactsUseCase extends UseCase {
-  late final _sharedContactsRepository =
-      dependencyLocator<SharedContactsRepository>();
-  late final _getUser = GetLoggedInUserUseCase();
-  late final _storage = dependencyLocator<StorageRepository>();
-  late final _nativeSharedContacts = SharedContacts();
+  final SharedContactsRepository _sharedContactsRepository;
+  final StorageRepository _storage;
+  final GetLoggedInUserUseCase _getUser;
+  final PropagateSharedContacts _propagateSharedContacts;
+
+  GetSharedContactsUseCase(
+    this._sharedContactsRepository,
+    this._storage,
+    this._getUser,
+    this._propagateSharedContacts,
+  );
 
   Future<List<SharedContact>> call({
     bool forceSharedContactsRefresh = false,
@@ -23,35 +31,11 @@ class GetSharedContactsUseCase extends UseCase {
             ? await _fetchSharedContacts()
             : cachedSharedContacts;
 
-    _processNativeSharedContacts(sharedContacts);
+    if (cachedSharedContacts != sharedContacts) {
+      _propagateSharedContacts(cachedSharedContacts, sharedContacts);
+    }
 
     return sharedContacts;
-  }
-
-  /// Processes the native shared contacts by converting them into a list of [NativeSharedContact] objects
-  /// and passing them to the [_nativeSharedContacts.processSharedContacts] method.
-  ///
-  /// The [sharedContacts] parameter is a list of [SharedContact] objects representing the shared contacts
-  /// to be processed.
-  void _processNativeSharedContacts(List<SharedContact> sharedContacts) {
-    _nativeSharedContacts.processSharedContacts(
-      sharedContacts
-          .map(
-            (contact) => NativeSharedContact(
-              phoneNumbers: contact.phoneNumbers
-                  .map(
-                    (phoneNumber) => NativePhoneNumber(
-                      phoneNumberFlat: phoneNumber.phoneNumberFlat,
-                      phoneNumberWithoutCallingCode:
-                          phoneNumber.withoutCallingCode,
-                    ),
-                  )
-                  .toList(),
-              displayName: contact.displayName,
-            ),
-          )
-          .toList(),
-    );
   }
 
   Future<List<SharedContact>> _fetchSharedContacts() async =>

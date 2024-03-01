@@ -386,6 +386,11 @@ class _ConclusionButton extends StatelessWidget {
             vertical: 12,
             horizontal: 12,
           ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+          side: BorderSide(
+            width: 1,
+            color: context.brand.theme.colors.primary.withOpacity(0.12),
+          ),
         ),
         onPressed: onPressed,
         child: Align(
