@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:vialer/data/models/user/user.dart';
+import 'package:vialer/global.dart';
 import 'package:vialer/presentation/resources/localizations.dart';
 import 'package:vialer/presentation/resources/theme.dart';
 
@@ -117,6 +119,8 @@ class _DialerPageState extends State<DialerPage>
 
   @override
   Widget build(BuildContext context) {
+    _populateNumberFromRouteArgument(context);
+
     return BlocProvider<DialerCubit>(
       create: (context) => DialerCubit(context.read<CallerCubit>()),
       child: BlocListener<DialerCubit, DialerState>(
@@ -188,5 +192,19 @@ class _DialerPageState extends State<DialerPage>
         ),
       ),
     );
+  }
+
+  /// Allows the dialer to be called with a [String] route argument, and will
+  /// automatically populate the phone number. This is primarily useful when
+  /// trying to start a Vialer call from outside the app.
+  void _populateNumberFromRouteArgument(BuildContext context) {
+    final argument = ModalRoute.of(context)?.settings.arguments;
+
+    if (argument == null || argument is! String) return;
+
+    if (argument.isBlank) return;
+
+    track('dialer-populated-from-external-app');
+    _dialPadController.text = argument;
   }
 }

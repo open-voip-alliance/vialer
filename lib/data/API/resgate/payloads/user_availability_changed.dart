@@ -1,8 +1,8 @@
 import 'package:collection/collection.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:vialer/data/models/relations/websocket/payloads/payload.dart';
+import 'package:vialer/data/API/resgate/payloads/payload.dart';
 
-import '../../colleagues/colleague.dart';
+import '../../../models/relations/colleagues/colleague.dart';
 
 part 'user_availability_changed.freezed.dart';
 part 'user_availability_changed.g.dart';
@@ -10,7 +10,7 @@ part 'user_availability_changed.g.dart';
 @freezed
 class UserAvailabilityChangedPayload
     with _$UserAvailabilityChangedPayload
-    implements Payload {
+    implements ResgatePayload {
   const UserAvailabilityChangedPayload._();
 
   @JsonSerializable(fieldRename: FieldRename.snake)
@@ -18,8 +18,6 @@ class UserAvailabilityChangedPayload
     required String userUuid,
     required bool hasLinkedDestinations,
     required int internalNumber,
-    @JsonKey(fromJson: _colleagueDestinationTypeFromJson)
-    required ColleagueDestinationType destinationType,
 
     /// This is the inferred status, based on things such as if the user has
     /// a destination set. This is the status that should be used for
@@ -37,8 +35,9 @@ class UserAvailabilityChangedPayload
     /// The list of selected destinations, currently we only support a single
     /// selected destination but this is a list to future-proof as we plan
     /// to support multiple selected destinations in the future.
-    @JsonKey(name: 'destinations')
-    required List<SelectedDestination> selectedDestinations,
+    @JsonKey(name: 'destination', fromJson: _selectedDestinationToDestinations)
+    @Default([])
+    List<SelectedDestination> selectedDestinations,
   }) = _UserAvailabilityChangedPayload;
 
   SelectedDestination? get selectedDestination =>
@@ -47,6 +46,11 @@ class UserAvailabilityChangedPayload
   factory UserAvailabilityChangedPayload.fromJson(Map<String, dynamic> json) =>
       _$UserAvailabilityChangedPayloadFromJson(json);
 }
+
+List<SelectedDestination> _selectedDestinationToDestinations(
+  Map<String, dynamic> json,
+) =>
+    [SelectedDestination.fromJson(json)];
 
 ColleagueAvailabilityStatus _availabilityFromJson(String? value) =>
     switch (value) {
@@ -70,8 +74,8 @@ List<ColleagueContext> _colleagueContextFromJson(List<dynamic> json) => json
     .whereNotNull()
     .toList();
 
-ColleagueDestinationType _colleagueDestinationTypeFromJson(String? value) =>
-    switch (value) {
+ColleagueDestinationType _colleagueDestinationTypeFromJson(String type) =>
+    switch (type) {
       'app_account' => ColleagueDestinationType.app,
       'voip_account' => ColleagueDestinationType.voipAccount,
       'fixeddestination' => ColleagueDestinationType.fixed,
@@ -82,8 +86,8 @@ ColleagueDestinationType _colleagueDestinationTypeFromJson(String? value) =>
 class SelectedDestination with _$SelectedDestination {
   @JsonSerializable(fieldRename: FieldRename.snake)
   const factory SelectedDestination({
-    required int destinationId,
-    @JsonKey(fromJson: _colleagueDestinationTypeFromJson)
+    @JsonKey(name: 'portal_id') required int destinationId,
+    @JsonKey(name: 'type', fromJson: _colleagueDestinationTypeFromJson)
     required ColleagueDestinationType destinationType,
   }) = _SelectedDestination;
 

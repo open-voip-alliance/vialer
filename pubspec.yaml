@@ -15,7 +15,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  flutter_phone_lib: 0.0.12
+  flutter_phone_lib: ^0.0.14
   font_awesome_flutter:
     hosted: https://onepub.dev/api/xhopsdavuh/
     version: ^1.0.0
@@ -75,6 +75,7 @@ dependencies:
   injectable_generator: ^2.4.1
   device_info_plus: ^9.1.1
   country_codes: ^2.2.0
+  res_client: ^0.8.5
 
 dev_dependencies:
   test: ^1.24.9

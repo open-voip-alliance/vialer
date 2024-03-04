@@ -1,33 +1,43 @@
-import 'package:vialer/data/models/calling/voip/destination.dart';
+import 'package:vialer/data/API/resgate/listeners/colleague_update_handler.dart';
 import 'package:vialer/data/models/relations/utils.dart';
-import 'package:vialer/data/models/relations/websocket/listeners/colleague_update_handler.dart';
-import 'package:vialer/data/repositories/calling/voip/destination_repository.dart';
 import 'package:vialer/dependency_locator.dart';
-
-import '../../../../../domain/usecases/onboarding/is_onboarded.dart';
-import '../../../../../domain/usecases/user/refresh/refresh_user.dart';
-import '../../../../../domain/usecases/user/settings/force_update_setting.dart';
-import '../../../user/events/logged_in_user_availability_changed.dart';
-import '../../../user/refresh/user_refresh_task.dart';
-import '../../../user/settings/call_setting.dart';
-import '../../colleagues/colleague.dart';
-import '../../user_availability_status.dart';
+import '../../../../domain/usecases/onboarding/is_onboarded.dart';
+import '../../../../domain/usecases/user/refresh/refresh_user.dart';
+import '../../../../domain/usecases/user/settings/force_update_setting.dart';
+import '../../../models/calling/voip/destination.dart';
+import '../../../models/relations/colleagues/colleague.dart';
+import '../../../models/relations/user_availability_status.dart';
+import '../../../models/user/events/logged_in_user_availability_changed.dart';
+import '../../../models/user/refresh/user_refresh_task.dart';
+import '../../../models/user/settings/call_setting.dart';
+import '../../../repositories/calling/voip/destination_repository.dart';
 import '../payloads/payload.dart';
 import '../payloads/user_availability_changed.dart';
+import '../rid_generator.dart';
 import 'listener.dart';
 
 class LoggedInUserAvailabilityChangedHandler
-    extends Listener<UserAvailabilityChangedPayload> {
+    extends ResgateListener<UserAvailabilityChangedPayload> with RidGenerator {
   late final _refreshUser = RefreshUser();
   late final _isOnboarded = IsOnboarded();
   late final _destinations = dependencyLocator<DestinationRepository>();
 
   @override
-  bool shouldHandle(Payload payload) {
+  bool shouldHandle(ResgatePayload payload) {
     if (payload is! UserAvailabilityChangedPayload) return false;
 
     return payload.isAboutLoggedInUser;
   }
+
+  @override
+  String get resourceToSubscribeTo => createRid(
+        (user, client) => 'availability.client.$client',
+      );
+
+  @override
+  RegExp get resourceToHandle => createRidRegex(
+        (user, client) => RegExp(resourceToSubscribeTo + '.user.$user' + r'$'),
+      );
 
   @override
   Future<void> handle(UserAvailabilityChangedPayload payload) async {
@@ -85,7 +95,8 @@ class LoggedInUserAvailabilityChangedHandler
 extension on UserAvailabilityChangedPayload {
   bool get isRingingDeviceOffline =>
       userStatus != ColleagueAvailabilityStatus.offline &&
-      destinationType == ColleagueDestinationType.voipAccount &&
+      selectedDestination?.destinationType ==
+          ColleagueDestinationType.voipAccount &&
       availability == ColleagueAvailabilityStatus.offline;
 
   UserAvailabilityStatus toUserAvailabilityStatus() =>
