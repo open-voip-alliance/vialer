@@ -4,6 +4,7 @@ import 'package:dartx/dartx.dart';
 import 'package:injectable/injectable.dart';
 import 'package:res_client/cache/cache_item.dart';
 import 'package:res_client/client.dart';
+import 'package:res_client/error.dart';
 import 'package:res_client/event.dart';
 import 'package:res_client/model.dart' hide logger;
 import 'package:vialer/data/API/resgate/payloads/device.dart';
@@ -80,9 +81,11 @@ class Resgate with Loggable {
 
     resgate.events.listen(
       (data) async {
-        // If we are receiving events, we will make sure to cancel any queued
-        // reconnect timer as we are obviously connected.
-        _cancelQueuedReconnect(resetAttempts: true);
+        if (data.isHealthyEvent) {
+          // If we are receiving events, we will make sure to cancel any queued
+          // reconnect timer as we are obviously connected.
+          _cancelQueuedReconnect(resetAttempts: true);
+        }
 
         if (data is ConnectedEvent) {
           await _onConnect();
@@ -91,6 +94,7 @@ class Resgate with Loggable {
 
         if (data is DisconnectedEvent) {
           attemptReconnect('Resgate has closed');
+          return;
         }
       },
       onDone: () => attemptReconnect('Resgate has closed'),
@@ -172,7 +176,7 @@ class Resgate with Loggable {
 
     _resgate = ResClient()..authenticate(auth);
 
-    _resgate?.events.where((event) => event is ConnectedEvent).listen((event) {
+    _resgate?.onConnected(() {
       if (shouldUpdateListeners) {
         performOnEachListener((l) => l.onConnect());
       }
@@ -187,11 +191,16 @@ class Resgate with Loggable {
   }) async {
     logger.info('Disconnecting from Resgate');
     _doNotReconnect = true;
-    _resgate?.dispose();
+    final resgate = _resgate;
+    if (resgate == null) return;
+    final completer = Completer<void>();
+    resgate.onDisconnected(() => completer.complete());
+    resgate.forceClose();
     _resgate = null;
     if (shouldUpdateListeners) {
       await performOnEachListener((l) => l.onDisconnect());
     }
+    return completer.future;
   }
 
   Future<void> _attemptReconnect() async {
@@ -268,6 +277,14 @@ extension on ResClient {
 
     return [];
   }
+
+  void onDisconnected(void Function() callback) => events
+      .where((event) => event is DisconnectedEvent)
+      .listen((event) => callback());
+
+  void onConnected(void Function() callback) => events
+      .where((event) => event is ConnectedEvent)
+      .listen((event) => callback());
 }
 
 extension on MapEntry<ResgateListener, Deserializer> {
@@ -288,4 +305,13 @@ extension on ResEvent {
 
     return self.rid.matches(listener.resourceToHandle);
   }
+
+  /// An event that indicates that the state of Resgate is healthy, i.e. not
+  /// disconnected or other errors.
+  bool get isHealthyEvent => ![
+        DisconnectedEvent,
+        ClientForcedDisconnectedEvent,
+        ClientDisconnectedException,
+        InvalidMessageException,
+      ].contains(runtimeType);
 }
