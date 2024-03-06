@@ -139,11 +139,16 @@ extension on List<Colleague> {
       );
 
   void removeAnyDeletedColleagues(List<Colleague> newColleagues) {
+    // Avoid a `Concurrent modification during iteration` exception
+    final colleaguesToRemove = <Colleague>[];
+
     for (final colleague in this) {
       if (newColleagues.findByUserUuid(colleague.id) == null) {
-        remove(colleague);
+        colleaguesToRemove.add(colleague);
       }
     }
+
+    colleaguesToRemove.forEach((colleague) => remove(colleague));
   }
 
   void updateColleagueNameIfModified(List<Colleague> newColleagues) {

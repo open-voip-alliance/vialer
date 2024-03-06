@@ -2,7 +2,7 @@ import '../../../domain/usecases/user/get_logged_in_user.dart';
 import '../../models/user/user.dart';
 
 mixin RidGenerator {
-  late User _user = GetLoggedInUserUseCase()();
+  User get _user => GetLoggedInUserUseCase()();
 
   /// A helper function to easily retrieve the user and client uuids to form
   /// rids.
