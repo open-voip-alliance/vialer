@@ -172,6 +172,7 @@ custom: # Custom properties to make workflows cleaner
         credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
         track: production
         in_app_update_priority: 5
+        changes_not_sent_for_review: true
 
     publish_for_beta: &publish_for_beta
       app_store_connect:
