@@ -31,9 +31,7 @@ class GetSharedContactsUseCase extends UseCase {
             ? await _fetchSharedContacts()
             : cachedSharedContacts;
 
-    if (cachedSharedContacts != sharedContacts) {
-      _propagateSharedContacts(cachedSharedContacts, sharedContacts);
-    }
+    _propagateSharedContacts(cachedSharedContacts, sharedContacts);
 
     return sharedContacts;
   }

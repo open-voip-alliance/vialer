@@ -22,7 +22,11 @@ class PropagateSharedContacts extends UseCase with Loggable {
   Future<void> call(
     Iterable<SharedContact> previous,
     Iterable<SharedContact> current,
-  ) {
+  ) async {
+    if (previous.isEmpty && current.isEmpty) return;
+
+    if (previous == current) return;
+
     logger.info(
       'Propagating shared contact changes to native, previous has '
       '[${previous.length}], current has [${current.length}].',

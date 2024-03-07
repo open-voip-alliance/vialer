@@ -200,6 +200,7 @@ class Resgate with Loggable {
     if (shouldUpdateListeners) {
       await performOnEachListener((l) => l.onDisconnect());
     }
+    if (completer.isCompleted) return;
     return completer.future;
   }
 
