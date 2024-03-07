@@ -87,11 +87,6 @@ class Resgate with Loggable {
           _cancelQueuedReconnect(resetAttempts: true);
         }
 
-        if (data is ConnectedEvent) {
-          await _onConnect();
-          return;
-        }
-
         if (data is DisconnectedEvent) {
           attemptReconnect('Resgate has closed');
           return;
@@ -164,6 +159,7 @@ class Resgate with Loggable {
     bool shouldUpdateListeners = true,
   }) async {
     final auth = _auth;
+    final completer = Completer<ResClient>();
 
     if (auth == null) {
       throw Exception('Unable to connect to WS as we have no authentication');
@@ -174,15 +170,22 @@ class Resgate with Loggable {
 
     logger.info('Attempting connection to WS at: ${auth.url}');
 
-    _resgate = ResClient()..authenticate(auth);
+    final resgate = ResClient()..reconnect(auth.url);
+    _resgate = resgate;
 
-    _resgate?.onConnected(() {
+    resgate.onConnected(() async {
+      await resgate.authenticate(auth);
+
+      await _onConnect();
+
       if (shouldUpdateListeners) {
-        performOnEachListener((l) => l.onConnect());
+        await performOnEachListener((l) => l.onConnect());
       }
+
+      completer.complete(resgate);
     });
 
-    return _resgate!;
+    return completer.future;
   }
 
   Future<void> _disconnect({
@@ -255,15 +258,12 @@ enum ResgateCloseReason {
 }
 
 extension on ResClient {
-  Future<void> authenticate(ResgateAuthentication credentials) async {
-    reconnect(credentials.url);
-
-    auth(
-      'usertoken',
-      'login',
-      params: {'token': credentials.token},
-    );
-  }
+  Future<void> authenticate(ResgateAuthentication credentials) async =>
+      await auth(
+        'usertoken',
+        'login',
+        params: {'token': credentials.token},
+      );
 
   // Normalizes a model or collection into a collection so we can handle both
   // of these in a similar way.
