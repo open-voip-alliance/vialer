@@ -14,20 +14,15 @@ class GetResgateAuthentication extends UseCase {
   User get _user => GetLoggedInUserUseCase()();
   Brand get _brand => GetBrand()();
 
-  /// Relations deploys their websockets with specific versions which allows
-  /// new statuses and information to to be added while still allowing older
-  /// clients to be supported.
-  ///
-  /// This version should only be upgraded when everything else has been
-  /// updated to handle the updated payloads.
-  static const version = 2;
+  ResgateAuthentication? call() {
+    if (!_isOnboarded) return null;
 
-  ResgateAuthentication? call() => _isOnboarded
-      ? ResgateAuthentication(
-          url: _brand.resgateUrl,
-          token: _user.token!,
-        )
-      : null;
+    final token = _user.token;
+
+    if (token == null) return null;
+
+    return ResgateAuthentication(url: _brand.resgateUrl, token: token);
+  }
 }
 
 @freezed
