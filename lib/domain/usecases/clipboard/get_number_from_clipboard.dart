@@ -9,10 +9,9 @@ class GetNumberFromClipboardUseCase extends UseCase {
 
   Future<String?> call() async {
     final text = await _clipboardRepository.getClipboardText();
-    print("Clipboard text: $text");
 
+    // Check if the clipboard text is a number
     if (text != null && text.isNumeric()) {
-      print("2");
       return text;
     }
 

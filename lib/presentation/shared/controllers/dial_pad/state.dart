@@ -6,6 +6,7 @@ part 'state.freezed.dart';
 sealed class ClipboardState with _$ClipboardState {
   const factory ClipboardState.initial() = Initial;
   const factory ClipboardState.loading() = Loading;
+  const factory ClipboardState.hasNumber() = HasNumber;
   const factory ClipboardState.success(String number) = Success;
   const factory ClipboardState.unavailable() = Unavailable;
 }
