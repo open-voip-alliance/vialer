@@ -20,11 +20,9 @@ class Clipboard extends _$Clipboard {
         : ClipboardState.unavailable();
   }
 
-  Future<void> hasNumberFromClipboard() async {
-    return _hasClipboardUseCase().then((hasNumber) {
+  Future<void> hasNumberFromClipboard() => _hasClipboardUseCase().then((hasNumber) {
       state = hasNumber == true
           ? ClipboardState.hasNumber()
           : ClipboardState.unavailable();
     });
-  }
 }

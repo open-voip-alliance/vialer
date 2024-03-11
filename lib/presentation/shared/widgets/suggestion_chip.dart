@@ -17,7 +17,7 @@ class SuggestionChip extends StatelessWidget {
         children: <Widget>[
           icon,
           SizedBox(
-            width: 4,
+            width: 4
           ),
           Text(
             label,
@@ -29,7 +29,7 @@ class SuggestionChip extends StatelessWidget {
       shape: StadiumBorder(
         side: BorderSide(
           color: Theme.of(context).primaryColor.withOpacity(0.4),
-          width: 0.0,
+          width: 0,
         ),
       ),
       onPressed: onSelected,

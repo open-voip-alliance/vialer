@@ -110,7 +110,7 @@ class MainActivity : FlutterActivity(), CallScreenBehavior {
         NativeClipboard.setUp(binaryMessenger, object : NativeClipboard {
             @RequiresApi(Build.VERSION_CODES.S)
             override fun hasPhoneNumber(callback: (Result<Boolean>) -> Unit) {
-                val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                val clipboard = context.getSystemService(ClipboardManager::class.java)
                 val confidenceScore = clipboard.primaryClipDescription?.getConfidenceScore(TextClassifier.TYPE_PHONE)
                 callback(Result.success(confidenceScore != null && confidenceScore > 0.8))
             }
