@@ -10,7 +10,6 @@ import 'package:vialer/presentation/shared/widgets/suggestion_chip.dart';
 
 import '../../features/call/widgets/call_button.dart';
 import '../../features/dialer/widgets/t9/widget.dart';
-
 import 'dial_pad/keypad.dart';
 import 'dial_pad/widget.dart';
 import 'transparent_status_bar.dart';

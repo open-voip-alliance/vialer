@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vialer/presentation/resources/theme.dart';
+
 import '../../controllers/connectivity_checker/cubit.dart';
 import 'key_input.dart';
 import 'keypad.dart';
@@ -40,7 +41,6 @@ class _DialPadState extends State<DialPad> {
   /// the offset is reported as -1. We need to update the position of the
   /// cursor in that case.
   final _cursorShownNotifier = ValueNotifier<bool>(false);
-  final GlobalKey<TooltipState> tooltipkey = GlobalKey<TooltipState>();
 
   @override
   Widget build(BuildContext context) {
@@ -82,60 +82,6 @@ class _DialPadState extends State<DialPad> {
           ),
         ),
       ],
-    );
-  }
-}
-
-class ClipboardTooltip extends StatelessWidget {
-  final String clipboardData;
-  final VoidCallback onClose;
-  final VoidCallback onTap;
-
-  ClipboardTooltip({
-    required this.clipboardData,
-    required this.onClose,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Material(
-        color: Colors.transparent,
-        child: Stack(
-          alignment: Alignment.topCenter,
-          children: [
-            IntrinsicWidth(
-              child: Container(
-                margin: EdgeInsets.only(top: 20.0),
-                padding: EdgeInsets.all(10.0),
-                decoration: BoxDecoration(
-                  color: Colors.blue,
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(clipboardData, style: TextStyle(color: Colors.white)),
-                    Align(
-                      alignment: Alignment.topRight,
-                      child: GestureDetector(
-                        onTap: onClose,
-                        child: Icon(Icons.close, color: Colors.white, size: 18),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Positioned(
-              top: -10,
-              child: Icon(Icons.arrow_drop_up, color: Colors.blue, size: 52.0),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
