@@ -1,5 +1,15 @@
 import groovy.json.JsonSlurper
 
+def thanksFlutterTeamToBreakBestWayToManageEnvironmentVariableOnYourLatestRelease = [];
+if (project.hasProperty('dart-defines')) {
+    thanksFlutterTeamToBreakBestWayToManageEnvironmentVariableOnYourLatestRelease = project.property('dart-defines')
+            .split(',')
+            .collectEntries { entry ->
+                def pair = new String(entry.decodeBase64(), 'UTF-8').split('=')
+                [(pair.first()): pair.last()]
+            }
+}
+
 def localProperties = new Properties()
 def localPropertiesFile = rootProject.file('local.properties')
 if (localPropertiesFile.exists()) {
@@ -25,21 +35,8 @@ if (flutterVersionName == null) {
 
 def brand = [:]
 
-if (project.hasProperty('identifier')) {
-    brand.identifier = project.getProperty('identifier')
-    brand.appId = project.getProperty('appId')
-} else {
-    logger.error("""
-Brand identifier is missing, this likely means you have not included --dart-define-from-file when
-running via Flutter.
-
-We will fallback to the information from vialer.json as this allows us to compile the app in a
-purely Android environment. If you are not in a purely Android environment you should resolve this
-instead.
-""")
-    brand.identifier = 'vialer'
-    brand.appId = 'com.voipgrid.vialer'
-}
+brand.identifier = thanksFlutterTeamToBreakBestWayToManageEnvironmentVariableOnYourLatestRelease.identifier
+brand.appId = thanksFlutterTeamToBreakBestWayToManageEnvironmentVariableOnYourLatestRelease.appId
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
