@@ -56,10 +56,11 @@ class _T9DialPadState extends ConsumerState<T9DialPad>
 
     controller.addListener(_disablePhoneNumberSuggestionChip);
 
-    WidgetsBinding.instance.addObserver(this);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _hasPhoneNumberFromClipboard();
-    });
+    WidgetsBinding.instance
+      ..addObserver
+      ..addPostFrameCallback((_) {
+        _hasPhoneNumberFromClipboard();
+      });
   }
 
   @override
@@ -247,9 +248,7 @@ class _PhoneNumberSuggestionChip extends StatelessWidget {
     return SuggestionChip(
       icon: FontAwesomeIcons.paste,
       label: context.msg.main.dialer.clipboard.copyPhoneNumber.title,
-      onSelected: () {
-        onSelected();
-      },
+      onSelected: onSelected,
     );
   }
 }
