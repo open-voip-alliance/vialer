@@ -30,7 +30,7 @@ class PrepareVoipPreferences extends UseCase {
       );
 
   Future<Set<SupplementaryContact>> _prepareSharedContacts() async {
-    final sharedContacts = await _getSharedContactsUseCase();
+    final sharedContacts = await _getSharedContactsUseCase(onlyCached: true);
     return sharedContacts
         .map((contact) => contact.toSupplementaryContactsForAllNumbers())
         .flatten()

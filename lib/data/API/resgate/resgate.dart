@@ -4,6 +4,7 @@ import 'package:dartx/dartx.dart';
 import 'package:injectable/injectable.dart';
 import 'package:res_client/cache/cache_item.dart';
 import 'package:res_client/client.dart';
+import 'package:res_client/error.dart';
 import 'package:res_client/event.dart';
 import 'package:res_client/model.dart' hide logger;
 import 'package:vialer/data/API/resgate/payloads/device.dart';
@@ -80,17 +81,15 @@ class Resgate with Loggable {
 
     resgate.events.listen(
       (data) async {
-        // If we are receiving events, we will make sure to cancel any queued
-        // reconnect timer as we are obviously connected.
-        _cancelQueuedReconnect(resetAttempts: true);
-
-        if (data is ConnectedEvent) {
-          await _onConnect();
-          return;
+        if (data.isHealthyEvent) {
+          // If we are receiving events, we will make sure to cancel any queued
+          // reconnect timer as we are obviously connected.
+          _cancelQueuedReconnect(resetAttempts: true);
         }
 
         if (data is DisconnectedEvent) {
           attemptReconnect('Resgate has closed');
+          return;
         }
       },
       onDone: () => attemptReconnect('Resgate has closed'),
@@ -160,6 +159,7 @@ class Resgate with Loggable {
     bool shouldUpdateListeners = true,
   }) async {
     final auth = _auth;
+    final completer = Completer<ResClient>();
 
     if (auth == null) {
       throw Exception('Unable to connect to WS as we have no authentication');
@@ -170,15 +170,22 @@ class Resgate with Loggable {
 
     logger.info('Attempting connection to WS at: ${auth.url}');
 
-    _resgate = ResClient()..authenticate(auth);
+    final resgate = ResClient()..reconnect(auth.url);
+    _resgate = resgate;
 
-    _resgate?.events.where((event) => event is ConnectedEvent).listen((event) {
+    resgate.onConnected(() async {
+      await resgate.authenticate(auth);
+
+      await _onConnect();
+
       if (shouldUpdateListeners) {
-        performOnEachListener((l) => l.onConnect());
+        await performOnEachListener((l) => l.onConnect());
       }
+
+      completer.complete(resgate);
     });
 
-    return _resgate!;
+    return completer.future;
   }
 
   Future<void> _disconnect({
@@ -187,11 +194,17 @@ class Resgate with Loggable {
   }) async {
     logger.info('Disconnecting from Resgate');
     _doNotReconnect = true;
-    _resgate?.dispose();
+    final resgate = _resgate;
+    if (resgate == null) return;
+    final completer = Completer<void>();
+    resgate.onDisconnected(() => completer.complete());
+    resgate.forceClose();
     _resgate = null;
     if (shouldUpdateListeners) {
       await performOnEachListener((l) => l.onDisconnect());
     }
+    if (completer.isCompleted) return;
+    return completer.future;
   }
 
   Future<void> _attemptReconnect() async {
@@ -245,15 +258,12 @@ enum ResgateCloseReason {
 }
 
 extension on ResClient {
-  Future<void> authenticate(ResgateAuthentication credentials) async {
-    reconnect(credentials.url);
-
-    auth(
-      'usertoken',
-      'login',
-      params: {'token': credentials.token},
-    );
-  }
+  Future<void> authenticate(ResgateAuthentication credentials) async =>
+      await auth(
+        'usertoken',
+        'login',
+        params: {'token': credentials.token},
+      );
 
   // Normalizes a model or collection into a collection so we can handle both
   // of these in a similar way.
@@ -268,6 +278,14 @@ extension on ResClient {
 
     return [];
   }
+
+  void onDisconnected(void Function() callback) => events
+      .where((event) => event is DisconnectedEvent)
+      .listen((event) => callback());
+
+  void onConnected(void Function() callback) => events
+      .where((event) => event is ConnectedEvent)
+      .listen((event) => callback());
 }
 
 extension on MapEntry<ResgateListener, Deserializer> {
@@ -288,4 +306,13 @@ extension on ResEvent {
 
     return self.rid.matches(listener.resourceToHandle);
   }
+
+  /// An event that indicates that the state of Resgate is healthy, i.e. not
+  /// disconnected or other errors.
+  bool get isHealthyEvent => ![
+        DisconnectedEvent,
+        ClientForcedDisconnectedEvent,
+        ClientDisconnectedException,
+        InvalidMessageException,
+      ].contains(runtimeType);
 }

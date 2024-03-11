@@ -18,6 +18,10 @@ class UserAvailabilityStatusRepository with Loggable {
       userUuid: user.uuid,
     );
 
+    if (response.statusCode == 404) {
+      return UserAvailabilityStatus.online;
+    }
+
     if (!response.isSuccessful) {
       logFailedResponse(response, name: 'Get availability status');
       throw Exception('Unable to get dnd status from the api');

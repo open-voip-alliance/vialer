@@ -1,7 +1,5 @@
 import 'package:flutter/cupertino.dart';
 
-import '../../../../../../../data/models/feature/feature.dart';
-import '../../../../../../../data/models/feature/has_feature.dart';
 import '../../../../../../../data/models/relations/user_availability_status.dart';
 import '../../../../../../../data/models/user/user.dart';
 import '../../../../../resources/localizations.dart';
@@ -33,7 +31,6 @@ class AvailabilityStatusPicker extends StatelessWidget {
   //
   // This can be removed at a later date.
   bool get _shouldShowAvailableForColleaguesButton =>
-      hasFeature(Feature.setAvailableForColleaguesStatus) ||
       userAvailabilityStatus == UserAvailabilityStatus.availableForColleagues;
 
   @override

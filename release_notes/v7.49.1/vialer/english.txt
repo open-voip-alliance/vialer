@@ -1,0 +1,5 @@
+- Fixed a bug causing contacts to flicker during a call transfer
+- Added additional screen reader announcements during calls
+- Starting a call via other apps will result in the number being pre-filled in the dialer rather than immediately starting a call, this will now also work more reliably
+- Shared contacts will now be used to display caller information
+- Android: Fixed a bug where media playback would not resume after an incoming call
