@@ -10,8 +10,7 @@ class GetDidAppUpdateToNewVersionUseCase extends UseCase {
   final _storageRepository = dependencyLocator<StorageRepository>();
 
   Future<bool> call() async {
-    final packageInfo = await PackageInfo.fromPlatform();
-    final currentVersion = packageInfo.version;
+    final currentVersion = await PackageInfo.fromPlatform().version;
     final lastInstalledVersion = _storageRepository.lastInstalledVersion;
 
     _storageRepository.lastInstalledVersion = currentVersion;
@@ -22,4 +21,8 @@ class GetDidAppUpdateToNewVersionUseCase extends UseCase {
 
     return currentVersion != lastInstalledVersion;
   }
+}
+
+extension PackageInfoVersion on Future<PackageInfo> {
+  Future<String> get version => then((info) => info.version);
 }
