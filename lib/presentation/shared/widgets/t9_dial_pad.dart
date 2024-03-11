@@ -47,34 +47,24 @@ class T9DialPad extends ConsumerStatefulWidget {
 class _T9DialPadState extends ConsumerState<T9DialPad>
     with WidgetsBindingObserver {
   late final TextEditingController controller;
-  bool _suggestionChipEnabled = true;
+  bool _phoneNumberSuggestionChipEnabled = true;
 
   @override
   void initState() {
     super.initState();
     controller = widget.controller ?? TextEditingController();
-    // Add a listener to the controller to observe text changes
-    controller.addListener(_observeTextChanges);
-    // Add a observer to the widget binding to observe app lifecycle changes
-    WidgetsBinding.instance.addObserver(this);
-    // Check if there is a number in the clipboard after the frame is built
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _hasNumberFromClipboard();
-    });
-  }
 
-  void _observeTextChanges() {
-    // Disable the paste button if the user is typing
-    if (_suggestionChipEnabled) {
-      setState(() {
-        _suggestionChipEnabled = false;
-      });
-    }
+    controller.addListener(_disablePhoneNumberSuggestionChip);
+
+    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _hasPhoneNumberFromClipboard();
+    });
   }
 
   @override
   void dispose() {
-    controller.removeListener(_observeTextChanges);
+    controller.removeListener(_disablePhoneNumberSuggestionChip);
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -83,18 +73,39 @@ class _T9DialPadState extends ConsumerState<T9DialPad>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
 
-    // Check if the app is resumed and the textdield empty to reset paste clipboard state
-    if (state == AppLifecycleState.resumed && controller.text.isEmpty) {
-      setState(() {
-        _suggestionChipEnabled = true;
-      });
+    _resetPhoneNumberSuggestionChipAfterResume(state);
+  }
 
-      _hasNumberFromClipboard();
+  void _disablePhoneNumberSuggestionChip() {
+    if (_phoneNumberSuggestionChipEnabled) {
+      setState(() {
+        _phoneNumberSuggestionChipEnabled = false;
+      });
     }
   }
 
-  Future<void> _hasNumberFromClipboard() async {
-    ref.read(clipboardProvider.notifier).hasNumberFromClipboard();
+  void _resetPhoneNumberSuggestionChipAfterResume(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed && controller.text.isEmpty) {
+      setState(() {
+        _phoneNumberSuggestionChipEnabled = true;
+      });
+
+      _hasPhoneNumberFromClipboard();
+    }
+  }
+
+  void _selectPhoneNumberSuggestionChip() {
+    ref.read(clipboardProvider.notifier).getPhoneNumberFromClipboard();
+
+    if (_phoneNumberSuggestionChipEnabled) {
+      setState(() {
+        _phoneNumberSuggestionChipEnabled = false;
+      });
+    }
+  }
+
+  Future<void> _hasPhoneNumberFromClipboard() async {
+    ref.read(clipboardProvider.notifier).hasPhoneNumberFromClipboard();
   }
 
   void _call(BuildContext context) {
@@ -113,45 +124,17 @@ class _T9DialPadState extends ConsumerState<T9DialPad>
   @override
   Widget build(BuildContext context) {
     final _clipboardState = ref.watch(clipboardProvider);
-    final _shouldShowSuggestionChip =
-        _suggestionChipEnabled && _clipboardState is HasNumber;
+    final _shouldShowPhoneNumberSuggestionChip =
+        _phoneNumberSuggestionChipEnabled && _clipboardState is HasPhoneNumber;
 
-    /// Listens to changes in the [ClipboardState] and updates the [controller.text]
-    /// with the new number if the [ClipboardState] is [Success].
-    ref.listen<ClipboardState>(clipboardProvider,
-        (ClipboardState? previousState, ClipboardState newState) {
+    ref.listen<ClipboardState>(clipboardProvider, (
+      ClipboardState? previousState,
+      ClipboardState newState,
+    ) {
       if (newState is Success) {
         controller.text = newState.number;
       }
     });
-
-    /// Builds a suggestion chip widget.
-    ///
-    /// This method returns a [SuggestionChip] widget that displays an icon and a label.
-    /// The icon is a [FaIcon] with the FontAwesomeIcons.paste icon, and the label is
-    /// retrieved from the context's message property.
-    /// When the chip is selected, it calls the [getNumberFromClipboard] method from the
-    /// [clipboardProvider] notifier, and updates the [pasteClipboardEnabled] state if
-    /// necessary.
-    SuggestionChip _buildSuggestionChip() {
-      return SuggestionChip(
-        icon: FaIcon(
-          FontAwesomeIcons.paste,
-          size: 18,
-          color: Theme.of(context).primaryColor,
-        ),
-        label: context.msg.main.dialer.clipboard.copyPhoneNumber.title,
-        onSelected: () {
-          ref.read(clipboardProvider.notifier).getNumberFromClipboard();
-
-          if (_suggestionChipEnabled) {
-            setState(() {
-              _suggestionChipEnabled = false;
-            });
-          }
-        },
-      );
-    }
 
     return TransparentStatusBar(
       child: SafeArea(
@@ -160,14 +143,15 @@ class _T9DialPadState extends ConsumerState<T9DialPad>
             if (widget.isT9ContactSearchEnabled) ...[
               Stack(children: [
                 T9ColltactsListView(controller: controller),
-                if (_shouldShowSuggestionChip) ...[
+                if (_shouldShowPhoneNumberSuggestionChip) ...[
                   Positioned(
                     bottom: 10,
                     left: 0,
                     right: 0,
                     child: Align(
                       alignment: Alignment.center,
-                      child: _buildSuggestionChip(),
+                      child: _PhoneNumberSuggestionChip(
+                          onSelected: _selectPhoneNumberSuggestionChip),
                     ),
                   ),
                 ]
@@ -179,11 +163,12 @@ class _T9DialPadState extends ConsumerState<T9DialPad>
             ] else ...[
               SafeArea(
                 child: SizedBox(
-                  height: (_shouldShowSuggestionChip) ? 0 : 58,
+                  height: (_shouldShowPhoneNumberSuggestionChip) ? 0 : 58,
                 ),
               ),
-              if (_shouldShowSuggestionChip) ...[
-                _buildSuggestionChip(),
+              if (_shouldShowPhoneNumberSuggestionChip) ...[
+                _PhoneNumberSuggestionChip(
+                    onSelected: _selectPhoneNumberSuggestionChip),
                 SizedBox(
                   height: 10,
                 ),
@@ -246,6 +231,25 @@ class _DialerPrimaryButton extends StatelessWidget {
         ),
         semanticsHint: semanticsHint,
       ),
+    );
+  }
+}
+
+class _PhoneNumberSuggestionChip extends StatelessWidget {
+  final VoidCallback onSelected;
+
+  _PhoneNumberSuggestionChip({
+    required this.onSelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SuggestionChip(
+      icon: FontAwesomeIcons.paste,
+      label: context.msg.main.dialer.clipboard.copyPhoneNumber.title,
+      onSelected: () {
+        onSelected();
+      },
     );
   }
 }

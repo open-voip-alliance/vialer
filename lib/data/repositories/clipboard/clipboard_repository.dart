@@ -4,9 +4,10 @@ import 'package:injectable/injectable.dart';
 import '../../../presentation/util/pigeon.dart';
 
 @singleton
-class ClipBoardRepository {
+class ClipboardRepository {
   Future<String?> getClipboardText() =>
       Clipboard.getData(Clipboard.kTextPlain).then((data) => data?.text);
 
-  Future<bool?> hasNumberInClipboard() => NativeClipboard().hasPhoneNumber();
+  Future<bool> hasPhoneNumberInClipboard() =>
+      NativeClipboard().hasPhoneNumber();
 }

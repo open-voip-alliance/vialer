@@ -1,11 +1,3 @@
-//
-//  ClipboardApi.swift
-//  Runner
-//
-//  Created by Johannes Nevels on 27/02/2024.
-//  Copyright © 2024 The Chromium Authors. All rights reserved.
-//
-
 import UIKit
 
 class NativeClipboardApi: NSObject, NativeClipboard {
