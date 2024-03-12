@@ -239,9 +239,7 @@ class _DialerPrimaryButton extends StatelessWidget {
 class _PhoneNumberSuggestionChip extends StatelessWidget {
   final VoidCallback onSelected;
 
-  _PhoneNumberSuggestionChip({
-    required this.onSelected,
-  });
+  _PhoneNumberSuggestionChip({required this.onSelected});
 
   @override
   Widget build(BuildContext context) {

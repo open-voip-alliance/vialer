@@ -23,9 +23,7 @@ class SuggestionChip extends StatelessWidget {
             size: 18,
             color: Theme.of(context).primaryColor,
           ),
-          SizedBox(
-            width: 4
-          ),
+          SizedBox(width: 4),
           Text(
             label,
             style: TextStyle(color: Theme.of(context).primaryColor),
