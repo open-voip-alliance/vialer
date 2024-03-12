@@ -57,7 +57,7 @@ class _T9DialPadState extends ConsumerState<T9DialPad>
     controller.addListener(_disablePhoneNumberSuggestionChip);
 
     WidgetsBinding.instance
-      ..addObserver
+      ..addObserver(this)
       ..addPostFrameCallback((_) {
         _hasPhoneNumberFromClipboard();
       });
