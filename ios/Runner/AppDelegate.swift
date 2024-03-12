@@ -77,10 +77,11 @@ import UserNotifications
         SharedContactsSetup.setUp(binaryMessenger: controller.binaryMessenger, api:  SharedContactsApi())
         MiddlewareRegistrarSetup.setUp(binaryMessenger: controller.binaryMessenger, api: middleware)
         nativeToFlutter = NativeToFlutter(binaryMessenger: controller.binaryMessenger)
-
+        NativeClipboardSetup.setUp(binaryMessenger: controller.binaryMessenger, api: NativeClipboardApi())
+        
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
     }
-    
+
     /// Handles receiving call starts from outside the application (e.g. contacts)
     override func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
         if let handle = userActivity.startCallHandle {

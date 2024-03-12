@@ -1,5 +1,12 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:vialer/presentation/resources/localizations.dart';
 import 'package:vialer/presentation/resources/theme.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:vialer/presentation/shared/controllers/dial_pad/riverpod.dart';
+import 'package:vialer/presentation/shared/controllers/dial_pad/state.dart';
+import 'package:vialer/presentation/shared/widgets/suggestion_chip.dart';
 
 import '../../features/call/widgets/call_button.dart';
 import '../../features/dialer/widgets/t9/widget.dart';
@@ -7,7 +14,7 @@ import 'dial_pad/keypad.dart';
 import 'dial_pad/widget.dart';
 import 'transparent_status_bar.dart';
 
-class T9DialPad extends StatefulWidget {
+class T9DialPad extends ConsumerStatefulWidget {
   const T9DialPad({
     required this.onCallButtonPressed,
     required this.callButtonIcon,
@@ -34,16 +41,72 @@ class T9DialPad extends StatefulWidget {
   final bool isT9ContactSearchEnabled;
 
   @override
-  State<T9DialPad> createState() => _T9DialPadState();
+  ConsumerState<T9DialPad> createState() => _T9DialPadState();
 }
 
-class _T9DialPadState extends State<T9DialPad> {
+class _T9DialPadState extends ConsumerState<T9DialPad>
+    with WidgetsBindingObserver {
   late final TextEditingController controller;
+  bool _phoneNumberSuggestionChipEnabled = true;
 
   @override
   void initState() {
     super.initState();
     controller = widget.controller ?? TextEditingController();
+
+    controller.addListener(_disablePhoneNumberSuggestionChip);
+
+    WidgetsBinding.instance
+      ..addObserver(this)
+      ..addPostFrameCallback((_) {
+        _hasPhoneNumberFromClipboard();
+      });
+  }
+
+  @override
+  void dispose() {
+    controller.removeListener(_disablePhoneNumberSuggestionChip);
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+
+    _resetPhoneNumberSuggestionChipAfterResume(state);
+  }
+
+  void _disablePhoneNumberSuggestionChip() {
+    if (_phoneNumberSuggestionChipEnabled) {
+      setState(() {
+        _phoneNumberSuggestionChipEnabled = false;
+      });
+    }
+  }
+
+  void _resetPhoneNumberSuggestionChipAfterResume(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed && controller.text.isEmpty) {
+      setState(() {
+        _phoneNumberSuggestionChipEnabled = true;
+      });
+
+      _hasPhoneNumberFromClipboard();
+    }
+  }
+
+  void _selectPhoneNumberSuggestionChip() {
+    ref.read(clipboardProvider.notifier).getPhoneNumberFromClipboard();
+
+    if (_phoneNumberSuggestionChipEnabled) {
+      setState(() {
+        _phoneNumberSuggestionChipEnabled = false;
+      });
+    }
+  }
+
+  Future<void> _hasPhoneNumberFromClipboard() async {
+    ref.read(clipboardProvider.notifier).hasPhoneNumberFromClipboard();
   }
 
   void _call(BuildContext context) {
@@ -61,22 +124,57 @@ class _T9DialPadState extends State<T9DialPad> {
 
   @override
   Widget build(BuildContext context) {
+    final _clipboardState = ref.watch(clipboardProvider);
+    final _shouldShowPhoneNumberSuggestionChip =
+        _phoneNumberSuggestionChipEnabled && _clipboardState is HasPhoneNumber;
+
+    ref.listen<ClipboardState>(clipboardProvider, (
+      ClipboardState? previousState,
+      ClipboardState newState,
+    ) {
+      if (newState is Success) {
+        controller.text = newState.number;
+      }
+    });
+
     return TransparentStatusBar(
       child: SafeArea(
         child: Column(
           children: <Widget>[
             if (widget.isT9ContactSearchEnabled) ...[
-              T9ColltactsListView(controller: controller),
+              Stack(children: [
+                T9ColltactsListView(controller: controller),
+                if (_shouldShowPhoneNumberSuggestionChip) ...[
+                  Positioned(
+                    bottom: 10,
+                    left: 0,
+                    right: 0,
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: _PhoneNumberSuggestionChip(
+                          onSelected: _selectPhoneNumberSuggestionChip),
+                    ),
+                  ),
+                ]
+              ]),
               const Divider(
                 height: 1,
                 thickness: 1,
               ),
-            ] else
-              const SafeArea(
+            ] else ...[
+              SafeArea(
                 child: SizedBox(
-                  height: 48,
+                  height: (_shouldShowPhoneNumberSuggestionChip) ? 0 : 58,
                 ),
               ),
+              if (_shouldShowPhoneNumberSuggestionChip) ...[
+                _PhoneNumberSuggestionChip(
+                    onSelected: _selectPhoneNumberSuggestionChip),
+                SizedBox(
+                  height: 10,
+                ),
+              ],
+            ],
             Expanded(
               child: DialPad(
                 controller: controller,
@@ -134,6 +232,21 @@ class _DialerPrimaryButton extends StatelessWidget {
         ),
         semanticsHint: semanticsHint,
       ),
+    );
+  }
+}
+
+class _PhoneNumberSuggestionChip extends StatelessWidget {
+  final VoidCallback onSelected;
+
+  _PhoneNumberSuggestionChip({required this.onSelected});
+
+  @override
+  Widget build(BuildContext context) {
+    return SuggestionChip(
+      icon: FontAwesomeIcons.paste,
+      label: context.msg.main.dialer.clipboard.copyPhoneNumber.title,
+      onSelected: onSelected,
     );
   }
 }
