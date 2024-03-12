@@ -4,6 +4,8 @@ import 'dart:io';
 
 import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:vialer/domain/usecases/in_app_updates/get_did_app_update_to_new_version.dart';
 
 import '../../../presentation/util/pigeon.dart';
 import '../../models/user/user.dart';
@@ -63,14 +65,20 @@ class LoggingRepository {
 
   String _logStringOf(
     LogRecord record, {
-    required String userIdentifier,
+    String userIdentifier = '',
+    String appVersion = '',
     required bool remote,
   }) {
     final message =
         remote ? _anonymizationRules.apply(record.message) : record.message;
 
-    return '[${record.time}] ${record.level.name} '
-        '$userIdentifier${record.loggerName}: $message';
+    final time = '[${record.time}]';
+    final version = appVersion.isNotEmpty ? '[$appVersion]' : '';
+    final severity = record.level.name;
+    final user = userIdentifier.isNotEmpty ? '[$userIdentifier]' : '';
+    final loggedFrom = record.loggerName;
+
+    return '$time $version $severity $user $loggedFrom: $message';
   }
 
   Future<void> enableConsoleLogging({
@@ -78,11 +86,7 @@ class LoggingRepository {
     void Function(String log)? onLog,
   }) async {
     Logger.root.onRecord.listen((record) {
-      final logString = _logStringOf(
-        record,
-        userIdentifier: userIdentifier,
-        remote: false,
-      );
+      final logString = _logStringOf(record, remote: false);
       onLog?.call(logString);
       log(logString);
     });
@@ -92,6 +96,8 @@ class LoggingRepository {
     required String token,
     String userIdentifier = '',
   }) async {
+    final appVersion = await PackageInfo.fromPlatform().version;
+
     Future<void> startConnection() async {
       try {
         _remoteLoggingSocket = await SecureSocket.connect(
@@ -128,6 +134,7 @@ class LoggingRepository {
         final message = _logStringOf(
           record,
           userIdentifier: userIdentifier,
+          appVersion: appVersion,
           remote: true,
         );
 
