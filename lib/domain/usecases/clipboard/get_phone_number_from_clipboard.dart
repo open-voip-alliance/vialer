@@ -10,19 +10,13 @@ class GetPhoneNumberFromClipboardUseCase extends UseCase {
   Future<String?> call() async {
     final text = await _clipboardRepository.getClipboardText();
 
-    if (text != null) {
-      String sanitizedText = _sanitizePhoneNumber(text);
-      if (sanitizedText.isNumeric()) {
-        return sanitizedText;
-      }
-    }
+    if (text == null) return null;
 
-    return null;
+    final sanitizedText = _sanitizePhoneNumber(text);
+
+    return sanitizedText.isNumeric() ? sanitizedText : null;
   }
 
-  String _sanitizePhoneNumber(String text) {
-    String sanitized = text.replaceAll(' ', '');
-    sanitized = sanitized.replaceFirst('+', '00');
-    return sanitized;
-  }
+  String _sanitizePhoneNumber(String text) =>
+      text.replaceAll(' ', '').replaceFirst('+', '00');
 }
