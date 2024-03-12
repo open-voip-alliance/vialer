@@ -2,8 +2,9 @@ import UIKit
 
 class NativeClipboardApi: NSObject, NativeClipboard {
     func hasPhoneNumber(completion: @escaping (Result<Bool, Error>) -> Void) {
-        if #available(iOS 15, *) {
-            UIPasteboard.general.detectPatterns(for: [\.phoneNumbers]) { result in
+        let pasteboard = UIPasteboard.general
+        if #available(iOS 15, *), pasteboard.hasStrings {
+            pasteboard.detectPatterns(for: [\.phoneNumbers]) { result in
                 switch result {
                 case .success(let patterns):
                     let hasPhoneNumber = patterns.contains(\.phoneNumbers)
@@ -13,8 +14,8 @@ class NativeClipboardApi: NSObject, NativeClipboard {
                 }
             }
         } else {
-            // Fallback on earlier versions
-            completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "iOS 15 is required"])))
+            // Handle the case where the clipboard is empty or the iOS version is earlier than 15
+            completion(.success(false))
         }
     }
 }
