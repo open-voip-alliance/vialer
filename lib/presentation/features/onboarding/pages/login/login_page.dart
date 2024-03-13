@@ -8,6 +8,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:vialer/presentation/resources/localizations.dart';
 import 'package:vialer/presentation/resources/theme.dart';
+import 'package:vialer/presentation/util/screen_reader.dart';
 
 import '../../../../../../domain/usecases/user/launch_privacy_policy.dart';
 import '../../../../../../domain/usecases/user/launch_sign_up.dart';
@@ -104,6 +105,14 @@ class _LoginPageState extends State<LoginPage>
         password: _passwordController.text,
       );
     }
+  }
+
+  void _login(BuildContext context) {
+    final cubit = context.read<LoginCubit>();
+    cubit.setIsUsingScreenReader(context.isUsingScreenReader);
+    unawaited(
+      cubit.login(_emailController.text, _passwordController.text),
+    );
   }
 
   @override
@@ -236,12 +245,7 @@ class _LoginPageState extends State<LoginPage>
                                     key: LoginPage.keys.loginButton,
                                     onPressed: loginState is! LoggingIn &&
                                             connectivityState is! Disconnected
-                                        ? () => unawaited(
-                                              context.read<LoginCubit>().login(
-                                                    _emailController.text,
-                                                    _passwordController.text,
-                                                  ),
-                                            )
+                                        ? () => _login(context)
                                         : () => {},
                                     isLoading: loginState is LoggingIn,
                                     child: loginState is! LoggingIn

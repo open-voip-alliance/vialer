@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vialer/data/models/user/refresh/user_refresh_task.dart';
+import 'package:vialer/presentation/util/screen_reader.dart';
 
 import '../../../util/widgets_binding_observer_registrar.dart';
 import '../../controllers/user_data_refresher/cubit.dart';
@@ -56,11 +57,8 @@ class _UserDataRefresherState extends State<_UserDataRefresher>
     super.didChangeAppLifecycleState(state);
 
     if (state == AppLifecycleState.resumed) {
-      unawaited(
-        context
-            .read<UserDataRefresherCubit>()
-            .refreshIfReady(UserRefreshTask.all),
-      );
+      unawaited(cubit.refreshIfReady(UserRefreshTask.all));
+      cubit.setIsUsingScreenReader(context.isUsingScreenReader);
     }
   }
 

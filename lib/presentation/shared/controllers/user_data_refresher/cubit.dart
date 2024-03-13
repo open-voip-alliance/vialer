@@ -11,6 +11,7 @@ import '../../../../../domain/usecases/calling/voip/register_to_middleware.dart'
 import '../../../../../domain/usecases/onboarding/is_onboarded.dart';
 import '../../../../../domain/usecases/user/get_logged_in_user.dart';
 import '../../../../../domain/usecases/user/refresh/refresh_user.dart';
+import '../../../../domain/usecases/user/set_is_using_screen_reader.dart';
 import 'state.dart';
 
 export 'state.dart';
@@ -25,6 +26,7 @@ class UserDataRefresherCubit extends Cubit<UserDataRefresherState>
       dependencyLocator<RegisterToMiddlewareUseCase>();
   final _isLoggedInSomewhereElse = GetIsLoggedInSomewhereElseUseCase();
   final _logout = Logout();
+  final _setIsUsingScreenReader = SetIsUsingScreenReader();
 
   final _lastTimeTaskWasRefreshed = <UserRefreshTask, DateTime>{};
 
@@ -73,6 +75,9 @@ class UserDataRefresherCubit extends Cubit<UserDataRefresherState>
       tasksToPerform
           .where((task) => _lastTimeTaskWasRefreshed[task].isReadyForRefresh)
           .toList();
+
+  void setIsUsingScreenReader(bool isUsingScreenReader) =>
+      _setIsUsingScreenReader(isUsingScreenReader);
 }
 
 extension on DateTime? {
