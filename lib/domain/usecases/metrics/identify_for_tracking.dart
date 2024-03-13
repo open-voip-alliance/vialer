@@ -26,6 +26,7 @@ class IdentifyForTrackingUseCase extends UseCase {
   final _storage = dependencyLocator<StorageRepository>();
   final _getBrand = GetBrand();
   final _getUser = GetLoggedInUserUseCase();
+  late final _sharedContacts = SharedContacts();
 
   /// Add an artificial delay so we know that the user has been properly
   /// identified before sending other events.
@@ -46,6 +47,7 @@ class IdentifyForTrackingUseCase extends UseCase {
         ..._storage.currentColltactTab.toIdentifyProperties(),
         ..._storage.doNotShowOutgoingNumberSelectorOrNull
             .toIdentifyProperties(),
+        ...await _sharedContacts.toIdentifyProperties(),
       },
     ).then((_) => Future.delayed(_artificialDelay));
   }
@@ -125,5 +127,12 @@ extension on Client {
 extension on bool? {
   Map<String, dynamic> toIdentifyProperties() => <String, dynamic>{
         if (this != null) 'do-not-show-outgoing-number-prompt': this,
+      };
+}
+
+extension on SharedContacts {
+  Future<Map<String, dynamic>> toIdentifyProperties() async => {
+        'call-directory-extension-is-enabled':
+            Platform.isIOS ? await isCallDirectoryExtensionEnabled() : false
       };
 }

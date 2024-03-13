@@ -1,13 +1,12 @@
 package com.voipgrid.vialer
 
 import SystemTones
-import android.content.Intent
-import android.content.Context
 import android.content.ClipboardManager
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.view.textclassifier.TextClassifier
 import android.view.WindowManager
+import android.view.textclassifier.TextClassifier
 import androidx.annotation.NonNull
 import androidx.annotation.RequiresApi
 import com.google.android.gms.common.ConnectionResult
@@ -99,6 +98,8 @@ class MainActivity : FlutterActivity(), CallScreenBehavior {
 
         SharedContacts.setUp(binaryMessenger, object : SharedContacts {
             override fun processSharedContacts(contacts: List<NativeSharedContact>) {}
+            override fun isCallDirectoryExtensionEnabled(callback: (Result<Boolean>) -> Unit) = callback(Result.success(false))
+            override fun directUserToConfigureCallDirectoryExtension() {}
         })
 
         MiddlewareRegistrar.setUp(binaryMessenger, object : MiddlewareRegistrar {
