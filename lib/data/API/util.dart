@@ -78,6 +78,21 @@ class AuthorizationInterceptor implements chopper.RequestInterceptor {
   }
 }
 
+/// Certain legacy URLs require a trailing-slash at the end, to maintain
+/// consistency with other URLs this will be added via this request interceptor.
+class TrailingSlashRequestInterceptor implements chopper.RequestInterceptor {
+  static const _urls = ['/api/permission/apitoken'];
+
+  @override
+  FutureOr<chopper.Request> onRequest(Request request) =>
+      _shouldAppendTrailingSlash(request)
+          ? request.copyWith(uri: Uri.parse("${request.uri}/"))
+          : request;
+
+  bool _shouldAppendTrailingSlash(Request request) =>
+      _urls.contains(request.uri.toString());
+}
+
 /// We want to log out any users if they encounter as 401 response as this
 /// suggests that we do not have a valid token, this will fire the appropriate
 /// event so action can be taken.

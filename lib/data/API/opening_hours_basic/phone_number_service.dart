@@ -22,7 +22,7 @@ abstract class PhoneNumberService extends ChopperService {
         ),
       );
 
-  @Get(path: 'validate/{number}/')
+  @Get(path: 'validate/{number}')
   Future<Response<Map<String, dynamic>>> validate(
     @Path('number') String number,
   );
