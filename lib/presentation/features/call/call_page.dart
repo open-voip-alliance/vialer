@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -47,45 +46,47 @@ class _CallOrTransferPageState extends State<CallPage> {
   @override
   Widget build(BuildContext context) {
     return _TemporaryCubitProvider(
-      child: NestedNavigator(
-        // Users can never leave the ongoing call page.
-        onWillPop: () => SynchronousFuture(false),
-        fullscreenDialog: true,
-        routes: {
-          _callRoute: (context, _) => const _CallPage(),
-          _transferRoute: (context, _) {
-            return Scaffold(
-              body: Container(
-                alignment: Alignment.center,
-                child: CallProcessStateBuilder(
-                  ignoreCallDurationChanges: true,
-                  builder: (context, state) {
-                    return CallTransfer(
-                      activeCall: state.voipCall!,
-                      onTransferTargetSelected: (number) {
-                        unawaited(
-                          context.read<CallerCubit>().beginTransfer(number),
-                        );
-                        Navigator.of(context).pop();
-                      },
-                      onCloseButtonPressed: () =>
-                          Navigator.of(context, rootNavigator: true).pop(),
-                      onContactsButtonPressed: () {
-                        unawaited(
-                          Navigator.pushNamed(context, _contactsRoute).then(
-                            (number) => context
-                                .read<CallerCubit>()
-                                .beginTransfer(number! as String),
-                          ),
-                        );
-                      },
-                    );
-                  },
+      child: PopScope(
+        canPop: false,
+        child: NestedNavigator(
+          // Users can never leave the ongoing call page.
+          fullscreenDialog: true,
+          routes: {
+            _callRoute: (context, _) => const _CallPage(),
+            _transferRoute: (context, _) {
+              return Scaffold(
+                body: Container(
+                  alignment: Alignment.center,
+                  child: CallProcessStateBuilder(
+                    ignoreCallDurationChanges: true,
+                    builder: (context, state) {
+                      return CallTransfer(
+                        activeCall: state.voipCall!,
+                        onTransferTargetSelected: (number) {
+                          unawaited(
+                            context.read<CallerCubit>().beginTransfer(number),
+                          );
+                          Navigator.of(context).pop();
+                        },
+                        onCloseButtonPressed: () =>
+                            Navigator.of(context, rootNavigator: true).pop(),
+                        onContactsButtonPressed: () {
+                          unawaited(
+                            Navigator.pushNamed(context, _contactsRoute).then(
+                              (number) => context
+                                  .read<CallerCubit>()
+                                  .beginTransfer(number! as String),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
                 ),
-              ),
-            );
+              );
+            },
           },
-        },
+        ),
       ),
     );
   }
