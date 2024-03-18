@@ -13,7 +13,6 @@ import '../../../../../../domain/usecases/authentication/validate_password.dart'
 import '../../../../../../domain/usecases/onboarding/login.dart';
 import '../../../../../../domain/usecases/remote_logging/enable_remote_logging_if_needed.dart';
 import '../../../../../../domain/usecases/user/get_brand.dart';
-import '../../../../../domain/usecases/user/set_is_using_screen_reader.dart';
 import '../cubit.dart';
 import 'state.dart';
 
@@ -28,7 +27,6 @@ class LoginCubit extends Cubit<LoginState> with Loggable {
 
   final _enableRemoteLoggingIfNeeded = EnableRemoteLoggingIfNeededUseCase();
   final _login = LoginUseCase();
-  final _setIsUsingScreenReader = SetIsUsingScreenReader();
   final _getBrand = GetBrand();
   final _validatePassword = dependencyLocator<ValidatePassword>();
   final _validateEmail = dependencyLocator<ValidateEmail>();
@@ -92,7 +90,4 @@ class LoginCubit extends Cubit<LoginState> with Loggable {
   }
 
   bool get shouldShowSignUpLink => _getBrand().signUpUrl != null;
-
-  void setIsUsingScreenReader(bool isUsingScreenReader) =>
-      _setIsUsingScreenReader(isUsingScreenReader);
 }

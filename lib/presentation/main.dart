@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:timezone/data/latest.dart';
 import 'package:vialer/domain/usecases/user/settings/import_legacy_settings.dart';
 import 'package:vialer/presentation/util/global_bloc_provider.dart';
+import 'package:vialer/presentation/util/screen_reader.dart';
 
 import '../data/models/event/event_bus.dart';
 import '../data/repositories/env.dart';
@@ -21,6 +22,7 @@ import '../domain/usecases/onboarding/should_onboard.dart';
 import '../domain/usecases/remote_logging/enable_console_logging.dart';
 import '../domain/usecases/remote_logging/enable_remote_logging_if_needed.dart';
 import '../domain/usecases/user/get_stored_user.dart';
+import '../domain/usecases/user/set_is_using_screen_reader.dart';
 import 'features/main_page.dart';
 import 'resources/localizations.dart';
 import 'resources/theme.dart';
@@ -72,6 +74,8 @@ class _AppState extends State<App> {
 
   final EventBusObserver _eventBus = dependencyLocator<EventBusObserver>();
 
+  final _setIsUsingScreenReader = SetIsUsingScreenReader();
+
   late final bool _shouldOnboard;
 
   @override
@@ -79,6 +83,13 @@ class _AppState extends State<App> {
     super.initState();
     _shouldOnboard = ShouldOnboard()();
     _listenForEvents();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    _setIsUsingScreenReader(context.isUsingScreenReader);
   }
 
   @override

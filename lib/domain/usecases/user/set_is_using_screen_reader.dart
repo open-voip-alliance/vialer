@@ -5,6 +5,6 @@ import '../use_case.dart';
 class SetIsUsingScreenReader extends UseCase {
   final _storageRepository = dependencyLocator<StorageRepository>();
 
-  bool call(bool isUsingScreenReader) =>
+  Future<bool> call(bool isUsingScreenReader) async =>
       _storageRepository.isUsingScreenReader = isUsingScreenReader;
 }
