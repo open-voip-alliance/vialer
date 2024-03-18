@@ -160,14 +160,14 @@ Future<void> writeLanguageValues(Brand brand) async {
         final name = StringUtils.camelCaseToLowerUnderscore(
           '$prefix$sanitizedKey',
         );
-        final dynamic value = entry.value;
+        final dynamic valueFromYaml = entry.value;
 
-        if (value is YamlMap) {
-          buildElementsRecursively(value, prefix: name);
+        if (valueFromYaml is YamlMap) {
+          buildElementsRecursively(valueFromYaml, prefix: name);
           continue;
         }
 
-        value as String;
+        final value = (valueFromYaml as String?) ?? "";
 
         String sanitize(String value) {
           // Handle parameters, e.g. $appName to %1$s. We keep track of the
