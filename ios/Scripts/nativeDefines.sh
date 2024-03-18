@@ -15,8 +15,8 @@ do
     # Decode the base64-encoded string
     decoded_value=$(entry_decode "${define_items[$index]}")
     
-    # Exclude specific lines
-    if [[ "$decoded_value" != *"flutter.inspector.structuredErrors=true"* && "$decoded_value" != *"FLUTTER_WEB_AUTO_DETECT=true"* && "$decoded_value" != *"FLUTTER_WEB_CANVASKIT_URL="* ]]; then
+    # Exclude lines starting with specific prefixes
+    if [[ "$decoded_value" != flutter.inspector.structuredErrors* && "$decoded_value" != FLUTTER_WEB_AUTO_DETECT* && "$decoded_value" != FLUTTER_WEB_CANVASKIT_URL=* ]]; then
         # Add the decoded value to the output array
         output_items+=("$decoded_value")
     fi
