@@ -49,7 +49,6 @@ class _CallOrTransferPageState extends State<CallPage> {
       child: PopScope(
         canPop: false,
         child: NestedNavigator(
-          // Users can never leave the ongoing call page.
           fullscreenDialog: true,
           routes: {
             _callRoute: (context, _) => const _CallPage(),
@@ -58,7 +57,6 @@ class _CallOrTransferPageState extends State<CallPage> {
                 body: Container(
                   alignment: Alignment.center,
                   child: CallProcessStateBuilder(
-                    ignoreCallDurationChanges: true,
                     builder: (context, state) {
                       return CallTransfer(
                         activeCall: state.voipCall!,
@@ -305,7 +303,9 @@ class _CallPageState extends State<_CallPage>
   }
 
   void _hideSnackBar(BuildContext context) {
-    setState(() => isNotifyingUserAboutBadQualityCall = false);
+    if (isNotifyingUserAboutBadQualityCall) {
+      setState(() => isNotifyingUserAboutBadQualityCall = false);
+    }
     _poorQualityCallTimer?.cancel();
     ScaffoldMessenger.of(context).clearSnackBars();
   }
@@ -408,22 +408,44 @@ class _CallHeader extends StatelessWidget {
                 horizontal: 16,
                 vertical: 4,
               ),
-              child: Text(
-                state is StartingCall
-                    ? context.msg.main.call.ongoing.state.calling
-                    : state is FinishedCalling
-                        ? context.msg.main.call.ongoing.state.callEnded
-                        : call.prettyDuration,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
+              child: _CallDuration(),
             ),
             const Gap(12),
           ],
         ),
       ),
+    );
+  }
+}
+
+class _CallDuration extends StatelessWidget {
+  const _CallDuration();
+
+  String _text(BuildContext context, CallProcessState state) {
+    if (state is StartingCall) {
+      return context.msg.main.call.ongoing.state.calling;
+    }
+
+    if (state is FinishedCalling) {
+      return context.msg.main.call.ongoing.state.callEnded;
+    }
+
+    return state.voipCall?.prettyDuration ?? '';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return CallProcessStateBuilder(
+      includeCallDurationChanges: true,
+      builder: (context, state) {
+        return Text(
+          _text(context, state),
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+          ),
+        );
+      },
     );
   }
 }
