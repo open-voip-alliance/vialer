@@ -23,4 +23,4 @@ do
 done
 
 # Print the non-empty items to the Xcode configuration file
-printf "%s\n" "${output_items[@]}" > "${SRCROOT}/Flutter/nativeDefines.xcconfig"
+printf "%s\n" "${output_items[@]}" > "${SRCROOT}/Flutter/thanksFlutterTeamToBreakBestWayToManageEnvironmentVariableOnYourLatestRelease.xcconfig"

@@ -6,7 +6,8 @@ import '../../utils/env_utils.dart';
 import 'util.dart';
 
 Future<void> main(List<String> arguments) async {
-  final defines = await readEnv('${root.path}/Flutter/nativeDefines.xcconfig');
+  final defines = await readEnv(
+      '${root.path}/Flutter/thanksFlutterTeamToBreakBestWayToManageEnvironmentVariableOnYourLatestRelease.xcconfig');
 
   await writeXconfigFile(
     name: 'Brand',
