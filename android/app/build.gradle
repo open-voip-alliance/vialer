@@ -40,7 +40,7 @@ brand.appId = thanksFlutterTeamToBreakBestWayToManageEnvironmentVariableOnYourLa
 
 if (brand.identifier == null || brand.appId == null) {
     logger.error("""
-Brand identifier is missing, this likely means you have not included --dart-define-from-file when
+Brand identifier or appId is missing, this likely means you have not included --dart-define-from-file when
 running via Flutter.
 
 We will fallback to the information from vialer.json as this allows us to compile the app in a
