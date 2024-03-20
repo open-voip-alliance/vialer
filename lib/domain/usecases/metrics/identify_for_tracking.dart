@@ -38,6 +38,7 @@ class IdentifyForTrackingUseCase extends UseCase {
       user,
       <String, dynamic>{
         'brand': _getBrand().identifier,
+        'is-using-screen-reader': _storage.isUsingScreenReader,
         ...await _platformIdentifyProperties(),
         ...user.toIdentifyProperties(),
         ...user.client.toIdentifyProperties(),

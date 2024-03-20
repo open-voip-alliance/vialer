@@ -11,6 +11,7 @@ import 'package:vialer/presentation/shared/controllers/caller/cubit.dart';
 import 'package:vialer/presentation/shared/controllers/user_availability_status_builder/cubit.dart';
 import 'package:vialer/presentation/shared/widgets/bottom_navigation_profile_icon.dart';
 
+import '../../../presentation/util/pigeon_extensions.dart';
 import '../routes.dart';
 import '../shared/widgets/app_update_checker/widget.dart';
 import '../shared/widgets/connectivity_alert.dart';
@@ -28,7 +29,6 @@ import 'colltacts/pages/colltacts_page.dart';
 import 'dialer/dialer_page.dart';
 import 'recent/recent_calls_page.dart';
 import 'settings/pages/settings.dart';
-import '../../../presentation/util/pigeon_extensions.dart';
 
 class MainPage extends StatefulWidget {
   /// There can only be one.
