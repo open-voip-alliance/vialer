@@ -106,6 +106,13 @@ class _LoginPageState extends State<LoginPage>
     }
   }
 
+  void _login(BuildContext context) {
+    final cubit = context.read<LoginCubit>();
+    unawaited(
+      cubit.login(_emailController.text, _passwordController.text),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return KeyboardVisibilityBuilder(
@@ -236,12 +243,7 @@ class _LoginPageState extends State<LoginPage>
                                     key: LoginPage.keys.loginButton,
                                     onPressed: loginState is! LoggingIn &&
                                             connectivityState is! Disconnected
-                                        ? () => unawaited(
-                                              context.read<LoginCubit>().login(
-                                                    _emailController.text,
-                                                    _passwordController.text,
-                                                  ),
-                                            )
+                                        ? () => _login(context)
                                         : () => {},
                                     isLoading: loginState is LoggingIn,
                                     child: loginState is! LoggingIn

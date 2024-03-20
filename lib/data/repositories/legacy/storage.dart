@@ -282,6 +282,16 @@ class StorageRepository {
         value,
       ));
 
+  static const _isUsingScreenReader = 'is_using_screen_reader';
+
+  bool? get _isUsingScreenReaderOrNull =>
+      _preferences.getBool(_isUsingScreenReader);
+
+  bool get isUsingScreenReader => _isUsingScreenReaderOrNull ?? false;
+
+  set isUsingScreenReader(bool value) =>
+      unawaited(_preferences.setBool(_isUsingScreenReader, value));
+
   Future<void> clear() => _preferences.clear();
 
   Future<void> reload() => _preferences.reload();

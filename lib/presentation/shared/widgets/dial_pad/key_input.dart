@@ -8,6 +8,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:vialer/presentation/resources/localizations.dart';
 import 'package:vialer/presentation/resources/theme.dart';
 import 'package:vialer/presentation/util/phone_number.dart';
+import 'package:vialer/presentation/util/screen_reader.dart';
 
 class KeyInput extends StatefulWidget {
   const KeyInput({
@@ -311,8 +312,4 @@ class _DeleteButtonState extends State<_DeleteButton> {
       ),
     );
   }
-}
-
-extension Accessibility on BuildContext {
-  bool get isUsingScreenReader => MediaQuery.of(this).accessibleNavigation;
 }
