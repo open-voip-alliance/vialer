@@ -170,7 +170,10 @@ class Resgate with Loggable {
 
     logger.info('Attempting connection to WS at: ${auth.url}');
 
-    final resgate = ResClient()..reconnect(auth.url);
+    final resgate = ResClient()
+      ..reconnect(auth.url)
+      ..events.handleError(_handleResgateError);
+
     _resgate = resgate;
 
     resgate.onConnected(() async {
@@ -224,6 +227,8 @@ class Resgate with Loggable {
       await connect();
     });
   }
+
+  void _handleResgateError(Object e) => logger.error('Resgate error: $e');
 
   void _cancelQueuedReconnect({bool resetAttempts = false}) {
     _reconnectTimer?.cancel();
