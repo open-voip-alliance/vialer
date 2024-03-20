@@ -69,6 +69,7 @@ ios/Runner/Assets.xcassets/AppIcon.appiconset/*
 # Generated file by pre-build scripts.
 ios/Flutter/Brand.xcconfig
 ios/Flutter/Env.xcconfig
+ios/Flutter/thanksFlutterTeamToBreakBestWayToManageEnvironmentVariableOnYourLatestRelease.xcconfig
 
 release_notes_*.txt
 
