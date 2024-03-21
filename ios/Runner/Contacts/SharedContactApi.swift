@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 import CallKit
 
 class SharedContactsApi: NSObject, SharedContacts {
@@ -43,6 +44,24 @@ class SharedContactsApi: NSObject, SharedContacts {
                 }
             }
          }
+    }
+    
+    func isCallDirectoryExtensionEnabled(completion: @escaping (Result<Bool, Error>) -> Void) {
+        guard let callDirectoryExtensionIdentifier = AppConstants.callDirectoryExtensionIdentifier else {
+            return completion(.success(false))
+        }
+        
+        CXCallDirectoryManager.sharedInstance.getEnabledStatusForExtension(withIdentifier: callDirectoryExtensionIdentifier) { status, error in
+            completion(.success(error == nil && status == .enabled))
+        }
+    }
+    
+    func directUserToConfigureCallDirectoryExtension() throws {
+        if #available(iOS 13.4, *) {
+            CXCallDirectoryManager.sharedInstance.openSettings() { _ in }
+        } else {
+            UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
+        }
     }
 }
 

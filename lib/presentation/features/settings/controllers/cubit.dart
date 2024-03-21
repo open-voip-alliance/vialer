@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:dartx/dartx.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,6 +7,7 @@ import 'package:vialer/data/models/user/connectivity/connectivity_type.dart';
 import 'package:vialer/data/models/user/settings/app_setting.dart';
 import 'package:vialer/domain/usecases/user/settings/change_setting.dart';
 import 'package:vialer/presentation/util/loggable.dart';
+import 'package:vialer/presentation/util/pigeon.dart';
 
 import '../../../../../data/models/event/event_bus.dart';
 import '../../../../../data/models/user/events/logged_in_user_was_refreshed.dart';
@@ -65,6 +67,7 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
 
   final _refreshUser = RefreshUser();
   final _getConnectivity = GetCurrentConnectivityTypeUseCase();
+  late final _sharedContacts = SharedContacts();
 
   final _storageRepository = dependencyLocator<StorageRepository>();
   final _eventBus = dependencyLocator<EventBusObserver>();
@@ -100,6 +103,9 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
             ).then(
               (status) => status == PermissionStatus.granted,
             ),
+            isCallDirectoryExtensionEnabled: Platform.isIOS
+                ? await _sharedContacts.isCallDirectoryExtensionEnabled()
+                : false,
             availableDestinations: _storageRepository.availableDestinations,
             isApplyingChanges: _isUpdatingRemote,
             isRateLimited: _isRateLimited,
@@ -189,6 +195,9 @@ class SettingsCubit extends Cubit<SettingsState> with Loggable {
 
   Future<void> performEchoCancellationCalibration() =>
       _performEchoCancellationCalibration();
+
+  Future<void> directUserToConfigureCallDirectoryExtension() =>
+      _sharedContacts.directUserToConfigureCallDirectoryExtension();
 }
 
 class _SettingChangeRequest {
