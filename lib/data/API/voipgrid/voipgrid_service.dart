@@ -21,6 +21,7 @@ abstract class VoipgridService extends ChopperService {
         baseUrl: Uri.parse(getVoipgridBaseUrl()),
         converter: JsonConverter(),
         interceptors: [
+          TrailingSlashRequestInterceptor(),
           const AuthorizationInterceptor(
             forcedLegacyAuthPaths: [
               'v2/password',
@@ -43,28 +44,29 @@ abstract class VoipgridService extends ChopperService {
         baseUrl: Uri.parse(baseUrl),
         converter: JsonConverter(),
         interceptors: <RequestInterceptor>[
+          TrailingSlashRequestInterceptor(),
           AuthorizationInterceptor(user: user),
         ],
       ),
     );
   }
 
-  @Post(path: 'permission/apitoken/')
+  @Post(path: 'permission/apitoken')
   Future<Response<Map<String, dynamic>>> getToken(
     @Body() Map<String, dynamic> body,
   );
 
-  @Get(path: 'permission/systemuser/profile/')
+  @Get(path: 'permission/systemuser/profile')
   Future<Response<Map<String, dynamic>>> getSystemUser({
     @Header('Authorization') String? authorization,
   });
 
-  @Post(path: 'permission/password_reset/')
+  @Post(path: 'permission/password_reset')
   Future<Response<Map<String, dynamic>>> requestNewPassword(
     @Body() Map<String, dynamic> body,
   );
 
-  @Get(path: 'v2/call/personalized/')
+  @Get(path: 'v2/call/personalized')
   Future<Response<List<dynamic>>> getPersonalCalls({
     @Query('answered') bool? answered,
     @Query('timezone') String? timezone,
@@ -74,7 +76,7 @@ abstract class VoipgridService extends ChopperService {
     @Query('per_page') int perPage = 20,
   });
 
-  @Get(path: 'v2/callthrough/')
+  @Get(path: 'v2/callthrough')
   Future<Response<Map<String, dynamic>>> callthrough({
     @Query('destination') required String destination,
   });
@@ -84,41 +86,41 @@ abstract class VoipgridService extends ChopperService {
     @Body() Map<String, dynamic> body,
   );
 
-  @Get(path: 'autologin/token/')
+  @Get(path: 'autologin/token')
   Future<Response<Map<String, dynamic>>> getAutoLoginToken();
 
-  @Get(path: 'userdestination/')
+  @Get(path: 'userdestination')
   Future<Response<Map<String, dynamic>>> getAvailability();
 
-  @Put(path: 'selecteduserdestination/{id}/')
+  @Put(path: 'selecteduserdestination/{id}')
   Future<Response<Map<String, dynamic>>> setAvailability(
     @Path() String id,
     @Body() Map<String, dynamic> body,
   );
 
-  @Get(path: 'phoneaccount/basic/phoneaccount/{id}/')
+  @Get(path: 'phoneaccount/basic/phoneaccount/{id}')
   Future<Response<Map<String, dynamic>>> getPhoneAccount(@Path() String id);
 
-  @Get(path: 'mobile/profile/')
+  @Get(path: 'mobile/profile')
   Future<Response<Map<String, dynamic>>> getMobileProfile();
 
-  @Get(path: 'webphone/user/selected_account/')
+  @Get(path: 'webphone/user/selected_account')
   Future<Response<Map<String, dynamic>>> getWebphoneSelectedAccount();
 
-  @Put(path: 'mobile/profile/')
+  @Put(path: 'mobile/profile')
   Future<Response<Map<String, dynamic>>> updateMobileProfile(
     @Body() Map<String, dynamic> body,
   );
 
-  @Put(path: 'permission/mobile_number/')
+  @Put(path: 'permission/mobile_number')
   Future<Response<Map<String, dynamic>>> changeMobileNumber(
     @Body() Map<String, dynamic> body,
   );
 
-  @Get(path: 'v2/vialer/middlewares/')
+  @Get(path: 'v2/vialer/middlewares')
   Future<Response<Map<String, dynamic>>> getMiddleware();
 
-  @Get(path: 'cdr/record/')
+  @Get(path: 'cdr/record')
   Future<Response<Map<String, dynamic>>> getClientCalls({
     @Query('limit') int limit = 20,
     @Query('offset') int offset = 0,
