@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:vialer/presentation/resources/localizations.dart';
+import 'package:vialer/presentation/util/brand.dart';
 
 import '../../../../resources/messages.i18n.dart';
 import '../../../../shared/widgets/stylized_switch.dart';
@@ -20,7 +21,7 @@ class CallDirectoryExtensionTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return SettingTile(
       label: Text(context.strings.title),
-      description: Text(context.strings.description),
+      description: Text(context.strings.description(context.brand.appName)),
       child: StylizedSwitch(
         value: isCallDirectoryExtensionEnabled,
         onChanged: onChanged,
