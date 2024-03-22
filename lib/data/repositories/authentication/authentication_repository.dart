@@ -82,18 +82,17 @@ class AuthRepository with Loggable {
             email != null && token != null ? 'Token $email:$token' : null,
       );
     } catch (e) {
-      throw FailedToRetrieveUserException();
+      logFailedResponse(response, name: 'Fetch User');
+      throw FailedToRetrieveUserException(
+        statusCode: response.statusCode,
+        error: response.error.toString(),
+      );
     }
 
     if (response.error
         .toString()
         .contains('You need to change your password in the portal')) {
       throw NeedToChangePasswordException();
-    }
-
-    if (!response.isSuccessful) {
-      logFailedResponse(response, name: 'Fetch User');
-      throw FailedToRetrieveUserException();
     }
 
     final systemUser = _SystemUserResponse.fromJson(
