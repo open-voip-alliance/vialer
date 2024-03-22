@@ -84,6 +84,7 @@ class TrailingSlashRequestInterceptor implements chopper.RequestInterceptor {
   static const _urls = [
     '/api/permission/apitoken',
     '/api/permission/mobile_number',
+    '/api/permission/password_reset',
   ];
 
   @override
