@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart' hide Colors;
+import 'package:flutter/material.dart' as MaterialColors show Colors ;
 import 'package:vialer/presentation/resources/theme/colors.dart';
 
 import '../../../data/models/user/brand.dart';
@@ -61,6 +62,7 @@ class BrandTheme {
         ),
       ),
     ),
+    splashColor: MaterialColors.Colors.transparent,
   );
 }
 
