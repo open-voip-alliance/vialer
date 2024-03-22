@@ -81,7 +81,10 @@ class AuthorizationInterceptor implements chopper.RequestInterceptor {
 /// Certain legacy URLs require a trailing-slash at the end, to maintain
 /// consistency with other URLs this will be added via this request interceptor.
 class TrailingSlashRequestInterceptor implements chopper.RequestInterceptor {
-  static const _urls = ['/api/permission/apitoken'];
+  static const _urls = [
+    '/api/permission/apitoken',
+    '/api/permission/mobile_number',
+  ];
 
   @override
   FutureOr<chopper.Request> onRequest(Request request) =>
