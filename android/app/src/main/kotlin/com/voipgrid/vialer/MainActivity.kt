@@ -29,7 +29,7 @@ class MainActivity : FlutterActivity(), CallScreenBehavior {
         NativeLogging.setUp(binaryMessenger, App.logger)
         ContactSortHostApi.setUp(binaryMessenger, object : ContactSortHostApi {
             override fun getSorting(): ContactSort {
-                return ContactSort(orderBy = OrderBy.FAMILYNAME)
+                return ContactSort(orderBy = OrderBy.FAMILY_NAME)
             }
         })
 

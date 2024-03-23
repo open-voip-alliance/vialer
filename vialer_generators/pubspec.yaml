@@ -5,5 +5,5 @@ environment:
   sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
-  build_runner: ^2.4.6
+  build_runner: ^2.4.8
   source_gen: ^1.4.0
