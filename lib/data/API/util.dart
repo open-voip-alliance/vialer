@@ -87,6 +87,10 @@ class TrailingSlashRequestInterceptor implements chopper.RequestInterceptor {
     '/api/permission/password_reset',
   ];
 
+  static const _partials = [
+    'api/selecteduserdestination',
+  ];
+
   @override
   FutureOr<chopper.Request> onRequest(Request request) =>
       _shouldAppendTrailingSlash(request)
@@ -94,7 +98,10 @@ class TrailingSlashRequestInterceptor implements chopper.RequestInterceptor {
           : request;
 
   bool _shouldAppendTrailingSlash(Request request) =>
-      _urls.contains(request.uri.toString());
+      _urls.contains(request.uri.toString()) ||
+      _partials
+          .filter((partialUrl) => request.uri.toString().contains(partialUrl))
+          .isNotEmpty;
 }
 
 /// We want to log out any users if they encounter as 401 response as this
