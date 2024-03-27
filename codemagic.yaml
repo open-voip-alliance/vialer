@@ -20,6 +20,9 @@ custom: # Custom properties to make workflows cleaner
     - &set_version_for_other
       name: Updating version
       script: dart utils/ci/codemagic/set_version_information.dart --type other
+    - &verify_no_untranslated_strings
+      name: Checking to make sure no translations are missing in Phrase
+      script: dart utils/ci/codemagic/verify_no_untranslated_strings.dart
     - &prepare_environment_file
       name: Preparing .env file
       script: . utils/ci/codemagic/bin/prepare_environment_file.sh .env.example
@@ -78,7 +81,7 @@ custom: # Custom properties to make workflows cleaner
     max_build_duration: 90
     instance_type: mac_mini_m2
     environment: &config_environment
-      flutter: 3.16.8
+      flutter: 3.19.3
       # This has to be 14.2 for our integration tests to work, it should be changed to latest
       # when the tooling supports xCode 14.3.
       xcode: 14.2
@@ -277,6 +280,7 @@ workflows:
       - *run_code_generators
       - *set_version_for_other
       - *verify_codebase_complies_with_analysis_rules
+      - *verify_no_untranslated_strings
       - *flutter_test
       - *build_for_android
       - *update_ios_signing_for_current_brand
@@ -430,6 +434,7 @@ workflows:
       - *run_code_generators
       - *set_version_for_app_store
       - *verify_codebase_complies_with_analysis_rules
+      - *verify_no_untranslated_strings
       - *prepare_release_notes_from_files
       - *flutter_test
       - *build_for_android

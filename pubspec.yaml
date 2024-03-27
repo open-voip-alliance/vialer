@@ -7,7 +7,7 @@ version: 7.0.0
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
-  flutter: 3.16.8
+  flutter: 3.19.3
 
 dependencies:
   flutter:
@@ -15,7 +15,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  flutter_phone_lib: ^0.0.14
+  flutter_phone_lib: ^0.0.15
   font_awesome_flutter:
     hosted: https://onepub.dev/api/xhopsdavuh/
     version: ^1.0.0

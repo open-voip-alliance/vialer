@@ -1,11 +1,14 @@
 package com.voipgrid.vialer
 
 import SystemTones
+import android.content.ClipboardManager
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.WindowManager
+import android.view.textclassifier.TextClassifier
 import androidx.annotation.NonNull
+import androidx.annotation.RequiresApi
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.firebase.ktx.Firebase
@@ -95,6 +98,8 @@ class MainActivity : FlutterActivity(), CallScreenBehavior {
 
         SharedContacts.setUp(binaryMessenger, object : SharedContacts {
             override fun processSharedContacts(contacts: List<NativeSharedContact>) {}
+            override fun isCallDirectoryExtensionEnabled(callback: (Result<Boolean>) -> Unit) = callback(Result.success(false))
+            override fun directUserToConfigureCallDirectoryExtension() {}
         })
 
         MiddlewareRegistrar.setUp(binaryMessenger, object : MiddlewareRegistrar {
@@ -102,6 +107,15 @@ class MainActivity : FlutterActivity(), CallScreenBehavior {
         })
 
         nativeToFlutter = NativeToFlutter(binaryMessenger);
+
+        NativeClipboard.setUp(binaryMessenger, object : NativeClipboard {
+            @RequiresApi(Build.VERSION_CODES.S)
+            override fun hasPhoneNumber(callback: (Result<Boolean>) -> Unit) {
+                val clipboard = context.getSystemService(ClipboardManager::class.java)
+                val confidenceScore = clipboard.primaryClipDescription?.getConfidenceScore(TextClassifier.TYPE_PHONE)
+                callback(Result.success(confidenceScore != null && confidenceScore > 0.8))
+            }
+        })
     }
 
     override fun enable() {

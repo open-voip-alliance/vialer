@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -47,45 +46,45 @@ class _CallOrTransferPageState extends State<CallPage> {
   @override
   Widget build(BuildContext context) {
     return _TemporaryCubitProvider(
-      child: NestedNavigator(
-        // Users can never leave the ongoing call page.
-        onWillPop: () => SynchronousFuture(false),
-        fullscreenDialog: true,
-        routes: {
-          _callRoute: (context, _) => const _CallPage(),
-          _transferRoute: (context, _) {
-            return Scaffold(
-              body: Container(
-                alignment: Alignment.center,
-                child: CallProcessStateBuilder(
-                  ignoreCallDurationChanges: true,
-                  builder: (context, state) {
-                    return CallTransfer(
-                      activeCall: state.voipCall!,
-                      onTransferTargetSelected: (number) {
-                        unawaited(
-                          context.read<CallerCubit>().beginTransfer(number),
-                        );
-                        Navigator.of(context).pop();
-                      },
-                      onCloseButtonPressed: () =>
-                          Navigator.of(context, rootNavigator: true).pop(),
-                      onContactsButtonPressed: () {
-                        unawaited(
-                          Navigator.pushNamed(context, _contactsRoute).then(
-                            (number) => context
-                                .read<CallerCubit>()
-                                .beginTransfer(number! as String),
-                          ),
-                        );
-                      },
-                    );
-                  },
+      child: PopScope(
+        canPop: false,
+        child: NestedNavigator(
+          fullscreenDialog: true,
+          routes: {
+            _callRoute: (context, _) => const _CallPage(),
+            _transferRoute: (context, _) {
+              return Scaffold(
+                body: Container(
+                  alignment: Alignment.center,
+                  child: CallProcessStateBuilder(
+                    builder: (context, state) {
+                      return CallTransfer(
+                        activeCall: state.voipCall!,
+                        onTransferTargetSelected: (number) {
+                          unawaited(
+                            context.read<CallerCubit>().beginTransfer(number),
+                          );
+                          Navigator.of(context).pop();
+                        },
+                        onCloseButtonPressed: () =>
+                            Navigator.of(context, rootNavigator: true).pop(),
+                        onContactsButtonPressed: () {
+                          unawaited(
+                            Navigator.pushNamed(context, _contactsRoute).then(
+                              (number) => context
+                                  .read<CallerCubit>()
+                                  .beginTransfer(number! as String),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
                 ),
-              ),
-            );
+              );
+            },
           },
-        },
+        ),
       ),
     );
   }
@@ -304,7 +303,9 @@ class _CallPageState extends State<_CallPage>
   }
 
   void _hideSnackBar(BuildContext context) {
-    setState(() => isNotifyingUserAboutBadQualityCall = false);
+    if (isNotifyingUserAboutBadQualityCall) {
+      setState(() => isNotifyingUserAboutBadQualityCall = false);
+    }
     _poorQualityCallTimer?.cancel();
     ScaffoldMessenger.of(context).clearSnackBars();
   }
@@ -407,22 +408,44 @@ class _CallHeader extends StatelessWidget {
                 horizontal: 16,
                 vertical: 4,
               ),
-              child: Text(
-                state is StartingCall
-                    ? context.msg.main.call.ongoing.state.calling
-                    : state is FinishedCalling
-                        ? context.msg.main.call.ongoing.state.callEnded
-                        : call.prettyDuration,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
+              child: _CallDuration(),
             ),
             const Gap(12),
           ],
         ),
       ),
+    );
+  }
+}
+
+class _CallDuration extends StatelessWidget {
+  const _CallDuration();
+
+  String _text(BuildContext context, CallProcessState state) {
+    if (state is StartingCall) {
+      return context.msg.main.call.ongoing.state.calling;
+    }
+
+    if (state is FinishedCalling) {
+      return context.msg.main.call.ongoing.state.callEnded;
+    }
+
+    return state.voipCall?.prettyDuration ?? '';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return CallProcessStateBuilder(
+      includeCallDurationChanges: true,
+      builder: (context, state) {
+        return Text(
+          _text(context, state),
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+          ),
+        );
+      },
     );
   }
 }

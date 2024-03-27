@@ -19,5 +19,5 @@
 /// [deprecated]. We can't remove it in that case, because
 /// an enum always needs at least one constant.
 enum Feature {
-  setAvailableForColleaguesStatus,
+  placeholder,
 }

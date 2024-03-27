@@ -15,6 +15,7 @@ class SettingsState with _$SettingsState {
     required User user,
     BuildInfo? buildInfo,
     @Default(false) bool hasIgnoreBatteryOptimizationsPermission,
+    @Default(false) bool isCallDirectoryExtensionEnabled,
     @Default(false) bool hasTemporaryRedirect,
     @Default([Destination.notAvailable()])
     List<Destination> availableDestinations,

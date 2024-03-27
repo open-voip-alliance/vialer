@@ -10,12 +10,12 @@ import '../../../shared/controllers/caller/cubit.dart';
 class CallProcessStateBuilder extends StatelessWidget with Loggable {
   CallProcessStateBuilder({
     required this.builder,
-    this.ignoreCallDurationChanges = false,
+    this.includeCallDurationChanges = false,
     super.key,
   });
 
   final BlocWidgetBuilder<CallProcessState> builder;
-  final bool ignoreCallDurationChanges;
+  final bool includeCallDurationChanges;
 
   @override
   Widget build(BuildContext context) {
@@ -31,12 +31,13 @@ class CallProcessStateBuilder extends StatelessWidget with Loggable {
           return false;
         }
 
-        if (ignoreCallDurationChanges &&
+        if (!includeCallDurationChanges &&
             previous is CallProcessState &&
-            previous.voipCall != null)
+            previous.voipCall != null) {
           return !current.voipCall!.compareCalls(previous.voipCall!);
+        }
 
-        return true;
+        return previous != current;
       },
       builder: (context, state) => builder(context, state as CallProcessState),
     );

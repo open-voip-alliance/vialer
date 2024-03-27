@@ -29,6 +29,7 @@
 		8F30C2092B67D387008EB39F /* CodableSharedContact.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F30C2072B67D387008EB39F /* CodableSharedContact.swift */; };
 		8F30C20F2B69287B008EB39F /* AppConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F30C20E2B69287B008EB39F /* AppConstants.swift */; };
 		8F30C2102B69287B008EB39F /* AppConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F30C20E2B69287B008EB39F /* AppConstants.swift */; };
+		8FDF25FD2B8E0DB600436528 /* ClipboardApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FDF25FC2B8E0DB600436528 /* ClipboardApi.swift */; };
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
@@ -113,6 +114,7 @@
 		8F30C2072B67D387008EB39F /* CodableSharedContact.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodableSharedContact.swift; sourceTree = "<group>"; };
 		8F30C20E2B69287B008EB39F /* AppConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConstants.swift; sourceTree = "<group>"; };
 		8F9961B12B750B5A0041FD2D /* Brand.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Brand.xcconfig; path = Flutter/Brand.xcconfig; sourceTree = "<group>"; };
+		8FDF25FC2B8E0DB600436528 /* ClipboardApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipboardApi.swift; sourceTree = "<group>"; };
 		9740EEB21CF90195004384FC /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Debug.xcconfig; path = Flutter/Debug.xcconfig; sourceTree = "<group>"; };
 		9740EEB31CF90195004384FC /* Generated.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Generated.xcconfig; path = Flutter/Generated.xcconfig; sourceTree = "<group>"; };
 		97C146EE1CF9000F007C117D /* Runner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Runner.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -200,7 +202,6 @@
 		9740EEB11CF90186004384FC /* Flutter */ = {
 			isa = PBXGroup;
 			children = (
-				8F9961B12B750B5A0041FD2D /* Brand.xcconfig */,
 				9740EEB21CF90195004384FC /* Debug.xcconfig */,
 				7AFA3C8E1D35360C0083082E /* Release.xcconfig */,
 				9740EEB31CF90195004384FC /* Generated.xcconfig */,
@@ -262,6 +263,7 @@
 				5C6D440F28DE1D1D002F5590 /* ContactImporter.swift */,
 				8F30C20E2B69287B008EB39F /* AppConstants.swift */,
 				1A55D21D2B7D2143006BBEFB /* Error.swift */,
+				8FDF25FC2B8E0DB600436528 /* ClipboardApi.swift */,
 			);
 			path = Runner;
 			sourceTree = "<group>";
@@ -389,6 +391,7 @@
 		97C146E61CF9000F007C117D /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1510;
 				LastUpgradeCheck = 1510;
 				ORGANIZATIONNAME = "The Chromium Authors";
@@ -683,6 +686,7 @@
 				1A55D2202B7D21BF006BBEFB /* Pigeon.swift in Sources */,
 				D4066D5E27DF49BE0006BF36 /* Metrics.swift in Sources */,
 				5C5B39A22823B94D0052D50F /* SystemTones.swift in Sources */,
+				8FDF25FD2B8E0DB600436528 /* ClipboardApi.swift in Sources */,
 				D4066D6227DF50A60006BF36 /* CallScreenBehaviorApi.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
 				5C6D441028DE1D1D002F5590 /* ContactImporter.swift in Sources */,
@@ -755,6 +759,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -775,6 +780,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -842,9 +848,7 @@
 		};
 		8F30C1FF2B67AC33008EB39F /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8F9961B12B750B5A0041FD2D /* Brand.xcconfig */;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -886,9 +890,7 @@
 		};
 		8F30C2002B67AC33008EB39F /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8F9961B12B750B5A0041FD2D /* Brand.xcconfig */;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -928,9 +930,7 @@
 		};
 		8F30C2012B67AC33008EB39F /* Profile */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8F9961B12B750B5A0041FD2D /* Brand.xcconfig */;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -972,6 +972,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -992,6 +993,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -1028,6 +1030,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -1048,6 +1051,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -1070,6 +1074,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				TARGETED_DEVICE_FAMILY = 1;
 				VALIDATE_PRODUCT = YES;

@@ -56,11 +56,7 @@ class _UserDataRefresherState extends State<_UserDataRefresher>
     super.didChangeAppLifecycleState(state);
 
     if (state == AppLifecycleState.resumed) {
-      unawaited(
-        context
-            .read<UserDataRefresherCubit>()
-            .refreshIfReady(UserRefreshTask.all),
-      );
+      unawaited(cubit.refreshIfReady(UserRefreshTask.all));
     }
   }
 

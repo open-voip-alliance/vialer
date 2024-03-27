@@ -7,6 +7,7 @@ import '../../../../data/models/user/settings/call_setting.dart';
 import '../../../../data/repositories/user/settings/settings_repository.dart';
 import '../../../../dependency_locator.dart';
 import '../../use_case.dart';
+import '../../../util/numberic_strings.dart';
 
 /// This runs when the app starts. It migrates the former Destination settings,
 /// stored as an object to the new form, just the id.
@@ -43,8 +44,4 @@ class MigrateDestinationObjectToIdentifier extends UseCase {
         break;
     }
   }
-}
-
-extension on String {
-  bool isNumeric() => num.tryParse(this) != null;
 }

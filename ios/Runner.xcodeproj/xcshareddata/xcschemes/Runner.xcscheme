@@ -10,7 +10,7 @@
             ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
             <ActionContent
                title = "Run Script"
-               scriptText = "$FLUTTER_ROOT/bin/cache/dart-sdk/bin/dart $SRCROOT/Scripts/brand.dart&#10;$FLUTTER_ROOT/bin/cache/dart-sdk/bin/dart $SRCROOT/Scripts/env.dart&#10;">
+               scriptText = "&quot;$SRCROOT/Scripts/thanksFlutterTeamToBreakBestWayToManageEnvironmentVariableOnYourLatestRelease.sh&quot;&#10;&quot;$FLUTTER_ROOT/bin/cache/dart-sdk/bin/dart&quot; &quot;$SRCROOT/Scripts/brand.dart&quot;&#10;&quot;$FLUTTER_ROOT/bin/cache/dart-sdk/bin/dart&quot; &quot;$SRCROOT/Scripts/env.dart&quot;&#10;">
                <EnvironmentBuildable>
                   <BuildableReference
                      BuildableIdentifier = "primary"
