@@ -1,0 +1,4 @@
+- When opening the dialer with a phone number in your clipboard a new UI element will be shown to allow you to paste it easily
+- Android: Pressing the Android back button while in a call will no longer close the call screen
+- iOS: It is now possible to unmute calls if they were muted from the lock screen
+- iOS: There is a new setting, when enabled mobile calls will match to the Shared Contacts you have in the app
