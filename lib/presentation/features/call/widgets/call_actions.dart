@@ -464,6 +464,7 @@ class _AudioRouteButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CallProcessStateBuilder(
+      includeCallDurationChanges: true,
       builder: (context, state) {
         final currentRoute = state.audioState?.currentRoute ?? AudioRoute.phone;
         final hasBluetooth = state.audioState != null &&
