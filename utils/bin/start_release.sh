@@ -1,21 +1,28 @@
 #!/bin/bash
 
-# Check if version argument is provided
-if [ $# -ne 1 ]; then
-    echo "Usage: $0 <version>"
-    exit 1
+# Check if version and branch arguments are provided
+if [ $# -ne 2 ]; then
+    echo "Usage: $0 <version> <main|develop>"
+    return
 fi
 
 version=$1
+branch=$2
 
 # Validate version format
 if [[ ! $version =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
     echo "Invalid version format. Please use format v#.#.# (e.g., v7.50.0)"
-    exit 1
+    return
 fi
 
-git checkout develop
-git pull origin develop
+# Check if the provided branch is either develop or main
+if [ "$branch" != "develop" ] && [ "$branch" != "main" ]; then
+    echo "Invalid base branch. Please use either 'develop' or 'main'."
+    return
+fi
+
+git checkout "$branch"
+git pull origin "$branch"
 release_branch="release/$version"
 git checkout -b "$release_branch"
 recent_release_notes=$(ls -dtr release_notes/*/ | tail -n 1)
