@@ -85,6 +85,7 @@ class TrailingSlashRequestInterceptor implements chopper.RequestInterceptor {
     '/api/permission/apitoken',
     '/api/permission/mobile_number',
     '/api/permission/password_reset',
+    '/api/mobile/profile',
   ];
 
   static const _partials = [
