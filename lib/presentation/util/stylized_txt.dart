@@ -12,10 +12,17 @@ import 'package:styled_text/styled_text.dart' as styled_text;
 /// passed through. This should only be used in situations where the tag
 /// only needs to be used once.
 class StyledText extends StatelessWidget {
-  const StyledText(this.text, {this.style, this.tags = const {}, super.key});
+  const StyledText(
+    this.text, {
+    this.style,
+    this.tags = const {},
+    this.textAlign,
+    super.key,
+  });
 
   final String text;
   final TextStyle? style;
+  final TextAlign? textAlign;
   final Map<String, styled_text.StyledTextTag> tags;
 
   static final defaultTags = {
@@ -38,6 +45,7 @@ class StyledText extends StatelessWidget {
     return styled_text.StyledText(
       text: text,
       style: style,
+      textAlign: textAlign,
       tags: {
         ...defaultTags,
         ...tags,

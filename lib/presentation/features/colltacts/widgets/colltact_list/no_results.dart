@@ -11,6 +11,7 @@ import '../../../../resources/localizations.dart';
 import '../../../../shared/widgets/conditional_placeholder.dart';
 import '../../../../shared/widgets/stylized_button.dart';
 import '../../../../shared/widgets/universal_refresh_indicator.dart';
+import '../../../../util/circular_graphic.dart';
 import '../../../settings/widgets/settings_button.dart';
 import '../../controllers/contacts/cubit.dart';
 import '../../controllers/shared_contacts/cubit.dart';
@@ -143,7 +144,9 @@ class NoResultsPlaceholder extends StatelessWidget {
                   const SizedBox(height: 30),
                   AnimatedSwitcher(
                     duration: const Duration(milliseconds: 100),
-                    child: !isKeyboardVisible ? _CircularGraphic(type!) : null,
+                    child: !isKeyboardVisible
+                        ? CircularGraphic(type!.iconData)
+                        : null,
                   ),
                   const SizedBox(height: 40),
                   Text(
@@ -174,59 +177,6 @@ class NoResultsPlaceholder extends StatelessWidget {
   }
 }
 
-class _CircularGraphic extends StatelessWidget {
-  const _CircularGraphic(this.type);
-
-  final NoResultsType type;
-
-  IconData _icon() {
-    switch (type) {
-      case NoResultsType.noSearchResults:
-        return FontAwesomeIcons.magnifyingGlass;
-      case NoResultsType.colleaguesLoading:
-      case NoResultsType.contactsLoading:
-      case NoResultsType.sharedContactsLoading:
-        return FontAwesomeIcons.abacus;
-      case NoResultsType.noContactsExist:
-      case NoResultsType.noSharedContactsExist:
-      case NoResultsType.noOnlineColleagues:
-        return FontAwesomeIcons.userSlash;
-      case NoResultsType.noContactsPermission:
-        return FontAwesomeIcons.lock;
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final outerCircleColor =
-        context.brand.theme.colors.primaryLight.withOpacity(0.4);
-
-    return Center(
-      child: Material(
-        shape: const CircleBorder(),
-        color: outerCircleColor,
-        elevation: 2,
-        shadowColor: context.brand.theme.colors.primary.withOpacity(0),
-        child: Padding(
-          padding: const EdgeInsets.all(32),
-          child: Material(
-            shape: const CircleBorder(),
-            color: outerCircleColor.withOpacity(1),
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: FaIcon(
-                _icon(),
-                size: 40,
-                color: context.brand.theme.colors.primary,
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 enum NoResultsType {
   noOnlineColleagues,
   noSearchResults,
@@ -236,6 +186,21 @@ enum NoResultsType {
   noSharedContactsExist,
   noContactsExist,
   noContactsPermission,
+}
+
+extension on NoResultsType {
+  IconData get iconData => switch (this) {
+        NoResultsType.noSearchResults => FontAwesomeIcons.magnifyingGlass,
+        NoResultsType.colleaguesLoading ||
+        NoResultsType.contactsLoading ||
+        NoResultsType.sharedContactsLoading =>
+          FontAwesomeIcons.abacus,
+        NoResultsType.noContactsExist ||
+        NoResultsType.noSharedContactsExist ||
+        NoResultsType.noOnlineColleagues =>
+          FontAwesomeIcons.userSlash,
+        NoResultsType.noContactsPermission => FontAwesomeIcons.lock,
+      };
 }
 
 class _ContactsPermissionButton extends StatelessWidget {
