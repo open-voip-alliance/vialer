@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:vialer/presentation/resources/theme.dart';
 
 import '../../../../../../data/models/feedback/call_problem.dart';
@@ -73,6 +74,10 @@ class _CallFeedbackState extends State<CallFeedback> {
       // doesn't want to engage with it, therefore they are still on the first
       // stage.
       if (_stage == CallFeedbackStage.rateCall) {
+        SemanticsService.announce(
+          'Call quality rating dismissed',
+          Directionality.of(context),
+        );
         widget.onUserFinishedFeedbackProcess();
       }
     });
@@ -151,12 +156,14 @@ class CallFeedbackAlertDialog extends StatelessWidget {
   const CallFeedbackAlertDialog({
     required this.content,
     this.title,
+    this.semanticsLabel,
     this.actions,
     this.titleAlign,
     super.key,
   });
 
   final String? title;
+  final String? semanticsLabel;
   final Widget content;
   final List<Widget>? actions;
   final TextAlign? titleAlign;
@@ -169,6 +176,7 @@ class CallFeedbackAlertDialog extends StatelessWidget {
       title: title != null
           ? Text(
               title!,
+              semanticsLabel: semanticsLabel,
               textAlign: titleAlign ?? TextAlign.left,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
