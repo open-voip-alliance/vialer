@@ -32,43 +32,20 @@ class CallRating extends StatelessWidget {
             tapOnlyMode: true,
             itemCount: 5,
             itemBuilder: (context, index) {
-              switch (index) {
-                case 0:
-                  return Icon(
-                    FontAwesomeIcons.solidStar,
-                    semanticLabel: context
-                        .msg.main.call.feedback.rating.semantics.firstStar,
-                    color: context.brand.theme.colors.primary,
-                  );
-                case 1:
-                  return Icon(
-                    FontAwesomeIcons.solidStar,
-                    semanticLabel: context
-                        .msg.main.call.feedback.rating.semantics.secondStar,
-                    color: context.brand.theme.colors.primary,
-                  );
-                case 2:
-                  return Icon(
-                    FontAwesomeIcons.solidStar,
-                    semanticLabel: context
-                        .msg.main.call.feedback.rating.semantics.thirdStar,
-                    color: context.brand.theme.colors.primary,
-                  );
-                case 3:
-                  return Icon(
-                    FontAwesomeIcons.solidStar,
-                    semanticLabel: context
-                        .msg.main.call.feedback.rating.semantics.fourthStar,
-                    color: context.brand.theme.colors.primary,
-                  );
-                default:
-                  return Icon(
-                    FontAwesomeIcons.solidStar,
-                    semanticLabel: context
-                        .msg.main.call.feedback.rating.semantics.fifthStar,
-                    color: context.brand.theme.colors.primary,
-                  );
-              }
+              return _RatingIcon(
+                semanticLabel: switch (index) {
+                  0 =>
+                    context.msg.main.call.feedback.rating.semantics.firstStar,
+                  1 =>
+                    context.msg.main.call.feedback.rating.semantics.secondStar,
+                  2 =>
+                    context.msg.main.call.feedback.rating.semantics.thirdStar,
+                  3 =>
+                    context.msg.main.call.feedback.rating.semantics.fourthStar,
+                  _ =>
+                    context.msg.main.call.feedback.rating.semantics.fifthStar,
+                },
+              );
             },
           ),
           Padding(
@@ -97,6 +74,23 @@ class CallRating extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _RatingIcon extends StatelessWidget {
+  const _RatingIcon({
+    required this.semanticLabel,
+  });
+
+  final String semanticLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    return Icon(
+      FontAwesomeIcons.solidStar,
+      semanticLabel: semanticLabel,
+      color: context.brand.theme.colors.primary,
     );
   }
 }

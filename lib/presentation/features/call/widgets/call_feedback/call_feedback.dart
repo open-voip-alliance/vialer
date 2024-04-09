@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:vialer/presentation/resources/localizations.dart';
 import 'package:vialer/presentation/resources/theme.dart';
 
 import '../../../../../../data/models/feedback/call_problem.dart';
@@ -75,7 +76,8 @@ class _CallFeedbackState extends State<CallFeedback> {
       // stage.
       if (_stage == CallFeedbackStage.rateCall) {
         SemanticsService.announce(
-          'Call quality rating dismissed',
+          context.msg.main.call.feedback.rating.semantics
+              .callRatingDialogDismissal,
           Directionality.of(context),
         );
         widget.onUserFinishedFeedbackProcess();
