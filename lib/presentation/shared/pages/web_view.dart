@@ -28,16 +28,12 @@ class WebViewPage extends StatefulWidget {
 }
 
 class _WebViewPageState extends State<WebViewPage> {
-  final InAppWebViewGroupOptions _options = InAppWebViewGroupOptions(
-    crossPlatform: InAppWebViewOptions(
-      clearCache: true,
-      useOnDownloadStart: true,
-      transparentBackground: true,
-    ),
-    android: AndroidInAppWebViewOptions(
-      useHybridComposition: true,
-      geolocationEnabled: false,
-    ),
+  final _settings = InAppWebViewSettings(
+    clearCache: true,
+    useOnDownloadStart: true,
+    transparentBackground: true,
+    useHybridComposition: true,
+    geolocationEnabled: false,
   );
 
   InAppWebViewController? _controller;
@@ -97,13 +93,19 @@ class _WebViewPageState extends State<WebViewPage> {
                 children: [
                   InAppWebView(
                     key: Key(state.url),
-                    initialUrlRequest: URLRequest(url: Uri.parse(state.url)),
-                    initialOptions: _options,
+                    initialUrlRequest: URLRequest(url: WebUri(state.url)),
+                    initialSettings: _settings,
                     onWebViewCreated: _onWebViewCreated,
-                    onLoadError: (_, __, code, message) =>
-                        _onPageLoadError(context, code, message),
-                    onProgressChanged: (_, progress) =>
-                        _onProgressChanged(context, progress, state.url),
+                    onReceivedHttpError: (_, __, error) => _onPageLoadError(
+                      context,
+                      error.statusCode ?? 0,
+                      error.reasonPhrase ?? '',
+                    ),
+                    onProgressChanged: (_, progress) => _onProgressChanged(
+                      context,
+                      progress,
+                      state.url,
+                    ),
                   ),
                   if (state is! LoadedWebView)
                     const Center(
