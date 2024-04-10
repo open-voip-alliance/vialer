@@ -32,7 +32,9 @@ class CallRating extends StatelessWidget {
             tapOnlyMode: true,
             itemCount: 5,
             itemBuilder: (context, index) {
-              return _RatingIcon(
+              return Icon(
+                FontAwesomeIcons.solidStar,
+                color: context.brand.theme.colors.primary,
                 semanticLabel: switch (index) {
                   0 =>
                     context.msg.main.call.feedback.rating.semantics.firstStar,
@@ -74,23 +76,6 @@ class CallRating extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class _RatingIcon extends StatelessWidget {
-  const _RatingIcon({
-    required this.semanticLabel,
-  });
-
-  final String semanticLabel;
-
-  @override
-  Widget build(BuildContext context) {
-    return Icon(
-      FontAwesomeIcons.solidStar,
-      semanticLabel: semanticLabel,
-      color: context.brand.theme.colors.primary,
     );
   }
 }
