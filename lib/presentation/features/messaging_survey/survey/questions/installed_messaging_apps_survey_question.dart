@@ -18,11 +18,10 @@ class InstalledMessagingAppsSurveyQuestion extends ConsumerWidget {
 
   final OnQuestionAnswered onQuestionResult;
 
-  void _onConsent(MessagingSurveyResponse response) async => onQuestionResult(
-        response.copyWith(
-          installedApps: await GetInstalledMessagingApps()(),
-        ),
-      );
+  void _onConsent(MessagingSurveyResponse response) =>
+      onQuestionResult(GetInstalledMessagingApps()().then(
+        (value) => response.copyWith(installedApps: value),
+      ));
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

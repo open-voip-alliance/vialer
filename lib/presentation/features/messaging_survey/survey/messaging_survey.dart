@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:expandable_page_view/expandable_page_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,7 +12,10 @@ import 'package:vialer/presentation/features/messaging_survey/survey/questions/p
 import 'package:vialer/presentation/features/messaging_survey/survey/questions/thank_you.dart';
 
 /// Provide the updated [MessagingSurveyResponse] object.
-typedef OnQuestionAnswered = void Function(MessagingSurveyResponse);
+/// Expects a [FutureOr] so the user does not need to wait when we need to
+/// fetch data async, the survey will continue and the data will be updated
+/// in the background.
+typedef OnQuestionAnswered = void Function(FutureOr<MessagingSurveyResponse>);
 
 class MessagingSurvey extends ConsumerStatefulWidget {
   const MessagingSurvey({super.key});
@@ -47,18 +52,18 @@ class _MessagingSurveyState extends ConsumerState<MessagingSurvey> {
     );
   }
 
-  void onQuestionAnswered(MessagingSurveyResponse response) {
+  void onQuestionAnswered(FutureOr<MessagingSurveyResponse> response) async {
     final controller = ref.read(messagingSurveyControllerProvider.notifier);
-
-    controller.response = response;
-
-    if (_hasAnsweredAllQuestions) {
-      controller.submit();
-    }
 
     _controller.nextPage(
       duration: const Duration(milliseconds: 400),
       curve: Curves.easeInOut,
     );
+
+    controller.response = await response;
+
+    if (_hasAnsweredAllQuestions) {
+      controller.submit();
+    }
   }
 }
