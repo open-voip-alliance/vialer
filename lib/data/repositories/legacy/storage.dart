@@ -240,6 +240,15 @@ class StorageRepository {
   set hasCompletedOnboarding(bool value) =>
       unawaited(_preferences.setBool(_hasCompletedOnboarding, value));
 
+  static const _hasSubmittedMessagingAppsSurvey =
+      'has_submitted_messaging_apps_survey';
+
+  bool get hasSubmittedMessagingAppsSurvey =>
+      _preferences.getBool(_hasSubmittedMessagingAppsSurvey) ?? false;
+
+  set hasSubmittedMessagingAppsSurvey(bool value) =>
+      unawaited(_preferences.setBool(_hasSubmittedMessagingAppsSurvey, value));
+
   static const _currentColltactTabKey = 'current_colltact_tab';
 
   ColltactTab? get currentColltactTab {
