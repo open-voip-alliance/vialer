@@ -144,7 +144,7 @@ class _RingingDeviceButtonState extends State<RingingDeviceButton> {
         color: context.brand.theme.colors.primaryDark,
       ),
       label: Text(
-        context.msg.main.colleagues.status.someDevicesOffline,
+        context.msg.main.colleagues.status.aDeviceIsOffline(_text(context)),
         style: TextStyle(
           color: context.brand.theme.colors.primaryDark,
           fontSize: 14,
