@@ -101,29 +101,23 @@ class _NoticeState extends State<_Notice>
       );
     }
 
-    final String content;
-    if (state is PhonePermissionDeniedNotice) {
-      content = context.msg.main.notice.phone.content(context.brand.appName);
-    } else if (state is MicrophonePermissionDeniedNotice) {
-      content =
-          context.msg.main.notice.microphone.content(context.brand.appName);
-    } else if (state is BluetoothConnectPermissionDeniedNotice) {
-      content = context.msg.main.notice.bluetoothConnect
-          .content(context.brand.appName);
-    } else if (state is NotificationsPermissionDeniedNotice) {
-      content = context.msg.main.notice.notifications.content;
-    } else if (state is NoAppAccountNotice) {
-      content =
-          context.msg.main.notice.noAppAccount.content(context.brand.appName);
-    } else if (state is NoGooglePlayServices) {
-      content = context.msg.main.notice.noGooglePlayServices.content;
-    } else {
-      content = context.msg.main.notice.phoneAndMicrophone.content(
-        context.brand.appName,
-      );
-    }
+    final app = context.brand.appName;
+    final strings = context.msg.main.notice;
 
-    return Text(content);
+    final text = switch (state) {
+      PhonePermissionDeniedNotice() => strings.phone.content(app),
+      MicrophonePermissionDeniedNotice() => strings.microphone.content(app),
+      BluetoothConnectPermissionDeniedNotice() =>
+        strings.bluetoothConnect.content(app),
+      NotificationsPermissionDeniedNotice() => strings.notifications.content,
+      NoAppAccountNotice state => state.hasPermissionToChangeAppAccount
+          ? strings.noAppAccount.content(app)
+          : strings.noAppAccount.noPermission.content,
+      NoGooglePlayServices() => strings.noGooglePlayServices.content,
+      _ => strings.phoneAndMicrophone.content(app),
+    };
+
+    return Text(text);
   }
 
   @override
@@ -165,7 +159,8 @@ class _NoticeState extends State<_Notice>
                             .toUpperCaseIfAndroid(context),
                       ),
                     ),
-                    if (state is NoAppAccountNotice) ...[
+                    if (state is NoAppAccountNotice &&
+                        state.hasPermissionToChangeAppAccount) ...[
                       TextButton(
                         onPressed: () => unawaited(
                           WebViewPage.open(
