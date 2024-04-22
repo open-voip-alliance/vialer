@@ -24,7 +24,9 @@ sealed class NoticeState with _$NoticeState {
     required TemporaryRedirect temporaryRedirect,
     required bool canChangeTemporaryRedirect,
   }) = TemporaryRedirectNotice;
-  const factory NoticeState.noAppAccountNotice() = NoAppAccountNotice;
+  const factory NoticeState.noAppAccountNotice({
+    required bool hasPermissionToChangeAppAccount,
+  }) = NoAppAccountNotice;
   const factory NoticeState.noGooglePlayServices() = NoGooglePlayServices;
 
   bool get isPermissionNotice => switch (this) {
