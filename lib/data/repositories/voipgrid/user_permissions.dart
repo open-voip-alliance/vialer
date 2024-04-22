@@ -30,6 +30,7 @@ class UserPermissionsRepository with Loggable {
     'stats.view_stats': VoipgridPermission.viewStats,
     'openinghours.change_openinghoursgroup':
         VoipgridPermission.changeOpeningHours,
+    'appaccount.change_appaccount': VoipgridPermission.changeAppAccount,
   };
 
   Future<List<VoipgridPermission>> getGrantedPermissions({
@@ -73,6 +74,7 @@ enum VoipgridPermission {
   viewStats,
   viewRouting,
   changeOpeningHours,
+  changeAppAccount,
 }
 
 enum Permission {
@@ -91,6 +93,7 @@ enum Permission {
   canViewDialPlans,
   canViewStats,
   canChangeOpeningHours,
+  canChangeAppAccount,
 }
 
 class UnableToRetrievePermissionsException extends VialerException {}

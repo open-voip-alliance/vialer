@@ -66,6 +66,7 @@ extension on List<VoipgridPermission> {
     VoipgridPermission.viewRouting: Permission.canViewDialPlans,
     VoipgridPermission.viewStats: Permission.canViewStats,
     VoipgridPermission.changeOpeningHours: Permission.canChangeOpeningHours,
+    VoipgridPermission.changeAppAccount: Permission.canChangeAppAccount,
   };
 
   Permissions toUserPermissions() {
