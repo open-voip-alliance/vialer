@@ -141,7 +141,7 @@ class _CallActionButtons extends StatelessWidget {
         final call = state.voipCall!;
 
         return Padding(
-          padding: const EdgeInsets.only(left: 12.0, right: 12.0),
+          padding: const EdgeInsets.symmetric(horizontal: 12),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
