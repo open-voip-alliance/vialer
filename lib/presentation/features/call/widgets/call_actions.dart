@@ -140,86 +140,91 @@ class _CallActionButtons extends StatelessWidget {
       builder: (context, state) {
         final call = state.voipCall!;
 
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Expanded(
-                  child: _ActionButton(
-                    icon: const FaIcon(FontAwesomeIcons.microphoneSlash),
-                    label: context.msg.main.call.ongoing.actions.mute,
-                    includeActiveStatusInSemanticLabel: true,
-                    onPressedTogglesActiveStatus: true,
-                    active: state.isVoipCallMuted,
-                    // We can't mute when on hold.
-                    onPressed: !call.isOnHold && !state.isFinished
-                        ? () => _toggleMute(context)
-                        : null,
+        return Padding(
+          padding: const EdgeInsets.only(left: 12.0, right: 12.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Expanded(
+                    child: _ActionButton(
+                      icon: const FaIcon(FontAwesomeIcons.microphoneSlash),
+                      label: context.msg.main.call.ongoing.actions.mute,
+                      includeActiveStatusInSemanticLabel: true,
+                      onPressedTogglesActiveStatus: true,
+                      active: state.isVoipCallMuted,
+                      // We can't mute when on hold.
+                      onPressed: !call.isOnHold && !state.isFinished
+                          ? () => _toggleMute(context)
+                          : null,
+                    ),
                   ),
-                ),
-                Expanded(
-                  child: _ActionButton(
-                    icon: const Icon(Icons.dialpad),
-                    label: context.msg.main.call.ongoing.actions.keypad.label,
-                    onPressed: !state.isFinished
-                        ? () => _toggleDialPad(context)
-                        : null,
+                  Expanded(
+                    child: _ActionButton(
+                      icon: const Icon(Icons.dialpad),
+                      label: context.msg.main.call.ongoing.actions.keypad.label,
+                      onPressed: !state.isFinished
+                          ? () => _toggleDialPad(context)
+                          : null,
+                    ),
                   ),
-                ),
-                Expanded(
-                  child: _AudioRouteButton(
-                    enabled: !state.isFinished,
+                  Expanded(
+                    child: _AudioRouteButton(
+                      enabled: !state.isFinished,
+                    ),
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 48),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                const Spacer(),
-                Expanded(
-                  flex: 2,
-                  child: _ActionButton(
-                    icon: state.isInTransfer
-                        ? const FaIcon(FontAwesomeIcons.merge)
-                        : const FaIcon(FontAwesomeIcons.arrowRightArrowLeft),
-                    label: state.isInTransfer
-                        ? context.msg.main.call.ongoing.actions.merge
-                        : context.msg.main.call.ongoing.actions.transfer.label,
-                    onPressed: state.isActionable
-                        ? () => state.isInTransfer
-                            ? _merge(context)
-                            : _transfer(context)
-                        : null,
-                  ),
-                ),
-                Expanded(
-                  flex: 2,
-                  child: _ActionButton(
-                    icon: const FaIcon(FontAwesomeIcons.pause),
-                    label: context.msg.main.call.ongoing.actions.hold,
-                    includeActiveStatusInSemanticLabel: true,
-                    onPressedTogglesActiveStatus: true,
-                    active: call.isOnHold,
-                    onPressed:
-                        state.isActionable ? () => _toggleHold(context) : null,
-                  ),
-                ),
-                const Spacer(),
-              ],
-            ),
-            const SizedBox(height: 48),
-            Center(
-              child: CallButton.hangUp(
-                onPressed:
-                    state is! FinishedCalling ? onHangUpButtonPressed : null,
+                ],
               ),
-            ),
-            const SizedBox(height: 32),
-          ],
+              const SizedBox(height: 48),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  const Spacer(),
+                  Expanded(
+                    flex: 2,
+                    child: _ActionButton(
+                      icon: state.isInTransfer
+                          ? const FaIcon(FontAwesomeIcons.merge)
+                          : const FaIcon(FontAwesomeIcons.arrowRightArrowLeft),
+                      label: state.isInTransfer
+                          ? context.msg.main.call.ongoing.actions.merge
+                          : context
+                              .msg.main.call.ongoing.actions.transfer.label,
+                      onPressed: state.isActionable
+                          ? () => state.isInTransfer
+                              ? _merge(context)
+                              : _transfer(context)
+                          : null,
+                    ),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: _ActionButton(
+                      icon: const FaIcon(FontAwesomeIcons.pause),
+                      label: context.msg.main.call.ongoing.actions.hold,
+                      includeActiveStatusInSemanticLabel: true,
+                      onPressedTogglesActiveStatus: true,
+                      active: call.isOnHold,
+                      onPressed: state.isActionable
+                          ? () => _toggleHold(context)
+                          : null,
+                    ),
+                  ),
+                  const Spacer(),
+                ],
+              ),
+              const SizedBox(height: 48),
+              Center(
+                child: CallButton.hangUp(
+                  onPressed:
+                      state is! FinishedCalling ? onHangUpButtonPressed : null,
+                ),
+              ),
+              const SizedBox(height: 32),
+            ],
+          ),
         );
       },
     );
