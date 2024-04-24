@@ -5,7 +5,7 @@ import '../use_case.dart';
 import 'get_stored_user.dart';
 
 /// Returns the locally stored user. Will throw if called before user is
-/// logged in.
+/// logged in or after user is logged out.
 @injectable
 class GetLoggedInUserUseCase extends UseCase {
   final _getStoredUser = GetStoredUserUseCase();
