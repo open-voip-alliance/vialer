@@ -34,7 +34,7 @@ PODS:
     - PhoneNumberKit/PhoneNumberKitCore (= 3.7.6)
   - flutter_phone_lib (0.0.1):
     - Flutter
-    - iOSPhoneLib (= 0.1.8)
+    - iOSPhoneLib (= 0.1.9)
   - flutter_segment_sdk (3.13.1):
     - Analytics (= 4.1.6)
     - Flutter
@@ -44,7 +44,7 @@ PODS:
     - Flutter
   - integration_test (0.0.1):
     - Flutter
-  - iOSPhoneLib (0.1.8):
+  - iOSPhoneLib (0.1.9):
     - Swinject (~> 2.8.2)
   - le (1.2)
   - libphonenumber (0.0.1):
@@ -95,7 +95,7 @@ PODS:
     - sqlite3/fts5
     - sqlite3/perf-threadsafe
     - sqlite3/rtree
-  - Swinject (2.8.3)
+  - Swinject (2.8.7)
   - url_launcher_ios (0.0.1):
     - Flutter
 
@@ -210,11 +210,11 @@ SPEC CHECKSUMS:
   flutter_inappwebview_ios: 97215cf7d4677db55df76782dbd2930c5e1c1ea0
   flutter_keyboard_visibility: 0339d06371254c3eb25eeb90ba8d17dca8f9c069
   flutter_libphonenumber_ios: a4d7de8865ef47d0f77b1d047e88ef7aed488d53
-  flutter_phone_lib: d5936cb990dbf9338cf0c133fb0a9d68fcb4792d
+  flutter_phone_lib: 695d2ce126a72f35a04c3d76ddcea7ec94c3e4ae
   flutter_segment_sdk: 1f10af57ddcee29dedf01bb37800f8301c89b307
   in_app_review: 318597b3a06c22bb46dc454d56828c85f444f99d
   integration_test: 13825b8a9334a850581300559b8839134b124670
-  iOSPhoneLib: 0e9a577688b97e5ae39d48f5d6a120addddf81f2
+  iOSPhoneLib: fe36a48e818fd51b96cabccb9037fa9350fa8667
   le: 6854003e293bf5b3cb822ef06971f1cc23a77eb9
   libphonenumber: bd14d5abfc5939ab0b0767234e2d8e2593af258e
   libPhoneNumber-iOS: 0a32a9525cf8744fe02c5206eb30d571e38f7d75
@@ -232,9 +232,9 @@ SPEC CHECKSUMS:
   shared_preferences_foundation: b4c3b4cddf1c21f02770737f147a3f5da9d39695
   sqlite3: 73b7fc691fdc43277614250e04d183740cb15078
   sqlite3_flutter_libs: af0e8fe9bce48abddd1ffdbbf839db0302d72d80
-  Swinject: 893c9a543000ac2f10ee4cbaf0933c6992c935d5
+  Swinject: fe8cbab252e12690484090d9cffa017485e268ce
   url_launcher_ios: 6116280ddcfe98ab8820085d8d76ae7449447586
 
-PODFILE CHECKSUM: ee5876d915c23109c48d14bae194fb3133d43ae9
+PODFILE CHECKSUM: b7a9922ab8118a510e74003bb65c0ed276674aa0
 
 COCOAPODS: 1.15.2
