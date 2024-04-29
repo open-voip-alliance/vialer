@@ -1,8 +1,9 @@
+import 'package:dartx/dartx.dart';
 import 'package:vialer/data/repositories/clipboard/clipboard_repository.dart';
 import 'package:vialer/dependency_locator.dart';
 
-import '../use_case.dart';
 import '../../util/numberic_strings.dart';
+import '../use_case.dart';
 
 class GetPhoneNumberFromClipboardUseCase extends UseCase {
   final _clipboardRepository = dependencyLocator<ClipboardRepository>();
@@ -17,6 +18,11 @@ class GetPhoneNumberFromClipboardUseCase extends UseCase {
     return sanitizedText.isNumeric() ? sanitizedText : null;
   }
 
-  String _sanitizePhoneNumber(String text) =>
-      text.replaceAll(' ', '').replaceFirst('+', '00');
+  static const _ignoredCharacters = [')', '(', '-', ' '];
+
+  String _sanitizePhoneNumber(String text) => text
+      .split('')
+      .filter((element) => !_ignoredCharacters.contains(element))
+      .join('')
+      .replaceFirst('+', '00');
 }

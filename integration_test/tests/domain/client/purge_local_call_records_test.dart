@@ -16,7 +16,7 @@ Future<void> main() => runTest(
         const sourceNumber = '123';
         const destinationNumber = '543';
 
-        final logout = Logout();
+        late final logout = Logout();
 
         final localClientCalls =
             dependencyLocator<LocalClientCallsRepository>();

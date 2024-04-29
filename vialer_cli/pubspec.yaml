@@ -8,4 +8,4 @@ executables:
 dependencies:
   args: ^2.4.2
   dartx: ^1.2.0
-  austerity: 1.1.0
+  austerity: ^1.2.0

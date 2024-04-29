@@ -89,7 +89,11 @@ class NoticeCubit extends Cubit<NoticeState> with Loggable {
     } else if (notificationsStatus != PermissionStatus.granted) {
       emit(const NotificationsPermissionDeniedNotice());
     } else if (!user.isAllowedVoipCalling) {
-      emit(const NoAppAccountNotice());
+      emit(NoAppAccountNotice(
+        hasPermissionToChangeAppAccount: user.hasPermission(
+          Permission.canChangeAppAccount,
+        ),
+      ));
     } else if (user.client.currentTemporaryRedirect != null) {
       emit(
         TemporaryRedirectNotice(

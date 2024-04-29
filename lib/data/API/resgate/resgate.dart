@@ -10,6 +10,8 @@ import 'package:res_client/model.dart' hide logger;
 import 'package:vialer/data/API/resgate/payloads/device.dart';
 import 'package:vialer/data/API/resgate/payloads/payload.dart';
 import 'package:vialer/data/API/resgate/payloads/user_availability_changed.dart';
+
+import '../../../../domain/usecases/onboarding/is_onboarded.dart';
 import '../../../presentation/util/loggable.dart';
 import '../../../presentation/util/reconnection_strategy.dart';
 import 'get_resgate_authentication.dart';
@@ -305,6 +307,8 @@ extension on Stream<ResEvent> {
 
 extension on ResEvent {
   bool matchesRid(ResgateListener listener) {
+    if (!IsOnboarded()()) return false;
+
     final self = this;
 
     if (self is! ResourceEvent) return false;
