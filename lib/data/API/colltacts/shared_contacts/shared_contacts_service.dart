@@ -21,6 +21,7 @@ abstract class SharedContactsService extends ChopperService {
         interceptors: [
           AuthorizationInterceptor(onlyModernAuth: false),
           ...globalInterceptors,
+          HeadersInterceptor({'application': 'app'}),
         ],
       ),
     );
