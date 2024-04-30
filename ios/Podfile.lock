@@ -1,6 +1,6 @@
 PODS:
-  - Alamofire (5.9.1)
-  - Amplitude (8.19.2):
+  - Alamofire (5.9.0)
+  - Amplitude (8.18.3):
     - AnalyticsConnector (~> 1.0.0)
   - Analytics (4.1.6)
   - AnalyticsConnector (1.0.3)
@@ -60,7 +60,7 @@ PODS:
   - permission_handler_apple (9.3.0):
     - Flutter
   - PhoneNumberKit/PhoneNumberKitCore (3.7.6)
-  - ReachabilitySwift (5.2.2)
+  - ReachabilitySwift (5.2.1)
   - Segment-Amplitude (3.3.2):
     - Amplitude (~> 8.3)
     - Analytics
@@ -78,14 +78,14 @@ PODS:
   - shared_preferences_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
-  - "sqlite3 (3.45.3+1)":
-    - "sqlite3/common (= 3.45.3+1)"
-  - "sqlite3/common (3.45.3+1)"
-  - "sqlite3/fts5 (3.45.3+1)":
+  - sqlite3 (3.45.1):
+    - sqlite3/common (= 3.45.1)
+  - sqlite3/common (3.45.1)
+  - sqlite3/fts5 (3.45.1):
     - sqlite3/common
-  - "sqlite3/perf-threadsafe (3.45.3+1)":
+  - sqlite3/perf-threadsafe (3.45.1):
     - sqlite3/common
-  - "sqlite3/rtree (3.45.3+1)":
+  - sqlite3/rtree (3.45.1):
     - sqlite3/common
   - sqlite3_flutter_libs (0.0.1):
     - Flutter
@@ -93,7 +93,7 @@ PODS:
     - sqlite3/fts5
     - sqlite3/perf-threadsafe
     - sqlite3/rtree
-  - Swinject (2.8.8)
+  - Swinject (2.8.7)
   - url_launcher_ios (0.0.1):
     - Flutter
 
@@ -193,8 +193,8 @@ CHECKOUT OPTIONS:
     :git: https://github.com/LogentriesCommunity/le_ios.git
 
 SPEC CHECKSUMS:
-  Alamofire: f36a35757af4587d8e4f4bfa223ad10be2422b8c
-  Amplitude: 1c9fca37993bd5742cf7c121d432bf8bf5a28ccb
+  Alamofire: 02b772c9910e8eba1a079227c32fbd9e46c90a24
+  Amplitude: 82d5bc3bc194e7aab89fc780661de795c256450d
   Analytics: eefe524436f904b8bb3f8c8c3425280e43b34efc
   AnalyticsConnector: a53214d38ae22734c6266106c0492b37832633a9
   AppsFlyerFramework: 88a6eed37ad52bcee4ad74232efa8e22809d06c9
@@ -220,15 +220,15 @@ SPEC CHECKSUMS:
   path_provider_foundation: 3784922295ac71e43754bd15e0653ccfd36a147c
   permission_handler_apple: 9878588469a2b0d0fc1e048d9f43605f92e6cec2
   PhoneNumberKit: 3c68a822bad955ffcefc72a52df72b6596498555
-  ReachabilitySwift: 2128f3a8c9107e1ad33574c6e58e8285d460b149
+  ReachabilitySwift: 5ae15e16814b5f9ef568963fb2c87aeb49158c66
   Segment-Amplitude: 6c1e59c8c278a21029ba7a6a788fcb31b9233a2c
   segment-appsflyer-ios: 98124c817857be032697c92f613be97404a4c330
   Sentry: cd86fc55628f5b7c572cabe66cc8f95a9d2f165a
   sentry_flutter: 4cb24c1055c556d7b27262ab2e179d1e5a0b9b0c
   shared_preferences_foundation: b4c3b4cddf1c21f02770737f147a3f5da9d39695
-  sqlite3: 02d1f07eaaa01f80a1c16b4b31dfcbb3345ee01a
+  sqlite3: 73b7fc691fdc43277614250e04d183740cb15078
   sqlite3_flutter_libs: af0e8fe9bce48abddd1ffdbbf839db0302d72d80
-  Swinject: 2943463cdd58b49f114213bf1ce4a09f374828e7
+  Swinject: fe8cbab252e12690484090d9cffa017485e268ce
   url_launcher_ios: 6116280ddcfe98ab8820085d8d76ae7449447586
 
 PODFILE CHECKSUM: def017ae6ee88db0da9d35fc108c992b78293c58
