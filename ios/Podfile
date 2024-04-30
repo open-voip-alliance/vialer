@@ -44,6 +44,13 @@ target 'Runner' do
   end
 end
 
+directories_to_delete = [
+  'AppsFlyerFramework',
+  'Amplitude',
+  'Segment-Amplitude',
+  'segment-appsflyer-ios',
+]
+
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
@@ -101,4 +108,17 @@ post_install do |installer|
       ]
     end
   end
+
+  directories_to_delete.each do |dir|
+      # Define the path to the directory
+      directory_path = File.join(installer.sandbox.root, dir)
+
+      # Check if the directory exists before attempting to delete
+      if Dir.exist?(directory_path)
+        puts "Deleting directory: #{directory_path}"
+        FileUtils.rm_rf(directory_path)
+      else
+        puts "Directory does not exist: #{directory_path}"
+      end
+    end
 end
