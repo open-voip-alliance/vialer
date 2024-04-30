@@ -12,7 +12,7 @@
   "openingHoursBasicUrl": "https://api.stag.holodeck.spindle.dev/opening-hours-basic/client/",
   "privacyPolicyUrl": "https://vialerapp.com/privacy/",
   "availabilityServiceUrl": "https://api.stag.holodeck.spindle.dev/dnd-service",
-  "sharedContactsUrl": "https://openapi-mock-server.eu-stag.holodeck.wearespindle.com/mock/main/webphone/contacts/",
+  "sharedContactsUrl": "https://api.stag.holodeck.spindle.dev/contactbook/",
   "phoneNumberValidationUrl": "https://phonenumbers.spindle.dev",
   "featureAnnouncementsUrl": "https://api.stag.holodeck.spindle.dev/feature-announcements/",
   "resgateUrl": "wss://resgate.stag.holodeck.spindle.dev"

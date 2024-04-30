@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dartx/dartx.dart';
 import 'package:injectable/injectable.dart';
+import 'package:vialer/domain/usecases/user/get_logged_in_user.dart';
 
 import '../../../../presentation/util/loggable.dart';
 import '../../../API/colltacts/shared_contacts/shared_contacts_service.dart';
@@ -21,7 +22,8 @@ class SharedContactsRepository with Loggable {
 
   Future<List<SharedContact>> getSharedContacts(User user) async {
     final response = await _apiResourceCollector.collect(
-      requester: (page) => _service.getSharedContacts(page: page),
+      requester: (page) => _service.getSharedContacts(
+          clientUuid: GetLoggedInUserUseCase()().client.uuid, page: page),
       deserializer: (json) => json,
     );
 
@@ -40,7 +42,8 @@ class SharedContactsRepository with Loggable {
         )
         .toList();
 
-    final response = await _service.createSharedContact({
+    final response = await _service
+        .createSharedContact(GetLoggedInUserUseCase()().client.uuid, {
       'given_name': givenName ?? '',
       'family_name': familyName ?? '',
       'company_name': company ?? '',
@@ -51,10 +54,13 @@ class SharedContactsRepository with Loggable {
       logFailedResponse(response, name: 'Post create shared contact');
       throw Exception('Error');
     }
+
+    print(response.statusCode);
   }
 
   Future<void> deleteSharedContact(String? sharedContactUuid) async {
     final response = await _service.deleteSharedContact(
+      GetLoggedInUserUseCase()().client.uuid,
       sharedContactUuid ?? '',
     );
 
@@ -78,6 +84,7 @@ class SharedContactsRepository with Loggable {
         .toList();
 
     final response = await _service.updateSharedContact(
+      GetLoggedInUserUseCase()().client.uuid,
       sharedContactUuid ?? '',
       {
         'given_name': givenName ?? '',
