@@ -35,9 +35,7 @@ class _MessagingSurveyState extends ConsumerState<MessagingSurvey> {
     InstalledMessagingAppsSurveyQuestion(onQuestionAnswered),
     PersonalWhatsappSurveyQuestion(onQuestionAnswered),
     BusinessWhatsappSurveyQuestion(onQuestionAnswered),
-    // This question is to join the Voys research pools so it should only be
-    // shown for the Voys brand.
-    if (context.brand.isVoys)
+    if (context.brand.isVoys || context.brand.isVialer)
       JoinResearchPoolSurveyQuestion(onQuestionAnswered),
   ];
 

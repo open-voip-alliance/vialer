@@ -53,7 +53,6 @@ class _PersonalWhatsappSurveyQuestionState
               2: context.strings.messagingApps.personalWhatsApp.option3,
               3: context.strings.messagingApps.personalWhatsApp.option4,
               4: context.strings.messagingApps.personalWhatsApp.option5,
-              5: context.strings.messagingApps.personalWhatsApp.option6,
             },
           ),
         );
