@@ -2,7 +2,38 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.voipgrid.vialer">
     <queries>
+        <package android:name="com.voys.app" />
+        <package android:name="com.voipgrid.vialer" />
+        <package android:name="nl.verbonden.app" />
+        <package android:name="com.bellenmetannabel.app" />
         <package android:name="com.whatsapp" />
+        <package android:name="com.whatsapp.w4b" />
+        <package android:name="com.trengo.mobile" />
+        <package android:name="zendesk.android" />
+        <package android:name="com.zopim.android" />
+        <package android:name="com.futuresimple.base" />
+        <package android:name="com.Slack" />
+        <package android:name="com.facebook.orca" />
+        <package android:name="com.instagram.android" />
+        <package android:name="org.telegram.messenger" />
+        <package android:name="org.thoughtcrime.securesms" />
+        <package android:name="com.snapchat.android" />
+        <package android:name="com.zhiliaoapp.musically" />
+        <package android:name="com.instagram.barcelona" />
+        <package android:name="com.openai.chatgpt" />
+        <package android:name="com.jivosite.mobile" />
+        <package android:name="com.salesforce.chatter" />
+        <package android:name="com.hubspot.android" />
+        <package android:name="com.tidiochat.app" />
+        <package android:name="io.intercom.android" />
+        <package android:name="com.freshdesk.helpdesk" />
+        <package android:name="to.tawk.android" />
+        <package android:name="com.activecampaign.androidcrm" />
+        <package android:name="com.livechatinc.android" />
+        <package android:name="com.microsoft.teams" />
+        <package android:name="com.google.android.apps.dynamite" />
+        <package android:name="com.tencent.mm" />
+        <package android:name="net.helpscout.android" />
     </queries>
 
     <!-- io.flutter.app.FlutterApplication is an android.app.Application that
