@@ -2,6 +2,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.voipgrid.vialer">
     <queries>
+        <package android:name="com.voys.app" />
+        <package android:name="com.voipgrid.vialer" />
+        <package android:name="nl.verbonden.app" />
+        <package android:name="com.bellenmetannabel.app" />
         <package android:name="com.whatsapp" />
         <package android:name="com.whatsapp.w4b" />
         <package android:name="com.trengo.mobile" />
@@ -9,7 +13,6 @@
         <package android:name="com.zopim.android" />
         <package android:name="com.futuresimple.base" />
         <package android:name="com.Slack" />
-        <package android:name="com.voys.app" />
         <package android:name="com.facebook.orca" />
         <package android:name="com.instagram.android" />
         <package android:name="org.telegram.messenger" />
