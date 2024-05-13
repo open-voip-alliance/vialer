@@ -29,7 +29,7 @@
         <package android:name="com.livechatinc.android" />
         <package android:name="com.microsoft.teams" />
         <package android:name="com.google.android.apps.dynamite" />
-        <package android:name="<http://com.tencent.mm/>" />
+        <package android:name="com.tencent.mm" />
         <package android:name="net.helpscout.android" />
     </queries>
 
