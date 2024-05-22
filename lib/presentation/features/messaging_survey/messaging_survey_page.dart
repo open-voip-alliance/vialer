@@ -7,6 +7,7 @@ import 'package:vialer/presentation/features/messaging_survey/controllers/riverp
 import 'package:vialer/presentation/features/messaging_survey/survey/messaging_survey.dart';
 import 'package:vialer/presentation/resources/localizations.dart';
 import 'package:vialer/presentation/resources/messages.i18n.dart';
+import 'package:vialer/presentation/resources/theme.dart';
 import 'package:vialer/presentation/shared/widgets/stylized_button.dart';
 import 'package:vialer/presentation/util/circular_graphic.dart';
 import 'package:vialer/presentation/util/conditional_capitalization.dart';
@@ -54,6 +55,14 @@ class MessagingSurveyPage extends ConsumerWidget {
                 onPressed: () => ref
                     .read(messagingSurveyControllerProvider.notifier)
                     .skipSurvey(),
+              ),
+              Gap(10),
+              Text(
+                context.strings.messagingApps.disclaimer,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: context.brand.theme.colors.grey5,
+                ),
               ),
             ],
           ),
