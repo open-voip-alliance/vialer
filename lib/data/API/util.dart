@@ -1,9 +1,13 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:chopper/chopper.dart' as chopper;
 import 'package:chopper/chopper.dart';
 import 'package:dartx/dartx.dart';
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:vialer/domain/usecases/user/get_brand.dart';
 
 import '../../dependency_locator.dart';
 import '../../domain/usecases/user/get_stored_user.dart';
@@ -204,6 +208,45 @@ class JsonConverter extends chopper.JsonConverter {
   }
 }
 
-Iterable<chopper.ResponseInterceptor> get globalInterceptors => [
+Iterable<dynamic> get globalInterceptors => [
       SubmitUnexpectedFailedRequestsToSentry(),
+      ClientHeaderInterceptor(),
     ];
+
+/// Adds certain headers to requests allowing the back-end to properly identify
+/// the client.
+class ClientHeaderInterceptor implements chopper.RequestInterceptor {
+  static const _prefix = 'X-Client';
+
+  late final _brand = GetBrand()();
+  late final _deviceInfo = DeviceInfoPlugin();
+
+  final Map<String, String> _cachedClientHeaders = {};
+
+  @override
+  FutureOr<chopper.Request> onRequest(Request request) async {
+    if (_cachedClientHeaders.isNotEmpty) {
+      return request.copyWith(headers: {
+        ..._cachedClientHeaders,
+        ...request.headers,
+      });
+    }
+
+    final packageInfo = await PackageInfo.fromPlatform();
+    final deviceInfo = await _deviceInfo.deviceInfo;
+    final osVersion = Platform.isIOS
+        ? (deviceInfo as IosDeviceInfo).systemVersion
+        : (deviceInfo as AndroidDeviceInfo).version.release;
+
+    _cachedClientHeaders.addAll({
+      '$_prefix-Type': 'mobile',
+      '$_prefix-Product': 'vialer',
+      '$_prefix-Version': packageInfo.version,
+      '$_prefix-OS': Platform.operatingSystem,
+      '$_prefix-OS-Version': osVersion,
+      '$_prefix-Brand': _brand.identifier,
+    });
+
+    return onRequest(request);
+  }
+}
