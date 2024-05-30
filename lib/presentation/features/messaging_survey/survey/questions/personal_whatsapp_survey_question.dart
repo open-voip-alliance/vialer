@@ -48,11 +48,11 @@ class _PersonalWhatsappSurveyQuestionState
           child: RadioButtonSurveyQuestion(
             answer: _answer,
             answers: {
-              0: context.strings.messagingApps.personalWhatsApp.option1,
-              1: context.strings.messagingApps.personalWhatsApp.option2,
-              2: context.strings.messagingApps.personalWhatsApp.option3,
-              3: context.strings.messagingApps.personalWhatsApp.option4,
-              4: context.strings.messagingApps.personalWhatsApp.option5,
+              1: context.strings.messagingApps.personalWhatsApp.option1,
+              2: context.strings.messagingApps.personalWhatsApp.option2,
+              3: context.strings.messagingApps.personalWhatsApp.option3,
+              4: context.strings.messagingApps.personalWhatsApp.option4,
+              5: context.strings.messagingApps.personalWhatsApp.option5,
             },
           ),
         );
