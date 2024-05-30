@@ -365,25 +365,25 @@ class _KeypadValueButtonState extends State<KeypadValueButton> {
                 .join()
             : widget.secondaryValue;
 
-    return Center(
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(
-          maxWidth: KeypadValueButton.maxSize,
-          maxHeight: KeypadValueButton.maxSize,
-        ),
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            return KeypadButton(
-              child: Semantics(
-                label: widget.primaryValue,
-                hint: secondaryValueSemanticsLabel,
-                child: _InkWellOrResponse(
-                  response: !context.isIOS,
-                  customBorder: const CircleBorder(),
-                  onTapDown: _enterValue,
-                  onLongPress: widget.replaceWithSecondaryValueOnLongPress
-                      ? _replaceWithSecondaryValue
-                      : null,
+    return _InkWellOrResponse(
+      response: !context.isIOS,
+      customBorder: const CircleBorder(),
+      onTapDown: _enterValue,
+      onLongPress: widget.replaceWithSecondaryValueOnLongPress
+          ? _replaceWithSecondaryValue
+          : null,
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(
+            maxWidth: KeypadValueButton.maxSize,
+            maxHeight: KeypadValueButton.maxSize,
+          ),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return KeypadButton(
+                child: Semantics(
+                  label: widget.primaryValue,
+                  hint: secondaryValueSemanticsLabel,
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -418,9 +418,9 @@ class _KeypadValueButtonState extends State<KeypadValueButton> {
                     ],
                   ),
                 ),
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
       ),
     );
