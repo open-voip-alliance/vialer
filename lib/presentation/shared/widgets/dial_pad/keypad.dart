@@ -115,7 +115,7 @@ class _KeypadGridDelegate extends SliverGridDelegate {
     const itemsPerRow = 3;
     const itemsPerColumn = 5;
 
-    final maxCrossAxisExtent = slim ? 96.0 : 164.0;
+    final maxCrossAxisExtent = slim ? 104.0 : 164.0;
     final maxMainAxisExtent = slim ? 104.0 : 96.0;
 
     var crossAxisExtent = min(
