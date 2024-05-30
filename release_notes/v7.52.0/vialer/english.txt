@@ -1,2 +1,2 @@
-- Fixed a bug so you can paste numbers into the dialer that contain non-numeric characters
-- Improved padding on the ongoing call screen so no elements touch the edge
+- Added a survey relating to upcoming products
+- The dialer buttons are now a bit easier to hit when entering a number
