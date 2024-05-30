@@ -271,8 +271,8 @@ class _AndroidInputs extends StatelessWidget {
             ElevatedButton(
               onPressed: onCallButtonPressed,
               style: ButtonStyle(
-                elevation: MaterialStateProperty.all(4),
-                backgroundColor: MaterialStateProperty.all(
+                elevation: WidgetStateProperty.all(4),
+                backgroundColor: WidgetStateProperty.all(
                   context.brand.theme.colors.green2,
                 ),
               ),
@@ -305,10 +305,10 @@ class _AndroidInputs extends StatelessWidget {
               width: double.infinity,
               child: TextButton(
                 style: ButtonStyle(
-                  foregroundColor: MaterialStateProperty.all(
+                  foregroundColor: WidgetStateProperty.all(
                     context.brand.theme.colors.grey6,
                   ),
-                  overlayColor: MaterialStateProperty.all(
+                  overlayColor: WidgetStateProperty.all(
                     context.brand.theme.colors.grey4.withOpacity(0.25),
                   ),
                 ),
