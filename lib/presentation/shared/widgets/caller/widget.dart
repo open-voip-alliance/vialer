@@ -303,7 +303,7 @@ class _AlertDialog extends StatelessWidget {
           TextButton(
             onPressed: () => _onOkButtonPressed(context),
             style: ButtonStyle(
-              overlayColor: MaterialStateProperty.all(
+              overlayColor: WidgetStateProperty.all(
                 Theme.of(context).primaryColorLight,
               ),
             ),
