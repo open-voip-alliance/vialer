@@ -102,11 +102,13 @@ post_install do |installer|
     end
   end
 
-  Dir.glob("Pods/*").each do |pod_dir|
+  if ENV['CI'] == 'true'
+    Dir.glob("Pods/*").each do |pod_dir|
       privacy_files = Dir.glob("#{pod_dir}/**/PrivacyInfo.xcprivacy")
       privacy_files.each do |privacy_file|
-          File.delete(privacy_file)
-          puts "Deleted #{privacy_file}"
+        File.delete(privacy_file)
+        puts "Deleted #{privacy_file}"
       end
     end
+  end
 end
