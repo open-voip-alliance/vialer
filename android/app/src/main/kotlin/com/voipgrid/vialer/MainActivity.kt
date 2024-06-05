@@ -17,6 +17,7 @@ import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugins.GeneratedPluginRegistrant
 import org.openvoipalliance.flutterphonelib.PhoneLib
+import java.lang.IllegalStateException
 
 class MainActivity : FlutterActivity(), CallScreenBehavior {
     private lateinit var nativeToFlutter: NativeToFlutter
@@ -114,10 +115,16 @@ class MainActivity : FlutterActivity(), CallScreenBehavior {
                     return
                 }
 
-                val clipboard = context.getSystemService(ClipboardManager::class.java)
-                val confidenceScore = clipboard.primaryClipDescription?.getConfidenceScore(
-                    TextClassifier.TYPE_PHONE)
-                callback(Result.success(confidenceScore != null && confidenceScore > 0.8))
+
+                try {
+                    val clipboard = context.getSystemService(ClipboardManager::class.java)
+                    val confidenceScore = clipboard.primaryClipDescription?.getConfidenceScore(
+                        TextClassifier.TYPE_PHONE)
+                    callback(Result.success(confidenceScore != null && confidenceScore > 0.8))
+                } catch (e: IllegalStateException) {
+                    callback(Result.success(false))
+                }
+
             }
         })
     }
