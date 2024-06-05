@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dartx/dartx.dart';
 import 'package:injectable/injectable.dart';
+import 'package:vialer/domain/usecases/user/get_logged_in_user.dart';
 
 import '../../../../presentation/util/loggable.dart';
 import '../../../API/colltacts/shared_contacts/shared_contacts_service.dart';
@@ -19,9 +20,11 @@ class SharedContactsRepository with Loggable {
   final SharedContactsService _service;
   final VoipgridApiResourceCollector _apiResourceCollector;
 
+  String get _clientId => GetLoggedInUserUseCase()().client.uuid;
+
   Future<List<SharedContact>> getSharedContacts(User user) async {
     final response = await _apiResourceCollector.collect(
-      requester: (page) => _service.getSharedContacts(page: page),
+      requester: (page) => _service.getSharedContacts(_clientId, page: page),
       deserializer: (json) => json,
     );
 
@@ -40,7 +43,7 @@ class SharedContactsRepository with Loggable {
         )
         .toList();
 
-    final response = await _service.createSharedContact({
+    final response = await _service.createSharedContact(_clientId, {
       'given_name': givenName ?? '',
       'family_name': familyName ?? '',
       'company_name': company ?? '',
@@ -55,6 +58,7 @@ class SharedContactsRepository with Loggable {
 
   Future<void> deleteSharedContact(String? sharedContactUuid) async {
     final response = await _service.deleteSharedContact(
+      _clientId,
       sharedContactUuid ?? '',
     );
 
@@ -78,6 +82,7 @@ class SharedContactsRepository with Loggable {
         .toList();
 
     final response = await _service.updateSharedContact(
+      _clientId,
       sharedContactUuid ?? '',
       {
         'given_name': givenName ?? '',

@@ -19,31 +19,35 @@ abstract class SharedContactsService extends ChopperService {
         baseUrl: Uri.parse(sharedContactsBaseUrl),
         converter: JsonConverter(),
         interceptors: [
-          AuthorizationInterceptor(onlyModernAuth: false),
+          AuthorizationInterceptor(onlyModernAuth: true),
           ...globalInterceptors,
         ],
       ),
     );
   }
 
-  @Get()
-  Future<Response<List<Map<String, dynamic>>>> getSharedContacts({
+  @Get(path: 'clients/{clientId}/contacts')
+  Future<Response<Map<String, dynamic>>> getSharedContacts(
+    @Path() String clientId, {
     @Query() int page = 1,
     @Query('per_page') int perPage = 500,
   });
 
-  @Post()
+  @Post(path: 'clients/{clientId}/contacts')
   Future<Response<Map<String, dynamic>>> createSharedContact(
+    @Path() String clientId,
     @Body() Map<String, dynamic> body,
   );
 
-  @Delete(path: '{sharedContactUuid}')
+  @Delete(path: 'clients/{clientId}/contacts/{sharedContactUuid}')
   Future<Response<Map<String, dynamic>>> deleteSharedContact(
+    @Path() String clientId,
     @Path() String sharedContactUuid,
   );
 
-  @Put(path: '{sharedContactUuid}')
+  @Put(path: 'clients/{clientId}/contacts/{sharedContactUuid}')
   Future<Response<Map<String, dynamic>>> updateSharedContact(
+    @Path() String clientId,
     @Path() String sharedContactUuid,
     @Body() Map<String, dynamic> body,
   );
