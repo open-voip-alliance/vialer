@@ -31,13 +31,13 @@ class _MessagingSurveyState extends ConsumerState<MessagingSurvey> {
   bool get _hasAnsweredAllQuestions =>
       (_controller.page ?? _controller.initialPage) >= (_questions.length - 1);
 
+  bool _didJoinResearchPool = false;
+
   late final _questions = [
     InstalledMessagingAppsSurveyQuestion(onQuestionAnswered),
     PersonalWhatsappSurveyQuestion(onQuestionAnswered),
     BusinessWhatsappSurveyQuestion(onQuestionAnswered),
-    // This question is to join the Voys research pools so it should only be
-    // shown for the Voys brand.
-    if (context.brand.isVoys)
+    if (context.brand.isVoys || context.brand.isVialer)
       JoinResearchPoolSurveyQuestion(onQuestionAnswered),
   ];
 
@@ -50,7 +50,7 @@ class _MessagingSurveyState extends ConsumerState<MessagingSurvey> {
         controller: _controller,
         children: [
           ..._questions,
-          MessagingSurveyComplete(),
+          MessagingSurveyComplete(didJoinResearchPool: _didJoinResearchPool),
         ],
       ),
     );
@@ -65,6 +65,10 @@ class _MessagingSurveyState extends ConsumerState<MessagingSurvey> {
     );
 
     controller.response = await response;
+
+    setState(() {
+      _didJoinResearchPool = controller.response.joinInsightsCommunity ?? false;
+    });
 
     if (_hasAnsweredAllQuestions) {
       controller.submit();

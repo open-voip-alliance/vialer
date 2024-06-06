@@ -27,7 +27,7 @@ class _JoinResearchPoolSurveyQuestionState
   final _answer = ValueNotifier<int?>(null);
 
   void _onQuestionAnswered() => widget.onQuestionAnswered(
-        ref.response.copyWith(joinResearchPool: _answer.value == 0),
+        ref.response.copyWith(joinInsightsCommunity: _answer.value == 0),
       );
 
   @override

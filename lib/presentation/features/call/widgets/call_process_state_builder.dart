@@ -31,10 +31,14 @@ class CallProcessStateBuilder extends StatelessWidget with Loggable {
           return false;
         }
 
-        if (!includeCallDurationChanges &&
-            previous is CallProcessState &&
+        if (previous is CallProcessState &&
+            !includeCallDurationChanges &&
             previous.voipCall != null) {
-          return !current.voipCall!.compareCalls(previous.voipCall!);
+          if (previous.audioState?.currentRoute !=
+              current.audioState?.currentRoute)
+            return true;
+          else
+            return !current.voipCall!.compareCalls(previous.voipCall!);
         }
 
         return previous != current;

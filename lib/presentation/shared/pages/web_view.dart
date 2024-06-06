@@ -106,6 +106,11 @@ class _WebViewPageState extends State<WebViewPage> {
                       progress,
                       state.url,
                     ),
+                    onPermissionRequest: (_, request) async =>
+                        PermissionResponse(
+                      action: PermissionResponseAction.GRANT,
+                      resources: request.resources,
+                    ),
                   ),
                   if (state is! LoadedWebView)
                     const Center(

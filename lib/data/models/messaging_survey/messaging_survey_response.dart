@@ -8,6 +8,6 @@ class MessagingSurveyResponse with _$MessagingSurveyResponse {
     List<String>? installedApps,
     int? questionPersonalWhatsapp,
     int? questionBusinessWhatsapp,
-    bool? joinResearchPool,
+    bool? joinInsightsCommunity,
   }) = _MessagingSurveyResponse;
 }

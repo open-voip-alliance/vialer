@@ -18,7 +18,7 @@ class SubmitMessagingSurveyResponse extends UseCase {
       'installed-messaging-app': response.installedApps,
       'question-personal-whatsapp': response.questionPersonalWhatsapp,
       'question-business-whatsapp': response.questionBusinessWhatsapp,
-      'join-voys-research-pool': response.joinResearchPool,
+      'join-insights-community': response.joinInsightsCommunity,
     });
   }
 }

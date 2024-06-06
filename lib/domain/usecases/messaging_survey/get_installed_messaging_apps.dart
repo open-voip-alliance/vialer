@@ -30,7 +30,40 @@ extension on Iterable<String> {
   ///
   /// Any package name that is not in both the manifest and this list will NOT
   /// be included in the survey results.
-  static const _relevantApps = ['com.whatsapp'];
+  static const _relevantApps = [
+    'com.voys.app',
+    'com.voipgrid.vialer',
+    'nl.verbonden.app',
+    'com.bellenmetannabel.app',
+    'com.whatsapp',
+    'com.whatsapp.w4b',
+    'com.trengo.mobile',
+    'zendesk.android',
+    'com.zopim.android',
+    'com.futuresimple.base',
+    'com.Slack',
+    'com.facebook.orca',
+    'com.instagram.android',
+    'org.telegram.messenger',
+    'org.thoughtcrime.securesms',
+    'com.snapchat.android',
+    'com.zhiliaoapp.musically',
+    'com.instagram.barcelona',
+    'com.openai.chatgpt',
+    'com.jivosite.mobile',
+    'com.salesforce.chatter',
+    'com.hubspot.android',
+    'com.tidiochat.app',
+    'io.intercom.android',
+    'com.freshdesk.helpdesk',
+    'to.tawk.android',
+    'com.activecampaign.androidcrm',
+    'com.livechatinc.android',
+    'com.microsoft.teams',
+    'com.google.android.apps.dynamite',
+    'com.tencent.mm',
+    'net.helpscout.android',
+  ];
 
   List<String> get onlyRelevant =>
       filter((app) => _relevantApps.contains(app)).toList();

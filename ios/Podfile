@@ -38,7 +38,7 @@ target 'Runner' do
   pod 'le', :git => 'https://github.com/LogentriesCommunity/le_ios.git'
   pod 'Alamofire', '~> 5.4'
   pod 'Analytics', '~> 4.1'
-  
+
   target 'RunnerTests' do
     inherit! :search_paths
   end
@@ -101,4 +101,12 @@ post_install do |installer|
       ]
     end
   end
+
+  Dir.glob("Pods/*").each do |pod_dir|
+      privacy_files = Dir.glob("#{pod_dir}/**/PrivacyInfo.xcprivacy")
+      privacy_files.each do |privacy_file|
+          File.delete(privacy_file)
+          puts "Deleted #{privacy_file}"
+      end
+    end
 end
