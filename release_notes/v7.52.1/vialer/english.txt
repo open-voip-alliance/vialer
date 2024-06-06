@@ -1,0 +1,2 @@
+- Added a survey relating to upcoming products
+- The dialer buttons are now a bit easier to hit when entering a number
