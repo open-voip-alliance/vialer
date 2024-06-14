@@ -9,6 +9,7 @@ import 'package:vialer/presentation/resources/localizations.dart';
 import 'package:vialer/presentation/resources/theme.dart';
 import 'package:vialer/presentation/util/phone_number.dart';
 import 'package:vialer/presentation/util/screen_reader.dart';
+import 'package:vialer/presentation/util/vertically_expanded_row.dart';
 
 class KeyInput extends StatefulWidget {
   const KeyInput({
@@ -68,7 +69,7 @@ class _KeyInputState extends State<KeyInput> {
 
     return Container(
       color: context.brand.theme.colors.grey3.withOpacity(0.5),
-      child: Row(
+      child: VerticallyExpandedRow(
         children: [
           Expanded(
             child: Semantics(
@@ -109,14 +110,12 @@ class _KeyInputState extends State<KeyInput> {
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(right: deleteButtonPadding),
-            child: _DeleteButton(
-              controller: widget.controller,
-              cursorShownNotifier: widget.cursorShownNotifier,
-              canDelete: widget.canDelete,
-              onDeleteAll: widget.onDeleteAll,
-            ),
+          _DeleteButton(
+            controller: widget.controller,
+            cursorShownNotifier: widget.cursorShownNotifier,
+            canDelete: widget.canDelete,
+            onDeleteAll: widget.onDeleteAll,
+            padding: EdgeInsets.only(right: deleteButtonPadding),
           ),
         ],
       ),
@@ -149,12 +148,14 @@ class _DeleteButton extends StatefulWidget {
     required this.cursorShownNotifier,
     this.canDelete = true,
     this.onDeleteAll,
+    this.padding = EdgeInsets.zero,
   });
 
   final TextEditingController controller;
   final ValueNotifier<bool> cursorShownNotifier;
   final bool canDelete;
   final VoidCallback? onDeleteAll;
+  final EdgeInsets padding;
 
   static const double size = 32;
 
@@ -293,20 +294,23 @@ class _DeleteButtonState extends State<_DeleteButton> {
       child: InkResponse(
         onTap: _canDelete ? _delete : null,
         onLongPress: _canDelete ? _deleteAll : null,
-        child: AnimatedTheme(
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.decelerate,
-          data: Theme.of(context).copyWith(
-            iconTheme: Theme.of(context).iconTheme.copyWith(
-                  color: _canDelete
-                      ? context.brand.theme.colors.grey5
-                      : context.brand.theme.colors.grey2,
-                ),
-          ),
-          // Must stay as `Icon` (used in a `TextField`).
-          child: const Icon(
-            FontAwesomeIcons.deleteLeft,
-            size: _DeleteButton.size,
+        child: Padding(
+          padding: widget.padding,
+          child: AnimatedTheme(
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.decelerate,
+            data: Theme.of(context).copyWith(
+              iconTheme: Theme.of(context).iconTheme.copyWith(
+                    color: _canDelete
+                        ? context.brand.theme.colors.grey5
+                        : context.brand.theme.colors.grey2,
+                  ),
+            ),
+            // Must stay as `Icon` (used in a `TextField`).
+            child: const Icon(
+              FontAwesomeIcons.deleteLeft,
+              size: _DeleteButton.size,
+            ),
           ),
         ),
       ),
