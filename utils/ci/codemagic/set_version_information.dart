@@ -97,7 +97,7 @@ String _buildVersionDisplayName(Type type, String version) {
     case Type.appStore:
       return version;
     case Type.mergeRequest:
-      return '$version-MR.$_mergeRequestId-$_escapedBranch';
+      return version;
     case Type.other:
       return '$version-$_escapedBranch';
   }
@@ -128,14 +128,6 @@ Future<void> _updateFileContents(
     ),
   );
 }
-
-Future<String> _getMostRecentGitTag() => Process.run('git', [
-      'describe',
-      '--tags',
-      '--abbrev=0',
-      '--match',
-      'v*',
-    ]).then((value) => value.stdout.toString().trim().replaceFirst('v', ''));
 
 enum Type {
   appStore,
