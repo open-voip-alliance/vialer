@@ -24,7 +24,7 @@ void main(List<String> arguments) async {
   }
 
   final type = Type.fromString(args['type'] as String);
-  final version = await _getMostRecentGitTag();
+  final version = "7.49.0";
 
   await _updateCfBundleVersionForIos(version);
   await _updateVersionInPubspecYaml(_buildVersionDisplayName(type, version));
