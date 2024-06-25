@@ -34,7 +34,7 @@ PODS:
     - PhoneNumberKit/PhoneNumberKitCore (= 3.7.6)
   - flutter_phone_lib (0.0.1):
     - Flutter
-    - iOSPhoneLib (= 0.1.9)
+    - iOSPhoneLib (= 0.1.11)
   - flutter_segment_sdk (3.13.1):
     - Analytics (= 4.1.6)
     - Flutter
@@ -44,7 +44,7 @@ PODS:
     - Flutter
   - integration_test (0.0.1):
     - Flutter
-  - iOSPhoneLib (0.1.9):
+  - iOSPhoneLib (0.1.11):
     - Swinject (~> 2.8.2)
   - le (1.2)
   - libphonenumber (0.0.1):
