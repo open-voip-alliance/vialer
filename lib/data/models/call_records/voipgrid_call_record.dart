@@ -31,6 +31,7 @@ class CallRecordFromDetail with _$CallRecordFromDetail {
     required String dialedNumber,
     String? callerName,
     CallRecordVoipAccount? voipAccount,
+    String? userInternalNumber,
   }) = _CallRecordFromDetail;
 
   factory CallRecordFromDetail.fromJson(Map<String, dynamic> json) =>
