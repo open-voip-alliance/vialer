@@ -384,38 +384,40 @@ class _KeypadValueButtonState extends State<KeypadValueButton> {
                 child: Semantics(
                   label: widget.primaryValue,
                   hint: secondaryValueSemanticsLabel,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        widget.primaryValue,
-                        style: TextStyle(
-                          fontSize: 32,
-                          color: !_primaryIsNumber
-                              ? context.brand.theme.colors.grey5
-                              : null, // Null means default color
-                        ),
-                        // The font size is based on the available space, and we
-                        // never make the font size bigger
-                        textScaler: TextScaler.linear(
-                          min(
-                            constraints.maxWidth / KeypadValueButton.maxSize,
-                            // ignore: deprecated_member_use
-                            MediaQuery.textScalerOf(context).textScaleFactor,
+                  child: ExcludeSemantics(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          widget.primaryValue,
+                          style: TextStyle(
+                            fontSize: 32,
+                            color: !_primaryIsNumber
+                                ? context.brand.theme.colors.grey5
+                                : null, // Null means default color
+                          ),
+                          // The font size is based on the available space, and we
+                          // never make the font size bigger
+                          textScaler: TextScaler.linear(
+                            min(
+                              constraints.maxWidth / KeypadValueButton.maxSize,
+                              // ignore: deprecated_member_use
+                              MediaQuery.textScalerOf(context).textScaleFactor,
+                            ),
                           ),
                         ),
-                      ),
-                      Text(
-                        // Render an empty string if there's no secondary value
-                        // to keep the alignments proper.
-                        widget.secondaryValue ?? '',
-                        style: TextStyle(
-                          color: context.brand.theme.colors.grey5,
-                          fontSize: 12,
+                        Text(
+                          // Render an empty string if there's no secondary value
+                          // to keep the alignments proper.
+                          widget.secondaryValue ?? '',
+                          style: TextStyle(
+                            color: context.brand.theme.colors.grey5,
+                            fontSize: 12,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               );
@@ -428,9 +430,6 @@ class _KeypadValueButtonState extends State<KeypadValueButton> {
 }
 
 class _InkWellOrResponse extends StatelessWidget {
-  /// Note that the [InkResponse] or [InkWell] and all its children are
-  /// excluded from semantics. Only [onTapDown] and [onLongPress] are set for
-  /// semantics.
   const _InkWellOrResponse({
     required this.onTapDown,
     this.onLongPress,
@@ -455,25 +454,23 @@ class _InkWellOrResponse extends StatelessWidget {
     return Semantics(
       onTap: onTapDown,
       onLongPress: onLongPress,
-      child: ExcludeSemantics(
-        child: response
-            ? InkResponse(
-                excludeFromSemantics: excludeFromSemantics,
-                onTap: onTap,
-                onTapDown: onTapDownWithDetails,
-                onLongPress: onLongPress,
-                customBorder: customBorder,
-                child: child,
-              )
-            : InkWell(
-                excludeFromSemantics: excludeFromSemantics,
-                onTap: onTap,
-                onTapDown: onTapDownWithDetails,
-                onLongPress: onLongPress,
-                customBorder: customBorder,
-                child: child,
-              ),
-      ),
+      child: response
+          ? InkResponse(
+              excludeFromSemantics: excludeFromSemantics,
+              onTap: onTap,
+              onTapDown: onTapDownWithDetails,
+              onLongPress: onLongPress,
+              customBorder: customBorder,
+              child: child,
+            )
+          : InkWell(
+              excludeFromSemantics: excludeFromSemantics,
+              onTap: onTap,
+              onTapDown: onTapDownWithDetails,
+              onLongPress: onLongPress,
+              customBorder: customBorder,
+              child: child,
+            ),
     );
   }
 }
