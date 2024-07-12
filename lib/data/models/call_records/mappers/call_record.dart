@@ -1,3 +1,5 @@
+import 'package:dartx/dartx.dart';
+
 import '../call_record.dart';
 import '../voipgrid_call_record.dart';
 
@@ -35,6 +37,10 @@ CallParty _mapCaller(CallRecordFromDetail fromDetail) {
     number = fromDetail.phoneNumber;
   } else {
     number = fromDetail.phoneNumber;
+  }
+
+  if (fromDetail.userInternalNumber.isNotNullOrBlank) {
+    number = fromDetail.userInternalNumber!;
   }
 
   return CallParty(
