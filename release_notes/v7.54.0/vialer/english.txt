@@ -1,0 +1,2 @@
+- Pressing the delete button in the dialer is now easier
+- A pop-up will be shown when there is a new update available
