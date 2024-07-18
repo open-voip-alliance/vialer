@@ -72,6 +72,13 @@ class _RecentCallsPageState extends State<RecentCallsPage> {
     });
   }
 
+  void _refreshListWithDelay() {
+    //Add a small delay to allow the call to be added to the list.
+    Future.delayed(Duration(seconds: 1), () {
+      _manualRefresher.refresh();
+    });
+  }
+
   void _onStateChanged(BuildContext context, CallerState state) {
     if (state is NoPermission) {
       showSnackBar(
@@ -80,6 +87,10 @@ class _RecentCallsPageState extends State<RecentCallsPage> {
         label: Text(context.msg.main.contacts.snackBar.noPermission),
         padding: const EdgeInsets.only(right: 72),
       );
+    }
+
+    if (state is FinishedCalling) {
+      _refreshListWithDelay();
     }
   }
 
