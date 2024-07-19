@@ -37,7 +37,7 @@ class _MessagingSurveyState extends ConsumerState<MessagingSurvey> {
     InstalledMessagingAppsSurveyQuestion(onQuestionAnswered),
     PersonalWhatsappSurveyQuestion(onQuestionAnswered),
     BusinessWhatsappSurveyQuestion(onQuestionAnswered),
-    if (context.brand.isVoys || context.brand.isVialer)
+    if (context.brand.isVoys)
       JoinResearchPoolSurveyQuestion(onQuestionAnswered),
   ];
 
