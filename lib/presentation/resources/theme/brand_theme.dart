@@ -40,6 +40,8 @@ class BrandTheme {
     borderRadius: fieldBorderRadius,
   );
 
+  late final navigationBarLabelTextStyle = TextStyle(fontSize: 10);
+
   late final themeData = ThemeData(
     primaryColor: colors.primary,
     primaryColorDark: colors.primaryDark,
@@ -63,6 +65,18 @@ class BrandTheme {
       ),
     ),
     splashColor: MaterialColors.Colors.transparent,
+    navigationBarTheme: NavigationBarThemeData(
+      indicatorColor: colors.primary,
+      height: 60,
+      labelTextStyle: WidgetStateProperty.resolveWith(
+        (states) => states.contains(WidgetState.selected)
+            ? navigationBarLabelTextStyle.copyWith(
+                color: colors.primary,
+                fontWeight: FontWeight.bold,
+              )
+            : navigationBarLabelTextStyle,
+      ),
+    ),
   );
 }
 

@@ -283,11 +283,6 @@ class _BottomNavigationBar extends StatelessWidget {
       ),
       child: NavigationBar(
         key: MainPage.keys.navigationBar,
-        // type: BottomNavigationBarType.fixed,
-        // selectedFontSize: 9,
-        indicatorColor: context.brand.theme.colors.primaryDark,
-        // unselectedFontSize: 9,
-        // unselectedItemColor: context.brand.theme.colors.grey1,
         selectedIndex: currentIndex,
         onDestinationSelected: onTap,
         destinations: [
@@ -296,13 +291,13 @@ class _BottomNavigationBar extends StatelessWidget {
               icon: const _BottomNavigationBarIcon(
                 Icons.dialpad,
               ),
+              selectedIcon: const _ActiveBottomNavigationBarIcon(Icons.dialpad),
               label: context.msg.main.dialer.menu.title,
             ),
           NavigationDestination(
             icon: const _BottomNavigationBarIcon(FontAwesomeIcons.addressBook),
-            selectedIcon: const _BottomNavigationBarIcon(
+            selectedIcon: const _ActiveBottomNavigationBarIcon(
               FontAwesomeIcons.solidAddressBook,
-              isActive: true,
             ),
             label: context.msg.main.contacts.menu.title,
           ),
@@ -310,18 +305,16 @@ class _BottomNavigationBar extends StatelessWidget {
             icon: const _BottomNavigationBarIcon(
               FontAwesomeIcons.clockRotateLeft,
             ),
-            selectedIcon: const _BottomNavigationBarIcon(
+            selectedIcon: const _ActiveBottomNavigationBarIcon(
               FontAwesomeIcons.solidClockRotateLeft,
-              isActive: true,
             ),
             label: context.msg.main.recent.menu.title,
           ),
           if (displayMessagingSurveyItem)
             NavigationDestination(
               icon: const _BottomNavigationBarIcon(FontAwesomeIcons.comments),
-              selectedIcon: const _BottomNavigationBarIcon(
+              selectedIcon: const _ActiveBottomNavigationBarIcon(
                 FontAwesomeIcons.solidComments,
-                isActive: true,
               ),
               label: context.msg.main.survey.menu.title,
             ),
@@ -352,8 +345,22 @@ class _BottomNavigationBarIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return FaIcon(
       icon,
-      size: 16,
+      size: 18,
       color: isActive ? Colors.white : null,
+    );
+  }
+}
+
+class _ActiveBottomNavigationBarIcon extends StatelessWidget {
+  const _ActiveBottomNavigationBarIcon(this.icon);
+
+  final IconData icon;
+
+  @override
+  Widget build(BuildContext context) {
+    return _BottomNavigationBarIcon(
+      icon,
+      isActive: true,
     );
   }
 }
