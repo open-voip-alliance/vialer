@@ -4,9 +4,6 @@ import 'package:vialer/domain/usecases/phone_numbers/strictly_validate_mobile_ph
 import 'package:vialer/presentation/features/settings/widgets/tile/dialog/base/setting_tile_alert_dialog.dart';
 import 'package:vialer/presentation/resources/localizations.dart';
 import 'package:vialer/presentation/resources/theme.dart';
-import 'package:vialer/presentation/util/phone_number.dart';
-
-import '../../../../onboarding/widgets/stylized_text_field.dart';
 
 class EditMobileNumberDialog extends StatefulWidget {
   const EditMobileNumberDialog({
@@ -57,7 +54,7 @@ class _EditMobileNumberDialogState extends State<EditMobileNumberDialog> {
     _validate();
   }
 
-  void _validate() async {
+  Future<void> _validate() async {
     final isValid = await StrictlyValidateMobilePhoneNumber()(
       _textEditingController.text,
     );
@@ -76,19 +73,29 @@ class _EditMobileNumberDialogState extends State<EditMobileNumberDialog> {
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (!_isValid) _EditMobileNumberDialogHelp(),
-          StylizedTextField(
+          TextFormField(
             controller: _textEditingController,
             keyboardType: TextInputType.phone,
-            autoCorrect: false,
-            hasError: !_isValid,
-            elevation: 0,
-            onChanged: (text) {
+            autovalidateMode: AutovalidateMode.always,
+            decoration: InputDecoration(
+              icon: FaIcon(FontAwesomeIcons.simCard),
+              border: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: context.brand.theme.colors.grey5,
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: context.brand.theme.colors.grey4,
+                ),
+              ),
+              error: _isValid ? null : _EditMobileNumberDialogHelp(),
+              errorMaxLines: 3,
+            ),
+            onChanged: (_) async {
               _applyEditingFormatter();
-              _validate();
+              await _validate();
             },
-            semanticsLabel:
-                _textEditingController.text.asSemanticsLabelIfPhoneNumber,
           ),
         ],
       ),

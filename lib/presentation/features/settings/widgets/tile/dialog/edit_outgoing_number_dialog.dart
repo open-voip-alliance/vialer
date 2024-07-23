@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:vialer/presentation/features/settings/widgets/tile/dialog/base/setting_tile_alert_dialog.dart';
 import 'package:vialer/presentation/resources/localizations.dart';
+import 'package:vialer/presentation/resources/theme.dart';
 
 import '../../../../../../data/models/calling/outgoing_number/outgoing_number.dart';
 import '../../../../../../data/models/user/user.dart';
-import '../../../../../shared/widgets/stylized_dropdown.dart';
 import '../../../../../util/phone_number.dart';
 import '../../../../call/widgets/outgoing_number_prompt/item.dart';
 
@@ -109,13 +110,29 @@ class _EditOutgoingNumberDialogState extends State<EditOutgoingNumberDialog> {
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          StylizedDropdown<OutgoingNumber>(
+          DropdownButtonFormField(
             value: items.map((item) => item.value).contains(_value)
                 ? _value
                 : null,
             items: items,
             isExpanded: true,
+            isDense: false,
+            padding: EdgeInsets.zero,
             onChanged: (value) => setState(() => _currentValue = value),
+            decoration: InputDecoration(
+              icon: FaIcon(FontAwesomeIcons.phoneArrowRight),
+              border: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: context.brand.theme.colors.grey5,
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: context.brand.theme.colors.grey4,
+                ),
+              ),
+              errorMaxLines: 3,
+            ),
           ),
         ],
       ),

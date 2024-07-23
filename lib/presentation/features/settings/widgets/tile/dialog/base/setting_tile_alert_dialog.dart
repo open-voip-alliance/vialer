@@ -29,18 +29,24 @@ class SettingTileAlertDialog<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(title),
+      title: Semantics(
+        header: true,
+        child: Text(title),
+      ),
       content: Container(
         width: 500,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (description != null) ...[
-              Text(description!),
-              Gap(20),
+        child: Semantics(
+          explicitChildNodes: true,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (description != null) ...[
+                Text(description!),
+                Gap(20),
+              ],
+              content,
             ],
-            content,
-          ],
+          ),
         ),
       ),
       actions: [

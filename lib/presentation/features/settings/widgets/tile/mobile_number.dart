@@ -23,35 +23,30 @@ class MobileNumberTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SettingTileCategory(
-      icon: FontAwesomeIcons.idCard,
+      icon: FontAwesomeIcons.simCard,
       titleText: context.msg.main.settings.list.accountInfo.mobileNumber.title,
       bottomBorder: false,
       children: [
-        Semantics(
-          explicitChildNodes: true,
-          container: true,
-          child: SettingTile(
-            mergeSemantics: false,
-            onTap: () => _launchEditMobileNumberDialog(context),
-            description: Text(
-              context
-                  .msg.main.settings.list.accountInfo.mobileNumber.description,
-            ),
-            childFillWidth: true,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                PhoneNumberText(
-                  child: Text(
-                    user.settings.get(_key),
-                    style: const TextStyle(
-                      fontSize: 16,
-                    ),
+        SettingTile(
+          mergeSemantics: false,
+          onTap: () => _launchEditMobileNumberDialog(context),
+          description: Text(
+            context.msg.main.settings.list.accountInfo.mobileNumber.description,
+          ),
+          childFillWidth: true,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              PhoneNumberText(
+                child: Text(
+                  user.settings.get(_key),
+                  style: const TextStyle(
+                    fontSize: 16,
                   ),
                 ),
-                const FaIcon(FontAwesomeIcons.pen, size: 18),
-              ],
-            ),
+              ),
+              const FaIcon(FontAwesomeIcons.pen, size: 18),
+            ],
           ),
         ),
       ],
