@@ -60,7 +60,7 @@ class BottomNavigationProfileIcon extends StatelessWidget {
               active
                   ? FontAwesomeIcons.solidCircleUser
                   : FontAwesomeIcons.circleUser,
-              size: large ? 36 : null,
+              size: large ? 36 : 16,
               color: color,
             ),
             Positioned(
