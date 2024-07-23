@@ -281,50 +281,49 @@ class _BottomNavigationBar extends StatelessWidget {
           ),
         ),
       ),
-      child: BottomNavigationBar(
+      child: NavigationBar(
         key: MainPage.keys.navigationBar,
-        type: BottomNavigationBarType.fixed,
-        selectedFontSize: 9,
-        selectedItemColor: context.brand.theme.colors.primary,
-        unselectedFontSize: 9,
-        unselectedItemColor: context.brand.theme.colors.grey1,
-        currentIndex: currentIndex,
-        onTap: onTap,
-        items: [
+        selectedIndex: currentIndex,
+        onDestinationSelected: onTap,
+        destinations: [
           if (dialerIsPage)
-            BottomNavigationBarItem(
+            NavigationDestination(
               icon: const _BottomNavigationBarIcon(
                 Icons.dialpad,
               ),
+              selectedIcon: const _ActiveBottomNavigationBarIcon(Icons.dialpad),
               label: context.msg.main.dialer.menu.title,
             ),
-          BottomNavigationBarItem(
+          NavigationDestination(
             icon: const _BottomNavigationBarIcon(FontAwesomeIcons.addressBook),
-            activeIcon: const _BottomNavigationBarIcon(
+            selectedIcon: const _ActiveBottomNavigationBarIcon(
               FontAwesomeIcons.solidAddressBook,
             ),
             label: context.msg.main.contacts.menu.title,
           ),
-          BottomNavigationBarItem(
+          NavigationDestination(
             icon: const _BottomNavigationBarIcon(
               FontAwesomeIcons.clockRotateLeft,
             ),
-            activeIcon: const _BottomNavigationBarIcon(
+            selectedIcon: const _ActiveBottomNavigationBarIcon(
               FontAwesomeIcons.solidClockRotateLeft,
             ),
             label: context.msg.main.recent.menu.title,
           ),
           if (displayMessagingSurveyItem)
-            BottomNavigationBarItem(
+            NavigationDestination(
               icon: const _BottomNavigationBarIcon(FontAwesomeIcons.comments),
-              activeIcon: const _BottomNavigationBarIcon(
+              selectedIcon: const _ActiveBottomNavigationBarIcon(
                 FontAwesomeIcons.solidComments,
               ),
               label: context.msg.main.survey.menu.title,
             ),
-          BottomNavigationBarItem(
+          NavigationDestination(
             icon: const BottomNavigationProfileIcon(active: false),
-            activeIcon: const BottomNavigationProfileIcon(active: true),
+            selectedIcon: const BottomNavigationProfileIcon(
+              active: true,
+              color: Colors.white,
+            ),
             label: context.msg.main.settings.menu.title,
           ),
         ],
@@ -334,15 +333,34 @@ class _BottomNavigationBar extends StatelessWidget {
 }
 
 class _BottomNavigationBarIcon extends StatelessWidget {
-  const _BottomNavigationBarIcon(this.icon);
+  const _BottomNavigationBarIcon(
+    this.icon, {
+    this.isActive = false,
+  });
+
+  final IconData icon;
+  final bool isActive;
+
+  @override
+  Widget build(BuildContext context) {
+    return FaIcon(
+      icon,
+      size: 18,
+      color: isActive ? Colors.white : null,
+    );
+  }
+}
+
+class _ActiveBottomNavigationBarIcon extends StatelessWidget {
+  const _ActiveBottomNavigationBarIcon(this.icon);
 
   final IconData icon;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 4),
-      child: FaIcon(icon),
+    return _BottomNavigationBarIcon(
+      icon,
+      isActive: true,
     );
   }
 }
