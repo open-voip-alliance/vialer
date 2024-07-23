@@ -41,6 +41,7 @@ class BrandTheme {
   );
 
   late final navigationBarLabelTextStyle = TextStyle(fontSize: 10);
+  late final navigationBarIconThemeData = IconThemeData(size: 16);
 
   late final themeData = ThemeData(
     primaryColor: colors.primary,
@@ -68,6 +69,13 @@ class BrandTheme {
     navigationBarTheme: NavigationBarThemeData(
       indicatorColor: colors.primary,
       height: 60,
+      iconTheme: WidgetStateProperty.resolveWith(
+        (states) => states.contains(WidgetState.selected)
+            ? navigationBarIconThemeData.copyWith(
+                color: MaterialColors.Colors.white,
+              )
+            : navigationBarIconThemeData,
+      ),
       labelTextStyle: WidgetStateProperty.resolveWith(
         (states) => states.contains(WidgetState.selected)
             ? navigationBarLabelTextStyle.copyWith(

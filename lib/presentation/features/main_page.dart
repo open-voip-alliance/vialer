@@ -288,79 +288,32 @@ class _BottomNavigationBar extends StatelessWidget {
         destinations: [
           if (dialerIsPage)
             NavigationDestination(
-              icon: const _BottomNavigationBarIcon(
-                Icons.dialpad,
-              ),
-              selectedIcon: const _ActiveBottomNavigationBarIcon(Icons.dialpad),
+              icon: const Icon(Icons.dialpad),
               label: context.msg.main.dialer.menu.title,
             ),
           NavigationDestination(
-            icon: const _BottomNavigationBarIcon(FontAwesomeIcons.addressBook),
-            selectedIcon: const _ActiveBottomNavigationBarIcon(
-              FontAwesomeIcons.solidAddressBook,
-            ),
+            icon: const FaIcon(FontAwesomeIcons.addressBook),
+            selectedIcon: const FaIcon(FontAwesomeIcons.solidAddressBook),
             label: context.msg.main.contacts.menu.title,
           ),
           NavigationDestination(
-            icon: const _BottomNavigationBarIcon(
-              FontAwesomeIcons.clockRotateLeft,
-            ),
-            selectedIcon: const _ActiveBottomNavigationBarIcon(
-              FontAwesomeIcons.solidClockRotateLeft,
-            ),
+            icon: const FaIcon(FontAwesomeIcons.clockRotateLeft),
+            selectedIcon: const FaIcon(FontAwesomeIcons.solidClockRotateLeft),
             label: context.msg.main.recent.menu.title,
           ),
           if (displayMessagingSurveyItem)
             NavigationDestination(
-              icon: const _BottomNavigationBarIcon(FontAwesomeIcons.comments),
-              selectedIcon: const _ActiveBottomNavigationBarIcon(
-                FontAwesomeIcons.solidComments,
-              ),
+              icon: const FaIcon(FontAwesomeIcons.comments),
+              selectedIcon: const FaIcon(FontAwesomeIcons.solidComments),
               label: context.msg.main.survey.menu.title,
             ),
           NavigationDestination(
             icon: const BottomNavigationProfileIcon(active: false),
-            selectedIcon: const BottomNavigationProfileIcon(
-              active: true,
-              color: Colors.white,
-            ),
+            selectedIcon: const BottomNavigationProfileIcon(active: true),
             label: context.msg.main.settings.menu.title,
           ),
         ],
       ),
-    );
-  }
-}
-
-class _BottomNavigationBarIcon extends StatelessWidget {
-  const _BottomNavigationBarIcon(
-    this.icon, {
-    this.isActive = false,
-  });
-
-  final IconData icon;
-  final bool isActive;
-
-  @override
-  Widget build(BuildContext context) {
-    return FaIcon(
-      icon,
-      size: 18,
-      color: isActive ? Colors.white : null,
-    );
-  }
-}
-
-class _ActiveBottomNavigationBarIcon extends StatelessWidget {
-  const _ActiveBottomNavigationBarIcon(this.icon);
-
-  final IconData icon;
-
-  @override
-  Widget build(BuildContext context) {
-    return _BottomNavigationBarIcon(
-      icon,
-      isActive: true,
     );
   }
 }
