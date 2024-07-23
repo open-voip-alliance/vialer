@@ -121,7 +121,7 @@ class _EditOutgoingNumberDialogState extends State<EditOutgoingNumberDialog> {
             onChanged: (value) => setState(() => _currentValue = value),
             decoration: InputDecoration(
               icon: FaIcon(FontAwesomeIcons.phoneArrowRight),
-              border: OutlineInputBorder(
+              enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(
                   color: context.brand.theme.colors.grey5,
                 ),

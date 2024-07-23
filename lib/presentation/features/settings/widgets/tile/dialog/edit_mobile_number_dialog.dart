@@ -79,7 +79,7 @@ class _EditMobileNumberDialogState extends State<EditMobileNumberDialog> {
             autovalidateMode: AutovalidateMode.always,
             decoration: InputDecoration(
               icon: FaIcon(FontAwesomeIcons.simCard),
-              border: OutlineInputBorder(
+              enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(
                   color: context.brand.theme.colors.grey5,
                 ),
