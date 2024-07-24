@@ -75,7 +75,6 @@ class BrandTheme {
     splashColor: MaterialColors.Colors.transparent,
     navigationBarTheme: NavigationBarThemeData(
       indicatorColor: colors.primary,
-      height: 60,
       iconTheme: WidgetStateProperty.resolveWith(
         (states) => states.contains(WidgetState.selected)
             ? navigationBarIconThemeData.copyWith(
