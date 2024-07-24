@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:vialer/presentation/resources/localizations.dart';
-import 'package:vialer/presentation/util/phone_number.dart';
 
 import '../../../../../../data/models/calling/outgoing_number/outgoing_number.dart';
 import '../../../../../../data/models/user/settings/call_setting.dart';
@@ -11,8 +10,8 @@ import '../../../../../../data/models/user/user.dart';
 import '../../../../../data/repositories/voipgrid/user_permissions.dart';
 import '../../../call/widgets/outgoing_number_prompt/item.dart';
 import 'category/widget.dart';
-import 'editable_value.dart';
-import 'value.dart';
+import 'dialog/base/show_setting_tile_alert_dialog.dart';
+import 'dialog/edit_outgoing_number_dialog.dart';
 import 'widget.dart';
 
 class OutgoingNumberTile extends StatelessWidget {
@@ -30,19 +29,11 @@ class OutgoingNumberTile extends StatelessWidget {
 
   static const _key = CallSetting.outgoingNumber;
 
+  bool get _hasPermission =>
+      user.hasPermission(Permission.canChangeOutgoingNumber);
+
   @override
   Widget build(BuildContext context) {
-    final locked = OutgoingNumberInfo(
-      item: user.settings.get(CallSetting.outgoingNumber),
-      textStyle: TextStyle(fontSize: 16),
-      subtitleTextStyle: TextStyle(fontSize: 12),
-    );
-
-    // No duplicates allowed in a dropdown, so remove the recent outgoing
-    // numbers from the available numbers.
-    final availableOutgoingNumbers = user.client.outgoingNumbers
-        .where((number) => !recentOutgoingNumbers.contains(number));
-
     return SettingTileCategory(
       icon: FontAwesomeIcons.phoneArrowRight,
       titleText:
@@ -55,92 +46,39 @@ class OutgoingNumberTile extends StatelessWidget {
                 .msg.main.settings.list.accountInfo.businessNumber.description,
           ),
           childFillWidth: true,
-          child: user.hasPermission(Permission.canChangeOutgoingNumber)
-              ? EditableSettingField(
-                  unlocked: Expanded(
-                    child: MultipleChoiceSettingValue<OutgoingNumber>(
-                      value: _outgoingNumber,
-                      padding: const EdgeInsets.only(
-                        bottom: 8,
-                        right: 8,
-                      ),
-                      onChanged: enabled
-                          ? (number) => unawaited(
-                                defaultOnSettingChanged(
-                                  context,
-                                  _key,
-                                  number,
-                                ),
-                              )
-                          : null,
-                      items: [
-                        DropdownMenuItem<OutgoingNumber>(
-                          value: const OutgoingNumber.suppressed(),
-                          child: OutgoingNumberInfo(
-                            item: OutgoingNumber.suppressed(),
-                          ),
-                        ),
-                        if (recentOutgoingNumbers.isNotEmpty)
-                          DropdownMenuItem<OutgoingNumber>(
-                            enabled: false,
-                            value: const OutgoingNumber.section(),
-                            child: FittedBox(
-                              fit: BoxFit.scaleDown,
-                              child: PhoneNumberText(
-                                child: Text(
-                                  context.msg.main.settings.list.accountInfo
-                                      .businessNumber.section.recently,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        if (recentOutgoingNumbers.isNotEmpty)
-                          ...recentOutgoingNumbers.map(
-                            (number) => DropdownMenuItem<OutgoingNumber>(
-                              value: number,
-                              child: FittedBox(
-                                fit: BoxFit.scaleDown,
-                                child: OutgoingNumberInfo(item: number),
-                              ),
-                            ),
-                          ),
-                        if (recentOutgoingNumbers.isNotEmpty)
-                          DropdownMenuItem<OutgoingNumber>(
-                            enabled: false,
-                            value: const OutgoingNumber.section(),
-                            child: FittedBox(
-                              fit: BoxFit.scaleDown,
-                              child: PhoneNumberText(
-                                child: Text(
-                                  context.msg.main.settings.list.accountInfo
-                                      .businessNumber.section.other,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ...availableOutgoingNumbers.map(
-                          (number) => DropdownMenuItem<OutgoingNumber>(
-                            value: number,
-                            child: FittedBox(
-                              fit: BoxFit.scaleDown,
-                              child: OutgoingNumberInfo(item: number),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  locked: locked,
-                )
-              : locked,
+          onTap: _hasPermission
+              ? () => _launchEditOutgoingNumberDialog(context)
+              : null,
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Expanded(
+                child: OutgoingNumberInfo(
+                  item: user.settings.get(CallSetting.outgoingNumber),
+                  textStyle: TextStyle(fontSize: 16),
+                  subtitleTextStyle: TextStyle(fontSize: 12),
+                ),
+              ),
+              if (_hasPermission)
+                const FaIcon(
+                  FontAwesomeIcons.pen,
+                  size: 18,
+                ),
+            ],
+          ),
         ),
       ],
+    );
+  }
+
+  Future<void> _launchEditOutgoingNumberDialog(BuildContext context) async {
+    await showSettingTileAlertDialogAndSaveOnCompletion<OutgoingNumber>(
+      context: context,
+      settingKey: _key,
+      builder: (context) => EditOutgoingNumberDialog(
+        initialValue: _outgoingNumber,
+        user: user,
+      ),
     );
   }
 }
