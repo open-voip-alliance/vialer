@@ -40,15 +40,11 @@ class BrandTheme {
     borderRadius: fieldBorderRadius,
   );
 
-  late final navigationBarLabelTextStyle = TextStyle(
-    fontSize: 10,
-    color: colors.grey6,
-  );
+  late final navigationBarLabelTextStyle =
+      TextStyle(fontSize: 12, color: colors.grey6);
 
-  late final navigationBarIconThemeData = IconThemeData(
-    size: 16,
-    color: colors.grey6,
-  );
+  late final navigationBarIconThemeData =
+      IconThemeData(size: 18, color: colors.grey6);
 
   late final themeData = ThemeData(
     primaryColor: colors.primary,
