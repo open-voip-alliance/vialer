@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
+import 'package:vialer/presentation/features/colltacts/widgets/shared_contact_form/phone_number_field.dart';
 import 'package:vialer/presentation/resources/localizations.dart';
 import 'package:vialer/presentation/resources/theme.dart';
 
@@ -82,7 +83,7 @@ class _SharedContactFormState extends State<_SharedContactForm> {
   String? company;
 
   Map<Key?, String> phoneNumbers = {};
-  List<SharedContactFieldRow> _deletablePhoneNumberFields = [];
+  List<PhoneNumberField> _deletablePhoneNumberFields = [];
 
   int get _phoneNumberFieldsCount => _deletablePhoneNumberFields.length + 1;
   bool get _isEditContactForm => widget.sharedContact != null;
@@ -125,19 +126,15 @@ class _SharedContactFormState extends State<_SharedContactForm> {
 
     _deletablePhoneNumberFields = List.from(_deletablePhoneNumberFields)
       ..add(
-        SharedContactFieldRow(
+        PhoneNumberField(
           key: key,
-          icon: null,
-          hintText: context.strings.phoneNumberHintText,
           initialValue: () =>
-              phoneNumbers[key].isNullOrEmpty ? null : phoneNumbers[key],
-          isForPhoneNumber: true,
+          phoneNumbers[key].isNullOrEmpty ? null : phoneNumbers[key],
           validator: (value) => cubit.validatePhoneNumber(
             value,
             context,
           ),
           onValueChanged: (value) => phoneNumbers[key] = value,
-          isDeletable: true,
           onDelete: (key) => _deletePhoneNumberField(key),
         ),
       );
@@ -252,13 +249,10 @@ class _SharedContactFormState extends State<_SharedContactForm> {
                   ),
                   onValueChanged: (value) => company = value,
                 ),
-                SharedContactFieldRow(
-                  icon: FontAwesomeIcons.phone,
-                  hintText: context.strings.phoneNumberHintText,
+                PhoneNumberField(
                   initialValue: () => phoneNumbers[null].isNullOrEmpty
                       ? null
                       : phoneNumbers[null],
-                  isForPhoneNumber: true,
                   validator: (value) => cubit.validatePhoneNumber(
                     value,
                     context,
