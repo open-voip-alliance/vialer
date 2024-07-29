@@ -128,12 +128,7 @@ class _SharedContactFormState extends State<_SharedContactForm> {
       ..add(
         PhoneNumberField(
           key: key,
-          initialValue: () =>
-          phoneNumbers[key].isNullOrEmpty ? null : phoneNumbers[key],
-          validator: (value) => cubit.validatePhoneNumber(
-            value,
-            context,
-          ),
+          phoneNumbers: phoneNumbers,
           onValueChanged: (value) => phoneNumbers[key] = value,
           onDelete: (key) => _deletePhoneNumberField(key),
         ),
@@ -250,13 +245,7 @@ class _SharedContactFormState extends State<_SharedContactForm> {
                   onValueChanged: (value) => company = value,
                 ),
                 PhoneNumberField(
-                  initialValue: () => phoneNumbers[null].isNullOrEmpty
-                      ? null
-                      : phoneNumbers[null],
-                  validator: (value) => cubit.validatePhoneNumber(
-                    value,
-                    context,
-                  ),
+                  phoneNumbers: phoneNumbers,
                   onValueChanged: (value) => phoneNumbers[null] = value,
                 ),
                 Column(

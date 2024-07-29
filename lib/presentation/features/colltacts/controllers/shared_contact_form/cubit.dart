@@ -1,6 +1,7 @@
 import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vialer/domain/usecases/phone_numbers/validate_phone_number.dart';
 import 'package:vialer/presentation/features/colltacts/widgets/shared_contact_form/widget.dart';
 
 import '../../../../../../domain/usecases/colltacts/shared_contacts/create_shared_contact.dart';
@@ -17,6 +18,7 @@ class SharedContactFormCubit extends Cubit<SharedContactFormState> {
   final _createSharedContact = CreateSharedContactUseCase();
   final _deleteSharedContact = DeleteSharedContactUseCase();
   final _updateSharedContact = UpdateSharedContactUseCase();
+  final _validatePhoneNumber = ValidatePhoneNumber();
 
   String? validateText(
     String? text,
@@ -53,12 +55,23 @@ class SharedContactFormCubit extends Cubit<SharedContactFormState> {
     return null;
   }
 
-  String? validatePhoneNumber(String? text, BuildContext context) {
-    ///TODO: validate with api call for phone number on a following ticket
-    if (text != null && text.length > 128) {
+  Future<String?> validatePhoneNumber(
+    String? number,
+    BuildContext context,
+  ) async {
+    if (number == null) return null;
+
+    if (number.length > 128) {
       return context.strings.tooLongPhoneNumber;
     }
-    return null;
+
+    if (number.length >= 10 && !number.startsWith('+')) {
+      return context.strings.missingCountryCode;
+    }
+
+    return (await _validatePhoneNumber(number))
+        ? null
+        : context.strings.invalidPhoneNumber;
   }
 
   void onSave(
