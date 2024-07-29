@@ -27,9 +27,9 @@ class PhoneNumberField extends StatefulWidget {
 class _PhoneNumberFieldState extends State<PhoneNumberField> {
   final textEditingController = TextEditingController();
   final focusNode = FocusNode();
-  
+
   String? _validationError;
-  
+
   Future<void> _onValueChanged(String value) async {
     final cubit = context.read<SharedContactFormCubit>();
 
@@ -53,22 +53,20 @@ class _PhoneNumberFieldState extends State<PhoneNumberField> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<SharedContactFormCubit, SharedContactFormState>(
-      builder: (context, state) {
-
-        return SharedContactFieldRow(
-          key: widget.key,
-          icon: FontAwesomeIcons.phone,
-          hintText: context.strings.phoneNumberHintText,
-          initialValue: () => widget.phoneNumbers[null].isNullOrEmpty
-              ? null
-              : widget.phoneNumbers[null],
-          isForPhoneNumber: true,
-          validator: (_) => _validationError,
-          onValueChanged: _onValueChanged,
-          isDeletable: widget.onDelete != null,
-          onDelete: widget.onDelete,
-        );
-      }
-    );
+        builder: (context, state) {
+      return SharedContactFieldRow(
+        key: widget.key,
+        icon: FontAwesomeIcons.phone,
+        hintText: context.strings.phoneNumberHintText,
+        initialValue: () => widget.phoneNumbers[null].isNullOrEmpty
+            ? null
+            : widget.phoneNumbers[null],
+        isForPhoneNumber: true,
+        validator: (_) => _validationError,
+        onValueChanged: _onValueChanged,
+        isDeletable: widget.onDelete != null,
+        onDelete: widget.onDelete,
+      );
+    });
   }
 }
