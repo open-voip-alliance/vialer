@@ -31,6 +31,8 @@ class _PhoneNumberFieldState extends State<PhoneNumberField> {
   String? _validationError;
 
   Future<void> _onValueChanged(String value) async {
+    widget.onValueChanged(value);
+
     final cubit = context.read<SharedContactFormCubit>();
 
     final validationError = await cubit.validatePhoneNumber(
@@ -58,9 +60,9 @@ class _PhoneNumberFieldState extends State<PhoneNumberField> {
         key: widget.key,
         icon: FontAwesomeIcons.phone,
         hintText: context.strings.phoneNumberHintText,
-        initialValue: () => widget.phoneNumbers[null].isNullOrEmpty
+        initialValue: () => widget.phoneNumbers[widget.key].isNullOrEmpty
             ? null
-            : widget.phoneNumbers[null],
+            : widget.phoneNumbers[widget.key],
         isForPhoneNumber: true,
         validator: (_) => _validationError,
         onValueChanged: _onValueChanged,
