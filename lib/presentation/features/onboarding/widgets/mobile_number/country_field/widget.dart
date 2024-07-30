@@ -9,7 +9,7 @@ import '../../../../../../../data/models/onboarding/country.dart';
 import '../../../controllers/mobile_number/country_field/cubit.dart';
 
 class CountryFlagField extends StatefulWidget {
-  const CountryFlagField._({
+  const CountryFlagField({
     required this.controller,
     required this.focusNode,
   });
@@ -23,7 +23,7 @@ class CountryFlagField extends StatefulWidget {
   }) {
     return BlocProvider(
       create: (_) => CountryFieldCubit(),
-      child: CountryFlagField._(
+      child: CountryFlagField(
         controller: controller,
         focusNode: focusNode,
       ),
@@ -31,13 +31,13 @@ class CountryFlagField extends StatefulWidget {
   }
 
   @override
-  State<CountryFlagField> createState() => _CountryFlagFieldState();
+  State<CountryFlagField> createState() => CountryFlagFieldState();
 }
 
-class _CountryFlagFieldState extends State<CountryFlagField> {
+class CountryFlagFieldState<T extends CountryFlagField> extends State<T> {
   String _mobileNumber = '';
 
-  void _handleMobileNumberRetrieval() {
+  void handleMobileNumberRetrieval() async {
     if (widget.controller.value.text.length > 4) {
       _mobileNumber = widget.controller.value.text;
 
@@ -49,7 +49,7 @@ class _CountryFlagFieldState extends State<CountryFlagField> {
 
       // Remove listener, so we effectively only listen once when the mobile
       // number from the VG api returns.
-      widget.controller.removeListener(_handleMobileNumberRetrieval);
+      widget.controller.removeListener(handleMobileNumberRetrieval);
     }
   }
 
@@ -57,10 +57,10 @@ class _CountryFlagFieldState extends State<CountryFlagField> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    widget.controller.addListener(_handleMobileNumberRetrieval);
+    widget.controller.addListener(handleMobileNumberRetrieval);
   }
 
-  void _onStateChanged(BuildContext context, CountryFieldState state) {
+  void onStateChanged(BuildContext context, CountryFieldState state) {
     if (state is CountriesLoaded) {
       if (_mobileNumber == '') {
         widget.controller.text = '+${state.currentCountry.callingCode}';
@@ -173,7 +173,7 @@ class _CountryFlagFieldState extends State<CountryFlagField> {
   @override
   Widget build(BuildContext context) {
     return BlocListener<CountryFieldCubit, CountryFieldState>(
-      listener: _onStateChanged,
+      listener: onStateChanged,
       child: BlocBuilder<CountryFieldCubit, CountryFieldState>(
         builder: (context, state) {
           if (state is CountriesLoaded) {

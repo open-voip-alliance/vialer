@@ -60,7 +60,7 @@ class _PhoneNumberFieldState extends State<PhoneNumberField> {
         key: widget.key,
         icon: FontAwesomeIcons.phone,
         hintText: context.strings.phoneNumberHintText,
-        initialValue: () => widget.phoneNumbers[widget.key].isNullOrEmpty
+        initialValue: widget.phoneNumbers[widget.key].isNullOrEmpty
             ? null
             : widget.phoneNumbers[widget.key],
         isForPhoneNumber: true,

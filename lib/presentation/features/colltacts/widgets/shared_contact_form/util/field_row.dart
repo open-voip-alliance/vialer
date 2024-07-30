@@ -1,7 +1,12 @@
 import 'dart:io';
 
+import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:vialer/data/models/user/settings/call_setting.dart';
+import 'package:vialer/data/models/user/user.dart';
+import 'package:vialer/domain/usecases/user/get_logged_in_user.dart';
+import 'package:vialer/presentation/features/colltacts/widgets/shared_contact_form/shared_contact_country_field.dart';
 import 'package:vialer/presentation/resources/theme.dart';
 
 class SharedContactFieldRow extends StatelessWidget {
@@ -22,7 +27,7 @@ class SharedContactFieldRow extends StatelessWidget {
   final String? Function(String?) validator;
   final void Function(String) onValueChanged;
   final void Function(Key)? onDelete;
-  final String? Function() initialValue;
+  final String? initialValue;
   final bool isForPhoneNumber;
   final bool isDeletable;
 
@@ -45,12 +50,14 @@ class SharedContactFieldRow extends StatelessWidget {
                   size: 20,
                 ),
               ),
-              _SharedContactTextFormField(
-                hintText: hintText,
-                validator: validator,
-                onValueChanged: onValueChanged,
-                initialValue: initialValue,
-                isForPhoneNumber: isForPhoneNumber,
+              Expanded(
+                child: _SharedContactTextFormField(
+                  hintText: hintText,
+                  validator: validator,
+                  onValueChanged: onValueChanged,
+                  initialValue: initialValue,
+                  isForPhoneNumber: isForPhoneNumber,
+                ),
               ),
               if (isDeletable)
                 IntrinsicHeight(
@@ -101,7 +108,7 @@ class SharedContactFieldRow extends StatelessWidget {
   }
 }
 
-class _SharedContactTextFormField extends StatelessWidget {
+class _SharedContactTextFormField extends StatefulWidget {
   const _SharedContactTextFormField({
     required this.hintText,
     required this.validator,
@@ -114,55 +121,84 @@ class _SharedContactTextFormField extends StatelessWidget {
   final String hintText;
   final String? Function(String?) validator;
   final void Function(String) onValueChanged;
-  final String? Function() initialValue;
+  final String? initialValue;
   final bool isForPhoneNumber;
 
   @override
+  State<_SharedContactTextFormField> createState() =>
+      _SharedContactTextFormFieldState();
+}
+
+class _SharedContactTextFormFieldState
+    extends State<_SharedContactTextFormField> {
+  final textEditingController = TextEditingController();
+  final focusNode = FocusNode();
+
+  @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: TextFormField(
-        validator: validator,
-        initialValue: initialValue(),
-        onChanged: (value) => onValueChanged(value),
-        textInputAction: TextInputAction.next,
-        keyboardType: isForPhoneNumber
-            ? Platform.isIOS
-                ? TextInputType.numberWithOptions(signed: true)
-                : TextInputType.phone
-            : TextInputType.text,
-        decoration: InputDecoration(
-          hintText: hintText,
-          hintStyle: TextStyle(color: context.brand.theme.colors.grey5),
-          fillColor: Colors.white,
-          filled: true,
-          contentPadding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10.0),
-            borderSide: BorderSide(
-              color: context.brand.theme.colors.grey3,
-            ),
+    final mobileNumber =
+        GetLoggedInUserUseCase()().settings.get(CallSetting.mobileNumber);
+
+    if (widget.initialValue.isNotNullOrBlank && !widget.isForPhoneNumber) {
+      textEditingController.text = widget.initialValue!;
+    }
+
+    return Row(
+      children: [
+        if (widget.isForPhoneNumber)
+          SharedContactCountryField.create(
+            controller: textEditingController,
+            focusNode: focusNode,
+            initialValue: widget.initialValue,
+            mobileNumber: mobileNumber,
           ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10.0),
-            borderSide: BorderSide(
-              color: context.brand.theme.colors.primary,
-            ),
-          ),
-          errorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10.0),
-            borderSide: BorderSide(
-              color: context.brand.theme.colors.red1,
-            ),
-          ),
-          focusedErrorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10.0),
-            borderSide: BorderSide(
-              color: context.brand.theme.colors.red1,
-              width: 2,
+        Expanded(
+          child: TextFormField(
+            validator: widget.validator,
+            onChanged: (value) => widget.onValueChanged(value),
+            textInputAction: TextInputAction.next,
+            controller: textEditingController,
+            focusNode: focusNode,
+            keyboardType: widget.isForPhoneNumber
+                ? Platform.isIOS
+                    ? TextInputType.numberWithOptions(signed: true)
+                    : TextInputType.phone
+                : TextInputType.text,
+            decoration: InputDecoration(
+              hintText: !widget.isForPhoneNumber ? widget.hintText : null,
+              hintStyle: TextStyle(color: context.brand.theme.colors.grey5),
+              fillColor: Colors.white,
+              filled: true,
+              contentPadding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+                borderSide: BorderSide(
+                  color: context.brand.theme.colors.grey3,
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+                borderSide: BorderSide(
+                  color: context.brand.theme.colors.primary,
+                ),
+              ),
+              errorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+                borderSide: BorderSide(
+                  color: context.brand.theme.colors.red1,
+                ),
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+                borderSide: BorderSide(
+                  color: context.brand.theme.colors.red1,
+                  width: 2,
+                ),
+              ),
             ),
           ),
         ),
-      ),
+      ],
     );
   }
 }

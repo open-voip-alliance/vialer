@@ -207,8 +207,7 @@ class _SharedContactFormState extends State<_SharedContactForm> {
                 SharedContactFieldRow(
                   icon: FontAwesomeIcons.user,
                   hintText: context.strings.firstNameHintText,
-                  initialValue: () =>
-                      firstName.isNullOrEmpty ? null : firstName,
+                  initialValue: firstName.isNullOrEmpty ? null : firstName,
                   validator: (value) => cubit.validateText(
                     value,
                     firstName,
@@ -221,7 +220,7 @@ class _SharedContactFormState extends State<_SharedContactForm> {
                 SharedContactFieldRow(
                   icon: null,
                   hintText: context.strings.lastNameHintText,
-                  initialValue: () => lastName.isNullOrEmpty ? null : lastName,
+                  initialValue: lastName.isNullOrEmpty ? null : lastName,
                   validator: (value) => cubit.validateText(
                     value,
                     firstName,
@@ -234,7 +233,7 @@ class _SharedContactFormState extends State<_SharedContactForm> {
                 SharedContactFieldRow(
                   icon: FontAwesomeIcons.building,
                   hintText: context.strings.companyHintText,
-                  initialValue: () => company.isNullOrEmpty ? null : company,
+                  initialValue: company.isNullOrEmpty ? null : company,
                   validator: (value) => cubit.validateText(
                     value,
                     firstName,
