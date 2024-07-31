@@ -74,7 +74,7 @@ class CountryFlagFieldState<T extends CountryFlagField> extends State<T> {
     }
   }
 
-  void _pickCountry(
+  void pickCountry(
     BuildContext context,
     CountryFieldCubit cubit,
     Country country,
@@ -157,7 +157,7 @@ class CountryFlagFieldState<T extends CountryFlagField> extends State<T> {
                             fontSize: 16,
                           ),
                         ),
-                        onTap: () => _pickCountry(context, cubit, country),
+                        onTap: () => pickCountry(context, cubit, country),
                       );
                     },
                   );

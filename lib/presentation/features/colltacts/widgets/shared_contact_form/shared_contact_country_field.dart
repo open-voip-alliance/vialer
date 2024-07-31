@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../data/models/onboarding/country.dart';
 import '../../../onboarding/controllers/mobile_number/country_field/cubit.dart';
 import '../../../onboarding/widgets/mobile_number/country_field/widget.dart';
 
@@ -39,6 +40,8 @@ class SharedContactCountryField extends CountryFlagField {
 
 class SharedContactCountryFieldState<T extends SharedContactCountryField>
     extends CountryFlagFieldState<T> {
+  Country? manuallyChosenCountry;
+
   @override
   void initState() {
     _loadCountryBasedOnProvidedNumber();
@@ -74,11 +77,27 @@ class SharedContactCountryFieldState<T extends SharedContactCountryField>
   }
 
   @override
+  void pickCountry(
+    BuildContext context,
+    CountryFieldCubit cubit,
+    Country country,
+  ) {
+    manuallyChosenCountry = country;
+    super.pickCountry(context, cubit, country);
+  }
+
+  @override
   void onStateChanged(BuildContext context, CountryFieldState state) {
     if (state is! CountriesLoaded) return;
 
+    if (manuallyChosenCountry != null) {
+      widget.controller.text = '+${manuallyChosenCountry!.callingCode}';
+      return;
+    }
+
     if (widget.initialValue == null) {
       widget.controller.text = '+${state.currentCountry.callingCode}';
+
     }
   }
 

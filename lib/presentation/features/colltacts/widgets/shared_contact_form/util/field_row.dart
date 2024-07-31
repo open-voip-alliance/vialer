@@ -145,13 +145,6 @@ class _SharedContactTextFormFieldState
 
     return Row(
       children: [
-        if (widget.isForPhoneNumber)
-          SharedContactCountryField.create(
-            controller: textEditingController,
-            focusNode: focusNode,
-            initialValue: widget.initialValue,
-            mobileNumber: mobileNumber,
-          ),
         Expanded(
           child: TextFormField(
             validator: widget.validator,
@@ -165,6 +158,12 @@ class _SharedContactTextFormFieldState
                     : TextInputType.phone
                 : TextInputType.text,
             decoration: InputDecoration(
+              prefixIcon: widget.isForPhoneNumber ? SharedContactCountryField.create(
+                controller: textEditingController,
+                focusNode: focusNode,
+                initialValue: widget.initialValue,
+                mobileNumber: mobileNumber,
+              ) : null,
               hintText: !widget.isForPhoneNumber ? widget.hintText : null,
               hintStyle: TextStyle(color: context.brand.theme.colors.grey5),
               fillColor: Colors.white,
