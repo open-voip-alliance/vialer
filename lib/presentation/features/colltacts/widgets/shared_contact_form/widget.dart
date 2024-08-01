@@ -85,8 +85,8 @@ class _SharedContactFormState extends State<_SharedContactForm> {
   String? lastName;
   String? company;
 
-  Map<GlobalKey?, String> phoneNumbers = {};
-  List<GlobalKey> _deletablePhoneNumberFields = [];
+  Map<UniqueKey?, String> phoneNumbers = {};
+  List<UniqueKey> _deletablePhoneNumberFields = [];
 
   int get _phoneNumberFieldsCount => _deletablePhoneNumberFields.length + 1;
   bool get _isEditContactForm => widget.sharedContact != null;
@@ -107,7 +107,7 @@ class _SharedContactFormState extends State<_SharedContactForm> {
 
     final phoneNumbersFromContact = Map.fromEntries(
       sharedContact.phoneNumbers.map(
-        (e) => MapEntry(GlobalKey(), e.phoneNumberFlat),
+        (e) => MapEntry(UniqueKey(), e.phoneNumberFlat),
       ),
     );
 
@@ -123,10 +123,10 @@ class _SharedContactFormState extends State<_SharedContactForm> {
   void _addDeletablePhoneNumberField(
     SharedContactFormCubit cubit,
     BuildContext context, [
-    GlobalKey? key,
+    UniqueKey? key,
   ]) {
     if (_phoneNumberFieldsCount >= _maximumPhoneNumberFields) return;
-    _deletablePhoneNumberFields.add(key ?? GlobalKey());
+    _deletablePhoneNumberFields.add(key ?? UniqueKey());
   }
 
   void _deletePhoneNumberField(Key key) {

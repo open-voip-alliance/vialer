@@ -41,6 +41,12 @@ class CountryFlagFieldState<T extends CountryFlagField> extends State<T> {
     super.initState();
   }
 
+  @override
+  void didUpdateWidget(T oldWidget) {
+    _initializeStartingCountry();
+    super.didUpdateWidget(oldWidget);
+  }
+
   /// Change the country, you may not want to update the text field if there
   /// is another number in there, in that case set [updateTextField] to false.
   void _changeCountry(
