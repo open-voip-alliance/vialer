@@ -479,12 +479,3 @@ extension SharedContactsFormMessages on BuildContext {
   FormSharedContactsContactsMainMessages get strings =>
       msg.main.contacts.sharedContacts.form;
 }
-
-@freezed
-class PhoneNumberContainer with _$PhoneNumberContainer {
-  const factory PhoneNumberContainer({
-    required Key key,
-    required PhoneNumberField widget,
-    required String phoneNumber,
-  }) = _PhoneNumberContainer;
-}
