@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:gap/gap.dart';
 import 'package:vialer/presentation/features/colltacts/widgets/shared_contact_form/phone_number_field.dart';
 import 'package:vialer/presentation/resources/localizations.dart';
@@ -16,8 +15,6 @@ import '../../../../shared/widgets/header.dart';
 import '../../controllers/shared_contact_form/cubit.dart';
 import '../../controllers/shared_contact_form/state.dart';
 import 'util/field_row.dart';
-
-part 'widget.freezed.dart';
 
 /// This is a back-end limitation
 const _maximumPhoneNumberFields = 10;
