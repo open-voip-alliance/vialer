@@ -3,10 +3,7 @@ import 'dart:io';
 import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:vialer/data/models/user/settings/call_setting.dart';
-import 'package:vialer/data/models/user/user.dart';
-import 'package:vialer/domain/usecases/user/get_logged_in_user.dart';
-import 'package:vialer/presentation/features/colltacts/widgets/shared_contact_form/shared_contact_country_field.dart';
+import 'package:vialer/presentation/features/onboarding/widgets/mobile_number/country_field/widget.dart';
 import 'package:vialer/presentation/resources/theme.dart';
 
 class SharedContactFieldRow extends StatelessWidget {
@@ -17,19 +14,20 @@ class SharedContactFieldRow extends StatelessWidget {
     required this.onValueChanged,
     this.isForPhoneNumber = false,
     this.isDeletable = false,
-    this.onDelete = null,
+    this.onDelete,
     required this.initialValue,
-    Key? key,
-  }) : super(key: key);
+    this.controller,
+  });
 
   final IconData? icon;
   final String hintText;
   final String? Function(String?) validator;
   final void Function(String) onValueChanged;
-  final void Function(Key)? onDelete;
+  final void Function()? onDelete;
   final String? initialValue;
   final bool isForPhoneNumber;
   final bool isDeletable;
+  final TextEditingController? controller;
 
   @override
   Widget build(BuildContext context) {
@@ -57,6 +55,7 @@ class SharedContactFieldRow extends StatelessWidget {
                   onValueChanged: onValueChanged,
                   initialValue: initialValue,
                   isForPhoneNumber: isForPhoneNumber,
+                  controller: controller,
                 ),
               ),
               if (isDeletable)
@@ -70,7 +69,7 @@ class SharedContactFieldRow extends StatelessWidget {
                       Container(
                         width: 48.0,
                         child: OutlinedButton(
-                          onPressed: () => onDelete!(key!),
+                          onPressed: () => onDelete!(),
                           style: OutlinedButton.styleFrom(
                             backgroundColor: Colors.white,
                             padding: const EdgeInsets.symmetric(
@@ -115,14 +114,15 @@ class _SharedContactTextFormField extends StatefulWidget {
     required this.onValueChanged,
     required this.initialValue,
     this.isForPhoneNumber = false,
-    Key? key,
-  }) : super(key: key);
+    this.controller,
+  });
 
   final String hintText;
   final String? Function(String?) validator;
   final void Function(String) onValueChanged;
   final String? initialValue;
   final bool isForPhoneNumber;
+  final TextEditingController? controller;
 
   @override
   State<_SharedContactTextFormField> createState() =>
@@ -131,16 +131,15 @@ class _SharedContactTextFormField extends StatefulWidget {
 
 class _SharedContactTextFormFieldState
     extends State<_SharedContactTextFormField> {
-  final textEditingController = TextEditingController();
+  final controller = TextEditingController();
   final focusNode = FocusNode();
 
   @override
   Widget build(BuildContext context) {
-    final mobileNumber =
-        GetLoggedInUserUseCase()().settings.get(CallSetting.mobileNumber);
+    final controller = widget.controller ?? this.controller;
 
-    if (widget.initialValue.isNotNullOrBlank && !widget.isForPhoneNumber) {
-      textEditingController.text = widget.initialValue!;
+    if (widget.initialValue.isNotNullOrBlank) {
+      controller.text = widget.initialValue!;
     }
 
     return Row(
@@ -150,7 +149,7 @@ class _SharedContactTextFormFieldState
             validator: widget.validator,
             onChanged: (value) => widget.onValueChanged(value),
             textInputAction: TextInputAction.next,
-            controller: textEditingController,
+            controller: controller,
             focusNode: focusNode,
             keyboardType: widget.isForPhoneNumber
                 ? Platform.isIOS
@@ -158,12 +157,13 @@ class _SharedContactTextFormFieldState
                     : TextInputType.phone
                 : TextInputType.text,
             decoration: InputDecoration(
-              prefixIcon: widget.isForPhoneNumber ? SharedContactCountryField.create(
-                controller: textEditingController,
-                focusNode: focusNode,
-                initialValue: widget.initialValue,
-                mobileNumber: mobileNumber,
-              ) : null,
+              prefixIcon: widget.isForPhoneNumber
+                  ? CountryFlagField(
+                      controller: controller,
+                      focusNode: focusNode,
+                      initialValue: widget.initialValue,
+                    )
+                  : null,
               hintText: !widget.isForPhoneNumber ? widget.hintText : null,
               hintStyle: TextStyle(color: context.brand.theme.colors.grey5),
               fillColor: Colors.white,

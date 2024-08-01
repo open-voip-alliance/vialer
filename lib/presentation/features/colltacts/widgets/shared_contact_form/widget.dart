@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:gap/gap.dart';
 import 'package:vialer/presentation/features/colltacts/widgets/shared_contact_form/phone_number_field.dart';
 import 'package:vialer/presentation/resources/localizations.dart';
@@ -15,6 +16,8 @@ import '../../../../shared/widgets/header.dart';
 import '../../controllers/shared_contact_form/cubit.dart';
 import '../../controllers/shared_contact_form/state.dart';
 import 'util/field_row.dart';
+
+part 'widget.freezed.dart';
 
 /// This is a back-end limitation
 const _maximumPhoneNumberFields = 10;
@@ -82,8 +85,8 @@ class _SharedContactFormState extends State<_SharedContactForm> {
   String? lastName;
   String? company;
 
-  Map<Key?, String> phoneNumbers = {};
-  List<PhoneNumberField> _deletablePhoneNumberFields = [];
+  Map<GlobalKey?, String> phoneNumbers = {};
+  List<GlobalKey> _deletablePhoneNumberFields = [];
 
   int get _phoneNumberFieldsCount => _deletablePhoneNumberFields.length + 1;
   bool get _isEditContactForm => widget.sharedContact != null;
@@ -104,7 +107,7 @@ class _SharedContactFormState extends State<_SharedContactForm> {
 
     final phoneNumbersFromContact = Map.fromEntries(
       sharedContact.phoneNumbers.map(
-        (e) => MapEntry(UniqueKey(), e.phoneNumberFlat),
+        (e) => MapEntry(GlobalKey(), e.phoneNumberFlat),
       ),
     );
 
@@ -119,42 +122,27 @@ class _SharedContactFormState extends State<_SharedContactForm> {
 
   void _addDeletablePhoneNumberField(
     SharedContactFormCubit cubit,
-    BuildContext context,
-    UniqueKey key,
-  ) {
+    BuildContext context, [
+    GlobalKey? key,
+  ]) {
     if (_phoneNumberFieldsCount >= _maximumPhoneNumberFields) return;
-
-    _deletablePhoneNumberFields = List.from(_deletablePhoneNumberFields)
-      ..add(
-        PhoneNumberField(
-          key: key,
-          phoneNumbers: phoneNumbers,
-          onValueChanged: (value) => phoneNumbers[key] = value,
-          onDelete: (key) => _deletePhoneNumberField(key),
-        ),
-      );
+    _deletablePhoneNumberFields.add(key ?? GlobalKey());
   }
 
   void _deletePhoneNumberField(Key key) {
     phoneNumbers.remove(key);
-    setState(() {
-      _deletablePhoneNumberFields.removeWhere((e) => e.key == key);
-    });
+    setState(
+      () => _deletablePhoneNumberFields.removeWhere((e) => e == key),
+    );
   }
 
   void _createDeletablePhoneNumberFieldsFromMap(
     SharedContactFormCubit cubit,
     BuildContext context,
-  ) {
-    phoneNumbers.forEach((key, value) {
-      if (key != null)
-        _addDeletablePhoneNumberField(
-          cubit,
-          context,
-          key as UniqueKey,
-        );
-    });
-  }
+  ) =>
+      phoneNumbers.filterKeys((key) => key != null).forEach(
+            (key, value) => _addDeletablePhoneNumberField(cubit, context, key!),
+          );
 
   @override
   Widget build(BuildContext context) {
@@ -248,7 +236,16 @@ class _SharedContactFormState extends State<_SharedContactForm> {
                   onValueChanged: (value) => phoneNumbers[null] = value,
                 ),
                 Column(
-                  children: _deletablePhoneNumberFields,
+                  children: _deletablePhoneNumberFields
+                      .map(
+                        (key) => PhoneNumberField(
+                          key: key,
+                          phoneNumbers: phoneNumbers,
+                          onValueChanged: (value) => phoneNumbers[key] = value,
+                          onDelete: (key) => _deletePhoneNumberField(key),
+                        ),
+                      )
+                      .toList(),
                 ),
                 const Gap(3),
                 if (_phoneNumberFieldsCount < _maximumPhoneNumberFields)
@@ -278,13 +275,12 @@ class _SharedContactFormState extends State<_SharedContactForm> {
                                 ),
                               ],
                             ),
-                            onPressed: () => setState(() {
-                              _addDeletablePhoneNumberField(
+                            onPressed: () => setState(
+                              () => _addDeletablePhoneNumberField(
                                 cubit,
                                 context,
-                                UniqueKey(),
-                              );
-                            }),
+                              ),
+                            ),
                           ),
                         ),
                         const Gap(16),
@@ -482,4 +478,13 @@ extension on Map<Key?, String> {
 extension SharedContactsFormMessages on BuildContext {
   FormSharedContactsContactsMainMessages get strings =>
       msg.main.contacts.sharedContacts.form;
+}
+
+@freezed
+class PhoneNumberContainer with _$PhoneNumberContainer {
+  const factory PhoneNumberContainer({
+    required Key key,
+    required PhoneNumberField widget,
+    required String phoneNumber,
+  }) = _PhoneNumberContainer;
 }

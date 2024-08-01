@@ -25,7 +25,7 @@ class PhoneNumberField extends StatefulWidget {
 }
 
 class _PhoneNumberFieldState extends State<PhoneNumberField> {
-  final textEditingController = TextEditingController();
+  final controller = TextEditingController();
   final focusNode = FocusNode();
 
   String? _validationError;
@@ -46,29 +46,23 @@ class _PhoneNumberFieldState extends State<PhoneNumberField> {
   }
 
   @override
-  void dispose() {
-    textEditingController.dispose();
-    focusNode.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return BlocBuilder<SharedContactFormCubit, SharedContactFormState>(
-        builder: (context, state) {
-      return SharedContactFieldRow(
-        key: widget.key,
-        icon: FontAwesomeIcons.phone,
-        hintText: context.strings.phoneNumberHintText,
-        initialValue: widget.phoneNumbers[widget.key].isNullOrEmpty
-            ? null
-            : widget.phoneNumbers[widget.key],
-        isForPhoneNumber: true,
-        validator: (_) => _validationError,
-        onValueChanged: _onValueChanged,
-        isDeletable: widget.onDelete != null,
-        onDelete: widget.onDelete,
-      );
-    });
+      builder: (context, state) {
+        return SharedContactFieldRow(
+          icon: FontAwesomeIcons.phone,
+          hintText: context.strings.phoneNumberHintText,
+          initialValue: widget.phoneNumbers[widget.key].isNullOrEmpty
+              ? null
+              : widget.phoneNumbers[widget.key],
+          isForPhoneNumber: true,
+          validator: (_) => _validationError,
+          onValueChanged: _onValueChanged,
+          isDeletable: widget.onDelete != null,
+          onDelete: () => widget.onDelete!(widget.key!),
+          controller: controller,
+        );
+      },
+    );
   }
 }

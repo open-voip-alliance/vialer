@@ -136,9 +136,10 @@ class _MobileNumberPageState extends State<MobileNumberPage> {
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              CountryFlagField.create(
+                              CountryFlagField(
                                 controller: _mobileNumberController,
                                 focusNode: _mobileNumberFocusNode,
+                                initialValue: _mobileNumberController.text,
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(right: 6),

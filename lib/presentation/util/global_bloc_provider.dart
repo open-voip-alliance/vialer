@@ -5,6 +5,7 @@ import 'package:vialer/presentation/features/colltacts/controllers/contacts/cubi
 import '../features/business_availability/controllers/temporary_redirect/cubit.dart';
 import '../features/colltacts/controllers/shared_contacts/cubit.dart';
 import '../features/main_page.dart';
+import '../features/onboarding/controllers/mobile_number/country_field/cubit.dart';
 import '../main.dart';
 import '../shared/controllers/caller/cubit.dart';
 import '../shared/widgets/caller/widget.dart';
@@ -60,6 +61,12 @@ class GlobalBlocProvider extends StatelessWidget {
                 );
               },
             ),
+        (child) => Builder(
+              builder: (context) => BlocProvider<CountriesCubit>(
+                create: (_) => CountriesCubit(),
+                child: child,
+              ),
+            )
       ],
       child,
     );
