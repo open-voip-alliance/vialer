@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vialer/presentation/resources/theme.dart';
 import 'package:vialer/presentation/shared/widgets/country_text_field_prefix.dart';
 
 import '../../../../../../../data/models/onboarding/country.dart';
@@ -66,12 +67,26 @@ class CountryFlagFieldState<T extends CountryFlagField> extends State<T> {
   Widget build(BuildContext context) {
     return BlocBuilder<CountriesCubit, CountryFieldState>(
       builder: (context, state) {
-        return CountryTextFieldPrefix(
-          currentCountry: selectedCountry,
-          onCountrySelected: _changeCountry,
-          countries: state.countries,
-          focusNode: widget.focusNode,
-          controller: widget.controller,
+        return IntrinsicHeight(
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CountryTextFieldPrefix(
+                currentCountry: selectedCountry,
+                onCountrySelected: _changeCountry,
+                countries: state.countries,
+                focusNode: widget.focusNode,
+                controller: widget.controller,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(right: 6),
+                child: VerticalDivider(
+                  thickness: 1,
+                  color: context.brand.theme.colors.grey1,
+                ),
+              ),
+            ],
+          ),
         );
       },
     );

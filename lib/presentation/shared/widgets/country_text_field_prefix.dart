@@ -44,7 +44,7 @@ class CountryTextFieldPrefix extends StatelessWidget {
       context: context,
       builder: (context) {
         return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Padding(
               padding: const EdgeInsets.all(16),
@@ -111,7 +111,7 @@ class CountryTextFieldPrefix extends StatelessWidget {
 
     return MaterialButton(
       minWidth: 0,
-      padding: EdgeInsets.zero,
+      padding: EdgeInsets.only(left: 10),
       onPressed: () => _onFlagPressed(context),
       child: Text(
         currentCountry.flag,

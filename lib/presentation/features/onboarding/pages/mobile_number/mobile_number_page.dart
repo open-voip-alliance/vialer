@@ -132,24 +132,10 @@ class _MobileNumberPageState extends State<MobileNumberPage> {
                       StylizedTextField(
                         key: MobileNumberPage.keys.field,
                         bordered: true,
-                        prefixWidget: IntrinsicHeight(
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              CountryFlagField(
-                                controller: _mobileNumberController,
-                                focusNode: _mobileNumberFocusNode,
-                                initialValue: _mobileNumberController.text,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(right: 6),
-                                child: VerticalDivider(
-                                  thickness: 1,
-                                  color: context.brand.theme.colors.grey1,
-                                ),
-                              ),
-                            ],
-                          ),
+                        prefixWidget: CountryFlagField(
+                          controller: _mobileNumberController,
+                          focusNode: _mobileNumberFocusNode,
+                          initialValue: _mobileNumberController.text,
                         ),
                         controller: _mobileNumberController,
                         focusNode: _mobileNumberFocusNode,
