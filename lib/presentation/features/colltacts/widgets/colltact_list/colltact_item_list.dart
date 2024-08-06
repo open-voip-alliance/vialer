@@ -265,7 +265,7 @@ class ColltactItemList extends StatelessWidget {
     ]
         .map(
           (e) => [
-            GroupHeader(group: e.key),
+            GroupHeader(group: e.key, numberOfElements: e.value.length),
             ...e.value
                 .sortedBy((colltact) => colltact.getSortKey(contactSort))
                 .map(
