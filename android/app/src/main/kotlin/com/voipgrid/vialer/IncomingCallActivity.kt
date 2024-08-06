@@ -58,7 +58,7 @@ class IncomingCallActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        registerReceiver(receiver, IntentFilter(INCOMING_CALL_CANCEL_INTENT), ContextCompat.RECEIVER_NOT_EXPORTED)
+        ContextCompat.registerReceiver(this, receiver, IntentFilter(INCOMING_CALL_CANCEL_INTENT), ContextCompat.RECEIVER_EXPORTED)
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         // Although the title is not shown visually, we still set it for screen readers.
         title = getString(R.string.main_call_incoming_subtitle_with, getString(R.string.app_name))
