@@ -17,6 +17,7 @@ class CallFeedback extends StatefulWidget {
     required this.onFeedbackReady,
     required this.onUserFinishedFeedbackProcess,
     this.positiveRatingThreshold = 4,
+    this.isUsingScreenReader = false,
     super.key,
   });
 
@@ -33,6 +34,10 @@ class CallFeedback extends StatefulWidget {
   /// prompt for further feedback. This is inclusive, so if set to 4 then 4 and
   /// 5 are counted as positive ratings.
   final int positiveRatingThreshold;
+
+  /// Whether the user is using a screen reader or not. When the user is using
+  /// a screen reader the feedback screen should not auto dismiss.
+  final bool isUsingScreenReader;
 
   @override
   State<StatefulWidget> createState() => _CallFeedbackState();
@@ -74,7 +79,7 @@ class _CallFeedbackState extends State<CallFeedback> {
       // The call feedback should only be automatically dismissed if the user
       // doesn't want to engage with it, therefore they are still on the first
       // stage.
-      if (_stage == CallFeedbackStage.rateCall) {
+      if (_stage == CallFeedbackStage.rateCall && !widget.isUsingScreenReader) {
         SemanticsService.announce(
           context.msg.main.call.feedback.rating.semantics
               .callRatingDialogDismissal,
