@@ -24,21 +24,25 @@ class CountryFlagField extends StatefulWidget {
 class CountryFlagFieldState<T extends CountryFlagField> extends State<T> {
   Country? selectedCountry;
 
-  void _initializeStartingCountry() async {
+  bool get shouldModifyTextField =>
+      widget.controller.text.length <= 4 &&
+      widget.controller.text.startsWith('+');
+
+  void _initializeStartingCountry({bool updateOnEmpty = false}) async {
     final country = await context
         .read<CountriesCubit>()
         .chooseCountryBasedOnUser(widget.initialValue ?? null);
 
     _changeCountry(
       country,
-      updateTextField:
-          widget.initialValue == null && widget.controller.text.length <= 4,
+      updateTextField: widget.initialValue == null &&
+          (shouldModifyTextField || updateOnEmpty),
     );
   }
 
   @override
   void initState() {
-    _initializeStartingCountry();
+    _initializeStartingCountry(updateOnEmpty: true);
     super.initState();
   }
 
@@ -53,15 +57,12 @@ class CountryFlagFieldState<T extends CountryFlagField> extends State<T> {
   void _changeCountry(
     Country? country, {
     bool updateTextField = true,
-  }) {
-    if (country == null) return;
-
-    setState(() {
-      selectedCountry = country;
-      if (!updateTextField) return;
-      widget.controller.text = '+${country.callingCode}';
-    });
-  }
+  }) =>
+      setState(() {
+        selectedCountry = country;
+        if (country == null || !updateTextField) return null;
+        widget.controller.text = '+${country.callingCode}';
+      });
 
   @override
   Widget build(BuildContext context) {

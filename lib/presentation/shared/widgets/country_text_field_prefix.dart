@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:vialer/data/models/onboarding/country.dart';
 import 'package:vialer/presentation/resources/localizations.dart';
+import 'package:vialer/presentation/resources/theme.dart';
 
 class CountryTextFieldPrefix extends StatelessWidget {
   const CountryTextFieldPrefix({
@@ -100,25 +100,22 @@ class CountryTextFieldPrefix extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final currentCountry = this.currentCountry;
-
-    if (currentCountry == null) {
-      return const FaIcon(
-        FontAwesomeIcons.mobile,
-        color: Colors.grey,
-        size: 16,
-      );
-    }
+    final iconSize = 16.0;
 
     return MaterialButton(
       minWidth: 0,
-      padding: EdgeInsets.only(left: 10),
+      padding: const EdgeInsets.only(left: 10),
       onPressed: () => _onFlagPressed(context),
-      child: Text(
-        currentCountry.flag,
-        style: const TextStyle(
-          fontSize: 16,
-        ),
-      ),
+      child: currentCountry != null
+          ? Text(
+              currentCountry.flag,
+              style: TextStyle(fontSize: iconSize),
+            )
+          : Icon(
+              context.brand.icon,
+              color: context.brand.theme.colors.primary,
+              size: iconSize,
+            ),
     );
   }
 }

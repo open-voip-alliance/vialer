@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_libphonenumber/flutter_libphonenumber.dart';
 import 'package:vialer/data/models/user/settings/call_setting.dart';
 import 'package:vialer/data/models/user/user.dart';
+import 'package:vialer/data/repositories/calling/call_through/call_through.dart';
 import 'package:vialer/domain/usecases/user/get_logged_in_user.dart';
 
 import '../../../../../../../data/models/onboarding/country.dart';
@@ -61,6 +62,14 @@ class CountriesCubit extends Cubit<CountryFieldState> {
   /// Provide [queryNumber] to override this and choose the country based on
   /// this number instead. Only falling back if this number is invalid.
   Future<Country?> chooseCountryBasedOnUser([String? queryNumber]) async {
+    if (queryNumber != null &&
+        !queryNumber.startsWith('+') &&
+        queryNumber.isInternalNumber) {
+      return null;
+    }
+
+    final mobileNumber = _getUser().settings.get(CallSetting.mobileNumber);
+
     // We're going to wait for the countries to be loaded before we continue
     // otherwise we won't get a result.
     final state = (this.state is CountriesLoaded
@@ -68,9 +77,11 @@ class CountriesCubit extends Cubit<CountryFieldState> {
             : await stream.firstWhere((state) => state is CountriesLoaded))
         as CountriesLoaded;
 
-    final countryCode = await _getCountryCode(
-      queryNumber ?? _getUser().settings.get(CallSetting.mobileNumber),
-    );
+    String? countryCode = await _getCountryCode(queryNumber ?? mobileNumber);
+
+    if (countryCode == null) {
+      countryCode = await _getCountryCode(queryNumber ?? mobileNumber);
+    }
 
     return countryCode != null
         ? await _getCountryFirstWhere(
