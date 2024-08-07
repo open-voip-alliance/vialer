@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:vialer/presentation/features/colltacts/widgets/shared_contact_form/widget.dart';
+import 'package:vialer/presentation/resources/localizations.dart';
 import 'package:vialer/presentation/resources/theme.dart';
 
 class SearchTextField extends StatefulWidget {
@@ -49,26 +51,30 @@ class _SearchTextFieldState extends State<SearchTextField> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 42,
-      child: SearchBar(
-        controller: _searchController,
-        leading: Icon(
-          FontAwesomeIcons.magnifyingGlass,
-          size: 20,
-          color: context.brand.theme.colors.grey4,
-        ),
-        trailing: [
-          if (_canClear)
-            IconButton(
-              onPressed: _handleClear,
-              icon: FaIcon(
-                FontAwesomeIcons.xmark,
-                size: 20,
-                color: context.brand.theme.colors.grey4,
+    return Semantics(
+      label: context.msg.main.contacts.screenReader.title,
+      textField: true,
+      child: Container(
+        height: 42,
+        child: SearchBar(
+          controller: _searchController,
+          leading: Icon(
+            FontAwesomeIcons.magnifyingGlass,
+            size: 20,
+            color: context.brand.theme.colors.grey4,
+          ),
+          trailing: [
+            if (_canClear)
+              IconButton(
+                onPressed: _handleClear,
+                icon: FaIcon(
+                  FontAwesomeIcons.xmark,
+                  size: 20,
+                  color: context.brand.theme.colors.grey4,
+                ),
               ),
-            ),
-        ],
+          ],
+        ),
       ),
     );
   }
