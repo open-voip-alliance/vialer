@@ -51,7 +51,7 @@ class _SearchTextFieldState extends State<SearchTextField> {
   @override
   Widget build(BuildContext context) {
     return Semantics(
-      label: context.msg.main.contacts.screenReader.title,
+      label: context.msg.main.contacts.search.screenReader.title,
       textField: true,
       child: Container(
         height: 42,
