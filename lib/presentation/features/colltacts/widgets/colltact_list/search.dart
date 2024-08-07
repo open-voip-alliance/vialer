@@ -49,33 +49,26 @@ class _SearchTextFieldState extends State<SearchTextField> {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      cursorColor: context.brand.theme.colors.primary,
-      controller: _searchController,
-      decoration: InputDecoration(
-        filled: true,
-        fillColor: context.brand.theme.colors.grey3,
-        border: const OutlineInputBorder(
-          borderSide: BorderSide.none,
-          gapPadding: 0,
-        ),
-        // Must be `Icon` and not `FaIcon` because it's expected as a square.
-        prefixIcon: Icon(
+    return Container(
+      height: 42,
+      child: SearchBar(
+        controller: _searchController,
+        leading: Icon(
           FontAwesomeIcons.magnifyingGlass,
           size: 20,
           color: context.brand.theme.colors.grey4,
         ),
-        suffixIcon: _canClear
-            ? IconButton(
-                onPressed: _handleClear,
-                icon: FaIcon(
-                  FontAwesomeIcons.xmark,
-                  size: 20,
-                  color: context.brand.theme.colors.grey4,
-                ),
-              )
-            : null,
-        contentPadding: EdgeInsets.zero,
+        trailing: [
+          if (_canClear)
+            IconButton(
+              onPressed: _handleClear,
+              icon: FaIcon(
+                FontAwesomeIcons.xmark,
+                size: 20,
+                color: context.brand.theme.colors.grey4,
+              ),
+            ),
+        ],
       ),
     );
   }

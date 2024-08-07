@@ -87,6 +87,18 @@ class BrandTheme {
             : navigationBarLabelTextStyle,
       ),
     ),
+    textSelectionTheme: TextSelectionThemeData(
+      cursorColor: colors.primary,
+    ),
+    searchBarTheme: SearchBarThemeData(
+      padding: WidgetStateProperty.all(
+        const EdgeInsets.symmetric(horizontal: 14),
+      ),
+      shape: WidgetStateProperty.all(
+        RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+      ),
+      elevation: WidgetStateProperty.all(0),
+    ),
   );
 }
 
