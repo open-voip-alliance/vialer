@@ -7,7 +7,6 @@ import 'package:flutter_phone_lib/flutter_phone_lib.dart'
     hide AttendedTransferStarted;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
-import 'package:vialer/data/repositories/legacy/storage.dart';
 import 'package:vialer/presentation/resources/localizations.dart';
 import 'package:vialer/presentation/resources/theme.dart';
 import 'package:vialer/presentation/shared/widgets/animated_visibility.dart';
@@ -113,7 +112,6 @@ class _CallPageState extends State<_CallPage>
   bool isNotifyingUserAboutBadQualityCall = false;
 
   late final _metrics = dependencyLocator<MetricsRepository>();
-  late final _storage = dependencyLocator<StorageRepository>();
 
   @override
   void initState() {
@@ -238,7 +236,6 @@ class _CallPageState extends State<_CallPage>
           context,
           after: const Duration(milliseconds: 500),
         ),
-        isUsingScreenReader: _storage.isUsingScreenReader,
       ),
     );
   }

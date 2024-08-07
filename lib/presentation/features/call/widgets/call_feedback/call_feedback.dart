@@ -7,6 +7,8 @@ import 'package:vialer/presentation/resources/localizations.dart';
 import 'package:vialer/presentation/resources/theme.dart';
 
 import '../../../../../../data/models/feedback/call_problem.dart';
+import '../../../../../data/repositories/legacy/storage.dart';
+import '../../../../../dependency_locator.dart';
 import 'call_rating.dart';
 import 'select_audio_problems.dart';
 import 'select_call_problem.dart';
@@ -17,7 +19,6 @@ class CallFeedback extends StatefulWidget {
     required this.onFeedbackReady,
     required this.onUserFinishedFeedbackProcess,
     this.positiveRatingThreshold = 4,
-    this.isUsingScreenReader = false,
     super.key,
   });
 
@@ -35,10 +36,6 @@ class CallFeedback extends StatefulWidget {
   /// 5 are counted as positive ratings.
   final int positiveRatingThreshold;
 
-  /// Whether the user is using a screen reader or not. When the user is using
-  /// a screen reader the feedback screen should not auto dismiss.
-  final bool isUsingScreenReader;
-
   @override
   State<StatefulWidget> createState() => _CallFeedbackState();
 }
@@ -48,6 +45,8 @@ class _CallFeedbackState extends State<CallFeedback> {
   /// when it has been completed via the [CallFeedback.onFeedbackReady]
   /// callback.
   var _result = CallFeedbackResult.fresh();
+
+  late final _storage = dependencyLocator<StorageRepository>();
 
   /// The current stage that should be rendered, this is determined by the
   /// data within the [_result] object.
@@ -79,7 +78,8 @@ class _CallFeedbackState extends State<CallFeedback> {
       // The call feedback should only be automatically dismissed if the user
       // doesn't want to engage with it, therefore they are still on the first
       // stage.
-      if (_stage == CallFeedbackStage.rateCall && !widget.isUsingScreenReader) {
+      if (_stage == CallFeedbackStage.rateCall &&
+          !_storage.isUsingScreenReader) {
         SemanticsService.announce(
           context.msg.main.call.feedback.rating.semantics
               .callRatingDialogDismissal,
