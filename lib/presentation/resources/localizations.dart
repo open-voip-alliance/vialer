@@ -5,6 +5,8 @@ import 'messages.i18n.dart';
 import 'messages_de.i18n.dart';
 import 'messages_nl.i18n.dart';
 import 'messages_fr.i18n.dart';
+import 'messages_es.i18n.dart';
+import 'messages_pt.i18n.dart';
 
 class VialerLocalizations {
   VialerLocalizations(this.locale) : msg = _messagesFromLocale(locale);
@@ -18,7 +20,7 @@ class VialerLocalizations {
 
   static const delegate = _VialerLocalizationsDelegate();
 
-  static const locales = ['en', 'nl', 'de', 'fr'];
+  static const locales = ['en', 'nl', 'de', 'fr', 'es', 'pt'];
 }
 
 extension LocalizationsContext on BuildContext {
@@ -26,12 +28,13 @@ extension LocalizationsContext on BuildContext {
 
   bool get isEnglish =>
       VialerLocalizations.of(this).locale.languageCode == 'en';
-
   bool get isDutch => VialerLocalizations.of(this).locale.languageCode == 'nl';
-
   bool get isGerman => VialerLocalizations.of(this).locale.languageCode == 'de';
-
   bool get isFrench => VialerLocalizations.of(this).locale.languageCode == 'fr';
+  bool get isSpanish =>
+      VialerLocalizations.of(this).locale.languageCode == 'es';
+  bool get isPortuguese =>
+      VialerLocalizations.of(this).locale.languageCode == 'pt';
 }
 
 class _VialerLocalizationsDelegate
@@ -61,6 +64,10 @@ Messages _messagesFromLocale(Locale locale) {
       return const MessagesDe();
     case 'fr':
       return const MessagesFr();
+    case 'es':
+      return const MessagesEs();
+    case 'pt':
+      return const MessagesPt();
     default:
       throw UnsupportedError('Unsupported locale');
   }

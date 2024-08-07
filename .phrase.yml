@@ -29,3 +29,15 @@ phrase:
         file_format: yml_symfony2
         include_unverified_translations: true
         include_empty_translations: true
+    - file: ./lib/presentation/resources/messages_es.i18n.yaml
+      params:
+        locale_id: 0e634e9d237c2de46b23a76d77005b7b
+        file_format: yml_symfony2
+        include_unverified_translations: true
+        include_empty_translations: true
+    - file: ./lib/presentation/resources/messages_pt.i18n.yaml
+      params:
+        locale_id: c0bb879bbc867e4a6960ea8602f7dae4
+        file_format: yml_symfony2
+        include_unverified_translations: true
+        include_empty_translations: true
