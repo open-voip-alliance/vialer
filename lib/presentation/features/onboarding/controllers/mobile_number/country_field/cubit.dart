@@ -77,10 +77,11 @@ class CountriesCubit extends Cubit<CountryFieldState> {
             : await stream.firstWhere((state) => state is CountriesLoaded))
         as CountriesLoaded;
 
-    String? countryCode = await _getCountryCode(queryNumber ?? mobileNumber);
+    var countryCode = await _getCountryCode(queryNumber ?? mobileNumber);
 
-    if (countryCode == null) {
-      countryCode = await _getCountryCode(queryNumber ?? mobileNumber);
+    // Fallback to try the mobile number if query number doesn't find a country
+    if (countryCode == null && queryNumber != null) {
+      countryCode = await _getCountryCode(mobileNumber);
     }
 
     return countryCode != null
