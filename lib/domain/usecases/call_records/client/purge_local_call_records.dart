@@ -1,39 +1,21 @@
 import 'dart:async';
+import 'dart:io';
 
-import '../../../../../data/repositories/metrics/metrics.dart';
-import '../../../../data/repositories/call_records/client/local_client_calls.dart';
-import '../../../../dependency_locator.dart';
+import 'package:path_provider/path_provider.dart';
+
 import '../../../../presentation/util/loggable.dart';
 import '../../use_case.dart';
+import 'package:path/path.dart' as p;
 
-class PurgeLocalCallRecordsUseCase extends UseCase with Loggable {
-  final _clientCallsRepository =
-      dependencyLocator<LocalClientCallsRepository>();
-  final _metricsRepository = dependencyLocator<MetricsRepository>();
-
-  /// We store client calls in a local database, for security reasons these
-  /// must be completed removed if a user were to logout or no longer have
-  /// appropriate permissions.
-  Future<void> call({
-    required PurgeReason reason,
-  }) async {
-    final amountDeleted = await _clientCallsRepository.deleteAll();
-
-    if (amountDeleted <= 0) return;
-
-    logger.info(
-      'Removed $amountDeleted local client calls because ${reason.name}',
-    );
-
-    _metricsRepository.track('client-calls-purged', <String, dynamic>{
-      'amount': amountDeleted,
-      'reason': reason.name,
-    });
+class RemoveLegacyClientCallRecordsFile extends UseCase with Loggable {
+  /// We used to store client call records in a sqlite file, this is no longer
+  /// the case and we should make sure this file has been completely deleted.
+  ///
+  /// This can be removed in a future release (2025).
+  Future<void> call() async {
+    final dbFolder = await getApplicationDocumentsDirectory();
+    final file = File(p.join(dbFolder.path, 'db.sqlite'));
+    if (!file.existsSync()) return;
+    await file.delete();
   }
-}
-
-enum PurgeReason {
-  permissionFailed,
-  logout,
-  disabled,
 }

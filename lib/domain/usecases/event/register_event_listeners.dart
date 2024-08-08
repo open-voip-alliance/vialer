@@ -3,15 +3,12 @@ import 'dart:async';
 import '../../../data/API/authentication/unauthorized_api_response.dart';
 import '../../../data/models/event/event_bus.dart';
 import '../../../data/models/user/events/logged_in_user_was_refreshed.dart';
-import '../../../data/models/user/settings/app_setting.dart';
 import '../../../data/models/user/settings/setting_changed.dart';
 import '../../../data/models/voipgrid/rate_limit_reached_event.dart';
 import '../../../dependency_locator.dart';
 import '../../../presentation/util/loggable.dart';
 import '../../usecases/metrics/identify_for_tracking.dart';
 import '../authentication/logout_on_unauthorized_response.dart';
-import '../call_records/client/import_historic_client_call_records.dart';
-import '../call_records/client/purge_local_call_records.dart';
 import '../use_case.dart';
 import '../user/handle_app_account_change.dart';
 import '../voipgrid/track_rate_limited_api_calls.dart';
@@ -20,8 +17,6 @@ import '../voipgrid/track_rate_limited_api_calls.dart';
 /// event listeners that require the user interface to take action.
 class RegisterDomainEventListenersUseCase extends UseCase with Loggable {
   final _eventBus = dependencyLocator<EventBusObserver>();
-  final _importHistoricClientCalls = ImportHistoricClientCallRecordsUseCase();
-  final _purgeLocalCallRecords = PurgeLocalCallRecordsUseCase();
   final _identifyForTracking = IdentifyForTrackingUseCase();
   final _logoutOnUnauthorizedResponse = LogoutOnUnauthorizedResponse();
   final _trackRateLimitedApiCalls = TrackRateLimitedApiCalls();
@@ -32,16 +27,6 @@ class RegisterDomainEventListenersUseCase extends UseCase with Loggable {
       ..on<UnauthorizedApiResponseEvent>(_logoutOnUnauthorizedResponse)
       ..on<RateLimitReachedEvent>(
         (event) => _trackRateLimitedApiCalls(event.url),
-      )
-      ..onSettingChange<bool>(
-        AppSetting.showClientCalls,
-        (oldValue, newValue) {
-          if (newValue == true) {
-            unawaited(_importHistoricClientCalls());
-          } else {
-            unawaited(_purgeLocalCallRecords(reason: PurgeReason.disabled));
-          }
-        },
       )
       ..on<SettingChangedEvent>((_) => unawaited(_identifyForTracking()))
       ..on<LoggedInUserWasRefreshed>(

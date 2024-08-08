@@ -274,8 +274,6 @@ class _Calls<C extends RecentCallsCubit> extends StatelessWidget {
 
   Future<void> _refreshCalls(BuildContext context) async {
     final cubit = context.read<C>();
-
-    await cubit.performBackgroundImport();
     await cubit.refreshRecentCalls();
   }
 
@@ -299,7 +297,6 @@ class _Calls<C extends RecentCallsCubit> extends StatelessWidget {
           ),
           onCopyPressed: cubit.copyNumber,
           loadMoreCalls: cubit.loadMoreRecentCalls,
-          performBackgroundImport: cubit.performBackgroundImport,
           manualRefresher: manualRefresher,
         );
       },

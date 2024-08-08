@@ -76,6 +76,14 @@ abstract class VoipgridService extends ChopperService {
     @Query('per_page') int perPage = 20,
   });
 
+  @Get(path: 'v2/call/non-personalized')
+  Future<Response<List<dynamic>>> getCalls({
+    @Query('answered') bool? answered,
+    @Query('timezone') String? timezone,
+    @Query('page') int pageNumber = 1,
+    @Query('per_page') int perPage = 20,
+  });
+
   @Get(path: 'v2/callthrough')
   Future<Response<Map<String, dynamic>>> callthrough({
     @Query('destination') required String destination,
