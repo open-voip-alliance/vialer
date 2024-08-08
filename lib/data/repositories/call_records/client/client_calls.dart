@@ -39,7 +39,7 @@ class ClientCallsRepository with Loggable {
 
     final objects = response.body ?? const [];
 
-    if (objects.isEmpty) return [];
+    if (objects.isEmpty) return const [];
 
     var callRecords = objects.map(
       (dynamic json) => VoipgridCallRecord.fromJson(
