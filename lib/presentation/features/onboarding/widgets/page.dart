@@ -116,11 +116,12 @@ class OnboardingPageState extends State<OnboardingPage> {
         backgroundColor: Colors.transparent,
         resizeToAvoidBottomInset: false,
         body: BlocProvider<OnboardingCubit>(
-          create: (_) => OnboardingCubit(
-            context.watch<CallerCubit>(),
-          ),
+          create: (_) => OnboardingCubit(context.watch<CallerCubit>()),
           child: BlocConsumer<OnboardingCubit, OnboardingState>(
             listener: _onStateChange,
+            buildWhen: (prev, current) =>
+                prev.currentStep.asBackgroundStyle() !=
+                current.currentStep.asBackgroundStyle(),
             builder: (context, state) {
               return Background(
                 style: state.currentStep.asBackgroundStyle(),
