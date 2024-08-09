@@ -7,8 +7,6 @@ part 'state.freezed.dart';
 @freezed
 sealed class CountryFieldState with _$CountryFieldState {
   const factory CountryFieldState.loading() = LoadingCountries;
-  const factory CountryFieldState.loaded({
-    required Iterable<Country> countries,
-    required Country currentCountry,
-  }) = CountriesLoaded;
+  const factory CountryFieldState.loaded(Iterable<Country> countries) =
+      CountriesLoaded;
 }
