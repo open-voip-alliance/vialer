@@ -117,7 +117,7 @@ class ConfirmPageState extends State<ConfirmPage>
     cubit.cancelCallThroughCall();
   }
 
-  Future<void> _onWillPop(bool didPop) async {
+  Future<void> _onWillPop(bool didPop, void __) async {
     if (didPop) return;
     _pop();
   }
@@ -134,7 +134,7 @@ class ConfirmPageState extends State<ConfirmPage>
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      onPopInvoked: _onWillPop,
+      onPopInvokedWithResult: _onWillPop,
       child: TransparentStatusBar(
         child: Padding(
           padding: const EdgeInsets.only(
