@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
+import 'package:vialer/presentation/features/colltacts/widgets/shared_contact_form/phone_number_field.dart';
 import 'package:vialer/presentation/resources/localizations.dart';
 import 'package:vialer/presentation/resources/theme.dart';
 
@@ -81,8 +82,8 @@ class _SharedContactFormState extends State<_SharedContactForm> {
   String? lastName;
   String? company;
 
-  Map<Key?, String> phoneNumbers = {};
-  List<SharedContactFieldRow> _deletablePhoneNumberFields = [];
+  Map<UniqueKey?, String> phoneNumbers = {};
+  List<UniqueKey> _deletablePhoneNumberFields = [];
 
   int get _phoneNumberFieldsCount => _deletablePhoneNumberFields.length + 1;
   bool get _isEditContactForm => widget.sharedContact != null;
@@ -118,51 +119,27 @@ class _SharedContactFormState extends State<_SharedContactForm> {
 
   void _addDeletablePhoneNumberField(
     SharedContactFormCubit cubit,
-    BuildContext context,
-    UniqueKey key,
-  ) {
+    BuildContext context, [
+    UniqueKey? key,
+  ]) {
     if (_phoneNumberFieldsCount >= _maximumPhoneNumberFields) return;
-
-    _deletablePhoneNumberFields = List.from(_deletablePhoneNumberFields)
-      ..add(
-        SharedContactFieldRow(
-          key: key,
-          icon: null,
-          hintText: context.strings.phoneNumberHintText,
-          initialValue: () =>
-              phoneNumbers[key].isNullOrEmpty ? null : phoneNumbers[key],
-          isForPhoneNumber: true,
-          validator: (value) => cubit.validatePhoneNumber(
-            value,
-            context,
-          ),
-          onValueChanged: (value) => phoneNumbers[key] = value,
-          isDeletable: true,
-          onDelete: (key) => _deletePhoneNumberField(key),
-        ),
-      );
+    _deletablePhoneNumberFields.add(key ?? UniqueKey());
   }
 
   void _deletePhoneNumberField(Key key) {
     phoneNumbers.remove(key);
-    setState(() {
-      _deletablePhoneNumberFields.removeWhere((e) => e.key == key);
-    });
+    setState(
+      () => _deletablePhoneNumberFields.removeWhere((e) => e == key),
+    );
   }
 
   void _createDeletablePhoneNumberFieldsFromMap(
     SharedContactFormCubit cubit,
     BuildContext context,
-  ) {
-    phoneNumbers.forEach((key, value) {
-      if (key != null)
-        _addDeletablePhoneNumberField(
-          cubit,
-          context,
-          key as UniqueKey,
-        );
-    });
-  }
+  ) =>
+      phoneNumbers.filterKeys((key) => key != null).forEach(
+            (key, value) => _addDeletablePhoneNumberField(cubit, context, key!),
+          );
 
   @override
   Widget build(BuildContext context) {
@@ -215,8 +192,7 @@ class _SharedContactFormState extends State<_SharedContactForm> {
                 SharedContactFieldRow(
                   icon: FontAwesomeIcons.user,
                   hintText: context.strings.firstNameHintText,
-                  initialValue: () =>
-                      firstName.isNullOrEmpty ? null : firstName,
+                  initialValue: firstName.isNullOrEmpty ? null : firstName,
                   validator: (value) => cubit.validateText(
                     value,
                     firstName,
@@ -229,7 +205,7 @@ class _SharedContactFormState extends State<_SharedContactForm> {
                 SharedContactFieldRow(
                   icon: null,
                   hintText: context.strings.lastNameHintText,
-                  initialValue: () => lastName.isNullOrEmpty ? null : lastName,
+                  initialValue: lastName.isNullOrEmpty ? null : lastName,
                   validator: (value) => cubit.validateText(
                     value,
                     firstName,
@@ -242,7 +218,7 @@ class _SharedContactFormState extends State<_SharedContactForm> {
                 SharedContactFieldRow(
                   icon: FontAwesomeIcons.building,
                   hintText: context.strings.companyHintText,
-                  initialValue: () => company.isNullOrEmpty ? null : company,
+                  initialValue: company.isNullOrEmpty ? null : company,
                   validator: (value) => cubit.validateText(
                     value,
                     firstName,
@@ -252,21 +228,21 @@ class _SharedContactFormState extends State<_SharedContactForm> {
                   ),
                   onValueChanged: (value) => company = value,
                 ),
-                SharedContactFieldRow(
-                  icon: FontAwesomeIcons.phone,
-                  hintText: context.strings.phoneNumberHintText,
-                  initialValue: () => phoneNumbers[null].isNullOrEmpty
-                      ? null
-                      : phoneNumbers[null],
-                  isForPhoneNumber: true,
-                  validator: (value) => cubit.validatePhoneNumber(
-                    value,
-                    context,
-                  ),
+                PhoneNumberField(
+                  phoneNumbers: phoneNumbers,
                   onValueChanged: (value) => phoneNumbers[null] = value,
                 ),
                 Column(
-                  children: _deletablePhoneNumberFields,
+                  children: _deletablePhoneNumberFields
+                      .map(
+                        (key) => PhoneNumberField(
+                          key: key,
+                          phoneNumbers: phoneNumbers,
+                          onValueChanged: (value) => phoneNumbers[key] = value,
+                          onDelete: (key) => _deletePhoneNumberField(key),
+                        ),
+                      )
+                      .toList(),
                 ),
                 const Gap(3),
                 if (_phoneNumberFieldsCount < _maximumPhoneNumberFields)
@@ -296,13 +272,12 @@ class _SharedContactFormState extends State<_SharedContactForm> {
                                 ),
                               ],
                             ),
-                            onPressed: () => setState(() {
-                              _addDeletablePhoneNumberField(
+                            onPressed: () => setState(
+                              () => _addDeletablePhoneNumberField(
                                 cubit,
                                 context,
-                                UniqueKey(),
-                              );
-                            }),
+                              ),
+                            ),
                           ),
                         ),
                         const Gap(16),
