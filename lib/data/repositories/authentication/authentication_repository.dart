@@ -74,40 +74,42 @@ class AuthRepository with Loggable {
       'Either email or token must be passed',
     );
 
-    late Response<Map<String, dynamic>> response;
-
     try {
-      response = await _service.getSystemUser(
+      final response = await _service.getSystemUser(
         authorization:
             email != null && token != null ? 'Token $email:$token' : null,
       );
-    } catch (e) {
-      logFailedResponse(response, name: 'Fetch User');
-      throw FailedToRetrieveUserException(
-        statusCode: response.statusCode,
-        error: response.error.toString(),
+
+      if (response.error
+          .toString()
+          .contains('You need to change your password in the portal')) {
+        throw NeedToChangePasswordException();
+      }
+
+      final systemUser = _SystemUserResponse.fromJson(
+        response.body!,
       );
+
+      ForceUpdateSettings()(
+        {
+          CallSetting.mobileNumber: systemUser.mobileNumber ?? '',
+          CallSetting.outgoingNumber:
+          OutgoingNumber.fromJson(systemUser.outgoingCli ?? ''),
+        },
+      );
+
+      return systemUser.toUser();
+
+    } on ChopperHttpException catch (e) {
+      logFailedResponse(e.response, name: 'Fetch User');
+      throw FailedToRetrieveUserException(
+        statusCode: e.response.statusCode,
+        error: e.response.error.toString(),
+      );
+    } catch (e) {
+      logger.severe('Failed to retrieve user: $e');
+      throw FailedToRetrieveUserException();
     }
-
-    if (response.error
-        .toString()
-        .contains('You need to change your password in the portal')) {
-      throw NeedToChangePasswordException();
-    }
-
-    final systemUser = _SystemUserResponse.fromJson(
-      response.body!,
-    );
-
-    ForceUpdateSettings()(
-      {
-        CallSetting.mobileNumber: systemUser.mobileNumber ?? '',
-        CallSetting.outgoingNumber:
-            OutgoingNumber.fromJson(systemUser.outgoingCli ?? ''),
-      },
-    );
-
-    return systemUser.toUser();
   }
 
   /// If null is returned, authentication failed.
