@@ -24,7 +24,7 @@ sealed class RecentCallsState with _$RecentCallsState {
     int page,
   ) = RecentCallsLoaded;
 
-  static const _maxPages = 10;
+  static const _maxPages = 100;
 
   bool get maxPagesLoaded => page == _maxPages;
 }

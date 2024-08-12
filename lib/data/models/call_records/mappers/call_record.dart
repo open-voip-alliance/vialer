@@ -17,6 +17,29 @@ extension FromVoipgridCallRecord on VoipgridCallRecord {
       destination: _mapDestination(to),
     );
   }
+
+  ClientCallRecord toClientCallRecord(List<int> userPhoneAccounts) {
+    final isTargetLoggedInUser = userPhoneAccounts.contains(to.voipAccount?.id);
+    final wasInitiatedByLoggedInUser =
+        userPhoneAccounts.contains(from.voipAccount?.id);
+
+    return ClientCallRecord(
+      id: id,
+      callType: _mapCallType(type),
+      callDirection: _mapDirection(direction),
+      answered: answered,
+      answeredElsewhere: isAnsweredElsewhere,
+      duration: Duration(seconds: durationInSeconds),
+      date: startTime,
+      caller: _mapCaller(from),
+      destination: _mapDestination(to),
+      didTargetColleague: !isTargetLoggedInUser && to.voipAccount != null,
+      didTargetLoggedInUser: isTargetLoggedInUser,
+      wasInitiatedByColleague:
+          !wasInitiatedByLoggedInUser && from.voipAccount != null,
+      wasInitiatedByLoggedInUser: wasInitiatedByLoggedInUser,
+    );
+  }
 }
 
 CallType _mapCallType(String type) =>
