@@ -7,7 +7,6 @@ import 'package:timezone/data/latest.dart';
 import 'package:vialer/domain/usecases/user/settings/import_legacy_settings.dart';
 import 'package:vialer/presentation/util/global_bloc_provider.dart';
 import 'package:vialer/presentation/util/screen_reader.dart';
-import 'package:vialer/presentation/util/vialer_upgrade_alert.dart';
 
 import '../data/models/event/event_bus.dart';
 import '../data/repositories/env.dart';
@@ -119,7 +118,7 @@ class _AppState extends State<App> {
                     ErrorWidget.builder = (_) => const BuildError();
                   }
 
-                  return GentleUpdateReminder(child: child!);
+                  return child!;
                 },
               ),
             );

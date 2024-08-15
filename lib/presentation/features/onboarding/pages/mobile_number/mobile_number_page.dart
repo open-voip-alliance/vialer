@@ -37,9 +37,11 @@ class _MobileNumberPageState extends State<MobileNumberPage> {
   MobileNumberCubit _createCubit() {
     final cubit = MobileNumberCubit();
     WidgetsBinding.instance.addPostFrameCallback(
-      (_) => setState(() {
-        _mobileNumberController.text = cubit.state.mobileNumber;
-      }),
+      (_) => mounted
+          ? setState(() {
+              _mobileNumberController.text = cubit.state.mobileNumber;
+            })
+          : null,
     );
 
     _mobileNumberController.addListener(() {

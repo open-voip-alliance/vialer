@@ -25,6 +25,7 @@ import '../shared/widgets/notice/widget.dart';
 import '../shared/widgets/survey_triggerer/widget.dart';
 import '../shared/widgets/transparent_status_bar.dart';
 import '../shared/widgets/user_data_refresher/widget.dart';
+import '../util/vialer_upgrade_alert.dart';
 import 'call/widgets/call_button.dart';
 import 'colltacts/controllers/colleagues/cubit.dart';
 import 'colltacts/controllers/contacts/cubit.dart';
@@ -154,99 +155,102 @@ class MainPageState extends ConsumerState<MainPage> {
   Widget build(BuildContext context) {
     _listenForMessagingSurveyStateChanges();
 
-    return MultiWidgetParent(
-      [
-        (child) => SurveyTriggerer(child: child),
-        (child) => AppUpdateChecker.create(child: child),
-        (child) => BlocProvider<SettingsCubit>(
-              create: (_) => SettingsCubit(),
-              child: child,
-            ),
-        (child) => MultiWidgetChildWithDependencies(
-              builder: (context) {
-                return BlocProvider<UserAvailabilityStatusCubit>(
-                  create: (_) => UserAvailabilityStatusCubit(
-                    context.watch<SettingsCubit>(),
-                  ),
-                  child: child,
-                );
-              },
-            ),
-        (child) => MultiWidgetChildWithDependencies(
-              builder: (context) {
-                return BlocProvider<ColleaguesCubit>(
-                  create: (_) => ColleaguesCubit(context.watch<CallerCubit>()),
-                  child: child,
-                );
-              },
-            ),
-        (child) => Builder(
-              builder: (context) {
-                return BlocProvider<ColltactsTabsCubit>(
-                  create: (_) => ColltactsTabsCubit(
-                    context.watch<ContactsCubit>(),
-                    context.watch<ColleaguesCubit>(),
-                    context.watch<SharedContactsCubit>(),
-                  ),
-                  child: child,
-                );
-              },
-            ),
-        (child) => BuildWebSocketDependantCubitsThenConnect(
-              child: child,
-            ),
-      ],
-      Scaffold(
-        resizeToAvoidBottomInset: false,
-        floatingActionButton: !_isOnProfilePage && !_dialerIsPage
-            ? AnimatedContainer(
-                duration: const Duration(milliseconds: 100),
-                curve: Curves.decelerate,
-                padding: _currentIndex == 1
-                    // TODO: Ideally this value should not be hardcoded. Now
-                    // it's not responsive to e.g. font size changes.
-                    ? const EdgeInsets.only(bottom: 64)
-                    : EdgeInsets.zero,
-                child: SizedBox(
-                  height: 62,
-                  width: 62,
-                  child: MergeSemantics(
-                    child: Semantics(
-                      label: context.msg.main.dialer.title,
-                      child: FloatingActionButton(
-                        // We use the CallButton's hero tag for a nice
-                        // transition between the dialer and call button.
-                        heroTag: CallButton.defaultHeroTag,
-                        foregroundColor: Colors.white,
-                        backgroundColor: context.brand.theme.colors.green1,
-                        onPressed: () => unawaited(
-                          Navigator.pushNamed(context, Routes.dialer),
-                        ),
-                        shape: CircleBorder(),
-                        child: const Icon(
-                          Icons.dialpad,
-                          size: 31,
+    return GentleUpdateReminder(
+      child: MultiWidgetParent(
+        [
+          (child) => SurveyTriggerer(child: child),
+          (child) => AppUpdateChecker.create(child: child),
+          (child) => BlocProvider<SettingsCubit>(
+                create: (_) => SettingsCubit(),
+                child: child,
+              ),
+          (child) => MultiWidgetChildWithDependencies(
+                builder: (context) {
+                  return BlocProvider<UserAvailabilityStatusCubit>(
+                    create: (_) => UserAvailabilityStatusCubit(
+                      context.watch<SettingsCubit>(),
+                    ),
+                    child: child,
+                  );
+                },
+              ),
+          (child) => MultiWidgetChildWithDependencies(
+                builder: (context) {
+                  return BlocProvider<ColleaguesCubit>(
+                    create: (_) =>
+                        ColleaguesCubit(context.watch<CallerCubit>()),
+                    child: child,
+                  );
+                },
+              ),
+          (child) => Builder(
+                builder: (context) {
+                  return BlocProvider<ColltactsTabsCubit>(
+                    create: (_) => ColltactsTabsCubit(
+                      context.watch<ContactsCubit>(),
+                      context.watch<ColleaguesCubit>(),
+                      context.watch<SharedContactsCubit>(),
+                    ),
+                    child: child,
+                  );
+                },
+              ),
+          (child) => BuildWebSocketDependantCubitsThenConnect(
+                child: child,
+              ),
+        ],
+        Scaffold(
+          resizeToAvoidBottomInset: false,
+          floatingActionButton: !_isOnProfilePage && !_dialerIsPage
+              ? AnimatedContainer(
+                  duration: const Duration(milliseconds: 100),
+                  curve: Curves.decelerate,
+                  padding: _currentIndex == 1
+                      // TODO: Ideally this value should not be hardcoded. Now
+                      // it's not responsive to e.g. font size changes.
+                      ? const EdgeInsets.only(bottom: 64)
+                      : EdgeInsets.zero,
+                  child: SizedBox(
+                    height: 62,
+                    width: 62,
+                    child: MergeSemantics(
+                      child: Semantics(
+                        label: context.msg.main.dialer.title,
+                        child: FloatingActionButton(
+                          // We use the CallButton's hero tag for a nice
+                          // transition between the dialer and call button.
+                          heroTag: CallButton.defaultHeroTag,
+                          foregroundColor: Colors.white,
+                          backgroundColor: context.brand.theme.colors.green1,
+                          onPressed: () => unawaited(
+                            Navigator.pushNamed(context, Routes.dialer),
+                          ),
+                          shape: CircleBorder(),
+                          child: const Icon(
+                            Icons.dialpad,
+                            size: 31,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              )
-            : null,
-        bottomNavigationBar: _BottomNavigationBar(
-          currentIndex: _currentIndex!,
-          dialerIsPage: _dialerIsPage,
-          onTap: _navigateTo,
-          displayMessagingSurveyItem: _showMessagingSurvey,
-        ),
-        body: TransparentStatusBar(
-          child: UserDataRefresher(
-            child: ConnectivityAlert(
-              child: SafeArea(
-                child: Notice(
-                  child: _AnimatedIndexedStack(
-                    index: _currentIndex!,
-                    children: _pages!,
+                )
+              : null,
+          bottomNavigationBar: _BottomNavigationBar(
+            currentIndex: _currentIndex!,
+            dialerIsPage: _dialerIsPage,
+            onTap: _navigateTo,
+            displayMessagingSurveyItem: _showMessagingSurvey,
+          ),
+          body: TransparentStatusBar(
+            child: UserDataRefresher(
+              child: ConnectivityAlert(
+                child: SafeArea(
+                  child: Notice(
+                    child: _AnimatedIndexedStack(
+                      index: _currentIndex!,
+                      children: _pages!,
+                    ),
                   ),
                 ),
               ),
