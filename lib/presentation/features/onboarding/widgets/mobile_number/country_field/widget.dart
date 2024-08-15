@@ -58,11 +58,13 @@ class CountryFlagFieldState<T extends CountryFlagField> extends State<T> {
     Country? country, {
     bool updateTextField = true,
   }) =>
-      setState(() {
-        selectedCountry = country;
-        if (country == null || !updateTextField) return null;
-        widget.controller.text = '+${country.callingCode}';
-      });
+      mounted
+          ? setState(() {
+              selectedCountry = country;
+              if (country == null || !updateTextField) return null;
+              widget.controller.text = '+${country.callingCode}';
+            })
+          : null;
 
   @override
   Widget build(BuildContext context) {

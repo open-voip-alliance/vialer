@@ -94,12 +94,11 @@ class AuthRepository with Loggable {
         {
           CallSetting.mobileNumber: systemUser.mobileNumber ?? '',
           CallSetting.outgoingNumber:
-          OutgoingNumber.fromJson(systemUser.outgoingCli ?? ''),
+              OutgoingNumber.fromJson(systemUser.outgoingCli ?? ''),
         },
       );
 
       return systemUser.toUser();
-
     } on ChopperHttpException catch (e) {
       logFailedResponse(e.response, name: 'Fetch User');
       throw FailedToRetrieveUserException(

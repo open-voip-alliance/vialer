@@ -112,49 +112,44 @@ class OnboardingPageState extends State<OnboardingPage> {
   Widget build(BuildContext context) {
     return KeyboardDismissOnTap(
       dismissOnCapturedTaps: true,
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        resizeToAvoidBottomInset: false,
-        body: BlocProvider<OnboardingCubit>(
-          create: (_) => OnboardingCubit(
-            context.watch<CallerCubit>(),
-          ),
-          child: BlocConsumer<OnboardingCubit, OnboardingState>(
-            listener: _onStateChange,
-            builder: (context, state) {
-              return Background(
-                style: state.currentStep.asBackgroundStyle(),
-                child: PopScope(
-                  onPopInvokedWithResult: (_, __) async => _backward(context),
-                  child: DefaultTextStyle(
-                    style: const TextStyle(color: Colors.black),
-                    child: IconTheme(
-                      data: const IconThemeData(color: Colors.white),
-                      child: PageView(
-                        controller: pageController,
-                        physics: const NeverScrollableScrollPhysics(),
-                        children: currentPages.entries.map((entry) {
-                          final page = entry.value;
-                          return Semantics(
-                            explicitChildNodes: true,
-                            child: SafeArea(
-                              child: Provider<EdgeInsets>(
-                                create: (_) =>
-                                    const EdgeInsets.all(48).copyWith(
-                                  top: 128,
-                                  bottom: 32,
-                                ),
-                                child: page(context),
-                              ),
-                            ),
-                          );
-                        }).toList(),
+      child: Provider<EdgeInsets>(
+        create: (_) => const EdgeInsets.all(48).copyWith(top: 128, bottom: 32),
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          resizeToAvoidBottomInset: false,
+          body: BlocProvider<OnboardingCubit>(
+            create: (_) => OnboardingCubit(context.watch<CallerCubit>()),
+            child: BlocConsumer<OnboardingCubit, OnboardingState>(
+              listener: _onStateChange,
+              buildWhen: (prev, current) =>
+                  prev.currentStep.asBackgroundStyle() !=
+                  current.currentStep.asBackgroundStyle(),
+              builder: (context, state) {
+                return Background(
+                  style: state.currentStep.asBackgroundStyle(),
+                  child: PopScope(
+                    onPopInvokedWithResult: (_, __) async => _backward(context),
+                    child: DefaultTextStyle(
+                      style: const TextStyle(color: Colors.black),
+                      child: IconTheme(
+                        data: const IconThemeData(color: Colors.white),
+                        child: PageView(
+                          controller: pageController,
+                          physics: const NeverScrollableScrollPhysics(),
+                          children: currentPages.entries.map((entry) {
+                            final page = entry.value;
+                            return Semantics(
+                              explicitChildNodes: true,
+                              child: SafeArea(child: page(context)),
+                            );
+                          }).toList(),
+                        ),
                       ),
                     ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
         ),
       ),
