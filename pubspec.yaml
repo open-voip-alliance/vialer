@@ -74,7 +74,6 @@ dependencies:
   device_info_plus: ^9.1.2
   country_codes: ^2.2.0
   res_client: ^0.8.6
-  installed_apps: ^1.5.0
   expandable_page_view: ^1.0.17
   upgrader: ^10.3.0
 
