@@ -4,9 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:vialer/data/models/feature/has_feature.dart';
-import 'package:vialer/presentation/features/messaging_survey/controllers/riverpod.dart';
-import 'package:vialer/presentation/features/messaging_survey/messaging_survey_page.dart';
 import 'package:vialer/presentation/features/relations/widgets/widget.dart';
 import 'package:vialer/presentation/features/settings/controllers/cubit.dart';
 import 'package:vialer/presentation/resources/localizations.dart';
@@ -16,7 +13,6 @@ import 'package:vialer/presentation/shared/controllers/user_availability_status_
 import 'package:vialer/presentation/shared/widgets/bottom_navigation_profile_icon.dart';
 
 import '../../../presentation/util/pigeon_extensions.dart';
-import '../../data/models/feature/feature.dart';
 import '../routes.dart';
 import '../shared/widgets/app_update_checker/widget.dart';
 import '../shared/widgets/connectivity_alert.dart';
@@ -58,11 +54,6 @@ class MainPageState extends ConsumerState<MainPage> {
   ];
 
   final _navigatorKey = GlobalKey<NavigatorState>();
-
-  bool get _showMessagingSurvey =>
-      context.isAndroid &&
-      hasFeature(Feature.messagingAppsSurvey) &&
-      ref.read(messagingSurveyControllerProvider) is Ready;
 
   void navigateTo(MainPageTab tab) =>
       unawaited(_navigateTo(_dialerIsPage ? tab.index : tab.index - 1));
@@ -128,7 +119,6 @@ class MainPageState extends ConsumerState<MainPage> {
         snackBarPadding:
             !_dialerIsPage ? const EdgeInsets.only(right: 72) : EdgeInsets.zero,
       ),
-      if (_showMessagingSurvey) const MessagingSurveyPage(),
       SettingsPage(navigatorKey: _navigatorKey),
     ];
 
@@ -138,23 +128,8 @@ class MainPageState extends ConsumerState<MainPage> {
   bool get _isOnProfilePage =>
       (_pages ?? [])[_currentIndex ?? 0] is SettingsPage;
 
-  void _listenForMessagingSurveyStateChanges() => ref.listen(
-        messagingSurveyControllerProvider,
-        (_, state) {
-          if (state is Completed) {
-            // If the user has completed the survey we need to remove the new
-            // bottom navigation bar item and then put the user back to the
-            // first page.
-            _initializePages();
-            navigateTo(MainPageTab.contacts);
-          }
-        },
-      );
-
   @override
   Widget build(BuildContext context) {
-    _listenForMessagingSurveyStateChanges();
-
     return GentleUpdateReminder(
       child: MultiWidgetParent(
         [
@@ -240,7 +215,6 @@ class MainPageState extends ConsumerState<MainPage> {
             currentIndex: _currentIndex!,
             dialerIsPage: _dialerIsPage,
             onTap: _navigateTo,
-            displayMessagingSurveyItem: _showMessagingSurvey,
           ),
           body: TransparentStatusBar(
             child: UserDataRefresher(
@@ -267,13 +241,11 @@ class _BottomNavigationBar extends StatelessWidget {
     required this.currentIndex,
     required this.onTap,
     this.dialerIsPage = false,
-    this.displayMessagingSurveyItem = true,
   });
 
   final int currentIndex;
   final ValueChanged<int> onTap;
   final bool dialerIsPage;
-  final bool displayMessagingSurveyItem;
 
   @override
   Widget build(BuildContext context) {
@@ -305,12 +277,6 @@ class _BottomNavigationBar extends StatelessWidget {
             selectedIcon: const FaIcon(FontAwesomeIcons.solidClockRotateLeft),
             label: context.msg.main.recent.menu.title,
           ),
-          if (displayMessagingSurveyItem)
-            NavigationDestination(
-              icon: const FaIcon(FontAwesomeIcons.comments),
-              selectedIcon: const FaIcon(FontAwesomeIcons.solidComments),
-              label: context.msg.main.survey.menu.title,
-            ),
           NavigationDestination(
             icon: const BottomNavigationProfileIcon(active: false),
             selectedIcon: const BottomNavigationProfileIcon(active: true),
