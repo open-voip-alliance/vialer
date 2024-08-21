@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:vialer/domain/usecases/user/settings/change_setting.dart';
 
 import '../../../../../dependency_locator.dart';
-import '../../../../../domain/usecases/call_records/client/purge_local_call_records.dart';
 import '../../../../repositories/voipgrid/user_permissions.dart';
 import '../../settings/app_setting.dart';
 import '../../user.dart';
@@ -37,10 +36,6 @@ class RefreshVoipgridUserPermissions extends UserRefreshTaskPerformer {
 
   User _applyPermissionsSideEffects(Permissions permissions, User user) {
     if (permissions.contains(Permission.canSeeClientCalls)) return user;
-
-    unawaited(
-      PurgeLocalCallRecordsUseCase()(reason: PurgeReason.permissionFailed),
-    );
 
     var newUser = user;
 
