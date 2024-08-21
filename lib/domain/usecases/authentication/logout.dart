@@ -3,7 +3,6 @@ import 'dart:async';
 import '../../../data/models/event/event_bus.dart';
 import '../../../data/repositories/legacy/storage.dart';
 import '../../../dependency_locator.dart';
-import '../call_records/client/purge_local_call_records.dart';
 import '../calling/voip/stop_voip.dart';
 import '../use_case.dart';
 import '../user/get_logged_in_user.dart';
@@ -16,7 +15,6 @@ class Logout extends UseCase {
 
   final _getUser = GetLoggedInUserUseCase();
   final _stopVoip = StopVoipUseCase();
-  final _purgeClientCalls = PurgeLocalCallRecordsUseCase();
   final _preserveCrossSessionSettings =
       ClearStorageAndPreserveCrossSessionSettings();
 
@@ -37,8 +35,6 @@ class Logout extends UseCase {
     _storageRepository
       ..pushToken = pushToken
       ..remoteNotificationToken = remoteNotificationToken;
-
-    await _purgeClientCalls(reason: PurgeReason.logout);
 
     _eventBus.broadcast(const UserWasLoggedOutEvent());
   }
