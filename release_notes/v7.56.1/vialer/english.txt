@@ -1,0 +1,3 @@
+- The bottom navigation bar has been redesigned
+- Changing your mobile number or outgoing number will now display as a pop-up rather than in the page, making it easier to use with screen-readers
+- iOS: The recent call list will automatically refresh after a call
