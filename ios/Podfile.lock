@@ -1,6 +1,6 @@
 PODS:
   - Alamofire (5.9.1)
-  - Amplitude (8.19.3):
+  - Amplitude (8.20.0):
     - AnalyticsConnector (~> 1.0.0)
   - Analytics (4.1.6)
   - AnalyticsConnector (1.0.3)
@@ -34,7 +34,7 @@ PODS:
     - PhoneNumberKit/PhoneNumberKitCore (= 3.7.9)
   - flutter_phone_lib (0.0.1):
     - Flutter
-    - iOSPhoneLib (= 0.1.9)
+    - iOSPhoneLib (= 0.1.11)
   - flutter_segment_sdk (3.13.1):
     - Analytics (= 4.1.6)
     - Flutter
@@ -44,7 +44,7 @@ PODS:
     - Flutter
   - integration_test (0.0.1):
     - Flutter
-  - iOSPhoneLib (0.1.9):
+  - iOSPhoneLib (0.1.11):
     - Swinject (~> 2.8.2)
   - le (1.2)
   - libphonenumber (0.0.1):
@@ -78,16 +78,16 @@ PODS:
   - shared_preferences_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
-  - "sqlite3 (3.46.0+1)":
-    - "sqlite3/common (= 3.46.0+1)"
-  - "sqlite3/common (3.46.0+1)"
-  - "sqlite3/dbstatvtab (3.46.0+1)":
+  - "sqlite3 (3.46.1+1)":
+    - "sqlite3/common (= 3.46.1+1)"
+  - "sqlite3/common (3.46.1+1)"
+  - "sqlite3/dbstatvtab (3.46.1+1)":
     - sqlite3/common
-  - "sqlite3/fts5 (3.46.0+1)":
+  - "sqlite3/fts5 (3.46.1+1)":
     - sqlite3/common
-  - "sqlite3/perf-threadsafe (3.46.0+1)":
+  - "sqlite3/perf-threadsafe (3.46.1+1)":
     - sqlite3/common
-  - "sqlite3/rtree (3.46.0+1)":
+  - "sqlite3/rtree (3.46.1+1)":
     - sqlite3/common
   - sqlite3_flutter_libs (0.0.1):
     - Flutter
@@ -197,7 +197,7 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   Alamofire: f36a35757af4587d8e4f4bfa223ad10be2422b8c
-  Amplitude: d9f5d6cd3f9b0202781d5fdeb430d0690ac7f67a
+  Amplitude: ff1f937ebc56d1bd59067ed306e31b37a54535b6
   Analytics: eefe524436f904b8bb3f8c8c3425280e43b34efc
   AnalyticsConnector: a53214d38ae22734c6266106c0492b37832633a9
   AppsFlyerFramework: 88a6eed37ad52bcee4ad74232efa8e22809d06c9
@@ -210,11 +210,11 @@ SPEC CHECKSUMS:
   flutter_inappwebview_ios: 97215cf7d4677db55df76782dbd2930c5e1c1ea0
   flutter_keyboard_visibility: 0339d06371254c3eb25eeb90ba8d17dca8f9c069
   flutter_libphonenumber_ios: eb22e6f6e97c9604805f00bff961ca397071dfdc
-  flutter_phone_lib: 695d2ce126a72f35a04c3d76ddcea7ec94c3e4ae
+  flutter_phone_lib: 40cdfa8365e787c28a86e94d02bcb42baa04089a
   flutter_segment_sdk: 1f10af57ddcee29dedf01bb37800f8301c89b307
   in_app_review: 318597b3a06c22bb46dc454d56828c85f444f99d
   integration_test: 252f60fa39af5e17c3aa9899d35d908a0721b573
-  iOSPhoneLib: fe36a48e818fd51b96cabccb9037fa9350fa8667
+  iOSPhoneLib: 24544e7b71c6601830bac2396ac0450083462b95
   le: 6854003e293bf5b3cb822ef06971f1cc23a77eb9
   libphonenumber: bd14d5abfc5939ab0b0767234e2d8e2593af258e
   libPhoneNumber-iOS: 0a32a9525cf8744fe02c5206eb30d571e38f7d75
@@ -229,7 +229,7 @@ SPEC CHECKSUMS:
   Sentry: cd86fc55628f5b7c572cabe66cc8f95a9d2f165a
   sentry_flutter: 0cf2507eb90ff7a6aa3304e900dd7f08edbbefdf
   shared_preferences_foundation: fcdcbc04712aee1108ac7fda236f363274528f78
-  sqlite3: 292c3e1bfe89f64e51ea7fc7dab9182a017c8630
+  sqlite3: 0bb0e6389d824e40296f531b858a2a0b71c0d2fb
   sqlite3_flutter_libs: c00457ebd31e59fa6bb830380ddba24d44fbcd3b
   Swinject: 2943463cdd58b49f114213bf1ce4a09f374828e7
   url_launcher_ios: 5334b05cef931de560670eeae103fd3e431ac3fe
