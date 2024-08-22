@@ -6,10 +6,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../data/models/call_records/call_record.dart';
-import '../../../../../data/repositories/call_records/client/local_client_calls.dart';
 import '../../../../../dependency_locator.dart';
 import '../../../../../domain/usecases/call_records/client/get_recent_client_calls.dart';
-import '../../../../../domain/usecases/call_records/client/import_new_client_calls.dart';
 import '../../../../../domain/usecases/call_records/personal/get_recent_calls.dart';
 import '../../../../../domain/usecases/metrics/track_copy_number.dart';
 import '../../../shared/controllers/caller/cubit.dart';
@@ -58,11 +56,6 @@ class RecentCallsCubit extends Cubit<RecentCallsState> {
     }
   }
 
-  Future<void> performBackgroundImport() async {
-    // Personal calls require API calls so there is never any background
-    // import.
-  }
-
   Future<void> _loadRecentCalls({required int page}) async {
     final newlyFetchedCalls = await _fetch(page: page);
     final existingCalls = state.callRecords.keepRecordsIfNecessary(page);
@@ -92,22 +85,10 @@ class RecentCallsCubit extends Cubit<RecentCallsState> {
 }
 
 class ClientCallsCubit extends RecentCallsCubit {
-  ClientCallsCubit(super.caller) {
-    unawaited(
-      _localClientCalls.watch().then(
-            (value) => value.listen(
-              (event) {
-                refreshRecentCalls();
-              },
-            ),
-          ),
-    );
-  }
-
   final _getRecentClientCalls =
       dependencyLocator<GetRecentClientCallsUseCase>();
-  final _importNewClientCalls = ImportNewClientCallRecordsUseCase();
-  final _localClientCalls = dependencyLocator<LocalClientCallsRepository>();
+
+  ClientCallsCubit(super.caller);
 
   @override
   Future<List<ClientCallRecordWithContact>> _fetch({required int page}) =>
@@ -115,29 +96,6 @@ class ClientCallsCubit extends RecentCallsCubit {
         page: page,
         onlyMissedCalls: onlyMissedCalls,
       );
-
-  @override
-  Future<void> performBackgroundImport() => _importNewClientCalls();
-
-  @override
-  Future<void> refreshRecentCalls() async {
-    emit(RefreshingRecentCalls(state.callRecords, state.page));
-
-    await _loadRecentCalls(page: 1);
-  }
-
-  @override
-  Future<void> _loadRecentCalls({required int page}) async {
-    final newlyFetchedCalls = await _fetch(page: page);
-    final existingCalls = state.callRecords.keepRecordsIfNecessary(page);
-
-    final calls = (existingCalls + newlyFetchedCalls)
-        .distinct()
-        .sortedByDescending((record) => record.date)
-        .toList();
-
-    emit(RecentCallsLoaded(calls, page));
-  }
 }
 
 extension on List<CallRecord> {

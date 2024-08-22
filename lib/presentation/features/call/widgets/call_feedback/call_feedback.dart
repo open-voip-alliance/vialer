@@ -7,6 +7,8 @@ import 'package:vialer/presentation/resources/localizations.dart';
 import 'package:vialer/presentation/resources/theme.dart';
 
 import '../../../../../../data/models/feedback/call_problem.dart';
+import '../../../../../data/repositories/legacy/storage.dart';
+import '../../../../../dependency_locator.dart';
 import 'call_rating.dart';
 import 'select_audio_problems.dart';
 import 'select_call_problem.dart';
@@ -44,6 +46,8 @@ class _CallFeedbackState extends State<CallFeedback> {
   /// callback.
   var _result = CallFeedbackResult.fresh();
 
+  late final _storage = dependencyLocator<StorageRepository>();
+
   /// The current stage that should be rendered, this is determined by the
   /// data within the [_result] object.
   CallFeedbackStage get _stage {
@@ -74,7 +78,8 @@ class _CallFeedbackState extends State<CallFeedback> {
       // The call feedback should only be automatically dismissed if the user
       // doesn't want to engage with it, therefore they are still on the first
       // stage.
-      if (_stage == CallFeedbackStage.rateCall) {
+      if (_stage == CallFeedbackStage.rateCall &&
+          !_storage.isUsingScreenReader) {
         SemanticsService.announce(
           context.msg.main.call.feedback.rating.semantics
               .callRatingDialogDismissal,

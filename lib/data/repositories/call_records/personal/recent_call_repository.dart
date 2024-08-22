@@ -34,21 +34,19 @@ class RecentCallRepository with Loggable {
 
     final objects = response.body ?? const [];
 
-    if (objects.isEmpty) {
-      return <CallRecord>[];
-    } else {
-      var callRecords = objects.map(
-        (dynamic jsonObject) => VoipgridCallRecord.fromJson(
-          jsonObject as Map<String, dynamic>,
-        ).toCallRecord(),
-      );
+    if (objects.isEmpty) return const [];
 
-      // Restrict the missed calls only to incoming ones.
-      if (onlyMissedCalls) {
-        callRecords = callRecords.filter((contact) => contact.isInbound);
-      }
+    var callRecords = objects.map(
+      (dynamic jsonObject) => VoipgridCallRecord.fromJson(
+        jsonObject as Map<String, dynamic>,
+      ).toCallRecord(),
+    );
 
-      return callRecords.toList();
+    // Restrict the missed calls only to incoming ones.
+    if (onlyMissedCalls) {
+      callRecords = callRecords.filter((contact) => contact.isInbound);
     }
+
+    return callRecords.toList();
   }
 }

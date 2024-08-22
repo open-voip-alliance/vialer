@@ -37,9 +37,11 @@ class _MobileNumberPageState extends State<MobileNumberPage> {
   MobileNumberCubit _createCubit() {
     final cubit = MobileNumberCubit();
     WidgetsBinding.instance.addPostFrameCallback(
-      (_) => setState(() {
-        _mobileNumberController.text = cubit.state.mobileNumber;
-      }),
+      (_) => mounted
+          ? setState(() {
+              _mobileNumberController.text = cubit.state.mobileNumber;
+            })
+          : null,
     );
 
     _mobileNumberController.addListener(() {
@@ -132,23 +134,10 @@ class _MobileNumberPageState extends State<MobileNumberPage> {
                       StylizedTextField(
                         key: MobileNumberPage.keys.field,
                         bordered: true,
-                        prefixWidget: IntrinsicHeight(
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              CountryFlagField.create(
-                                controller: _mobileNumberController,
-                                focusNode: _mobileNumberFocusNode,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(right: 6),
-                                child: VerticalDivider(
-                                  thickness: 1,
-                                  color: context.brand.theme.colors.grey1,
-                                ),
-                              ),
-                            ],
-                          ),
+                        prefixWidget: CountryFlagField(
+                          controller: _mobileNumberController,
+                          focusNode: _mobileNumberFocusNode,
+                          initialValue: _mobileNumberController.text,
                         ),
                         controller: _mobileNumberController,
                         focusNode: _mobileNumberFocusNode,

@@ -4,9 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:vialer/data/models/feature/has_feature.dart';
-import 'package:vialer/presentation/features/messaging_survey/controllers/riverpod.dart';
-import 'package:vialer/presentation/features/messaging_survey/messaging_survey_page.dart';
 import 'package:vialer/presentation/features/relations/widgets/widget.dart';
 import 'package:vialer/presentation/features/settings/controllers/cubit.dart';
 import 'package:vialer/presentation/resources/localizations.dart';
@@ -16,7 +13,6 @@ import 'package:vialer/presentation/shared/controllers/user_availability_status_
 import 'package:vialer/presentation/shared/widgets/bottom_navigation_profile_icon.dart';
 
 import '../../../presentation/util/pigeon_extensions.dart';
-import '../../data/models/feature/feature.dart';
 import '../routes.dart';
 import '../shared/widgets/app_update_checker/widget.dart';
 import '../shared/widgets/connectivity_alert.dart';
@@ -25,6 +21,7 @@ import '../shared/widgets/notice/widget.dart';
 import '../shared/widgets/survey_triggerer/widget.dart';
 import '../shared/widgets/transparent_status_bar.dart';
 import '../shared/widgets/user_data_refresher/widget.dart';
+import '../util/vialer_upgrade_alert.dart';
 import 'call/widgets/call_button.dart';
 import 'colltacts/controllers/colleagues/cubit.dart';
 import 'colltacts/controllers/contacts/cubit.dart';
@@ -57,11 +54,6 @@ class MainPageState extends ConsumerState<MainPage> {
   ];
 
   final _navigatorKey = GlobalKey<NavigatorState>();
-
-  bool get _showMessagingSurvey =>
-      context.isAndroid &&
-      hasFeature(Feature.messagingAppsSurvey) &&
-      ref.read(messagingSurveyControllerProvider) is Ready;
 
   void navigateTo(MainPageTab tab) =>
       unawaited(_navigateTo(_dialerIsPage ? tab.index : tab.index - 1));
@@ -127,7 +119,6 @@ class MainPageState extends ConsumerState<MainPage> {
         snackBarPadding:
             !_dialerIsPage ? const EdgeInsets.only(right: 72) : EdgeInsets.zero,
       ),
-      if (_showMessagingSurvey) const MessagingSurveyPage(),
       SettingsPage(navigatorKey: _navigatorKey),
     ];
 
@@ -137,116 +128,103 @@ class MainPageState extends ConsumerState<MainPage> {
   bool get _isOnProfilePage =>
       (_pages ?? [])[_currentIndex ?? 0] is SettingsPage;
 
-  void _listenForMessagingSurveyStateChanges() => ref.listen(
-        messagingSurveyControllerProvider,
-        (_, state) {
-          if (state is Completed) {
-            // If the user has completed the survey we need to remove the new
-            // bottom navigation bar item and then put the user back to the
-            // first page.
-            _initializePages();
-            navigateTo(MainPageTab.contacts);
-          }
-        },
-      );
-
   @override
   Widget build(BuildContext context) {
-    _listenForMessagingSurveyStateChanges();
-
-    return MultiWidgetParent(
-      [
-        (child) => SurveyTriggerer(child: child),
-        (child) => AppUpdateChecker.create(child: child),
-        (child) => BlocProvider<SettingsCubit>(
-              create: (_) => SettingsCubit(),
-              child: child,
-            ),
-        (child) => MultiWidgetChildWithDependencies(
-              builder: (context) {
-                return BlocProvider<UserAvailabilityStatusCubit>(
-                  create: (_) => UserAvailabilityStatusCubit(
-                    context.watch<SettingsCubit>(),
-                  ),
-                  child: child,
-                );
-              },
-            ),
-        (child) => MultiWidgetChildWithDependencies(
-              builder: (context) {
-                return BlocProvider<ColleaguesCubit>(
-                  create: (_) => ColleaguesCubit(context.watch<CallerCubit>()),
-                  child: child,
-                );
-              },
-            ),
-        (child) => Builder(
-              builder: (context) {
-                return BlocProvider<ColltactsTabsCubit>(
-                  create: (_) => ColltactsTabsCubit(
-                    context.watch<ContactsCubit>(),
-                    context.watch<ColleaguesCubit>(),
-                    context.watch<SharedContactsCubit>(),
-                  ),
-                  child: child,
-                );
-              },
-            ),
-        (child) => BuildWebSocketDependantCubitsThenConnect(
-              child: child,
-            ),
-      ],
-      Scaffold(
-        resizeToAvoidBottomInset: false,
-        floatingActionButton: !_isOnProfilePage && !_dialerIsPage
-            ? AnimatedContainer(
-                duration: const Duration(milliseconds: 100),
-                curve: Curves.decelerate,
-                padding: _currentIndex == 1
-                    // TODO: Ideally this value should not be hardcoded. Now
-                    // it's not responsive to e.g. font size changes.
-                    ? const EdgeInsets.only(bottom: 64)
-                    : EdgeInsets.zero,
-                child: SizedBox(
-                  height: 62,
-                  width: 62,
-                  child: MergeSemantics(
-                    child: Semantics(
-                      label: context.msg.main.dialer.title,
-                      child: FloatingActionButton(
-                        // We use the CallButton's hero tag for a nice
-                        // transition between the dialer and call button.
-                        heroTag: CallButton.defaultHeroTag,
-                        foregroundColor: Colors.white,
-                        backgroundColor: context.brand.theme.colors.green1,
-                        onPressed: () => unawaited(
-                          Navigator.pushNamed(context, Routes.dialer),
-                        ),
-                        shape: CircleBorder(),
-                        child: const Icon(
-                          Icons.dialpad,
-                          size: 31,
+    return GentleUpdateReminder(
+      child: MultiWidgetParent(
+        [
+          (child) => SurveyTriggerer(child: child),
+          (child) => AppUpdateChecker.create(child: child),
+          (child) => BlocProvider<SettingsCubit>(
+                create: (_) => SettingsCubit(),
+                child: child,
+              ),
+          (child) => MultiWidgetChildWithDependencies(
+                builder: (context) {
+                  return BlocProvider<UserAvailabilityStatusCubit>(
+                    create: (_) => UserAvailabilityStatusCubit(
+                      context.watch<SettingsCubit>(),
+                    ),
+                    child: child,
+                  );
+                },
+              ),
+          (child) => MultiWidgetChildWithDependencies(
+                builder: (context) {
+                  return BlocProvider<ColleaguesCubit>(
+                    create: (_) =>
+                        ColleaguesCubit(context.watch<CallerCubit>()),
+                    child: child,
+                  );
+                },
+              ),
+          (child) => Builder(
+                builder: (context) {
+                  return BlocProvider<ColltactsTabsCubit>(
+                    create: (_) => ColltactsTabsCubit(
+                      context.watch<ContactsCubit>(),
+                      context.watch<ColleaguesCubit>(),
+                      context.watch<SharedContactsCubit>(),
+                    ),
+                    child: child,
+                  );
+                },
+              ),
+          (child) => BuildWebSocketDependantCubitsThenConnect(
+                child: child,
+              ),
+        ],
+        Scaffold(
+          resizeToAvoidBottomInset: false,
+          floatingActionButton: !_isOnProfilePage && !_dialerIsPage
+              ? AnimatedContainer(
+                  duration: const Duration(milliseconds: 100),
+                  curve: Curves.decelerate,
+                  padding: _currentIndex == 1
+                      // TODO: Ideally this value should not be hardcoded. Now
+                      // it's not responsive to e.g. font size changes.
+                      ? const EdgeInsets.only(bottom: 64)
+                      : EdgeInsets.zero,
+                  child: SizedBox(
+                    height: 62,
+                    width: 62,
+                    child: MergeSemantics(
+                      child: Semantics(
+                        label: context.msg.main.dialer.title,
+                        child: FloatingActionButton(
+                          // We use the CallButton's hero tag for a nice
+                          // transition between the dialer and call button.
+                          heroTag: CallButton.defaultHeroTag,
+                          foregroundColor: Colors.white,
+                          backgroundColor: context.brand.theme.colors.green1,
+                          onPressed: () => unawaited(
+                            Navigator.pushNamed(context, Routes.dialer),
+                          ),
+                          shape: CircleBorder(),
+                          child: const Icon(
+                            Icons.dialpad,
+                            size: 31,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              )
-            : null,
-        bottomNavigationBar: _BottomNavigationBar(
-          currentIndex: _currentIndex!,
-          dialerIsPage: _dialerIsPage,
-          onTap: _navigateTo,
-          displayMessagingSurveyItem: _showMessagingSurvey,
-        ),
-        body: TransparentStatusBar(
-          child: UserDataRefresher(
-            child: ConnectivityAlert(
-              child: SafeArea(
-                child: Notice(
-                  child: _AnimatedIndexedStack(
-                    index: _currentIndex!,
-                    children: _pages!,
+                )
+              : null,
+          bottomNavigationBar: _BottomNavigationBar(
+            currentIndex: _currentIndex!,
+            dialerIsPage: _dialerIsPage,
+            onTap: _navigateTo,
+          ),
+          body: TransparentStatusBar(
+            child: UserDataRefresher(
+              child: ConnectivityAlert(
+                child: SafeArea(
+                  child: Notice(
+                    child: _AnimatedIndexedStack(
+                      index: _currentIndex!,
+                      children: _pages!,
+                    ),
                   ),
                 ),
               ),
@@ -263,13 +241,11 @@ class _BottomNavigationBar extends StatelessWidget {
     required this.currentIndex,
     required this.onTap,
     this.dialerIsPage = false,
-    this.displayMessagingSurveyItem = true,
   });
 
   final int currentIndex;
   final ValueChanged<int> onTap;
   final bool dialerIsPage;
-  final bool displayMessagingSurveyItem;
 
   @override
   Widget build(BuildContext context) {
@@ -301,12 +277,6 @@ class _BottomNavigationBar extends StatelessWidget {
             selectedIcon: const FaIcon(FontAwesomeIcons.solidClockRotateLeft),
             label: context.msg.main.recent.menu.title,
           ),
-          if (displayMessagingSurveyItem)
-            NavigationDestination(
-              icon: const FaIcon(FontAwesomeIcons.comments),
-              selectedIcon: const FaIcon(FontAwesomeIcons.solidComments),
-              label: context.msg.main.survey.menu.title,
-            ),
           NavigationDestination(
             icon: const BottomNavigationProfileIcon(active: false),
             selectedIcon: const BottomNavigationProfileIcon(active: true),

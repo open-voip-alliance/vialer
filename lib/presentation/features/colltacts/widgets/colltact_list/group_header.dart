@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:vialer/presentation/resources/theme.dart';
 
 class GroupHeader extends StatelessWidget {
@@ -21,14 +20,17 @@ class GroupHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: padding,
-      child: Text(
-        group,
-        style: TextStyle(
-          color: context.isIOS
-              ? context.brand.theme.colors.grey1
-              : context.brand.theme.colors.grey5,
-          fontSize: 16,
-          fontWeight: context.isIOS ? FontWeight.normal : FontWeight.bold,
+      child: Semantics(
+        header: true,
+        child: Text(
+          group,
+          style: TextStyle(
+            color: context.isIOS
+                ? context.brand.theme.colors.grey1
+                : context.brand.theme.colors.grey5,
+            fontSize: 16,
+            fontWeight: context.isIOS ? FontWeight.normal : FontWeight.bold,
+          ),
         ),
       ),
     );

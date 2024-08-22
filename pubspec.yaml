@@ -7,7 +7,7 @@ version: 7.0.0
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
-  flutter: 3.22.1
+  flutter: 3.24.0
 
 dependencies:
   flutter:
@@ -55,7 +55,6 @@ dependencies:
   synchronized: ^3.1.0
   duration: ^3.0.13
   flutter_keyboard_visibility: ^6.0.0
-  drift: ^2.16.0
   recase: ^4.1.0
   watcher: ^1.1.0
   freezed_annotation: ^2.4.1
@@ -74,7 +73,6 @@ dependencies:
   device_info_plus: ^9.1.2
   country_codes: ^2.2.0
   res_client: ^0.8.6
-  installed_apps: ^1.5.0
   expandable_page_view: ^1.0.17
   upgrader: ^10.3.0
 
@@ -95,7 +93,6 @@ dev_dependencies:
   yaml: ^3.1.2
   yaml_edit: ^2.2.0
   glob: ^2.1.2
-  drift_dev: ^2.16.0
   package_config: ^2.1.0
   freezed: ^2.4.7
   riverpod_generator: ^2.4.0

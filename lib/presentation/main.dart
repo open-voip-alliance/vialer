@@ -7,13 +7,13 @@ import 'package:timezone/data/latest.dart';
 import 'package:vialer/domain/usecases/user/settings/import_legacy_settings.dart';
 import 'package:vialer/presentation/util/global_bloc_provider.dart';
 import 'package:vialer/presentation/util/screen_reader.dart';
-import 'package:vialer/presentation/util/vialer_upgrade_alert.dart';
 
 import '../data/models/event/event_bus.dart';
 import '../data/repositories/env.dart';
 import '../data/repositories/error_tracking/error_tracking_repository.dart';
 import '../dependency_locator.dart';
 import '../domain/usecases/authentication/user_was_logged_out.dart';
+import '../domain/usecases/call_records/client/purge_local_call_records.dart';
 import '../domain/usecases/calling/voip/apply_destination_migration.dart';
 import '../domain/usecases/event/register_event_listeners.dart';
 import '../domain/usecases/metrics/initialize_metric_collection.dart';
@@ -52,6 +52,7 @@ Future<void> main() async {
   final user = GetStoredUserUseCase()();
 
   unawaited(PeriodicallyIdentifyForTracking()());
+  RemoveLegacyClientCallRecordsFile()();
 
   if (dsn.isEmpty) {
     runApp(const App());
@@ -119,7 +120,7 @@ class _AppState extends State<App> {
                     ErrorWidget.builder = (_) => const BuildError();
                   }
 
-                  return GentleUpdateReminder(child: child!);
+                  return child!;
                 },
               ),
             );

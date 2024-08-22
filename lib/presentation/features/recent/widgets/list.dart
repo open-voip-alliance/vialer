@@ -22,7 +22,6 @@ class RecentCallsList extends StatefulWidget {
     required this.onCopyPressed,
     required this.loadMoreCalls,
     required this.manualRefresher,
-    required this.performBackgroundImport,
     this.isLoadingInitial = false,
     super.key,
   });
@@ -37,7 +36,6 @@ class RecentCallsList extends StatefulWidget {
   final void Function(String) onCallPressed;
   final void Function(String) onCopyPressed;
   final void Function() loadMoreCalls;
-  final void Function() performBackgroundImport;
 
   final ManualRefresher manualRefresher;
 
@@ -49,18 +47,11 @@ class _RecentCallsListState extends State<RecentCallsList>
     with WidgetsBindingObserver, WidgetsBindingObserverRegistrar {
   final _scrollController = ScrollController();
   Timer? _localRefreshTimer;
-  Timer? _backgroundImportTimer;
-
-  static const _backgroundImportInterval = Duration(seconds: 30);
 
   @override
   void initState() {
     super.initState();
     _scrollController.addListener(_handleScrolling);
-    _backgroundImportTimer = Timer.periodic(
-      _backgroundImportInterval,
-      (_) => widget.performBackgroundImport(),
-    );
   }
 
   @override
@@ -69,7 +60,6 @@ class _RecentCallsListState extends State<RecentCallsList>
 
     if (state == AppLifecycleState.resumed) {
       unawaited(widget.manualRefresher.refresh());
-      widget.performBackgroundImport();
     }
   }
 
@@ -77,7 +67,6 @@ class _RecentCallsListState extends State<RecentCallsList>
   void dispose() {
     _scrollController.dispose();
     _localRefreshTimer?.cancel();
-    _backgroundImportTimer?.cancel();
     super.dispose();
   }
 
