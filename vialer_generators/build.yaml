@@ -5,6 +5,8 @@ targets:
         enabled: true
         generate_for:
           - lib/presentation/resources/theme/colors.dart
+      vialer_generators|versionInfoBuilder:
+        enabled: true
 
 builders:
   colorsGeneratorBuilder:
@@ -12,4 +14,10 @@ builders:
     builder_factories: ['colorsGeneratorBuilder']
     auto_apply: dependents
     build_extensions: {".dart": [".vialer.dart"]}
+    build_to: source
+  versionInfoBuilder:
+    import: 'package:vialer_generators/generators.dart'
+    builder_factories: [ "versionInfoBuilder" ]
+    build_extensions: { "$lib$": ["version_info.vialer.dart"] }
+    auto_apply: root_package
     build_to: source
