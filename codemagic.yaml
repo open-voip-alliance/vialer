@@ -236,10 +236,10 @@ workflows:
       - *verify_codebase_complies_with_analysis_rules
       - *flutter_test
       - *build_for_android
-      #- *update_ios_signing_for_current_brand
-      #- *build_for_ios
-      #- *set_testflight_release_notes_for_main
-      #- *release_to_sentry
+      - *update_ios_signing_for_current_brand
+      - *build_for_ios
+      - *set_testflight_release_notes_for_main
+      - *release_to_sentry
     artifacts: *defaults_artifacts
 
   release-candidate:
@@ -606,9 +606,9 @@ workflows:
       - *set_version_for_app_store
       - *verify_codebase_complies_with_analysis_rules
       - *build_for_android
-      - *update_ios_signing_for_current_brand
-      - *build_for_ios
-      - *release_to_sentry
+      #- *update_ios_signing_for_current_brand
+      #- *build_for_ios
+      #- *release_to_sentry
     publishing: *publish_for_internal_preview
 
   # Generate production .aab/.ipa files, these are for manually uploading.
