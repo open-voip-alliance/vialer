@@ -1,3 +1,4 @@
-- The bottom navigation bar has been redesigned
-- Changing your mobile number or outgoing number will now display as a pop-up rather than in the page, making it easier to use with screen-readers
-- iOS: The recent call list will automatically refresh after a call
+- Android: Improved the onboarding animations to feel more fluid
+- Added language support for Spanish and Portuguese
+- Submitting a phone number in shared contacts now requires a country code
+- Improved screen reader functionality
