@@ -163,7 +163,7 @@ custom: # Custom properties to make workflows cleaner
         - pattern: '*'
           include: true
 
-    publish_for_production: &publish_for_production
+#    publish_for_production: &publish_for_production
 #      app_store_connect:
 #        api_key: $APP_STORE_CONNECT_PRIVATE_KEY
 #        key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
@@ -443,7 +443,7 @@ workflows:
 #      - *release_to_sentry
 #      - *track_new_version
 #      - *call_zapier_production_build_webhook
-    publishing: *publish_for_production
+#    publishing: *publish_for_production
 
   production-voys:
     name: Release Voys to Production
