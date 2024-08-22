@@ -191,13 +191,13 @@ custom: # Custom properties to make workflows cleaner
         in_app_update_priority: 5
 
     publish_for_internal_preview: &publish_for_internal_preview
-      app_store_connect:
-        api_key: $APP_STORE_CONNECT_PRIVATE_KEY
-        key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
-        issuer_id: $APP_STORE_CONNECT_ISSUER_ID
-        submit_to_testflight: true
-        beta_groups:
-          - Internal Preview
+#      app_store_connect:
+#        api_key: $APP_STORE_CONNECT_PRIVATE_KEY
+#        key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
+#        issuer_id: $APP_STORE_CONNECT_ISSUER_ID
+#        submit_to_testflight: true
+#        beta_groups:
+#          - Internal Preview
       google_play:
         credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
         track: internal
@@ -236,10 +236,10 @@ workflows:
       - *verify_codebase_complies_with_analysis_rules
       - *flutter_test
       - *build_for_android
-      - *update_ios_signing_for_current_brand
-      - *build_for_ios
-      - *set_testflight_release_notes_for_main
-      - *release_to_sentry
+      #- *update_ios_signing_for_current_brand
+      #- *build_for_ios
+      #- *set_testflight_release_notes_for_main
+      #- *release_to_sentry
     artifacts: *defaults_artifacts
 
   release-candidate:
