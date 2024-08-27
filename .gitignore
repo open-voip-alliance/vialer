@@ -79,3 +79,4 @@ android/app/src/**/res/font/
 
 # Ignoring generated language files
 *.i18n.yaml
+devtools_options.yaml

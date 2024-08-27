@@ -163,18 +163,18 @@ custom: # Custom properties to make workflows cleaner
         - pattern: '*'
           include: true
 
-#    publish_for_production: &publish_for_production
-#      app_store_connect:
-#        api_key: $APP_STORE_CONNECT_PRIVATE_KEY
-#        key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
-#        issuer_id: $APP_STORE_CONNECT_ISSUER_ID
-#        submit_to_app_store: true
-#        release_type: MANUAL
-#        cancel_previous_submissions: true
-#      google_play:
-#        credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
-#        track: production
-#        in_app_update_priority: 1
+    publish_for_production: &publish_for_production
+      app_store_connect:
+        api_key: $APP_STORE_CONNECT_PRIVATE_KEY
+        key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
+        issuer_id: $APP_STORE_CONNECT_ISSUER_ID
+        submit_to_app_store: true
+        release_type: MANUAL
+        cancel_previous_submissions: true
+      google_play:
+        credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
+        track: production
+        in_app_update_priority: 1
 
     publish_for_beta: &publish_for_beta
       app_store_connect:
@@ -191,13 +191,13 @@ custom: # Custom properties to make workflows cleaner
         in_app_update_priority: 5
 
     publish_for_internal_preview: &publish_for_internal_preview
-#      app_store_connect:
-#        api_key: $APP_STORE_CONNECT_PRIVATE_KEY
-#        key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
-#        issuer_id: $APP_STORE_CONNECT_ISSUER_ID
-#        submit_to_testflight: true
-#        beta_groups:
-#          - Internal Preview
+      app_store_connect:
+        api_key: $APP_STORE_CONNECT_PRIVATE_KEY
+        key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
+        issuer_id: $APP_STORE_CONNECT_ISSUER_ID
+        submit_to_testflight: true
+        beta_groups:
+          - Internal Preview
       google_play:
         credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
         track: internal
@@ -438,12 +438,12 @@ workflows:
       - *prepare_release_notes_from_files
       - *flutter_test
       - *build_for_android
-#      - *update_ios_signing_for_current_brand
-#      - *build_for_ios
-#      - *release_to_sentry
-#      - *track_new_version
-#      - *call_zapier_production_build_webhook
-#    publishing: *publish_for_production
+      - *update_ios_signing_for_current_brand
+      - *build_for_ios
+      - *release_to_sentry
+      - *track_new_version
+      - *call_zapier_production_build_webhook
+    publishing: *publish_for_production
 
   production-voys:
     name: Release Voys to Production
@@ -606,9 +606,9 @@ workflows:
       - *set_version_for_app_store
       - *verify_codebase_complies_with_analysis_rules
       - *build_for_android
-      #- *update_ios_signing_for_current_brand
-      #- *build_for_ios
-      #- *release_to_sentry
+      - *update_ios_signing_for_current_brand
+      - *build_for_ios
+      - *release_to_sentry
     publishing: *publish_for_internal_preview
 
   # Generate production .aab/.ipa files, these are for manually uploading.
@@ -636,8 +636,8 @@ workflows:
       - *verify_codebase_complies_with_analysis_rules
       - *flutter_test
       - *build_for_android
-      #- *update_ios_signing_for_current_brand
-      #- *build_ipa
+      - *update_ios_signing_for_current_brand
+      - *build_ipa
     publishing: { }
 
   main-voys:
