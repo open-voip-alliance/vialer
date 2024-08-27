@@ -498,8 +498,6 @@
 				"${BUILT_PRODUCTS_DIR}/flutter_inappwebview_ios/flutter_inappwebview_ios.framework",
 				"${BUILT_PRODUCTS_DIR}/flutter_keyboard_visibility/flutter_keyboard_visibility.framework",
 				"${BUILT_PRODUCTS_DIR}/flutter_libphonenumber_ios/flutter_libphonenumber_ios.framework",
-				"${BUILT_PRODUCTS_DIR}/flutter_phone_lib/flutter_phone_lib.framework",
-				"${BUILT_PRODUCTS_DIR}/iOSPhoneLib/iOSPhoneLib.framework",
 				"${BUILT_PRODUCTS_DIR}/in_app_review/in_app_review.framework",
 				"${BUILT_PRODUCTS_DIR}/integration_test/integration_test.framework",
 				"${BUILT_PRODUCTS_DIR}/le/le.framework",
@@ -513,13 +511,13 @@
 				"${BUILT_PRODUCTS_DIR}/sqlite3_flutter_libs/sqlite3_flutter_libs.framework",
 				"${BUILT_PRODUCTS_DIR}/url_launcher_ios/url_launcher_ios.framework",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/iOSPhoneLib/bctoolbox-ios.framework/bctoolbox-ios",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/iOSPhoneLib/bctoolbox-tester.framework/bctoolbox-tester",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/iOSPhoneLib/bctoolbox.framework/bctoolbox",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/iOSPhoneLib/belcard.framework/belcard",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/iOSPhoneLib/belle-sip.framework/belle-sip",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/iOSPhoneLib/belr.framework/belr",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/iOSPhoneLib/lime.framework/lime",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/iOSPhoneLib/linphone.framework/linphone",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/iOSPhoneLib/linphonesw.framework/linphonesw",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/iOSPhoneLib/linphonetester.framework/linphonetester",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/iOSPhoneLib/mediastreamer2.framework/mediastreamer2",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/iOSPhoneLib/msamr.framework/msamr",
@@ -528,7 +526,6 @@
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/iOSPhoneLib/mssilk.framework/mssilk",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/iOSPhoneLib/mswebrtc.framework/mswebrtc",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/iOSPhoneLib/ortp.framework/ortp",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/iOSPhoneLib/ZXing.framework/ZXing",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
@@ -549,8 +546,6 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/flutter_inappwebview_ios.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/flutter_keyboard_visibility.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/flutter_libphonenumber_ios.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/flutter_phone_lib.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/iOSPhoneLib.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/in_app_review.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/integration_test.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/le.framework",
@@ -564,13 +559,13 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/sqlite3_flutter_libs.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/url_launcher_ios.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/bctoolbox-ios.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/bctoolbox-tester.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/bctoolbox.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/belcard.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/belle-sip.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/belr.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/lime.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/linphone.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/linphonesw.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/linphonetester.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/mediastreamer2.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/msamr.framework",
@@ -579,7 +574,6 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/mssilk.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/mswebrtc.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ortp.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ZXing.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
