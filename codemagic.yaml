@@ -636,8 +636,6 @@ workflows:
       - *verify_codebase_complies_with_analysis_rules
       - *flutter_test
       - *build_for_android
-      - *update_ios_signing_for_current_brand
-      - *build_ipa
     publishing: { }
 
   main-voys:
