@@ -109,6 +109,21 @@ class TrailingSlashRequestInterceptor implements chopper.RequestInterceptor {
           .isNotEmpty;
 }
 
+/// When you use an empty @Get() or @Post() method in Chopper, it will append
+/// a trailing slash. This is usually fine for GET requests because the web
+/// server will redirect automatically, but redirects don't happen automatically
+/// for POST requests.
+///
+/// Adding this interceptor will allow you to use empty @Post() annotations
+/// when you don't need anything more than the [baseUrl].
+class PreventAppendingTrailingSlashInterceptor
+    implements chopper.RequestInterceptor {
+  @override
+  FutureOr<chopper.Request> onRequest(Request request) => request.copyWith(
+        uri: Uri.parse(request.url.toString().removeSuffix('/')),
+      );
+}
+
 /// We want to log out any users if they encounter as 401 response as this
 /// suggests that we do not have a valid token, this will fire the appropriate
 /// event so action can be taken.
