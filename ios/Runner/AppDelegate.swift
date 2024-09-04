@@ -4,7 +4,7 @@ import flutter_phone_lib
 import Intents
 import UserNotifications
 
-@UIApplicationMain
+@main
 @objc class AppDelegate: FlutterAppDelegate {
     private let logger = Logger()
     private let flutterSharedPreferences = FlutterSharedPreferences()
