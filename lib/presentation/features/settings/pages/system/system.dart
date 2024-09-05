@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:vialer/presentation/features/settings/pages/system/version_info.dart';
 import 'package:vialer/presentation/resources/localizations.dart';
 
 import '../../controllers/cubit.dart';
@@ -39,6 +40,13 @@ class SystemSubPage extends StatelessWidget {
                   icon: FontAwesomeIcons.flag,
                   cubit: cubit,
                   pageBuilder: (_) => const FeatureFlagsSubPage(),
+                ),
+                SubPageLinkTile(
+                  title: context.msg.main.settings.list.advancedSettings
+                      .troubleshooting.versionInfo.title,
+                  icon: FontAwesomeIcons.codeFork,
+                  cubit: cubit,
+                  pageBuilder: (_) => const VersionInfoSubPage(),
                 ),
               ],
             );
