@@ -1,0 +1,2 @@
+- Android: Fixed an issue where audio would stop when the screen turns off during a call
+- iOS: Optimized answering calls on slow or poor internet connections
