@@ -12,7 +12,7 @@
   "openingHoursBasicUrl": "https://api.prod.holodeck.spindle.dev/opening-hours-basic/client/",
   "privacyPolicyUrl": "https://bellenmetannabel.nl/privacy-app/",
   "availabilityServiceUrl": "https://api.prod.holodeck.spindle.dev/dnd-service",
-  "sharedContactsUrl": "https://contacts.spindle.dev/contacts/",
+  "sharedContactsUrl": "https://contactbook.eu-production.holodeck.voys.nl",
   "phoneNumberValidationUrl": "https://phonenumbers.spindle.dev",
   "featureAnnouncementsUrl": "https://api.prod.holodeck.spindle.dev/feature-announcements/",
   "resgateUrl": "wss://resgate.prod.holodeck.spindle.dev"

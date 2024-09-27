@@ -58,7 +58,7 @@ class Middleware(
             put("token", token)
             put("sip_user_id", middlewareCredentials.sipUserId)
             put("os_version", Build.VERSION.RELEASE)
-            put("client_version", BuildConfig.VERSION_NAME)
+            put("client_version", BuildConfig.VERSION_NAME.split('-').first())
             put("app", context.packageName)
             put("dnd", false)
             put("app_startup_timestamp", prefs.loginTime)
