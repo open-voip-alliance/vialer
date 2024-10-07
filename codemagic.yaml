@@ -164,13 +164,13 @@ custom: # Custom properties to make workflows cleaner
           include: true
 
     publish_for_production: &publish_for_production
-#      app_store_connect:
-#        api_key: $APP_STORE_CONNECT_PRIVATE_KEY
-#        key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
-#        issuer_id: $APP_STORE_CONNECT_ISSUER_ID
-#        submit_to_app_store: true
-#        release_type: MANUAL
-#        cancel_previous_submissions: true
+      app_store_connect:
+        api_key: $APP_STORE_CONNECT_PRIVATE_KEY
+        key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
+        issuer_id: $APP_STORE_CONNECT_ISSUER_ID
+        submit_to_app_store: true
+        release_type: MANUAL
+        cancel_previous_submissions: true
       google_play:
         credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
         track: production
@@ -439,10 +439,10 @@ workflows:
       - *flutter_test
       - *build_for_android
       - *update_ios_signing_for_current_brand
-#      - *build_for_ios
+      - *build_for_ios
       - *release_to_sentry
       - *track_new_version
-#      - *call_zapier_production_build_webhook
+      - *call_zapier_production_build_webhook
     publishing: *publish_for_production
 
   production-voys:
