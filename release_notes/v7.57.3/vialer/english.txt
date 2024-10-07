@@ -1,0 +1,1 @@
+- Android: Fixed an issue with calls ending while using IPv6
