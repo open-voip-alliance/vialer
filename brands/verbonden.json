@@ -11,7 +11,7 @@
   "businessAvailabilityUrl": "https://api.prod.holodeck.spindle.dev/business-availability/clients/",
   "openingHoursBasicUrl": "https://api.prod.holodeck.spindle.dev/opening-hours-basic/client/",
   "privacyPolicyUrl": "https://verbonden.nl/app/privacy",
-  "availabilityServiceUrl": "https://api.prod.holodeck.spindle.dev/dnd-service",
+  "availabilityServiceUrl": "https://api.eu-production.holodeck.voys.nl/relations/user-status",
   "sharedContactsUrl": "https://contactbook.eu-production.holodeck.voys.nl",
   "phoneNumberValidationUrl": "https://phonenumbers.spindle.dev",
   "featureAnnouncementsUrl": "https://api.prod.holodeck.spindle.dev/feature-announcements/",
