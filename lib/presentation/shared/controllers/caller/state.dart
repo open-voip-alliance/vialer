@@ -89,10 +89,8 @@ abstract class CallProcessState extends CallOriginDetermined {
       voipCall?.state == CallState.connected;
 
   bool get isInBadQualityCall =>
-      voipCall != null &&
-      voipCall!.currentMos > 0 &&
-      voipCall!.currentMos < 3 &&
-      voipCall!.duration >= 2;
+      voipCall!.hasValidMosValue &&
+      voipCall!.currentMos < BAD_CALL_QUALITY_MOS_THRESHOLD;
 
   @override
   List<Object?> get props => [
@@ -356,4 +354,16 @@ enum CallOrigin {
   sharedContacts,
   colleagues,
   unknown,
+}
+
+/// The threshold below which we consider a call to be of bad quality.
+const BAD_CALL_QUALITY_MOS_THRESHOLD = 2;
+
+/// A call must be below [BAD_CALL_QUALITY_MOS_THRESHOLD] for this many seconds
+/// before it will be considered a bad quality call.
+const BAD_CALL_QUALITY_MIN_DURATION = 5;
+
+extension on Call? {
+  bool get hasValidMosValue =>
+      this != null && this!.currentMos > 0 && this!.duration >= 2;
 }

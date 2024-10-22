@@ -107,7 +107,8 @@ class _CallPageState extends State<_CallPage>
 
   /// The [Duration] that the call must be below the minimum quality threshold
   /// before we show a warning to the user.
-  static const _poorQualityMinimumDuration = Duration(seconds: 2);
+  static const _poorQualityMinimumDuration =
+      Duration(seconds: BAD_CALL_QUALITY_MIN_DURATION);
 
   bool isNotifyingUserAboutBadQualityCall = false;
 
