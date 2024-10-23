@@ -92,7 +92,7 @@ const vialerVersionInfo = VialerVersionInfo(
 
   Future<String> _getAndroidPhoneLibVersion() async {
     final file = await _findNativeDependencyFile('android/build.gradle');
-    if (!file.existsSync()) _noVersionFound;
+    if (!file.existsSync()) return _noVersionFound;
     return RegExp(r'Android-Phone-Integration-Lib:(\d+\.\d+\.\d+)')
             .firstMatch(await file.readAsStringSync())
             ?.group(1) ??
