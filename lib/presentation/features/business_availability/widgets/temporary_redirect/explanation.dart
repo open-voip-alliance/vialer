@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:vialer/presentation/resources/localizations.dart';
@@ -51,6 +52,7 @@ class TemporaryRedirectExplanation extends StatelessWidget {
 
 extension on DateTime? {
   String toTemporaryRedirectFormat() => this != null
-      ? DateFormat('E. d-M-y HH:mm').format(this!.toLocal())
+      ? DateFormat('EEEE d-M-y HH:mm', Platform.localeName)
+          .format(this!.toLocal())
       : '??';
 }
