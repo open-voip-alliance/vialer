@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vialer/data/models/user/user.dart';
 import 'package:vialer/presentation/features/settings/widgets/tile/call_directory_extension.dart';
+import 'package:vialer/presentation/features/settings/widgets/tile/enable_advanced_voip_logging.dart';
 import 'package:vialer/presentation/resources/localizations.dart';
 import 'package:vialer/presentation/resources/theme.dart';
 
@@ -91,6 +92,7 @@ class AppPreferencesSubPage extends StatelessWidget {
                   AdvancedSettingsCategory(
                     children: [
                       TroubleshootingLinkTile(),
+                      EnableAdvancedVoipLoggingTile(user),
                     ],
                   ),
               ],

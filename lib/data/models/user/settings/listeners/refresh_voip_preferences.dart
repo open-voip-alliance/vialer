@@ -16,7 +16,10 @@ class RefreshVoipPreferences extends SettingChangeListener<bool> with Loggable {
   final SettingKey<bool> key = CallSetting.usePhoneRingtone;
 
   @override
-  final otherKeys = const [AppSetting.showCallsInNativeRecents];
+  final otherKeys = const [
+    AppSetting.showCallsInNativeRecents,
+    AppSetting.enableAdvancedVoipLogging,
+  ];
 
   @override
   FutureOr<SettingChangeListenResult> applySettingsSideEffects(
