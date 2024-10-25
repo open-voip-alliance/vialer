@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vialer/data/models/user/user.dart';
@@ -92,7 +94,8 @@ class AppPreferencesSubPage extends StatelessWidget {
                   AdvancedSettingsCategory(
                     children: [
                       TroubleshootingLinkTile(),
-                      EnableAdvancedVoipLoggingTile(user),
+                      if (Platform.isAndroid)
+                        EnableAdvancedVoipLoggingTile(user),
                     ],
                   ),
               ],
