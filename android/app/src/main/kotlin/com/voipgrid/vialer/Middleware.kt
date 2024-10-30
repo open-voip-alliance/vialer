@@ -286,12 +286,9 @@ private val RemoteMessage.pushSentTime
     get() = try {
         val startTime = messageStartTime
 
-        // We get the [messageStartTime] in scientific notation so we need to convert it, we also
-        // want to support if this ever changes in the future.
         when {
             startTime == null -> 0
-            startTime.uppercase().contains("E") -> BigDecimal(messageStartTime).toLong()
-            else -> startTime.toLong()
+            else -> BigDecimal(messageStartTime).toLong()
         }
     } catch (e: Throwable) {
         0
