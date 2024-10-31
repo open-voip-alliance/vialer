@@ -81,7 +81,7 @@ custom: # Custom properties to make workflows cleaner
     max_build_duration: 90
     instance_type: mac_mini_m2
     environment: &config_environment
-      flutter: 3.24.0
+      flutter: 3.24.3
       # This has to be 14.2 for our integration tests to work, it should be changed to latest
       # when the tooling supports xCode 14.3.
       xcode: 15.3

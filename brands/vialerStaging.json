@@ -11,7 +11,7 @@
   "businessAvailabilityUrl": "https://api.stag.holodeck.spindle.dev/business-availability/clients/",
   "openingHoursBasicUrl": "https://api.stag.holodeck.spindle.dev/opening-hours-basic/client/",
   "privacyPolicyUrl": "https://vialerapp.com/privacy/",
-  "availabilityServiceUrl": "https://api.stag.holodeck.spindle.dev/dnd-service",
+  "availabilityServiceUrl": "https://api.eu-staging.holodeck.voys.nl/user-status",
   "sharedContactsUrl": "https://contactbook.eu-staging.holodeck.voys.nl",
   "phoneNumberValidationUrl": "https://phonenumbers.spindle.dev",
   "featureAnnouncementsUrl": "https://api.stag.holodeck.spindle.dev/feature-announcements/",
