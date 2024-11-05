@@ -10,6 +10,7 @@ void main() {
     expect('0611112222'.isInternalNumber, isFalse);
     expect('00611112222'.isInternalNumber, isFalse);
     expect('+31611112222'.isInternalNumber, isFalse);
+    // Luxembourg number
     expect('+351112222'.isInternalNumber, isFalse);
   });
 }

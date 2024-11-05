@@ -100,9 +100,8 @@ class PhoneNumberText extends StatelessWidget {
     return text
         .split(' ')
         .map(
-          (word) => word.looksLikePhoneNumber()
-              ? word.phoneNumberSemanticLabel
-              : word,
+          (word) =>
+              word.looksLikePhoneNumber ? word.phoneNumberSemanticLabel : word,
         )
         .join(' ');
   }
@@ -117,5 +116,5 @@ extension PhoneNumberSemantics on String {
       .join(' ');
 
   String get asSemanticsLabelIfPhoneNumber =>
-      looksLikePhoneNumber() ? phoneNumberSemanticLabel : this;
+      looksLikePhoneNumber ? phoneNumberSemanticLabel : this;
 }
