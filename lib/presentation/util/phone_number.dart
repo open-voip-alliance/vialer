@@ -1,5 +1,6 @@
 import 'package:dartx/dartx.dart';
 import 'package:flutter/widgets.dart';
+import 'package:vialer/domain/util/phone_number.dart';
 import 'package:vialer/presentation/resources/localizations.dart';
 
 import '../../../data/models/calling/outgoing_number/outgoing_number.dart';
@@ -117,11 +118,4 @@ extension PhoneNumberSemantics on String {
 
   String get asSemanticsLabelIfPhoneNumber =>
       looksLikePhoneNumber() ? phoneNumberSemanticLabel : this;
-}
-
-extension PhoneNumberUtils on String {
-  bool looksLikePhoneNumber() => RegExp(r'^[0-9+() ]+$').hasMatch(this);
-
-  bool get isInternalNumber =>
-      length <= 10 && !startsWith('0') && !startsWith('+');
 }

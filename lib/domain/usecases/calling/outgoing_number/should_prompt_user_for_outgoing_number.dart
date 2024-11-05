@@ -1,6 +1,6 @@
 import 'package:vialer/domain/usecases/use_case.dart';
+import 'package:vialer/domain/util/phone_number.dart';
 import 'package:vialer/presentation/util/loggable.dart';
-import 'package:vialer/presentation/util/phone_number.dart';
 
 import '../../../../../data/repositories/voipgrid/user_permissions.dart';
 import '../../../../data/models/user/user.dart';
