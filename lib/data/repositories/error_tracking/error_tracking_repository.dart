@@ -36,8 +36,7 @@ class ErrorTrackingRepository with Loggable {
       (options) => options
         ..dsn = dsn
         ..sampleRate = 0.5
-        ..beforeSend =
-            (event, {dynamic hint}) => _beforeSend(event, user, hint: hint),
+        ..beforeSend = (event, hint) => _beforeSend(event, user, hint: hint),
       appRunner: appRunner,
     );
   }
