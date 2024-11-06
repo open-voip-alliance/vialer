@@ -85,7 +85,7 @@ custom: # Custom properties to make workflows cleaner
       # This has to be 14.2 for our integration tests to work, it should be changed to latest
       # when the tooling supports xCode 14.3.
       xcode: 16.1
-      cocoapods: 1.15.2
+      cocoapods: 1.16.2
     cache:
       cache_paths:
         - $HOME/Library/Caches/CocoaPods
