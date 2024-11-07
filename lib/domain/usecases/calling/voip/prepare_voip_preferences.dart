@@ -27,6 +27,9 @@ class PrepareVoipPreferences extends UseCase {
           AppSetting.showCallsInNativeRecents,
         ),
         supplementaryContacts: await _prepareSharedContacts(),
+        enableAdvancedLogging: user.settings.get(
+          AppSetting.enableAdvancedVoipLogging,
+        ),
       );
 
   Future<Set<SupplementaryContact>> _prepareSharedContacts() async {

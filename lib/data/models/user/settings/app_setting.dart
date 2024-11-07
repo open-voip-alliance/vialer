@@ -11,7 +11,8 @@ enum AppSetting<T extends Object> with SettingKey<T> {
   showClientCalls<bool>(),
   showOnlineColleaguesOnly<bool>(),
   enableT9ContactSearch<bool>(),
-  hasUnreadFeatureAnnouncements<bool>();
+  hasUnreadFeatureAnnouncements<bool>(),
+  enableAdvancedVoipLogging<bool>();
 
   static Map<AppSetting, Object?> get defaultValues => Map.fromEntries(
         AppSetting.values.map((e) => MapEntry(e, e._defaultValue)),
@@ -27,5 +28,6 @@ enum AppSetting<T extends Object> with SettingKey<T> {
         AppSetting.showOnlineColleaguesOnly => true,
         AppSetting.enableT9ContactSearch => Platform.isAndroid,
         AppSetting.hasUnreadFeatureAnnouncements => false,
+        AppSetting.enableAdvancedVoipLogging => false,
       };
 }
