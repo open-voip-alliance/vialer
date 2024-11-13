@@ -6,8 +6,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_libphonenumber/flutter_libphonenumber.dart';
 import 'package:vialer/data/models/user/settings/call_setting.dart';
 import 'package:vialer/data/models/user/user.dart';
-import 'package:vialer/data/repositories/calling/call_through/call_through.dart';
 import 'package:vialer/domain/usecases/user/get_logged_in_user.dart';
+import 'package:vialer/domain/util/phone_number.dart';
 
 import '../../../../../../../data/models/onboarding/country.dart';
 import '../../../../../../../domain/usecases/onboarding/get_countries.dart';

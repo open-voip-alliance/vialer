@@ -1,5 +1,6 @@
 import 'package:dartx/dartx.dart';
 import 'package:flutter/widgets.dart';
+import 'package:vialer/domain/util/phone_number.dart';
 import 'package:vialer/presentation/resources/localizations.dart';
 
 import '../../../data/models/calling/outgoing_number/outgoing_number.dart';
@@ -99,9 +100,8 @@ class PhoneNumberText extends StatelessWidget {
     return text
         .split(' ')
         .map(
-          (word) => word.looksLikePhoneNumber()
-              ? word.phoneNumberSemanticLabel
-              : word,
+          (word) =>
+              word.looksLikePhoneNumber ? word.phoneNumberSemanticLabel : word,
         )
         .join(' ');
   }
@@ -116,9 +116,5 @@ extension PhoneNumberSemantics on String {
       .join(' ');
 
   String get asSemanticsLabelIfPhoneNumber =>
-      looksLikePhoneNumber() ? phoneNumberSemanticLabel : this;
-}
-
-extension on String {
-  bool looksLikePhoneNumber() => RegExp(r'^[0-9+() ]+$').hasMatch(this);
+      looksLikePhoneNumber ? phoneNumberSemanticLabel : this;
 }

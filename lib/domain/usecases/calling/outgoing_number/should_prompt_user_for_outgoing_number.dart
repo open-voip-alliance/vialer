@@ -1,5 +1,5 @@
-import 'package:vialer/data/repositories/calling/call_through/call_through.dart';
 import 'package:vialer/domain/usecases/use_case.dart';
+import 'package:vialer/domain/util/phone_number.dart';
 import 'package:vialer/presentation/util/loggable.dart';
 
 import '../../../../../data/repositories/voipgrid/user_permissions.dart';
