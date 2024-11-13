@@ -1,0 +1,2 @@
+- iOS: Improved performance with large number of contacts
+- Improved when lower call quality message will be shown
