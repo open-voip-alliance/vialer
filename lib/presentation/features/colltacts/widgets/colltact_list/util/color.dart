@@ -1,6 +1,6 @@
 import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
-import 'package:vialer/data/repositories/calling/call_through/call_through.dart';
+import 'package:vialer/domain/util/phone_number.dart';
 
 import '../../../../../../../data/models/colltacts/contact.dart';
 import '../../../../../../../data/models/colltacts/shared_contacts/shared_contact.dart';

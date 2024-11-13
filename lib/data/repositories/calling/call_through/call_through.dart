@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:injectable/injectable.dart';
 import 'package:libphonenumber/libphonenumber.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+import 'package:vialer/domain/util/phone_number.dart';
 
 import '../../../../presentation/util/loggable.dart';
 import '../../../../presentation/util/pigeon.dart' as native;
@@ -157,8 +158,4 @@ class CallThroughRepository with Loggable {
 
     return null;
   }
-}
-
-extension CallThrough on String {
-  bool get isInternalNumber => length <= 10 && !startsWith('0');
 }
