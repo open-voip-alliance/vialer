@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
+import 'package:vialer/presentation/features/settings/widgets/tile/change_password.dart';
 import 'package:vialer/presentation/resources/localizations.dart';
 import 'package:vialer/presentation/util/context_extensions.dart';
 
@@ -38,6 +39,7 @@ class UserSubPage extends StatelessWidget {
                         recentOutgoingNumbers: state.recentOutgoingNumbers,
                       ),
                       UsernameTile(state.user),
+                      ChangePasswordTile(state.user),
                       const SizedBox(height: 20),
                     ],
                   ),
@@ -88,6 +90,7 @@ class _LogoutButtonState extends State<_LogoutButton> {
             ? SettingsButton(
                 text: context.msg.main.settings.buttons.logout,
                 onPressed: _logout,
+                solid: false,
               )
             : CircularProgressIndicator(color: context.colors.primary);
       },

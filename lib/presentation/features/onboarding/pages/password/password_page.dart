@@ -9,12 +9,12 @@ import 'package:vialer/presentation/resources/localizations.dart';
 import 'package:vialer/presentation/resources/theme.dart';
 
 import '../../../../../../domain/usecases/authentication/validate_password.dart';
+import '../../../../shared/widgets/error.dart';
 import '../../../../shared/widgets/stylized_button.dart';
+import '../../../../shared/widgets/stylized_text_field.dart';
 import '../../../../util/conditional_capitalization.dart';
 import '../../controllers/cubit.dart';
 import '../../controllers/password/cubit.dart';
-import '../../widgets/error.dart';
-import '../../widgets/stylized_text_field.dart';
 
 class PasswordPage extends StatefulWidget {
   const PasswordPage({super.key});

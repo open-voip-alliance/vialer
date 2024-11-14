@@ -12,13 +12,13 @@ import 'package:vialer/presentation/resources/theme.dart';
 import '../../../../../../domain/usecases/user/launch_privacy_policy.dart';
 import '../../../../../../domain/usecases/user/launch_sign_up.dart';
 import '../../../../shared/controllers/connectivity_checker/cubit.dart';
+import '../../../../shared/widgets/error.dart';
 import '../../../../shared/widgets/stylized_button.dart';
+import '../../../../shared/widgets/stylized_text_field.dart';
 import '../../../../util/stylized_snack_bar.dart';
 import '../../../../util/widgets_binding_observer_registrar.dart';
 import '../../controllers/cubit.dart';
 import '../../controllers/login/cubit.dart';
-import '../../widgets/error.dart';
-import '../../widgets/stylized_text_field.dart';
 import '../password_forgotten/password_forgotten_page.dart';
 
 class LoginPage extends StatefulWidget {
