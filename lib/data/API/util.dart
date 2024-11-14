@@ -50,6 +50,10 @@ class AuthorizationInterceptor implements chopper.RequestInterceptor {
 
   @override
   FutureOr<chopper.Request> onRequest(chopper.Request request) {
+    if (request.alreadyHasAuthorizationHeader) {
+      return request;
+    }
+
     final user = this.user ?? GetStoredUserUseCase()();
 
     if (user != null) {
@@ -198,6 +202,11 @@ class SubmitUnexpectedFailedRequestsToSentry
 
     return response;
   }
+}
+
+extension on Request {
+  bool get alreadyHasAuthorizationHeader =>
+      headers.containsKey('Authorization');
 }
 
 extension on int {

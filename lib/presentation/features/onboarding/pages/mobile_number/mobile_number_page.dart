@@ -9,13 +9,13 @@ import 'package:vialer/presentation/resources/localizations.dart';
 import 'package:vialer/presentation/resources/theme.dart';
 
 import '../../../../../../data/models/user/brand.dart';
+import '../../../../shared/widgets/error.dart';
 import '../../../../shared/widgets/stylized_button.dart';
+import '../../../../shared/widgets/stylized_text_field.dart';
 import '../../../../util/conditional_capitalization.dart';
 import '../../controllers/cubit.dart';
 import '../../controllers/mobile_number/cubit.dart';
-import '../../widgets/error.dart';
 import '../../widgets/mobile_number/country_field/widget.dart';
-import '../../widgets/stylized_text_field.dart';
 
 class MobileNumberPage extends StatefulWidget {
   const MobileNumberPage({super.key});

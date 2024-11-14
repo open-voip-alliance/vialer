@@ -175,7 +175,7 @@ class MainPageState extends ConsumerState<MainPage> {
               ),
         ],
         Scaffold(
-          resizeToAvoidBottomInset: false,
+          resizeToAvoidBottomInset: _isOnProfilePage,
           floatingActionButton: !_isOnProfilePage && !_dialerIsPage
               ? AnimatedContainer(
                   duration: const Duration(milliseconds: 100),
