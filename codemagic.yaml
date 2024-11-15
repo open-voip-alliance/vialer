@@ -210,6 +210,7 @@ workflows:
     environment:
       groups:
         - configuration
+        - team_shared_environment
         - diagnostics
         - vialer_android_firebase
         - vialer_upload_keystore_credentials
@@ -248,6 +249,7 @@ workflows:
     environment:
       groups:
         - configuration
+        - team_shared_environment
         - diagnostics
         - production_and_release_candidate
         - vialer_android_firebase
@@ -303,6 +305,7 @@ workflows:
     environment:
       groups:
         - configuration
+        - team_shared_environment
         - diagnostics
         - production_and_release_candidate
         - vialer_android_firebase
@@ -392,6 +395,7 @@ workflows:
     environment:
       groups:
         - configuration
+        - team_shared_environment
         - diagnostics
         - vialer_android_firebase
         - vialer_upload_keystore_credentials
@@ -416,6 +420,7 @@ workflows:
     environment:
       groups:
         - configuration
+        - team_shared_environment
         - production_diagnostics
         - production_and_release_candidate
         - vialer_android_firebase
@@ -451,6 +456,7 @@ workflows:
     environment:
       groups:
         - configuration
+        - team_shared_environment
         - production_diagnostics
         - production_and_release_candidate
         - voys_android_firebase
@@ -468,6 +474,7 @@ workflows:
     environment:
       groups:
         - configuration
+        - team_shared_environment
         - production_diagnostics
         - production_and_release_candidate
         - verbonden_android_firebase
@@ -485,6 +492,7 @@ workflows:
     environment:
       groups:
         - configuration
+        - team_shared_environment
         - production_diagnostics
         - production_and_release_candidate
         - annabel_android_firebase
@@ -502,6 +510,7 @@ workflows:
     environment:
       groups:
         - configuration
+        - team_shared_environment
         - diagnostics
         - vialer_android_firebase
         - vialer_upload_keystore_credentials
@@ -535,6 +544,7 @@ workflows:
     environment:
       groups:
         - configuration
+        - team_shared_environment
         - diagnostics
         - voys_android_firebase
         - voys_playstore_credentials
@@ -553,6 +563,7 @@ workflows:
     environment:
       groups:
         - configuration
+        - team_shared_environment
         - diagnostics
         - verbonden_android_firebase
         - verbonden_playstore_credentials
@@ -569,6 +580,7 @@ workflows:
     environment:
       groups:
         - configuration
+        - team_shared_environment
         - diagnostics
         - annabel_android_firebase
         - annabel_playstore_credentials
@@ -585,6 +597,7 @@ workflows:
     environment:
       groups:
         - configuration
+        - team_shared_environment
         - diagnostics
         - vialer_android_firebase
         - vialer_upload_keystore_credentials
@@ -618,6 +631,7 @@ workflows:
     environment:
       groups:
         - configuration
+        - team_shared_environment
         - production_diagnostics
         - vialer_android_firebase
         - vialer_upload_keystore_credentials
@@ -644,6 +658,7 @@ workflows:
     environment:
       groups:
         - configuration
+        - team_shared_environment
         - diagnostics
         - voys_android_firebase
         - voys_upload_keystore_credentials
@@ -675,6 +690,7 @@ workflows:
     environment:
       groups:
         - configuration
+        - team_shared_environment
         - diagnostics
         - verbonden_android_firebase
         - verbonden_upload_keystore_credentials
@@ -706,6 +722,7 @@ workflows:
     environment:
       groups:
         - configuration
+        - team_shared_environment
         - diagnostics
         - annabel_android_firebase
         - annabel_upload_keystore_credentials
@@ -739,6 +756,7 @@ workflows:
     environment:
       groups:
         - configuration
+        - team_shared_environment
         - diagnostics
         - vialer_android_firebase
         - vialer_upload_keystore_credentials
