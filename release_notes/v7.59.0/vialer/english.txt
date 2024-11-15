@@ -1,2 +1,4 @@
-- iOS: Improved performance with large number of contacts
-- Improved when lower call quality message will be shown
+- Localised day names in temporary redirect
+- iOS: Upgraded to support xCode 16
+- Updated the FPL library to support advanced voip logging
+- Phone numbers starting with a "+" will never be considered as internal numbers
