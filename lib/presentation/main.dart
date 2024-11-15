@@ -24,6 +24,7 @@ import '../domain/usecases/remote_logging/enable_console_logging.dart';
 import '../domain/usecases/remote_logging/enable_remote_logging_if_needed.dart';
 import '../domain/usecases/user/get_stored_user.dart';
 import '../domain/usecases/user/set_is_using_screen_reader.dart';
+import '../domain/usecases/user/settings/disable_advanced_voip_logging.dart';
 import 'features/main_page.dart';
 import 'resources/localizations.dart';
 import 'resources/theme.dart';
@@ -46,6 +47,10 @@ Future<void> main() async {
   unawaited(EnableConsoleLoggingUseCase()());
   unawaited(EnableRemoteLoggingIfNeededUseCase()());
   MigrateDestinationObjectToIdentifier()();
+
+  // Disable this whenever the app launches so we aren't letting users keep
+  // this enabled indefinitely.
+  unawaited(DisableAdvancedVoipLogging()());
 
   final errorTrackingRepository = dependencyLocator<ErrorTrackingRepository>();
   final dsn = dependencyLocator<EnvRepository>().errorTrackingDsn;
