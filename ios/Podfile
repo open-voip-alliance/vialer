@@ -45,6 +45,7 @@ target 'Runner' do
 end
 
 post_install do |installer|
+  # Existing build settings
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
 
@@ -102,6 +103,7 @@ post_install do |installer|
     end
   end
 
+  # CI-related clean-up
   if ENV['CI'] == 'true'
     Dir.glob("Pods/*").each do |pod_dir|
       privacy_files = Dir.glob("#{pod_dir}/**/PrivacyInfo.xcprivacy")
@@ -110,5 +112,32 @@ post_install do |installer|
         puts "Deleted #{privacy_file}"
       end
     end
+  end
+
+  # Bitcode stripping
+  bitcode_strip_path = `xcrun --find bitcode_strip`.chop!
+
+  def strip_bitcode_from_framework(bitcode_strip_path, framework_relative_path)
+    framework_path = File.join(Dir.pwd, framework_relative_path)
+    command = "#{bitcode_strip_path} #{framework_path} -r -o #{framework_path}"
+    puts "Stripping bitcode: #{command}"
+    system(command)
+  end
+
+  framework_paths = [
+    "Pods/iOSPhoneLib/linphone-sdk-novideo-frameworks/bctoolbox-ios.xcframework/ios-arm64/bctoolbox-ios.framework/bctoolbox-ios",
+    "Pods/iOSPhoneLib/linphone-sdk-novideo-frameworks/bctoolbox-ios.xcframework/ios-arm64_x86_64-simulator/bctoolbox-ios.framework/bctoolbox-ios",
+    "Pods/linphone-sdk-novideo/linphone-sdk-novideo/apple-darwin/XCFrameworks/bctoolbox-ios.xcframework/ios-arm64/bctoolbox-ios.framework/bctoolbox-ios",
+    "Pods/linphone-sdk-novideo/linphone-sdk-novideo/apple-darwin/XCFrameworks/bctoolbox-ios.xcframework/ios-arm64_x86_64-simulator/bctoolbox-ios.framework/bctoolbox-ios",
+    "Pods/iOSPhoneLib/linphone-sdk-novideo-frameworks/bctoolbox-tester.xcframework/ios-arm64/bctoolbox-tester.framework/bctoolbox-tester",
+    "Pods/iOSPhoneLib/linphone-sdk-novideo-frameworks/bctoolbox-tester.xcframework/ios-arm64_x86_64-simulator/bctoolbox-tester.framework/bctoolbox-tester",
+    "Pods/iOSPhoneLib/linphone-sdk-novideo-frameworks/bctoolbox.xcframework/ios-arm64/bctoolbox.framework/bctoolbox",
+    "Pods/iOSPhoneLib/linphone-sdk-novideo-frameworks/bctoolbox.xcframework/ios-arm64_x86_64-simulator/bctoolbox.framework/bctoolbox",
+    "Pods/linphone-sdk-novideo/linphone-sdk-novideo/apple-darwin/XCFrameworks/bctoolbox.xcframework/ios-arm64/bctoolbox.framework/bctoolbox",
+    "Pods/linphone-sdk-novideo/linphone-sdk-novideo/apple-darwin/XCFrameworks/bctoolbox.xcframework/ios-arm64_x86_64-simulator/bctoolbox.framework/bctoolbox",
+  ]
+
+  framework_paths.each do |framework_relative_path|
+    strip_bitcode_from_framework(bitcode_strip_path, framework_relative_path)
   end
 end
