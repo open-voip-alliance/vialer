@@ -45,6 +45,7 @@ target 'Runner' do
 end
 
 post_install do |installer|
+  # Existing build settings
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
 
@@ -102,6 +103,7 @@ post_install do |installer|
     end
   end
 
+  # CI-related clean-up
   if ENV['CI'] == 'true'
     Dir.glob("Pods/*").each do |pod_dir|
       privacy_files = Dir.glob("#{pod_dir}/**/PrivacyInfo.xcprivacy")
@@ -110,5 +112,58 @@ post_install do |installer|
         puts "Deleted #{privacy_file}"
       end
     end
+  end
+
+  # Bitcode stripping
+  bitcode_strip_path = `xcrun --find bitcode_strip`.chop!
+
+  def strip_bitcode_from_framework(bitcode_strip_path, framework_relative_path)
+    framework_path = File.join(Dir.pwd, framework_relative_path)
+    command = "#{bitcode_strip_path} #{framework_path} -r -o #{framework_path}"
+    puts "Stripping bitcode: #{command}"
+    system(command)
+  end
+
+  framework_paths = [
+    "Pods/iOSPhoneLib/linphone-sdk-novideo-frameworks/bctoolbox-ios.xcframework/ios-arm64/bctoolbox-ios.framework/bctoolbox-ios",
+    "Pods/iOSPhoneLib/linphone-sdk-novideo-frameworks/bctoolbox-ios.xcframework/ios-arm64_x86_64-simulator/bctoolbox-ios.framework/bctoolbox-ios",
+    "Pods/linphone-sdk-novideo/linphone-sdk-novideo/apple-darwin/XCFrameworks/bctoolbox-ios.xcframework/ios-arm64/bctoolbox-ios.framework/bctoolbox-ios",
+    "Pods/linphone-sdk-novideo/linphone-sdk-novideo/apple-darwin/XCFrameworks/bctoolbox-ios.xcframework/ios-arm64_x86_64-simulator/bctoolbox-ios.framework/bctoolbox-ios",
+    "Pods/iOSPhoneLib/linphone-sdk-novideo-frameworks/bctoolbox-tester.xcframework/ios-arm64/bctoolbox-tester.framework/bctoolbox-tester",
+    "Pods/iOSPhoneLib/linphone-sdk-novideo-frameworks/bctoolbox-tester.xcframework/ios-arm64_x86_64-simulator/bctoolbox-tester.framework/bctoolbox-tester",
+    "Pods/iOSPhoneLib/linphone-sdk-novideo-frameworks/bctoolbox.xcframework/ios-arm64/bctoolbox.framework/bctoolbox",
+    "Pods/iOSPhoneLib/linphone-sdk-novideo-frameworks/bctoolbox.xcframework/ios-arm64_x86_64-simulator/bctoolbox.framework/bctoolbox",
+    "Pods/linphone-sdk-novideo/linphone-sdk-novideo/apple-darwin/XCFrameworks/bctoolbox.xcframework/ios-arm64/bctoolbox.framework/bctoolbox",
+    "Pods/linphone-sdk-novideo/linphone-sdk-novideo/apple-darwin/XCFrameworks/bctoolbox.xcframework/ios-arm64_x86_64-simulator/bctoolbox.framework/bctoolbox",
+    "Pods/iOSPhoneLib/linphone-sdk-novideo-frameworks/belcard.xcframework/ios-arm64/belcard.framework/belcard",
+    "Pods/linphone-sdk-novideo/linphone-sdk-novideo/apple-darwin/XCFrameworks/belcard.xcframework/ios-arm64/belcard.framework/belcard",
+    "Pods/iOSPhoneLib/linphone-sdk-novideo-frameworks/belle-sip.xcframework/ios-arm64/belle-sip.framework/belle-sip",
+    "Pods/linphone-sdk-novideo/linphone-sdk-novideo/apple-darwin/XCFrameworks/belle-sip.xcframework/ios-arm64/belle-sip.framework/belle-sip",
+    "Pods/iOSPhoneLib/linphone-sdk-novideo-frameworks/belr.xcframework/ios-arm64/belr.framework/belr",
+    "Pods/linphone-sdk-novideo/linphone-sdk-novideo/apple-darwin/XCFrameworks/belr.xcframework/ios-arm64/belr.framework/belr",
+    "Pods/iOSPhoneLib/linphone-sdk-novideo-frameworks/lime.xcframework/ios-arm64/lime.framework/lime",
+    "Pods/linphone-sdk-novideo/linphone-sdk-novideo/apple-darwin/XCFrameworks/lime.xcframework/ios-arm64/lime.framework/lime",
+    "Pods/iOSPhoneLib/linphone-sdk-novideo-frameworks/linphone.xcframework/ios-arm64/linphone.framework/linphone",
+    "Pods/linphone-sdk-novideo/linphone-sdk-novideo/apple-darwin/XCFrameworks/linphone.xcframework/ios-arm64/linphone.framework/linphone",
+    "Pods/iOSPhoneLib/linphone-sdk-novideo-frameworks/linphonetester.xcframework/ios-arm64/linphonetester.framework/linphonetester",
+    "Pods/linphone-sdk-novideo/linphone-sdk-novideo/apple-darwin/XCFrameworks/linphonetester.xcframework/ios-arm64/linphonetester.framework/linphonetester",
+    "Pods/iOSPhoneLib/linphone-sdk-novideo-frameworks/mediastreamer2.xcframework/ios-arm64/mediastreamer2.framework/mediastreamer2",
+    "Pods/linphone-sdk-novideo/linphone-sdk-novideo/apple-darwin/XCFrameworks/mediastreamer2.xcframework/ios-arm64/mediastreamer2.framework/mediastreamer2",
+    "Pods/iOSPhoneLib/linphone-sdk-novideo-frameworks/msamr.xcframework/ios-arm64/msamr.framework/msamr",
+    "Pods/linphone-sdk-novideo/linphone-sdk-novideo/apple-darwin/XCFrameworks/msamr.xcframework/ios-arm64/msamr.framework/msamr",
+    "Pods/iOSPhoneLib/linphone-sdk-novideo-frameworks/mscodec2.xcframework/ios-arm64/mscodec2.framework/mscodec2",
+    "Pods/linphone-sdk-novideo/linphone-sdk-novideo/apple-darwin/XCFrameworks/mscodec2.xcframework/ios-arm64/mscodec2.framework/mscodec2",
+    "Pods/iOSPhoneLib/linphone-sdk-novideo-frameworks/msopenh264.xcframework/ios-arm64/msopenh264.framework/msopenh264",
+    "Pods/linphone-sdk-novideo/linphone-sdk-novideo/apple-darwin/XCFrameworks/msopenh264.xcframework/ios-arm64/msopenh264.framework/msopenh264",
+    "Pods/iOSPhoneLib/linphone-sdk-novideo-frameworks/mssilk.xcframework/ios-arm64/mssilk.framework/mssilk",
+    "Pods/linphone-sdk-novideo/linphone-sdk-novideo/apple-darwin/XCFrameworks/mssilk.xcframework/ios-arm64/mssilk.framework/mssilk",
+    "Pods/iOSPhoneLib/linphone-sdk-novideo-frameworks/mswebrtc.xcframework/ios-arm64/mswebrtc.framework/mswebrtc",
+    "Pods/linphone-sdk-novideo/linphone-sdk-novideo/apple-darwin/XCFrameworks/mswebrtc.xcframework/ios-arm64/mswebrtc.framework/mswebrtc",
+    "Pods/iOSPhoneLib/linphone-sdk-novideo-frameworks/ortp.xcframework/ios-arm64/ortp.framework/ortp",
+    "Pods/linphone-sdk-novideo/linphone-sdk-novideo/apple-darwin/XCFrameworks/ortp.xcframework/ios-arm64/ortp.framework/ortp",
+  ]
+
+  framework_paths.each do |framework_relative_path|
+    strip_bitcode_from_framework(bitcode_strip_path, framework_relative_path)
   end
 end
