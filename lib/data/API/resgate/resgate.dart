@@ -77,6 +77,7 @@ class Resgate with Loggable {
       unawaited(
         attemptReconnect('Failed to start Resgate: $e'),
       );
+      return;
     }
 
     final resgate = this._resgate!;
