@@ -68,6 +68,8 @@ class _NoticeState extends State<_Notice>
       return FontAwesomeIcons.userSlash;
     } else if (state is TemporaryRedirectNotice) {
       return FontAwesomeIcons.listTree;
+    } else if (state is IgnoreBatteryOptimizationsPermissionDeniedNotice) {
+      return FontAwesomeIcons.batteryFull;
     } else {
       return FontAwesomeIcons.exclamation;
     }
@@ -88,6 +90,8 @@ class _NoticeState extends State<_Notice>
       return context.msg.main.temporaryRedirect.title;
     } else if (state is NoGooglePlayServices) {
       return context.msg.main.notice.noGooglePlayServices.title;
+    } else if (state is IgnoreBatteryOptimizationsPermissionDeniedNotice) {
+      return context.msg.onboarding.permission.ignoreBatteryOptimizations.title;
     } else {
       return context.msg.main.notice.phoneAndMicrophone.title;
     }
@@ -114,6 +118,8 @@ class _NoticeState extends State<_Notice>
           ? strings.noAppAccount.content(app)
           : strings.noAppAccount.noPermission.content,
       NoGooglePlayServices() => strings.noGooglePlayServices.content,
+      IgnoreBatteryOptimizationsPermissionDeniedNotice() => context.msg.main
+          .settings.list.calling.ignoreBatteryOptimizations.description,
       _ => strings.phoneAndMicrophone.content(app),
     };
 
@@ -189,6 +195,9 @@ class _NoticeState extends State<_Notice>
                               else if (state
                                   is NotificationsPermissionDeniedNotice)
                                 Permission.notifications
+                              else if (state
+                                  is IgnoreBatteryOptimizationsPermissionDeniedNotice)
+                                Permission.ignoreBatteryOptimizations
                               else ...[Permission.phone, Permission.microphone],
                             ],
                           ),

@@ -4,8 +4,8 @@ import 'package:vialer/domain/usecases/user/settings/change_setting.dart';
 
 class DisableAdvancedVoipLogging extends UseCase {
   Future<void> call() => ChangeSettingUseCase()(
-    AppSetting.enableAdvancedVoipLogging,
-    false,
-    track: false,
-  );
+        AppSetting.enableAdvancedVoipLogging,
+        false,
+        track: false,
+      );
 }
