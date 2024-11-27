@@ -6,12 +6,15 @@ import 'dart:io';
 import 'package:dartx/dartx.dart';
 import 'package:recase/recase.dart';
 import 'package:vialer/data/models/user/settings/app_setting.dart';
+import 'package:vialer/domain/usecases/user/get_permission_status.dart';
 import 'package:vialer/presentation/util/pigeon.dart';
 
 import '../../../../../data/repositories/metrics/metrics.dart';
 import '../../../data/models/colltacts/colltact_tab.dart';
 import '../../../data/models/relations/colleagues/colleague.dart';
 import '../../../data/models/user/client.dart';
+import '../../../data/models/user/permissions/permission.dart';
+import '../../../data/models/user/permissions/permission_status.dart';
 import '../../../data/models/user/settings/call_setting.dart';
 import '../../../data/models/user/settings/settings.dart';
 import '../../../data/models/user/user.dart';
@@ -49,6 +52,7 @@ class IdentifyForTrackingUseCase extends UseCase {
         ..._storage.doNotShowOutgoingNumberSelectorOrNull
             .toIdentifyProperties(),
         ...await _sharedContacts.toIdentifyProperties(),
+        ...await _operatingSystemPermissionProperties(),
       },
     ).then((_) => Future.delayed(_artificialDelay));
   }
@@ -57,6 +61,29 @@ class IdentifyForTrackingUseCase extends UseCase {
         if (Platform.isAndroid)
           'google-play-services-available': await _isPlayServicesAvailable,
       };
+
+  Future<Map<String, dynamic>> _operatingSystemPermissionProperties() async {
+    final getPermission = GetPermissionStatusUseCase();
+
+    final entries = await Future.wait(
+      Permission.values.map(
+        (permission) async => MapEntry(
+          permission.identifyFormat,
+          (await getPermission(permission: permission)).identifyFormat,
+        ),
+      ),
+    );
+
+    return Map.fromEntries(entries);
+  }
+}
+
+extension on Permission {
+  String get identifyFormat => 'permission-${name.paramCase}';
+}
+
+extension on PermissionStatus {
+  String get identifyFormat => name.paramCase;
 }
 
 late final _isPlayServicesAvailable = GooglePlayServices().isAvailable();
