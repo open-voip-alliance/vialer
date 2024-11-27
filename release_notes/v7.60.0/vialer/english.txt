@@ -1,0 +1,1 @@
+- Android: Displaying an alert to encourage ignoring battery optimization
