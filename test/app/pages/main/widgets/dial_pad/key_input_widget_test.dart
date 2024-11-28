@@ -41,7 +41,7 @@ void main() {
           phoneNumberValidationUrl:
               Uri.parse('https://phonenumbers.spindle.dev'),
           featureAnnouncementsUrl: Uri.parse(
-            "https://api.prod.holodeck.spindle.dev/feature-announcments/",
+            "https://api.eu-production.holodeck.voys.nl/feature-announcments/",
           ),
         ),
         child: KeyInput(
