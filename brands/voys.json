@@ -7,7 +7,7 @@
   "url": "https://freedom.voys.nl",
   "aboutUrl": "https://www.voys.nl/hulp/toestellen/voys-4g-app/",
   "middlewareUrl": "https://vialerpush.voipgrid.nl",
-  "voipgridUrl": "https://partner.voipgrid.nl",
+  "voipgridUrl": "https://partner.voys.co",
   "sipUrl": "sip.encryptedsip.com",
   "businessAvailabilityUrl": "https://api.prod.holodeck.spindle.dev/business-availability/clients/",
   "openingHoursBasicUrl": "https://api.prod.holodeck.spindle.dev/opening-hours-basic/client/",
