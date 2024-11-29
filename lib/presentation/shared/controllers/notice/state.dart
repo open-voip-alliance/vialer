@@ -28,13 +28,16 @@ sealed class NoticeState with _$NoticeState {
     required bool hasPermissionToChangeAppAccount,
   }) = NoAppAccountNotice;
   const factory NoticeState.noGooglePlayServices() = NoGooglePlayServices;
+  const factory NoticeState.ignoreBatteryOptimizationsPermissionDeniedNotice() =
+      IgnoreBatteryOptimizationsPermissionDeniedNotice;
 
   bool get isPermissionNotice => switch (this) {
         MicrophonePermissionDeniedNotice() ||
         PhonePermissionDeniedNotice() ||
         PhoneAndMicrophonePermissionDeniedNotice() ||
         BluetoothConnectPermissionDeniedNotice() ||
-        NotificationsPermissionDeniedNotice() =>
+        NotificationsPermissionDeniedNotice() ||
+        IgnoreBatteryOptimizationsPermissionDeniedNotice() =>
           true,
         _ => false,
       };

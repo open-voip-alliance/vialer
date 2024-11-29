@@ -47,6 +47,7 @@ class NoticeCubit extends Cubit<NoticeState> with Loggable {
     PermissionStatus? phoneStatus,
     PermissionStatus? bluetoothStatus,
     PermissionStatus? notificationsStatus,
+    PermissionStatus? ignoreBatteryOptimization,
   }) async {
     if (state is NoticeDismissed) return;
 
@@ -71,6 +72,12 @@ class NoticeCubit extends Cubit<NoticeState> with Loggable {
             permission: os.Permission.notifications,
           )
         : PermissionStatus.granted;
+
+    ignoreBatteryOptimization = Platform.isIOS
+        ? PermissionStatus.granted
+        : ignoreBatteryOptimization ??= await _getPermissionStatus(
+            permission: os.Permission.ignoreBatteryOptimizations,
+          );
 
     final user = _getUser();
 
@@ -104,6 +111,8 @@ class NoticeCubit extends Cubit<NoticeState> with Loggable {
       );
     } else if (!googlePlayServicesIsAvailable) {
       emit(const NoGooglePlayServices());
+    } else if (ignoreBatteryOptimization != PermissionStatus.granted) {
+      emit(const IgnoreBatteryOptimizationsPermissionDeniedNotice());
     } else {
       emit(const NoNotice());
     }
@@ -117,7 +126,8 @@ class NoticeCubit extends Cubit<NoticeState> with Loggable {
         permission == os.Permission.phone ||
             permission == os.Permission.microphone ||
             permission == os.Permission.bluetooth ||
-            permission == os.Permission.notifications,
+            permission == os.Permission.notifications ||
+            permission == os.Permission.ignoreBatteryOptimizations,
         'Must be a relevant permission',
       );
 
@@ -139,6 +149,10 @@ class NoticeCubit extends Cubit<NoticeState> with Loggable {
         bluetoothStatus: permission == os.Permission.bluetooth ? status : null,
         notificationsStatus:
             permission == os.Permission.notifications ? status : null,
+        ignoreBatteryOptimization:
+            permission == os.Permission.ignoreBatteryOptimizations
+                ? status
+                : null,
       );
 
       // No need to request more if there's no notice.
