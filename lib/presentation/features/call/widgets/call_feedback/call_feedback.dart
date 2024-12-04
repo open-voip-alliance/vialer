@@ -12,7 +12,7 @@ import '../../../../../dependency_locator.dart';
 import 'call_rating.dart';
 import 'select_audio_problems.dart';
 import 'select_call_problem.dart';
-import 'written_feedback.dart';
+import 'thank_you.dart';
 
 class CallFeedback extends StatefulWidget {
   const CallFeedback({
@@ -67,7 +67,7 @@ class _CallFeedbackState extends State<CallFeedback> {
       return CallFeedbackStage.selectAudioProblem;
     }
 
-    return CallFeedbackStage.provideWrittenFeedback;
+    return CallFeedbackStage.thankYou;
   }
 
   @override
@@ -126,26 +126,20 @@ class _CallFeedbackState extends State<CallFeedback> {
     });
   }
 
-  Widget _buildForCurrentStage() {
-    switch (_stage) {
-      case CallFeedbackStage.rateCall:
-        return CallRating(
-          onComplete: _onCallRated,
-        );
-      case CallFeedbackStage.selectCallProblem:
-        return SelectCallProblem(
-          onComplete: _onProblemSelected,
-        );
-      case CallFeedbackStage.provideWrittenFeedback:
-        return WrittenFeedback(
-          onComplete: widget.onUserFinishedFeedbackProcess,
-        );
-      case CallFeedbackStage.selectAudioProblem:
-        return SelectAudioProblems(
-          onComplete: _onAudioProblemsSelected,
-        );
-    }
-  }
+  Widget _buildForCurrentStage() => switch (_stage) {
+        CallFeedbackStage.rateCall => CallRating(
+            onComplete: _onCallRated,
+          ),
+        CallFeedbackStage.selectCallProblem => SelectCallProblem(
+            onComplete: _onProblemSelected,
+          ),
+        CallFeedbackStage.selectAudioProblem => SelectAudioProblems(
+            onComplete: _onAudioProblemsSelected,
+          ),
+        CallFeedbackStage.thankYou => ThankYou(
+            onComplete: widget.onUserFinishedFeedbackProcess,
+          )
+      };
 
   @override
   Widget build(BuildContext context) {
@@ -205,6 +199,6 @@ class CallFeedbackAlertDialog extends StatelessWidget {
 enum CallFeedbackStage {
   rateCall,
   selectCallProblem,
-  provideWrittenFeedback,
   selectAudioProblem,
+  thankYou,
 }

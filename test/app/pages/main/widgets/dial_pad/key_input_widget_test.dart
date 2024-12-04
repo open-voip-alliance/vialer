@@ -43,6 +43,7 @@ void main() {
           featureAnnouncementsUrl: Uri.parse(
             "https://api.prod.holodeck.spindle.dev/feature-announcments/",
           ),
+          supportUrl: null,
         ),
         child: KeyInput(
           controller: controller,

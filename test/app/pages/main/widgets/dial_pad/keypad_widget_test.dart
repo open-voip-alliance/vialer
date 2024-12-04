@@ -461,6 +461,7 @@ class TestApp extends StatelessWidget {
         featureAnnouncementsUrl: Uri.parse(
           "https://api.prod.holodeck.spindle.dev/feature-announcments/",
         ),
+        supportUrl: null,
       ),
       child: Builder(
         builder: (context) {
