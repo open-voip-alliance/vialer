@@ -158,11 +158,13 @@ class _SharedContactFormState extends State<_SharedContactForm> {
         } else if (state is Error) {
           ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()
-            ..showSnackBar(SnackBar(
-              content: Text(
-                context.strings.genericError,
+            ..showSnackBar(
+              SnackBar(
+                content: Text(
+                  context.strings.genericError,
+                ),
               ),
-            ));
+            );
         }
       },
       builder: (context, state) {

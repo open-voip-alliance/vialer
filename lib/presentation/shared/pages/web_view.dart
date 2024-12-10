@@ -115,7 +115,7 @@ class _WebViewPageState extends State<WebViewPage> {
                   if (state is! LoadedWebView)
                     const Center(
                       child: CircularProgressIndicator(),
-                    )
+                    ),
                 ],
               );
             }

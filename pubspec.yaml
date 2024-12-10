@@ -76,6 +76,8 @@ dependencies:
   expandable_page_view: ^1.0.17
   upgrader: ^10.3.0
 
+  riverpod_annotation: any
+  meta: any
 dev_dependencies:
   test: ^1.24.9
   integration_test:
@@ -96,7 +98,6 @@ dev_dependencies:
   package_config: ^2.1.0
   freezed: ^2.4.7
   riverpod_generator: ^2.4.0
-  riverpod_annotation: ^2.3.5
   mockito: ^5.4.4
   austerity: ^1.2.0
 
@@ -108,6 +109,8 @@ dev_dependencies:
   vialer_cli:
     path: vialer_cli
 
+  args: any
+  http: any
 flutter:
   uses-material-design: true
 

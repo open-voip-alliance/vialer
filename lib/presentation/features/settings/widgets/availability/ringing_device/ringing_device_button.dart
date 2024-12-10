@@ -70,13 +70,13 @@ class _RingingDeviceButtonState extends State<RingingDeviceButton> {
 
   List<Destination?> get _destinations => switch (widget.type) {
         RingingDeviceType.webphone => [
-            widget.destinations.findWebphoneAccountFor(user: widget.user)
+            widget.destinations.findWebphoneAccountFor(user: widget.user),
           ],
         RingingDeviceType.deskPhone ||
         RingingDeviceType.unknown =>
           widget.destinations.deskPhonesFor(user: widget.user),
         RingingDeviceType.mobile => [
-            widget.destinations.findAppAccountFor(user: widget.user)
+            widget.destinations.findAppAccountFor(user: widget.user),
           ],
         RingingDeviceType.fixed =>
           widget.destinations.fixedDestinationsFor(user: widget.user),

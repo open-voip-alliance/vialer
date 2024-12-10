@@ -70,7 +70,7 @@ Future<void> writeBrandValues(Brand brand) async {
         MapEntry<String, dynamic>(
           'flutter_shared_pref_name',
           '${brand.appId}_preferences',
-        )
+        ),
       ]);
 
       for (final entry in entries) {

@@ -37,7 +37,8 @@ class StorageRepository {
     if (json.containsKey('permissions') &&
         json['permissions'] is Map<String, dynamic>) {
       final permissions = <Permission>{}..addAll(
-          (json['permissions'] as Map<String, dynamic>).toNewPermissions());
+          (json['permissions'] as Map<String, dynamic>).toNewPermissions(),
+        );
 
       json.remove('permissions');
 
@@ -276,11 +277,12 @@ class StorageRepository {
   bool get doNotShowOutgoingNumberSelector =>
       _preferences.getBool(_doNotShowOutgoingNumberSelector) ?? false;
 
-  set doNotShowOutgoingNumberSelector(bool value) =>
-      unawaited(_preferences.setBool(
-        _doNotShowOutgoingNumberSelector,
-        value,
-      ));
+  set doNotShowOutgoingNumberSelector(bool value) => unawaited(
+        _preferences.setBool(
+          _doNotShowOutgoingNumberSelector,
+          value,
+        ),
+      );
 
   static const _isUsingScreenReader = 'is_using_screen_reader';
 

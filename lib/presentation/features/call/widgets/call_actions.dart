@@ -84,7 +84,7 @@ class _CallActionsState extends State<CallActions> {
             onHangUpButtonPressed: _hangUp,
             onCancelButtonPressed: () => Navigator.pop(context),
           );
-        }
+        },
       },
     );
   }

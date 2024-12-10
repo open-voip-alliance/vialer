@@ -53,7 +53,7 @@ class _SelectAudioProblemsState extends State<SelectAudioProblems> {
           child: Text(
             context.msg.main.call.feedback.audioProblems.done.toUpperCase(),
           ),
-        )
+        ),
       ],
       content: Column(
         mainAxisSize: MainAxisSize.min,

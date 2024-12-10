@@ -161,6 +161,6 @@ extension on bool? {
 extension on SharedContacts {
   Future<Map<String, dynamic>> toIdentifyProperties() async => {
         'call-directory-extension-is-enabled':
-            Platform.isIOS ? await isCallDirectoryExtensionEnabled() : false
+            Platform.isIOS ? await isCallDirectoryExtensionEnabled() : false,
       };
 }

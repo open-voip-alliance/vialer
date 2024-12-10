@@ -142,21 +142,24 @@ class _T9DialPadState extends ConsumerState<T9DialPad>
         child: Column(
           children: <Widget>[
             if (widget.isT9ContactSearchEnabled) ...[
-              Stack(children: [
-                T9ColltactsListView(controller: controller),
-                if (_shouldShowPhoneNumberSuggestionChip) ...[
-                  Positioned(
-                    bottom: 10,
-                    left: 0,
-                    right: 0,
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: _PhoneNumberSuggestionChip(
-                          onSelected: _selectPhoneNumberSuggestionChip),
+              Stack(
+                children: [
+                  T9ColltactsListView(controller: controller),
+                  if (_shouldShowPhoneNumberSuggestionChip) ...[
+                    Positioned(
+                      bottom: 10,
+                      left: 0,
+                      right: 0,
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: _PhoneNumberSuggestionChip(
+                          onSelected: _selectPhoneNumberSuggestionChip,
+                        ),
+                      ),
                     ),
-                  ),
-                ]
-              ]),
+                  ],
+                ],
+              ),
               const Divider(
                 height: 1,
                 thickness: 1,
@@ -169,7 +172,8 @@ class _T9DialPadState extends ConsumerState<T9DialPad>
               ),
               if (_shouldShowPhoneNumberSuggestionChip) ...[
                 _PhoneNumberSuggestionChip(
-                    onSelected: _selectPhoneNumberSuggestionChip),
+                  onSelected: _selectPhoneNumberSuggestionChip,
+                ),
                 SizedBox(
                   height: 10,
                 ),

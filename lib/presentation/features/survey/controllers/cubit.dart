@@ -165,7 +165,7 @@ class SurveyCubit extends Cubit<SurveyState> with Loggable {
             'answer': {
               'id': s.answer,
               'phrase': s.question.answers[s.answer!],
-            }
+            },
           },
       ].reversed.toList(),
     };
