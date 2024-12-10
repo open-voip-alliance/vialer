@@ -7,6 +7,7 @@ import 'package:vialer/presentation/shared/widgets/brand_provider/widget.dart';
 import 'package:vialer/presentation/shared/widgets/dial_pad/key_input.dart';
 
 void main() {
+  final _fakeUrl = Uri.parse('https://fake.url');
   final controller = TextEditingController();
   final testWidget = MaterialApp(
     locale: const Locale('en'),
@@ -22,27 +23,19 @@ void main() {
           identifier: 'vialer',
           appId: 'com.voipgrid.vialer',
           appName: 'Vialer',
-          url: Uri.parse('https://partner.voipgrid.nl'),
-          middlewareUrl: Uri.parse('https://vialerpush.voipgrid.nl'),
-          voipgridUrl: Uri.parse('https://partner.voipgrid.nl'),
-          sipUrl: Uri.parse('sip.encryptedsip.com'),
-          businessAvailabilityUrl: Uri.parse(
-            'https://api.eu-prod.holodeck.wearespindle.com/business-availability/clients/',
-          ),
-          openingHoursBasicUrl: Uri.parse(
-            'https://api.eu-prod.holodeck.wearespindle.com/openinghours/client/',
-          ),
-          resgateUrl: Uri.parse('resgate'),
-          privacyPolicyUrl: Uri.parse('dummypolicy.com'),
+          url: _fakeUrl,
+          middlewareUrl: _fakeUrl,
+          voipgridUrl: _fakeUrl,
+          sipUrl: _fakeUrl,
+          businessAvailabilityUrl: _fakeUrl,
+          openingHoursBasicUrl: _fakeUrl,
+          resgateUrl: _fakeUrl,
+          privacyPolicyUrl: _fakeUrl,
           signUpUrl: null,
-          availabilityServiceUrl: Uri.parse('dummydndservice.url'),
-          sharedContactsUrl:
-              Uri.parse('https://contacts.spindle.dev/contacts/'),
-          phoneNumberValidationUrl:
-              Uri.parse('https://phonenumbers.spindle.dev'),
-          featureAnnouncementsUrl: Uri.parse(
-            "https://api.prod.holodeck.spindle.dev/feature-announcments/",
-          ),
+          availabilityServiceUrl: _fakeUrl,
+          sharedContactsUrl: _fakeUrl,
+          phoneNumberValidationUrl: _fakeUrl,
+          featureAnnouncementsUrl: _fakeUrl,
         ),
         child: KeyInput(
           controller: controller,
