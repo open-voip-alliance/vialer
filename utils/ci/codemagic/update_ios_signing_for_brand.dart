@@ -28,9 +28,10 @@ void main(List<String> arguments) async {
     ],
     iosBundleId: [
       RegExp(
-          r'(?<=PRODUCT_BUNDLE_IDENTIFIER = )[\w.]+(?=\.CallDirectoryExtension;|;)'),
+        r'(?<=PRODUCT_BUNDLE_IDENTIFIER = )[\w.]+(?=\.CallDirectoryExtension;|;)',
+      ),
       RegExp(r'(?<=<string>group.)[\w.]+(?=\.contacts</string>)'),
-    ]
+    ],
   };
 
   for (final filePath in filePaths) {
@@ -51,7 +52,9 @@ String appendExtensionIfNecessary(String? match) {
 }
 
 String replaceCandidate(
-    MapEntry<String, List<RegExp>> replacement, String contents) {
+  MapEntry<String, List<RegExp>> replacement,
+  String contents,
+) {
   for (final candidate in replacement.value) {
     contents = contents.replaceAllMapped(
       candidate,

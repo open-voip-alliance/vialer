@@ -78,7 +78,8 @@ class Client with _$Client {
 }
 
 List<Map<String, dynamic>> _outgoingNumbersToJson(
-        Iterable<OutgoingNumber> numbers) =>
+  Iterable<OutgoingNumber> numbers,
+) =>
     numbers.map(OutgoingNumber.serializeToJson).toList();
 
 ClientVoipConfig _clientVoipConfigFromJson(Map<String, dynamic>? json) {

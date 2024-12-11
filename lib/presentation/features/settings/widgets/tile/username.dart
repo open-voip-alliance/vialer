@@ -30,7 +30,7 @@ class UsernameTile extends StatelessWidget {
               bold: false,
             ),
           ),
-        )
+        ),
       ],
     );
   }

@@ -86,7 +86,7 @@ class BottomNavigationProfileIcon extends StatelessWidget {
                   ),
                 ),
               ),
-            )
+            ),
           ],
         );
       },

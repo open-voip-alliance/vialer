@@ -37,91 +37,93 @@ class ColltactItemList extends StatelessWidget {
     final bottomLettersPadding =
         ColltactTabsInheritedWidget.of(context).bottomLettersPadding;
 
-    return ColltactBlocBuilder(builder: (container) {
-      final colltacts = <Colltact>[];
-      final contactsState = container.contactsState;
-      final colleaguesState = container.colleaguesState;
-      final sharedContactsState = container.sharedContactsState;
+    return ColltactBlocBuilder(
+      builder: (container) {
+        final colltacts = <Colltact>[];
+        final contactsState = container.contactsState;
+        final colleaguesState = container.colleaguesState;
+        final sharedContactsState = container.sharedContactsState;
 
-      if (kind == ColltactKind.contact) {
-        final contacts = contactsState is ContactsLoaded
-            ? contactsState.contacts
-            : <Contact>[];
-        for (final contact in contacts) {
-          colltacts.add(Colltact.contact(contact));
+        if (kind == ColltactKind.contact) {
+          final contacts = contactsState is ContactsLoaded
+              ? contactsState.contacts
+              : <Contact>[];
+          for (final contact in contacts) {
+            colltacts.add(Colltact.contact(contact));
+          }
+        } else if (kind == ColltactKind.colleague) {
+          final colleagues = colleaguesState is ColleaguesLoaded
+              ? colleaguesState.filteredColleagues
+              : <Colleague>[];
+          for (final colleague in colleagues) {
+            colltacts.add(Colltact.colleague(colleague));
+          }
+        } else {
+          final sharedContacts = sharedContactsState is SharedContactsLoaded
+              ? sharedContactsState.sharedContacts
+              : <SharedContact>[];
+          for (final sharedContact in sharedContacts) {
+            colltacts.add(Colltact.sharedContact(sharedContact));
+          }
         }
-      } else if (kind == ColltactKind.colleague) {
-        final colleagues = colleaguesState is ColleaguesLoaded
-            ? colleaguesState.filteredColleagues
-            : <Colleague>[];
-        for (final colleague in colleagues) {
-          colltacts.add(Colltact.colleague(colleague));
-        }
-      } else {
-        final sharedContacts = sharedContactsState is SharedContactsLoaded
-            ? sharedContactsState.sharedContacts
-            : <SharedContact>[];
-        for (final sharedContact in sharedContacts) {
-          colltacts.add(Colltact.sharedContact(sharedContact));
-        }
-      }
 
-      final colleaguesUpToDate = kind == ColltactKind.colleague &&
-          colleaguesState is ColleaguesLoaded &&
-          colleaguesState.upToDate;
+        final colleaguesUpToDate = kind == ColltactKind.colleague &&
+            colleaguesState is ColleaguesLoaded &&
+            colleaguesState.upToDate;
 
-      final widgets = _mapAndFilterToWidgets(
-        colltacts,
-        contactsState is ContactsLoaded
-            ? contactsState.contactSort
-            : defaultContactSort,
-        colleaguesUpToDate,
-        searchTerm,
-      );
-
-      Future<void> onRefresh() async {
-        await container.colleaguesCubit.refresh();
-        await container.contactsCubit.reloadContacts();
-        await container.sharedContactsCubit.loadSharedContacts(
-          fullRefresh: true,
+        final widgets = _mapAndFilterToWidgets(
+          colltacts,
+          contactsState is ContactsLoaded
+              ? contactsState.contactSort
+              : defaultContactSort,
+          colleaguesUpToDate,
+          searchTerm,
         );
-      }
 
-      return AnimatedSwitcher(
-        duration: const Duration(milliseconds: 200),
-        switchInCurve: Curves.decelerate,
-        switchOutCurve: Curves.decelerate.flipped,
-        child: NoResultsPlaceholder(
-          type: _noResultsType(
-            widgets,
-            contactsState,
-            colleaguesState,
-            container.colleaguesCubit,
-            sharedContactsState,
-            container.sharedContactsCubit,
-            kind,
-            searchTerm,
-          ),
-          kind: kind,
-          searchTerm: searchTerm,
-          onCall: (number) => unawaited(
-            kind == ColltactKind.contact
-                ? container.contactsCubit.call(number)
-                : container.colleaguesCubit.call(number),
-          ),
-          dontAskForContactsPermissionAgain:
-              contactsState is ContactsLoaded && contactsState.dontAskAgain,
-          contactsCubit: container.contactsCubit,
-          onRefresh: onRefresh,
-          child: AlphabetListView(
-            key: ValueKey(searchTerm),
-            bottomLettersPadding: bottomLettersPadding,
+        Future<void> onRefresh() async {
+          await container.colleaguesCubit.refresh();
+          await container.contactsCubit.reloadContacts();
+          await container.sharedContactsCubit.loadSharedContacts(
+            fullRefresh: true,
+          );
+        }
+
+        return AnimatedSwitcher(
+          duration: const Duration(milliseconds: 200),
+          switchInCurve: Curves.decelerate,
+          switchOutCurve: Curves.decelerate.flipped,
+          child: NoResultsPlaceholder(
+            type: _noResultsType(
+              widgets,
+              contactsState,
+              colleaguesState,
+              container.colleaguesCubit,
+              sharedContactsState,
+              container.sharedContactsCubit,
+              kind,
+              searchTerm,
+            ),
+            kind: kind,
+            searchTerm: searchTerm,
+            onCall: (number) => unawaited(
+              kind == ColltactKind.contact
+                  ? container.contactsCubit.call(number)
+                  : container.colleaguesCubit.call(number),
+            ),
+            dontAskForContactsPermissionAgain:
+                contactsState is ContactsLoaded && contactsState.dontAskAgain,
+            contactsCubit: container.contactsCubit,
             onRefresh: onRefresh,
-            children: widgets,
+            child: AlphabetListView(
+              key: ValueKey(searchTerm),
+              bottomLettersPadding: bottomLettersPadding,
+              onRefresh: onRefresh,
+              children: widgets,
+            ),
           ),
-        ),
-      );
-    });
+        );
+      },
+    );
   }
 
   /// Inspects the current state and determines why we aren't able to show
@@ -273,7 +275,7 @@ class ColltactItemList extends StatelessWidget {
                     colltact,
                     colleaguesUpToDate: colleaguesUpToDate,
                   ),
-                )
+                ),
           ],
         )
         .flatten()

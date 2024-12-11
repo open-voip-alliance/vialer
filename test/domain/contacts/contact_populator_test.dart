@@ -60,9 +60,10 @@ void main() {
 
   test('External number matches shared contact without country code', () {
     _expectsToMatchContact(
-        numberInCallRecord: externalNumber,
-        numbersInContacts: [],
-        numbersInSharedContacts: ['0640366644']);
+      numberInCallRecord: externalNumber,
+      numbersInContacts: [],
+      numbersInSharedContacts: ['0640366644'],
+    );
   });
 
   test('Internal number does not match with country code', () {

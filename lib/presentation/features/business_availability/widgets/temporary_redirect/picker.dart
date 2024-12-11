@@ -216,7 +216,7 @@ class _TemporaryRedirectPickerState extends State<TemporaryRedirectPicker> {
                   .msg.main.temporaryRedirect.actions.stopRedirect.labelOngoing,
               solid: false,
             ),
-          ]
+          ],
         ],
       ),
     );
