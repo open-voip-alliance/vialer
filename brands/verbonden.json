@@ -15,5 +15,6 @@
   "sharedContactsUrl": "https://contactbook.eu-production.holodeck.voys.nl",
   "phoneNumberValidationUrl": "https://phonenumbers.spindle.dev",
   "featureAnnouncementsUrl": "https://api.eu-production.holodeck.voys.nl/feature-announcements/",
-  "resgateUrl": "wss://resgate.prod.holodeck.spindle.dev"
+  "resgateUrl": "wss://resgate.prod.holodeck.spindle.dev",
+  "supportUrl": "https://verbonden.nl/contact"
 }

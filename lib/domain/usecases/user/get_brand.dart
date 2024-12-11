@@ -1,9 +1,12 @@
+import 'package:dartx/dartx.dart';
+
 import '../../../data/models/user/brand.dart';
 import '../use_case.dart';
 
 class GetBrand extends UseCase {
   Brand call() {
     const signUpUrl = String.fromEnvironment('signUpUrl');
+    const supportUrl = String.fromEnvironment('supportUrl');
 
     return Brand(
       identifier: const String.fromEnvironment('identifier'),
@@ -38,6 +41,7 @@ class GetBrand extends UseCase {
       resgateUrl: Uri.parse(
         const String.fromEnvironment('resgateUrl'),
       ),
+      supportUrl: supportUrl.isNotNullOrBlank ? Uri.parse(supportUrl) : null,
     );
   }
 }
