@@ -17,5 +17,6 @@
   "phoneNumberValidationUrl": "https://phonenumbers.spindle.dev",
   "featureAnnouncementsUrl": "https://api.eu-production.holodeck.voys.nl/feature-announcements/",
   "resgateUrl": "wss://resgate.prod.holodeck.spindle.dev",
-  "supportUrl": "https://booking.voys.nl"
+  "supportUrl": "https://www.voys.co/contact/",
+  "supportUrlNL": "https://booking.voys.nl"
 }

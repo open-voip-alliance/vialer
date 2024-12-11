@@ -37,6 +37,7 @@ void main() {
           phoneNumberValidationUrl: _fakeUrl,
           featureAnnouncementsUrl: _fakeUrl,
           supportUrl: _fakeUrl,
+          supportUrlNL: _fakeUrl,
         ),
         child: KeyInput(
           controller: controller,

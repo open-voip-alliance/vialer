@@ -16,5 +16,6 @@
   "phoneNumberValidationUrl": "https://phonenumbers.spindle.dev",
   "featureAnnouncementsUrl": "https://api.eu-production.holodeck.voys.nl/feature-announcements/",
   "resgateUrl": "wss://resgate.prod.holodeck.spindle.dev",
-  "supportUrl": "https://verbonden.nl/contact"
+  "supportUrl": "https://verbonden.nl/contact",
+  "supportUrlNL": ""
 }
