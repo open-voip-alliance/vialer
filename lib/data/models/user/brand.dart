@@ -23,6 +23,7 @@ class Brand with _$Brand {
     required Uri phoneNumberValidationUrl,
     required Uri featureAnnouncementsUrl,
     required Uri resgateUrl,
+    required Uri? supportUrl,
   }) = _Brand;
 
   const Brand._();
@@ -63,4 +64,6 @@ extension GetBrandValue on Brand {
       throw UnsupportedError('Unsupported brand: $identifier');
     }
   }
+
+  bool get hasSupportUrl => supportUrl != null;
 }
