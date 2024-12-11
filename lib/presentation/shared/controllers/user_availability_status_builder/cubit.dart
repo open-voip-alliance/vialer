@@ -73,31 +73,37 @@ class UserAvailabilityStatusCubit extends Cubit<UserAvailabilityStatusState> {
     }
 
     if (availability != null) {
-      return emit(state.copyWith(
-        status: availability,
-        currentDestination: destination,
-        availableDestinations: availableDestinations,
-        isRingingDeviceOffline: isRingingDeviceOffline,
-      ));
+      return emit(
+        state.copyWith(
+          status: availability,
+          currentDestination: destination,
+          availableDestinations: availableDestinations,
+          isRingingDeviceOffline: isRingingDeviceOffline,
+        ),
+      );
     }
 
     // If the websocket can't connect we're just going to fallback to
     // determining the status based on what we have stored locally. This is
     // usually accurate, but not necessarily.
     if (!_relationsWebSocket.isConnected) {
-      return emit(state.copyWith(
-        status: _status,
-        currentDestination: destination,
-        availableDestinations: availableDestinations,
-      ));
+      return emit(
+        state.copyWith(
+          status: _status,
+          currentDestination: destination,
+          availableDestinations: availableDestinations,
+        ),
+      );
     }
 
     // We don't have any availability update, so we'll just make sure to emit
     // the new state with the current destination.
-    emit(state.copyWith(
-      currentDestination: destination,
-      availableDestinations: availableDestinations,
-    ));
+    emit(
+      state.copyWith(
+        currentDestination: destination,
+        availableDestinations: availableDestinations,
+      ),
+    );
   }
 
   Future<UserAvailabilityStatus> _fetchStatusFromServer() =>

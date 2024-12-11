@@ -55,7 +55,7 @@ class FeedbackRepository {
         'os': os,
         'os_version': osVersion,
         'device_info': model,
-      }
+      },
     });
   }
 }

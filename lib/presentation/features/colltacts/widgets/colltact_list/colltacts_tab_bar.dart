@@ -15,30 +15,31 @@ class ColltactsTabBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ColltactsTabsCubit, List<ColltactTab>>(
-        builder: (context, tabs) {
-      return TabBar(
-        controller: controller,
-        labelStyle: const TextStyle(fontWeight: FontWeight.bold),
-        labelPadding: const EdgeInsets.only(
-          top: 18,
-          bottom: 8,
-        ),
-        labelColor: Theme.of(context).primaryColor,
-        unselectedLabelColor: context.colors.grey1,
-        indicatorColor: Theme.of(context).primaryColor,
-        indicatorSize: TabBarIndicatorSize.label,
-        tabs: tabs.widgets(
-          (tab) => switch (tab) {
-            ColltactTab.contacts =>
-              Text(context.strings.contactsTabTitle.toUpperCase()),
-            ColltactTab.sharedContact =>
-              Text(context.strings.sharedTabTitle.toUpperCase()),
-            ColltactTab.colleagues =>
-              Text(context.strings.colleaguesTabTitle.toUpperCase()),
-          },
-        ),
-      );
-    });
+      builder: (context, tabs) {
+        return TabBar(
+          controller: controller,
+          labelStyle: const TextStyle(fontWeight: FontWeight.bold),
+          labelPadding: const EdgeInsets.only(
+            top: 18,
+            bottom: 8,
+          ),
+          labelColor: Theme.of(context).primaryColor,
+          unselectedLabelColor: context.colors.grey1,
+          indicatorColor: Theme.of(context).primaryColor,
+          indicatorSize: TabBarIndicatorSize.label,
+          tabs: tabs.widgets(
+            (tab) => switch (tab) {
+              ColltactTab.contacts =>
+                Text(context.strings.contactsTabTitle.toUpperCase()),
+              ColltactTab.sharedContact =>
+                Text(context.strings.sharedTabTitle.toUpperCase()),
+              ColltactTab.colleagues =>
+                Text(context.strings.colleaguesTabTitle.toUpperCase()),
+            },
+          ),
+        );
+      },
+    );
   }
 }
 

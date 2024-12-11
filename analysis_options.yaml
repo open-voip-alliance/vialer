@@ -17,6 +17,7 @@ linter:
     avoid_slow_async_io: false
     do_not_use_environment: false
     sort_pub_dependencies: false
+    require_trailing_commas: true
 
 analyzer:
   errors:

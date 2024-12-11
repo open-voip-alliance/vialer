@@ -241,10 +241,12 @@ class ClientHeaderInterceptor implements chopper.RequestInterceptor {
   @override
   FutureOr<chopper.Request> onRequest(Request request) async {
     if (_cachedClientHeaders.isNotEmpty) {
-      return request.copyWith(headers: {
-        ..._cachedClientHeaders,
-        ...request.headers,
-      });
+      return request.copyWith(
+        headers: {
+          ..._cachedClientHeaders,
+          ...request.headers,
+        },
+      );
     }
 
     final packageInfo = await PackageInfo.fromPlatform();

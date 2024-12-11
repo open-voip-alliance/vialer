@@ -42,7 +42,7 @@ Future<void> runIfSettingCanBeChanged(
             TextButton(
               onPressed: () => Navigator.pop(context),
               child: Text(context.msg.generic.button.close),
-            )
+            ),
           ],
           content: Text(context.msg.main.settings.noConnectionDialog.message),
         );
