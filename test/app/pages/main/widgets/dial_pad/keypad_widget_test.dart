@@ -456,6 +456,7 @@ class TestApp extends StatelessWidget {
         sharedContactsUrl: _fakeUrl,
         phoneNumberValidationUrl: _fakeUrl,
         featureAnnouncementsUrl: _fakeUrl,
+        supportUrl: _fakeUrl,
       ),
       child: Builder(
         builder: (context) {
