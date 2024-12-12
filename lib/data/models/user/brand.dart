@@ -24,6 +24,7 @@ class Brand with _$Brand {
     required Uri featureAnnouncementsUrl,
     required Uri resgateUrl,
     required Uri? supportUrl,
+    required Uri? supportUrlNL,
   }) = _Brand;
 
   const Brand._();

@@ -7,6 +7,7 @@ class GetBrand extends UseCase {
   Brand call() {
     const signUpUrl = String.fromEnvironment('signUpUrl');
     const supportUrl = String.fromEnvironment('supportUrl');
+    const supportUrlNL = String.fromEnvironment('supportUrlNL');
 
     return Brand(
       identifier: const String.fromEnvironment('identifier'),
@@ -42,6 +43,8 @@ class GetBrand extends UseCase {
         const String.fromEnvironment('resgateUrl'),
       ),
       supportUrl: supportUrl.isNotNullOrBlank ? Uri.parse(supportUrl) : null,
+      supportUrlNL:
+          supportUrlNL.isNotNullOrBlank ? Uri.parse(supportUrlNL) : null,
     );
   }
 }
