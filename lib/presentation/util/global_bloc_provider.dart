@@ -66,7 +66,7 @@ class GlobalBlocProvider extends StatelessWidget {
                 create: (_) => CountriesCubit(),
                 child: child,
               ),
-            )
+            ),
       ],
       child,
     );

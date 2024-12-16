@@ -38,12 +38,13 @@ class ColltactsTabsCubit extends Cubit<List<ColltactTab>> {
         if (_shouldShow(kind: ColltactKind.colleague)) ColltactTab.colleagues,
       ];
 
-  void trackTabSelected(int index) =>
-      _metricsRepository.track(switch (_indexToTab(index)) {
-        ColltactTab.contacts => 'contacts-tab-selected',
-        ColltactTab.sharedContact => 'shared-contacts-tab-selected',
-        ColltactTab.colleagues => 'colleague-tab-selected',
-      });
+  void trackTabSelected(int index) => _metricsRepository.track(
+        switch (_indexToTab(index)) {
+          ColltactTab.contacts => 'contacts-tab-selected',
+          ColltactTab.sharedContact => 'shared-contacts-tab-selected',
+          ColltactTab.colleagues => 'colleague-tab-selected',
+        },
+      );
 
   int getStoredTabAsIndex() {
     final index = _tabToIndex(

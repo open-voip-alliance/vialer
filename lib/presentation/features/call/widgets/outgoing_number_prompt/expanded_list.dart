@@ -55,7 +55,9 @@ class ExpandedList extends StatelessWidget {
         if (recentOutgoingNumbers.isNotEmpty) ...[
           Subheading(context.strings.recentlyUsedNumbers.label),
           ...recentOutgoingNumbers.toWidgets(
-              onOutgoingNumberSelected, state.currentOutgoingNumber),
+            onOutgoingNumberSelected,
+            state.currentOutgoingNumber,
+          ),
         ],
         Subheading(context.strings.allNumbers.label),
         _ButtonStylizedAsDropdown(

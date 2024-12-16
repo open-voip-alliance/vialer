@@ -24,11 +24,13 @@ Future<void> main(List<String> args) async {
       final entries =
           filesWithMissingTranslations[file] ?? <_MissingTranslation>[];
 
-      entries.add((
-        line.replaceAll(_nullPattern, '').trim(),
-        lineNumber,
-        file,
-      ));
+      entries.add(
+        (
+          line.replaceAll(_nullPattern, '').trim(),
+          lineNumber,
+          file,
+        ),
+      );
 
       filesWithMissingTranslations[file] = entries;
     }

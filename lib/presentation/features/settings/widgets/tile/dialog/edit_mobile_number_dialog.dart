@@ -123,7 +123,7 @@ class _EditMobileNumberDialogHelp extends StatelessWidget {
               context.msg.main.settings.list.accountInfo.mobileNumber.help,
               style: TextStyle(color: helpColor),
             ),
-          )
+          ),
         ],
       ),
     );

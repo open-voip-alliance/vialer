@@ -294,7 +294,7 @@ class _TwoFactorDigitField extends StatelessWidget {
           textAlign: TextAlign.center,
           onEditingComplete: focusScope.nextFocus,
           onChanged: (text) => {
-            if (text.isNotEmpty) {focusScope.nextFocus()}
+            if (text.isNotEmpty) {focusScope.nextFocus()},
           },
           onTap: () => controller.text = '',
         ),

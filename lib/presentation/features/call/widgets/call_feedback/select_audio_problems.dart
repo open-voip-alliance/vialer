@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:vialer/presentation/resources/localizations.dart';
-import 'package:vialer/presentation/resources/theme.dart';
 
 import '../../../../../../data/models/feedback/call_problem.dart';
 import '../../../../../../domain/usecases/calling/voip/rate_voip_call.dart';
@@ -47,13 +46,10 @@ class _SelectAudioProblemsState extends State<SelectAudioProblems> {
       actions: [
         TextButton(
           onPressed: _onDonePressed,
-          style: TextButton.styleFrom(
-            foregroundColor: context.brand.theme.colors.raisedColoredButtonText,
-          ),
           child: Text(
             context.msg.main.call.feedback.audioProblems.done.toUpperCase(),
           ),
-        )
+        ),
       ],
       content: Column(
         mainAxisSize: MainAxisSize.min,

@@ -235,9 +235,10 @@ class _CreateSharedContactButton extends StatelessWidget {
           MaterialPageRoute(
             builder: (_) {
               return AddSharedContactPage(
-                  onSave: () => context
-                      .read<SharedContactsCubit>()
-                      .loadSharedContacts(fullRefresh: true));
+                onSave: () => context
+                    .read<SharedContactsCubit>()
+                    .loadSharedContacts(fullRefresh: true),
+              );
             },
           ),
         ),

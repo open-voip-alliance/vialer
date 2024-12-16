@@ -100,9 +100,11 @@ class _ColltactPageState extends State<_ColltactList>
 
     if (state == AppLifecycleState.resumed) {
       unawaited(context.read<ContactsCubit>().reloadContacts());
-      unawaited(context
-          .read<SharedContactsCubit>()
-          .loadSharedContacts(fullRefresh: true));
+      unawaited(
+        context
+            .read<SharedContactsCubit>()
+            .loadSharedContacts(fullRefresh: true),
+      );
     }
   }
 
@@ -219,8 +221,10 @@ class SharedContactItemList extends StatelessWidget {
             MaterialPageRoute(
               builder: (_) {
                 return AddSharedContactPage(
-                    onSave: () => sharedContactsCubit.loadSharedContacts(
-                        fullRefresh: true));
+                  onSave: () => sharedContactsCubit.loadSharedContacts(
+                    fullRefresh: true,
+                  ),
+                );
               },
             ),
           ),

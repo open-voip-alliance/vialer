@@ -62,9 +62,10 @@ class PasswordForgottenPage extends ConsumerWidget {
 
     /// Listens to changes in the [PasswordForgottenState] and performs an action based on the state.
     /// If the [newState] is of type [Success], it pops a message with the provided success message.
-    ref.listen<PasswordForgottenState>(passwordForgottenProvider,
-        (PasswordForgottenState? previousState,
-            PasswordForgottenState newState) {
+    ref.listen<PasswordForgottenState>(passwordForgottenProvider, (
+      PasswordForgottenState? previousState,
+      PasswordForgottenState newState,
+    ) {
       if (newState is Success)
         _pop(
           context,
@@ -112,7 +113,10 @@ class PasswordForgottenPage extends ConsumerWidget {
                         StylizedButton.raised(
                           colored: true,
                           onPressed: () => _handleRequestNewPassword(
-                              context, ref, passwordForgottenState),
+                            context,
+                            ref,
+                            passwordForgottenState,
+                          ),
                           isLoading: passwordForgottenState is Loading,
                           child: passwordForgottenState is Loading
                               ? PlatformText(

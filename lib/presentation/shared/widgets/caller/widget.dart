@@ -292,7 +292,7 @@ class _AlertDialog extends StatelessWidget {
           CupertinoButton(
             onPressed: () => _onOkButtonPressed(context),
             child: okText,
-          )
+          ),
         ],
       );
     } else {

@@ -38,7 +38,7 @@ Future<void> main(List<String> args) async {
   final data = {
     'anonymousId': anonymousId,
     'event': event,
-    'properties': {'brand': brand, 'version': version}
+    'properties': {'brand': brand, 'version': version},
   };
   await sendToSegment(trackUrl, authorizationHeader, data);
 

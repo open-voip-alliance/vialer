@@ -103,12 +103,14 @@ class SharedContactFormCubit extends Cubit<SharedContactFormState> {
 
       emit(SharedContactFormState.saved());
     } catch (error) {
-      emit(SharedContactFormState.error(
-        firstName: firstName,
-        lastName: lastName,
-        company: company,
-        phoneNumbers: phoneNumbers,
-      ));
+      emit(
+        SharedContactFormState.error(
+          firstName: firstName,
+          lastName: lastName,
+          company: company,
+          phoneNumbers: phoneNumbers,
+        ),
+      );
     }
   }
 
@@ -123,9 +125,11 @@ class SharedContactFormCubit extends Cubit<SharedContactFormState> {
       );
       emit(SharedContactFormState.deleted());
     } catch (error) {
-      emit(SharedContactFormState.error(
-        uuid: sharedContactUuid,
-      ));
+      emit(
+        SharedContactFormState.error(
+          uuid: sharedContactUuid,
+        ),
+      );
     }
   }
 }

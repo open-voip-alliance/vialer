@@ -428,12 +428,13 @@ void initiateFakeCall({required TextEditingController controller}) {
 }
 
 class TestApp extends StatelessWidget {
-  const TestApp({
+  TestApp({
     required this.child,
     super.key,
   });
 
   final Widget child;
+  final _fakeUrl = Uri.parse('https://fake.url');
 
   @override
   Widget build(BuildContext context) {
@@ -442,25 +443,21 @@ class TestApp extends StatelessWidget {
         identifier: 'vialer',
         appId: 'com.voipgrid.vialer',
         appName: 'Vialer',
-        url: Uri.parse('https://partner.voipgrid.nl'),
-        middlewareUrl: Uri.parse('https://vialerpush.voipgrid.nl'),
-        voipgridUrl: Uri.parse('https://partner.voipgrid.nl'),
-        sipUrl: Uri.parse('sip.encryptedsip.com'),
-        businessAvailabilityUrl: Uri.parse(
-          'https://api.eu-prod.holodeck.wearespindle.com/business-availability/clients/',
-        ),
-        openingHoursBasicUrl: Uri.parse(
-          'https://api.eu-prod.holodeck.wearespindle.com/openinghours/client/',
-        ),
-        resgateUrl: Uri.parse('resgate'),
-        privacyPolicyUrl: Uri.parse('dummypolicy.com'),
+        url: _fakeUrl,
+        middlewareUrl: _fakeUrl,
+        voipgridUrl: _fakeUrl,
+        sipUrl: _fakeUrl,
+        businessAvailabilityUrl: _fakeUrl,
+        openingHoursBasicUrl: _fakeUrl,
+        resgateUrl: _fakeUrl,
+        privacyPolicyUrl: _fakeUrl,
         signUpUrl: null,
-        availabilityServiceUrl: Uri.parse('dummydndservice.url'),
-        sharedContactsUrl: Uri.parse('https://contacts.spindle.dev/contacts/'),
-        phoneNumberValidationUrl: Uri.parse('https://phonenumbers.spindle.dev'),
-        featureAnnouncementsUrl: Uri.parse(
-          "https://api.prod.holodeck.spindle.dev/feature-announcments/",
-        ),
+        availabilityServiceUrl: _fakeUrl,
+        sharedContactsUrl: _fakeUrl,
+        phoneNumberValidationUrl: _fakeUrl,
+        featureAnnouncementsUrl: _fakeUrl,
+        supportUrl: _fakeUrl,
+        supportUrlNL: _fakeUrl,
       ),
       child: Builder(
         builder: (context) {

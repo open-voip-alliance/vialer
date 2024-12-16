@@ -7,3 +7,5 @@ environment:
 dependencies:
   build_runner: ^2.4.8
   source_gen: ^1.4.0
+  build: any
+  analyzer: any

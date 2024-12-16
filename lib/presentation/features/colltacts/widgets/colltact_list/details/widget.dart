@@ -41,116 +41,118 @@ class _ColltactDetailsState extends State<ColltactDetails> {
     return BlocProvider<ColltactDetailsCubit>(
       create: (_) => ColltactDetailsCubit(context.read<CallerCubit>()),
       child: BlocBuilder<SharedContactsCubit, SharedContactsState>(
-          builder: (context, sharedContactsState) {
-        return BlocBuilder<ColleaguesCubit, ColleaguesState>(
-          builder: (context, colleagueState) {
-            return BlocBuilder<ContactsCubit, ContactsState>(
-              builder: (context, contactsState) {
-                final sharedContactsCubit = context.read<SharedContactsCubit>();
-                final contactsCubit = context.read<ContactsCubit>();
-                final colleaguesCubit = context.read<ColleaguesCubit>();
+        builder: (context, sharedContactsState) {
+          return BlocBuilder<ColleaguesCubit, ColleaguesState>(
+            builder: (context, colleagueState) {
+              return BlocBuilder<ContactsCubit, ContactsState>(
+                builder: (context, contactsState) {
+                  final sharedContactsCubit =
+                      context.read<SharedContactsCubit>();
+                  final contactsCubit = context.read<ContactsCubit>();
+                  final colleaguesCubit = context.read<ColleaguesCubit>();
 
-                /// Ensure we have the latest Colltact data
-                var colltact = widget.colltact.when(
-                  colleague: (_) =>
-                      colleaguesCubit.refreshColltactColleague(widget.colltact),
-                  contact: (_) =>
-                      contactsCubit.refreshColltactContact(widget.colltact),
-                  sharedContact: (_) => sharedContactsCubit
-                      .refreshColltactSharedContact(widget.colltact),
-                );
+                  /// Ensure we have the latest Colltact data
+                  var colltact = widget.colltact.when(
+                    colleague: (_) => colleaguesCubit
+                        .refreshColltactColleague(widget.colltact),
+                    contact: (_) =>
+                        contactsCubit.refreshColltactContact(widget.colltact),
+                    sharedContact: (_) => sharedContactsCubit
+                        .refreshColltactSharedContact(widget.colltact),
+                  );
 
-                return Scaffold(
-                  appBar: AppBar(
-                    backgroundColor: Colors.transparent,
-                    elevation: 0,
-                    title: Header(context.msg.main.contacts.title),
-                    centerTitle: false,
-                    iconTheme: IconThemeData(
-                      color: Theme.of(context).primaryColor,
-                    ),
-                    actions: switch (colltact) {
-                      ColltactColleague() => null,
-                      ColltactContact() ||
-                      ColltactSharedContact() =>
-                        widget.actions,
-                    },
-                  ),
-                  body: SafeArea(
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                        top: 32,
+                  return Scaffold(
+                    appBar: AppBar(
+                      backgroundColor: Colors.transparent,
+                      elevation: 0,
+                      title: Header(context.msg.main.contacts.title),
+                      centerTitle: false,
+                      iconTheme: IconThemeData(
+                        color: Theme.of(context).primaryColor,
                       ),
-                      child: Column(
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: _horizontalPadding,
-                            ),
-                            child: Row(
-                              children: <Widget>[
-                                ColltactAvatar(colltact, size: _leadingSize),
-                                const SizedBox(width: 16),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      Text(
-                                        colltact.name,
-                                        maxLines: 5,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: const TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold,
+                      actions: switch (colltact) {
+                        ColltactColleague() => null,
+                        ColltactContact() ||
+                        ColltactSharedContact() =>
+                          widget.actions,
+                      },
+                    ),
+                    body: SafeArea(
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                          top: 32,
+                        ),
+                        child: Column(
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: _horizontalPadding,
+                              ),
+                              child: Row(
+                                children: <Widget>[
+                                  ColltactAvatar(colltact, size: _leadingSize),
+                                  const SizedBox(width: 16),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Text(
+                                          colltact.name,
+                                          maxLines: 5,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
-                                      ),
-                                      const SizedBox(height: 4),
-                                      colltact.when(
-                                        colleague: (_) =>
-                                            const SizedBox.shrink(),
-                                        contact: (contact) =>
-                                            ColltactSubtitle(colltact),
-                                        sharedContact: (_) =>
-                                            const SizedBox.shrink(),
-                                      ),
-                                    ],
+                                        const SizedBox(height: 4),
+                                        colltact.when(
+                                          colleague: (_) =>
+                                              const SizedBox.shrink(),
+                                          contact: (contact) =>
+                                              ColltactSubtitle(colltact),
+                                          sharedContact: (_) =>
+                                              const SizedBox.shrink(),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(height: 24),
-                          Expanded(
-                            child: RefreshIndicator(
-                              onRefresh: () async {
-                                if (colltact is ColltactContact)
-                                  context
-                                      .read<ContactsCubit>()
-                                      .reloadContacts();
-                                else if (colltact is ColltactSharedContact)
-                                  context
-                                      .read<SharedContactsCubit>()
-                                      .loadSharedContacts(fullRefresh: true);
-                              },
-                              child: _DestinationsList(
-                                colltact: colltact,
-                                onPhoneNumberPressed:
-                                    widget.onPhoneNumberPressed,
-                                onEmailPressed: widget.onEmailPressed,
+                                ],
                               ),
                             ),
-                          ),
-                        ],
+                            const SizedBox(height: 24),
+                            Expanded(
+                              child: RefreshIndicator(
+                                onRefresh: () async {
+                                  if (colltact is ColltactContact)
+                                    context
+                                        .read<ContactsCubit>()
+                                        .reloadContacts();
+                                  else if (colltact is ColltactSharedContact)
+                                    context
+                                        .read<SharedContactsCubit>()
+                                        .loadSharedContacts(fullRefresh: true);
+                                },
+                                child: _DestinationsList(
+                                  colltact: colltact,
+                                  onPhoneNumberPressed:
+                                      widget.onPhoneNumberPressed,
+                                  onEmailPressed: widget.onEmailPressed,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                );
-              },
-            );
-          },
-        );
-      }),
+                  );
+                },
+              );
+            },
+          );
+        },
+      ),
     );
   }
 }

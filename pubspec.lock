@@ -42,7 +42,7 @@ packages:
     source: hosted
     version: "3.6.1"
   args:
-    dependency: transitive
+    dependency: "direct dev"
     description:
       name: args
       sha256: "7cf60b9f0cc88203c5a190b4cd62a99feea42759a7fa695010eb5de1c0b2252a"
@@ -792,7 +792,7 @@ packages:
     source: hosted
     version: "0.2.2"
   http:
-    dependency: transitive
+    dependency: "direct dev"
     description:
       name: http
       sha256: b9c29a161230ee03d3ccf545097fccd9b87a5264228c5d348202e0f0c28f9010
@@ -965,7 +965,7 @@ packages:
     source: hosted
     version: "0.11.1"
   meta:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: meta
       sha256: bdb68674043280c3428e9ec998512fb681678676b3c54e773629ffe74419f8c7
@@ -1293,7 +1293,7 @@ packages:
     source: hosted
     version: "0.5.1"
   riverpod_annotation:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: riverpod_annotation
       sha256: e5e796c0eba4030c704e9dae1b834a6541814963292839dcf9638d53eba84f5c
