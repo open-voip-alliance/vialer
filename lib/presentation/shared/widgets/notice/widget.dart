@@ -207,7 +207,7 @@ class _NoticeState extends State<_Notice>
                               .toUpperCaseIfAndroid(context),
                         ),
                       ),
-                    ]
+                    ],
                   ],
                 ],
               ),

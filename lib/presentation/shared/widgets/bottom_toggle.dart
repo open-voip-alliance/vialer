@@ -38,7 +38,7 @@ class BottomToggleState extends State<BottomToggle> {
           StylizedSwitch(
             value: _toggleValue,
             onChanged: _onChanged,
-          )
+          ),
         ],
       ),
     );

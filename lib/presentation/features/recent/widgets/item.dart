@@ -442,7 +442,7 @@ class _RecentItemSubtitleText extends StatelessWidget {
             ),
             overflow: TextOverflow.ellipsis,
             style: textStyle,
-          )
+          ),
         ],
       );
     }

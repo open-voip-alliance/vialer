@@ -54,7 +54,7 @@ class SettingsPageContainer extends StatelessWidget {
                 );
               },
             );
-          }
+          },
         },
       ),
     );

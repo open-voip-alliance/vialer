@@ -265,7 +265,7 @@ class _AndroidInputs extends StatelessWidget {
                   value: checkboxValue,
                   activeColor: Theme.of(context).primaryColor,
                   onChanged: (value) => onCheckboxValueChanged(value!),
-                )
+                ),
               ],
             ),
             ElevatedButton(

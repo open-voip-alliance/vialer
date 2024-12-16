@@ -276,8 +276,8 @@ class AuthRepository with Loggable {
               'use_mobile_number_as_fallback': enable,
               'voip_account': {
                 'id': (app['voip_account'] as Map<String, dynamic>)['id'],
-              }
-            }
+              },
+            },
           },
         );
 

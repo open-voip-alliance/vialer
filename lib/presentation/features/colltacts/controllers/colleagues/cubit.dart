@@ -30,9 +30,11 @@ class ColleaguesCubit extends Cubit<ColleaguesState> {
         ) {
     _eventBus
       ..on<UserWasLoggedOutEvent>((_) async {
-        emit(ColleaguesState.loading(
-          showOnlineColleaguesOnly: state.showOnlineColleaguesOnly,
-        ));
+        emit(
+          ColleaguesState.loading(
+            showOnlineColleaguesOnly: state.showOnlineColleaguesOnly,
+          ),
+        );
       })
       ..on<ColleagueListDidChangeEvent>(_colleaguesWereChanged);
   }

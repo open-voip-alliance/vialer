@@ -156,7 +156,7 @@ Future<List<T9Colltact>> _filterColltactsByRegularExpression(
                 label: '',
                 value: colleague.number ?? '',
               ),
-            )
+            ),
           ],
           contact: (contact) => contact.phoneNumbers.map(
             (number) => T9Colltact(
