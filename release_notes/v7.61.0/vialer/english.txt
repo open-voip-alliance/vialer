@@ -1,0 +1,4 @@
+- The feedback page has been completely removed from the app
+- The "Feedback" link in "About the app" has been removed
+- Added a "Support" button at the bottom of the "About the app" page
+- When a user is asked to rate a call and provides a poor rating, they will no longer be asked to provide written feedback about it
