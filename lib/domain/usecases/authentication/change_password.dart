@@ -9,14 +9,14 @@ class ChangePasswordUseCase extends UseCase {
   final _authRepository = dependencyLocator<AuthRepository>();
   final _getUser = GetLoggedInUserUseCase();
 
-  Future<void> call({
+  Future<bool> call({
     required String currentPassword,
     required String newPassword,
     String? email,
   }) async {
     email ??= _getUser().email;
 
-    await _authRepository.changePassword(
+    return _authRepository.changePassword(
       email: email,
       currentPassword: currentPassword,
       newPassword: newPassword,

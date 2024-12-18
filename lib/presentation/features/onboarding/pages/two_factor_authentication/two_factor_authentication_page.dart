@@ -8,11 +8,11 @@ import 'package:provider/provider.dart';
 import 'package:vialer/presentation/resources/localizations.dart';
 import 'package:vialer/presentation/resources/theme.dart';
 
+import '../../../../shared/widgets/error.dart';
+import '../../../../shared/widgets/stylized_text_field.dart';
 import '../../../../util/widgets_binding_observer_registrar.dart';
 import '../../controllers/cubit.dart';
 import '../../controllers/two_factor_authentication/cubit.dart';
-import '../../widgets/error.dart';
-import '../../widgets/stylized_text_field.dart';
 
 class TwoFactorAuthenticationPage extends StatefulWidget {
   const TwoFactorAuthenticationPage({super.key});

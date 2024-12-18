@@ -5,12 +5,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../resources/localizations.dart';
+import '../../../../shared/widgets/error.dart';
 import '../../../../shared/widgets/stylized_button.dart';
+import '../../../../shared/widgets/stylized_text_field.dart';
 import '../../controllers/password_forgotten/riverpod.dart';
 import '../../controllers/password_forgotten/state.dart';
 import '../../widgets/background.dart';
-import '../../widgets/error.dart';
-import '../../widgets/stylized_text_field.dart';
 
 class PasswordForgottenPage extends ConsumerWidget {
   PasswordForgottenPage({
