@@ -50,6 +50,10 @@ custom: # Custom properties to make workflows cleaner
     - &build_for_ios
       name: Building application (.ipa) for iOS
       script: . utils/ci/codemagic/bin/build_for_ios.sh
+    - &build_for_ios_and_ignore_failure
+      name: Building application (.ipa) for iOS
+      script: . utils/ci/codemagic/bin/build_for_ios.sh
+      ignore_failure: true
     - &prepare_environment_for_integration_testing
       name: Preparing environment for integration testing
       script: |
@@ -471,6 +475,25 @@ workflows:
   production-verbonden:
     name: Release Verbonden to Production
     <<: *production_workflow
+    # Temporary scripts section to allow us to skip Verbonden's iOS build as it is failing and
+    # stopping the entire release flow. Remove the entire scripts section from this workflow
+    # when the issue is resolved also remove the `build_for_ios_and_ignore_failure` script
+    # completely.
+    scripts:
+      - *use_project_build_number
+      - *prepare_environment_file
+      - *run_code_generators
+      - *set_version_for_app_store
+      - *verify_codebase_complies_with_analysis_rules
+      - *verify_no_untranslated_strings
+      - *prepare_release_notes_from_files
+      - *flutter_test
+      - *build_for_android
+      - *update_ios_signing_for_current_brand
+      - *build_for_ios_and_ignore_failure
+      - *release_to_sentry
+      - *track_new_version
+      - *call_zapier_production_build_webhook
     environment:
       groups:
         - configuration
