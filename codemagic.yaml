@@ -412,7 +412,7 @@ workflows:
         FINALIZE_SENTRY_RELEASE: "false"
     publishing:
       slack:
-        channel: '#vialer_mobile_staging_builds'
+        channel: '#mobile_staging_builds'
         notify_on_build_start: false
         notify:
           success: true
