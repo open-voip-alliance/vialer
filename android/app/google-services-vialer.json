@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "944827751702",
+    "firebase_url": "https://vialer-fcm-423a9.firebaseio.com",
+    "project_id": "vialer-fcm-423a9",
+    "storage_bucket": "vialer-fcm-423a9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:944827751702:android:56d040edacefd8fb",
+        "android_client_info": {
+          "package_name": "com.voipgrid.vialer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "944827751702-obsifvlpb1fsvf0qhmbgtam9gqseniuh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDFF2CUq8hwgW7xQd61IzkTP4mzD6VgJQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

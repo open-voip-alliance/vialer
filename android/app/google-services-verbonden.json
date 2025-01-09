@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "1028378367821",
+    "firebase_url": "https://verbonden-fcm.firebaseio.com",
+    "project_id": "verbonden-fcm",
+    "storage_bucket": "verbonden-fcm.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1028378367821:android:f94506a87a68b2ec",
+        "android_client_info": {
+          "package_name": "nl.verbonden.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1028378367821-6m472njppdlrqudti61891uorip9vl98.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDmtAE9X9Ui-U1eIVl3gRP_GHtbfWSOpVA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "915182362191",
+    "firebase_url": "https://bellen-met-annabel.firebaseio.com",
+    "project_id": "bellen-met-annabel",
+    "storage_bucket": "bellen-met-annabel.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:915182362191:android:52a37b0209817b64",
+        "android_client_info": {
+          "package_name": "com.bellenmetannabel.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "915182362191-mde4ig73u110b4nfripamt4as128j0cc.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "915182362191-mde4ig73u110b4nfripamt4as128j0cc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBqTW5FiGl-f3Mso8_skzq26Ap6heLHUYE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
